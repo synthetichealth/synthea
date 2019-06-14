@@ -17,6 +17,8 @@ import org.mitre.synthea.engine.Transition.ConditionalTransitionOption;
 import org.mitre.synthea.engine.Transition.DirectTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransitionOption;
+import org.mitre.synthea.engine.Transition.LookupTableTransition;
+import org.mitre.synthea.engine.Transition.LookupTableTransitionOption;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.RandomValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
@@ -45,6 +47,7 @@ public abstract class State implements Cloneable {
   private List<ConditionalTransitionOption> conditionalTransition;
   private List<DistributedTransitionOption> distributedTransition;
   private List<ComplexTransitionOption> complexTransition;
+  private List<LookupTableTransitionOption> lookupTableTransition;
   public List<String> remarks;
 
   protected void initialize(Module module, String name, JsonObject definition) {
@@ -59,6 +62,8 @@ public abstract class State implements Cloneable {
       this.transition = new ConditionalTransition(conditionalTransition);
     } else if (complexTransition != null) {
       this.transition = new ComplexTransition(complexTransition);
+    } else if (lookupTableTransition != null) {
+      this.transition = new LookupTableTransition(lookupTableTransition);
     } else if (!(this instanceof Terminal)) {
       throw new RuntimeException("State `" + name + "` has no transition.\n");
     }
