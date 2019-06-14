@@ -538,8 +538,7 @@
       ]
     },
     "Stage IV Treatment": {
-      "type": "CallSubmodule",
-      "submodule": "breast_cancer/breast_stage4",
+      "type": "Simple",
       "distributed_transition": [
         {
           "transition": "Treatment Successful",
@@ -627,8 +626,7 @@
       "direct_transition": "Stage III"
     },
     "Stage III Treatment": {
-      "type": "CallSubmodule",
-      "submodule": "breast_cancer/breast_stage3",
+      "type": "Simple",
       "distributed_transition": [
         {
           "transition": "Treatment Successful",
@@ -845,11 +843,7 @@
       "direct_transition": "Delay for Analysis of Possible Treatments"
     },
     "Stage II Treatment": {
-      "type": "CallSubmodule",
-      "submodule": "breast_cancer/breast_stage2",
-      "remarks": [
-        "https://www.medicalnewstoday.com/articles/316867.php"
-      ],
+      "type": "Simple",
       "distributed_transition": [
         {
           "transition": "Treatment Successful",
@@ -859,11 +853,13 @@
           "transition": "Treatment Unsuccessful",
           "distribution": 0.07
         }
+      ],
+      "remarks": [
+        "https://www.medicalnewstoday.com/articles/316867.php"
       ]
     },
     "Stage 0 Treatment": {
-      "type": "CallSubmodule",
-      "submodule": "breast_cancer/breast_stage0",
+      "type": "Simple",
       "distributed_transition": [
         {
           "transition": "Treatment Successful",
@@ -1488,15 +1484,32 @@
     },
     "End Meeting with Oncologist": {
       "type": "EncounterEnd",
-      "direct_transition": "Choose Treatment Option"
+      "direct_transition": "Choose_Treatment_Option"
     },
-    "Choose Treatment Option": {
+    "Stage I Treatment": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Treatment Successful",
+          "distribution": 0.99
+        },
+        {
+          "transition": "Treatment Unsuccessful",
+          "distribution": 0.01
+        }
+      ]
+    },
+    "Choose_Treatment_Option": {
       "type": "Delay",
       "range": {
         "low": 1,
         "high": 7,
         "unit": "days"
       },
+      "direct_transition": "Neoadjuvant Chemo Before Surgery"
+    },
+    "End Treatment": {
+      "type": "Simple",
       "conditional_transition": [
         {
           "transition": "Stage 0 Treatment",
@@ -1537,19 +1550,74 @@
         }
       ]
     },
-    "Stage I Treatment": {
-      "type": "CallSubmodule",
-      "submodule": "breast_cancer/breast_stage1",
-      "distributed_transition": [
+    "Neoadjuvant Chemotherapy": {
+      "type": "Procedure",
+      "codes": [
         {
-          "transition": "Treatment Successful",
-          "distribution": 0.99
-        },
-        {
-          "transition": "Treatment Unsuccessful",
-          "distribution": 0.01
+          "system": "SNOMED-CT",
+          "code": 367336001,
+          "display": "Chemotherapy (procedure)"
         }
-      ]
+      ],
+      "duration": {
+        "low": 0,
+        "high": 2,
+        "unit": "hours"
+      },
+      "direct_transition": "Pertuzumab"
+    },
+    "Pertuzumab": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1298949,
+          "display": "Perjeta"
+        }
+      ],
+      "direct_transition": "End Neoadjuvant Chemo Treatment",
+      "assign_to_attribute": "neoMed"
+    },
+    "Buffer": {
+      "type": "Delay",
+      "direct_transition": "End Neodjuvant Medication in Preparation for Surgery",
+      "range": {
+        "low": 3,
+        "high": 6,
+        "unit": "months"
+      }
+    },
+    "End Neodjuvant Medication in Preparation for Surgery": {
+      "type": "MedicationEnd",
+      "direct_transition": "End Chemo Treatment",
+      "medication_order": "text",
+      "referenced_by_attribute": "neoMed"
+    },
+    "Neoadjuvant Chemo Before Surgery": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "Neoadjuvant Chemotherapy"
+    },
+    "End Neoadjuvant Chemo Treatment": {
+      "type": "EncounterEnd",
+      "direct_transition": "Buffer"
+    },
+    "End Chemo Treatment": {
+      "type": "EncounterEnd",
+      "direct_transition": "Begin Treatment"
+    },
+    "Begin Treatment": {
+      "type": "CallSubmodule",
+      "submodule": "Breast_cancer/Surgery_Therapy_Breast",
+      "direct_transition": "End Treatment"
     }
   }
 }

@@ -8,21 +8,21 @@
       "type": "Initial",
       "conditional_transition": [
         {
-          "transition": "Breast_Surgery",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "T",
-            "operator": "!=",
-            "value": 0
-          }
-        },
-        {
           "transition": "Lymph_Node Surgery",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "T",
+            "attribute": "N",
+            "operator": "!=",
+            "value": "N0"
+          }
+        },
+        {
+          "transition": "End_Lymph_Node_Surgery",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "N",
             "operator": "==",
-            "value": "T0"
+            "value": "N0"
           }
         }
       ]
@@ -452,7 +452,7 @@
         "high": 1,
         "unit": "days"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "End_Lymph_Node_Surgery"
     },
     "Axillary_Lymph_Node_Dissection__ALND_": {
       "type": "Procedure",
@@ -468,30 +468,11 @@
         "high": 1,
         "unit": "days"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "End_Lymph_Node_Surgery"
     },
     "End Breast Surgery": {
       "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Lymph_Node Surgery",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "N",
-            "operator": "!=",
-            "value": "N0"
-          }
-        },
-        {
-          "transition": "Terminal",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "N",
-            "operator": "==",
-            "value": "N0"
-          }
-        }
-      ]
+      "direct_transition": "Terminal"
     },
     "Lymph_Node Surgery": {
       "type": "Simple",
@@ -503,6 +484,29 @@
         {
           "transition": "Axillary_Lymph_Node_Dissection__ALND_",
           "distribution": 0.5
+        }
+      ]
+    },
+    "End_Lymph_Node_Surgery": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Breast_Surgery",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "T",
+            "operator": "!=",
+            "value": "T0"
+          }
+        },
+        {
+          "transition": "End Breast Surgery",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "T",
+            "operator": "==",
+            "value": "T0"
+          }
         }
       ]
     }
