@@ -64,15 +64,20 @@ public abstract class Exporter {
       if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
         org.hl7.fhir.dstu3.model.Bundle bundle = FhirStu3.convertToFHIR(person, stopTime);
         IParser parser = FhirContext.forDstu3().newJsonParser().setPrettyPrint(false);
+        Set<String> fileNames = new HashSet<>();
         for (org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           String entryJson = parser.encodeResourceToString(entry.getResource());
           String fileName = entry.getResource().getResourceType().toString() + ".ndjson";
+          fileNames.add(fileName);
           if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
             AWSS3Writer.appendToFile(folderName, fileName, entryJson);
           } else {
             File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
             FileSystemWriter.appendToFile(outDirectory, fileName, entryJson);
           }
+        }
+        if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
+          cleanupTempFile(folderName, fileNames);
         }
       } else {
         String bundleJson = FhirStu3.convertToFHIRJson(person, stopTime);
@@ -90,15 +95,20 @@ public abstract class Exporter {
       if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
         ca.uhn.fhir.model.dstu2.resource.Bundle bundle = FhirDstu2.convertToFHIR(person, stopTime);
         IParser parser = FhirContext.forDstu2().newJsonParser().setPrettyPrint(false);
+        Set<String> fileNames = new HashSet<>();
         for (ca.uhn.fhir.model.dstu2.resource.Bundle.Entry entry : bundle.getEntry()) {
           String entryJson = parser.encodeResourceToString(entry.getResource());
           String fileName = entry.getResource().getResourceName() + ".ndjson";
+          fileNames.add(fileName);
           if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
             AWSS3Writer.appendToFile(folderName, fileName, entryJson);
           } else {
             File outDirectory = FileSystemWriter.getOutputFolder(folderName, person);
             FileSystemWriter.appendToFile(outDirectory, fileName, entryJson);
           }
+        }
+        if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
+          cleanupTempFile(folderName, fileNames);
         }
       } else {
         String bundleJson = FhirDstu2.convertToFHIRJson(person, stopTime);
@@ -125,16 +135,7 @@ public abstract class Exporter {
           FileSystemWriter.appendToFile(outDirectory, fileName, entryJson);
         }
         if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
-          fileNames.forEach((fileName) -> {
-            try {
-              Path path = Paths.get(fileName);
-              String content = new String ( Files.readAllBytes(path));
-              AWSS3Writer.writeNewFile(folderName, fileName, content);
-              Files.delete(path);
-            } catch (IOException e) {
-              e.printStackTrace();
-            }
-          });
+          cleanupTempFile(folderName, fileNames);
         }
       } else {
         String bundleJson = FhirR4.convertToFHIRJson(person, stopTime);
@@ -182,6 +183,19 @@ public abstract class Exporter {
     if (Boolean.parseBoolean(Config.get("exporter.cdw.export"))) {
       try {
         CDWExporter.getInstance().export(person, stopTime);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  private static void cleanupTempFile(String folderName, Set<String> fileNames) {
+    for (String fileName : fileNames) {
+      try {
+        Path path = Paths.get(fileName);
+        String content = new String(Files.readAllBytes(path));
+        AWSS3Writer.writeNewFile(folderName, fileName, content);
+        Files.delete(path);
       } catch (IOException e) {
         e.printStackTrace();
       }
