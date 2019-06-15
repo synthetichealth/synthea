@@ -23,6 +23,7 @@ import org.hl7.fhir.dstu3.model.Practitioner;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.writer.AWSS3Writer;
 
 public abstract class FhirPractitionerExporterStu3 {
 
@@ -62,9 +63,6 @@ public abstract class FhirPractitionerExporterStu3 {
       String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
 
       try {
-        if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3")) == true) {
-          // todo : write to aws3
-        } else {
           // get output folder
           List<String> folders = new ArrayList<>();
           folders.add("fhir_stu3");
@@ -72,6 +70,9 @@ public abstract class FhirPractitionerExporterStu3 {
           File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
           f.mkdirs();
           Path outFilePath = f.toPath().resolve("practitionerInformation" + stop + ".json");
+        if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
+          AWSS3Writer.appendToFile("fhir_stu3", "practitionerInformation" + stop + ".json", Collections.singleton(bundleJson).toString());
+        } else {
           Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
         }
       } catch (IOException e) {
