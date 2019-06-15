@@ -23,6 +23,7 @@ import org.hl7.fhir.r4.model.Organization;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.writer.AWSS3Writer;
 
 public abstract class HospitalExporterR4 {
 
@@ -52,16 +53,16 @@ public abstract class HospitalExporterR4 {
       String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
 
       try {
-        if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3")) == true) {
-          // todo : write to aws3
+        // get output folder
+        List<String> folders = new ArrayList<>();
+        folders.add("fhir");
+        String baseDirectory = Config.get("exporter.baseDirectory");
+        File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
+        f.mkdirs();
+        Path outFilePath = f.toPath().resolve("hospitalInformation" + stop + ".json");
+        if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
+          AWSS3Writer.appendToFile("fhir_stu3", "practitionerInformation" + stop + ".json", Collections.singleton(bundleJson).toString());
         } else {
-          // get output folder
-          List<String> folders = new ArrayList<>();
-          folders.add("fhir");
-          String baseDirectory = Config.get("exporter.baseDirectory");
-          File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
-          f.mkdirs();
-          Path outFilePath = f.toPath().resolve("hospitalInformation" + stop + ".json");
           Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
         }
       } catch (IOException e) {
