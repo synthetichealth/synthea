@@ -89,7 +89,8 @@ public class Person implements Serializable, QuadTreeData {
   /** history of the currently active module. */
   public List<State> history;
   /** person's insurance company */
-  // Each entry in the payerHistory List corresponds to the insurance held at that age
+  // Each entry in the payerHistory List corresponds to the insurance held at that
+  // age
   public List<Payer> payerHistory;
 
   public Person(long seed) {
@@ -100,8 +101,7 @@ public class Person implements Serializable, QuadTreeData {
     symptoms = new ConcurrentHashMap<String, Map<String, Integer>>();
     symptomStatuses = new ConcurrentHashMap<String, Map<String, Boolean>>();
     events = new EventList();
-    hasMultipleRecords =
-        Boolean.parseBoolean(Config.get("exporter.split_records", "false"));
+    hasMultipleRecords = Boolean.parseBoolean(Config.get("exporter.split_records", "false"));
     if (hasMultipleRecords) {
       records = new ConcurrentHashMap<String, HealthRecord>();
     }
@@ -118,30 +118,29 @@ public class Person implements Serializable, QuadTreeData {
   public double rand(double low, double high) {
     return (low + ((high - low) * random.nextDouble()));
   }
-  
+
   /**
-   * Helper function to get a random number based on an array of [min, max].
-   * This should be used primarily when pulling ranges from YML.
+   * Helper function to get a random number based on an array of [min, max]. This
+   * should be used primarily when pulling ranges from YML.
    * 
    * @param range array [min, max]
    * @return random double between min and max
    */
   public double rand(double[] range) {
     if (range == null || range.length != 2) {
-      throw new IllegalArgumentException("input range must be of length 2 -- got "
-          + Arrays.toString(range));
+      throw new IllegalArgumentException("input range must be of length 2 -- got " + Arrays.toString(range));
     }
-    
+
     if (range[0] > range[1]) {
-      throw new IllegalArgumentException("range must be of the form {low, high} -- got "
-          + Arrays.toString(range));
+      throw new IllegalArgumentException("range must be of the form {low, high} -- got " + Arrays.toString(range));
     }
-    
+
     return rand(range[0], range[1]);
   }
 
   /**
    * Return one of the options randomly with uniform distribution.
+   * 
    * @param choices The options to be returned.
    * @return One of the options randomly selected.
    */
@@ -150,23 +149,21 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
-   * Helper function to get a random number based on an integer array of [min, max].
-   * This should be used primarily when pulling ranges from YML.
+   * Helper function to get a random number based on an integer array of [min,
+   * max]. This should be used primarily when pulling ranges from YML.
    * 
    * @param range array [min, max]
    * @return random double between min and max
    */
   public double rand(int[] range) {
     if (range == null || range.length != 2) {
-      throw new IllegalArgumentException("input range must be of length 2 -- got "
-          + Arrays.toString(range));
+      throw new IllegalArgumentException("input range must be of length 2 -- got " + Arrays.toString(range));
     }
-    
+
     if (range[0] > range[1]) {
-      throw new IllegalArgumentException("range must be of the form {low, high} -- got "
-          + Arrays.toString(range));
+      throw new IllegalArgumentException("range must be of the form {low, high} -- got " + Arrays.toString(range));
     }
-    
+
     return rand(range[0], range[1]);
   }
 
@@ -183,8 +180,8 @@ public class Person implements Serializable, QuadTreeData {
 
     if (attributes.containsKey(BIRTHDATE)) {
       LocalDate now = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
-      LocalDate birthdate = Instant.ofEpochMilli((long) attributes.get(BIRTHDATE))
-          .atZone(ZoneId.systemDefault()).toLocalDate();
+      LocalDate birthdate = Instant.ofEpochMilli((long) attributes.get(BIRTHDATE)).atZone(ZoneId.systemDefault())
+          .toLocalDate();
       age = Period.between(birthdate, now);
     }
     return age;
@@ -192,9 +189,10 @@ public class Person implements Serializable, QuadTreeData {
 
   /**
    * Return the persons age in months at a given time.
+   * 
    * @param time The time when their age should be calculated.
-   * @return age in months. Can never be less than zero,
-   *     even if given a time before they were born.
+   * @return age in months. Can never be less than zero, even if given a time
+   *         before they were born.
    */
   public int ageInMonths(long time) {
     int months = (int) age(time).toTotalMonths();
@@ -206,9 +204,10 @@ public class Person implements Serializable, QuadTreeData {
 
   /**
    * Return the persons age in years at a given time.
+   * 
    * @param time The time when their age should be calculated.
-   * @return age in years. Can never be less than zero,
-   *     even if given a time before they were born.
+   * @return age in years. Can never be less than zero, even if given a time
+   *         before they were born.
    */
   public int ageInYears(long time) {
     int years = age(time).getYears();
@@ -244,7 +243,7 @@ public class Person implements Serializable, QuadTreeData {
     return max;
   }
 
-  //Mark the largest valued symptom as addressed.
+  // Mark the largest valued symptom as addressed.
   public void addressLargestSymptom() {
     String highestType = "";
     String highestCause = "";
@@ -267,8 +266,8 @@ public class Person implements Serializable, QuadTreeData {
   public Double getVitalSign(VitalSign vitalSign, long time) {
     ValueGenerator valueGenerator = vitalSigns.get(vitalSign);
     if (valueGenerator == null) {
-      throw new NullPointerException("Vital sign '" + vitalSign
-          + "' not set. Valid vital signs: " + vitalSigns.keySet());
+      throw new NullPointerException(
+          "Vital sign '" + vitalSign + "' not set. Valid vital signs: " + vitalSigns.keySet());
     }
     return valueGenerator.getValue(time);
   }
@@ -301,7 +300,9 @@ public class Person implements Serializable, QuadTreeData {
 
   /**
    * The total number of all unaddressed symptom severities.
-   * @return total : sum of all the symptom severities. This number drives care-seeking behaviors.
+   * 
+   * @return total : sum of all the symptom severities. This number drives
+   *         care-seeking behaviors.
    */
   public int symptomTotal() {
     int total = 0;
@@ -359,7 +360,7 @@ public class Person implements Serializable, QuadTreeData {
         record.provider = provider;
         records.put(key, record);
       }
-      returnValue = records.get(key);      
+      returnValue = records.get(key);
     }
     return returnValue;
   }
@@ -368,8 +369,7 @@ public class Person implements Serializable, QuadTreeData {
 
   @SuppressWarnings("unchecked")
   public Encounter getCurrentEncounter(Module module) {
-    Map<String, Encounter> moduleToCurrentEncounter = 
-        (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
+    Map<String, Encounter> moduleToCurrentEncounter = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
 
     if (moduleToCurrentEncounter == null) {
       moduleToCurrentEncounter = new HashMap<>();
@@ -381,8 +381,7 @@ public class Person implements Serializable, QuadTreeData {
 
   @SuppressWarnings("unchecked")
   public void setCurrentEncounter(Module module, Encounter encounter) {
-    Map<String, Encounter> moduleToCurrentEncounter = 
-        (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
+    Map<String, Encounter> moduleToCurrentEncounter = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
 
     if (moduleToCurrentEncounter == null) {
       moduleToCurrentEncounter = new HashMap<>();
@@ -406,7 +405,7 @@ public class Person implements Serializable, QuadTreeData {
     }
     return (Provider) attributes.get(key);
   }
-  
+
   public void setProvider(EncounterType type, Provider provider) {
     String key = PREFERREDYPROVIDER + type;
     attributes.put(key, provider);
@@ -447,6 +446,7 @@ public class Person implements Serializable, QuadTreeData {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.apache.sis.index.tree.QuadTreeData#getX()
    */
   @Override
@@ -456,6 +456,7 @@ public class Person implements Serializable, QuadTreeData {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.apache.sis.index.tree.QuadTreeData#getY()
    */
   @Override
@@ -465,6 +466,7 @@ public class Person implements Serializable, QuadTreeData {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.apache.sis.index.tree.QuadTreeData#getLatLon()
    */
   @Override
@@ -474,6 +476,7 @@ public class Person implements Serializable, QuadTreeData {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.apache.sis.index.tree.QuadTreeData#getFileName()
    */
   @Override
@@ -481,15 +484,15 @@ public class Person implements Serializable, QuadTreeData {
     return null;
   }
 
-public Payer getInsurance(long time) {
-  int age = this.ageInYears(time);
-  if(this.payerHistory.get(age) != null){
-    return this.payerHistory.get(age);
+  public Payer getInsurance(long time) {
+    int age = this.ageInYears(time);
+    if (this.payerHistory.get(age) != null) {
+      return this.payerHistory.get(age);
+    }
+    return this.payerHistory.get(0);
   }
-	return this.payerHistory.get(0);
-}
 
-public List<Payer> getPayerHistory() {
-	return this.payerHistory;
-}
+  public List<Payer> getPayerHistory() {
+    return this.payerHistory;
+  }
 }

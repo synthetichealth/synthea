@@ -256,7 +256,7 @@ public class HealthRecord {
     public Payer insurance;
 
     public Claim(Encounter encounter) {
-      this.insurance = HealthInsuranceModule.getCurrentInsurance(person, encounter.start);
+      this.insurance = person.getInsurance(encounter.start);
 
       // Encounter inpatient
       if (encounter.type.equalsIgnoreCase("inpatient")) {

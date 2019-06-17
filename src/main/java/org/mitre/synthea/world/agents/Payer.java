@@ -47,10 +47,10 @@ public class Payer implements QuadTreeData {
   // private static final double MAX_PROVIDER_SEARCH_DISTANCE =
   // Double.parseDouble(Config.get("generate.providers.maximum_search_distance",
   // "500"));
-  public static final String PROVIDER_SELECTION_BEHAVIOR = "random";
+  public static final String PAYER_SELECTION_BEHAVIOR = "random";
   // Config.get("generate.providers.selection_behavior", "nearest").toLowerCase();
   private static IPayerFinder payerFinder = buildPayerFinder();
-// Provider Selection Behavior algorithm choices:
+  // Provider Selection Behavior algorithm choices:
   public static final String NEAREST = "nearest";
   public static final String RANDOM = "random";
   public static final String NETWORK = "network";
@@ -79,6 +79,10 @@ public class Payer implements QuadTreeData {
   // row: year, column: type, value: count
   private Table<Integer, String, AtomicInteger> utilization;
 
+  // Costs Information
+  private double costsCovered;
+  private double revenue;
+
   // TEMP NO_INSURANCE OBJECT
   public static Payer noInsurance;
 
@@ -90,24 +94,27 @@ public class Payer implements QuadTreeData {
     attributes = new LinkedTreeMap<>();
     utilization = HashBasedTable.create();
     coordinates = new DirectPosition2D();
+    costsCovered = 0.0;
+    revenue = 0.0;
   }
 
   // Determines the algorithm to use to find a Payer
   private static IPayerFinder buildPayerFinder() {
     IPayerFinder finder = null;
-    // String behavior = Config.get("generate.providers.selection_behavior", "nearest").toLowerCase();
-    switch (PROVIDER_SELECTION_BEHAVIOR) {
-      case BESTRATE:
-        finder = new PayerFinderBestRates();
-        break;
-      case RANDOM:
-        finder = new PayerFinderRandom();
-        break;
-      case NEAREST:
-        finder = new PayerFinderNearest();
-        break;
-      default:
-        throw new RuntimeException("Not a valid Payer Selction Algorithm");
+    // String behavior = Config.get("generate.providers.selection_behavior",
+    // "nearest").toLowerCase();
+    switch (PAYER_SELECTION_BEHAVIOR) {
+    case BESTRATE:
+      finder = new PayerFinderBestRates();
+      break;
+    case RANDOM:
+      finder = new PayerFinderRandom();
+      break;
+    case NEAREST:
+      finder = new PayerFinderNearest();
+      break;
+    default:
+      throw new RuntimeException("Not a valid Payer Selction Algorithm");
     }
     return finder;
   }
@@ -124,7 +131,9 @@ public class Payer implements QuadTreeData {
     return coordinates;
   }
 
-  // Necessary? Taken from Provider.java
+  // Necessary? We would need a new CSV file for Payers that would display each
+  // companies utilization, the amount that they paid, the amount that they were
+  // paid (show the difference between income and expenses)
   private synchronized void increment(Integer year, String key) {
     if (!utilization.contains(year, key)) {
       utilization.put(year, key, new AtomicInteger(0));
@@ -156,7 +165,8 @@ public class Payer implements QuadTreeData {
       return false;
     } else if (this.name.equals("Medicaid") && !person.attributes.containsKey("blind")) {
       return false;
-    } else if (this.name.equals("Dual Eligible") && !person.attributes.containsKey("blind") && person.ageInYears(time) < 65) {
+    } else if (this.name.equals("Dual Eligible") && !person.attributes.containsKey("blind")
+        && person.ageInYears(time) < 65) {
       return false;
     }
     return true;
@@ -174,9 +184,10 @@ public class Payer implements QuadTreeData {
 
   /**
    * Is the given Provider in this Payer's network?.
+   * 
    * @return the payer selection algorithm
    */
-  public static IPayerFinder getPayerFinder(){
+  public static IPayerFinder getPayerFinder() {
     return payerFinder;
   }
 
@@ -367,5 +378,17 @@ public class Payer implements QuadTreeData {
   // For now, insurance will cover all services
   public boolean coversService(EncounterType service) {
     return true;
+  }
+
+  public double getCopay() {
+    return this.defaultCopay;
+  }
+
+  public void addCost(double costToPayer) {
+    this.costsCovered += costToPayer;
+  }
+
+  public void addRevenue(double costToPatient) {
+    this.revenue += costToPatient;
   }
 }

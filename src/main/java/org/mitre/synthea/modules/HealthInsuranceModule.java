@@ -1,24 +1,12 @@
 package org.mitre.synthea.modules;
 
-import java.util.List;
-import java.util.Random;
-
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.Provider;
-import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
 public class HealthInsuranceModule extends Module {
-  // public static final String INSURANCE = "insurance";
-
-  // public static final String NO_INSURANCE = "no_insurance";
-  // public static final String PRIVATE = "private";
-  // public static final String MEDICAID = "medicaid";
-  // public static final String MEDICARE = "medicare";
-  // public static final String DUAL_ELIGIBLE = "dual_eligible";
 
   public long mandateTime;
   public double mandateOccupation;
@@ -108,21 +96,9 @@ public class HealthInsuranceModule extends Module {
       }
     }
 
-    // No Insurance... What to return here?
-    // Temportatily just a fake payer with 0.0 for every field (coverage/copay/premium)
+    // No insurance
+    // Return a fake payer with 0.0 for every field (coverage/copay/premium)
     return Payer.noInsurance;
-  }
-
-  /**
-   * Get the insurance recorded for a person at a given time. The time must not be
-   * in the future or beyond the latest simulated date.
-   * 
-   * @param person The person under question.
-   * @return A string categorization of insurance.
-   */
-  @SuppressWarnings("unchecked")
-  public static Payer getCurrentInsurance(Person person, long time) {
-    return person.getInsurance(time);
   }
 
   // Is the following necessary? Not sure if blindness is already an attribute before this.
