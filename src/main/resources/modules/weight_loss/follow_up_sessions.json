@@ -6,12 +6,9 @@
   ],
   "states": {
     "Initial": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 2,
-        "unit": "days"
-      },
-      "direct_transition": "Reset_Visit_Counter"
+      "type": "Initial",
+      "direct_transition": "Wait_For_First",
+      "name": "Initial"
     },
     "Nutrition_Intervention_Procedure": {
       "type": "Procedure",
@@ -28,7 +25,8 @@
         "low": 45,
         "high": 60,
         "unit": "minutes"
-      }
+      },
+      "name": "Nutrition_Intervention_Procedure"
     },
     "Exercise_Intervention_Procedure": {
       "type": "Procedure",
@@ -45,11 +43,13 @@
         "high": 60,
         "unit": "minutes"
       },
-      "direct_transition": "End_Exercise_Intervention"
+      "direct_transition": "End_Exercise_Intervention",
+      "name": "Exercise_Intervention_Procedure"
     },
     "End_Exercise_Intervention": {
       "type": "EncounterEnd",
-      "direct_transition": "Check_For_End"
+      "direct_transition": "Check_For_End",
+      "name": "End_Exercise_Intervention"
     },
     "MEND_Encounter": {
       "type": "Encounter",
@@ -62,21 +62,25 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "MEND_Vitals"
+      "direct_transition": "MEND_Vitals",
+      "name": "MEND_Encounter"
     },
     "End_MEND_Week": {
-      "type": "Terminal"
+      "type": "Terminal",
+      "name": "End_MEND_Week"
     },
     "MEND_Vitals": {
       "type": "CallSubmodule",
       "submodule": "encounter/vitals",
-      "direct_transition": "Nutrition_Intervention_Procedure"
+      "direct_transition": "Nutrition_Intervention_Procedure",
+      "name": "MEND_Vitals"
     },
     "Reset_Visit_Counter": {
       "type": "SetAttribute",
       "attribute": "mend_weekly_visit_count",
       "direct_transition": "Increment_MEND_Visit",
-      "value": 0
+      "value": 0,
+      "name": "Reset_Visit_Counter"
     },
     "Increment_MEND_Visit": {
       "type": "Counter",
@@ -113,7 +117,8 @@
             }
           ]
         }
-      ]
+      ],
+      "name": "Increment_MEND_Visit"
     },
     "Wait_For_Next_Visit": {
       "type": "Delay",
@@ -121,7 +126,8 @@
         "quantity": 3,
         "unit": "days"
       },
-      "direct_transition": "Increment_MEND_Visit"
+      "direct_transition": "Increment_MEND_Visit",
+      "name": "Wait_For_Next_Visit"
     },
     "Wait_For_Week_To_End": {
       "type": "Delay",
@@ -129,7 +135,8 @@
         "quantity": 2,
         "unit": "days"
       },
-      "direct_transition": "End_MEND_Week"
+      "direct_transition": "End_MEND_Week",
+      "name": "Wait_For_Week_To_End"
     },
     "Check_For_End": {
       "type": "Simple",
@@ -146,7 +153,17 @@
         {
           "transition": "Wait_For_Next_Visit"
         }
-      ]
+      ],
+      "name": "Check_For_End"
+    },
+    "Wait_For_First": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 2,
+        "unit": "days"
+      },
+      "direct_transition": "Reset_Visit_Counter",
+      "name": "Wait_For_First"
     }
   }
 }
