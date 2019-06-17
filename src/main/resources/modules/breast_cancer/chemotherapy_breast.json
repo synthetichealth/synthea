@@ -6,47 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Adjuvant_Neoadjuvant_Chemotherapy"
-    },
-    "Terminal": {
-      "type": "Terminal"
-    },
-    "Adjuvant_Neoadjuvant_Chemotherapy": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 367336001,
-          "display": "Chemotherapy (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 3,
-        "high": 12,
-        "unit": "months"
-      },
-      "distributed_transition": [
-        {
-          "transition": "Anthracyclines",
-          "distribution": 0.3
-        },
-        {
-          "transition": "Taxanes",
-          "distribution": 0.3
-        },
-        {
-          "transition": "5-fluorouracil",
-          "distribution": 0.05
-        },
-        {
-          "transition": "Cyclophosphamide",
-          "distribution": 0.3
-        },
-        {
-          "transition": "Carboplatin",
-          "distribution": 0.05
-        }
-      ]
+      "direct_transition": "Set chemo counter"
     },
     "Cyclophosphamide": {
       "type": "MedicationOrder",
@@ -57,7 +17,8 @@
           "display": "Cytoxan"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "Adjuvant Chemotherapy Procedure",
+      "assign_to_attribute": "chemoMed"
     },
     "Anthracyclines": {
       "type": "Simple",
@@ -81,7 +42,8 @@
           "display": "Paraplatin"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "Adjuvant Chemotherapy Procedure",
+      "assign_to_attribute": "chemoMed"
     },
     "Taxanes": {
       "type": "Simple",
@@ -96,7 +58,8 @@
           "display": "5-FU"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "Adjuvant Chemotherapy Procedure",
+      "assign_to_attribute": "chemoMed"
     },
     "Doxorubicin": {
       "type": "MedicationOrder",
@@ -107,12 +70,13 @@
           "display": "Adriamycin"
         }
       ],
-      "direct_transition": "Terminal",
+      "direct_transition": "Adjuvant Chemotherapy Procedure",
       "remarks": [
         "- Doxorubicin (Adriamycin)",
         "- Epriubicin (Ellence) ",
         "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html"
-      ]
+      ],
+      "assign_to_attribute": "chemoMed"
     },
     "Epirubicin": {
       "type": "MedicationOrder",
@@ -123,7 +87,8 @@
           "display": "Ellence"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "Adjuvant Chemotherapy Procedure",
+      "assign_to_attribute": "chemoMed"
     },
     "Paclitaxel": {
       "type": "MedicationOrder",
@@ -134,7 +99,116 @@
           "display": "Taxotere"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "Adjuvant Chemotherapy Procedure",
+      "assign_to_attribute": "chemoMed"
+    },
+    "Adjuvant_Chemotherapy": {
+      "type": "Encounter",
+      "reason": "Breast Cancer",
+      "distributed_transition": [
+        {
+          "transition": "Anthracyclines",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Taxanes",
+          "distribution": 0.3
+        },
+        {
+          "transition": "5-fluorouracil",
+          "distribution": 0.05
+        },
+        {
+          "transition": "Cyclophosphamide",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Carboplatin",
+          "distribution": 0.05
+        }
+      ],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "encounter_class": "inpatient"
+    },
+    "Set chemo counter": {
+      "type": "SetAttribute",
+      "attribute": "chemoCount",
+      "direct_transition": "Adjuvant_Chemotherapy",
+      "value": 0
+    },
+    "Adjuvant Chemotherapy Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 367336001,
+          "display": "Chemotherapy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 2,
+        "unit": "hours"
+      },
+      "direct_transition": "End Current Chemo Treatment"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "End Current Chemo Treatment": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Increment Chemo Counter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chemoCount",
+            "operator": "<",
+            "value": 8
+          }
+        },
+        {
+          "transition": "End Adjuvant Chemotherapy Medication"
+        }
+      ]
+    },
+    "End Adjuvant Chemotherapy Medication": {
+      "type": "MedicationEnd",
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "chemoMed"
+    },
+    "Increment Chemo Counter": {
+      "type": "Counter",
+      "attribute": "chemoCount",
+      "action": "increment",
+      "direct_transition": "Delay Until Next Cycle"
+    },
+    "Delay Until Next Cycle": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 3,
+        "unit": "weeks"
+      },
+      "direct_transition": "Start New Cycle"
+    },
+    "Start New Cycle": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "Breast Cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Adjuvant Chemotherapy Procedure"
     }
   }
 }
