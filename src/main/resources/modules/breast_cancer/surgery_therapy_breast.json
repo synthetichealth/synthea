@@ -6,26 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "conditional_transition": [
-        {
-          "transition": "Lymph_Node Surgery",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "N",
-            "operator": "!=",
-            "value": "N0"
-          }
-        },
-        {
-          "transition": "End_Lymph_Node_Surgery",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "N",
-            "operator": "==",
-            "value": "N0"
-          }
-        }
-      ]
+      "direct_transition": "Surgery encounter"
     },
     "Terminal": {
       "type": "Terminal"
@@ -47,76 +28,7 @@
       "remarks": [
         "https://www.breastcancer.org/treatment/surgery/mastectomy/expectations"
       ],
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Observation",
-            "codes": [
-              {
-                "system": "LOINC",
-                "code": "21908-9",
-                "display": "Stage group.clinical Cancer"
-              }
-            ],
-            "operator": "==",
-            "value_code": {
-              "system": "SNOMED-CT",
-              "code": 13104003,
-              "display": "Clinical stage I (finding)"
-            }
-          },
-          "distributions": [
-            {
-              "transition": "External Beam Radiation",
-              "distribution": 1
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "transition": "External Beam Radiation",
-              "distribution": 0.01
-            },
-            {
-              "transition": "chemo",
-              "distribution": 0.33
-            },
-            {
-              "transition": "Advanced_drugs",
-              "distribution": 0.66
-            }
-          ],
-          "condition": {
-            "condition_type": "Observation",
-            "codes": [
-              {
-                "system": "LOINC",
-                "code": "21908-9",
-                "display": "Stage group.clinical Cancer"
-              }
-            ],
-            "operator": "==",
-            "value_code": {
-              "system": "SNOMED-CT",
-              "code": 2640006,
-              "display": "Clinical stage IV (finding)"
-            }
-          }
-        },
-        {
-          "distributions": [
-            {
-              "transition": "External Beam Radiation",
-              "distribution": 0.5
-            },
-            {
-              "transition": "chemo",
-              "distribution": 0.5
-            }
-          ]
-        }
-      ]
+      "direct_transition": "End Surgery encounter"
     },
     "Breast-conserving surgery (BCS)": {
       "type": "Procedure",
@@ -135,112 +47,7 @@
       "remarks": [
         "https://www.breastcancer.org/treatment/surgery/lumpectomy/expectations"
       ],
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Observation",
-            "codes": [
-              {
-                "system": "LOINC",
-                "code": "21908-9",
-                "display": "Stage group.clinical Cancer"
-              }
-            ],
-            "operator": "==",
-            "value_code": {
-              "system": "SNOMED-CT",
-              "code": 13104003,
-              "display": "Clinical stage I (finding)"
-            }
-          },
-          "distributions": [
-            {
-              "transition": "External Beam Radiation",
-              "distribution": 0.4
-            },
-            {
-              "transition": "Intraoperative radiation therapy (IORT)",
-              "distribution": 0.1
-            },
-            {
-              "transition": "Hypofractionated radiation therapy",
-              "distribution": 0.4
-            },
-            {
-              "transition": "Brachytherapy",
-              "distribution": 0.1
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "transition": "External Beam Radiation",
-              "distribution": 0.02
-            },
-            {
-              "transition": "Hypofractionated radiation therapy",
-              "distribution": 0.04
-            },
-            {
-              "transition": "Intraoperative radiation therapy (IORT)",
-              "distribution": 0.04
-            },
-            {
-              "transition": "Brachytherapy",
-              "distribution": 0.1
-            },
-            {
-              "transition": "chemo",
-              "distribution": 0.1
-            },
-            {
-              "transition": "Advanced_drugs",
-              "distribution": 0.7
-            }
-          ],
-          "condition": {
-            "condition_type": "Observation",
-            "codes": [
-              {
-                "system": "LOINC",
-                "code": "21908-9",
-                "display": "Stage group.clinical Cancer"
-              }
-            ],
-            "operator": "==",
-            "value_code": {
-              "system": "SNOMED-CT",
-              "code": 2640006,
-              "display": "Clinical stage IV (finding)"
-            }
-          }
-        },
-        {
-          "distributions": [
-            {
-              "transition": "External Beam Radiation",
-              "distribution": 0.3
-            },
-            {
-              "transition": "Hypofractionated radiation therapy",
-              "distribution": 0.3
-            },
-            {
-              "transition": "Intraoperative radiation therapy (IORT)",
-              "distribution": 0.1
-            },
-            {
-              "transition": "Brachytherapy",
-              "distribution": 0.1
-            },
-            {
-              "transition": "chemo",
-              "distribution": 0.2
-            }
-          ]
-        }
-      ]
+      "direct_transition": "BCS end surgery"
     },
     "External Beam Radiation": {
       "type": "Procedure",
@@ -508,6 +315,226 @@
             "value": "T0"
           }
         }
+      ]
+    },
+    "Surgery encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Lymph_Node Surgery",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "N",
+            "operator": "!=",
+            "value": "N0"
+          }
+        },
+        {
+          "transition": "End_Lymph_Node_Surgery",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "N",
+            "operator": "==",
+            "value": "N0"
+          }
+        }
+      ]
+    },
+    "End Surgery encounter": {
+      "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 13104003,
+              "display": "Clinical stage I (finding)"
+            }
+          },
+          "distributions": [
+            {
+              "transition": "External Beam Radiation",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "External Beam Radiation",
+              "distribution": 0.01
+            },
+            {
+              "transition": "chemo",
+              "distribution": 0.33
+            },
+            {
+              "transition": "Advanced_drugs",
+              "distribution": 0.66
+            }
+          ],
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 2640006,
+              "display": "Clinical stage IV (finding)"
+            }
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "External Beam Radiation",
+              "distribution": 0.5
+            },
+            {
+              "transition": "chemo",
+              "distribution": 0.5
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/mastectomy/expectations"
+      ]
+    },
+    "BCS end surgery": {
+      "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 13104003,
+              "display": "Clinical stage I (finding)"
+            }
+          },
+          "distributions": [
+            {
+              "transition": "External Beam Radiation",
+              "distribution": 0.4
+            },
+            {
+              "transition": "Intraoperative radiation therapy (IORT)",
+              "distribution": 0.1
+            },
+            {
+              "transition": "Hypofractionated radiation therapy",
+              "distribution": 0.4
+            },
+            {
+              "transition": "Brachytherapy",
+              "distribution": 0.1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "External Beam Radiation",
+              "distribution": 0.02
+            },
+            {
+              "transition": "Hypofractionated radiation therapy",
+              "distribution": 0.04
+            },
+            {
+              "transition": "Intraoperative radiation therapy (IORT)",
+              "distribution": 0.04
+            },
+            {
+              "transition": "Brachytherapy",
+              "distribution": 0.1
+            },
+            {
+              "transition": "chemo",
+              "distribution": 0.1
+            },
+            {
+              "transition": "Advanced_drugs",
+              "distribution": 0.7
+            }
+          ],
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 2640006,
+              "display": "Clinical stage IV (finding)"
+            }
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "External Beam Radiation",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Hypofractionated radiation therapy",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Intraoperative radiation therapy (IORT)",
+              "distribution": 0.1
+            },
+            {
+              "transition": "Brachytherapy",
+              "distribution": 0.1
+            },
+            {
+              "transition": "chemo",
+              "distribution": 0.2
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/lumpectomy/expectations"
       ]
     }
   }
