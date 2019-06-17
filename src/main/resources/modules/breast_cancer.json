@@ -1508,7 +1508,7 @@
       },
       "conditional_transition": [
         {
-          "transition": "Neoadjuvant Chemo Before Surgery",
+          "transition": "Set pre-surgery chemo counter",
           "condition": {
             "condition_type": "Or",
             "conditions": [
@@ -1524,7 +1524,7 @@
           }
         },
         {
-          "transition": "Begin Treatment"
+          "transition": "Begin Surgery and Radiation Treatment"
         }
       ]
     },
@@ -1570,110 +1570,32 @@
         }
       ]
     },
-    "Neoadjuvant Chemotherapy": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 367336001,
-          "display": "Chemotherapy (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 0,
-        "high": 2,
-        "unit": "hours"
-      },
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "neoMed",
-            "operator": "is nil"
-          },
-          "distributions": [
-            {
-              "transition": "Anthracyclines",
-              "distribution": 0.5
-            },
-            {
-              "transition": "Taxanes",
-              "distribution": 0.5
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "neoMed",
-            "operator": "==",
-            "value": "P"
-          },
-          "distributions": [],
-          "transition": "Paclitaxel"
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "neoMed",
-            "operator": "==",
-            "value": "E"
-          },
-          "distributions": [],
-          "transition": "Epirubicin"
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "neoMed",
-            "operator": "==",
-            "value": "D"
-          },
-          "distributions": [],
-          "transition": "Doxorubicin"
-        }
-      ]
-    },
-    "Buffer": {
-      "type": "Delay",
-      "direct_transition": "End Neodjuvant Medication in Preparation for Surgery",
-      "range": {
-        "low": 3,
-        "high": 6,
-        "unit": "months"
-      }
-    },
     "End Neodjuvant Medication in Preparation for Surgery": {
       "type": "MedicationEnd",
       "direct_transition": "End Chemo Treatment",
-      "medication_order": "text",
       "referenced_by_attribute": "neoMed"
     },
     "Neoadjuvant Chemo Before Surgery": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
+      "reason": "Breast Cancer",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 185347001,
+          "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "Neoadjuvant Chemotherapy"
-    },
-    "End Neoadjuvant Chemo Treatment": {
-      "type": "EncounterEnd",
-      "direct_transition": "Buffer"
+      "direct_transition": "Chemotherapy Drugs"
     },
     "End Chemo Treatment": {
-      "type": "EncounterEnd",
-      "direct_transition": "Begin Treatment"
-    },
-    "Begin Treatment": {
-      "type": "CallSubmodule",
-      "submodule": "Breast_cancer/Surgery_Therapy_Breast",
-      "direct_transition": "End Treatment"
+      "type": "Delay",
+      "direct_transition": "Begin Surgery and Radiation Treatment",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "weeks"
+      }
     },
     "Doxorubicin": {
       "type": "MedicationOrder",
@@ -1689,7 +1611,8 @@
         "- Epriubicin (Ellence) ",
         "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html"
       ],
-      "direct_transition": "End Neoadjuvant Chemo Treatment"
+      "direct_transition": "Neoadjuvant chemotherapy procedure",
+      "assign_to_attribute": "neoMed"
     },
     "Epirubicin": {
       "type": "MedicationOrder",
@@ -1700,7 +1623,7 @@
           "display": "Ellence"
         }
       ],
-      "direct_transition": "End Neoadjuvant Chemo Treatment",
+      "direct_transition": "Neoadjuvant chemotherapy procedure",
       "assign_to_attribute": "neoMed"
     },
     "Paclitaxel": {
@@ -1712,7 +1635,8 @@
           "display": "Taxotere"
         }
       ],
-      "direct_transition": "End Neoadjuvant Chemo Treatment"
+      "direct_transition": "Neoadjuvant chemotherapy procedure",
+      "assign_to_attribute": "neoMed"
     },
     "Anthracyclines": {
       "type": "Simple",
@@ -1730,6 +1654,95 @@
     "Taxanes": {
       "type": "Simple",
       "direct_transition": "Paclitaxel"
+    },
+    "End_Neoadjuvant_Chemo_Treatment": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Increment pre-surgery chemo counter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "neoCount",
+            "operator": "<",
+            "value": 8
+          }
+        },
+        {
+          "transition": "End Neodjuvant Medication in Preparation for Surgery"
+        }
+      ]
+    },
+    "Chemotherapy Drugs": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Anthracyclines",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Taxanes",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Set pre-surgery chemo counter": {
+      "type": "SetAttribute",
+      "attribute": "neoCount",
+      "direct_transition": "Neoadjuvant Chemo Before Surgery",
+      "value": 0
+    },
+    "Neoadjuvant chemotherapy procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 367336001,
+          "display": "Chemotherapy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 2,
+        "unit": "hours"
+      },
+      "direct_transition": "End_Neoadjuvant_Chemo_Treatment"
+    },
+    "Increment pre-surgery chemo counter": {
+      "type": "Counter",
+      "attribute": "neoCount",
+      "action": "increment",
+      "direct_transition": "Delay Until Next Cycle"
+    },
+    "Delay Until Next Cycle": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 3,
+        "unit": "weeks"
+      },
+      "direct_transition": "Start New Chemo Cycle"
+    },
+    "Start New Chemo Cycle": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Neoadjuvant chemotherapy procedure"
+    },
+    "Begin Surgery and Radiation Treatment": {
+      "type": "CallSubmodule",
+      "submodule": "Breast_cancer/Surgery_Therapy_Breast",
+      "direct_transition": "Begin Hormone Therapy Treatment"
+    },
+    "Begin Hormone Therapy Treatment": {
+      "type": "CallSubmodule",
+      "submodule": "Breast_cancer/hormonetherapy_breast",
+      "direct_transition": "End Treatment"
     }
   }
 }
