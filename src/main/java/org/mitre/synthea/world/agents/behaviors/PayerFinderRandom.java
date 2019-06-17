@@ -23,7 +23,7 @@ public class PayerFinderRandom implements IPayerFinder {
   public Payer find(List<Payer> payers, Person person, EncounterType service, long time) {
     List<Payer> options = new ArrayList<Payer>();
 
-      // TO ADD: Must be within provider network
+      // TODO: Must be within provider network
 
     for (Payer payer : payers) {
       if (payer.accepts(person, time)

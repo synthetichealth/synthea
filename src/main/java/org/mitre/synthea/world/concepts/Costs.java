@@ -196,6 +196,9 @@ public class Costs {
     payer.addCost(costToPayer);
     payer.addRevenue(costToPatient);
 
+
+    payer.incrementEncountersPaid();
+
     //return baseCost * locationAdjustment; - Previous return statement
     return costToPatient;
   }

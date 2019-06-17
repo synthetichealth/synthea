@@ -22,6 +22,7 @@ import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -96,6 +97,10 @@ public class CSVExporter {
    * Writer for providers.csv
    */
   private FileWriter providers;
+    /**
+   * Writer for payers.csv
+   */
+  private FileWriter payers;
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -148,8 +153,10 @@ public class CSVExporter {
 
       File organizationsFile = outputDirectory.resolve("organizations.csv").toFile();
       File providersFile = outputDirectory.resolve("providers.csv").toFile();
+      File payersFile = outputDirectory.resolve("payers.csv").toFile();
       organizations = new FileWriter(organizationsFile, append);
       providers = new FileWriter(providersFile, append);
+      payers = new FileWriter(payersFile, append);
 
       if (!append) {
         writeCSVHeaders();
@@ -199,6 +206,8 @@ public class CSVExporter {
     organizations.write(NEWLINE);
     providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,UTILIZATION");
     providers.write(NEWLINE);
+    payers.write("Id,NAME,AMOUNT_COVERED,REVENUE,UTILIZATION");
+    payers.write(NEWLINE);
   }
 
   /**
@@ -244,6 +253,19 @@ public class CSVExporter {
       }
       organizations.flush();
       providers.flush();
+    }
+  }
+
+    /**
+   * Export the payers.csv file. This method should be
+   * called once after all the Patient records have been exported using the
+   * export(Person,long) method.
+   * @throws IOException if any IO errors occur.
+   */
+  public void exportPayers() throws IOException {
+    for (Payer payer: Payer.getPayerList()) {
+      payer(payer);
+      payers.flush();
     }
   }
 
@@ -810,6 +832,32 @@ public class CSVExporter {
 
     write(s.toString(), providers);
 
+  }
+
+  private void payer(Payer payer) throws IOException {
+    // Id,NAME,AMOUNT_PAID,REVENUE,UTILIZATION
+
+    StringBuilder s = new StringBuilder();
+    s.append(payer.getResourceID()).append(',');
+    s.append(payer.getName()).append(',');
+    s.append(payer.getAmountPaid()).append(',');
+    s.append(payer.getRevenue()).append(',');
+    s.append(payer.getEncounterCount());
+    //check how this ^ works for providers
+
+    // for (String attribute: new String[] {
+    //     "NAME",
+    //     "AMOUNT_PAID",
+    //     "REVENUE",
+    //     "UTILIZATION"
+    // }) {
+    //   String value = (String) payer.attributes.getOrDefault(attribute, "");
+    //   s.append(clean(value)).append(',');
+    // }
+
+    s.append(NEWLINE);
+
+    write(s.toString(), payers);
   }
 
   /**

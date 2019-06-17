@@ -33,6 +33,7 @@ public class HealthInsuranceModule extends Module {
     // payerhistory must be populated first...
     // Payer currentPayer = payerHistory.get(age);
     Payer currentPayer = determineInsurance(person, age, time);
+    // Temporary printout of what insurance people got/switched to
     System.out.println(person.attributes.get(Person.NAME) + " Got: " + currentPayer.name);
 
     // Is "Dead Code"
@@ -55,6 +56,14 @@ public class HealthInsuranceModule extends Module {
     return false;
   }
 
+  /**
+   * Determine what insurance a person will get based on their attributes
+   *
+   * @param person the person to cover
+   * @param age the age of the person
+   * @param time the current time to consider
+   * @return the insurance that this person gets
+   */
   private Payer determineInsurance(Person person, int age, long time) {
     boolean female = (person.attributes.get(Person.GENDER).equals("F"));
     boolean pregnant = (person.attributes.containsKey("pregnant") && (boolean) person.attributes.get("pregnant"));
@@ -69,6 +78,7 @@ public class HealthInsuranceModule extends Module {
     boolean medicare = false;
     boolean medicaid = false;
 
+    // possibly redundant for the Payer.accepts method?
     if (sixtyFive || esrd) {
       medicare = true;
     }
@@ -101,8 +111,8 @@ public class HealthInsuranceModule extends Module {
     return Payer.noInsurance;
   }
 
-  // Is the following necessary? Not sure if blindness is already an attribute before this.
 
+  // BRING BACK
   /**
    * Populate the given attribute map with the list of attributes that this module
    * reads/writes with example values when appropriate.

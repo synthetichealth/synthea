@@ -14,20 +14,16 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.sis.geometry.DirectPosition2D;
-import org.apache.sis.index.tree.QuadTree;
-import org.apache.sis.index.tree.QuadTreeData;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.behaviors.IPayerFinder;
 import org.mitre.synthea.world.agents.behaviors.PayerFinderBestRates;
-import org.mitre.synthea.world.agents.behaviors.PayerFinderNearest;
 import org.mitre.synthea.world.agents.behaviors.PayerFinderRandom;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
 
-public class Payer implements QuadTreeData {
+public class Payer {
 
   // Provider Selection Behavior algorithm choices:
   // public static final String NEAREST = "nearest";
@@ -37,7 +33,6 @@ public class Payer implements QuadTreeData {
   // ArrayList of all government payers imported (Maybe?)
   // private static ArrayList<Payer> governmentPayerList = new ArrayList<Payer>();
 
-  private static QuadTree payerMap = generateQuadTree();
   // The U.S. States loaded
   private static Set<String> statesLoaded = new HashSet<String>();
   // Number of payers loaded (?)
@@ -61,7 +56,6 @@ public class Payer implements QuadTreeData {
   public String uuid;
   public String id;
   public String name;
-  private Location location;
   public String address;
   public String city;
   public String state;
@@ -73,8 +67,6 @@ public class Payer implements QuadTreeData {
   // public String phone;
   // public String type;
   public String ownership;
-  // public int quality;
-  private DirectPosition2D coordinates;
   // public ArrayList<EncounterType> servicesProvided;
   // row: year, column: type, value: count
   private Table<Integer, String, AtomicInteger> utilization;
@@ -82,6 +74,8 @@ public class Payer implements QuadTreeData {
   // Costs Information
   private double costsCovered;
   private double revenue;
+
+  private int encounterCount;
 
   // TEMP NO_INSURANCE OBJECT
   public static Payer noInsurance;
@@ -93,9 +87,9 @@ public class Payer implements QuadTreeData {
     uuid = UUID.randomUUID().toString();
     attributes = new LinkedTreeMap<>();
     utilization = HashBasedTable.create();
-    coordinates = new DirectPosition2D();
     costsCovered = 0.0;
     revenue = 0.0;
+    encounterCount = 0;
   }
 
   // Determines the algorithm to use to find a Payer
@@ -109,9 +103,6 @@ public class Payer implements QuadTreeData {
       break;
     case RANDOM:
       finder = new PayerFinderRandom();
-      break;
-    case NEAREST:
-      finder = new PayerFinderNearest();
       break;
     default:
       throw new RuntimeException("Not a valid Payer Selction Algorithm");
@@ -127,18 +118,14 @@ public class Payer implements QuadTreeData {
     return attributes;
   }
 
-  public DirectPosition2D getCoordinates() {
-    return coordinates;
+  public void incrementEncountersPaid(EncounterType service, int year) {
+    increment(year, "ENCOUNTERS");
   }
 
-  // Necessary? We would need a new CSV file for Payers that would display each
-  // companies utilization, the amount that they paid, the amount that they were
-  // paid (show the difference between income and expenses)
   private synchronized void increment(Integer year, String key) {
     if (!utilization.contains(year, key)) {
       utilization.put(year, key, new AtomicInteger(0));
     }
-
     utilization.get(year, key).incrementAndGet();
   }
 
@@ -198,19 +185,7 @@ public class Payer implements QuadTreeData {
     payerList.clear();
     // governmentPayerList.clear();
     statesLoaded.clear();
-    payerMap = generateQuadTree();
     loaded = 0;
-  }
-
-  // WHAT DOES THIS QUADTREE DO???
-  /**
-   * Generate a quad tree with sufficient capacity and depth to load the biggest
-   * states.
-   * 
-   * @return QuadTree.
-   */
-  private static QuadTree generateQuadTree() {
-    return new QuadTree(7500, 25); // capacity, depth
   }
 
   /**
@@ -247,7 +222,7 @@ public class Payer implements QuadTreeData {
    */
   public static void loadPayers(Location location, String fileName) throws IOException {
 
-    // TEMP no insurance payer
+    // No Insurance object
     noInsurance = new Payer();
     noInsurance.defaultCoverage = 0.0;
     noInsurance.name = "NO_INSURANCE";
@@ -275,16 +250,8 @@ public class Payer implements QuadTreeData {
           parsedPayer.attributes.put(e.getKey(), e.getValue());
         }
 
-        parsedPayer.location = location;
-
-        payerList.add(parsedPayer);
-        boolean inserted = payerMap.insert(parsedPayer);
-        if (!inserted) {
-          throw new RuntimeException(
-              "Payer QuadTree Full! Dropping # " + loaded + ": " + parsedPayer.name + " @ " + parsedPayer.city);
-        } else {
-          loaded++;
-        }
+        Payer.payerList.add(parsedPayer);
+        loaded++;
       }
     }
   }
@@ -317,78 +284,97 @@ public class Payer implements QuadTreeData {
     // newPayer.type = line.remove("type");
     newPayer.ownership = line.remove("ownership");
 
-    try {
-      double lat = Double.parseDouble(line.remove("LAT"));
-      double lon = Double.parseDouble(line.remove("LON"));
-      newPayer.coordinates.setLocation(lon, lat);
-    } catch (Exception e) {
-      newPayer.coordinates.setLocation(0.0, 0.0);
-    }
     return newPayer;
   }
 
+  /**
+   * Returns the list of all loaded payers
+   * 
+   * @return the list of all loaded payers.
+   */
   public static List<Payer> getPayerList() {
     return payerList;
   }
 
-  /*
-   * (non-Javadoc)
+  /**
+   * Returns the default coverage % of the payer
    * 
-   * @see org.apache.sis.index.tree.QuadTreeData#getX()
+   * @return the Payer's default coverage %.
    */
-  @Override
-  public double getX() {
-    return coordinates.getX();
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.sis.index.tree.QuadTreeData#getY()
-   */
-  @Override
-  public double getY() {
-    return coordinates.getY();
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.sis.index.tree.QuadTreeData#getLatLon()
-   */
-  @Override
-  public DirectPosition2D getLatLon() {
-    return coordinates;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.sis.index.tree.QuadTreeData#getFileName()
-   */
-  @Override
-  public String getFileName() {
-    return null;
-  }
-
   public double getCoverage() {
     return this.defaultCoverage;
   }
 
-  // For now, insurance will cover all services
+  /**
+   * Returns whether the payer covers the given encounter type For now, insurance
+   * will cover all services
+   * 
+   * @param service the encounter type to check
+   * @return whether the payer covers the given encounter type
+   */
   public boolean coversService(EncounterType service) {
     return true;
   }
 
+  /**
+   * Returns the default Copay of the payer
+   * 
+   * @return the Payer's default copay.
+   */
   public double getCopay() {
     return this.defaultCopay;
   }
 
+  /**
+   * Increases the total costs incurred by the payer by the given amount
+   * 
+   * @param costToPayer the total cost of the current encounter
+   */
   public void addCost(double costToPayer) {
     this.costsCovered += costToPayer;
   }
 
-  public void addRevenue(double costToPatient) {
-    this.revenue += costToPatient;
+  /**
+   * Increases the total revenue earned by the payer by the given amount
+   * 
+   * @param patientPayment the amount paid by a patient to the payer
+   */
+  public void addRevenue(double patientPayment) {
+    this.revenue += patientPayment;
+  }
+
+   /**
+   * @return the number of encounters this payer paid for
+   */
+  public int getEncounterCount() {
+    return this.encounterCount;
+  }
+
+  /**
+   * @return the name of the payer
+   */
+  public String getName() {
+    return this.name;
+  }
+
+  /**
+   * @return the amount of money the payer paid
+   */
+  public double getAmountPaid() {
+    return this.costsCovered;
+  }
+
+  /**
+   * @return the total amount recieved from patients
+   */
+  public double getRevenue() {
+    return this.revenue;
+  }
+
+    /**
+   * Increments the number of encounters the payer has covered
+   */
+  public void incrementEncountersPaid() {
+    this.encounterCount++;
   }
 }
