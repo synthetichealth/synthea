@@ -6,34 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "conditional_transition": [
-        {
-          "transition": "ER-Treatments",
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "PR",
-                "operator": "==",
-                "value": "PR-positive"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "ER",
-                "operator": "==",
-                "value": "ER-positive"
-              }
-            ]
-          }
-        },
-        {
-          "transition": "Upper-Stage Treatment"
-        }
-      ]
-    },
-    "Terminal": {
-      "type": "Terminal"
+      "direct_transition": "ER-encounter"
     },
     "Estrogen Blocking Receptors": {
       "type": "MedicationOrder",
@@ -44,7 +17,20 @@
           "display": "Tamoxifen"
         }
       ],
-      "direct_transition": "Upper-Stage Treatment"
+      "direct_transition": "ER-endencounter",
+      "assign_to_attribute": "ermed",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "years"
+        }
+      }
     },
     "Fulvestrant": {
       "type": "MedicationOrder",
@@ -55,7 +41,8 @@
           "display": "Faslodex"
         }
       ],
-      "direct_transition": "Upper-Stage Treatment"
+      "direct_transition": "ER-endencounter",
+      "assign_to_attribute": "ermed"
     },
     "Aromatase Inhibitors (AI)": {
       "type": "Simple",
@@ -83,7 +70,20 @@
           "display": "Femara"
         }
       ],
-      "direct_transition": "Upper-Stage Treatment"
+      "direct_transition": "ER-endencounter",
+      "assign_to_attribute": "ermed",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 7,
+          "unit": "years"
+        }
+      }
     },
     "Anastrozole": {
       "type": "MedicationOrder",
@@ -94,7 +94,20 @@
           "display": "Arimidex"
         }
       ],
-      "direct_transition": "Upper-Stage Treatment"
+      "direct_transition": "ER-endencounter",
+      "assign_to_attribute": "ermed",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 7,
+          "unit": "years"
+        }
+      }
     },
     "Exemestane": {
       "type": "MedicationOrder",
@@ -105,7 +118,20 @@
           "display": "Aromasin"
         }
       ],
-      "direct_transition": "Upper-Stage Treatment"
+      "direct_transition": "ER-endencounter",
+      "assign_to_attribute": "ermed",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 7,
+          "unit": "years"
+        }
+      }
     },
     "ER-Treatments": {
       "type": "Simple",
@@ -122,6 +148,10 @@
           "transition": "Aromatase Inhibitors (AI)",
           "distribution": 0.3
         }
+      ],
+      "remarks": [
+        "https://www.breastcancer.org/research-news/5-more-years-of-ais-no-better-than-2-more",
+        ""
       ]
     },
     "HER2-Treatment": {
@@ -175,7 +205,8 @@
           "display": "Kadcyla(TDM-1)"
         }
       ],
-      "direct_transition": "Hormone-Receptor-Positive-Treatments"
+      "direct_transition": "Hormone-Receptor-Positive-Treatments",
+      "assign_to_attribute": "hermed"
     },
     "Lapatinib": {
       "type": "MedicationOrder",
@@ -186,7 +217,8 @@
           "display": "Tykerb"
         }
       ],
-      "direct_transition": "Hormone-Receptor-Positive-Treatments"
+      "direct_transition": "Hormone-Receptor-Positive-Treatments",
+      "assign_to_attribute": "hermed"
     },
     "Neratinib": {
       "type": "MedicationOrder",
@@ -197,7 +229,8 @@
           "display": "Nerlynx"
         }
       ],
-      "direct_transition": "Hormone-Receptor-Positive-Treatments"
+      "direct_transition": "Hormone-Receptor-Positive-Treatments",
+      "assign_to_attribute": "hermed"
     },
     "Trastuzumab_her2": {
       "type": "MedicationOrder",
@@ -208,7 +241,8 @@
           "display": "Herceptin"
         }
       ],
-      "direct_transition": "Hormone-Receptor-Positive-Treatments"
+      "direct_transition": "Hormone-Receptor-Positive-Treatments",
+      "assign_to_attribute": "hermed"
     },
     "CDK4/6 Inhibitors": {
       "type": "Simple",
@@ -236,7 +270,8 @@
           "display": "Verzenio"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "HER-endencounter",
+      "assign_to_attribute": "hermed"
     },
     "Palbociclib": {
       "type": "MedicationOrder",
@@ -247,7 +282,8 @@
           "display": "Ibrance"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "HER-endencounter",
+      "assign_to_attribute": "hermed"
     },
     "Ribociclib": {
       "type": "MedicationOrder",
@@ -258,34 +294,8 @@
           "display": "Kisqali"
         }
       ],
-      "direct_transition": "Terminal"
-    },
-    "Upper-Stage Treatment": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Terminal",
-          "condition": {
-            "condition_type": "Observation",
-            "codes": [
-              {
-                "system": "LOINC",
-                "code": "21908-9",
-                "display": "Stage group.clinical Cancer"
-              }
-            ],
-            "operator": "==",
-            "value_code": {
-              "system": "SNOMED-CT",
-              "code": 13104003,
-              "display": "Clinical stage I (finding)"
-            }
-          }
-        },
-        {
-          "transition": "HER2-Treatment"
-        }
-      ]
+      "direct_transition": "HER-endencounter",
+      "assign_to_attribute": "hermed"
     },
     "Hormone-Receptor-Positive-Treatments": {
       "type": "Simple",
@@ -311,9 +321,107 @@
           }
         },
         {
-          "transition": "Terminal"
+          "transition": "HER-endencounter"
         }
       ]
+    },
+    "ER-encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "ER-Treatments",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "PR",
+                "operator": "==",
+                "value": "PR-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER",
+                "operator": "==",
+                "value": "ER-positive"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "ER-endencounter"
+        }
+      ]
+    },
+    "ER-endencounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "ER_medend"
+    },
+    "Upper Stage Treatment": {
+      "type": "Simple",
+      "direct_transition": "HER2-encounter"
+    },
+    "HER2-encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "HER-endencounter",
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 13104003,
+              "display": "Clinical stage I (finding)"
+            }
+          }
+        },
+        {
+          "transition": "HER2-Treatment"
+        }
+      ]
+    },
+    "ER_medend": {
+      "type": "MedicationEnd",
+      "direct_transition": "Upper Stage Treatment",
+      "referenced_by_attribute": "ermed"
+    },
+    "HER-endencounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "HER-endmed"
+    },
+    "HER-endmed": {
+      "type": "MedicationEnd",
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "hermed"
+    },
+    "Terminal": {
+      "type": "Terminal"
     }
   }
 }
