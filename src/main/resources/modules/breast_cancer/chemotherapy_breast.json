@@ -102,46 +102,6 @@
       "direct_transition": "Adjuvant Chemotherapy Procedure",
       "assign_to_attribute": "chemoMed"
     },
-    "Adjuvant_Chemotherapy": {
-      "type": "Encounter",
-      "reason": "Breast Cancer",
-      "distributed_transition": [
-        {
-          "transition": "Anthracyclines",
-          "distribution": 0.3
-        },
-        {
-          "transition": "Taxanes",
-          "distribution": 0.3
-        },
-        {
-          "transition": "5-fluorouracil",
-          "distribution": 0.05
-        },
-        {
-          "transition": "Cyclophosphamide",
-          "distribution": 0.3
-        },
-        {
-          "transition": "Carboplatin",
-          "distribution": 0.05
-        }
-      ],
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem"
-        }
-      ],
-      "encounter_class": "inpatient"
-    },
-    "Set chemo counter": {
-      "type": "SetAttribute",
-      "attribute": "chemoCount",
-      "direct_transition": "Adjuvant_Chemotherapy",
-      "value": 0
-    },
     "Adjuvant Chemotherapy Procedure": {
       "type": "Procedure",
       "codes": [
@@ -209,6 +169,33 @@
         }
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure"
+    },
+    "Set chemo counter": {
+      "type": "SetAttribute",
+      "attribute": "chemoCounter",
+      "distributed_transition": [
+        {
+          "transition": "Anthracyclines",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Taxanes",
+          "distribution": 0.3
+        },
+        {
+          "transition": "5-fluorouracil",
+          "distribution": 0.05
+        },
+        {
+          "transition": "Cyclophosphamide",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Carboplatin",
+          "distribution": 0.05
+        }
+      ],
+      "value": 0
     }
   }
 }

@@ -205,7 +205,8 @@
           "display": "Zometa"
         }
       ],
-      "direct_transition": "End Breast Surgery"
+      "direct_transition": "Advanced Drugs IV Injection",
+      "assign_to_attribute": "adv_drug"
     },
     "Denosumab": {
       "type": "MedicationOrder",
@@ -216,7 +217,8 @@
           "display": "Xgeva"
         }
       ],
-      "direct_transition": "End Breast Surgery"
+      "direct_transition": "Advanced Drugs IV Injection",
+      "assign_to_attribute": "adv_drug"
     },
     "Pamidronate": {
       "type": "MedicationOrder",
@@ -227,23 +229,15 @@
           "display": "Aredia"
         }
       ],
-      "direct_transition": "End Breast Surgery"
+      "direct_transition": "Pamidronate IV Injection",
+      "assign_to_attribute": "adv_drug"
     },
     "Breast_Surgery": {
       "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Breast-conserving surgery (BCS)",
-          "distribution": 0.6
-        },
-        {
-          "transition": "Mastectomy",
-          "distribution": 0.4
-        }
-      ],
       "remarks": [
         "https://www.cooperhealth.org/services/radiation-oncology/questions-you-may-have-about-radiation-therapy"
-      ]
+      ],
+      "direct_transition": "Breast_Surgery_2"
     },
     "Sentinel_Lymph_Node_Biopsy__SLNB_": {
       "type": "Procedure",
@@ -279,7 +273,7 @@
     },
     "End Breast Surgery": {
       "type": "Simple",
-      "direct_transition": "Terminal"
+      "direct_transition": "Delay After Treatment"
     },
     "Lymph_Node Surgery": {
       "type": "Simple",
@@ -324,8 +318,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 185347001,
+          "display": "Encounter for problem"
         }
       ],
       "conditional_transition": [
@@ -351,6 +345,52 @@
     },
     "End Surgery encounter": {
       "type": "EncounterEnd",
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/mastectomy/expectations"
+      ],
+      "direct_transition": "Delay after Mastectomy"
+    },
+    "BCS end surgery": {
+      "type": "EncounterEnd",
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/lumpectomy/expectations"
+      ],
+      "direct_transition": "Delay After BCS"
+    },
+    "Delay After BCS": {
+      "type": "Delay",
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/lumpectomy/expectations"
+      ],
+      "range": {
+        "low": 5,
+        "high": 14,
+        "unit": "days"
+      },
+      "direct_transition": "BCS Follow-Up Treatment"
+    },
+    "Delay after Mastectomy": {
+      "type": "Delay",
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/mastectomy/expectations"
+      ],
+      "range": {
+        "low": 5,
+        "high": 14,
+        "unit": "days"
+      },
+      "direct_transition": "Mastectomy Follow-Up Therapy"
+    },
+    "Mastectomy Follow-Up Therapy": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
       "complex_transition": [
         {
           "condition": {
@@ -425,8 +465,17 @@
         "https://www.breastcancer.org/treatment/surgery/mastectomy/expectations"
       ]
     },
-    "BCS end surgery": {
-      "type": "EncounterEnd",
+    "BCS Follow-Up Treatment": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
       "complex_transition": [
         {
           "condition": {
@@ -536,6 +585,123 @@
       "remarks": [
         "https://www.breastcancer.org/treatment/surgery/lumpectomy/expectations"
       ]
+    },
+    "Pamidronate IV Injection": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 43060002,
+          "display": "Intravenous injection (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 24,
+        "unit": "hours"
+      },
+      "direct_transition": "End Pamidronate Infusion Encounter"
+    },
+    "End Pamidronate Infusion Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "End Pamidronate Medication"
+    },
+    "Advanced Drugs IV Injection": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 43060002,
+          "display": "Intravenous injection (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 120,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Current Advanced Drug Infusion"
+    },
+    "End Current Advanced Drug Infusion": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Increment treatment counter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "treat_count",
+            "operator": "<",
+            "value": 8
+          }
+        },
+        {
+          "transition": "End Advanced Drug Medication"
+        }
+      ]
+    },
+    "End Advanced Drug Medication": {
+      "type": "MedicationEnd",
+      "direct_transition": "End Breast Surgery",
+      "referenced_by_attribute": "adv_drug"
+    },
+    "End Pamidronate Medication": {
+      "type": "MedicationEnd",
+      "direct_transition": "End Breast Surgery",
+      "referenced_by_attribute": "adv_drug"
+    },
+    "Increment treatment counter": {
+      "type": "Counter",
+      "attribute": "treat_count",
+      "action": "increment",
+      "direct_transition": "6 Month Delay"
+    },
+    "Breast_Surgery_2": {
+      "type": "SetAttribute",
+      "attribute": "treat_count",
+      "distributed_transition": [
+        {
+          "transition": "Breast-conserving surgery (BCS)",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Mastectomy",
+          "distribution": 0.4
+        }
+      ],
+      "remarks": [
+        "https://www.cooperhealth.org/services/radiation-oncology/questions-you-may-have-about-radiation-therapy"
+      ],
+      "value": 0
+    },
+    "6 Month Delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 6,
+        "unit": "months"
+      },
+      "direct_transition": "Start New Advanced Drug Cycle"
+    },
+    "Start New Advanced Drug Cycle": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Advanced Drugs IV Injection"
+    },
+    "Delay After Treatment": {
+      "type": "Delay",
+      "direct_transition": "Terminal",
+      "range": {
+        "low": 2,
+        "high": 7,
+        "unit": "days"
+      }
     }
   }
 }

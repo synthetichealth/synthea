@@ -1524,7 +1524,7 @@
           }
         },
         {
-          "transition": "Begin Surgery and Radiation Treatment"
+          "transition": "Begin Hormone Therapy Treatment"
         }
       ]
     },
@@ -1590,7 +1590,7 @@
     },
     "End Chemo Treatment": {
       "type": "Delay",
-      "direct_transition": "Begin Surgery and Radiation Treatment",
+      "direct_transition": "Begin Hormone Therapy Treatment",
       "range": {
         "low": 1,
         "high": 3,
@@ -1734,14 +1734,14 @@
       ],
       "direct_transition": "Neoadjuvant chemotherapy procedure"
     },
-    "Begin Surgery and Radiation Treatment": {
-      "type": "CallSubmodule",
-      "submodule": "Breast_cancer/Surgery_Therapy_Breast",
-      "direct_transition": "Begin Hormone Therapy Treatment"
-    },
     "Begin Hormone Therapy Treatment": {
       "type": "CallSubmodule",
       "submodule": "Breast_cancer/hormonetherapy_breast",
+      "direct_transition": "Begin Surgery and Radiation Treatment"
+    },
+    "Begin Surgery and Radiation Treatment": {
+      "type": "CallSubmodule",
+      "submodule": "Breast_cancer/Surgery_Therapy_Breast",
       "direct_transition": "End Treatment"
     }
   }
