@@ -59,11 +59,11 @@
         }
       ],
       "duration": {
-        "low": 5,
-        "high": 6,
-        "unit": "weeks"
+        "low": 15,
+        "high": 40,
+        "unit": "minutes"
       },
-      "direct_transition": "End Breast Surgery",
+      "direct_transition": "End Current Radiation Visit",
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/treatment/radiation-for-breast-cancer.html"
       ]
@@ -78,11 +78,11 @@
         }
       ],
       "duration": {
-        "low": 3,
-        "high": 5,
-        "unit": "weeks"
+        "low": 15,
+        "high": 40,
+        "unit": "minutes"
       },
-      "direct_transition": "End Breast Surgery",
+      "direct_transition": "End Current Radiation Visit",
       "remarks": [
         "https://www.breastcancer.org/research-news/accelerated-whole-breast-radiation-new-standard"
       ]
@@ -101,7 +101,7 @@
         "high": 40,
         "unit": "minutes"
       },
-      "direct_transition": "End Breast Surgery",
+      "direct_transition": "End Current Radiation Visit",
       "remarks": [
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5493441/",
         "https://uihc.org/health-topics/intraoperative-radiation-therapy-iort"
@@ -117,9 +117,9 @@
         }
       ],
       "duration": {
-        "low": 1,
-        "high": 30,
-        "unit": "days"
+        "low": 2,
+        "high": 8,
+        "unit": "weeks"
       },
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/treatment/radiation-for-breast-cancer.html",
@@ -146,11 +146,11 @@
         }
       ],
       "duration": {
-        "low": 1,
-        "high": 30,
-        "unit": "days"
+        "low": 2,
+        "high": 8,
+        "unit": "weeks"
       },
-      "direct_transition": "End Breast Surgery",
+      "direct_transition": "End Brachytherapy Implant",
       "remarks": [
         "https://www.mayoclinic.org/tests-procedures/brachytherapy/about/pac-20385159"
       ]
@@ -165,14 +165,14 @@
         }
       ],
       "duration": {
-        "low": 1,
-        "high": 30,
-        "unit": "days"
+        "low": 2,
+        "high": 8,
+        "unit": "weeks"
       },
       "remarks": [
         "https://www.mayoclinic.org/tests-procedures/brachytherapy/about/pac-20385159"
       ],
-      "direct_transition": "End Breast Surgery"
+      "direct_transition": "End Brachytherapy Implant"
     },
     "chemo": {
       "type": "CallSubmodule",
@@ -702,6 +702,86 @@
         "high": 7,
         "unit": "days"
       }
+    },
+    "Radiation_Buffer_After_Brachytherapy": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 8,
+        "unit": "weeks"
+      },
+      "direct_transition": "End Breast Surgery"
+    },
+    "End Brachytherapy Implant": {
+      "type": "EncounterEnd",
+      "direct_transition": "Radiation_Buffer_After_Brachytherapy"
+    },
+    "End Current Radiation Visit": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Increment Radiation Treatment Count",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "treat_count",
+            "operator": "<",
+            "value": 33
+          }
+        },
+        {
+          "transition": "End Breast Surgery"
+        }
+      ]
+    },
+    "Increment Radiation Treatment Count": {
+      "type": "Counter",
+      "attribute": "treat_count",
+      "action": "increment",
+      "direct_transition": "Delay Until Next Cycle"
+    },
+    "Delay Until Next Cycle": {
+      "type": "Delay",
+      "direct_transition": "Next Day Radiation Treatment",
+      "range": {
+        "low": 1,
+        "high": 1.5,
+        "unit": "days"
+      }
+    },
+    "Next Day Radiation Treatment": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "External Beam Radiation",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "External Beam Radiation"
+          }
+        },
+        {
+          "transition": "Intraoperative radiation therapy (IORT)",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Intraoperative radiation therapy (IORT)"
+          }
+        },
+        {
+          "transition": "Hypofractionated radiation therapy",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Hypofractionated radiation therapy"
+          }
+        }
+      ]
     }
   }
 }
