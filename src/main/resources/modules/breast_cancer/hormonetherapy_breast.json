@@ -17,7 +17,7 @@
           "display": "Tamoxifen"
         }
       ],
-      "direct_transition": "ER-endencounter",
+      "direct_transition": "ER_medend",
       "assign_to_attribute": "ermed",
       "prescription": {
         "dosage": {
@@ -41,7 +41,7 @@
           "display": "Faslodex"
         }
       ],
-      "direct_transition": "ER-endencounter",
+      "direct_transition": "ER_medend",
       "assign_to_attribute": "ermed"
     },
     "Aromatase Inhibitors (AI)": {
@@ -70,7 +70,7 @@
           "display": "Femara"
         }
       ],
-      "direct_transition": "ER-endencounter",
+      "direct_transition": "ER_medend",
       "assign_to_attribute": "ermed",
       "prescription": {
         "dosage": {
@@ -94,7 +94,7 @@
           "display": "Arimidex"
         }
       ],
-      "direct_transition": "ER-endencounter",
+      "direct_transition": "ER_medend",
       "assign_to_attribute": "ermed",
       "prescription": {
         "dosage": {
@@ -118,7 +118,7 @@
           "display": "Aromasin"
         }
       ],
-      "direct_transition": "ER-endencounter",
+      "direct_transition": "ER_medend",
       "assign_to_attribute": "ermed",
       "prescription": {
         "dosage": {
@@ -190,7 +190,7 @@
           "distributions": [
             {
               "distribution": 1,
-              "transition": "Hormone-Receptor-Positive-Treatments"
+              "transition": "Hormone_Receptor_Positive_Treatments"
             }
           ]
         }
@@ -205,7 +205,7 @@
           "display": "Kadcyla(TDM-1)"
         }
       ],
-      "direct_transition": "Hormone-Receptor-Positive-Treatments",
+      "direct_transition": "HER-endmed",
       "assign_to_attribute": "hermed"
     },
     "Lapatinib": {
@@ -217,7 +217,7 @@
           "display": "Tykerb"
         }
       ],
-      "direct_transition": "Hormone-Receptor-Positive-Treatments",
+      "direct_transition": "HER-endmed",
       "assign_to_attribute": "hermed"
     },
     "Neratinib": {
@@ -229,7 +229,7 @@
           "display": "Nerlynx"
         }
       ],
-      "direct_transition": "Hormone-Receptor-Positive-Treatments",
+      "direct_transition": "HER-endmed",
       "assign_to_attribute": "hermed"
     },
     "Trastuzumab_her2": {
@@ -241,7 +241,7 @@
           "display": "Herceptin"
         }
       ],
-      "direct_transition": "Hormone-Receptor-Positive-Treatments",
+      "direct_transition": "HER-endmed",
       "assign_to_attribute": "hermed"
     },
     "CDK4/6 Inhibitors": {
@@ -270,8 +270,8 @@
           "display": "Verzenio"
         }
       ],
-      "direct_transition": "HER-endencounter",
-      "assign_to_attribute": "hermed"
+      "direct_transition": "erpermed-endmed",
+      "assign_to_attribute": "erprmed"
     },
     "Palbociclib": {
       "type": "MedicationOrder",
@@ -282,8 +282,8 @@
           "display": "Ibrance"
         }
       ],
-      "direct_transition": "HER-endencounter",
-      "assign_to_attribute": "hermed"
+      "direct_transition": "erpermed-endmed",
+      "assign_to_attribute": "erprmed"
     },
     "Ribociclib": {
       "type": "MedicationOrder",
@@ -294,36 +294,8 @@
           "display": "Kisqali"
         }
       ],
-      "direct_transition": "HER-endencounter",
-      "assign_to_attribute": "hermed"
-    },
-    "Hormone-Receptor-Positive-Treatments": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "CDK4/6 Inhibitors",
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "ER",
-                "operator": "==",
-                "value": "ER-positive"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "PR",
-                "operator": "==",
-                "value": "PR-positive"
-              }
-            ]
-          }
-        },
-        {
-          "transition": "HER-endencounter"
-        }
-      ]
+      "direct_transition": "erpermed-endmed",
+      "assign_to_attribute": "erprmed"
     },
     "ER-encounter": {
       "type": "Encounter",
@@ -332,8 +304,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 185347001,
+          "display": "Encounter for problem"
         }
       ],
       "conditional_transition": [
@@ -358,70 +330,63 @@
           }
         },
         {
-          "transition": "ER-endencounter"
+          "transition": "Upper Stage Treatment"
         }
       ]
-    },
-    "ER-endencounter": {
-      "type": "EncounterEnd",
-      "direct_transition": "ER_medend"
     },
     "Upper Stage Treatment": {
       "type": "Simple",
-      "direct_transition": "HER2-encounter"
-    },
-    "HER2-encounter": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
-        }
-      ],
-      "conditional_transition": [
-        {
-          "transition": "HER-endencounter",
-          "condition": {
-            "condition_type": "Observation",
-            "codes": [
-              {
-                "system": "LOINC",
-                "code": "21908-9",
-                "display": "Stage group.clinical Cancer"
-              }
-            ],
-            "operator": "==",
-            "value_code": {
-              "system": "SNOMED-CT",
-              "code": 13104003,
-              "display": "Clinical stage I (finding)"
-            }
-          }
-        },
-        {
-          "transition": "HER2-Treatment"
-        }
-      ]
+      "direct_transition": "HER2-Treatment"
     },
     "ER_medend": {
       "type": "MedicationEnd",
       "direct_transition": "Upper Stage Treatment",
       "referenced_by_attribute": "ermed"
     },
-    "HER-endencounter": {
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "erpermed-endmed": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "erprmed",
+      "direct_transition": "end_encounter"
+    },
+    "end_encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "HER-endmed"
+      "direct_transition": "Terminal"
+    },
+    "Hormone_Receptor_Positive_Treatments": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CDK4/6 Inhibitors",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER",
+                "operator": "==",
+                "value": "ER-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "PR",
+                "operator": "==",
+                "value": "PR-positive"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "end_encounter"
+        }
+      ]
     },
     "HER-endmed": {
       "type": "MedicationEnd",
-      "direct_transition": "Terminal",
+      "direct_transition": "Hormone_Receptor_Positive_Treatments",
       "referenced_by_attribute": "hermed"
-    },
-    "Terminal": {
-      "type": "Terminal"
     }
   }
 }
