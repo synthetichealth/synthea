@@ -874,10 +874,6 @@
         "https://www.medicalnewstoday.com/articles/316867.php"
       ]
     },
-    "End Oncologist Visit": {
-      "type": "EncounterEnd",
-      "direct_transition": "Initialize Initial Follow-Up Counter"
-    },
     "End Initial Follow-Up Doctor Visit": {
       "type": "EncounterEnd",
       "direct_transition": "Initial Follow-Up Counter"
@@ -1260,7 +1256,7 @@
     },
     "Follow-Up Treatment": {
       "type": "Simple",
-      "direct_transition": "End Oncologist Visit"
+      "direct_transition": "Initialize Initial Follow-Up Counter"
     },
     "Decrement Years Left": {
       "type": "Counter",
