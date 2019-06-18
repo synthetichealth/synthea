@@ -3,8 +3,8 @@ package org.mitre.synthea.world.agents.behaviors;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
 /**

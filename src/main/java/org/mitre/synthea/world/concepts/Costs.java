@@ -171,35 +171,28 @@ public class Costs {
 
     // Calculate what the Payer and patient pays
     double patientCopay = 0.0;
-    // NEED TO UPDATE TO BE ACTUAL TIME
-    long tempTime = 0;
-    if(patient != null && patient.getInsurance(tempTime) != null){
+    if (patient != null ) { // Check if insurance is null? patient.getInsurance(time)
       // if(payer.isInNetwork(provider))
       // if(payer.coversProcedure(entry))
       patientCopay = payer.getCopay();
     }
-    // The Insurance Company must be in the network of the provider (Implement Later)
-    // The Insurance Company must cover the given procedure/medication/checkup/etc. (Implement Later)
     
-    // Should 'costToPatient' be called 'patientDeductible'?
     double costToPatient = 0.0;
     double costToPayer = 0.0;
     // Should costToPayer include the copay or not?
-    costToPayer = baseCost;
-    if(patientCopay > 0.0){
+    if (payer.getResourceID() != null) {
       costToPatient = patientCopay;
+      costToPayer = (baseCost * locationAdjustment); // - patientCopay?
     } else {
       costToPatient = (baseCost * locationAdjustment);
+      costToPayer = 0.0;
     }
 
-    // Upate Payer's cost values
+    // Upate Payer
     payer.addCost(costToPayer);
     payer.addRevenue(costToPatient);
-
-
     payer.incrementEncountersPaid();
 
-    //return baseCost * locationAdjustment; - Previous return statement
     return costToPatient;
   }
   

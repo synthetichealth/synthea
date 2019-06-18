@@ -1138,7 +1138,7 @@ public class FhirStu3 {
     Payer insurance = person.getInsurance(encounter.start);
     Coverage coverage = new Coverage();
     coverage.setId("coverage");
-    coverage.setType(new CodeableConcept().setText(insurance.name));
+    coverage.setType(new CodeableConcept().setText(insurance.getName()));
     eob.addContained(coverage);
     ExplanationOfBenefit.InsuranceComponent insuranceComponent =
         new ExplanationOfBenefit.InsuranceComponent();

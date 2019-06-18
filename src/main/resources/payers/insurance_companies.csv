@@ -1,8 +1,9 @@
-﻿,id,name,address,city,state,zip,default_coverage,default_copay,monthly_premium,ownership,LAT,LON
-0,10001,Medicare,,,,,0.95,55,70,Government,43.4,71
-1,10002,Medicaid,,,,,0.85,100,70,Government,43.4,71
-2,10003,Dual Eligible,,,,,0.99,25,70,Government,43.4,71
-3,10004,MassHealth,201 WASHINGTON STREET,BOSTON,MA,2102,0.8,80,90,Private,43.4,71
-4,10005,Blue Cross Blue Shield,202 WASHINGTON STREET,BOSTON,MA,2101,0.75,75,100,Private,43.4,71
-5,10006,CaliHealth,915 I STREET,SACRAMENTO,CA,95814,0.7,22,150,Private,43.4,71
-6,10007,Gecko Health,916 I STREET,SACRAMENTO,CA,95814,0.65,30,200,Private,43.4,71
+﻿,id,name,address,city,state,zip,phone,default_coverage,default_copay,monthly_premium,ownership
+0,10001,Medicare,,,,,1-800-633-4227,0.95,55,70,Government
+1,10002,Medicaid,,,,,877-267-2323,0.85,100,70,Government
+2,10003,Dual Eligible,,,,,877-267-2323,0.99,25,70,Government
+3,10004,Tufts Health,705 Mt Auburn Street,Watertown,MA,2472,617-972-9400,0.8,80,90,Private
+4,10005,Blue Cross Blue Shield,101 Huntington Avenue #1300,BOSTON,MA,2199,800-262-2583,0.75,75,100,Private
+5,10006,Hollywood Healthcare,915 I STREET,SACRAMENTO,CA,95814,888-888-8888,0.7,22,150,Private
+6,10007,Gecko Health,916 I STREET,SACRAMENTO,CA,95814,999-999-9999,0.65,30,200,Private
+7,10008,Harvard Pilgrim,93 Worcester St,Wellesley,MA,2481,888-333-4742,0.8,80,90,Private

@@ -152,7 +152,7 @@ public class Attributes {
     CardiovascularDiseaseModule.inventoryAttributes(attributes);
     DeathModule.inventoryAttributes(attributes);
     EncounterModule.inventoryAttributes(attributes);
-    //HealthInsuranceModule.inventoryAttributes(attributes);
+    HealthInsuranceModule.inventoryAttributes(attributes);
     Immunizations.inventoryAttributes(attributes);
     LifecycleModule.inventoryAttributes(attributes);
     QualityOfLifeModule.inventoryAttributes(attributes);

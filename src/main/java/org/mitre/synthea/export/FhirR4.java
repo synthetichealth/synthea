@@ -751,7 +751,7 @@ public class FhirR4 {
     InsuranceComponent insuranceComponent = new InsuranceComponent();
     insuranceComponent.setSequence(1);
     insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference().setDisplay(insurance.name));
+    insuranceComponent.setCoverage(new Reference().setDisplay(insurance.getName()));
     claimResource.addInsurance(insuranceComponent);
 
     // duration of encounter
@@ -814,7 +814,7 @@ public class FhirR4 {
     InsuranceComponent insuranceComponent = new InsuranceComponent();
     insuranceComponent.setSequence(1);
     insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference().setDisplay(insurance.name));
+    insuranceComponent.setCoverage(new Reference().setDisplay(insurance.getName()));
     claimResource.addInsurance(insuranceComponent);
 
     // duration of encounter
@@ -1009,16 +1009,16 @@ public class FhirR4 {
     Coverage coverage = new Coverage();
     coverage.setId("coverage");
     coverage.setStatus(CoverageStatus.ACTIVE);
-    coverage.setType(new CodeableConcept().setText(insurance.name));
+    coverage.setType(new CodeableConcept().setText(insurance.getName()));
     coverage.setBeneficiary(new Reference(personEntry.getFullUrl()));
-    coverage.addPayor(new Reference().setDisplay(insurance.name));
+    coverage.addPayor(new Reference().setDisplay(insurance.getName()));
     eob.addContained(coverage);
     ExplanationOfBenefit.InsuranceComponent insuranceComponent =
         new ExplanationOfBenefit.InsuranceComponent();
     insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference("#coverage").setDisplay(insurance.name));
+    insuranceComponent.setCoverage(new Reference("#coverage").setDisplay(insurance.getName()));
     eob.addInsurance(insuranceComponent);
-    eob.setInsurer(new Reference().setDisplay(insurance.name));
+    eob.setInsurer(new Reference().setDisplay(insurance.getName()));
 
     org.hl7.fhir.r4.model.Claim claim =
         (org.hl7.fhir.r4.model.Claim) claimEntry.getResource();

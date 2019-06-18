@@ -115,13 +115,10 @@ public class HealthRecord {
       this.codes = new ArrayList<Code>();
     }
 
-
-    // EDIT THIS SO THAT PAYER IS NOT NULL
     public BigDecimal cost() {
       if (cost == null) {
         Person patient = record.person;
         Provider provider = record.provider;
-        //Payer payer = null;
         Payer payer = person.getInsurance(start);
         cost = BigDecimal.valueOf(Costs.calculateCost(this, patient, provider, payer));
         cost = cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
@@ -253,10 +250,10 @@ public class HealthRecord {
     public Encounter encounter;
     public Medication medication;
     public List<Entry> items;
-    public Payer insurance;
+    public Payer payer;
 
     public Claim(Encounter encounter) {
-      this.insurance = person.getInsurance(encounter.start);
+      this.payer = person.getInsurance(encounter.start);
 
       // Encounter inpatient
       if (encounter.type.equalsIgnoreCase("inpatient")) {

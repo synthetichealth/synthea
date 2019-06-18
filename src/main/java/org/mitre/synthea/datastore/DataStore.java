@@ -256,13 +256,12 @@ public class DataStore {
       long birthdate = (long) p.attributes.get(Person.BIRTHDATE);
       int birthYear = Utilities.getYear(birthdate);
       for (int i = 0; i < coverage.size(); i++) {
-        String category = coverage.get(i).name;
-        if (category == null) {
+        if (coverage.get(i) == null) {
           break;
         } else {
           stmt.setString(1, personID);
           stmt.setInt(2, (birthYear + i));
-          stmt.setString(3, category);
+          stmt.setString(3, coverage.get(i).getOwnership());
           stmt.addBatch();
         }
       }

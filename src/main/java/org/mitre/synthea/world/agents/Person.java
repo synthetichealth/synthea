@@ -88,11 +88,14 @@ public class Person implements Serializable, QuadTreeData {
   public boolean hasMultipleRecords;
   /** history of the currently active module. */
   public List<State> history;
-  /** person's insurance company */
+  /** person's insurance company. */
   // Each entry in the payerHistory List corresponds to the insurance held at that
   // age
   public List<Payer> payerHistory;
 
+  /**
+   * Person constructor.
+   */
   public Person(long seed) {
     this.seed = seed; // keep track of seed so it can be exported later
     random = new Random(seed);
@@ -106,15 +109,20 @@ public class Person implements Serializable, QuadTreeData {
       records = new ConcurrentHashMap<String, HealthRecord>();
     }
     record = new HealthRecord(this);
-    // NEW
     // 128 because it's a nice power of 2, and nobody will reach that age
     payerHistory = Arrays.asList(new Payer[128]);
   }
 
+  /**
+   * Retuns a random double.
+   */
   public double rand() {
     return random.nextDouble();
   }
 
+  /**
+   * Retuns a random double in the given range.
+   */
   public double rand(double low, double high) {
     return (low + ((high - low) * random.nextDouble()));
   }
@@ -128,11 +136,13 @@ public class Person implements Serializable, QuadTreeData {
    */
   public double rand(double[] range) {
     if (range == null || range.length != 2) {
-      throw new IllegalArgumentException("input range must be of length 2 -- got " + Arrays.toString(range));
+      throw new IllegalArgumentException(
+          "input range must be of length 2 -- got " + Arrays.toString(range));
     }
 
     if (range[0] > range[1]) {
-      throw new IllegalArgumentException("range must be of the form {low, high} -- got " + Arrays.toString(range));
+      throw new IllegalArgumentException(
+          "range must be of the form {low, high} -- got " + Arrays.toString(range));
     }
 
     return rand(range[0], range[1]);
@@ -157,11 +167,13 @@ public class Person implements Serializable, QuadTreeData {
    */
   public double rand(int[] range) {
     if (range == null || range.length != 2) {
-      throw new IllegalArgumentException("input range must be of length 2 -- got " + Arrays.toString(range));
+      throw new IllegalArgumentException(
+          "input range must be of length 2 -- got " + Arrays.toString(range));
     }
 
     if (range[0] > range[1]) {
-      throw new IllegalArgumentException("range must be of the form {low, high} -- got " + Arrays.toString(range));
+      throw new IllegalArgumentException(
+          "range must be of the form {low, high} -- got " + Arrays.toString(range));
     }
 
     return rand(range[0], range[1]);
@@ -180,8 +192,8 @@ public class Person implements Serializable, QuadTreeData {
 
     if (attributes.containsKey(BIRTHDATE)) {
       LocalDate now = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
-      LocalDate birthdate = Instant.ofEpochMilli((long) attributes.get(BIRTHDATE)).atZone(ZoneId.systemDefault())
-          .toLocalDate();
+      LocalDate birthdate = Instant.ofEpochMilli((long)
+          attributes.get(BIRTHDATE)).atZone(ZoneId.systemDefault()).toLocalDate();
       age = Period.between(birthdate, now);
     }
     return age;
@@ -369,7 +381,8 @@ public class Person implements Serializable, QuadTreeData {
 
   @SuppressWarnings("unchecked")
   public Encounter getCurrentEncounter(Module module) {
-    Map<String, Encounter> moduleToCurrentEncounter = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
+    Map<String, Encounter> moduleToCurrentEncounter =
+        (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
 
     if (moduleToCurrentEncounter == null) {
       moduleToCurrentEncounter = new HashMap<>();
@@ -381,7 +394,8 @@ public class Person implements Serializable, QuadTreeData {
 
   @SuppressWarnings("unchecked")
   public void setCurrentEncounter(Module module, Encounter encounter) {
-    Map<String, Encounter> moduleToCurrentEncounter = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
+    Map<String, Encounter> moduleToCurrentEncounter =
+        (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
 
     if (moduleToCurrentEncounter == null) {
       moduleToCurrentEncounter = new HashMap<>();
@@ -484,6 +498,9 @@ public class Person implements Serializable, QuadTreeData {
     return null;
   }
 
+  /**
+   * Returns this person's Payer at the given time.
+   */
   public Payer getInsurance(long time) {
     int age = this.ageInYears(time);
     if (this.payerHistory.get(age) != null) {
@@ -492,6 +509,9 @@ public class Person implements Serializable, QuadTreeData {
     return this.payerHistory.get(0);
   }
 
+  /**
+   * Returns the list of this person's Payer history.
+   */
   public List<Payer> getPayerHistory() {
     return this.payerHistory;
   }

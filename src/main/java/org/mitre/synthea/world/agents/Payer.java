@@ -25,63 +25,44 @@ import org.mitre.synthea.world.geography.Location;
 
 public class Payer {
 
-  // Provider Selection Behavior algorithm choices:
-  // public static final String NEAREST = "nearest";
-
-  // ArrayList of all private payers imported
+  // ArrayList of all payers imported
   private static ArrayList<Payer> payerList = new ArrayList<Payer>();
   // ArrayList of all government payers imported (Maybe?)
   // private static ArrayList<Payer> governmentPayerList = new ArrayList<Payer>();
 
-  // The U.S. States loaded
+  // U.S. States loaded
   private static Set<String> statesLoaded = new HashSet<String>();
-  // Number of payers loaded (?)
+  // Number of payers loaded (?) (can't we just use payerlist.size?)
   private static int loaded = 0;
 
-  /* Algorithms for choosing an insurance company - TODO */
-  // private static final double MAX_PROVIDER_SEARCH_DISTANCE =
-  // Double.parseDouble(Config.get("generate.providers.maximum_search_distance",
-  // "500"));
-  public static final String PAYER_SELECTION_BEHAVIOR = "random";
-  // Config.get("generate.providers.selection_behavior", "nearest").toLowerCase();
   private static IPayerFinder payerFinder = buildPayerFinder();
   // Provider Selection Behavior algorithm choices:
-  public static final String NEAREST = "nearest";
-  public static final String RANDOM = "random";
-  public static final String NETWORK = "network";
-  public static final String BESTRATE = "best_rate";
+  private static final String RANDOM = "random";
+  private static final String BESTRATE = "best_rate";
 
-  // What attributes?
-  public Map<String, Object> attributes;
+  // Payer information
+  private Map<String, Object> attributes;
   public String uuid;
-  public String id;
-  public String name;
-  public String address;
-  public String city;
-  public String state;
-  public String zip;
-  private double defaultCoverage;
+  private String id;
+  private String name;
   private double defaultCopay;
   private double monthlyPremium;
   private double deductible;
-  // public String phone;
-  // public String type;
   public String ownership;
-  // public ArrayList<EncounterType> servicesProvided;
+  // public ArrayList<EncounterType> servicesCovered;
   // row: year, column: type, value: count
   private Table<Integer, String, AtomicInteger> utilization;
 
-  // Costs Information
+  // Payer statistics
   private double costsCovered;
   private double revenue;
-
   private int encounterCount;
 
-  // TEMP NO_INSURANCE OBJECT
+  // Static default NO_INSURANCE object
   public static Payer noInsurance;
 
   /**
-   * Create a new Provider with no information.
+   * Create a new Payer with no information.
    */
   public Payer() {
     uuid = UUID.randomUUID().toString();
@@ -89,39 +70,57 @@ public class Payer {
     utilization = HashBasedTable.create();
     costsCovered = 0.0;
     revenue = 0.0;
+    monthlyPremium = 0.0;
+    deductible = 0.0;
+    defaultCopay = 0.0;
     encounterCount = 0;
   }
 
-  // Determines the algorithm to use to find a Payer
+  /**
+   * Determines the algorithm to use to find a Payer.
+   */
   private static IPayerFinder buildPayerFinder() {
     IPayerFinder finder = null;
-    // String behavior = Config.get("generate.providers.selection_behavior",
-    // "nearest").toLowerCase();
-    switch (PAYER_SELECTION_BEHAVIOR) {
-    case BESTRATE:
-      finder = new PayerFinderBestRates();
-      break;
-    case RANDOM:
-      finder = new PayerFinderRandom();
-      break;
-    default:
-      throw new RuntimeException("Not a valid Payer Selction Algorithm");
+    String behavior = Config.get("generate.payers.selection_behavior").toLowerCase();
+    switch (behavior) {
+      case BESTRATE:
+        finder = new PayerFinderBestRates();
+        break;
+      case RANDOM:
+        finder = new PayerFinderRandom();
+        break;
+      default:
+        throw new RuntimeException("Not a valid Payer Selction Algorithm");
     }
     return finder;
   }
 
+  /**
+   * Returns the payer's unique ID.
+   */
   public String getResourceID() {
     return uuid;
   }
 
+  /**
+   * Returns the map of payer's second class attributes.
+   */
   public Map<String, Object> getAttributes() {
     return attributes;
   }
 
-  public void incrementEncountersPaid(EncounterType service, int year) {
+  /**
+   * Increments the encounters the payer has covered.
+   */
+  public void incrementEncountersCovered(EncounterType service, int year) {
     increment(year, "ENCOUNTERS");
   }
 
+  /**
+   * Increments utiilization. TODO - need some guidance with what this does.
+   * Currently called by incrementEncountersCovered which is never referenced.
+   * Copied from Providers.java.
+   */
   private synchronized void increment(Integer year, String key) {
     if (!utilization.contains(year, key)) {
       utilization.put(year, key, new AtomicInteger(0));
@@ -133,17 +132,18 @@ public class Payer {
     return utilization;
   }
 
-  // Potentially unneeded... person will choose their insurance externally../ May
-  // need this for when a payer starts making decisions about who to insure. May
-  // be useful for choosing different patients based on differnt policies etc.
-  // Every insurer will have a different set of guidelines for accepting a
-  // customer, where to keep these? In the table? How?
+  // Person will choose their insurance externally.
+  // May need this for when a payer starts making decisions about who to insure.
+  // May be useful for choosing different patients based on different policies
+  // (pre-existing conditions, etc).
+  // Every insurer will have a different set of guidelines for accepting
+  // amcustomer, where to keep these? In the table? How?
   /**
    * Will this payer accept the given person at the given time?.
    * 
    * @param person Person to consider
    * @param time   Time the person seeks care
-   * @return whether or not the person can receive care by this provider
+   * @return whether or not the payer will accept this patient as a customer
    */
   public boolean accepts(Person person, long time) {
     // for now assume every payer accepts every patient
@@ -194,10 +194,12 @@ public class Payer {
    * @param location the state being loaded.
    */
   public static void loadPayers(Location location) {
-    if (!statesLoaded.contains(location.state) || !statesLoaded.contains(Location.getAbbreviation(location.state))
+    if (!statesLoaded.contains(location.state)
+        || !statesLoaded.contains(Location.getAbbreviation(location.state))
         || !statesLoaded.contains(Location.getStateName(location.state))) {
       try {
-        String insuranceCompanyFile = Config.get("generate.payers.insurance_companies.default_file");
+        String insuranceCompanyFile =
+            Config.get("generate.payers.insurance_companies.default_file");
         loadPayers(location, insuranceCompanyFile);
 
         statesLoaded.add(location.state);
@@ -212,20 +214,19 @@ public class Payer {
 
   /**
    * Read the payers from the given resource file, only importing the ones for the
-   * given state. THIS method is for loading providers and generating clinicians
-   * with specific specialties
+   * given state.
    * 
-   * @param location         the state being loaded
-   * @param fileName         Location of the file, relative to src/main/resources
-   * @param servicesProvided Set of services provided by these facilities
+   * @param location the state being loaded
+   * @param fileName Location of the file, relative to src/main/resources
    * @throws IOException if the file cannot be read
    */
   public static void loadPayers(Location location, String fileName) throws IOException {
 
     // No Insurance object
     noInsurance = new Payer();
-    noInsurance.defaultCoverage = 0.0;
     noInsurance.name = "NO_INSURANCE";
+    noInsurance.ownership = "NO_INSURANCE";
+    noInsurance.uuid = null;
 
     String resource = Utilities.readResource(fileName);
     Iterator<? extends Map<String, String>> csv = SimpleCSV.parseLineByLine(resource);
@@ -273,41 +274,23 @@ public class Payer {
     }
     String base = newPayer.id + newPayer.name;
     newPayer.uuid = UUID.nameUUIDFromBytes(base.getBytes()).toString();
-    newPayer.address = line.remove("address");
-    newPayer.city = line.remove("city");
-    newPayer.state = line.remove("state");
-    newPayer.zip = line.remove("zip");
-    newPayer.defaultCoverage = Double.parseDouble(line.remove("default_coverage"));
     newPayer.defaultCopay = Double.parseDouble(line.remove("default_copay"));
     newPayer.monthlyPremium = Double.parseDouble(line.remove("monthly_premium"));
-    // newPayer.phone = line.remove("phone");
-    // newPayer.type = line.remove("type");
     newPayer.ownership = line.remove("ownership");
 
     return newPayer;
   }
 
   /**
-   * Returns the list of all loaded payers
-   * 
-   * @return the list of all loaded payers.
+   * Returns the list of all loaded payers.
    */
   public static List<Payer> getPayerList() {
     return payerList;
   }
 
   /**
-   * Returns the default coverage % of the payer
-   * 
-   * @return the Payer's default coverage %.
-   */
-  public double getCoverage() {
-    return this.defaultCoverage;
-  }
-
-  /**
-   * Returns whether the payer covers the given encounter type For now, insurance
-   * will cover all services
+   * Returns whether the payer covers the given encounter type. For now, insurance
+   * will cover all services.
    * 
    * @param service the encounter type to check
    * @return whether the payer covers the given encounter type
@@ -317,16 +300,14 @@ public class Payer {
   }
 
   /**
-   * Returns the default Copay of the payer
-   * 
-   * @return the Payer's default copay.
+   * Returns the Payer's default copay.
    */
   public double getCopay() {
     return this.defaultCopay;
   }
 
   /**
-   * Increases the total costs incurred by the payer by the given amount
+   * Increases the total costs incurred by the payer by the given amount.
    * 
    * @param costToPayer the total cost of the current encounter
    */
@@ -335,7 +316,7 @@ public class Payer {
   }
 
   /**
-   * Increases the total revenue earned by the payer by the given amount
+   * Increases the total revenue earned by the payer by the given amount.
    * 
    * @param patientPayment the amount paid by a patient to the payer
    */
@@ -343,38 +324,45 @@ public class Payer {
     this.revenue += patientPayment;
   }
 
-   /**
-   * @return the number of encounters this payer paid for
+  /**
+   * Returns the number of encounters this payer paid for.
    */
   public int getEncounterCount() {
     return this.encounterCount;
   }
 
   /**
-   * @return the name of the payer
+   * Returns the name of the payer.
    */
   public String getName() {
     return this.name;
   }
 
   /**
-   * @return the amount of money the payer paid
+   * Returns the amount of money the payer paid.
    */
   public double getAmountPaid() {
     return this.costsCovered;
   }
 
   /**
-   * @return the total amount recieved from patients
+   * Returns the total amount recieved from patients.
    */
   public double getRevenue() {
     return this.revenue;
   }
 
-    /**
-   * Increments the number of encounters the payer has covered
+  /**
+   * Increments the number of encounters the payer has covered.
    */
   public void incrementEncountersPaid() {
     this.encounterCount++;
+  }
+
+  /**
+   * Returns the ownserhip type of the payer (Government/Private).
+   */
+  public String getOwnership() {
+    return this.ownership;
   }
 }

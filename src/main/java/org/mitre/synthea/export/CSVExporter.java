@@ -36,17 +36,14 @@ import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 
 /**
- * Researchers have requested a simple table-based format
- * that could easily be imported into any database for analysis.
- * Unlike other formats which export a single record per patient,
- * this format generates 9 total files,
- * and adds lines to each based on the clinical events for each patient.
- * These files are intended to be analogous to database tables,
- * with the patient UUID being a foreign key.
- * Files include:
- * patients.csv, encounters.csv, allergies.csv,
- * medications.csv, conditions.csv, careplans.csv,
- * observations.csv, procedures.csv, and immunizations.csv.
+ * Researchers have requested a simple table-based format that could easily be
+ * imported into any database for analysis. Unlike other formats which export a
+ * single record per patient, this format generates 9 total files, and adds
+ * lines to each based on the clinical events for each patient. These files are
+ * intended to be analogous to database tables, with the patient UUID being a
+ * foreign key. Files include: patients.csv, encounters.csv, allergies.csv,
+ * medications.csv, conditions.csv, careplans.csv, observations.csv,
+ * procedures.csv, and immunizations.csv.
  */
 public class CSVExporter {
   /**
@@ -97,7 +94,7 @@ public class CSVExporter {
    * Writer for providers.csv
    */
   private FileWriter providers;
-    /**
+  /**
    * Writer for payers.csv
    */
   private FileWriter payers;
@@ -108,8 +105,8 @@ public class CSVExporter {
   private static final String NEWLINE = System.lineSeparator();
 
   /**
-   * Constructor for the CSVExporter -
-   *  initialize the 9 specified files and store the writers in fields.
+   * Constructor for the CSVExporter - initialize the 9 specified files and store
+   * the writers in fields.
    */
   private CSVExporter() {
     try {
@@ -127,8 +124,8 @@ public class CSVExporter {
       }
 
       File patientsFile = outputDirectory.resolve("patients.csv").toFile();
-      boolean append = patientsFile.exists()
-          && Boolean.parseBoolean(Config.get("exporter.csv.append_mode"));
+      boolean append =
+          patientsFile.exists() && Boolean.parseBoolean(Config.get("exporter.csv.append_mode"));
 
       File allergiesFile = outputDirectory.resolve("allergies.csv").toFile();
       File medicationsFile = outputDirectory.resolve("medications.csv").toFile();
@@ -171,6 +168,7 @@ public class CSVExporter {
 
   /**
    * Write the headers to each of the CSV files.
+   * 
    * @throws IOException if any IO error occurs
    */
   private void writeCSVHeaders() throws IOException {
@@ -182,8 +180,7 @@ public class CSVExporter {
     allergies.write(NEWLINE);
     medications.write(
         "START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,DISPENSES,TOTALCOST,"
-        + "REASONCODE,REASONDESCRIPTION"
-    );
+        + "REASONCODE,REASONDESCRIPTION");
     medications.write(NEWLINE);
     conditions.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION");
     conditions.write(NEWLINE);
@@ -196,7 +193,8 @@ public class CSVExporter {
     procedures.write(NEWLINE);
     immunizations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST");
     immunizations.write(NEWLINE);
-    encounters.write("Id,START,STOP,PATIENT,PROVIDER,ENCOUNTERCLASS,CODE,DESCRIPTION,COST,"
+    encounters.write(
+        "Id,START,STOP,PATIENT,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,COST,"
         + "REASONCODE,REASONDESCRIPTION");
     encounters.write(NEWLINE);
     imagingStudies.write("Id,DATE,PATIENT,ENCOUNTER,BODYSITE_CODE,BODYSITE_DESCRIPTION,"
@@ -206,13 +204,13 @@ public class CSVExporter {
     organizations.write(NEWLINE);
     providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,UTILIZATION");
     providers.write(NEWLINE);
-    payers.write("Id,NAME,AMOUNT_COVERED,REVENUE,UTILIZATION");
+    payers.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,AMOUNT_COVERED,REVENUE,UTILIZATION");
     payers.write(NEWLINE);
   }
 
   /**
-   *  Thread safe singleton pattern adopted from
-   *  https://stackoverflow.com/questions/7048198/thread-safe-singletons-in-java
+   * Thread safe singleton pattern adopted from
+   * https://stackoverflow.com/questions/7048198/thread-safe-singletons-in-java
    */
   private static class SingletonHolder {
     /**
@@ -223,6 +221,7 @@ public class CSVExporter {
 
   /**
    * Get the current instance of the CSVExporter.
+   * 
    * @return the current instance of the CSVExporter.
    */
   public static CSVExporter getInstance() {
@@ -233,20 +232,21 @@ public class CSVExporter {
    * Export the organizations.csv and providers.csv files. This method should be
    * called once after all the Patient records have been exported using the
    * export(Person,long) method.
+   * 
    * @throws IOException if any IO errors occur.
    */
   public void exportOrganizationsAndProviders() throws IOException {
-    for (Provider org: Provider.getProviderList()) {
+    for (Provider org : Provider.getProviderList()) {
       // Check utilization for hospital before we export
       Table<Integer, String, AtomicInteger> utilization = org.getUtilization();
-      int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream()
-              .mapToInt(ai -> ai.get()).sum();
+      int totalEncounters =
+          utilization.column(Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
       if (totalEncounters > 0) {
         organization(org, totalEncounters);
         Map<String, ArrayList<Clinician>> providers = org.clinicianMap;
-        for (String speciality: providers.keySet()) {
+        for (String speciality : providers.keySet()) {
           ArrayList<Clinician> clinicians = providers.get(speciality);
-          for (Clinician clinician: clinicians) {
+          for (Clinician clinician : clinicians) {
             provider(clinician, org.getResourceID());
           }
         }
@@ -256,23 +256,26 @@ public class CSVExporter {
     }
   }
 
-    /**
-   * Export the payers.csv file. This method should be
-   * called once after all the Patient records have been exported using the
-   * export(Person,long) method.
+  /**
+   * Export the payers.csv file. This method should be called once after all the
+   * Patient records have been exported using the export(Person,long) method.
+   * 
    * @throws IOException if any IO errors occur.
    */
   public void exportPayers() throws IOException {
-    for (Payer payer: Payer.getPayerList()) {
+    for (Payer payer : Payer.getPayerList()) {
       payer(payer);
       payers.flush();
     }
+    payer(Payer.noInsurance);
+    payers.flush();
   }
 
   /**
    * Add a single Person's health record info to the CSV records.
+   * 
    * @param person Person to write record data for
-   * @param time Time the simulation ended
+   * @param time   Time the simulation ended
    * @throws IOException if any IO error occurs
    */
   public void export(Person person, long time) throws IOException {
@@ -330,7 +333,7 @@ public class CSVExporter {
    * Write a single Patient line, to patients.csv.
    *
    * @param person Person to write data for
-   * @param time Time the simulation ended, to calculate age/deceased status
+   * @param time   Time the simulation ended, to calculate age/deceased status
    * @return the patient's ID, to be referenced as a "foreign key" if necessary
    * @throws IOException if any IO error occurs
    */
@@ -349,30 +352,16 @@ public class CSVExporter {
 
     StringBuilder s = new StringBuilder();
     s.append(personID).append(',');
-    s.append(dateFromTimestamp((long)person.attributes.get(Person.BIRTHDATE))).append(',');
+    s.append(dateFromTimestamp((long) person.attributes.get(Person.BIRTHDATE))).append(',');
     if (!person.alive(time)) {
       s.append(dateFromTimestamp(person.events.event(Event.DEATH).time));
     }
 
-    for (String attribute : new String[] {
-        Person.IDENTIFIER_SSN,
-        Person.IDENTIFIER_DRIVERS,
-        Person.IDENTIFIER_PASSPORT,
-        Person.NAME_PREFIX,
-        Person.FIRST_NAME,
-        Person.LAST_NAME,
-        Person.NAME_SUFFIX,
-        Person.MAIDEN_NAME,
-        Person.MARITAL_STATUS,
-        Person.RACE,
-        Person.ETHNICITY,
-        Person.GENDER,
-        Person.BIRTHPLACE,
-        Person.ADDRESS,
-        Person.CITY,
-        Person.STATE,
-        Person.ZIP
-    }) {
+    for (String attribute : new String[] { Person.IDENTIFIER_SSN, Person.IDENTIFIER_DRIVERS,
+        Person.IDENTIFIER_PASSPORT, Person.NAME_PREFIX, Person.FIRST_NAME, Person.LAST_NAME,
+        Person.NAME_SUFFIX, Person.MAIDEN_NAME, Person.MARITAL_STATUS, Person.RACE,
+        Person.ETHNICITY, Person.GENDER, Person.BIRTHPLACE, Person.ADDRESS, Person.CITY,
+        Person.STATE, Person.ZIP }) {
       String value = (String) person.attributes.getOrDefault(attribute, "");
       s.append(',').append(clean(value));
     }
@@ -386,51 +375,58 @@ public class CSVExporter {
   /**
    * Write a single Encounter line to encounters.csv.
    *
-   * @param personID The ID of the person that had this encounter
+   * @param personID  The ID of the person that had this encounter
    * @param encounter The encounter itself
    * @return The encounter ID, to be referenced as a "foreign key" if necessary
    * @throws IOException if any IO error occurs
    */
   private String encounter(String personID, Encounter encounter) throws IOException {
-    // Id,START,STOP,PATIENT,PROVIDER,ENCOUNTERCLASS,CODE,DESCRIPTION,COST,
+    // Id,START,STOP,PATIENT,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,COST,
     // REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
     String encounterID = UUID.randomUUID().toString();
-    //ID
+    // ID
     s.append(encounterID).append(',');
-    //START
+    // START
     s.append(iso8601Timestamp(encounter.start)).append(',');
-    //STOP
+    // STOP
     if (encounter.stop != 0L) {
       s.append(iso8601Timestamp(encounter.stop)).append(',');
     } else {
       s.append(',');
     }
-    //PATIENT
+    // PATIENT
     s.append(personID).append(',');
 
-    //PROVIDER
+    // PROVIDER
     if (encounter.provider != null) {
       s.append(encounter.provider.getResourceID()).append(',');
     } else {
       s.append(',');
     }
 
-    //ENCOUNTERCLASS
+    // PAYER
+    if (encounter.claim.payer != null) {
+      s.append(encounter.claim.payer.getResourceID()).append(',');
+    } else {
+      s.append(',');
+    }
+
+    // ENCOUNTERCLASS
     if (encounter.type != null) {
       s.append(encounter.type.toLowerCase()).append(',');
     } else {
       s.append(',');
     }
-    //CODE
+    // CODE
     Code coding = encounter.codes.get(0);
     s.append(coding.code).append(',');
-    //DESCRIPTION
+    // DESCRIPTION
     s.append(clean(coding.display)).append(',');
-    //COST
+    // COST
     s.append(String.format(Locale.US, "%.2f", encounter.cost())).append(',');
-    //REASONCODE & REASONDESCRIPTION
+    // REASONCODE & REASONDESCRIPTION
     if (encounter.reason == null) {
       s.append(",");
     } else {
@@ -447,13 +443,12 @@ public class CSVExporter {
   /**
    * Write a single Condition to conditions.csv.
    *
-   * @param personID ID of the person that has the condition.
+   * @param personID    ID of the person that has the condition.
    * @param encounterID ID of the encounter where the condition was diagnosed
-   * @param condition The condition itself
+   * @param condition   The condition itself
    * @throws IOException if any IO error occurs
    */
-  private void condition(String personID, String encounterID,
-      Entry condition) throws IOException {
+  private void condition(String personID, String encounterID, Entry condition) throws IOException {
     // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION
     StringBuilder s = new StringBuilder();
 
@@ -477,13 +472,12 @@ public class CSVExporter {
   /**
    * Write a single Allergy to allergies.csv.
    *
-   * @param personID ID of the person that has the allergy.
+   * @param personID    ID of the person that has the allergy.
    * @param encounterID ID of the encounter where the allergy was diagnosed
-   * @param allergy The allergy itself
+   * @param allergy     The allergy itself
    * @throws IOException if any IO error occurs
    */
-  private void allergy(String personID, String encounterID,
-      Entry allergy) throws IOException {
+  private void allergy(String personID, String encounterID, Entry allergy) throws IOException {
     // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION
     StringBuilder s = new StringBuilder();
 
@@ -507,13 +501,13 @@ public class CSVExporter {
   /**
    * Write a single Observation to observations.csv.
    *
-   * @param personID ID of the person to whom the observation applies.
+   * @param personID    ID of the person to whom the observation applies.
    * @param encounterID ID of the encounter where the observation was taken
    * @param observation The observation itself
    * @throws IOException if any IO error occurs
    */
-  private void observation(String personID, String encounterID,
-      Observation observation) throws IOException {
+  private void observation(String personID,
+      String encounterID, Observation observation) throws IOException {
 
     if (observation.value == null) {
       if (observation.observations != null && !observation.observations.isEmpty()) {
@@ -553,9 +547,9 @@ public class CSVExporter {
   /**
    * Write a single Procedure to procedures.csv.
    *
-   * @param personID ID of the person on whom the procedure was performed.
+   * @param personID    ID of the person on whom the procedure was performed.
    * @param encounterID ID of the encounter where the procedure was performed
-   * @param procedure The procedure itself
+   * @param procedure   The procedure itself
    * @throws IOException if any IO error occurs
    */
   private void procedure(String personID, String encounterID,
@@ -589,14 +583,14 @@ public class CSVExporter {
   /**
    * Write a single Medication to medications.csv.
    *
-   * @param personID ID of the person prescribed the medication.
+   * @param personID    ID of the person prescribed the medication.
    * @param encounterID ID of the encounter where the medication was prescribed
-   * @param medication The medication itself
-   * @param stopTime End time
+   * @param medication  The medication itself
+   * @param stopTime    End time
    * @throws IOException if any IO error occurs
    */
-  private void medication(String personID, String encounterID,
-      Medication medication, long stopTime) throws IOException {
+  private void medication(String personID, String encounterID, Medication medication, long stopTime)
+      throws IOException {
     // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,
     // COST,DISPENSES,TOTALCOST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
@@ -625,8 +619,7 @@ public class CSVExporter {
     }
     long medDuration = stop - medication.start;
 
-    if (medication.prescriptionDetails != null
-        && medication.prescriptionDetails.has("refills")) {
+    if (medication.prescriptionDetails != null && medication.prescriptionDetails.has("refills")) {
       dispenses = medication.prescriptionDetails.get("refills").getAsInt();
     } else if (medication.prescriptionDetails != null
         && medication.prescriptionDetails.has("duration")) {
@@ -650,9 +643,8 @@ public class CSVExporter {
     }
 
     s.append(dispenses).append(',');
-    BigDecimal totalCost = cost
-        .multiply(BigDecimal.valueOf(dispenses))
-        .setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
+    BigDecimal totalCost = cost.multiply(
+        BigDecimal.valueOf(dispenses)).setScale(2, RoundingMode.DOWN); //Truncate 2 decimal places
     s.append(String.format(Locale.US, "%.2f", totalCost)).append(',');
 
     if (medication.reasons.isEmpty()) {
@@ -670,13 +662,13 @@ public class CSVExporter {
   /**
    * Write a single Immunization to immunizations.csv.
    *
-   * @param personID ID of the person on whom the immunization was performed.
-   * @param encounterID ID of the encounter where the immunization was performed
+   * @param personID     ID of the person on whom the immunization was performed.
+   * @param encounterID  ID of the encounter where the immunization was performed
    * @param immunization The immunization itself
    * @throws IOException if any IO error occurs
    */
   private void immunization(String personID, String encounterID,
-      Entry immunization) throws IOException  {
+      Entry immunization) throws IOException {
     // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST
     StringBuilder s = new StringBuilder();
 
@@ -698,9 +690,9 @@ public class CSVExporter {
   /**
    * Write a single CarePlan to careplans.csv.
    *
-   * @param personID ID of the person prescribed the careplan.
+   * @param personID    ID of the person prescribed the careplan.
    * @param encounterID ID of the encounter where the careplan was prescribed
-   * @param careplan The careplan itself
+   * @param careplan    The careplan itself
    * @throws IOException if any IO error occurs
    */
   private String careplan(String personID, String encounterID,
@@ -740,8 +732,8 @@ public class CSVExporter {
   /**
    * Write a single ImagingStudy to imaging_studies.csv.
    *
-   * @param personID ID of the person the ImagingStudy was taken of.
-   * @param encounterID ID of the encounter where the ImagingStudy was performed
+   * @param personID     ID of the person the ImagingStudy was taken of.
+   * @param encounterID  ID of the encounter where the ImagingStudy was performed
    * @param imagingStudy The ImagingStudy itself
    * @throws IOException if any IO error occurs
    */
@@ -782,7 +774,8 @@ public class CSVExporter {
 
   /**
    * Write a single organization to organizations.csv
-   * @param org The organization to be written
+   * 
+   * @param org         The organization to be written
    * @param utilization The total number of encounters for the org
    * @throws IOException if any IO error occurs
    */
@@ -804,8 +797,9 @@ public class CSVExporter {
 
   /**
    * Write a single clinician to providers.csv
+   * 
    * @param provider The provider information to be written
-   * @param orgId ID of the organization the provider belongs to
+   * @param orgId    ID of the organization the provider belongs to
    * @throws IOException if any IO error occurs
    */
   private void provider(Clinician provider, String orgId) throws IOException {
@@ -814,15 +808,9 @@ public class CSVExporter {
     StringBuilder s = new StringBuilder();
     s.append(provider.getResourceID()).append(',');
     s.append(orgId).append(',');
-    for (String attribute: new String[] {
-        Clinician.NAME,
-        Clinician.GENDER,
-        Clinician.SPECIALTY,
-        Clinician.ADDRESS,
-        Clinician.CITY,
-        Clinician.STATE,
-        Clinician.ZIP
-    }) {
+    for (String attribute : new String[] { Clinician.NAME, Clinician.GENDER,
+        Clinician.SPECIALTY, Clinician.ADDRESS, Clinician.CITY, Clinician.STATE,
+        Clinician.ZIP }) {
       String value = (String) provider.attributes.getOrDefault(attribute, "");
       s.append(clean(value)).append(',');
     }
@@ -831,30 +819,21 @@ public class CSVExporter {
     s.append(NEWLINE);
 
     write(s.toString(), providers);
-
   }
 
   private void payer(Payer payer) throws IOException {
-    // Id,NAME,AMOUNT_PAID,REVENUE,UTILIZATION
+    // Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,AMOUNT_PAID,REVENUE,UTILIZATION
 
     StringBuilder s = new StringBuilder();
     s.append(payer.getResourceID()).append(',');
     s.append(payer.getName()).append(',');
-    s.append(payer.getAmountPaid()).append(',');
-    s.append(payer.getRevenue()).append(',');
+    for (String attribute : new String[] { "address", "city", "state", "zip", "phone" }) {
+      String value = (String) payer.getAttributes().getOrDefault(attribute, "");
+      s.append(clean(value)).append(',');
+    }
+    s.append(String.format(Locale.US, "%.2f", payer.getAmountPaid())).append(',');
+    s.append(String.format(Locale.US, "%.2f", payer.getRevenue())).append(',');
     s.append(payer.getEncounterCount());
-    //check how this ^ works for providers
-
-    // for (String attribute: new String[] {
-    //     "NAME",
-    //     "AMOUNT_PAID",
-    //     "REVENUE",
-    //     "UTILIZATION"
-    // }) {
-    //   String value = (String) payer.attributes.getOrDefault(attribute, "");
-    //   s.append(clean(value)).append(',');
-    // }
-
     s.append(NEWLINE);
 
     write(s.toString(), payers);
@@ -873,10 +852,10 @@ public class CSVExporter {
   }
 
   /**
-   * Helper method to write a line to a File.
-   * Extracted to a separate method here to make it a little easier to replace implementations.
+   * Helper method to write a line to a File. Extracted to a separate method here
+   * to make it a little easier to replace implementations.
    *
-   * @param line The line to write
+   * @param line   The line to write
    * @param writer The place to write it
    * @throws IOException if an I/O error occurs
    */
