@@ -292,15 +292,6 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Breast_Surgery",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "T",
-            "operator": "!=",
-            "value": "T0"
-          }
-        },
-        {
           "transition": "End Breast Surgery",
           "condition": {
             "condition_type": "Attribute",
@@ -308,6 +299,9 @@
             "operator": "==",
             "value": "T0"
           }
+        },
+        {
+          "transition": "Breast_Surgery"
         }
       ]
     },
@@ -324,15 +318,6 @@
       ],
       "conditional_transition": [
         {
-          "transition": "Lymph_Node Surgery",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "N",
-            "operator": "!=",
-            "value": "N0"
-          }
-        },
-        {
           "transition": "End_Lymph_Node_Surgery",
           "condition": {
             "condition_type": "Attribute",
@@ -340,6 +325,9 @@
             "operator": "==",
             "value": "N0"
           }
+        },
+        {
+          "transition": "Lymph_Node Surgery"
         }
       ]
     },
