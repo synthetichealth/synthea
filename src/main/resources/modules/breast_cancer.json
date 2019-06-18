@@ -1736,12 +1736,12 @@
     },
     "Begin Hormone Therapy Treatment": {
       "type": "CallSubmodule",
-      "submodule": "Breast_cancer/hormonetherapy_breast",
+      "submodule": "breast_cancer/hormonetherapy_breast",
       "direct_transition": "Begin Surgery and Radiation Treatment"
     },
     "Begin Surgery and Radiation Treatment": {
       "type": "CallSubmodule",
-      "submodule": "Breast_cancer/Surgery_Therapy_Breast",
+      "submodule": "breast_cancer/surgery_therapy_breast",
       "direct_transition": "End Treatment"
     }
   }
