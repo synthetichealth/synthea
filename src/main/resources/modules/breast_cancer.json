@@ -1697,7 +1697,7 @@
         {
           "system": "SNOMED-CT",
           "code": 367336001,
-          "display": "Neoadjuvant Chemotherapy (procedure)"
+          "display": "Chemotherapy (procedure)"
         }
       ],
       "duration": {
