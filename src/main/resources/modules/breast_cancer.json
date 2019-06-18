@@ -1664,7 +1664,7 @@
             "condition_type": "Attribute",
             "attribute": "neoCount",
             "operator": "<",
-            "value": 8
+            "value": 7
           }
         },
         {
@@ -1697,7 +1697,7 @@
         {
           "system": "SNOMED-CT",
           "code": 367336001,
-          "display": "Chemotherapy (procedure)"
+          "display": "Neoadjuvant Chemotherapy (procedure)"
         }
       ],
       "duration": {
