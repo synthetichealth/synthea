@@ -92,8 +92,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "Radiotherapy - intraoperative control (procedure)"
+          "code": 108290001,
+          "display": "Radiation oncology AND/OR radiotherapy (procedure)"
         }
       ],
       "duration": {

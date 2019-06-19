@@ -382,7 +382,7 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "Switch from Primary Care Physician to Oncologist"
+      "direct_transition": "Breast Biopsy"
     },
     "Breast Cancer Encounter": {
       "type": "Encounter",
@@ -395,10 +395,6 @@
         }
       ],
       "direct_transition": "Mammogram"
-    },
-    "Switch from Primary Care Physician to Oncologist": {
-      "type": "EncounterEnd",
-      "direct_transition": "Delay Before Oncologist Biopsy"
     },
     "MRI": {
       "type": "Procedure",
@@ -414,19 +410,6 @@
         "high": 90,
         "unit": "minutes"
       },
-      "direct_transition": "Switch from Primary Care Physician to Oncologist"
-    },
-    "TNM_Staging_Visit": {
-      "type": "Encounter",
-      "encounter_class": "inpatient",
-      "reason": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 122548005,
-          "display": "Biopsy of breast (procedure)"
-        }
-      ],
       "direct_transition": "Breast Biopsy"
     },
     "Diagnose_TNM_Markers": {
@@ -1463,15 +1446,6 @@
         "low": 0,
         "high": 1,
         "unit": "weeks"
-      }
-    },
-    "Delay Before Oncologist Biopsy": {
-      "type": "Delay",
-      "direct_transition": "TNM_Staging_Visit",
-      "range": {
-        "low": 1,
-        "high": 3,
-        "unit": "days"
       }
     },
     "Delay for Analysis of Possible Treatments": {
