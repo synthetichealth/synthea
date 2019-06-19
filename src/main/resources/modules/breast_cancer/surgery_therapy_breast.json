@@ -248,12 +248,12 @@
           "display": "Sentinel lymph node biopsy (procedure)"
         }
       ],
+      "direct_transition": "Excision_Of_Sentinel_Lymph_Node",
       "duration": {
-        "low": 0,
-        "high": 1,
-        "unit": "days"
-      },
-      "direct_transition": "End_Lymph_Node_Surgery"
+        "low": 40,
+        "high": 50,
+        "unit": "minutes"
+      }
     },
     "Axillary_Lymph_Node_Dissection__ALND_": {
       "type": "Procedure",
@@ -770,6 +770,22 @@
           }
         }
       ]
+    },
+    "Excision_Of_Sentinel_Lymph_Node": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 443497002,
+          "display": "Excision of sentinel lymph node (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 1,
+        "unit": "days"
+      },
+      "direct_transition": "End_Lymph_Node_Surgery"
     }
   }
 }

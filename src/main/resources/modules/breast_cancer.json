@@ -1362,31 +1362,6 @@
         }
       ]
     },
-    "Regular_Mammogram": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 71651007,
-          "display": "Mammography (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 15,
-        "high": 25,
-        "unit": "minutes"
-      },
-      "distributed_transition": [
-        {
-          "transition": "Ultrasound",
-          "distribution": 0.75
-        },
-        {
-          "transition": "MRI",
-          "distribution": 0.25
-        }
-      ]
-    },
     "Regular Mammogram Visit": {
       "type": "Encounter",
       "encounter_class": "inpatient",
@@ -1398,7 +1373,7 @@
           "display": "Inpatient care (regime/therapy)"
         }
       ],
-      "direct_transition": "Regular_Mammogram"
+      "direct_transition": "Screening Mammogram"
     },
     "Breast Cancer Found": {
       "type": "ConditionOnset",
@@ -1431,7 +1406,7 @@
           "transition": "Breast Cancer Found",
           "condition": {
             "condition_type": "PriorState",
-            "name": "Regular_Mammogram"
+            "name": "Screening Mammogram"
           }
         },
         {
@@ -1741,6 +1716,31 @@
             "condition_type": "PriorState",
             "name": ""
           }
+        }
+      ]
+    },
+    "Screening Mammogram": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 24623002,
+          "display": "Screening mammography (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 25,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Ultrasound",
+          "distribution": 0.75
+        },
+        {
+          "transition": "MRI",
+          "distribution": 0.25
         }
       ]
     }
