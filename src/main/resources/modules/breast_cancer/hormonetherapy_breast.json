@@ -8,30 +8,6 @@
       "type": "Initial",
       "direct_transition": "ER-encounter"
     },
-    "Estrogen Blocking Receptors": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 10324,
-          "display": "Tamoxifen"
-        }
-      ],
-      "direct_transition": "ER_medend",
-      "assign_to_attribute": "ermed",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 10,
-          "unit": "years"
-        }
-      }
-    },
     "Fulvestrant": {
       "type": "MedicationOrder",
       "codes": [
@@ -45,7 +21,8 @@
       "assign_to_attribute": "ermed"
     },
     "Aromatase Inhibitors (AI)": {
-      "type": "Simple",
+      "type": "SetAttribute",
+      "attribute": "aromatase_inhibitors",
       "distributed_transition": [
         {
           "transition": "Letrozole",
@@ -59,7 +36,8 @@
           "transition": "Exemestane",
           "distribution": 0.34
         }
-      ]
+      ],
+      "value": true
     },
     "Letrozole": {
       "type": "MedicationOrder",
@@ -387,6 +365,36 @@
       "type": "MedicationEnd",
       "direct_transition": "Hormone_Receptor_Positive_Treatments",
       "referenced_by_attribute": "hermed"
+    },
+    "Tamoxifen": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 10324,
+          "display": "Tamoxifen"
+        }
+      ],
+      "direct_transition": "ER_medend",
+      "assign_to_attribute": "ermed",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "years"
+        }
+      }
+    },
+    "Estrogen Blocking Receptors": {
+      "type": "SetAttribute",
+      "attribute": "tamoxifen",
+      "direct_transition": "Tamoxifen",
+      "value": true
     }
   }
 }

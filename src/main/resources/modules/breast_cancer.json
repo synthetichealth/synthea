@@ -1023,6 +1023,15 @@
           }
         },
         {
+          "transition": "Gynecologist Visit",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tamoxifen",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
           "transition": "Bone Followup"
         }
       ],
@@ -1097,6 +1106,15 @@
             "symptom": "Early menopause due to treatment",
             "operator": ">",
             "value": 0
+          }
+        },
+        {
+          "transition": "Bone Exam Visit",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "aromatase_inhibitors",
+            "operator": "==",
+            "value": true
           }
         },
         {
@@ -1739,6 +1757,18 @@
       "type": "CallSubmodule",
       "submodule": "breast_cancer/surgery_therapy_breast",
       "direct_transition": "End Treatment"
+    },
+    "New_State": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "New_State",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": ""
+          }
+        }
+      ]
     }
   }
 }
