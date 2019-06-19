@@ -18,23 +18,11 @@
       ],
       "type": "Encounter",
       "wellness": true,
-      "conditional_transition": [
+      "complex_transition": [
         {
           "condition": {
             "condition_type": "And",
             "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "active_weight_management",
-                "operator": "==",
-                "value": true
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "bmi_percentile",
-                "operator": ">=",
-                "value": 0.85
-              },
               {
                 "condition_type": "Age",
                 "operator": ">=",
@@ -46,12 +34,28 @@
                 "operator": "<=",
                 "quantity": 17,
                 "unit": "years"
+              },
+              {
+                "condition_type": "Attribute",
+                "operator": ">=",
+                "attribute": "bmi_percentile",
+                "value": 0.85
               }
             ]
           },
-          "transition": "Comprehensive_Multidisciplinary_Intervention_Care_Plan"
+          "distributions": [
+            {
+              "transition": "Comprehensive_Multidisciplinary_Intervention_Care_Plan",
+              "distribution": 0.041
+            },
+            {
+              "transition": "Not_Referred",
+              "distribution": 0.959
+            }
+          ]
         },
         {
+          "distributions": [],
           "transition": "Initial"
         }
       ]
@@ -82,19 +86,16 @@
     },
     "End_Wellness_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Wait_For_Initial_WM_Visit"
-    },
-    "Wait_For_Initial_WM_Visit": {
-      "type": "Delay",
-      "range": {
-        "low": 14,
-        "high": 21,
-        "unit": "days"
-      },
-      "direct_transition": "Set_MEND_Weeks"
-    },
-    "End_Clinical_Weight_Loss": {
-      "type": "Terminal"
+      "distributed_transition": [
+        {
+          "transition": "Wait_For_Initial_MEND_Week",
+          "distribution": 0.416
+        },
+        {
+          "transition": "End_MEND_Program",
+          "distribution": 0.584
+        }
+      ]
     },
     "Set_MEND_Weeks": {
       "type": "SetAttribute",
@@ -110,10 +111,27 @@
     },
     "MEND_Visits": {
       "type": "CallSubmodule",
-      "submodule": "weight_loss/follow_up_sessions",
+      "submodule": "weight_loss/mend_week",
+      "direct_transition": "Check_MEND_Weeks"
+    },
+    "Wait_For_Initial_MEND_Week": {
+      "type": "Delay",
+      "range": {
+        "low": 14,
+        "high": 21,
+        "unit": "days"
+      },
+      "direct_transition": "Set_MEND_Weeks"
+    },
+    "Not_Referred": {
+      "type": "Simple",
+      "direct_transition": "Initial"
+    },
+    "Check_MEND_Weeks": {
+      "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "End_Clinical_Weight_Loss",
+          "transition": "End_MEND_Program",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "mend_weeks",
@@ -125,6 +143,9 @@
           "transition": "Increment_MEND_Week"
         }
       ]
+    },
+    "End_MEND_Program": {
+      "type": "Terminal"
     }
   }
 }
