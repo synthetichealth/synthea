@@ -99,6 +99,19 @@ public class ProviderTest {
   }
 
   @Test
+  public void testNearestEmergencyInDC() {
+    // DC is a good test because it has one city, Washington, with a single
+    // coordinate. People in the same city have more or less the same
+    // coordinate as emergency hospitals.
+    Location capital = new Location("District of Columbia", null);
+    Provider.loadProviders(capital);
+    Person person = new Person(0L);
+    capital.assignPoint(person, capital.randomCityName(person.random));
+    Provider provider = Provider.findService(person, EncounterType.EMERGENCY, 0);
+    Assert.assertNotNull(provider);
+  }
+
+  @Test
   public void testNearestUrgentCareInState() {
     Provider.loadProviders(location);
     Person person = new Person(0L);
