@@ -341,7 +341,8 @@
         }
       ],
       "direct_transition": "Time Before Initial Doctor Visit",
-      "target_encounter": "Breast Cancer Encounter"
+      "target_encounter": "Breast Cancer Encounter",
+      "assign_to_attribute": "breast_cancer_condition"
     },
     "Mammogram": {
       "type": "Procedure",
@@ -1385,7 +1386,8 @@
         }
       ],
       "target_encounter": "Breast Cancer Encounter",
-      "direct_transition": "Diagnose_TNM_Markers"
+      "direct_transition": "Diagnose_TNM_Markers",
+      "assign_to_attribute": "breast_cancer_condition"
     },
     "Breast Biopsy": {
       "type": "Procedure",
@@ -1541,7 +1543,7 @@
     "Neoadjuvant Chemo Before Surgery": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "Breast Cancer",
+      "reason": "breast_cancer_condition",
       "codes": [
         {
           "system": "SNOMED-CT",
