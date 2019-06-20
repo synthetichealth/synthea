@@ -956,8 +956,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 71651007,
-          "display": "Mammography (procedure)"
+          "code": 410410006,
+          "display": "Screening surveillance (regime/therapy)"
         }
       ],
       "encounter_class": "inpatient"
@@ -1178,8 +1178,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 312681000,
-          "display": "SN   Bone density scan (procedure)"
+          "code": 185389009,
+          "display": "Follow-up visit (procedure)"
         }
       ],
       "direct_transition": "Bone Exam"
@@ -1243,8 +1243,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185389009,
-          "display": "Follow-up visit (procedure)"
+          "code": 439740005,
+          "display": "Postoperative follow-up visit (procedure)"
         }
       ],
       "direct_transition": "End Initial Follow-Up Doctor Visit",
@@ -1255,10 +1255,6 @@
     "Death": {
       "type": "Death",
       "direct_transition": "Terminal"
-    },
-    "Follow-Up Treatment": {
-      "type": "Simple",
-      "direct_transition": "Initialize Initial Follow-Up Counter"
     },
     "Decrement Years Left": {
       "type": "Counter",
@@ -1294,38 +1290,38 @@
     "Treatment Successful": {
       "type": "SetAttribute",
       "attribute": "years_left",
-      "direct_transition": "Follow-Up Treatment",
+      "direct_transition": "Post-Treatment Surveillance",
       "value": 200
     },
     "Terminal 1 Year": {
       "type": "SetAttribute",
       "attribute": "years_left",
       "value": 1,
-      "direct_transition": "Follow-Up Treatment"
+      "direct_transition": "Post-Treatment Surveillance"
     },
     "Terminal 2 Years": {
       "type": "SetAttribute",
       "attribute": "years_left",
       "value": 2,
-      "direct_transition": "Follow-Up Treatment"
+      "direct_transition": "Post-Treatment Surveillance"
     },
     "Terminal 3 Years": {
       "type": "SetAttribute",
       "attribute": "years_left",
       "value": 3,
-      "direct_transition": "Follow-Up Treatment"
+      "direct_transition": "Post-Treatment Surveillance"
     },
     "Terminal 4 Years": {
       "type": "SetAttribute",
       "attribute": "years_left",
       "value": 4,
-      "direct_transition": "Follow-Up Treatment"
+      "direct_transition": "Post-Treatment Surveillance"
     },
     "Terminal 5 Years": {
       "type": "SetAttribute",
       "attribute": "years_left",
       "value": 5,
-      "direct_transition": "Follow-Up Treatment"
+      "direct_transition": "Post-Treatment Surveillance"
     },
     "69 < Age <= 85": {
       "type": "Delay",
@@ -1478,12 +1474,23 @@
             "condition_type": "Or",
             "conditions": [
               {
-                "condition_type": "PriorState",
-                "name": "Stage III"
+                "condition_type": "Attribute",
+                "attribute": "triple_wicked",
+                "operator": "==",
+                "value": true
               },
               {
-                "condition_type": "PriorState",
-                "name": "Stage IV"
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "PriorState",
+                    "name": "Stage III"
+                  },
+                  {
+                    "condition_type": "PriorState",
+                    "name": "Stage IV"
+                  }
+                ]
               }
             ]
           }
@@ -1543,7 +1550,6 @@
     "Neoadjuvant Chemo Before Surgery": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "breast_cancer_condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1551,7 +1557,8 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "Chemotherapy Drugs"
+      "direct_transition": "Chemotherapy Drugs",
+      "reason": "breast_cancer_condition"
     },
     "End Chemo Treatment": {
       "type": "Delay",
@@ -1577,7 +1584,8 @@
         "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html"
       ],
       "direct_transition": "Neoadjuvant chemotherapy procedure",
-      "assign_to_attribute": "neoMed"
+      "assign_to_attribute": "neoMed",
+      "reason": "breast_cancer_condition"
     },
     "Epirubicin": {
       "type": "MedicationOrder",
@@ -1745,6 +1753,10 @@
           "distribution": 0.25
         }
       ]
+    },
+    "Post-Treatment Surveillance": {
+      "type": "Simple",
+      "direct_transition": "Initialize Initial Follow-Up Counter"
     }
   }
 }

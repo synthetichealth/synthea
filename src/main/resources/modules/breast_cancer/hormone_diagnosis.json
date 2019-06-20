@@ -277,7 +277,7 @@
         "code": 706970001,
         "display": "Triple negative malignant neoplasm of breast (disorder)"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Triple_Negative_Patient"
     },
     "Hormone Receptor Positive": {
       "type": "Observation",
@@ -304,8 +304,8 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": "66110-8",
-          "display": "Breast Pathology biopsy report"
+          "code": 417181009,
+          "display": "Estrogen+Progesterone receptor Ag [Presence] in Tissue by Immune stain"
         }
       ],
       "value_code": {
@@ -356,6 +356,12 @@
           "distribution": 0.2
         }
       ]
+    },
+    "Triple_Negative_Patient": {
+      "type": "SetAttribute",
+      "attribute": "triple_wicked",
+      "direct_transition": "Terminal",
+      "value": true
     }
   }
 }

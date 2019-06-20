@@ -382,6 +382,24 @@
       "complex_transition": [
         {
           "condition": {
+            "condition_type": "Attribute",
+            "attribute": "triple_wicked",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "distribution": 0.8,
+              "transition": "chemo"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "External Beam Radiation"
+            }
+          ]
+        },
+        {
+          "condition": {
             "condition_type": "Observation",
             "codes": [
               {
@@ -399,26 +417,12 @@
           },
           "distributions": [
             {
-              "transition": "External Beam Radiation",
-              "distribution": 1
+              "distribution": 1,
+              "transition": "External Beam Radiation"
             }
           ]
         },
         {
-          "distributions": [
-            {
-              "transition": "External Beam Radiation",
-              "distribution": 0.01
-            },
-            {
-              "transition": "chemo",
-              "distribution": 0.33
-            },
-            {
-              "transition": "Advanced_drugs",
-              "distribution": 0.66
-            }
-          ],
           "condition": {
             "condition_type": "Observation",
             "codes": [
@@ -434,23 +438,38 @@
               "code": 2640006,
               "display": "Clinical stage IV (finding)"
             }
-          }
+          },
+          "distributions": [
+            {
+              "distribution": 0.01,
+              "transition": "External Beam Radiation"
+            },
+            {
+              "distribution": 0.33,
+              "transition": "chemo"
+            },
+            {
+              "distribution": 0.66,
+              "transition": "Advanced_drugs"
+            }
+          ]
         },
         {
           "distributions": [
             {
-              "transition": "External Beam Radiation",
-              "distribution": 0.5
+              "distribution": 0.5,
+              "transition": "External Beam Radiation"
             },
             {
-              "transition": "chemo",
-              "distribution": 0.5
+              "distribution": 0.5,
+              "transition": "chemo"
             }
           ]
         }
       ],
       "remarks": [
-        "https://www.breastcancer.org/treatment/surgery/mastectomy/expectations"
+        "https://www.breastcancer.org/treatment/surgery/mastectomy/expectations",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4493381/"
       ]
     },
     "BCS Follow-Up Treatment": {
