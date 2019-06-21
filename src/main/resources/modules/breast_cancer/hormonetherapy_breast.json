@@ -1,7 +1,7 @@
 {
   "name": "hormonetherapy_breast",
   "remarks": [
-    "A blank module"
+    "This module has ER/PR and HER2 treatments depending on whether each receptor is positive or negative. There is also treatment for if ER/PR are both positive. "
   ],
   "states": {
     "Initial": {

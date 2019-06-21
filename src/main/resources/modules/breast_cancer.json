@@ -1,7 +1,7 @@
 {
   "name": "Breast_cancer",
   "remarks": [
-    "A blank module"
+    "The main pathway for breast_cancer. Starts from initial and goes to obtaining breast cancer, screening, diagnosis, treatments, and final followup followed by potential death. "
   ],
   "states": {
     "Initial": {

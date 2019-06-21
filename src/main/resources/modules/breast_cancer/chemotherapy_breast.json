@@ -1,7 +1,7 @@
 {
   "name": "chemotherapy_breast",
   "remarks": [
-    "A blank module"
+    "This module consists of the different chemo drugs and goes through the adjuvant chemo cycle after surgery. "
   ],
   "states": {
     "Initial": {

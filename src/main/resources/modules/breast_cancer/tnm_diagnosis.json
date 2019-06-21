@@ -1,7 +1,7 @@
 {
   "name": "TNM_Diagnosis",
   "remarks": [
-    "A blank module"
+    "This module goes through and diagnoses which T, N, and M stage a person would encounter through the screening. "
   ],
   "states": {
     "Initial": {

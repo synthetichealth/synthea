@@ -1,7 +1,7 @@
 {
   "name": "Hormone_Diagnosis",
   "remarks": [
-    "A blank module"
+    "This module checks for HER2 and then assigns either HER2 positive/negative. This follows suit for ER and PR. Finally, it accounts for the Triple negative factor at the end. "
   ],
   "states": {
     "Initial": {
