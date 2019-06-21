@@ -772,22 +772,6 @@
         "https://www.medicalnewstoday.com/articles/316867.php"
       ]
     },
-    "Stage 0 Treatment": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Treatment Successful",
-          "distribution": 0.99
-        },
-        {
-          "transition": "Treatment Unsuccessful",
-          "distribution": 0.01
-        }
-      ],
-      "remarks": [
-        "https://www.medicalnewstoday.com/articles/316867.php"
-      ]
-    },
     "End Initial Follow-Up Doctor Visit": {
       "type": "EncounterEnd",
       "direct_transition": "Initial Follow-Up Counter"
@@ -1398,7 +1382,6 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Stage 0 Treatment",
           "condition": {
             "condition_type": "PriorState"
           }
@@ -1431,9 +1414,7 @@
             "name": "Stage IV"
           }
         },
-        {
-          "transition": "Stage 0 Treatment"
-        }
+        {}
       ]
     },
     "End Neodjuvant Medication in Preparation for Surgery": {
