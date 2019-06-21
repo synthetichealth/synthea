@@ -359,7 +359,7 @@ public class Provider implements QuadTreeData {
    * @param specialty - which specialty clinicians to generate
    * @return
    */
-  private ArrayList<Clinician> generateClinicianList(int numClinicians, String specialty) {
+  private ArrayList<Clinician> generateClinicianList(int numClinicians, String specialty, int clinicianSeed) {
     ArrayList<Clinician> clinicians = new ArrayList<Clinician>();
     for (int i = 0; i < numClinicians; i++) {
       Clinician clinician = null;

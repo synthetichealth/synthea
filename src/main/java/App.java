@@ -16,7 +16,7 @@ public class App {
    */
   public static void usage() {
     System.out.println("Usage: run_synthea [options] [state [city]]");
-    System.out.println("Options: [-s seed] [-p populationSize]");
+    System.out.println("Options: [-s seed] [-ps providerSeed] [-p populationSize]");
     System.out.println("         [-g gender] [-a minAge-maxAge]");
     System.out.println("         [-o overflowPopulation]");
     System.out.println("         [-m moduleFileWildcardList]");
@@ -58,6 +58,9 @@ public class App {
           } else if (currArg.equalsIgnoreCase("-s")) {
             String value = argsQ.poll();
             options.seed = Long.parseLong(value);
+          } else if (currArg.equalsIgnoreCase("-ps")) {
+            String value = argsQ.poll();
+            options.providerSeed = Long.parseLong(value);
           } else if (currArg.equalsIgnoreCase("-p")) {
             String value = argsQ.poll();
             options.population = Integer.parseInt(value);

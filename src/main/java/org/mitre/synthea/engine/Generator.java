@@ -75,6 +75,7 @@ public class Generator {
   public static class GeneratorOptions {
     public int population = Integer.parseInt(Config.get("generate.default_population", "1"));
     public long seed = System.currentTimeMillis();
+    public long providerSeed = seed;
     /** Population as exclusively live persons or including deceased.
      * True for live, false includes deceased */
     public boolean overflow = true;
@@ -117,10 +118,11 @@ public class Generator {
    * @param population Target population size
    * @param seed Seed used for randomness
    */
-  public Generator(int population, long seed) {
+  public Generator(int population, long seed, long providerSeed) {
     GeneratorOptions options = new GeneratorOptions();
     options.population = population;
     options.seed = seed;
+    options.providerSeed = providerSeed;
     init(options);
   }
 
@@ -182,7 +184,7 @@ public class Generator {
     }
 
     // initialize hospitals
-    Provider.loadProviders(location);
+    Provider.loadProviders(location, this.providerSeeed);
     // ensure modules load early
     List<String> coreModuleNames = getModuleNames(Module.getModules(path -> false));
     List<String> moduleNames = getModuleNames(Module.getModules(modulePredicate)); 
@@ -195,8 +197,8 @@ public class Generator {
       locationName = o.city + ", " + o.state;
     }
     System.out.println("Running with options:");
-    System.out.println(String.format("Population: %d\nSeed: %d\nLocation: %s",
-        o.population, o.seed, locationName));
+    System.out.println(String.format("Population: %d\nSeed: %d\nProvider Seed:%d\nLocation: %s",
+        o.population, o.seed, o.providerSeed, locationName));
     System.out.println(String.format("Min Age: %d\nMax Age: %d",
         o.minAge, o.maxAge));
     if (o.gender != null) {
