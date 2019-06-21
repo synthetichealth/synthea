@@ -1,7 +1,7 @@
 {
   "name": "Breast_cancer",
   "remarks": [
-    "The main pathway for breast_cancer. Starts from initial and goes to obtaining breast cancer, screening, diagnosis, treatments, and final followup followed by potential death. "
+    "A blank module"
   ],
   "states": {
     "Initial": {
@@ -1716,18 +1716,6 @@
       "type": "CallSubmodule",
       "submodule": "breast_cancer/surgery_therapy_breast",
       "direct_transition": "End Treatment"
-    },
-    "New_State": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "New_State",
-          "condition": {
-            "condition_type": "PriorState",
-            "name": ""
-          }
-        }
-      ]
     },
     "Screening Mammogram": {
       "type": "Procedure",
