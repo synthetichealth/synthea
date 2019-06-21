@@ -27,6 +27,7 @@ public final class WeightLossModule extends Module {
   public static final String PRE_MANAGEMENT_WEIGHT = "pre_management_weight";
   public static final String WEIGHT_MANAGEMENT_START = "weight_management_start";
   public static final String WEIGHT_LOSS_PERCENTAGE = "weight_loss_percentage";
+  public static final String WEIGHT_LOSS_BMI_CHANGE = "weight_loss_bmi_change";
   public static final String LONG_TERM_WEIGHT_LOSS = "long_term_weight_loss";
   public static final String WEIGHT_LOSS_ADHERENCE = "weight_loss_adherence";
 
@@ -44,6 +45,7 @@ public final class WeightLossModule extends Module {
   public static final double maintenance = (double) BiometricsConfig.get("maintenance", 0.2);
   public static final double minWeightPercentile =
       (double) BiometricsConfig.get("best_pediatric_percentile", 0.6);
+  public static final double maxPedBMIChange = (double) BiometricsConfig.get("max_ped_bmi_change", 3.5);
 
 
   @Override
@@ -114,6 +116,7 @@ public final class WeightLossModule extends Module {
     person.attributes.remove(WEIGHT_MANAGEMENT_START);
     person.attributes.remove(WEIGHT_LOSS_PERCENTAGE);
     person.attributes.remove(WEIGHT_LOSS_ADHERENCE);
+    person.attributes.remove(WEIGHT_LOSS_BMI_CHANGE);
     person.attributes.remove(PRE_MANAGEMENT_WEIGHT);
     person.attributes.remove(ACTIVE_WEIGHT_MANAGEMENT);
     person.attributes.remove(LONG_TERM_WEIGHT_LOSS);
@@ -171,8 +174,7 @@ public final class WeightLossModule extends Module {
     of time in the regression period.
    */
   public double pediatricRegression(Person person, long time) {
-    int ageInMonths = person.ageInMonths(time);
-    return percentileRegression(person, time, ageInMonths);
+    return percentileRegression(person, time);
   }
 
   /**
@@ -180,33 +182,71 @@ public final class WeightLossModule extends Module {
     pediatric regression.
    */
   public double transitionRegression(Person person, long time) {
-    int maxAgeInMonths = 240;
-    return percentileRegression(person, time, maxAgeInMonths);
+    return percentileRegression(person, time);
   }
 
-  private double percentileRegression(Person person, long time, int ageInMonths) {
+  private double percentileRegression(Person person, long time) {
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
+    double bmiChange = (double) person.attributes.get(WEIGHT_LOSS_BMI_CHANGE);
     String gender = (String) person.attributes.get(Person.GENDER);
-    double regressionWeight = lookupGrowthChart("weight", gender, ageInMonths,
+    int startAgeInMonths = person.ageInMonths(start);
+    double startWeight = lookupGrowthChart("weight", gender, startAgeInMonths,
         person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
-    double lossPercent = (double) person.attributes.get(WEIGHT_LOSS_PERCENTAGE);
+    double startHeight = lookupGrowthChart("height", gender, startAgeInMonths,
+        person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+    double startBMI = bmi(startHeight, startWeight);
+    double lowestBMI = startBMI - bmiChange;
+    int regressionEndAgeInMonths = startAgeInMonths + 60;
+    if (regressionEndAgeInMonths > 240) {
+      regressionEndAgeInMonths = 240; // Fixing the end age at the end of the growth charts. We only need this to find
+                                      // the final BMI to move towards.
+    }
+    double endWeight = lookupGrowthChart("weight", gender, regressionEndAgeInMonths,
+        person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
+    double endHeight = lookupGrowthChart("height", gender, regressionEndAgeInMonths,
+        person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+    double endBMI = bmi(endHeight, endWeight);
     double percentOfTimeElapsed = (time - start - Utilities.convertTime("years", 1))
         / (double) Utilities.convertTime("years", 4);
-    return regressionWeight - (regressionWeight * lossPercent * (1 - percentOfTimeElapsed));
+    double currentBMI = endBMI - ((endBMI - lowestBMI) * percentOfTimeElapsed);
+    int currentAgeInMonths = person.ageInMonths(time);
+    if (currentAgeInMonths > 240) {
+      currentAgeInMonths = 240; // Same as above
+    }
+    double currentHeight = lookupGrowthChart("height", gender, currentAgeInMonths,
+        person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+    return currentBMI * (currentHeight / 100.0) * (currentHeight / 100.0);
   }
 
   /**
-    Uses the same method as adult weight loss, but sets a threshold for how low the weight can go.
-    This is to handle the fact that children will grow, so their healthy weight will increase.
+    Patients under 20 will lose/manage weight as a change to their BMI. This change will be somewhere between
+    0 and max_ped_bmi_change as specified in biometrics.yml (3.5 be default). Even if the change in BMI is 0,
+    it may still result in weight loss as the patient may grow over the year.
+
+    This function will calculate the weight by taking WEIGHT_LOSS_BMI_CHANGE attribute and using a percentage
+    of that based on the amount of year that has elapsed since WEIGHT_MANAGEMENT_START. It will determine the
+    patient's BMI at the start of weight management and subtract the appropriate portion of BMI change. It will then
+    calculate the weight by reversing the BMI calculation with a height based on the patient's height in months for
+    the time passed in.
    */
   public double pediatricWeightLoss(Person person, long time) {
-    double weight = adultWeightLoss(person, time);
+    long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
+    double year = Utilities.convertTime("years", 1);
+    double percentOfYearElapsed = (time - start) / year;
+    double bmiChange = (double) person.attributes.get(WEIGHT_LOSS_BMI_CHANGE);
     String gender = (String) person.attributes.get(Person.GENDER);
-    int ageInMonths = person.ageInMonths(time);
-    double minWeight = lookupGrowthChart("weight", gender, ageInMonths, minWeightPercentile);
-    if (minWeight > weight) {
-      weight = minWeight;
-    }
+    int startAgeInMonths = person.ageInMonths(start);
+    double startWeight = lookupGrowthChart("weight", gender, startAgeInMonths,
+        person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
+    double startHeight = lookupGrowthChart("height", gender, startAgeInMonths,
+        person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+    double startBMI = bmi(startHeight, startWeight);
+    double currentBMI = startBMI - (bmiChange * percentOfYearElapsed);
+    int currentAgeInMonths = person.ageInMonths(time);
+    double currentHeight = lookupGrowthChart("height", gender, currentAgeInMonths,
+        person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+    // weight = BMI * h^2
+    double weight = currentBMI * (currentHeight / 100.0) * (currentHeight / 100.0);
     return weight;
   }
 
@@ -223,8 +263,13 @@ public final class WeightLossModule extends Module {
     boolean stickToPlan = person.rand() <= adherence;
     person.attributes.put(WEIGHT_LOSS_ADHERENCE, stickToPlan);
     if (stickToPlan) {
-      double percentWeightLoss = person.rand(minLoss, maxLoss);
-      person.attributes.put(WEIGHT_LOSS_PERCENTAGE, percentWeightLoss);
+      if (person.ageInYears(time) >= 20) {
+        double percentWeightLoss = person.rand(minLoss, maxLoss);
+        person.attributes.put(WEIGHT_LOSS_PERCENTAGE, percentWeightLoss);
+      } else {
+        double bmiChange = person.rand() * maxPedBMIChange;
+        person.attributes.put(WEIGHT_LOSS_BMI_CHANGE, bmiChange);
+      }
       boolean longTermSuccess = person.rand() <= maintenance;
       person.attributes.put(LONG_TERM_WEIGHT_LOSS, longTermSuccess);
     } else {
