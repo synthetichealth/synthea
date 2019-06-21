@@ -515,4 +515,15 @@ public class Person implements Serializable, QuadTreeData {
   public List<Payer> getPayerHistory() {
     return this.payerHistory;
   }
+
+  /**
+   * Set's the person's payer history at the given age to the given payer.
+   */
+  public void setPayerAtAge(int age, Payer currentPayer) {
+    if(payerHistory.get(age) != null){
+      // TODO: This constantly occurs. Need to limit insurance changes to once a year max.
+      //System.out.println("ERROR: Overwriting a person's insurance at age " + age + ".");
+    }
+    this.payerHistory.set(age, currentPayer);
+  }
 }

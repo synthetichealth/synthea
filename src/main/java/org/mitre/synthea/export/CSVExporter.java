@@ -195,7 +195,7 @@ public class CSVExporter {
     immunizations.write(NEWLINE);
     encounters.write(
         "Id,START,STOP,PATIENT,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,COST,"
-        + "REASONCODE,REASONDESCRIPTION");
+        + "PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION");
     encounters.write(NEWLINE);
     imagingStudies.write("Id,DATE,PATIENT,ENCOUNTER,BODYSITE_CODE,BODYSITE_DESCRIPTION,"
         + "MODALITY_CODE,MODALITY_DESCRIPTION,SOP_CODE,SOP_DESCRIPTION");
@@ -381,8 +381,8 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private String encounter(String personID, Encounter encounter) throws IOException {
-    // Id,START,STOP,PATIENT,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,COST,
-    // REASONCODE,REASONDESCRIPTION
+    // Id,START,STOP,PATIENT,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,
+    // COST,PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
     String encounterID = UUID.randomUUID().toString();
@@ -426,6 +426,8 @@ public class CSVExporter {
     s.append(clean(coding.display)).append(',');
     // COST
     s.append(String.format(Locale.US, "%.2f", encounter.cost())).append(',');
+    // PAYER_COVERAGE
+    s.append(String.format(Locale.US, "%.2f", encounter.claim.determineCoveredCost())).append(',');
     // REASONCODE & REASONDESCRIPTION
     if (encounter.reason == null) {
       s.append(",");

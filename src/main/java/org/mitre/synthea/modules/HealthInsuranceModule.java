@@ -53,26 +53,17 @@ public class HealthInsuranceModule extends Module {
 
     // payerhistory must be populated first...
     // Payer currentPayer = payerHistory.get(age);
+
+    // Are age AND time fields necessary?
     Payer currentPayer = determineInsurance(person, age, time);
     // Temporary printout of what insurance people got/switched to
-    System.out.println(person.attributes.get(Person.NAME) + " Got: " + currentPayer.getName());
+    // System.out.println(person.attributes.get(Person.NAME) + " Got: " + currentPayer.getName());
 
-    // Is "Dead Code"
-    // if (currentPayer == null) {
-    // Payer previousPayer = null;
-    // if (age >= 1) {
-    // previousPayer = payerHistory.get(age - 1);
-    // }
-    // // Payer currentInsurance = determineInsurance(person, age, time);
-    // if (currentPayer != previousPayer &&
-    // Provider.PROVIDER_SELECTION_BEHAVIOR.equals(Provider.NETWORK)) {
-    // // update providers if we are considering insurance networks
-    // for (EncounterType type : EncounterType.values()) {
-    // person.setProvider(type, time);
-    // }
-    // }
-    // }
-    person.payerHistory.set(age, currentPayer);
+    if(currentPayer == null){
+      System.out.println("ERROR: Payer is null.");
+    }
+
+    person.setPayerAtAge(age, currentPayer);
 
     // java modules will never "finish"
     return false;

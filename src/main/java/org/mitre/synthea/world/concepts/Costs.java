@@ -17,29 +17,24 @@ import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.geography.Location;
 
 public class Costs {
-  // all of these are CSVs with these columns: 
+  // all of these are CSVs with these columns:
   // code, min cost in $, mode cost in $, max cost in $, comments
-  private static final Map<String, CostData> PROCEDURE_COSTS =
-      parseCsvToMap("costs/procedures.csv");
-  private static final Map<String, CostData> MEDICATION_COSTS =
-      parseCsvToMap("costs/medications.csv");
-  private static final Map<String, CostData> ENCOUNTER_COSTS =
-      parseCsvToMap("costs/encounters.csv");
-  private static final Map<String, CostData> IMMUNIZATION_COSTS =
-      parseCsvToMap("costs/immunizations.csv");
-  
-  private static final double DEFAULT_PROCEDURE_COST =
-      Double.parseDouble(Config.get("generate.costs.default_procedure_cost"));
-  private static final double DEFAULT_MEDICATION_COST =
-      Double.parseDouble(Config.get("generate.costs.default_medication_cost"));
-  private static final double DEFAULT_ENCOUNTER_COST =
-      Double.parseDouble(Config.get("generate.costs.default_encounter_cost"));
-  private static final double DEFAULT_IMMUNIZATION_COST =
-      Double.parseDouble(Config.get("generate.costs.default_immunization_cost"));
-  
-  private static final Map<String, Double> LOCATION_ADJUSTMENT_FACTORS = 
-      parseAdjustmentFactors(); 
-  
+  private static final Map<String, CostData> PROCEDURE_COSTS = parseCsvToMap("costs/procedures.csv");
+  private static final Map<String, CostData> MEDICATION_COSTS = parseCsvToMap("costs/medications.csv");
+  private static final Map<String, CostData> ENCOUNTER_COSTS = parseCsvToMap("costs/encounters.csv");
+  private static final Map<String, CostData> IMMUNIZATION_COSTS = parseCsvToMap("costs/immunizations.csv");
+
+  private static final double DEFAULT_PROCEDURE_COST = Double
+      .parseDouble(Config.get("generate.costs.default_procedure_cost"));
+  private static final double DEFAULT_MEDICATION_COST = Double
+      .parseDouble(Config.get("generate.costs.default_medication_cost"));
+  private static final double DEFAULT_ENCOUNTER_COST = Double
+      .parseDouble(Config.get("generate.costs.default_encounter_cost"));
+  private static final double DEFAULT_IMMUNIZATION_COST = Double
+      .parseDouble(Config.get("generate.costs.default_immunization_cost"));
+
+  private static final Map<String, Double> LOCATION_ADJUSTMENT_FACTORS = parseAdjustmentFactors();
+
   /**
    * Load all cost data needed by the system.
    */
@@ -47,40 +42,40 @@ public class Costs {
     // intentionally do nothing
     // this method is only called to ensure the static data is loaded at a predictable time
   }
-  
+
   private static Map<String, CostData> parseCsvToMap(String filename) {
     try {
       String rawData = Utilities.readResource(filename);
       List<LinkedHashMap<String, String>> lines = SimpleCSV.parse(rawData);
-      
+
       Map<String, CostData> costMap = new HashMap<>();
-      for (Map<String,String> line : lines) {
+      for (Map<String, String> line : lines) {
         String code = line.get("CODE");
         String minStr = line.get("MIN");
         String modeStr = line.get("MODE");
         String maxStr = line.get("MAX");
-        
+
         try {
           double min = Double.parseDouble(minStr);
           double mode = Double.parseDouble(modeStr);
           double max = Double.parseDouble(maxStr);
           costMap.put(code, new CostData(min, mode, max));
         } catch (NumberFormatException nfe) {
-          System.err.println(filename + ": Invalid cost for code: '" + code
-              + "' -- costs should be numeric but were "
+          System.err.println(filename + ": Invalid cost for code: '"
+              + code + "' -- costs should be numeric but were "
               + "'" + minStr + "', '" + modeStr + "', '" + maxStr + "'");
           System.err.println("Code '" + code + "' will use the default cost");
           nfe.printStackTrace();
         }
       }
-      
+
       return costMap;
     } catch (IOException e) {
       e.printStackTrace();
       throw new ExceptionInInitializerError("Unable to read required file: " + filename);
     }
   }
-  
+
   private static Map<String, Double> parseAdjustmentFactors() {
     try {
       String rawData = Utilities.readResource("costs/adjustmentFactors.csv");
@@ -108,35 +103,37 @@ public class Costs {
   /**
    * Whether or not this HealthRecord.Entry has an associated cost on a claim.
    * Billing cost is not necessarily reimbursed cost or paid cost.
+   * 
    * @param entry HealthRecord.Entry
    * @return true if the entry has a cost; false otherwise
    */
   public static boolean hasCost(Entry entry) {
-    return (entry instanceof HealthRecord.Procedure)
+    return (entry instanceof HealthRecord.Procedure) 
         || (entry instanceof HealthRecord.Medication)
         || (entry instanceof HealthRecord.Encounter)
         || (entry instanceof HealthRecord.Immunization);
   }
 
   /**
-   * Calculate the cost of this Procedure, Encounter, Medication, etc to the patient.
+   * Calculate the cost of this Procedure, Encounter, Medication, etc. to both the
+   * payer and the patient.
    * 
-   * @param entry Entry to calculate cost of.
-   * @param patient Person to whom the entry refers to
+   * @param entry    Entry to calculate cost of.
+   * @param patient  Person to whom the entry refers to
    * @param provider Provider that performed the service, if any
-   * @param payer Entity paying for the service, if any
+   * @param payer    Entity paying for the service, if any
    * @return Cost, in USD.
    */
   public static double calculateCost(Entry entry, Person patient, Provider provider, Payer payer) {
     if (!hasCost(entry)) {
       return 0;
     }
-    
+
     String code = entry.codes.get(0).code;
-    
+
     double defaultCost = 0.0;
     Map<String, CostData> costs = null;
-    
+
     if (entry instanceof HealthRecord.Procedure) {
       costs = PROCEDURE_COSTS;
       defaultCost = DEFAULT_PROCEDURE_COST;
@@ -150,7 +147,7 @@ public class Costs {
       costs = IMMUNIZATION_COSTS;
       defaultCost = DEFAULT_IMMUNIZATION_COST;
     }
-    
+
     // Calculate the Base Cost
     double baseCost;
     if (costs != null && costs.containsKey(code)) {
@@ -171,63 +168,69 @@ public class Costs {
 
     // Calculate what the Payer and patient pays
     double patientCopay = 0.0;
-    if (patient != null ) { // Check if insurance is null? patient.getInsurance(time)
+    if (patient != null) { // Check if insurance is null? patient.getInsurance(time)
       // if(payer.isInNetwork(provider))
       // if(payer.coversProcedure(entry))
       patientCopay = payer.getCopay();
     }
-    
+
     double costToPatient = 0.0;
     double costToPayer = 0.0;
-    // Should costToPayer include the copay or not?
+    double totalCost = (baseCost * locationAdjustment);
+
     if (payer.getResourceID() != null) {
-      costToPatient = patientCopay;
-      costToPayer = (baseCost * locationAdjustment); // - patientCopay?
+      // Ensure that copay is less than the cost of the encounter
+      if (totalCost >= patientCopay) {
+        costToPayer = totalCost - patientCopay;
+        costToPatient = patientCopay;
+      }else{
+        costToPatient = totalCost;
+      }
     } else {
-      costToPatient = (baseCost * locationAdjustment);
+      costToPatient = totalCost;
       costToPayer = 0.0;
     }
 
     // Upate Payer
     payer.addCost(costToPayer);
-    payer.addRevenue(costToPatient);
+    // payer.addRevenue(costToPatient);
     payer.incrementEncountersPaid();
 
-    return costToPatient;
+    return totalCost;
   }
-  
+
   /**
-   * Helper class to store a grouping of cost data for a single concept.
-   * Currently cost data includes a minimum, maximum, and mode (most common value).
-   * Selection of individual prices based on this cost data should be done
-   * using the chooseCost(Random) method.
+   * Helper class to store a grouping of cost data for a single concept. Currently
+   * cost data includes a minimum, maximum, and mode (most common value).
+   * Selection of individual prices based on this cost data should be done using
+   * the chooseCost(Random) method.
    */
   private static class CostData {
     private double min;
     private double mode;
     private double max;
-    
+
     private CostData(double min, double mode, double max) {
       this.min = min;
       this.mode = mode;
       this.max = max;
     }
-    
+
     /**
-     * Select an individual cost based on this cost data. Uses a triangular distribution
-     * to pick a randomized value.
+     * Select an individual cost based on this cost data. Uses a triangular
+     * distribution to pick a randomized value.
      * @param random Source of randomness
      * @return Single cost within the range this set of cost data represents
      */
     private double chooseCost(Random random) {
       return triangularDistribution(min, max, mode, random.nextDouble());
     }
-    
+
     /**
-     * Pick a single value based on a triangular distribution. 
-     * See: https://en.wikipedia.org/wiki/Triangular_distribution
-     * @param min Lower limit of the distribution
-     * @param max Upper limit of the distribution
+     * Pick a single value based on a triangular distribution. See:
+     * https://en.wikipedia.org/wiki/Triangular_distribution
+     * @param min  Lower limit of the distribution
+     * @param max  Upper limit of the distribution
      * @param mode Most common value
      * @param rand A random value between 0-1
      * @return a single value from the distribution

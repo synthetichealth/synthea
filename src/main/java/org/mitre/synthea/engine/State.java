@@ -232,6 +232,7 @@ public abstract class State implements Cloneable {
         encounter = person.getCurrentEncounter(submod);
         if (encounter != null) {
           person.setCurrentEncounter(module, encounter);
+          encounter.claim.determineCoveredCost();
         }
 
         return true;

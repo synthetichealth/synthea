@@ -23,9 +23,9 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 
 /**
- * HealthRecord contains all the coded entries in a person's health record. This class represents a
- * logical health record. Exporters will convert this health record into various standardized
- * formats.
+ * HealthRecord contains all the coded entries in a person's health record. This
+ * class represents a logical health record. Exporters will convert this health
+ * record into various standardized formats.
  */
 public class HealthRecord {
   /**
@@ -42,12 +42,9 @@ public class HealthRecord {
     /**
      * Create a new code.
      *
-     * @param system
-     *          the URI identifier of the code system
-     * @param code
-     *          the code itself
-     * @param display
-     *          human-readable description of the coe
+     * @param system  the URI identifier of the code system
+     * @param code    the code itself
+     * @param display human-readable description of the coe
      */
     public Code(String system, String code, String display) {
       this.system = system;
@@ -58,8 +55,8 @@ public class HealthRecord {
     /**
      * Create a new code from JSON.
      *
-     * @param definition
-     *          JSON object that contains 'system', 'code', and 'display' attributes.
+     * @param definition JSON object that contains 'system', 'code', and 'display'
+     *                   attributes.
      */
     public Code(JsonObject definition) {
       this.system = definition.get("system").getAsString();
@@ -94,9 +91,9 @@ public class HealthRecord {
   }
 
   /**
-   * All things within a HealthRecord are instances of Entry. For example, Observations, Reports,
-   * Medications, etc. All Entries have a name, start and stop times, a type, and a list of
-   * associated codes.
+   * All things within a HealthRecord are instances of Entry. For example,
+   * Observations, Reports, Medications, etc. All Entries have a name, start and
+   * stop times, a type, and a list of associated codes.
    */
   public class Entry {
     /** reference to the HealthRecord this entry belongs to. */
@@ -212,16 +209,19 @@ public class HealthRecord {
     }
 
     /**
-     * ImagingStudy.Series represents a series of images that were taken of
-     * a specific part of the body.
+     * ImagingStudy.Series represents a series of images that were taken of a
+     * specific part of the body.
      */
     public class Series {
       /** A randomly assigned DICOM UID. */
       public transient String dicomUid;
       /** A SNOMED-CT body structures code. */
       public Code bodySite;
-      /** A DICOM acquisition modality code.
-       * @see <a href="https://www.hl7.org/fhir/valueset-dicom-cid29.html">DICOM modality codes</a>
+      /**
+       * A DICOM acquisition modality code.
+       * 
+       * @see <a href="https://www.hl7.org/fhir/valueset-dicom-cid29.html">DICOM
+       *      modality codes</a>
        */
       public Code modality;
       /** One or more imaging Instances that belong to this Series. */
@@ -229,8 +229,8 @@ public class HealthRecord {
     }
 
     /**
-     * ImagingStudy.Instance represents a single imaging Instance taken as
-     * part of a Series of images.
+     * ImagingStudy.Instance represents a single imaging Instance taken as part of a
+     * Series of images.
      */
     public class Instance {
       /** A randomly assigned DICOM UID. */
@@ -239,6 +239,7 @@ public class HealthRecord {
       public String title;
       /**
        * A DICOM Service-Object Pair (SOP) class.
+       * 
        * @see <a href="https://www.dicomlibrary.com/dicom/sop/">DICOM SOP codes</a>
        */
       public Code sopClass;
@@ -246,30 +247,41 @@ public class HealthRecord {
   }
 
   public class Claim {
-    public double baseCost;
+    // public double baseCost;
     public Encounter encounter;
+    // The Encounter has the actual cost, so the claim has the amount that the payer
+    // covered. Does this sound reasonable? I originally had the payer covered cost
+    // in the Encounter, however it resulted in a lot of dicciculties, so I
+    // discarded that and changed it into Claim.
+    public double coveredCost;
     public Medication medication;
     public List<Entry> items;
     public Payer payer;
 
     public Claim(Encounter encounter) {
       this.payer = person.getInsurance(encounter.start);
-
-      // Encounter inpatient
-      if (encounter.type.equalsIgnoreCase("inpatient")) {
-        baseCost = 75.00;
-      } else {
-        // Outpatient Encounter, Encounter for 'checkup', Encounter for symptom, Encounter for
-        // problem,
-        // patient initiated encounter, patient encounter procedure
-        baseCost = 125.00;
+      if (this.payer == null) {
+        // Shouldn't have to do this? Shouldn't the person's Payer already be
+        // determined?
+        person.setPayerAtAge(person.ageInYears(encounter.start), null);
+        System.out.println("ERROR: Claim made with null Payer");
       }
+
+      // Covered cost will be updated once the payer actually pays it.
+      coveredCost = 0.0;
+
       this.encounter = encounter;
       items = new ArrayList<>();
     }
 
     public Claim(Medication medication) {
-      baseCost = 255.0;
+      // baseCost = 255.0;
+
+      // Having some difficulties here. The person rarely has insurance when they make
+      // a claim for medication.
+      // this.payer = person.getInsurance(encounter.start);
+      // double patientCopay = payer.determineCopay(encounter);
+
       this.medication = medication;
       items = new ArrayList<>();
     }
@@ -279,19 +291,32 @@ public class HealthRecord {
     }
 
     public BigDecimal total() {
-      BigDecimal total = BigDecimal.valueOf(baseCost);
+      BigDecimal totalCoveredByLineItem = BigDecimal.valueOf(coveredCost);
 
       for (Entry lineItem : items) {
-        total = total.add(lineItem.cost());
+        totalCoveredByLineItem = totalCoveredByLineItem.add(lineItem.cost());
       }
-      return total;
+      return totalCoveredByLineItem;
+    }
+
+    public double determineCoveredCost() {
+      if (payer != null) {
+        this.coveredCost = (encounter.cost().doubleValue() - payer.determineCopay(encounter));
+        System.out.println(coveredCost);
+        if (coveredCost < 0 || payer.determineCopay(encounter) <= 0) {
+          // In case the copay is more expensive than the encounter
+          this.coveredCost = 0.0;
+        }
+      } else {
+        System.out.println("ERROR: Tried to determine Covered Cost with a null Payer.");
+        this.coveredCost = 0.0;
+      }
+      return this.coveredCost;
     }
   }
 
   public enum EncounterType {
-    WELLNESS("AMB"), AMBULATORY("AMB"),
-    OUTPATIENT("AMB"), INPATIENT("IMP"),
-    EMERGENCY("EMER"), URGENTCARE("AMB");
+    WELLNESS("AMB"), AMBULATORY("AMB"), OUTPATIENT("AMB"), INPATIENT("IMP"), EMERGENCY("EMER"), URGENTCARE("AMB");
 
     // http://www.hl7.org/implement/standards/fhir/v3/ActEncounterCode/vs.html
     private final String code;
@@ -442,8 +467,7 @@ public class HealthRecord {
     int count = numberOfObservations;
     if (encounter.observations.size() >= numberOfObservations) {
       while (count > 0) {
-        observation.observations
-            .add(encounter.observations.remove(encounter.observations.size() - 1));
+        observation.observations.add(encounter.observations.remove(encounter.observations.size() - 1));
         count--;
       }
     }
@@ -688,7 +712,9 @@ public class HealthRecord {
   }
 
   /**
-   * Assigns random DICOM UIDs to each Series and Instance in an imaging study after creation.
+   * Assigns random DICOM UIDs to each Series and Instance in an imaging study
+   * after creation.
+   * 
    * @param study the ImagingStudy to populate with DICOM UIDs.
    */
   private void assignImagingStudyDicomUids(ImagingStudy study) {

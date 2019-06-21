@@ -20,6 +20,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.behaviors.IPayerFinder;
 import org.mitre.synthea.world.agents.behaviors.PayerFinderBestRates;
 import org.mitre.synthea.world.agents.behaviors.PayerFinderRandom;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
 
@@ -32,8 +33,6 @@ public class Payer {
 
   // U.S. States loaded
   private static Set<String> statesLoaded = new HashSet<String>();
-  // Number of payers loaded (?) (can't we just use payerlist.size?)
-  private static int loaded = 0;
 
   private static IPayerFinder payerFinder = buildPayerFinder();
   // Provider Selection Behavior algorithm choices:
@@ -83,14 +82,14 @@ public class Payer {
     IPayerFinder finder = null;
     String behavior = Config.get("generate.payers.selection_behavior").toLowerCase();
     switch (behavior) {
-      case BESTRATE:
-        finder = new PayerFinderBestRates();
-        break;
-      case RANDOM:
-        finder = new PayerFinderRandom();
-        break;
-      default:
-        throw new RuntimeException("Not a valid Payer Selction Algorithm");
+    case BESTRATE:
+      finder = new PayerFinderBestRates();
+      break;
+    case RANDOM:
+      finder = new PayerFinderRandom();
+      break;
+    default:
+      throw new RuntimeException("Not a valid Payer Selction Algorithm: " + behavior);
     }
     return finder;
   }
@@ -185,7 +184,6 @@ public class Payer {
     payerList.clear();
     // governmentPayerList.clear();
     statesLoaded.clear();
-    loaded = 0;
   }
 
   /**
@@ -195,7 +193,7 @@ public class Payer {
    */
   public static void loadPayers(Location location) {
     if (!statesLoaded.contains(location.state)
-        || !statesLoaded.contains(Location.getAbbreviation(location.state))
+    || !statesLoaded.contains(Location.getAbbreviation(location.state))
         || !statesLoaded.contains(Location.getStateName(location.state))) {
       try {
         String insuranceCompanyFile =
@@ -252,7 +250,6 @@ public class Payer {
         }
 
         Payer.payerList.add(parsedPayer);
-        loaded++;
       }
     }
   }
@@ -364,5 +361,24 @@ public class Payer {
    */
   public String getOwnership() {
     return this.ownership;
+  }
+
+  /**
+   * Determines the copay owed bsed on the type of encounter.
+   */
+  public double determineCopay(Encounter encounter) {
+
+    // TODO - Currently just returns a default copay, add different types.
+    // // Encounter inpatient
+    // if (encounter.type.equalsIgnoreCase("inpatient")) {
+    // copay = inpatientCopay;
+    // } else {
+    // // Outpatient Encounter, Encounter for 'checkup', Encounter for symptom,
+    // Encounter for
+    // // problem,
+    // // patient initiated encounter, patient encounter procedure
+    // copay = outpatientCopay
+    // }
+    return defaultCopay;
   }
 }
