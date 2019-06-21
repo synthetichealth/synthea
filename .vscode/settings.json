@@ -1,6 +1,0 @@
-{
-    "java.configuration.updateBuildConfiguration": "interactive",
-    "atlascode.jira.workingSite": {
-        "baseUrlSuffix": "atlassian.net"
-    }
-}
