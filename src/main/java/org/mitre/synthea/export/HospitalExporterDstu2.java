@@ -61,7 +61,7 @@ public abstract class HospitalExporterDstu2 {
         f.mkdirs();
         Path outFilePath = f.toPath().resolve("hospitalInformation" + stop + ".json");
         if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
-          AWSS3Writer.appendToFile("fhir_stu3", "practitionerInformation" + stop + ".json", Collections.singleton(bundleJson).toString());
+          AWSS3Writer.appendToFile("fhir_dstu2", "practitionerInformation" + stop + ".json", Collections.singleton(bundleJson).toString());
         } else {
           Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
         }

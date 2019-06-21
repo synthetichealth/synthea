@@ -71,7 +71,7 @@ public abstract class FhirPractitionerExporterR4 {
         f.mkdirs();
         Path outFilePath = f.toPath().resolve("practitionerInformation" + stop + ".json");
         if (Boolean.parseBoolean(Config.get("exporter.upload_directly_to_aws_s3"))) {
-          AWSS3Writer.appendToFile("fhir_stu3", "practitionerInformation" + stop + ".json", Collections.singleton(bundleJson).toString());
+          AWSS3Writer.appendToFile("fhir_r4", "practitionerInformation" + stop + ".json", Collections.singleton(bundleJson).toString());
         } else {
           Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
         }
