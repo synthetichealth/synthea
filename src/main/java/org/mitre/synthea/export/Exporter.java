@@ -445,7 +445,7 @@ public abstract class Exporter {
    * @return The fileName only (not a path).
    */
   public static String filename(Person person, String tag, String extension) {
-    if (Boolean.parseBoolean(Config.get("exporter.use_uuid_fileNames"))) {
+    if (Boolean.parseBoolean(Config.get("exporter.use_uuid_filenames"))) {
       return person.attributes.get(Person.ID) + tag + "." + extension;
     } else {
       // ensure unique fileNames for now
