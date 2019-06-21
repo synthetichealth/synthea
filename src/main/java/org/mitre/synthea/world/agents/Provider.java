@@ -244,7 +244,7 @@ public class Provider implements QuadTreeData {
    * Load into cache the list of providers for a state.
    * @param location the state being loaded.
    */
-  public static void loadProviders(Location location) {
+  public static void loadProviders(Location location, long clinicianSeed) {
     if (!statesLoaded.contains(location.state)
         || !statesLoaded.contains(Location.getAbbreviation(location.state))
         || !statesLoaded.contains(Location.getStateName(location.state))) {
@@ -255,20 +255,20 @@ public class Provider implements QuadTreeData {
         servicesProvided.add(EncounterType.INPATIENT);
       
         String hospitalFile = Config.get("generate.providers.hospitals.default_file");
-        loadProviders(location, hospitalFile, servicesProvided);
+        loadProviders(location, hospitalFile, servicesProvided, clinicianSeed);
 
         String vaFile = Config.get("generate.providers.veterans.default_file");
-        loadProviders(location, vaFile, servicesProvided);
+        loadProviders(location, vaFile, servicesProvided, clinicianSeed);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.WELLNESS);
         String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
-        loadProviders(location, primaryCareFile, servicesProvided);
+        loadProviders(location, primaryCareFile, servicesProvided, clinicianSeed);
         
         servicesProvided.clear();
         servicesProvided.add(EncounterType.URGENTCARE);
         String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
-        loadProviders(location, urgentcareFile, servicesProvided);
+        loadProviders(location, urgentcareFile, servicesProvided, clinicianSeed);
       
         statesLoaded.add(location.state);
         statesLoaded.add(Location.getAbbreviation(location.state));
@@ -290,7 +290,7 @@ public class Provider implements QuadTreeData {
    * @throws IOException if the file cannot be read
    */
   public static void loadProviders(Location location, String filename,
-      Set<EncounterType> servicesProvided)
+      Set<EncounterType> servicesProvided, long clinicianSeed)
       throws IOException {
     String resource = Utilities.readResource(filename);
     Iterator<? extends Map<String,String>> csv = SimpleCSV.parseLineByLine(resource);
@@ -325,19 +325,19 @@ public class Provider implements QuadTreeData {
         if (row.get("hasSpecialties") == null
             || row.get("hasSpecialties").equalsIgnoreCase("false")) {
           parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, 
-              parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE));
+              parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE, clinicianSeed));
         } else {
           for (String specialty : ClinicianSpecialty.getSpecialties()) { 
             String specialtyCount = row.get(specialty);
             if (specialtyCount != null && !specialtyCount.trim().equals("") 
                 && !specialtyCount.trim().equals("0")) {
               parsed.clinicianMap.put(specialty, 
-                  parsed.generateClinicianList(Integer.parseInt(row.get(specialty)), specialty));
+                  parsed.generateClinicianList(Integer.parseInt(row.get(specialty)), specialty, clinicianSeed));
             }
           }
           if (row.get(ClinicianSpecialty.GENERAL_PRACTICE).equals("0")) {
             parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, 
-                parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE));
+                parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE, clinicianSeed));
           }
         }
 
@@ -359,7 +359,7 @@ public class Provider implements QuadTreeData {
    * @param specialty - which specialty clinicians to generate
    * @return
    */
-  private ArrayList<Clinician> generateClinicianList(int numClinicians, String specialty, int clinicianSeed) {
+  private ArrayList<Clinician> generateClinicianList(int numClinicians, String specialty, long clinicianSeed) {
     ArrayList<Clinician> clinicians = new ArrayList<Clinician>();
     for (int i = 0; i < numClinicians; i++) {
       Clinician clinician = null;
