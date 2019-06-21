@@ -22,7 +22,7 @@
     },
     "Aromatase Inhibitors (AI)": {
       "type": "SetAttribute",
-      "attribute": "aromatase_inhibitors",
+      "attribute": "breast_cancer_aromatase_inhibitors",
       "distributed_transition": [
         {
           "transition": "Letrozole",
@@ -141,7 +141,7 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "HER2",
+            "attribute": "breast_cancer_HER2",
             "operator": "==",
             "value": "HER2-positive"
           },
@@ -294,13 +294,13 @@
             "conditions": [
               {
                 "condition_type": "Attribute",
-                "attribute": "PR",
+                "attribute": "breast_cancer_PR",
                 "operator": "==",
                 "value": "PR-positive"
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "ER",
+                "attribute": "breast_cancer_ER",
                 "operator": "==",
                 "value": "ER-positive"
               }
@@ -343,13 +343,13 @@
             "conditions": [
               {
                 "condition_type": "Attribute",
-                "attribute": "ER",
+                "attribute": "breast_cancer_ER",
                 "operator": "==",
                 "value": "ER-positive"
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "PR",
+                "attribute": "breast_cancer_PR",
                 "operator": "==",
                 "value": "PR-positive"
               }
@@ -392,7 +392,7 @@
     },
     "Estrogen Blocking Receptors": {
       "type": "SetAttribute",
-      "attribute": "tamoxifen",
+      "attribute": "breast_cancer_tamoxifen",
       "direct_transition": "Tamoxifen",
       "value": true
     }

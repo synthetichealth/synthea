@@ -295,7 +295,7 @@
           "transition": "End Breast Surgery",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "T",
+            "attribute": "breast_cancer_T",
             "operator": "==",
             "value": "T0"
           }
@@ -321,7 +321,7 @@
           "transition": "End_Lymph_Node_Surgery",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "N",
+            "attribute": "breast_cancer_N",
             "operator": "==",
             "value": "N0"
           }
@@ -383,7 +383,7 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "triple_wicked",
+            "attribute": "breast_cancer_triple_wicked",
             "operator": "==",
             "value": true
           },
@@ -636,7 +636,7 @@
           "transition": "Increment treatment counter",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "treat_count",
+            "attribute": "breast_cancer_treat_count",
             "operator": "<",
             "value": 8
           }
@@ -664,7 +664,7 @@
     },
     "Breast_Surgery_2": {
       "type": "SetAttribute",
-      "attribute": "treat_count",
+      "attribute": "breast_cancer_treat_count",
       "distributed_transition": [
         {
           "transition": "Breast-conserving surgery (BCS)",
@@ -730,7 +730,7 @@
           "transition": "Increment Radiation Treatment Count",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "treat_count",
+            "attribute": "breast_cancer_treat_count",
             "operator": "<",
             "value": 33
           }

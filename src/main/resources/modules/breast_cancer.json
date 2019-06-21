@@ -430,7 +430,7 @@
           "transition": "Stage IV",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "M",
+            "attribute": "breast_cancer_M",
             "operator": "==",
             "value": "M1"
           }
@@ -439,7 +439,7 @@
           "transition": "Nonmetastatic",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "M",
+            "attribute": "breast_cancer_M",
             "operator": "==",
             "value": "M0"
           }
@@ -471,7 +471,7 @@
           "transition": "IIIC",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "N",
+            "attribute": "breast_cancer_N",
             "operator": "==",
             "value": "N3"
           }
@@ -480,7 +480,7 @@
           "transition": "IIIB",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "T",
+            "attribute": "breast_cancer_T",
             "operator": "==",
             "value": "T4"
           }
@@ -492,7 +492,7 @@
             "conditions": [
               {
                 "condition_type": "Attribute",
-                "attribute": "N",
+                "attribute": "breast_cancer_N",
                 "operator": "==",
                 "value": "N2"
               },
@@ -501,13 +501,13 @@
                 "conditions": [
                   {
                     "condition_type": "Attribute",
-                    "attribute": "N",
+                    "attribute": "breast_cancer_N",
                     "operator": "==",
                     "value": "N1"
                   },
                   {
                     "condition_type": "Attribute",
-                    "attribute": "T",
+                    "attribute": "breast_cancer_T",
                     "operator": "==",
                     "value": "T3"
                   }
@@ -635,7 +635,7 @@
             "conditions": [
               {
                 "condition_type": "Attribute",
-                "attribute": "T",
+                "attribute": "breast_cancer_T",
                 "operator": "==",
                 "value": "T3"
               },
@@ -644,13 +644,13 @@
                 "conditions": [
                   {
                     "condition_type": "Attribute",
-                    "attribute": "T",
+                    "attribute": "breast_cancer_T",
                     "operator": "==",
                     "value": "T2"
                   },
                   {
                     "condition_type": "Attribute",
-                    "attribute": "N",
+                    "attribute": "breast_cancer_N",
                     "operator": "==",
                     "value": "N1"
                   }
@@ -666,7 +666,7 @@
             "conditions": [
               {
                 "condition_type": "Attribute",
-                "attribute": "T",
+                "attribute": "breast_cancer_T",
                 "operator": "==",
                 "value": "T2"
               },
@@ -675,13 +675,13 @@
                 "conditions": [
                   {
                     "condition_type": "Attribute",
-                    "attribute": "T",
+                    "attribute": "breast_cancer_T",
                     "operator": "==",
                     "value": "T1"
                   },
                   {
                     "condition_type": "Attribute",
-                    "attribute": "N",
+                    "attribute": "breast_cancer_N",
                     "operator": "==",
                     "value": "N1"
                   }
@@ -792,7 +792,7 @@
           "transition": "IA",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "T",
+            "attribute": "breast_cancer_T",
             "operator": "==",
             "value": "T1"
           }
@@ -801,7 +801,7 @@
           "transition": "IB",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "N",
+            "attribute": "breast_cancer_N",
             "operator": "==",
             "value": "N1"
           }
@@ -882,13 +882,13 @@
             "conditions": [
               {
                 "condition_type": "Attribute",
-                "attribute": "init_followup_counter",
+                "attribute": "breast_cancer_init_followup_counter",
                 "operator": "<",
                 "value": 3
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "years_after_treatment",
+                "attribute": "breast_cancer_years_after_treatment",
                 "operator": "<",
                 "value": 5
               }
@@ -902,7 +902,7 @@
     },
     "Initialize Initial Follow-Up Counter": {
       "type": "SetAttribute",
-      "attribute": "init_followup_counter",
+      "attribute": "breast_cancer_init_followup_counter",
       "direct_transition": "Initialize Years After Treatment Counter",
       "value": 0
     },
@@ -1010,7 +1010,7 @@
           "transition": "Gynecologist Visit",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "tamoxifen",
+            "attribute": "breast_cancer_tamoxifen",
             "operator": "==",
             "value": true
           }
@@ -1096,7 +1096,7 @@
           "transition": "Bone Exam Visit",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "aromatase_inhibitors",
+            "attribute": "breast_cancer_aromatase_inhibitors",
             "operator": "==",
             "value": true
           }
@@ -1197,7 +1197,7 @@
           "transition": "Death",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "years_left",
+            "attribute": "breast_cancer_years_left",
             "operator": "<",
             "value": 1
           }
@@ -1206,7 +1206,7 @@
           "transition": "4 Months between Initial Follow-Ups",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "years_after_treatment",
+            "attribute": "breast_cancer_years_after_treatment",
             "operator": "<",
             "value": 5
           }
@@ -1218,13 +1218,13 @@
     },
     "Initialize Years After Treatment Counter": {
       "type": "SetAttribute",
-      "attribute": "years_after_treatment",
+      "attribute": "breast_cancer_years_after_treatment",
       "direct_transition": "4 Months between Initial Follow-Ups",
       "value": 0
     },
     "Reset Initial Follow-Up Counter": {
       "type": "SetAttribute",
-      "attribute": "init_followup_counter",
+      "attribute": "breast_cancer_init_followup_counter",
       "direct_transition": "Decrement Years Left",
       "value": 0
     },
@@ -1289,37 +1289,37 @@
     },
     "Treatment Successful": {
       "type": "SetAttribute",
-      "attribute": "years_left",
+      "attribute": "breast_cancer_years_left",
       "direct_transition": "Post-Treatment Surveillance",
       "value": 200
     },
     "Terminal 1 Year": {
       "type": "SetAttribute",
-      "attribute": "years_left",
+      "attribute": "breast_cancer_years_left",
       "value": 1,
       "direct_transition": "Post-Treatment Surveillance"
     },
     "Terminal 2 Years": {
       "type": "SetAttribute",
-      "attribute": "years_left",
+      "attribute": "breast_cancer_years_left",
       "value": 2,
       "direct_transition": "Post-Treatment Surveillance"
     },
     "Terminal 3 Years": {
       "type": "SetAttribute",
-      "attribute": "years_left",
+      "attribute": "breast_cancer_years_left",
       "value": 3,
       "direct_transition": "Post-Treatment Surveillance"
     },
     "Terminal 4 Years": {
       "type": "SetAttribute",
-      "attribute": "years_left",
+      "attribute": "breast_cancer_years_left",
       "value": 4,
       "direct_transition": "Post-Treatment Surveillance"
     },
     "Terminal 5 Years": {
       "type": "SetAttribute",
-      "attribute": "years_left",
+      "attribute": "breast_cancer_years_left",
       "value": 5,
       "direct_transition": "Post-Treatment Surveillance"
     },
@@ -1475,7 +1475,7 @@
             "conditions": [
               {
                 "condition_type": "Attribute",
-                "attribute": "triple_wicked",
+                "attribute": "breast_cancer_triple_wicked",
                 "operator": "==",
                 "value": true
               },
@@ -1660,7 +1660,7 @@
     },
     "Set pre-surgery chemo counter": {
       "type": "SetAttribute",
-      "attribute": "neoCount",
+      "attribute": "breast_cancer_neoCount",
       "direct_transition": "Neoadjuvant Chemo Before Surgery",
       "value": 0
     },

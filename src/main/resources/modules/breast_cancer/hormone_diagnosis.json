@@ -187,13 +187,13 @@
             "conditions": [
               {
                 "condition_type": "Attribute",
-                "attribute": "ER",
+                "attribute": "breast_cancer_ER",
                 "operator": "==",
                 "value": "ER-negative"
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "PR",
+                "attribute": "breast_cancer_PR",
                 "operator": "==",
                 "value": "PR-negative"
               }
@@ -207,13 +207,13 @@
             "conditions": [
               {
                 "condition_type": "Attribute",
-                "attribute": "ER",
+                "attribute": "breast_cancer_ER",
                 "operator": "==",
                 "value": "ER-positive"
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "PR",
+                "attribute": "breast_cancer_PR",
                 "operator": "==",
                 "value": "PR-positive"
               }
@@ -227,37 +227,37 @@
     },
     "HER2-": {
       "type": "SetAttribute",
-      "attribute": "HER2",
+      "attribute": "breast_cancer_HER2",
       "direct_transition": "Tumor_Biopsy_to_Test_Estrogen_Receptor_Status",
       "value": "HER2-negative"
     },
     "HER2+": {
       "type": "SetAttribute",
-      "attribute": "HER2",
+      "attribute": "breast_cancer_HER2",
       "value": "HER2-positive",
       "direct_transition": "Tumor_Biopsy_to_Test_Estrogen_Receptor_Status"
     },
     "ER-": {
       "type": "SetAttribute",
-      "attribute": "ER",
+      "attribute": "breast_cancer_ER",
       "direct_transition": "Tumor_Biopsy_to_Test_Progesterone_Receptor_Status",
       "value": "ER-negative"
     },
     "ER+": {
       "type": "SetAttribute",
-      "attribute": "ER",
+      "attribute": "breast_cancer_ER",
       "direct_transition": "Tumor_Biopsy_to_Test_Progesterone_Receptor_Status",
       "value": "ER-positive"
     },
     "PR-": {
       "type": "SetAttribute",
-      "attribute": "PR",
+      "attribute": "breast_cancer_PR",
       "direct_transition": "Overall_Receptor_Analysis",
       "value": "PR-negative"
     },
     "PR+": {
       "type": "SetAttribute",
-      "attribute": "PR",
+      "attribute": "breast_cancer_PR",
       "direct_transition": "Overall_Receptor_Analysis",
       "value": "PR-positive"
     },
@@ -318,7 +318,7 @@
           "transition": "Triple_Negative",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "HER2",
+            "attribute": "breast_cancer_HER2",
             "operator": "==",
             "value": "HER2-negative"
           }
@@ -359,7 +359,7 @@
     },
     "Triple_Negative_Patient": {
       "type": "SetAttribute",
-      "attribute": "triple_wicked",
+      "attribute": "breast_cancer_triple_wicked",
       "direct_transition": "Terminal",
       "value": true
     }

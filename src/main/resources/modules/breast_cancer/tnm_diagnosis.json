@@ -13,13 +13,13 @@
     },
     "M1": {
       "type": "SetAttribute",
-      "attribute": "M",
+      "attribute": "breast_cancer_M",
       "direct_transition": "M1_Diagnosed",
       "value": "M1"
     },
     "M0": {
       "type": "SetAttribute",
-      "attribute": "M",
+      "attribute": "breast_cancer_M",
       "value": "M0",
       "remarks": [
         "https://www.cancer.net/cancer-types/breast-cancer/statistics"
@@ -48,7 +48,7 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "Location",
+            "attribute": "breast_cancer_Location",
             "operator": "==",
             "value": "local"
           },
@@ -91,67 +91,67 @@
     },
     "T1": {
       "type": "SetAttribute",
-      "attribute": "T",
+      "attribute": "breast_cancer_T",
       "direct_transition": "T1_Diagnosed",
       "value": "T1"
     },
     "T2": {
       "type": "SetAttribute",
-      "attribute": "T",
+      "attribute": "breast_cancer_T",
       "direct_transition": "T2_Diagnosed",
       "value": "T2"
     },
     "T3": {
       "type": "SetAttribute",
-      "attribute": "T",
+      "attribute": "breast_cancer_T",
       "direct_transition": "T3_Diagnosed",
       "value": "T3"
     },
     "T4": {
       "type": "SetAttribute",
-      "attribute": "T",
+      "attribute": "breast_cancer_T",
       "direct_transition": "T4_Diagnosed",
       "value": "T4"
     },
     "T0": {
       "type": "SetAttribute",
-      "attribute": "T",
+      "attribute": "breast_cancer_T",
       "direct_transition": "T0_Diagnosed",
       "value": "T0"
     },
     "N1": {
       "type": "SetAttribute",
-      "attribute": "N",
+      "attribute": "breast_cancer_N",
       "direct_transition": "N1_Diagnosed",
       "value": "N1"
     },
     "N2": {
       "type": "SetAttribute",
-      "attribute": "N",
+      "attribute": "breast_cancer_N",
       "direct_transition": "N2_Diagnosed",
       "value": "N2"
     },
     "N3": {
       "type": "SetAttribute",
-      "attribute": "N",
+      "attribute": "breast_cancer_N",
       "direct_transition": "N3_Diagnosed",
       "value": "N3"
     },
     "N0": {
       "type": "SetAttribute",
-      "attribute": "N",
+      "attribute": "breast_cancer_N",
       "direct_transition": "N0_Diagnosed",
       "value": "N0"
     },
     "Distant Breast Cancer": {
       "type": "SetAttribute",
-      "attribute": "Location",
+      "attribute": "breast_cancer_Location",
       "direct_transition": "T4",
       "value": "distant"
     },
     "Regional Breast Cancer": {
       "type": "SetAttribute",
-      "attribute": "Location",
+      "attribute": "breast_cancer_Location",
       "distributed_transition": [
         {
           "transition": "T1",
@@ -178,7 +178,7 @@
     },
     "Local Breast Cancer": {
       "type": "SetAttribute",
-      "attribute": "Location",
+      "attribute": "breast_cancer_Location",
       "distributed_transition": [
         {
           "transition": "T1",
