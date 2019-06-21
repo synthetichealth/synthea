@@ -37,17 +37,17 @@ public class Clinician implements Serializable, QuadTreeData {
   
   
   public final Random random;
+  public final long identifier;
   public final String uuid;
-  public final long seed;
   public Map<String, Object> attributes;
   private ArrayList<String> servicesProvided;
   private int encounters;
   public long populationSeed;
   
-  public Clinician(long seed) {
+  public Clinician(Random clinicianRand, long identifier) {
     this.uuid = UUID.randomUUID().toString(); // todo : use clinician seed???
-    this.seed = seed; // keep track of seed so it can be exported later
-    random = new Random(seed);
+    this.random = clinicianRand;
+    this.identifier = identifier;
     attributes = new ConcurrentHashMap<String, Object>();
     servicesProvided = new ArrayList<String>();
   }

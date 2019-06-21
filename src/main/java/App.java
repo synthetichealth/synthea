@@ -58,7 +58,7 @@ public class App {
           } else if (currArg.equalsIgnoreCase("-s")) {
             String value = argsQ.poll();
             options.seed = Long.parseLong(value);
-          } else if (currArg.equalsIgnoreCase("-ps")) {
+          } else if (currArg.equalsIgnoreCase("-cs")) {
             String value = argsQ.poll();
             options.clinicianSeed = Long.parseLong(value);
           } else if (currArg.equalsIgnoreCase("-p")) {

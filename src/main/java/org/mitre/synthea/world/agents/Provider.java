@@ -294,6 +294,7 @@ public class Provider implements QuadTreeData {
       throws IOException {
     String resource = Utilities.readResource(filename);
     Iterator<? extends Map<String,String>> csv = SimpleCSV.parseLineByLine(resource);
+    Random clinicianRand = new Random(clinicianSeed);
     
     while (csv.hasNext()) {
       Map<String,String> row = csv.next();
@@ -325,19 +326,19 @@ public class Provider implements QuadTreeData {
         if (row.get("hasSpecialties") == null
             || row.get("hasSpecialties").equalsIgnoreCase("false")) {
           parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, 
-              parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE, clinicianSeed));
+              parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE, clinicianRand));
         } else {
           for (String specialty : ClinicianSpecialty.getSpecialties()) { 
             String specialtyCount = row.get(specialty);
             if (specialtyCount != null && !specialtyCount.trim().equals("") 
                 && !specialtyCount.trim().equals("0")) {
               parsed.clinicianMap.put(specialty, 
-                  parsed.generateClinicianList(Integer.parseInt(row.get(specialty)), specialty, clinicianSeed));
+                  parsed.generateClinicianList(Integer.parseInt(row.get(specialty)), specialty, clinicianRand));
             }
           }
           if (row.get(ClinicianSpecialty.GENERAL_PRACTICE).equals("0")) {
             parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, 
-                parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE, clinicianSeed));
+                parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE, clinicianRand));
           }
         }
 
@@ -359,11 +360,12 @@ public class Provider implements QuadTreeData {
    * @param specialty - which specialty clinicians to generate
    * @return
    */
-  private ArrayList<Clinician> generateClinicianList(int numClinicians, String specialty, long clinicianSeed) {
+  private ArrayList<Clinician> generateClinicianList(int numClinicians, String specialty, Random clinicianRand) {
     ArrayList<Clinician> clinicians = new ArrayList<Clinician>();
     for (int i = 0; i < numClinicians; i++) {
       Clinician clinician = null;
-      clinician = generateClinician(Long.parseLong(loaded + "" + i), this);
+      // clinician = generateClinician(Long.parseLong(loaded + "" + i), this);
+      clinician = generateClinician(clinicianRand, Long.parseLong(loaded + "" + i), this);
       clinician.attributes.put(Clinician.SPECIALTY, specialty);
       clinicians.add(clinician);
     }
@@ -377,20 +379,19 @@ public class Provider implements QuadTreeData {
    *          Seed for the random clinician
    * @return generated Clinician
    */
-  private Clinician generateClinician(long clinicianSeed, Provider provider) {
+  private Clinician generateClinician(Random clinicianRand, long clinicianIdentifier, Provider provider) {
     Clinician clinician = null;
     try {
-      Random randomForDemographics = new Random(clinicianSeed);
-      Demographics city = location.randomCity(randomForDemographics);
+      Demographics city = location.randomCity(clinicianRand);
       Map<String, Object> out = new HashMap<>();
 
-      String race = city.pickRace(randomForDemographics);
+      String race = city.pickRace(clinicianRand);
       out.put(Person.RACE, race);
-      String ethnicity = city.ethnicityFromRace(race, randomForDemographics);
+      String ethnicity = city.ethnicityFromRace(race, clinicianRand);
       out.put(Person.ETHNICITY, ethnicity);
-      String language = city.languageFromEthnicity(ethnicity, randomForDemographics);
+      String language = city.languageFromEthnicity(ethnicity, clinicianRand);
       out.put(Person.FIRST_LANGUAGE, language);
-      String gender = city.pickGender(randomForDemographics);
+      String gender = city.pickGender(clinicianRand);
       if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
         gender = "M";
       } else {
@@ -398,7 +399,7 @@ public class Provider implements QuadTreeData {
       }
       out.put(Person.GENDER, gender);
 
-      clinician = new Clinician(clinicianSeed);
+      clinician = new Clinician(clinicianRand, clinicianIdentifier);
       clinician.attributes.putAll(out);
       clinician.attributes.put(Person.ADDRESS, provider.address);
       clinician.attributes.put(Person.CITY, provider.city);
