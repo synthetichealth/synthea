@@ -27,7 +27,7 @@ public class ConceptsTest {
 
   @Before
   public void setup() {
-    concepts = new TreeMap<Code,Set<String>>();;
+    concepts = new TreeMap<Code,Set<String>>();
   }
   
   @Test
