@@ -13,8 +13,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 3002,
-          "display": "Cytoxan"
+          "code": 1734919,
+          "display": "Cyclophosphamide 1000 MG Injection"
         }
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",
@@ -38,8 +38,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 40048,
-          "display": "Paraplatin"
+          "code": 597195,
+          "display": "Carboplatin 10 MG/ML Injectable Solution"
         }
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",
@@ -54,8 +54,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 4492,
-          "display": "5-FU"
+          "code": 1791701,
+          "display": "10 ML Fluorouracil 50 MG/ML Injection"
         }
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",
@@ -66,8 +66,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 42512,
-          "display": "Adriamycin"
+          "code": 1790099,
+          "display": "10 ML Doxorubicin Hydrochloride 2 MG/ML Injection"
         }
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",
@@ -83,8 +83,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 203766,
-          "display": "Ellence"
+          "code": 1732186,
+          "display": "100 ML Epirubicin Hydrochloride 2 MG/ML Injection"
         }
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",
@@ -95,8 +95,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 202982,
-          "display": "Taxotere"
+          "code": 583214,
+          "display": "Paclitaxel 100 MG Injection"
         }
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",

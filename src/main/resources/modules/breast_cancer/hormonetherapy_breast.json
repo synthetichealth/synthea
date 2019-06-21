@@ -13,8 +13,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 203870,
-          "display": "Faslodex"
+          "code": 727762,
+          "display": "5 ML fulvestrant 50 MG/ML Prefilled Syringe"
         }
       ],
       "direct_transition": "ER_medend",
@@ -44,8 +44,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 203769,
-          "display": "Femara"
+          "code": 200064,
+          "display": "letrozole 2.5 MG Oral Tablet"
         }
       ],
       "direct_transition": "ER_medend",
@@ -68,8 +68,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 262485,
-          "display": "Arimidex"
+          "code": 199224,
+          "display": "anastrozole 1 MG Oral Tablet"
         }
       ],
       "direct_transition": "ER_medend",
@@ -92,8 +92,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 262105,
-          "display": "Aromasin"
+          "code": 310261,
+          "display": "exemestane 25 MG Oral Tablet"
         }
       ],
       "direct_transition": "ER_medend",
@@ -179,8 +179,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 1371046,
-          "display": "Kadcyla(TDM-1)"
+          "code": 1658084,
+          "display": "ado-trastuzumab emtansine 100 MG Injection"
         }
       ],
       "direct_transition": "HER-endmed",
@@ -191,8 +191,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 659616,
-          "display": "Tykerb"
+          "code": 672149,
+          "display": "lapatinib 250 MG Oral Tablet"
         }
       ],
       "direct_transition": "HER-endmed",
@@ -203,8 +203,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 1940649,
-          "display": "Nerlynx"
+          "code": 1940648,
+          "display": "neratinib 40 MG Oral Tablet"
         }
       ],
       "direct_transition": "HER-endmed",
@@ -215,8 +215,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 101306,
-          "display": "Herceptin"
+          "code": 2119714,
+          "display": "5 ML hyaluronidase-oysk 2000 UNT/ML / trastuzumab 120 MG/ML Injection"
         }
       ],
       "direct_transition": "HER-endmed",
@@ -245,7 +245,7 @@
         {
           "system": "RxNorm",
           "code": 1946831,
-          "display": "Verzenio"
+          "display": "abemaciclib 100 MG Oral Tablet"
         }
       ],
       "direct_transition": "erpermed-endmed",
@@ -256,8 +256,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 1601381,
-          "display": "Ibrance"
+          "code": 1601380,
+          "display": "palbociclib 100 MG Oral Capsule"
         }
       ],
       "direct_transition": "erpermed-endmed",
@@ -268,8 +268,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 1873984,
-          "display": "Kisqali"
+          "code": 1873983,
+          "display": "ribociclib 200 MG Oral Tablet"
         }
       ],
       "direct_transition": "erpermed-endmed",
@@ -371,8 +371,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 10324,
-          "display": "Tamoxifen"
+          "code": 198240,
+          "display": "Tamoxifen 10 MG Oral Tablet"
         }
       ],
       "direct_transition": "ER_medend",
