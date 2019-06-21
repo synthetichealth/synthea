@@ -177,7 +177,23 @@
     "chemo": {
       "type": "CallSubmodule",
       "submodule": "breast_cancer/chemotherapy_breast",
-      "direct_transition": "End Breast Surgery"
+      "conditional_transition": [
+        {
+          "transition": "External Beam Radiation",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_triple_wicked",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "End Breast Surgery"
+        }
+      ],
+      "remarks": [
+        "https://www.breastcancer.org/research-news/20110925b"
+      ]
     },
     "Advanced_drugs": {
       "type": "Simple",
@@ -292,7 +308,7 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "End Breast Surgery",
+          "transition": "External Beam Radiation",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "breast_cancer_T",
@@ -387,16 +403,8 @@
             "operator": "==",
             "value": true
           },
-          "distributions": [
-            {
-              "distribution": 0.8,
-              "transition": "chemo"
-            },
-            {
-              "distribution": 0.2,
-              "transition": "External Beam Radiation"
-            }
-          ]
+          "distributions": [],
+          "transition": "chemo"
         },
         {
           "condition": {
@@ -486,6 +494,16 @@
       "complex_transition": [
         {
           "condition": {
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_triple_wicked",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "chemo"
+        },
+        {
+          "condition": {
             "condition_type": "Observation",
             "codes": [
               {
@@ -503,50 +521,24 @@
           },
           "distributions": [
             {
-              "transition": "External Beam Radiation",
-              "distribution": 0.4
+              "distribution": 0.4,
+              "transition": "External Beam Radiation"
             },
             {
-              "transition": "Intraoperative radiation therapy (IORT)",
-              "distribution": 0.1
+              "distribution": 0.1,
+              "transition": "Intraoperative radiation therapy (IORT)"
             },
             {
-              "transition": "Hypofractionated radiation therapy",
-              "distribution": 0.4
+              "distribution": 0.4,
+              "transition": "Hypofractionated radiation therapy"
             },
             {
-              "transition": "Brachytherapy",
-              "distribution": 0.1
+              "distribution": 0.1,
+              "transition": "Brachytherapy"
             }
           ]
         },
         {
-          "distributions": [
-            {
-              "transition": "External Beam Radiation",
-              "distribution": 0.02
-            },
-            {
-              "transition": "Hypofractionated radiation therapy",
-              "distribution": 0.04
-            },
-            {
-              "transition": "Intraoperative radiation therapy (IORT)",
-              "distribution": 0.04
-            },
-            {
-              "transition": "Brachytherapy",
-              "distribution": 0.1
-            },
-            {
-              "transition": "chemo",
-              "distribution": 0.1
-            },
-            {
-              "transition": "Advanced_drugs",
-              "distribution": 0.7
-            }
-          ],
           "condition": {
             "condition_type": "Observation",
             "codes": [
@@ -562,29 +554,55 @@
               "code": 2640006,
               "display": "Clinical stage IV (finding)"
             }
-          }
+          },
+          "distributions": [
+            {
+              "distribution": 0.02,
+              "transition": "External Beam Radiation"
+            },
+            {
+              "distribution": 0.04,
+              "transition": "Hypofractionated radiation therapy"
+            },
+            {
+              "distribution": 0.04,
+              "transition": "Intraoperative radiation therapy (IORT)"
+            },
+            {
+              "distribution": 0.1,
+              "transition": "Brachytherapy"
+            },
+            {
+              "distribution": 0.1,
+              "transition": "chemo"
+            },
+            {
+              "distribution": 0.7,
+              "transition": "Advanced_drugs"
+            }
+          ]
         },
         {
           "distributions": [
             {
-              "transition": "External Beam Radiation",
-              "distribution": 0.3
+              "distribution": 0.3,
+              "transition": "External Beam Radiation"
             },
             {
-              "transition": "Hypofractionated radiation therapy",
-              "distribution": 0.3
+              "distribution": 0.3,
+              "transition": "Hypofractionated radiation therapy"
             },
             {
-              "transition": "Intraoperative radiation therapy (IORT)",
-              "distribution": 0.1
+              "distribution": 0.1,
+              "transition": "Intraoperative radiation therapy (IORT)"
             },
             {
-              "transition": "Brachytherapy",
-              "distribution": 0.1
+              "distribution": 0.1,
+              "transition": "Brachytherapy"
             },
             {
-              "transition": "chemo",
-              "distribution": 0.2
+              "distribution": 0.2,
+              "transition": "chemo"
             }
           ]
         }
