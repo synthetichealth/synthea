@@ -1382,11 +1382,6 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "condition": {
-            "condition_type": "PriorState"
-          }
-        },
-        {
           "transition": "Stage I Treatment",
           "condition": {
             "condition_type": "PriorState",
@@ -1413,8 +1408,7 @@
             "condition_type": "PriorState",
             "name": "Stage IV"
           }
-        },
-        {}
+        }
       ]
     },
     "End Neodjuvant Medication in Preparation for Surgery": {
