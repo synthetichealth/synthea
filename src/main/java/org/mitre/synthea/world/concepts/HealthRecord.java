@@ -265,6 +265,8 @@ public class HealthRecord {
         // determined?
         person.setPayerAtAge(person.ageInYears(encounter.start), null);
         System.out.println("ERROR: Claim made with null Payer");
+      } else {
+        payer.incrementEncountersCovered(EncounterType.fromString(encounter.type), Utilities.getYear(encounter.start));
       }
 
       // Covered cost will be updated once the payer actually pays it.

@@ -48,14 +48,16 @@ public class Payer {
   private double monthlyPremium;
   private double deductible;
   public String ownership;
-  // public ArrayList<EncounterType> servicesCovered;
-  // row: year, column: type, value: count
-  private Table<Integer, String, AtomicInteger> utilization;
+
+  // The services that this payer covers. Currently unimplemented.
+  // Perhaps just a list of services that a payer will cover in payers.csv to determine?
+  public ArrayList<EncounterType> servicesCovered;
 
   // Payer statistics
   private double costsCovered;
   private double revenue;
-  private int encounterCount;
+  // row: year, column: type, value: count
+  private Table<Integer, String, AtomicInteger> utilization;
 
   // Static default NO_INSURANCE object
   public static Payer noInsurance;
@@ -72,7 +74,6 @@ public class Payer {
     monthlyPremium = 0.0;
     deductible = 0.0;
     defaultCopay = 0.0;
-    encounterCount = 0;
   }
 
   /**
@@ -112,13 +113,12 @@ public class Payer {
    * Increments the encounters the payer has covered.
    */
   public void incrementEncountersCovered(EncounterType service, int year) {
-    increment(year, "ENCOUNTERS");
+    increment(year, Provider.ENCOUNTERS);
+    increment(year, Provider.ENCOUNTERS + "-" + service);
   }
 
   /**
-   * Increments utiilization. TODO - need some guidance with what this does.
-   * Currently called by incrementEncountersCovered which is never referenced.
-   * Copied from Providers.java.
+   * Increments utiilization for a given year and service.
    */
   private synchronized void increment(Integer year, String key) {
     if (!utilization.contains(year, key)) {
@@ -325,7 +325,7 @@ public class Payer {
    * Returns the number of encounters this payer paid for.
    */
   public int getEncounterCount() {
-    return this.encounterCount;
+    return utilization.column(Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
   }
 
   /**
@@ -350,13 +350,6 @@ public class Payer {
   }
 
   /**
-   * Increments the number of encounters the payer has covered.
-   */
-  public void incrementEncountersPaid() {
-    this.encounterCount++;
-  }
-
-  /**
    * Returns the ownserhip type of the payer (Government/Private).
    */
   public String getOwnership() {
@@ -368,7 +361,7 @@ public class Payer {
    */
   public double determineCopay(Encounter encounter) {
 
-    // TODO - Currently just returns a default copay, add different types.
+    // TODO - Currently just returns a default copay. Need to add different types.
     // // Encounter inpatient
     // if (encounter.type.equalsIgnoreCase("inpatient")) {
     // copay = inpatientCopay;

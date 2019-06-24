@@ -174,6 +174,7 @@ public class Costs {
       patientCopay = payer.getCopay();
     }
 
+    // Currently, nothing is done with the costToPatient. Not sure how to use it to affect a person's savings/income/etc. yet.
     double costToPatient = 0.0;
     double costToPayer = 0.0;
     double totalCost = (baseCost * locationAdjustment);
@@ -188,13 +189,13 @@ public class Costs {
       }
     } else {
       costToPatient = totalCost;
-      costToPayer = 0.0;
+      // Allows for no_insurance field in payers.csv to show how much it money it accounted for.
+      costToPayer = totalCost;
     }
 
     // Upate Payer
     payer.addCost(costToPayer);
     // payer.addRevenue(costToPatient);
-    payer.incrementEncountersPaid();
 
     return totalCost;
   }
