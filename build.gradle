@@ -61,6 +61,11 @@ dependencies {
   // if we switch to a real logging framework we may want to switch this
   compile "org.slf4j:slf4j-api:1.6.1"
   compile "org.slf4j:slf4j-nop:1.6.1"
+  
+  // Physiology simulation dependencies
+  compile files('lib/SimulationCoreLibrary_v1.5_slim.jar')
+  compile group: 'org.sbml.jsbml', name: 'jsbml', version: '1.4'
+  compile group: 'org.apache.commons', name: 'commons-math', version: '2.2'
 
   // Use JUnit test framework
   testCompile 'junit:junit:4.12'
