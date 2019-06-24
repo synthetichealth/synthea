@@ -419,8 +419,8 @@
             "operator": "==",
             "value_code": {
               "system": "SNOMED-CT",
-              "code": 13104003,
-              "display": "Clinical stage I (finding)"
+              "code": 258215001,
+              "display": "Stage 1 (qualifier value)"
             }
           },
           "distributions": [
@@ -443,8 +443,8 @@
             "operator": "==",
             "value_code": {
               "system": "SNOMED-CT",
-              "code": 2640006,
-              "display": "Clinical stage IV (finding)"
+              "code": 258228008,
+              "display": "Stage 4 (qualifier value)"
             }
           },
           "distributions": [
@@ -515,8 +515,8 @@
             "operator": "==",
             "value_code": {
               "system": "SNOMED-CT",
-              "code": 13104003,
-              "display": "Clinical stage I (finding)"
+              "code": 258215001,
+              "display": "Stage 1 (qualifier value)"
             }
           },
           "distributions": [
@@ -551,8 +551,8 @@
             "operator": "==",
             "value_code": {
               "system": "SNOMED-CT",
-              "code": 2640006,
-              "display": "Clinical stage IV (finding)"
+              "code": 258228008,
+              "display": "Stage 4 (qualifier value)"
             }
           },
           "distributions": [

@@ -390,8 +390,8 @@
       "direct_transition": "Delay for Analysis of Possible Treatments",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 2640006,
-        "display": "Clinical stage IV (finding)"
+        "code": 258228008,
+        "display": "Stage 4 (qualifier value)"
       }
     },
     "Nonmetastatic": {
@@ -480,8 +480,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 50283003,
-        "display": "Clinical stage III (finding)"
+        "code": 258224005,
+        "display": "Stage 3 (qualifier value)"
       },
       "direct_transition": "Delay for Analysis of Possible Treatments"
     },
@@ -498,8 +498,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 13104003,
-        "display": "Clinical stage I (finding)"
+        "code": 258215001,
+        "display": "Stage 1 (qualifier value)"
       },
       "direct_transition": "Delay for Analysis of Possible Treatments"
     },
@@ -517,8 +517,8 @@
       "direct_transition": "Stage III",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 64062008,
-        "display": "Clinical stage III B (finding)"
+        "code": 261639007,
+        "display": "Stage 3B (qualifier value)"
       }
     },
     "IIIA": {
@@ -534,8 +534,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 73082003,
-        "display": "Clinical stage III A (finding)"
+        "code": 261638004,
+        "display": "Stage 3A (qualifier value)"
       },
       "direct_transition": "Stage III"
     },
@@ -638,8 +638,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 48105005,
-        "display": "Clinical stage III C (finding)"
+        "code": 261640009,
+        "display": "Stage 3C (qualifier value)"
       },
       "direct_transition": "Stage III"
     },
@@ -656,8 +656,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 17816005,
-        "display": "Clinical stage II B (finding)"
+        "code": 261615002,
+        "display": "Stage 2B (qualifier value)"
       },
       "direct_transition": "Stage II"
     },
@@ -674,8 +674,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 17816005,
-        "display": "Clinical stage II A (finding)"
+        "code": 261614003,
+        "display": "Stage 2A (qualifier value)"
       },
       "direct_transition": "Stage II"
     },
@@ -692,8 +692,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 46333007,
-        "display": "Clinical stage I A (finding)"
+        "code": 261634002,
+        "display": "Stage 1A (qualifier value)"
       },
       "direct_transition": "Stage I"
     },
@@ -710,8 +710,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 786005,
-        "display": "Clinical stage I B (finding)"
+        "code": 261635001,
+        "display": "Stage 1B (qualifier value)"
       },
       "direct_transition": "Stage I"
     },
@@ -751,8 +751,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 60333009,
-        "display": "Clinical stage II (finding)"
+        "code": 258219007,
+        "display": "Stage 2 (qualifier value)"
       },
       "direct_transition": "Delay for Analysis of Possible Treatments"
     },
@@ -837,8 +837,8 @@
             "operator": "!=",
             "value_code": {
               "system": "SNOMED-CT",
-              "code": 786005,
-              "display": "Clinical stage I B (finding)"
+              "code": 261635001,
+              "display": "Stage 1B (qualifier value)"
             }
           }
         },
