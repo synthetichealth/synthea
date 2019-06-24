@@ -43,8 +43,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 431396003,
-        "display": "Human epidermal growth factor 2 negative carcinoma of breast (disorder)"
+        "code": 260385009,
+        "display": "Negative (qualifier value)"
       },
       "direct_transition": "HER2-"
     },
@@ -61,8 +61,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 427685000,
-        "display": "Human epidermal growth factor 2 positive carcinoma of breast (disorder)"
+        "code": 10828004,
+        "display": "Positive (qualifier value)"
       },
       "direct_transition": "HER2+"
     },
@@ -97,8 +97,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 441117001,
-        "display": "Estrogen receptor negative neoplasm (disorder)"
+        "code": 260385009,
+        "display": "Negative (qualifier value)"
       },
       "direct_transition": "ER-"
     },
@@ -115,8 +115,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 416053008,
-        "display": "Estrogen receptor positive tumor (disorder)"
+        "code": 10828004,
+        "display": "Positive (qualifier value)"
       },
       "direct_transition": "ER+"
     },
@@ -151,8 +151,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 441118006,
-        "display": "Progesterone receptor negative neoplasm (disorder)"
+        "code": 260385009,
+        "display": "Negative (qualifier value)"
       },
       "direct_transition": "PR-"
     },
@@ -169,8 +169,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 416561008,
-        "display": "Progesterone receptor positive tumor (disorder)"
+        "code": 10828004,
+        "display": "Positive (qualifier value)"
       },
       "direct_transition": "PR+"
     },
@@ -293,8 +293,8 @@
       "direct_transition": "Terminal",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 417181009,
-        "display": "Hormone receptor positive malignant neoplasm of breast (disorder)"
+        "code": 10828004,
+        "display": "Positive (qualifier value)"
       }
     },
     "Hormone Receptor Negative": {
@@ -310,8 +310,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 438628005,
-        "display": "Hormone receptor negative neoplasm (disorder)"
+        "code": 260385009,
+        "display": "Negative (qualifier value)"
       },
       "conditional_transition": [
         {
