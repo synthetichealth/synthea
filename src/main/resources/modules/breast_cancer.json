@@ -1108,15 +1108,6 @@
       "action": "increment",
       "conditional_transition": [
         {
-          "transition": "Death",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "breast_cancer_years_left",
-            "operator": "<",
-            "value": 1
-          }
-        },
-        {
           "transition": "4 Months between Initial Follow-Ups",
           "condition": {
             "condition_type": "Attribute",
@@ -1139,7 +1130,7 @@
     "Reset Initial Follow-Up Counter": {
       "type": "SetAttribute",
       "attribute": "breast_cancer_init_followup_counter",
-      "direct_transition": "Decrement Years Left",
+      "direct_transition": "Years After Treatment Counter",
       "value": 0
     },
     "1 Year Passed": {
@@ -1166,75 +1157,12 @@
         "https://www.cancer.org/cancer/breast-cancer/living-as-a-breast-cancer-survivor/follow-up-care-after-breast-cancer-treatment.html"
       ]
     },
-    "Death": {
-      "type": "Death",
-      "direct_transition": "Terminal"
-    },
-    "Decrement Years Left": {
-      "type": "Counter",
-      "attribute": "years_left",
-      "action": "decrement",
-      "direct_transition": "Years After Treatment Counter"
-    },
     "Treatment Unsuccessful": {
       "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Terminal 1 Year",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Terminal 2 Years",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Terminal 3 Years",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Terminal 4 Years",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Terminal 5 Years",
-          "distribution": 0.2
-        }
-      ]
+      "direct_transition": "Impending Death from Cancer Complications"
     },
     "Treatment Successful": {
-      "type": "SetAttribute",
-      "attribute": "breast_cancer_years_left",
-      "direct_transition": "Post-Treatment Surveillance",
-      "value": 200
-    },
-    "Terminal 1 Year": {
-      "type": "SetAttribute",
-      "attribute": "breast_cancer_years_left",
-      "value": 1,
-      "direct_transition": "Post-Treatment Surveillance"
-    },
-    "Terminal 2 Years": {
-      "type": "SetAttribute",
-      "attribute": "breast_cancer_years_left",
-      "value": 2,
-      "direct_transition": "Post-Treatment Surveillance"
-    },
-    "Terminal 3 Years": {
-      "type": "SetAttribute",
-      "attribute": "breast_cancer_years_left",
-      "value": 3,
-      "direct_transition": "Post-Treatment Surveillance"
-    },
-    "Terminal 4 Years": {
-      "type": "SetAttribute",
-      "attribute": "breast_cancer_years_left",
-      "value": 4,
-      "direct_transition": "Post-Treatment Surveillance"
-    },
-    "Terminal 5 Years": {
-      "type": "SetAttribute",
-      "attribute": "breast_cancer_years_left",
-      "value": 5,
+      "type": "Simple",
       "direct_transition": "Post-Treatment Surveillance"
     },
     "Regular Mammogram Visit": {
@@ -1720,6 +1648,16 @@
           ]
         }
       ]
+    },
+    "Impending Death from Cancer Complications": {
+      "type": "Death",
+      "direct_transition": "Post-Treatment Surveillance",
+      "referenced_by_attribute": "breast_cancer_condition",
+      "range": {
+        "low": 0,
+        "high": 5,
+        "unit": "years"
+      }
     }
   }
 }
