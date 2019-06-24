@@ -11,30 +11,15 @@
     "Terminal": {
       "type": "Terminal"
     },
-    "M1": {
-      "type": "SetAttribute",
-      "attribute": "breast_cancer_M",
-      "direct_transition": "M1_Diagnosed",
-      "value": "M1"
-    },
-    "M0": {
-      "type": "SetAttribute",
-      "attribute": "breast_cancer_M",
-      "value": "M0",
-      "remarks": [
-        "https://www.cancer.net/cancer-types/breast-cancer/statistics"
-      ],
-      "direct_transition": "M0_Diagnosed"
-    },
     "M Marker": {
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "M0",
+          "transition": "No Evidence of Distant Metastasis ",
           "distribution": 0.94
         },
         {
-          "transition": "M1",
+          "transition": "Distant Metastases Detected",
           "distribution": 0.06
         }
       ],
@@ -54,19 +39,19 @@
           },
           "distributions": [
             {
-              "transition": "N0",
+              "transition": "No Regional Lymph Node Metastasis",
               "distribution": 0.8
             },
             {
-              "transition": "N1",
+              "transition": "Micrometastasis in 1 - 3 Lymph Nodes",
               "distribution": 0.1
             },
             {
-              "transition": "N2",
+              "transition": "Macrometastases in 4 - 9 Lymph Nodes",
               "distribution": 0.06
             },
             {
-              "transition": "N3",
+              "transition": "Macrometastases in 10+ Lymph Nodes",
               "distribution": 0.03
             }
           ]
@@ -74,50 +59,29 @@
         {
           "distributions": [
             {
-              "transition": "N1",
+              "transition": "Micrometastasis in 1 - 3 Lymph Nodes",
               "distribution": 0.34
             },
             {
-              "transition": "N2",
+              "transition": "Macrometastases in 4 - 9 Lymph Nodes",
               "distribution": 0.33
             },
             {
-              "transition": "N3",
+              "transition": "Macrometastases in 10+ Lymph Nodes",
               "distribution": 0.33
             }
           ]
         }
+      ],
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/LymphNodeStatusandStaging.html"
       ]
-    },
-    "T1": {
-      "type": "SetAttribute",
-      "attribute": "breast_cancer_T",
-      "direct_transition": "T1_Diagnosed",
-      "value": "T1"
-    },
-    "T2": {
-      "type": "SetAttribute",
-      "attribute": "breast_cancer_T",
-      "direct_transition": "T2_Diagnosed",
-      "value": "T2"
-    },
-    "T3": {
-      "type": "SetAttribute",
-      "attribute": "breast_cancer_T",
-      "direct_transition": "T3_Diagnosed",
-      "value": "T3"
     },
     "T4": {
       "type": "SetAttribute",
       "attribute": "breast_cancer_T",
       "direct_transition": "T4_Diagnosed",
       "value": "T4"
-    },
-    "T0": {
-      "type": "SetAttribute",
-      "attribute": "breast_cancer_T",
-      "direct_transition": "T0_Diagnosed",
-      "value": "T0"
     },
     "N1": {
       "type": "SetAttribute",
@@ -137,16 +101,10 @@
       "direct_transition": "N3_Diagnosed",
       "value": "N3"
     },
-    "N0": {
-      "type": "SetAttribute",
-      "attribute": "breast_cancer_N",
-      "direct_transition": "N0_Diagnosed",
-      "value": "N0"
-    },
     "Distant Breast Cancer": {
       "type": "SetAttribute",
       "attribute": "breast_cancer_Location",
-      "direct_transition": "T4",
+      "direct_transition": "Tumor Size Any",
       "value": "distant"
     },
     "Regional Breast Cancer": {
@@ -154,19 +112,19 @@
       "attribute": "breast_cancer_Location",
       "distributed_transition": [
         {
-          "transition": "T1",
+          "transition": "Tumor Size Less than 2 cm",
           "distribution": 0.3011
         },
         {
-          "transition": "T2",
+          "transition": "Tumor Size 2 -5 cm",
           "distribution": 0.5053
         },
         {
-          "transition": "T3",
+          "transition": "Tumor Size Greater Than 5 cm",
           "distribution": 0.1398
         },
         {
-          "transition": "T0",
+          "transition": "No Evidence of Primary Tumor in Breast",
           "distribution": 0.0538
         }
       ],
@@ -181,15 +139,15 @@
       "attribute": "breast_cancer_Location",
       "distributed_transition": [
         {
-          "transition": "T1",
+          "transition": "Tumor Size Less than 2 cm",
           "distribution": 0.7052
         },
         {
-          "transition": "T2",
+          "transition": "Tumor Size 2 -5 cm",
           "distribution": 0.2632
         },
         {
-          "transition": "T3",
+          "transition": "Tumor Size Greater Than 5 cm",
           "distribution": 0.0316
         }
       ],
@@ -411,6 +369,250 @@
         "display": "N3 category (finding)"
       },
       "direct_transition": "Terminal"
+    },
+    "T1": {
+      "type": "SetAttribute",
+      "attribute": "breast_cancer_T",
+      "value": "T1",
+      "direct_transition": "T1_Diagnosed"
+    },
+    "No Evidence of Primary Tumor in Breast": {
+      "type": "Simple",
+      "direct_transition": "T0",
+      "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition"
+      ]
+    },
+    "T0": {
+      "type": "SetAttribute",
+      "attribute": "breast_cancer_T",
+      "value": "T0",
+      "direct_transition": "T0_Diagnosed"
+    },
+    "Tumor Size 2 -5 cm": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "cm",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "33728-7",
+          "display": "Size.maximum dimension in Tumor"
+        }
+      ],
+      "direct_transition": "T2",
+      "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition"
+      ],
+      "range": {
+        "low": 2,
+        "high": 5
+      }
+    },
+    "T2": {
+      "type": "SetAttribute",
+      "attribute": "breast_cancer_T",
+      "value": "T2",
+      "direct_transition": "T2_Diagnosed"
+    },
+    "Tumor Size Greater Than 5 cm": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "cm",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "33728-7",
+          "display": "Size.maximum dimension in Tumor"
+        }
+      ],
+      "direct_transition": "T3",
+      "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition"
+      ],
+      "range": {
+        "low": 5,
+        "high": 6
+      }
+    },
+    "Tumor Size Less than 2 cm": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "cm",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "33728-7",
+          "display": "Size.maximum dimension in Tumor"
+        }
+      ],
+      "direct_transition": "T1",
+      "range": {
+        "low": 0,
+        "high": 2
+      },
+      "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition"
+      ]
+    },
+    "T3": {
+      "type": "SetAttribute",
+      "attribute": "breast_cancer_T",
+      "value": "T3",
+      "direct_transition": "T3_Diagnosed"
+    },
+    "Tumor Size Any": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "cm",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "33728-7",
+          "display": "Size.maximum dimension in Tumor"
+        }
+      ],
+      "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition"
+      ],
+      "range": {
+        "low": 0,
+        "high": 6
+      },
+      "direct_transition": "T4"
+    },
+    "No Evidence of Distant Metastasis ": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "44667-4",
+          "display": "Site of distant metastasis in Breast tumor"
+        }
+      ],
+      "direct_transition": "M0",
+      "remarks": [
+        "https://www.cancer.net/cancer-types/breast-cancer/statistics",
+        "AJCC Cancer Staging Manual; 8th Edition"
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 260413007,
+        "display": "None (qualifier value)"
+      }
+    },
+    "M0": {
+      "type": "SetAttribute",
+      "attribute": "breast_cancer_M",
+      "value": "M0",
+      "remarks": [
+        "https://www.cancer.net/cancer-types/breast-cancer/statistics"
+      ],
+      "direct_transition": "M0_Diagnosed"
+    },
+    "Distant Metastases Detected": {
+      "type": "Simple",
+      "direct_transition": "M1",
+      "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition"
+      ]
+    },
+    "M1": {
+      "type": "SetAttribute",
+      "attribute": "breast_cancer_M",
+      "value": "M1",
+      "direct_transition": "M1_Diagnosed",
+      "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition"
+      ]
+    },
+    "No Regional Lymph Node Metastasis": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "#",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85352-3",
+          "display": "Lymph nodes with isolated tumor cells [#] in Cancer specimen by Light microscopy"
+        }
+      ],
+      "exact": {
+        "quantity": 0
+      },
+      "direct_transition": "N0",
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/LymphNodeStatusandStaging.html"
+      ]
+    },
+    "N0": {
+      "type": "SetAttribute",
+      "attribute": "breast_cancer_N",
+      "value": "N0",
+      "direct_transition": "N0_Diagnosed"
+    },
+    "Micrometastasis in 1 - 3 Lymph Nodes": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "#",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85344-0",
+          "display": "Lymph nodes with micrometastases [#] in Cancer specimen by Light microscopy"
+        }
+      ],
+      "direct_transition": "N1",
+      "range": {
+        "low": 1,
+        "high": 3
+      },
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/LymphNodeStatusandStaging.html"
+      ]
+    },
+    "Macrometastases in 4 - 9 Lymph Nodes": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "#",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85343-2",
+          "display": "Lymph nodes with macrometastases [#] in Cancer specimen by Light microscopy"
+        }
+      ],
+      "direct_transition": "N2",
+      "range": {
+        "low": 4,
+        "high": 9
+      },
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/LymphNodeStatusandStaging.html"
+      ]
+    },
+    "Macrometastases in 10+ Lymph Nodes": {
+      "type": "Observation",
+      "category": "imaging",
+      "unit": "#",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85343-2",
+          "display": "Lymph nodes with macrometastases [#] in Cancer specimen by Light microscopy"
+        }
+      ],
+      "direct_transition": "N3",
+      "range": {
+        "low": 10,
+        "high": 30
+      },
+      "remarks": [
+        "https://ww5.komen.org/BreastCancer/LymphNodeStatusandStaging.html",
+        "https://www.medicalnewstoday.com/articles/319713.php"
+      ]
     }
   }
 }
