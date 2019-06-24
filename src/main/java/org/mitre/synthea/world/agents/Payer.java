@@ -361,7 +361,7 @@ public class Payer {
    */
   public double determineCopay(Encounter encounter) {
 
-    // TODO - Currently just returns a default copay. Need to add different types.
+    // TODO - Currently just returns a default copay. Need to add different types (Ambulatory, inpatient, outpatient, etc.).
     // // Encounter inpatient
     // if (encounter.type.equalsIgnoreCase("inpatient")) {
     // copay = inpatientCopay;

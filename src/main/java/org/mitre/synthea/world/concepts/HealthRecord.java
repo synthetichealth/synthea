@@ -264,7 +264,7 @@ public class HealthRecord {
         // Shouldn't have to do this? Shouldn't the person's Payer already be
         // determined?
         person.setPayerAtAge(person.ageInYears(encounter.start), null);
-        System.out.println("ERROR: Claim made with null Payer");
+        System.out.println("ERROR: Claim made with null Payer. Redetermined a new one.");
       } else {
         payer.incrementEncountersCovered(EncounterType.fromString(encounter.type), Utilities.getYear(encounter.start));
       }

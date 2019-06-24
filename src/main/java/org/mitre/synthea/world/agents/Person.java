@@ -90,7 +90,7 @@ public class Person implements Serializable, QuadTreeData {
   public List<State> history;
   /** person's insurance company. */
   // Each entry in the payerHistory List corresponds to the insurance held at that
-  // agexfp
+  // age
   public List<Payer> payerHistory;
 
   /**
@@ -136,13 +136,11 @@ public class Person implements Serializable, QuadTreeData {
    */
   public double rand(double[] range) {
     if (range == null || range.length != 2) {
-      throw new IllegalArgumentException(
-          "input range must be of length 2 -- got " + Arrays.toString(range));
+      throw new IllegalArgumentException("input range must be of length 2 -- got " + Arrays.toString(range));
     }
 
     if (range[0] > range[1]) {
-      throw new IllegalArgumentException(
-          "range must be of the form {low, high} -- got " + Arrays.toString(range));
+      throw new IllegalArgumentException("range must be of the form {low, high} -- got " + Arrays.toString(range));
     }
 
     return rand(range[0], range[1]);
@@ -167,13 +165,11 @@ public class Person implements Serializable, QuadTreeData {
    */
   public double rand(int[] range) {
     if (range == null || range.length != 2) {
-      throw new IllegalArgumentException(
-          "input range must be of length 2 -- got " + Arrays.toString(range));
+      throw new IllegalArgumentException("input range must be of length 2 -- got " + Arrays.toString(range));
     }
 
     if (range[0] > range[1]) {
-      throw new IllegalArgumentException(
-          "range must be of the form {low, high} -- got " + Arrays.toString(range));
+      throw new IllegalArgumentException("range must be of the form {low, high} -- got " + Arrays.toString(range));
     }
 
     return rand(range[0], range[1]);
@@ -192,8 +188,8 @@ public class Person implements Serializable, QuadTreeData {
 
     if (attributes.containsKey(BIRTHDATE)) {
       LocalDate now = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
-      LocalDate birthdate = Instant.ofEpochMilli((long)
-          attributes.get(BIRTHDATE)).atZone(ZoneId.systemDefault()).toLocalDate();
+      LocalDate birthdate = Instant.ofEpochMilli((long) attributes.get(BIRTHDATE)).atZone(ZoneId.systemDefault())
+          .toLocalDate();
       age = Period.between(birthdate, now);
     }
     return age;
@@ -381,8 +377,7 @@ public class Person implements Serializable, QuadTreeData {
 
   @SuppressWarnings("unchecked")
   public Encounter getCurrentEncounter(Module module) {
-    Map<String, Encounter> moduleToCurrentEncounter =
-        (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
+    Map<String, Encounter> moduleToCurrentEncounter = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
 
     if (moduleToCurrentEncounter == null) {
       moduleToCurrentEncounter = new HashMap<>();
@@ -394,8 +389,7 @@ public class Person implements Serializable, QuadTreeData {
 
   @SuppressWarnings("unchecked")
   public void setCurrentEncounter(Module module, Encounter encounter) {
-    Map<String, Encounter> moduleToCurrentEncounter =
-        (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
+    Map<String, Encounter> moduleToCurrentEncounter = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
 
     if (moduleToCurrentEncounter == null) {
       moduleToCurrentEncounter = new HashMap<>();
@@ -520,10 +514,17 @@ public class Person implements Serializable, QuadTreeData {
    * Set's the person's payer history at the given age to the given payer.
    */
   public void setPayerAtAge(int age, Payer currentPayer) {
-    if(payerHistory.get(age) != null){
-      // TODO: This constantly occurs. Need to limit insurance changes to once a year max.
-      //System.out.println("ERROR: Overwriting a person's insurance at age " + age + ".");
+    if (payerHistory.get(age) != null) {
+      // System.out.println("ERROR: Overwriting a person's insurance at age " + age +
+      // ".");
     }
     this.payerHistory.set(age, currentPayer);
+  }
+
+  /**
+   * Gets the Payer of the person in the given year.
+   */
+  public Payer getPayerAtAge(int age) {
+    return this.payerHistory.get(age);
   }
 }

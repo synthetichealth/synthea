@@ -23,15 +23,11 @@ public class HealthInsuranceModule extends Module {
    * HealthInsuranceModule constructor.
    */
   public HealthInsuranceModule() {
-    int mandateYear = Integer.parseInt(
-        Config.get("generate.insurance.mandate.year", "2006"));
+    int mandateYear = Integer.parseInt(Config.get("generate.insurance.mandate.year", "2006"));
     mandateTime = Utilities.convertCalendarYearsToTime(mandateYear);
-    mandateOccupation = Double.parseDouble(
-        Config.get("generate.insurance.mandate.occupation", "0.2"));
-    privateIncomeThreshold = Integer.parseInt(
-        Config.get("generate.insurance.private.minimum_income", "24000"));
-    povertyLevel = Double.parseDouble(
-        Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
+    mandateOccupation = Double.parseDouble(Config.get("generate.insurance.mandate.occupation", "0.2"));
+    privateIncomeThreshold = Integer.parseInt(Config.get("generate.insurance.private.minimum_income", "24000"));
+    povertyLevel = Double.parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
     medicaidLevel = 1.33 * povertyLevel;
   }
 
@@ -47,23 +43,17 @@ public class HealthInsuranceModule extends Module {
   @Override
   public boolean process(Person person, long time) {
 
-    // List<Payer> payerHistory = (List<Payer>) person.getPayerHistory();
-
     int age = person.ageInYears(time);
 
-    // payerhistory must be populated first...
-    // Payer currentPayer = payerHistory.get(age);
-
-    // Are age AND time fields necessary?
-    Payer currentPayer = determineInsurance(person, age, time);
-    // Temporary printout of what insurance people got/switched to
-    // System.out.println(person.attributes.get(Person.NAME) + " Got: " + currentPayer.getName());
-
-    if(currentPayer == null){
-      System.out.println("ERROR: Payer is null.");
+    Payer newPayer = null;
+    // If the payerHistory at the given age is null, they must get insurance for the new year.
+    // Note: This means the person will change insurance yearly, just after their birthday.
+    if (person.getPayerAtAge(age) == null) {
+      // Are age AND time fields necessary?
+      newPayer = determineInsurance(person, age, time);
+      // Set the payer at the current age
+      person.setPayerAtAge(age, newPayer);
     }
-
-    person.setPayerAtAge(age, currentPayer);
 
     // java modules will never "finish"
     return false;
@@ -79,10 +69,8 @@ public class HealthInsuranceModule extends Module {
    */
   private Payer determineInsurance(Person person, int age, long time) {
     boolean female = (person.attributes.get(Person.GENDER).equals("F"));
-    boolean pregnant = (person.attributes.containsKey("pregnant")
-        && (boolean) person.attributes.get("pregnant"));
-    boolean blind = (person.attributes.containsKey("blindness")
-        && (boolean) person.attributes.get("blindness"));
+    boolean pregnant = (person.attributes.containsKey("pregnant") && (boolean) person.attributes.get("pregnant"));
+    boolean blind = (person.attributes.containsKey("blindness") && (boolean) person.attributes.get("blindness"));
     boolean esrd = (person.attributes.containsKey("end_stage_renal_disease")
         && (boolean) person.attributes.get("end_stage_renal_disease"));
     boolean sixtyFive = (age >= 65);
