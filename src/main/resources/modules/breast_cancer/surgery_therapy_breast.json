@@ -253,7 +253,7 @@
       "remarks": [
         "https://www.cooperhealth.org/services/radiation-oncology/questions-you-may-have-about-radiation-therapy"
       ],
-      "direct_transition": "Breast_Surgery_2"
+      "direct_transition": "Initialize Breast Surgery Treatment Counter"
     },
     "Sentinel_Lymph_Node_Biopsy__SLNB_": {
       "type": "Procedure",
@@ -680,31 +680,14 @@
       "action": "increment",
       "direct_transition": "6 Month Delay"
     },
-    "Breast_Surgery_2": {
-      "type": "SetAttribute",
-      "attribute": "breast_cancer_treat_count",
-      "distributed_transition": [
-        {
-          "transition": "Breast-conserving surgery (BCS)",
-          "distribution": 0.6
-        },
-        {
-          "transition": "Mastectomy",
-          "distribution": 0.4
-        }
-      ],
-      "remarks": [
-        "https://www.cooperhealth.org/services/radiation-oncology/questions-you-may-have-about-radiation-therapy"
-      ],
-      "value": 0
-    },
     "6 Month Delay": {
       "type": "Delay",
-      "exact": {
-        "quantity": 6,
+      "direct_transition": "Start New Advanced Drug Cycle",
+      "range": {
+        "low": 5,
+        "high": 7,
         "unit": "months"
-      },
-      "direct_transition": "Start New Advanced Drug Cycle"
+      }
     },
     "Start New Advanced Drug Cycle": {
       "type": "Encounter",
@@ -768,9 +751,9 @@
       "type": "Delay",
       "direct_transition": "Next Day Radiation Treatment",
       "range": {
-        "low": 1,
-        "high": 1.5,
-        "unit": "days"
+        "low": 24,
+        "high": 36,
+        "unit": "hours"
       }
     },
     "Next Day Radiation Treatment": {
@@ -823,6 +806,24 @@
         "unit": "days"
       },
       "direct_transition": "End_Lymph_Node_Surgery"
+    },
+    "Initialize Breast Surgery Treatment Counter": {
+      "type": "SetAttribute",
+      "attribute": "breast_cancer_treat_count",
+      "distributed_transition": [
+        {
+          "transition": "Breast-conserving surgery (BCS)",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Mastectomy",
+          "distribution": 0.4
+        }
+      ],
+      "remarks": [
+        "https://www.cooperhealth.org/services/radiation-oncology/questions-you-may-have-about-radiation-therapy"
+      ],
+      "value": 0
     }
   }
 }

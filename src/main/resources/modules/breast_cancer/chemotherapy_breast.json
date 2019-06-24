@@ -147,15 +147,7 @@
       "type": "Counter",
       "attribute": "chemoCount",
       "action": "increment",
-      "direct_transition": "Delay Until Next Cycle"
-    },
-    "Delay Until Next Cycle": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 3,
-        "unit": "weeks"
-      },
-      "direct_transition": "Start New Cycle"
+      "direct_transition": "Delay Until Next Cycle (3 Weeks)"
     },
     "Start New Cycle": {
       "type": "Encounter",
@@ -196,6 +188,15 @@
         }
       ],
       "value": 0
+    },
+    "Delay Until Next Cycle (3 Weeks)": {
+      "type": "Delay",
+      "direct_transition": "Start New Cycle",
+      "range": {
+        "low": 19,
+        "high": 23,
+        "unit": "days"
+      }
     }
   }
 }

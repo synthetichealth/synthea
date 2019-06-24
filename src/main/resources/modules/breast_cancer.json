@@ -778,11 +778,12 @@
     },
     "4 Months between Initial Follow-Ups": {
       "type": "Delay",
-      "exact": {
-        "quantity": 4,
-        "unit": "months"
-      },
-      "direct_transition": "Initial Follow-Up Doctor Visit"
+      "direct_transition": "Initial Follow-Up Doctor Visit",
+      "range": {
+        "low": 14,
+        "high": 18,
+        "unit": "weeks"
+      }
     },
     "Initial Follow-Up Counter": {
       "type": "Counter",
@@ -1108,7 +1109,7 @@
       "action": "increment",
       "conditional_transition": [
         {
-          "transition": "4 Months between Initial Follow-Ups",
+          "transition": "Post-Op Cancer Status",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "breast_cancer_years_after_treatment",
@@ -1135,11 +1136,12 @@
     },
     "1 Year Passed": {
       "type": "Delay",
-      "exact": {
-        "quantity": 1,
-        "unit": "years"
-      },
-      "direct_transition": "Initial Follow-Up Doctor Visit"
+      "direct_transition": "Initial Follow-Up Doctor Visit",
+      "range": {
+        "low": 11,
+        "high": 13,
+        "unit": "months"
+      }
     },
     "Initial Follow-Up Doctor Visit": {
       "type": "Encounter",
@@ -1159,21 +1161,20 @@
     },
     "Treatment Unsuccessful": {
       "type": "Simple",
-      "direct_transition": "Impending Death from Cancer Complications"
+      "direct_transition": "Worsening After Surgery/Therapy"
     },
     "Treatment Successful": {
       "type": "Simple",
-      "direct_transition": "Post-Treatment Surveillance"
+      "direct_transition": "Improvement After Surgery/Therapy"
     },
     "Regular Mammogram Visit": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 394656005,
-          "display": "Inpatient care (regime/therapy)"
+          "code": 86013001,
+          "display": "Periodic reevaluation and management of healthy individual (procedure)"
         }
       ],
       "direct_transition": "Screening Mammogram"
@@ -1302,7 +1303,7 @@
           }
         },
         {
-          "transition": "Begin Hormone Therapy Treatment"
+          "transition": "Begin Surgery and Radiation Treatment"
         }
       ]
     },
@@ -1485,11 +1486,12 @@
     },
     "Delay Until Next Cycle": {
       "type": "Delay",
-      "exact": {
-        "quantity": 3,
-        "unit": "weeks"
-      },
-      "direct_transition": "Start New Chemo Cycle"
+      "direct_transition": "Start New Chemo Cycle",
+      "range": {
+        "low": 19,
+        "high": 23,
+        "unit": "days"
+      }
     },
     "Start New Chemo Cycle": {
       "type": "Encounter",
@@ -1507,12 +1509,12 @@
     "Begin Hormone Therapy Treatment": {
       "type": "CallSubmodule",
       "submodule": "breast_cancer/hormonetherapy_breast",
-      "direct_transition": "Begin Surgery and Radiation Treatment"
+      "direct_transition": "End Treatment"
     },
     "Begin Surgery and Radiation Treatment": {
       "type": "CallSubmodule",
       "submodule": "breast_cancer/surgery_therapy_breast",
-      "direct_transition": "End Treatment"
+      "direct_transition": "Begin Hormone Therapy Treatment"
     },
     "Screening Mammogram": {
       "type": "Procedure",
@@ -1670,15 +1672,118 @@
           "display": "Response to cancer treatment"
         }
       ],
-      "direct_transition": "Begin Hormone Therapy Treatment",
+      "direct_transition": "Begin Surgery and Radiation Treatment",
       "remarks": [
         "http://standardhealthrecord.org/guides/mcode/ValueSet-shr-core-ConditionStatusTrendVS.html"
       ],
       "value_code": {
         "system": "SNOMED-CT",
         "code": 385633008,
-        "display": "Improving (qualifier value"
+        "display": "Improving (qualifier value)"
       }
+    },
+    "Improvement After Surgery/Therapy": {
+      "type": "Observation",
+      "category": "therapy",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "remarks": [
+        "http://standardhealthrecord.org/guides/mcode/ValueSet-shr-core-ConditionStatusTrendVS.html"
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 385633008,
+        "display": "Improving (qualifier value)"
+      },
+      "direct_transition": "Post-Treatment Surveillance"
+    },
+    "Worsening After Surgery/Therapy": {
+      "type": "Observation",
+      "category": "therapy",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "remarks": [
+        "http://standardhealthrecord.org/guides/mcode/ValueSet-shr-core-ConditionStatusTrendVS.html"
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 230993007,
+        "display": "Worsening (qualifier value)"
+      },
+      "direct_transition": "Impending Death from Cancer Complications"
+    },
+    "Post-Op Cancer Status": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Ineffective Treatment",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Treatment Unsuccessful"
+          }
+        },
+        {
+          "transition": "Effective Treatment",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Treatment Successful"
+          }
+        }
+      ]
+    },
+    "Ineffective Treatment": {
+      "type": "Observation",
+      "category": "therapy",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "remarks": [
+        "http://standardhealthrecord.org/guides/mcode/ValueSet-shr-core-ConditionStatusTrendVS.html"
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 230993007,
+        "display": "Worsening (qualifier value)"
+      },
+      "direct_transition": "4 Months between Initial Follow-Ups"
+    },
+    "Effective Treatment": {
+      "type": "Observation",
+      "category": "therapy",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "remarks": [
+        "http://standardhealthrecord.org/guides/mcode/ValueSet-shr-core-ConditionStatusTrendVS.html"
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 385633008,
+        "display": "Improving (qualifier value)"
+      },
+      "direct_transition": "4 Months between Initial Follow-Ups"
     }
   }
 }
