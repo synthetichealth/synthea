@@ -1359,7 +1359,7 @@
     },
     "End Chemo Treatment": {
       "type": "Delay",
-      "direct_transition": "Begin Hormone Therapy Treatment",
+      "direct_transition": "Improvement After Neoadjuvant Chemotherapy",
       "range": {
         "low": 1,
         "high": 3,
@@ -1657,6 +1657,27 @@
         "low": 0,
         "high": 5,
         "unit": "years"
+      }
+    },
+    "Improvement After Neoadjuvant Chemotherapy": {
+      "type": "Observation",
+      "category": "therapy",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "direct_transition": "Begin Hormone Therapy Treatment",
+      "remarks": [
+        "http://standardhealthrecord.org/guides/mcode/ValueSet-shr-core-ConditionStatusTrendVS.html"
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 385633008,
+        "display": "Improving (qualifier value"
       }
     }
   }
