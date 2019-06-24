@@ -317,7 +317,7 @@
     },
     "Breast Cancer Encounter": {
       "type": "Encounter",
-      "encounter_class": "emergency",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1238,7 +1238,7 @@
     },
     "Sit-Down with Oncologist to Discuss Treatment Options": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "reason": "",
       "codes": [
         {
@@ -1346,7 +1346,7 @@
     },
     "Neoadjuvant Chemo Before Surgery": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1493,7 +1493,7 @@
     },
     "Start New Chemo Cycle": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
+      "encounter_class": "inpatient",
       "reason": "",
       "codes": [
         {

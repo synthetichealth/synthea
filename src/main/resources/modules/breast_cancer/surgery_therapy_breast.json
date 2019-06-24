@@ -323,7 +323,7 @@
     },
     "Surgery encounter": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
+      "encounter_class": "inpatient",
       "reason": "",
       "codes": [
         {
@@ -775,7 +775,7 @@
     },
     "Next Day Radiation Treatment": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
+      "encounter_class": "inpatient",
       "reason": "",
       "codes": [
         {
