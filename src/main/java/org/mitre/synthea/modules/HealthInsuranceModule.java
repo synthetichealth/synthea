@@ -51,6 +51,7 @@ public class HealthInsuranceModule extends Module {
     if (person.getPayerAtAge(age) == null) {
       // Are age AND time fields necessary?
       newPayer = determineInsurance(person, age, time);
+      newPayer.incrementCustomers(person);
       // Set the payer at the current age
       person.setPayerAtAge(age, newPayer);
     }

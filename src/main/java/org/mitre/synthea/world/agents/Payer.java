@@ -6,6 +6,7 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -50,7 +51,8 @@ public class Payer {
   public String ownership;
 
   // The services that this payer covers. Currently unimplemented.
-  // Perhaps just a list of services that a payer will cover in payers.csv to determine?
+  // Perhaps just a list of services that a payer will cover in payers.csv to
+  // determine?
   public ArrayList<EncounterType> servicesCovered;
 
   // Payer statistics
@@ -58,6 +60,8 @@ public class Payer {
   private double revenue;
   // row: year, column: type, value: count
   private Table<Integer, String, AtomicInteger> utilization;
+  // Unique utilizers of Payer, by Person ID
+  private HashMap<String, AtomicInteger> customerUtilization;
 
   // Static default NO_INSURANCE object
   public static Payer noInsurance;
@@ -69,6 +73,7 @@ public class Payer {
     uuid = UUID.randomUUID().toString();
     attributes = new LinkedTreeMap<>();
     utilization = HashBasedTable.create();
+    customerUtilization = new HashMap<String, AtomicInteger>();
     costsCovered = 0.0;
     revenue = 0.0;
     monthlyPremium = 0.0;
@@ -107,6 +112,16 @@ public class Payer {
    */
   public Map<String, Object> getAttributes() {
     return attributes;
+  }
+
+  /**
+   * Increments the number of unique users.
+   */
+  public void incrementCustomers(Person person) {
+    if (!customerUtilization.containsKey(person.attributes.get(Person.ID))) {
+      customerUtilization.put((String) person.attributes.get(Person.ID), new AtomicInteger(0));
+    }
+    customerUtilization.get(person.attributes.get(Person.ID)).incrementAndGet();
   }
 
   /**
@@ -192,12 +207,10 @@ public class Payer {
    * @param location the state being loaded.
    */
   public static void loadPayers(Location location) {
-    if (!statesLoaded.contains(location.state)
-    || !statesLoaded.contains(Location.getAbbreviation(location.state))
+    if (!statesLoaded.contains(location.state) || !statesLoaded.contains(Location.getAbbreviation(location.state))
         || !statesLoaded.contains(Location.getStateName(location.state))) {
       try {
-        String insuranceCompanyFile =
-            Config.get("generate.payers.insurance_companies.default_file");
+        String insuranceCompanyFile = Config.get("generate.payers.insurance_companies.default_file");
         loadPayers(location, insuranceCompanyFile);
 
         statesLoaded.add(location.state);
@@ -329,6 +342,13 @@ public class Payer {
   }
 
   /**
+   * Returns the number of Unique plan purchasers.
+   */
+  public int getUniqueCustomers() {
+    return customerUtilization.size();
+  }
+
+  /**
    * Returns the name of the payer.
    */
   public String getName() {
@@ -361,7 +381,8 @@ public class Payer {
    */
   public double determineCopay(Encounter encounter) {
 
-    // TODO - Currently just returns a default copay. Need to add different types (Ambulatory, inpatient, outpatient, etc.).
+    // TODO - Currently just returns a default copay. Need to add different types
+    // (Ambulatory, inpatient, outpatient, etc.).
     // // Encounter inpatient
     // if (encounter.type.equalsIgnoreCase("inpatient")) {
     // copay = inpatientCopay;

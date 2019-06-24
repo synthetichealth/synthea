@@ -263,7 +263,9 @@ public class HealthRecord {
       if (this.payer == null) {
         // Shouldn't have to do this? Shouldn't the person's Payer already be
         // determined?
+        // TODO - change from setting to null to determineInsurance()
         person.setPayerAtAge(person.ageInYears(encounter.start), null);
+        // TODO - This error occurs exactly the same number of times as there are people. mot likely has to do with their first payer at age 0 being null?
         System.out.println("ERROR: Claim made with null Payer. Redetermined a new one.");
       } else {
         payer.incrementEncountersCovered(EncounterType.fromString(encounter.type), Utilities.getYear(encounter.start));
@@ -304,7 +306,6 @@ public class HealthRecord {
     public double determineCoveredCost() {
       if (payer != null) {
         this.coveredCost = (encounter.cost().doubleValue() - payer.determineCopay(encounter));
-        System.out.println(coveredCost);
         if (coveredCost < 0 || payer.determineCopay(encounter) <= 0) {
           // In case the copay is more expensive than the encounter
           this.coveredCost = 0.0;
