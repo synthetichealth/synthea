@@ -117,9 +117,9 @@
         }
       ],
       "duration": {
-        "low": 2,
-        "high": 8,
-        "unit": "weeks"
+        "low": 15,
+        "high": 50,
+        "unit": "minutes"
       },
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/treatment/radiation-for-breast-cancer.html",
@@ -146,9 +146,9 @@
         }
       ],
       "duration": {
-        "low": 2,
-        "high": 8,
-        "unit": "weeks"
+        "low": 15,
+        "high": 40,
+        "unit": "minutes"
       },
       "direct_transition": "End Brachytherapy Implant",
       "remarks": [
@@ -165,9 +165,9 @@
         }
       ],
       "duration": {
-        "low": 2,
-        "high": 8,
-        "unit": "weeks"
+        "low": 15,
+        "high": 40,
+        "unit": "minutes"
       },
       "remarks": [
         "https://www.mayoclinic.org/tests-procedures/brachytherapy/about/pac-20385159"
@@ -281,9 +281,9 @@
         }
       ],
       "duration": {
-        "low": 0,
-        "high": 1,
-        "unit": "days"
+        "low": 40,
+        "high": 50,
+        "unit": "minutes"
       },
       "direct_transition": "End_Lymph_Node_Surgery"
     },
@@ -801,9 +801,9 @@
         }
       ],
       "duration": {
-        "low": 0,
-        "high": 1,
-        "unit": "days"
+        "low": 40,
+        "high": 50,
+        "unit": "minutes"
       },
       "direct_transition": "End_Lymph_Node_Surgery"
     },

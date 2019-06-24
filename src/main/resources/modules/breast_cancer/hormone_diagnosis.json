@@ -274,8 +274,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 706970001,
-        "display": "Triple negative malignant neoplasm of breast (disorder)"
+        "code": 260385009,
+        "display": "Negative (qualifier value)"
       },
       "direct_transition": "Triple_Negative_Patient"
     },
