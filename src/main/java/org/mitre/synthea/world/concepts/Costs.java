@@ -198,9 +198,8 @@ public class Costs {
       costToPayer = totalCost;
     }
 
-    // Upate Payer
+    // Update Payer
     payer.addCost(costToPayer);
-    // payer.addRevenue(costToPatient); (Not to be used here) - TODO
 
     return totalCost;
   }

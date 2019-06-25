@@ -20,6 +20,7 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -92,6 +93,9 @@ public class Person implements Serializable, QuadTreeData {
   // Each entry in the payerHistory List corresponds to the insurance held at that
   // age
   public List<Payer> payerHistory;
+  // Tracks the months the Person has paid for insurance
+  private int lastMonthPaid;
+  private int lastYearPaid;
 
   /**
    * Person constructor.
@@ -111,6 +115,9 @@ public class Person implements Serializable, QuadTreeData {
     record = new HealthRecord(this);
     // 128 because it's a nice power of 2, and nobody will reach that age
     payerHistory = Arrays.asList(new Payer[128]);
+
+    lastMonthPaid = 0;
+    lastYearPaid = 0;
   }
 
   /**
@@ -519,26 +526,6 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
-   * Returns this person's Payer at the given time.
-   */
-  public Payer getInsurance(long time) {
-    int age = this.ageInYears(time);
-    if (this.payerHistory.get(age) != null) {
-      return this.payerHistory.get(age);
-    }
-    // TODO - Fix Issue: payer at that age is null when person is 0 and has their
-    // first encounter. Thus, payerHistory.get(0) is still null.
-    // See Person.getInsurance(time) to see where/how this fix was implemented.
-    // The problem is that the person's HealthInsurance.process, which determines
-    // their insurance for each year of their life, does not get called until after
-    // their first encounter. I dont't want to mess with how module.process gets
-    // called so I'mnot sure how to fix this beyond what I've done here.
-    // return this.payerHistory.get(0);
-    // For Now, return NO_INSURANCE.
-    return Payer.noInsurance;
-  }
-
-  /**
    * Returns the list of this person's Payer history.
    */
   public List<Payer> getPayerHistory() {
@@ -548,18 +535,55 @@ public class Person implements Serializable, QuadTreeData {
   /**
    * Set's the person's payer history at the given age to the given payer.
    */
-  public void setPayerAtAge(int age, Payer currentPayer) {
+  public void setPayerAtTime(long time, Payer currentPayer) {
+    int age = this.ageInYears(time);
     if (payerHistory.get(age) != null) {
-      // System.out.println("ERROR: Overwriting a person's insurance at age " + age +
-      // ".");
+      System.out.println("ERROR: Overwriting a person's insurance at age " + age + ".");
     }
     this.payerHistory.set(age, currentPayer);
   }
 
   /**
-   * Gets the Payer of the person in the given year.
+   * Gets the Payer of the person at the given time.
    */
-  public Payer getPayerAtAge(int age) {
-    return this.payerHistory.get(age);
+  public Payer getPayerAtTime(long time) {
+    return this.payerHistory.get(this.ageInYears(time));
+  }
+
+  /**
+   * Checks if the person has paid thier monthly premium. If not, the person pays
+   * the premium to their payer.
+   * 
+   * @param time the time that the person checks to pay premium.
+   */
+  public void checkToPayMonthlyPremium(long time) {
+    int currentMonth = Utilities.getMonth(time);
+    int currentYear = Utilities.getYear(time);
+
+    if (currentMonth > lastMonthPaid && currentYear > lastYearPaid) {
+      // May be a way to do this without keeping
+      // track of the year.
+
+      // TODO - Subtract money from person's bank account &
+      // Check that they can actually pay the premium.
+
+      // Pay the payer.
+      Payer currentPayer = this.getPayerAtTime(time);
+      if (currentPayer == null) {
+        // No premium to paid... null at age 0. TODO - fix, should never be null.
+      } else {
+        // Eventually this logic will go elsewhere (Likely a potential Plans class)
+        // based on plans and insurance companies.
+        // It will not call payer.getMonthlyPremium() here.
+        currentPayer.payPremium(currentPayer.getMonthlyPremium());
+
+        if (currentMonth >= 12) {
+          lastYearPaid = currentYear;
+          lastMonthPaid = 0;
+        } else {
+          lastMonthPaid = currentMonth;
+        }
+      }
+    }
   }
 }

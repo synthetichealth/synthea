@@ -46,16 +46,16 @@ public class HealthInsuranceModule extends Module {
   @Override
   public boolean process(Person person, long time) {
 
-    int age = person.ageInYears(time);
-
-    Payer newPayer = null;
+    person.checkToPayMonthlyPremium(time);
+    
     // If the payerHistory at the given age is null, they must get insurance for the new year.
-    // Note: This means the person will change insurance yearly, just after their birthday.
-    if (person.getPayerAtAge(age) == null) {
-      // Are age AND time fields necessary?
-      newPayer = determineInsurance(person, age, time);
-      // Set the payer at the current age
-      person.setPayerAtAge(age, newPayer);
+    // Note: This means the person will check to change insurance yearly, just after their
+    // birthday.
+    if (person.getPayerAtTime(time) == null) {
+      Payer newPayer = determineInsurance(person, time);
+      // Set the payer at the current time
+      person.setPayerAtTime(time, newPayer);
+      // Update the Payer
       newPayer.incrementCustomers(person);
     }
 
@@ -67,11 +67,11 @@ public class HealthInsuranceModule extends Module {
    * Determine what insurance a person will get based on their attributes.
    *
    * @param person the person to cover
-   * @param age    the age of the person
    * @param time   the current time to consider
    * @return the insurance that this person gets
    */
-  private Payer determineInsurance(Person person, int age, long time) {
+  private Payer determineInsurance(Person person, long time) {
+    int age = person.ageInYears(time);
     boolean female = (person.attributes.get(Person.GENDER).equals("F"));
     boolean pregnant = (person.attributes.containsKey("pregnant")
         && (boolean) person.attributes.get("pregnant"));
@@ -87,7 +87,7 @@ public class HealthInsuranceModule extends Module {
     boolean medicare = false;
     boolean medicaid = false;
 
-    // possibly redundant for the Payer.accepts method?
+    // Possibly redundant because of the Payer.accepts method?
     if (sixtyFive || esrd) {
       medicare = true;
     }

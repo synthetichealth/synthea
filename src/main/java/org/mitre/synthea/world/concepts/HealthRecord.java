@@ -115,7 +115,7 @@ public class HealthRecord {
       if (cost == null) {
         Person patient = record.person;
         Provider provider = record.provider;
-        Payer payer = person.getInsurance(start);
+        Payer payer = person.getPayerAtTime(start);
         cost = BigDecimal.valueOf(Costs.calculateCost(this, patient, provider, payer));
         cost = cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
       }
@@ -258,19 +258,20 @@ public class HealthRecord {
     public Payer payer;
 
     public Claim(Encounter encounter) {
-      this.payer = person.getInsurance(encounter.start);
+      this.payer = person.getPayerAtTime(encounter.start);
       if (this.payer == null) {
         // The payer is only ever null when the person is 0 and they have their first
         // encounter. After this first encounter, they will never have null insurance.
-        // I have temporarily fixed this by making getInsurance(time) return the
-        // Payer.noInsurance object if they have a null payer.
-        person.setPayerAtAge(person.ageInYears(encounter.start), null);
-        throw new RuntimeException("ERROR: Claim made with null Payer at age: "
-            + person.ageInYears(encounter.start) + " for encounter: " + encounter);
-      } else {
-        payer.incrementEncountersCovered(encounter.type, Utilities.getYear(encounter.start));
+        // I have temporarily fixed this by making just setting the payer
+        // to the NO_INSURANCE object in this case.
+        person.setPayerAtTime(encounter.start, Payer.noInsurance);
+        this.payer = person.getPayerAtTime(encounter.start);
+        // throw new RuntimeException("ERROR: Claim made with null Payer at age: "
+        //     + person.ageInYears(encounter.start) + " for encounter: " + encounter);
       }
-
+      
+      payer.incrementEncountersCovered(encounter.type, Utilities.getYear(encounter.start));
+      
       // Covered cost will be updated once the payer actually pays it.
       coveredCost = 0.0;
 
@@ -281,8 +282,7 @@ public class HealthRecord {
     public Claim(Medication medication) {
       // baseCost = 255.0;
 
-      // Having some difficulties here. The person rarely has insurance when they make
-      // a claim for medication.
+      // Need some guidance with medications, etc.
       // this.payer = person.getInsurance(encounter.start);
       // double patientCopay = payer.determineCopay(encounter);
 
@@ -311,7 +311,7 @@ public class HealthRecord {
           this.coveredCost = 0.0;
         }
       } else {
-        System.out.println("ERROR: Tried to determine Covered Cost with a null Payer.");
+        new RuntimeException("ERROR: Tried to determine Covered Cost with a null Payer.");
         this.coveredCost = 0.0;
       }
       return this.coveredCost;

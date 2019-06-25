@@ -125,9 +125,9 @@ public class Payer {
   }
 
   /**
-   * Increments the encounters the payer has covered.
-   * Changed service from EncounterType to String to simplify for now.
-   * Would like to change back to EncounterType later.
+   * Increments the encounters the payer has covered. Changed service from
+   * EncounterType to String to simplify for now. Would like to change back to
+   * EncounterType later.
    */
   public void incrementEncountersCovered(String service, int year) {
     increment(year, Provider.ENCOUNTERS);
@@ -213,8 +213,8 @@ public class Payer {
         || !statesLoaded.contains(Location.getAbbreviation(location.state))
         || !statesLoaded.contains(Location.getStateName(location.state))) {
       try {
-        String insuranceCompanyFile =
-            Config.get("generate.payers.insurance_companies.default_file");
+        String insuranceCompanyFile
+            = Config.get("generate.payers.insurance_companies.default_file");
         loadPayers(location, insuranceCompanyFile);
 
         statesLoaded.add(location.state);
@@ -342,8 +342,7 @@ public class Payer {
    * Returns the number of encounters this payer paid for.
    */
   public int getEncounterCount() {
-    return
-        utilization.column(Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
+    return utilization.column(Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
   }
 
   /**
@@ -398,6 +397,20 @@ public class Payer {
     // // patient initiated encounter, patient encounter procedure
     // copay = outpatientCopay
     // }
-    return defaultCopay; 
+    return defaultCopay;
+  }
+
+  /**
+   * Returns the monthly premium of the payer.
+   */
+  public double getMonthlyPremium() {
+    return this.monthlyPremium;
+  }
+
+  /**
+   * Pays the given premium to the Payer, increasing their revenue.
+   */
+  public void payPremium(double monthlyPremium) {
+    this.revenue += monthlyPremium;
   }
 }
