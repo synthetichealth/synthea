@@ -743,7 +743,7 @@
     },
     "Increment Radiation Treatment Count": {
       "type": "Counter",
-      "attribute": "treat_count",
+      "attribute": "breast_cancer_treat_count",
       "action": "increment",
       "direct_transition": "Delay Until Next Cycle"
     },
