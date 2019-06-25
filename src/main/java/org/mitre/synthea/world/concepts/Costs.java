@@ -19,10 +19,14 @@ import org.mitre.synthea.world.geography.Location;
 public class Costs {
   // all of these are CSVs with these columns:
   // code, min cost in $, mode cost in $, max cost in $, comments
-  private static final Map<String, CostData> PROCEDURE_COSTS = parseCsvToMap("costs/procedures.csv");
-  private static final Map<String, CostData> MEDICATION_COSTS = parseCsvToMap("costs/medications.csv");
-  private static final Map<String, CostData> ENCOUNTER_COSTS = parseCsvToMap("costs/encounters.csv");
-  private static final Map<String, CostData> IMMUNIZATION_COSTS = parseCsvToMap("costs/immunizations.csv");
+  private static final Map<String, CostData> PROCEDURE_COSTS =
+      parseCsvToMap("costs/procedures.csv");
+  private static final Map<String, CostData> MEDICATION_COSTS =
+      parseCsvToMap("costs/medications.csv");
+  private static final Map<String, CostData> ENCOUNTER_COSTS =
+      parseCsvToMap("costs/encounters.csv");
+  private static final Map<String, CostData> IMMUNIZATION_COSTS =
+      parseCsvToMap("costs/immunizations.csv");
 
   private static final double DEFAULT_PROCEDURE_COST = Double
       .parseDouble(Config.get("generate.costs.default_procedure_cost"));
@@ -174,7 +178,8 @@ public class Costs {
       patientCopay = payer.getCopay();
     }
 
-    // Currently, nothing is done with the costToPatient. Not sure how to use it to affect a person's savings/income/etc. yet.
+    // Currently, nothing is done with the costToPatient.
+    // Not sure how to use it to affect a person's savings/income/etc. yet.
     double costToPatient = 0.0;
     double costToPayer = 0.0;
     double totalCost = (baseCost * locationAdjustment);
@@ -184,7 +189,7 @@ public class Costs {
       if (totalCost >= patientCopay) {
         costToPayer = totalCost - patientCopay;
         costToPatient = patientCopay;
-      }else{
+      } else {
         costToPatient = totalCost;
       }
     } else {
@@ -195,7 +200,7 @@ public class Costs {
 
     // Upate Payer
     payer.addCost(costToPayer);
-    // payer.addRevenue(costToPatient);
+    // payer.addRevenue(costToPatient); (Not to be used here) - TODO
 
     return totalCost;
   }

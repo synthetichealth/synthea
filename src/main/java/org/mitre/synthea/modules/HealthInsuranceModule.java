@@ -25,9 +25,12 @@ public class HealthInsuranceModule extends Module {
   public HealthInsuranceModule() {
     int mandateYear = Integer.parseInt(Config.get("generate.insurance.mandate.year", "2006"));
     mandateTime = Utilities.convertCalendarYearsToTime(mandateYear);
-    mandateOccupation = Double.parseDouble(Config.get("generate.insurance.mandate.occupation", "0.2"));
-    privateIncomeThreshold = Integer.parseInt(Config.get("generate.insurance.private.minimum_income", "24000"));
-    povertyLevel = Double.parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
+    mandateOccupation = Double
+        .parseDouble(Config.get("generate.insurance.mandate.occupation", "0.2"));
+    privateIncomeThreshold = Integer
+        .parseInt(Config.get("generate.insurance.private.minimum_income", "24000"));
+    povertyLevel = Double
+        .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
     medicaidLevel = 1.33 * povertyLevel;
   }
 
@@ -51,9 +54,9 @@ public class HealthInsuranceModule extends Module {
     if (person.getPayerAtAge(age) == null) {
       // Are age AND time fields necessary?
       newPayer = determineInsurance(person, age, time);
-      newPayer.incrementCustomers(person);
       // Set the payer at the current age
       person.setPayerAtAge(age, newPayer);
+      newPayer.incrementCustomers(person);
     }
 
     // java modules will never "finish"
@@ -70,8 +73,10 @@ public class HealthInsuranceModule extends Module {
    */
   private Payer determineInsurance(Person person, int age, long time) {
     boolean female = (person.attributes.get(Person.GENDER).equals("F"));
-    boolean pregnant = (person.attributes.containsKey("pregnant") && (boolean) person.attributes.get("pregnant"));
-    boolean blind = (person.attributes.containsKey("blindness") && (boolean) person.attributes.get("blindness"));
+    boolean pregnant = (person.attributes.containsKey("pregnant")
+        && (boolean) person.attributes.get("pregnant"));
+    boolean blind = (person.attributes.containsKey("blindness")
+        && (boolean) person.attributes.get("blindness"));
     boolean esrd = (person.attributes.containsKey("end_stage_renal_disease")
         && (boolean) person.attributes.get("end_stage_renal_disease"));
     boolean sixtyFive = (age >= 65);

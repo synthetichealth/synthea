@@ -204,7 +204,8 @@ public class CSVExporter {
     organizations.write(NEWLINE);
     providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,UTILIZATION");
     providers.write(NEWLINE);
-    payers.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,AMOUNT_COVERED,REVENUE,ENCOUNTER_UTILIZATION,UNIQUE_CUSTOMERS");
+    payers.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,AMOUNT_COVERED,REVENUE,"
+        + "ENCOUNTER_UTILIZATION,UNIQUE_CUSTOMERS");
     payers.write(NEWLINE);
   }
 
@@ -824,7 +825,8 @@ public class CSVExporter {
   }
 
   private void payer(Payer payer) throws IOException {
-    // Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,AMOUNT_PAID,REVENUE,ENCOUNTER_UTILIZATION,UNIQUE_CUSTOMERS
+    // Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,AMOUNT_PAID,REVENUE,
+    // ENCOUNTER_UTILIZATION,UNIQUE_CUSTOMERS
 
     StringBuilder s = new StringBuilder();
     s.append(payer.getResourceID()).append(',');

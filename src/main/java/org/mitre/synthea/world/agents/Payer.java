@@ -88,14 +88,14 @@ public class Payer {
     IPayerFinder finder = null;
     String behavior = Config.get("generate.payers.selection_behavior").toLowerCase();
     switch (behavior) {
-    case BESTRATE:
-      finder = new PayerFinderBestRates();
-      break;
-    case RANDOM:
-      finder = new PayerFinderRandom();
-      break;
-    default:
-      throw new RuntimeException("Not a valid Payer Selction Algorithm: " + behavior);
+      case BESTRATE:
+        finder = new PayerFinderBestRates();
+        break;
+      case RANDOM:
+        finder = new PayerFinderRandom();
+        break;
+      default:
+        throw new RuntimeException("Not a valid Payer Selction Algorithm: " + behavior);
     }
     return finder;
   }
@@ -126,8 +126,10 @@ public class Payer {
 
   /**
    * Increments the encounters the payer has covered.
+   * Changed service from EncounterType to String to simplify for now.
+   * Would like to change back to EncounterType later.
    */
-  public void incrementEncountersCovered(EncounterType service, int year) {
+  public void incrementEncountersCovered(String service, int year) {
     increment(year, Provider.ENCOUNTERS);
     increment(year, Provider.ENCOUNTERS + "-" + service);
   }
@@ -207,10 +209,12 @@ public class Payer {
    * @param location the state being loaded.
    */
   public static void loadPayers(Location location) {
-    if (!statesLoaded.contains(location.state) || !statesLoaded.contains(Location.getAbbreviation(location.state))
+    if (!statesLoaded.contains(location.state)
+        || !statesLoaded.contains(Location.getAbbreviation(location.state))
         || !statesLoaded.contains(Location.getStateName(location.state))) {
       try {
-        String insuranceCompanyFile = Config.get("generate.payers.insurance_companies.default_file");
+        String insuranceCompanyFile =
+            Config.get("generate.payers.insurance_companies.default_file");
         loadPayers(location, insuranceCompanyFile);
 
         statesLoaded.add(location.state);
@@ -338,7 +342,8 @@ public class Payer {
    * Returns the number of encounters this payer paid for.
    */
   public int getEncounterCount() {
-    return utilization.column(Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
+    return
+        utilization.column(Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
   }
 
   /**
@@ -393,6 +398,6 @@ public class Payer {
     // // patient initiated encounter, patient encounter procedure
     // copay = outpatientCopay
     // }
-    return defaultCopay;
+    return defaultCopay; 
   }
 }

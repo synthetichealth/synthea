@@ -136,11 +136,13 @@ public class Person implements Serializable, QuadTreeData {
    */
   public double rand(double[] range) {
     if (range == null || range.length != 2) {
-      throw new IllegalArgumentException("input range must be of length 2 -- got " + Arrays.toString(range));
+      throw new IllegalArgumentException(
+          "input range must be of length 2 -- got " + Arrays.toString(range));
     }
 
     if (range[0] > range[1]) {
-      throw new IllegalArgumentException("range must be of the form {low, high} -- got " + Arrays.toString(range));
+      throw new IllegalArgumentException(
+          "range must be of the form {low, high} -- got " + Arrays.toString(range));
     }
 
     return rand(range[0], range[1]);
@@ -165,31 +167,42 @@ public class Person implements Serializable, QuadTreeData {
    */
   public double rand(int[] range) {
     if (range == null || range.length != 2) {
-      throw new IllegalArgumentException("input range must be of length 2 -- got " + Arrays.toString(range));
+      throw new IllegalArgumentException(
+          "input range must be of length 2 -- got " + Arrays.toString(range));
     }
 
     if (range[0] > range[1]) {
-      throw new IllegalArgumentException("range must be of the form {low, high} -- got " + Arrays.toString(range));
+      throw new IllegalArgumentException(
+          "range must be of the form {low, high} -- got " + Arrays.toString(range));
     }
 
     return rand(range[0], range[1]);
   }
 
+  /**
+   * Returns a random integer.
+   */
   public int randInt() {
     return random.nextInt();
   }
 
+  /**
+   * Returns a random integer in the given bound.
+   */
   public int randInt(int bound) {
     return random.nextInt(bound);
   }
 
+  /**
+   * Returns a person's age in Period form.
+   */
   public Period age(long time) {
     Period age = Period.ZERO;
 
     if (attributes.containsKey(BIRTHDATE)) {
       LocalDate now = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
-      LocalDate birthdate = Instant.ofEpochMilli((long) attributes.get(BIRTHDATE)).atZone(ZoneId.systemDefault())
-          .toLocalDate();
+      LocalDate birthdate = Instant.ofEpochMilli((long) attributes.get(BIRTHDATE))
+          .atZone(ZoneId.systemDefault()).toLocalDate();
       age = Period.between(birthdate, now);
     }
     return age;
@@ -225,6 +238,9 @@ public class Person implements Serializable, QuadTreeData {
     return years;
   }
 
+  /**
+   * Returns whether a person is alive at the given time.
+   */
   public boolean alive(long time) {
     return (events.event(Event.BIRTH) != null && events.before(time, Event.DEATH).isEmpty());
   }
@@ -291,6 +307,14 @@ public class Person implements Serializable, QuadTreeData {
     setVitalSign(vitalSign, new ConstantValueGenerator(this, value));
   }
 
+  /**
+   * Records a person's death.
+   * 
+   * @param time     the time of the death.
+   * @param cause    the cause of the death.
+   * @param ruleName the name of the rule or method that created the event (for
+   *                 debugging).
+   */
   public void recordDeath(long time, Code cause, String ruleName) {
     events.create(time, Event.DEATH, ruleName, true);
     if (record.death == null || record.death > time) {
@@ -377,7 +401,8 @@ public class Person implements Serializable, QuadTreeData {
 
   @SuppressWarnings("unchecked")
   public Encounter getCurrentEncounter(Module module) {
-    Map<String, Encounter> moduleToCurrentEncounter = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
+    Map<String, Encounter> moduleToCurrentEncounter
+        = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
 
     if (moduleToCurrentEncounter == null) {
       moduleToCurrentEncounter = new HashMap<>();
@@ -389,7 +414,8 @@ public class Person implements Serializable, QuadTreeData {
 
   @SuppressWarnings("unchecked")
   public void setCurrentEncounter(Module module, Encounter encounter) {
-    Map<String, Encounter> moduleToCurrentEncounter = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
+    Map<String, Encounter> moduleToCurrentEncounter
+        = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
 
     if (moduleToCurrentEncounter == null) {
       moduleToCurrentEncounter = new HashMap<>();
@@ -500,7 +526,16 @@ public class Person implements Serializable, QuadTreeData {
     if (this.payerHistory.get(age) != null) {
       return this.payerHistory.get(age);
     }
-    return this.payerHistory.get(0);
+    // TODO - Fix Issue: payer at that age is null when person is 0 and has their
+    // first encounter. Thus, payerHistory.get(0) is still null.
+    // See Person.getInsurance(time) to see where/how this fix was implemented.
+    // The problem is that the person's HealthInsurance.process, which determines
+    // their insurance for each year of their life, does not get called until after
+    // their first encounter. I dont't want to mess with how module.process gets
+    // called so I'mnot sure how to fix this beyond what I've done here.
+    // return this.payerHistory.get(0);
+    // For Now, return NO_INSURANCE.
+    return Payer.noInsurance;
   }
 
   /**

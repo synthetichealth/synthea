@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
@@ -261,14 +260,15 @@ public class HealthRecord {
     public Claim(Encounter encounter) {
       this.payer = person.getInsurance(encounter.start);
       if (this.payer == null) {
-        // Shouldn't have to do this? Shouldn't the person's Payer already be
-        // determined?
-        // TODO - change from setting to null to determineInsurance()
+        // The payer is only ever null when the person is 0 and they have their first
+        // encounter. After this first encounter, they will never have null insurance.
+        // I have temporarily fixed this by making getInsurance(time) return the
+        // Payer.noInsurance object if they have a null payer.
         person.setPayerAtAge(person.ageInYears(encounter.start), null);
-        // TODO - This error occurs exactly the same number of times as there are people. mot likely has to do with their first payer at age 0 being null?
-        System.out.println("ERROR: Claim made with null Payer. Redetermined a new one.");
+        throw new RuntimeException("ERROR: Claim made with null Payer at age: "
+            + person.ageInYears(encounter.start) + " for encounter: " + encounter);
       } else {
-        payer.incrementEncountersCovered(EncounterType.fromString(encounter.type), Utilities.getYear(encounter.start));
+        payer.incrementEncountersCovered(encounter.type, Utilities.getYear(encounter.start));
       }
 
       // Covered cost will be updated once the payer actually pays it.
@@ -319,7 +319,8 @@ public class HealthRecord {
   }
 
   public enum EncounterType {
-    WELLNESS("AMB"), AMBULATORY("AMB"), OUTPATIENT("AMB"), INPATIENT("IMP"), EMERGENCY("EMER"), URGENTCARE("AMB");
+    WELLNESS("AMB"), AMBULATORY("AMB"), OUTPATIENT("AMB"), INPATIENT("IMP"),
+    EMERGENCY("EMER"), URGENTCARE("AMB");
 
     // http://www.hl7.org/implement/standards/fhir/v3/ActEncounterCode/vs.html
     private final String code;
@@ -444,6 +445,7 @@ public class HealthRecord {
       encounter = new Encounter(time, EncounterType.WELLNESS.toString());
       encounter.name = "First Wellness";
       encounters.add(encounter);
+      System.out.println("First encounter at " + person.ageInYears(time));
     }
     return encounter;
   }
@@ -470,7 +472,8 @@ public class HealthRecord {
     int count = numberOfObservations;
     if (encounter.observations.size() >= numberOfObservations) {
       while (count > 0) {
-        observation.observations.add(encounter.observations.remove(encounter.observations.size() - 1));
+        observation.observations.add(
+            encounter.observations.remove(encounter.observations.size() - 1));
         count--;
       }
     }
