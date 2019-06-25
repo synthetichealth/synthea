@@ -37,40 +37,52 @@
             "operator": "==",
             "value": "local"
           },
+          "distributions": [],
+          "transition": "No Regional Lymph Node Metastasis"
+        },
+        {
           "distributions": [
             {
-              "transition": "No Regional Lymph Node Metastasis",
-              "distribution": 0.8
+              "distribution": 0.34,
+              "transition": "Micrometastasis in 1 - 3 Lymph Nodes"
             },
             {
-              "transition": "Micrometastasis in 1 - 3 Lymph Nodes",
-              "distribution": 0.1
+              "distribution": 0.33,
+              "transition": "Macrometastases in 4 - 9 Lymph Nodes"
             },
             {
-              "transition": "Macrometastases in 4 - 9 Lymph Nodes",
-              "distribution": 0.06
-            },
-            {
-              "transition": "Macrometastases in 10+ Lymph Nodes",
-              "distribution": 0.03
+              "distribution": 0.33,
+              "transition": "Macrometastases in 10+ Lymph Nodes"
             }
-          ]
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "M",
+            "operator": "==",
+            "value": "M1"
+          }
         },
         {
           "distributions": [
             {
               "transition": "Micrometastasis in 1 - 3 Lymph Nodes",
-              "distribution": 0.34
+              "distribution": 0.6
             },
             {
               "transition": "Macrometastases in 4 - 9 Lymph Nodes",
-              "distribution": 0.33
+              "distribution": 0.3
             },
             {
               "transition": "Macrometastases in 10+ Lymph Nodes",
-              "distribution": 0.33
+              "distribution": 0.10000000000000009
             }
-          ]
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_Locataion",
+            "operator": "==",
+            "value": "regional"
+          }
         }
       ],
       "remarks": [
