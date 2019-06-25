@@ -57,7 +57,7 @@
           ],
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "M",
+            "attribute": "breast_cancer_M",
             "operator": "==",
             "value": "M1"
           }
@@ -79,7 +79,7 @@
           ],
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "breast_cancer_Locataion",
+            "attribute": "breast_cancer_Location",
             "operator": "==",
             "value": "regional"
           }

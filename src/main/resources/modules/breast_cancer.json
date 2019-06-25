@@ -557,9 +557,8 @@
     },
     "Nonaggressive": {
       "type": "Simple",
-      "conditional_transition": [
+      "complex_transition": [
         {
-          "transition": "IIB",
           "condition": {
             "condition_type": "Or",
             "conditions": [
@@ -587,41 +586,64 @@
                 ]
               }
             ]
-          }
+          },
+          "distributions": [
+            {
+              "transition": "IIB",
+              "distribution": 1
+            }
+          ]
         },
         {
-          "transition": "IIA",
           "condition": {
-            "condition_type": "Or",
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_T",
+            "operator": "==",
+            "value": "T2"
+          },
+          "distributions": [
+            {
+              "transition": "IIA",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
             "conditions": [
               {
                 "condition_type": "Attribute",
                 "attribute": "breast_cancer_T",
                 "operator": "==",
-                "value": "T2"
+                "value": "T1"
               },
               {
-                "condition_type": "And",
-                "conditions": [
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "breast_cancer_T",
-                    "operator": "==",
-                    "value": "T1"
-                  },
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "breast_cancer_N",
-                    "operator": "==",
-                    "value": "N1"
-                  }
-                ]
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_N",
+                "operator": "==",
+                "value": "N1"
               }
             ]
-          }
+          },
+          "distributions": [
+            {
+              "transition": "IIA",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Early_Stage",
+              "distribution": 0.5
+            }
+          ]
         },
         {
-          "transition": "Early_Stage"
+          "distributions": [
+            {
+              "transition": "Early_Stage",
+              "distribution": 1
+            }
+          ]
         }
       ]
     },
