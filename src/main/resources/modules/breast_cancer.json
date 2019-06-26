@@ -1210,7 +1210,6 @@
           "display": "Malignant neoplasm of breast (disorder)"
         }
       ],
-      "target_encounter": "Breast Cancer Encounter",
       "direct_transition": "Diagnose_TNM_Markers",
       "assign_to_attribute": "breast_cancer_condition"
     },
