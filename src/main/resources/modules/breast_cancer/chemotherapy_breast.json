@@ -18,7 +18,8 @@
         }
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",
-      "assign_to_attribute": "chemoMed"
+      "assign_to_attribute": "chemoMed",
+      "reason": "breast_cancer_condition"
     },
     "Anthracyclines": {
       "type": "Simple",
@@ -43,7 +44,8 @@
         }
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",
-      "assign_to_attribute": "chemoMed"
+      "assign_to_attribute": "chemoMed",
+      "reason": "breast_cancer_condition"
     },
     "Taxanes": {
       "type": "Simple",
@@ -59,7 +61,8 @@
         }
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",
-      "assign_to_attribute": "chemoMed"
+      "assign_to_attribute": "chemoMed",
+      "reason": "breast_cancer_condition"
     },
     "Doxorubicin": {
       "type": "MedicationOrder",
@@ -76,7 +79,8 @@
         "- Epriubicin (Ellence) ",
         "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html"
       ],
-      "assign_to_attribute": "chemoMed"
+      "assign_to_attribute": "chemoMed",
+      "reason": "breast_cancer_condition"
     },
     "Epirubicin": {
       "type": "MedicationOrder",
@@ -88,7 +92,8 @@
         }
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",
-      "assign_to_attribute": "chemoMed"
+      "assign_to_attribute": "chemoMed",
+      "reason": "breast_cancer_condition"
     },
     "Paclitaxel": {
       "type": "MedicationOrder",
@@ -100,7 +105,8 @@
         }
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",
-      "assign_to_attribute": "chemoMed"
+      "assign_to_attribute": "chemoMed",
+      "reason": "breast_cancer_condition"
     },
     "Adjuvant Chemotherapy Procedure": {
       "type": "Procedure",
@@ -187,7 +193,21 @@
           "distribution": 0.05
         }
       ],
-      "value": 0
+      "value": 0,
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html",
+        "",
+        "Which chemotherapy drugs are used for breast cancer?",
+        "In most cases (especially as adjuvant or neoadjuvant treatment), chemo is most effective when combinations of drugs are used. Today, doctors use many different combinations, and it's not clear that any single combination is clearly the best.",
+        "",
+        "The most common drugs used for adjuvant and neoadjuvant chemo include:",
+        "Anthracyclines, such as doxorubicin (Adriamycin) and epirubicin (Ellence)",
+        "Taxanes, such as paclitaxel (Taxol) and docetaxel (Taxotere)",
+        "5-fluorouracil (5-FU)",
+        "Cyclophosphamide (Cytoxan)",
+        "Carboplatin (Paraplatin)",
+        "Most often, combinations of 2 or 3 of these drugs are used."
+      ]
     },
     "Delay Until Next Cycle (3 Weeks)": {
       "type": "Delay",
