@@ -50,6 +50,15 @@ public class QualityOfLifeModule extends Module {
       qols.put(year, values[2]);
       person.attributes.put("most-recent-daly", values[0]);
       person.attributes.put("most-recent-qaly", values[1]);
+
+      // Payer really should never be null but occasionally it is. Probably has something to do with the order that QOL's & HealthInsurance's module.process happens to be called in?
+      if (person.getPayerAtTime(time) != null) {
+        person.getPayerAtTime(time).addQOLS(values[2]);
+      }
+
+      System.out.println(person.attributes.get(Person.NAME) + " QALY at age " + person.ageInYears(time) + " was: "
+          + values[1] + " with a DALY of: " + values[0] + " and a QOLS of: " + values[2]);
+
     }
 
     // java modules will never "finish"
@@ -71,18 +80,20 @@ public class QualityOfLifeModule extends Module {
   }
 
   /**
-   * Calculate the HALYs for this person, at the given time. HALYs include QALY and DALY.
+   * Calculate the HALYs for this person, at the given time. HALYs include QALY
+   * and DALY.
    * 
-   * @param person
-   *          Person to calculate
-   * @param stop
-   *          current timestamp
-   * @return array of [daly (cumulative), qaly (cumulative), current disability weight]
+   * @param person Person to calculate
+   * @param stop   current timestamp
+   * @return array of [daly (cumulative), qaly (cumulative), current disability
+   *         weight]
    */
   public static double[] calculate(Person person, long stop) {
     // Disability-Adjusted Life Year = DALY = YLL + YLD
-    // Years of Life Lost = YLL = (1) * (standard life expectancy at age of death in years)
-    // Years Lost due to Disability = YLD = (disability weight) * (average duration of case)
+    // Years of Life Lost = YLL = (1) * (standard life expectancy at age of death in
+    // years)
+    // Years Lost due to Disability = YLD = (disability weight) * (average duration
+    // of case)
     // from http://www.who.int/healthinfo/global_burden_disease/metrics_daly/en/
     double yll = 0.0;
     double yld = 0.0;
@@ -94,9 +105,14 @@ public class QualityOfLifeModule extends Module {
       // life expectancy equation derived from IHME GBD 2015 Reference Life Table
       // 6E-5x^3 - 0.0054x^2 - 0.8502x + 86.16
       // R^2 = 0.99978
-      double l = ((0.00006 * Math.pow(age, 3)) - (0.0054 * Math.pow(age, 2)) - (0.8502 * age)
-          + 86.16);
+      double l = ((0.00006 * Math.pow(age, 3)) - (0.0054 * Math.pow(age, 2)) - (0.8502 * age) + 86.16);
       yll = l;
+
+      // Need to give the yll to the payer here.
+      // person.payer.addQALY(personAge/QALY) or .add(DALY)
+      // At the end, payer averages this data out
+
+      System.out.println("yup, " + person.attributes.get(Person.NAME) + " is dead. lost " + yll + " years.");
     }
     // get list of conditions
     List<Entry> allConditions = new ArrayList<Entry>();
@@ -116,8 +132,7 @@ public class QualityOfLifeModule extends Module {
       disabilityWeight = 0.0;
 
       for (Entry condition : conditionsInYear) {
-        disabilityWeight += (double) disabilityWeights.get(condition.codes.get(0).display)
-            .get("disability_weight");
+        disabilityWeight += (double) disabilityWeights.get(condition.codes.get(0).display).get("disability_weight");
       }
 
       disabilityWeight = Math.min(1.0, weight(disabilityWeight, i + 1));
@@ -154,12 +169,12 @@ public class QualityOfLifeModule extends Module {
   }
 
   /**
-   * Populate the given attribute map with the list of attributes that this
-   * module reads/writes with example values when appropriate.
+   * Populate the given attribute map with the list of attributes that this module
+   * reads/writes with example values when appropriate.
    *
    * @param attributes Attribute map to populate.
    */
-  public static void inventoryAttributes(Map<String,Inventory> attributes) {
+  public static void inventoryAttributes(Map<String, Inventory> attributes) {
     String m = QualityOfLifeModule.class.getSimpleName();
     Attributes.inventory(attributes, m, "QALY", true, true, "LinkedHashMap<Integer, Double>");
     Attributes.inventory(attributes, m, "DALY", true, true, "LinkedHashMap<Integer, Double>");

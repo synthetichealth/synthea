@@ -58,6 +58,8 @@ public class Payer {
   // Payer statistics
   private double costsCovered;
   private double revenue;
+  // [0]: Total QOLS, [1]: Total Years
+  private double[] qualityOfLifeTracker;
   // row: year, column: type, value: count
   private Table<Integer, String, AtomicInteger> utilization;
   // Unique utilizers of Payer, by Person ID
@@ -79,6 +81,7 @@ public class Payer {
     monthlyPremium = 0.0;
     deductible = 0.0;
     defaultCopay = 0.0;
+    qualityOfLifeTracker = new double[] { 0.0, 0.0 };
   }
 
   /**
@@ -88,14 +91,14 @@ public class Payer {
     IPayerFinder finder = null;
     String behavior = Config.get("generate.payers.selection_behavior").toLowerCase();
     switch (behavior) {
-      case BESTRATE:
-        finder = new PayerFinderBestRates();
-        break;
-      case RANDOM:
-        finder = new PayerFinderRandom();
-        break;
-      default:
-        throw new RuntimeException("Not a valid Payer Selction Algorithm: " + behavior);
+    case BESTRATE:
+      finder = new PayerFinderBestRates();
+      break;
+    case RANDOM:
+      finder = new PayerFinderRandom();
+      break;
+    default:
+      throw new RuntimeException("Not a valid Payer Selction Algorithm: " + behavior);
     }
     return finder;
   }
@@ -209,12 +212,10 @@ public class Payer {
    * @param location the state being loaded.
    */
   public static void loadPayers(Location location) {
-    if (!statesLoaded.contains(location.state)
-        || !statesLoaded.contains(Location.getAbbreviation(location.state))
+    if (!statesLoaded.contains(location.state) || !statesLoaded.contains(Location.getAbbreviation(location.state))
         || !statesLoaded.contains(Location.getStateName(location.state))) {
       try {
-        String insuranceCompanyFile
-            = Config.get("generate.payers.insurance_companies.default_file");
+        String insuranceCompanyFile = Config.get("generate.payers.insurance_companies.default_file");
         loadPayers(location, insuranceCompanyFile);
 
         statesLoaded.add(location.state);
@@ -412,5 +413,25 @@ public class Payer {
    */
   public void payPremium(double monthlyPremium) {
     this.revenue += monthlyPremium;
+  }
+
+  /**
+   * Adds the Quality of Life Score (QOLS) of a patient of the current (past?)
+   * year. Increments the total number of years covered (for averaging out
+   * purposes)
+   * Should this take the DALY instead of QOLS?
+   */
+  public void addQOLS(double qols) {
+    qualityOfLifeTracker[0] += qols;
+    qualityOfLifeTracker[1]++;
+  }
+
+   /**
+   * Returns the average of the payer's QOL impact with the number of years covered.
+   */
+  public double getQOLAverage() {
+    double qolTotal = qualityOfLifeTracker[0];
+    double numYears = qualityOfLifeTracker[1];
+    return qolTotal/numYears;
   }
 }

@@ -205,7 +205,7 @@ public class CSVExporter {
     providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,UTILIZATION");
     providers.write(NEWLINE);
     payers.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,AMOUNT_COVERED,REVENUE,"
-        + "ENCOUNTER_UTILIZATION,UNIQUE_CUSTOMERS");
+        + "ENCOUNTER_UTILIZATION,UNIQUE_CUSTOMERS,QOLS_AVG");
     payers.write(NEWLINE);
   }
 
@@ -826,7 +826,7 @@ public class CSVExporter {
 
   private void payer(Payer payer) throws IOException {
     // Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,AMOUNT_PAID,REVENUE,
-    // ENCOUNTER_UTILIZATION,UNIQUE_CUSTOMERS
+    // ENCOUNTER_UTILIZATION,UNIQUE_CUSTOMERS,QOLS_AVG
 
     StringBuilder s = new StringBuilder();
     s.append(payer.getResourceID()).append(',');
@@ -838,7 +838,8 @@ public class CSVExporter {
     s.append(String.format(Locale.US, "%.2f", payer.getAmountPaid())).append(',');
     s.append(String.format(Locale.US, "%.2f", payer.getRevenue())).append(',');
     s.append(payer.getEncounterCount()).append(",");
-    s.append(payer.getUniqueCustomers());
+    s.append(payer.getUniqueCustomers()).append(",");
+    s.append(payer.getQOLAverage());
     s.append(NEWLINE);
 
     write(s.toString(), payers);
