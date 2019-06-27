@@ -826,7 +826,7 @@
     },
     "Initial Follow-Up Counter": {
       "type": "Counter",
-      "attribute": "init_followup_counter",
+      "attribute": "breast_cancer_init_followup_counter",
       "action": "increment",
       "conditional_transition": [
         {
