@@ -1144,7 +1144,7 @@
     },
     "Years After Treatment Counter": {
       "type": "Counter",
-      "attribute": "years_after_treatment",
+      "attribute": "breast_cancer_years_after_treatment",
       "action": "increment",
       "conditional_transition": [
         {
