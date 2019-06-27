@@ -24,6 +24,7 @@
         }
       ],
       "remarks": [
+        "About 6% of women have metastatic cancer when they are first diagnosed with breast cancer:",
         "https://www.cancer.net/cancer-types/breast-cancer/statistics"
       ]
     },
@@ -86,6 +87,13 @@
         }
       ],
       "remarks": [
+        "Lymph node status shows whether or not the lymph nodes in the underarm area (axillary lymph nodes) contain cancer:",
+        "Lymph node-negative means the axillary lymph nodes do not contain cancer.",
+        "Lymph node-positive means the axillary lymph nodes contain cancer.",
+        "Prognosis is better when cancer has not spread to the lymph nodes (lymph node-negative) [13].",
+        "The more lymph nodes that contain cancer, the poorer prognosis tends to be [13].",
+        "The number of positive nodes guides treatment and helps predict prognosis (chances for survival).",
+        "See Figure 4.4 for an illustration of the breast and lymph nodes.",
         "https://ww5.komen.org/BreastCancer/LymphNodeStatusandStaging.html"
       ]
     },
@@ -93,7 +101,10 @@
       "type": "SetAttribute",
       "attribute": "breast_cancer_T",
       "direct_transition": "T4_Diagnosed",
-      "value": "T4"
+      "value": "T4",
+      "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition"
+      ]
     },
     "N1": {
       "type": "SetAttribute",
@@ -214,6 +225,7 @@
         }
       ],
       "remarks": [
+        "If the cancer is located only in the breast, the 5-year survival rate of women with breast cancer is 99%. Sixty-two percent (62%) of cases are diagnosed at this stage:",
         "https://www.cancer.net/cancer-types/breast-cancer/statistics"
       ]
     },
@@ -386,7 +398,10 @@
       "type": "SetAttribute",
       "attribute": "breast_cancer_T",
       "value": "T1",
-      "direct_transition": "T1_Diagnosed"
+      "direct_transition": "T1_Diagnosed",
+      "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition"
+      ]
     },
     "No Evidence of Primary Tumor in Breast": {
       "type": "Simple",
@@ -425,7 +440,10 @@
       "type": "SetAttribute",
       "attribute": "breast_cancer_T",
       "value": "T2",
-      "direct_transition": "T2_Diagnosed"
+      "direct_transition": "T2_Diagnosed",
+      "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition"
+      ]
     },
     "Tumor Size Greater Than 5 cm": {
       "type": "Observation",
@@ -471,7 +489,10 @@
       "type": "SetAttribute",
       "attribute": "breast_cancer_T",
       "value": "T3",
-      "direct_transition": "T3_Diagnosed"
+      "direct_transition": "T3_Diagnosed",
+      "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition"
+      ]
     },
     "Tumor Size Any": {
       "type": "Observation",
@@ -520,7 +541,9 @@
       "attribute": "breast_cancer_M",
       "value": "M0",
       "remarks": [
-        "https://www.cancer.net/cancer-types/breast-cancer/statistics"
+        "AJCC Cancer Staging Manual; 8th Edition",
+        "Cancer has either spread beyond the breast and nearby lymph nodes to other areas of the body (M1) or it has not (MO):",
+        "https://ww5.komen.org/BreastCancer/MetastasesandStaging.html"
       ],
       "direct_transition": "M0_Diagnosed"
     },
@@ -556,6 +579,7 @@
       },
       "direct_transition": "N0",
       "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition",
         "https://ww5.komen.org/BreastCancer/LymphNodeStatusandStaging.html"
       ]
     },
@@ -582,6 +606,7 @@
         "high": 3
       },
       "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition",
         "https://ww5.komen.org/BreastCancer/LymphNodeStatusandStaging.html"
       ]
     },
@@ -602,6 +627,7 @@
         "high": 9
       },
       "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition",
         "https://ww5.komen.org/BreastCancer/LymphNodeStatusandStaging.html"
       ]
     },
@@ -622,6 +648,7 @@
         "high": 30
       },
       "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition",
         "https://ww5.komen.org/BreastCancer/LymphNodeStatusandStaging.html",
         "https://www.medicalnewstoday.com/articles/319713.php"
       ]

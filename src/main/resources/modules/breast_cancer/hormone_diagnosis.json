@@ -21,18 +21,23 @@
         }
       ],
       "duration": {
-        "low": 0,
-        "high": 1,
+        "low": 1,
+        "high": 2,
         "unit": "days"
       },
       "remarks": [
-        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html"
+        "Fluorescence in situ hybridization (FISH), which detects the number of HER2 genes in the cancer cells:",
+        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html",
+        "",
+        "FISH results are usually available from the lab within a few days:",
+        "https://www.verywellhealth.com/fish-test-2252457"
       ],
-      "direct_transition": "Human_Epidermal_Growth_Factor_Receptor_2_HER2_Detection_Immunochemistry"
+      "direct_transition": "Human_Epidermal_Growth_Factor_Receptor_2_HER2_Detection_Immunochemistry",
+      "reason": "breast_cancer_condition"
     },
     "HER2_negative": {
       "type": "Observation",
-      "category": "procedure",
+      "category": "laboratory",
       "unit": "",
       "codes": [
         {
@@ -50,7 +55,7 @@
     },
     "HER2_positive": {
       "type": "Observation",
-      "category": "procedure",
+      "category": "laboratory",
       "unit": "",
       "codes": [
         {
@@ -79,14 +84,13 @@
         }
       ],
       "remarks": [
-        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html",
-        "",
+        "About 80% of all breast cancers are “ER-positive.” That means the cancer cells grow in response to the hormone estrogen.:",
         "https://www.webmd.com/breast-cancer/breast-cancer-types-er-positive-her2-positive#1"
       ]
     },
     "ER_negative": {
       "type": "Observation",
-      "category": "procedure",
+      "category": "laboratory",
       "unit": "",
       "codes": [
         {
@@ -104,7 +108,7 @@
     },
     "ER_positive": {
       "type": "Observation",
-      "category": "procedure",
+      "category": "laboratory",
       "unit": "",
       "codes": [
         {
@@ -133,14 +137,13 @@
         }
       ],
       "remarks": [
-        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html",
-        "",
+        "About 80% of all breast cancers are “ER-positive.” That means the cancer cells grow in response to the hormone estrogen. About 65% of these are also “PR-positive.” They grow in response to another hormone, progesterone.:",
         "https://www.webmd.com/breast-cancer/breast-cancer-types-er-positive-her2-positive#1"
       ]
     },
     "PR_negative": {
       "type": "Observation",
-      "category": "procedure",
+      "category": "laboratory",
       "unit": "",
       "codes": [
         {
@@ -158,7 +161,7 @@
     },
     "PR_positive": {
       "type": "Observation",
-      "category": "procedure",
+      "category": "laboratory",
       "unit": "",
       "codes": [
         {
@@ -263,7 +266,7 @@
     },
     "Triple_Negative": {
       "type": "Observation",
-      "category": "procedure",
+      "category": "laboratory",
       "unit": "",
       "codes": [
         {
@@ -277,11 +280,14 @@
         "code": 260385009,
         "display": "Negative (qualifier value)"
       },
-      "direct_transition": "Triple_Negative_Patient"
+      "direct_transition": "Triple_Negative_Patient",
+      "remarks": [
+        "In women with triple-negative breast cancer, the malignant cells do not contain receptors for estrogen, progesterone or HER2. Breast cancer that is ER-, PR- and HER2-negative cannot be treated with hormone therapy or medications that work by blocking HER2, such as trastuzumab."
+      ]
     },
     "Hormone Receptor Positive": {
       "type": "Observation",
-      "category": "imaging",
+      "category": "laboratory",
       "unit": "",
       "codes": [
         {
@@ -295,11 +301,15 @@
         "system": "SNOMED-CT",
         "code": 10828004,
         "display": "Positive (qualifier value)"
-      }
+      },
+      "remarks": [
+        "Hormone receptor-positive (estrogen receptor-positive (ER-positive)/progesterone receptor-positive (PR-positive)) tumors express (have a lot of) hormone receptors.:",
+        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html"
+      ]
     },
     "Hormone Receptor Negative": {
       "type": "Observation",
-      "category": "imaging",
+      "category": "laboratory",
       "unit": "",
       "codes": [
         {
@@ -326,6 +336,10 @@
         {
           "transition": "Terminal"
         }
+      ],
+      "remarks": [
+        "Hormone receptor-negative (estrogen receptor-negative (ER-negative)/progesterone receptor-negative (PR- negative)) tumors do not express (have few or no) hormone receptors.:",
+        "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html"
       ]
     },
     "Human_Epidermal_Growth_Factor_Receptor_2_HER2_Detection_Immunochemistry": {
@@ -338,13 +352,19 @@
         }
       ],
       "duration": {
-        "low": 0,
-        "high": 1,
-        "unit": "days"
+        "low": 2,
+        "high": 4,
+        "unit": "hours"
       },
       "remarks": [
+        "Immunohistochemistry (IHC), which detects the number of HER2 protein receptors in the cancer cells:",
         "https://ww5.komen.org/BreastCancer/TumorCharacteristics.html",
-        "https://www.webmd.com/breast-cancer/breast-cancer-types-er-positive-her2-positive#1"
+        "",
+        "In about 20% of breast cancers, the cells make too much of a protein known as HER2. These cancers tend to be aggressive and fast-growing:",
+        "https://www.webmd.com/breast-cancer/breast-cancer-types-er-positive-her2-positive#1",
+        "",
+        "All antibody-antigen interactions investigated in this study, both the primary antibody binding to its target and the secondary antibody binding to the primary, require several hours to reach equilibrium at the concentrations used:",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3878317/"
       ],
       "distributed_transition": [
         {
@@ -355,7 +375,8 @@
           "transition": "HER2_positive",
           "distribution": 0.2
         }
-      ]
+      ],
+      "reason": "breast_cancer_condition"
     },
     "Triple_Negative_Patient": {
       "type": "SetAttribute",
