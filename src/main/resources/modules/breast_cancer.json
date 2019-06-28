@@ -1,7 +1,18 @@
 {
   "name": "Breast_cancer",
   "remarks": [
-    "The main pathway for breast_cancer. Starts from initial and goes to obtaining breast cancer, screening, diagnosis, treatments, and final followup followed by potential death. "
+    "The main pathway for breast_cancer. Starts from initial and goes to obtaining breast cancer, screening, diagnosis, treatments, and final followup followed by potential death. ",
+    "",
+    "Information was primarily sourced from:",
+    "",
+    "1) Susan G. Komen: https://ww5.komen.org/",
+    "2) American Cancer Society: https://www.cancer.org/cancer/breast-cancer.html",
+    "3) National Comprehensive Cancer Network: https://www.nccn.org/professionals/physician_gls/default.aspx#site",
+    "4) Center for Disease Control: https://gis.cdc.gov/Cancer/USCS/DataViz.html",
+    "5) AJCC Cancer Staging Manual 8th Edition (Physical Textbook)",
+    "6) Conversations with Jim O'Connor, Breast Cancer Clinician",
+    "",
+    ""
   ],
   "states": {
     "Initial": {
@@ -314,6 +325,13 @@
           "transition": "Ultrasound",
           "distribution": 0.75
         }
+      ],
+      "remarks": [
+        "Mammogram",
+        "A mammogram is an x-ray that allows a qualified specialist to examine the breast tissue for any suspicious areas.  In a diagnostic mammogram, more x-rays are taken, providing views of the breast from multiple vantage points.",
+        "https://www.nationalbreastcancer.org/breast-cancer-diagnosis",
+        "",
+        "https://www.breastcancer.org/research-news/20091204b"
       ]
     },
     "Ultrasound": {
@@ -330,7 +348,12 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "Breast Biopsy"
+      "direct_transition": "Breast Biopsy",
+      "remarks": [
+        "Ultrasound",
+        "A breast ultrasound is a scan that uses penetrating sound waves that do not affect or damage the tissue and cannot be heard by humans.",
+        "https://www.nationalbreastcancer.org/breast-cancer-diagnosis"
+      ]
     },
     "Breast Cancer Encounter": {
       "type": "Encounter",
@@ -358,7 +381,12 @@
         "high": 90,
         "unit": "minutes"
       },
-      "direct_transition": "Breast Biopsy"
+      "direct_transition": "Breast Biopsy",
+      "remarks": [
+        "MRI",
+        "During a breast MRI, a magnet connected to a computer transmits magnetic energy and radio waves (not radiation) through the breast tissue. It scans the tissue, making detailed pictures of areas within the breast.",
+        "https://www.nationalbreastcancer.org/breast-cancer-diagnosis"
+      ]
     },
     "Diagnose_TNM_Markers": {
       "type": "CallSubmodule",
@@ -391,6 +419,9 @@
             "value": "M0"
           }
         }
+      ],
+      "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition"
       ]
     },
     "Stage IV": {
@@ -662,6 +693,9 @@
             }
           ]
         }
+      ],
+      "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition"
       ]
     },
     "IIIC": {
@@ -775,6 +809,9 @@
             "value": "N1"
           }
         }
+      ],
+      "remarks": [
+        "AJCC Cancer Staging Manual; 8th Edition"
       ]
     },
     "Stage II": {
@@ -1255,6 +1292,9 @@
         {
           "transition": "Diagnose_TNM_Markers"
         }
+      ],
+      "remarks": [
+        "https://www.breastcancer.org/research-news/20091204b"
       ]
     },
     "Time Before Initial Doctor Visit": {
@@ -1286,7 +1326,11 @@
           "display": "Discussion about treatment (procedure)"
         }
       ],
-      "direct_transition": "End Meeting with Oncologist"
+      "direct_transition": "End Meeting with Oncologist",
+      "remarks": [
+        "Treatment Options:",
+        "https://www.cancer.net/cancer-types/breast-cancer/types-treatment"
+      ]
     },
     "End Meeting with Oncologist": {
       "type": "EncounterEnd",
@@ -1343,6 +1387,9 @@
         {
           "transition": "Begin Surgery and Radiation Treatment"
         }
+      ],
+      "remarks": [
+        "Decision for Neoadjuvant Chemotherapy based upon conversations with Doctor Jim O'Connor"
       ]
     },
     "End Treatment": {
@@ -1381,7 +1428,7 @@
     "End Neodjuvant Medication in Preparation for Surgery": {
       "type": "MedicationEnd",
       "direct_transition": "End Chemo Treatment",
-      "referenced_by_attribute": "neoMed"
+      "referenced_by_attribute": "breast_cancer_neoMed"
     },
     "Neoadjuvant Chemo Before Surgery": {
       "type": "Encounter",
@@ -1420,7 +1467,7 @@
         "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html"
       ],
       "direct_transition": "Neoadjuvant chemotherapy procedure",
-      "assign_to_attribute": "neoMed",
+      "assign_to_attribute": "breast_cancer_neoMed",
       "reason": "breast_cancer_condition"
     },
     "Epirubicin": {
@@ -1433,7 +1480,7 @@
         }
       ],
       "direct_transition": "Neoadjuvant chemotherapy procedure",
-      "assign_to_attribute": "neoMed"
+      "assign_to_attribute": "breast_cancer_neoMed"
     },
     "Paclitaxel": {
       "type": "MedicationOrder",
@@ -1445,7 +1492,7 @@
         }
       ],
       "direct_transition": "Neoadjuvant chemotherapy procedure",
-      "assign_to_attribute": "neoMed"
+      "assign_to_attribute": "breast_cancer_neoMed"
     },
     "Anthracyclines": {
       "type": "Simple",
@@ -1458,11 +1505,31 @@
           "transition": "Epirubicin",
           "distribution": 0.5
         }
+      ],
+      "remarks": [
+        "The most common drugs used for adjuvant and neoadjuvant chemo include:",
+        "Anthracyclines, such as doxorubicin (Adriamycin) and epirubicin (Ellence)",
+        "Taxanes, such as paclitaxel (Taxol) and docetaxel (Taxotere)",
+        "5-fluorouracil (5-FU)",
+        "Cyclophosphamide (Cytoxan)",
+        "Carboplatin (Paraplatin)",
+        "Most often, combinations of 2 or 3 of these drugs are used:",
+        "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html"
       ]
     },
     "Taxanes": {
       "type": "Simple",
-      "direct_transition": "Paclitaxel"
+      "direct_transition": "Paclitaxel",
+      "remarks": [
+        "The most common drugs used for adjuvant and neoadjuvant chemo include:",
+        "Anthracyclines, such as doxorubicin (Adriamycin) and epirubicin (Ellence)",
+        "Taxanes, such as paclitaxel (Taxol) and docetaxel (Taxotere)",
+        "5-fluorouracil (5-FU)",
+        "Cyclophosphamide (Cytoxan)",
+        "Carboplatin (Paraplatin)",
+        "Most often, combinations of 2 or 3 of these drugs are used:",
+        "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html"
+      ]
     },
     "End_Neoadjuvant_Chemo_Treatment": {
       "type": "EncounterEnd",
@@ -1492,6 +1559,16 @@
           "transition": "Taxanes",
           "distribution": 0.5
         }
+      ],
+      "remarks": [
+        "The most common drugs used for adjuvant and neoadjuvant chemo include:",
+        "Anthracyclines, such as doxorubicin (Adriamycin) and epirubicin (Ellence)",
+        "Taxanes, such as paclitaxel (Taxol) and docetaxel (Taxotere)",
+        "5-fluorouracil (5-FU)",
+        "Cyclophosphamide (Cytoxan)",
+        "Carboplatin (Paraplatin)",
+        "Most often, combinations of 2 or 3 of these drugs are used:",
+        "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html"
       ]
     },
     "Set pre-surgery chemo counter": {
@@ -1518,7 +1595,7 @@
     },
     "Increment pre-surgery chemo counter": {
       "type": "Counter",
-      "attribute": "neoCount",
+      "attribute": "breast_cancer_neoCount",
       "action": "increment",
       "direct_transition": "Delay Until Next Cycle"
     },
@@ -1529,7 +1606,11 @@
         "low": 19,
         "high": 23,
         "unit": "days"
-      }
+      },
+      "remarks": [
+        "Doctors give chemo in cycles, with each period of treatment followed by a rest period to give you time to recover from the effects of the drugs. Cycles are most often 2 or 3 weeks long. The schedule varies depending on the drugs used:",
+        "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html"
+      ]
     },
     "Start New Chemo Cycle": {
       "type": "Encounter",
@@ -1577,6 +1658,11 @@
           "transition": "MRI",
           "distribution": 0.25
         }
+      ],
+      "remarks": [
+        "Mammogram",
+        "A mammogram is an x-ray that allows a qualified specialist to examine the breast tissue for any suspicious areas.  In a diagnostic mammogram, more x-rays are taken, providing views of the breast from multiple vantage points.",
+        "https://www.nationalbreastcancer.org/breast-cancer-diagnosis"
       ]
     },
     "Post-Treatment Surveillance": {
@@ -1597,8 +1683,11 @@
         },
         {
           "transition": "BreastCancer_Symptom1",
-          "distribution": 1
+          "distribution": 0.52
         }
+      ],
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4127601/pdf/WJCO-5-283.pdf"
       ]
     },
     "Age 0-39": {
@@ -1627,8 +1716,11 @@
         },
         {
           "transition": "BreastCancer_Symptom1",
-          "distribution": 1
+          "distribution": 0.31
         }
+      ],
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4127601/pdf/WJCO-5-283.pdf"
       ]
     },
     "Age 39-59": {
@@ -1648,7 +1740,7 @@
         },
         {
           "transition": "BreastCancer_Symptom1",
-          "distribution": 0.3700000000000001
+          "distribution": 0.37
         }
       ]
     },
