@@ -151,7 +151,7 @@
     },
     "Increment Chemo Counter": {
       "type": "Counter",
-      "attribute": "chemoCount",
+      "attribute": "breast_cancer_chemoCount",
       "action": "increment",
       "direct_transition": "Delay Until Next Cycle (3 Weeks)"
     },
