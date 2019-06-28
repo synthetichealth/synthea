@@ -51,7 +51,7 @@
         "code": 260385009,
         "display": "Negative (qualifier value)"
       },
-      "direct_transition": "HER2-"
+      "direct_transition": "HER2 ratio less than 1point8"
     },
     "HER2_positive": {
       "type": "Observation",
@@ -69,7 +69,7 @@
         "code": 10828004,
         "display": "Positive (qualifier value)"
       },
-      "direct_transition": "HER2+"
+      "direct_transition": "HER2_ratio_greater_than_2point2"
     },
     "Tumor_Biopsy_to_Test_Estrogen_Receptor_Status": {
       "type": "Simple",
@@ -383,6 +383,48 @@
       "attribute": "breast_cancer_triple_wicked",
       "direct_transition": "Terminal",
       "value": true
+    },
+    "HER2 ratio less than 1point8": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "ratio",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85318-4",
+          "display": "HER2 [Presence] in Breast cancer specimen by FISH"
+        }
+      ],
+      "direct_transition": "HER2-",
+      "remarks": [
+        "Title of the article: HER2 Evaluation and Its Impact on Breast Cancer Treatment Decisions",
+        "",
+        "https://wwwncbinlmnihgov/pmc/articles/PMC3225235/"
+      ],
+      "exact": {
+        "quantity": "less than 1.8"
+      }
+    },
+    "HER2_ratio_greater_than_2point2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "ratio",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85318-4",
+          "display": "HER2 [Presence] in Breast cancer specimen by FISH"
+        }
+      ],
+      "direct_transition": "HER2+",
+      "remarks": [
+        "Title of the article: HER2 Evaluation and Its Impact on Breast Cancer Treatment Decisions",
+        "",
+        "https://wwwncbinlmnihgov/pmc/articles/PMC3225235/"
+      ],
+      "exact": {
+        "quantity": "greater than 2.2"
+      }
     }
   }
 }
