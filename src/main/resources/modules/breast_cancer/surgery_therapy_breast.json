@@ -899,7 +899,7 @@
     },
     "Increment treatment counter": {
       "type": "Counter",
-      "attribute": "treat_count",
+      "attribute": "breast_cancer_treat_count",
       "action": "increment",
       "direct_transition": "6 Month Delay"
     },
@@ -982,7 +982,6 @@
     "Next Day Radiation Treatment": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",
