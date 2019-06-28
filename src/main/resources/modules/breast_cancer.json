@@ -512,6 +512,11 @@
         }
       ],
       "remarks": [
+        "The American Cancer Society report that 5-year survival rates break down by stage as follows:",
+        "Stage 0-1: Close to 100 percent survival rate. Approximately 61 percent of all breast cancers are diagnosed at this stage.",
+        "Stage 2: Relative survival rate of 93 percent.",
+        "Stage 3: Relative survival rate of 72 percent. Many women with this stage breast cancer are treated successfully.",
+        "Stage 4: Relative survival rate of 22 percent. Many different treatment options are available:",
         "https://www.medicalnewstoday.com/articles/316867.php"
       ]
     },
@@ -600,6 +605,11 @@
         }
       ],
       "remarks": [
+        "The American Cancer Society report that 5-year survival rates break down by stage as follows:",
+        "Stage 0-1: Close to 100 percent survival rate. Approximately 61 percent of all breast cancers are diagnosed at this stage.",
+        "Stage 2: Relative survival rate of 93 percent.",
+        "Stage 3: Relative survival rate of 72 percent. Many women with this stage breast cancer are treated successfully.",
+        "Stage 4: Relative survival rate of 22 percent. Many different treatment options are available:",
         "https://www.medicalnewstoday.com/articles/316867.php"
       ]
     },
@@ -845,6 +855,11 @@
         }
       ],
       "remarks": [
+        "The American Cancer Society report that 5-year survival rates break down by stage as follows:",
+        "Stage 0-1: Close to 100 percent survival rate. Approximately 61 percent of all breast cancers are diagnosed at this stage.",
+        "Stage 2: Relative survival rate of 93 percent.",
+        "Stage 3: Relative survival rate of 72 percent. Many women with this stage breast cancer are treated successfully.",
+        "Stage 4: Relative survival rate of 22 percent. Many different treatment options are available:",
         "https://www.medicalnewstoday.com/articles/316867.php"
       ]
     },
@@ -859,7 +874,11 @@
         "low": 14,
         "high": 18,
         "unit": "weeks"
-      }
+      },
+      "remarks": [
+        "Doctor visits: At first, your follow-up doctor visits will probably be scheduled for every few months. The longer you have been free of cancer, the less often the appointments are needed. After 5 years, they are typically done about once a year:",
+        "https://www.cancer.org/cancer/breast-cancer/living-as-a-breast-cancer-survivor/follow-up-care-after-breast-cancer-treatment.html"
+      ]
     },
     "Initial Follow-Up Counter": {
       "type": "Counter",
@@ -889,13 +908,19 @@
         {
           "transition": "Mammogram Followup"
         }
+      ],
+      "remarks": [
+        "1 unit of the counter indicates 4 months. Patients within 5 years of surgery will typically go to the doctors about every 4 months."
       ]
     },
     "Initialize Initial Follow-Up Counter": {
       "type": "SetAttribute",
       "attribute": "breast_cancer_init_followup_counter",
       "direct_transition": "Initialize Years After Treatment Counter",
-      "value": 0
+      "value": 0,
+      "remarks": [
+        "1 unit of the counter indicates 4 months. Patients within 5 years of surgery will typically go to the doctors about every 4 months."
+      ]
     },
     "Mammogram Followup": {
       "type": "Simple",
@@ -922,6 +947,10 @@
         {
           "transition": "Pelvic Followup"
         }
+      ],
+      "remarks": [
+        "Mammograms: If you had breast-conserving surgery, you will get a mammogram about 6-12 months after surgery and radiation are completed, and then at least every year after that. Depending on the type of mastectomy you had, you may still need to have yearly mammograms on the remaining breast:",
+        "https://www.cancer.org/cancer/breast-cancer/living-as-a-breast-cancer-survivor/follow-up-care-after-breast-cancer-treatment.html"
       ]
     },
     "Post-Surgery Mammogram": {
@@ -938,11 +967,18 @@
         "high": 25,
         "unit": "minutes"
       },
-      "direct_transition": "End Mammogram Followup Visit"
+      "direct_transition": "End Mammogram Followup Visit",
+      "reason": "breast_cancer_condition",
+      "remarks": [
+        "Mammogram",
+        "A mammogram is an x-ray that allows a qualified specialist to examine the breast tissue for any suspicious areas.  In a diagnostic mammogram, more x-rays are taken, providing views of the breast from multiple vantage points.",
+        "https://www.nationalbreastcancer.org/breast-cancer-diagnosis:",
+        "https://www.breastcancer.org/research-news/20091204b"
+      ]
     },
     "Mammogram Followup Visit": {
       "type": "Encounter",
-      "reason": "",
+      "reason": "breast_cancer_condition",
       "direct_transition": "Post-Surgery Mammogram",
       "codes": [
         {
@@ -1011,14 +1047,16 @@
         }
       ],
       "remarks": [
+        "Pelvic exams: If you are taking either of the hormone drugs tamoxifen or toremifene and still have your uterus, you should have pelvic exams every year because these drugs can increase your risk of uterine cancer. This risk is highest in women who have gone through menopause. Be sure to tell your doctor right away about any unusual vaginal bleeding, such as vaginal bleeding or spotting after menopause, bleeding or spotting between periods, or a change in your periods. Although this is usually caused by something that isn’t cancer, it can also be the first sign of uterine cancer.",
         "https://www.cancer.org/cancer/breast-cancer/living-as-a-breast-cancer-survivor/follow-up-care-after-breast-cancer-treatment.html",
+        "",
         "https://www.hopkinsmedicine.org/kimmel_cancer_center/centers/breast_cancer_program/treatment_and_services/survivorship/follow_up/pelvic_exams.html"
       ]
     },
     "Gynecologist Visit": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason": "",
+      "reason": "breast_cancer_condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1097,6 +1135,7 @@
         }
       ],
       "remarks": [
+        "Bone density tests: If you are taking an aromatase inhibitor (anastrozole, letrozole, or exemestane) for early stage breast cancer, or if you go through menopause as a result of treatment, your doctor will want to monitor your bone health and may consider testing your bone density.",
         "https://www.cancer.org/cancer/breast-cancer/living-as-a-breast-cancer-survivor/follow-up-care-after-breast-cancer-treatment.html"
       ]
     },
@@ -1120,8 +1159,11 @@
       },
       "direct_transition": "Pap Smear",
       "remarks": [
+        "What Can I Expect During a Pelvic Exam?",
+        "You can expect to feel a little discomfort, but you should not feel pain during a pelvic exam. The exam itself takes about 10 minutes. If you have any questions during the exam, be sure to ask your doctor.",
         "https://www.webmd.com/women/guide/pelvic-examination#1"
-      ]
+      ],
+      "reason": "breast_cancer_condition"
     },
     "Pap Smear": {
       "type": "Procedure",
@@ -1139,9 +1181,13 @@
       },
       "direct_transition": "End Gynecologist Visit",
       "remarks": [
+        "A routine gynecological exam with a pap smear should be performed yearly for cervical cancer screening. Any abnormal vaginal spotting or bleeding should be reported to your primary care provider or gynecologist to evaluate for the possibility of uterine (endometrial) cancer, especially in women over the age of 50 and on tamoxifen. Although unusual vaginal bleeding can occur with menopause, any kind of vaginal bleeding after menopause should be checked out by your gynecologist or primary care provider.",
         "https://www.hopkinsmedicine.org/kimmel_cancer_center/centers/breast_cancer_program/treatment_and_services/survivorship/follow_up/pelvic_exams.html",
+        "",
+        "If you take tamoxifen, tell your doctor about any unusual vaginal bleeding. If you take it and still have your uterus, you need an annual Pap smear, regardless of age.",
         "https://www.webmd.com/breast-cancer/guide/breast-cancer-follow-up-care"
-      ]
+      ],
+      "reason": "breast_cancer_condition"
     },
     "Bone Exam": {
       "type": "Procedure",
@@ -1159,13 +1205,15 @@
       },
       "direct_transition": "End Bone Exam Visit",
       "remarks": [
+        "If you have your bone density test done at a hospital, it'll probably be done on a central device, where you lie on a padded platform while a mechanical arm passes over your body. The amount of radiation you're exposed to is very low, much less than the amount emitted during a chest X-ray. The test usually takes about 10 to 30 minutes.",
         "https://www.mayoclinic.org/tests-procedures/bone-density-test/about/pac-20385273"
-      ]
+      ],
+      "reason": "breast_cancer_condition"
     },
     "Bone Exam Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
+      "reason": "breast_cancer_condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1196,13 +1244,19 @@
         {
           "transition": "1 Year Passed"
         }
+      ],
+      "remarks": [
+        "Indicate that a year has passed"
       ]
     },
     "Initialize Years After Treatment Counter": {
       "type": "SetAttribute",
       "attribute": "breast_cancer_years_after_treatment",
       "direct_transition": "4 Months between Initial Follow-Ups",
-      "value": 0
+      "value": 0,
+      "remarks": [
+        "1 unit of the counter represents around 1 year after completing treatment."
+      ]
     },
     "Reset Initial Follow-Up Counter": {
       "type": "SetAttribute",
@@ -1222,7 +1276,7 @@
     "Initial Follow-Up Doctor Visit": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
+      "reason": "breast_cancer_condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1232,16 +1286,21 @@
       ],
       "direct_transition": "End Initial Follow-Up Doctor Visit",
       "remarks": [
+        "Doctor visits: At first, your follow-up doctor visits will probably be scheduled for every few months. The longer you have been free of cancer, the less often the appointments are needed. After 5 years, they are typically done about once a year.",
         "https://www.cancer.org/cancer/breast-cancer/living-as-a-breast-cancer-survivor/follow-up-care-after-breast-cancer-treatment.html"
       ]
     },
     "Treatment Unsuccessful": {
-      "type": "Simple",
-      "direct_transition": "Worsening After Surgery/Therapy"
+      "type": "SetAttribute",
+      "attribute": "breast_cancer_survival",
+      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options",
+      "value": "no"
     },
     "Treatment Successful": {
-      "type": "Simple",
-      "direct_transition": "Improvement After Surgery/Therapy"
+      "type": "SetAttribute",
+      "attribute": "breast_cancer_survival",
+      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options",
+      "value": "yes"
     },
     "Regular Mammogram Visit": {
       "type": "Encounter",
@@ -1313,12 +1372,12 @@
         "high": 7,
         "unit": "days"
       },
-      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options"
+      "direct_transition": "Breast Cancer Treatment Success Rate"
     },
     "Sit-Down with Oncologist to Discuss Treatment Options": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
+      "reason": "breast_cancer_condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1347,6 +1406,14 @@
           "transition": "Treatment Unsuccessful",
           "distribution": 0.01
         }
+      ],
+      "remarks": [
+        "The American Cancer Society report that 5-year survival rates break down by stage as follows:",
+        "Stage 0-1: Close to 100 percent survival rate. Approximately 61 percent of all breast cancers are diagnosed at this stage.",
+        "Stage 2: Relative survival rate of 93 percent.",
+        "Stage 3: Relative survival rate of 72 percent. Many women with this stage breast cancer are treated successfully.",
+        "Stage 4: Relative survival rate of 22 percent. Many different treatment options are available:",
+        "https://www.medicalnewstoday.com/articles/316867.php"
       ]
     },
     "Choose_Treatment_Option": {
@@ -1393,37 +1460,49 @@
       ]
     },
     "End Treatment": {
-      "type": "Simple",
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "59557-9",
+          "display": "Treatment status Cancer"
+        }
+      ],
       "conditional_transition": [
         {
-          "transition": "Stage I Treatment",
+          "transition": "Improvement After Surgery/Therapy",
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Stage I"
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_survival",
+            "operator": "==",
+            "value": "yes"
           }
         },
         {
-          "transition": "Stage II Treatment",
+          "transition": "Worsening After Surgery/Therapy",
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Stage II"
-          }
-        },
-        {
-          "transition": "Stage III Treatment",
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Stage III"
-          }
-        },
-        {
-          "transition": "Stage IV Treatment",
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Stage IV"
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_survival",
+            "operator": "==",
+            "value": "no"
           }
         }
-      ]
+      ],
+      "remarks": [
+        "The American Cancer Society report that 5-year survival rates break down by stage as follows:",
+        "Stage 0-1: Close to 100 percent survival rate. Approximately 61 percent of all breast cancers are diagnosed at this stage.",
+        "Stage 2: Relative survival rate of 93 percent.",
+        "Stage 3: Relative survival rate of 72 percent. Many women with this stage breast cancer are treated successfully.",
+        "Stage 4: Relative survival rate of 22 percent. Many different treatment options are available:",
+        "https://www.medicalnewstoday.com/articles/316867.php"
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 445528004,
+        "display": "Treatment changed (situation)"
+      }
     },
     "End Neodjuvant Medication in Preparation for Surgery": {
       "type": "MedicationEnd",
@@ -1447,10 +1526,14 @@
       "type": "Delay",
       "direct_transition": "Improvement After Neoadjuvant Chemotherapy",
       "range": {
-        "low": 1,
-        "high": 3,
+        "low": 2,
+        "high": 5,
         "unit": "weeks"
-      }
+      },
+      "remarks": [
+        "This issue of time interval between completion of neoadjuvant chemotherapy and surgery has also not been well addressed in large randomized clinical trials on neoadjuvant systemic therapy and many do not even specify the recommended interval (8-10). But when mentioned, a surgery between 2 and 5 weeks after the last chemotherapy cycle was recommended (11-13):",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5293647/"
+      ]
     },
     "Doxorubicin": {
       "type": "MedicationOrder",
@@ -1480,7 +1563,8 @@
         }
       ],
       "direct_transition": "Neoadjuvant chemotherapy procedure",
-      "assign_to_attribute": "breast_cancer_neoMed"
+      "assign_to_attribute": "breast_cancer_neoMed",
+      "reason": "breast_cancer_condition"
     },
     "Paclitaxel": {
       "type": "MedicationOrder",
@@ -1492,7 +1576,8 @@
         }
       ],
       "direct_transition": "Neoadjuvant chemotherapy procedure",
-      "assign_to_attribute": "breast_cancer_neoMed"
+      "assign_to_attribute": "breast_cancer_neoMed",
+      "reason": "breast_cancer_condition"
     },
     "Anthracyclines": {
       "type": "Simple",
@@ -1538,7 +1623,7 @@
           "transition": "Increment pre-surgery chemo counter",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "neoCount",
+            "attribute": "breast_cancer_neoCount",
             "operator": "<",
             "value": 7
           }
@@ -1587,11 +1672,16 @@
         }
       ],
       "duration": {
-        "low": 0,
-        "high": 2,
-        "unit": "hours"
+        "low": 30,
+        "high": 240,
+        "unit": "minutes"
       },
-      "direct_transition": "End_Neoadjuvant_Chemo_Treatment"
+      "direct_transition": "End_Neoadjuvant_Chemo_Treatment",
+      "remarks": [
+        "Some last as long as three or four hours, while others may only take a half-hour:",
+        "https://www.cancercarenorthwest.com/frequently-asked-questions/"
+      ],
+      "reason": "breast_cancer_condition"
     },
     "Increment pre-surgery chemo counter": {
       "type": "Counter",
@@ -1615,7 +1705,7 @@
     "Start New Chemo Cycle": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason": "",
+      "reason": "breast_cancer_condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1628,12 +1718,18 @@
     "Begin Hormone Therapy Treatment": {
       "type": "CallSubmodule",
       "submodule": "breast_cancer/hormonetherapy_breast",
-      "direct_transition": "End Treatment"
+      "direct_transition": "End Treatment",
+      "remarks": [
+        "Order of hormone therapy after surgery and radiation was based off of a conversation with Doctor Jim O'Connor."
+      ]
     },
     "Begin Surgery and Radiation Treatment": {
       "type": "CallSubmodule",
       "submodule": "breast_cancer/surgery_therapy_breast",
-      "direct_transition": "Begin Hormone Therapy Treatment"
+      "direct_transition": "Begin Hormone Therapy Treatment",
+      "remarks": [
+        "Order of hormone therapy after surgery and radiation was based off of a conversation with Doctor Jim O'Connor."
+      ]
     },
     "Screening Mammogram": {
       "type": "Procedure",
@@ -1914,6 +2010,47 @@
         "display": "Improving (qualifier value)"
       },
       "direct_transition": "4 Months between Initial Follow-Ups"
+    },
+    "Breast Cancer Treatment Success Rate": {
+      "type": "Simple",
+      "remarks": [
+        "The American Cancer Society report that 5-year survival rates break down by stage as follows:",
+        "Stage 0-1: Close to 100 percent survival rate. Approximately 61 percent of all breast cancers are diagnosed at this stage.",
+        "Stage 2: Relative survival rate of 93 percent.",
+        "Stage 3: Relative survival rate of 72 percent. Many women with this stage breast cancer are treated successfully.",
+        "Stage 4: Relative survival rate of 22 percent. Many different treatment options are available:",
+        "https://www.medicalnewstoday.com/articles/316867.php"
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Stage I Treatment",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Stage I"
+          }
+        },
+        {
+          "transition": "Stage II Treatment",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Stage II"
+          }
+        },
+        {
+          "transition": "Stage III Treatment",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Stage III"
+          }
+        },
+        {
+          "transition": "Stage IV Treatment",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Stage IV"
+          }
+        }
+      ]
     }
   }
 }
