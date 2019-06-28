@@ -136,7 +136,7 @@
             "condition_type": "Attribute",
             "attribute": "breast_cancer_chemoCount",
             "operator": "<",
-            "value": 8
+            "value": 7
           }
         },
         {
@@ -170,7 +170,7 @@
     },
     "Set chemo counter": {
       "type": "SetAttribute",
-      "attribute": "breast_cancer_chemoCounter",
+      "attribute": "breast_cancer_chemoCount",
       "distributed_transition": [
         {
           "transition": "Anthracyclines",

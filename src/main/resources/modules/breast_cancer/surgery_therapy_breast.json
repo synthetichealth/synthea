@@ -879,7 +879,7 @@
             "condition_type": "Attribute",
             "attribute": "breast_cancer_treat_count",
             "operator": "<",
-            "value": 8
+            "value": 7
           }
         },
         {
