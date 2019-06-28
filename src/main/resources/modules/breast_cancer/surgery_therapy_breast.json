@@ -255,8 +255,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 285143,
-          "display": "Zometa"
+          "code": 1114085,
+          "display": "100 ML zoledronic acid 0.04 MG/ML Injection"
         }
       ],
       "direct_transition": "Advanced Drugs IV Injection",
@@ -268,8 +268,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 1046399,
-          "display": "Xgeva"
+          "code": 993452,
+          "display": "1 ML denosumab 60 MG/ML Prefilled Syringe"
         }
       ],
       "direct_transition": "Advanced Drugs IV Injection",
@@ -281,8 +281,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 11473,
-          "display": "Aredia"
+          "code": 1737449,
+          "display": "10 ML Pamidronate Disodium 3 MG/ML Injection"
         }
       ],
       "direct_transition": "Pamidronate IV Injection",
