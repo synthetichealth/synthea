@@ -152,7 +152,7 @@ public class Costs {
       defaultCost = DEFAULT_IMMUNIZATION_COST;
     }
 
-    // Calculate the Base Cost
+    // Retrieve the base cost based on the code.
     double baseCost;
     if (costs != null && costs.containsKey(code)) {
       baseCost = costs.get(code).chooseCost(patient.random);
@@ -160,7 +160,7 @@ public class Costs {
       baseCost = defaultCost;
     }
 
-    // Calculate the location adjustment factor
+    // Retrieve the location adjustment factor
     double locationAdjustment = 1.0;
     if (patient != null && patient.attributes.containsKey(Person.STATE)) {
       String state = (String) patient.attributes.get(Person.STATE);
@@ -173,18 +173,18 @@ public class Costs {
     // Calculate what the Payer and patient pays
     double patientCopay = 0.0;
     if (patient != null) { // Check if insurance is null? patient.getInsurance(time)
+      // TODO - implement these checks for Payer to cover service.
       // if(payer.isInNetwork(provider))
-      // if(payer.coversProcedure(entry))
+      // if(payer.Service(entry))
       patientCopay = payer.getCopay();
     }
 
-    // Currently, nothing is done with the costToPatient.
-    // Not sure how to use it to affect a person's savings/income/etc. yet.
+    // Currently, nothing is done with the costToPatient. It will effect the person's money.
     double costToPatient = 0.0;
     double costToPayer = 0.0;
     double totalCost = (baseCost * locationAdjustment);
 
-    if (payer.getResourceID() != null) {
+    if (payer.getResourceID() != "NO_INSURANCE") {
       // Ensure that copay is less than the cost of the encounter
       if (totalCost >= patientCopay) {
         costToPayer = totalCost - patientCopay;

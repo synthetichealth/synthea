@@ -317,8 +317,8 @@ public class Person implements Serializable, QuadTreeData {
   /**
    * Records a person's death.
    * 
-   * @param time     the time of the death.
-   * @param cause    the cause of the death.
+   * @param time     the time of death.
+   * @param cause    the cause of death.
    * @param ruleName the name of the rule or method that created the event (for
    *                 debugging).
    */
@@ -544,15 +544,15 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
-   * Gets the Payer of the person at the given time.
+   * Gets the person's Payer at the given time.
    */
   public Payer getPayerAtTime(long time) {
     return this.payerHistory.get(this.ageInYears(time));
   }
 
   /**
-   * Checks if the person has paid thier monthly premium. If not, the person pays
-   * the premium to their payer.
+   * Checks if the person has paid their monthly premium. If not, the person pays
+   * the premium to their current payer.
    * 
    * @param time the time that the person checks to pay premium.
    */
@@ -565,12 +565,12 @@ public class Person implements Serializable, QuadTreeData {
       // track of the year.
 
       // TODO - Subtract money from person's bank account &
-      // Check that they can actually pay the premium.
+      // Check that they can actually afford the premium.
 
-      // Pay the payer.
+      // Pay the payer
       Payer currentPayer = this.getPayerAtTime(time);
       if (currentPayer == null) {
-        // No premium to paid... null at age 0. TODO - fix, should never be null.
+        // No premium to pay... null at age 0. TODO - fix, Payer should never be null.
       } else {
         // Eventually this logic will go elsewhere (Likely a potential Plans class)
         // based on plans and insurance companies.

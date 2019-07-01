@@ -184,7 +184,7 @@ public class Generator {
 
     // initialize hospitals
     Provider.loadProviders(location);
-    // Initialize Insurance Companies
+    // Initialize Payers
     Payer.loadPayers(location);
     // ensure modules load early
     List<String> coreModuleNames = getModuleNames(Module.getModules(path -> false));

@@ -40,7 +40,7 @@ public class Payer {
   private static final String RANDOM = "random";
   private static final String BESTRATE = "best_rate";
 
-  // Payer information
+  /* Payer information */
   private Map<String, Object> attributes;
   public String uuid;
   private String id;
@@ -51,15 +51,17 @@ public class Payer {
   public String ownership;
 
   // The services that this payer covers. Currently unimplemented.
-  // Perhaps just a list of services that a payer will cover in payers.csv to
-  // determine?
-  public ArrayList<EncounterType> servicesCovered;
+  // Will likely be moved to a Plans class.
+  private List<EncounterType> servicesCovered;
 
-  // Payer statistics
+  // The list of plans that this Payer has.
+  // private List<Plan> plans
+
+  /* Payer statistics. May be better to move to attributes. */
   private double costsCovered;
   private double revenue;
-  // [0]: Total QOLS, [1]: Total Years
-  private double[] qualityOfLifeTracker;
+  /* Quality of Life Stats. [0]: Total QOLS, [1]: Total Years */
+  private double[] qualityOfLifeStatistics;
   // row: year, column: type, value: count
   private Table<Integer, String, AtomicInteger> utilization;
   // Unique utilizers of Payer, by Person ID
@@ -81,24 +83,24 @@ public class Payer {
     monthlyPremium = 0.0;
     deductible = 0.0;
     defaultCopay = 0.0;
-    qualityOfLifeTracker = new double[] { 0.0, 0.0 };
+    qualityOfLifeStatistics = new double[] { 0.0, 0.0 };
   }
 
   /**
-   * Determines the algorithm to use to find a Payer.
+   * Determines the algorithm to use for patients to find a Payer.
    */
   private static IPayerFinder buildPayerFinder() {
     IPayerFinder finder = null;
     String behavior = Config.get("generate.payers.selection_behavior").toLowerCase();
     switch (behavior) {
-    case BESTRATE:
-      finder = new PayerFinderBestRates();
-      break;
-    case RANDOM:
-      finder = new PayerFinderRandom();
-      break;
-    default:
-      throw new RuntimeException("Not a valid Payer Selction Algorithm: " + behavior);
+      case BESTRATE:
+        finder = new PayerFinderBestRates();
+        break;
+      case RANDOM:
+        finder = new PayerFinderRandom();
+        break;
+      default:
+        throw new RuntimeException("Not a valid Payer Selction Algorithm: " + behavior);
     }
     return finder;
   }
@@ -111,7 +113,8 @@ public class Payer {
   }
 
   /**
-   * Returns the map of payer's second class attributes.
+   * Returns a Map of the payer's second class attributes.
+   * ADDRESS,ZIP,CITY
    */
   public Map<String, Object> getAttributes() {
     return attributes;
@@ -119,6 +122,8 @@ public class Payer {
 
   /**
    * Increments the number of unique users.
+   * 
+   * @param person the person to add to the payer.
    */
   public void incrementCustomers(Person person) {
     if (!customerUtilization.containsKey(person.attributes.get(Person.ID))) {
@@ -128,9 +133,12 @@ public class Payer {
   }
 
   /**
-   * Increments the encounters the payer has covered. Changed service from
+   * Increments the encounters and encounterTypes the payer has covered. Changed service from
    * EncounterType to String to simplify for now. Would like to change back to
    * EncounterType later.
+   * 
+   * @param service the service type of the encounter
+   * @param year the year of the encounter
    */
   public void incrementEncountersCovered(String service, int year) {
     increment(year, Provider.ENCOUNTERS);
@@ -147,16 +155,14 @@ public class Payer {
     utilization.get(year, key).incrementAndGet();
   }
 
-  public Table<Integer, String, AtomicInteger> getUtilization() {
-    return utilization;
-  }
-
-  // Person will choose their insurance externally.
-  // May need this for when a payer starts making decisions about who to insure.
-  // May be useful for choosing different patients based on different policies
-  // (pre-existing conditions, etc).
-  // Every insurer will have a different set of guidelines for accepting
-  // amcustomer, where to keep these? In the table? How?
+  /** 
+   * Person chooses their insurance externally.
+   * May need this for when a payer starts making decisions about who to insure.
+   * May be useful for choosing different patients based on different policies
+   * (pre-existing conditions, etc).
+   * Every insurer will have a different set of guidelines for accepting
+   * a customer, where should these be kept? In the payer/plans csv table?
+   */
   /**
    * Will this payer accept the given person at the given time?.
    * 
@@ -180,6 +186,7 @@ public class Payer {
 
   /**
    * Is the given Provider in this Payer's network?.
+   * Currently just returns true until Networks are implemented.
    * 
    * @param provider Provider to consider
    * @return whether or not the provider is in the payer network
@@ -189,21 +196,12 @@ public class Payer {
   }
 
   /**
-   * Is the given Provider in this Payer's network?.
+   * Returns the selection algorithm for payers in this simulation.
    * 
    * @return the payer selection algorithm
    */
   public static IPayerFinder getPayerFinder() {
     return payerFinder;
-  }
-
-  /**
-   * Clear the list of loaded and cached payers.
-   */
-  public static void clear() {
-    payerList.clear();
-    // governmentPayerList.clear();
-    statesLoaded.clear();
   }
 
   /**
@@ -242,7 +240,7 @@ public class Payer {
     noInsurance = new Payer();
     noInsurance.name = "NO_INSURANCE";
     noInsurance.ownership = "NO_INSURANCE";
-    noInsurance.uuid = null;
+    noInsurance.uuid = "NO_INSURANCE";
 
     String resource = Utilities.readResource(fileName);
     Iterator<? extends Map<String, String>> csv = SimpleCSV.parseLineByLine(resource);
@@ -276,11 +274,11 @@ public class Payer {
    * Given a line of parsed CSV input, convert the data into a Payer.
    * 
    * @param line - read a csv line to a provider's attributes
-   * @return A payer.
+   * @return the new payer.
    */
   private static Payer csvLineToPayer(Map<String, String> line) {
     Payer newPayer = new Payer();
-    // using remove instead of get here so that we can iterate over the remaining
+    // Using .remove() instead of .get() so that we can iterate over the remaining
     // keys later
     newPayer.id = line.remove("id");
     newPayer.name = line.remove("name");
@@ -324,19 +322,10 @@ public class Payer {
   /**
    * Increases the total costs incurred by the payer by the given amount.
    * 
-   * @param costToPayer the total cost of the current encounter
+   * @param costToPayer the cost of the current encounter, after the paid copay.
    */
   public void addCost(double costToPayer) {
     this.costsCovered += costToPayer;
-  }
-
-  /**
-   * Increases the total revenue earned by the payer by the given amount.
-   * 
-   * @param patientPayment the amount paid by a patient to the payer
-   */
-  public void addRevenue(double patientPayment) {
-    this.revenue += patientPayment;
   }
 
   /**
@@ -347,7 +336,7 @@ public class Payer {
   }
 
   /**
-   * Returns the number of Unique plan purchasers.
+   * Returns the number of Unique customers for this payer.
    */
   public int getUniqueCustomers() {
     return customerUtilization.size();
@@ -382,23 +371,22 @@ public class Payer {
   }
 
   /**
-   * Determines the copay owed bsed on the type of encounter.
+   * Determines the copay owed for this Payer based on the type of encounter.
    */
   public double determineCopay(Encounter encounter) {
 
-    // TODO - Currently just returns a default copay. Need to add different types
-    // (Ambulatory, inpatient, outpatient, etc.).
-    // // Encounter inpatient
-    // if (encounter.type.equalsIgnoreCase("inpatient")) {
-    // copay = inpatientCopay;
-    // } else {
-    // // Outpatient Encounter, Encounter for 'checkup', Encounter for symptom,
-    // Encounter for
-    // // problem,
-    // // patient initiated encounter, patient encounter procedure
-    // copay = outpatientCopay
-    // }
-    return defaultCopay;
+    // TODO - Currently just returns a default copay. May add different copays for
+    // each Encounter type.
+
+    double copay = this.defaultCopay;
+    // Encounter inpatient
+    if (encounter.type.equalsIgnoreCase("inpatient")) {
+      //copay = inpatientCopay;
+    } else {
+      // Outpatient Encounter, Encounter for 'checkup', Encounter for symptom,
+      //copay = outpatientCopay
+    }
+    return copay;
   }
 
   /**
@@ -410,6 +398,8 @@ public class Payer {
 
   /**
    * Pays the given premium to the Payer, increasing their revenue.
+   * 
+   * @param monthlyPremium the monthly premium to be paid, in dollars.
    */
   public void payPremium(double monthlyPremium) {
     this.revenue += monthlyPremium;
@@ -418,20 +408,23 @@ public class Payer {
   /**
    * Adds the Quality of Life Score (QOLS) of a patient of the current (past?)
    * year. Increments the total number of years covered (for averaging out
-   * purposes)
-   * Should this take the DALY instead of QOLS?
+   * purposes).
+   * 
+   * @param qols the Quality of Life Score to be added.
    */
   public void addQOLS(double qols) {
-    qualityOfLifeTracker[0] += qols;
-    qualityOfLifeTracker[1]++;
+    // Add QOLS to QOLS Total.
+    qualityOfLifeStatistics[0] += qols;
+    // Increment the number of years covered.
+    qualityOfLifeStatistics[1]++;
   }
 
    /**
-   * Returns the average of the payer's QOL impact with the number of years covered.
+   * Returns the average of the payer's QOLS of customers over the number of years covered.
    */
   public double getQOLAverage() {
-    double qolTotal = qualityOfLifeTracker[0];
-    double numYears = qualityOfLifeTracker[1];
-    return qolTotal/numYears;
+    double qolsTotal = qualityOfLifeStatistics[0];
+    double numYears = qualityOfLifeStatistics[1];
+    return qolsTotal/numYears;
   }
 }

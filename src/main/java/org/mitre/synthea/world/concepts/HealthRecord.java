@@ -249,21 +249,22 @@ public class HealthRecord {
     // public double baseCost;
     public Encounter encounter;
     // The Encounter has the actual cost, so the claim has the amount that the payer
-    // covered. Does this sound reasonable? I originally had the payer covered cost
-    // in the Encounter, however it resulted in a lot of dicciculties, so I
-    // discarded that and changed it into Claim.
+    // covered.
     public double coveredCost;
     public Medication medication;
     public List<Entry> items;
     public Payer payer;
 
+    /**
+     * Constructor of a Claim for an encounter.
+     */
     public Claim(Encounter encounter) {
       this.payer = person.getPayerAtTime(encounter.start);
       if (this.payer == null) {
         // The payer is only ever null when the person is 0 and they have their first
         // encounter. After this first encounter, they will never have null insurance.
-        // I have temporarily fixed this by making just setting the payer
-        // to the NO_INSURANCE object in this case.
+        // I have temporarily fixed this by  just setting the payer
+        // to NO_INSURANCE in this case.
         person.setPayerAtTime(encounter.start, Payer.noInsurance);
         this.payer = person.getPayerAtTime(encounter.start);
         // throw new RuntimeException("ERROR: Claim made with null Payer at age: "
@@ -279,10 +280,13 @@ public class HealthRecord {
       items = new ArrayList<>();
     }
 
+    /**
+     * Constructor of a Claim for a medication.
+     */
     public Claim(Medication medication) {
       // baseCost = 255.0;
 
-      // Need some guidance with medications, etc.
+      // Need some assistance with medications, etc.
       // this.payer = person.getInsurance(encounter.start);
       // double patientCopay = payer.determineCopay(encounter);
 
@@ -290,10 +294,17 @@ public class HealthRecord {
       items = new ArrayList<>();
     }
 
+    /**
+     * Adds a line item to the total resources used in the encounter.
+     * (Ex. anesthesia, other non-explicit costs beyond encounter)
+     */
     public void addItem(Entry entry) {
       items.add(entry);
     }
 
+    /**
+     * Returns the total cost of the Claim, including line item non-explicit costs.
+     */
     public BigDecimal total() {
       BigDecimal totalCoveredByLineItem = BigDecimal.valueOf(coveredCost);
 
@@ -303,6 +314,9 @@ public class HealthRecord {
       return totalCoveredByLineItem;
     }
 
+    /**
+     * Determines how much the Payer paid for this Claim.
+     */
     public double determineCoveredCost() {
       if (payer != null) {
         this.coveredCost = (encounter.cost().doubleValue() - payer.determineCopay(encounter));

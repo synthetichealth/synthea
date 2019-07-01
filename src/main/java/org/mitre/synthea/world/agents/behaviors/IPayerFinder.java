@@ -12,7 +12,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 public interface IPayerFinder {
   /**
    * Find a provider with a specific service for the person.
-   * @param payers The list of eligible payers.
+   * @param payers The list of eligible payers (determined by state currently).
    * @param person The patient who requires the service.
    * @param service The service required. Determines if the payer covers that service (TODO)
    * @param time The date/time within the simulated world, in milliseconds.

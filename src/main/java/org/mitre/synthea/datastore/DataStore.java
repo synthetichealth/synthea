@@ -13,7 +13,6 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -252,16 +251,16 @@ public class DataStore {
       // Add coverage to database
       stmt = connection
           .prepareStatement("INSERT INTO COVERAGE (person_id, year, category) VALUES (?,?,?);");
-      List<Payer> coverage = (List<Payer>) p.getPayerHistory();
+      List<Payer> payerHistory = (List<Payer>) p.getPayerHistory();
       long birthdate = (long) p.attributes.get(Person.BIRTHDATE);
       int birthYear = Utilities.getYear(birthdate);
-      for (int i = 0; i < coverage.size(); i++) {
-        if (coverage.get(i) == null) {
+      for (int i = 0; i < payerHistory.size(); i++) {
+        if (payerHistory.get(i) == null) {
           break;
         } else {
           stmt.setString(1, personID);
           stmt.setInt(2, (birthYear + i));
-          stmt.setString(3, coverage.get(i).getOwnership());
+          stmt.setString(3, payerHistory.get(i).getOwnership());
           stmt.addBatch();
         }
       }

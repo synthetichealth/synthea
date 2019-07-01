@@ -168,7 +168,6 @@ public class CSVExporter {
 
   /**
    * Write the headers to each of the CSV files.
-   * 
    * @throws IOException if any IO error occurs
    */
   private void writeCSVHeaders() throws IOException {
@@ -334,7 +333,7 @@ public class CSVExporter {
    * Write a single Patient line, to patients.csv.
    *
    * @param person Person to write data for
-   * @param time   Time the simulation ended, to calculate age/deceased status
+   * @param time Time the simulation ended, to calculate age/deceased status
    * @return the patient's ID, to be referenced as a "foreign key" if necessary
    * @throws IOException if any IO error occurs
    */

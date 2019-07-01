@@ -46,6 +46,7 @@ public class HealthInsuranceModule extends Module {
   @Override
   public boolean process(Person person, long time) {
 
+    // Checks if person has paid their premium this month. If not, they pay it.
     person.checkToPayMonthlyPremium(time);
     
     // If the payerHistory at the given age is null, they must get insurance for the new year.
@@ -53,9 +54,9 @@ public class HealthInsuranceModule extends Module {
     // birthday.
     if (person.getPayerAtTime(time) == null) {
       Payer newPayer = determineInsurance(person, time);
-      // Set the payer at the current time
+      // Set the new payer at the current time
       person.setPayerAtTime(time, newPayer);
-      // Update the Payer
+      // Update the Payer statistics
       newPayer.incrementCustomers(person);
     }
 
@@ -88,16 +89,17 @@ public class HealthInsuranceModule extends Module {
     boolean medicaid = false;
 
     // Possibly redundant because of the Payer.accepts method?
+    // Perhaps makes more sense to have Medicare/Medicaid accept the patient,
+    // not the other way around.
     if (sixtyFive || esrd) {
       medicare = true;
     }
-
     if ((female && pregnant) || blind || medicaidIncomeEligible) {
       medicaid = true;
     }
 
-    // CURRENTLY ASSUMES: that medicare/medicaid/dualeligible are always the first
-    // three entries of the list
+    // Currently assumes that medicare/medicaid/dualeligible are always the first
+    // three entries of the list. Perhaps need to make a list of government payers?
     if (medicare && medicaid) {
       return Payer.getPayerList().get(2);
     } else if (medicare) {
@@ -107,16 +109,23 @@ public class HealthInsuranceModule extends Module {
     } else {
       if (time >= mandateTime && occupation >= mandateOccupation) {
         // Randomly choose one of the remaining private insurances
-        return Payer.getPayerFinder().find(Payer.getPayerList(), person, null, time);
+        Payer newPayer = Payer.getPayerFinder().find(Payer.getPayerList(), person, null, time);
+        if(newPayer != null){
+          // If Payer is null, then there is no insurance available to them. Return No_Insurance.
+          return newPayer;
+        }
       }
       if (income >= privateIncomeThreshold) {
         // Randomly choose one of the remaining private insurances
-        return Payer.getPayerFinder().find(Payer.getPayerList(), person, null, time);
+        Payer newPayer = Payer.getPayerFinder().find(Payer.getPayerList(), person, null, time);
+        if(newPayer != null){
+          // If Payer is null, then there is no insurance available to them. Return No_Insurance.
+          return newPayer;
+        }
       }
     }
 
-    // No insurance
-    // Return a fake payer with 0.0 for every field (coverage/copay/premium)
+    // No insurance. Return a fake payer with 0.0 for every field (coverage/copay/premium)
     return Payer.noInsurance;
   }
 

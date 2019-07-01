@@ -32,11 +32,10 @@ public class PayerFinderBestRates implements IPayerFinder {
     for (Payer payer : payers) {
       if (payer.accepts(person, time) && (payer.coversService(service) || service == null)) {
 
-        // If the monthly premium to coverage ration of this company is better than the
+        // If the monthly premium to coverage ratio of this company is better than the
         // current best, choose this company. Also make decision based on whether this
-        // person has lots of pre-existing conditions, in which case a higher montly
-        // premium and higher coverage would be more worth it (often visiting doctors,
-        // would want less copay etc)
+        // person has lots of pre-existing conditions, in which case a higher monthly
+        // premium and lower copay would be more cost effective.
 
       }
     }

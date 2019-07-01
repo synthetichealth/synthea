@@ -232,6 +232,7 @@ public abstract class State implements Cloneable {
         encounter = person.getCurrentEncounter(submod);
         if (encounter != null) {
           person.setCurrentEncounter(module, encounter);
+          // Is this the best place to determine the covered cost? Not sure if every encounter is guarenteed to reach this point.
           encounter.claim.determineCoveredCost();
         }
 
