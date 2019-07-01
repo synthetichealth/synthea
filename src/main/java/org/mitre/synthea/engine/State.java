@@ -489,7 +489,7 @@ public abstract class State implements Cloneable {
           person.setCurrentEncounter(module, encounter);
 
           // find closest provider and increment encounters count
-          Provider provider = person.getProvider(EncounterType.AMBULATORY, time);
+          Provider provider = person.getProvider(EncounterType.WELLNESS, time);
           person.addCurrentProvider(module.name, provider);
           int year = Utilities.getYear(time);
           provider.incrementEncounters(EncounterType.WELLNESS, year);
