@@ -1296,7 +1296,7 @@
     "Treatment Unsuccessful": {
       "type": "SetAttribute",
       "attribute": "breast_cancer_survival",
-      "direct_transition": "Impending_Death_from_Cancer_Complications",
+      "direct_transition": "Impending Death from Cancer Complications",
       "value": "no"
     },
     "Treatment Successful": {
@@ -1920,15 +1920,6 @@
         }
       ]
     },
-    "Impending Death from Cancer Complications": {
-      "type": "Death",
-      "referenced_by_attribute": "breast_cancer_condition",
-      "range": {
-        "low": 0,
-        "high": 5,
-        "unit": "years"
-      }
-    },
     "Improvement After Neoadjuvant Chemotherapy": {
       "type": "Observation",
       "category": "therapy",
@@ -2094,7 +2085,7 @@
         }
       ]
     },
-    "Impending_Death_from_Cancer_Complications": {
+    "Impending Death from Cancer Complications": {
       "type": "Death",
       "referenced_by_attribute": "breast_cancer_condition",
       "range": {
