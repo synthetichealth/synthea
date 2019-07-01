@@ -1638,16 +1638,6 @@
     },
     "Chemotherapy Drugs": {
       "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Anthracyclines",
-          "distribution": 0.5
-        },
-        {
-          "transition": "Taxanes",
-          "distribution": 0.5
-        }
-      ],
       "remarks": [
         "The most common drugs used for adjuvant and neoadjuvant chemo include:",
         "Anthracyclines, such as doxorubicin (Adriamycin) and epirubicin (Ellence)",
@@ -1657,6 +1647,56 @@
         "Carboplatin (Paraplatin)",
         "Most often, combinations of 2 or 3 of these drugs are used:",
         "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Doxorubicin"
+          },
+          "distributions": [
+            {
+              "transition": "Doxorubicin",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Epirubicin"
+          },
+          "distributions": [
+            {
+              "transition": "Epirubicin",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Paclitaxel",
+              "distribution": 1
+            }
+          ],
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Paclitaxel"
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Anthracyclines",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Taxanes",
+              "distribution": 0.5
+            }
+          ]
+        }
       ]
     },
     "Set pre-surgery chemo counter": {
@@ -1716,29 +1756,7 @@
           "display": "Encounter for problem"
         }
       ],
-      "conditional_transition": [
-        {
-          "transition": "Doxorubicin",
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Doxorubicin"
-          }
-        },
-        {
-          "transition": "Epirubicin",
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Epirubicin"
-          }
-        },
-        {
-          "transition": "Paclitaxel",
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Paclitaxel"
-          }
-        }
-      ]
+      "direct_transition": "Chemotherapy Drugs"
     },
     "Begin Hormone Therapy Treatment": {
       "type": "CallSubmodule",

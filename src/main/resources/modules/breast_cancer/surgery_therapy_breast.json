@@ -235,19 +235,50 @@
     },
     "Advanced_drugs": {
       "type": "Simple",
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Denosumab",
-          "distribution": 0.34
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Denosumab"
+          },
+          "distributions": [
+            {
+              "transition": "Denosumab",
+              "distribution": 1
+            }
+          ]
         },
         {
-          "transition": "Zoledronic_Acid",
-          "distribution": 0.33
+          "distributions": [
+            {
+              "transition": "Zoledronic_Acid",
+              "distribution": 1
+            }
+          ],
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Zoledronic_Acid"
+          }
         },
         {
-          "transition": "Pamidronate",
-          "distribution": 0.33
+          "distributions": [
+            {
+              "transition": "Denosumab",
+              "distribution": 0.34
+            },
+            {
+              "transition": "Zoledronic_Acid",
+              "distribution": 0.33
+            },
+            {
+              "transition": "Pamidronate",
+              "distribution": 0.33
+            }
+          ]
         }
+      ],
+      "remarks": [
+        "https://www.breastcancer.org/research-news/prolia-reduces-recurrence-risk-for-some"
       ]
     },
     "Zoledronic_Acid": {
@@ -910,7 +941,11 @@
         "low": 5,
         "high": 7,
         "unit": "months"
-      }
+      },
+      "remarks": [
+        "Prolia (chemical name: denosumab) is a targeted therapy used to treat bone loss in women taking aromatase inhibitors as part of their breast cancer treatment. Prolia is given as an injection under the skin every 6 months at a dose of 60 mg:",
+        "https://www.breastcancer.org/research-news/prolia-reduces-recurrence-risk-for-some"
+      ]
     },
     "Start New Advanced Drug Cycle": {
       "type": "Encounter",
@@ -923,22 +958,7 @@
           "display": "Encounter for problem"
         }
       ],
-      "conditional_transition": [
-        {
-          "transition": "Denosumab",
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Denosumab"
-          }
-        },
-        {
-          "transition": "Zoledronic_Acid",
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Zoledronic_Acid"
-          }
-        }
-      ]
+      "direct_transition": "Advanced_drugs"
     },
     "Delay After Treatment": {
       "type": "Delay",

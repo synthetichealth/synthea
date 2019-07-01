@@ -166,7 +166,7 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "Adjuvant Chemotherapy Procedure"
+      "direct_transition": "Choose Chemo Drug"
     },
     "Set chemo counter": {
       "type": "SetAttribute",
@@ -186,7 +186,7 @@
         "Carboplatin (Paraplatin)",
         "Most often, combinations of 2 or 3 of these drugs are used."
       ],
-      "direct_transition": "Set_chemo_counter"
+      "direct_transition": "Choose Chemo Drug"
     },
     "Delay Until Next Cycle (3 Weeks)": {
       "type": "Delay",
@@ -197,10 +197,8 @@
         "unit": "days"
       }
     },
-    "Set_chemo_counter": {
-      "type": "SetAttribute",
-      "attribute": "breast_cancer_chemoCount",
-      "value": 0,
+    "Choose Chemo Drug": {
+      "type": "Simple",
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html",
         "",
@@ -215,26 +213,102 @@
         "Carboplatin (Paraplatin)",
         "Most often, combinations of 2 or 3 of these drugs are used."
       ],
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Anthracyclines",
-          "distribution": 0.3
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Cyclophosphamide"
+          },
+          "distributions": [
+            {
+              "transition": "Cyclophosphamide",
+              "distribution": 1
+            }
+          ]
         },
         {
-          "transition": "Taxanes",
-          "distribution": 0.3
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Doxorubicin"
+          },
+          "distributions": [
+            {
+              "transition": "Doxorubicin",
+              "distribution": 1
+            }
+          ]
         },
         {
-          "transition": "5-fluorouracil",
-          "distribution": 0.05
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Epirubicin"
+          },
+          "distributions": [
+            {
+              "transition": "Epirubicin",
+              "distribution": 1
+            }
+          ]
         },
         {
-          "transition": "Cyclophosphamide",
-          "distribution": 0.3
+          "distributions": [
+            {
+              "transition": "Carboplatin",
+              "distribution": 1
+            }
+          ],
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Carboplatin"
+          }
         },
         {
-          "transition": "Carboplatin",
-          "distribution": 0.05
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Paclitaxel"
+          },
+          "distributions": [
+            {
+              "transition": "Paclitaxel",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": ""
+          },
+          "distributions": [
+            {
+              "transition": "5-fluorouracil",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Cyclophosphamide",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Anthracyclines",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Carboplatin",
+              "distribution": 0.05
+            },
+            {
+              "transition": "Taxanes",
+              "distribution": 0.3
+            },
+            {
+              "transition": "5-fluorouracil",
+              "distribution": 0.05
+            }
+          ]
         }
       ]
     }
