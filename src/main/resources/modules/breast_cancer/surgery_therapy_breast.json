@@ -923,7 +923,22 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "Advanced Drugs IV Injection"
+      "conditional_transition": [
+        {
+          "transition": "Denosumab",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Denosumab"
+          }
+        },
+        {
+          "transition": "Zoledronic_Acid",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Zoledronic_Acid"
+          }
+        }
+      ]
     },
     "Delay After Treatment": {
       "type": "Delay",

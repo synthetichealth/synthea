@@ -171,6 +171,50 @@
     "Set chemo counter": {
       "type": "SetAttribute",
       "attribute": "breast_cancer_chemoCount",
+      "value": 0,
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html",
+        "",
+        "Which chemotherapy drugs are used for breast cancer?",
+        "In most cases (especially as adjuvant or neoadjuvant treatment), chemo is most effective when combinations of drugs are used. Today, doctors use many different combinations, and it's not clear that any single combination is clearly the best.",
+        "",
+        "The most common drugs used for adjuvant and neoadjuvant chemo include:",
+        "Anthracyclines, such as doxorubicin (Adriamycin) and epirubicin (Ellence)",
+        "Taxanes, such as paclitaxel (Taxol) and docetaxel (Taxotere)",
+        "5-fluorouracil (5-FU)",
+        "Cyclophosphamide (Cytoxan)",
+        "Carboplatin (Paraplatin)",
+        "Most often, combinations of 2 or 3 of these drugs are used."
+      ],
+      "direct_transition": "Set_chemo_counter"
+    },
+    "Delay Until Next Cycle (3 Weeks)": {
+      "type": "Delay",
+      "direct_transition": "Start New Cycle",
+      "range": {
+        "low": 19,
+        "high": 23,
+        "unit": "days"
+      }
+    },
+    "Set_chemo_counter": {
+      "type": "SetAttribute",
+      "attribute": "breast_cancer_chemoCount",
+      "value": 0,
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html",
+        "",
+        "Which chemotherapy drugs are used for breast cancer?",
+        "In most cases (especially as adjuvant or neoadjuvant treatment), chemo is most effective when combinations of drugs are used. Today, doctors use many different combinations, and it's not clear that any single combination is clearly the best.",
+        "",
+        "The most common drugs used for adjuvant and neoadjuvant chemo include:",
+        "Anthracyclines, such as doxorubicin (Adriamycin) and epirubicin (Ellence)",
+        "Taxanes, such as paclitaxel (Taxol) and docetaxel (Taxotere)",
+        "5-fluorouracil (5-FU)",
+        "Cyclophosphamide (Cytoxan)",
+        "Carboplatin (Paraplatin)",
+        "Most often, combinations of 2 or 3 of these drugs are used."
+      ],
       "distributed_transition": [
         {
           "transition": "Anthracyclines",
@@ -192,31 +236,7 @@
           "transition": "Carboplatin",
           "distribution": 0.05
         }
-      ],
-      "value": 0,
-      "remarks": [
-        "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html",
-        "",
-        "Which chemotherapy drugs are used for breast cancer?",
-        "In most cases (especially as adjuvant or neoadjuvant treatment), chemo is most effective when combinations of drugs are used. Today, doctors use many different combinations, and it's not clear that any single combination is clearly the best.",
-        "",
-        "The most common drugs used for adjuvant and neoadjuvant chemo include:",
-        "Anthracyclines, such as doxorubicin (Adriamycin) and epirubicin (Ellence)",
-        "Taxanes, such as paclitaxel (Taxol) and docetaxel (Taxotere)",
-        "5-fluorouracil (5-FU)",
-        "Cyclophosphamide (Cytoxan)",
-        "Carboplatin (Paraplatin)",
-        "Most often, combinations of 2 or 3 of these drugs are used."
       ]
-    },
-    "Delay Until Next Cycle (3 Weeks)": {
-      "type": "Delay",
-      "direct_transition": "Start New Cycle",
-      "range": {
-        "low": 19,
-        "high": 23,
-        "unit": "days"
-      }
     }
   }
 }

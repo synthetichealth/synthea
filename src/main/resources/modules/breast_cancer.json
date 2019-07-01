@@ -158,6 +158,9 @@
         "Breast cancer in men is a rare disease. Less than 1% of all breast cancers occur in men:",
         "https://www.breastcancer.org/symptoms/types/male_bc",
         "",
+        "All people, whether male or female, are born with some breast cells and tissue. Even though males do not develop milk-producing breasts, a man’s breast cells and tissue can still develop cancer. Even so, male breast cancer is very rare. Less than one percent of all breast cancer cases develop in men, and only one in a thousand men will ever be diagnosed with breast cancer.",
+        "https://www.nationalbreastcancer.org/male-breast-cancer",
+        "",
         "Most breast cancers happen to men between ages 60 and 70:",
         "https://www.webmd.com/breast-cancer/breast-cancer-men"
       ],
@@ -168,7 +171,7 @@
         },
         {
           "transition": "Age 60-69",
-          "distribution": 0.01
+          "distribution": 0.001
         }
       ]
     },
@@ -1293,7 +1296,7 @@
     "Treatment Unsuccessful": {
       "type": "SetAttribute",
       "attribute": "breast_cancer_survival",
-      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options",
+      "direct_transition": "Impending_Death_from_Cancer_Complications",
       "value": "no"
     },
     "Treatment Successful": {
@@ -1431,7 +1434,7 @@
             "conditions": [
               {
                 "condition_type": "Attribute",
-                "attribute": "breast_cancer_triple_wicked",
+                "attribute": "breast_cancer_triple_negative",
                 "operator": "==",
                 "value": true
               },
@@ -1713,7 +1716,29 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "Neoadjuvant chemotherapy procedure"
+      "conditional_transition": [
+        {
+          "transition": "Doxorubicin",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Doxorubicin"
+          }
+        },
+        {
+          "transition": "Epirubicin",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Epirubicin"
+          }
+        },
+        {
+          "transition": "Paclitaxel",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Paclitaxel"
+          }
+        }
+      ]
     },
     "Begin Hormone Therapy Treatment": {
       "type": "CallSubmodule",
@@ -1879,7 +1904,6 @@
     },
     "Impending Death from Cancer Complications": {
       "type": "Death",
-      "direct_transition": "Post-Treatment Surveillance",
       "referenced_by_attribute": "breast_cancer_condition",
       "range": {
         "low": 0,
@@ -1948,7 +1972,7 @@
         "code": 230993007,
         "display": "Worsening (qualifier value)"
       },
-      "direct_transition": "Impending Death from Cancer Complications"
+      "direct_transition": "Post-Treatment Surveillance"
     },
     "Post-Op Cancer Status": {
       "type": "Simple",
@@ -2051,6 +2075,16 @@
           }
         }
       ]
+    },
+    "Impending_Death_from_Cancer_Complications": {
+      "type": "Death",
+      "referenced_by_attribute": "breast_cancer_condition",
+      "range": {
+        "low": 0,
+        "high": 5,
+        "unit": "years"
+      },
+      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options"
     }
   }
 }
