@@ -17,8 +17,8 @@
           "display": "5 ML fulvestrant 50 MG/ML Prefilled Syringe"
         }
       ],
-      "direct_transition": "ER_medend",
-      "assign_to_attribute": "ermed",
+      "direct_transition": "ER_medication_end",
+      "assign_to_attribute": "ER_medication",
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/treatment/hormone-therapy-for-breast-cancer.html",
         "",
@@ -102,8 +102,8 @@
           "display": "letrozole 2.5 MG Oral Tablet"
         }
       ],
-      "direct_transition": "ER_medend",
-      "assign_to_attribute": "ermed",
+      "direct_transition": "ER_medication_end",
+      "assign_to_attribute": "ER_medication",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -127,8 +127,8 @@
           "display": "anastrozole 1 MG Oral Tablet"
         }
       ],
-      "direct_transition": "ER_medend",
-      "assign_to_attribute": "ermed",
+      "direct_transition": "ER_medication_end",
+      "assign_to_attribute": "ER_medication",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -152,8 +152,8 @@
           "display": "exemestane 25 MG Oral Tablet"
         }
       ],
-      "direct_transition": "ER_medend",
-      "assign_to_attribute": "ermed",
+      "direct_transition": "ER_medication_end",
+      "assign_to_attribute": "ER_medication",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -259,8 +259,8 @@
           "display": "ado-trastuzumab emtansine 100 MG Injection"
         }
       ],
-      "direct_transition": "HER-endmed",
-      "assign_to_attribute": "hermed",
+      "direct_transition": "HER2_medication_end",
+      "assign_to_attribute": "HER2_medication",
       "reason": "breast_cancer_condition"
     },
     "Lapatinib": {
@@ -272,8 +272,8 @@
           "display": "lapatinib 250 MG Oral Tablet"
         }
       ],
-      "direct_transition": "HER-endmed",
-      "assign_to_attribute": "hermed",
+      "direct_transition": "HER2_medication_end",
+      "assign_to_attribute": "HER2_medication",
       "reason": "breast_cancer_condition"
     },
     "Neratinib": {
@@ -285,8 +285,8 @@
           "display": "neratinib 40 MG Oral Tablet"
         }
       ],
-      "direct_transition": "HER-endmed",
-      "assign_to_attribute": "hermed",
+      "direct_transition": "HER2_medication_end",
+      "assign_to_attribute": "HER2_medication",
       "reason": "breast_cancer_condition"
     },
     "Trastuzumab_her2": {
@@ -298,8 +298,8 @@
           "display": "5 ML hyaluronidase-oysk 2000 UNT/ML / trastuzumab 120 MG/ML Injection"
         }
       ],
-      "direct_transition": "HER-endmed",
-      "assign_to_attribute": "hermed",
+      "direct_transition": "HER2_medication_end",
+      "assign_to_attribute": "HER2_medication",
       "reason": "breast_cancer_condition"
     },
     "CDK4/6 Inhibitors": {
@@ -347,8 +347,8 @@
           "display": "abemaciclib 100 MG Oral Tablet"
         }
       ],
-      "direct_transition": "erpermed-endmed",
-      "assign_to_attribute": "erprmed",
+      "direct_transition": "ER_PR_medication_end",
+      "assign_to_attribute": "ER_PR_medication",
       "reason": "breast_cancer_condition"
     },
     "Palbociclib": {
@@ -360,8 +360,8 @@
           "display": "palbociclib 100 MG Oral Capsule"
         }
       ],
-      "direct_transition": "erpermed-endmed",
-      "assign_to_attribute": "erprmed",
+      "direct_transition": "ER_PR_medication_end",
+      "assign_to_attribute": "ER_PR_medication",
       "reason": "breast_cancer_condition"
     },
     "Ribociclib": {
@@ -373,8 +373,8 @@
           "display": "ribociclib 200 MG Oral Tablet"
         }
       ],
-      "direct_transition": "erpermed-endmed",
-      "assign_to_attribute": "erprmed",
+      "direct_transition": "ER_PR_medication_end",
+      "assign_to_attribute": "ER_PR_medication",
       "reason": "breast_cancer_condition"
     },
     "ER-encounter": {
@@ -418,18 +418,8 @@
       "type": "Simple",
       "direct_transition": "HER2-Treatment"
     },
-    "ER_medend": {
-      "type": "MedicationEnd",
-      "direct_transition": "Upper Stage Treatment",
-      "referenced_by_attribute": "ermed"
-    },
     "Terminal": {
       "type": "Terminal"
-    },
-    "erpermed-endmed": {
-      "type": "MedicationEnd",
-      "referenced_by_attribute": "erprmed",
-      "direct_transition": "end_encounter"
     },
     "end_encounter": {
       "type": "EncounterEnd",
@@ -463,11 +453,6 @@
         }
       ]
     },
-    "HER-endmed": {
-      "type": "MedicationEnd",
-      "direct_transition": "Hormone_Receptor_Positive_Treatments",
-      "referenced_by_attribute": "hermed"
-    },
     "Tamoxifen": {
       "type": "MedicationOrder",
       "codes": [
@@ -477,8 +462,8 @@
           "display": "Tamoxifen 10 MG Oral Tablet"
         }
       ],
-      "direct_transition": "ER_medend",
-      "assign_to_attribute": "ermed",
+      "direct_transition": "ER_medication_end",
+      "assign_to_attribute": "ER_medication",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -526,6 +511,21 @@
         "",
         ""
       ]
+    },
+    "ER_medication_end": {
+      "type": "MedicationEnd",
+      "direct_transition": "Upper Stage Treatment",
+      "referenced_by_attribute": "ER_medication"
+    },
+    "HER2_medication_end": {
+      "type": "MedicationEnd",
+      "direct_transition": "Hormone_Receptor_Positive_Treatments",
+      "referenced_by_attribute": "HER2_medication"
+    },
+    "ER_PR_medication_end": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "ER_PR_medication",
+      "direct_transition": "end_encounter"
     }
   }
 }
