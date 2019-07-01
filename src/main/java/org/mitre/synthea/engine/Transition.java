@@ -67,7 +67,7 @@ public abstract class Transition {
    */
   public static final class DistributedTransitionOption extends TransitionOption {
     private Object distribution;
-    public Double numericDistribution;
+    private Double numericDistribution;
     private NamedDistribution namedDistribution;
   }
 
@@ -104,8 +104,8 @@ public abstract class Transition {
    * compared with a table lookup to find its probability and attributes.
    */
   public static final class LookupTableTransitionOption extends TransitionOption {
-    public String lookupTableName;
-    public double defaultProbability;
+    private String lookupTableName;
+    private double defaultProbability;
   }
 
   /**
@@ -126,6 +126,7 @@ public abstract class Transition {
         ArrayList<DistributedTransitionOption>>>();
     private List<LookupTableTransitionOption> transitions;
     private ArrayList<String> attributes;
+    private Integer ageIndex;
     private ArrayList<String> stateNames;
     private ArrayList<DistributedTransitionOption> defaultTransitions;
     private String lookupTableName;
@@ -173,6 +174,9 @@ public abstract class Transition {
         this.attributes = new ArrayList<String>(lookupTable.get(0).keySet());
         this.attributes.subList((this.attributes.size() - lookupTableTransitions.size()),
             this.attributes.size()).clear();
+        if (this.attributes.contains("age")) {
+          this.ageIndex = this.attributes.indexOf("age");
+        }
         // Parse list of State Transitions
         this.stateNames = new ArrayList<String>(lookupTable.get(0).keySet());
         this.stateNames.subList(0, this.attributes.size()).clear();
@@ -180,14 +184,31 @@ public abstract class Transition {
         for (Map<String, String> currentRow : lookupTable) {
           ArrayList<String> currentAttributes = new ArrayList<String>(currentRow.values());
           currentAttributes.subList(this.attributes.size(), currentAttributes.size()).clear();
-          LookupTableKey attributeRecordsLookupKey = new LookupTableKey(currentAttributes,
-              this.attributes.indexOf("age"), -1);
-          ArrayList<DistributedTransitionOption> transitionProbabilities
-              = new ArrayList<DistributedTransitionOption>();
+          // create ageRange
+          Range<Integer> ageRange = null;
+          if (this.ageIndex != null) {
+            String value = currentAttributes.remove(ageIndex.intValue());
+            if (!value.contains("-") ||
+                value.substring(0, value.indexOf("-")).length() < 1 ||
+                value.substring(value.indexOf("-") + 1).length() < 1) {
+              throw new RuntimeException(
+                  "LOOKUP TABLE '" + fileName +
+                  "' AGE ERROR: Age Range must be in the form: 'ageLow-ageHigh'. Found '" + value +
+                  "'");
+            } else {
+              ageRange = Range.between(
+                  Integer.parseInt(value.substring(0, value.indexOf("-"))),
+                  Integer.parseInt(value.substring(value.indexOf("-") + 1)));
+            }
+          }
+          LookupTableKey attributeRecordsLookupKey =
+              new LookupTableKey(currentAttributes, ageRange);
+          ArrayList<DistributedTransitionOption> transitionProbabilities =
+              new ArrayList<DistributedTransitionOption>();
           transitionProbabilities = createDistributedTransitionOptions(currentRow);
           newTable.put(attributeRecordsLookupKey, transitionProbabilities);
         }
-        // Put new table into Hasmap of all tables
+        // Put new table into Hash map of all tables
         lookupTables.put(lookupTableName, newTable);
       }
     }
@@ -225,14 +246,13 @@ public abstract class Transition {
 
     @Override
     public String follow(Person person, long time) {
-
+      Integer age = null;
       // Extract Person's list of relevant attributes
-      String personAge = "-1";
       ArrayList<String> personsAttributes = new ArrayList<String>();
       for (String attributeToAdd : this.attributes) {
         attributeToAdd.toLowerCase();
         if (attributeToAdd.equals("age")) {
-          personAge = Integer.toString(person.ageInYears(time));
+          age = person.ageInYears(time);
         } else {
           String currentAttributeToCheck = (String) person.attributes.get(attributeToAdd);
           if (currentAttributeToCheck == null) {
@@ -244,8 +264,7 @@ public abstract class Transition {
         }
       }
       // Create Key to get distributions
-      LookupTableKey personsAttributesLookupKey = new LookupTableKey(
-          personsAttributes, this.attributes.indexOf("age"), Integer.parseInt(personAge));
+      LookupTableKey personsAttributesLookupKey = new LookupTableKey(personsAttributes, age);
       if (lookupTables.get(lookupTableName).containsKey(personsAttributesLookupKey)) {
         // Person matches, use their attribute's list of distributedtransitionoptions
         return pickDistributedTransition(
@@ -255,64 +274,89 @@ public abstract class Transition {
         return pickDistributedTransition(this.defaultTransitions, person);
       }
     }
+  }
 
-    private final class LookupTableKey {
+  public final class LookupTableKey {
+    private final List<String> attributes;
+    /** Age for this patient. May be null if irrelevant. */
+    private final Integer age;
+    /** Age range for this row. Null if this is a person. */
+    private final Range<Integer> ageRange;
 
-      private final ArrayList<String> recordAttributes;
-      private final int ageIndex;
-      private final int personAge;
-      private final Range<Integer> ageRange;
+    /**
+     * Create a symbolic lookup key for a given row that contains actual patient values.
+     * @param attributes Patient attribute values.
+     * @param age Patient age.
+     */
+    public LookupTableKey(List<String> attributes, Integer age) {
+      this.attributes = attributes;
+      this.age = age;
+      this.ageRange = null;
+    }
 
-      LookupTableKey(ArrayList<String> currentAttributes, int ageIndex, int personAge) {
-        this.personAge = personAge;
-        this.recordAttributes = currentAttributes;
-        this.ageIndex = ageIndex;
-        if (ageIndex > -1 && personAge < 0) {
-          String ageRange = currentAttributes.get(ageIndex);
-          if (ageRange.indexOf("-") == -1 || ageRange.substring(0,
-              ageRange.indexOf("-")).length() < 1
-              || ageRange.substring(ageRange.indexOf("-") + 1).length() < 1) {
-            throw new RuntimeException(
-                "LOOKUP TABLE CSV AGE ERROR: Age Range '" + ageRange
-                + "' must be in the form: 'ageLow-ageHigh'");
-          }
-          this.ageRange = Range.between(
-              Integer.parseInt(ageRange.substring(0, ageRange.indexOf("-"))),
-              Integer.parseInt(ageRange.substring(ageRange.indexOf("-") + 1)));
-          currentAttributes.remove(ageIndex);
+    /**
+     * Create a symbolic lookup key for a given row that contains lookup values.
+     * @param attributes Table attribute values.
+     * @param ageIndex If the table contains an age column, ageIndex specifies which column
+     * it is. Otherwise, null.
+     */
+    public LookupTableKey(List<String> attributes, Range<Integer> range) {
+      this.attributes = attributes;
+      this.age = null;
+      this.ageRange = range;
+    }
+
+    @Override
+    public int hashCode() {
+      return this.attributes.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj == null || this.getClass() != obj.getClass()) {
+        return false;
+      }
+      LookupTableKey that = (LookupTableKey) obj;
+
+      boolean agesMatch = true;
+
+      if (this.age != null) {
+        if (that.age != null) {
+          agesMatch = (this.age == that.age);
+        } else if (that.ageRange != null) {
+          agesMatch = (that.ageRange.contains(this.age));
         } else {
-          this.ageRange = Range.between(-1, -1);
+          // that.age == null && that.ageRange == null
+          agesMatch = false;
         }
-      }
-
-      @Override
-      public int hashCode() {
-        return this.recordAttributes.hashCode();
-      }
-
-      @Override
-      public boolean equals(Object obj) {
-
-        if (obj == null || this.getClass() != obj.getClass()) {
-          return false;
-        }
-        LookupTableKey lookupTableKey = (LookupTableKey) obj;
-        ArrayList<String> personAttributes = lookupTableKey.recordAttributes;
-        // If There is an age column (at ageIndex)
-        if (this.ageIndex > -1) {
-          // If this is a person
-          if (personAge > -1) {
-            return lookupTableKey.ageRange.contains(personAge);
-          } else {
-            return attributes.equals(personAttributes);
-          }
+      } else if (that.age != null) {
+        if (this.ageRange != null) {
+          agesMatch = (this.ageRange.contains(that.age));
         } else {
-          // No age column. Return standard ArrayList.equals();
-          return this.recordAttributes.equals(personAttributes);
+          // this.age == null && this.ageRange == null
+          agesMatch = false;
         }
+      } else if (this.ageRange != null) {
+        // this.age == null && that.age == null
+        if (that.ageRange != null) {
+          agesMatch = this.ageRange.containsRange(that.ageRange);
+        } else {
+          agesMatch = false;
+        }
+      } else if (that.ageRange != null) {
+        agesMatch = false;
       }
+
+      return agesMatch && this.attributes.equals(that.attributes);
+    }
+
+    @Override
+    public String toString() {
+      String age = (this.age == null ? ageRange.toString() : this.age.toString());
+      return attributes.toString() + " : " + age;
     }
   }
+
 
   /**
    * A ConditionalTransitionOption represents a single destination state, with a
@@ -352,7 +396,6 @@ public abstract class Transition {
       TransitionOption last = transitions.get(transitions.size() - 1);
       return last.transition;
     }
-
   }
 
   /**

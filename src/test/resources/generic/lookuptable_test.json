@@ -59,8 +59,6 @@
       },
       "Mild_Lookuptablitis": {
         "type": "ConditionOnset",
-        "assign_to_attribute": "",
-        "target_encounter": "",
         "codes": [
           {
             "system": "SNOMED-CT",
@@ -73,8 +71,6 @@
       },
       "Moderate_Lookuptablitis": {
         "type": "ConditionOnset",
-        "assign_to_attribute": "",
-        "target_encounter": "",
         "codes": [
           {
             "system": "SNOMED-CT",
@@ -87,8 +83,6 @@
       },
       "Extreme_Lookuptablitis": {
         "type": "ConditionOnset",
-        "assign_to_attribute": "",
-        "target_encounter": "",
         "codes": [
           {
             "system": "SNOMED-CT",

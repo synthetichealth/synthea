@@ -11,14 +11,21 @@ import java.io.FileReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.lang3.Range;
+import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.mitre.synthea.engine.Generator.GeneratorOptions;
 import org.mitre.synthea.engine.Logic.ActiveCondition;
+import org.mitre.synthea.engine.Transition.DirectTransition;
+import org.mitre.synthea.engine.Transition.LookupTableKey;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -40,6 +47,214 @@ public class LookupTableTransitionTest {
       e.printStackTrace();
       throw new RuntimeException(e);
     }
+  }
+
+  @Test
+  public void keyTestWithAgesMatch() {
+    DirectTransition test = new DirectTransition("test");
+
+    List<String> attributes = new ArrayList<String>();
+    attributes.add("foo");
+    attributes.add("bar");
+    Integer age = 20;
+    LookupTableKey silver = test.new LookupTableKey(attributes, age);
+
+    List<String> others = new ArrayList<String>();
+    others.add("foo");
+    others.add("bar");
+    Range<Integer> range = Range.between(0, 30);
+    LookupTableKey gold = test.new LookupTableKey(others, range);
+
+    Assert.assertEquals(silver, gold);
+    Assert.assertEquals(gold, silver);
+
+    Set<LookupTableKey> set = new HashSet<LookupTableKey>();
+    set.add(gold);
+    Assert.assertTrue(set.contains(silver));
+  }
+
+  @Test
+  public void keyTestWithAgesMatchHigh() {
+    DirectTransition test = new DirectTransition("test");
+
+    List<String> attributes = new ArrayList<String>();
+    attributes.add("foo");
+    attributes.add("bar");
+    Integer age = 30;
+    LookupTableKey silver = test.new LookupTableKey(attributes, age);
+
+    List<String> others = new ArrayList<String>();
+    others.add("foo");
+    others.add("bar");
+    Range<Integer> range = Range.between(0, 30);
+    LookupTableKey gold = test.new LookupTableKey(others, range);
+
+    Assert.assertEquals(silver, gold);
+    Assert.assertEquals(gold, silver);
+
+    Set<LookupTableKey> set = new HashSet<LookupTableKey>();
+    set.add(gold);
+    Assert.assertTrue(set.contains(silver));
+  }
+
+  @Test
+  public void keyTestWithAgesMatchLow() {
+    DirectTransition test = new DirectTransition("test");
+
+    List<String> attributes = new ArrayList<String>();
+    attributes.add("foo");
+    attributes.add("bar");
+    Integer age = 0;
+    LookupTableKey silver = test.new LookupTableKey(attributes, age);
+
+    List<String> others = new ArrayList<String>();
+    others.add("foo");
+    others.add("bar");
+    Range<Integer> range = Range.between(0, 30);
+    LookupTableKey gold = test.new LookupTableKey(others, range);
+
+    Assert.assertEquals(silver, gold);
+    Assert.assertEquals(gold, silver);
+
+    Set<LookupTableKey> set = new HashSet<LookupTableKey>();
+    set.add(gold);
+    Assert.assertTrue(set.contains(silver));
+  }
+
+  @Test
+  public void keyTestCorrectMatch() {
+    DirectTransition test = new DirectTransition("test");
+
+    List<String> attributes = new ArrayList<String>();
+    attributes.add("foo");
+    attributes.add("bar");
+    Integer age = 20;
+    LookupTableKey yellow = test.new LookupTableKey(attributes, age);
+    age = 50;
+    LookupTableKey grey = test.new LookupTableKey(attributes, age);
+
+    List<String> others = new ArrayList<String>();
+    others.add("foo");
+    others.add("bar");
+    Range<Integer> range = Range.between(0, 30);
+    LookupTableKey gold = test.new LookupTableKey(others, range);
+
+    Range<Integer> anotherRange = Range.between(31, 60);
+    LookupTableKey platinum = test.new LookupTableKey(others, anotherRange);
+
+    Assert.assertEquals(yellow, gold);
+    Assert.assertEquals(gold, yellow);
+    Assert.assertEquals(grey, platinum);
+    Assert.assertEquals(platinum, grey);
+
+    Assert.assertNotEquals(grey, gold);
+    Assert.assertNotEquals(yellow, platinum);
+    Assert.assertNotEquals(gold, platinum);
+    Assert.assertNotEquals(yellow, grey);
+
+    Map<LookupTableKey, String> map = new HashMap<LookupTableKey, String>();
+    map.put(gold, "gold");
+    map.put(platinum, "platinum");
+    Assert.assertTrue(map.containsKey(yellow));
+    Assert.assertEquals(map.get(yellow), "gold");
+    Assert.assertTrue(map.containsKey(grey));
+    Assert.assertEquals(map.get(grey), "platinum");
+  }
+
+  @Test
+  public void keyTestWithAgesNoMatchAge() {
+    DirectTransition test = new DirectTransition("test");
+
+    List<String> attributes = new ArrayList<String>();
+    attributes.add("foo");
+    attributes.add("bar");
+    Integer age = 40;
+    LookupTableKey silver = test.new LookupTableKey(attributes, age);
+
+    List<String> others = new ArrayList<String>();
+    others.add("foo");
+    others.add("bar");
+    Range<Integer> range = Range.between(0, 30);
+    LookupTableKey gold = test.new LookupTableKey(others, range);
+
+    Assert.assertNotEquals(silver, gold);
+    Assert.assertNotEquals(gold, silver);
+
+    Set<LookupTableKey> set = new HashSet<LookupTableKey>();
+    set.add(gold);
+    Assert.assertFalse(set.contains(silver));
+  }
+
+  @Test
+  public void keyTestWithAgesNoMatchOther() {
+    DirectTransition test = new DirectTransition("test");
+
+    List<String> attributes = new ArrayList<String>();
+    attributes.add("foo");
+    attributes.add("bar");
+    Integer age = 20;
+    LookupTableKey silver = test.new LookupTableKey(attributes, age);
+
+    List<String> others = new ArrayList<String>();
+    others.add("foo");
+    others.add("baz");
+    Range<Integer> range = Range.between(0, 30);
+    LookupTableKey gold = test.new LookupTableKey(others, range);
+
+    Assert.assertNotEquals(silver, gold);
+    Assert.assertNotEquals(gold, silver);
+ 
+    Set<LookupTableKey> set = new HashSet<LookupTableKey>();
+    set.add(gold);
+    Assert.assertFalse(set.contains(silver));
+  }
+
+  @Test
+  public void keyTestWithoutAgesMatch() {
+    DirectTransition test = new DirectTransition("test");
+
+    List<String> attributes = new ArrayList<String>();
+    attributes.add("foo");
+    attributes.add("bar");
+    Integer age = null;
+    LookupTableKey silver = test.new LookupTableKey(attributes, age);
+
+    List<String> others = new ArrayList<String>();
+    others.add("foo");
+    others.add("bar");
+    Range<Integer> range = null;
+    LookupTableKey gold = test.new LookupTableKey(others, range);
+
+    Assert.assertEquals(silver, gold);
+    Assert.assertEquals(gold, silver);
+
+    Set<LookupTableKey> set = new HashSet<LookupTableKey>();
+    set.add(gold);
+    Assert.assertTrue(set.contains(silver));
+  }
+
+  @Test
+  public void keyTestWithoutAgesNoMatch() {
+    DirectTransition test = new DirectTransition("test");
+
+    List<String> attributes = new ArrayList<String>();
+    attributes.add("foo");
+    attributes.add("bar");
+    Integer age = null;
+    LookupTableKey silver = test.new LookupTableKey(attributes, age);
+
+    List<String> others = new ArrayList<String>();
+    others.add("foo");
+    others.add("baz");
+    Range<Integer> range = null;
+    LookupTableKey gold = test.new LookupTableKey(others, range);
+
+    Assert.assertNotEquals(silver, gold);
+    Assert.assertNotEquals(gold, silver);
+
+    Set<LookupTableKey> set = new HashSet<LookupTableKey>();
+    set.add(gold);
+    Assert.assertFalse(set.contains(silver));
   }
 
   @Test
@@ -365,7 +580,7 @@ public class LookupTableTransitionTest {
   }
 
   @Test(expected = RuntimeException.class)
-  public void zinvalidAgeRangeTest() {
+  public void zzInvalidAgeRangeTest() {
 
     Map<String, Module.ModuleSupplier> modules =
             Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
@@ -383,7 +598,7 @@ public class LookupTableTransitionTest {
   }
 
   @Test(expected = RuntimeException.class)
-  public void anoTransitionMatchTest() {
+  public void aaNoTransitionMatchTest() {
 
     Map<String, Module.ModuleSupplier> modules =
             Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
