@@ -9,12 +9,24 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 
 public class LocationTest {
+
+  private static Location location = null;
+
+  @BeforeClass
+  /**
+   * Setup the unit tests with a single location... no need to reload this
+   * in every unit test.
+   */
+  public static void createLocation() {
+    location = new Location("Massachusetts", null);
+  }
 
   @Test
   public void testAbbreviations() {
@@ -28,7 +40,6 @@ public class LocationTest {
 
   @Test
   public void testLocation() {
-    Location location = new Location("Massachusetts", null);
     Assert.assertTrue(location.getPopulation("Bedford") > 0);
     Assert.assertTrue(location.getZipCode("Bedford").equals("01730"));
   }
@@ -69,7 +80,7 @@ public class LocationTest {
       String original = (city + ", " + state);
       String key = original.toUpperCase();
       if (!availableLocations.contains(key)) {
-        mismatches.add(original);
+        mismatches.add(original + "|");
       }
     }
     String message = mismatches.toString();
@@ -109,8 +120,7 @@ public class LocationTest {
 
   @Test
   public void testGetForeignPlaceOfBirth_HappyPath() {
-    Location location = new Location("Massachusetts", null);
-    Random random = new Random(0);
+    Random random = new Random(4L);
     String[] placeOfBirth = location.randomBirthplaceByEthnicity(random, "german");
     Assert.assertEquals("Expected to receive 'Munich'", "Munich", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Bavaria'", "Bavaria", placeOfBirth[1]);
@@ -121,8 +131,7 @@ public class LocationTest {
 
   @Test
   public void testGetForeignPlaceOfBirth_ValidStringInvalidFormat_1() {
-    Location location = new Location("Massachusetts", null);
-    Random random = new Random(0);
+    Random random = new Random(0L);
     String[] placeOfBirth = location.randomBirthplaceByEthnicity(random, "too_many_elements");
     Assert.assertEquals("Expected to receive 'Stoughton'", "Stoughton", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Massachusetts'", "Massachusetts", placeOfBirth[1]);
@@ -133,8 +142,7 @@ public class LocationTest {
 
   @Test
   public void testGetForeignPlaceOfBirth_ValidStringInvalidFormat_2() {
-    Location location = new Location("Massachusetts", null);
-    Random random = new Random(0);
+    Random random = new Random(0L);
     String[] placeOfBirth = location.randomBirthplaceByEthnicity(random, "not_enough_elements");
     Assert.assertEquals("Expected to receive 'Stoughton'", "Stoughton", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Massachusetts'", "Massachusetts", placeOfBirth[1]);
@@ -145,8 +153,7 @@ public class LocationTest {
 
   @Test
   public void testGetForeignPlaceOfBirth_MissingValue() {
-    Location location = new Location("Massachusetts", null);
-    Random random = new Random(0);
+    Random random = new Random(0L);
     String[] placeOfBirth = location.randomBirthplaceByEthnicity(random, "unknown_ethnicity");
     Assert.assertEquals("Expected to receive 'Rehoboth'", "Rehoboth", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Massachusetts'", "Massachusetts", placeOfBirth[1]);
@@ -157,8 +164,7 @@ public class LocationTest {
 
   @Test
   public void testGetForeignPlaceOfBirth_EmptyValue() {
-    Location location = new Location("Massachusetts", null);
-    Random random = new Random(0);
+    Random random = new Random(0L);
     String[] placeOfBirth = location.randomBirthplaceByEthnicity(random, "empty_ethnicity");
     Assert.assertEquals("Expected to receive 'Rehoboth'", "Rehoboth", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Massachusetts'", "Massachusetts", placeOfBirth[1]);
