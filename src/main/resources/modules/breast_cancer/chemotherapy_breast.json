@@ -122,7 +122,7 @@
         "high": 2,
         "unit": "hours"
       },
-      "direct_transition": "End Current Chemo Treatment"
+      "direct_transition": "End Current Adjuvant Chemo Medication"
     },
     "Terminal": {
       "type": "Terminal"
@@ -140,14 +140,9 @@
           }
         },
         {
-          "transition": "End Adjuvant Chemotherapy Medication"
+          "transition": "Terminal"
         }
       ]
-    },
-    "End Adjuvant Chemotherapy Medication": {
-      "type": "MedicationEnd",
-      "direct_transition": "Terminal",
-      "referenced_by_attribute": "chemoMed"
     },
     "Increment Chemo Counter": {
       "type": "Counter",
@@ -311,6 +306,11 @@
           ]
         }
       ]
+    },
+    "End Current Adjuvant Chemo Medication": {
+      "type": "MedicationEnd",
+      "direct_transition": "End Current Chemo Treatment",
+      "referenced_by_attribute": "chemoMed"
     }
   }
 }

@@ -898,7 +898,7 @@
         "high": 120,
         "unit": "minutes"
       },
-      "direct_transition": "End Current Advanced Drug Infusion",
+      "direct_transition": "End Advanced Drug Medication",
       "reason": "breast_cancer_condition"
     },
     "End Current Advanced Drug Infusion": {
@@ -914,13 +914,13 @@
           }
         },
         {
-          "transition": "End Advanced Drug Medication"
+          "transition": "End Breast Surgery"
         }
       ]
     },
     "End Advanced Drug Medication": {
       "type": "MedicationEnd",
-      "direct_transition": "End Breast Surgery",
+      "direct_transition": "End Current Advanced Drug Infusion",
       "referenced_by_attribute": "adv_drug"
     },
     "End Pamidronate Medication": {

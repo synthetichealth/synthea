@@ -1509,7 +1509,7 @@
     },
     "End Neodjuvant Medication in Preparation for Surgery": {
       "type": "MedicationEnd",
-      "direct_transition": "End Chemo Treatment",
+      "direct_transition": "End_Neoadjuvant_Chemo_Treatment",
       "referenced_by_attribute": "breast_cancer_neoMed"
     },
     "Neoadjuvant Chemo Before Surgery": {
@@ -1632,7 +1632,7 @@
           }
         },
         {
-          "transition": "End Neodjuvant Medication in Preparation for Surgery"
+          "transition": "End Chemo Treatment"
         }
       ]
     },
@@ -1719,7 +1719,7 @@
         "high": 240,
         "unit": "minutes"
       },
-      "direct_transition": "End_Neoadjuvant_Chemo_Treatment",
+      "direct_transition": "End Neodjuvant Medication in Preparation for Surgery",
       "remarks": [
         "Some last as long as three or four hours, while others may only take a half-hour:",
         "https://www.cancercarenorthwest.com/frequently-asked-questions/"
