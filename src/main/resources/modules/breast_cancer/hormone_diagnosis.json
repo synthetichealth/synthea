@@ -380,7 +380,7 @@
     },
     "Triple_Negative_Patient": {
       "type": "SetAttribute",
-      "attribute": "breast_cancer_triple_wicked",
+      "attribute": "breast_cancer_triple_negative",
       "direct_transition": "Terminal",
       "value": true
     },

@@ -220,7 +220,7 @@
           "transition": "External Beam Radiation",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "breast_cancer_triple_wicked",
+            "attribute": "breast_cancer_triple_negative",
             "operator": "==",
             "value": true
           }
@@ -458,7 +458,7 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "breast_cancer_triple_wicked",
+            "attribute": "breast_cancer_triple_negative",
             "operator": "==",
             "value": true
           },
@@ -635,7 +635,7 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "breast_cancer_triple_wicked",
+            "attribute": "breast_cancer_triple_negative",
             "operator": "==",
             "value": true
           },
