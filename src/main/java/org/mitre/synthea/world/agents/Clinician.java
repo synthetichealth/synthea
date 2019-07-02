@@ -92,27 +92,39 @@ public class Clinician implements Serializable, QuadTreeData {
     return random.nextInt(bound);
   }
   
+  /*
+   * (non-Javadoc)
+   * @see org.apache.sis.index.tree.QuadTreeData#getX()
+   */
   @Override
   public double getX() {
-    // TODO Auto-generated method stub
-    return 0;
+    return getLatLon().getX();
   }
-  
+
+  /*
+   * (non-Javadoc)
+   * @see org.apache.sis.index.tree.QuadTreeData#getY()
+   */
   @Override
   public double getY() {
-    // TODO Auto-generated method stub
-    return 0;
+    return getLatLon().getY();
   }
-  
+
+  /*
+   * (non-Javadoc)
+   * @see org.apache.sis.index.tree.QuadTreeData#getLatLon()
+   */
   @Override
   public DirectPosition2D getLatLon() {
-    // TODO Auto-generated method stub
-    return null;
+    return (DirectPosition2D) attributes.get(Person.COORDINATE);
   }
-  
+
+  /*
+   * (non-Javadoc)
+   * @see org.apache.sis.index.tree.QuadTreeData#getFileName()
+   */
   @Override
   public String getFileName() {
-    // TODO Auto-generated method stub
     return null;
   }
 }

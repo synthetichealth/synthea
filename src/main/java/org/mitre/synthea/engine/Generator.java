@@ -429,6 +429,7 @@ public class Generator {
     Map<String, Object> out = new HashMap<>();
     out.put(Person.CITY, city.city);
     out.put(Person.STATE, city.state);
+    out.put("county", city.county);
     
     String race = city.pickRace(random);
     out.put(Person.RACE, race);
