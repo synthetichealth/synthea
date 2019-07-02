@@ -51,13 +51,16 @@ public class QualityOfLifeModule extends Module {
       person.attributes.put("most-recent-daly", values[0]);
       person.attributes.put("most-recent-qaly", values[1]);
 
-      // Payer really should never be null but occasionally it is. Probably has something to do with the order that QOL's & HealthInsurance's module.process happens to be called in?
+      // Payer should never be null but is when the patient is 0.
+      // Probably has something to do with the order that QOL's &
+      // HealthInsurance's module.process happens to be called in?
       if (person.getPayerAtTime(time) != null) {
         person.getPayerAtTime(time).addQOLS(values[2]);
       }
 
-      System.out.println(person.attributes.get(Person.NAME) + " QALY at age " + person.ageInYears(time) + " was: "
-          + values[1] + " with a DALY of: " + values[0] + " and a QOLS of: " + values[2]);
+      // System.out.println(person.attributes.get(Person.NAME)
+      //     + " QALY at age " + person.ageInYears(time) + " was: "
+      //     + values[1] + " with a DALY of: " + values[0] + " and a QOLS of: " + values[2]);
 
     }
 
@@ -105,14 +108,16 @@ public class QualityOfLifeModule extends Module {
       // life expectancy equation derived from IHME GBD 2015 Reference Life Table
       // 6E-5x^3 - 0.0054x^2 - 0.8502x + 86.16
       // R^2 = 0.99978
-      double l = ((0.00006 * Math.pow(age, 3)) - (0.0054 * Math.pow(age, 2)) - (0.8502 * age) + 86.16);
+      double l = ((0.00006 * Math.pow(age, 3))
+          - (0.0054 * Math.pow(age, 2)) - (0.8502 * age) + 86.16);
       yll = l;
 
       // Need to give the yll to the payer here.
       // person.payer.addQALY(personAge/QALY) or .add(DALY)
       // At the end, payer averages this data out
 
-      System.out.println("yup, " + person.attributes.get(Person.NAME) + " is dead. lost " + yll + " years.");
+      System.out.println("DEATH: "
+          + person.attributes.get(Person.NAME) + ". Lost " + yll + " years.");
     }
     // get list of conditions
     List<Entry> allConditions = new ArrayList<Entry>();
@@ -132,7 +137,8 @@ public class QualityOfLifeModule extends Module {
       disabilityWeight = 0.0;
 
       for (Entry condition : conditionsInYear) {
-        disabilityWeight += (double) disabilityWeights.get(condition.codes.get(0).display).get("disability_weight");
+        disabilityWeight += (double) disabilityWeights
+            .get(condition.codes.get(0).display).get("disability_weight");
       }
 
       disabilityWeight = Math.min(1.0, weight(disabilityWeight, i + 1));
@@ -145,6 +151,9 @@ public class QualityOfLifeModule extends Module {
     return new double[] { daly, qaly, 1 - disabilityWeight };
   }
 
+  /**
+   * Returns the conditions had in a given year.
+   */
   public static List<Entry> conditionsInYear(List<Entry> conditions, long yearStart, long yearEnd) {
     List<Entry> conditionsInYear = new ArrayList<Entry>();
     for (Entry condition : conditions) {

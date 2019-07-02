@@ -110,7 +110,7 @@ public class HealthInsuranceModule extends Module {
       if (time >= mandateTime && occupation >= mandateOccupation) {
         // Randomly choose one of the remaining private insurances
         Payer newPayer = Payer.getPayerFinder().find(Payer.getPayerList(), person, null, time);
-        if(newPayer != null){
+        if (newPayer != null) {
           // If Payer is null, then there is no insurance available to them. Return No_Insurance.
           return newPayer;
         }
@@ -118,7 +118,7 @@ public class HealthInsuranceModule extends Module {
       if (income >= privateIncomeThreshold) {
         // Randomly choose one of the remaining private insurances
         Payer newPayer = Payer.getPayerFinder().find(Payer.getPayerList(), person, null, time);
-        if(newPayer != null){
+        if (newPayer != null) {
           // If Payer is null, then there is no insurance available to them. Return No_Insurance.
           return newPayer;
         }

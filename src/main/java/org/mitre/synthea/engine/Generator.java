@@ -308,6 +308,8 @@ public class Generator {
         person.attributes.put(Person.LOCATION, location);
 
         LifecycleModule.birth(person, start);
+        // Process HealthInsuranceModule Here.
+        // HealthInsuranceModule.process(person, start);
         EncounterModule encounterModule = new EncounterModule();
 
         long time = start;

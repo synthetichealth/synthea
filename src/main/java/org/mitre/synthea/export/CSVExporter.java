@@ -98,6 +98,10 @@ public class CSVExporter {
    * Writer for payers.csv
    */
   private FileWriter payers;
+   /**
+   * Writer for payerTransitions.csv
+   */
+  private FileWriter payerTransitions;
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -151,9 +155,11 @@ public class CSVExporter {
       File organizationsFile = outputDirectory.resolve("organizations.csv").toFile();
       File providersFile = outputDirectory.resolve("providers.csv").toFile();
       File payersFile = outputDirectory.resolve("payers.csv").toFile();
+      File payerTransitionsFile = outputDirectory.resolve("payer_transitions.csv").toFile();
       organizations = new FileWriter(organizationsFile, append);
       providers = new FileWriter(providersFile, append);
       payers = new FileWriter(payersFile, append);
+      payerTransitions = new FileWriter(payerTransitionsFile, append);
 
       if (!append) {
         writeCSVHeaders();
@@ -206,6 +212,8 @@ public class CSVExporter {
     payers.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,AMOUNT_COVERED,REVENUE,"
         + "ENCOUNTER_UTILIZATION,UNIQUE_CUSTOMERS,QOLS_AVG");
     payers.write(NEWLINE);
+    payerTransitions.write("PATIENT,YEAR,PAYER,OWNERSHIP");
+    payerTransitions.write(NEWLINE);
   }
 
   /**
@@ -269,6 +277,26 @@ public class CSVExporter {
     }
     payer(Payer.noInsurance);
     payers.flush();
+  }
+
+  /**
+   * Export the payerTransitions.csv file. This method should be called once after all the
+   * Patient records have been exported using the export(Person,long) method.
+   * 
+   * @throws IOException if any IO errors occur.
+   */
+  public void exportPayerTransitions(Person person, long stopTime) throws IOException {
+
+    int year = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
+
+    for (Payer payer : person.getPayerHistory()){
+      payerTransition(person, payer, year);
+      year++;
+      //payerTransitions.flush();
+      if(year > 2019 || !person.alive(Utilities.convertTime("years", year))){
+        break;
+      }
+    }
   }
 
   /**
@@ -842,6 +870,46 @@ public class CSVExporter {
     s.append(NEWLINE);
 
     write(s.toString(), payers);
+  }
+
+  private void payerTransition(Person person, Payer payer, int currentYear) throws IOException {
+    // PATIENT_ID,YEAR,PAYER_ID,OWNERSHIP
+
+    StringBuilder s = new StringBuilder();
+    s.append(person.attributes.get(Person.ID)).append(",");
+    s.append(currentYear).append(",");
+    if (payer == null || payer.getName().equals("NO_INSURANCE")){
+      // TODO - For the year 2019, Payer is sometimes null because it has not yet been decided.
+      s.append(',');
+      // no owner
+      s.append(',');
+    }
+    else {
+      s.append(payer.getResourceID()).append(',');
+
+      // Ownership
+      int personAge = currentYear - Utilities.getYear((long)person.attributes.get(Person.BIRTHDATE));
+      // person.ageInYears(Utilities.convertTime("years", currentYear)) was acting verys strangley... age would be 1967...
+      if (personAge < 18){
+        if ((person.getPayerAtTime(personAge).getName().equals("Medicare"))){
+          s.append("Self ---------------- MEDICARE CHILD ").append(",");
+        } else {
+          s.append("Guardian").append(",");
+        }
+      } else if ( (person.attributes.containsKey(Person.MARITAL_STATUS)) && person.attributes.get(Person.MARITAL_STATUS).equals("M")){
+        if (person.rand(0.0, 1.0) < .5){
+          s.append("Spouse").append(",");
+        } else {
+          s.append("Self").append(",");
+        }
+      } else{
+        s.append("Self").append(",");
+      }
+      
+    }
+
+    s.append(NEWLINE);
+    write(s.toString(), payerTransitions);
   }
 
   /**

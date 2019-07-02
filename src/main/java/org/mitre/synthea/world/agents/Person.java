@@ -231,7 +231,7 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
-   * Return the persons age in years at a given time.
+   * Returns the persons age in years at the given time.
    * 
    * @param time The time when their age should be calculated.
    * @return age in years. Can never be less than zero, even if given a time

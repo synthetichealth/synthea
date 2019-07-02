@@ -210,10 +210,12 @@ public class Payer {
    * @param location the state being loaded.
    */
   public static void loadPayers(Location location) {
-    if (!statesLoaded.contains(location.state) || !statesLoaded.contains(Location.getAbbreviation(location.state))
+    if (!statesLoaded.contains(location.state)
+        || !statesLoaded.contains(Location.getAbbreviation(location.state))
         || !statesLoaded.contains(Location.getStateName(location.state))) {
       try {
-        String insuranceCompanyFile = Config.get("generate.payers.insurance_companies.default_file");
+        String insuranceCompanyFile
+            = Config.get("generate.payers.insurance_companies.default_file");
         loadPayers(location, insuranceCompanyFile);
 
         statesLoaded.add(location.state);
@@ -419,12 +421,12 @@ public class Payer {
     qualityOfLifeStatistics[1]++;
   }
 
-   /**
+  /**
    * Returns the average of the payer's QOLS of customers over the number of years covered.
    */
   public double getQOLAverage() {
     double qolsTotal = qualityOfLifeStatistics[0];
     double numYears = qualityOfLifeStatistics[1];
-    return qolsTotal/numYears;
+    return qolsTotal / numYears;
   }
 }
