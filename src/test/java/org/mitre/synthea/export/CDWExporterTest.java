@@ -3,6 +3,7 @@ package org.mitre.synthea.export;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.nio.file.Files;
 
 import org.junit.Rule;
@@ -12,6 +13,7 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
+import org.powermock.reflect.Whitebox;
 
 public class CDWExporterTest {
   /**
@@ -27,12 +29,26 @@ public class CDWExporterTest {
     File tempOutputFolder = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
 
-    int numberOfPeople = 100;
+    int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);
+    generator.options.overflow = false;
     for (int i = 0; i < numberOfPeople; i++) {
       generator.generatePerson(i);
     }
     CDWExporter.getInstance().writeFactTables();
+
+    // Ensure the files are synchronized with the tempFolder...
+    String[] variables = { "lookuppatient", "spatient", "spatientaddress", "spatientphone",
+        "patientrace", "patientethnicity", "consult", "visit", "appointment", "inpatient",
+        "immunization", "allergy", "allergicreaction", "allergycomment", "problemlist",
+        "vdiagnosis", "rxoutpatient", "rxoutpatfill", "nonvamed", "cprsorder",
+        "ordereditem", "labchem", "labpanel", "patientlabchem", "vprocedure",
+        "surgeryProcedureDiagnosisCode", "surgeryPRE", "vitalSign" };
+    for (String variable : variables) {
+      FileWriter fw =
+          Whitebox.<FileWriter>getInternalState(CDWExporter.getInstance(), variable);
+      fw.close();
+    }
 
     // if we get here we at least had no exceptions
     File expectedExportFolder = tempOutputFolder.toPath().resolve("cdw").toFile();
@@ -43,6 +59,7 @@ public class CDWExporterTest {
         continue;
       }
       System.out.println("Parsing " + cdwFile.getPath());
+
       String cdwData = new String(Files.readAllBytes(cdwFile.toPath()));
 
       // the CDW exporter doesn't use the SimpleCSV class to write the data,

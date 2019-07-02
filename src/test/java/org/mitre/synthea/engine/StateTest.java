@@ -34,8 +34,6 @@ import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
 
-import ca.uhn.fhir.model.dstu2.resource.MedicationOrder;
-
 public class StateTest {
 
   private Person person;

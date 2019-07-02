@@ -35,6 +35,7 @@ public class DeathModuleTest {
     Provider mock = Mockito.mock(Provider.class);
     mock.uuid = "Mock-UUID";
     person.setProvider(EncounterType.AMBULATORY, mock);
+    person.setProvider(EncounterType.WELLNESS, mock);
     person.setProvider(EncounterType.EMERGENCY, mock);
     person.setProvider(EncounterType.INPATIENT, mock);
 
@@ -62,7 +63,7 @@ public class DeathModuleTest {
     DeathModule.process(person, time);
 
     Encounter enc = person.record.encounters.get(0);
-    assertEquals("ambulatory", enc.type);
+    assertEquals(EncounterType.WELLNESS.toString(), enc.type);
     assertEquals(time, enc.start);
 
     Code code = enc.codes.get(0);

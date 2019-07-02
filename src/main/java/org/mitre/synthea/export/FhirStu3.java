@@ -1,7 +1,6 @@
 package org.mitre.synthea.export;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.model.dstu2.valueset.MedicationAdministrationStatusEnum;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -635,8 +634,8 @@ public class FhirStu3 {
         BundleEntryComponent providerOrganization = provider(bundle, encounter.provider);
         encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
       }
-    } else { // no associated provider, patient goes to ambulatory provider
-      Provider provider = person.getProvider(EncounterType.AMBULATORY, encounter.start);
+    } else { // no associated provider, patient goes to wellness provider
+      Provider provider = person.getProvider(EncounterType.WELLNESS, encounter.start);
       String providerFullUrl = findProviderUrl(provider, bundle);
 
       if (providerFullUrl != null) {
@@ -909,7 +908,7 @@ public class FhirStu3 {
       inpatient = true;
       // Provider enum doesn't include outpatient, but it can still be
       // an encounter type.
-    } else if (type == EncounterType.AMBULATORY) {
+    } else if (type == EncounterType.AMBULATORY || type == EncounterType.WELLNESS) {
       outpatient = true;
     }
     ExplanationOfBenefit eob = new ExplanationOfBenefit();
