@@ -18,10 +18,6 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class TrendingValueGenerator extends ValueGenerator {
 
-  // TODO: How do I properly seed this prng?
-  // Can I have more guarantees for reproducability if I use person or beginTime to seed?
-  private static final Random prng = new SecureRandom();
-
   private double standardDeviation;
   private Double minimumValue;
   private Double maximumValue;
@@ -100,7 +96,7 @@ public class TrendingValueGenerator extends ValueGenerator {
     double nextValue;
 
     do {
-      nextValue = prng.nextGaussian() * standardDeviation + mean;
+      nextValue = person.random.nextGaussian() * standardDeviation + mean;
 
       if ((minimumValue == null || nextValue >= minimumValue) && (maximumValue == null
           || nextValue <= maximumValue)) {

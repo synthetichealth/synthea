@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.sis.geometry.DirectPosition2D;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -20,7 +21,7 @@ import org.mitre.synthea.world.agents.Person;
 public class Location {
   private static LinkedHashMap<String, String> stateAbbreviations = loadAbbreviations();
   private static Map<String, String> timezones = loadTimezones();
-  private static Map<String, List<String>> foreignPlacesOfBirth = loadCitiesByLangauge();
+  private static Map<String, List<String>> foreignPlacesOfBirth = loadCitiesByLanguage();
 
   private long totalPopulation;
 
@@ -263,7 +264,16 @@ public class Location {
     }
     
     if (place != null) {
-      person.attributes.put(Person.COORDINATE, place.getLatLon());
+      // Get the coordinate of the city/town
+      DirectPosition2D coordinate = place.getLatLon().clone();
+      // And now perturbate it slightly.
+      // Precision within 0.001 degree is more or less a neighborhood or street.
+      // Precision within 0.01 is a village or town
+      // Precision within 0.1 is a large city
+      double dx = person.rand(0.001, 0.1);
+      double dy = person.rand(0.001, 0.1);
+      coordinate.setLocation(coordinate.x + dx, coordinate.y + dy);
+      person.attributes.put(Person.COORDINATE, coordinate);
     }
   }
 
@@ -297,7 +307,16 @@ public class Location {
     }
     
     if (place != null) {
-      clinician.attributes.put(Person.COORDINATE, place.getLatLon());
+      // Get the coordinate of the city/town
+      DirectPosition2D coordinate = place.getLatLon().clone();
+      // And now perturbate it slightly.
+      // Precision within 0.001 degree is more or less a neighborhood or street.
+      // Precision within 0.01 is a village or town
+      // Precision within 0.1 is a large city
+      double dx = clinician.rand() / 10.0;
+      double dy = clinician.rand() / 10.0;
+      coordinate.setLocation(coordinate.x + dx, coordinate.y + dy);
+      clinician.attributes.put(Person.COORDINATE, coordinate);
     }
   }
   
@@ -382,7 +401,7 @@ public class Location {
     return timezones;
   }
 
-  private static Map<String, List<String>> loadCitiesByLangauge() {
+  private static Map<String, List<String>> loadCitiesByLanguage() {
     //get the default foreign_birthplace file if we can't get the file listed in the config
     String resource = Config.get("generate.geography.foreign.birthplace.default_file",
             "geography/foreign_birthplace.json");

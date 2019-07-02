@@ -55,6 +55,7 @@ public class StateTest {
     Provider mock = Mockito.mock(Provider.class);
     mock.uuid = "Mock-UUID";
     person.setProvider(EncounterType.AMBULATORY, mock);
+    person.setProvider(EncounterType.WELLNESS, mock);
     person.setProvider(EncounterType.EMERGENCY, mock);
     person.setProvider(EncounterType.INPATIENT, mock);
 
