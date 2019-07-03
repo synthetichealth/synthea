@@ -1,0 +1,1185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" metaid="_199983" level="2" version="4">
+  <model metaid="metaid_0000002" id="Smith2004_CVS_human" name="Smith2004_CVS_human">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p>This a model from the article:      <br/>
+        <strong>Minimal haemodynamic system model including ventricular interaction and valve
+dynamics.</strong>
+        <br/>
+          Smith BW, Chase JG, Nokes RI, Shaw GM, Wake G.      <em>Med Eng Phys</em>
+          2004 Mar;26(2):131-9      <a href="http://www.ncbi.nlm.nih.gov/pubmed/15036180">15036180</a>
+          ,      <br/>
+        <strong>Abstract:</strong>
+        <br/>
+          Characterising circulatory dysfunction and choosing a suitable treatment is
+often difficult and time consuming, and can result in a deterioration in patient
+condition, or unsuitable therapy choices. A stable minimal model of the human
+cardiovascular system (CVS) is developed with the ultimate specific aim of
+assisting medical staff for rapid, on site modelling to assist in diagnosis and
+treatment. Models found in the literature simulate specific areas of the CVS
+with limited direct usefulness to medical staff. Others model the full CVS as a
+closed loop system, but they were found to be very complex, difficult to solve,
+or unstable. This paper develops a model that uses a minimal number of governing
+equations with the primary goal of accurately capturing trends in the CVS
+dynamics in a simple, easily solved, robust model. The model is shown to have
+long term stability and consistency with non-specific initial conditions as a
+result. An &quot;open on pressure close on flow&quot; valve law is created to capture the
+effects of inertia and the resulting dynamics of blood flow through the cardiac
+valves. An accurate, stable solution is performed using a method that varies the
+number of states in the model depending on the specific phase of the cardiac
+cycle, better matching the real physiological conditions. Examples of results
+include a 9% drop in cardiac output when increasing the thoracic pressure from
+-4 to 0 mmHg, and an increase in blood pressure from 120/80 to 165/130 mmHg when
+the systemic resistance is doubled. These results show that the model adequately
+provides appropriate magnitudes and trends that are in agreement with existing
+data for a variety of physiologically verified test cases simulating human CVS
+function.      </p>
+      <p>This model was taken from the      <a href="http://www.cellml.org/models">CellML repository</a>
+          and automatically converted to SBML.      <br/>
+          The original model was:      <a href="http://models.cellml.org/exposure/f629920d520a0ea9f51dbde8754470da">
+        <strong>Smith BW, Chase JG, Nokes RI, Shaw GM, Wake G. (2004) - version=1.0</strong>
+      </a>
+      <br/>
+          The original CellML model was created by:      <br/>
+      <strong>Geoffrey Nunns</strong>
+      <br/>
+          gnunns1@jhu.edu      <br/>
+          The University of Auckland      <br/></p>
+    <p>This model originates from BioModels Database: A Database of Annotated Published Models. It is copyright (c) 2005-2011 The BioModels.net Team.      <br/>
+          To the extent possible under law, all copyright and related or neighbouring rights to this encoded model have been dedicated to the public domain worldwide. Please refer to      <a href="http://creativecommons.org/publicdomain/zero/1.0/" title="Creative Commons CC0">CC0 Public Domain Dedication</a>
+          for more information.      </p>
+  <p>In summary, you are entitled to use this encoded model in absolutely any manner you deem suitable, verbatim, or with modification, alone or embedded it in a larger context, redistribute it, commercially or not, in a restricted way or not..      <br/>
+  <br/>
+          To cite BioModels Database, please use:      <a href="http://www.ncbi.nlm.nih.gov/pubmed/20587024" target="_blank">Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.</a>
+</p>
+</body>
+</notes><annotation>
+  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+    <rdf:Description rdf:about="#metaid_0000002">
+      <dc:creator>
+        <rdf:Bag>
+          <rdf:li rdf:parseType="Resource">
+            <vCard:N rdf:parseType="Resource">
+              <vCard:Family>Nunns</vCard:Family>
+              <vCard:Given>Geoffrey</vCard:Given>
+            </vCard:N>
+            <vCard:EMAIL>gnunns1@jhu.edu</vCard:EMAIL>
+            <vCard:ORG rdf:parseType="Resource">
+              <vCard:Orgname>Auckland Bioengineering Institute, The Auckland University</vCard:Orgname>
+            </vCard:ORG>
+          </rdf:li>
+          <rdf:li rdf:parseType="Resource">
+            <vCard:N rdf:parseType="Resource">
+              <vCard:Family>Nunns</vCard:Family>
+              <vCard:Given>Geoffrey</vCard:Given>
+            </vCard:N>
+            <vCard:EMAIL>gnunns1@jhu.edu</vCard:EMAIL>
+            <vCard:ORG rdf:parseType="Resource">
+              <vCard:Orgname>Auckland Bioengineering Institute, The Auckland University</vCard:Orgname>
+            </vCard:ORG>
+          </rdf:li>
+          <rdf:li rdf:parseType="Resource">
+            <vCard:N rdf:parseType="Resource">
+              <vCard:Family>Nunns</vCard:Family>
+              <vCard:Given>Geoffrey</vCard:Given>
+            </vCard:N>
+            <vCard:EMAIL>gnunns1@jhu.edu</vCard:EMAIL>
+            <vCard:ORG rdf:parseType="Resource">
+              <vCard:Orgname>Auckland Bioengineering Institute, The Auckland University</vCard:Orgname>
+            </vCard:ORG>
+          </rdf:li>
+        </rdf:Bag>
+      </dc:creator>
+      <dcterms:created rdf:parseType="Resource">
+        <dcterms:W3CDTF>2010-06-23T13:38:09Z</dcterms:W3CDTF>
+      </dcterms:created>
+      <dcterms:modified rdf:parseType="Resource">
+        <dcterms:W3CDTF>2010-09-27T17:18:29Z</dcterms:W3CDTF>
+      </dcterms:modified>
+      <dcterms:modified rdf:parseType="Resource">
+        <dcterms:W3CDTF>2010-09-27T17:18:29Z</dcterms:W3CDTF>
+      </dcterms:modified>
+      <dcterms:modified rdf:parseType="Resource">
+        <dcterms:W3CDTF>2010-09-27T17:18:29Z</dcterms:W3CDTF>
+      </dcterms:modified>
+      <bqmodel:is>
+        <rdf:Bag>
+          <rdf:li rdf:resource="http://identifiers.org/biomodels.db/MODEL1006230000"/>
+        </rdf:Bag>
+      </bqmodel:is>
+      <bqmodel:isDescribedBy>
+        <rdf:Bag>
+          <rdf:li rdf:resource="http://identifiers.org/pubmed/15036180"/>
+        </rdf:Bag>
+      </bqmodel:isDescribedBy>
+      <bqbiol:hasTaxon>
+        <rdf:Bag>
+          <rdf:li rdf:resource="http://identifiers.org/taxonomy/9606"/>
+        </rdf:Bag>
+      </bqbiol:hasTaxon>
+      <bqbiol:isVersionOf>
+        <rdf:Bag>
+          <rdf:li rdf:resource="http://identifiers.org/go/GO:0003013"/>
+        </rdf:Bag>
+      </bqbiol:isVersionOf>
+    </rdf:Description>
+  </rdf:RDF>
+</annotation><listOfUnitDefinitions>
+  <unitDefinition metaid="_199995" id="kPa" name="kPa">
+    <listOfUnits>
+      <unit metaid="_200007" kind="pascal" scale="3"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_200019" id="mL" name="mL">
+    <listOfUnits>
+      <unit metaid="_200031" kind="litre" scale="-3"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_200043" id="per_mL" name="per_mL">
+    <listOfUnits>
+      <unit metaid="_200055" kind="litre" exponent="-1" scale="-3"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_200067" id="kPa_per_mL" name="kPa_per_mL">
+    <listOfUnits>
+      <unit metaid="_200079" kind="pascal" scale="3"/>
+      <unit metaid="_200091" kind="litre" exponent="-1" scale="-3"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_200103" id="kPa_second_per_mL" name="kPa_second_per_mL">
+    <listOfUnits>
+      <unit metaid="_200115" kind="pascal" scale="3"/>
+      <unit metaid="_200127" kind="second"/>
+      <unit metaid="_200139" kind="litre" exponent="-1" scale="-3"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_200151" id="mL_per_second" name="mL_per_second">
+    <listOfUnits>
+      <unit metaid="_200163" kind="litre" scale="-3"/>
+      <unit metaid="_200175" kind="second" exponent="-1"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_200187" id="mL_per_second2" name="mL_per_second2">
+    <listOfUnits>
+      <unit metaid="_200199" kind="litre" scale="-3"/>
+      <unit metaid="_200211" kind="second" exponent="-2"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_200223" id="per_second2" name="per_second2">
+    <listOfUnits>
+      <unit metaid="_200235" kind="second" exponent="-2"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition metaid="_200247" id="kPa_second2_per_mL" name="kPa_second2_per_mL">
+    <listOfUnits>
+      <unit metaid="_200259" kind="pascal" scale="3"/>
+      <unit metaid="_200271" kind="second" exponent="2"/>
+      <unit metaid="_200283" kind="litre" exponent="-1" scale="-3"/>
+    </listOfUnits>
+  </unitDefinition>
+</listOfUnitDefinitions><listOfCompartments>
+  <compartment metaid="_685722" id="COMpartment" size="1" units="litre"/>
+</listOfCompartments><listOfParameters>
+  <parameter metaid="_685776" id="R_mt" name="R_mt" value="0.0158"/>
+  <parameter metaid="_685777" id="R_av" name="R_av" value="0.018"/>
+  <parameter metaid="_685778" id="R_tc" name="R_tc" value="0.0237"/>
+  <parameter metaid="_685779" id="R_pv" name="R_pv" value="0.0055"/>
+  <parameter metaid="_685780" id="R_pul" name="R_pul" value="0.1552"/>
+  <parameter metaid="_685783" id="R_sys" name="R_sys" value="1.0889"/>
+  <parameter metaid="_685784" id="L_tc" name="L_tc" value="8.0093e-05"/>
+  <parameter metaid="_685785" id="L_pv" name="L_pv" value="0.00014868"/>
+  <parameter metaid="_685786" id="L_mt" name="L_mt" value="7.6968e-05"/>
+  <parameter metaid="_685789" id="L_av" name="L_av" value="0.00012189"/>
+  <parameter metaid="_685790" id="V_tot" name="V_tot" value="5.5"/>
+  <parameter metaid="_685791" id="P_th" name="P_th" value="-4"/>
+  <parameter metaid="_685794" id="e_t" name="e_t" constant="false"/>
+  <parameter metaid="_685795" id="A" name="A" value="1"/>
+  <parameter metaid="_685796" id="B" name="B" value="80"/>
+  <parameter metaid="_685797" id="C" name="C" value="0.375"/>
+  <parameter metaid="_685800" id="tau" name="tau" constant="false"/>
+  <parameter metaid="_685801" id="period" name="period" value="0.75"/>
+  <parameter metaid="_685802" id="V_pcd" name="V_pcd" constant="false"/>
+  <parameter metaid="_685803" id="P_pcd" name="P_pcd" constant="false"/>
+  <parameter metaid="_685806" id="P_peri" name="P_peri" constant="false"/>
+  <parameter metaid="_685807" id="P_0_pcd" name="P_0_pcd" value="0.5003"/>
+  <parameter metaid="_685808" id="V_0_pcd" name="V_0_pcd" value="200"/>
+  <parameter metaid="_685811" id="lambda_pcd" name="lambda_pcd" value="0.03"/>
+  <parameter metaid="_685812" id="V_lvf" name="V_lvf" constant="false"/>
+  <parameter metaid="_685813" id="P_lvf" name="P_lvf" constant="false"/>
+  <parameter metaid="_685814" id="P_lv" name="P_lv" constant="false"/>
+  <parameter metaid="_685817" id="V_lv" name="V_lv" value="94.6812" constant="false"/>
+  <parameter metaid="_685818" id="P_es_lvf" name="P_es_lvf" constant="false"/>
+  <parameter metaid="_685819" id="P_ed_lvf" name="P_ed_lvf" constant="false"/>
+  <parameter metaid="_685820" id="E_es_lvf" name="E_es_lvf" value="2.8798"/>
+  <parameter metaid="_685823" id="V_d_lvf" name="V_d_lvf" value="0"/>
+  <parameter metaid="_685824" id="P_0_lvf" name="P_0_lvf" value="0.1203"/>
+  <parameter metaid="_685825" id="lambda_lvf" name="lambda_lvf" value="0.033"/>
+  <parameter metaid="_685828" id="V_0_lvf" name="V_0_lvf" value="0"/>
+  <parameter metaid="_685829" id="V_rvf" name="V_rvf" constant="false"/>
+  <parameter metaid="_685830" id="P_rvf" name="P_rvf" constant="false"/>
+  <parameter metaid="_685833" id="P_rv" name="P_rv" constant="false"/>
+  <parameter metaid="_685834" id="V_rv" name="V_rv" value="90.7302" constant="false"/>
+  <parameter metaid="_685835" id="P_es_rvf" name="P_es_rvf" constant="false"/>
+  <parameter metaid="_685838" id="P_ed_rvf" name="P_ed_rvf" constant="false"/>
+  <parameter metaid="_685839" id="E_es_rvf" name="E_es_rvf" value="0.585"/>
+  <parameter metaid="_685840" id="V_d_rvf" name="V_d_rvf" value="0"/>
+  <parameter metaid="_685843" id="P_0_rvf" name="P_0_rvf" value="0.2157"/>
+  <parameter metaid="_685844" id="lambda_rvf" name="lambda_rvf" value="0.023"/>
+  <parameter metaid="_685845" id="V_0_rvf" name="V_0_rvf" value="0"/>
+  <parameter metaid="_685846" id="V_spt" name="V_spt"/>
+  <parameter metaid="_685849" id="E_es_spt" name="E_es_spt" value="48.754"/>
+  <parameter metaid="_685850" id="V_d_spt" name="V_d_spt" value="2"/>
+  <parameter metaid="_685851" id="P_0_spt" name="P_0_spt" value="1.1101"/>
+  <parameter metaid="_685852" id="lambda_spt" name="lambda_spt" value="0.435"/>
+  <parameter metaid="_685853" id="V_0_spt" name="V_0_spt" value="2"/>
+  <parameter metaid="_685856" id="one" name="one" value="1"/>
+  <parameter metaid="_685857" id="P_pa" name="P_pa" constant="false"/>
+  <parameter metaid="_685858" id="E_es_pa" name="E_es_pa" value="0.369"/>
+  <parameter metaid="_685861" id="V_pa" name="V_pa" value="43.0123" constant="false"/>
+  <parameter metaid="_685862" id="V_d_pa" name="V_d_pa" value="0"/>
+  <parameter metaid="_685863" id="P_pu" name="P_pu" constant="false"/>
+  <parameter metaid="_685866" id="E_es_pu" name="E_es_pu" value="0.0073"/>
+  <parameter metaid="_685867" id="V_pu" name="V_pu" value="808.4579" constant="false"/>
+  <parameter metaid="_685868" id="V_d_pu" name="V_d_pu" value="0"/>
+  <parameter metaid="_685871" id="P_ao" name="P_ao" constant="false"/>
+  <parameter metaid="_685872" id="E_es_ao" name="E_es_ao" value="0.6913"/>
+  <parameter metaid="_685873" id="V_ao" name="V_ao" value="133.3381" constant="false"/>
+  <parameter metaid="_685874" id="V_d_ao" name="V_d_ao" value="0"/>
+  <parameter metaid="_685877" id="P_vc" name="P_vc" constant="false"/>
+  <parameter metaid="_685878" id="E_es_vc" name="E_es_vc" value="0.0059"/>
+  <parameter metaid="_685879" id="V_vc" name="V_vc" value="329.7803" constant="false"/>
+  <parameter metaid="_685882" id="V_d_vc" name="V_d_vc" value="0"/>
+  <parameter metaid="_685883" id="Q_sys" name="Q_sys" constant="false"/>
+  <parameter metaid="_685884" id="Q_pul" name="Q_pul" constant="false"/>
+  <parameter metaid="_685887" id="Q_mt" name="Q_mt" value="245.5813" constant="false"/>
+  <parameter metaid="_685888" id="Q_av" name="Q_av" value="0" constant="false"/>
+  <parameter metaid="_685889" id="Q_tc" name="Q_tc" value="190.0661" constant="false"/>
+  <parameter metaid="_685890" id="Q_pv" name="Q_pv" value="0" constant="false"/>
+</listOfParameters><listOfRules>
+  <rateRule metaid="_685729" variable="V_lv">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <piecewise>
+        <piece>
+          <cn> 0 </cn>
+          <apply>
+            <and/>
+            <apply>
+              <lt/>
+              <ci> Q_mt </ci>
+              <cn> 0 </cn>
+            </apply>
+            <apply>
+              <lt/>
+              <ci> Q_av </ci>
+              <cn> 0 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <piece>
+          <apply>
+            <minus/>
+            <ci> Q_av </ci>
+          </apply>
+          <apply>
+            <lt/>
+            <ci> Q_mt </ci>
+            <cn> 0 </cn>
+          </apply>
+        </piece>
+        <piece>
+          <ci> Q_mt </ci>
+          <apply>
+            <lt/>
+            <ci> Q_av </ci>
+            <cn> 0 </cn>
+          </apply>
+        </piece>
+        <otherwise>
+          <apply>
+            <minus/>
+            <ci> Q_mt </ci>
+            <ci> Q_av </ci>
+          </apply>
+        </otherwise>
+      </piecewise>
+    </math>
+  </rateRule>
+  <rateRule metaid="_685730" variable="V_rv">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <piecewise>
+        <piece>
+          <cn> 0 </cn>
+          <apply>
+            <and/>
+            <apply>
+              <lt/>
+              <ci> Q_tc </ci>
+              <cn> 0 </cn>
+            </apply>
+            <apply>
+              <lt/>
+              <ci> Q_pv </ci>
+              <cn> 0 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <piece>
+          <apply>
+            <minus/>
+            <ci> Q_pv </ci>
+          </apply>
+          <apply>
+            <lt/>
+            <ci> Q_tc </ci>
+            <cn> 0 </cn>
+          </apply>
+        </piece>
+        <piece>
+          <ci> Q_tc </ci>
+          <apply>
+            <lt/>
+            <ci> Q_pv </ci>
+            <cn> 0 </cn>
+          </apply>
+        </piece>
+        <otherwise>
+          <apply>
+            <minus/>
+            <ci> Q_tc </ci>
+            <ci> Q_pv </ci>
+          </apply>
+        </otherwise>
+      </piecewise>
+    </math>
+  </rateRule>
+  <rateRule metaid="_685733" variable="V_pa">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <piecewise>
+        <piece>
+          <apply>
+            <minus/>
+            <ci> Q_pul </ci>
+          </apply>
+          <apply>
+            <lt/>
+            <ci> Q_pv </ci>
+            <cn> 0 </cn>
+          </apply>
+        </piece>
+        <otherwise>
+          <apply>
+            <minus/>
+            <ci> Q_pv </ci>
+            <ci> Q_pul </ci>
+          </apply>
+        </otherwise>
+      </piecewise>
+    </math>
+  </rateRule>
+  <rateRule metaid="_685734" variable="V_pu">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <piecewise>
+        <piece>
+          <ci> Q_pul </ci>
+          <apply>
+            <lt/>
+            <ci> Q_mt </ci>
+            <cn> 0 </cn>
+          </apply>
+        </piece>
+        <otherwise>
+          <apply>
+            <minus/>
+            <ci> Q_pul </ci>
+            <ci> Q_mt </ci>
+          </apply>
+        </otherwise>
+      </piecewise>
+    </math>
+  </rateRule>
+  <rateRule metaid="_685735" variable="V_ao">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <piecewise>
+        <piece>
+          <apply>
+            <minus/>
+            <ci> Q_sys </ci>
+          </apply>
+          <apply>
+            <lt/>
+            <ci> Q_av </ci>
+            <cn> 0 </cn>
+          </apply>
+        </piece>
+        <otherwise>
+          <apply>
+            <minus/>
+            <ci> Q_av </ci>
+            <ci> Q_sys </ci>
+          </apply>
+        </otherwise>
+      </piecewise>
+    </math>
+  </rateRule>
+  <rateRule metaid="_685736" variable="V_vc">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <piecewise>
+        <piece>
+          <ci> Q_sys </ci>
+          <apply>
+            <lt/>
+            <ci> Q_tc </ci>
+            <cn> 0 </cn>
+          </apply>
+        </piece>
+        <otherwise>
+          <apply>
+            <minus/>
+            <ci> Q_sys </ci>
+            <ci> Q_tc </ci>
+          </apply>
+        </otherwise>
+      </piecewise>
+    </math>
+  </rateRule>
+  <rateRule metaid="_685739" variable="Q_mt">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <piecewise>
+        <piece>
+          <cn> 0 </cn>
+          <apply>
+            <and/>
+            <apply>
+              <lt/>
+              <apply>
+                <minus/>
+                <ci> P_pu </ci>
+                <ci> P_lv </ci>
+              </apply>
+              <cn> 0 </cn>
+            </apply>
+            <apply>
+              <lt/>
+              <ci> Q_mt </ci>
+              <cn> 0 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <otherwise>
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <ci> P_pu </ci>
+                <ci> P_lv </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Q_mt </ci>
+                <ci> R_mt </ci>
+              </apply>
+            </apply>
+            <ci> L_mt </ci>
+          </apply>
+        </otherwise>
+      </piecewise>
+    </math>
+  </rateRule>
+  <rateRule metaid="_685740" variable="Q_av">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <piecewise>
+        <piece>
+          <cn> 0 </cn>
+          <apply>
+            <and/>
+            <apply>
+              <lt/>
+              <apply>
+                <minus/>
+                <ci> P_lv </ci>
+                <ci> P_ao </ci>
+              </apply>
+              <cn> 0 </cn>
+            </apply>
+            <apply>
+              <lt/>
+              <ci> Q_av </ci>
+              <cn> 0 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <otherwise>
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <ci> P_lv </ci>
+                <ci> P_ao </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Q_av </ci>
+                <ci> R_av </ci>
+              </apply>
+            </apply>
+            <ci> L_av </ci>
+          </apply>
+        </otherwise>
+      </piecewise>
+    </math>
+  </rateRule>
+  <rateRule metaid="_685741" variable="Q_tc">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <piecewise>
+        <piece>
+          <cn> 0 </cn>
+          <apply>
+            <and/>
+            <apply>
+              <lt/>
+              <apply>
+                <minus/>
+                <ci> P_vc </ci>
+                <ci> P_rv </ci>
+              </apply>
+              <cn> 0 </cn>
+            </apply>
+            <apply>
+              <lt/>
+              <ci> Q_tc </ci>
+              <cn> 0 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <otherwise>
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <ci> P_vc </ci>
+                <ci> P_rv </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Q_tc </ci>
+                <ci> R_tc </ci>
+              </apply>
+            </apply>
+            <ci> L_tc </ci>
+          </apply>
+        </otherwise>
+      </piecewise>
+    </math>
+  </rateRule>
+  <rateRule metaid="_685742" variable="Q_pv">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <piecewise>
+        <piece>
+          <cn> 0 </cn>
+          <apply>
+            <and/>
+            <apply>
+              <lt/>
+              <apply>
+                <minus/>
+                <ci> P_rv </ci>
+                <ci> P_pa </ci>
+              </apply>
+              <cn> 0 </cn>
+            </apply>
+            <apply>
+              <lt/>
+              <ci> Q_pv </ci>
+              <cn> 0 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <otherwise>
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <ci> P_rv </ci>
+                <ci> P_pa </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Q_pv </ci>
+                <ci> R_pv </ci>
+              </apply>
+            </apply>
+            <ci> L_pv </ci>
+          </apply>
+        </otherwise>
+      </piecewise>
+    </math>
+  </rateRule>
+  <assignmentRule metaid="_685743" variable="tau">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <piecewise>
+        <piece>
+          <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+          <apply>
+            <leq/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <ci> period </ci>
+          </apply>
+        </piece>
+        <piece>
+          <apply>
+            <minus/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <ci> period </ci>
+          </apply>
+          <apply>
+            <leq/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 2 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <piece>
+          <apply>
+            <minus/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 2 </cn>
+            </apply>
+          </apply>
+          <apply>
+            <leq/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 3 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <piece>
+          <apply>
+            <minus/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 3 </cn>
+            </apply>
+          </apply>
+          <apply>
+            <leq/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 4 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <piece>
+          <apply>
+            <minus/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 4 </cn>
+            </apply>
+          </apply>
+          <apply>
+            <leq/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 5 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <piece>
+          <apply>
+            <minus/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 5 </cn>
+            </apply>
+          </apply>
+          <apply>
+            <leq/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 6 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <piece>
+          <apply>
+            <minus/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 6 </cn>
+            </apply>
+          </apply>
+          <apply>
+            <leq/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 7 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <piece>
+          <apply>
+            <minus/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 7 </cn>
+            </apply>
+          </apply>
+          <apply>
+            <leq/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 8 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <piece>
+          <apply>
+            <minus/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 8 </cn>
+            </apply>
+          </apply>
+          <apply>
+            <leq/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 9 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <piece>
+          <apply>
+            <minus/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 9 </cn>
+            </apply>
+          </apply>
+          <apply>
+            <leq/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 10 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <piece>
+          <apply>
+            <minus/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 10 </cn>
+            </apply>
+          </apply>
+          <apply>
+            <leq/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 11 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <piece>
+          <apply>
+            <minus/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 11 </cn>
+            </apply>
+          </apply>
+          <apply>
+            <leq/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 12 </cn>
+            </apply>
+          </apply>
+        </piece>
+        <piece>
+          <apply>
+            <minus/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 12 </cn>
+            </apply>
+          </apply>
+          <apply>
+            <leq/>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <times/>
+              <ci> period </ci>
+              <cn> 13 </cn>
+            </apply>
+          </apply>
+        </piece>
+      </piecewise>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685746" variable="e_t">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <ci> A </ci>
+        <apply>
+          <exp/>
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> B </ci>
+            </apply>
+            <apply>
+              <power/>
+              <apply>
+                <minus/>
+                <ci> tau </ci>
+                <ci> C </ci>
+              </apply>
+              <cn> 2 </cn>
+            </apply>
+          </apply>
+        </apply>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685747" variable="V_pcd">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <plus/>
+        <ci> V_lv </ci>
+        <ci> V_rv </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685748" variable="P_pcd">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <ci> P_0_pcd </ci>
+        <apply>
+          <minus/>
+          <apply>
+            <exp/>
+            <apply>
+              <times/>
+              <ci> lambda_pcd </ci>
+              <apply>
+                <minus/>
+                <ci> V_pcd </ci>
+                <ci> V_0_pcd </ci>
+              </apply>
+            </apply>
+          </apply>
+          <cn> 1 </cn>
+        </apply>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685749" variable="P_peri">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <plus/>
+        <ci> P_pcd </ci>
+        <ci> P_th </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685752" variable="V_lvf">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <minus/>
+        <ci> V_lv </ci>
+        <ci> V_spt </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685753" variable="P_lvf">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <plus/>
+        <apply>
+          <times/>
+          <ci> e_t </ci>
+          <ci> P_es_lvf </ci>
+        </apply>
+        <apply>
+          <times/>
+          <apply>
+            <minus/>
+            <cn> 1 </cn>
+            <ci> e_t </ci>
+          </apply>
+          <ci> P_ed_lvf </ci>
+        </apply>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685754" variable="P_lv">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <plus/>
+        <ci> P_lvf </ci>
+        <ci> P_peri </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685755" variable="P_es_lvf">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <ci> E_es_lvf </ci>
+        <apply>
+          <minus/>
+          <ci> V_lvf </ci>
+          <ci> V_d_lvf </ci>
+        </apply>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685758" variable="P_ed_lvf">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <ci> P_0_lvf </ci>
+        <apply>
+          <minus/>
+          <apply>
+            <exp/>
+            <apply>
+              <times/>
+              <ci> lambda_lvf </ci>
+              <apply>
+                <minus/>
+                <ci> V_lvf </ci>
+                <ci> V_0_lvf </ci>
+              </apply>
+            </apply>
+          </apply>
+          <cn> 1 </cn>
+        </apply>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685759" variable="V_rvf">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <plus/>
+        <ci> V_rv </ci>
+        <ci> V_spt </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685760" variable="P_rvf">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <plus/>
+        <apply>
+          <times/>
+          <ci> e_t </ci>
+          <ci> P_es_rvf </ci>
+        </apply>
+        <apply>
+          <times/>
+          <apply>
+            <minus/>
+            <cn> 1 </cn>
+            <ci> e_t </ci>
+          </apply>
+          <ci> P_ed_rvf </ci>
+        </apply>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685761" variable="P_rv">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <plus/>
+        <ci> P_rvf </ci>
+        <ci> P_peri </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685764" variable="P_es_rvf">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <ci> E_es_rvf </ci>
+        <apply>
+          <minus/>
+          <ci> V_rvf </ci>
+          <ci> V_d_rvf </ci>
+        </apply>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685765" variable="P_ed_rvf">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <ci> P_0_rvf </ci>
+        <apply>
+          <minus/>
+          <apply>
+            <exp/>
+            <apply>
+              <times/>
+              <ci> lambda_rvf </ci>
+              <apply>
+                <minus/>
+                <ci> V_rvf </ci>
+                <ci> V_0_rvf </ci>
+              </apply>
+            </apply>
+          </apply>
+          <cn> 1 </cn>
+        </apply>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685766" variable="P_pa">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <plus/>
+        <apply>
+          <times/>
+          <ci> E_es_pa </ci>
+          <apply>
+            <minus/>
+            <ci> V_pa </ci>
+            <ci> V_d_pa </ci>
+          </apply>
+        </apply>
+        <ci> P_th </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685767" variable="P_pu">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <plus/>
+        <apply>
+          <times/>
+          <ci> E_es_pu </ci>
+          <apply>
+            <minus/>
+            <ci> V_pu </ci>
+            <ci> V_d_pu </ci>
+          </apply>
+        </apply>
+        <ci> P_th </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685770" variable="P_ao">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <ci> E_es_ao </ci>
+        <apply>
+          <minus/>
+          <ci> V_ao </ci>
+          <ci> V_d_ao </ci>
+        </apply>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685771" variable="P_vc">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <ci> E_es_vc </ci>
+        <apply>
+          <minus/>
+          <ci> V_vc </ci>
+          <ci> V_d_vc </ci>
+        </apply>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685772" variable="Q_sys">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <divide/>
+        <apply>
+          <minus/>
+          <ci> P_ao </ci>
+          <ci> P_vc </ci>
+        </apply>
+        <ci> R_sys </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685773" variable="Q_pul">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <divide/>
+        <apply>
+          <minus/>
+          <ci> P_pa </ci>
+          <ci> P_pu </ci>
+        </apply>
+        <ci> R_pul </ci>
+      </apply>
+    </math>
+  </assignmentRule>
+</listOfRules>
+</model>
+</sbml>
