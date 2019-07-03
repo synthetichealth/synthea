@@ -188,13 +188,13 @@ public abstract class Transition {
           Range<Integer> ageRange = null;
           if (this.ageIndex != null) {
             String value = currentAttributes.remove(ageIndex.intValue());
-            if (!value.contains("-") ||
-                value.substring(0, value.indexOf("-")).length() < 1 ||
-                value.substring(value.indexOf("-") + 1).length() < 1) {
+            if (!value.contains("-")
+                || value.substring(0, value.indexOf("-")).length() < 1
+                || value.substring(value.indexOf("-") + 1).length() < 1) {
               throw new RuntimeException(
-                  "LOOKUP TABLE '" + fileName +
-                  "' AGE ERROR: Age Range must be in the form: 'ageLow-ageHigh'. Found '" + value +
-                  "'");
+                  "LOOKUP TABLE '" + fileName
+                  + "' AGE ERROR: Age Range must be in the form: 'ageLow-ageHigh'. Found '"
+                  + value + "'");
             } else {
               ageRange = Range.between(
                   Integer.parseInt(value.substring(0, value.indexOf("-"))),
@@ -297,8 +297,8 @@ public abstract class Transition {
     /**
      * Create a symbolic lookup key for a given row that contains lookup values.
      * @param attributes Table attribute values.
-     * @param ageIndex If the table contains an age column, ageIndex specifies which column
-     * it is. Otherwise, null.
+     * @param range If the table contains an age column, range contains the age range
+     *     information for this key.
      */
     public LookupTableKey(List<String> attributes, Range<Integer> range) {
       this.attributes = attributes;
