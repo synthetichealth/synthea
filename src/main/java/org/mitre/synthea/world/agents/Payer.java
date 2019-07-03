@@ -88,124 +88,6 @@ public class Payer {
   }
 
   /**
-   * Determines the algorithm to use for patients to find a Payer.
-   */
-  private static IPayerFinder buildPayerFinder() {
-    IPayerFinder finder = null;
-    String behavior = Config.get("generate.payers.selection_behavior").toLowerCase();
-    switch (behavior) {
-      case BESTRATE:
-        finder = new PayerFinderBestRates();
-        break;
-      case RANDOM:
-        finder = new PayerFinderRandom();
-        break;
-      default:
-        throw new RuntimeException("Not a valid Payer Selction Algorithm: " + behavior);
-    }
-    return finder;
-  }
-
-  /**
-   * Returns the payer's unique ID.
-   */
-  public String getResourceID() {
-    return uuid;
-  }
-
-  /**
-   * Returns a Map of the payer's second class attributes.
-   * ADDRESS,ZIP,CITY
-   */
-  public Map<String, Object> getAttributes() {
-    return attributes;
-  }
-
-  /**
-   * Increments the number of unique users.
-   * 
-   * @param person the person to add to the payer.
-   */
-  public void incrementCustomers(Person person) {
-    if (!customerUtilization.containsKey(person.attributes.get(Person.ID))) {
-      customerUtilization.put((String) person.attributes.get(Person.ID), new AtomicInteger(0));
-    }
-    customerUtilization.get(person.attributes.get(Person.ID)).incrementAndGet();
-  }
-
-  /**
-   * Increments the encounters and encounterTypes the payer has covered. Changed service from
-   * EncounterType to String to simplify for now. Would like to change back to
-   * EncounterType later.
-   * 
-   * @param service the service type of the encounter
-   * @param year the year of the encounter
-   */
-  public void incrementEncountersCovered(String service, int year) {
-    increment(year, Provider.ENCOUNTERS);
-    increment(year, Provider.ENCOUNTERS + "-" + service);
-  }
-
-  /**
-   * Increments utiilization for a given year and service.
-   */
-  private synchronized void increment(Integer year, String key) {
-    if (!utilization.contains(year, key)) {
-      utilization.put(year, key, new AtomicInteger(0));
-    }
-    utilization.get(year, key).incrementAndGet();
-  }
-
-  /** 
-   * Person chooses their insurance externally.
-   * May need this for when a payer starts making decisions about who to insure.
-   * May be useful for choosing different patients based on different policies
-   * (pre-existing conditions, etc).
-   * Every insurer will have a different set of guidelines for accepting
-   * a customer, where should these be kept? In the payer/plans csv table?
-   */
-  /**
-   * Will this payer accept the given person at the given time?.
-   * 
-   * @param person Person to consider
-   * @param time   Time the person seeks care
-   * @return whether or not the payer will accept this patient as a customer
-   */
-  public boolean accepts(Person person, long time) {
-    // for now assume every payer accepts every patient
-    // EXCEPT for medicaire & medicaid (Don't have all correct requirements)
-    if (this.name.equals("Medicare") && person.ageInYears(time) < 65) {
-      return false;
-    } else if (this.name.equals("Medicaid") && !person.attributes.containsKey("blind")) {
-      return false;
-    } else if (this.name.equals("Dual Eligible") && !person.attributes.containsKey("blind")
-        && person.ageInYears(time) < 65) {
-      return false;
-    }
-    return true;
-  }
-
-  /**
-   * Is the given Provider in this Payer's network?.
-   * Currently just returns true until Networks are implemented.
-   * 
-   * @param provider Provider to consider
-   * @return whether or not the provider is in the payer network
-   */
-  public boolean inNetwork(Provider provider) {
-    return true;
-  }
-
-  /**
-   * Returns the selection algorithm for payers in this simulation.
-   * 
-   * @return the payer selection algorithm
-   */
-  public static IPayerFinder getPayerFinder() {
-    return payerFinder;
-  }
-
-  /**
    * Load into cache the list of payers for a state.
    * 
    * @param location the state being loaded.
@@ -332,6 +214,159 @@ public class Payer {
   }
 
   /**
+   * Returns the government payer with the given name.
+   * 
+   * @param governmentPayerName the governmemnt payer to get.
+   */
+  public static Payer getGovernmentPayer(String governmentPayerName) {
+    Payer governmentPayer = Payer.governmentPayerMap.get(governmentPayerName);
+    if(governmentPayer != null){
+      return Payer.governmentPayerMap.get(governmentPayerName);
+    } else {
+      throw new RuntimeException("ERROR: Government Payer '" + governmentPayerName + "' does not exist.");
+    }
+  }
+
+  /**
+   * Determines the algorithm to use for patients to find a Payer.
+   */
+  private static IPayerFinder buildPayerFinder() {
+    IPayerFinder finder = null;
+    String behavior = Config.get("generate.payers.selection_behavior").toLowerCase();
+    switch (behavior) {
+      case BESTRATE:
+        finder = new PayerFinderBestRates();
+        break;
+      case RANDOM:
+        finder = new PayerFinderRandom();
+        break;
+      default:
+        throw new RuntimeException("Not a valid Payer Selction Algorithm: " + behavior);
+    }
+    return finder;
+  }
+
+  /**
+   * Returns the selection algorithm for payers in this simulation.
+   * 
+   * @return the payer selection algorithm
+   */
+  public static IPayerFinder getPayerFinder() {
+    return payerFinder;
+  }
+
+  /**
+   * Returns the payer's unique ID.
+   */
+  public String getResourceID() {
+    return uuid;
+  }
+
+  /**
+   * Returns the name of the payer.
+   */
+  public String getName() {
+    return this.name;
+  }
+
+  /**
+   * Returns the monthly premium of the payer.
+   */
+  public double getMonthlyPremium() {
+    return this.monthlyPremium;
+  }
+
+  /**
+   * Returns the ownserhip type of the payer (Government/Private).
+   */
+  public String getOwnership() {
+    return this.ownership;
+  }
+
+  /**
+   * Returns the Map of the payer's second class attributes.
+   * ADDRESS,ZIP,CITY
+   */
+  public Map<String, Object> getAttributes() {
+    return attributes;
+  }
+
+  /**
+   * Increments the number of unique users.
+   * 
+   * @param person the person to add to the payer.
+   */
+  public void incrementCustomers(Person person) {
+    if (!customerUtilization.containsKey(person.attributes.get(Person.ID))) {
+      customerUtilization.put((String) person.attributes.get(Person.ID), new AtomicInteger(0));
+    }
+    customerUtilization.get(person.attributes.get(Person.ID)).incrementAndGet();
+  }
+
+  /**
+   * Increments the encounters and encounterTypes the payer has covered. Changed service from
+   * EncounterType to String to simplify for now. Would like to change back to
+   * EncounterType later.
+   * 
+   * @param service the service type of the encounter
+   * @param year the year of the encounter
+   */
+  public void incrementEncountersCovered(String service, int year) {
+    increment(year, Provider.ENCOUNTERS);
+    increment(year, Provider.ENCOUNTERS + "-" + service);
+  }
+
+  /**
+   * Increments utiilization for a given year and service.
+   */
+  private synchronized void increment(Integer year, String key) {
+    if (!utilization.contains(year, key)) {
+      utilization.put(year, key, new AtomicInteger(0));
+    }
+    utilization.get(year, key).incrementAndGet();
+  }
+
+  /** 
+   * Person chooses their insurance externally.
+   * May need this for when a payer starts making decisions about who to insure.
+   * May be useful for choosing different patients based on different policies
+   * (pre-existing conditions, etc).
+   * Every insurer will have a different set of guidelines for accepting
+   * a customer, where should these be kept? In the payer/plans csv table?
+   */
+  /**
+   * Will this payer accept the given person at the given time?.
+   * 
+   * @param person Person to consider
+   * @param time   Time the person seeks care
+   * @return whether or not the payer will accept this patient as a customer
+   */
+  public boolean accepts(Person person, long time) {
+    // for now assume every payer accepts every patient
+    // EXCEPT for medicaire & medicaid (Don't have all correct requirements)
+    if (this.name.equals("Medicare") && person.ageInYears(time) < 65) {
+      return false;
+    } else if (this.name.equals("Medicaid") && !person.attributes.containsKey("blind")) {
+      return false;
+    } else if (this.name.equals("Dual Eligible") && !person.attributes.containsKey("blind")
+        && person.ageInYears(time) < 65) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Is the given Provider in this Payer's network?.
+   * Currently just returns true until Networks are implemented.
+   * 
+   * @param provider Provider to consider
+   * @return whether or not the provider is in the payer network
+   */
+  public boolean isInNetwork(Provider provider) {
+    return true;
+  }
+
+  /**
    * Returns whether the payer covers the given encounter type. For now, insurance
    * will cover all services.
    * 
@@ -340,13 +375,6 @@ public class Payer {
    */
   public boolean coversService(EncounterType service) {
     return true;
-  }
-
-  /**
-   * Returns the Payer's default copay.
-   */
-  public double getCopay() {
-    return this.defaultCopay;
   }
 
   /**
@@ -373,13 +401,6 @@ public class Payer {
   }
 
   /**
-   * Returns the name of the payer.
-   */
-  public String getName() {
-    return this.name;
-  }
-
-  /**
    * Returns the amount of money the payer paid.
    */
   public double getAmountPaid() {
@@ -394,14 +415,8 @@ public class Payer {
   }
 
   /**
-   * Returns the ownserhip type of the payer (Government/Private).
-   */
-  public String getOwnership() {
-    return this.ownership;
-  }
-
-  /**
    * Determines the copay owed for this Payer based on the type of encounter.
+   * May change from encounter to entry. Could give access to medications/procedure/etc.
    */
   public double determineCopay(Encounter encounter) {
 
@@ -410,20 +425,13 @@ public class Payer {
 
     double copay = this.defaultCopay;
     // Encounter inpatient
-    if (encounter.type.equalsIgnoreCase("inpatient")) {
+    // if (encounter.type.equalsIgnoreCase("inpatient")) {
       //copay = inpatientCopay;
-    } else {
+    // } else {
       // Outpatient Encounter, Encounter for 'checkup', Encounter for symptom,
       //copay = outpatientCopay
-    }
+    // }
     return copay;
-  }
-
-  /**
-   * Returns the monthly premium of the payer.
-   */
-  public double getMonthlyPremium() {
-    return this.monthlyPremium;
   }
 
   /**
@@ -456,19 +464,5 @@ public class Payer {
     double qolsTotal = qualityOfLifeStatistics[0];
     double numYears = qualityOfLifeStatistics[1];
     return qolsTotal / numYears;
-  }
-
-  /**
-   * Returns the government payer with the given name.
-   * 
-   * @param governmentPayerName the governmemnt payer to get.
-   */
-  public static Payer getGovernmentPayer(String governmentPayerName) {
-    Payer governmentPayer = Payer.governmentPayerMap.get(governmentPayerName);
-    if(governmentPayer != null){
-      return Payer.governmentPayerMap.get(governmentPayerName);
-    } else {
-      throw new RuntimeException("ERROR: Government Payer '" + governmentPayerName + "' does not exist.");
-    }
   }
 }

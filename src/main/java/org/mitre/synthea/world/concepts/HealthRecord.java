@@ -262,11 +262,12 @@ public class HealthRecord {
       this.payer = person.getPayerAtTime(encounter.start);
       if (this.payer == null) {
 
-        // PRIORITY ISSUE: THIS IS (probably) WHY NO_INSURANCE HAS RIDICULOUSLY HIGH UTILIZATION
+        // PRIORITY ISSUE: The Payer should never be null when making a claim.
+        // Has something to do with determineInsurance for the year being called after a claim is made.
+        // Happens ~twice per person
         person.setPayerAtTime(encounter.start, Payer.noInsurance);
         this.payer = person.getPayerAtTime(encounter.start);
-        // Note: everyone eventually ends up with insurance for each year in the end.
-        // This gets hit occasionally, though. Looks to be around twice per life.
+        person.getPayerAtTime(encounter.start).incrementCustomers(person);
 
         // throw new RuntimeException("ERROR: Claim made with null Payer at age: "
         //     + person.ageInYears(encounter.start) + " for encounter: " + encounter + " in year " + Utilities.getYear(encounter.start));
