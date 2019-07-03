@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
@@ -27,10 +28,10 @@ import org.mitre.synthea.world.geography.Location;
 
 public class Payer {
 
-  // ArrayList of all payers imported
-  private static ArrayList<Payer> payerList = new ArrayList<Payer>();
-  // ArrayList of all government payers imported (Maybe?)
-  // private static ArrayList<Payer> governmentPayerList = new ArrayList<Payer>();
+  // ArrayList of all private payers imported
+  private static ArrayList<Payer> privatePayerList = new ArrayList<Payer>();
+  // ArrayList of all government payers imported
+  private static Map<String, Payer> governmentPayerMap = new HashMap<String,Payer>();
 
   // U.S. States loaded
   private static Set<String> statesLoaded = new HashSet<String>();
@@ -254,20 +255,27 @@ public class Payer {
       String abbreviation = Location.getAbbreviation(location.state);
 
       // for now, only allow one U.S. state at a time
-      // NOTE: If there is no given state, then it is Medicaid/Medicare/DualEligible
-      if ((location.state == null) || ownership.equalsIgnoreCase("government")
+      if (ownership.equalsIgnoreCase("government")
           || (location.state != null && location.state.equalsIgnoreCase(currState))
           || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
 
         Payer parsedPayer = csvLineToPayer(row);
 
         // add any remaining columns we didn't explicitly map to first-class fields
-        // into the attributes table
+        // into the attributes map
         for (Map.Entry<String, String> e : row.entrySet()) {
           parsedPayer.attributes.put(e.getKey(), e.getValue());
         }
 
-        Payer.payerList.add(parsedPayer);
+        // Put the payer in their correct List/Map.
+        if (parsedPayer.ownership.equalsIgnoreCase("government")) {
+          // Government payers go in a map, allowing for easy retrieval of specific payers.
+          Payer.governmentPayerMap.put(parsedPayer.getName(), parsedPayer);
+        } else {
+          // Private payers go in a list.
+          Payer.privatePayerList.add(parsedPayer);
+        }
+
       }
     }
   }
@@ -297,10 +305,30 @@ public class Payer {
   }
 
   /**
-   * Returns the list of all loaded payers.
+   * Returns the list of all loaded private payers.
    */
-  public static List<Payer> getPayerList() {
-    return payerList;
+  public static List<Payer> getPrivatePayers() {
+    return Payer.privatePayerList;
+  }
+
+  /**
+   * Returns the List of all loaded government payers.
+   */
+  public static List<Payer> getGovernmentPayers() {
+    return Payer.governmentPayerMap.values().stream().collect(Collectors.toList());
+  }
+
+  /**
+   * Returns the List of all loaded payers.
+   * 
+   * TODO - This is inefficient. Creates a whole new list with a duplicate set of pointers to each Payer.
+   * Gotta figure out a better way than this.
+   */
+  public static List<Payer> getAllPayers() {
+    List<Payer> allPayers = new ArrayList<>();
+    allPayers.addAll(Payer.getGovernmentPayers());
+    allPayers.addAll(Payer.getPrivatePayers());
+    return allPayers;
   }
 
   /**
@@ -428,5 +456,19 @@ public class Payer {
     double qolsTotal = qualityOfLifeStatistics[0];
     double numYears = qualityOfLifeStatistics[1];
     return qolsTotal / numYears;
+  }
+
+  /**
+   * Returns the government payer with the given name.
+   * 
+   * @param governmentPayerName the governmemnt payer to get.
+   */
+  public static Payer getGovernmentPayer(String governmentPayerName) {
+    Payer governmentPayer = Payer.governmentPayerMap.get(governmentPayerName);
+    if(governmentPayer != null){
+      return Payer.governmentPayerMap.get(governmentPayerName);
+    } else {
+      throw new RuntimeException("ERROR: Government Payer '" + governmentPayerName + "' does not exist.");
+    }
   }
 }

@@ -101,15 +101,15 @@ public class HealthInsuranceModule extends Module {
     // Currently assumes that medicare/medicaid/dualeligible are always the first
     // three entries of the list. Perhaps need to make a list of government payers?
     if (medicare && medicaid) {
-      return Payer.getPayerList().get(2);
+      return Payer.getGovernmentPayer("Dual Eligible");
     } else if (medicare) {
-      return Payer.getPayerList().get(0);
+      return Payer.getGovernmentPayer("Medicare");
     } else if (medicaid) {
-      return Payer.getPayerList().get(1);
+      return Payer.getGovernmentPayer("Medicaid");
     } else {
       if ( (time >= mandateTime && occupation >= mandateOccupation) || (income >= privateIncomeThreshold) ) {
-        // Randomly choose one of the remaining private insurances
-        Payer newPayer = Payer.getPayerFinder().find(Payer.getPayerList(), person, null, time);
+        // Randomly choose one of the remaining insurances
+        Payer newPayer = Payer.getPayerFinder().find(Payer.getAllPayers(), person, null, time);
         if (newPayer != null) {
           // If Payer is null, then there is no insurance available to them and they'll recieve NO_INSURANCE.
           return newPayer;

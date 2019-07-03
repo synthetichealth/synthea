@@ -271,10 +271,12 @@ public class CSVExporter {
    * @throws IOException if any IO errors occur.
    */
   public void exportPayers() throws IOException {
-    for (Payer payer : Payer.getPayerList()) {
+    // Export All Payers
+    for (Payer payer : Payer.getAllPayers()) {
       payer(payer);
       payers.flush();
     }
+    // Export No Insurance statistics
     payer(Payer.noInsurance);
     payers.flush();
   }
