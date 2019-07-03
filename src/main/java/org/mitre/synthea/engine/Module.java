@@ -309,4 +309,8 @@ public class Module {
       return module;
     }
   }
+
+  public static void processHealthInsuranceModule(Person person, long time) {
+    modules.get("Health Insurance").module.process(person, time);
+  }
 }

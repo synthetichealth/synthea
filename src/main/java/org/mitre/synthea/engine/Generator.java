@@ -309,11 +309,14 @@ public class Generator {
 
         LifecycleModule.birth(person, start);
         // Process HealthInsuranceModule Here.
+        Module.processHealthInsuranceModule(person, start);
+
         // HealthInsuranceModule.process(person, start);
         EncounterModule encounterModule = new EncounterModule();
 
         long time = start;
         while (person.alive(time) && time < stop) {
+
           encounterModule.process(person, time);
           Iterator<Module> iter = modules.iterator();
           while (iter.hasNext()) {

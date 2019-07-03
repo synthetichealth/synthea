@@ -570,7 +570,7 @@ public class Person implements Serializable, QuadTreeData {
       // Pay the payer
       Payer currentPayer = this.getPayerAtTime(time);
       if (currentPayer == null) {
-        // No premium to pay... null at age 0. TODO - fix, Payer should never be null.
+        throw new RuntimeException("ERROR: Attempted to pay monthly premium to null Payer.");
       } else {
         // Eventually this logic will go elsewhere (Likely a potential Plans class)
         // based on plans and insurance companies.

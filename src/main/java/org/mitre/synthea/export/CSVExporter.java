@@ -878,8 +878,14 @@ public class CSVExporter {
     StringBuilder s = new StringBuilder();
     s.append(person.attributes.get(Person.ID)).append(",");
     s.append(currentYear).append(",");
-    if (payer == null || payer.getName().equals("NO_INSURANCE")){
-      // TODO - For the year 2019, Payer is sometimes null because it has not yet been decided.
+    if (payer == null){
+      if(currentYear >= 2019){
+        // TODO - insurance is sometimes still null in 2019
+      } else {
+        throw new RuntimeException(
+          "ERROR: " + person.attributes.get(Person.ID) + " had null insurance for the year " + currentYear);
+      }
+    } else if (payer.getName().equals("NO_INSURANCE")){
       s.append(',');
       // no owner
       s.append(',');
@@ -889,10 +895,10 @@ public class CSVExporter {
 
       // Ownership
       int personAge = currentYear - Utilities.getYear((long)person.attributes.get(Person.BIRTHDATE));
-      // person.ageInYears(Utilities.convertTime("years", currentYear)) was acting verys strangley... age would be 1967...
+      // person.ageInYears(Utilities.convertTime("years", currentYear)) was acting strangely. Would output age as starting at 1967.
       if (personAge < 18){
         if ((person.getPayerAtTime(personAge).getName().equals("Medicare"))){
-          s.append("Self ---------------- MEDICARE CHILD ").append(",");
+          s.append("Self").append(",");
         } else {
           s.append("Guardian").append(",");
         }

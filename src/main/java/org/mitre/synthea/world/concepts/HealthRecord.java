@@ -261,17 +261,18 @@ public class HealthRecord {
     public Claim(Encounter encounter) {
       this.payer = person.getPayerAtTime(encounter.start);
       if (this.payer == null) {
-        // The payer is only ever null when the person is 0 and they have their first
-        // encounter. After this first encounter, they will never have null insurance.
-        // I have temporarily fixed this by  just setting the payer
-        // to NO_INSURANCE in this case.
+
+        // PRIORITY ISSUE: THIS IS (probably) WHY NO_INSURANCE HAS RIDICULOUSLY HIGH UTILIZATION
         person.setPayerAtTime(encounter.start, Payer.noInsurance);
         this.payer = person.getPayerAtTime(encounter.start);
+        // Note: everyone eventually ends up with insurance for each year in the end.
+        // This gets hit occasionally, though. Looks to be around twice per life.
+
         // throw new RuntimeException("ERROR: Claim made with null Payer at age: "
-        //     + person.ageInYears(encounter.start) + " for encounter: " + encounter);
+        //     + person.ageInYears(encounter.start) + " for encounter: " + encounter + " in year " + Utilities.getYear(encounter.start));
       }
       
-      payer.incrementEncountersCovered(encounter.type, Utilities.getYear(encounter.start));
+      this.payer.incrementEncountersCovered(encounter.type, Utilities.getYear(encounter.start));
       
       // Covered cost will be updated once the payer actually pays it.
       coveredCost = 0.0;
@@ -318,15 +319,14 @@ public class HealthRecord {
      * Determines how much the Payer paid for this Claim.
      */
     public double determineCoveredCost() {
-      if (payer != null) {
-        this.coveredCost = (encounter.cost().doubleValue() - payer.determineCopay(encounter));
-        if (coveredCost < 0 || payer.determineCopay(encounter) <= 0) {
+      if (this.payer != null) {
+        this.coveredCost = (encounter.cost().doubleValue() - this.payer.determineCopay(encounter));
+        if (coveredCost < 0 || this.payer.determineCopay(encounter) <= 0) {
           // In case the copay is more expensive than the encounter
           this.coveredCost = 0.0;
         }
       } else {
-        new RuntimeException("ERROR: Tried to determine Covered Cost with a null Payer.");
-        this.coveredCost = 0.0;
+        throw new RuntimeException("ERROR: Tried to determine Covered Cost with a null Payer.");
       }
       return this.coveredCost;
     }

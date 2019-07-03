@@ -45,9 +45,6 @@ public class HealthInsuranceModule extends Module {
   @SuppressWarnings("unchecked")
   @Override
   public boolean process(Person person, long time) {
-
-    // Checks if person has paid their premium this month. If not, they pay it.
-    person.checkToPayMonthlyPremium(time);
     
     // If the payerHistory at the given age is null, they must get insurance for the new year.
     // Note: This means the person will check to change insurance yearly, just after their
@@ -59,6 +56,9 @@ public class HealthInsuranceModule extends Module {
       // Update the Payer statistics
       newPayer.incrementCustomers(person);
     }
+
+    // Checks if person has paid their premium this month. If not, they pay it.
+    person.checkToPayMonthlyPremium(time);
 
     // java modules will never "finish"
     return false;
@@ -107,25 +107,17 @@ public class HealthInsuranceModule extends Module {
     } else if (medicaid) {
       return Payer.getPayerList().get(1);
     } else {
-      if (time >= mandateTime && occupation >= mandateOccupation) {
+      if ( (time >= mandateTime && occupation >= mandateOccupation) || (income >= privateIncomeThreshold) ) {
         // Randomly choose one of the remaining private insurances
         Payer newPayer = Payer.getPayerFinder().find(Payer.getPayerList(), person, null, time);
         if (newPayer != null) {
-          // If Payer is null, then there is no insurance available to them. Return No_Insurance.
-          return newPayer;
-        }
-      }
-      if (income >= privateIncomeThreshold) {
-        // Randomly choose one of the remaining private insurances
-        Payer newPayer = Payer.getPayerFinder().find(Payer.getPayerList(), person, null, time);
-        if (newPayer != null) {
-          // If Payer is null, then there is no insurance available to them. Return No_Insurance.
+          // If Payer is null, then there is no insurance available to them and they'll recieve NO_INSURANCE.
           return newPayer;
         }
       }
     }
 
-    // No insurance. Return a fake payer with 0.0 for every field (coverage/copay/premium)
+    // No insurance. Return NO_INSURANCE payer with 0.0 for every field (coverage/copay/premium)
     return Payer.noInsurance;
   }
 
