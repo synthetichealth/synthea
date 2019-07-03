@@ -202,8 +202,8 @@ public class Payer {
 
   /**
    * Returns the List of all loaded payers.
-   * 
-   * TODO - This is inefficient. Creates a whole new list with a duplicate set of pointers to each Payer.
+   * TODO - This is inefficient.
+   * Creates a whole new list with a duplicate set of pointers to each Payer.
    * Gotta figure out a better way than this.
    */
   public static List<Payer> getAllPayers() {
@@ -220,10 +220,11 @@ public class Payer {
    */
   public static Payer getGovernmentPayer(String governmentPayerName) {
     Payer governmentPayer = Payer.governmentPayerMap.get(governmentPayerName);
-    if(governmentPayer != null){
+    if (governmentPayer != null) {
       return Payer.governmentPayerMap.get(governmentPayerName);
     } else {
-      throw new RuntimeException("ERROR: Government Payer '" + governmentPayerName + "' does not exist.");
+      throw new RuntimeException(
+          "ERROR: Government Payer '" + governmentPayerName + "' does not exist.");
     }
   }
 
@@ -424,13 +425,15 @@ public class Payer {
     // each Encounter type.
 
     double copay = this.defaultCopay;
+    /*
     // Encounter inpatient
-    // if (encounter.type.equalsIgnoreCase("inpatient")) {
+    if (encounter.type.equalsIgnoreCase("inpatient")) {
       //copay = inpatientCopay;
-    // } else {
+    } else {
       // Outpatient Encounter, Encounter for 'checkup', Encounter for symptom,
-      //copay = outpatientCopay
-    // }
+      copay = outpatientCopay
+    }
+    */
     return copay;
   }
 

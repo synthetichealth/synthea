@@ -107,11 +107,13 @@ public class HealthInsuranceModule extends Module {
     } else if (medicaid) {
       return Payer.getGovernmentPayer("Medicaid");
     } else {
-      if ( (time >= mandateTime && occupation >= mandateOccupation) || (income >= privateIncomeThreshold) ) {
+      if ((time >= mandateTime && occupation >= mandateOccupation)
+          || (income >= privateIncomeThreshold)) {
         // Randomly choose one of the remaining insurances
         Payer newPayer = Payer.getPayerFinder().find(Payer.getAllPayers(), person, null, time);
         if (newPayer != null) {
-          // If Payer is null, then there is no insurance available to them and they'll recieve NO_INSURANCE.
+          // If Payer is null, then there is no insurance available to them and
+          // they'll recieve NO_INSURANCE.
           return newPayer;
         }
       }

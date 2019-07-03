@@ -263,14 +263,16 @@ public class HealthRecord {
       if (this.payer == null) {
 
         // PRIORITY ISSUE: The Payer should never be null when making a claim.
-        // Has something to do with determineInsurance for the year being called after a claim is made.
+        // Has something to do with determineInsurance for the year being
+        // called after a claim is made.
         // Happens ~twice per person
         person.setPayerAtTime(encounter.start, Payer.noInsurance);
         this.payer = person.getPayerAtTime(encounter.start);
         person.getPayerAtTime(encounter.start).incrementCustomers(person);
 
         // throw new RuntimeException("ERROR: Claim made with null Payer at age: "
-        //     + person.ageInYears(encounter.start) + " for encounter: " + encounter + " in year " + Utilities.getYear(encounter.start));
+        //      + person.ageInYears(encounter.start) + " for encounter: "
+        //      + encounter + " in year " + Utilities.getYear(encounter.start));
       }
       
       this.payer.incrementEncountersCovered(encounter.type, Utilities.getYear(encounter.start));
