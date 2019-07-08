@@ -1,19 +1,20 @@
 package org.mitre.synthea.world.agents;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.UUID;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
-import java.util.UUID;
-
-import org.junit.Before;
-import org.junit.Test;
 import org.mitre.synthea.world.geography.Location;
 
 public class PayerTest {
@@ -24,16 +25,15 @@ public class PayerTest {
   double povertyLevel;
   double medicaidLevel;
   long mandateTime;
-  
 
   /**
-   * Setup for Payer Tests
+   * Setup for Payer Tests.
    */
   @Before
-  public void setup(){
-    // Clear any Payers that may have been statically loaded
+  public void setup() {
+    // Clear any Payers that may have already been statically loaded.
     Payer.clear();
-    // Load in the actual list of Payers for MA.
+    // Load in the .csv list of Payers for MA.
     Payer.loadPayers(new Location("Massachusetts", null));
     // Get the first Payer in the list for testing.
     randomPrivatePayer = Payer.getPrivatePayers().get(0);
@@ -42,7 +42,7 @@ public class PayerTest {
     povertyLevel = Double
         .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
     medicaidLevel = 1.33 * povertyLevel;
-    // Set up Mandate year numbers
+    // Set up Mandate year numbers.
     int mandateYear = Integer.parseInt(Config.get("generate.insurance.mandate.year", "2006"));
     mandateTime = Utilities.convertCalendarYearsToTime(mandateYear);
   }
@@ -73,7 +73,7 @@ public class PayerTest {
   /**
    * Sets the person's payer for the given year range.
    */
-  private void setPayerForYears(Person person, int startAge, int endAge){
+  private void setPayerForYears(Person person, int startAge, int endAge) {
     for (int i = startAge; i <= endAge; i++) {
       if (person.getPayerAtAge(i) == null) {
         person.setPayerAtAge(i, randomPrivatePayer);
@@ -190,7 +190,7 @@ public class PayerTest {
     healthInsuranceModule.process(person, mandateTime + 10000);
     assertNotEquals("NO_INSURANCE", person.getPayerAtTime(0L).getName());
 
-    /* Second Test: Wealthy Enough to Purchase */
+    /* Second Test: Wealthy Enough to Purchase Private*/
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, mandateTime - 10000);
     person.attributes.put(Person.GENDER, "F");
@@ -199,5 +199,31 @@ public class PayerTest {
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
     healthInsuranceModule.process(person, mandateTime - 10000);
     assertNotEquals("NO_INSURANCE", person.getPayerAtTime(0L).getName());
+  }
+
+  @Test
+  public void loadGovernmentPayersTest() {
+    assertTrue(Payer.getGovernmentPayer("Medicare")
+        != null && Payer.getGovernmentPayer("Medicaid") != null);
+  }
+
+  @Test
+  public void monthlyPremiumPaymentTest() {
+
+    person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.ID, UUID.randomUUID().toString());
+    // Predetermine person's Payer.
+    setPayerForYears(person, 0, 64);
+    // Pay premium for 65 years.
+    for (int year = 0; year <= 64; year++) {
+      for (int month = 0; month < 24; month++) {
+        // Person checks to pay twice a month. Only needs to pay once a month.
+        healthInsuranceModule.process(person, Utilities.convertCalendarYearsToTime(year)
+            + Utilities.convertTime("months", month/2));
+      }
+    }
+    int totalMonthlyPremiumsOwed = (int) (randomPrivatePayer.getMonthlyPremium() * 12 * 65);
+    assertEquals(totalMonthlyPremiumsOwed, randomPrivatePayer.getRevenue(), 0.1);
   }
 }

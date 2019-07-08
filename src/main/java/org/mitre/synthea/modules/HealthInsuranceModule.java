@@ -42,7 +42,6 @@ public class HealthInsuranceModule extends Module {
    * @param time   the date within the simulated world
    * @return completed : whether or not this Module completed.
    */
-  @SuppressWarnings("unchecked")
   @Override
   public boolean process(Person person, long time) {
     

@@ -16,6 +16,9 @@ public class ProviderFinderTest {
   private List<Provider> providers;
   private Person person;
 
+  /**
+   * Setup for Provider Finder Tests.
+   */
   @Before
   public void setup() {
     person = new Person(0L);

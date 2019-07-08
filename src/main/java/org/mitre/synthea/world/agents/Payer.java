@@ -48,12 +48,12 @@ public class Payer {
   private String name;
   private double defaultCopay;
   private double monthlyPremium;
-  private double deductible;
+  // private double deductible;
   public String ownership;
 
   // The services that this payer covers. Currently unimplemented.
   // Will likely be moved to a Plans class.
-  private List<EncounterType> servicesCovered;
+  // private List<EncounterType> servicesCovered;
 
   // The list of plans that this Payer has.
   // private List<Plan> plans
@@ -82,7 +82,7 @@ public class Payer {
     costsCovered = 0.0;
     revenue = 0.0;
     monthlyPremium = 0.0;
-    deductible = 0.0;
+    // deductible = 0.0;
     defaultCopay = 0.0;
     qualityOfLifeStatistics = new double[] { 0.0, 0.0 };
   }

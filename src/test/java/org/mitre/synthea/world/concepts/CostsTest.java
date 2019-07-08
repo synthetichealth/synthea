@@ -16,6 +16,9 @@ public class CostsTest {
   private Person person;
   private Payer noInsurance;
   
+  /**
+   * Setup for Costs Tests.
+   */
   @Before
   public void setup() {
     Costs.loadCostData();
