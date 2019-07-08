@@ -44,13 +44,9 @@ public class Clinician implements Serializable, QuadTreeData {
   private int encounters;
   public long populationSeed;
   
-  public Clinician(long clinicianSeed, Random clinicianRand, Boolean preserveClinicianUUID, long identifier) {
+  public Clinician(long clinicianSeed, Random clinicianRand, long identifier) {
     
-    if ( preserveClinicianUUID )
-      this.uuid =  new UUID(clinicianSeed, identifier).toString();
-    else
-      this.uuid = UUID.randomUUID().toString();
-    
+    this.uuid =  new UUID(clinicianSeed, identifier).toString();    
     this.random = clinicianRand;
     this.identifier = identifier;
     attributes = new ConcurrentHashMap<String, Object>();

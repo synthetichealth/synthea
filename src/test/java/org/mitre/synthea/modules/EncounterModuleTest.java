@@ -27,7 +27,7 @@ public class EncounterModuleTest {
     person = new Person(0L);
     location = new Location("Massachusetts", null);
     location.assignPoint(person, location.randomCityName(person.random));
-    Provider.loadProviders(location, 1L, false);
+    Provider.loadProviders(location, 1L);
     module = new EncounterModule();
   }
 

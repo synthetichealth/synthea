@@ -40,7 +40,7 @@ public class HospitalExporterTestDstu2 {
     FhirDstu2.TRANSACTION_BUNDLE = true; // set this manually, in case it has already been loaded.
     Location location = new Location("Massachusetts", null);
     Provider.clear();
-    Provider.loadProviders(location, 1L, false);
+    Provider.loadProviders(location, 1L);
     assertNotNull(Provider.getProviderList());
     assertFalse(Provider.getProviderList().isEmpty());
 

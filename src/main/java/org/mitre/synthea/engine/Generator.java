@@ -184,7 +184,7 @@ public class Generator {
     }
 
     // initialize hospitals
-    Provider.loadProviders(location, options.clinicianSeed, Boolean.parseBoolean(Config.get("exporter.practitioner.preserve_uuid", "false")));
+    Provider.loadProviders(location, options.clinicianSeed);
     // ensure modules load early
     List<String> coreModuleNames = getModuleNames(Module.getModules(path -> false));
     List<String> moduleNames = getModuleNames(Module.getModules(modulePredicate)); 
