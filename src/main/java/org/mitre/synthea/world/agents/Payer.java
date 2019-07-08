@@ -216,7 +216,7 @@ public class Payer {
   /**
    * Returns the government payer with the given name.
    * 
-   * @param governmentPayerName the governmemnt payer to get.
+   * @param governmentPayerName the government payer to get.
    */
   public static Payer getGovernmentPayer(String governmentPayerName) {
     Payer governmentPayer = Payer.governmentPayerMap.get(governmentPayerName);
@@ -226,6 +226,16 @@ public class Payer {
       throw new RuntimeException(
           "ERROR: Government Payer '" + governmentPayerName + "' does not exist.");
     }
+  }
+
+  /**
+   * Clear the list of loaded and cached Payers.
+   * Currently only used for testing.
+   */
+  public static void clear() {
+    governmentPayerMap.clear();
+    privatePayerList.clear();
+    statesLoaded.clear();
   }
 
   /**
@@ -399,6 +409,13 @@ public class Payer {
    */
   public int getUniqueCustomers() {
     return customerUtilization.size();
+  }
+
+  /**
+   * Returns the number of years the given customer was with this Payer.
+   */
+  public int getCustomerUtilization(Person person) {
+    return customerUtilization.get(person.attributes.get(Person.ID)).get();
   }
 
   /**

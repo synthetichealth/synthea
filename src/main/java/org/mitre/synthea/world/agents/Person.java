@@ -533,7 +533,7 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
-   * Set's the person's payer history at the given age to the given payer.
+   * Set's the person's payer history at the given time to the given payer.
    */
   public void setPayerAtTime(long time, Payer currentPayer) {
     int age = this.ageInYears(time);
@@ -544,10 +544,24 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
+   * Set's the person's payer history at the given age to the given payer.
+   */
+  public void setPayerAtAge(int age, Payer randomPrivatePayer) {
+    this.payerHistory.set(age, randomPrivatePayer);
+  }
+
+  /**
    * Gets the person's Payer at the given time.
    */
   public Payer getPayerAtTime(long time) {
     return this.payerHistory.get(this.ageInYears(time));
+  }
+
+  /**
+   * Gets the person's Payer at the given age.
+   */
+  public Payer getPayerAtAge(int personAge) {
+    return this.payerHistory.get(personAge);
   }
 
   /**

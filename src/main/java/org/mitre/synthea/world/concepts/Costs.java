@@ -176,7 +176,8 @@ public class Costs {
       // TODO - implement these checks for Payer to cover service.
       // if(payer.isInNetwork(provider))
       // if(payer.Service(entry))
-      patientCopay = payer.determineCopay(null); // Temporary null until encounter type copays are implemented
+      // Temporary null until encounter type copays are implemented
+      patientCopay = payer.determineCopay(null);
     }
 
     // Currently, nothing is done with the costToPatient. It will effect the person's money.

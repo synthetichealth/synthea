@@ -899,7 +899,7 @@ public class CSVExporter {
           = currentYear - Utilities.getYear((long)person.attributes.get(Person.BIRTHDATE));
       // person.ageInYears(Utilities.convertTime("years", currentYear)) was acting strangely.
       if (personAge < 18){
-        if ((person.getPayerAtTime(personAge).getName().equals("Medicare"))){
+        if ((person.getPayerAtAge(personAge).getName().equals("Medicaid"))){
           s.append("Self").append(",");
         } else {
           s.append("Guardian").append(",");
