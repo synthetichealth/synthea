@@ -1,5 +1,10 @@
 package org.mitre.synthea.world.agents;
 
+import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+
+
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -66,7 +71,16 @@ public class PayerTest {
 
   @Test
   public void incrementEncountersTest() {
-    
+
+    Person person = new Person(0L);
+    person.setPayerAtTime(0, randomPrivatePayer);
+    HealthRecord healthRecord = new HealthRecord(person);
+
+    healthRecord.encounterStart(0L, EncounterType.INPATIENT);
+    healthRecord.encounterStart(0L, EncounterType.AMBULATORY);
+    healthRecord.encounterStart(0L, EncounterType.EMERGENCY);
+
+    assertEquals(3, randomPrivatePayer.getEncounterCount());
   }
 
   @Test
