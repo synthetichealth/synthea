@@ -426,7 +426,6 @@ public abstract class Exporter {
   private static HealthRecord filterForExport(HealthRecord record, int yearsToKeep, long endTime) {
 
     long cutoffDate = endTime - Utilities.convertTime("years", yearsToKeep);
-    Predicate<HealthRecord.Entry> notFutureDated = e -> e.start <= endTime;
 
     for (Encounter encounter : record.encounters) {
       List<HealthRecord.Entry> claimItems = encounter.claim.items;
@@ -440,17 +439,14 @@ public abstract class Exporter {
       // allergies are essentially the same as conditions
       filterEntries(encounter.allergies, claimItems, cutoffDate, endTime, keepCondition);
 
-      // some of the "future death" logic could potentially add a future-dated death certificate
+      // always keep cause of death observation
       Predicate<Observation> isCauseOfDeath =
           o -> DeathModule.CAUSE_OF_DEATH_CODE.code.equals(o.type);
-      // keep cause of death unless it's future dated
-      Predicate<Observation> keepObservation = isCauseOfDeath.and(notFutureDated);
-      filterEntries(encounter.observations, claimItems, cutoffDate, endTime, keepObservation);
+      filterEntries(encounter.observations, claimItems, cutoffDate, endTime, isCauseOfDeath);
 
-      // keep all death certificates, unless they are future-dated
+      // always keep all death certificates
       Predicate<Report> isDeathCertificate = r -> DeathModule.DEATH_CERTIFICATE.code.equals(r.type);
-      Predicate<Report> keepReport = isDeathCertificate.and(notFutureDated);
-      filterEntries(encounter.reports, claimItems, cutoffDate, endTime, keepReport);
+      filterEntries(encounter.reports, claimItems, cutoffDate, endTime, isDeathCertificate);
 
       filterEntries(encounter.procedures, claimItems, cutoffDate, endTime, null);
 
@@ -472,13 +468,8 @@ public abstract class Exporter {
             || !e.procedures.isEmpty() || !e.medications.isEmpty()
             || !e.immunizations.isEmpty() || !e.careplans.isEmpty();
 
-    Predicate<Encounter> isDeathCertification =
-        e -> !e.codes.isEmpty() && DeathModule.DEATH_CERTIFICATION.equals(e.codes.get(0));
-    Predicate<Encounter> keepEncounter =
-        encounterNotEmpty.or(isDeathCertification.and(notFutureDated));
-
     // finally filter out any empty encounters
-    filterEntries(record.encounters, Collections.emptyList(), cutoffDate, endTime, keepEncounter);
+    filterEntries(record.encounters, Collections.emptyList(), cutoffDate, endTime, encounterNotEmpty);
 
     return record;
   }

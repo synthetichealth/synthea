@@ -33,6 +33,9 @@ public class DeathModule {
       // otherwise it's tough to tell after the fact whether this patient did die or will die
       person.attributes.remove(Person.CAUSE_OF_DEATH);
       person.record.death = null;
+      if (person.hasMultipleRecords) {
+        person.records.values().forEach(hr -> hr.death = null);
+      }
       // TODO: if stopping/restarting/reloading becomes a thing, this may have to be reworked
     } else if (person.attributes.containsKey(Person.CAUSE_OF_DEATH)) {
       // create an encounter, diagnostic report, and observation
