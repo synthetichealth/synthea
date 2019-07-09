@@ -322,14 +322,10 @@ public class HealthRecord {
      * Determines how much the Payer paid for this Claim.
      */
     public double determineCoveredCost() {
-      if (this.payer != null) {
-        this.coveredCost = (encounter.cost().doubleValue() - this.payer.determineCopay(encounter));
-        if (coveredCost < 0 || this.payer.determineCopay(encounter) <= 0) {
-          // In case the copay is more expensive than the encounter
-          this.coveredCost = 0.0;
-        }
-      } else {
-        throw new RuntimeException("ERROR: Tried to determine Covered Cost with a null Payer.");
+      this.coveredCost = (encounter.cost().doubleValue() - this.payer.determineCopay(encounter));
+      if (coveredCost < 0 || this.payer.determineCopay(encounter) <= 0) {
+        // In case the copay is more expensive than the encounter
+        this.coveredCost = 0.0;   
       }
       return this.coveredCost;
     }

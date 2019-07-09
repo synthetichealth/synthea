@@ -12,8 +12,12 @@ import org.junit.Test;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
+import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 
 import org.mitre.synthea.world.geography.Location;
 
@@ -37,12 +41,12 @@ public class PayerTest {
     Payer.loadPayers(new Location("Massachusetts", null));
     // Get the first Payer in the list for testing.
     randomPrivatePayer = Payer.getPrivatePayers().get(0);
-    // Set up Medicaid/Medicare numbers.
+    // Set up Medicaid numbers.
     healthInsuranceModule = new HealthInsuranceModule();
     povertyLevel = Double
         .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
     medicaidLevel = 1.33 * povertyLevel;
-    // Set up Mandate year numbers.
+    // Set up Mandate year.
     int mandateYear = Integer.parseInt(Config.get("generate.insurance.mandate.year", "2006"));
     mandateTime = Utilities.convertCalendarYearsToTime(mandateYear);
   }
@@ -86,7 +90,7 @@ public class PayerTest {
   public void incrementEncountersTest() {
 
     person = new Person(0L);
-    person.setPayerAtTime(0, randomPrivatePayer);
+    person.setPayerAtTime(0L, randomPrivatePayer);
     HealthRecord healthRecord = new HealthRecord(person);
 
     healthRecord.encounterStart(0L, EncounterType.INPATIENT);
@@ -109,6 +113,7 @@ public class PayerTest {
     // At time 2100000000000L, the person is 65 and qualifies for Medicare.
     healthInsuranceModule.process(person, 2100000000000L);
     assertEquals("Medicare", person.getPayerAtTime(2100000000000L).getName());
+    assertTrue(person.getPayerAtTime(2100000000000L).accepts(person, 2100000000000L));
 
     /* Second Test: ESRD */
     person = new Person(0L);
@@ -135,6 +140,8 @@ public class PayerTest {
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
     healthInsuranceModule.process(person, 0L);
     assertEquals("Medicaid", person.getPayerAtTime(0L).getName());
+    assertTrue(person.getPayerAtTime(0L).accepts(person, 0L));
+
 
     /* Second Test: Poverty Level */
     person = new Person(0L);
@@ -160,6 +167,8 @@ public class PayerTest {
     // At time 2100000000000L, the person is 65 and qualifies for Medicare.
     healthInsuranceModule.process(person, 2100000000000L);
     assertEquals("Dual Eligible", person.getPayerAtTime(2100000000000L).getName());
+    assertTrue(person.getPayerAtTime(2100000000000L).accepts(person, 2100000000000L));
+
   }
 
   @Test
@@ -190,7 +199,7 @@ public class PayerTest {
     healthInsuranceModule.process(person, mandateTime + 10000);
     assertNotEquals("NO_INSURANCE", person.getPayerAtTime(0L).getName());
 
-    /* Second Test: Wealthy Enough to Purchase Private*/
+    /* Second Test: Wealthy Enough to Purchase Private */
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, mandateTime - 10000);
     person.attributes.put(Person.GENDER, "F");
@@ -202,9 +211,36 @@ public class PayerTest {
   }
 
   @Test
+  public void payerAtAgeTest() {
+
+    person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.setPayerAtTime(2100000000000L, randomPrivatePayer);
+    // At 2100000000000L, a person born at 0L is 66.
+    assertEquals(person.getPayerAtTime(2100000000000L), person.getPayerAtAge(66));
+  }
+
+  @Test
   public void loadGovernmentPayersTest() {
+
     assertTrue(Payer.getGovernmentPayer("Medicare")
         != null && Payer.getGovernmentPayer("Medicaid") != null);
+
+    for (Payer payer : Payer.getGovernmentPayers()) {
+      assertEquals("Government", payer.getOwnership());
+    }
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void invalidGovernmentPayerTest() {
+    Payer.getGovernmentPayer("Hollywood Healthcare");
+  }
+
+  @Test
+  public void loadAllPayersTest() {
+    int numGovernmentPayers = Payer.getGovernmentPayers().size();
+    int numPrivatePayers = Payer.getPrivatePayers().size();
+    assertEquals(numGovernmentPayers + numPrivatePayers, Payer.getAllPayers().size());
   }
 
   @Test
@@ -220,10 +256,58 @@ public class PayerTest {
       for (int month = 0; month < 24; month++) {
         // Person checks to pay twice a month. Only needs to pay once a month.
         healthInsuranceModule.process(person, Utilities.convertCalendarYearsToTime(year)
-            + Utilities.convertTime("months", month/2));
+            + Utilities.convertTime("months", month / 2));
       }
     }
     int totalMonthlyPremiumsOwed = (int) (randomPrivatePayer.getMonthlyPremium() * 12 * 65);
     assertEquals(totalMonthlyPremiumsOwed, randomPrivatePayer.getRevenue(), 0.1);
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void monthlyPremiumPaymentNullPayerTest() {
+
+    person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.ID, UUID.randomUUID().toString());
+    person.checkToPayMonthlyPremium(0L);
+  }
+  
+  @Test
+  public void costToPayerTest() {
+
+    Costs.loadCostData();
+    person = new Person(0L);
+    person.setPayerAtTime(0L, randomPrivatePayer);
+    Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
+    Entry fakeProcedure = person.record.procedure(0L, code.display);
+    fakeProcedure.codes.add(code);
+    double totalCost = Costs.calculateCost(fakeProcedure, person, null, randomPrivatePayer);
+    // The total cost should equal the Cost to the Payer summed with the Payer's copay amount.
+    assertEquals(totalCost, randomPrivatePayer.getAmountPaid()
+        + randomPrivatePayer.determineCopay(null), 0.1);
+  }
+
+  // TODO - (expected = RuntimeException.class)
+  @Test
+  public void determineCoveredCostWithNullPayerTest() {
+
+    person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    HealthRecord healthRecord = new HealthRecord(person);
+    Encounter encounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
+    encounter.codes.add(new Code("SNOMED-CT","705129","Fake SNOMED for null entry"));
+    encounter.claim.determineCoveredCost();
+  }
+
+  @Test
+  public void payerInProviderNetworkTest() {
+    // For now, this returns true by default because it is not yet implememted.
+    assertTrue(randomPrivatePayer.isInNetwork(null));
+  }
+
+  @Test
+  public void payerCoversServiceTest() {
+    // For now, this returns true by default because it is not yet implememted.
+    assertTrue(randomPrivatePayer.coversService(null));
   }
 }

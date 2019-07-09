@@ -49,7 +49,7 @@ public class Payer {
   private double defaultCopay;
   private double monthlyPremium;
   // private double deductible;
-  public String ownership;
+  private String ownership;
 
   // The services that this payer covers. Currently unimplemented.
   // Will likely be moved to a Plans class.
@@ -353,15 +353,11 @@ public class Payer {
    * @return whether or not the payer will accept this patient as a customer
    */
   public boolean accepts(Person person, long time) {
-    // for now assume every payer accepts every patient
-    // EXCEPT for medicaire & medicaid (Don't have all correct requirements)
-    if (this.name.equals("Medicare") && person.ageInYears(time) < 65) {
-      return false;
-    } else if (this.name.equals("Medicaid") && !person.attributes.containsKey("blind")) {
-      return false;
-    } else if (this.name.equals("Dual Eligible") && !person.attributes.containsKey("blind")
-        && person.ageInYears(time) < 65) {
-      return false;
+
+    // For now, assume that all payers accept all customers
+    // EXCEPT Medicare/Medicaid
+    if(this.getOwnership().equals("Government")){
+      // Medicare/Medicaid Check
     }
     return true;
   }

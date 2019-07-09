@@ -69,5 +69,5 @@ public class CostsTest {
     double cost = Costs.calculateCost(fakeMedication, person, null, noInsurance);
     double expectedCost = Double.parseDouble(Config.get("generate.costs.default_medication_cost"));
     assertEquals(expectedCost, cost, 0.01); // assert the cost is within $0.01
-  } 
+  }
 }
