@@ -21,7 +21,7 @@ public class GraphvizTest {
   public void testGraphviz() throws Exception {
     TestHelper.exportOff();
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
-    // String inputPath = getClass().getResource("/generic/submodules").getPath();
+    // String inputPath = getClass().getResource("/modules/submodules").getPath();
     String[] args = null; //{ inputPath };
     final PrintStream original = System.out;
     final ByteArrayOutputStream out = new ByteArrayOutputStream();

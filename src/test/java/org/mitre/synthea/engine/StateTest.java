@@ -6,14 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
-
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
@@ -21,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
@@ -65,65 +59,49 @@ public class StateTest {
     time = System.currentTimeMillis();
   }
 
-  protected static Module getModule(String name) {
-    try {
-      Path modulesFolder = Paths.get("src/test/resources/generic");
-      Path logicFile = modulesFolder.resolve(name);
-      JsonReader reader = new JsonReader(new FileReader(logicFile.toString()));
-      JsonObject jsonModule = new JsonParser().parse(reader).getAsJsonObject();
-      reader.close();
-
-      return new Module(jsonModule, false);
-    } catch (Exception e) {
-      // if anything breaks, we can't fix it. throw a RuntimeException for simplicity
-      e.printStackTrace();
-      throw new RuntimeException(e);
-    }
-  }
-
   private void simulateWellnessEncounter(Module module) {
     person.attributes.put(EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + module.name, true);
   }
 
   @Test
-  public void initial_always_passes() {
-    Module module = getModule("initial_to_terminal.json");
+  public void initial_always_passes() throws Exception {
+    Module module = TestHelper.getFixture("initial_to_terminal.json");
     State initial = module.getState("Initial");
     assertTrue(initial.process(person, time));
   }
 
   @Test
-  public void terminal_never_passes() {
-    Module module = getModule("initial_to_terminal.json");
+  public void terminal_never_passes() throws Exception {
+    Module module = TestHelper.getFixture("initial_to_terminal.json");
     State terminal = module.getState("Terminal");
     assertFalse(terminal.process(person, time));
     assertFalse(terminal.process(person, time + TimeUnit.DAYS.toMillis(7)));
   }
 
   @Test(expected = RuntimeException.class)
-  public void stateMustHaveTransition() {
-    getModule("state_without_transition.json");
+  public void stateMustHaveTransition() throws Exception {
+    TestHelper.getFixture("state_without_transition.json");
   }
 
   @Test
-  public void guard_passes_when_condition_is_met() {
-    Module module = getModule("guard.json");
+  public void guard_passes_when_condition_is_met() throws Exception {
+    Module module = TestHelper.getFixture("guard.json");
     State guard = module.getState("Gender_Guard");
     person.attributes.put(Person.GENDER, "F");
     assertTrue(guard.process(person, time));
   }
 
   @Test
-  public void guard_blocks_when_condition_isnt_met() {
-    Module module = getModule("guard.json");
+  public void guard_blocks_when_condition_isnt_met() throws Exception {
+    Module module = TestHelper.getFixture("guard.json");
     State guard = module.getState("Gender_Guard");
     person.attributes.put(Person.GENDER, "M");
     assertFalse(guard.process(person, time));
   }
 
   @Test
-  public void counter() {
-    Module module = getModule("counter.json");
+  public void counter() throws Exception {
+    Module module = TestHelper.getFixture("counter.json");
 
     assertTrue(person.attributes.get("loop_index") == null);
 
@@ -146,12 +124,12 @@ public class StateTest {
   }
 
   @Test
-  public void condition_onset() {
+  public void condition_onset() throws Exception {
     // Setup a mock to track calls to the patient record
     // In this case, the record shouldn't be called at all
     person.record = Mockito.mock(HealthRecord.class);
 
-    Module module = getModule("condition_onset.json");
+    Module module = TestHelper.getFixture("condition_onset.json");
     State condition = module.getState("Diabetes");
     // Should pass through this state immediately without calling the record
     assertTrue(condition.process(person, time));
@@ -160,8 +138,8 @@ public class StateTest {
   }
 
   @Test
-  public void condition_onset_diagnosed_by_target_encounter() {
-    Module module = getModule("condition_onset.json");
+  public void condition_onset_diagnosed_by_target_encounter() throws Exception {
+    Module module = TestHelper.getFixture("condition_onset.json");
 
     State condition = module.getState("Diabetes");
     // Should pass through this state immediately without calling the record
@@ -185,8 +163,8 @@ public class StateTest {
   }
 
   @Test
-  public void condition_onset_during_encounter() {
-    Module module = getModule("condition_onset.json");
+  public void condition_onset_during_encounter() throws Exception {
+    Module module = TestHelper.getFixture("condition_onset.json");
     // The encounter comes first (and add it to history);
     State encounter = module.getState("ED_Visit");
 
@@ -210,12 +188,12 @@ public class StateTest {
   }
 
   @Test
-  public void allergy_onset() {
+  public void allergy_onset() throws Exception {
     // Setup a mock to track calls to the patient record
     // In this case, the record shouldn't be called at all
     person.record = Mockito.mock(HealthRecord.class);
 
-    Module module = getModule("allergies.json");
+    Module module = TestHelper.getFixture("allergies.json");
     State allergy = module.getState("Allergy_to_Eggs");
     // Should pass through this state immediately without calling the record
     assertTrue(allergy.process(person, time));
@@ -224,8 +202,8 @@ public class StateTest {
   }
 
   @Test
-  public void delay_passes_after_exact_time() {
-    Module module = getModule("delay.json");
+  public void delay_passes_after_exact_time() throws Exception {
+    Module module = TestHelper.getFixture("delay.json");
 
     // Seconds
     State delay = module.getState("2_Second_Delay");
@@ -287,8 +265,8 @@ public class StateTest {
   }
 
   @Test
-  public void delay_passes_after_time_range() {
-    Module module = getModule("delay.json");
+  public void delay_passes_after_time_range() throws Exception {
+    Module module = TestHelper.getFixture("delay.json");
 
     // Seconds
     State delay = module.getState("2_To_10_Second_Delay");
@@ -348,12 +326,12 @@ public class StateTest {
   }
 
   @Test
-  public void vitalsign() {
+  public void vitalsign() throws Exception {
     // Setup a mock to track calls to the patient record
     // In this case, the record shouldn't be called at all
     person.record = Mockito.mock(HealthRecord.class);
 
-    Module module = getModule("observation.json");
+    Module module = TestHelper.getFixture("observation.json");
 
     State vitalsign = module.getState("VitalSign").clone();
     assertTrue(vitalsign.process(person, time));
@@ -364,8 +342,8 @@ public class StateTest {
   }
 
   @Test
-  public void symptoms() {
-    Module module = getModule("symptom.json");
+  public void symptoms() throws Exception {
+    Module module = TestHelper.getFixture("symptom.json");
 
     State symptom1 = module.getState("SymptomOnset");
     assertTrue(symptom1.process(person, time));
@@ -378,16 +356,16 @@ public class StateTest {
   }
 
   @Test
-  public void symptoms50() {
-    Module module = getModule("symptom50.json");
+  public void symptoms50() throws Exception {
+    Module module = TestHelper.getFixture("symptom50.json");
 
     State symptom50 = module.getState("Symptom50");
     assertTrue(symptom50.process(person, time));
   }
 
   @Test
-  public void setAttribute_with_value() {
-    Module module = getModule("set_attribute.json");
+  public void setAttribute_with_value() throws Exception {
+    Module module = TestHelper.getFixture("set_attribute.json");
 
     person.attributes.remove("Current Opioid Prescription");
     State set1 = module.getState("Set_Attribute_1");
@@ -397,8 +375,8 @@ public class StateTest {
   }
 
   @Test
-  public void setAttribute_without_value() {
-    Module module = getModule("set_attribute.json");
+  public void setAttribute_without_value() throws Exception {
+    Module module = TestHelper.getFixture("set_attribute.json");
 
     person.attributes.put("Current Opioid Prescription", "Vicodin");
     State set2 = module.getState("Set_Attribute_2");
@@ -408,9 +386,9 @@ public class StateTest {
   }
 
   @Test
-  public void procedure_assigns_entity_attribute() {
+  public void procedure_assigns_entity_attribute() throws Exception {
     person.attributes.remove("Most Recent Surgery");
-    Module module = getModule("procedure.json");
+    Module module = TestHelper.getFixture("procedure.json");
     State encounter = module.getState("Inpatient_Encounter");
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
@@ -430,8 +408,8 @@ public class StateTest {
   }
 
   @Test
-  public void procedure_during_encounter() {
-    Module module = getModule("procedure.json");
+  public void procedure_during_encounter() throws Exception {
+    Module module = TestHelper.getFixture("procedure.json");
 
     // The encounter comes first (and add it to history);
     State encounter = module.getState("Inpatient_Encounter");
@@ -454,8 +432,8 @@ public class StateTest {
   }
 
   @Test
-  public void observation() {
-    Module module = getModule("observation.json");
+  public void observation() throws Exception {
+    Module module = TestHelper.getFixture("observation.json");
 
     State vitalsign = module.getState("VitalSign");
     assertTrue(vitalsign.process(person, time));
@@ -495,8 +473,8 @@ public class StateTest {
   }
 
   @Test
-  public void imaging_study_during_encounter() {
-    Module module = getModule("imaging_study.json");
+  public void imaging_study_during_encounter() throws Exception {
+    Module module = TestHelper.getFixture("imaging_study.json");
 
     // First, onset the injury
     State kneeInjury = module.getState("Knee_Injury");
@@ -551,8 +529,8 @@ public class StateTest {
   }
 
   @Test
-  public void wellness_encounter() {
-    Module module = getModule("encounter.json");
+  public void wellness_encounter() throws Exception {
+    Module module = TestHelper.getFixture("encounter.json");
     State encounter = module.getState("Annual_Physical");
 
     // shouldn't pass through this state until a wellness encounter happens externally
@@ -569,8 +547,8 @@ public class StateTest {
   }
 
   @Test
-  public void wellness_encounter_diagnoses_condition() {
-    Module module = getModule("encounter.json");
+  public void wellness_encounter_diagnoses_condition() throws Exception {
+    Module module = TestHelper.getFixture("encounter.json");
     // First, onset the Diabetes!
     State diabetes = module.getState("Diabetes");
     assertTrue(diabetes.process(person, time));
@@ -595,8 +573,8 @@ public class StateTest {
   }
 
   @Test
-  public void ed_visit_encounter() {
-    Module module = getModule("encounter.json");
+  public void ed_visit_encounter() throws Exception {
+    Module module = TestHelper.getFixture("encounter.json");
     // Non-wellness encounters happen immediately
 
     // First, onset the Diabetes!
@@ -618,8 +596,8 @@ public class StateTest {
   }
 
   @Test
-  public void encounter_with_attribute_reason() {
-    Module module = getModule("encounter.json");
+  public void encounter_with_attribute_reason() throws Exception {
+    Module module = TestHelper.getFixture("encounter.json");
 
     // First, onset the Diabetes!
     State diabetes = module.getState("Diabetes");
@@ -642,8 +620,8 @@ public class StateTest {
   }
 
   @Test
-  public void allergy_onset_during_encounter() {
-    Module module = getModule("allergies.json");
+  public void allergy_onset_during_encounter() throws Exception {
+    Module module = TestHelper.getFixture("allergies.json");
     State allergyState = module.getState("Allergy_to_Eggs");
     // Should pass through this state immediately without calling the record
     assertTrue(allergyState.process(person, time));
@@ -662,8 +640,8 @@ public class StateTest {
   }
 
   @Test
-  public void allergy_end_by_state_name() {
-    Module module = getModule("allergies.json");
+  public void allergy_end_by_state_name() throws Exception {
+    Module module = TestHelper.getFixture("allergies.json");
     State allergyState = module.getState("Allergy_to_Eggs").clone();
     // Should pass through this state immediately without calling the record
     assertTrue(allergyState.process(person, time));
@@ -686,8 +664,8 @@ public class StateTest {
   }
 
   @Test
-  public void condition_end_by_entity_attribute() {
-    Module module = getModule("condition_end.json");
+  public void condition_end_by_entity_attribute() throws Exception {
+    Module module = TestHelper.getFixture("condition_end.json");
 
     // First, onset the condition
     State condition1 = module.getState("Condition1_Start");
@@ -720,8 +698,8 @@ public class StateTest {
   }
 
   @Test
-  public void condition_end_by_condition_onset() {
-    Module module = getModule("condition_end.json");
+  public void condition_end_by_condition_onset() throws Exception {
+    Module module = TestHelper.getFixture("condition_end.json");
 
     // First, onset the condition
     State condition2 = module.getState("Condition2_Start");
@@ -752,8 +730,8 @@ public class StateTest {
   }
 
   @Test
-  public void condition_end_by_code() {
-    Module module = getModule("condition_end.json");
+  public void condition_end_by_code() throws Exception {
+    Module module = TestHelper.getFixture("condition_end.json");
 
     // First, onset the Diabetes!
     State condition3 = module.getState("Condition3_Start");
@@ -783,8 +761,8 @@ public class StateTest {
   }
 
   @Test
-  public void medication_order_during_wellness_encounter() {
-    Module module = getModule("medication_order.json");
+  public void medication_order_during_wellness_encounter() throws Exception {
+    Module module = TestHelper.getFixture("medication_order.json");
 
     // First, onset the Diabetes!
     State diabetes = module.getState("Diabetes");
@@ -814,8 +792,8 @@ public class StateTest {
   }
 
   @Test
-  public void medication_order_with_dosage() {
-    Module module = getModule("medication_order.json");
+  public void medication_order_with_dosage() throws Exception {
+    Module module = TestHelper.getFixture("medication_order.json");
 
     // First, onset the Diabetes!
     State diabetes = module.getState("Diabetes");
@@ -845,8 +823,8 @@ public class StateTest {
   }
 
   @Test
-  public void medication_order_as_needed() {
-    Module module = getModule("medication_order.json");
+  public void medication_order_as_needed() throws Exception {
+    Module module = TestHelper.getFixture("medication_order.json");
 
     // First, onset the Diabetes!
     State diabetes = module.getState("Diabetes");
@@ -878,9 +856,9 @@ public class StateTest {
   }
 
   @Test
-  public void medication_order_assigns_entity_attribute() {
+  public void medication_order_assigns_entity_attribute() throws Exception {
     person.attributes.remove("Diabetes Medication");
-    Module module = getModule("medication_order.json");
+    Module module = TestHelper.getFixture("medication_order.json");
     State encounter = module.getState("Wellness_Encounter");
     simulateWellnessEncounter(module);
     assertTrue(encounter.process(person, time));
@@ -899,8 +877,8 @@ public class StateTest {
   }
 
   @Test
-  public void medication_end_by_entity_attribute() {
-    Module module = getModule("medication_end.json");
+  public void medication_end_by_entity_attribute() throws Exception {
+    Module module = TestHelper.getFixture("medication_end.json");
 
     // First, onset the Diabetes!
     State diabetes = module.getState("Diabetes");
@@ -936,8 +914,8 @@ public class StateTest {
   }
 
   @Test
-  public void medication_end_by_medication_order() {
-    Module module = getModule("medication_end.json");
+  public void medication_end_by_medication_order() throws Exception {
+    Module module = TestHelper.getFixture("medication_end.json");
 
     // First, onset the Diabetes!
     State diabetes = module.getState("Diabetes");
@@ -972,8 +950,8 @@ public class StateTest {
   }
 
   @Test
-  public void medication_end_by_code() {
-    Module module = getModule("medication_end.json");
+  public void medication_end_by_code() throws Exception {
+    Module module = TestHelper.getFixture("medication_end.json");
 
     // First, onset the Diabetes!
     State diabetes = module.getState("Diabetes");
@@ -1008,8 +986,8 @@ public class StateTest {
   }
 
   @Test
-  public void careplan_start() {
-    Module module = getModule("careplan_start.json");
+  public void careplan_start() throws Exception {
+    Module module = TestHelper.getFixture("careplan_start.json");
 
     // First onset diabetes
     State diabetes = module.getState("Diabetes");
@@ -1045,9 +1023,9 @@ public class StateTest {
   }
 
   @Test
-  public void careplan_assigns_entity_attribute() {
+  public void careplan_assigns_entity_attribute() throws Exception {
     person.attributes.remove("Diabetes_CarePlan");
-    Module module = getModule("careplan_start.json");
+    Module module = TestHelper.getFixture("careplan_start.json");
     State encounter = module.getState("Wellness_Encounter");
     simulateWellnessEncounter(module);
     assertTrue(encounter.process(person, time));
@@ -1066,8 +1044,8 @@ public class StateTest {
   }
 
   @Test
-  public void careplan_end_by_entity_attribute() {
-    Module module = getModule("careplan_end.json");
+  public void careplan_end_by_entity_attribute() throws Exception {
+    Module module = TestHelper.getFixture("careplan_end.json");
 
     // First, onset the condition
     State condition = module.getState("The_Condition");
@@ -1113,8 +1091,8 @@ public class StateTest {
   }
 
   @Test
-  public void careplan_end_by_code() {
-    Module module = getModule("careplan_end.json");
+  public void careplan_end_by_code() throws Exception {
+    Module module = TestHelper.getFixture("careplan_end.json");
 
     // First, onset the condition
     State condition = module.getState("The_Condition");
@@ -1159,8 +1137,8 @@ public class StateTest {
   }
 
   @Test
-  public void careplan_end_by_careplan() {
-    Module module = getModule("careplan_end.json");
+  public void careplan_end_by_careplan() throws Exception {
+    Module module = TestHelper.getFixture("careplan_end.json");
 
     // First, onset the condition
     State condition = module.getState("The_Condition");
@@ -1200,8 +1178,8 @@ public class StateTest {
   }
 
   @Test
-  public void death() {
-    Module module = getModule("death.json");
+  public void death() throws Exception {
+    Module module = TestHelper.getFixture("death.json");
     State death = module.getState("Death");
     assertTrue(person.alive(time));
     assertTrue(death.process(person, time));
@@ -1214,8 +1192,8 @@ public class StateTest {
   }
 
   @Test
-  public void future_death() {
-    Module module = getModule("death_life_expectancy.json");
+  public void future_death() throws Exception {
+    Module module = TestHelper.getFixture("death_life_expectancy.json");
     module.process(person, time);
     module.process(person, time + Utilities.convertTime("days", 7));
 
@@ -1231,8 +1209,8 @@ public class StateTest {
   }
 
   @Test
-  public void cause_of_death_code() {
-    Module module = getModule("death_reason.json");
+  public void cause_of_death_code() throws Exception {
+    Module module = TestHelper.getFixture("death_reason.json");
 
     // First, onset the Diabetes!
     State condition = module.getState("OnsetDiabetes");
@@ -1247,8 +1225,8 @@ public class StateTest {
   }
 
   @Test
-  public void cause_of_death_conditionOnset() {
-    Module module = getModule("death_reason.json");
+  public void cause_of_death_conditionOnset() throws Exception {
+    Module module = TestHelper.getFixture("death_reason.json");
 
     // First, onset the Diabetes!
     State condition = module.getState("OnsetDiabetes");
@@ -1263,8 +1241,8 @@ public class StateTest {
   }
 
   @Test
-  public void cause_of_death_attribute() {
-    Module module = getModule("death_reason.json");
+  public void cause_of_death_attribute() throws Exception {
+    Module module = TestHelper.getFixture("death_reason.json");
 
     // First, onset the Diabetes!
     State condition = module.getState("OnsetDiabetes");
@@ -1279,13 +1257,13 @@ public class StateTest {
   }
 
   @Test
-  public void testDelayRewindTime() {
+  public void testDelayRewindTime() throws Exception {
     // Synthea is currently run in 7-day increments. If a delay falls between increments, then the
     // delay and subsequent states must be run at the delay expiration time -- not at the current
     // cycle time.
 
     // Setup the context
-    Module module = getModule("delay_time_travel.json");
+    Module module = TestHelper.getFixture("delay_time_travel.json");
 
     // Run number one should stop at the delay
     module.process(person, time);
@@ -1333,17 +1311,17 @@ public class StateTest {
   }
 
   @Test
-  public void testSubmoduleHistory() {
+  public void testSubmoduleHistory() throws Exception {
     Map<String, Module.ModuleSupplier> modules =
             Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
     // hack to load these test modules so they can be called by the CallSubmodule state
-    Module subModule1 = getModule("submodules/encounter_submodule.json");
-    Module subModule2 = getModule("submodules/medication_submodule.json");
+    Module subModule1 = TestHelper.getFixture("submodules/encounter_submodule.json");
+    Module subModule2 = TestHelper.getFixture("submodules/medication_submodule.json");
     modules.put("submodules/encounter_submodule", new Module.ModuleSupplier(subModule1));
     modules.put("submodules/medication_submodule", new Module.ModuleSupplier(subModule2));
 
     try {
-      Module module = getModule("recursively_calls_submodules.json");
+      Module module = TestHelper.getFixture("recursively_calls_submodules.json");
       while (!module.process(person, time)) {
         time += Utilities.convertTime("years", 1);
       }
@@ -1420,15 +1398,15 @@ public class StateTest {
   }
 
   @Test
-  public void testSubmoduleDiagnosesAndEndingEncounters() {
+  public void testSubmoduleDiagnosesAndEndingEncounters() throws Exception {
     Map<String, Module.ModuleSupplier> modules =
         Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
     // hack to load these test modules so they can be called by the CallSubmodule state
-    Module subModule = getModule("submodules/admission.json");
+    Module subModule = TestHelper.getFixture("submodules/admission.json");
     modules.put("submodules/admission", new Module.ModuleSupplier(subModule));
 
     try {
-      Module module = getModule("encounter_with_submodule.json");
+      Module module = TestHelper.getFixture("encounter_with_submodule.json");
       while (!module.process(person, time)) {
         time += Utilities.convertTime("years", 1);
       }
@@ -1449,11 +1427,11 @@ public class StateTest {
   }
 
   @Test
-  public void testDiagnosticReport() {
+  public void testDiagnosticReport() throws Exception {
     // Birth makes the vital signs come alive :-)
     LifecycleModule.birth(person, (long)person.attributes.get(Person.BIRTHDATE));
 
-    Module module = getModule("observation_groups.json");
+    Module module = TestHelper.getFixture("observation_groups.json");
 
     State condition = module.getState("Record_MetabolicPanel");
     assertTrue(condition.process(person, time));
@@ -1480,11 +1458,11 @@ public class StateTest {
   }
 
   @Test
-  public void testMultiObservation() {
+  public void testMultiObservation() throws Exception {
     // Birth makes the blood pump :-)
     LifecycleModule.birth(person, (long)person.attributes.get(Person.BIRTHDATE));
 
-    Module module = getModule("observation_groups.json");
+    Module module = TestHelper.getFixture("observation_groups.json");
 
     State condition = module.getState("Record_BP");
     assertTrue(condition.process(person, time));

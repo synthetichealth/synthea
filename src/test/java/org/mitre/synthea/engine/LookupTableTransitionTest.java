@@ -3,13 +3,6 @@ package org.mitre.synthea.engine;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
-
-import java.io.FileReader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +15,7 @@ import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator.GeneratorOptions;
 import org.mitre.synthea.engine.Logic.ActiveCondition;
 import org.mitre.synthea.engine.Transition.DirectTransition;
@@ -33,21 +27,6 @@ import org.powermock.reflect.Whitebox;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LookupTableTransitionTest {
-
-  protected static Module getModule(String name) {
-    try {
-      Path modulesFolder = Paths.get("src/test/resources/generic");
-      Path logicFile = modulesFolder.resolve(name);
-      JsonReader reader = new JsonReader(new FileReader(logicFile.toString()));
-      JsonObject jsonModule = new JsonParser().parse(reader).getAsJsonObject();
-      reader.close();
-      return new Module(jsonModule, false);
-    } catch (Exception e) {
-      // if anything breaks, we can't fix it. throw a RuntimeException for simplicity
-      e.printStackTrace();
-      throw new RuntimeException(e);
-    }
-  }
 
   @Test
   public void keyTestWithAgesMatch() {
@@ -260,9 +239,10 @@ public class LookupTableTransitionTest {
   @Test
   public void lookUpTableTestMassachusetts() {
 
-    int population = 30;
+    int population = 10;
     GeneratorOptions standardGO = new GeneratorOptions();
     standardGO.population = population;
+    standardGO.overflow = false;
 
     // Create Mild Lookuptablitis Condition
     ActiveCondition mildLookuptablitis = new ActiveCondition();
@@ -415,18 +395,19 @@ public class LookupTableTransitionTest {
   }
 
   @Test
-  public void lookUpTableTestArizona() {
+  public void lookUpTableTestArizona() throws Exception {
 
     // Hack in the lookuptable_test.json module
     Map<String, Module.ModuleSupplier> modules =
         Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
     // hack to load these test modules so they can be called by the CallSubmodule state
-    Module lookuptabletestModule = getModule("lookuptable_test.json");
+    Module lookuptabletestModule = TestHelper.getFixture("lookuptable_test.json");
     modules.put("lookuptable_test", new Module.ModuleSupplier(lookuptabletestModule));
 
-    int population = 30;
+    int population = 10;
     GeneratorOptions standardGO = new GeneratorOptions();
     standardGO.population = population;
+    standardGO.overflow = false;
 
     // Create Mild Lookuptablitis Condition
     ActiveCondition mildLookuptablitis = new ActiveCondition();
@@ -579,40 +560,24 @@ public class LookupTableTransitionTest {
     modules.remove("lookuptable_test");
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void zzInvalidAgeRangeTest() {
-
-    Map<String, Module.ModuleSupplier> modules =
-            Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
-    // hack to load these test modules so they can be called by the CallSubmodule state
-    Module lookuptabletestModule = getModule("lookuptable_agerangetest.json");
-    modules.put("lookuptable_agerangetest", new Module.ModuleSupplier(lookuptabletestModule));
-
-    GeneratorOptions onePersonGeneratorOption = new GeneratorOptions();
-    onePersonGeneratorOption.population = 5;
-    Generator generator = new Generator(onePersonGeneratorOption);
-
-    generator.generatePerson(2);
-
-    modules.remove("lookuptable_agerangetest");
+    try {
+      TestHelper.getFixture("lookuptable_agerangetest.json");
+    } catch (Exception e) {
+      assertTrue(e.getMessage().contains("Age Range must be in the form: 'ageLow-ageHigh'"));
+    }
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void aaNoTransitionMatchTest() {
-
-    Map<String, Module.ModuleSupplier> modules =
-            Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
-    // hack to load these test modules so they can be called by the CallSubmodule state
-    Module lookuptabletestModule = getModule("lookuptable_nomatchcolumn.json");
-    modules.put("lookuptable_nomatchcolumn", new Module.ModuleSupplier(lookuptabletestModule));
-
-    GeneratorOptions onePersonGeneratorOption = new GeneratorOptions();
-    onePersonGeneratorOption.population = 5;
-    Generator generator = new Generator(onePersonGeneratorOption);
-
-    generator.generatePerson(2);
-
-    modules.remove("lookuptable_nomatchcolumn");
+    try {
+      TestHelper.getFixture("lookuptable_nomatchcolumn.json");
+    } catch (Exception e) {
+      assertTrue(e.getMessage().contains("CSV column state name"));
+      assertTrue(
+          e.getMessage().contains("does not match a JSON state to transition to in CSV table"));
+    }
   }
 }
 
