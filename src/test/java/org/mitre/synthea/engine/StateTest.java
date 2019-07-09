@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
+import ca.uhn.fhir.model.dstu2.resource.MedicationOrder;
+
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -27,8 +29,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
-
-import ca.uhn.fhir.model.dstu2.resource.MedicationOrder;
 
 public class StateTest {
 
@@ -859,7 +859,7 @@ public class StateTest {
   }
 
   @Test
-  public void medication_order_assigns_administered_attribute() {
+  public void medication_order_assigns_administered_attribute() throws Exception {
     person.attributes.remove("Diabetes Medication");
     Module module = TestHelper.getFixture("medication_order.json");
     State encounter = module.getState("Wellness_Encounter");
@@ -876,9 +876,9 @@ public class StateTest {
   }
 
   @Test
-  public void medication_order_assigns_entity_attribute() {
+  public void medication_order_assigns_entity_attribute() throws Exception {
     person.attributes.remove("Diabetes Medication");
-    Module module = getModule("medication_order.json");
+    Module module = TestHelper.getFixture("medication_order.json");
     State encounter = module.getState("Wellness_Encounter");
     simulateWellnessEncounter(module);
     assertTrue(encounter.process(person, time));
@@ -887,7 +887,8 @@ public class StateTest {
     State med = module.getState("Metformin");
     assertTrue(med.process(person, time));
 
-    HealthRecord.Medication medication = (HealthRecord.Medication) person.attributes.get("Diabetes Medication");
+    HealthRecord.Medication medication =
+        (HealthRecord.Medication) person.attributes.get("Diabetes Medication");
     assertEquals(time, medication.start);
 
     assertFalse(medication.administration);
