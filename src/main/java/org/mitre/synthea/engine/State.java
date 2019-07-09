@@ -494,7 +494,7 @@ public abstract class State implements Cloneable {
           person.setCurrentEncounter(module, encounter);
 
           // find closest provider and increment encounters count
-          Provider provider = person.getProvider(EncounterType.AMBULATORY, time);
+          Provider provider = person.getProvider(EncounterType.WELLNESS, time);
           person.addCurrentProvider(module.name, provider);
           int year = Utilities.getYear(time);
           provider.incrementEncounters(EncounterType.WELLNESS, year);
@@ -785,13 +785,15 @@ public abstract class State implements Cloneable {
    * prescribed. MedicationOrder states may only be processed during an Encounter, and so must occur
    * after the target Encounter state and before the EncounterEnd. See the Encounter section above
    * for more details. The MedicationOrder state supports identifying a previous ConditionOnset or
-   * the name of an attribute as the reason for the prescription.
+   * the name of an attribute as the reason for the prescription. Adding a 'administration' field
+   * allows for the MedicationOrder to also export a MedicationAdministration into the exported FHIR record.
    */
   public static class MedicationOrder extends State {
     private List<Code> codes;
     private String reason;
     private JsonObject prescription; // TODO make this a Component
     private String assignToAttribute;
+    private boolean administration;
 
     @Override
     public MedicationOrder clone() {
@@ -800,6 +802,7 @@ public abstract class State implements Cloneable {
       clone.reason = reason;
       clone.prescription = prescription;
       clone.assignToAttribute = assignToAttribute;
+      clone.administration = administration;
       return clone;
     }
 
@@ -828,6 +831,7 @@ public abstract class State implements Cloneable {
       }
 
       medication.prescriptionDetails = prescription;
+      medication.administration = administration;
 
       if (assignToAttribute != null) {
         person.attributes.put(assignToAttribute, medication);

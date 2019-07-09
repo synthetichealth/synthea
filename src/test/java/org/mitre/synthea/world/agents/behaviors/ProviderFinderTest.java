@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.sis.geometry.DirectPosition2D;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -13,11 +13,15 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
 public class ProviderFinderTest {
   
-  private List<Provider> providers;
-  private Person person;
+  private static List<Provider> providers;
+  private static Person person;
 
-  @Before
-  public void setup() {
+  /**
+   * Setup the unit tests with a single person/patient and a list of
+   * three providers.
+   */
+  @BeforeClass
+  public static void setup() {
     person = new Person(0L);
     DirectPosition2D coordinate = new DirectPosition2D(0, 0);
     person.attributes.put(Person.COORDINATE, coordinate);

@@ -34,7 +34,8 @@
       "remarks": [
         "TODO: look into Phenobarbital (can cause apnea), Etomidate (risk of nausea), Ketamine (increased secretions, risk of laryngospasm and hallucinations), Dexmedetomidine",
         "https://www.ncbi.nlm.nih.gov/books/NBK493199/"
-      ]
+      ],
+      "administration": true
     },
     "Intubation": {
       "type": "Procedure",
@@ -61,7 +62,8 @@
           "display": "Midazolam 1 MG/ML Injectable Solution"
         }
       ],
-      "direct_transition": "Midazolam_End"
+      "direct_transition": "Midazolam_End",
+      "administration": true
     },
     "Anxiolytic": {
       "type": "Simple",
@@ -94,7 +96,8 @@
           "display": "Diazepam 5 MG/ML Injectable Solution"
         }
       ],
-      "direct_transition": "Diazepam_End"
+      "direct_transition": "Diazepam_End",
+      "administration": true
     },
     "Lorazepam": {
       "type": "MedicationOrder",
@@ -105,7 +108,8 @@
           "display": "Lorazepam 2 MG/ML Injectable Solution"
         }
       ],
-      "direct_transition": "Lorazepam_End"
+      "direct_transition": "Lorazepam_End",
+      "administration": true
     },
     "Antiemetic": {
       "type": "MedicationOrder",
@@ -120,7 +124,8 @@
       "remarks": [
         "4mg is the most common dose for Ondansetron and virtually all anesthesia patients receive it prior to general anesthesia.",
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5509245/"
-      ]
+      ],
+      "administration": true
     },
     "Paralytic": {
       "type": "MedicationOrder",
@@ -139,7 +144,8 @@
         "",
         "In one study of general anesthetics, Rocuronium was used in 96.7% of cases",
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5500064/"
-      ]
+      ],
+      "administration": true
     },
     "Fentanyl": {
       "type": "MedicationOrder",
@@ -150,7 +156,8 @@
           "display": "Fentanyl"
         }
       ],
-      "direct_transition": "Fentanyl_End"
+      "direct_transition": "Fentanyl_End",
+      "administration": true
     },
     "Analgesic": {
       "type": "Simple",
@@ -186,7 +193,8 @@
           "display": "Remifentanil"
         }
       ],
-      "direct_transition": "Remifentanil_End"
+      "direct_transition": "Remifentanil_End",
+      "administration": true
     },
     "Alfentanil": {
       "type": "MedicationOrder",
@@ -197,7 +205,8 @@
           "display": "Alfentanil"
         }
       ],
-      "direct_transition": "Alfentanil_End"
+      "direct_transition": "Alfentanil_End",
+      "administration": true
     },
     "Sufentanil": {
       "type": "MedicationOrder",
@@ -208,7 +217,8 @@
           "display": "Sufentanil"
         }
       ],
-      "direct_transition": "Sufentanil_End"
+      "direct_transition": "Sufentanil_End",
+      "administration": true
     },
     "Isoflurane": {
       "type": "MedicationOrder",
@@ -219,7 +229,8 @@
           "display": "Isoflurane 999 MG/ML Inhalant Solution"
         }
       ],
-      "direct_transition": "Isoflurane_End"
+      "direct_transition": "Isoflurane_End",
+      "administration": true
     },
     "Volatile_Anesthetic": {
       "type": "Simple",
@@ -253,7 +264,8 @@
           "display": "desflurane 990 MG/ML Inhalant Solution"
         }
       ],
-      "direct_transition": "Desflurane_End"
+      "direct_transition": "Desflurane_End",
+      "administration": true
     },
     "Sevoflurane": {
       "type": "MedicationOrder",
@@ -264,7 +276,8 @@
           "display": "sevoflurane 1000 MG/ML Inhalant Solution"
         }
       ],
-      "direct_transition": "Sevoflurane_End"
+      "direct_transition": "Sevoflurane_End",
+      "administration": true
     },
     "Midazolam_End": {
       "type": "MedicationEnd",

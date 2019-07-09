@@ -158,6 +158,7 @@ public class HealthRecord {
     public Code stopReason;
     public JsonObject prescriptionDetails;
     public Claim claim;
+    public boolean administration;
 
     public Medication(long time, String type) {
       super(time, type);

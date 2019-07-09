@@ -32,6 +32,21 @@
             "reason": "Diabetes",
             "direct_transition": "Metformin_With_Dosage"
         },
+        "Metformin_With_Administration": {
+          "type": "MedicationOrder",
+          "target_encounter": "Wellness_Encounter",
+          "codes": [
+            {
+              "system": "RxNorm",
+              "code": "860975",
+              "display": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
+            }
+          ],
+          "assign_to_attribute": "Diabetes Medication",
+          "reason": "Diabetes",
+          "direct_transition": "Metformin_With_Dosage",
+          "administration": true
+        },
         "Metformin_With_Dosage": {
             "type": "MedicationOrder",
             "target_encounter": "Wellness_Encounter",

@@ -28,6 +28,8 @@ import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
 
+import ca.uhn.fhir.model.dstu2.resource.MedicationOrder;
+
 public class StateTest {
 
   private Person person;
@@ -49,6 +51,7 @@ public class StateTest {
     Provider mock = Mockito.mock(Provider.class);
     mock.uuid = "Mock-UUID";
     person.setProvider(EncounterType.AMBULATORY, mock);
+    person.setProvider(EncounterType.WELLNESS, mock);
     person.setProvider(EncounterType.EMERGENCY, mock);
     person.setProvider(EncounterType.INPATIENT, mock);
 
@@ -856,9 +859,26 @@ public class StateTest {
   }
 
   @Test
-  public void medication_order_assigns_entity_attribute() throws Exception {
+  public void medication_order_assigns_administered_attribute() {
     person.attributes.remove("Diabetes Medication");
     Module module = TestHelper.getFixture("medication_order.json");
+    State encounter = module.getState("Wellness_Encounter");
+    simulateWellnessEncounter(module);
+    assertTrue(encounter.process(person, time));
+    person.history.add(encounter);
+
+    State med = module.getState("Metformin_With_Administration");
+    assertTrue(med.process(person, time));
+
+    HealthRecord.Medication medication = (HealthRecord.Medication) person.attributes
+        .get("Diabetes Medication");
+    assertTrue(medication.administration);
+  }
+
+  @Test
+  public void medication_order_assigns_entity_attribute() {
+    person.attributes.remove("Diabetes Medication");
+    Module module = getModule("medication_order.json");
     State encounter = module.getState("Wellness_Encounter");
     simulateWellnessEncounter(module);
     assertTrue(encounter.process(person, time));
@@ -867,9 +887,10 @@ public class StateTest {
     State med = module.getState("Metformin");
     assertTrue(med.process(person, time));
 
-    HealthRecord.Medication medication = (HealthRecord.Medication) person.attributes
-        .get("Diabetes Medication");
+    HealthRecord.Medication medication = (HealthRecord.Medication) person.attributes.get("Diabetes Medication");
     assertEquals(time, medication.start);
+
+    assertFalse(medication.administration);
 
     Code code = medication.codes.get(0);
     assertEquals("860975", code.code);

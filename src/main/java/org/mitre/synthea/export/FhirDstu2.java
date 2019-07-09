@@ -29,6 +29,7 @@ import ca.uhn.fhir.model.dstu2.resource.Encounter.Hospitalization;
 import ca.uhn.fhir.model.dstu2.resource.ImagingStudy.Series;
 import ca.uhn.fhir.model.dstu2.resource.ImagingStudy.SeriesInstance;
 import ca.uhn.fhir.model.dstu2.resource.Immunization;
+import ca.uhn.fhir.model.dstu2.resource.MedicationAdministration;
 import ca.uhn.fhir.model.dstu2.resource.MedicationOrder;
 import ca.uhn.fhir.model.dstu2.resource.MedicationOrder.DosageInstruction;
 import ca.uhn.fhir.model.dstu2.resource.Observation.Component;
@@ -59,6 +60,7 @@ import ca.uhn.fhir.model.dstu2.valueset.IdentifierTypeCodesEnum;
 import ca.uhn.fhir.model.dstu2.valueset.InstanceAvailabilityEnum;
 import ca.uhn.fhir.model.dstu2.valueset.MaritalStatusCodesEnum;
 import ca.uhn.fhir.model.dstu2.valueset.MedicationOrderStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.MedicationAdministrationStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.NameUseEnum;
 import ca.uhn.fhir.model.dstu2.valueset.NarrativeStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ObservationStatusEnum;
@@ -1067,7 +1069,76 @@ public class FhirDstu2 {
     // create new claim for medication
     medicationClaim(personEntry, bundle, encounterEntry, medication.claim, medicationEntry);
 
+    // Create new administration for medication, if needed
+    if (medication.administration) {
+      medicationAdministration(personEntry, bundle, encounterEntry, medication);
+    }
+
     return medicationEntry;
+  }
+
+  /**
+   * Add a MedicationAdministration if needed for the given medication
+   * 
+   * @param personEntry       The Entry for the Person
+   * @param bundle            Bundle to add the MedicationAdministration to
+   * @param encounterEntry    Current Encounter entry
+   * @param medication        The Medication
+   * @return The added Entry
+   */
+  private static Entry medicationAdministration(Entry personEntry, Bundle bundle,
+      Entry encounterEntry, Medication medication) {
+    MedicationAdministration medicationResource = new MedicationAdministration();
+
+    medicationResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
+    medicationResource.setEncounter(new ResourceReferenceDt(encounterEntry.getFullUrl()));
+
+    Code code = medication.codes.get(0);
+    String system = code.system.equals("SNOMED-CT") ? SNOMED_URI : RXNORM_URI;
+
+    medicationResource.setMedication(mapCodeToCodeableConcept(code, system));
+    medicationResource.setEffectiveTime(new DateTimeDt(new Date(medication.start)));
+
+    medicationResource.setStatus(MedicationAdministrationStatusEnum.COMPLETED);
+
+    if (medication.prescriptionDetails != null) {
+      JsonObject rxInfo = medication.prescriptionDetails;
+      MedicationAdministration.Dosage dosage = new MedicationAdministration.Dosage();
+
+      // as_needed is true if present
+      if ((rxInfo.has("dosage")) && (!rxInfo.has("as_needed"))) {
+        QuantityDt dose = new QuantityDt()
+            .setValue(rxInfo.get("dosage").getAsJsonObject().get("amount").getAsDouble());
+        dosage.setQuantity((SimpleQuantityDt) dose);
+
+        if (rxInfo.has("instructions")) {
+          for (JsonElement instructionElement : rxInfo.get("instructions").getAsJsonArray()) {
+            JsonObject instruction = instructionElement.getAsJsonObject();
+
+            dosage.setText(instruction.get("display").getAsString());
+          }
+        }
+      }
+      medicationResource.setDosage(dosage);
+    }
+
+    if (!medication.reasons.isEmpty()) {
+      // Only one element in list
+      Code reason = medication.reasons.get(0);
+      for (Entry entry : bundle.getEntry()) {
+        if (entry.getResource().getResourceName().equals("Condition")) {
+          Condition condition = (Condition) entry.getResource();
+          // Only one element in list
+          CodeableConceptDt coding = condition.getCode();
+          if (reason.code.equals(coding.getCodingFirstRep().getCode())) {
+            medicationResource.addReasonGiven(coding);
+          }
+        }
+      }
+    }
+
+    Entry medicationAdminEntry = newEntry(bundle, medicationResource);
+    return medicationAdminEntry;
   }
 
   /**

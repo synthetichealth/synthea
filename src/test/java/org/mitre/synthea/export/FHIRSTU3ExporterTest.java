@@ -101,6 +101,14 @@ public class FHIRSTU3ExporterTest {
                  * starting with "urn:uuid"
                  */
                 valid = true; // ignore this error
+              } else if (emessage.getMessage().contains(
+                  "per-1: If present, start SHALL have a lower value than end")) {
+                /*
+                 * The per-1 invariant does not account for daylight savings time... so, if the
+                 * daylight savings switch happens between the start and end, the validation
+                 * fails, even if it is valid.
+                 */
+                valid = true; // ignore this error
               }
 
               if (!valid) {

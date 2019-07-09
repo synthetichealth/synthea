@@ -1,0 +1,316 @@
+{
+  "name": "chemotherapy_breast",
+  "remarks": [
+    "This module consists of the different chemo drugs and goes through the adjuvant chemo cycle after surgery. "
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Set chemo counter"
+    },
+    "Cyclophosphamide": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1734919,
+          "display": "Cyclophosphamide 1000 MG Injection"
+        }
+      ],
+      "direct_transition": "Adjuvant Chemotherapy Procedure",
+      "assign_to_attribute": "chemoMed",
+      "reason": "breast_cancer_condition"
+    },
+    "Anthracyclines": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Doxorubicin",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Epirubicin",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Carboplatin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 597195,
+          "display": "Carboplatin 10 MG/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Adjuvant Chemotherapy Procedure",
+      "assign_to_attribute": "chemoMed",
+      "reason": "breast_cancer_condition"
+    },
+    "Taxanes": {
+      "type": "Simple",
+      "direct_transition": "Paclitaxel"
+    },
+    "5-fluorouracil": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1791701,
+          "display": "10 ML Fluorouracil 50 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Adjuvant Chemotherapy Procedure",
+      "assign_to_attribute": "chemoMed",
+      "reason": "breast_cancer_condition"
+    },
+    "Doxorubicin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1790099,
+          "display": "10 ML Doxorubicin Hydrochloride 2 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Adjuvant Chemotherapy Procedure",
+      "remarks": [
+        "- Doxorubicin (Adriamycin)",
+        "- Epriubicin (Ellence) ",
+        "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html"
+      ],
+      "assign_to_attribute": "chemoMed",
+      "reason": "breast_cancer_condition"
+    },
+    "Epirubicin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1732186,
+          "display": "100 ML Epirubicin Hydrochloride 2 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Adjuvant Chemotherapy Procedure",
+      "assign_to_attribute": "chemoMed",
+      "reason": "breast_cancer_condition"
+    },
+    "Paclitaxel": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 583214,
+          "display": "Paclitaxel 100 MG Injection"
+        }
+      ],
+      "direct_transition": "Adjuvant Chemotherapy Procedure",
+      "assign_to_attribute": "chemoMed",
+      "reason": "breast_cancer_condition"
+    },
+    "Adjuvant Chemotherapy Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 367336001,
+          "display": "Chemotherapy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 0,
+        "high": 2,
+        "unit": "hours"
+      },
+      "direct_transition": "End Current Adjuvant Chemo Medication"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "End Current Chemo Treatment": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Increment Chemo Counter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_chemoCount",
+            "operator": "<",
+            "value": 7
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Increment Chemo Counter": {
+      "type": "Counter",
+      "attribute": "breast_cancer_chemoCount",
+      "action": "increment",
+      "direct_transition": "Delay Until Next Cycle (3 Weeks)"
+    },
+    "Start New Cycle": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "Breast Cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Choose Chemo Drug"
+    },
+    "Set chemo counter": {
+      "type": "SetAttribute",
+      "attribute": "breast_cancer_chemoCount",
+      "value": 0,
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html",
+        "",
+        "Which chemotherapy drugs are used for breast cancer?",
+        "In most cases (especially as adjuvant or neoadjuvant treatment), chemo is most effective when combinations of drugs are used. Today, doctors use many different combinations, and it's not clear that any single combination is clearly the best.",
+        "",
+        "The most common drugs used for adjuvant and neoadjuvant chemo include:",
+        "Anthracyclines, such as doxorubicin (Adriamycin) and epirubicin (Ellence)",
+        "Taxanes, such as paclitaxel (Taxol) and docetaxel (Taxotere)",
+        "5-fluorouracil (5-FU)",
+        "Cyclophosphamide (Cytoxan)",
+        "Carboplatin (Paraplatin)",
+        "Most often, combinations of 2 or 3 of these drugs are used."
+      ],
+      "direct_transition": "Choose Chemo Drug"
+    },
+    "Delay Until Next Cycle (3 Weeks)": {
+      "type": "Delay",
+      "direct_transition": "Start New Cycle",
+      "range": {
+        "low": 19,
+        "high": 23,
+        "unit": "days"
+      }
+    },
+    "Choose Chemo Drug": {
+      "type": "Simple",
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html",
+        "",
+        "Which chemotherapy drugs are used for breast cancer?",
+        "In most cases (especially as adjuvant or neoadjuvant treatment), chemo is most effective when combinations of drugs are used. Today, doctors use many different combinations, and it's not clear that any single combination is clearly the best.",
+        "",
+        "The most common drugs used for adjuvant and neoadjuvant chemo include:",
+        "Anthracyclines, such as doxorubicin (Adriamycin) and epirubicin (Ellence)",
+        "Taxanes, such as paclitaxel (Taxol) and docetaxel (Taxotere)",
+        "5-fluorouracil (5-FU)",
+        "Cyclophosphamide (Cytoxan)",
+        "Carboplatin (Paraplatin)",
+        "Most often, combinations of 2 or 3 of these drugs are used."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Cyclophosphamide"
+          },
+          "distributions": [
+            {
+              "transition": "Cyclophosphamide",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Doxorubicin"
+          },
+          "distributions": [
+            {
+              "transition": "Doxorubicin",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Epirubicin"
+          },
+          "distributions": [
+            {
+              "transition": "Epirubicin",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Carboplatin",
+              "distribution": 1
+            }
+          ],
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Carboplatin"
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Paclitaxel"
+          },
+          "distributions": [
+            {
+              "transition": "Paclitaxel",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": ""
+          },
+          "distributions": [
+            {
+              "transition": "5-fluorouracil",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Cyclophosphamide",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Anthracyclines",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Carboplatin",
+              "distribution": 0.05
+            },
+            {
+              "transition": "Taxanes",
+              "distribution": 0.3
+            },
+            {
+              "transition": "5-fluorouracil",
+              "distribution": 0.05
+            }
+          ]
+        }
+      ]
+    },
+    "End Current Adjuvant Chemo Medication": {
+      "type": "MedicationEnd",
+      "direct_transition": "End Current Chemo Treatment",
+      "referenced_by_attribute": "chemoMed"
+    }
+  }
+}
