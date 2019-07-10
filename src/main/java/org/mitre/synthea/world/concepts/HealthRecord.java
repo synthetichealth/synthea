@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Payer;
@@ -261,27 +262,17 @@ public class HealthRecord {
     public Claim(Encounter encounter) {
       this.payer = person.getPayerAtTime(encounter.start);
       if (this.payer == null) {
-
-        // PRIORITY ISSUE: The Payer should never be null when making a claim.
-        // Has something to do with determineInsurance for the year being
-        // called after a claim is made.
-        // Happens ~twice per person
-        person.setPayerAtTime(encounter.start, Payer.noInsurance);
+        // Person hasn't checked to get insurance at this age yet. Have to check now.
+        Module.processHealthInsuranceModule(person, encounter.start);
         this.payer = person.getPayerAtTime(encounter.start);
-        person.getPayerAtTime(encounter.start).incrementCustomers(person);
-
-        // throw new RuntimeException("ERROR: Claim made with null Payer at age: "
-        //      + person.ageInYears(encounter.start) + " for encounter: "
-        //      + encounter + " in year " + Utilities.getYear(encounter.start));
       }
       
       this.payer.incrementEncountersCovered(encounter.type, Utilities.getYear(encounter.start));
       
       // Covered cost will be updated once the payer actually pays it.
-      coveredCost = 0.0;
-
+      this.coveredCost = 0.0;
       this.encounter = encounter;
-      items = new ArrayList<>();
+      this.items = new ArrayList<>();
     }
 
     /**
@@ -289,8 +280,6 @@ public class HealthRecord {
      */
     public Claim(Medication medication) {
       // baseCost = 255.0;
-
-      // Need some assistance with medications, etc.
       // this.payer = person.getInsurance(encounter.start);
       // double patientCopay = payer.determineCopay(encounter);
 

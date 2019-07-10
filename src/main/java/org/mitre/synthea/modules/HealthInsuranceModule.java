@@ -118,12 +118,11 @@ public class HealthInsuranceModule extends Module {
         // Randomly choose one of the remaining private insurances
         Payer newPayer = Payer.getPayerFinder().find(Payer.getAllPayers(), person, null, time);
         if (newPayer != null) {
-          // If Payer is null, then there is no insurance available to them and
-          // they'll recieve NO_INSURANCE.
           return newPayer;
         }
       }
     }
+    // There is no insurance available to this person.
     return Payer.noInsurance;
   }
 
