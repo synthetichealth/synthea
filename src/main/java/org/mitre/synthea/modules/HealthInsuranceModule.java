@@ -13,11 +13,11 @@ import org.mitre.synthea.world.agents.Person;
 public class HealthInsuranceModule extends Module {
   public static final String INSURANCE = "insurance";
 
-  public long mandateTime;
-  public double mandateOccupation;
-  public int privateIncomeThreshold;
-  public double povertyLevel;
-  public double medicaidLevel;
+  public static long mandateTime;
+  public static double mandateOccupation;
+  public static int privateIncomeThreshold;
+  public static double povertyLevel;
+  public static double medicaidLevel;
 
   /**
    * HealthInsuranceModule constructor.
@@ -71,50 +71,27 @@ public class HealthInsuranceModule extends Module {
    * @return the insurance that this person gets
    */
   private Payer determineInsurance(Person person, long time) {
-    int age = person.ageInYears(time);
-    boolean female = (person.attributes.get(Person.GENDER).equals("F"));
-    boolean pregnant = (person.attributes.containsKey("pregnant")
-        && (boolean) person.attributes.get("pregnant"));
-    boolean blind = (person.attributes.containsKey("blindness")
-        && (boolean) person.attributes.get("blindness"));
-    boolean esrd = (person.attributes.containsKey("end_stage_renal_disease")
-        && (boolean) person.attributes.get("end_stage_renal_disease"));
-    boolean sixtyFive = (age >= 65);
+
     double occupation = (Double) person.attributes.get(Person.OCCUPATION_LEVEL);
     int income = (Integer) person.attributes.get(Person.INCOME);
-    boolean medicaidIncomeEligible = (income <= medicaidLevel);
 
-    boolean medicare = false;
-    boolean medicaid = false;
-
-    // Possibly redundant because of the Payer.accepts method?
-    // Perhaps makes more sense to have Medicare/Medicaid accept the patient,
-    // not the other way around.
-    if (sixtyFive || esrd) {
-      medicare = true;
-    }
-    if ((female && pregnant) || blind || medicaidIncomeEligible) {
-      medicaid = true;
-    }
-
-    if (medicare && medicaid) {
+    // If Medicare/Medicaid will accept this person, then it takes priority.
+    if (Payer.getGovernmentPayer("Medicare").accepts(person, time)
+        && Payer.getGovernmentPayer("Medicaid").accepts(person, time)) {
       return Payer.getGovernmentPayer("Dual Eligible");
-    } else if (medicare) {
+    } else if (Payer.getGovernmentPayer("Medicare").accepts(person, time)) {
       return Payer.getGovernmentPayer("Medicare");
-    } else if (medicaid) {
+    } else if (Payer.getGovernmentPayer("Medicaid").accepts(person, time)) {
       return Payer.getGovernmentPayer("Medicaid");
     } else {
+      // If this person can afford private insurance, they will recieve it.
       if ((time >= mandateTime && occupation >= mandateOccupation)
           || (income >= privateIncomeThreshold)) {
-
-
-        // If they had private insurance the previous year, keep it.
-        if(person.ageInYears(time) > 0 && !person.getPayerAtAge(person.ageInYears(time) - 1).getOwnership().equalsIgnoreCase("Government")){
+        // If this person had private insurance the previous year, the will keep it.
+        if(person.ageInYears(time) > 0 && person.getPayerAtAge(person.ageInYears(time) - 1).getOwnership().equalsIgnoreCase("Private")){
           return person.getPayerAtAge(person.ageInYears(time) - 1);
         }
-
-        // TODO - They will decide to change it if the can no longer afford it.
-        
+        // TODO - If this person can no longer afford this Payer, the will try to get a new one.
         // Randomly choose one of the remaining private insurances
         Payer newPayer = Payer.getPayerFinder().find(Payer.getAllPayers(), person, null, time);
         if (newPayer != null) {

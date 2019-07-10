@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.behaviors.IPayerFinder;
 import org.mitre.synthea.world.agents.behaviors.PayerFinderBestRates;
 import org.mitre.synthea.world.agents.behaviors.PayerFinderRandom;
@@ -337,14 +338,6 @@ public class Payer {
     utilization.get(year, key).incrementAndGet();
   }
 
-  /** 
-   * Person chooses their insurance externally.
-   * May need this for when a payer starts making decisions about who to insure.
-   * May be useful for choosing different patients based on different policies
-   * (pre-existing conditions, etc).
-   * Every insurer will have a different set of guidelines for accepting
-   * a customer, where should these be kept? In the payer/plans csv table?
-   */
   /**
    * Will this payer accept the given person at the given time?.
    * 
@@ -357,7 +350,30 @@ public class Payer {
     // For now, assume that all payers accept all customers
     // EXCEPT Medicare/Medicaid
     if (this.getOwnership().equals("Government")) {
-      // Medicare/Medicaid Check
+
+      if (this.name.equals("Medicare")){
+        // This Payer is Medicare, return whether the person satisfies the conditions for acceptance.
+        int age = person.ageInYears(time);
+        boolean esrd = (person.attributes.containsKey("end_stage_renal_disease")
+          && (boolean) person.attributes.get("end_stage_renal_disease"));
+        boolean sixtyFive = (age >= 65);
+
+        boolean medicare = sixtyFive || esrd;
+        return medicare;
+
+      } else if (this.name.equals("Medicaid")){
+        // This Payer is Medicaid, return whether the person satisfies the conditions for acceptance.
+        boolean female = (person.attributes.get(Person.GENDER).equals("F"));
+        boolean pregnant = (person.attributes.containsKey("pregnant")
+            && (boolean) person.attributes.get("pregnant"));
+        boolean blind = (person.attributes.containsKey("blindness")
+            && (boolean) person.attributes.get("blindness"));
+        int income = (Integer) person.attributes.get(Person.INCOME);
+        boolean medicaidIncomeEligible = (income <= HealthInsuranceModule.medicaidLevel);
+
+        boolean medicaid = (female && pregnant) || blind || medicaidIncomeEligible;
+        return medicaid;
+      }
     }
     return true;
   }

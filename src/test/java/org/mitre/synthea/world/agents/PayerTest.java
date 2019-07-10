@@ -287,8 +287,7 @@ public class PayerTest {
         + randomPrivatePayer.determineCopay(null), 0.1);
   }
 
-  // TODO - (expected = RuntimeException.class)
-  @Test
+  @Test(expected = RuntimeException.class)
   public void determineCoveredCostWithNullPayerTest() {
 
     person = new Person(0L);
