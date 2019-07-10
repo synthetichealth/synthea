@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -17,6 +18,7 @@ public class EncounterModuleTest {
   private Location location;
   private Person person; 
   private EncounterModule module;
+  private Payer noInsurance;
   
   /**
    * Setup the Encounter Module Tests.
@@ -29,6 +31,9 @@ public class EncounterModuleTest {
     location.assignPoint(person, location.randomCityName(person.random));
     Provider.loadProviders(location);
     module = new EncounterModule();
+    // Ensure Person's Payer is not null.
+    noInsurance = new Payer();
+    person.setPayerAtTime(System.currentTimeMillis(), noInsurance);
   }
 
   @Test

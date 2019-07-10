@@ -12,7 +12,7 @@ public class PayerFinderTest {
   private Person person;
 
   /**
-   * Setup for Provider Finder Tests.
+   * Setup for Payer Finder Tests.
    */
   @Before
   public void setup() {
@@ -21,12 +21,18 @@ public class PayerFinderTest {
     Payer.clear();
     // Load in the .csv list of Payers for MA.
     Payer.loadPayers(new Location("Massachusetts", null));
-    // Get the first Payer in the list for testing.
   }
 
   @Test
   public void testRandom() {
     PayerFinderRandom finder = new PayerFinderRandom();
+    Payer payer = finder.find(Payer.getPrivatePayers(), person, null, 0L);
+    Assert.assertNotNull(payer);
+  }
+
+  @Test
+  public void testBestRates() {
+    PayerFinderBestRates finder = new PayerFinderBestRates();
     Payer payer = finder.find(Payer.getPrivatePayers(), person, null, 0L);
     Assert.assertNotNull(payer);
   }

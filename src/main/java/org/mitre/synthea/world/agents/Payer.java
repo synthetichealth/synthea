@@ -356,7 +356,7 @@ public class Payer {
 
     // For now, assume that all payers accept all customers
     // EXCEPT Medicare/Medicaid
-    if(this.getOwnership().equals("Government")){
+    if (this.getOwnership().equals("Government")) {
       // Medicare/Medicaid Check
     }
     return true;

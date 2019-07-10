@@ -48,14 +48,6 @@ public abstract class Exporter {
     } else {
       exportRecord(person, "", stopTime);
     }
-    try {
-      // Not sure if this should be called elsewhere.
-      // May be better to call this when the person dies, not at the end of the simulation.
-      // Although that could cause some thread entanglement of patients in the export file.
-      CSVExporter.getInstance().exportPayerTransitions(person, stopTime);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 
   /**
@@ -128,6 +120,7 @@ public abstract class Exporter {
     if (Boolean.parseBoolean(Config.get("exporter.csv.export"))) {
       try {
         CSVExporter.getInstance().export(person, stopTime);
+        CSVExporter.getInstance().exportPayerTransitions(person, stopTime);
       } catch (IOException e) {
         e.printStackTrace();
       }

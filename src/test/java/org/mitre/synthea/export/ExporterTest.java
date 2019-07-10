@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -37,6 +38,9 @@ public class ExporterTest {
     location.assignPoint(patient, location.randomCityName(patient.random));
     Provider.loadProviders(location);
     record = patient.record;
+    // Ensure Person's Payer is not null.
+    Payer noInsurance = new Payer();
+    patient.setPayerAtTime(time, noInsurance);
   }
 
   @Test public void test_export_filter_simple_cutoff() {

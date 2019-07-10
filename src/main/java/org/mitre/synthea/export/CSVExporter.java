@@ -291,7 +291,7 @@ public class CSVExporter {
 
     int year = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
 
-    for (Payer payer : person.getPayerHistory()){
+    for (Payer payer : person.getPayerHistory()) {
       payerTransition(person, payer, year);
       year++;
       //payerTransitions.flush();
@@ -882,12 +882,13 @@ public class CSVExporter {
     s.append(currentYear).append(",");
     if (payer == null) {
       if (currentYear >= 2019) {
-        // TODO - insurance is sometimes null in 2019 (final year of simulation, insurance not yet decided)
+        // TODO - insurance is sometimes null in 2019
+        // (final year of simulation, insurance not yet decided)
       } else {
         throw new RuntimeException("ERROR: " + person.attributes.get(Person.ID)
             + " had null insurance for the year " + currentYear);
       }
-    } else if (payer.getName().equals("NO_INSURANCE")){
+    } else if (payer.getName().equals("NO_INSURANCE")) {
       s.append(',');
       // no owner
       s.append(',');
@@ -898,8 +899,8 @@ public class CSVExporter {
       int personAge
           = currentYear - Utilities.getYear((long)person.attributes.get(Person.BIRTHDATE));
       // person.ageInYears(Utilities.convertTime("years", currentYear)) was acting strangely.
-      if (personAge < 18){
-        if ((person.getPayerAtAge(personAge).getName().equals("Medicaid"))){
+      if (personAge < 18) {
+        if ((person.getPayerAtAge(personAge).getName().equals("Medicaid"))) {
           s.append("Self").append(",");
         } else {
           s.append("Guardian").append(",");

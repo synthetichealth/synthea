@@ -37,6 +37,7 @@ public class PayerFinderBestRates implements IPayerFinder {
         // person has lots of pre-existing conditions, in which case a higher monthly
         // premium and lower copay would be more cost effective.
 
+        options.add(payer);
       }
     }
 

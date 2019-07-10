@@ -13,6 +13,8 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
+import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.geography.Location;
 
 public class CSVExporterTest {
   /**
@@ -28,6 +30,9 @@ public class CSVExporterTest {
     Config.set("exporter.csv.folder_per_run", "false");
     File tempOutputFolder = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
+
+    Payer.clear();
+    Payer.loadPayers(new Location("Massachusetts", null));
 
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);
