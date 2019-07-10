@@ -913,11 +913,11 @@ public class CSVExporter {
           s.append("Self").append(",");
         }
       } else {
+        // Unmarried and over 18.
         s.append("Self").append(",");
       }
       
     }
-
     s.append(NEWLINE);
     write(s.toString(), payerTransitions);
   }

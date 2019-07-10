@@ -53,7 +53,7 @@ public class HealthInsuranceModule extends Module {
       // Set the new payer at the current time
       person.setPayerAtTime(time, newPayer);
       // Update the Payer statistics
-      newPayer.incrementCustomers(person);
+      person.getPayerAtTime(time).incrementCustomers(person);
     }
 
     // Checks if person has paid their premium this month. If not, they pay it.
@@ -97,8 +97,6 @@ public class HealthInsuranceModule extends Module {
       medicaid = true;
     }
 
-    // Currently assumes that medicare/medicaid/dualeligible are always the first
-    // three entries of the list. Perhaps need to make a list of government payers?
     if (medicare && medicaid) {
       return Payer.getGovernmentPayer("Dual Eligible");
     } else if (medicare) {
@@ -108,7 +106,16 @@ public class HealthInsuranceModule extends Module {
     } else {
       if ((time >= mandateTime && occupation >= mandateOccupation)
           || (income >= privateIncomeThreshold)) {
-        // Randomly choose one of the remaining insurances
+
+
+        // If they had private insurance the previous year, keep it.
+        if(person.ageInYears(time) > 0 && !person.getPayerAtAge(person.ageInYears(time) - 1).getOwnership().equalsIgnoreCase("Government")){
+          return person.getPayerAtAge(person.ageInYears(time) - 1);
+        }
+
+        // TODO - They will decide to change it if the can no longer afford it.
+        
+        // Randomly choose one of the remaining private insurances
         Payer newPayer = Payer.getPayerFinder().find(Payer.getAllPayers(), person, null, time);
         if (newPayer != null) {
           // If Payer is null, then there is no insurance available to them and
@@ -117,8 +124,6 @@ public class HealthInsuranceModule extends Module {
         }
       }
     }
-
-    // No insurance. Return NO_INSURANCE payer with 0.0 for every field (coverage/copay/premium)
     return Payer.noInsurance;
   }
 
