@@ -91,6 +91,3 @@ weightloss:
 
   #https://www.cdc.gov/mmwr/volumes/67/wr/mm6741a10.htm?s_cid=mm6741a10_w
   start_prob: 0.493
-
-  # The lowest weight percentile that a pediatric patient can hit during active, successful weight management
-  best_pediatric_percentile: 0.6

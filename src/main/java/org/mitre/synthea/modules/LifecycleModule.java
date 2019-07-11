@@ -482,8 +482,8 @@ public final class LifecycleModule extends Module {
    * values to calculate the intermediate values.
    * Reference : https://www.cdc.gov/growthcharts/percentile_data_files.htm
    *
-   * Note: BMI values only available for ageInMonths 24 - 240 as BMI is
-   * typically useful in patients under 24 months.
+   * <p>Note: BMI values only available for ageInMonths 24 - 240 as BMI is
+   * not typically useful in patients under 24 months.</p>
    *
    * @param heightWeightOrBMI "height" | "weight" | "bmi"
    * @param gender "M" | "F"
@@ -510,6 +510,13 @@ public final class LifecycleModule extends Module {
     }
   }
 
+  /**
+   * Look up the percentile that a given BMI falls into based on gender and age in months.
+   * @param bmi the BMI to find the percentile for
+   * @param gender "M" | "F"
+   * @param ageInMonths 24 - 240
+   * @return 0 - 1.0
+   */
   public static double percentileForBMI(double bmi, String gender, int ageInMonths) {
     Map chart = (Map) growthChart.get("bmi");
     Map byGender = (Map) chart.get(gender);
@@ -518,8 +525,8 @@ public final class LifecycleModule extends Module {
     double l = Double.parseDouble((String) byAge.get("l"));
     double m = Double.parseDouble((String) byAge.get("m"));
     double s = Double.parseDouble((String) byAge.get("s"));
-    double z = zScoreForValue(bmi, l, m, s);
-    return zScoreToPercentile(z);
+    double z = zscoreForValue(bmi, l, m, s);
+    return zscoreToPercentile(z);
   }
 
   /**
@@ -551,14 +558,14 @@ public final class LifecycleModule extends Module {
   }
 
   /**
-   * Compute the z-score given a value and the LMS parameters
+   * Compute the z-score given a value and the LMS parameters.
    * @param value the actual value, for example a weight, height or BMI
    * @param l distribution's L parameter
    * @param m distribution's M parameter
    * @param s distribution's S parameter
    * @return z-score
    */
-  protected static double zScoreForValue(double value, double l, double m, double s) {
+  protected static double zscoreForValue(double value, double l, double m, double s) {
     if (l == 0) {
       return Math.log(value / m) / s;
     } else {
@@ -567,15 +574,15 @@ public final class LifecycleModule extends Module {
   }
 
   /**
-   * Convert a z-score into a percentile
-   * @param zScore
+   * Convert a z-score into a percentile.
+   * @param zscore The ZScore to find the percentile for
    * @return percentile - 0.0 - 1.0
    */
-  protected static double zScoreToPercentile(double zScore) {
+  protected static double zscoreToPercentile(double zscore) {
     double percentile = 0;
 
     NormalDistribution dist = new NormalDistribution();
-    percentile = dist.cumulativeProbability(zScore);
+    percentile = dist.cumulativeProbability(zscore);
     return percentile;
   }
 

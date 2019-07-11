@@ -43,9 +43,8 @@ public final class WeightLossModule extends Module {
   public static final double minLoss = (double) BiometricsConfig.get("min_loss", 0.07);
   public static final double maxLoss = (double) BiometricsConfig.get("max_loss", 0.1);
   public static final double maintenance = (double) BiometricsConfig.get("maintenance", 0.2);
-  public static final double minWeightPercentile =
-      (double) BiometricsConfig.get("best_pediatric_percentile", 0.6);
-  public static final double maxPedBMIChange = (double) BiometricsConfig.get("max_ped_bmi_change", 3.5);
+  public static final double maxPedBMIChange =
+      (double) BiometricsConfig.get("max_ped_bmi_change", 3.5);
 
 
   @Override
@@ -109,8 +108,8 @@ public final class WeightLossModule extends Module {
   }
 
   /**
-    Person stops weight management. The module will remove all weight management related
-    attributes.
+   * Person stops weight management. The module will remove all weight management related
+   * attributes.
    */
   public void stopWeightManagement(Person person) {
     person.attributes.remove(WEIGHT_MANAGEMENT_START);
@@ -123,8 +122,8 @@ public final class WeightLossModule extends Module {
   }
 
   /**
-    Determines whether the person is currently within their first year of active weight management
-    based on the WEIGHT_MANAGEMENT_START attribute.
+   * Determines whether the person is currently within their first year of active weight management
+   * based on the WEIGHT_MANAGEMENT_START attribute.
    */
   public boolean firstYearOfManagement(Person person, long time) {
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
@@ -132,8 +131,8 @@ public final class WeightLossModule extends Module {
   }
 
   /**
-    Determines whether the person is currently within their first five years of active weight
-    management based on the WEIGHT_MANAGEMENT_START attribute.
+   * Determines whether the person is currently within their first five years of active weight
+   * management based on the WEIGHT_MANAGEMENT_START attribute.
    */
   public boolean firstFiveYearsOfManagement(Person person, long time) {
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
@@ -141,9 +140,9 @@ public final class WeightLossModule extends Module {
   }
 
   /**
-    Weight loss is linear from the person's start weight to their target
-    weight (start - percentage loss) over the first year of active weight management.
-    Returns the new weight for the person.
+   * Weight loss is linear from the person's start weight to their target
+   * weight (start - percentage loss) over the first year of active weight management.
+   * Returns the new weight for the person.
    */
   public double adultWeightLoss(Person person, long time) {
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
@@ -155,8 +154,8 @@ public final class WeightLossModule extends Module {
   }
 
   /**
-    Weight regression is linear from a person's current weight to their original weight over the
-    second through fifth year of active weight management. Returns the new weight for the person.
+   * Weight regression is linear from a person's current weight to their original weight over the
+   * second through fifth year of active weight management. Returns the new weight for the person.
    */
   public double adultRegression(Person person, long time) {
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
@@ -169,17 +168,17 @@ public final class WeightLossModule extends Module {
   }
 
   /**
-    This will regress a pediatric patient back to their weight percentile. Weight gain will not
-    necessarily be linear. It will approach the weight based on percentile at age as a function
-    of time in the regression period.
+   * This will regress a pediatric patient back to their weight percentile. Weight gain will not
+   * necessarily be linear. It will approach the weight based on percentile at age as a function
+   * of time in the regression period.
    */
   public double pediatricRegression(Person person, long time) {
     return percentileRegression(person, time);
   }
 
   /**
-    Revert the person to their 240 month weight percentile following the same procedure as
-    pediatric regression.
+   * Revert the person to their 240 month weight percentile following the same procedure as
+   * pediatric regression.
    */
   public double transitionRegression(Person person, long time) {
     return percentileRegression(person, time);
@@ -198,13 +197,13 @@ public final class WeightLossModule extends Module {
     double lowestBMI = startBMI - bmiChange;
     int regressionEndAgeInMonths = startAgeInMonths + 60;
     if (regressionEndAgeInMonths > 240) {
-      regressionEndAgeInMonths = 240; // Fixing the end age at the end of the growth charts. We only need this to find
-                                      // the final BMI to move towards.
+      regressionEndAgeInMonths = 240; // Fixing the end age at the end of the growth charts.
+      // We only need this to find the final BMI to move towards.
     }
-    double endWeight = lookupGrowthChart("weight", gender, regressionEndAgeInMonths,
-        person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
-    double endHeight = lookupGrowthChart("height", gender, regressionEndAgeInMonths,
-        person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+    double endWeight = lookupGrowthChart("weight", gender,
+        regressionEndAgeInMonths, person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
+    double endHeight = lookupGrowthChart("height", gender,
+        regressionEndAgeInMonths, person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
     double endBMI = bmi(endHeight, endWeight);
     double percentOfTimeElapsed = (time - start - Utilities.convertTime("years", 1))
         / (double) Utilities.convertTime("years", 4);
@@ -219,15 +218,14 @@ public final class WeightLossModule extends Module {
   }
 
   /**
-    Patients under 20 will lose/manage weight as a change to their BMI. This change will be somewhere between
-    0 and max_ped_bmi_change as specified in biometrics.yml (3.5 be default). Even if the change in BMI is 0,
-    it may still result in weight loss as the patient may grow over the year.
-
-    This function will calculate the weight by taking WEIGHT_LOSS_BMI_CHANGE attribute and using a percentage
-    of that based on the amount of year that has elapsed since WEIGHT_MANAGEMENT_START. It will determine the
-    patient's BMI at the start of weight management and subtract the appropriate portion of BMI change. It will then
-    calculate the weight by reversing the BMI calculation with a height based on the patient's height in months for
-    the time passed in.
+   * Patients under 20 will lose/manage weight as a change to their BMI. This change will be
+   * somewhere between 0 and max_ped_bmi_change as specified in biometrics.yml (3.5 be default).
+   *
+   * <p>This function calculates the weight by taking WEIGHT_LOSS_BMI_CHANGE attribute and using a
+   * percentage of that based on the amount of year that has elapsed since WEIGHT_MANAGEMENT_START.
+   * It will determine the patient's BMI at the start of weight management and subtract the
+   * appropriate portion of BMI change. It will then calculate the weight by reversing the BMI
+   * calculation with a height based on the patient's height in months for the time passed in.</p>
    */
   public double pediatricWeightLoss(Person person, long time) {
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
@@ -251,9 +249,9 @@ public final class WeightLossModule extends Module {
   }
 
   /**
-    Starts active weight management for the person. It will select if a person adheres to their
-    weight management plan. If they do, it will select the percentage of their body weight that
-    they will lose and whether they will keep it off long term.
+   * Starts active weight management for the person. It will select if a person adheres to their
+   * weight management plan. If they do, it will select the percentage of their body weight that
+   * they will lose and whether they will keep it off long term.
    */
   public void startWeightManagement(Person person, long time) {
     double startWeight = person.getVitalSign(VitalSign.WEIGHT, time);
@@ -278,9 +276,9 @@ public final class WeightLossModule extends Module {
   }
 
   /**
-    Determines whether a person will start weight management. If they meet the weight
-    management thresholds, there is a 49.3% chance that they will start
-    weight management. This does not mean that they will adhere to the management plan.
+   * Determines whether a person will start weight management. If they meet the weight
+   * management thresholds, there is a 49.3% chance that they will start
+   * weight management. This does not mean that they will adhere to the management plan.
    */
   public boolean willStartWeightManagement(Person person, long time) {
     if (meetsWeightManagementThresholds(person, time)) {
@@ -290,20 +288,25 @@ public final class WeightLossModule extends Module {
   }
 
   /**
-    Determines whether a person meets the thresholds for starting weight management. With the default settings:
-    Children under 5 do not ever meet the threshold.
-    Patients from ages 5 to 20 meet the threshold if their BMI is at or over the 85th percentile for their age in months
-    Patients 20 and older meet the threshold if their BMI is 30 or over.
+   * Determines whether a person meets the thresholds for starting weight management.
+   * With the default settings:
+   * Children under 5 do not ever meet the threshold.
+   * Patients from ages 5 to 20 meet the threshold if their BMI is at or over the 85th percentile
+   *   for their age in months
+   * Patients 20 and older meet the threshold if their BMI is 30 or over.
    */
   public boolean meetsWeightManagementThresholds(Person person, long time) {
     int age = person.ageInYears(time);
     double bmi = person.getVitalSign(VitalSign.BMI, time);
-    double bmiAtPercentile = 500; // initializing to an impossibly high value if we somehow hit this later
+    double bmiAtPercentile = 500; // initializing to an impossibly high value
+    // if we somehow hit this later
     if (age >= 2 && age < 20) {
       int ageInMonths = person.ageInMonths(time);
       String gender = (String) person.attributes.get(Person.GENDER);
-      bmiAtPercentile = lookupGrowthChart("bmi", gender, ageInMonths, startPercentile);
+      bmiAtPercentile = lookupGrowthChart("bmi", gender,
+          ageInMonths, startPercentile);
     }
-    return (age >= managementStartAge && ((bmi >= startBMI && age >= 20) || (age < 20 && bmi >= bmiAtPercentile)));
+    return (age >= managementStartAge && ((bmi >= startBMI && age >= 20)
+        || (age < 20 && bmi >= bmiAtPercentile)));
   }
 }
