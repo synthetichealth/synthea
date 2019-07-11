@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
@@ -289,13 +290,20 @@ public class CSVExporter {
    */
   public void exportPayerTransitions(Person person, long stopTime) throws IOException {
 
+    // The year of the person's birth.
     int year = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
+
+    // A person's Payer may not yet have been decided in the final year of simulation.
+    if(person.alive(stopTime)){
+      // If a person's birthday during the year is after the date of the stop year, they will not recieve insurance for the final year.
+      HealthInsuranceModule.processHealthInsuranceModule(person, stopTime + Utilities.convertTime("years",1));
+    }
 
     for (Payer payer : person.getPayerHistory()) {
       payerTransition(person, payer, year);
       year++;
-      //payerTransitions.flush();
-      if (year > 2019 || !person.alive(Utilities.convertTime("years", year))) {
+      // payerTransitions.flush();
+      if (year > Utilities.getYear(stopTime) || !person.alive(Utilities.convertTime("years", year))) {
         break;
       }
     }
@@ -880,17 +888,14 @@ public class CSVExporter {
     StringBuilder s = new StringBuilder();
     s.append(person.attributes.get(Person.ID)).append(",");
     s.append(currentYear).append(",");
+
     if (payer == null) {
-      if (currentYear >= 2019) {
-        // TODO - insurance is sometimes null in 2019
-        // (final year of simulation, insurance not yet decided)
-      } else {
-        throw new RuntimeException("ERROR: " + person.attributes.get(Person.ID)
-            + " had null insurance for the year " + currentYear);
-      }
+      throw new RuntimeException("ERROR: " + person.attributes.get(Person.ID)
+          + " had null insurance for the year " + currentYear);
     } else if (payer.getName().equals("NO_INSURANCE")) {
+      // No insurance to display.
       s.append(',');
-      // no owner
+      // No owner to display.
       s.append(',');
     } else {
       s.append(payer.getResourceID()).append(',');

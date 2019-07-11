@@ -312,7 +312,12 @@ public class Payer {
     if (!customerUtilization.containsKey(person.attributes.get(Person.ID))) {
       customerUtilization.put((String) person.attributes.get(Person.ID), new AtomicInteger(0));
     }
-    customerUtilization.get(person.attributes.get(Person.ID)).incrementAndGet();
+    customerUtilization.
+    get(
+      person
+      .attributes
+      .get(Person.ID))
+      .incrementAndGet();
   }
 
   /**

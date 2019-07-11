@@ -201,6 +201,8 @@ public class Costs {
 
     // Update Payer
     payer.addCost(costToPayer);
+    // Update Person's costs
+    patient.addCost(costToPatient);
 
     return totalCost;
   }

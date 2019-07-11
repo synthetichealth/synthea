@@ -83,13 +83,13 @@ public class Person implements Serializable, QuadTreeData {
   private Map<String, Map<String, Integer>> symptoms;
   private Map<String, Map<String, Boolean>> symptomStatuses;
   public EventList events;
-  /** the active health record. */
+  /* The active health record. */
   public HealthRecord record;
   public Map<String, HealthRecord> records;
   public boolean hasMultipleRecords;
-  /** history of the currently active module. */
+  /** History of the currently active module. */
   public List<State> history;
-  /** person's insurance company. */
+  /* Person's Payer. */
   // Each entry in the payerHistory List corresponds to the insurance held at that
   // age
   public List<Payer> payerHistory;
@@ -535,12 +535,12 @@ public class Person implements Serializable, QuadTreeData {
   /**
    * Set's the person's payer history at the given time to the given payer.
    */
-  public void setPayerAtTime(long time, Payer currentPayer) {
+  public void setPayerAtTime(long time, Payer newPayer) {
     int age = this.ageInYears(time);
     if (payerHistory.get(age) != null) {
-      System.out.println("ERROR: Overwriting a person's insurance at age " + age + ".");
+      throw new RuntimeException("ERROR: Overwriting a person's insurance at age " + age);
     }
-    this.payerHistory.set(age, currentPayer);
+    this.payerHistory.set(age, newPayer);
   }
 
   /**
@@ -599,5 +599,14 @@ public class Person implements Serializable, QuadTreeData {
         }
       }
     }
+  }
+
+  /**
+   * Adds the cost of an encounter to this person.
+   * 
+   * @param costToPatient the cost, after insurance, to this patient.
+   */
+  public void addCost(double costToPatient) {
+    // TODO - Affect the person's costs/income/etc.
   }
 }
