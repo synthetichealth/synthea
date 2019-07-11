@@ -35,7 +35,7 @@ public class ExporterTest {
     patient = new Person(12345L);
     Location location = new Location("Massachusetts", null);
     location.assignPoint(patient, location.randomCityName(patient.random));
-    Provider.loadProviders(location);
+    Provider.loadProviders(location, 1L);
     record = patient.record;
   }
 
