@@ -104,7 +104,7 @@ public class ProviderTest {
     // coordinate. People in the same city have more or less the same
     // coordinate as emergency hospitals.
     Location capital = new Location("District of Columbia", null);
-    Provider.loadProviders(capital);
+    Provider.loadProviders(capital, 1L);
     Person person = new Person(0L);
     capital.assignPoint(person, capital.randomCityName(person.random));
     Provider provider = Provider.findService(person, EncounterType.EMERGENCY, 0);
