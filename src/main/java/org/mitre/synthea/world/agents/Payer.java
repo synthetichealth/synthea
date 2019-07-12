@@ -98,9 +98,9 @@ public class Payer {
         || !statesLoaded.contains(Location.getAbbreviation(location.state))
         || !statesLoaded.contains(Location.getStateName(location.state))) {
       try {
-        String insuranceCompanyFile
+        String payerFile
             = Config.get("generate.payers.insurance_companies.default_file");
-        loadPayers(location, insuranceCompanyFile);
+        loadPayers(location, payerFile);
 
         statesLoaded.add(location.state);
         statesLoaded.add(Location.getAbbreviation(location.state));
@@ -137,28 +137,27 @@ public class Payer {
       String ownership = row.get("ownership");
       String abbreviation = Location.getAbbreviation(location.state);
 
-      // for now, only allow one U.S. state at a time
+      // For now, only allow one U.S. state at a time.
+      // If the payer is government owned, then state does not matter.
       if (ownership.equalsIgnoreCase("government")
           || (location.state != null && location.state.equalsIgnoreCase(currState))
           || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
 
         Payer parsedPayer = csvLineToPayer(row);
 
-        // add any remaining columns we didn't explicitly map to first-class fields
-        // into the attributes map
+        // Add remaining columns we didn't map to first-class fields to attributes map.
         for (Map.Entry<String, String> e : row.entrySet()) {
           parsedPayer.attributes.put(e.getKey(), e.getValue());
         }
 
-        // Put the payer in their correct List/Map.
+        // Put the payer in their correct List/Map based on Government/Private.
         if (parsedPayer.ownership.equalsIgnoreCase("government")) {
-          // Government payers go in a map, allowing for easy retrieval of specific payers.
+          // Government payers go in a map, allowing for easy retrieval of specific gov payers.
           Payer.governmentPayerMap.put(parsedPayer.getName(), parsedPayer);
         } else {
           // Private payers go in a list.
           Payer.privatePayerList.add(parsedPayer);
         }
-
       }
     }
   }
@@ -171,8 +170,7 @@ public class Payer {
    */
   private static Payer csvLineToPayer(Map<String, String> line) {
     Payer newPayer = new Payer();
-    // Using .remove() instead of .get() so that we can iterate over the remaining
-    // keys later
+    // Uses .remove() instead of .get() so we can iterate over the remaining keys later.
     newPayer.id = line.remove("id");
     newPayer.name = line.remove("name");
     if (newPayer.name == null || newPayer.name.isEmpty()) {
@@ -221,17 +219,16 @@ public class Payer {
    */
   public static Payer getGovernmentPayer(String governmentPayerName) {
     Payer governmentPayer = Payer.governmentPayerMap.get(governmentPayerName);
-    if (governmentPayer != null) {
-      return Payer.governmentPayerMap.get(governmentPayerName);
-    } else {
+    if (governmentPayer == null) {
       throw new RuntimeException(
           "ERROR: Government Payer '" + governmentPayerName + "' does not exist.");
     }
+    return Payer.governmentPayerMap.get(governmentPayerName);
   }
 
   /**
    * Clear the list of loaded and cached Payers.
-   * Currently only used for testing.
+   * Currently only used in tests.
    */
   public static void clear() {
     governmentPayerMap.clear();
@@ -297,7 +294,7 @@ public class Payer {
 
   /**
    * Returns the Map of the payer's second class attributes.
-   * ADDRESS,ZIP,CITY
+   * Currently: ADDRESS,ZIP,CITY.
    */
   public Map<String, Object> getAttributes() {
     return attributes;
@@ -312,12 +309,7 @@ public class Payer {
     if (!customerUtilization.containsKey(person.attributes.get(Person.ID))) {
       customerUtilization.put((String) person.attributes.get(Person.ID), new AtomicInteger(0));
     }
-    customerUtilization.
-    get(
-      person
-      .attributes
-      .get(Person.ID))
-      .incrementAndGet();
+    customerUtilization.get(person.attributes.get(Person.ID)).incrementAndGet();
   }
 
   /**
@@ -352,22 +344,22 @@ public class Payer {
    */
   public boolean accepts(Person person, long time) {
 
-    // For now, assume that all payers accept all customers
-    // EXCEPT Medicare/Medicaid
+    // For now, assume that all payers accept all patients.
+    // EXCEPT Medicare/Medicaid.
     if (this.getOwnership().equals("Government")) {
 
-      if (this.name.equals("Medicare")){
-        // This Payer is Medicare, return whether the person satisfies the conditions for acceptance.
+      if (this.name.equals("Medicare")) {
+        // Return whether the person satisfies the conditions for Medicare acceptance.
         int age = person.ageInYears(time);
         boolean esrd = (person.attributes.containsKey("end_stage_renal_disease")
-          && (boolean) person.attributes.get("end_stage_renal_disease"));
+            && (boolean) person.attributes.get("end_stage_renal_disease"));
         boolean sixtyFive = (age >= 65);
 
         boolean medicare = sixtyFive || esrd;
         return medicare;
 
-      } else if (this.name.equals("Medicaid")){
-        // This Payer is Medicaid, return whether the person satisfies the conditions for acceptance.
+      } else if (this.name.equals("Medicaid")) {
+        // Return whether the person satisfies the conditions for Medicaid acceptance.
         boolean female = (person.attributes.get(Person.GENDER).equals("F"));
         boolean pregnant = (person.attributes.containsKey("pregnant")
             && (boolean) person.attributes.get("pregnant"));
@@ -380,6 +372,7 @@ public class Payer {
         return medicaid;
       }
     }
+    // The payer is not Medicare/Medicaid so they will accept any and every person. For now.
     return true;
   }
 
@@ -408,7 +401,7 @@ public class Payer {
   /**
    * Increases the total costs incurred by the payer by the given amount.
    * 
-   * @param costToPayer the cost of the current encounter, after the paid copay.
+   * @param costToPayer the cost of the current encounter, after the patient's copay.
    */
   public void addCost(double costToPayer) {
     this.costsCovered += costToPayer;
@@ -422,7 +415,7 @@ public class Payer {
   }
 
   /**
-   * Returns the number of Unique customers for this payer.
+   * Returns the number of Unique customers of this payer.
    */
   public int getUniqueCustomers() {
     return customerUtilization.size();
@@ -436,14 +429,14 @@ public class Payer {
   }
 
   /**
-   * Returns the amount of money the payer paid.
+   * Returns the amount of money the payer paid to providers.
    */
   public double getAmountPaid() {
     return this.costsCovered;
   }
 
   /**
-   * Returns the total amount recieved from patients.
+   * Returns the total amount of money recieved from patients.
    */
   public double getRevenue() {
     return this.revenue;
@@ -451,12 +444,12 @@ public class Payer {
 
   /**
    * Determines the copay owed for this Payer based on the type of encounter.
-   * May change from encounter to entry. Could give access to medications/procedure/etc.
+   * May change from encounter to entry to get access to medications/procedure/etc.
    */
   public double determineCopay(Encounter encounter) {
 
     // TODO - Currently just returns a default copay. May add different copays for
-    // each Encounter type.
+    // each Encounter type (AMB/EMERGENCY/MEDICATION/etc).
 
     double copay = this.defaultCopay;
     /*
@@ -477,6 +470,10 @@ public class Payer {
    * @param monthlyPremium the monthly premium to be paid, in dollars.
    */
   public void payPremium(double monthlyPremium) {
+    if (monthlyPremium != this.monthlyPremium) {
+      throw new RuntimeException("ERROR: Person paid a $" + monthlyPremium
+          + " monthly premium when they owed the payer $" + this.monthlyPremium);
+    }
     this.revenue += monthlyPremium;
   }
 

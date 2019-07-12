@@ -42,7 +42,7 @@ public class QualityOfLifeModule extends Module {
     int year = Utilities.getYear(time);
 
     if (!qalys.containsKey(year)) {
-      // double age = person.ageInYears(time) + 1;
+
       double[] values = calculate(person, time);
 
       dalys.put(year, values[0]);
@@ -51,16 +51,14 @@ public class QualityOfLifeModule extends Module {
       person.attributes.put("most-recent-daly", values[0]);
       person.attributes.put("most-recent-qaly", values[1]);
 
-      // Payer should never be null but is when the patient is 0.
-      // Probably has something to do with the order that QOL's &
-      // HealthInsurance's module.process happens to be called in?
+      // Add the person's QOLS to their Payer.
       if (person.getPayerAtTime(time) != null) {
         person.getPayerAtTime(time).addQOLS(values[2]);
+      } else {
+        // throw new RuntimeException("ERROR: Attempted to evaluate a Payer's QOLS when null.");
       }
 
-      // System.out.println(person.attributes.get(Person.NAME)
-      //     + " QALY at age " + person.ageInYears(time) + " was: "
-      //     + values[1] + " with a DALY of: " + values[0] + " and a QOLS of: " + values[2]);
+
 
     }
 
@@ -116,6 +114,7 @@ public class QualityOfLifeModule extends Module {
       // person.payer.addQALY(personAge/QALY) or .add(DALY)
       // At the end, payer averages this data out
 
+      // I've only ever seen this print statement reached one time.
       System.out.println("DEATH: "
           + person.attributes.get(Person.NAME) + ". Lost " + yll + " years.");
     }

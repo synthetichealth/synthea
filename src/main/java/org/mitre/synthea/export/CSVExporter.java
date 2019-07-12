@@ -294,17 +294,22 @@ public class CSVExporter {
     int year = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
 
     // A person's Payer may not yet have been decided in the final year of simulation.
-    if(person.alive(stopTime)){
-      // If a person's birthday during the year is after the date of the stop year, they will not recieve insurance for the final year.
-      HealthInsuranceModule.processHealthInsuranceModule(person, stopTime + Utilities.convertTime("years",1));
+    if (person.alive(stopTime)
+        && Utilities.getMonth(stopTime)
+        <= Utilities.getMonth((long) person.attributes.get(Person.BIRTHDATE))) {
+      // If a person's birth month is after the stop month, they don't have a payer for final year.
+      HealthInsuranceModule.processHealthInsuranceModule(person, stopTime
+          + Utilities.convertTime("months",
+          Utilities.getMonth((long) person.attributes.get(Person.BIRTHDATE)) + 1));
     }
 
     for (Payer payer : person.getPayerHistory()) {
       payerTransition(person, payer, year);
       year++;
       // payerTransitions.flush();
-      if (year > Utilities.getYear(stopTime) || !person.alive(Utilities.convertTime("years", year))) {
-        break;
+      if (year > Utilities.getYear(stopTime)
+          || !person.alive(Utilities.convertCalendarYearsToTime(year + 1))) {
+        break; 
       }
     }
   }
@@ -901,10 +906,9 @@ public class CSVExporter {
       s.append(payer.getResourceID()).append(',');
 
       // Ownership
-      int personAge
-          = currentYear - Utilities.getYear((long)person.attributes.get(Person.BIRTHDATE));
-      // person.ageInYears(Utilities.convertTime("years", currentYear)) was acting strangely.
+      int personAge = person.ageInYears(Utilities.convertCalendarYearsToTime(currentYear));
       if (personAge < 18) {
+        // If a person is a minor, their Gaurdian owns their health plan unless it is Medicaid.
         if ((person.getPayerAtAge(personAge).getName().equals("Medicaid"))) {
           s.append("Self").append(",");
         } else {
@@ -912,13 +916,14 @@ public class CSVExporter {
         }
       } else if ((person.attributes.containsKey(Person.MARITAL_STATUS))
           && person.attributes.get(Person.MARITAL_STATUS).equals("M")) {
+        // If a person is married, there is a 50% chance their spouse owns their insurance.
         if (person.rand(0.0, 1.0) < .5) {
           s.append("Spouse").append(",");
         } else {
           s.append("Self").append(",");
         }
       } else {
-        // Unmarried and over 18.
+        // If a person is unmarried and over 18, they own their insurance.
         s.append("Self").append(",");
       }
       

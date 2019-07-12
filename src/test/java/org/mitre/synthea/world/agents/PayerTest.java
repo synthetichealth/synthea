@@ -152,6 +152,17 @@ public class PayerTest {
     person.attributes.put(Person.INCOME, (int) medicaidLevel - 1);
     healthInsuranceModule.process(person, 0L);
     assertEquals("Medicaid", person.getPayerAtTime(0L).getName());
+
+    /* Third Test: Blindness */
+    person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.GENDER, "M");
+    person.attributes.put("blindness", true);
+    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    // Above Medicaid Income Level.
+    person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
+    healthInsuranceModule.process(person, 0L);
+    assertEquals("Medicaid", person.getPayerAtTime(0L).getName());
   }
 
   @Test

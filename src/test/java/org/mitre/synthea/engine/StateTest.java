@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -34,10 +35,12 @@ import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
 
+
 public class StateTest {
 
   private Person person;
   private long time;
+  private Payer noInsurance;
 
   /**
    * Setup State tests.
@@ -45,6 +48,8 @@ public class StateTest {
    */
   @Before
   public void setup() throws IOException {
+    time = System.currentTimeMillis();
+
     person = new Person(0L);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.FIRST_LANGUAGE, "spanish");
@@ -57,12 +62,13 @@ public class StateTest {
     person.setProvider(EncounterType.AMBULATORY, mock);
     person.setProvider(EncounterType.EMERGENCY, mock);
     person.setProvider(EncounterType.INPATIENT, mock);
-
+    
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
     person.events.create(birthTime, Event.BIRTH, "Generator.run", true);
 
-    time = System.currentTimeMillis();
+    noInsurance = new Payer();
+    person.setPayerAtTime(time, noInsurance);
   }
 
   protected static Module getModule(String name) {
@@ -1346,6 +1352,7 @@ public class StateTest {
       Module module = getModule("recursively_calls_submodules.json");
       while (!module.process(person, time)) {
         time += Utilities.convertTime("years", 1);
+        person.setPayerAtTime(time, noInsurance);
       }
 
       // main module has 5 states, with the callsubmodule counted 2x

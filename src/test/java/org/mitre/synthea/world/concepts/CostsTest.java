@@ -15,6 +15,7 @@ public class CostsTest {
 
   private Person person;
   private Payer noInsurance;
+  long time;
   
   /**
    * Setup for Costs Tests.
@@ -25,6 +26,8 @@ public class CostsTest {
     person = new Person(System.currentTimeMillis());
     noInsurance = new Payer();
     noInsurance.uuid = null;
+    time = 0L;
+    person.setPayerAtTime(time, noInsurance);
   }
   
   @Test public void testCostByKnownCode() {
@@ -33,7 +36,7 @@ public class CostsTest {
     double minCost = 8.5;
     double maxCost = 400;
     
-    Entry fakeMedication = person.record.medicationStart(0L, code.display);
+    Entry fakeMedication = person.record.medicationStart(time, code.display);
     fakeMedication.codes.add(code);
     
     double cost = Costs.calculateCost(fakeMedication, person, null, noInsurance);
@@ -51,7 +54,7 @@ public class CostsTest {
   
   @Test public void testCostByCodeWithDifferentSystem() {
     Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
-    Entry fakeProcedure = person.record.procedure(0L, code.display);
+    Entry fakeProcedure = person.record.procedure(time, code.display);
     fakeProcedure.codes.add(code);
     
     // it's the same number as above, but a procedure not a medication,
@@ -63,7 +66,7 @@ public class CostsTest {
   
   @Test public void testCostByUnknownCode() {
     Code code = new Code("RxNorm","111111111111111111","Exaplitol");
-    Entry fakeMedication = person.record.medicationStart(0L, code.display);
+    Entry fakeMedication = person.record.medicationStart(time, code.display);
     fakeMedication.codes.add(code);
     
     double cost = Costs.calculateCost(fakeMedication, person, null, noInsurance);

@@ -311,7 +311,7 @@ public class HealthRecord {
      * Determines how much the Payer paid for this Claim.
      */
     public double determineCoveredCost() {
-      if (this.payer == null){
+      if (this.payer == null) {
         throw new RuntimeException("ERROR: Attempted to determine covered cost with a null payer.");
       }
       this.coveredCost = (encounter.cost().doubleValue() - this.payer.determineCopay(encounter));

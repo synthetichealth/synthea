@@ -90,9 +90,9 @@ public class Person implements Serializable, QuadTreeData {
   /** History of the currently active module. */
   public List<State> history;
   /* Person's Payer. */
-  // Each entry in the payerHistory List corresponds to the insurance held at that
+  // Each entry in the payerHistory Array corresponds to the insurance held at that
   // age
-  public List<Payer> payerHistory;
+  public Payer[] payerHistory;
   // Tracks the months the Person has paid for insurance
   private int lastMonthPaid;
   private int lastYearPaid;
@@ -114,7 +114,7 @@ public class Person implements Serializable, QuadTreeData {
     }
     record = new HealthRecord(this);
     // 128 because it's a nice power of 2, and nobody will reach that age
-    payerHistory = Arrays.asList(new Payer[128]);
+    payerHistory = new Payer[128];
 
     lastMonthPaid = 0;
     lastYearPaid = 0;
@@ -528,40 +528,40 @@ public class Person implements Serializable, QuadTreeData {
   /**
    * Returns the list of this person's Payer history.
    */
-  public List<Payer> getPayerHistory() {
+  public Payer[] getPayerHistory() {
     return this.payerHistory;
   }
 
   /**
-   * Set's the person's payer history at the given time to the given payer.
+   * Sets the person's payer history at the given time to the given payer.
    */
   public void setPayerAtTime(long time, Payer newPayer) {
     int age = this.ageInYears(time);
-    if (payerHistory.get(age) != null) {
+    if (payerHistory[age] != null) {
       throw new RuntimeException("ERROR: Overwriting a person's insurance at age " + age);
     }
-    this.payerHistory.set(age, newPayer);
+    this.setPayerAtAge(age, newPayer);
   }
 
   /**
-   * Set's the person's payer history at the given age to the given payer.
+   * Sets the person's payer history at the given age to the given payer.
    */
   public void setPayerAtAge(int age, Payer randomPrivatePayer) {
-    this.payerHistory.set(age, randomPrivatePayer);
+    this.payerHistory[age] = randomPrivatePayer;
   }
 
   /**
    * Gets the person's Payer at the given time.
    */
   public Payer getPayerAtTime(long time) {
-    return this.payerHistory.get(this.ageInYears(time));
+    return this.payerHistory[this.ageInYears(time)];
   }
 
   /**
    * Gets the person's Payer at the given age.
    */
   public Payer getPayerAtAge(int personAge) {
-    return this.payerHistory.get(personAge);
+    return this.payerHistory[personAge];
   }
 
   /**

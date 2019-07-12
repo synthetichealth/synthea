@@ -251,16 +251,16 @@ public class DataStore {
       // Add coverage to database
       stmt = connection
           .prepareStatement("INSERT INTO COVERAGE (person_id, year, category) VALUES (?,?,?);");
-      List<Payer> payerHistory = (List<Payer>) p.getPayerHistory();
+      Payer[] payerHistory = p.getPayerHistory();
       long birthdate = (long) p.attributes.get(Person.BIRTHDATE);
       int birthYear = Utilities.getYear(birthdate);
-      for (int i = 0; i < payerHistory.size(); i++) {
-        if (payerHistory.get(i) == null) {
+      for (int i = 0; i < payerHistory.length; i++) {
+        if (payerHistory[i] == null) {
           break;
         } else {
           stmt.setString(1, personID);
           stmt.setInt(2, (birthYear + i));
-          stmt.setString(3, payerHistory.get(i).getOwnership());
+          stmt.setString(3, payerHistory[i].getOwnership());
           stmt.addBatch();
         }
       }

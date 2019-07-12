@@ -45,14 +45,15 @@ public class HealthInsuranceModule extends Module {
   @Override
   public boolean process(Person person, long time) {
     
-    // If the payerHistory at the given age is null, they must get insurance for the new year.
+    // If the payerHistory at the current age is null, they must get insurance for the new year.
     // Note: This means the person will check to change insurance yearly, just after their
     // birthday.
     if (person.getPayerAtTime(time) == null) {
+      // Determine the insurance for this person.
       Payer newPayer = determineInsurance(person, time);
-      // Set the new payer at the current time
+      // Set this new payer at the current time for the person.
       person.setPayerAtTime(time, newPayer);
-      // Update the Payer statistics
+      // Update the new Payer's statistics.
       person.getPayerAtTime(time).incrementCustomers(person);
     }
 
@@ -72,9 +73,6 @@ public class HealthInsuranceModule extends Module {
    */
   private Payer determineInsurance(Person person, long time) {
 
-    double occupation = (Double) person.attributes.get(Person.OCCUPATION_LEVEL);
-    int income = (Integer) person.attributes.get(Person.INCOME);
-
     // If Medicare/Medicaid will accept this person, then it takes priority.
     if (Payer.getGovernmentPayer("Medicare").accepts(person, time)
         && Payer.getGovernmentPayer("Medicaid").accepts(person, time)) {
@@ -84,14 +82,19 @@ public class HealthInsuranceModule extends Module {
     } else if (Payer.getGovernmentPayer("Medicaid").accepts(person, time)) {
       return Payer.getGovernmentPayer("Medicaid");
     } else {
+      // occupation determines whether their employer will pay for insurance after the mandate.
+      double occupation = (Double) person.attributes.get(Person.OCCUPATION_LEVEL);
+      // income determines whether a person can afford private insurance.
+      int income = (Integer) person.attributes.get(Person.INCOME);
       // If this person can afford private insurance, they will recieve it.
       if ((time >= mandateTime && occupation >= mandateOccupation)
           || (income >= privateIncomeThreshold)) {
-        // If this person had private insurance the previous year, the will keep it.
-        if(person.ageInYears(time) > 0 && person.getPayerAtAge(person.ageInYears(time) - 1).getOwnership().equalsIgnoreCase("Private")){
+        // TODO - If this person can no longer afford this Payer, they will try to get a new one.
+        // If this person had private insurance the previous year, they will keep it.
+        if (person.ageInYears(time) > 0 && person.getPayerAtAge(person.ageInYears(time) - 1)
+            .getOwnership().equalsIgnoreCase("Private")) {
           return person.getPayerAtAge(person.ageInYears(time) - 1);
         }
-        // TODO - If this person can no longer afford this Payer, the will try to get a new one.
         // Randomly choose one of the remaining private insurances
         Payer newPayer = Payer.getPayerFinder().find(Payer.getAllPayers(), person, null, time);
         if (newPayer != null) {
