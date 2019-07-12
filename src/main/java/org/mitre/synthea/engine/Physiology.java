@@ -178,9 +178,9 @@ public class Physiology {
     try {
       SBMLDocument doc = reader.readSBML(inputFile);
       System.out.println("Loaded SBML Document successfully!");
-      Model guytonModel = doc.getModel();
+      Model model = doc.getModel();
       try {
-        SBMLinterpreter interpreter = new SBMLinterpreter(guytonModel);
+        SBMLinterpreter interpreter = new SBMLinterpreter(model);
         System.out.println("Interpreted SBML Model successfully!");
         return interpreter;
 
@@ -309,20 +309,27 @@ public class Physiology {
     return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
   }
 
-  public static void main(String [] args) {
-
-    Physiology physio = new Physiology("circulation/Smith2004_CVS_human.xml", "runge_kutta", 0.01, 2);
+  public static void main(String [] args) throws DerivativeException {
     
-    try {
-      // Run with all default parameters
-      MultiTable results = physio.run(new HashMap());
-      Block mainBlock = results.getBlock(0);
-      int numRows = mainBlock.getRowCount();
-      for(String param : mainBlock.getIdentifiers()) {
-        System.out.println("Param: \"" + param + "\": " + mainBlock.getColumn(param).getValue(numRows-1));
-      }
-    } catch (DerivativeException ex) {
-      System.out.println("Error solving the differential equation");
-    }
+    Map<String,Double> inputs = new HashMap();
+//    inputs.put("R_sys", 1.814);
+    inputs.put("E_es_lvf", 1.734);
+
+    Physiology physio = new Physiology("circulation/Smith2004_CVS_human.xml", "runge_kutta", 0.01, 4);
+    MultiTable results = physio.run(inputs);
+    
+    Physiology.testModel(physio, Paths.get("circ_model_pathology_results.csv"), inputs);
+    
+//    try {
+//      // Run with all default parameters
+//      MultiTable results = physio.run(new HashMap());
+//      Block mainBlock = results.getBlock(0);
+//      int numRows = mainBlock.getRowCount();
+//      for(String param : mainBlock.getIdentifiers()) {
+//        System.out.println("Param: \"" + param + "\": " + mainBlock.getColumn(param).getValue(numRows-1));
+//      }
+//    } catch (DerivativeException ex) {
+//      System.out.println("Error solving the differential equation");
+//    }
   }
 }
