@@ -91,7 +91,7 @@ public class ProviderTest {
 
   @Test
   public void testNearestWellnessInState() {
-    Provider.loadProviders(location);
+    Provider.loadProviders(location, 1L);
     Person person = new Person(0L);
     location.assignPoint(person, location.randomCityName(person.random));
     Provider provider = Provider.findService(person, EncounterType.WELLNESS, 0);
@@ -149,7 +149,7 @@ public class ProviderTest {
 
   @Test
   public void testNearestWellnessInCity() {
-    Provider.loadProviders(city);
+    Provider.loadProviders(city, 1L);
     Person person = new Person(0L);
     city.assignPoint(person, city.randomCityName(person.random));
     Provider provider = Provider.findService(person, EncounterType.WELLNESS, 0);
