@@ -255,8 +255,8 @@ public class LogicTest {
   }
 
   @Test
-  public void test_logic_with_split_record_no_duplicates() {
-    Module module = StateTest.getModule("switching_provider.json");
+  public void test_logic_with_split_record_no_duplicates() throws Exception {
+    Module module = TestHelper.getFixture("switching_provider.json");
     Config.set("exporter.split_records.duplicate_data", "false");
     person.hasMultipleRecords = true;
     person.records = new ConcurrentHashMap<String, HealthRecord>();
@@ -275,8 +275,8 @@ public class LogicTest {
   }
 
   @Test
-  public void test_logic_with_split_record_with_duplicates() {
-    Module module = StateTest.getModule("switching_provider.json");
+  public void test_logic_with_split_record_with_duplicates() throws Exception {
+    Module module = TestHelper.getFixture("switching_provider.json");
     Config.set("exporter.split_records.duplicate_data", "true");
     person.hasMultipleRecords = true;
     person.records = new ConcurrentHashMap<String, HealthRecord>();
