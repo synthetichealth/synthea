@@ -531,8 +531,8 @@ public class FhirDstu2 {
         encounterResource
             .setServiceProvider(new ResourceReferenceDt(providerOrganization.getFullUrl()));
       }
-    } else { // no associated provider, patient goes to ambulatory provider
-      Provider provider = person.getProvider(EncounterType.AMBULATORY, encounter.start);
+    } else { // no associated provider, patient goes to wellness provider
+      Provider provider = person.getProvider(EncounterType.WELLNESS, encounter.start);
       String providerFullUrl = findProviderUrl(provider, bundle);
 
       if (providerFullUrl != null) {

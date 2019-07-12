@@ -28,7 +28,7 @@ public class DeathModule {
 
       Code causeOfDeath = (Code) person.attributes.get(Person.CAUSE_OF_DEATH);
 
-      Encounter deathCertification = person.encounterStart(time, EncounterType.AMBULATORY);
+      Encounter deathCertification = person.encounterStart(time, EncounterType.WELLNESS);
       deathCertification.codes.add(DEATH_CERTIFICATION);
 
       Observation codObs = person.record.observation(time, CAUSE_OF_DEATH_CODE.code, causeOfDeath);

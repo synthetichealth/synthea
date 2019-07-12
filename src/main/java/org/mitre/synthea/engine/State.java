@@ -840,7 +840,7 @@ public abstract class State implements Cloneable {
       Provider medicationProvider = person.getCurrentProvider(module.name);
       if (medicationProvider == null) {
         // no provider associated with encounter or medication order
-        medicationProvider = person.getProvider(EncounterType.AMBULATORY, time);
+        medicationProvider = person.getProvider(EncounterType.WELLNESS, time);
       }
 
       int year = Utilities.getYear(time);
@@ -1048,7 +1048,7 @@ public abstract class State implements Cloneable {
       if (person.getCurrentProvider(module.name) != null) {
         provider = person.getCurrentProvider(module.name);
       } else { // no provider associated with encounter or procedure
-        provider = person.getProvider(EncounterType.AMBULATORY, time);
+        provider = person.getProvider(EncounterType.WELLNESS, time);
       }
       int year = Utilities.getYear(time);
       provider.incrementProcedures(year);
@@ -1263,7 +1263,7 @@ public abstract class State implements Cloneable {
       if (person.getCurrentProvider(module.name) != null) {
         provider = person.getCurrentProvider(module.name);
       } else { // no provider associated with encounter or procedure
-        provider = person.getProvider(EncounterType.AMBULATORY, time);
+        provider = person.getProvider(EncounterType.WELLNESS, time);
       }
       int year = Utilities.getYear(time);
       provider.incrementLabs(year);

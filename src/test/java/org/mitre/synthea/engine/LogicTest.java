@@ -48,8 +48,11 @@ public class LogicTest {
   public void setup() throws IOException {
     person = new Person(0L);
     Provider mock = Mockito.mock(Provider.class);
-    mock.uuid = "Mock-Ambulatory";
-    person.setProvider(EncounterType.AMBULATORY, mock);
+    mock.uuid = "Mock-Provider";
+    for (EncounterType type : EncounterType.values()) {
+      person.setProvider(type, mock);
+    }
+
     mock = Mockito.mock(Provider.class);
     mock.uuid = "Mock-Emergency";
     person.setProvider(EncounterType.EMERGENCY, mock);
