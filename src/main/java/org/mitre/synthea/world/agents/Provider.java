@@ -116,10 +116,6 @@ public class Provider implements QuadTreeData {
     return attributes;
   }
 
-  public DirectPosition2D getCoordinates() {
-    return coordinates;
-  }
-
   public boolean hasService(EncounterType service) {
     return servicesProvided.contains(service);
   }
@@ -405,6 +401,7 @@ public class Provider implements QuadTreeData {
       clinician.attributes.put(Person.CITY, provider.city);
       clinician.attributes.put(Person.STATE, provider.state);
       clinician.attributes.put(Person.ZIP, provider.zip);
+      clinician.attributes.put(Person.COORDINATE, provider.getLatLon());
 
       String firstName = LifecycleModule.fakeFirstName(gender, language, clinician.random);
       String lastName = LifecycleModule.fakeLastName(language, clinician.random);
