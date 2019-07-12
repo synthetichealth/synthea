@@ -28,7 +28,7 @@ import org.sbml.jsbml.validator.ModelOverdeterminedException;
 import org.sbml.jsbml.xml.stax.SBMLReader;
 import org.simulator.math.odes.AdamsBashforthSolver;
 import org.simulator.math.odes.AdamsMoultonSolver;
-import org.simulator.math.odes.DESSolver;
+import org.simulator.math.odes.AbstractDESSolver;
 import org.simulator.math.odes.DormandPrince54Solver;
 import org.simulator.math.odes.DormandPrince853Solver;
 import org.simulator.math.odes.EulerMethod;
@@ -46,13 +46,14 @@ import org.simulator.sbml.SBMLinterpreter;
 public class Physiology {
 
   private static final Map<String, Class> SOLVER_CLASSES;
-  private static final Map<String, DESSolver> SOLVERS = new HashMap();
+  private static final Map<String, AbstractDESSolver> SOLVERS = new HashMap();
   private static Path sbmlPath;
   private final SBMLinterpreter interpreter;
   private final String[] modelFields;
   private final double[] modelDefaults;
-  private final DESSolver solver;
+  private final AbstractDESSolver solver;
   private final double simDuration;
+  private final double leadTime;
 
 
   static {
@@ -81,7 +82,7 @@ public class Physiology {
     }
     
   }
-
+  
   /**
    * Physiology constructor.
    * @param modelPath Path to the SBML file to load relative to resources/physiology
@@ -90,6 +91,18 @@ public class Physiology {
    * @param simDuration Amount of time to simulate
    */
   public Physiology(String modelPath, String solverName, double stepSize, double simDuration) {
+    this(modelPath, solverName, stepSize, simDuration, 0);
+  }
+
+  /**
+   * Physiology constructor.
+   * @param modelPath Path to the SBML file to load relative to resources/physiology
+   * @param solverName Name of the solver to use
+   * @param stepSize Time step for the simulation
+   * @param simDuration Amount of time to simulate
+   * @param leadTime Amount of time to run the simulation before capturing results
+   */
+  public Physiology(String modelPath, String solverName, double stepSize, double simDuration, double leadTime) {
     Path modelFilepath = Paths.get(sbmlPath.toString(), modelPath);
     interpreter = getInterpreter(modelFilepath.toString());
     modelFields = interpreter.getIdentifiers();
@@ -97,6 +110,7 @@ public class Physiology {
     solver = getSolver(solverName);
     solver.setStepSize(stepSize);
     this.simDuration = simDuration;
+    this.leadTime = leadTime;
   }
   
   /**
@@ -114,6 +128,8 @@ public class Physiology {
    */
   public MultiTable run(Map<String, Double> inputs) throws DerivativeException {
     
+    solver.reset();
+    
     // Create a copy of the default parameters to use
     double[] params = Arrays.copyOf(modelDefaults, modelDefaults.length);
 
@@ -126,7 +142,7 @@ public class Physiology {
     }
     
     // Solve the ODE for the specified duration and return the results
-    return solver.solve(interpreter, params, 0, simDuration);
+    return solver.solve(interpreter, params, -leadTime, simDuration);
 
   }
 
@@ -147,7 +163,7 @@ public class Physiology {
     return SOLVER_CLASSES.keySet();
   }
 
-  private static DESSolver getSolver(String solverName) throws RuntimeException {
+  private static AbstractDESSolver getSolver(String solverName) throws RuntimeException {
 
     // If the provided solver name doesn't exist in our map, it's an invalid
     // value that the programmer needs to correct.
@@ -162,7 +178,7 @@ public class Physiology {
 
     // It hasn't been instantiated yet so we do so now
     try {
-      SOLVERS.put(solverName, (DESSolver) SOLVER_CLASSES.get(solverName).newInstance());
+      SOLVERS.put(solverName, (AbstractDESSolver) SOLVER_CLASSES.get(solverName).newInstance());
     } catch (InstantiationException | IllegalAccessException ex) {
       Logger.getLogger(Physiology.class.getName()).log(Level.SEVERE, null, ex);
       throw new RuntimeException("Unable to instantiate " + solverName + " solver");
@@ -250,7 +266,7 @@ public class Physiology {
   private static void getPerfStats(Path modelPath, String solverName) {
     SBMLinterpreter interpreter = getInterpreter(modelPath.toString());
     System.out.println("Interpreted SBML Model successfully!");
-    DESSolver solver = getSolver(solverName);
+    AbstractDESSolver solver = getSolver(solverName);
 //    solver.setStepSize(stepSize);
     try {
       double[] defaultValues = interpreter.getInitialValues();
@@ -315,7 +331,7 @@ public class Physiology {
 //    inputs.put("R_sys", 1.814);
     inputs.put("E_es_lvf", 1.734);
 
-    Physiology physio = new Physiology("circulation/Smith2004_CVS_human.xml", "runge_kutta", 0.01, 4);
+    Physiology physio = new Physiology("circulation/Smith2004_CVS_human.xml", "runge_kutta", 0.01, 4, 1.0);
     MultiTable results = physio.run(inputs);
     
     Physiology.testModel(physio, Paths.get("circ_model_pathology_results.csv"), inputs);
