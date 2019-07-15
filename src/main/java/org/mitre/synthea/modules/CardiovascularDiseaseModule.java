@@ -738,7 +738,7 @@ public final class CardiovascularDiseaseModule extends Module {
           Provider provider = person.getCurrentProvider("Cardiovascular Disease Module");
           // no provider associated with encounter or procedure
           if (provider == null) {
-            provider = person.getProvider(EncounterType.AMBULATORY, time);
+            provider = person.getProvider(EncounterType.WELLNESS, time);
           }
           provider.incrementPrescriptions(year);
         }

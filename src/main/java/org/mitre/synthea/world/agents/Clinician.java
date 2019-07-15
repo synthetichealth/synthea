@@ -37,17 +37,18 @@ public class Clinician implements Serializable, QuadTreeData {
   
   
   public final Random random;
+  public final long identifier;
   public final String uuid;
-  public final long seed;
   public Map<String, Object> attributes;
   private ArrayList<String> servicesProvided;
   private int encounters;
   public long populationSeed;
   
-  public Clinician(long seed) {
-    this.uuid = UUID.randomUUID().toString();
-    this.seed = seed; // keep track of seed so it can be exported later
-    random = new Random(seed);
+  public Clinician(long clinicianSeed, Random clinicianRand, long identifier) {
+    
+    this.uuid =  new UUID(clinicianSeed, identifier).toString();    
+    this.random = clinicianRand;
+    this.identifier = identifier;
     attributes = new ConcurrentHashMap<String, Object>();
     servicesProvided = new ArrayList<String>();
   }
@@ -92,27 +93,39 @@ public class Clinician implements Serializable, QuadTreeData {
     return random.nextInt(bound);
   }
   
+  /*
+   * (non-Javadoc)
+   * @see org.apache.sis.index.tree.QuadTreeData#getX()
+   */
   @Override
   public double getX() {
-    // TODO Auto-generated method stub
-    return 0;
+    return getLatLon().getX();
   }
-  
+
+  /*
+   * (non-Javadoc)
+   * @see org.apache.sis.index.tree.QuadTreeData#getY()
+   */
   @Override
   public double getY() {
-    // TODO Auto-generated method stub
-    return 0;
+    return getLatLon().getY();
   }
-  
+
+  /*
+   * (non-Javadoc)
+   * @see org.apache.sis.index.tree.QuadTreeData#getLatLon()
+   */
   @Override
   public DirectPosition2D getLatLon() {
-    // TODO Auto-generated method stub
-    return null;
+    return (DirectPosition2D) attributes.get(Person.COORDINATE);
   }
-  
+
+  /*
+   * (non-Javadoc)
+   * @see org.apache.sis.index.tree.QuadTreeData#getFileName()
+   */
   @Override
   public String getFileName() {
-    // TODO Auto-generated method stub
     return null;
   }
 }

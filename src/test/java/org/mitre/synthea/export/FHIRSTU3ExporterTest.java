@@ -51,6 +51,7 @@ public class FHIRSTU3ExporterTest {
 
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);
+    generator.options.overflow = false;
     for (int i = 0; i < numberOfPeople; i++) {
       int x = validationErrors.size();
       TestHelper.exportOff();

@@ -115,7 +115,7 @@ public final class EncounterModule extends Module {
         person.addressLargestSymptom();
         Encounter encounter = person.encounterStart(time, EncounterType.WELLNESS);
         encounter.name = "Encounter Module Symptom Driven";
-        Provider prov = person.getProvider(EncounterType.AMBULATORY, time);
+        Provider prov = person.getProvider(EncounterType.WELLNESS, time);
         prov.incrementEncounters(EncounterType.WELLNESS, year);
         encounter.provider = prov;
         encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 

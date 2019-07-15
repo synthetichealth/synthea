@@ -17,6 +17,8 @@ import org.mitre.synthea.engine.Transition.ConditionalTransitionOption;
 import org.mitre.synthea.engine.Transition.DirectTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransitionOption;
+import org.mitre.synthea.engine.Transition.LookupTableTransition;
+import org.mitre.synthea.engine.Transition.LookupTableTransitionOption;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.RandomValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
@@ -45,6 +47,7 @@ public abstract class State implements Cloneable {
   private List<ConditionalTransitionOption> conditionalTransition;
   private List<DistributedTransitionOption> distributedTransition;
   private List<ComplexTransitionOption> complexTransition;
+  private List<LookupTableTransitionOption> lookupTableTransition;
   public List<String> remarks;
 
   protected void initialize(Module module, String name, JsonObject definition) {
@@ -59,6 +62,8 @@ public abstract class State implements Cloneable {
       this.transition = new ConditionalTransition(conditionalTransition);
     } else if (complexTransition != null) {
       this.transition = new ComplexTransition(complexTransition);
+    } else if (lookupTableTransition != null) {
+      this.transition = new LookupTableTransition(lookupTableTransition);
     } else if (!(this instanceof Terminal)) {
       throw new RuntimeException("State `" + name + "` has no transition.\n");
     }
@@ -780,13 +785,15 @@ public abstract class State implements Cloneable {
    * prescribed. MedicationOrder states may only be processed during an Encounter, and so must occur
    * after the target Encounter state and before the EncounterEnd. See the Encounter section above
    * for more details. The MedicationOrder state supports identifying a previous ConditionOnset or
-   * the name of an attribute as the reason for the prescription.
+   * the name of an attribute as the reason for the prescription. Adding a 'administration' field
+   * allows for the MedicationOrder to also export a MedicationAdministration into the exported FHIR record.
    */
   public static class MedicationOrder extends State {
     private List<Code> codes;
     private String reason;
     private JsonObject prescription; // TODO make this a Component
     private String assignToAttribute;
+    private boolean administration;
 
     @Override
     public MedicationOrder clone() {
@@ -795,6 +802,7 @@ public abstract class State implements Cloneable {
       clone.reason = reason;
       clone.prescription = prescription;
       clone.assignToAttribute = assignToAttribute;
+      clone.administration = administration;
       return clone;
     }
 
@@ -823,6 +831,7 @@ public abstract class State implements Cloneable {
       }
 
       medication.prescriptionDetails = prescription;
+      medication.administration = administration;
 
       if (assignToAttribute != null) {
         person.attributes.put(assignToAttribute, medication);
@@ -831,7 +840,7 @@ public abstract class State implements Cloneable {
       Provider medicationProvider = person.getCurrentProvider(module.name);
       if (medicationProvider == null) {
         // no provider associated with encounter or medication order
-        medicationProvider = person.getProvider(EncounterType.AMBULATORY, time);
+        medicationProvider = person.getProvider(EncounterType.WELLNESS, time);
       }
 
       int year = Utilities.getYear(time);
@@ -1039,7 +1048,7 @@ public abstract class State implements Cloneable {
       if (person.getCurrentProvider(module.name) != null) {
         provider = person.getCurrentProvider(module.name);
       } else { // no provider associated with encounter or procedure
-        provider = person.getProvider(EncounterType.AMBULATORY, time);
+        provider = person.getProvider(EncounterType.WELLNESS, time);
       }
       int year = Utilities.getYear(time);
       provider.incrementProcedures(year);
@@ -1254,7 +1263,7 @@ public abstract class State implements Cloneable {
       if (person.getCurrentProvider(module.name) != null) {
         provider = person.getCurrentProvider(module.name);
       } else { // no provider associated with encounter or procedure
-        provider = person.getProvider(EncounterType.AMBULATORY, time);
+        provider = person.getProvider(EncounterType.WELLNESS, time);
       }
       int year = Utilities.getYear(time);
       provider.incrementLabs(year);

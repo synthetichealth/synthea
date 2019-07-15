@@ -590,8 +590,16 @@ public class Graphviz {
             + logic.get("operator").getAsString() + " " + value + NEWLINE;
       case "Observation":
         String obs = findReferencedType(logic);
+        String valueString = "";
+        if (logic.has("value")) {
+          valueString = logic.get("value").getAsString();
+        } else if (logic.has("value_code")) {
+          JsonObject valueCode = logic.get("value_code").getAsJsonObject();
+          valueString = "'" + valueCode.get("system").getAsString() + " ["
+            + valueCode.get("code").getAsString() + "]: " + valueCode.get("display").getAsString() + "'";
+        }
         return "Observation " + obs + " \\" + logic.get("operator").getAsString() + " "
-            + logic.get("value").getAsString() + NEWLINE;
+            + valueString + NEWLINE;
       case "Vital Sign":
         return "Vital Sign " + logic.get("vital_sign").getAsString() + " \\"
             + logic.get("operator").getAsString() + " " + logic.get("value").getAsString() + "}"

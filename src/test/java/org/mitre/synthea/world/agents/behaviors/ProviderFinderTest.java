@@ -30,7 +30,7 @@ public class ProviderFinderTest {
     for (int i = 1; i <= 3; i += 1) {
       Provider provider = new Provider();
       provider.id = i + "";
-      provider.getCoordinates().setLocation(i, i);
+      provider.getLatLon().setLocation(i, i);
       provider.quality = i;
       provider.servicesProvided.add(EncounterType.WELLNESS);
       providers.add(provider);
