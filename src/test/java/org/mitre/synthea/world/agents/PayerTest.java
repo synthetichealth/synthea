@@ -38,6 +38,8 @@ public class PayerTest {
     // Clear any Payers that may have already been statically loaded.
     Payer.clear();
     // Load in the .csv list of Payers for MA.
+    Config.set("generate.payers.insurance_companies.default_file",
+        "generic/payers/test_payers.csv");
     Payer.loadPayers(new Location("Massachusetts", null));
     // Get the first Payer in the list for testing.
     randomPrivatePayer = Payer.getPrivatePayers().get(0);
@@ -103,11 +105,12 @@ public class PayerTest {
   @Test
   public void recieveMedicareTests() {
 
-    /* First Test: Older than 65 */
+    /* Older than 65 */
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    person.attributes.put("end_stage_renal_disease", false);
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
     // At time 2100000000000L, the person is 65 and qualifies for Medicare.
@@ -115,7 +118,7 @@ public class PayerTest {
     assertEquals("Medicare", person.getPayerAtTime(2100000000000L).getName());
     assertTrue(person.getPayerAtTime(2100000000000L).accepts(person, 2100000000000L));
 
-    /* Second Test: ESRD */
+    /* ESRD */
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "M");
@@ -130,7 +133,7 @@ public class PayerTest {
   @Test
   public void recieveMedicaidTests() {
 
-    /* First Test: Pregnancy */
+    /* Pregnancy */
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "F");
@@ -143,17 +146,18 @@ public class PayerTest {
     assertTrue(person.getPayerAtTime(0L).accepts(person, 0L));
 
 
-    /* Second Test: Poverty Level */
+    /* Poverty Level */
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    person.attributes.put("blindness", false);
     // Below Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel - 1);
     healthInsuranceModule.process(person, 0L);
     assertEquals("Medicaid", person.getPayerAtTime(0L).getName());
 
-    /* Third Test: Blindness */
+    /* Blindness */
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "M");
@@ -185,7 +189,7 @@ public class PayerTest {
   @Test
   public void recieveNoInsuranceTests() {
 
-    /* First Test: Pre 2006 Mandate */
+    /* Pre 2006 Mandate */
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, mandateTime - 10000);
     person.attributes.put(Person.GENDER, "F");
@@ -221,6 +225,15 @@ public class PayerTest {
     assertNotEquals("NO_INSURANCE", person.getPayerAtTime(0L).getName());
   }
 
+  @Test(expected = RuntimeException.class)
+  public void overwriteInsuranceTest() {
+
+    person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.setPayerAtTime(0L, randomPrivatePayer);
+    person.setPayerAtTime(0L, randomPrivatePayer);
+  }
+
   @Test
   public void payerAtAgeTest() {
 
@@ -254,8 +267,37 @@ public class PayerTest {
     assertEquals(numGovernmentPayers + numPrivatePayers, Payer.getAllPayers().size());
   }
 
+  @Test(expected = RuntimeException.class)
+  public void nullPayerNameTest() {
+    Payer.clear();
+    Config.set("generate.payers.insurance_companies.default_file",
+        "generic/payers/bad_test_payers.csv");
+    Payer.loadPayers(new Location("Massachusetts", null));
+    Payer.clear();
+  }
+
   @Test
   public void monthlyPremiumPaymentTest() {
+
+    person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.ID, UUID.randomUUID().toString());
+    // Predetermine person's Payer.
+    setPayerForYears(person, 0, 64);
+    // Pay premium for 65 years.
+    for (int year = 0; year <= 64; year++) {
+      for (int month = 0; month < 24; month++) {
+        // Person checks to pay twice a month. Only needs to pay once a month.
+        healthInsuranceModule.process(person, Utilities.convertCalendarYearsToTime(year)
+            + Utilities.convertTime("months", month / 2));
+      }
+    }
+    int totalMonthlyPremiumsOwed = (int) (randomPrivatePayer.getMonthlyPremium() * 12 * 65);
+    assertEquals(totalMonthlyPremiumsOwed, randomPrivatePayer.getRevenue(), 0.1);
+  }
+
+  @Test
+  public void monthlyPremiumIncorrectPaymentTest() {
 
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);

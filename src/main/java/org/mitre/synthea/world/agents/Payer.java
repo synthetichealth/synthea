@@ -76,16 +76,17 @@ public class Payer {
    * Create a new Payer with no information.
    */
   public Payer() {
-    uuid = UUID.randomUUID().toString();
-    attributes = new LinkedTreeMap<>();
-    utilization = HashBasedTable.create();
-    customerUtilization = new HashMap<String, AtomicInteger>();
-    costsCovered = 0.0;
-    revenue = 0.0;
-    monthlyPremium = 0.0;
-    // deductible = 0.0;
-    defaultCopay = 0.0;
-    qualityOfLifeStatistics = new double[] { 0.0, 0.0 };
+    this.uuid = UUID.randomUUID().toString();
+    this.attributes = new LinkedTreeMap<>();
+    this.utilization = HashBasedTable.create();
+    this.customerUtilization = new HashMap<String, AtomicInteger>();
+    this.ownership = "";
+    this.costsCovered = 0.0;
+    this.revenue = 0.0;
+    this.monthlyPremium = 0.0;
+    // this.deductible = 0.0;
+    this.defaultCopay = 0.0;
+    this.qualityOfLifeStatistics = new double[] { 0.0, 0.0 };
   }
 
   /**
@@ -120,7 +121,7 @@ public class Payer {
    * @param fileName Location of the file, relative to src/main/resources
    * @throws IOException if the file cannot be read
    */
-  public static void loadPayers(Location location, String fileName) throws IOException {
+  private static void loadPayers(Location location, String fileName) throws IOException {
 
     // No Insurance object
     noInsurance = new Payer();
@@ -169,12 +170,13 @@ public class Payer {
    * @return the new payer.
    */
   private static Payer csvLineToPayer(Map<String, String> line) {
+
     Payer newPayer = new Payer();
     // Uses .remove() instead of .get() so we can iterate over the remaining keys later.
     newPayer.id = line.remove("id");
     newPayer.name = line.remove("name");
     if (newPayer.name == null || newPayer.name.isEmpty()) {
-      newPayer.name = newPayer.id;
+      throw new RuntimeException("ERROR: Payer must have a non-null name.");
     }
     String base = newPayer.id + newPayer.name;
     newPayer.uuid = UUID.nameUUIDFromBytes(base.getBytes()).toString();
@@ -234,6 +236,7 @@ public class Payer {
     governmentPayerMap.clear();
     privatePayerList.clear();
     statesLoaded.clear();
+    payerFinder = buildPayerFinder();
   }
 
   /**
@@ -470,10 +473,6 @@ public class Payer {
    * @param monthlyPremium the monthly premium to be paid, in dollars.
    */
   public void payPremium(double monthlyPremium) {
-    if (monthlyPremium != this.monthlyPremium) {
-      throw new RuntimeException("ERROR: Person paid a $" + monthlyPremium
-          + " monthly premium when they owed the payer $" + this.monthlyPremium);
-    }
     this.revenue += monthlyPremium;
   }
 

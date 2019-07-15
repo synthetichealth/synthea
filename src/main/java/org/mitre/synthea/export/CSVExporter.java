@@ -400,11 +400,24 @@ public class CSVExporter {
       s.append(dateFromTimestamp(person.events.event(Event.DEATH).time));
     }
 
-    for (String attribute : new String[] { Person.IDENTIFIER_SSN, Person.IDENTIFIER_DRIVERS,
-        Person.IDENTIFIER_PASSPORT, Person.NAME_PREFIX, Person.FIRST_NAME, Person.LAST_NAME,
-        Person.NAME_SUFFIX, Person.MAIDEN_NAME, Person.MARITAL_STATUS, Person.RACE,
-        Person.ETHNICITY, Person.GENDER, Person.BIRTHPLACE, Person.ADDRESS, Person.CITY,
-        Person.STATE, Person.ZIP }) {
+    for (String attribute : new String[] {
+        Person.IDENTIFIER_SSN,
+        Person.IDENTIFIER_DRIVERS,
+        Person.IDENTIFIER_PASSPORT,
+        Person.NAME_PREFIX,
+        Person.FIRST_NAME,
+        Person.LAST_NAME,
+        Person.NAME_SUFFIX,
+        Person.MAIDEN_NAME,
+        Person.MARITAL_STATUS,
+        Person.RACE,
+        Person.ETHNICITY,
+        Person.GENDER,
+        Person.BIRTHPLACE,
+        Person.ADDRESS,
+        Person.CITY,
+        Person.STATE,
+        Person.ZIP }) {
       String value = (String) person.attributes.getOrDefault(attribute, "");
       s.append(',').append(clean(value));
     }

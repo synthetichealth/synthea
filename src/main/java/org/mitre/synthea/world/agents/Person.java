@@ -536,17 +536,16 @@ public class Person implements Serializable, QuadTreeData {
    * Sets the person's payer history at the given time to the given payer.
    */
   public void setPayerAtTime(long time, Payer newPayer) {
-    int age = this.ageInYears(time);
-    if (payerHistory[age] != null) {
-      throw new RuntimeException("ERROR: Overwriting a person's insurance at age " + age);
-    }
-    this.setPayerAtAge(age, newPayer);
+    this.setPayerAtAge(this.ageInYears(time), newPayer);
   }
 
   /**
    * Sets the person's payer history at the given age to the given payer.
    */
   public void setPayerAtAge(int age, Payer randomPrivatePayer) {
+    if (payerHistory[age] != null) {
+      throw new RuntimeException("ERROR: Overwriting a person's insurance at age " + age);
+    }
     this.payerHistory[age] = randomPrivatePayer;
   }
 
