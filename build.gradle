@@ -52,6 +52,11 @@ dependencies {
   compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
   compile group: 'org.apache.commons', name: 'commons-text', version: '1.2'
 
+  compile group: 'org.opencds.cqf', name: 'cql-engine', version: '1.2.20'
+  compile group: 'info.cqframework', name: 'cql', version: '1.2.20'
+  compile group: 'info.cqframework', name: 'model', version: '1.2.20'
+  compile group: 'info.cqframework', name: 'cql-to-elm', version: '1.2.20'
+
   // Java 9 no longer includes these APIs by default
   compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
   compile 'org.glassfish.jaxb:jaxb-runtime:2.3.0'
