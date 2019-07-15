@@ -127,7 +127,7 @@ public class Physiology {
    * @throws DerivativeException 
    */
   public MultiTable run(Map<String, Double> inputs) throws DerivativeException {
-    
+    // Reset the solver to its initial state
     solver.reset();
     
     // Create a copy of the default parameters to use
@@ -143,7 +143,6 @@ public class Physiology {
     
     // Solve the ODE for the specified duration and return the results
     return solver.solve(interpreter, params, -leadTime, simDuration);
-
   }
 
   /**
@@ -329,12 +328,18 @@ public class Physiology {
     
     Map<String,Double> inputs = new HashMap();
 //    inputs.put("R_sys", 1.814);
-    inputs.put("E_es_lvf", 1.734);
+    inputs.put("E_es_lvf", 1.034);
+//    inputs.put("B", 150.0);
+//    inputs.put("C", 0.25);
+//    inputs.put("period", 0.5);
+//    inputs.put("inactive_t0", 1.0);
+//    inputs.put("inactive_t1", 1.5);
 
-    Physiology physio = new Physiology("circulation/Smith2004_CVS_human.xml", "runge_kutta", 0.01, 4, 1.0);
-    MultiTable results = physio.run(inputs);
+    Physiology physio = new Physiology("circulation/Smith2004_CVS_human.xml", "runge_kutta", 0.01, 2, 1.0);
+//    Physiology physio = new Physiology("circulation/Fink2008_VentricularActionPotential.xml", "runge_kutta", 0.01, 4);
+//    Physiology physio = new Physiology("circulation/Iyer2007_Arrhythmia_CardiacDeath.xml", "adams_bashforth", 0.01, 4);
     
-    Physiology.testModel(physio, Paths.get("circ_model_pathology_results.csv"), inputs);
+    Physiology.testModel(physio, Paths.get("too_weak.csv"), inputs);
     
 //    try {
 //      // Run with all default parameters
