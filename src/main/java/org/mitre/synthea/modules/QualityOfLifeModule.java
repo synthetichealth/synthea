@@ -57,7 +57,7 @@ public class QualityOfLifeModule extends Module {
   }
 
   @SuppressWarnings("unchecked")
-  private static Map<String, Map<String, Object>> loadDisabilityWeights() {
+  public static Map<String, Map<String, Object>> loadDisabilityWeights() {
     String filename = "gbd_disability_weights.json";
     try {
       String json = Utilities.readResource(filename);
@@ -130,13 +130,21 @@ public class QualityOfLifeModule extends Module {
     return new double[] { daly, qaly, 1 - disabilityWeight };
   }
 
-  public static List<Entry> conditionsInYear(List<Entry> conditions, long yearStart, long yearEnd) {
+  /**
+   * Given a list of conditions, return a subset that was active during a given time period
+   * indicated by stop and stop.
+   * @param conditions The given list of conditions.
+   * @param start The start of the time period the condition must be active.
+   * @param stop The stop or end of the time period the condition must be active.
+   * @return Subset of input conditions that were active given the specified time period.
+   */
+  protected static List<Entry> conditionsInYear(List<Entry> conditions, long start, long stop) {
     List<Entry> conditionsInYear = new ArrayList<Entry>();
     for (Entry condition : conditions) {
       if (disabilityWeights.containsKey(condition.codes.get(0).display)) {
         // condition.stop == 0 for conditions that have not yet ended
-        if (yearStart >= condition.start && condition.start <= yearEnd
-            && (condition.stop > yearStart || condition.stop == 0)) {
+        if (start >= condition.start && condition.start <= stop
+            && (condition.stop > start || condition.stop == 0)) {
           conditionsInYear.add(condition);
         }
       }
@@ -144,7 +152,13 @@ public class QualityOfLifeModule extends Module {
     return conditionsInYear;
   }
 
-  public static double weight(double disabilityWeight, int age) {
+  /**
+   * Calculates the age-adjusted disability weight for a single year.
+   * @param disabilityWeight The unadjusted disability weight.
+   * @param age The age of the person during the year being adjusted.
+   * @return The age-adjusted disability weight during a specified age/year.
+   */
+  protected static double weight(double disabilityWeight, int age) {
     // age_weight = 0.1658 * age * e^(-0.04 * age)
     // from http://www.who.int/quantifying_ehimpacts/publications/9241546204/en/
     // weight = age_weight * disability_weight
