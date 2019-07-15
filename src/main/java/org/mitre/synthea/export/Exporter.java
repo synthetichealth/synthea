@@ -120,7 +120,9 @@ public abstract class Exporter {
     if (Boolean.parseBoolean(Config.get("exporter.csv.export"))) {
       try {
         CSVExporter.getInstance().export(person, stopTime);
-        CSVExporter.getInstance().exportPayerTransitions(person, stopTime);
+        if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+          CSVExporter.getInstance().exportPayerTransitions(person, stopTime);
+        }
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -257,7 +259,9 @@ public abstract class Exporter {
     if (Boolean.parseBoolean(Config.get("exporter.csv.export"))) {
       try {
         CSVExporter.getInstance().exportOrganizationsAndProviders();
-        CSVExporter.getInstance().exportPayers();
+        if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+          CSVExporter.getInstance().exportPayers();
+        }
       } catch (IOException e) {
         e.printStackTrace();
       }

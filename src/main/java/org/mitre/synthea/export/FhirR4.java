@@ -745,13 +745,15 @@ public class FhirR4 {
     claimResource.setUse(org.hl7.fhir.r4.model.Claim.Use.CLAIM);
 
     // get the insurance info at the time that the encounter occured
-    Payer insurance = person.getPayerAtTime(
-        encounterResource.getPeriod().getStart().getTime());
-    InsuranceComponent insuranceComponent = new InsuranceComponent();
-    insuranceComponent.setSequence(1);
-    insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference().setDisplay(insurance.getName()));
-    claimResource.addInsurance(insuranceComponent);
+    if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+      Payer payer = person.getPayerAtTime(
+          encounterResource.getPeriod().getStart().getTime());
+      InsuranceComponent insuranceComponent = new InsuranceComponent();
+      insuranceComponent.setSequence(1);
+      insuranceComponent.setFocal(true);
+      insuranceComponent.setCoverage(new Reference().setDisplay(payer.getName()));
+      claimResource.addInsurance(insuranceComponent);
+    }
 
     // duration of encounter
     claimResource.setBillablePeriod(encounterResource.getPeriod());
@@ -808,13 +810,15 @@ public class FhirR4 {
     claimResource.setUse(org.hl7.fhir.r4.model.Claim.Use.CLAIM);
 
     // get the insurance info at the time that the encounter occured
-    Payer insurance = person.getPayerAtTime(
-        encounterResource.getPeriod().getStart().getTime());
-    InsuranceComponent insuranceComponent = new InsuranceComponent();
-    insuranceComponent.setSequence(1);
-    insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference().setDisplay(insurance.getName()));
-    claimResource.addInsurance(insuranceComponent);
+    if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+      Payer insurance = person.getPayerAtTime(
+          encounterResource.getPeriod().getStart().getTime());
+      InsuranceComponent insuranceComponent = new InsuranceComponent();
+      insuranceComponent.setSequence(1);
+      insuranceComponent.setFocal(true);
+      insuranceComponent.setCoverage(new Reference().setDisplay(insurance.getName()));
+      claimResource.addInsurance(insuranceComponent);
+    }
 
     // duration of encounter
     claimResource.setBillablePeriod(encounterResource.getPeriod());
@@ -1004,20 +1008,22 @@ public class FhirR4 {
     eob.setReferral(new Reference().setReference("#referral"));
 
     // get the insurance info at the time that the encounter occured
-    Payer insurance = person.getPayerAtTime(encounter.start);
-    Coverage coverage = new Coverage();
-    coverage.setId("coverage");
-    coverage.setStatus(CoverageStatus.ACTIVE);
-    coverage.setType(new CodeableConcept().setText(insurance.getName()));
-    coverage.setBeneficiary(new Reference(personEntry.getFullUrl()));
-    coverage.addPayor(new Reference().setDisplay(insurance.getName()));
-    eob.addContained(coverage);
-    ExplanationOfBenefit.InsuranceComponent insuranceComponent =
-        new ExplanationOfBenefit.InsuranceComponent();
-    insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference("#coverage").setDisplay(insurance.getName()));
-    eob.addInsurance(insuranceComponent);
-    eob.setInsurer(new Reference().setDisplay(insurance.getName()));
+    if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+      Payer payer = person.getPayerAtTime(encounter.start);
+      Coverage coverage = new Coverage();
+      coverage.setId("coverage");
+      coverage.setStatus(CoverageStatus.ACTIVE);
+      coverage.setType(new CodeableConcept().setText(payer.getName()));
+      coverage.setBeneficiary(new Reference(personEntry.getFullUrl()));
+      coverage.addPayor(new Reference().setDisplay(payer.getName()));
+      eob.addContained(coverage);
+      ExplanationOfBenefit.InsuranceComponent insuranceComponent =
+          new ExplanationOfBenefit.InsuranceComponent();
+      insuranceComponent.setFocal(true);
+      insuranceComponent.setCoverage(new Reference("#coverage").setDisplay(payer.getName()));
+      eob.addInsurance(insuranceComponent);
+      eob.setInsurer(new Reference().setDisplay(payer.getName()));
+    }
 
     org.hl7.fhir.r4.model.Claim claim =
         (org.hl7.fhir.r4.model.Claim) claimEntry.getResource();

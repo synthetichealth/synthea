@@ -38,6 +38,7 @@ public class PayerTest {
     // Clear any Payers that may have already been statically loaded.
     Payer.clear();
     // Load in the .csv list of Payers for MA.
+    Config.set("generate.health_insurance", "true");
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
     Payer.loadPayers(new Location("Massachusetts", null));

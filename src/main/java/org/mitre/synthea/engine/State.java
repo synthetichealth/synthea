@@ -17,6 +17,7 @@ import org.mitre.synthea.engine.Transition.ConditionalTransitionOption;
 import org.mitre.synthea.engine.Transition.DirectTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransitionOption;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.RandomValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
@@ -234,7 +235,9 @@ public abstract class State implements Cloneable {
           person.setCurrentEncounter(module, encounter);
           // Is this the best place to determine the covered cost?
           // Not sure if every encounter is guarenteed to reach this point.
-          encounter.claim.determineCoveredCost();
+          if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+            encounter.claim.determineCoveredCost();
+          }
         }
 
         return true;

@@ -185,7 +185,11 @@ public class Generator {
     // initialize hospitals
     Provider.loadProviders(location);
     // Initialize Payers
-    Payer.loadPayers(location);
+    if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+      Payer.loadPayers(location);
+    } else {
+      Payer.loadNoInsurance();
+    }
     // ensure modules load early
     List<String> coreModuleNames = getModuleNames(Module.getModules(path -> false));
     List<String> moduleNames = getModuleNames(Module.getModules(modulePredicate)); 
@@ -308,8 +312,10 @@ public class Generator {
         person.attributes.put(Person.LOCATION, location);
 
         LifecycleModule.birth(person, start);
-        // Process HealthInsuranceModule Here.
-        Module.processHealthInsuranceModule(person, start);
+        // Force process HealthInsuranceModule in correct order.
+        if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+          Module.processHealthInsuranceModule(person, start);
+        }
 
         // HealthInsuranceModule.process(person, start);
         EncounterModule encounterModule = new EncounterModule();

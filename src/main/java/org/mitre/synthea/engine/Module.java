@@ -26,6 +26,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.HealthInsuranceModule;
@@ -53,7 +54,9 @@ public class Module {
     retVal.put("Lifecycle", new ModuleSupplier(new LifecycleModule()));
     retVal.put("Cardiovascular Disease", new ModuleSupplier(new CardiovascularDiseaseModule()));
     retVal.put("Quality Of Life", new ModuleSupplier(new QualityOfLifeModule()));
-    retVal.put("Health Insurance", new ModuleSupplier(new HealthInsuranceModule()));
+    if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+      retVal.put("Health Insurance", new ModuleSupplier(new HealthInsuranceModule()));
+    }
     retVal.put("Weight Loss", new ModuleSupplier(new WeightLossModule()));
 
     try {
@@ -310,6 +313,12 @@ public class Module {
     }
   }
 
+  /**
+   * Forces a processing of a person's health insurance at the given time.
+   * 
+   * @param person  the person to process for.
+   * @param time    the time to process at.
+   */
   public static void processHealthInsuranceModule(Person person, long time) {
     modules.get("Health Insurance").module.process(person, time);
   }

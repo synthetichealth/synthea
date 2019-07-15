@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Payer;
@@ -116,7 +117,12 @@ public class HealthRecord {
       if (cost == null) {
         Person patient = record.person;
         Provider provider = record.provider;
-        Payer payer = person.getPayerAtTime(start);
+        Payer payer;
+        if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+          payer = person.getPayerAtTime(start);
+        } else {
+          payer = Payer.noInsurance;
+        }
         cost = BigDecimal.valueOf(Costs.calculateCost(this, patient, provider, payer));
         cost = cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
       }
@@ -260,17 +266,22 @@ public class HealthRecord {
      * Constructor of a Claim for an encounter.
      */
     public Claim(Encounter encounter) {
-      this.payer = person.getPayerAtTime(encounter.start);
+
+      if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+        this.payer = person.getPayerAtTime(encounter.start);
+      } else {
+        this.payer = Payer.noInsurance;
+      }
       if (this.payer == null) {
         // Person hasn't checked to get insurance at this age yet. Have to check now.
         Module.processHealthInsuranceModule(person, encounter.start);
         this.payer = person.getPayerAtTime(encounter.start);
       }
-      
       this.payer.incrementEncountersCovered(encounter.type, Utilities.getYear(encounter.start));
       
       // Covered cost will be updated once the payer actually pays it.
       this.coveredCost = 0.0;
+
       this.encounter = encounter;
       this.items = new ArrayList<>();
     }

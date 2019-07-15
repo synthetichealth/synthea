@@ -95,6 +95,7 @@ public class CSVExporter {
    * Writer for providers.csv
    */
   private FileWriter providers;
+  
   /**
    * Writer for payers.csv
    */
@@ -155,12 +156,14 @@ public class CSVExporter {
 
       File organizationsFile = outputDirectory.resolve("organizations.csv").toFile();
       File providersFile = outputDirectory.resolve("providers.csv").toFile();
-      File payersFile = outputDirectory.resolve("payers.csv").toFile();
-      File payerTransitionsFile = outputDirectory.resolve("payer_transitions.csv").toFile();
       organizations = new FileWriter(organizationsFile, append);
       providers = new FileWriter(providersFile, append);
-      payers = new FileWriter(payersFile, append);
-      payerTransitions = new FileWriter(payerTransitionsFile, append);
+      if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+        File payersFile = outputDirectory.resolve("payers.csv").toFile();
+        File payerTransitionsFile = outputDirectory.resolve("payer_transitions.csv").toFile();
+        payers = new FileWriter(payersFile, append);
+        payerTransitions = new FileWriter(payerTransitionsFile, append);
+      }
 
       if (!append) {
         writeCSVHeaders();
@@ -210,11 +213,13 @@ public class CSVExporter {
     organizations.write(NEWLINE);
     providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,UTILIZATION");
     providers.write(NEWLINE);
-    payers.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,AMOUNT_COVERED,REVENUE,"
-        + "ENCOUNTER_UTILIZATION,UNIQUE_CUSTOMERS,QOLS_AVG");
-    payers.write(NEWLINE);
-    payerTransitions.write("PATIENT,YEAR,PAYER,OWNERSHIP");
-    payerTransitions.write(NEWLINE);
+    if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+      payers.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,AMOUNT_COVERED,REVENUE,"
+          + "ENCOUNTER_UTILIZATION,UNIQUE_CUSTOMERS,QOLS_AVG");
+      payers.write(NEWLINE);
+      payerTransitions.write("PATIENT,YEAR,PAYER,OWNERSHIP");
+      payerTransitions.write(NEWLINE);
+    }
   }
 
   /**

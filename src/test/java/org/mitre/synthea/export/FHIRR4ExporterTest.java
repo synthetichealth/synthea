@@ -33,6 +33,7 @@ public class FHIRR4ExporterTest {
   @Test
   public void testFHIRR4Export() throws Exception {
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
+    Config.set("generate.health_insurance", "true");
 
     FhirContext ctx = FhirContext.forR4();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);

@@ -123,11 +123,7 @@ public class Payer {
    */
   private static void loadPayers(Location location, String fileName) throws IOException {
 
-    // No Insurance object
-    noInsurance = new Payer();
-    noInsurance.name = "NO_INSURANCE";
-    noInsurance.ownership = "NO_INSURANCE";
-    noInsurance.uuid = "NO_INSURANCE";
+    Payer.loadNoInsurance();
 
     String resource = Utilities.readResource(fileName);
     Iterator<? extends Map<String, String>> csv = SimpleCSV.parseLineByLine(resource);
@@ -161,6 +157,16 @@ public class Payer {
         }
       }
     }
+  }
+
+  /**
+   * Loads the noInsurance Payer.
+   */
+  public static void loadNoInsurance() {
+    noInsurance = new Payer();
+    noInsurance.name = "NO_INSURANCE";
+    noInsurance.ownership = "NO_INSURANCE";
+    noInsurance.uuid = "NO_INSURANCE";
   }
 
   /**

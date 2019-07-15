@@ -32,6 +32,7 @@ public class CSVExporterTest {
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
 
     Payer.clear();
+    Config.set("generate.health_insurance", "true");
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
     Payer.loadPayers(new Location("Massachusetts", null));
