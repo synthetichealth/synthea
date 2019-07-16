@@ -322,14 +322,4 @@ public class Module {
   public static void processHealthInsuranceModule(Person person, long time) {
     modules.get("Health Insurance").module.process(person, time);
   }
-
-  /**
-   * Forces processing of a person's QOLS at the given time.
-   * 
-   * @param person  the person to process for.
-   * @param time    the time to process at.
-   */
-  public static void processQualityOfLifeModule(Person person, long time) {
-    modules.get("Quality Of Life").module.process(person, time);
-  }
 }

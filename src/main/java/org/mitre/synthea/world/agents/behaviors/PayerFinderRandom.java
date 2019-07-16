@@ -23,21 +23,24 @@ public class PayerFinderRandom implements IPayerFinder {
   public Payer find(List<Payer> payers, Person person, EncounterType service, long time) {
     List<Payer> options = new ArrayList<Payer>();
 
-    // TODO: Must be within provider network
+    // occupation determines whether their employer will pay for insurance after the mandate.
+    double occupation = (Double) person.attributes.get(Person.OCCUPATION_LEVEL);
 
     for (Payer payer : payers) {
       if (payer.accepts(person, time)
-          && (payer.coversService(service) || service == null)) {
+          && (person.canAfford(payer) || (time >= mandateTime && occupation >= mandateOccupation))
+          && payer.isInNetwork(null)
+          && (payer.coversService(service))) {
         options.add(payer);
       }
     }
 
     if (options.isEmpty()) {
-      return null;
+      return Payer.noInsurance;
     } else if (options.size() == 1) {
       return options.get(0);
     } else {
-      // there are a few equally good options, pick one randomly.
+      // There are a few equally good options, pick one randomly.
       return options.get(person.randInt(options.size()));
     }
   }

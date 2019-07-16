@@ -5,7 +5,6 @@ import java.util.Map;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
-import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
@@ -13,26 +12,10 @@ import org.mitre.synthea.world.agents.Person;
 public class HealthInsuranceModule extends Module {
   public static final String INSURANCE = "insurance";
 
-  public static long mandateTime;
-  public static double mandateOccupation;
-  public static int privateIncomeThreshold;
-  public static double povertyLevel;
-  public static double medicaidLevel;
-
   /**
    * HealthInsuranceModule constructor.
    */
-  public HealthInsuranceModule() {
-    int mandateYear = Integer.parseInt(Config.get("generate.insurance.mandate.year", "2006"));
-    mandateTime = Utilities.convertCalendarYearsToTime(mandateYear);
-    mandateOccupation = Double
-        .parseDouble(Config.get("generate.insurance.mandate.occupation", "0.2"));
-    privateIncomeThreshold = Integer
-        .parseInt(Config.get("generate.insurance.private.minimum_income", "24000"));
-    povertyLevel = Double
-        .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
-    medicaidLevel = 1.33 * povertyLevel;
-  }
+  public HealthInsuranceModule() {}
 
   /**
    * Process this HealthInsuranceModule with the given Person at the specified
@@ -86,28 +69,9 @@ public class HealthInsuranceModule extends Module {
     } else if (Payer.getGovernmentPayer("Medicaid").accepts(person, time)) {
       return Payer.getGovernmentPayer("Medicaid");
     } else {
-      // occupation determines whether their employer will pay for insurance after the mandate.
-      double occupation = (Double) person.attributes.get(Person.OCCUPATION_LEVEL);
-      // income determines whether a person can afford private insurance.
-      int income = (Integer) person.attributes.get(Person.INCOME);
-      // If this person can afford private insurance, they will recieve it.
-      if ((time >= mandateTime && occupation >= mandateOccupation)
-          || (income >= privateIncomeThreshold)) {
-        // TODO - If this person can no longer afford this Payer, they will try to get a new one.
-        // If this person had private insurance the previous year, they will keep it.
-        if (person.ageInYears(time) > 0 && person.getPayerAtAge(person.ageInYears(time) - 1)
-            .getOwnership().equalsIgnoreCase("Private")) {
-          return person.getPayerAtAge(person.ageInYears(time) - 1);
-        }
-        // Randomly choose one of the remaining private insurances
-        Payer newPayer = Payer.getPayerFinder().find(Payer.getAllPayers(), person, null, time);
-        if (newPayer != null) {
-          return newPayer;
-        }
-      }
+      // Randomly choose one of the remaining private insurances. Returns no_insurance if a person cannot afford any of them.
+      return Payer.getPayerFinder().find(Payer.getPrivatePayers(), person, null, time);
     }
-    // There is no insurance available to this person.
-    return Payer.noInsurance;
   }
 
   /**

@@ -25,12 +25,14 @@ public class PayerFinderBestRates implements IPayerFinder {
   public Payer find(List<Payer> payers, Person person, EncounterType service, long time) {
     List<Payer> options = new ArrayList<Payer>();
 
-    // TO ADD: Is in provider's network
-    // Add a provider field to the find() method? Or choose providers based on a
-    // pre-chosen payer first?
+    // occupation determines whether their employer will pay for insurance after the mandate.
+    double occupation = (Double) person.attributes.get(Person.OCCUPATION_LEVEL);
 
     for (Payer payer : payers) {
-      if (payer.accepts(person, time) && (payer.coversService(service) || service == null)) {
+      if (payer.accepts(person, time)
+          && (person.canAfford(payer) || (time >= mandateTime && occupation >= mandateOccupation))
+          && payer.isInNetwork(null)
+          && (payer.coversService(service))) {
 
         // If the monthly premium to coverage ratio of this company is better than the
         // current best, choose this company. Also make decision based on whether this
@@ -42,11 +44,11 @@ public class PayerFinderBestRates implements IPayerFinder {
     }
 
     if (options.isEmpty()) {
-      return null;
+      return Payer.noInsurance;
     } else if (options.size() == 1) {
       return options.get(0);
     } else {
-      // there are a few equally good options, pick one randomly.
+      // There are a few equally good options, pick one randomly.
       return options.get(person.randInt(options.size()));
     }
   }

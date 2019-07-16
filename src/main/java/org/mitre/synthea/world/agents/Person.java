@@ -621,4 +621,21 @@ public class Person implements Serializable, QuadTreeData {
   public void addCost(double costToPatient) {
     // TODO - Affect the person's costs/income/etc.
   }
+
+  /**
+   * Returns whether or not a person can afford a given payer.
+   * If a person's income is greater than:
+   *    -A year of monthly premiums +
+   *    -The deductible
+   * Then they can afford the insurance.
+   * 
+   * @param payer the payer to check.
+   */
+  public boolean canAfford(Payer payer) {
+    int income = (Integer) this.attributes.get(Person.INCOME);
+    double yearlyPremiumTotal = payer.getMonthlyPremium() * 12;
+    double yearlyDeductible = payer.getDeductible();
+    double yearlyTotalCost = yearlyPremiumTotal + yearlyDeductible;
+    return income > yearlyTotalCost;
+  }
 }

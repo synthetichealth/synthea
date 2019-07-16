@@ -49,7 +49,7 @@ public class Payer {
   private String name;
   private double defaultCopay;
   private double monthlyPremium;
-  // private double deductible;
+  private double deductible;
   private String ownership;
 
   // The services that this payer covers. Currently unimplemented.
@@ -84,7 +84,7 @@ public class Payer {
     this.costsCovered = 0.0;
     this.revenue = 0.0;
     this.monthlyPremium = 0.0;
-    // this.deductible = 0.0;
+    this.deductible = 0.0;  // Currently, deductible is not used.
     this.defaultCopay = 0.0;
     this.totalQOLS = 0.0;
   }
@@ -295,6 +295,13 @@ public class Payer {
   }
 
   /**
+   * Returns the yearly deductible of this payer.
+   */
+  public double getDeductible() {
+    return this.deductible;
+  }
+
+  /**
    * Returns the ownserhip type of the payer (Government/Private).
    */
   public String getOwnership() {
@@ -375,7 +382,7 @@ public class Payer {
         boolean blind = (person.attributes.containsKey("blindness")
             && (boolean) person.attributes.get("blindness"));
         int income = (Integer) person.attributes.get(Person.INCOME);
-        boolean medicaidIncomeEligible = (income <= HealthInsuranceModule.medicaidLevel);
+        boolean medicaidIncomeEligible = (income <= IPayerFinder.medicaidLevel);
 
         boolean medicaid = (female && pregnant) || blind || medicaidIncomeEligible;
         return medicaid;
@@ -404,6 +411,10 @@ public class Payer {
    * @return whether the payer covers the given encounter type
    */
   public boolean coversService(EncounterType service) {
+    if (service == null) {
+      return true;
+    }
+    // Will check if payer actually covers service here.
     return true;
   }
 
