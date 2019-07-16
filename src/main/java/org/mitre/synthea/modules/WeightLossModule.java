@@ -50,51 +50,32 @@ public final class WeightLossModule extends Module {
   @Override
   public boolean process(Person person, long time) {
     Object activeWeightManagement = person.attributes.get(ACTIVE_WEIGHT_MANAGEMENT);
+
     // First check to see if they are under active weight management
     if (activeWeightManagement != null && (boolean) activeWeightManagement) {
-      boolean followsPlan = (boolean) person.attributes.get(WEIGHT_LOSS_ADHERENCE);
       boolean longTermSuccess = (boolean) person.attributes.get(LONG_TERM_WEIGHT_LOSS);
+      int age = person.ageInYears(time);
+      int ageInMonths = person.ageInMonths(time);
+      String gender = (String) person.attributes.get(Person.GENDER);
       // In the first year of management, if there is adherence, the person will lose
       // weight
       if (firstYearOfManagement(person, time)) {
-        if (followsPlan) {
-          int age = person.ageInYears(time);
-          double weight;
-          if (age < 20) {
-            weight = pediatricWeightLoss(person, time);
-          } else {
-            weight = adultWeightLoss(person, time);
-          }
-          double height = person.getVitalSign(VitalSign.HEIGHT, time);
-          person.setVitalSign(VitalSign.WEIGHT, weight);
-          person.setVitalSign(VitalSign.BMI, bmi(height, weight));
-        }
+        manageFirstYearWeight(person, time);
       } else if (firstFiveYearsOfManagement(person, time)) {
-        // In the next 5 years, if someone has lost weight, check to see if they
-        // will have long term success. If they don't, revert their weight back
-        // to the original weight
-        if (followsPlan) {
-          if (! longTermSuccess) {
-            int age = person.ageInYears(time);
-            double weight;
-            if (age < 20) {
-              weight = pediatricRegression(person, time);
-            } else {
-              long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
-              if (person.ageInYears(start) < 20) {
-                weight = transitionRegression(person, time);
-              } else {
-                weight = adultRegression(person, time);
-              }
-            }
-            double height = person.getVitalSign(VitalSign.HEIGHT, time);
-            person.setVitalSign(VitalSign.WEIGHT, weight);
-            person.setVitalSign(VitalSign.BMI, bmi(height, weight));
-          }
-        }
+        manageYearTwoThroughFive(person, time);
       } else {
         // five years after the start
-        if (! longTermSuccess) {
+        if (longTermSuccess) {
+          if (age < 20) {
+            // The person will continue to grow, increase their weight, but keep BMI steady
+            double height = lookupGrowthChart("height", gender, ageInMonths,
+                person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+            double weight = maintainBMI(person, time);
+            person.setVitalSign(VitalSign.WEIGHT, weight);
+            person.setVitalSign(VitalSign.HEIGHT, height);
+            person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+          }
+        } else {
           stopWeightManagement(person);
         }
       }
@@ -105,6 +86,97 @@ public final class WeightLossModule extends Module {
       }
     }
     return false;
+  }
+
+  public void manageFirstYearWeight(Person person, long time) {
+    boolean followsPlan = (boolean) person.attributes.get(WEIGHT_LOSS_ADHERENCE);
+    int age = person.ageInYears(time);
+    int ageInMonths = person.ageInMonths(time);
+    String gender = (String) person.attributes.get(Person.GENDER);
+    double weight;
+    if (followsPlan) {
+      if (age < 20) {
+        weight = pediatricWeightLoss(person, time);
+      } else {
+        weight = adultWeightLoss(person, time);
+      }
+    } else {
+      if (age < 20) {
+        // Not following the plan. Keep along the weight percentile per the growth chart
+        weight = lookupGrowthChart("weight", gender, ageInMonths,
+            person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
+      } else {
+        // Not following the plan. Just keep the weight steady
+        weight = person.getVitalSign(VitalSign.WEIGHT, time);
+      }
+    }
+    double height = person.getVitalSign(VitalSign.HEIGHT, time);
+    person.setVitalSign(VitalSign.WEIGHT, weight);
+    person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+  }
+
+  public void manageYearTwoThroughFive(Person person, long time) {
+    boolean followsPlan = (boolean) person.attributes.get(WEIGHT_LOSS_ADHERENCE);
+    boolean longTermSuccess = (boolean) person.attributes.get(LONG_TERM_WEIGHT_LOSS);
+    int age = person.ageInYears(time);
+    int ageInMonths = person.ageInMonths(time);
+    String gender = (String) person.attributes.get(Person.GENDER);
+    // In the next 5 years, if someone has lost weight, check to see if they
+    // will have long term success. If they don't, revert their weight back
+    // to the original weight
+    if (followsPlan) {
+      if (longTermSuccess) {
+        if (age < 20) {
+          // The person will continue to grow, increase their weight, but keep BMI steady
+          double height = lookupGrowthChart("height", gender, ageInMonths,
+              person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+          double weight = maintainBMI(person, time);
+          person.setVitalSign(VitalSign.WEIGHT, weight);
+          person.setVitalSign(VitalSign.HEIGHT, height);
+          person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+        }
+      } else {
+        double weight;
+        double height;
+        if (age < 20) {
+          height = lookupGrowthChart("height", gender, ageInMonths,
+              person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+
+          weight = pediatricRegression(person, time);
+        } else {
+          long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
+          if (person.ageInYears(start) < 20) {
+            if (age >= 20) {
+              height = lookupGrowthChart("height", gender, 240,
+                  person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+            } else {
+              height = lookupGrowthChart("height", gender, ageInMonths,
+                  person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+            }
+
+            weight = transitionRegression(person, time);
+          } else {
+            height = person.getVitalSign(VitalSign.HEIGHT, time);
+            weight = adultRegression(person, time);
+          }
+        }
+
+        person.setVitalSign(VitalSign.HEIGHT, height);
+        person.setVitalSign(VitalSign.WEIGHT, weight);
+        person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+      }
+    } else {
+      if (age < 20) {
+        // Didn't follow the plan. Keep along the weight percentile per the growth chart
+        double weight = lookupGrowthChart("weight", gender, ageInMonths,
+            person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
+        double height = lookupGrowthChart("height", gender, ageInMonths,
+            person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+        person.setVitalSign(VitalSign.HEIGHT, height);
+        person.setVitalSign(VitalSign.WEIGHT, weight);
+        person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+      }
+    }
   }
 
   /**
@@ -207,7 +279,7 @@ public final class WeightLossModule extends Module {
     double endBMI = bmi(endHeight, endWeight);
     double percentOfTimeElapsed = (time - start - Utilities.convertTime("years", 1))
         / (double) Utilities.convertTime("years", 4);
-    double currentBMI = endBMI - ((endBMI - lowestBMI) * percentOfTimeElapsed);
+    double currentBMI = endBMI - ((endBMI - lowestBMI) * (1 - percentOfTimeElapsed));
     int currentAgeInMonths = person.ageInMonths(time);
     if (currentAgeInMonths > 240) {
       currentAgeInMonths = 240; // Same as above
@@ -245,6 +317,29 @@ public final class WeightLossModule extends Module {
         person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
     // weight = BMI * h^2
     double weight = currentBMI * (currentHeight / 100.0) * (currentHeight / 100.0);
+    return weight;
+  }
+
+  /**
+   * For patients under 20 that have successful weight management and long term success, they will
+   * maintain their BMI until they reach age 20. This means that they will gain weight as they are
+   * gaining height, but it will be in a more healthy range.
+   */
+  public double maintainBMI(Person person, long time) {
+    long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
+    double bmiChange = (double) person.attributes.get(WEIGHT_LOSS_BMI_CHANGE);
+    String gender = (String) person.attributes.get(Person.GENDER);
+    int startAgeInMonths = person.ageInMonths(start);
+    double startWeight = lookupGrowthChart("weight", gender, startAgeInMonths,
+        person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
+    double startHeight = lookupGrowthChart("height", gender, startAgeInMonths,
+        person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+    double startBMI = bmi(startHeight, startWeight);
+    double bmi = startBMI - bmiChange;
+    int ageInMonths = person.ageInMonths(time);
+    double currentHeight = lookupGrowthChart("height", gender, ageInMonths,
+        person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+    double weight = bmi * (currentHeight / 100.0) * (currentHeight / 100.0);
     return weight;
   }
 

@@ -102,6 +102,23 @@ public class WeightLossModuleTest {
   }
 
   @Test
+  public void testMaintainBMI() {
+    long birthDay = TestHelper.timestamp(1990, 1, 1, 0, 0, 0);
+    long start = TestHelper.timestamp(2000, 1, 1, 0, 0, 0);
+    long twoYears = TestHelper.timestamp(2002, 1, 1, 0, 0, 0);
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, birthDay);
+    person.attributes.put(Person.GENDER, "M");
+    person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, 0.9);
+    person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, 0.75);
+    person.attributes.put(WeightLossModule.WEIGHT_MANAGEMENT_START, start);
+    person.attributes.put(WeightLossModule.WEIGHT_LOSS_BMI_CHANGE, 1.1d);
+    person.attributes.put(WeightLossModule.PRE_MANAGEMENT_WEIGHT, 41.96d);
+    double weight = mod.maintainBMI(person, twoYears);
+    assertEquals(46.08, weight, 0.1);
+  }
+
+  @Test
   public void testProcess() {
     long sixMonths = TestHelper.timestamp(2000, 7, 2, 0, 0, 0);
     long oneYear = TestHelper.timestamp(2000, 12, 31, 0, 0, 0);
