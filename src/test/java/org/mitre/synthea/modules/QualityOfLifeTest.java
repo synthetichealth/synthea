@@ -30,9 +30,9 @@ public class QualityOfLifeTest {
     person.events.create(0, "birth", "QualityOfLifeTest", true);
     person.attributes.put("birthdate", 0L);
 
-    // Diabetes - code = 44054006; dw = 0.049
-    // ADD - code = 192127007; dw = 0.045
-    // Asthma - code = 195967001; dw = 0.015
+    // Diabetes - code = 44054006;  dw = 0.031, 0.049, 0.072
+    // ADD      - code = 192127007; dw = 0.028, 0.045, 0.066
+    // Asthma   - code = 195967001; dw = 0.015, 0.036, 0.133
 
     //                 asthma
     //           |-----------------|
@@ -77,8 +77,8 @@ public class QualityOfLifeTest {
 
     double dalyLiving = qol[0];
     double qalyLiving = qol[1];
-    assertEquals(true, (dalyLiving > 1.7 && dalyLiving < 1.8));
-    assertEquals(true, (qalyLiving > 33 && qalyLiving < 34));
+    assertEquals(true, (dalyLiving > 2.2 && dalyLiving < 2.3));
+    assertEquals(true, (qalyLiving > 32 && qalyLiving < 33));
   }
 
   @Test
@@ -91,7 +91,7 @@ public class QualityOfLifeTest {
     double dalyDeceased = qol[0];
     double qalyDeceased = qol[1];
     assertEquals(true, (dalyDeceased > 54 && dalyDeceased < 55));
-    assertEquals(true, (qalyDeceased > 33 && qalyDeceased < 34));
+    assertEquals(true, (qalyDeceased > 32 && qalyDeceased < 33));
   }
 
   @Test
