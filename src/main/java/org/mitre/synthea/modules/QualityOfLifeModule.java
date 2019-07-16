@@ -51,17 +51,7 @@ public class QualityOfLifeModule extends Module {
       person.attributes.put("most-recent-daly", values[0]);
       person.attributes.put("most-recent-qaly", values[1]);
 
-      // Add the person's QOLS to their Payer.
-      if (person.getPayerAtTime(time) != null) {
-        person.getPayerAtTime(time).addQOLS(values[2]);
-      } else {
-        // throw new RuntimeException("ERROR: Attempted to evaluate a Payer's QOLS when null.");
-      }
-
-
-
     }
-
     // java modules will never "finish"
     return false;
   }

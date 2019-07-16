@@ -600,6 +600,19 @@ public class Person implements Serializable, QuadTreeData {
     }
   }
 
+  @SuppressWarnings("unchecked")
+  /**
+   * Returns the person's QOLS at the given time.
+   * 
+   * @param time the time to retrive the qols for.
+   */
+  public double getQolsForYear(int year) {
+    if(((Map<Integer, Double>) this.attributes.get("QOL")).get(year) == null){
+      throw new RuntimeException("ERROR: Person's QOLS was not calculated for the year " + year + ".");
+    }
+    return ((Map<Integer, Double>) this.attributes.get("QOL")).get(year);
+  }
+
   /**
    * Adds the cost of an encounter to this person.
    * 

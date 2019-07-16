@@ -62,8 +62,8 @@ public class Payer {
   /* Payer statistics. May be better to move to attributes. */
   private double costsCovered;
   private double revenue;
-  /* Quality of Life Stats. [0]: Total QOLS, [1]: Total Years */
-  private double[] qualityOfLifeStatistics;
+  /* Quality of Life Score Statisitc*/
+  private double totalQOLS;
   // row: year, column: type, value: count
   private Table<Integer, String, AtomicInteger> utilization;
   // Unique utilizers of Payer, by Person ID
@@ -86,7 +86,7 @@ public class Payer {
     this.monthlyPremium = 0.0;
     // this.deductible = 0.0;
     this.defaultCopay = 0.0;
-    this.qualityOfLifeStatistics = new double[] { 0.0, 0.0 };
+    this.totalQOLS = 0.0;
   }
 
   /**
@@ -490,18 +490,21 @@ public class Payer {
    * @param qols the Quality of Life Score to be added.
    */
   public void addQOLS(double qols) {
-    // Add QOLS to QOLS Total.
-    qualityOfLifeStatistics[0] += qols;
-    // Increment the number of years covered.
-    qualityOfLifeStatistics[1]++;
+    totalQOLS += qols;
   }
 
   /**
    * Returns the average of the payer's QOLS of customers over the number of years covered.
    */
   public double getQOLAverage() {
-    double qolsTotal = qualityOfLifeStatistics[0];
-    double numYears = qualityOfLifeStatistics[1];
-    return qolsTotal / numYears;
+    double numYears = this.getNumYearsCovered();
+    return this.totalQOLS / numYears;
+  }
+
+  /**
+   * Returns the number of member years covered by this payer.
+   */
+  public int getNumYearsCovered(){
+    return this.customerUtilization.values().stream().mapToInt(AtomicInteger::intValue).sum();
   }
 }

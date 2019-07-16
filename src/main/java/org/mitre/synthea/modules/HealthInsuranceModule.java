@@ -49,11 +49,15 @@ public class HealthInsuranceModule extends Module {
     // Note: This means the person will check to change insurance yearly, just after their
     // birthday.
     if (person.getPayerAtTime(time) == null) {
-      // Determine the insurance for this person.
+      // Update their last payer with person's QOLS for that year.
+      if(person.ageInYears(time) > 0){
+        person.getPayerAtAge(person.ageInYears(time) - 1).addQOLS(person.getQolsForYear(Utilities.getYear(time) - 1));
+      }
+      // Determine the insurance for this person at this time.
       Payer newPayer = determineInsurance(person, time);
       // Set this new payer at the current time for the person.
       person.setPayerAtTime(time, newPayer);
-      // Update the new Payer's statistics.
+      // Update the new Payer's customer statistics.
       person.getPayerAtTime(time).incrementCustomers(person);
     }
 

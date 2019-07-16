@@ -215,7 +215,7 @@ public class CSVExporter {
     providers.write(NEWLINE);
     if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
       payers.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,AMOUNT_COVERED,REVENUE,"
-          + "ENCOUNTER_UTILIZATION,UNIQUE_CUSTOMERS,QOLS_AVG");
+          + "ENCOUNTER_UTILIZATION,UNIQUE_CUSTOMERS,QOLS_AVG,MEMBER_MONTHS");
       payers.write(NEWLINE);
       payerTransitions.write("PATIENT,YEAR,PAYER,OWNERSHIP");
       payerTransitions.write(NEWLINE);
@@ -886,7 +886,7 @@ public class CSVExporter {
 
   private void payer(Payer payer) throws IOException {
     // Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,AMOUNT_PAID,REVENUE,
-    // ENCOUNTER_UTILIZATION,UNIQUE_CUSTOMERS,QOLS_AVG
+    // ENCOUNTER_UTILIZATION,UNIQUE_CUSTOMERS,QOLS_AVG,MEMBER_MONTHS
 
     StringBuilder s = new StringBuilder();
     s.append(payer.getResourceID()).append(',');
@@ -899,7 +899,9 @@ public class CSVExporter {
     s.append(String.format(Locale.US, "%.2f", payer.getRevenue())).append(',');
     s.append(payer.getEncounterCount()).append(",");
     s.append(payer.getUniqueCustomers()).append(",");
-    s.append(payer.getQOLAverage());
+    s.append(payer.getQOLAverage()).append(",");
+    // Note that this converts the number of years covered to months.
+    s.append(payer.getNumYearsCovered() * 12);
     s.append(NEWLINE);
 
     write(s.toString(), payers);
