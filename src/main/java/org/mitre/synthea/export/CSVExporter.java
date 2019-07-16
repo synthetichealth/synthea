@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
@@ -289,6 +291,39 @@ public class CSVExporter {
 
       for (ImagingStudy imagingStudy : encounter.imagingStudies) {
         imagingStudy(personID, encounterID, imagingStudy);
+      }
+    }
+
+    int yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
+    Calendar cutOff = new GregorianCalendar(1900, 0, 1);
+    if (yearsOfHistory > 0) {
+      cutOff = Calendar.getInstance();
+      cutOff.set(cutOff.get(Calendar.YEAR) - yearsOfHistory, 0, 1);
+    }
+    Calendar now = Calendar.getInstance();
+    Calendar birthDay = Calendar.getInstance();
+    birthDay.setTimeInMillis((long) person.attributes.get(Person.BIRTHDATE));
+    String[] GBD = { "QALY", "DALY", "QOL" };
+    String unit = null;
+    for (String score : GBD) {
+      if (score.equals("QOL")) {
+        unit = "{score}";
+      } else {
+        // years in UCUM is "a" for Latin "Annus"
+        unit = "a";
+      }
+      @SuppressWarnings("unchecked")
+      Map<Integer, Double> scores = (Map<Integer, Double>) person.attributes.get(score);
+      for (Integer year : scores.keySet()) {
+        birthDay.set(Calendar.YEAR, year);
+        if (birthDay.after(cutOff) && birthDay.before(now)) {
+          Observation obs = person.record.new Observation(
+              birthDay.getTimeInMillis(), score, scores.get(year));
+          obs.unit = unit;
+          Code code = new Code("GBD", score, score);
+          obs.codes.add(code);
+          observation(personID, "", obs);
+        }
       }
     }
 
