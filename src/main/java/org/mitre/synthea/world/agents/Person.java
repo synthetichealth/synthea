@@ -600,28 +600,6 @@ public class Person implements Serializable, QuadTreeData {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  /**
-   * Returns the person's QOLS at the given time.
-   * 
-   * @param time the time to retrive the qols for.
-   */
-  public double getQolsForYear(int year) {
-    if(((Map<Integer, Double>) this.attributes.get("QOL")).get(year) == null){
-      throw new RuntimeException("ERROR: Person's QOLS was not calculated for the year " + year + ".");
-    }
-    return ((Map<Integer, Double>) this.attributes.get("QOL")).get(year);
-  }
-
-  /**
-   * Adds the cost of an encounter to this person.
-   * 
-   * @param costToPatient the cost, after insurance, to this patient.
-   */
-  public void addCost(double costToPatient) {
-    // TODO - Affect the person's costs/income/etc.
-  }
-
   /**
    * Returns whether or not a person can afford a given payer.
    * If a person's income is greater than:
@@ -637,5 +615,28 @@ public class Person implements Serializable, QuadTreeData {
     double yearlyDeductible = payer.getDeductible();
     double yearlyTotalCost = yearlyPremiumTotal + yearlyDeductible;
     return income > yearlyTotalCost;
+  }
+
+  @SuppressWarnings("unchecked")
+  /**
+   * Returns the person's QOLS at the given time.
+   * 
+   * @param time the time to retrive the qols for.
+   */
+  public double getQolsForYear(int year) {
+    if (((Map<Integer, Double>) this.attributes.get("QOL")).get(year) == null) {
+      throw new RuntimeException(
+          "ERROR: Person's QOLS was not calculated for the year " + year + ".");
+    }
+    return ((Map<Integer, Double>) this.attributes.get("QOL")).get(year);
+  }
+
+  /**
+   * Adds the cost of an encounter to this person.
+   * 
+   * @param costToPatient the cost, after insurance, to this patient.
+   */
+  public void addCost(double costToPatient) {
+    // TODO - Affect the person's costs/income/etc.
   }
 }

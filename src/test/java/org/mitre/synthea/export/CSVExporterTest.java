@@ -32,7 +32,6 @@ public class CSVExporterTest {
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
 
     Payer.clear();
-    Config.set("generate.health_insurance", "true");
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
     Payer.loadPayers(new Location("Massachusetts", null));
@@ -66,6 +65,10 @@ public class CSVExporterTest {
       count++;
     }
 
-    assertEquals("Expected 14 CSV files in the output directory, found " + count, 14, count);
+    if (Boolean.parseBoolean(Config.get("generate.health_insurance"))) {
+      assertEquals("Expected 14 CSV files in the output directory, found " + count, 14, count);
+    } else {
+      assertEquals("Expected 12 CSV files in the output directory, found " + count, 12, count);
+    }
   }
 }

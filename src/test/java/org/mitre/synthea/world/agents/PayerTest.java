@@ -4,8 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,9 +29,9 @@ public class PayerTest {
   Payer randomPrivatePayer;
   HealthInsuranceModule healthInsuranceModule;
   Person person;
-  double povertyLevel;
   double medicaidLevel;
   long mandateTime;
+  boolean originalHealthInsuranceSetting;
 
   /**
    * Setup for Payer Tests.
@@ -37,21 +40,29 @@ public class PayerTest {
   public void setup() {
     // Clear any Payers that may have already been statically loaded.
     Payer.clear();
-    // Load in the .csv list of Payers for MA.
+    // Set the config settings correctly.
+    originalHealthInsuranceSetting
+         = Boolean.parseBoolean(Config.get("generate.health_insurance", "true"));
     Config.set("generate.health_insurance", "true");
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
+    // Load in the .csv list of Payers for MA.
     Payer.loadPayers(new Location("Massachusetts", null));
     // Get the first Payer in the list for testing.
     randomPrivatePayer = Payer.getPrivatePayers().get(0);
     // Set up Medicaid numbers.
     healthInsuranceModule = new HealthInsuranceModule();
-    povertyLevel = Double
+    double povertyLevel = Double
         .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
     medicaidLevel = 1.33 * povertyLevel;
     // Set up Mandate year.
     int mandateYear = Integer.parseInt(Config.get("generate.insurance.mandate.year", "2006"));
     mandateTime = Utilities.convertCalendarYearsToTime(mandateYear);
+  }
+
+  @After
+  public void resetHealthInusanceFlag() {
+    Config.set("generate.health_insurance", Boolean.toString(originalHealthInsuranceSetting));
   }
 
   @Test
@@ -106,6 +117,8 @@ public class PayerTest {
   @Test
   public void recieveMedicareTests() {
 
+    long olderThanSixtyFiveTime = 2100000000000L;
+
     /* Older than 65 */
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
@@ -114,10 +127,18 @@ public class PayerTest {
     person.attributes.put("end_stage_renal_disease", false);
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
-    // At time 2100000000000L, the person is 65 and qualifies for Medicare.
-    healthInsuranceModule.process(person, 2100000000000L);
-    assertEquals("Medicare", person.getPayerAtTime(2100000000000L).getName());
-    assertTrue(person.getPayerAtTime(2100000000000L).accepts(person, 2100000000000L));
+    // QOLS cannot be null for the checked years.
+    Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
+    qolsByYear.put(Utilities.getYear(olderThanSixtyFiveTime) - 1, 1.0);
+    person.attributes.put("QOL", qolsByYear);
+    // Their previous payer must not be null to prevent nullPointerExceptions.
+    person.setPayerAtTime(olderThanSixtyFiveTime
+        - Utilities.convertTime("years", 1), randomPrivatePayer);
+    // At time olderThanSixtyFiveTime, the person is 65 and qualifies for Medicare.
+    healthInsuranceModule.process(person, olderThanSixtyFiveTime);
+    assertEquals("Medicare", person.getPayerAtTime(olderThanSixtyFiveTime).getName());
+    assertTrue(person.getPayerAtTime(olderThanSixtyFiveTime)
+        .accepts(person, olderThanSixtyFiveTime));
 
     /* ESRD */
     person = new Person(0L);
@@ -173,33 +194,51 @@ public class PayerTest {
   @Test
   public void recieveDualEligibleTests() {
 
-    /* Poverty Level and Over 65 */
+    long olderThanSixtyFiveTime = 2100000000000L;
+
+    /* Below Poverty Level and Over 65 */
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "M");
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     // Below Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel - 1);
-    // At time 2100000000000L, the person is 65 and qualifies for Medicare.
-    healthInsuranceModule.process(person, 2100000000000L);
-    assertEquals("Dual Eligible", person.getPayerAtTime(2100000000000L).getName());
-    assertTrue(person.getPayerAtTime(2100000000000L).accepts(person, 2100000000000L));
-
+    // QOLS cannot be null for the checked years.
+    Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
+    qolsByYear.put(Utilities.getYear(olderThanSixtyFiveTime) - 1, 1.0);
+    person.attributes.put("QOL", qolsByYear);
+    // Their previous payer must not be null to prevent nullPointerExceptions.
+    person.setPayerAtTime(olderThanSixtyFiveTime
+        - Utilities.convertTime("years", 1), randomPrivatePayer);
+    // At time olderThanSixtyFiveTime, the person is 65 and qualifies for Medicare.
+    healthInsuranceModule.process(person, olderThanSixtyFiveTime);
+    assertEquals("Dual Eligible", person.getPayerAtTime(olderThanSixtyFiveTime).getName());
+    assertTrue(person.getPayerAtTime(olderThanSixtyFiveTime)
+        .accepts(person, olderThanSixtyFiveTime));
   }
 
   @Test
   public void recieveNoInsuranceTests() {
 
-    /* Pre 2006 Mandate */
+    /* Person is poorer than can afford the test insurance */
+    double monthlyPremium = randomPrivatePayer.getMonthlyPremium();
+    double deductible = randomPrivatePayer.getDeductible();
+    double totalYearlyCost = (monthlyPremium * 12) + deductible;
+
     person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, mandateTime - 10000);
+    person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.OCCUPATION_LEVEL, 0.1);
-    // Barely above Medicaid Income Level.
-    person.attributes.put(Person.INCOME, (int) medicaidLevel + 100);
-    healthInsuranceModule.process(person, mandateTime - 10000);
+    // Give the person an income lower than the totalYearlyCost.
+    person.attributes.put(Person.INCOME, (int) totalYearlyCost - 1);
+    // Set the medicaid poverty level to be lower than their income
+    Config.set("generate.demographics.socioeconomic.income.poverty",
+        Integer.toString((int) totalYearlyCost - 2));
+    HealthInsuranceModule.medicaidLevel = Double.parseDouble(
+        Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
+
+    healthInsuranceModule.process(person, 0L);
     assertEquals("NO_INSURANCE", person.getPayerAtTime(0L).getName());
-    
   }
 
   @Test

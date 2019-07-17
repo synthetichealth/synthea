@@ -37,7 +37,7 @@ public class Payer {
   // U.S. States loaded
   private static Set<String> statesLoaded = new HashSet<String>();
 
-  private static IPayerFinder payerFinder = buildPayerFinder();
+  private static IPayerFinder payerFinder;
   // Provider Selection Behavior algorithm choices:
   private static final String RANDOM = "random";
   private static final String BESTRATE = "best_rate";
@@ -95,6 +95,10 @@ public class Payer {
    * @param location the state being loaded.
    */
   public static void loadPayers(Location location) {
+
+    // Build the Payer Finder
+    payerFinder = buildPayerFinder();
+
     if (!statesLoaded.contains(location.state)
         || !statesLoaded.contains(Location.getAbbreviation(location.state))
         || !statesLoaded.contains(Location.getStateName(location.state))) {
@@ -382,7 +386,7 @@ public class Payer {
         boolean blind = (person.attributes.containsKey("blindness")
             && (boolean) person.attributes.get("blindness"));
         int income = (Integer) person.attributes.get(Person.INCOME);
-        boolean medicaidIncomeEligible = (income <= IPayerFinder.medicaidLevel);
+        boolean medicaidIncomeEligible = (income <= HealthInsuranceModule.medicaidLevel);
 
         boolean medicaid = (female && pregnant) || blind || medicaidIncomeEligible;
         return medicaid;
@@ -463,6 +467,13 @@ public class Payer {
   }
 
   /**
+   * Returns the number of member years covered by this payer.
+   */
+  public int getNumYearsCovered() {
+    return this.customerUtilization.values().stream().mapToInt(AtomicInteger::intValue).sum();
+  }
+
+  /**
    * Determines the copay owed for this Payer based on the type of encounter.
    * May change from encounter to entry to get access to medications/procedure/etc.
    */
@@ -500,7 +511,7 @@ public class Payer {
    * 
    * @param qols the Quality of Life Score to be added.
    */
-  public void addQOLS(double qols) {
+  public void addQols(double qols) {
     totalQOLS += qols;
   }
 
@@ -510,12 +521,5 @@ public class Payer {
   public double getQOLAverage() {
     double numYears = this.getNumYearsCovered();
     return this.totalQOLS / numYears;
-  }
-
-  /**
-   * Returns the number of member years covered by this payer.
-   */
-  public int getNumYearsCovered(){
-    return this.customerUtilization.values().stream().mapToInt(AtomicInteger::intValue).sum();
   }
 }

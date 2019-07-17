@@ -37,7 +37,6 @@ public class FHIRSTU3ExporterTest {
   @Test
   public void testFHIRSTU3Export() throws Exception {
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
-    Config.set("generate.health_insurance", "true");
 
     FhirContext ctx = FhirContext.forDstu3();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);

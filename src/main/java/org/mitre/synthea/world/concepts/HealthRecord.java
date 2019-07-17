@@ -294,6 +294,9 @@ public class HealthRecord {
       // this.payer = person.getInsurance(encounter.start);
       // double patientCopay = payer.determineCopay(encounter);
 
+      // Temporary, until can get payer at a certain time.
+      this.payer = Payer.noInsurance;
+
       this.medication = medication;
       items = new ArrayList<>();
     }

@@ -33,7 +33,6 @@ public class FHIRR4ExporterTest {
   @Test
   public void testFHIRR4Export() throws Exception {
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
-    Config.set("generate.health_insurance", "true");
 
     FhirContext ctx = FhirContext.forR4();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
@@ -46,11 +45,11 @@ public class FHIRR4ExporterTest {
 
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);
+
     for (int i = 0; i < numberOfPeople; i++) {
       int x = validationErrors.size();
       TestHelper.exportOff();
       Person person = generator.generatePerson(i);
-      Config.set("exporter.fhir.export", "true");
       FhirR4.TRANSACTION_BUNDLE = person.random.nextBoolean();
       FhirR4.USE_US_CORE_IG = person.random.nextBoolean();
       String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());

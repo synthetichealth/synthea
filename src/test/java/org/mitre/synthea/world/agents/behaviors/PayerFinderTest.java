@@ -1,7 +1,7 @@
 package org.mitre.synthea.world.agents.behaviors;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -24,6 +24,8 @@ public class PayerFinderTest {
   @Before
   public void setup() {
     person = new Person(0L);
+    person.attributes.put(Person.OCCUPATION_LEVEL, 0.5);
+    person.attributes.put(Person.INCOME, 100);
     // Load in the .csv test list of payers.
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
@@ -43,7 +45,7 @@ public class PayerFinderTest {
     PayerFinderRandom finder = new PayerFinderRandom();
     List<Payer> options = new ArrayList<Payer>();
     Payer payer = finder.find(options, person, null, 0L);
-    assertNull(payer);
+    assertEquals("NO_INSURANCE", payer.getName());
   }
 
   @Test
@@ -69,7 +71,7 @@ public class PayerFinderTest {
     PayerFinderBestRates finder = new PayerFinderBestRates();
     List<Payer> options = new ArrayList<Payer>();
     Payer payer = finder.find(options, person, null, 0L);
-    assertNull(payer);
+    assertEquals("NO_INSURANCE", payer.getName());
   }
 
   @Test

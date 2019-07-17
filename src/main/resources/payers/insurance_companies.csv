@@ -2,8 +2,8 @@
 0,10001,Medicare,,,,,1-800-633-4227,0.95,75,250,Government
 1,10002,Medicaid,,,,,877-267-2323,0.85,75,250,Government
 2,10003,Dual Eligible,,,,,877-267-2323,0.99,0,500,Government
-3,10004,Tufts Health,705 Mt Auburn Street,Watertown,MA,2472,617-972-9400,0.8,70,10000000,Private
-4,10005,Blue Cross Blue Shield,101 Huntington Avenue #1300,BOSTON,MA,2199,800-262-2583,0.75,65,10000000,Private
-5,10006,Hollywood Healthcare,915 I STREET,SACRAMENTO,MA,95814,888-888-8888,0.7,35,10000000,Private
-6,10007,Gecko Health,916 I STREET,SACRAMENTO,MA,95814,999-999-9999,0.65,55,1000,Private
+3,10004,Tufts Health,705 Mt Auburn Street,Watertown,MA,2472,617-972-9400,0.8,70,2000,Private
+4,10005,Blue Cross Blue Shield,101 Huntington Avenue #1300,BOSTON,MA,2199,800-262-2583,0.75,65,2000,Private
+5,10006,Hollywood Healthcare,915 I STREET,SACRAMENTO,MA,95814,888-888-8888,0.7,35,2000,Private
+6,10007,Gecko Health,916 I STREET,SACRAMENTO,MA,95814,999-999-9999,0.65,55,2000,Private
 7,10008,Harvard Pilgrim,93 Worcester St,Wellesley,CA,2481,888-333-4742,0.8,90,555,Private

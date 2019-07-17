@@ -5,12 +5,22 @@ import java.util.Map;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 
 public class HealthInsuranceModule extends Module {
   public static final String INSURANCE = "insurance";
+
+  // Load properties insurance numbers.
+  public static long mandateTime
+      = Utilities.convertCalendarYearsToTime(Integer.parseInt(Config
+      .get("generate.insurance.mandate.year", "2006")));
+  public static double mandateOccupation = Double
+      .parseDouble(Config.get("generate.insurance.mandate.occupation", "0.2"));
+  public static double medicaidLevel = 1.33 * Double
+      .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
 
   /**
    * HealthInsuranceModule constructor.
@@ -33,8 +43,9 @@ public class HealthInsuranceModule extends Module {
     // birthday.
     if (person.getPayerAtTime(time) == null) {
       // Update their last payer with person's QOLS for that year.
-      if(person.ageInYears(time) > 0){
-        person.getPayerAtAge(person.ageInYears(time) - 1).addQOLS(person.getQolsForYear(Utilities.getYear(time) - 1));
+      if (person.ageInYears(time) > 0) {
+        person.getPayerAtAge(person.ageInYears(time) - 1)
+            .addQols(person.getQolsForYear(Utilities.getYear(time) - 1));
       }
       // Determine the insurance for this person at this time.
       Payer newPayer = determineInsurance(person, time);
@@ -69,7 +80,8 @@ public class HealthInsuranceModule extends Module {
     } else if (Payer.getGovernmentPayer("Medicaid").accepts(person, time)) {
       return Payer.getGovernmentPayer("Medicaid");
     } else {
-      // Randomly choose one of the remaining private insurances. Returns no_insurance if a person cannot afford any of them.
+      // Randomly choose one of the remaining private payers.
+      // Returns no_insurance if a person cannot afford any of them.
       return Payer.getPayerFinder().find(Payer.getPrivatePayers(), person, null, time);
     }
   }
