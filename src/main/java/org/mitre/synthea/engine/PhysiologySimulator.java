@@ -41,9 +41,9 @@ import org.simulator.math.odes.RungeKutta_EventSolver;
 import org.simulator.sbml.SBMLinterpreter;
 
 /**
- * Physiology represents the entry point of a physiology simulation submodule.
+ * PhysiologySimulator represents the entry point of a physiology simulation submodule.
  */
-public class Physiology {
+public class PhysiologySimulator {
 
   private static final Map<String, Class> SOLVER_CLASSES;
   private static final Map<String, AbstractDESSolver> SOLVERS = new HashMap();
@@ -78,31 +78,31 @@ public class Physiology {
     try {
       sbmlPath = Paths.get(physiologyFolder.toURI());
     } catch (URISyntaxException ex) {
-      Logger.getLogger(Physiology.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, null, ex);
     }
     
   }
   
   /**
-   * Physiology constructor.
+   * PhysiologySimulator constructor.
    * @param modelPath Path to the SBML file to load relative to resources/physiology
    * @param solverName Name of the solver to use
    * @param stepSize Time step for the simulation
    * @param simDuration Amount of time to simulate
    */
-  public Physiology(String modelPath, String solverName, double stepSize, double simDuration) {
+  public PhysiologySimulator(String modelPath, String solverName, double stepSize, double simDuration) {
     this(modelPath, solverName, stepSize, simDuration, 0);
   }
 
   /**
-   * Physiology constructor.
+   * PhysiologySimulator constructor.
    * @param modelPath Path to the SBML file to load relative to resources/physiology
    * @param solverName Name of the solver to use
    * @param stepSize Time step for the simulation
    * @param simDuration Amount of time to simulate
    * @param leadTime Amount of time to run the simulation before capturing results
    */
-  public Physiology(String modelPath, String solverName, double stepSize, double simDuration, double leadTime) {
+  public PhysiologySimulator(String modelPath, String solverName, double stepSize, double simDuration, double leadTime) {
     Path modelFilepath = Paths.get(sbmlPath.toString(), modelPath);
     interpreter = getInterpreter(modelFilepath.toString());
     modelFields = interpreter.getIdentifiers();
@@ -179,7 +179,7 @@ public class Physiology {
     try {
       SOLVERS.put(solverName, (AbstractDESSolver) SOLVER_CLASSES.get(solverName).newInstance());
     } catch (InstantiationException | IllegalAccessException ex) {
-      Logger.getLogger(Physiology.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, null, ex);
       throw new RuntimeException("Unable to instantiate " + solverName + " solver");
     }
 
@@ -200,23 +200,23 @@ public class Physiology {
         return interpreter;
 
       } catch (ModelOverdeterminedException | SBMLException ex) {
-        Logger.getLogger(Physiology.class.getName()).log(Level.SEVERE, null, ex);
+        Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, null, ex);
         System.out.println("Error interpreting SBML Model...");
       }
 
     } catch (IOException | XMLStreamException ex) {
-      Logger.getLogger(Physiology.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, null, ex);
       System.out.println("Failed to load SBML document...");
     }
     return null;
   }
   
-  private static void testModel(Physiology physio, Path outputFile) {
+  private static void testModel(PhysiologySimulator physio, Path outputFile) {
     // Use all default parameters
     testModel(physio, outputFile, new HashMap());
   }
 
-  private static void testModel(Physiology physio, Path outputPath, Map<String,Double> inputs) {
+  private static void testModel(PhysiologySimulator physio, Path outputPath, Map<String,Double> inputs) {
 
     try {
       MultiTable solution = physio.run(inputs);
@@ -225,7 +225,7 @@ public class Physiology {
       try {
         writer = new PrintWriter(outputPath.toString(), "UTF-8");
       } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-        Logger.getLogger(Physiology.class.getName()).log(Level.SEVERE, null, ex);
+        Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, null, ex);
         System.out.println("Unable to open output file:" + outputPath);
         return;
       }
@@ -257,7 +257,7 @@ public class Physiology {
       System.out.println("Success!");
 
     } catch (DerivativeException ex) {
-      Logger.getLogger(Physiology.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, null, ex);
       System.out.println("Error solving Model...");
     }
   }
@@ -275,7 +275,7 @@ public class Physiology {
       try {
         statWriter = new PrintWriter("stats.csv", "UTF-8");
       } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-        Logger.getLogger(Physiology.class.getName()).log(Level.SEVERE, null, ex);
+        Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, null, ex);
         return;
       }
 
@@ -314,7 +314,7 @@ public class Physiology {
       System.out.println("Success!");
 
     } catch (DerivativeException ex) {
-      Logger.getLogger(Physiology.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, null, ex);
       System.out.println("Error solving Model...");
     }
   }
@@ -335,11 +335,11 @@ public class Physiology {
 //    inputs.put("inactive_t0", 1.0);
 //    inputs.put("inactive_t1", 1.5);
 
-    Physiology physio = new Physiology("circulation/Smith2004_CVS_human.xml", "runge_kutta", 0.01, 2, 1.0);
+    PhysiologySimulator physio = new PhysiologySimulator("circulation/Smith2004_CVS_human.xml", "runge_kutta", 0.01, 2, 1.0);
 //    Physiology physio = new Physiology("circulation/Fink2008_VentricularActionPotential.xml", "runge_kutta", 0.01, 4);
 //    Physiology physio = new Physiology("circulation/Iyer2007_Arrhythmia_CardiacDeath.xml", "adams_bashforth", 0.01, 4);
     
-    Physiology.testModel(physio, Paths.get("too_weak.csv"), inputs);
+    PhysiologySimulator.testModel(physio, Paths.get("too_weak.csv"), inputs);
     
 //    try {
 //      // Run with all default parameters
