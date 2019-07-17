@@ -283,27 +283,25 @@
       "symptom": "Nipple Discharge",
       "cause": "",
       "probability": 0.1,
-      "direct_transition": "Breast Cancer",
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/about/breast-cancer-signs-and-symptoms.html"
       ],
       "range": {
         "low": 0,
         "high": 5
-      }
-    },
-    "Breast Cancer": {
-      "type": "ConditionOnset",
-      "codes": [
+      },
+      "conditional_transition": [
         {
-          "system": "SNOMED-CT",
-          "code": 254837009,
-          "display": "Malignant neoplasm of breast (disorder)"
+          "transition": "Breast Cancer Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Breast Cancer Male"
         }
-      ],
-      "direct_transition": "Time Before Initial Doctor Visit",
-      "target_encounter": "Breast Cancer Encounter",
-      "assign_to_attribute": "breast_cancer_condition"
+      ]
     },
     "Mammogram": {
       "type": "Procedure",
@@ -1322,8 +1320,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 254837009,
-          "display": "Malignant neoplasm of breast (disorder)"
+          "code": 93796005,
+          "display": "Primary malignant neoplasm of female breast (disorder)"
         }
       ],
       "direct_transition": "Diagnose_TNM_Markers",
@@ -1345,7 +1343,7 @@
       },
       "conditional_transition": [
         {
-          "transition": "Breast Cancer Found",
+          "transition": "Switch",
           "condition": {
             "condition_type": "PriorState",
             "name": "Screening Mammogram"
@@ -2094,6 +2092,59 @@
         "unit": "years"
       },
       "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options"
+    },
+    "Breast Cancer Female": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 93796005,
+          "display": "Primary malignant neoplasm of female breast (disorder)"
+        }
+      ],
+      "direct_transition": "Time Before Initial Doctor Visit",
+      "target_encounter": "Breast Cancer Encounter",
+      "assign_to_attribute": "breast_cancer_condition"
+    },
+    "Breast Cancer Male": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "breast_cancer_condition",
+      "target_encounter": "Breast Cancer Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 93884005,
+          "display": "Primary malignant neoplasm of male breast (disorder)"
+        }
+      ],
+      "direct_transition": "Breast Cancer Female"
+    },
+    "Breast Cancer Found Male": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "breast_cancer_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 93884005,
+          "display": "Primary malignant neoplasm of male breast (disorder)"
+        }
+      ],
+      "direct_transition": "Diagnose_TNM_Markers"
+    },
+    "Switch": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Breast Cancer Found",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Breast Cancer Found Male"
+        }
+      ]
     }
   }
 }
