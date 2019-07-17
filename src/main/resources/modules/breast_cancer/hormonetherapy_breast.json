@@ -304,20 +304,6 @@
     },
     "CDK4/6 Inhibitors": {
       "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Abemaciclib",
-          "distribution": 0.33
-        },
-        {
-          "transition": "Palbociclib",
-          "distribution": 0.33
-        },
-        {
-          "transition": "Ribociclib",
-          "distribution": 0.34
-        }
-      ],
       "remarks": [
         "https://www.cancer.org/cancer/breast-cancer/treatment/targeted-therapy-for-breast-cancer.html",
         "",
@@ -336,6 +322,31 @@
         "Side effects of these drugs tend to be mild. The most common side effects are low blood cell counts and fatigue. Nausea and vomiting, mouth sores, hair loss, diarrhea, and headache are less common side effects. Very low white blood cell counts can increase the risk of serious infection.",
         "",
         ""
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Palbociclib",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_M",
+                "operator": "==",
+                "value": "M1"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_HER2",
+                "operator": "==",
+                "value": "HER2-negative"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Pick Inhibitor"
+        }
       ]
     },
     "Abemaciclib": {
@@ -526,6 +537,19 @@
       "type": "MedicationEnd",
       "referenced_by_attribute": "ER_PR_medication",
       "direct_transition": "end_encounter"
+    },
+    "Pick Inhibitor": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Abemaciclib",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Ribociclib",
+          "distribution": 0.5
+        }
+      ]
     }
   }
 }
