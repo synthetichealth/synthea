@@ -269,16 +269,35 @@ public class HealthRecord {
 
       if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
         this.payer = person.getPayerAtTime(encounter.start);
+
+        if (this.payer == null) {
+          // Person hasn't checked to get insurance at this age yet. Have to check now.
+          Module.processHealthInsuranceModule(person, encounter.start);
+          this.payer = person.getPayerAtTime(encounter.start);
+        }
+
+        // This logic may not belong in Claim.
+        // TODO - think about where to move this logic.
+        if (person.payerCoversCare(encounter)) {
+          // Person's Payer covers their care.
+          this.payer.incrementEncountersCovered(encounter.type, encounter.start);
+        } else if (person.canAffordCare(encounter)) {
+          // Person's Payer will not cover care, but they can afford it.
+          this.payer.incrementEncountersNotCovered(encounter.type, encounter.start);
+          // TODO - This might cause some weird issues down the line with noInsurance stats.
+          this.payer = Payer.noInsurance;
+        } else {
+          // Person does not recive the care.
+          this.payer.incrementEncountersNotCovered(encounter.type, encounter.start);
+          // TODO - This might cause some weird issues down the line with noInsurance stats.
+          this.payer = Payer.noInsurance;
+          // Here is where QOLS/GBD is affected.
+        }
+
       } else {
         this.payer = Payer.noInsurance;
       }
-      if (this.payer == null) {
-        // Person hasn't checked to get insurance at this age yet. Have to check now.
-        Module.processHealthInsuranceModule(person, encounter.start);
-        this.payer = person.getPayerAtTime(encounter.start);
-      }
-      this.payer.incrementEncountersCovered(encounter.type, Utilities.getYear(encounter.start));
-      
+            
       // Covered cost will be updated once the payer actually pays it.
       this.coveredCost = 0.0;
 
@@ -295,7 +314,7 @@ public class HealthRecord {
       // double patientCopay = payer.determineCopay(encounter);
 
       // Temporary, until can get payer at a certain time.
-      this.payer = Payer.noInsurance;
+      // this.payer = Payer.noInsurance;
 
       this.medication = medication;
       items = new ArrayList<>();

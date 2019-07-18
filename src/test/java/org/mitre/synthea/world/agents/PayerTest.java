@@ -111,7 +111,7 @@ public class PayerTest {
     healthRecord.encounterStart(0L, EncounterType.AMBULATORY);
     healthRecord.encounterStart(0L, EncounterType.EMERGENCY);
 
-    assertEquals(3, randomPrivatePayer.getEncounterCount());
+    assertEquals(3, randomPrivatePayer.getEncountersCoveredCount());
   }
 
   @Test

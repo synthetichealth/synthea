@@ -65,9 +65,9 @@ public class Payer {
   /* Quality of Life Score Statisitc*/
   private double totalQOLS;
   // row: year, column: type, value: count
-  private Table<Integer, String, AtomicInteger> utilization;
+  public Table<Integer, String, AtomicInteger> utilization;
   // Unique utilizers of Payer, by Person ID
-  private HashMap<String, AtomicInteger> customerUtilization;
+  public HashMap<String, AtomicInteger> customerUtilization;
 
   // Static default NO_INSURANCE object
   public static Payer noInsurance;
@@ -340,9 +340,24 @@ public class Payer {
    * @param service the service type of the encounter
    * @param year the year of the encounter
    */
-  public void incrementEncountersCovered(String service, int year) {
-    increment(year, Provider.ENCOUNTERS);
-    increment(year, Provider.ENCOUNTERS + "-" + service);
+  public void incrementEncountersCovered(String service, long time) {
+    int year = Utilities.getYear(time);
+    increment(year, "covered-" + Provider.ENCOUNTERS);
+    increment(year, "covered-" + Provider.ENCOUNTERS + "-" + service);
+  }
+
+  /**
+   * Increments the encounters the payer did not cover for their customer. Changed service from
+   * EncounterType to String to simplify for now. Would like to change back to
+   * EncounterType later.
+   * 
+   * @param service the service type of the encounter
+   * @param year the year of the encounter
+   */
+  public void incrementEncountersNotCovered(String service, long time) {
+    int year = Utilities.getYear(time);
+    increment(year, "uncovered-" + Provider.ENCOUNTERS);
+    increment(year, "uncovered-" + Provider.ENCOUNTERS + "-" + service);
   }
 
   /**
@@ -434,8 +449,15 @@ public class Payer {
   /**
    * Returns the number of encounters this payer paid for.
    */
-  public int getEncounterCount() {
-    return utilization.column(Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
+  public int getEncountersCoveredCount() {
+    return utilization.column("covered-" + Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
+  }
+
+  /**
+   * Returns the number of encounters this payer did not cover for their customers.
+   */
+  public int getEncountersUncoveredCount() {
+    return utilization.column("uncovered-" + Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
   }
 
   /**

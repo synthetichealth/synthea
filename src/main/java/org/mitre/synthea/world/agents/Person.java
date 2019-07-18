@@ -578,7 +578,7 @@ public class Person implements Serializable, QuadTreeData {
       // track of the year.
 
       // TODO - Subtract money from person's bank account &
-      // Check that they can actually afford the premium.
+      // Check that they can actually still afford the premium due to newly incurred health costs.
 
       // Pay the payer
       Payer currentPayer = this.getPayerAtTime(time);
@@ -638,5 +638,34 @@ public class Person implements Serializable, QuadTreeData {
    */
   public void addCost(double costToPatient) {
     // TODO - Affect the person's costs/income/etc.
+  }
+
+  /**
+   * Returns whether or not the person's current payer will cover this encounter.
+   * Currently returns true for everything EXCEPT when the person has NO_INSURANCE.
+   * 
+   * @param encounter the encounter that needs covering.
+   * @param time the time of the encounter.
+   */
+  public boolean payerCoversCare(Encounter encounter) {
+    Payer payer = this.getPayerAtTime(encounter.start);
+
+    if (payer.getName().equals("NO_INSURANCE")){
+      return false;
+    }
+    // Payer.coversService() & Payer.isInNetwork() always returns true. For Now.
+    return payer.coversService(EncounterType.fromString(encounter.type))
+        && payer.isInNetwork(encounter.provider);
+  }
+
+  /**
+   * Returns whether or not the person can afford to pay out of pocket for the given encounter.
+   * Currently returns false for everyone. Not sure how to determine whether someone can afford it.
+   * Need to keep in consideration previous health/insurance costs the person already incurred.
+   * 
+   * @param encounter the encounter to pay for.
+   */
+  public boolean canAffordCare(Encounter encounter) {
+    return false;
   }
 }
