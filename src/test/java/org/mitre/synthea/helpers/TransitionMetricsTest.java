@@ -95,13 +95,13 @@ public class TransitionMetricsTest {
   
   private long run(Person person, Module singleModule, long start) {
     long time = start;
-    Payer noInsurance = new Payer();
+    Payer.loadNoInsurance();
     // run until the module completes (it has no loops so it is guaranteed to)
     // reminder that process returns true when the module is "done"
     while (person.alive(time) && !singleModule.process(person, time)) {
       time += Utilities.convertTime("years", 1);
       // Give the person No Insurance to prevent null pointers.
-      person.setPayerAtTime(time, noInsurance);
+      person.setPayerAtTime(time, Payer.noInsurance);
       // hack the wellness encounter just in case
       person.attributes.put(EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + singleModule.name,
           true);

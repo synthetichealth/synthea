@@ -39,8 +39,8 @@ public class ExporterTest {
     Provider.loadProviders(location);
     record = patient.record;
     // Ensure Person's Payer is not null.
-    Payer noInsurance = new Payer();
-    patient.setPayerAtTime(time, noInsurance);
+    Payer.loadNoInsurance();
+    patient.setPayerAtTime(time, Payer.noInsurance);
   }
 
   @Test public void test_export_filter_simple_cutoff() {

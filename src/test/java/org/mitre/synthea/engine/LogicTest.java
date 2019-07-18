@@ -56,8 +56,8 @@ public class LogicTest {
     person.setProvider(EncounterType.EMERGENCY, mock);
     time = System.currentTimeMillis();
     // Ensure Person's Payer is not null.
-    Payer noInsurance = new Payer();
-    person.setPayerAtTime(time, noInsurance);
+    Payer.loadNoInsurance();
+    person.setPayerAtTime(time, Payer.noInsurance);
 
     Path modulesFolder = Paths.get("src/test/resources/generic");
     Path logicFile = modulesFolder.resolve("logic.json");

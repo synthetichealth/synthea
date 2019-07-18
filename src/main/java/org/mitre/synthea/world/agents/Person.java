@@ -645,7 +645,6 @@ public class Person implements Serializable, QuadTreeData {
    * Currently returns true for everything EXCEPT when the person has NO_INSURANCE.
    * 
    * @param encounter the encounter that needs covering.
-   * @param time the time of the encounter.
    */
   public boolean payerCoversCare(Encounter encounter) {
     Payer payer = this.getPayerAtTime(encounter.start);

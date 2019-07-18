@@ -370,6 +370,8 @@ public class HealthRecord {
     public static EncounterType fromString(String value) {
       if (value == null) {
         return EncounterType.AMBULATORY;
+      } else if (value.equals("super")) {
+        return EncounterType.INPATIENT;
       } else {
         return EncounterType.valueOf(value.toUpperCase());
       }

@@ -24,8 +24,8 @@ public class CostsTest {
   public void setup() {
     Costs.loadCostData();
     person = new Person(System.currentTimeMillis());
-    noInsurance = new Payer();
-    noInsurance.uuid = null;
+    Payer.loadNoInsurance();
+    noInsurance = Payer.noInsurance;
     time = 0L;
     person.setPayerAtTime(time, noInsurance);
   }

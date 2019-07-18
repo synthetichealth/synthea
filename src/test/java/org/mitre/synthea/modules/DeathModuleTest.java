@@ -43,8 +43,8 @@ public class DeathModuleTest {
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
     person.events.create(birthTime, Event.BIRTH, "Generator.run", true);
-    Payer noInsurance = new Payer();
-    person.setPayerAtTime(time, noInsurance);
+    Payer.loadNoInsurance();
+    person.setPayerAtTime(time, Payer.noInsurance);
   }
 
   @Test

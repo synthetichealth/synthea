@@ -40,7 +40,6 @@ public class StateTest {
 
   private Person person;
   private long time;
-  private Payer noInsurance;
 
   /**
    * Setup State tests.
@@ -67,8 +66,8 @@ public class StateTest {
     person.attributes.put(Person.BIRTHDATE, birthTime);
     person.events.create(birthTime, Event.BIRTH, "Generator.run", true);
 
-    noInsurance = new Payer();
-    person.setPayerAtTime(time, noInsurance);
+    Payer.loadNoInsurance();
+    person.setPayerAtTime(time, Payer.noInsurance);
   }
 
   protected static Module getModule(String name) {
@@ -1352,7 +1351,7 @@ public class StateTest {
       Module module = getModule("recursively_calls_submodules.json");
       while (!module.process(person, time)) {
         time += Utilities.convertTime("years", 1);
-        person.setPayerAtTime(time, noInsurance);
+        person.setPayerAtTime(time, Payer.noInsurance);
       }
 
       // main module has 5 states, with the callsubmodule counted 2x

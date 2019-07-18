@@ -19,7 +19,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 public class QualityOfLifeTest {
 
   private Person person;
-  private Payer noInsurance;
+  //private Payer noInsurance;
 
   public static final long stopTime = ((long) (365.25 * 35)) + 1;
 
@@ -33,8 +33,8 @@ public class QualityOfLifeTest {
     person.events.create(0, "birth", "QualityOfLifeTest", true);
     person.attributes.put("birthdate", 0L);
     // Ensure Person's payer is not null
-    noInsurance = new Payer();
-    person.setPayerAtTime(0L, noInsurance);
+    Payer.loadNoInsurance();
+    person.setPayerAtTime(0L, Payer.noInsurance);
 
     // Diabetes - code = 44054006; dw = 0.049
     // ADD - code = 192127007; dw = 0.045
@@ -47,7 +47,7 @@ public class QualityOfLifeTest {
     // |-----|-----|-----|-----|-----|-----|-----|
     // 0 5 10 15 20 25 30 35
 
-    person.setPayerAtTime(TimeUnit.DAYS.toMillis((long) (365.25 * 10)), noInsurance);
+    person.setPayerAtTime(TimeUnit.DAYS.toMillis((long) (365.25 * 10)), Payer.noInsurance);
     Entry addCondition = person.record.conditionStart(TimeUnit.DAYS.toMillis((long) (365.25 * 10)),
         "192127007");
     addCondition.name = "Child attention deficit disorder";

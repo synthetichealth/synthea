@@ -19,7 +19,8 @@ public class HealthRecordTest {
    */
   @Before
   public void setup() {
-    noInsurance = new Payer();
+    Payer.loadNoInsurance();
+    noInsurance = Payer.noInsurance;
     time = 0L;
   }
 

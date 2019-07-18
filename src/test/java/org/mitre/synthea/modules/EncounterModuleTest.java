@@ -18,7 +18,6 @@ public class EncounterModuleTest {
   private Location location;
   private Person person; 
   private EncounterModule module;
-  private Payer noInsurance;
   
   /**
    * Setup the Encounter Module Tests.
@@ -32,8 +31,8 @@ public class EncounterModuleTest {
     Provider.loadProviders(location);
     module = new EncounterModule();
     // Ensure Person's Payer is not null.
-    noInsurance = new Payer();
-    person.setPayerAtTime(System.currentTimeMillis(), noInsurance);
+    Payer.loadNoInsurance();
+    person.setPayerAtTime(System.currentTimeMillis(), Payer.noInsurance);
   }
 
   @Test

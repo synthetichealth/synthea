@@ -53,11 +53,13 @@ public class Payer {
   private double deductible;
   private String ownership;
 
+  /* The States that this payer covers & operates in */
+  private Set<String> statesCovered;
+  
   /* The services that this payer covers */
   // Will likely be moved to a Plans class.
-  // Is a Hashset instead of List for efficiency. If an encounterType is contained in a payer's
-  // servicesCovered, then they cover it.
-  private HashSet<String> servicesCovered;
+  // If an encounterType is contained in a payer's servicesCovered, then they cover it.
+  private Set<String> servicesCovered;
 
   // The list of plans that this Payer has.
   // private List<Plan> plans
@@ -87,7 +89,7 @@ public class Payer {
     this.costsCovered = 0.0;
     this.revenue = 0.0;
     this.monthlyPremium = 0.0;
-    this.deductible = 0.0;  // Currently, deductible is not used.
+    this.deductible = 0.0;  // Currently, deductible is not set.
     this.defaultCopay = 0.0;
     this.totalQOLS = 0.0;
   }
@@ -137,15 +139,11 @@ public class Payer {
 
     while (csv.hasNext()) {
       Map<String, String> row = csv.next();
-      String currState = row.get("state");
-      String ownership = row.get("ownership");
-      String abbreviation = Location.getAbbreviation(location.state);
+      String payerStates = row.get("states_covered").toUpperCase();
+      String abbreviation = Location.getAbbreviation(location.state).toUpperCase();
 
       // For now, only allow one U.S. state at a time.
-      // If the payer is government owned, then state does not matter.
-      if (ownership.equalsIgnoreCase("government")
-          || (location.state != null && location.state.equalsIgnoreCase(currState))
-          || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
+      if (payerStates.contains(abbreviation) || payerStates.contains("*")) {
 
         Payer parsedPayer = csvLineToPayer(row);
 
@@ -174,8 +172,11 @@ public class Payer {
     noInsurance.name = "NO_INSURANCE";
     noInsurance.ownership = "NO_INSURANCE";
     noInsurance.uuid = "NO_INSURANCE";
-    noInsurance.servicesCovered = new HashSet();
-    // TODO - state hashSet with "*" to denote all states.
+    // noInsurance 'covers' no services.
+    noInsurance.servicesCovered = new HashSet<String>();
+    // noInsurance 'covers' all states.
+    noInsurance.statesCovered = new HashSet<String>();
+    noInsurance.statesCovered.add("*");
   }
 
   /**
@@ -195,6 +196,7 @@ public class Payer {
     }
     String base = newPayer.id + newPayer.name;
     newPayer.uuid = UUID.nameUUIDFromBytes(base.getBytes()).toString();
+    newPayer.statesCovered = commaSeparatedStringToHashSet(line.remove("states_covered"));
     newPayer.servicesCovered = commaSeparatedStringToHashSet(line.remove("services_covered"));
     newPayer.defaultCopay = Double.parseDouble(line.remove("default_copay"));
     newPayer.monthlyPremium = Double.parseDouble(line.remove("monthly_premium"));
@@ -357,7 +359,7 @@ public class Payer {
    * EncounterType later.
    * 
    * @param service the service type of the encounter
-   * @param year the year of the encounter
+   * @param time the time of the encounter
    */
   public void incrementEncountersCovered(String service, long time) {
     int year = Utilities.getYear(time);
@@ -371,7 +373,7 @@ public class Payer {
    * EncounterType later.
    * 
    * @param service the service type of the encounter
-   * @param year the year of the encounter
+   * @param time the time of the encounter
    */
   public void incrementEncountersNotCovered(String service, long time) {
     int year = Utilities.getYear(time);
@@ -465,14 +467,16 @@ public class Payer {
    * Returns the number of encounters this payer paid for.
    */
   public int getEncountersCoveredCount() {
-    return utilization.column("covered-" + Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
+    return utilization.column("covered-"
+        + Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
   }
 
   /**
    * Returns the number of encounters this payer did not cover for their customers.
    */
   public int getEncountersUncoveredCount() {
-    return utilization.column("uncovered-" + Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
+    return utilization.column("uncovered-"
+        + Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
   }
 
   /**
