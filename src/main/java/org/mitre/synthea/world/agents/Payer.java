@@ -6,6 +6,7 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -52,9 +53,11 @@ public class Payer {
   private double deductible;
   private String ownership;
 
-  // The services that this payer covers. Currently unimplemented.
+  /* The services that this payer covers */
   // Will likely be moved to a Plans class.
-  // private List<EncounterType> servicesCovered;
+  // Is a Hashset instead of List for efficiency. If an encounterType is contained in a payer's
+  // servicesCovered, then they cover it.
+  private HashSet<String> servicesCovered;
 
   // The list of plans that this Payer has.
   // private List<Plan> plans
@@ -171,12 +174,14 @@ public class Payer {
     noInsurance.name = "NO_INSURANCE";
     noInsurance.ownership = "NO_INSURANCE";
     noInsurance.uuid = "NO_INSURANCE";
+    noInsurance.servicesCovered = new HashSet();
+    // TODO - state hashSet with "*" to denote all states.
   }
 
   /**
    * Given a line of parsed CSV input, convert the data into a Payer.
    * 
-   * @param line - read a csv line to a provider's attributes
+   * @param line read a csv line to a payer's attributes
    * @return the new payer.
    */
   private static Payer csvLineToPayer(Map<String, String> line) {
@@ -190,11 +195,25 @@ public class Payer {
     }
     String base = newPayer.id + newPayer.name;
     newPayer.uuid = UUID.nameUUIDFromBytes(base.getBytes()).toString();
+    newPayer.servicesCovered = commaSeparatedStringToHashSet(line.remove("services_covered"));
     newPayer.defaultCopay = Double.parseDouble(line.remove("default_copay"));
     newPayer.monthlyPremium = Double.parseDouble(line.remove("monthly_premium"));
     newPayer.ownership = line.remove("ownership");
 
     return newPayer;
+  }
+
+  /**
+   * Given a field of parsed CSV input, convert the data into a Hashset of services covered.
+   * 
+   * @param field the string to extract servicesCovered from.
+   * @return the Hashset of services covered.
+   */
+  private static HashSet<String> commaSeparatedStringToHashSet(String field) {
+    String[] commaSeparatedField = field.split("\\s*,\\s*");
+    List<String> parsedValues = Arrays.stream(commaSeparatedField).collect(Collectors.toList());
+    HashSet<String> servicesCovered = new HashSet<String>(parsedValues);
+    return servicesCovered;
   }
 
   /**
@@ -423,18 +442,14 @@ public class Payer {
   }
 
   /**
-   * Returns whether the payer covers the given encounter type. For now, insurance
-   * will cover all services.
+   * Returns whether the payer covers the given encounter type.
    * 
    * @param service the encounter type to check
    * @return whether the payer covers the given encounter type
    */
   public boolean coversService(EncounterType service) {
-    if (service == null) {
-      return true;
-    }
-    // Will check if payer actually covers service here.
-    return true;
+    return service == null
+        || this.servicesCovered.contains(service.toString());
   }
 
   /**

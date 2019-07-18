@@ -43,7 +43,7 @@ public interface IPayerFinder {
         && (person.canAfford(payer) || (time >= HealthInsuranceModule.mandateTime
         && occupation >= HealthInsuranceModule.mandateOccupation))
         && payer.isInNetwork(null)
-        && (payer.coversService(service));
+        && (payer.coversService(service)); // For a null service, Payer.coversService returns true.
   }
 
   /**

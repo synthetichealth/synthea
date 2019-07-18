@@ -650,10 +650,7 @@ public class Person implements Serializable, QuadTreeData {
   public boolean payerCoversCare(Encounter encounter) {
     Payer payer = this.getPayerAtTime(encounter.start);
 
-    if (payer.getName().equals("NO_INSURANCE")){
-      return false;
-    }
-    // Payer.coversService() & Payer.isInNetwork() always returns true. For Now.
+    // Payer.isInNetwork() always returns true. For Now.
     return payer.coversService(EncounterType.fromString(encounter.type))
         && payer.isInNetwork(encounter.provider);
   }
