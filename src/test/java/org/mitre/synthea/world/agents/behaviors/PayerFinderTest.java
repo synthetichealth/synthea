@@ -2,7 +2,6 @@ package org.mitre.synthea.world.agents.behaviors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,16 +31,10 @@ public class PayerFinderTest {
   }
 
   @Test
-  public void payerFinderRandomTest() {
+  public void noPayersRandom() {
     Config.set("generate.payers.selection_behavior", "random");
     Payer.clear();
     Payer.loadPayers(new Location("Massachusetts", null));
-    Payer.getPayerFinder().find(Payer.getPrivatePayers(), person, null, 0L);
-    assertTrue(Payer.getPayerFinder() instanceof PayerFinderRandom);
-  }
-
-  @Test
-  public void noPayersRandom() {
     PayerFinderRandom finder = new PayerFinderRandom();
     List<Payer> options = new ArrayList<Payer>();
     Payer payer = finder.find(options, person, null, 0L);
@@ -52,22 +45,16 @@ public class PayerFinderTest {
   public void onePayerRandom() {
     PayerFinderRandom finder = new PayerFinderRandom();
     List<Payer> options = new ArrayList<Payer>();
-    options.add(new Payer());
+    options.add(Payer.getPrivatePayers().get(0));
     Payer payer = finder.find(options, person, null, 0L);
     assertNotNull(payer);
   }
 
   @Test
-  public void payerFinderBestRateTest() {
+  public void noPayersBestRate() {
     Config.set("generate.payers.selection_behavior", "best_rate");
     Payer.clear();
     Payer.loadPayers(new Location("Massachusetts", null));
-    Payer.getPayerFinder().find(Payer.getPrivatePayers(), person, null, 0L);
-    assertTrue(Payer.getPayerFinder() instanceof PayerFinderBestRates);
-  }
-
-  @Test
-  public void noPayersBestRate() {
     PayerFinderBestRates finder = new PayerFinderBestRates();
     List<Payer> options = new ArrayList<Payer>();
     Payer payer = finder.find(options, person, null, 0L);
@@ -76,9 +63,12 @@ public class PayerFinderTest {
 
   @Test
   public void onePayerBestRate() {
+    Config.set("generate.payers.selection_behavior", "best_rate");
+    Payer.clear();
+    Payer.loadPayers(new Location("Massachusetts", null));
     PayerFinderBestRates finder = new PayerFinderBestRates();
     List<Payer> options = new ArrayList<Payer>();
-    options.add(new Payer());
+    options.add(Payer.getPrivatePayers().get(0));
     Payer payer = finder.find(options, person, null, 0L);
     assertNotNull(payer);
   }
@@ -89,7 +79,5 @@ public class PayerFinderTest {
     Config.set("generate.payers.selection_behavior", "bestrate");
     Payer.clear();
     Payer.loadPayers(new Location("Massachusetts", null));
-    Payer.getPayerFinder().find(Payer.getPrivatePayers(), person, null, 0L);
-    assertTrue(Payer.getPayerFinder() instanceof PayerFinderBestRates);
   }
 }

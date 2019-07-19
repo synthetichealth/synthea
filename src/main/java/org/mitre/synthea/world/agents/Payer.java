@@ -30,24 +30,25 @@ import org.mitre.synthea.world.geography.Location;
 
 public class Payer {
 
-  // ArrayList of all private payers imported
+  /* ArrayList of all Private Payers imported */
   private static ArrayList<Payer> privatePayerList = new ArrayList<Payer>();
-  // ArrayList of all government payers imported
+  /* Map of all Government Payers imported */
   private static Map<String, Payer> governmentPayerMap = new HashMap<String,Payer>();
 
-  // U.S. States loaded
+  /* U.S. States loaded */
   private static Set<String> statesLoaded = new HashSet<String>();
 
+  /* Payer Finder */
   private static IPayerFinder payerFinder;
   // Provider Selection Behavior algorithm choices:
   private static final String RANDOM = "random";
   private static final String BESTRATE = "best_rate";
 
-  /* Payer information */
-  private Map<String, Object> attributes;
-  public String uuid;
-  private String id;
-  private String name;
+  /* Payer Information */
+  private final Map<String, Object> attributes;
+  private final String name;
+  private final String id;
+  public final String uuid;
   private double defaultCopay;
   private double monthlyPremium;
   private double deductible;
@@ -55,42 +56,45 @@ public class Payer {
 
   /* The States that this payer covers & operates in */
   private Set<String> statesCovered;
-  
+
   /* The services that this payer covers */
   // Will likely be moved to a Plans class.
   // If an encounterType is contained in a payer's servicesCovered, then they cover it.
   private Set<String> servicesCovered;
-
-  // The list of plans that this Payer has.
+  /* The list of plans that this Payer has. */
   // private List<Plan> plans
 
-  /* Payer statistics. May be better to move to attributes. */
+  /* Payer Statistics */
   private double costsCovered;
   private double revenue;
-  /* Quality of Life Score Statisitc*/
-  private double totalQOLS;
+  private double totalQOLS; // Total customer quality of life scores.
   // row: year, column: type, value: count
-  public Table<Integer, String, AtomicInteger> utilization;
+  public Table<Integer, String, AtomicInteger> encounterUtilization;
   // Unique utilizers of Payer, by Person ID
   public HashMap<String, AtomicInteger> customerUtilization;
 
-  // Static default NO_INSURANCE object
+  /* Default NO_INSURANCE object */
   public static Payer noInsurance;
 
   /**
-   * Create a new Payer with no information.
+   * Payer Constructor.
    */
-  public Payer() {
-    this.uuid = UUID.randomUUID().toString();
+  private Payer(String name, String id) {
+    if (name == null || name.isEmpty()) {
+      throw new RuntimeException("ERROR: Payer must have a non-null name.");
+    }
+    this.name = name;
+    this.id = id;
+    this.uuid = UUID.nameUUIDFromBytes((this.id + this.name).getBytes()).toString();
     this.attributes = new LinkedTreeMap<>();
-    this.utilization = HashBasedTable.create();
-    this.customerUtilization = new HashMap<String, AtomicInteger>();
-    this.ownership = "";
-    this.costsCovered = 0.0;
-    this.revenue = 0.0;
+    this.defaultCopay = 0.0;
     this.monthlyPremium = 0.0;
     this.deductible = 0.0;  // Currently, deductible is not set.
-    this.defaultCopay = 0.0;
+    this.ownership = "";
+    this.encounterUtilization = HashBasedTable.create();
+    this.customerUtilization = new HashMap<String, AtomicInteger>();
+    this.costsCovered = 0.0;
+    this.revenue = 0.0;
     this.totalQOLS = 0.0;
   }
 
@@ -147,11 +151,6 @@ public class Payer {
 
         Payer parsedPayer = csvLineToPayer(row);
 
-        // Add remaining columns we didn't map to first-class fields to attributes map.
-        for (Map.Entry<String, String> e : row.entrySet()) {
-          parsedPayer.attributes.put(e.getKey(), e.getValue());
-        }
-
         // Put the payer in their correct List/Map based on Government/Private.
         if (parsedPayer.ownership.equalsIgnoreCase("government")) {
           // Government payers go in a map, allowing for easy retrieval of specific gov payers.
@@ -168,11 +167,9 @@ public class Payer {
    * Loads the noInsurance Payer.
    */
   public static void loadNoInsurance() {
-    noInsurance = new Payer();
-    noInsurance.name = "NO_INSURANCE";
+    noInsurance = new Payer("NO_INSURANCE", "000000");
     noInsurance.ownership = "NO_INSURANCE";
-    noInsurance.uuid = "NO_INSURANCE";
-    // noInsurance 'covers' no services.
+    // noInsurance does not 'cover' any services.
     noInsurance.servicesCovered = new HashSet<String>();
     // noInsurance 'covers' all states.
     noInsurance.statesCovered = new HashSet<String>();
@@ -187,35 +184,30 @@ public class Payer {
    */
   private static Payer csvLineToPayer(Map<String, String> line) {
 
-    Payer newPayer = new Payer();
     // Uses .remove() instead of .get() so we can iterate over the remaining keys later.
-    newPayer.id = line.remove("id");
-    newPayer.name = line.remove("name");
-    if (newPayer.name == null || newPayer.name.isEmpty()) {
-      throw new RuntimeException("ERROR: Payer must have a non-null name.");
-    }
-    String base = newPayer.id + newPayer.name;
-    newPayer.uuid = UUID.nameUUIDFromBytes(base.getBytes()).toString();
+    Payer newPayer = new Payer(line.remove("name"), line.remove("id"));
     newPayer.statesCovered = commaSeparatedStringToHashSet(line.remove("states_covered"));
     newPayer.servicesCovered = commaSeparatedStringToHashSet(line.remove("services_covered"));
     newPayer.defaultCopay = Double.parseDouble(line.remove("default_copay"));
     newPayer.monthlyPremium = Double.parseDouble(line.remove("monthly_premium"));
     newPayer.ownership = line.remove("ownership");
-
+    // Add remaining columns we didn't map to first-class fields to attributes map.
+    for (Map.Entry<String, String> e : line.entrySet()) {
+      newPayer.attributes.put(e.getKey(), e.getValue());
+    }
     return newPayer;
   }
 
   /**
-   * Given a field of parsed CSV input, convert the data into a Hashset of services covered.
+   * Given a Comma Seperated String, convert the data into a Set.
    * 
-   * @param field the string to extract servicesCovered from.
-   * @return the Hashset of services covered.
+   * @param field the string to extract the Set from.
+   * @return the HashSet of services covered.
    */
-  private static HashSet<String> commaSeparatedStringToHashSet(String field) {
+  private static Set<String> commaSeparatedStringToHashSet(String field) {
     String[] commaSeparatedField = field.split("\\s*,\\s*");
     List<String> parsedValues = Arrays.stream(commaSeparatedField).collect(Collectors.toList());
-    HashSet<String> servicesCovered = new HashSet<String>(parsedValues);
-    return servicesCovered;
+    return new HashSet<String>(parsedValues);
   }
 
   /**
@@ -274,7 +266,7 @@ public class Payer {
    * Determines the algorithm to use for patients to find a Payer.
    */
   private static IPayerFinder buildPayerFinder() {
-    IPayerFinder finder = null;
+    IPayerFinder finder;
     String behavior = Config.get("generate.payers.selection_behavior").toLowerCase();
     switch (behavior) {
       case BESTRATE:
@@ -290,12 +282,15 @@ public class Payer {
   }
 
   /**
-   * Returns the selection algorithm for payers in this simulation.
+   * Returns a Payer that the person can qualify for.
    * 
-   * @return the payer selection algorithm
+   * @param person the person who needs to find insurance.
+   * @param service the EncounterType the person would like covered.
+   * @param time the time that the person requires insurance.
+   * @return a payer who the person can accept and vice versa.
    */
-  public static IPayerFinder getPayerFinder() {
-    return payerFinder;
+  public static Payer findPayer(Person person, EncounterType service, long time) {
+    return Payer.payerFinder.find(Payer.getPrivatePayers(), person, service, time);
   }
 
   /**
@@ -363,8 +358,8 @@ public class Payer {
    */
   public void incrementEncountersCovered(String service, long time) {
     int year = Utilities.getYear(time);
-    increment(year, "covered-" + Provider.ENCOUNTERS);
-    increment(year, "covered-" + Provider.ENCOUNTERS + "-" + service);
+    incrementEncounters(year, "covered-" + Provider.ENCOUNTERS);
+    incrementEncounters(year, "covered-" + Provider.ENCOUNTERS + "-" + service);
   }
 
   /**
@@ -377,18 +372,21 @@ public class Payer {
    */
   public void incrementEncountersNotCovered(String service, long time) {
     int year = Utilities.getYear(time);
-    increment(year, "uncovered-" + Provider.ENCOUNTERS);
-    increment(year, "uncovered-" + Provider.ENCOUNTERS + "-" + service);
+    incrementEncounters(year, "uncovered-" + Provider.ENCOUNTERS);
+    incrementEncounters(year, "uncovered-" + Provider.ENCOUNTERS + "-" + service);
   }
 
   /**
-   * Increments utiilization for a given year and service.
+   * Increments encounter utiilization for a given year and encounter type.
+   * 
+   * @param year the year of the encounter to add
+   * @param key the key (the encounter type and whether it was covered/uncovered)
    */
-  private synchronized void increment(Integer year, String key) {
-    if (!utilization.contains(year, key)) {
-      utilization.put(year, key, new AtomicInteger(0));
+  private synchronized void incrementEncounters(Integer year, String key) {
+    if (!encounterUtilization.contains(year, key)) {
+      encounterUtilization.put(year, key, new AtomicInteger(0));
     }
-    utilization.get(year, key).incrementAndGet();
+    encounterUtilization.get(year, key).incrementAndGet();
   }
 
   /**
@@ -467,7 +465,7 @@ public class Payer {
    * Returns the number of encounters this payer paid for.
    */
   public int getEncountersCoveredCount() {
-    return utilization.column("covered-"
+    return encounterUtilization.column("covered-"
         + Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
   }
 
@@ -475,7 +473,7 @@ public class Payer {
    * Returns the number of encounters this payer did not cover for their customers.
    */
   public int getEncountersUncoveredCount() {
-    return utilization.column("uncovered-"
+    return encounterUtilization.column("uncovered-"
         + Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
   }
 

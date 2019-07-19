@@ -609,7 +609,7 @@ public class Person implements Serializable, QuadTreeData {
    * 
    * @param payer the payer to check.
    */
-  public boolean canAfford(Payer payer) {
+  public boolean canAffordPayer(Payer payer) {
     int income = (Integer) this.attributes.get(Person.INCOME);
     double yearlyPremiumTotal = payer.getMonthlyPremium() * 12;
     double yearlyDeductible = payer.getDeductible();

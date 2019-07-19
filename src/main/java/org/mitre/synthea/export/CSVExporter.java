@@ -214,7 +214,7 @@ public class CSVExporter {
     providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,UTILIZATION");
     providers.write(NEWLINE);
     if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-      payers.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,AMOUNT_COVERED,REVENUE,"
+      payers.write("Id,NAME,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,REVENUE,"
           + "COVERED_ENCOUNTERS,UNCOVERED_ENCOUNTERS,UNIQUE_CUSTOMERS,QOLS_AVG,MEMBER_MONTHS");
       payers.write(NEWLINE);
       payerTransitions.write("PATIENT,YEAR,PAYER,OWNERSHIP");
@@ -885,13 +885,14 @@ public class CSVExporter {
   }
 
   private void payer(Payer payer) throws IOException {
-    // Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,AMOUNT_PAID,REVENUE,
+    // Id,NAME,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_PAID,REVENUE,
     // COVERED_ENCOUNTERS,UNCOVERED_ENCOUNTERS,UNIQUE_CUSTOMERS,QOLS_AVG,MEMBER_MONTHS
 
     StringBuilder s = new StringBuilder();
     s.append(payer.getResourceID()).append(',');
     s.append(payer.getName()).append(',');
-    for (String attribute : new String[] { "address", "city", "state", "zip", "phone" }) {
+    for (String attribute : new String[]
+        { "address", "city", "state_headquartered", "zip", "phone" }) {
       String value = (String) payer.getAttributes().getOrDefault(attribute, "");
       s.append(clean(value)).append(',');
     }

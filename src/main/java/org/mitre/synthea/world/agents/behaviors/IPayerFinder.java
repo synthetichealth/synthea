@@ -40,7 +40,7 @@ public interface IPayerFinder {
     double occupation = (Double) person.attributes.get(Person.OCCUPATION_LEVEL);
 
     return payer.accepts(person, time)
-        && (person.canAfford(payer) || (time >= HealthInsuranceModule.mandateTime
+        && (person.canAffordPayer(payer) || (time >= HealthInsuranceModule.mandateTime
         && occupation >= HealthInsuranceModule.mandateOccupation))
         && payer.isInNetwork(null)
         && (payer.coversService(service)); // For a null service, Payer.coversService returns true.

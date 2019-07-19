@@ -284,12 +284,12 @@ public class HealthRecord {
         } else if (person.canAffordCare(encounter)) {
           // Person's Payer will not cover care, but they can afford it.
           this.payer.incrementEncountersNotCovered(encounter.type, encounter.start);
-          // TODO - This might cause some weird issues down the line with noInsurance stats.
+          // TODO - This might cause some issues down the line with noInsurance stats.
           this.payer = Payer.noInsurance;
         } else {
           // Person does not recive the care.
           this.payer.incrementEncountersNotCovered(encounter.type, encounter.start);
-          // TODO - This might cause some weird issues down the line with noInsurance stats.
+          // TODO - This might cause some issues down the line with noInsurance stats.
           this.payer = Payer.noInsurance;
           // Here is where QOLS/GBD is affected.
         }

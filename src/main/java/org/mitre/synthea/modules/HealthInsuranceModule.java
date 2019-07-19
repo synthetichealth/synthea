@@ -82,7 +82,7 @@ public class HealthInsuranceModule extends Module {
     } else {
       // Randomly choose one of the remaining private payers.
       // Returns no_insurance if a person cannot afford any of them.
-      return Payer.getPayerFinder().find(Payer.getPrivatePayers(), person, null, time);
+      return Payer.findPayer(person, null, time);
     }
   }
 
