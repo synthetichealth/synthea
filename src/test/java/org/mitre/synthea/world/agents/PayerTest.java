@@ -22,7 +22,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
-
 import org.mitre.synthea.world.geography.Location;
 
 public class PayerTest {
@@ -371,18 +370,36 @@ public class PayerTest {
   }
   
   @Test
-  public void costToPayer() {
+  public void costsCoveredByPayer() {
 
     Costs.loadCostData();
     person = new Person(0L);
     person.setPayerAtTime(0L, testPrivatePayer1);
     Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
+    Entry fakeEncounter = person.record.encounterStart(0L, EncounterType.WELLNESS);
+    fakeEncounter.codes.add(code);
+    double totalCost = Costs.calculateCost(fakeEncounter, person, null);
+    // The total cost should equal the Cost to the Payer summed with the Payer's copay amount.
+    assertEquals(totalCost, testPrivatePayer1.getAmountCovered()
+        + testPrivatePayer1.determineCopay(null), 0.1);
+    // The total cost should equal the Payer's uncovered costs plus the Payer's covered costs.
+    assertEquals(totalCost, testPrivatePayer1.getAmountCovered()
+        + testPrivatePayer1.getAmountUncovered(), 0.1);
+  }
+
+  @Test
+  public void costsUncoveredByNoInsurance() {
+
+    Costs.loadCostData();
+    Payer.loadNoInsurance();
+    person = new Person(0L);
+    person.setPayerAtTime(0L, Payer.noInsurance);
+    Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
     Entry fakeProcedure = person.record.procedure(0L, code.display);
     fakeProcedure.codes.add(code);
-    double totalCost = Costs.calculateCost(fakeProcedure, person, null, testPrivatePayer1);
-    // The total cost should equal the Cost to the Payer summed with the Payer's copay amount.
-    assertEquals(totalCost, testPrivatePayer1.getAmountPaid()
-        + testPrivatePayer1.determineCopay(null), 0.1);
+    double totalCost = Costs.calculateCost(fakeProcedure, person, null);
+    assertEquals(0, Payer.noInsurance.getAmountCovered(), 0.1);
+    assertEquals(totalCost, Payer.noInsurance.getAmountUncovered(), 0.1);
   }
 
   @Test(expected = RuntimeException.class)
@@ -404,7 +421,7 @@ public class PayerTest {
     HealthRecord healthRecord = new HealthRecord(person);
     Encounter encounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
     encounter.codes.add(new Code("SNOMED-CT","705129","Fake SNOMED for null entry"));
-    assertTrue(testPrivatePayer1.coversService(EncounterType.fromString(encounter.type)));
+    assertTrue(testPrivatePayer1.coversService(encounter.type));
   }
 
   @Test
@@ -415,14 +432,15 @@ public class PayerTest {
     HealthRecord healthRecord = new HealthRecord(person);
     Encounter encounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
     encounter.codes.add(new Code("SNOMED-CT","705129","Fake SNOMED for null entry"));
-    assertFalse(testPrivatePayer2.coversService(EncounterType.fromString(encounter.type)));
+    assertFalse(testPrivatePayer2.coversService(encounter.type));
   }
 
   @Test
   public void personCanAffordPayer() {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    int yearlyCostOfPayer = (int) ((testPrivatePayer1.getMonthlyPremium() * 12) + testPrivatePayer1.getDeductible());
+    int yearlyCostOfPayer = (int) ((testPrivatePayer1.getMonthlyPremium() * 12)
+        + testPrivatePayer1.getDeductible());
     person.attributes.put(Person.INCOME, yearlyCostOfPayer + 1);
     assertTrue(person.canAffordPayer(testPrivatePayer1));
   }
@@ -431,7 +449,8 @@ public class PayerTest {
   public void personCannotAffordPayer() {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    int yearlyCostOfPayer = (int) ((testPrivatePayer1.getMonthlyPremium() * 12) + testPrivatePayer1.getDeductible());
+    int yearlyCostOfPayer = (int) ((testPrivatePayer1.getMonthlyPremium() * 12)
+        + testPrivatePayer1.getDeductible());
     person.attributes.put(Person.INCOME, yearlyCostOfPayer - 1);
     assertFalse(person.canAffordPayer(testPrivatePayer1));
   }
@@ -454,12 +473,13 @@ public class PayerTest {
       long currentTime = startTime + Utilities.convertTime("years", year);
       healthInsuranceModule.process(person, currentTime);
     }
-    int totalYearsCovered = testPrivatePayer1.getNumYearsCovered() + testPrivatePayer2.getNumYearsCovered();
+    int totalYearsCovered = testPrivatePayer1.getNumYearsCovered()
+        + testPrivatePayer2.getNumYearsCovered();
     assertEquals(55, totalYearsCovered);
   }
 
   @Test
-  public void payerInProviderNetworkTest() {
+  public void payerInProviderNetwork() {
     // For now, this returns true by default because it is not yet implememted.
     assertTrue(testPrivatePayer1.isInNetwork(null));
   }

@@ -26,6 +26,7 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.VitalSign;
 
 public class Person implements Serializable, QuadTreeData {
@@ -641,17 +642,16 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
-   * Returns whether or not the person's current payer will cover this encounter.
-   * Currently returns true for everything EXCEPT when the person has NO_INSURANCE.
+   * Returns whether or not the person's current payer will cover the given entry.
+   * For now, this always returns true if the entry is not an encounter.
    * 
-   * @param encounter the encounter that needs covering.
+   * @param entry the entry that needs covering.
    */
-  public boolean payerCoversCare(Encounter encounter) {
-    Payer payer = this.getPayerAtTime(encounter.start);
-
+  public boolean payerCoversCare(Entry entry) {
+    Payer payer = this.getPayerAtTime(entry.start);
     // Payer.isInNetwork() always returns true. For Now.
-    return payer.coversService(EncounterType.fromString(encounter.type))
-        && payer.isInNetwork(encounter.provider);
+    return payer.coversService(entry.type)
+        && payer.isInNetwork(null);
   }
 
   /**
@@ -659,9 +659,9 @@ public class Person implements Serializable, QuadTreeData {
    * Currently returns false for everyone. Not sure how to determine whether someone can afford it.
    * Need to keep in consideration previous health/insurance costs the person already incurred.
    * 
-   * @param encounter the encounter to pay for.
+   * @param entry the entry to pay for.
    */
-  public boolean canAffordCare(Encounter encounter) {
+  public boolean canAffordCare(Entry entry) {
     return false;
   }
 }

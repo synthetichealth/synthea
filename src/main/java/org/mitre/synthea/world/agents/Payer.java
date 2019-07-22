@@ -26,6 +26,8 @@ import org.mitre.synthea.world.agents.behaviors.PayerFinderBestRates;
 import org.mitre.synthea.world.agents.behaviors.PayerFinderRandom;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.HealthRecord.Entry;
+import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.geography.Location;
 
 public class Payer {
@@ -66,6 +68,7 @@ public class Payer {
 
   /* Payer Statistics */
   private double costsCovered;
+  private double costsUncovered;
   private double revenue;
   private double totalQOLS; // Total customer quality of life scores.
   // row: year, column: type, value: count
@@ -94,6 +97,7 @@ public class Payer {
     this.encounterUtilization = HashBasedTable.create();
     this.customerUtilization = new HashMap<String, AtomicInteger>();
     this.costsCovered = 0.0;
+    this.costsUncovered = 0.0;
     this.revenue = 0.0;
     this.totalQOLS = 0.0;
   }
@@ -349,31 +353,46 @@ public class Payer {
   }
 
   /**
-   * Increments the encounters and encounterTypes the payer has covered. Changed service from
-   * EncounterType to String to simplify for now. Would like to change back to
-   * EncounterType later.
+   * Increments the entries covered by this payer.
    * 
-   * @param service the service type of the encounter
-   * @param time the time of the encounter
+   * @param entry the entry covered.
    */
-  public void incrementEncountersCovered(String service, long time) {
-    int year = Utilities.getYear(time);
-    incrementEncounters(year, "covered-" + Provider.ENCOUNTERS);
-    incrementEncounters(year, "covered-" + Provider.ENCOUNTERS + "-" + service);
-  }
+  public void incrementEntriesCovered(Entry entry) {
 
+    String entryType;
+
+    if (entry instanceof Encounter) {
+      entryType = Provider.ENCOUNTERS;
+    } else if (entry instanceof Medication) { 
+      entryType = "medications";
+    } else {
+      throw new RuntimeException("Attempted to inrement Payer entries with invalid type "
+          + entry.getClass());
+    }
+    incrementEncounters(Utilities.getYear(entry.start), "covered-" + entryType);
+    incrementEncounters(Utilities.getYear(entry.start), "covered-" + entryType + "-" + entry.type);
+  }
+  
   /**
-   * Increments the encounters the payer did not cover for their customer. Changed service from
-   * EncounterType to String to simplify for now. Would like to change back to
-   * EncounterType later.
+   * Increments the entries covered by this payer.
    * 
-   * @param service the service type of the encounter
-   * @param time the time of the encounter
+   * @param entry the entry covered.
    */
-  public void incrementEncountersNotCovered(String service, long time) {
-    int year = Utilities.getYear(time);
-    incrementEncounters(year, "uncovered-" + Provider.ENCOUNTERS);
-    incrementEncounters(year, "uncovered-" + Provider.ENCOUNTERS + "-" + service);
+  public void incrementEntriesNotCovered(Entry entry) {
+
+    String entryType;
+
+    if (entry instanceof Encounter) {
+      entryType = Provider.ENCOUNTERS;
+    } else if (entry instanceof Medication) {
+      entryType = "medications";
+    } else {
+      throw new RuntimeException("Attempted to inrement Payer entries with invalid type "
+          + entry.getClass());
+    }
+    incrementEncounters(Utilities.getYear(entry.start), "uncovered-" + entryType);
+    incrementEncounters(Utilities.getYear(entry.start), "uncovered-" + entryType
+        + "-" + entry.type);
   }
 
   /**
@@ -442,14 +461,15 @@ public class Payer {
   }
 
   /**
-   * Returns whether the payer covers the given encounter type.
+   * Returns whether the payer covers the given service.
    * 
-   * @param service the encounter type to check
-   * @return whether the payer covers the given encounter type
+   * @param service the entry type to check
+   * @return whether the payer covers the given service
    */
-  public boolean coversService(EncounterType service) {
+  public boolean coversService(String service) {
     return service == null
-        || this.servicesCovered.contains(service.toString());
+        || this.servicesCovered.contains(service)
+        || this.servicesCovered.contains("*");
   }
 
   /**
@@ -459,6 +479,15 @@ public class Payer {
    */
   public void addCost(double costToPayer) {
     this.costsCovered += costToPayer;
+  }
+
+  /**
+   * Increases the costs the payer did not cover by the given amount.
+   * 
+   * @param costToPatient the costs that the payer did not cover.
+   */
+  public void addUncoveredCost(double costToPatient) {
+    this.costsUncovered += costToPatient;
   }
 
   /**
@@ -494,8 +523,15 @@ public class Payer {
   /**
    * Returns the amount of money the payer paid to providers.
    */
-  public double getAmountPaid() {
+  public double getAmountCovered() {
     return this.costsCovered;
+  }
+
+  /**
+   * Returns the amount of money the payer did not cover.
+   */
+  public double getAmountUncovered() {
+    return this.costsUncovered;
   }
 
   /**

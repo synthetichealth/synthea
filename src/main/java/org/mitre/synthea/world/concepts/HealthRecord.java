@@ -114,17 +114,11 @@ public class HealthRecord {
     }
 
     public BigDecimal cost() {
-      if (cost == null) {
+      if (this.cost == null) {
         Person patient = record.person;
         Provider provider = record.provider;
-        Payer payer;
-        if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-          payer = person.getPayerAtTime(start);
-        } else {
-          payer = Payer.noInsurance;
-        }
-        cost = BigDecimal.valueOf(Costs.calculateCost(this, patient, provider, payer));
-        cost = cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
+        this.cost = BigDecimal.valueOf(Costs.calculateCost(this, patient, provider));
+        this.cost = this.cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
       }
       return cost;
     }
@@ -267,57 +261,57 @@ public class HealthRecord {
      */
     public Claim(Encounter encounter) {
 
-      if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-        this.payer = person.getPayerAtTime(encounter.start);
-
-        if (this.payer == null) {
-          // Person hasn't checked to get insurance at this age yet. Have to check now.
-          Module.processHealthInsuranceModule(person, encounter.start);
-          this.payer = person.getPayerAtTime(encounter.start);
-        }
-
-        // This logic may not belong in Claim.
-        // TODO - think about where to move this logic.
-        if (person.payerCoversCare(encounter)) {
-          // Person's Payer covers their care.
-          this.payer.incrementEncountersCovered(encounter.type, encounter.start);
-        } else if (person.canAffordCare(encounter)) {
-          // Person's Payer will not cover care, but they can afford it.
-          this.payer.incrementEncountersNotCovered(encounter.type, encounter.start);
-          // TODO - This might cause some issues down the line with noInsurance stats.
-          this.payer = Payer.noInsurance;
-        } else {
-          // Person does not recive the care.
-          this.payer.incrementEncountersNotCovered(encounter.type, encounter.start);
-          // TODO - This might cause some issues down the line with noInsurance stats.
-          this.payer = Payer.noInsurance;
-          // Here is where QOLS/GBD is affected.
-        }
-
-      } else {
-        this.payer = Payer.noInsurance;
-      }
-            
-      // Covered cost will be updated once the payer actually pays it.
-      this.coveredCost = 0.0;
-
+      this((Entry) encounter);
       this.encounter = encounter;
-      this.items = new ArrayList<>();
     }
 
     /**
      * Constructor of a Claim for a medication.
      */
     public Claim(Medication medication) {
-      // baseCost = 255.0;
-      // this.payer = person.getInsurance(encounter.start);
-      // double patientCopay = payer.determineCopay(encounter);
 
-      // Temporary, until can get payer at a certain time.
-      // this.payer = Payer.noInsurance;
-
+      this((Entry) medication);
       this.medication = medication;
-      items = new ArrayList<>();
+    }
+
+    /**
+     * Constructor of a Claim for a medication.
+     */
+    private Claim(Entry entry) {
+      if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+        this.payer = person.getPayerAtTime(entry.start);
+
+        if (this.payer == null) {
+          // Person hasn't checked to get insurance at this age yet. Have to check now.
+          Module.processHealthInsuranceModule(person, entry.start);
+          this.payer = person.getPayerAtTime(entry.start);
+        }
+
+        // This logic may not belong in Claim.
+        // TODO - think about where to move this logic.
+        if (person.payerCoversCare(entry)) {
+          // Person's Payer covers their care.
+          this.payer.incrementEntriesCovered(entry);
+        } else if (person.canAffordCare(entry)) {
+          // Person's Payer will not cover care, but they can afford it.
+          this.payer.incrementEntriesNotCovered(entry);
+          // TODO - This might cause some issues down the line with noInsurance stats.
+          this.payer = Payer.noInsurance;
+        } else {
+          // Person does not recive the medication.
+          this.payer.incrementEntriesNotCovered(entry);
+          // TODO - This might cause some issues with noInsurance statistics.
+          this.payer = Payer.noInsurance;
+          // Here is where QOLS/GBD should be affected.
+        }
+      } else {
+        this.payer = Payer.noInsurance;
+      }
+
+      // Covered cost will be updated once the payer actually pays it.
+      this.coveredCost = 0.0;
+      // Additional items as part of this entry.
+      this.items = new ArrayList<>();
     }
 
     /**

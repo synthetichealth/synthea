@@ -125,13 +125,15 @@ public class Costs {
    * @param entry    Entry to calculate cost of.
    * @param patient  Person to whom the entry refers to
    * @param provider Provider that performed the service, if any
-   * @param payer    Entity paying for the service, if any
    * @return Cost, in USD.
    */
-  public static double calculateCost(Entry entry, Person patient, Provider provider, Payer payer) {
+  public static double calculateCost(Entry entry, Person patient, Provider provider) {
+
     if (!hasCost(entry)) {
       return 0;
     }
+
+    Payer payer = patient.getPayerAtTime(entry.start);
 
     String code = entry.codes.get(0).code;
 
@@ -172,10 +174,7 @@ public class Costs {
 
     // Calculate what the Payer and patient pays
     double patientCopay = 0.0;
-    if (patient != null) { // Check if insurance is null? patient.getInsurance(time)
-      // TODO - implement these checks for Payer to cover service.
-      // if(payer.isInNetwork(provider))
-      // if(payer.Service(entry))
+    if (patient != null) {
       // Temporary null until encounter type copays are implemented
       patientCopay = payer.determineCopay(null);
     }
@@ -185,7 +184,8 @@ public class Costs {
     double costToPayer = 0.0;
     double totalCost = (baseCost * locationAdjustment);
 
-    if (payer.getResourceID() != "NO_INSURANCE") {
+    // TODO - Refactor,duplicate check from the claim, from which calculateCost is called.
+    if (patient.payerCoversCare(entry)) {
       // Ensure that copay is less than the cost of the encounter
       if (totalCost >= patientCopay) {
         costToPayer = totalCost - patientCopay;
@@ -195,14 +195,13 @@ public class Costs {
       }
     } else {
       costToPatient = totalCost;
-      // Allows for no_insurance field in payers.csv to show how much it money it accounted for.
-      costToPayer = totalCost;
     }
 
-    // Update Payer
-    payer.addCost(costToPayer);
-    // Update Person's costs
+    // Update Person's costs.
     patient.addCost(costToPatient);
+    // Update Payer's statistics.
+    payer.addCost(costToPayer);
+    payer.addUncoveredCost(costToPatient);
 
     return totalCost;
   }
