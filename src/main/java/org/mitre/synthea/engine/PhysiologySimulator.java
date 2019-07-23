@@ -225,13 +225,8 @@ public class PhysiologySimulator {
       try {
         writer = new PrintWriter(outputPath.toString(), "UTF-8");
       } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-        Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, null, ex);
-        System.out.println("Unable to open output file:" + outputPath);
-        return;
+        throw new RuntimeException("Unable to open output file:" + outputPath);
       }
-      
-      System.out.println("Block 1: " + Arrays.toString(solution.getBlock(0).getColumnNames()));
-      System.out.println("Block 2: " + Arrays.toString(solution.getBlock(1).getColumnNames()));
 
       int numRows = solution.getRowCount();
       int numCols = solution.getColumnCount();
@@ -257,14 +252,12 @@ public class PhysiologySimulator {
       System.out.println("Success!");
 
     } catch (DerivativeException ex) {
-      Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, null, ex);
-      System.out.println("Error solving Model...");
+      throw new RuntimeException(ex);
     }
   }
 
   private static void getPerfStats(Path modelPath, String solverName) {
     SBMLinterpreter interpreter = getInterpreter(modelPath.toString());
-    System.out.println("Interpreted SBML Model successfully!");
     AbstractDESSolver solver = getSolver(solverName);
 //    solver.setStepSize(stepSize);
     try {
@@ -314,8 +307,7 @@ public class PhysiologySimulator {
       System.out.println("Success!");
 
     } catch (DerivativeException ex) {
-      Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, null, ex);
-      System.out.println("Error solving Model...");
+      throw new RuntimeException(ex);
     }
   }
 
