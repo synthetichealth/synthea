@@ -1,5 +1,12 @@
 package org.mitre.synthea.helpers;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.bind.JAXBException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -30,5 +37,24 @@ public class ExpressionProcessorTest {
     Object result = ExpressionProcessor.evaluate(exp, p, 0L);
     assertTrue(result instanceof Number);
     assertEquals(20L, ((Number)result).longValue());
+  }
+  
+  @Test
+  public void testInstance() throws IOException, JAXBException {
+    Map<String,String> typeMap = new HashMap();
+    typeMap.put("var_one", "Decimal");
+    typeMap.put("var_two", "Decimal");
+    ExpressionProcessor expProcessor = null;
+    
+    expProcessor = new ExpressionProcessor("#{var_one} * (#{var_two} + 3.0)", typeMap);
+    
+    Map<String,BigDecimal> params = new HashMap();
+    
+    params.put("var_one", new BigDecimal(2.0));
+    params.put("var_two", new BigDecimal(3.0));
+    
+    double result = expProcessor.evaluateNumeric(params).doubleValue();
+    
+    assertEquals(12.0, result, 0.0001);
   }
 }
