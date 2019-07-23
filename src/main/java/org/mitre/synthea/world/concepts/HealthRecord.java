@@ -29,6 +29,12 @@ import org.mitre.synthea.world.agents.Provider;
  * record into various standardized formats.
  */
 public class HealthRecord {
+
+  public static final String ENCOUNTERS = "encounters";
+  public static final String PROCEDURES = "procedures";
+  public static final String MEDICATIONS = "medications";
+  public static final String IMMUNIZATIONS = "immunizations";
+
   /**
    * HealthRecord.Code represents a system, code, and display value.
    */
@@ -107,22 +113,37 @@ public class HealthRecord {
     public List<Code> codes;
     private BigDecimal cost;
 
+    /**
+     * Constructor for Entry.
+     */
     public Entry(long start, String type) {
       this.start = start;
       this.type = type;
       this.codes = new ArrayList<Code>();
     }
 
-    public BigDecimal cost() {
-      if (this.cost == null) {
-        Person patient = record.person;
-        Provider provider = record.provider;
-        this.cost = BigDecimal.valueOf(Costs.calculateCost(this, patient, provider));
-        this.cost = this.cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
-      }
-      return cost;
+    /**
+     * Determines the cost of the entry based on type and location adjustment factors.
+     */
+    public void determineCost() {
+      this.cost = BigDecimal.valueOf(Costs.determineCostOfEntry(this, this.record.person));
+      this.cost = this.cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
     }
 
+    /**
+     * Returns the base cost of the entry.
+     */
+    public BigDecimal getCost() {
+      if( (this.cost == null)) {
+        this.determineCost();
+      }
+      return this.cost;
+    }
+
+    /**
+     * Converts the entry to a String.
+     */
+    @Override
     public String toString() {
       return String.format("%s %s", Instant.ofEpochMilli(start).toString(), type);
     }
@@ -135,6 +156,9 @@ public class HealthRecord {
     public List<Observation> observations;
     public Report report;
 
+    /**
+     * Constructor for Observation HealthRecord Entry.
+     */
     public Observation(long time, String type, Object value) {
       super(time, type);
       this.value = value;
@@ -145,6 +169,9 @@ public class HealthRecord {
   public class Report extends Entry {
     public List<Observation> observations;
 
+    /**
+     * Constructor for Report HealthRecord Entry.
+     */
     public Report(long time, String type, List<Observation> observations) {
       super(time, type);
       this.observations = observations;
@@ -157,6 +184,9 @@ public class HealthRecord {
     public JsonObject prescriptionDetails;
     public Claim claim;
 
+    /**
+     * Constructor for Medication HealthRecord Entry.
+     */
     public Medication(long time, String type) {
       super(time, type);
       this.reasons = new ArrayList<Code>();
@@ -167,6 +197,9 @@ public class HealthRecord {
   public class Immunization extends Entry {
     public int series = -1;
 
+    /**
+     * Constructor for Immunization HealthRecord Entry.
+     */
     public Immunization(long start, String type) {
       super(start, type);
     }
@@ -177,6 +210,9 @@ public class HealthRecord {
     public Provider provider;
     public Clinician clinician;
 
+    /**
+     * Constructor for Procedure HealthRecord Entry.
+     */
     public Procedure(long time, String type) {
       super(time, type);
       this.reasons = new ArrayList<Code>();
@@ -190,6 +226,9 @@ public class HealthRecord {
     public Set<JsonObject> goals;
     public Code stopReason;
 
+    /**
+     * Constructor for CarePlan HealthRecord Entry.
+     */
     public CarePlan(long time, String type) {
       super(time, type);
       this.activities = new LinkedHashSet<Code>();
@@ -202,6 +241,9 @@ public class HealthRecord {
     public String dicomUid;
     public List<Series> series;
 
+    /**
+     * Constructor for ImagingStudy HealthRecord Entry.
+     */
     public ImagingStudy(long time, String type) {
       super(time, type);
       this.dicomUid = Utilities.randomDicomUid(0, 0);
@@ -247,12 +289,12 @@ public class HealthRecord {
   }
 
   public class Claim {
-    // public double baseCost;
-    public Encounter encounter;
-    // The Encounter has the actual cost, so the claim has the amount that the payer
+
+    private Encounter encounter;
+    private Medication medication;
+    // The Entry has the actual cost, so the claim has the amount that the payer
     // covered.
-    public double coveredCost;
-    public Medication medication;
+    private double coveredCost;
     public List<Entry> items;
     public Payer payer;
 
@@ -275,43 +317,108 @@ public class HealthRecord {
     }
 
     /**
-     * Constructor of a Claim for a medication.
+     * Constructor of a Claim for an Entry.
      */
     private Claim(Entry entry) {
-      if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-        this.payer = person.getPayerAtTime(entry.start);
 
+      if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+
+        this.payer = person.getPayerAtTime(entry.start);
         if (this.payer == null) {
           // Person hasn't checked to get insurance at this age yet. Have to check now.
           Module.processHealthInsuranceModule(person, entry.start);
           this.payer = person.getPayerAtTime(entry.start);
         }
-
-        // This logic may not belong in Claim.
-        // TODO - think about where to move this logic.
-        if (person.payerCoversCare(entry)) {
-          // Person's Payer covers their care.
-          this.payer.incrementEntriesCovered(entry);
-        } else if (person.canAffordCare(entry)) {
-          // Person's Payer will not cover care, but they can afford it.
-          this.payer.incrementEntriesNotCovered(entry);
-          // TODO - This might cause some issues down the line with noInsurance stats.
-          this.payer = Payer.noInsurance;
-        } else {
-          // Person does not recive the medication.
-          this.payer.incrementEntriesNotCovered(entry);
-          // TODO - This might cause some issues with noInsurance statistics.
-          this.payer = Payer.noInsurance;
-          // Here is where QOLS/GBD should be affected.
-        }
       } else {
         this.payer = Payer.noInsurance;
       }
 
-      // Covered cost will be updated once the payer actually pays it.
-      this.coveredCost = 0.0;
       // Additional items as part of this entry.
       this.items = new ArrayList<>();
+    }
+
+    // Assign the costs of the entry to the Payer and Patient.
+    public void assignCosts() {
+
+      Entry entry;
+
+      if (this.encounter != null) {
+        entry = (Entry) encounter;
+      } else if (this.medication != null) {
+        entry = (Entry) medication;
+      } else {
+        throw new RuntimeException("Invalid Claim Entry.");
+      }
+
+      Person person = entry.record.person;
+      // Provider provider = entry.record.provider; Later, for determining isInNetwork().
+      // Right now, total cost is based on the main entry's cost, ignoring the lineItem costs.
+      double totalCost = entry.getCost().doubleValue();
+  
+      // Calculate the Patient's Copay.
+      double patientCopay = 0.0;
+      if (person != null) {
+        // Temporarily null input until encounter type copays are implemented.
+        patientCopay = payer.determineCopay(null);
+      }
+  
+      double costToPatient = 0.0;
+      double costToPayer = 0.0;
+  
+      // Determine who covers the care and assign the costs accordingly.
+      if (this.payer.coversCare(entry)) {
+        // Person's Payer covers their care.
+        if (totalCost >= patientCopay) {
+          costToPayer = totalCost - patientCopay;
+          costToPatient = patientCopay;
+        } else {
+          costToPatient = totalCost;
+        }
+        this.payer.incrementEntriesCovered(entry);
+        if (this.encounter != null) {
+          for (Procedure procedure : this.encounter.procedures) {
+            this.payer.incrementEntriesCovered(procedure);
+          }
+          for (Immunization immunization : this.encounter.immunizations) {
+            this.payer.incrementEntriesCovered(immunization);
+          }
+        }
+      } else if (person.canAffordCare(entry)) {
+        // Person's Payer will not cover care, but the person can afford it.
+        this.payer.incrementEntriesNotCovered(entry);
+        if (this.encounter != null) {
+          for (Procedure procedure : this.encounter.procedures) {
+            this.payer.incrementEntriesNotCovered(procedure);
+          }
+          for (Immunization immunization : this.encounter.immunizations) {
+            this.payer.incrementEntriesNotCovered(immunization);
+          }
+        }
+        // TODO - This might cause some issues with noInsurance statistics.
+        payer = Payer.noInsurance;
+      } else {
+        // Person does not recive the entry.
+        this.payer.incrementEntriesNotCovered(entry);
+        if (this.encounter != null) {
+          for (Procedure procedure : this.encounter.procedures) {
+            this.payer.incrementEntriesNotCovered(procedure);
+          }
+          for (Immunization immunization : this.encounter.immunizations) {
+            this.payer.incrementEntriesNotCovered(immunization);
+          }
+        }
+        // TODO - This might cause some issues with noInsurance statistics.
+        this.payer = Payer.noInsurance;
+        // Here is where QOLS/GBD should/could/would be affected.
+      }
+  
+      // Update Person's Costs.
+      person.addCost(costToPatient);
+      // Update Payer's Costs.
+      this.payer.addCost(costToPayer);
+      this.payer.addUncoveredCost(costToPatient);
+      // Update the Claim
+      this.coveredCost = costToPayer;
     }
 
     /**
@@ -329,23 +436,12 @@ public class HealthRecord {
       BigDecimal totalCoveredByLineItem = BigDecimal.valueOf(coveredCost);
 
       for (Entry lineItem : items) {
-        totalCoveredByLineItem = totalCoveredByLineItem.add(lineItem.cost());
+        totalCoveredByLineItem = totalCoveredByLineItem.add(lineItem.getCost());
       }
       return totalCoveredByLineItem;
     }
 
-    /**
-     * Determines how much the Payer paid for this Claim.
-     */
-    public double determineCoveredCost() {
-      if (this.payer == null) {
-        throw new RuntimeException("ERROR: Attempted to determine covered cost with a null payer.");
-      }
-      this.coveredCost = (encounter.cost().doubleValue() - this.payer.determineCopay(encounter));
-      if (coveredCost < 0 || this.payer.determineCopay(encounter) <= 0) {
-        // In case the copay is more expensive than the encounter
-        this.coveredCost = 0.0;   
-      }
+    public double getCoveredCost() {
       return this.coveredCost;
     }
   }
@@ -646,6 +742,9 @@ public class HealthRecord {
             encounter.stop += procedureTime;
           }
         }
+        // Update Costs/Claim infomation.
+        encounter.determineCost();
+        encounter.claim.assignCosts();
         return;
       }
     }
@@ -676,6 +775,9 @@ public class HealthRecord {
       Medication medication = (Medication) present.get(type);
       medication.stop = time;
       medication.stopReason = reason;
+      // Update Costs/Claim infomation.
+      medication.determineCost();
+      medication.claim.assignCosts();
       present.remove(type);
     }
   }

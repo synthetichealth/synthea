@@ -10,9 +10,7 @@ import java.util.Random;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.geography.Location;
 
@@ -119,94 +117,6 @@ public class Costs {
   }
 
   /**
-   * Calculate the cost of this Procedure, Encounter, Medication, etc. to both the
-   * payer and the patient.
-   * 
-   * @param entry    Entry to calculate cost of.
-   * @param patient  Person to whom the entry refers to
-   * @param provider Provider that performed the service, if any
-   * @return Cost, in USD.
-   */
-  public static double calculateCost(Entry entry, Person patient, Provider provider) {
-
-    if (!hasCost(entry)) {
-      return 0;
-    }
-
-    Payer payer = patient.getPayerAtTime(entry.start);
-
-    String code = entry.codes.get(0).code;
-
-    double defaultCost = 0.0;
-    Map<String, CostData> costs = null;
-
-    if (entry instanceof HealthRecord.Procedure) {
-      costs = PROCEDURE_COSTS;
-      defaultCost = DEFAULT_PROCEDURE_COST;
-    } else if (entry instanceof HealthRecord.Medication) {
-      costs = MEDICATION_COSTS;
-      defaultCost = DEFAULT_MEDICATION_COST;
-    } else if (entry instanceof HealthRecord.Encounter) {
-      costs = ENCOUNTER_COSTS;
-      defaultCost = DEFAULT_ENCOUNTER_COST;
-    } else if (entry instanceof HealthRecord.Immunization) {
-      costs = IMMUNIZATION_COSTS;
-      defaultCost = DEFAULT_IMMUNIZATION_COST;
-    }
-
-    // Retrieve the base cost based on the code.
-    double baseCost;
-    if (costs != null && costs.containsKey(code)) {
-      baseCost = costs.get(code).chooseCost(patient.random);
-    } else {
-      baseCost = defaultCost;
-    }
-
-    // Retrieve the location adjustment factor
-    double locationAdjustment = 1.0;
-    if (patient != null && patient.attributes.containsKey(Person.STATE)) {
-      String state = (String) patient.attributes.get(Person.STATE);
-      state = Location.getAbbreviation(state);
-      if (LOCATION_ADJUSTMENT_FACTORS.containsKey(state)) {
-        locationAdjustment = (double) LOCATION_ADJUSTMENT_FACTORS.get(state);
-      }
-    }
-
-    // Calculate what the Payer and patient pays
-    double patientCopay = 0.0;
-    if (patient != null) {
-      // Temporary null until encounter type copays are implemented
-      patientCopay = payer.determineCopay(null);
-    }
-
-    // Currently, nothing is done with the costToPatient. It will effect the person's money.
-    double costToPatient = 0.0;
-    double costToPayer = 0.0;
-    double totalCost = (baseCost * locationAdjustment);
-
-    // TODO - Refactor,duplicate check from the claim, from which calculateCost is called.
-    if (patient.payerCoversCare(entry)) {
-      // Ensure that copay is less than the cost of the encounter
-      if (totalCost >= patientCopay) {
-        costToPayer = totalCost - patientCopay;
-        costToPatient = patientCopay;
-      } else {
-        costToPatient = totalCost;
-      }
-    } else {
-      costToPatient = totalCost;
-    }
-
-    // Update Person's costs.
-    patient.addCost(costToPatient);
-    // Update Payer's statistics.
-    payer.addCost(costToPayer);
-    payer.addUncoveredCost(costToPatient);
-
-    return totalCost;
-  }
-
-  /**
    * Helper class to store a grouping of cost data for a single concept. Currently
    * cost data includes a minimum, maximum, and mode (most common value).
    * Selection of individual prices based on this cost data should be done using
@@ -250,5 +160,54 @@ public class Costs {
         return max - Math.sqrt((1 - rand) * (max - min) * (max - mode));
       }
     }
+  }
+
+  public static double determineCostOfEntry(Entry entry, Person patient) {
+
+    // if (!hasCost(entry)) {
+    //   return 0;
+    // }
+    double defaultCost = 0.0;
+    Map<String, CostData> costs = null;
+
+    if (entry instanceof HealthRecord.Procedure) {
+      costs = PROCEDURE_COSTS;
+      defaultCost = DEFAULT_PROCEDURE_COST;
+    } else if (entry instanceof HealthRecord.Medication) {
+      costs = MEDICATION_COSTS;
+      defaultCost = DEFAULT_MEDICATION_COST;
+    } else if (entry instanceof HealthRecord.Encounter) {
+      costs = ENCOUNTER_COSTS;
+      defaultCost = DEFAULT_ENCOUNTER_COST;
+    } else if (entry instanceof HealthRecord.Immunization) {
+      costs = IMMUNIZATION_COSTS;
+      defaultCost = DEFAULT_IMMUNIZATION_COST;
+    } else {
+      // Is not an entry type that has an associated cost.
+      return 0.0;
+    }
+
+    String code = entry.codes.get(0).code;
+
+    // Retrieve the base cost based on the code.
+    double baseCost;
+    if (costs != null && costs.containsKey(code)) {
+      baseCost = costs.get(code).chooseCost(patient.random);
+    } else {
+      baseCost = defaultCost;
+    }
+
+    // Retrieve the location adjustment factor
+    double locationAdjustment = 1.0;
+    if (patient != null && patient.attributes.containsKey(Person.STATE)) {
+      String state = (String) patient.attributes.get(Person.STATE);
+      state = Location.getAbbreviation(state);
+      if (LOCATION_ADJUSTMENT_FACTORS.containsKey(state)) {
+        locationAdjustment = (double) LOCATION_ADJUSTMENT_FACTORS.get(state);
+      }
+    }
+
+    double totalCost = (baseCost * locationAdjustment);
+    return totalCost;
   }
 }

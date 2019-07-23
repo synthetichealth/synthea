@@ -24,10 +24,13 @@ import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.behaviors.IPayerFinder;
 import org.mitre.synthea.world.agents.behaviors.PayerFinderBestRates;
 import org.mitre.synthea.world.agents.behaviors.PayerFinderRandom;
+import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
+import org.mitre.synthea.world.concepts.HealthRecord.Immunization;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
+import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.geography.Location;
 
 public class Payer {
@@ -71,10 +74,10 @@ public class Payer {
   private double costsUncovered;
   private double revenue;
   private double totalQOLS; // Total customer quality of life scores.
-  // row: year, column: type, value: count
-  public Table<Integer, String, AtomicInteger> encounterUtilization;
-  // Unique utilizers of Payer, by Person ID
-  public HashMap<String, AtomicInteger> customerUtilization;
+  // row: year, column: type, value: count.
+  private final Table<Integer, String, AtomicInteger> entryUtilization;
+  // Unique utilizers of Payer, by Person ID, with number of utilizations per Person.
+  private final HashMap<String, AtomicInteger> customerUtilization;
 
   /* Default NO_INSURANCE object */
   public static Payer noInsurance;
@@ -94,7 +97,7 @@ public class Payer {
     this.monthlyPremium = 0.0;
     this.deductible = 0.0;  // Currently, deductible is not set.
     this.ownership = "";
-    this.encounterUtilization = HashBasedTable.create();
+    this.entryUtilization = HashBasedTable.create();
     this.customerUtilization = new HashMap<String, AtomicInteger>();
     this.costsCovered = 0.0;
     this.costsUncovered = 0.0;
@@ -359,40 +362,50 @@ public class Payer {
    */
   public void incrementEntriesCovered(Entry entry) {
 
-    String entryType;
+    String entryType = getEntryType(entry);
 
-    if (entry instanceof Encounter) {
-      entryType = Provider.ENCOUNTERS;
-    } else if (entry instanceof Medication) { 
-      entryType = "medications";
-    } else {
-      throw new RuntimeException("Attempted to inrement Payer entries with invalid type "
-          + entry.getClass());
-    }
-    incrementEncounters(Utilities.getYear(entry.start), "covered-" + entryType);
-    incrementEncounters(Utilities.getYear(entry.start), "covered-" + entryType + "-" + entry.type);
+    incrementEntries(Utilities.getYear(entry.start), "covered-" + entryType);
+    incrementEntries(Utilities.getYear(entry.start), "covered-" + entryType + "-" + entry.type);
   }
   
   /**
-   * Increments the entries covered by this payer.
+   * Increments the entries not covered by this payer.
    * 
    * @param entry the entry covered.
    */
   public void incrementEntriesNotCovered(Entry entry) {
 
+    String entryType = getEntryType(entry);
+
+    incrementEntries(Utilities.getYear(entry.start), "uncovered-" + entryType);
+    incrementEntries(Utilities.getYear(entry.start), "uncovered-" + entryType
+        + "-" + entry.type);
+  }
+
+  // Perhaps move to HealthRecord.java
+  /**
+   * Determines what entry type (Immunization/Encounter/Procedure/Medication) of the given entry.
+   * 
+   * @param entry the entry to parse.
+   */
+  private String getEntryType(Entry entry) {
+
     String entryType;
 
     if (entry instanceof Encounter) {
-      entryType = Provider.ENCOUNTERS;
+      entryType = HealthRecord.ENCOUNTERS;
     } else if (entry instanceof Medication) {
-      entryType = "medications";
+      entryType = HealthRecord.MEDICATIONS;
+    } else if (entry instanceof Procedure) {
+      entryType = HealthRecord.PROCEDURES;
+    } else if (entry instanceof Immunization) {
+      entryType = HealthRecord.IMMUNIZATIONS;
     } else {
-      throw new RuntimeException("Attempted to inrement Payer entries with invalid type "
+      throw new RuntimeException("Attempted to increment Payer entries with invalid type "
           + entry.getClass());
     }
-    incrementEncounters(Utilities.getYear(entry.start), "uncovered-" + entryType);
-    incrementEncounters(Utilities.getYear(entry.start), "uncovered-" + entryType
-        + "-" + entry.type);
+
+    return entryType;
   }
 
   /**
@@ -401,11 +414,11 @@ public class Payer {
    * @param year the year of the encounter to add
    * @param key the key (the encounter type and whether it was covered/uncovered)
    */
-  private synchronized void incrementEncounters(Integer year, String key) {
-    if (!encounterUtilization.contains(year, key)) {
-      encounterUtilization.put(year, key, new AtomicInteger(0));
+  private synchronized void incrementEntries(Integer year, String key) {
+    if (!entryUtilization.contains(year, key)) {
+      entryUtilization.put(year, key, new AtomicInteger(0));
     }
-    encounterUtilization.get(year, key).incrementAndGet();
+    entryUtilization.get(year, key).incrementAndGet();
   }
 
   /**
@@ -491,19 +504,67 @@ public class Payer {
   }
 
   /**
+   * Returns the number of medications this payer paid for.
+   */
+  public int getMedicationsCoveredCount() {
+    return entryUtilization.column("covered-"
+        + HealthRecord.MEDICATIONS).values().stream().mapToInt(ai -> ai.get()).sum();
+  }
+
+  /**
+   * Returns the number of medications this payer did not cover for their customers.
+   */
+  public int getMedicationsUncoveredCount() {
+    return entryUtilization.column("uncovered-"
+        + HealthRecord.MEDICATIONS).values().stream().mapToInt(ai -> ai.get()).sum();
+  }
+
+  /**
    * Returns the number of encounters this payer paid for.
    */
   public int getEncountersCoveredCount() {
-    return encounterUtilization.column("covered-"
-        + Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
+    return entryUtilization.column("covered-"
+        + HealthRecord.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
   }
 
   /**
    * Returns the number of encounters this payer did not cover for their customers.
    */
   public int getEncountersUncoveredCount() {
-    return encounterUtilization.column("uncovered-"
-        + Provider.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
+    return entryUtilization.column("uncovered-"
+        + HealthRecord.ENCOUNTERS).values().stream().mapToInt(ai -> ai.get()).sum();
+  }
+
+  /**
+   * Returns the number of immunizations this payer paid for.
+   */
+  public int getImmunizationsCoveredCount() {
+    return entryUtilization.column("covered-"
+        + HealthRecord.IMMUNIZATIONS).values().stream().mapToInt(ai -> ai.get()).sum();
+  }
+
+  /**
+   * Returns the number of immunizations this payer did not cover for their customers.
+   */
+  public int getImmunizationsUncoveredCount() {
+    return entryUtilization.column("uncovered-"
+        + HealthRecord.IMMUNIZATIONS).values().stream().mapToInt(ai -> ai.get()).sum();
+  }
+
+  /**
+   * Returns the number of procedures this payer paid for.
+   */
+  public int getProceduresCoveredCount() {
+    return entryUtilization.column("covered-"
+        + HealthRecord.PROCEDURES).values().stream().mapToInt(ai -> ai.get()).sum();
+  }
+
+  /**
+   * Returns the number of procedures this payer did not cover for their customers.
+   */
+  public int getProceduresUncoveredCount() {
+    return entryUtilization.column("uncovered-"
+        + HealthRecord.PROCEDURES).values().stream().mapToInt(ai -> ai.get()).sum();
   }
 
   /**
@@ -596,5 +657,16 @@ public class Payer {
   public double getQOLAverage() {
     double numYears = this.getNumYearsCovered();
     return this.totalQOLS / numYears;
+  }
+
+  /**
+   * Returns whether or not this payer will cover the given entry.
+   * 
+   * @param entry the entry that needs covering.
+   */
+  public boolean coversCare(Entry entry) {
+    // Payer.isInNetwork() always returns true. For Now.
+    return this.coversService(entry.type)
+        && this.isInNetwork(null);
   }
 }

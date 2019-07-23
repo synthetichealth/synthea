@@ -807,7 +807,7 @@ public class FhirStu3 {
         Money moneyResource = new Money();
         moneyResource.setCode("USD");
         moneyResource.setSystem("urn:iso:std:iso:4217");
-        moneyResource.setValue(item.cost());
+        moneyResource.setValue(item.getCost());
         claimItem.setNet(moneyResource);
 
         if (item instanceof HealthRecord.Procedure) {

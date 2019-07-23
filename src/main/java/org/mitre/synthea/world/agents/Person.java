@@ -578,7 +578,6 @@ public class Person implements Serializable, QuadTreeData {
       // May be a way to do this without keeping
       // track of the year.
 
-      // TODO - Subtract money from person's bank account &
       // Check that they can actually still afford the premium due to newly incurred health costs.
 
       // Pay the payer
@@ -590,6 +589,7 @@ public class Person implements Serializable, QuadTreeData {
         // based on plans and insurance companies.
         // It will not call payer.getMonthlyPremium() here.
         currentPayer.payPremium(currentPayer.getMonthlyPremium());
+        this.addCost(currentPayer.getMonthlyPremium());
 
         if (currentMonth >= 12) {
           lastYearPaid = currentYear;
@@ -639,19 +639,6 @@ public class Person implements Serializable, QuadTreeData {
    */
   public void addCost(double costToPatient) {
     // TODO - Affect the person's costs/income/etc.
-  }
-
-  /**
-   * Returns whether or not the person's current payer will cover the given entry.
-   * For now, this always returns true if the entry is not an encounter.
-   * 
-   * @param entry the entry that needs covering.
-   */
-  public boolean payerCoversCare(Entry entry) {
-    Payer payer = this.getPayerAtTime(entry.start);
-    // Payer.isInNetwork() always returns true. For Now.
-    return payer.coversService(entry.type)
-        && payer.isInNetwork(null);
   }
 
   /**

@@ -861,7 +861,7 @@ public class FhirR4 {
         // calculate the cost of the procedure
         Money moneyResource = new Money();
         moneyResource.setCurrency("USD");
-        moneyResource.setValue(item.cost());
+        moneyResource.setValue(item.getCost());
         claimItem.setNet(moneyResource);
         claimResource.addItem(claimItem);
 

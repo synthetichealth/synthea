@@ -703,7 +703,7 @@ public class FhirDstu2 {
         MoneyDt moneyResource = new MoneyDt();
         moneyResource.setCode("USD");
         moneyResource.setSystem("urn:iso:std:iso:4217");
-        moneyResource.setValue(item.cost());
+        moneyResource.setValue(item.getCost());
         procedureItem.setNet(moneyResource);
 
         // assume item type is clinical service invoice

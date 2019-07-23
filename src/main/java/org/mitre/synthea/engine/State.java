@@ -231,15 +231,6 @@ public abstract class State implements Cloneable {
         person.history.add(0, this);
         // start using the current encounter, it may have changed
         encounter = person.getCurrentEncounter(submod);
-        if (encounter != null) {
-          person.setCurrentEncounter(module, encounter);
-          // Is this the best place to determine the covered cost?
-          // Not sure if every encounter is guarenteed to reach this point.
-          if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-            encounter.claim.determineCoveredCost();
-          }
-        }
-
         return true;
       } else {
         // reset person.history to this module's history

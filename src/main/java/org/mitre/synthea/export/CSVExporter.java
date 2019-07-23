@@ -203,7 +203,7 @@ public class CSVExporter {
     immunizations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST");
     immunizations.write(NEWLINE);
     encounters.write(
-        "Id,START,STOP,PATIENT,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,COST,"
+        "Id,START,STOP,PATIENT,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,BASE_COST,"
         + "PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION");
     encounters.write(NEWLINE);
     imagingStudies.write("Id,DATE,PATIENT,ENCOUNTER,BODYSITE_CODE,BODYSITE_DESCRIPTION,"
@@ -215,7 +215,9 @@ public class CSVExporter {
     providers.write(NEWLINE);
     if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
       payers.write("Id,NAME,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,"
-          + "AMOUNT_UNCOVERED,REVENUE,COVERED_ENCOUNTERS,UNCOVERED_ENCOUNTERS,"
+          + "AMOUNT_UNCOVERED,REVENUE,COVERED_ENCOUNTERS,UNCOVERED_ENCOUNTERS,COVERED_MEDICATIONS,"
+          + "UNCOVERED_MEDICATIONS,COVERED_PROCEDURES,UNCOVERED_PROCEDURES,"
+          + "COVERED_IMMUNIZATIONS,UNCOVERED_IMMUNIZATIONS,"
           + "UNIQUE_CUSTOMERS,QOLS_AVG,MEMBER_MONTHS");
       payers.write(NEWLINE);
       payerTransitions.write("PATIENT,YEAR,PAYER,OWNERSHIP");
@@ -444,7 +446,7 @@ public class CSVExporter {
    */
   private String encounter(String personID, Encounter encounter) throws IOException {
     // Id,START,STOP,PATIENT,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,
-    // COST,PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION
+    // BASE_COST,PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
     String encounterID = UUID.randomUUID().toString();
@@ -486,10 +488,10 @@ public class CSVExporter {
     s.append(coding.code).append(',');
     // DESCRIPTION
     s.append(clean(coding.display)).append(',');
-    // COST
-    s.append(String.format(Locale.US, "%.2f", encounter.cost())).append(',');
+    // BASE_COST
+    s.append(String.format(Locale.US, "%.2f", encounter.getCost())).append(',');
     // PAYER_COVERAGE
-    s.append(String.format(Locale.US, "%.2f", encounter.claim.determineCoveredCost())).append(',');
+    s.append(String.format(Locale.US, "%.2f", encounter.claim.getCoveredCost())).append(',');
     // REASONCODE & REASONDESCRIPTION
     if (encounter.reason == null) {
       s.append(",");
@@ -630,7 +632,7 @@ public class CSVExporter {
     s.append(coding.code).append(',');
     s.append(clean(coding.display)).append(',');
 
-    s.append(String.format(Locale.US, "%.2f", procedure.cost())).append(',');
+    s.append(String.format(Locale.US, "%.2f", procedure.getCost())).append(',');
 
     if (procedure.reasons.isEmpty()) {
       s.append(','); // reason code & desc
@@ -672,7 +674,7 @@ public class CSVExporter {
     s.append(coding.code).append(',');
     s.append(clean(coding.display)).append(',');
 
-    BigDecimal cost = medication.cost();
+    BigDecimal cost = medication.getCost();
     s.append(String.format(Locale.US, "%.2f", cost)).append(',');
     long dispenses = 1; // dispenses = refills + original
     // makes the math cleaner and more explicit. dispenses * unit cost = total cost
@@ -745,7 +747,7 @@ public class CSVExporter {
     s.append(coding.code).append(',');
     s.append(clean(coding.display)).append(',');
 
-    s.append(String.format(Locale.US, "%.2f", immunization.cost()));
+    s.append(String.format(Locale.US, "%.2f", immunization.getCost()));
 
     s.append(NEWLINE);
     write(s.toString(), immunizations);
@@ -887,7 +889,9 @@ public class CSVExporter {
 
   private void payer(Payer payer) throws IOException {
     // Id,NAME,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,AMOUNT_UNCOVERED,REVENUE,
-    // COVERED_ENCOUNTERS,UNCOVERED_ENCOUNTERS,UNIQUE_CUSTOMERS,QOLS_AVG,MEMBER_MONTHS
+    // COVERED_ENCOUNTERS,UNCOVERED_ENCOUNTERS,COVERED_MEDICATIONS,UNCOVERED_MEDICATIONS,
+    // COVERED_PROCEDURES,UNCOVERED_PROCEDURES,COVERED_IMMUNIZATIONS,UNCOVERED_IMMUNIZATIONS,
+    // UNIQUE_CUSTOMERS,QOLS_AVG,MEMBER_MONTHS
 
     StringBuilder s = new StringBuilder();
     s.append(payer.getResourceID()).append(',');
@@ -902,6 +906,12 @@ public class CSVExporter {
     s.append(String.format(Locale.US, "%.2f", payer.getRevenue())).append(',');
     s.append(payer.getEncountersCoveredCount()).append(",");
     s.append(payer.getEncountersUncoveredCount()).append(",");
+    s.append(payer.getMedicationsCoveredCount()).append(",");
+    s.append(payer.getMedicationsUncoveredCount()).append(",");
+    s.append(payer.getProceduresCoveredCount()).append(",");
+    s.append(payer.getProceduresUncoveredCount()).append(",");
+    s.append(payer.getImmunizationsCoveredCount()).append(",");
+    s.append(payer.getImmunizationsUncoveredCount()).append(",");
     s.append(payer.getUniqueCustomers()).append(",");
     s.append(payer.getQOLAverage()).append(",");
     // Note that this converts the number of years covered to months.
