@@ -149,10 +149,6 @@
         {
           "distribution": 0.334,
           "transition": "Enter_Directed_Use_Condition3"
-        },
-        {
-          "transition": "Initial",
-          "distribution": 1
         }
       ]
     },
