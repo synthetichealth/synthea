@@ -15,11 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.mitre.synthea.engine.Module;
-import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 
@@ -104,7 +101,7 @@ public class HealthRecord {
    */
   public class Entry {
     /** reference to the HealthRecord this entry belongs to. */
-    private HealthRecord record = HealthRecord.this;
+    HealthRecord record = HealthRecord.this;
     public String fullUrl;
     public String name;
     public long start;
@@ -190,7 +187,7 @@ public class HealthRecord {
     public Medication(long time, String type) {
       super(time, type);
       this.reasons = new ArrayList<Code>();
-      this.claim = new Claim(this);
+      this.claim = new Claim(this, person);
     }
   }
 
@@ -288,164 +285,6 @@ public class HealthRecord {
     }
   }
 
-  public class Claim {
-
-    private Encounter encounter;
-    private Medication medication;
-    // The Entry has the actual cost, so the claim has the amount that the payer
-    // covered.
-    private double coveredCost;
-    public List<Entry> items;
-    public Payer payer;
-
-    /**
-     * Constructor of a Claim for an encounter.
-     */
-    public Claim(Encounter encounter) {
-
-      this((Entry) encounter);
-      this.encounter = encounter;
-    }
-
-    /**
-     * Constructor of a Claim for a medication.
-     */
-    public Claim(Medication medication) {
-
-      this((Entry) medication);
-      this.medication = medication;
-    }
-
-    /**
-     * Constructor of a Claim for an Entry.
-     */
-    private Claim(Entry entry) {
-
-      if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-
-        this.payer = person.getPayerAtTime(entry.start);
-        if (this.payer == null) {
-          // Person hasn't checked to get insurance at this age yet. Have to check now.
-          Module.processHealthInsuranceModule(person, entry.start);
-          this.payer = person.getPayerAtTime(entry.start);
-        }
-      } else {
-        this.payer = Payer.noInsurance;
-      }
-
-      // Additional items as part of this entry.
-      this.items = new ArrayList<>();
-    }
-
-    // Assign the costs of the entry to the Payer and Patient.
-    public void assignCosts() {
-
-      Entry entry;
-
-      if (this.encounter != null) {
-        entry = (Entry) encounter;
-      } else if (this.medication != null) {
-        entry = (Entry) medication;
-      } else {
-        throw new RuntimeException("Invalid Claim Entry.");
-      }
-
-      Person person = entry.record.person;
-      // Provider provider = entry.record.provider; Later, for determining isInNetwork().
-      // Right now, total cost is based on the main entry's cost, ignoring the lineItem costs.
-      double totalCost = entry.getCost().doubleValue();
-  
-      // Calculate the Patient's Copay.
-      double patientCopay = 0.0;
-      if (person != null) {
-        // Temporarily null input until encounter type copays are implemented.
-        patientCopay = payer.determineCopay(null);
-      }
-  
-      double costToPatient = 0.0;
-      double costToPayer = 0.0;
-  
-      // Determine who covers the care and assign the costs accordingly.
-      if (this.payer.coversCare(entry)) {
-        // Person's Payer covers their care.
-        if (totalCost >= patientCopay) {
-          costToPayer = totalCost - patientCopay;
-          costToPatient = patientCopay;
-        } else {
-          costToPatient = totalCost;
-        }
-        this.payer.incrementEntriesCovered(entry);
-        if (this.encounter != null) {
-          for (Procedure procedure : this.encounter.procedures) {
-            this.payer.incrementEntriesCovered(procedure);
-          }
-          for (Immunization immunization : this.encounter.immunizations) {
-            this.payer.incrementEntriesCovered(immunization);
-          }
-        }
-      } else if (person.canAffordCare(entry)) {
-        // Person's Payer will not cover care, but the person can afford it.
-        this.payer.incrementEntriesNotCovered(entry);
-        if (this.encounter != null) {
-          for (Procedure procedure : this.encounter.procedures) {
-            this.payer.incrementEntriesNotCovered(procedure);
-          }
-          for (Immunization immunization : this.encounter.immunizations) {
-            this.payer.incrementEntriesNotCovered(immunization);
-          }
-        }
-        // TODO - This might cause some issues with noInsurance statistics.
-        payer = Payer.noInsurance;
-      } else {
-        // Person does not recive the entry.
-        this.payer.incrementEntriesNotCovered(entry);
-        if (this.encounter != null) {
-          for (Procedure procedure : this.encounter.procedures) {
-            this.payer.incrementEntriesNotCovered(procedure);
-          }
-          for (Immunization immunization : this.encounter.immunizations) {
-            this.payer.incrementEntriesNotCovered(immunization);
-          }
-        }
-        // TODO - This might cause some issues with noInsurance statistics.
-        this.payer = Payer.noInsurance;
-        // Here is where QOLS/GBD should/could/would be affected.
-      }
-  
-      // Update Person's Costs.
-      person.addCost(costToPatient);
-      // Update Payer's Costs.
-      this.payer.addCost(costToPayer);
-      this.payer.addUncoveredCost(costToPatient);
-      // Update the Claim
-      this.coveredCost = costToPayer;
-    }
-
-    /**
-     * Adds a line item to the total resources used in the encounter.
-     * (Ex. anesthesia, other non-explicit costs beyond encounter)
-     */
-    public void addItem(Entry entry) {
-      items.add(entry);
-    }
-
-    /**
-     * Returns the total cost of the Claim, including line item non-explicit costs.
-     */
-    public BigDecimal total() {
-      BigDecimal totalCoveredByLineItem = BigDecimal.valueOf(coveredCost);
-
-      for (Entry lineItem : items) {
-        totalCoveredByLineItem = totalCoveredByLineItem.add(lineItem.getCost());
-      }
-      return totalCoveredByLineItem;
-    }
-
-    public double getCoveredCost() {
-      return this.coveredCost;
-    }
-  }
-
   public enum EncounterType {
     WELLNESS("AMB"), AMBULATORY("AMB"), OUTPATIENT("AMB"), INPATIENT("IMP"),
     EMERGENCY("EMER"), URGENTCARE("AMB");
@@ -515,7 +354,7 @@ public class HealthRecord {
       medications = new ArrayList<Medication>();
       careplans = new ArrayList<CarePlan>();
       imagingStudies = new ArrayList<ImagingStudy>();
-      claim = new Claim(this);
+      claim = new Claim(this, person);
     }
   }
 

@@ -188,19 +188,20 @@ public class CSVExporter {
     allergies.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION");
     allergies.write(NEWLINE);
     medications.write(
-        "START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,DISPENSES,TOTALCOST,"
-        + "REASONCODE,REASONDESCRIPTION");
+        "START,STOP,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,PAYER_COVERAGE,DISPENSES,"
+        + "TOTALCOST,REASONCODE,REASONDESCRIPTION");
     medications.write(NEWLINE);
-    conditions.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION");
+    conditions.write("START,STOP,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION");
     conditions.write(NEWLINE);
     careplans.write(
         "Id,START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,REASONCODE,REASONDESCRIPTION");
     careplans.write(NEWLINE);
     observations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,VALUE,UNITS,TYPE");
     observations.write(NEWLINE);
-    procedures.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION");
+    procedures.write("DATE,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,PAYER_COVERAGE,"
+        + "REASONCODE,REASONDESCRIPTION");
     procedures.write(NEWLINE);
-    immunizations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST");
+    immunizations.write("DATE,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,PAYER_COVERAGE");
     immunizations.write(NEWLINE);
     encounters.write(
         "Id,START,STOP,PATIENT,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,BASE_COST,"
@@ -333,7 +334,9 @@ public class CSVExporter {
     String personID = patient(person, time);
 
     for (Encounter encounter : person.record.encounters) {
+
       String encounterID = encounter(personID, encounter);
+      String payerID = person.getPayerAtTime(encounter.start).uuid;
 
       for (HealthRecord.Entry condition : encounter.conditions) {
         condition(personID, encounterID, condition);
@@ -348,15 +351,15 @@ public class CSVExporter {
       }
 
       for (Procedure procedure : encounter.procedures) {
-        procedure(personID, encounterID, procedure);
+        procedure(personID, encounterID, payerID, procedure);
       }
 
       for (Medication medication : encounter.medications) {
-        medication(personID, encounterID, medication, time);
+        medication(personID, encounterID, payerID, medication, time);
       }
 
       for (HealthRecord.Entry immunization : encounter.immunizations) {
-        immunization(personID, encounterID, immunization);
+        immunization(personID, encounterID, payerID, immunization);
       }
 
       for (CarePlan careplan : encounter.careplans) {
@@ -615,25 +618,30 @@ public class CSVExporter {
    *
    * @param personID    ID of the person on whom the procedure was performed.
    * @param encounterID ID of the encounter where the procedure was performed
+   * @param payerID      ID of the payer who covered the immunization.
    * @param procedure   The procedure itself
    * @throws IOException if any IO error occurs
    */
-  private void procedure(String personID, String encounterID,
+  private void procedure(String personID, String encounterID, String payerID,
       Procedure procedure) throws IOException {
-    // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
+    // DATE,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
     s.append(dateFromTimestamp(procedure.start)).append(',');
     s.append(personID).append(',');
+    s.append(payerID).append(',');
     s.append(encounterID).append(',');
-
+    // CODE
     Code coding = procedure.codes.get(0);
-
     s.append(coding.code).append(',');
+    // DESCRIPTION
     s.append(clean(coding.display)).append(',');
-
+    // BASE_COST
     s.append(String.format(Locale.US, "%.2f", procedure.getCost())).append(',');
-
+    // PAYER_COVERAGE
+    // TODO - Not sure how to receive the coveredCost because procedures do not have a claim.
+    s.append(String.format(Locale.US, "%.2f", 0.0));
+    // REASONCODE & REASONDESCRIPTION
     if (procedure.reasons.isEmpty()) {
       s.append(','); // reason code & desc
     } else {
@@ -651,14 +659,15 @@ public class CSVExporter {
    *
    * @param personID    ID of the person prescribed the medication.
    * @param encounterID ID of the encounter where the medication was prescribed
+   * @param payerID     ID of the payer who covered the immunization.
    * @param medication  The medication itself
    * @param stopTime    End time
    * @throws IOException if any IO error occurs
    */
-  private void medication(String personID, String encounterID, Medication medication, long stopTime)
+  private void medication(String personID, String encounterID, String payerID, Medication medication, long stopTime)
       throws IOException {
-    // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,
-    // COST,DISPENSES,TOTALCOST,REASONCODE,REASONDESCRIPTION
+    // START,STOP,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,
+    // BASE_COST,PAYER_COVERAGE,DISPENSES,TOTALCOST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
     s.append(dateFromTimestamp(medication.start)).append(',');
@@ -667,15 +676,18 @@ public class CSVExporter {
     }
     s.append(',');
     s.append(personID).append(',');
+    s.append(payerID).append(',');
     s.append(encounterID).append(',');
-
+    // CODE
     Code coding = medication.codes.get(0);
-
     s.append(coding.code).append(',');
+    // DESCRIPTION
     s.append(clean(coding.display)).append(',');
-
+    // BASE_COST
     BigDecimal cost = medication.getCost();
     s.append(String.format(Locale.US, "%.2f", cost)).append(',');
+    // PAYER_COVERAGE
+    s.append(String.format(Locale.US, "%.2f", medication.claim.getCoveredCost())).append(',');
     long dispenses = 1; // dispenses = refills + original
     // makes the math cleaner and more explicit. dispenses * unit cost = total cost
 
@@ -729,25 +741,30 @@ public class CSVExporter {
    * Write a single Immunization to immunizations.csv.
    *
    * @param personID     ID of the person on whom the immunization was performed.
-   * @param encounterID  ID of the encounter where the immunization was performed
+   * @param encounterID  ID of the encounter where the immunization was performed.
+   * @param payerID      ID of the payer who covered the immunization.
    * @param immunization The immunization itself
    * @throws IOException if any IO error occurs
    */
-  private void immunization(String personID, String encounterID,
+  private void immunization(String personID, String encounterID, String payerID,
       Entry immunization) throws IOException {
-    // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST
+    // DATE,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,PAYER_COVERAGE
     StringBuilder s = new StringBuilder();
 
     s.append(dateFromTimestamp(immunization.start)).append(',');
     s.append(personID).append(',');
+    s.append(payerID).append(',');
     s.append(encounterID).append(',');
-
+    // CODE
     Code coding = immunization.codes.get(0);
-
     s.append(coding.code).append(',');
+    // DESCRIPTION
     s.append(clean(coding.display)).append(',');
-
+    // BASE_COST
     s.append(String.format(Locale.US, "%.2f", immunization.getCost()));
+    // PAYER_COVERAGE
+    // TODO - Not sure how to receive the coveredCost because immunizations do not have a claim.
+    s.append(String.format(Locale.US, "%.2f", 0.0));
 
     s.append(NEWLINE);
     write(s.toString(), immunizations);
