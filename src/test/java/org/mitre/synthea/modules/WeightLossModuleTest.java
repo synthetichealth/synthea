@@ -77,11 +77,11 @@ public class WeightLossModuleTest {
     person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, 0.9);
     person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, 0.75);
     person.attributes.put(WeightLossModule.WEIGHT_MANAGEMENT_START, start);
-    person.attributes.put(WeightLossModule.WEIGHT_LOSS_BMI_CHANGE, 1.1d);
+    person.attributes.put(WeightLossModule.WEIGHT_LOSS_BMI_PERCENTILE_CHANGE, 0.1d);
     double weight = mod.pediatricRegression(person, twoYears);
-    assertEquals(53.83, weight, 0.1);
+    assertEquals(49.03, weight, 0.1);
     weight = mod.pediatricRegression(person, threeYears);
-    assertEquals(56.24, weight, 0.1);
+    assertEquals(56.51, weight, 0.1);
   }
 
   @Test
@@ -92,17 +92,17 @@ public class WeightLossModuleTest {
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, birthDay);
     person.attributes.put(Person.GENDER, "M");
-    person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, 0.9);
+    person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, 0.90);
     person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, 0.75);
     person.attributes.put(WeightLossModule.WEIGHT_MANAGEMENT_START, start);
-    person.attributes.put(WeightLossModule.WEIGHT_LOSS_BMI_CHANGE, 1.1d);
+    person.attributes.put(WeightLossModule.WEIGHT_LOSS_BMI_PERCENTILE_CHANGE, 0.1d);
     person.attributes.put(WeightLossModule.PRE_MANAGEMENT_WEIGHT, 41.96d);
     double weight = mod.pediatricWeightLoss(person, sixMonths);
-    assertEquals(42.32, weight, 0.1);
+    assertEquals(42.53, weight, 0.1);
   }
 
   @Test
-  public void testMaintainBMI() {
+  public void testMaintainBMIPercentile() {
     long birthDay = TestHelper.timestamp(1990, 1, 1, 0, 0, 0);
     long start = TestHelper.timestamp(2000, 1, 1, 0, 0, 0);
     long twoYears = TestHelper.timestamp(2002, 1, 1, 0, 0, 0);
@@ -112,10 +112,10 @@ public class WeightLossModuleTest {
     person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, 0.9);
     person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, 0.75);
     person.attributes.put(WeightLossModule.WEIGHT_MANAGEMENT_START, start);
-    person.attributes.put(WeightLossModule.WEIGHT_LOSS_BMI_CHANGE, 1.1d);
+    person.attributes.put(WeightLossModule.WEIGHT_LOSS_BMI_PERCENTILE_CHANGE, 0.1d);
     person.attributes.put(WeightLossModule.PRE_MANAGEMENT_WEIGHT, 41.96d);
-    double weight = mod.maintainBMI(person, twoYears);
-    assertEquals(46.08, weight, 0.1);
+    double weight = mod.maintainBMIPercentile(person, twoYears);
+    assertEquals(48.42, weight, 0.1);
   }
 
   @Test
@@ -151,14 +151,14 @@ public class WeightLossModuleTest {
     person.setVitalSign(VitalSign.HEIGHT, 143d);
     person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, 0.75);
     person.attributes.put(WeightLossModule.WEIGHT_MANAGEMENT_START, start);
-    person.attributes.put(WeightLossModule.WEIGHT_LOSS_BMI_CHANGE, 1.1d);
+    person.attributes.put(WeightLossModule.WEIGHT_LOSS_BMI_PERCENTILE_CHANGE, 0.1d);
     person.attributes.put(WeightLossModule.PRE_MANAGEMENT_WEIGHT, 41.96d);
     person.attributes.put(WeightLossModule.ACTIVE_WEIGHT_MANAGEMENT, true);
     person.attributes.put(WeightLossModule.WEIGHT_LOSS_ADHERENCE, true);
     person.attributes.put(WeightLossModule.LONG_TERM_WEIGHT_LOSS, true);
     mod.process(person, sixMonths);
     weight = person.getVitalSign(VitalSign.WEIGHT, sixMonths);
-    assertEquals(42.32, weight, 0.1);
+    assertEquals(42.53, weight, 0.1);
   }
 
   @Test
