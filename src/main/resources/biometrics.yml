@@ -77,10 +77,9 @@ weightloss:
   max_management_loss: = 0.1
   maintenance: = 0.2
 
-  # For patients under 20, weight loss will be controlled by change in BMI. This is the maximum change allowable
-  # to a patient's BMI over the course of a year.
-  # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6014905/
-  max_ped_bmi_change: 3.5
+  # For patients under 20, weight loss will be controlled by change in BMI percentile.
+  # This is the maximum change allowable to a patient's BMI percentile over the course of a year.
+  max_ped_percentile_change: 0.1
 
   # Earliest age someone will try to lose weight
   min_age: 5
