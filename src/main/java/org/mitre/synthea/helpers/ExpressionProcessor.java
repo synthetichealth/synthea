@@ -192,12 +192,38 @@ public class ExpressionProcessor {
     this.context = new Context(library);
   }
   
+  /**
+   * Returns a list of parameters in the expression associated with this processor
+   * @return list of parameters
+   */
+  public List getParamNames() {
+    return paramNames;
+  }
+  
+  /**
+   * Returns a map of parameter names to their CQL types as provided to the constructor
+   * @return map of parameter names to CQL type names
+   */
+  public Map getParamTypes() {
+    return paramTypeMap;
+  }
+  
+  /**
+   * Evaluates the expression with the given numeric parameters, returning the result as a BigDecimal
+   * @param params numeric parameters as a map of variable names to values
+   * @return evaluation result
+   */
   public BigDecimal evaluateNumeric(Map<String,BigDecimal> params) {
     // Create a generic 'view' into our typed params map
     Map<String,Object> genericParams = Collections.<String,Object>unmodifiableMap(params);
     return (BigDecimal) evaluate(genericParams);
   }
   
+  /**
+   * Evaluates the expression with the given parameters
+   * @param params parameters as a map of variable names to values
+   * @return evaluation result
+   */
   public Object evaluate(Map<String,Object> params) {
     for (Entry<String,Object> entry : params.entrySet()) {
       context.setParameter(null, entry.getKey(), entry.getValue());
