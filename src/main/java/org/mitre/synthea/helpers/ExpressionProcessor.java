@@ -1,5 +1,6 @@
 package org.mitre.synthea.helpers;
 
+import com.google.common.collect.Sets;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -7,10 +8,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -30,6 +33,7 @@ public class ExpressionProcessor {
   private static final ModelManager MODEL_MANAGER = new ModelManager();
   private static final LibraryManager LIBRARY_MANAGER = new LibraryManager(MODEL_MANAGER);
   private static final String LIBRARY_NAME = "Synthea";
+  String expression;
   Library library;
   Context context;
   String elm;
@@ -177,6 +181,7 @@ public class ExpressionProcessor {
   public ExpressionProcessor(String expression, Map<String,String> paramTypeMap) {
     this.paramNames = new ArrayList();
     this.paramTypeMap = paramTypeMap;
+    this.expression = expression;
     
     String cleanExpression = replaceParameters(expression);
     String wrappedExpression = convertParameterizedExpressionToCQL(cleanExpression);
@@ -190,6 +195,14 @@ public class ExpressionProcessor {
       throw new RuntimeException(ex);
     }
     this.context = new Context(library);
+  }
+  
+  /**
+   * Returns the expression associated with this expression processor
+   * @return expression
+   */
+  public String getExpression() {
+    return expression;
   }
   
   /**
@@ -225,8 +238,23 @@ public class ExpressionProcessor {
    * @return evaluation result
    */
   public Object evaluate(Map<String,Object> params) {
+    // Keep track to make sure all parameters are set
+    Set setParams = new HashSet();
     for (Entry<String,Object> entry : params.entrySet()) {
       context.setParameter(null, entry.getKey(), entry.getValue());
+      setParams.add(entry.getKey());
+    }
+    
+    Set missing = Sets.difference(paramTypeMap.keySet(), setParams);
+    Set extra = Sets.difference(setParams, paramTypeMap.keySet());
+    
+    if(missing.size() > 0) {
+      throw new RuntimeException("Missing evaluation parameters: " + missing);
+    }
+    if(extra.size() > 0) {
+      Logger.getLogger(ExpressionProcessor.class.getName()).log(Level.WARNING,
+              "unused parameters provided for expression \"{0}\": {1}",
+              new Object[]{expression, extra});
     }
     
     Object retVal = null;

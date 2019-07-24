@@ -40,13 +40,11 @@ public class ExpressionProcessorTest {
   }
   
   @Test
-  public void testInstance() throws IOException, JAXBException {
+  public void testInstance() {
     Map<String,String> typeMap = new HashMap();
     typeMap.put("var_one", "Decimal");
     typeMap.put("var_two", "Decimal");
-    ExpressionProcessor expProcessor = null;
-    
-    expProcessor = new ExpressionProcessor("#{var_one} * (#{var_two} + 3.0)", typeMap);
+    ExpressionProcessor expProcessor = new ExpressionProcessor("#{var_one} * (#{var_two} + 3.0)", typeMap);
     
     Map<String,BigDecimal> params = new HashMap();
     
