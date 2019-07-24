@@ -39,7 +39,7 @@ public class CostsTest {
     Entry fakeMedication = person.record.medicationStart(time, code.display);
     fakeMedication.codes.add(code);
     
-    double cost = Costs.calculateCost(fakeMedication, person, null);
+    double cost = Costs.determineCostOfEntry(fakeMedication, person);
     // at this point person has no state set, so there won't be a geographic factor applied
     
     assertTrue(cost <= maxCost);
@@ -47,7 +47,7 @@ public class CostsTest {
 
     person.attributes.put(Person.STATE, "Massachusetts");
     double adjFactor = 1.0333;
-    cost = Costs.calculateCost(fakeMedication, person, null);
+    cost = Costs.determineCostOfEntry(fakeMedication, person);
     assertTrue(cost <= (maxCost * adjFactor));
     assertTrue(cost >= (minCost * adjFactor));
   }
@@ -59,7 +59,7 @@ public class CostsTest {
     
     // it's the same number as above, but a procedure not a medication,
     // so we don't expect the same result
-    double cost = Costs.calculateCost(fakeProcedure, person, null);
+    double cost = Costs.determineCostOfEntry(fakeProcedure, person);
     double expectedCost = Double.parseDouble(Config.get("generate.costs.default_procedure_cost"));
     assertEquals(expectedCost, cost, 0.01); // assert the cost is within $0.01
   }
@@ -69,7 +69,7 @@ public class CostsTest {
     Entry fakeMedication = person.record.medicationStart(time, code.display);
     fakeMedication.codes.add(code);
     
-    double cost = Costs.calculateCost(fakeMedication, person, null);
+    double cost = Costs.determineCostOfEntry(fakeMedication, person);
     double expectedCost = Double.parseDouble(Config.get("generate.costs.default_medication_cost"));
     assertEquals(expectedCost, cost, 0.01); // assert the cost is within $0.01
   }

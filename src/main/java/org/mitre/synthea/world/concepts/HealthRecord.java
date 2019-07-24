@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
@@ -122,7 +123,7 @@ public class HealthRecord {
     /**
      * Determines the cost of the entry based on type and location adjustment factors.
      */
-    public void determineCost() {
+    void determineCost() {
       this.cost = BigDecimal.valueOf(Costs.determineCostOfEntry(this, this.record.person));
       this.cost = this.cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
     }
@@ -131,7 +132,7 @@ public class HealthRecord {
      * Returns the base cost of the entry.
      */
     public BigDecimal getCost() {
-      if( (this.cost == null)) {
+      if ((this.cost == null)) {
         this.determineCost();
       }
       return this.cost;
@@ -187,7 +188,13 @@ public class HealthRecord {
     public Medication(long time, String type) {
       super(time, type);
       this.reasons = new ArrayList<Code>();
-      this.claim = new Claim(this, person);
+      if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+        // Create a medication claim.
+        this.claim = new Claim(this, person);
+      } else {
+        // Create a default, blank, unused claim because health insruance is turned off.
+        this.claim = new Claim();
+      }
     }
   }
 
@@ -286,8 +293,8 @@ public class HealthRecord {
   }
 
   public enum EncounterType {
-    WELLNESS("AMB"), AMBULATORY("AMB"), OUTPATIENT("AMB"), INPATIENT("IMP"),
-    EMERGENCY("EMER"), URGENTCARE("AMB");
+    WELLNESS("AMB"), AMBULATORY("AMB"), OUTPATIENT("AMB"),
+        INPATIENT("IMP"), EMERGENCY("EMER"), URGENTCARE("AMB");
 
     // http://www.hl7.org/implement/standards/fhir/v3/ActEncounterCode/vs.html
     private final String code;
@@ -296,6 +303,11 @@ public class HealthRecord {
       this.code = code;
     }
 
+    /**
+     * Convert the given string into an EncounterType.
+     * 
+     * @param value the string to convert.
+     */
     public static EncounterType fromString(String value) {
       if (value == null) {
         return EncounterType.AMBULATORY;
@@ -310,6 +322,10 @@ public class HealthRecord {
       return this.code;
     }
 
+    /**
+     * Convert this EncounterType into a string.
+     */
+    @Override
     public String toString() {
       return this.name().toLowerCase();
     }
@@ -354,7 +370,13 @@ public class HealthRecord {
       medications = new ArrayList<Medication>();
       careplans = new ArrayList<CarePlan>();
       imagingStudies = new ArrayList<ImagingStudy>();
-      claim = new Claim(this, person);
+      if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+        // Create an insurance claim.
+        this.claim = new Claim(this, person);
+      } else {
+        // Create a blank, unused claim because health insurance is turned off.
+        this.claim = new Claim();
+      }
     }
   }
 
@@ -441,8 +463,8 @@ public class HealthRecord {
     int count = numberOfObservations;
     if (encounter.observations.size() >= numberOfObservations) {
       while (count > 0) {
-        observation.observations.add(
-            encounter.observations.remove(encounter.observations.size() - 1));
+        observation.observations.add(encounter.observations.remove(
+            encounter.observations.size() - 1));
         count--;
       }
     }
@@ -557,13 +579,27 @@ public class HealthRecord {
     return report;
   }
 
+  /**
+   * Starts an encounter of the given type at the given time.
+   * 
+   * @param time the start time of the encounter.
+   * @param type the type of the encounter.
+   * @return
+   */
   public Encounter encounterStart(long time, EncounterType type) {
     Encounter encounter = new Encounter(time, type.toString());
     encounters.add(encounter);
     return encounter;
   }
 
+  /**
+   * Not sure how this works exactly - just takes an encounterType?.
+   * 
+   * @param time the end time of the encounter.
+   * @param type the type of the encounter.
+   */
   public void encounterEnd(long time, EncounterType type) {
+
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
       EncounterType encounterType = EncounterType.fromString(encounter.type);

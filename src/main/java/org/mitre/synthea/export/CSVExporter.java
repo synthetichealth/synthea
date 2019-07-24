@@ -210,7 +210,7 @@ public class CSVExporter {
     imagingStudies.write("Id,DATE,PATIENT,ENCOUNTER,BODYSITE_CODE,BODYSITE_DESCRIPTION,"
         + "MODALITY_CODE,MODALITY_DESCRIPTION,SOP_CODE,SOP_DESCRIPTION");
     imagingStudies.write(NEWLINE);
-    organizations.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,UTILIZATION");
+    organizations.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,REVENUE,UTILIZATION");
     organizations.write(NEWLINE);
     providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,UTILIZATION");
     providers.write(NEWLINE);
@@ -336,7 +336,10 @@ public class CSVExporter {
     for (Encounter encounter : person.record.encounters) {
 
       String encounterID = encounter(personID, encounter);
-      String payerID = person.getPayerAtTime(encounter.start).uuid;
+      String payerID = "";
+      if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+        payerID = person.getPayerAtTime(encounter.start).uuid;
+      }
 
       for (HealthRecord.Entry condition : encounter.conditions) {
         condition(personID, encounterID, condition);
@@ -465,21 +468,18 @@ public class CSVExporter {
     }
     // PATIENT
     s.append(personID).append(',');
-
     // PROVIDER
     if (encounter.provider != null) {
       s.append(encounter.provider.getResourceID()).append(',');
     } else {
       s.append(',');
     }
-
     // PAYER
     if (encounter.claim.payer != null) {
       s.append(encounter.claim.payer.getResourceID()).append(',');
     } else {
       s.append(',');
     }
-
     // ENCOUNTERCLASS
     if (encounter.type != null) {
       s.append(encounter.type.toLowerCase()).append(',');
@@ -664,7 +664,8 @@ public class CSVExporter {
    * @param stopTime    End time
    * @throws IOException if any IO error occurs
    */
-  private void medication(String personID, String encounterID, String payerID, Medication medication, long stopTime)
+  private void medication(String personID, String encounterID, String payerID,
+      Medication medication, long stopTime)
       throws IOException {
     // START,STOP,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,
     // BASE_COST,PAYER_COVERAGE,DISPENSES,TOTALCOST,REASONCODE,REASONDESCRIPTION
@@ -863,7 +864,7 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private void organization(Provider org, int utilization) throws IOException {
-    // Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,UTILIZATION
+    // Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,REVENUE,UTILIZATION
     StringBuilder s = new StringBuilder();
     s.append(org.getResourceID()).append(',');
     s.append(clean(org.name)).append(',');
@@ -872,6 +873,7 @@ public class CSVExporter {
     s.append(org.state).append(',');
     s.append(org.zip).append(',');
     s.append(org.phone).append(',');
+    s.append(org.getRevenue()).append(',');
     s.append(utilization);
     s.append(NEWLINE);
 

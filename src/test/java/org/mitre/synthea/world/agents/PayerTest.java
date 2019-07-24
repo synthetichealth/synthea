@@ -21,8 +21,8 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
-import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.geography.Location;
+
 
 public class PayerTest {
 
@@ -111,9 +111,20 @@ public class PayerTest {
     person.setPayerAtTime(0L, testPrivatePayer1);
     HealthRecord healthRecord = new HealthRecord(person);
 
-    healthRecord.encounterStart(0L, EncounterType.INPATIENT);
-    healthRecord.encounterStart(0L, EncounterType.AMBULATORY);
-    healthRecord.encounterStart(0L, EncounterType.EMERGENCY);
+    Code code = new Code("SNOMED-CT","705129","Fake Code");
+
+    Encounter fakeEncounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
+    fakeEncounter.codes.add(code);
+    fakeEncounter.provider = new Provider();
+    healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
+    fakeEncounter = healthRecord.encounterStart(0L, EncounterType.AMBULATORY);
+    fakeEncounter.provider = new Provider();
+    fakeEncounter.codes.add(code);
+    healthRecord.encounterEnd(0L, EncounterType.AMBULATORY);
+    fakeEncounter = healthRecord.encounterStart(0L, EncounterType.EMERGENCY);
+    fakeEncounter.codes.add(code);
+    fakeEncounter.provider = new Provider();
+    healthRecord.encounterEnd(0L, EncounterType.EMERGENCY);
 
     assertEquals(3, testPrivatePayer1.getEncountersCoveredCount());
   }
@@ -376,9 +387,11 @@ public class PayerTest {
     person = new Person(0L);
     person.setPayerAtTime(0L, testPrivatePayer1);
     Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
-    Entry fakeEncounter = person.record.encounterStart(0L, EncounterType.WELLNESS);
+    Encounter fakeEncounter = person.record.encounterStart(0L, EncounterType.WELLNESS);
     fakeEncounter.codes.add(code);
-    double totalCost = Costs.calculateCost(fakeEncounter, person, null);
+    fakeEncounter.provider = new Provider();
+    double totalCost = fakeEncounter.getCost().doubleValue();
+    person.record.encounterEnd(0L, EncounterType.WELLNESS);
     // The total cost should equal the Cost to the Payer summed with the Payer's copay amount.
     assertEquals(totalCost, testPrivatePayer1.getAmountCovered()
         + testPrivatePayer1.determineCopay(null), 0.1);
@@ -395,9 +408,11 @@ public class PayerTest {
     person = new Person(0L);
     person.setPayerAtTime(0L, Payer.noInsurance);
     Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
-    Entry fakeProcedure = person.record.procedure(0L, code.display);
-    fakeProcedure.codes.add(code);
-    double totalCost = Costs.calculateCost(fakeProcedure, person, null);
+    Encounter fakeEncounter = person.record.encounterStart(0L, EncounterType.WELLNESS);
+    fakeEncounter.codes.add(code);
+    fakeEncounter.provider = new Provider();
+    double totalCost = fakeEncounter.getCost().doubleValue();
+    person.record.encounterEnd(0L, EncounterType.WELLNESS);
     assertEquals(0, Payer.noInsurance.getAmountCovered(), 0.1);
     assertEquals(totalCost, Payer.noInsurance.getAmountUncovered(), 0.1);
   }
@@ -410,7 +425,6 @@ public class PayerTest {
     HealthRecord healthRecord = new HealthRecord(person);
     Encounter encounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
     encounter.codes.add(new Code("SNOMED-CT","705129","Fake SNOMED for null entry"));
-    encounter.claim.determineCoveredCost();
   }
 
   @Test

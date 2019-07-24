@@ -25,7 +25,7 @@ public class PayerFinderBestRates implements IPayerFinder {
     List<Payer> options = new ArrayList<Payer>();
 
     for (Payer payer : payers) {
-      if (meetsBasicRequirements(payer, person, service, time)) {
+      if (IPayerFinder.meetsBasicRequirements(payer, person, service, time)) {
 
         // If the monthly premium to coverage ratio of this company is better than the
         // current best, choose this company. Also make decision based on whether this

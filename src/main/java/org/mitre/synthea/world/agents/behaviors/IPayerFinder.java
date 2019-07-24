@@ -33,7 +33,7 @@ public interface IPayerFinder {
    * @param time The date/time within the simulated world, in milliseconds.
    * @return if the payer meets the basic requirements.
    */
-  public default boolean meetsBasicRequirements(
+  public static boolean meetsBasicRequirements(
       Payer payer, Person person, EncounterType service, long time) {
 
     // occupation determines whether their employer will pay for insurance after the mandate.

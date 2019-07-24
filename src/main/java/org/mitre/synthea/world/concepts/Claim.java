@@ -1,20 +1,19 @@
 package org.mitre.synthea.world.concepts;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Immunization;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
-
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class Claim {
 
@@ -28,7 +27,7 @@ public class Claim {
   public Person person;
 
   /**
-   * Constructor of a Claim for an encounter.
+   * Constructor of a health insurance Claim for an encounter.
    */
   public Claim(Encounter encounter, Person person) {
 
@@ -37,7 +36,7 @@ public class Claim {
   }
 
   /**
-   * Constructor of a Claim for a medication.
+   * Constructor of a health insurance Claim for a medication.
    */
   public Claim(Medication medication, Person person) {
 
@@ -51,42 +50,44 @@ public class Claim {
   private Claim(Entry entry, Person person) {
 
     this.person = person;
+    this.payer = this.person.getPayerAtTime(entry.start);
 
-    if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-
+    if (this.payer == null) {
+      // Person hasn't checked to get insurance at this age yet. Have to check now.
+      Module.processHealthInsuranceModule(this.person, entry.start);
       this.payer = this.person.getPayerAtTime(entry.start);
-      if (this.payer == null) {
-        // Person hasn't checked to get insurance at this age yet. Have to check now.
-        Module.processHealthInsuranceModule(this.person, entry.start);
-        this.payer = this.person.getPayerAtTime(entry.start);
-      }
-    } else {
-      this.payer = Payer.noInsurance;
     }
-
     // Additional items as part of this entry.
     this.items = new ArrayList<>();
   }
 
-  // Assign the costs of the entry to the Payer and Patient.
+  /**
+   * Default constructor to create a blank claim that will be unused because
+   * health insurance is turned off.
+   */
+  public Claim() {
+    this.items = new ArrayList<>();
+  }
+
+  /**
+   * Assigns the costs of the claim to the patient and payer.
+   */
   public void assignCosts() {
 
-    if(this.coveredCost > 0) {
-      throw new RuntimeException("ASsssss");
-    }
-
+    // Casts either the encounter or medication of the claim depending on which is not null.
     Entry entry;
 
+    Provider provider = null;
     if (this.encounter != null) {
       entry = (Entry) encounter;
+      provider = encounter.provider;
     } else if (this.medication != null) {
       entry = (Entry) medication;
     } else {
-      throw new RuntimeException("Invalid Claim Entry.");
+      // Claims can only be made for encounters and medications.
+      return;
     }
 
-    // Provider provider = entry.record.provider; Later, for determining
-    // isInNetwork().
     // Right now, total cost is based on the main entry's cost, ignoring the
     // lineItem costs.
     double totalCost = entry.getCost().doubleValue();
@@ -114,9 +115,11 @@ public class Claim {
     } else if (person.canAffordCare(entry)) {
       // Person's Payer will not cover care, but the person can afford it.
       this.payerDoesNotCoverEntry(entry);
+      costToPatient = totalCost;
       // Affect the person's costs
     } else {
       this.payerDoesNotCoverEntry(entry);
+      costToPatient = totalCost;
       // Here is where QOLS/GBD should/could/would be affected.
     }
 
@@ -125,6 +128,10 @@ public class Claim {
     // Update Payer's Costs.
     this.payer.addCost(costToPayer);
     this.payer.addUncoveredCost(costToPatient);
+    // Update the Provider's Revenue if this is an encounter.
+    if (encounter != null) {
+      provider.addRevenue(totalCost);
+    }
     // Update the Claim
     this.coveredCost = costToPayer;
   }
@@ -156,6 +163,9 @@ public class Claim {
     return this.coveredCost;
   }
 
+  /**
+   * Increments the covered entry utilization of the payer.
+   */
   private void payerCoversEntry(Entry entry) {
     this.payer.incrementEntriesCovered(entry);
     if (this.encounter != null) {
@@ -168,6 +178,9 @@ public class Claim {
     }
   }
 
+  /**
+   * Increments the uncovered entry utilization of the payer.
+   */
   private void payerDoesNotCoverEntry(Entry entry) {
     // Person does not recive the entry.
     this.payer.incrementEntriesNotCovered(entry);

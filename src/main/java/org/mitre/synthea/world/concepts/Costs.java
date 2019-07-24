@@ -38,6 +38,57 @@ public class Costs {
   private static final Map<String, Double> LOCATION_ADJUSTMENT_FACTORS = parseAdjustmentFactors();
 
   /**
+   * Return the cost of the given entry (Encounter/Procedure/Immunization/Medication).
+   * 
+   * @param entry the entry to calculate the cost for.
+   * @param patient the person associated with the entry (in order to have the location).
+   * @return the total cost of the entry.
+   */
+  public static double determineCostOfEntry(Entry entry, Person patient) {
+
+    double defaultCost = 0.0;
+    Map<String, CostData> costs = null;
+
+    if (entry instanceof HealthRecord.Procedure) {
+      costs = PROCEDURE_COSTS;
+      defaultCost = DEFAULT_PROCEDURE_COST;
+    } else if (entry instanceof HealthRecord.Medication) {
+      costs = MEDICATION_COSTS;
+      defaultCost = DEFAULT_MEDICATION_COST;
+    } else if (entry instanceof HealthRecord.Encounter) {
+      costs = ENCOUNTER_COSTS;
+      defaultCost = DEFAULT_ENCOUNTER_COST;
+    } else if (entry instanceof HealthRecord.Immunization) {
+      costs = IMMUNIZATION_COSTS;
+      defaultCost = DEFAULT_IMMUNIZATION_COST;
+    } else {
+      // Not an entry type that has an associated cost.
+      return 0.0;
+    }
+
+    String code = entry.codes.get(0).code;
+    // Retrieve the base cost based on the code.
+    double baseCost;
+    if (costs != null && costs.containsKey(code)) {
+      baseCost = costs.get(code).chooseCost(patient.random);
+    } else {
+      baseCost = defaultCost;
+    }
+
+    // Retrieve the location adjustment factor.
+    double locationAdjustment = 1.0;
+    if (patient != null && patient.attributes.containsKey(Person.STATE)) {
+      String state = (String) patient.attributes.get(Person.STATE);
+      state = Location.getAbbreviation(state);
+      if (LOCATION_ADJUSTMENT_FACTORS.containsKey(state)) {
+        locationAdjustment = (double) LOCATION_ADJUSTMENT_FACTORS.get(state);
+      }
+    }
+    // Return the total cost of the given entry.
+    return (baseCost * locationAdjustment);
+  }
+
+  /**
    * Load all cost data needed by the system.
    */
   public static void loadCostData() {
@@ -45,6 +96,9 @@ public class Costs {
     // this method is only called to ensure the static data is loaded at a predictable time
   }
 
+  /**
+   * Parse the given CSV into the costMap.
+   */
   private static Map<String, CostData> parseCsvToMap(String filename) {
     try {
       String rawData = Utilities.readResource(filename);
@@ -160,54 +214,5 @@ public class Costs {
         return max - Math.sqrt((1 - rand) * (max - min) * (max - mode));
       }
     }
-  }
-
-  public static double determineCostOfEntry(Entry entry, Person patient) {
-
-    // if (!hasCost(entry)) {
-    //   return 0;
-    // }
-    double defaultCost = 0.0;
-    Map<String, CostData> costs = null;
-
-    if (entry instanceof HealthRecord.Procedure) {
-      costs = PROCEDURE_COSTS;
-      defaultCost = DEFAULT_PROCEDURE_COST;
-    } else if (entry instanceof HealthRecord.Medication) {
-      costs = MEDICATION_COSTS;
-      defaultCost = DEFAULT_MEDICATION_COST;
-    } else if (entry instanceof HealthRecord.Encounter) {
-      costs = ENCOUNTER_COSTS;
-      defaultCost = DEFAULT_ENCOUNTER_COST;
-    } else if (entry instanceof HealthRecord.Immunization) {
-      costs = IMMUNIZATION_COSTS;
-      defaultCost = DEFAULT_IMMUNIZATION_COST;
-    } else {
-      // Is not an entry type that has an associated cost.
-      return 0.0;
-    }
-
-    String code = entry.codes.get(0).code;
-
-    // Retrieve the base cost based on the code.
-    double baseCost;
-    if (costs != null && costs.containsKey(code)) {
-      baseCost = costs.get(code).chooseCost(patient.random);
-    } else {
-      baseCost = defaultCost;
-    }
-
-    // Retrieve the location adjustment factor
-    double locationAdjustment = 1.0;
-    if (patient != null && patient.attributes.containsKey(Person.STATE)) {
-      String state = (String) patient.attributes.get(Person.STATE);
-      state = Location.getAbbreviation(state);
-      if (LOCATION_ADJUSTMENT_FACTORS.containsKey(state)) {
-        locationAdjustment = (double) LOCATION_ADJUSTMENT_FACTORS.get(state);
-      }
-    }
-
-    double totalCost = (baseCost * locationAdjustment);
-    return totalCost;
   }
 }

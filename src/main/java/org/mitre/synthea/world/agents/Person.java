@@ -565,6 +565,17 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
+   * Gets the person's last year's payer from the given time.
+   */
+  public Payer getPreviousPayer(long time) {
+    int age = this.ageInYears(time);
+    if (age <= 0) {
+      return null;
+    }
+    return this.getPayerAtAge(age - 1);
+  }
+
+  /**
    * Checks if the person has paid their monthly premium. If not, the person pays
    * the premium to their current payer.
    * 

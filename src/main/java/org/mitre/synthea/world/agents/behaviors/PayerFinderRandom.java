@@ -25,7 +25,7 @@ public class PayerFinderRandom implements IPayerFinder {
     List<Payer> options = new ArrayList<Payer>();
 
     for (Payer payer : payers) {
-      if (meetsBasicRequirements(payer, person, service, time)) {
+      if (IPayerFinder.meetsBasicRequirements(payer, person, service, time)) {
         options.add(payer);
       }
     }

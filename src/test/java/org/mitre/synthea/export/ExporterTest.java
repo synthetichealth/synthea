@@ -12,8 +12,10 @@ import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.geography.Location;
 
 public class ExporterTest {
@@ -62,11 +64,15 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_old_active_medication() {
+
+    Code code = new Code("SNOMED-CT","705129","Fake Code");
+
     record.encounterStart(time - years(10), EncounterType.AMBULATORY);
     record.medicationStart(time - years(10), "fakeitol");
 
     record.encounterStart(time - years(8), EncounterType.AMBULATORY);
-    record.medicationStart(time - years(8), "placebitol");
+    Medication med = record.medicationStart(time - years(8), "placebitol");
+    med.codes.add(code);
     record.medicationEnd(time - years(6), "placebitol", DUMMY_CODE);
 
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
@@ -78,12 +84,17 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_medication_that_ended_during_target() {
+
+    Code code = new Code("SNOMED-CT","705129","Fake Code");
+
     record.encounterStart(time - years(10), EncounterType.AMBULATORY);
-    record.medicationStart(time - years(10), "dimoxinil");
+    Medication med = record.medicationStart(time - years(10), "dimoxinil");
+    med.codes.add(code);
     record.medicationEnd(time - years(9), "dimoxinil", DUMMY_CODE);
 
     record.encounterStart(time - years(8), EncounterType.AMBULATORY);
-    record.medicationStart(time - years(8), "placebitol");
+    med = record.medicationStart(time - years(8), "placebitol");
+    med.codes.add(code);
     record.medicationEnd(time - years(4), "placebitol", DUMMY_CODE);
 
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);

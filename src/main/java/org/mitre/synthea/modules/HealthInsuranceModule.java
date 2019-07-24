@@ -9,6 +9,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.behaviors.IPayerFinder;
 
 public class HealthInsuranceModule extends Module {
   public static final String INSURANCE = "insurance";
@@ -43,10 +44,10 @@ public class HealthInsuranceModule extends Module {
     // birthday.
     if (person.getPayerAtTime(time) == null) {
       // Update their last payer with person's QOLS for that year.
-      if (person.ageInYears(time) > 0) {
-        person.getPayerAtAge(person.ageInYears(time) - 1)
-            .addQols(person.getQolsForYear(Utilities.getYear(time) - 1));
+      if (person.getPreviousPayer(time) != null) {
+        person.getPreviousPayer(time).addQols(person.getQolsForYear(Utilities.getYear(time) - 1));
       }
+
       // Determine the insurance for this person at this time.
       Payer newPayer = determineInsurance(person, time);
       // Set this new payer at the current time for the person.
@@ -79,6 +80,11 @@ public class HealthInsuranceModule extends Module {
       return Payer.getGovernmentPayer("Medicare");
     } else if (Payer.getGovernmentPayer("Medicaid").accepts(person, time)) {
       return Payer.getGovernmentPayer("Medicaid");
+    } else if (person.getPreviousPayer(time) != null
+        && IPayerFinder.meetsBasicRequirements(person.getPreviousPayer(time)
+        , person, null, time)) {
+      // People will keep their previous year's insurance if they can.
+      return person.getPreviousPayer(time);
     } else {
       // Randomly choose one of the remaining private payers.
       // Returns no_insurance if a person cannot afford any of them.
