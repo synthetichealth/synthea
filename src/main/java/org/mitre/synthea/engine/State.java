@@ -17,7 +17,6 @@ import org.mitre.synthea.engine.Transition.ConditionalTransitionOption;
 import org.mitre.synthea.engine.Transition.DirectTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransitionOption;
-import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.RandomValueGenerator;
 import org.mitre.synthea.helpers.Utilities;

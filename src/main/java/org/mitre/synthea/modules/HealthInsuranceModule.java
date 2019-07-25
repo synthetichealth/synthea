@@ -52,6 +52,8 @@ public class HealthInsuranceModule extends Module {
       Payer newPayer = determineInsurance(person, time);
       // Set this new payer at the current time for the person.
       person.setPayerAtTime(time, newPayer);
+      // Reset the person's yearly deductible.
+      person.resetDeductible(time);
       // Update the new Payer's customer statistics.
       person.getPayerAtTime(time).incrementCustomers(person);
     }
@@ -81,8 +83,7 @@ public class HealthInsuranceModule extends Module {
     } else if (Payer.getGovernmentPayer("Medicaid").accepts(person, time)) {
       return Payer.getGovernmentPayer("Medicaid");
     } else if (person.getPreviousPayer(time) != null
-        && IPayerFinder.meetsBasicRequirements(person.getPreviousPayer(time)
-        , person, null, time)) {
+        && IPayerFinder.meetsBasicRequirements(person.getPreviousPayer(time), person, null, time)) {
       // People will keep their previous year's insurance if they can.
       return person.getPreviousPayer(time);
     } else {

@@ -2,6 +2,7 @@ package org.mitre.synthea.datastore;
 
 import com.google.common.collect.Table;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -489,7 +490,7 @@ public class DataStore {
           stmt.setString(3, encounterID);
           stmt.setString(4, medicationID);
           stmt.setLong(5, medication.start);
-          stmt.setBigDecimal(6, medication.claim.total());
+          stmt.setBigDecimal(6, new BigDecimal(medication.claim.getTotalClaimCost()));
           stmt.execute();
 
         }
@@ -596,7 +597,7 @@ public class DataStore {
         stmt.setString(3, encounterID);
         stmt.setString(4, null);
         stmt.setLong(5, encounter.start);
-        stmt.setBigDecimal(6, encounter.claim.total());
+        stmt.setBigDecimal(6, new BigDecimal(encounter.claim.getTotalClaimCost()));
         stmt.execute();
 
       }

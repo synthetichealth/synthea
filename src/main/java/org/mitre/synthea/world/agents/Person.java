@@ -75,6 +75,8 @@ public class Person implements Serializable, QuadTreeData {
   public static final String SEXUAL_ORIENTATION = "sexual_orientation";
   public static final String LOCATION = "location";
   public static final String ACTIVE_WEIGHT_MANAGEMENT = "active_weight_management";
+  private static final String DEDUCTIBLE = "deductible";
+  private static final String LAST_MONTH_PAID = "last_month_paid";
 
   public final Random random;
   public final long seed;
@@ -94,9 +96,6 @@ public class Person implements Serializable, QuadTreeData {
   // Each entry in the payerHistory Array corresponds to the insurance held at that
   // age
   public Payer[] payerHistory;
-  // Tracks the months the Person has paid for insurance
-  private int lastMonthPaid;
-  private int lastYearPaid;
 
   /**
    * Person constructor.
@@ -116,9 +115,6 @@ public class Person implements Serializable, QuadTreeData {
     record = new HealthRecord(this);
     // 128 because it's a nice power of 2, and nobody will reach that age
     payerHistory = new Payer[128];
-
-    lastMonthPaid = 0;
-    lastYearPaid = 0;
   }
 
   /**
@@ -486,6 +482,148 @@ public class Person implements Serializable, QuadTreeData {
     }
   }
 
+  /**
+   * Returns the list of this person's Payer history.
+   */
+  public Payer[] getPayerHistory() {
+    return this.payerHistory;
+  }
+
+  /**
+   * Sets the person's payer history at the given time to the given payer.
+   */
+  public void setPayerAtTime(long time, Payer newPayer) {
+    this.setPayerAtAge(this.ageInYears(time), newPayer);
+  }
+
+  /**
+   * Sets the person's payer history at the given age to the given payer.
+   */
+  public void setPayerAtAge(int age, Payer randomPrivatePayer) {
+    if (payerHistory[age] != null) {
+      throw new RuntimeException("ERROR: Overwriting a person's insurance at age " + age);
+    }
+    this.payerHistory[age] = randomPrivatePayer;
+  }
+
+  /**
+   * Returns the person's Payer at the given time.
+   */
+  public Payer getPayerAtTime(long time) {
+    return this.payerHistory[this.ageInYears(time)];
+  }
+
+  /**
+   * Returns the person's Payer at the given age.
+   */
+  public Payer getPayerAtAge(int personAge) {
+    return this.payerHistory[personAge];
+  }
+
+  /**
+   * Returns the person's last year's payer from the given time.
+   */
+  public Payer getPreviousPayer(long time) {
+    int age = this.ageInYears(time);
+    if (age <= 0) {
+      return null;
+    }
+    return this.getPayerAtAge(age - 1);
+  }
+
+  /**
+   * Checks if the person has paid their monthly premium. If not, the person pays
+   * the premium to their current payer.
+   * 
+   * @param time the time that the person checks to pay premium.
+   */
+  public void checkToPayMonthlyPremium(long time) {
+
+    if (!this.attributes.containsKey(Person.LAST_MONTH_PAID)) {
+      this.attributes.put(Person.LAST_MONTH_PAID, 0);
+    }
+
+    int currentMonth = Utilities.getMonth(time);
+    int lastMonthPaid = (int) this.attributes.get(Person.LAST_MONTH_PAID);
+
+    if (currentMonth > lastMonthPaid || (currentMonth == 1 && lastMonthPaid == 12)) {
+
+      // TODO - Check that they can still afford the premium due to any newly incurred health costs.
+
+      // Pay the payer.
+      Payer currentPayer = this.getPayerAtTime(time);
+      if (currentPayer != null) {
+        currentPayer.payPremium(currentPayer.getMonthlyPremium());
+        this.addCost(currentPayer.getMonthlyPremium());
+        // Update the last monthly premium paid.
+        this.attributes.put(Person.LAST_MONTH_PAID, currentMonth);
+      } else {
+        throw new RuntimeException("ERROR: Attempted to pay monthly premium to null Payer.");
+      }
+    }
+  }
+
+  /**
+   * Resets a person's deductible.
+   * 
+   * @param time the time that the person's deductible is reset.
+   */
+  public void resetDeductible(long time) {
+    double deductible = this.getPayerAtTime(time).getDeductible();
+    this.attributes.put(Person.DEDUCTIBLE, deductible);
+  }
+
+  /**
+   * Returns whether or not a person can afford a given payer.
+   * If a person's income is greater than:
+   *    -A year of monthly premiums +
+   *    -The deductible
+   * Then they can afford the insurance.
+   * 
+   * @param payer the payer to check.
+   */
+  public boolean canAffordPayer(Payer payer) {
+    int income = (Integer) this.attributes.get(Person.INCOME);
+    double yearlyPremiumTotal = payer.getMonthlyPremium() * 12;
+    double yearlyDeductible = payer.getDeductible();
+    double yearlyTotalCost = yearlyPremiumTotal + yearlyDeductible;
+    return income > yearlyTotalCost;
+  }
+
+  @SuppressWarnings("unchecked")
+  /**
+   * Returns the person's QOLS at the given time.
+   * 
+   * @param time the time to retrive the qols for.
+   */
+  public double getQolsForYear(int year) {
+    if (((Map<Integer, Double>) this.attributes.get("QOL")).get(year) == null) {
+      throw new RuntimeException(
+          "ERROR: Person's QOLS was not calculated for the year " + year + ".");
+    }
+    return ((Map<Integer, Double>) this.attributes.get("QOL")).get(year);
+  }
+
+  /**
+   * Adds the cost of an encounter to this person.
+   * Currently does nothing.
+   * 
+   * @param costToPatient the cost, after insurance, to this patient.
+   */
+  public void addCost(double costToPatient) {
+    // Not yet implemented.
+  }
+
+  /**
+   * Returns whether or not the person can afford to pay out of pocket for the given encounter.
+   * Defaults to return false for everyone. For now.
+   * 
+   * @param entry the entry to pay for.
+   */
+  public boolean canAffordCare(Entry entry) {
+    return false;
+  }
+
   /*
    * (non-Javadoc)
    * 
@@ -524,142 +662,5 @@ public class Person implements Serializable, QuadTreeData {
   @Override
   public String getFileName() {
     return null;
-  }
-
-  /**
-   * Returns the list of this person's Payer history.
-   */
-  public Payer[] getPayerHistory() {
-    return this.payerHistory;
-  }
-
-  /**
-   * Sets the person's payer history at the given time to the given payer.
-   */
-  public void setPayerAtTime(long time, Payer newPayer) {
-    this.setPayerAtAge(this.ageInYears(time), newPayer);
-  }
-
-  /**
-   * Sets the person's payer history at the given age to the given payer.
-   */
-  public void setPayerAtAge(int age, Payer randomPrivatePayer) {
-    if (payerHistory[age] != null) {
-      throw new RuntimeException("ERROR: Overwriting a person's insurance at age " + age);
-    }
-    this.payerHistory[age] = randomPrivatePayer;
-  }
-
-  /**
-   * Gets the person's Payer at the given time.
-   */
-  public Payer getPayerAtTime(long time) {
-    return this.payerHistory[this.ageInYears(time)];
-  }
-
-  /**
-   * Gets the person's Payer at the given age.
-   */
-  public Payer getPayerAtAge(int personAge) {
-    return this.payerHistory[personAge];
-  }
-
-  /**
-   * Gets the person's last year's payer from the given time.
-   */
-  public Payer getPreviousPayer(long time) {
-    int age = this.ageInYears(time);
-    if (age <= 0) {
-      return null;
-    }
-    return this.getPayerAtAge(age - 1);
-  }
-
-  /**
-   * Checks if the person has paid their monthly premium. If not, the person pays
-   * the premium to their current payer.
-   * 
-   * @param time the time that the person checks to pay premium.
-   */
-  public void checkToPayMonthlyPremium(long time) {
-    int currentMonth = Utilities.getMonth(time);
-    int currentYear = Utilities.getYear(time);
-
-    if (currentMonth > lastMonthPaid && currentYear > lastYearPaid) {
-      // May be a way to do this without keeping
-      // track of the year.
-
-      // Check that they can actually still afford the premium due to newly incurred health costs.
-
-      // Pay the payer
-      Payer currentPayer = this.getPayerAtTime(time);
-      if (currentPayer == null) {
-        throw new RuntimeException("ERROR: Attempted to pay monthly premium to null Payer.");
-      } else {
-        // Eventually this logic will go elsewhere (Likely a potential Plans class)
-        // based on plans and insurance companies.
-        // It will not call payer.getMonthlyPremium() here.
-        currentPayer.payPremium(currentPayer.getMonthlyPremium());
-        this.addCost(currentPayer.getMonthlyPremium());
-
-        if (currentMonth >= 12) {
-          lastYearPaid = currentYear;
-          lastMonthPaid = 0;
-        } else {
-          lastMonthPaid = currentMonth;
-        }
-      }
-    }
-  }
-
-  /**
-   * Returns whether or not a person can afford a given payer.
-   * If a person's income is greater than:
-   *    -A year of monthly premiums +
-   *    -The deductible
-   * Then they can afford the insurance.
-   * 
-   * @param payer the payer to check.
-   */
-  public boolean canAffordPayer(Payer payer) {
-    int income = (Integer) this.attributes.get(Person.INCOME);
-    double yearlyPremiumTotal = payer.getMonthlyPremium() * 12;
-    double yearlyDeductible = payer.getDeductible();
-    double yearlyTotalCost = yearlyPremiumTotal + yearlyDeductible;
-    return income > yearlyTotalCost;
-  }
-
-  @SuppressWarnings("unchecked")
-  /**
-   * Returns the person's QOLS at the given time.
-   * 
-   * @param time the time to retrive the qols for.
-   */
-  public double getQolsForYear(int year) {
-    if (((Map<Integer, Double>) this.attributes.get("QOL")).get(year) == null) {
-      throw new RuntimeException(
-          "ERROR: Person's QOLS was not calculated for the year " + year + ".");
-    }
-    return ((Map<Integer, Double>) this.attributes.get("QOL")).get(year);
-  }
-
-  /**
-   * Adds the cost of an encounter to this person.
-   * 
-   * @param costToPatient the cost, after insurance, to this patient.
-   */
-  public void addCost(double costToPatient) {
-    // TODO - Affect the person's costs/income/etc.
-  }
-
-  /**
-   * Returns whether or not the person can afford to pay out of pocket for the given encounter.
-   * Currently returns false for everyone. Not sure how to determine whether someone can afford it.
-   * Need to keep in consideration previous health/insurance costs the person already incurred.
-   * 
-   * @param entry the entry to pay for.
-   */
-  public boolean canAffordCare(Entry entry) {
-    return false;
   }
 }

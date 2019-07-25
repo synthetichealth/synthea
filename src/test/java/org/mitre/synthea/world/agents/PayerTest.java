@@ -23,10 +23,9 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
 
-
 public class PayerTest {
 
-  // Covers all encounters.
+  // Covers all health care.
   Payer testPrivatePayer1;
   // Covers only wellness encounters.
   Payer testPrivatePayer2;

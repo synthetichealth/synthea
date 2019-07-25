@@ -751,7 +751,7 @@ public class FhirStu3 {
     claimResource.setPrescription(new Reference(medicationEntry.getFullUrl()));
 
     Money moneyResource = new Money();
-    moneyResource.setValue(claim.total());
+    moneyResource.setValue(claim.getTotalClaimCost());
     moneyResource.setCode("USD");
     moneyResource.setSystem("urn:iso:std:iso:4217");
     claimResource.setTotal(moneyResource);
@@ -857,7 +857,7 @@ public class FhirStu3 {
     Money moneyResource = new Money();
     moneyResource.setCode("USD");
     moneyResource.setSystem("urn:iso:std:iso:4217");
-    moneyResource.setValue(claim.total());
+    moneyResource.setValue(claim.getTotalClaimCost());
     claimResource.setTotal(moneyResource);
 
     return newEntry(bundle, claimResource);
@@ -1118,7 +1118,7 @@ public class FhirStu3 {
     Money totalCost = new Money();
     totalCost.setSystem("urn:iso:std:iso:4217");
     totalCost.setCode("USD");
-    totalCost.setValue(encounter.claim.total());
+    totalCost.setValue(encounter.claim.getTotalClaimCost());
     eob.setTotalCost(totalCost);
 
     // Set References

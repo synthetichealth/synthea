@@ -198,14 +198,14 @@ public class CSVExporter {
     careplans.write(NEWLINE);
     observations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,VALUE,UNITS,TYPE");
     observations.write(NEWLINE);
-    procedures.write("DATE,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,PAYER_COVERAGE,"
+    procedures.write("DATE,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,"
         + "REASONCODE,REASONDESCRIPTION");
     procedures.write(NEWLINE);
-    immunizations.write("DATE,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,PAYER_COVERAGE");
+    immunizations.write("DATE,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST");
     immunizations.write(NEWLINE);
     encounters.write(
-        "Id,START,STOP,PATIENT,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,BASE_COST,"
-        + "PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION");
+        "Id,START,STOP,PATIENT,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,BASE_ENCOUNTER_COST,"
+        + "TOTAL_CLAIM_COST,PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION");
     encounters.write(NEWLINE);
     imagingStudies.write("Id,DATE,PATIENT,ENCOUNTER,BODYSITE_CODE,BODYSITE_DESCRIPTION,"
         + "MODALITY_CODE,MODALITY_DESCRIPTION,SOP_CODE,SOP_DESCRIPTION");
@@ -452,7 +452,7 @@ public class CSVExporter {
    */
   private String encounter(String personID, Encounter encounter) throws IOException {
     // Id,START,STOP,PATIENT,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,
-    // BASE_COST,PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION
+    // BASE_ENCOUNTER_COST,TOTAL_CLAIM_COST,PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
     String encounterID = UUID.randomUUID().toString();
@@ -491,8 +491,10 @@ public class CSVExporter {
     s.append(coding.code).append(',');
     // DESCRIPTION
     s.append(clean(coding.display)).append(',');
-    // BASE_COST
+    // BASE_ENCOUNTER_COST
     s.append(String.format(Locale.US, "%.2f", encounter.getCost())).append(',');
+    // TOTAL_COST
+    s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalClaimCost())).append(',');
     // PAYER_COVERAGE
     s.append(String.format(Locale.US, "%.2f", encounter.claim.getCoveredCost())).append(',');
     // REASONCODE & REASONDESCRIPTION
@@ -638,9 +640,6 @@ public class CSVExporter {
     s.append(clean(coding.display)).append(',');
     // BASE_COST
     s.append(String.format(Locale.US, "%.2f", procedure.getCost())).append(',');
-    // PAYER_COVERAGE
-    // TODO - Not sure how to receive the coveredCost because procedures do not have a claim.
-    s.append(String.format(Locale.US, "%.2f", 0.0));
     // REASONCODE & REASONDESCRIPTION
     if (procedure.reasons.isEmpty()) {
       s.append(','); // reason code & desc
@@ -749,7 +748,7 @@ public class CSVExporter {
    */
   private void immunization(String personID, String encounterID, String payerID,
       Entry immunization) throws IOException {
-    // DATE,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,PAYER_COVERAGE
+    // DATE,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST
     StringBuilder s = new StringBuilder();
 
     s.append(dateFromTimestamp(immunization.start)).append(',');
@@ -763,9 +762,6 @@ public class CSVExporter {
     s.append(clean(coding.display)).append(',');
     // BASE_COST
     s.append(String.format(Locale.US, "%.2f", immunization.getCost()));
-    // PAYER_COVERAGE
-    // TODO - Not sure how to receive the coveredCost because immunizations do not have a claim.
-    s.append(String.format(Locale.US, "%.2f", 0.0));
 
     s.append(NEWLINE);
     write(s.toString(), immunizations);
@@ -944,45 +940,49 @@ public class CSVExporter {
     // PATIENT_ID,YEAR,PAYER_ID,OWNERSHIP
 
     StringBuilder s = new StringBuilder();
+    // PATIENT_ID
     s.append(person.attributes.get(Person.ID)).append(",");
+    // YEAR
     s.append(currentYear).append(",");
 
-    if (payer == null) {
-      throw new RuntimeException("ERROR: " + person.attributes.get(Person.ID)
-          + " had null insurance for the year " + currentYear);
-    } else if (payer.getName().equals("NO_INSURANCE")) {
-      // No insurance to display.
-      s.append(',');
-      // No owner to display.
-      s.append(',');
-    } else {
-      s.append(payer.getResourceID()).append(',');
+    String payerID = "";
+    String ownership = "";
 
-      // Ownership
-      int personAge = person.ageInYears(Utilities.convertCalendarYearsToTime(currentYear));
-      if (personAge < 18) {
-        // If a person is a minor, their Gaurdian owns their health plan unless it is Medicaid.
-        if ((person.getPayerAtAge(personAge).getName().equals("Medicaid"))) {
-          s.append("Self").append(",");
-        } else {
-          s.append("Guardian").append(",");
-        }
-      } else if ((person.attributes.containsKey(Person.MARITAL_STATUS))
-          && person.attributes.get(Person.MARITAL_STATUS).equals("M")) {
-        // If a person is married, there is a 50% chance their spouse owns their insurance.
-        if (person.rand(0.0, 1.0) < .5) {
-          s.append("Spouse").append(",");
-        } else {
-          s.append("Self").append(",");
-        }
-      } else {
-        // If a person is unmarried and over 18, they own their insurance.
-        s.append("Self").append(",");
-      }
-      
+    if (payer == null) {
+      // Person does not have insurance this year.
+    } else if (!payer.getName().equals("NO_INSURANCE")) {
+      // Update the insurance and ownership.
+      payerID = payer.getResourceID();
+      ownership = determineOwnership(person, currentYear);      
     }
+    // PAYER_ID
+    s.append(payerID).append(',');
+    // OWNERSHIP
+    s.append(ownership);
     s.append(NEWLINE);
     write(s.toString(), payerTransitions);
+  }
+
+  /**
+   * Returns a string of who owns this person's insurance at the current year.
+   */
+  private String determineOwnership(Person person, int currentYear) {
+
+    int personAge = person.ageInYears(Utilities.convertCalendarYearsToTime(currentYear));
+
+    if (personAge < 18
+        && !person.getPayerAtAge(personAge).getName().equals("Medicaid")) {
+      // If a person is a minor, their Guardian owns their health plan unless it is Medicaid.
+      return "Guardian";
+    } else if ((person.attributes.containsKey(Person.MARITAL_STATUS))
+        && person.attributes.get(Person.MARITAL_STATUS).equals("M")) {
+      // If a person is married, there is a 50% chance their spouse owns their insurance.
+      if (person.rand(0.0, 1.0) < .5) {
+        return "Spouse";
+      }
+    }
+    // If a person is unmarried and over 18, they own their insurance.
+    return "Self";
   }
 
   /**

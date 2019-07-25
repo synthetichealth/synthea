@@ -781,7 +781,7 @@ public class FhirR4 {
     claimResource.setPrescription(new Reference(medicationEntry.getFullUrl()));
 
     Money moneyResource = new Money();
-    moneyResource.setValue(claim.total());
+    moneyResource.setValue(claim.getTotalClaimCost());
     moneyResource.setCurrency("USD");
     claimResource.setTotal(moneyResource);
 
@@ -910,7 +910,7 @@ public class FhirR4 {
 
     Money moneyResource = new Money();
     moneyResource.setCurrency("USD");
-    moneyResource.setValue(claim.total());
+    moneyResource.setValue(claim.getTotalClaimCost());
     claimResource.setTotal(moneyResource);
 
     return newEntry(bundle, claimResource);
@@ -962,7 +962,7 @@ public class FhirR4 {
     // cost is hardcoded to be USD in claim so this should be fine as well
     Money totalCost = new Money();
     totalCost.setCurrency("USD");
-    totalCost.setValue(encounter.claim.total());
+    totalCost.setValue(encounter.claim.getTotalClaimCost());
     TotalComponent total = eob.addTotal();
     total.setAmount(totalCost);
     Code submitted = new Code("http://terminology.hl7.org/CodeSystem/adjudication",

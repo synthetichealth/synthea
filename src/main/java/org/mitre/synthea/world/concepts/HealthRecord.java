@@ -593,7 +593,7 @@ public class HealthRecord {
   }
 
   /**
-   * Not sure how this works exactly - just takes an encounterType?.
+   * Ends an encounter.
    * 
    * @param time the end time of the encounter.
    * @param type the type of the encounter.

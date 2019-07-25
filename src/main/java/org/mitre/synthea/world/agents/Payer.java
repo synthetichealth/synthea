@@ -54,9 +54,10 @@ public class Payer {
   private final String name;
   private final String id;
   public final String uuid;
-  private double defaultCopay;
-  private double monthlyPremium;
   private double deductible;
+  private double defaultCopay;
+  private double defaultCoinsurance;
+  private double monthlyPremium;
   private String ownership;
 
   /* The States that this payer covers & operates in */
@@ -66,8 +67,6 @@ public class Payer {
   // Will likely be moved to a Plans class.
   // If an encounterType is contained in a payer's servicesCovered, then they cover it.
   private Set<String> servicesCovered;
-  /* The list of plans that this Payer has. */
-  // private List<Plan> plans
 
   /* Payer Statistics */
   private double costsCovered;
@@ -93,9 +92,10 @@ public class Payer {
     this.id = id;
     this.uuid = UUID.nameUUIDFromBytes((this.id + this.name).getBytes()).toString();
     this.attributes = new LinkedTreeMap<>();
+    this.deductible = 0.0;
+    this.defaultCoinsurance = 0.0;
     this.defaultCopay = 0.0;
     this.monthlyPremium = 0.0;
-    this.deductible = 0.0;  // Currently, deductible is not set.
     this.ownership = "";
     this.entryUtilization = HashBasedTable.create();
     this.customerUtilization = new HashMap<String, AtomicInteger>();
@@ -195,10 +195,12 @@ public class Payer {
     Payer newPayer = new Payer(line.remove("name"), line.remove("id"));
     newPayer.statesCovered = commaSeparatedStringToHashSet(line.remove("states_covered"));
     newPayer.servicesCovered = commaSeparatedStringToHashSet(line.remove("services_covered"));
+    newPayer.deductible = Double.parseDouble(line.remove("deductible"));
+    newPayer.defaultCoinsurance = Double.parseDouble(line.remove("default_coinsurance"));
     newPayer.defaultCopay = Double.parseDouble(line.remove("default_copay"));
     newPayer.monthlyPremium = Double.parseDouble(line.remove("monthly_premium"));
     newPayer.ownership = line.remove("ownership");
-    // Add remaining columns we didn't map to first-class fields to attributes map.
+    // Add remaining columns we didn't map to first-class fields to payer's attributes map.
     for (Map.Entry<String, String> e : line.entrySet()) {
       newPayer.attributes.put(e.getKey(), e.getValue());
     }
@@ -232,10 +234,7 @@ public class Payer {
   }
 
   /**
-   * Returns the List of all loaded payers.
-   * TODO - This is inefficient.
-   * Creates a whole new list with a duplicate set of pointers to each Payer.
-   * Gotta figure out a better way than this.
+   * Returns a List of all loaded payers.
    */
   public static List<Payer> getAllPayers() {
     List<Payer> allPayers = new ArrayList<>();
@@ -329,6 +328,13 @@ public class Payer {
   }
 
   /**
+   * Returns the Coinsurance of this payer.
+   */
+  public double getCoinsurance() {
+    return this.defaultCoinsurance;
+  }
+
+  /**
    * Returns the ownserhip type of the payer (Government/Private).
    */
   public String getOwnership() {
@@ -348,7 +354,7 @@ public class Payer {
    * 
    * @param person the person to add to the payer.
    */
-  public void incrementCustomers(Person person) {
+  public synchronized void incrementCustomers(Person person) {
     if (!customerUtilization.containsKey(person.attributes.get(Person.ID))) {
       customerUtilization.put((String) person.attributes.get(Person.ID), new AtomicInteger(0));
     }
@@ -404,7 +410,6 @@ public class Payer {
       throw new RuntimeException("Attempted to increment Payer entries with invalid type "
           + entry.getClass());
     }
-
     return entryType;
   }
 
@@ -611,23 +616,12 @@ public class Payer {
 
   /**
    * Determines the copay owed for this Payer based on the type of encounter.
-   * May change from encounter to entry to get access to medications/procedure/etc.
+   * For now, this returns a default copay. But in the future there will be different
+   * copays depending on the encounter type covered.
+   * May change from encounter to entry to get copays for medications/procedures/etc.
    */
   public double determineCopay(Encounter encounter) {
-
-    // TODO - Currently just returns a default copay. May add different copays for
-    // each Encounter type (AMB/EMERGENCY/MEDICATION/etc).
-
     double copay = this.defaultCopay;
-    /*
-    // Encounter inpatient
-    if (encounter.type.equalsIgnoreCase("inpatient")) {
-      //copay = inpatientCopay;
-    } else {
-      // Outpatient Encounter, Encounter for 'checkup', Encounter for symptom,
-      copay = outpatientCopay
-    }
-    */
     return copay;
   }
 
