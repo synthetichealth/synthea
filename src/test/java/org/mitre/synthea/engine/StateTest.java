@@ -6,8 +6,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
-import ca.uhn.fhir.model.dstu2.resource.MedicationOrder;
-
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
