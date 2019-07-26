@@ -108,7 +108,6 @@
     },
     "Psychiatric_Evaluation": {
       "type": "Procedure",
-      "target_encounter": "ED_Visit_For_Attempted_Suicide",
       "reason": "suicide_attempt",
       "codes": [
         {
@@ -121,7 +120,6 @@
     },
     "Short_Hospital_Stay": {
       "type": "Procedure",
-      "target_encounter": "ED_Visit_For_Attempted_Suicide",
       "reason": "suicide_attempt",
       "codes": [
         {
@@ -186,7 +184,6 @@
     },
     "Suicide_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Attempted_Suicide_Followup",
       "assign_to_attribute": "suicide_careplan",
       "reason": "suicide_attempt",
       "codes": [
@@ -217,7 +214,6 @@
     },
     "Followup_Psychiatric_Evaluation": {
       "type": "Procedure",
-      "target_encounter": "Attempted_Suicide_Followup",
       "reason": "suicide_attempt",
       "codes": [
         {
@@ -363,7 +359,6 @@
     },
     "Autopsy_Examination": {
       "type": "Procedure",
-      "target_encounter": "Autopsy_Encounter",
       "reason": "suicide",
       "codes": [
         {

@@ -783,7 +783,6 @@
           "unit": "mmol/L"
         }
       ],
-      "target_encounter": "Wellness_Encounter",
       "direct_transition": "Inpatient Daily Transition"
     },
     "Record_CMP": {

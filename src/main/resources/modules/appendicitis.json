@@ -271,7 +271,6 @@
     },
     "Appendectomy": {
       "type": "Procedure",
-      "target_encounter": "Appendectomy_Encounter",
       "reason": "Appendicitis",
       "codes": [
         {

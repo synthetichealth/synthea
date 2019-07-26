@@ -119,7 +119,6 @@
     },
     "RA_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "RA_Diagnosis",
       "assign_to_attribute": "ra_careplan",
       "reason": "Rheumatoid_Arthritis",
       "codes": [
@@ -150,7 +149,6 @@
     },
     "RA_Nonopioid_Pain_Medication": {
       "type": "MedicationOrder",
-      "target_encounter": "RA_Diagnosis",
       "reason": "Rheumatoid_Arthritis",
       "remarks": [
         "A stronger NSAID pain reliever than the basic Aleve."
@@ -181,7 +179,6 @@
     },
     "DMARD": {
       "type": "MedicationOrder",
-      "target_encounter": "RA_Diagnosis",
       "reason": "Rheumatoid_Arthritis",
       "remarks": [
         "Disease-Modifying Anti-Rheumatic Drugs (DMARDs) inhibit or halt the progression ",
@@ -230,7 +227,6 @@
     },
     "Corticosteroid": {
       "type": "MedicationOrder",
-      "target_encounter": "RA_Diagnosis",
       "reason": "Rheumatoid_Arthritis",
       "remarks": [
         "When introduced in higher levels than those produced by the body, corticosteroids ",

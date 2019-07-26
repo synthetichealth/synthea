@@ -249,7 +249,6 @@
     },
     "Prescribe_UTI_Antibiotic": {
       "type": "MedicationOrder",
-      "target_encounter": "UTI_Diagnosis",
       "reason": "uti",
       "remarks": [
         "This is an antibiotic commonly prescribed for UTIs."
@@ -265,7 +264,6 @@
     },
     "Prescribe_OTC_Painkiller_For_UTIs": {
       "type": "MedicationOrder",
-      "target_encounter": "UTI_Diagnosis",
       "reason": "uti",
       "remarks": [
         "This is an OTC pain medication specifically for the urinary tract."
@@ -281,7 +279,6 @@
     },
     "UTI_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "UTI_Diagnosis",
       "reason": "uti",
       "codes": [
         {
@@ -345,7 +342,6 @@
     },
     "Prescribe_Second_Round_Of_Antibiotics": {
       "type": "MedicationOrder",
-      "target_encounter": "Followup_Encounter",
       "reason": "uti",
       "remarks": [
         "This is a stronger antibiotic."

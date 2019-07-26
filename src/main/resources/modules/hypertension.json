@@ -343,7 +343,6 @@
           "vital_sign": "Diastolic Blood Pressure"
         }
       ],
-      "target_encounter": "Hypertension_Followup_Encounter",
       "conditional_transition": [
         {
           "transition": "End_Hypertension_Medication",
@@ -395,7 +394,6 @@
           "vital_sign": "Diastolic Blood Pressure"
         }
       ],
-      "target_encounter": "Hypertension_Followup_Encounter",
       "conditional_transition": [
         {
           "transition": "End_Hypertension_Comb_Medication",
@@ -447,7 +445,6 @@
           "vital_sign": "Diastolic Blood Pressure"
         }
       ],
-      "target_encounter": "Hypertension_Followup_Encounter",
       "conditional_transition": [
         {
           "transition": "Referral To Hypertension Clinic",

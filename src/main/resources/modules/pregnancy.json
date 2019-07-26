@@ -88,7 +88,6 @@
     },
     "Pregnancy_Test": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -101,7 +100,6 @@
     },
     "Fetal_Viability_Ultrasound": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -286,7 +284,6 @@
     },
     "Pregnancy_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "remarks": [
         "There are MANY activities that could be associated with a pregnancy care plan.",
@@ -322,7 +319,6 @@
     },
     "Inital_Visit_Fundal_Height": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -335,7 +331,6 @@
     },
     "Inital_Visit_Fetal_Heartbeat": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -348,7 +343,6 @@
     },
     "Blood_Typing": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -361,7 +355,6 @@
     },
     "Hemoglobin_Test": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -374,7 +367,6 @@
     },
     "Hep_B_Surface_Antigen": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -387,7 +379,6 @@
     },
     "HIV_Test": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -400,7 +391,6 @@
     },
     "Chlamydia_Test": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -413,7 +403,6 @@
     },
     "Gonorrhea_Test": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -426,7 +415,6 @@
     },
     "Syphilis_Test": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -439,7 +427,6 @@
     },
     "Urine_Culture": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -452,7 +439,6 @@
     },
     "Pap_Smear": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -465,7 +451,6 @@
     },
     "Diabetes_Screen": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -478,7 +463,6 @@
     },
     "Hep_C_Test": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -491,7 +475,6 @@
     },
     "Rubella_Screen": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -504,7 +487,6 @@
     },
     "Varicella_Test": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -517,7 +499,6 @@
     },
     "Tuberculosis_Test": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -530,7 +511,6 @@
     },
     "Urine_Protein_Test": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -543,7 +523,6 @@
     },
     "Physical_Exam": {
       "type": "Procedure",
-      "target_encounter": "Prenatal_Initial_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -620,7 +599,6 @@
     },
     "Week_12_Fundal_Height": {
       "type": "Procedure",
-      "target_encounter": "Week_12_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -633,7 +611,6 @@
     },
     "Week_12_Fetal_Heartbeat": {
       "type": "Procedure",
-      "target_encounter": "Week_12_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -646,7 +623,6 @@
     },
     "Fetal_Aneuploidy_Screen": {
       "type": "Procedure",
-      "target_encounter": "Week_12_Visit",
       "reason": "Become_Pregnant",
       "remarks": [
         "This is just one option for genetic screening, many options exist but it is unreasonable to represent all options."
@@ -702,7 +678,6 @@
     },
     "Fetal_Anatomy_Study": {
       "type": "Procedure",
-      "target_encounter": "Week_16_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -715,7 +690,6 @@
     },
     "AFP_Test": {
       "type": "Procedure",
-      "target_encounter": "Week_16_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -728,7 +702,6 @@
     },
     "Week_16_Fundal_Height": {
       "type": "Procedure",
-      "target_encounter": "Week_16_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -741,7 +714,6 @@
     },
     "Week_16_Fetal_Heartbeat": {
       "type": "Procedure",
-      "target_encounter": "Week_16_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -779,7 +751,6 @@
     },
     "Week_20_Fundal_Height": {
       "type": "Procedure",
-      "target_encounter": "Week_20_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -792,7 +763,6 @@
     },
     "Week_20_Fetal_Heartbeat": {
       "type": "Procedure",
-      "target_encounter": "Week_20_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -830,7 +800,6 @@
     },
     "Week_24_Fundal_Height": {
       "type": "Procedure",
-      "target_encounter": "Week_24_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -843,7 +812,6 @@
     },
     "Week_24_Fetal_Heartbeat": {
       "type": "Procedure",
-      "target_encounter": "Week_24_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -894,7 +862,6 @@
     },
     "Antibody_Screen": {
       "type": "Procedure",
-      "target_encounter": "Week_28_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -907,7 +874,6 @@
     },
     "RhoD_Immune_Globulin": {
       "type": "Procedure",
-      "target_encounter": "Week_28_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -920,7 +886,6 @@
     },
     "Second_Hemoglobin_Test": {
       "type": "Procedure",
-      "target_encounter": "Week_28_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -933,7 +898,6 @@
     },
     "Tdap_Vaccine": {
       "type": "Procedure",
-      "target_encounter": "Week_28_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -946,7 +910,6 @@
     },
     "Glucose_Screen": {
       "type": "Procedure",
-      "target_encounter": "Week_28_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -959,7 +922,6 @@
     },
     "Week_28_Fundal_Height": {
       "type": "Procedure",
-      "target_encounter": "Week_28_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -972,7 +934,6 @@
     },
     "Week_28_Fetal_Heartbeat": {
       "type": "Procedure",
-      "target_encounter": "Week_28_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1032,7 +993,6 @@
     },
     "Week_32_Fundal_Height": {
       "type": "Procedure",
-      "target_encounter": "Week_32_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1045,7 +1005,6 @@
     },
     "Week_32_Fetal_Heartbeat": {
       "type": "Procedure",
-      "target_encounter": "Week_32_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1133,7 +1092,6 @@
     },
     "Group_B_Strep_Test": {
       "type": "Procedure",
-      "target_encounter": "Week_36_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1146,7 +1104,6 @@
     },
     "Week_36_Fundal_Height": {
       "type": "Procedure",
-      "target_encounter": "Week_36_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1159,7 +1116,6 @@
     },
     "Week_36_Fetal_Heartbeat": {
       "type": "Procedure",
-      "target_encounter": "Week_36_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1206,7 +1162,6 @@
     },
     "Week_38_Fundal_Height": {
       "type": "Procedure",
-      "target_encounter": "Week_38_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1219,7 +1174,6 @@
     },
     "Week_38_Fetal_Heartbeat": {
       "type": "Procedure",
-      "target_encounter": "Week_38_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1272,7 +1226,6 @@
     },
     "Week_39_Fundal_Height": {
       "type": "Procedure",
-      "target_encounter": "Week_39_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1285,7 +1238,6 @@
     },
     "Week_39_Fetal_Heartbeat": {
       "type": "Procedure",
-      "target_encounter": "Week_39_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1338,7 +1290,6 @@
     },
     "Week_40_Fundal_Height": {
       "type": "Procedure",
-      "target_encounter": "Week_40_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1351,7 +1302,6 @@
     },
     "Week_40_Fetal_Heartbeat": {
       "type": "Procedure",
-      "target_encounter": "Week_40_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1398,7 +1348,6 @@
     },
     "Week_41_Fundal_Height": {
       "type": "Procedure",
-      "target_encounter": "Week_41_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1411,7 +1360,6 @@
     },
     "Week_41_Fetal_Heartbeat": {
       "type": "Procedure",
-      "target_encounter": "Week_41_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1518,7 +1466,6 @@
     },
     "Induction": {
       "type": "Procedure",
-      "target_encounter": "Hospital_Admission_For_Birth",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1540,7 +1487,6 @@
     },
     "Epidural": {
       "type": "Procedure",
-      "target_encounter": "Hospital_Admission_For_Birth",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1562,7 +1508,6 @@
     },
     "Augmentation": {
       "type": "Procedure",
-      "target_encounter": "Hospital_Admission_For_Birth",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1584,7 +1529,6 @@
     },
     "Episiotomy": {
       "type": "Procedure",
-      "target_encounter": "Hospital_Admission_For_Birth",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1606,7 +1550,6 @@
     },
     "Assisted_Delivery": {
       "type": "Procedure",
-      "target_encounter": "Hospital_Admission_For_Birth",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1619,7 +1562,6 @@
     },
     "Spontaneous_Breech": {
       "type": "Procedure",
-      "target_encounter": "Hospital_Admission_For_Birth",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1679,7 +1621,6 @@
     },
     "Normal_Birth_Procedure": {
       "type": "Procedure",
-      "target_encounter": "Hospital_Admission_For_Birth",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1692,7 +1633,6 @@
     },
     "Premature_Birth_Procedure": {
       "type": "Procedure",
-      "target_encounter": "Hospital_Admission_For_Birth",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1705,7 +1645,6 @@
     },
     "Induced_Birth_Procedure": {
       "type": "Procedure",
-      "target_encounter": "Hospital_Admission_For_Birth",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1853,7 +1792,6 @@
     },
     "Methotrexate_Injection": {
       "type": "Procedure",
-      "target_encounter": "Ectopic_Pregnancy_Encounter",
       "reason": "Ectopic_Pregnancy",
       "codes": [
         {
@@ -1866,7 +1804,6 @@
     },
     "Ectopic_Pregnancy_Surgery_Procedure": {
       "type": "Procedure",
-      "target_encounter": "Ectopic_Pregnancy_Encounter",
       "reason": "Ectopic_Pregnancy",
       "codes": [
         {
@@ -1961,7 +1898,6 @@
     },
     "RhoD_Immune_Globulin_Post_Miscarriage": {
       "type": "Procedure",
-      "target_encounter": "Miscarriage_Followup_Encounter",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1974,7 +1910,6 @@
     },
     "Physical_Exam_Post_Miscarriage": {
       "type": "Procedure",
-      "target_encounter": "Miscarriage_Followup_Encounter",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -1987,7 +1922,6 @@
     },
     "Depression_Screening_Post_Miscarriage": {
       "type": "Procedure",
-      "target_encounter": "Miscarriage_Followup_Encounter",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -2036,7 +1970,6 @@
     },
     "Induced_Abortion_Therapy": {
       "type": "Procedure",
-      "target_encounter": "Induced_Abortion_Encounter",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -2049,7 +1982,6 @@
     },
     "Induced_Abortion_Procedure": {
       "type": "Procedure",
-      "target_encounter": "Induced_Abortion_Encounter",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -2101,7 +2033,6 @@
     },
     "RhoD_Immune_Globulin_Post_Abortion": {
       "type": "Procedure",
-      "target_encounter": "Abortion_Followup_Encounter",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -2114,7 +2045,6 @@
     },
     "Pregnancy_Termination_Care": {
       "type": "Procedure",
-      "target_encounter": "Abortion_Followup_Encounter",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -2127,7 +2057,6 @@
     },
     "Physical_Exam_Post_Abortion": {
       "type": "Procedure",
-      "target_encounter": "Abortion_Followup_Encounter",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -2140,7 +2069,6 @@
     },
     "Depression_Screening_Post_Abortion": {
       "type": "Procedure",
-      "target_encounter": "Abortion_Followup_Encounter",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -2276,7 +2204,6 @@
     },
     "RhoD_Immune_Globulin_Post_Birth": {
       "type": "Procedure",
-      "target_encounter": "Postnatal_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -2289,7 +2216,6 @@
     },
     "Physical_Exam_Post_Birth": {
       "type": "Procedure",
-      "target_encounter": "Postnatal_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {
@@ -2302,7 +2228,6 @@
     },
     "Depression_Screening_Post_Birth": {
       "type": "Procedure",
-      "target_encounter": "Postnatal_Visit",
       "reason": "Become_Pregnant",
       "codes": [
         {

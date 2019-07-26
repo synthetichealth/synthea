@@ -134,7 +134,6 @@
     },
     "Gout_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Gout_Diagnosis",
       "assign_to_attribute": "gout_careplan",
       "reason": "Gout",
       "codes": [
@@ -181,7 +180,6 @@
     },
     "Strong_NSAID": {
       "type": "MedicationOrder",
-      "target_encounter": "Gout_Diagnosis",
       "assign_to_attribute": "gout_nsaid",
       "reason": "Gout",
       "remarks": [
@@ -198,7 +196,6 @@
     },
     "Colchicine": {
       "type": "MedicationOrder",
-      "target_encounter": "Gout_Diagnosis",
       "assign_to_attribute": "gout_nsaid",
       "reason": "Gout",
       "remarks": [
@@ -215,7 +212,6 @@
     },
     "Uric_Acid_Reducer": {
       "type": "MedicationOrder",
-      "target_encounter": "Gout_Diagnosis",
       "reason": "Gout",
       "codes": [
         {
