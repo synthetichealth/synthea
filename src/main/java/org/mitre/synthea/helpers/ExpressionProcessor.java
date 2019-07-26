@@ -247,12 +247,13 @@ public class ExpressionProcessor {
     Set extra = Sets.difference(setParams, paramTypeMap.keySet());
     
     if(missing.size() > 0) {
-      throw new RuntimeException("Missing evaluation parameters: " + missing);
+      throw new IllegalArgumentException("Missing parameter(s): " + String.join(", ", missing) +
+              " for expression \""+expression+"\"");
     }
     if(extra.size() > 0) {
       Logger.getLogger(ExpressionProcessor.class.getName()).log(Level.WARNING,
-              "unused parameters provided for expression \"{0}\": {1}",
-              new Object[]{expression, extra});
+              "unused parameter(s) provided for expression \"{0}\": {1}",
+              new Object[]{expression, String.join(", ",extra)});
     }
     
     Object retVal = null;
