@@ -209,7 +209,7 @@ public class ExpressionProcessor {
    * Returns a list of parameters in the expression associated with this processor
    * @return list of parameters
    */
-  public List getParamNames() {
+  public List<String> getParamNames() {
     return paramNames;
   }
   
@@ -226,10 +226,8 @@ public class ExpressionProcessor {
    * @param params numeric parameters as a map of variable names to values
    * @return evaluation result
    */
-  public BigDecimal evaluateNumeric(Map<String,BigDecimal> params) {
-    // Create a generic 'view' into our typed params map
-    Map<String,Object> genericParams = Collections.<String,Object>unmodifiableMap(params);
-    return (BigDecimal) evaluate(genericParams);
+  public BigDecimal evaluateNumeric(Map<String,Object> params) {
+    return (BigDecimal) evaluate(params);
   }
   
   /**

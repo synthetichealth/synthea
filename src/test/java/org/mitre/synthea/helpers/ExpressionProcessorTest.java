@@ -2,7 +2,9 @@ package org.mitre.synthea.helpers;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,15 +46,23 @@ public class ExpressionProcessorTest {
     Map<String,String> typeMap = new HashMap();
     typeMap.put("var_one", "Decimal");
     typeMap.put("var_two", "Decimal");
-    ExpressionProcessor expProcessor = new ExpressionProcessor("#{var_one} * (#{var_two} + 3.0)", typeMap);
+    typeMap.put("var_three", "List<Decimal>");
+    ExpressionProcessor expProcessor = new ExpressionProcessor("#{var_one} * (#{var_two} + 3.0) + Max(#{var_three})", typeMap);
     
-    Map<String,BigDecimal> params = new HashMap();
+    Map<String,Object> params = new HashMap();
+    
+    List<BigDecimal> var_three = new ArrayList();
+    var_three.add(new BigDecimal(3.0));
+    var_three.add(new BigDecimal(1.2342));
+    var_three.add(new BigDecimal(5.25512));
+    var_three.add(new BigDecimal(12.0));
     
     params.put("var_one", new BigDecimal(2.0));
     params.put("var_two", new BigDecimal(3.0));
+    params.put("var_three", var_three);
     
     double result = expProcessor.evaluateNumeric(params).doubleValue();
     
-    assertEquals(12.0, result, 0.0001);
+    assertEquals(24.0, result, 0.0001);
   }
 }
