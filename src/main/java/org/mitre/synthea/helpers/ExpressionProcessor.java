@@ -1,5 +1,7 @@
 package org.mitre.synthea.helpers;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Sets;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -38,7 +40,7 @@ public class ExpressionProcessor implements Cloneable {
   Context context;
   String elm;
   Map<String,String> paramTypeMap;
-  Set<String> paramNames;
+  BiMap<String,String> cqlParamMap;
 
   /**
    * Evaluate the given expression, within the context of the given Person and timestamp.
@@ -179,9 +181,8 @@ public class ExpressionProcessor implements Cloneable {
    * @param paramTypeMap Map of parameter names to their corresponding CQL types.
    */
   public ExpressionProcessor(String expression, Map<String,String> paramTypeMap) {
-    this.paramNames = new HashSet();
+    this.cqlParamMap = HashBiMap.create();
     this.paramTypeMap = paramTypeMap;
-    this.expression = expression;
     
     String cleanExpression = replaceParameters(expression);
     String wrappedExpression = convertParameterizedExpressionToCQL(cleanExpression);
@@ -215,7 +216,7 @@ public class ExpressionProcessor implements Cloneable {
    * @return list of parameters
    */
   public Set<String> getParamNames() {
-    return paramNames;
+    return cqlParamMap.keySet();
   }
   
   /**
@@ -244,12 +245,13 @@ public class ExpressionProcessor implements Cloneable {
     // Keep track to make sure all parameters are set
     Set setParams = new HashSet();
     for (Entry<String,Object> entry : params.entrySet()) {
-      context.setParameter(null, entry.getKey(), entry.getValue());
+      // Set the CQL compatible parameter name in the context
+      context.setParameter(null, cqlParamMap.get(entry.getKey()), entry.getValue());
       setParams.add(entry.getKey());
     }
     
-    Set missing = Sets.difference(paramNames, setParams);
-    Set extra = Sets.difference(setParams, paramNames);
+    Set missing = Sets.difference(cqlParamMap.keySet(), setParams);
+    Set extra = Sets.difference(setParams, cqlParamMap.keySet());
     
     if(missing.size() > 0) {
       throw new IllegalArgumentException("Missing parameter(s): " + String.join(", ", missing) +
@@ -286,11 +288,13 @@ public class ExpressionProcessor implements Cloneable {
     while (matcher.find()) {
       String key = matcher.group();
       String param = key.substring(2, key.length() - 1).trim(); // lop off #{ and }
+      String cqlParam = param.replace(" ", "_");
       
-      paramNames.add(param);
+      // Add the bi-directional mapping from params to CQL compatible params
+      cqlParamMap.put(param, cqlParam);
 
       // clean up the expression so we can plug it in later
-      cleanExpression = cleanExpression.replace(key, param);
+      cleanExpression = cleanExpression.replace(key, cqlParam);
     }
     
     return cleanExpression;
@@ -301,12 +305,12 @@ public class ExpressionProcessor implements Cloneable {
 
     wrappedExpression.append("library " + LIBRARY_NAME + " version '1'\n");
 
-    for (String paramName : paramNames) {
+    for (Entry<String,String> paramEntry : cqlParamMap.entrySet()) {
       wrappedExpression
         .append("\nparameter ")
-        .append(paramName)
+        .append(paramEntry.getValue())
         .append(" ")
-        .append(paramTypeMap.getOrDefault(paramName, "Decimal"));
+        .append(paramTypeMap.getOrDefault(paramEntry.getKey(), "Decimal"));
     }
 
     wrappedExpression.append("\n\ncontext Patient\n\ndefine result: ");

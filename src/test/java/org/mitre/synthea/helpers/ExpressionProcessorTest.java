@@ -65,4 +65,21 @@ public class ExpressionProcessorTest {
     
     assertEquals(24.0, result, 0.0001);
   }
+  
+  @Test
+  public void testWithSpaces() {
+    Map<String,String> typeMap = new HashMap();
+    typeMap.put("var one", "Decimal");
+    typeMap.put("var two", "Decimal");
+    ExpressionProcessor expProcessor = new ExpressionProcessor("{var one} * (#{var two} + 3.0)", typeMap);
+    
+    Map<String,Object> params = new HashMap();
+    
+    params.put("var one", new BigDecimal(2.0));
+    params.put("var two", new BigDecimal(3.0));
+    
+    double result = expProcessor.evaluateNumeric(params).doubleValue();
+    
+    assertEquals(12.0, result, 0.0001);
+  }
 }
