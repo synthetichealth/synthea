@@ -1500,4 +1500,23 @@ public class StateTest {
     assertEquals("8462-4", o.observations.get(0).codes.get(0).code); // diastolic
     assertEquals("8480-6", o.observations.get(1).codes.get(0).code); // systolic
   }
+  
+  @Test
+  public void testPhysiology() throws Exception {
+    Module module = TestHelper.getFixture("smith_physiology.json");
+    
+    // High systemic resistance as an input for the circulation model (default value is 1.0889)
+    person.attributes.put("cvs_systemic_resistance", 1.814);
+
+    State simulateCvs = module.getState("Simulate_CVS");
+    assertTrue(simulateCvs.process(person, time));
+    
+    // LVEF should be diminished and BP should be elevated
+    assertTrue("LVEF < 59%", person.getVitalSign(VitalSign.LVEF, time) < 59.0);
+    assertTrue("LVEF > 58%", person.getVitalSign(VitalSign.LVEF, time) > 58.0);
+    assertTrue("SYS BP < 150 mmhg", person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time) < 150.0);
+    assertTrue("SYS BP > 140 mmhg", person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time) > 140.0);
+    assertTrue("DIA BP < 90 mmhg", person.getVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, time) < 90.0);
+    assertTrue("DIA BP > 80 mmhg", person.getVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, time) > 80.0);
+  }
 }
