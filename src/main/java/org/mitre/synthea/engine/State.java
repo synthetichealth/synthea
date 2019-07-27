@@ -360,6 +360,7 @@ public abstract class State implements Cloneable {
       IOType type;
       String from;
       String to;
+      String from_list;
       String from_exp;
       ExpressionProcessor expProcessor;
       
@@ -384,6 +385,7 @@ public abstract class State implements Cloneable {
         IOMapper clone = new IOMapper();
         clone.type = type;
         clone.from = from;
+        clone.from_list = from_list;
         clone.to = to;
         clone.from_exp = from_exp;
         clone.expProcessor = expProcessor.clone();
@@ -425,6 +427,7 @@ public abstract class State implements Cloneable {
                       "\" cannot be mapped to patient parameter \""+to+"\"");
             }
             
+
             for(int i=leadTimeIdx; i < col.getRowCount(); i++) {
               paramList.add(new BigDecimal(col.getValue(i)));
             }
@@ -433,6 +436,15 @@ public abstract class State implements Cloneable {
           
           BigDecimal result = expProcessor.evaluateNumeric(expParams);
           modelParamToPerson(result.doubleValue(), person);
+        }
+        else if(from_list != null) {
+          Column col = results.getColumn(from_list);
+          if(col == null) {
+            throw new IllegalArgumentException("Invalid model parameter \""+from_list+"\" cannot be mapped to patient parameter \""+to+"\"");
+          }
+          List<Double> valueList = new ArrayList();
+          col.iterator().forEachRemaining(valueList::add);
+          modelListToPerson(valueList, person);
         }
         else {
           int lastRow = results.getRowCount() - 1;
@@ -491,7 +503,14 @@ public abstract class State implements Cloneable {
       // will be thrown
       private void modelParamToPerson(Double value, Person person) {
         
-        if(type == IOType.VITAL_SIGN) {
+        if(type != IOType.VITAL_SIGN) if(type == IOType.ATTRIBUTE) {
+          person.attributes.put(to, value);
+        }
+        else {
+          throw new IllegalArgumentException("Missing required destination type for mapping of \""+from+"\" to target \""+to+
+                  "\". Mapping must specify either \"Vital Sign\" or \"Attribute\"");
+        }
+        else {
           try {
             // Set as a constant value
             org.mitre.synthea.world.concepts.VitalSign vs = org.mitre.synthea.world.concepts.VitalSign.fromString(to);
@@ -500,6 +519,15 @@ public abstract class State implements Cloneable {
           catch(IllegalArgumentException ex) {
             throw new IllegalArgumentException("Unable to map \""+from+"\" to invalid vital sign target \""+to+"\"");
           }
+        }
+      }
+      
+      private void modelListToPerson(List<Double> value, Person person) {
+        
+        if(type == IOType.VITAL_SIGN) {
+          // TODO: Look at potential for creating a generator or some other means of providing a vital sign based on simulation results over time
+          throw new IllegalArgumentException("Synthea does not currently support mapping lists to vital signs. Unable to map \""+
+                  from_list+"\" to provided vital sign \""+to+"\"");
         }
         else if(type == IOType.ATTRIBUTE) {
           person.attributes.put(to, value);
