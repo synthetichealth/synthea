@@ -2,9 +2,18 @@ package org.mitre.synthea.engine;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.math.ode.DerivativeException;
 
 import org.mitre.synthea.engine.Components.Exact;
 import org.mitre.synthea.engine.Components.ExactWithUnit;
@@ -23,6 +32,7 @@ import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.RandomValueGenerator;
 import org.mitre.synthea.helpers.ExpressionProcessor;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -34,6 +44,8 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
+import org.simulator.math.odes.MultiTable;
+import org.simulator.math.odes.MultiTable.Block.Column;
 
 public abstract class State implements Cloneable {
   public Module module;
@@ -249,6 +261,256 @@ public abstract class State implements Cloneable {
         return false;
       }
     }
+  }
+  
+  /**
+   * The CallSubmodule state immediately processes a reusable series of states contained in a
+   * submodule. These states are processes in the same time step, starting with the submodule's
+   * Initial state. Once the submodule's Terminal state is reached, execution of the calling module
+   * resumes.
+   */
+  public static class Physiology extends State {
+    private String model;
+    private String solver;
+    private double stepSize;
+    private double simDuration;
+    private double leadTime;
+    private List<IOMapper> inputs;
+    private List<IOMapper> outputs;
+    private transient PhysiologySimulator simulator;
+    private transient Map<String,String> paramTypes;
+    
+    @Override
+    protected void initialize(Module module, String name, JsonObject definition) {
+      super.initialize(module, name, definition);
+      
+      if(leadTime > simDuration) {
+        throw new IllegalArgumentException("Simulation lead time cannot be greater than sim duration!");
+      }
+
+      setup();
+    }
+    
+    private void setup() {
+      simulator = new PhysiologySimulator(model, solver, stepSize, simDuration, leadTime);
+      paramTypes = new HashMap();
+      
+      for(String param : simulator.getParameters()) {
+        // Assume all physiology model inputs are lists of Decimal objects which is typically the case
+        // TODO: Look into whether SBML supports other parameter types, and if so, how we might map
+        // those types to CQL types
+        paramTypes.put(param, "List<Decimal>");
+      }
+      
+      for(IOMapper mapper : inputs) {
+        mapper.initialize(paramTypes);
+      }
+      for(IOMapper mapper : outputs) {
+        mapper.initialize(paramTypes);
+      }
+    }
+
+    @Override
+    public Physiology clone() {
+      super.clone();
+      Physiology clone = (Physiology) super.clone();
+      clone.model = model;
+      clone.solver = solver;
+      clone.stepSize = stepSize;
+      clone.simDuration = simDuration;
+      clone.leadTime = leadTime;
+      
+      List<IOMapper> inputList = new ArrayList(inputs.size());
+      for(IOMapper mapper : inputs) {
+        inputList.add(mapper.clone());
+      }
+      clone.inputs = inputList;
+      
+      List<IOMapper> outputList = new ArrayList(outputs.size());
+      for(IOMapper mapper : outputs) {
+        outputList.add(mapper.clone());
+      }
+      clone.outputs = outputList;
+      
+      clone.setup();
+      
+      return clone;
+    }
+
+    @Override
+    public boolean process(Person person, long time) {
+      Map<String,Double> modelInputs = new HashMap();
+      for(IOMapper mapper : inputs) {
+        mapper.toModel(person, time, modelInputs);
+      }
+      try {
+        MultiTable results = simulator.run(modelInputs);
+        for(IOMapper mapper : outputs) {
+          mapper.toPerson(results, person, leadTime);
+        }
+      } catch (DerivativeException ex) {
+        Logger.getLogger(State.class.getName()).log(Level.SEVERE, "Unable to solve simulation \""+model+
+                "\" at time step "+time+" for person "+person.attributes.get(Person.ID), ex);
+      }
+      return true;
+    }
+    
+    // A private class here to represent input/output handlers
+    private static class IOMapper implements Cloneable {
+      IOType type;
+      String from;
+      String to;
+      String from_exp;
+      ExpressionProcessor expProcessor;
+      
+      enum IOType {
+        @SerializedName("Attribute") ATTRIBUTE, 
+        @SerializedName("Vital Sign") VITAL_SIGN
+      }
+      
+      void initialize(Map<String, String> paramTypes) {
+        if(from_exp != null && !"".equals(from_exp)) {
+          expProcessor = new ExpressionProcessor(from_exp, paramTypes);
+        }
+      }
+      
+      @Override
+      public IOMapper clone() {
+        try {
+          super.clone();
+        } catch (CloneNotSupportedException ex) {
+          throw new RuntimeException(ex);
+        }
+        IOMapper clone = new IOMapper();
+        clone.type = type;
+        clone.from = from;
+        clone.to = to;
+        clone.from_exp = from_exp;
+        clone.expProcessor = expProcessor.clone();
+        return clone;
+      }
+      
+      void toModel(Person person, long time, Map<String,Double> modelInputs) {
+        if(expProcessor != null) {
+          Map<String,Object> expParams = new HashMap();
+          
+          // Add all patient parameters to the expression parameter map
+          for(String param : expProcessor.getParamNames()) {
+            double value = getPersonValue(param, person, time);
+            expParams.put(param, new BigDecimal(value));
+          }
+          
+          // All physiology inputs should evaluate to numeric parameters
+          BigDecimal result = expProcessor.evaluateNumeric(expParams);
+          modelInputs.put(to, result.doubleValue());
+        }
+        else {
+          modelInputs.put(to, getPersonValue(from, person, time));
+        }
+      }
+      
+      void toPerson(MultiTable results, Person person, double leadTime) {
+        if(expProcessor != null) {
+          Map<String,Object> expParams = new HashMap();
+          
+          int leadTimeIdx = Arrays.binarySearch(results.getTimePoints(), leadTime);
+          
+          // Add all model outputs to the expression parameter map as lists of decimals
+          for(String param : expProcessor.getParamNames()) {
+            List<BigDecimal> paramList = new ArrayList(results.getRowCount());
+            
+            Column col = results.getColumn(param);
+            if(col == null) {
+              throw new IllegalArgumentException("Invalid model parameter \""+param+"\" in expression \""+from+
+                      "\" cannot be mapped to patient parameter \""+to+"\"");
+            }
+            
+            for(int i=leadTimeIdx; i < col.getRowCount(); i++) {
+              paramList.add(new BigDecimal(col.getValue(i)));
+            }
+            expParams.put(param, paramList);
+          }
+          
+          BigDecimal result = expProcessor.evaluateNumeric(expParams);
+          modelParamToPerson(result.doubleValue(), person);
+        }
+        else {
+          int lastRow = results.getRowCount() - 1;
+          Column col = results.getColumn(from);
+          if(col == null) {
+            throw new IllegalArgumentException("Invalid model parameter \""+from+"\" cannot be mapped to patient parameter \""+to+"\"");
+          }
+          modelParamToPerson(col.getValue(lastRow), person);
+        }
+      }
+      
+      void getModelOutputValue(MultiTable results, String param) {
+        
+      }
+      
+      // Retrieve the desired value from a Person model. Check for a VitalSign first and then an attribute if there is no
+      // VitalSign by the provided name. Throws an IllegalArgumentException if neither exists.
+      private double getPersonValue(String param, Person person, long time) {
+        org.mitre.synthea.world.concepts.VitalSign vs = null;
+        try {
+          vs = org.mitre.synthea.world.concepts.VitalSign.fromString(param);
+        }
+        catch(IllegalArgumentException ex) {} // Ignore since it actually may not be a vital sign
+
+        if(vs != null) {
+          return person.getVitalSign(vs, time);
+        }
+        else if(person.attributes.containsKey(param)) {
+          Object value = person.attributes.get(param);
+          if(value instanceof Number) {
+            return ((Number) value).doubleValue();
+          }
+          else {
+            if(expProcessor != null) {
+              throw new IllegalArgumentException("Unable to map person attribute \""+param+"\" in expression \""+from_exp+
+                      "\" for parameter \""+to+"\": Attribute value is not a number.");
+            }
+            else {
+              throw new IllegalArgumentException("Unable to map person attribute \""+param+"\" to parameter \""+to+"\": Attribute value is not a number.");
+            }
+          }
+        }
+        else {
+          if(expProcessor != null) {
+            throw new IllegalArgumentException("Unable to map \""+param+"\" in expression \""+from_exp+
+                    "\" for parameter \""+to+"\": Invalid person attribute or vital sign.");
+          }
+          else {
+            throw new IllegalArgumentException("Unable to map \""+param+"\" to parameter \""+to+"\": Invalid person attribute or vital sign.");
+          }
+        }
+      }
+      
+      // Places a numeric result into the desired field on a Person model. The "type" field must be present to indicate whether it should
+      // map to a VitalSign or an attribute. Attributes will accept any key, but if an invalid VitalSign is provided, an IllegalArgumentException
+      // will be thrown
+      private void modelParamToPerson(Double value, Person person) {
+        
+        if(type == IOType.VITAL_SIGN) {
+          try {
+            // Set as a constant value
+            org.mitre.synthea.world.concepts.VitalSign vs = org.mitre.synthea.world.concepts.VitalSign.fromString(to);
+            person.setVitalSign(vs, value);
+          }
+          catch(IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Unable to map \""+from+"\" to invalid vital sign target \""+to+"\"");
+          }
+        }
+        else if(type == IOType.ATTRIBUTE) {
+          person.attributes.put(to, value);
+        }
+        else {
+          throw new IllegalArgumentException("Missing required destination type for mapping of \""+from+"\" to target \""+to+
+                  "\". Mapping must specify either \"Vital Sign\" or \"Attribute\"");
+        }
+      }
+    }
+    
   }
 
   /**
