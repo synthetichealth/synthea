@@ -114,6 +114,14 @@ public class PhysiologySimulator {
   }
   
   /**
+   * Returns a list of all model parameters
+   * @return list of model parameters
+   */
+  public List<String> getParameters() {
+    return Arrays.asList(modelFields);
+  }
+  
+  /**
    * Solves the model at each time step for the specified duration using the provided inputs
    * as initial parameters. Provides the results as a map of value lists where each key is
    * a model parameter. In addition to the model parameters is a "Time" field which provides
@@ -221,39 +229,43 @@ public class PhysiologySimulator {
     try {
       MultiTable solution = physio.run(inputs);
 
-      PrintWriter writer;
-      try {
-        writer = new PrintWriter(outputPath.toString(), "UTF-8");
-      } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-        throw new RuntimeException("Unable to open output file:" + outputPath);
-      }
-
-      int numRows = solution.getRowCount();
-      int numCols = solution.getColumnCount();
-
-      for(int colIdx = 0; colIdx < numCols; colIdx++) {
-        writer.print(solution.getColumnIdentifier(colIdx));
-        if(colIdx < numCols -1) {
-          writer.print(",");
-        }
-      }
-      writer.println();
-
-      for(int rowIdx = 0; rowIdx < numRows; rowIdx++) {
-        for(int colIdx = 0; colIdx < numCols; colIdx++) {
-          writer.print(solution.getValueAt(rowIdx, colIdx));
-          if(colIdx < numCols -1) {
-            writer.print(",");
-          }
-        }
-        writer.println();
-      }
-      writer.close();
+      multiTableToCsvFile(solution, outputPath);
       System.out.println("Success!");
 
     } catch (DerivativeException ex) {
       throw new RuntimeException(ex);
     }
+  }
+  
+  private static void multiTableToCsvFile(MultiTable table, Path outputPath) {
+    PrintWriter writer;
+    try {
+      writer = new PrintWriter(outputPath.toString(), "UTF-8");
+    } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+      throw new RuntimeException("Unable to open output file:" + outputPath);
+    }
+
+    int numRows = table.getRowCount();
+    int numCols = table.getColumnCount();
+
+    for(int colIdx = 0; colIdx < numCols; colIdx++) {
+      writer.print(table.getColumnIdentifier(colIdx));
+      if(colIdx < numCols -1) {
+        writer.print(",");
+      }
+    }
+    writer.println();
+
+    for(int rowIdx = 0; rowIdx < numRows; rowIdx++) {
+      for(int colIdx = 0; colIdx < numCols; colIdx++) {
+        writer.print(table.getValueAt(rowIdx, colIdx));
+        if(colIdx < numCols -1) {
+          writer.print(",");
+        }
+      }
+      writer.println();
+    }
+    writer.close();
   }
 
   private static void getPerfStats(Path modelPath, String solverName) {
@@ -319,19 +331,19 @@ public class PhysiologySimulator {
   public static void main(String [] args) throws DerivativeException {
     
     Map<String,Double> inputs = new HashMap();
-//    inputs.put("R_sys", 1.814);
-    inputs.put("E_es_lvf", 1.034);
+    inputs.put("R_sys", 1.814);
+//    inputs.put("E_es_lvf", 1.034);
 //    inputs.put("B", 150.0);
 //    inputs.put("C", 0.25);
 //    inputs.put("period", 0.5);
 //    inputs.put("inactive_t0", 1.0);
 //    inputs.put("inactive_t1", 1.5);
 
-    PhysiologySimulator physio = new PhysiologySimulator("circulation/Smith2004_CVS_human.xml", "runge_kutta", 0.01, 2, 1.0);
+    PhysiologySimulator physio = new PhysiologySimulator("circulation/Smith2004_CVS_human.xml", "runge_kutta", 0.01, 4, 0.0);
 //    Physiology physio = new Physiology("circulation/Fink2008_VentricularActionPotential.xml", "runge_kutta", 0.01, 4);
 //    Physiology physio = new Physiology("circulation/Iyer2007_Arrhythmia_CardiacDeath.xml", "adams_bashforth", 0.01, 4);
     
-    PhysiologySimulator.testModel(physio, Paths.get("too_weak.csv"), inputs);
+    PhysiologySimulator.testModel(physio, Paths.get("sys_test.csv"), inputs);
     
 //    try {
 //      // Run with all default parameters
