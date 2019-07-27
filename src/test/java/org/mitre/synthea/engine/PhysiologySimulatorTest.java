@@ -48,9 +48,6 @@ public class PhysiologySimulatorTest {
       Double sys = Collections.max(pao);
       Double dia = Collections.min(pao);
       
-      System.out.println("sys 1: " + sys);
-      System.out.println("dia 1: " + dia);
-      
       assertTrue("sys > 110", sys > 110);
       assertTrue("sys < 120", sys < 120);
       assertTrue("dia > 70", dia > 70);
@@ -65,9 +62,6 @@ public class PhysiologySimulatorTest {
       pao = Lists.newArrayList(results.getColumn("P_ao"));
       sys = Collections.max(pao);
       dia = Collections.min(pao);
-      
-      System.out.println("sys 2: " + sys);
-      System.out.println("dia 2: " + dia);
       
       assertEquals(results.getColumn("R_sys").getValue(0), 1.814, 0.0001);
       

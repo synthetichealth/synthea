@@ -137,6 +137,13 @@ public class PhysiologySimulator {
   public MultiTable run(Map<String, Double> inputs) throws DerivativeException {
     // Reset the solver to its initial state
     solver.reset();
+    try {
+      // Need to reinitialize the interpreter to prevent old values from affecting the new simulation
+      interpreter.init(true);
+    } catch (ModelOverdeterminedException | SBMLException ex) {
+      // This shouldn't ever happen here since the interpreter has already been instantiated at least once
+      Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, "Error reinitializing SBML interpreter", ex);
+    }
     
     // Create a copy of the default parameters to use
     double[] params = Arrays.copyOf(modelDefaults, modelDefaults.length);
@@ -200,21 +207,19 @@ public class PhysiologySimulator {
     File inputFile = new File(filepath);
     try {
       SBMLDocument doc = reader.readSBML(inputFile);
-      System.out.println("Loaded SBML Document successfully!");
+//      System.out.println("Loaded SBML Document successfully!");
       Model model = doc.getModel();
       try {
         SBMLinterpreter interpreter = new SBMLinterpreter(model);
-        System.out.println("Interpreted SBML Model successfully!");
+//        System.out.println("Interpreted SBML Model successfully!");
         return interpreter;
 
       } catch (ModelOverdeterminedException | SBMLException ex) {
-        Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, null, ex);
-        System.out.println("Error interpreting SBML Model...");
+        Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, "Error interpreting SBML Model from \""+inputFile+"\".", ex);
       }
 
     } catch (IOException | XMLStreamException ex) {
-      Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, null, ex);
-      System.out.println("Failed to load SBML document...");
+      Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, "Failed to load SBML document \""+inputFile+"\".", ex);
     }
     return null;
   }
