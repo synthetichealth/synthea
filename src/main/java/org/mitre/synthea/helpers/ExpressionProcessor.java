@@ -29,7 +29,7 @@ import org.mitre.synthea.world.agents.Person;
 import org.opencds.cqf.cql.execution.Context;
 import org.opencds.cqf.cql.execution.CqlLibraryReader;
 
-public class ExpressionProcessor {
+public class ExpressionProcessor implements Cloneable {
   private static final ModelManager MODEL_MANAGER = new ModelManager();
   private static final LibraryManager LIBRARY_MANAGER = new LibraryManager(MODEL_MANAGER);
   private static final String LIBRARY_NAME = "Synthea";
@@ -38,7 +38,7 @@ public class ExpressionProcessor {
   Context context;
   String elm;
   Map<String,String> paramTypeMap;
-  List<String> paramNames;
+  Set<String> paramNames;
 
   /**
    * Evaluate the given expression, within the context of the given Person and timestamp.
@@ -179,7 +179,7 @@ public class ExpressionProcessor {
    * @param paramTypeMap Map of parameter names to their corresponding CQL types.
    */
   public ExpressionProcessor(String expression, Map<String,String> paramTypeMap) {
-    this.paramNames = new ArrayList();
+    this.paramNames = new HashSet();
     this.paramTypeMap = paramTypeMap;
     this.expression = expression;
     
@@ -197,6 +197,11 @@ public class ExpressionProcessor {
     this.context = new Context(library);
   }
   
+  @Override
+  public ExpressionProcessor clone() {
+    return new ExpressionProcessor(expression, paramTypeMap);
+  }
+  
   /**
    * Returns the expression associated with this expression processor
    * @return expression
@@ -209,7 +214,7 @@ public class ExpressionProcessor {
    * Returns a list of parameters in the expression associated with this processor
    * @return list of parameters
    */
-  public List<String> getParamNames() {
+  public Set<String> getParamNames() {
     return paramNames;
   }
   
@@ -243,8 +248,8 @@ public class ExpressionProcessor {
       setParams.add(entry.getKey());
     }
     
-    Set missing = Sets.difference(paramTypeMap.keySet(), setParams);
-    Set extra = Sets.difference(setParams, paramTypeMap.keySet());
+    Set missing = Sets.difference(paramNames, setParams);
+    Set extra = Sets.difference(setParams, paramNames);
     
     if(missing.size() > 0) {
       throw new IllegalArgumentException("Missing parameter(s): " + String.join(", ", missing) +
