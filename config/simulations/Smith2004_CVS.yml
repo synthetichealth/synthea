@@ -1,0 +1,76 @@
+
+# Data and charts will be placed in output/{name}/
+# Data file will always be output/{name}/{name}.csv
+name: Smith2004_CVS
+
+# Name of the model file
+model: circulation/Smith2004_CVS_human.xml
+
+# Which differential equation solver to use.
+# Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
+solver: runge_kutta
+
+# Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
+stepSize: 0.01
+
+# Simulation duration in seconds
+duration: 2
+
+# Model parameter inputs. Any unspecified parameters will use the model's default value.
+inputs:
+    R_sys: 1.213
+    E_es_lvf: 2.212
+
+# What charts to draw. Results will be plotted on PNG images.
+# Note that chart support is a convenience feature and many chart options cannot be manipulated here.
+# If you need more control over the chart, import the csv file into another program with that capability.
+charts:
+    - filename: pressures.png
+      # Currently only "line" or "scatter" charts are supported. "scatter" is the default
+      type: line
+      title: Cardiovascular Pressures
+      xAxis: time
+      xAxisLabel: time (s)
+      yAxisLabel: Pressure (mmhg)
+      series:
+        # Each series configuration item requires both the model parameter
+        # as well as a series label for the chart
+        - param: P_lv
+          label: Left Ventricle
+        - param: P_rv
+          label: Right Ventricle
+        - param: P_ao
+          label: Aorta
+          
+    # Any number of output charts can be configured
+    
+    - filename: volumes.png
+      type: line
+      xAxis: time
+      xAxisLabel: time (s)
+      yAxisLabel: utf-8Volume (ml)utf-8
+      series:
+        - param: V_lv
+          label: Left Ventricle
+        - param: V_rv
+          label: Right Ventricle
+        - param: V_ao
+          label: Aorta
+          
+    - filename: left_heart_pv.png
+      type: scatter
+      xAxis: V_lv
+      xAxisLabel: Volume (ml)
+      yAxisLabel: Pressure (mmhg)
+      series:
+        - param: P_lv
+          label: Left Ventricle
+          
+    - filename: right_heart_pv.png
+      type: scatter
+      xAxis: V_rv
+      xAxisLabel: Volume (ml)
+      yAxisLabel: Pressure (mmhg)
+      series:
+        - param: P_rv
+          label: Right Ventricle

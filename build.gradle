@@ -138,6 +138,13 @@ task attributes(type: JavaExec) {
   main = "org.mitre.synthea.helpers.Attributes"
 }
 
+task physiology(type: JavaExec) {
+    group 'Application'
+    description 'Test a physiology simulation'
+    classpath sourceSets.main.runtimeClasspath
+    main = "org.mitre.synthea.engine.PhysiologySimulator"
+}
+
 task versionTxt() {
   group 'Build'
   description 'Generates a version file.'
