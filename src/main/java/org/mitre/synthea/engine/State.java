@@ -406,6 +406,9 @@ public abstract class State implements Cloneable {
           BigDecimal result = expProcessor.evaluateNumeric(expParams);
           modelInputs.put(to, result.doubleValue());
         }
+        else if(from_list != null) {
+          throw new IllegalArgumentException("Cannot map lists from person attributes / vital signs to model parameters");
+        }
         else {
           modelInputs.put(to, getPersonValue(from, person, time));
         }
@@ -427,7 +430,6 @@ public abstract class State implements Cloneable {
                       "\" cannot be mapped to patient parameter \""+to+"\"");
             }
             
-
             for(int i=leadTimeIdx; i < col.getRowCount(); i++) {
               paramList.add(new BigDecimal(col.getValue(i)));
             }
@@ -454,10 +456,6 @@ public abstract class State implements Cloneable {
           }
           modelParamToPerson(col.getValue(lastRow), person);
         }
-      }
-      
-      void getModelOutputValue(MultiTable results, String param) {
-        
       }
       
       // Retrieve the desired value from a Person model. Check for a VitalSign first and then an attribute if there is no

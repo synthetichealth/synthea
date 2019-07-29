@@ -11,6 +11,7 @@ import ca.uhn.fhir.model.dstu2.resource.MedicationOrder;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -1517,6 +1518,9 @@ public class StateTest {
     
     // The "Final Aortal Volume" attribute should have been set
     assertTrue(person.attributes.containsKey("Final Aortal Volume"));
+    
+    // The "Arterial Pressure Values" attribute should have been set to a list
+    assertTrue(person.attributes.get("Arterial Pressure Values") instanceof List);
     
     // LVEF should be diminished and BP should be elevated
     assertTrue("LVEF < 59%", person.getVitalSign(VitalSign.LVEF, time) < 59.0);

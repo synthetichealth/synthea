@@ -35,6 +35,11 @@
           "type": "Attribute"
         },
         {
+          "from_list": "P_ao",
+          "to": "Arterial Pressure Values",
+          "type": "Attribute"
+        },
+        {
           "from_exp": "((Max(#{V_lv}) - Min(#{V_lv})) / Max(#{V_lv}))*100",
           "to": "LVEF",
           "type": "Vital Sign"
