@@ -514,12 +514,14 @@ public class PhysiologySimulator {
     Platform.runLater(() -> {
       NumberAxis xAxis = new NumberAxis();
       xAxis.setLabel(xAxisLabel);
+      xAxis.setAnimated(false); // Need to disable animations for the axis to show up in the image
       NumberAxis yAxis = new NumberAxis();
       yAxis.setLabel(yAxisLabel);
+      yAxis.setAnimated(false); // Need to disable animations for the axis to show up in the image
 
-      
       XYChart<Number,Number> chart;
       
+      // Initialize the chart based on the provided type argument
       switch(chartType) {
         case LINE: chart = new LineChart(xAxis,yAxis); break;
         default:
@@ -528,6 +530,12 @@ public class PhysiologySimulator {
       
       chart.setTitle(title);
       
+      // If there's only one series, and there's a title, hide the legend
+      if(title != null && !"".equals(title) && seriesConfigs.size() == 1) {
+        chart.setLegendVisible(false);
+      }
+      
+      // Get the list of x values. Time is treated specially since it doesn't have a param identifier
       List<Double> xValues = new ArrayList(table.getRowCount());;
       if("time".equalsIgnoreCase(xIdentifier)) {
         for(double timePoint : table.getTimePoints()) {
@@ -542,6 +550,7 @@ public class PhysiologySimulator {
         xCol.iterator().forEachRemaining(xValues::add);
       }
 
+      // Add each series to the chart
       for(SeriesConfig config : seriesConfigs) {
         XYChart.Series series = new XYChart.Series();
         series.setName(config.label);
@@ -555,10 +564,12 @@ public class PhysiologySimulator {
         chart.getData().add(series);
       }
 
+      // Render the chart to a scene and capture it as an image
       Scene scene = new Scene(chart, 1280, 720);
       WritableImage image = scene.snapshot(null);
 
       try {
+        // Write the image to a png file
         ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new File(filePath.toString()));
       } catch (IOException ex) {
         throw new RuntimeException(ex);
@@ -572,27 +583,6 @@ public class PhysiologySimulator {
   }
 
   public static void main(String [] args) throws DerivativeException {
-    
-//    System.out.print("Physiology args: ");
-//    for(String arg : args) {
-//      System.out.print(arg + ",");
-//    }
-//    System.out.println();
-//    
-//    Map<String,Double> inputs = new HashMap();
-//    inputs.put("R_sys", 1.814);
-//    inputs.put("E_es_lvf", 1.034);
-//    inputs.put("B", 150.0);
-//    inputs.put("C", 0.25);
-//    inputs.put("period", 0.5);
-//    inputs.put("inactive_t0", 1.0);
-//    inputs.put("inactive_t1", 1.5);
-
-//    PhysiologySimulator physio = new PhysiologySimulator("circulation/Smith2004_CVS_human.xml", "runge_kutta", 0.01, 2);
-//    Physiology physio = new Physiology("circulation/Fink2008_VentricularActionPotential.xml", "runge_kutta", 0.01, 4);
-//    Physiology physio = new Physiology("circulation/Iyer2007_Arrhythmia_CardiacDeath.xml", "adams_bashforth", 0.01, 4);
-    
-//    PhysiologySimulator.testModel(physio, Paths.get("sys_test.csv"), inputs);
 
     if(args.length < 1 || args[0].isEmpty()) {
       System.out.println("YAML simulation configuration file path must be provided.");
@@ -606,6 +596,7 @@ public class PhysiologySimulator {
     File configFile = new File(configFilePath.toString());
     FileInputStream inputStream;
     
+    // Try to open the configuration file as an input stream
     try {
       inputStream = new FileInputStream(configFile);
     } catch (FileNotFoundException ex) {
@@ -623,9 +614,11 @@ public class PhysiologySimulator {
     chartConfigDescription.addPropertyParameters("series", SeriesConfig.class);
     constructor.addTypeDescription(chartConfigDescription);
     
+    // Parse the SimConfig from the yaml file
     Yaml yaml = new Yaml(constructor);
     SimConfig config = (SimConfig) yaml.load(inputStream);
     
+    // Instantiate our simulator
     PhysiologySimulator simulator = new PhysiologySimulator(config.getModel(), config.getSolver(), config.getStepSize(), config.getDuration());
     
     // Create the output directory if it doesn't already exist
@@ -637,9 +630,7 @@ public class PhysiologySimulator {
         System.out.println("Unable to write output directory. Check user permissions.");
       }
     }
-
-    // Initialize FX Toolkit
-    new JFXPanel();
+    
     try {
       
       // Run with all default parameters
@@ -647,6 +638,9 @@ public class PhysiologySimulator {
       
       // Write CSV data file
       multiTableToCsvFile(results, Paths.get(outputDir.toString(), config.getName()+".csv"));
+      
+      // Initialize FX Toolkit
+      new JFXPanel();
       
       // Draw all of the charts
       for(ChartConfig chartConfig : config.getCharts()) {
