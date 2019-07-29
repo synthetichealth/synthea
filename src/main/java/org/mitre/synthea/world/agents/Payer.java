@@ -78,7 +78,7 @@ public class Payer {
   // Unique utilizers of Payer, by Person ID, with number of utilizations per Person.
   private final HashMap<String, AtomicInteger> customerUtilization;
 
-  /* Default NO_INSURANCE object */
+  /* NO_INSURANCE Payer */
   public static Payer noInsurance;
 
   /**
@@ -615,13 +615,20 @@ public class Payer {
   }
 
   /**
-   * Determines the copay owed for this Payer based on the type of encounter.
+   * Determines the copay owed for this Payer based on the type of entry.
    * For now, this returns a default copay. But in the future there will be different
-   * copays depending on the encounter type covered.
-   * May change from encounter to entry to get copays for medications/procedures/etc.
+   * copays depending on the encounter type covered. If the entry is a wellness visit
+   * and the time is after the madate year, then the copay is $0.00.
+   * May change from encounter to entry to get copays for medications/procedures/etc.\
+   * 
+   * @param entry the entry to calculate the copay for.
    */
-  public double determineCopay(Encounter encounter) {
+  public double determineCopay(Entry entry) {
     double copay = this.defaultCopay;
+    if (entry.type.equalsIgnoreCase(EncounterType.WELLNESS.toString())
+        && entry.start > HealthInsuranceModule.mandateTime) {
+      copay = 0.0;
+    }
     return copay;
   }
 

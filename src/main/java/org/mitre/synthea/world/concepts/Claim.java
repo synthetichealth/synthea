@@ -92,8 +92,7 @@ public class Claim {
     // Calculate the Patient's Copay.
     double patientCopay = 0.0;
     if (this.person != null) {
-      // Temporarily null input until encounter type copays are implemented.
-      patientCopay = payer.determineCopay(null);
+      patientCopay = payer.determineCopay(entry);
     }
 
     double costToPatient = 0.0;

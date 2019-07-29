@@ -221,7 +221,7 @@ public class CSVExporter {
           + "COVERED_IMMUNIZATIONS,UNCOVERED_IMMUNIZATIONS,"
           + "UNIQUE_CUSTOMERS,QOLS_AVG,MEMBER_MONTHS");
       payers.write(NEWLINE);
-      payerTransitions.write("PATIENT,YEAR,PAYER,OWNERSHIP");
+      payerTransitions.write("PATIENT,START_YEAR,END_YEAR,PAYER,OWNERSHIP");
       payerTransitions.write(NEWLINE);
     }
   }
@@ -285,10 +285,10 @@ public class CSVExporter {
     for (Payer payer : Payer.getAllPayers()) {
       payer(payer);
       payers.flush();
-    }
     // Export No Insurance statistics
     payer(Payer.noInsurance);
     payers.flush();
+    }
   }
 
   /**
@@ -299,8 +299,8 @@ public class CSVExporter {
    */
   public void exportPayerTransitions(Person person, long stopTime) throws IOException {
 
-    // The year of the person's birth.
-    int year = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
+    // The current year starts with the year of the person's birth.
+    int currentYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
 
     // A person's Payer may not yet have been decided in the final year of simulation.
     if (person.alive(stopTime)
@@ -312,14 +312,25 @@ public class CSVExporter {
           Utilities.getMonth((long) person.attributes.get(Person.BIRTHDATE)) + 1));
     }
 
+
+    String previousPayerID = person.getPayerHistory()[0].getResourceID();
+    int startYear = currentYear;
+
     for (Payer payer : person.getPayerHistory()) {
-      payerTransition(person, payer, year);
-      year++;
-      // payerTransitions.flush();
-      if (year > Utilities.getYear(stopTime)
-          || !person.alive(Utilities.convertCalendarYearsToTime(year + 1))) {
-        break; 
+      if (payer == null) {
+        return;
       }
+      // Only write a new line if these conditions are met to export for year ranges of payers.
+      if (!payer.getResourceID().equals(previousPayerID)
+          || Utilities.convertCalendarYearsToTime(currentYear) >= stopTime
+          || !person.alive(Utilities.convertCalendarYearsToTime(currentYear + 1))
+          || person.ageInYears(Utilities.convertCalendarYearsToTime(currentYear)) == 17) {
+        payerTransition(person, payer, startYear, currentYear);
+        previousPayerID = payer.getResourceID();
+        startYear = currentYear + 1;
+        payerTransitions.flush();
+      }
+      currentYear++;
     }
   }
 
@@ -936,24 +947,26 @@ public class CSVExporter {
     write(s.toString(), payers);
   }
 
-  private void payerTransition(Person person, Payer payer, int currentYear) throws IOException {
-    // PATIENT_ID,YEAR,PAYER_ID,OWNERSHIP
+  private void payerTransition(Person person, Payer payer, int startYear, int endYear)
+      throws IOException {
+    // PATIENT_ID,START_YEAR,END_YEAR,PAYER_ID,OWNERSHIP
 
     StringBuilder s = new StringBuilder();
     // PATIENT_ID
     s.append(person.attributes.get(Person.ID)).append(",");
-    // YEAR
-    s.append(currentYear).append(",");
+    // START_YEAR
+    s.append(startYear).append(',');
+    // END_YEAR
+    s.append(endYear).append(',');
 
     String payerID = "";
     String ownership = "";
 
-    if (payer == null) {
-      // Person does not have insurance this year.
-    } else if (!payer.getName().equals("NO_INSURANCE")) {
+    if (payer != null
+        && !payer.getName().equals("NO_INSURANCE")) {
       // Update the insurance and ownership.
       payerID = payer.getResourceID();
-      ownership = determineOwnership(person, currentYear);      
+      ownership = determineOwnership(person, endYear);      
     }
     // PAYER_ID
     s.append(payerID).append(',');

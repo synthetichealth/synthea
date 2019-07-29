@@ -25,7 +25,7 @@ import org.mitre.synthea.world.geography.Location;
 
 public class PayerTest {
 
-  // Covers all health care.
+  // Covers all healthcare.
   Payer testPrivatePayer1;
   // Covers only wellness encounters.
   Payer testPrivatePayer2;
@@ -131,11 +131,12 @@ public class PayerTest {
   @Test
   public void recieveMedicare() {
 
-    long olderThanSixtyFiveTime = 2100000000000L;
+    long birthTime = 0L;
+    long olderThanSixtyFiveTime = birthTime + Utilities.convertTime("years", 66);
 
     /* Older than 65 */
     person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.BIRTHDATE, birthTime);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     person.attributes.put("end_stage_renal_disease", false);
@@ -208,11 +209,12 @@ public class PayerTest {
   @Test
   public void recieveDualEligible() {
 
-    long olderThanSixtyFiveTime = 2100000000000L;
+    long birthTime = 0L;
+    long olderThanSixtyFiveTime = birthTime + Utilities.convertTime("years", 66);
 
     /* Below Poverty Level and Over 65 */
     person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.BIRTHDATE, birthTime);
     person.attributes.put(Person.GENDER, "M");
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     // Below Medicaid Income Level.
@@ -382,21 +384,70 @@ public class PayerTest {
   @Test
   public void costsCoveredByPayer() {
 
+    long time = 0L;
+
     Costs.loadCostData();
-    person = new Person(0L);
-    person.setPayerAtTime(0L, testPrivatePayer1);
+    person = new Person(time);
+    person.setPayerAtTime(time, testPrivatePayer1);
     Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
-    Encounter fakeEncounter = person.record.encounterStart(0L, EncounterType.WELLNESS);
+    Encounter fakeEncounter = person.record.encounterStart(time, EncounterType.WELLNESS);
     fakeEncounter.codes.add(code);
     fakeEncounter.provider = new Provider();
     double totalCost = fakeEncounter.getCost().doubleValue();
     person.record.encounterEnd(0L, EncounterType.WELLNESS);
     // The total cost should equal the Cost to the Payer summed with the Payer's copay amount.
     assertEquals(totalCost, testPrivatePayer1.getAmountCovered()
-        + testPrivatePayer1.determineCopay(null), 0.1);
+        + testPrivatePayer1.determineCopay(fakeEncounter), 0.1);
     // The total cost should equal the Payer's uncovered costs plus the Payer's covered costs.
     assertEquals(totalCost, testPrivatePayer1.getAmountCovered()
         + testPrivatePayer1.getAmountUncovered(), 0.1);
+  }
+
+  @Test
+  public void copayBeforeAndAfterMandate() {
+
+    Costs.loadCostData();
+    final long beforeMandateTime = mandateTime - 100;
+    final long afterMandateTime = mandateTime + 100;
+    Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
+    person = new Person(beforeMandateTime);
+
+    /* Before Mandate */
+
+    person.setPayerAtTime(beforeMandateTime, testPrivatePayer1);
+    Encounter wellnessBeforeMandate =
+        person.record.encounterStart(beforeMandateTime, EncounterType.WELLNESS);
+    wellnessBeforeMandate.codes.add(code);
+    wellnessBeforeMandate.provider = new Provider();
+    person.record.encounterEnd(beforeMandateTime, EncounterType.WELLNESS);
+    // The copay before the mandate time should be greater than 0.
+    assertTrue(testPrivatePayer1.determineCopay(wellnessBeforeMandate) > 0.0);
+
+    Encounter inpatientBeforeMandate
+        = person.record.encounterStart(beforeMandateTime, EncounterType.INPATIENT);
+    inpatientBeforeMandate.codes.add(code);
+    inpatientBeforeMandate.provider = new Provider();
+    person.record.encounterEnd(beforeMandateTime, EncounterType.INPATIENT);
+    // The copay for a non-wellness encounter should be greater than 0.
+    assertTrue(testPrivatePayer1.determineCopay(wellnessBeforeMandate) > 0.0);
+
+    /* After Mandate */
+
+    Encounter wellnessAfterMandate
+        = person.record.encounterStart(afterMandateTime, EncounterType.WELLNESS);
+    wellnessAfterMandate.codes.add(code);
+    wellnessAfterMandate.provider = new Provider();
+    person.record.encounterEnd(afterMandateTime, EncounterType.WELLNESS);
+    // The copay after the mandate time should be 0.
+    assertEquals(0.0, testPrivatePayer1.determineCopay(wellnessAfterMandate), 0.000001);
+
+    Encounter inpatientAfterMandate
+        = person.record.encounterStart(afterMandateTime, EncounterType.INPATIENT);
+    inpatientAfterMandate.codes.add(code);
+    inpatientAfterMandate.provider = new Provider();
+    person.record.encounterEnd(afterMandateTime, EncounterType.INPATIENT);
+    // The copay for a non-wellness encounter should be greater than 0.
+    assertTrue(testPrivatePayer1.determineCopay(inpatientAfterMandate) > 0.0);
   }
 
   @Test
