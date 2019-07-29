@@ -46,6 +46,7 @@ charts:
     
     - filename: volumes.png
       type: line
+      title: Cardiovascular Volumes
       xAxis: time
       xAxisLabel: time (s)
       yAxisLabel: utf-8Volume (ml)utf-8
@@ -59,6 +60,7 @@ charts:
           
     - filename: left_heart_pv.png
       type: scatter
+      title: Left Ventricle Pressure-Volume Relationship
       xAxis: V_lv
       xAxisLabel: Volume (ml)
       yAxisLabel: Pressure (mmhg)
@@ -68,6 +70,7 @@ charts:
           
     - filename: right_heart_pv.png
       type: scatter
+      title: Right Ventricle Pressure-Volume Relationship
       xAxis: V_rv
       xAxisLabel: Volume (ml)
       yAxisLabel: Pressure (mmhg)
