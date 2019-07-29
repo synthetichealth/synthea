@@ -71,7 +71,7 @@ public class ExpressionProcessorTest {
     Map<String,String> typeMap = new HashMap();
     typeMap.put("var one", "Decimal");
     typeMap.put("var two", "Decimal");
-    ExpressionProcessor expProcessor = new ExpressionProcessor("{var one} * (#{var two} + 3.0)", typeMap);
+    ExpressionProcessor expProcessor = new ExpressionProcessor("#{var one} * (#{var two} + 3.0)", typeMap);
     
     Map<String,Object> params = new HashMap();
     
