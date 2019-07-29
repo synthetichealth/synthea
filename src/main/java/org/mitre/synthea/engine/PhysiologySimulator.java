@@ -73,6 +73,7 @@ public class PhysiologySimulator {
   private final AbstractDESSolver solver;
   private final double simDuration;
   private final double leadTime;
+  private final double stepSize;
   
   public static enum ChartType {
     SCATTER,
@@ -304,7 +305,7 @@ public class PhysiologySimulator {
     modelFields = interpreter.getIdentifiers();
     modelDefaults = interpreter.getInitialValues();
     solver = getSolver(solverName);
-    solver.setStepSize(stepSize);
+    this.stepSize = stepSize;
     this.simDuration = simDuration;
     this.leadTime = leadTime;
   }
@@ -334,6 +335,7 @@ public class PhysiologySimulator {
   public MultiTable run(Map<String, Double> inputs) throws DerivativeException {
     // Reset the solver to its initial state
     solver.reset();
+    solver.setStepSize(stepSize);
     try {
       // Need to reinitialize the interpreter to prevent old values from affecting the new simulation
       interpreter.init(true);
