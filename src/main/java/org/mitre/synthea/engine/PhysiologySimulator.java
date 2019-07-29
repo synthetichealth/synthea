@@ -707,14 +707,16 @@ public class PhysiologySimulator {
       // Initialize FX Toolkit
       new JFXPanel();
       
-      // Draw all of the charts
-      int chartId = 1;
-      for(ChartConfig chartConfig : config.getCharts()) {
-        if(chartConfig.getFilename() == null || chartConfig.getFilename().isEmpty()) {
-          chartConfig.setFilename("chart"+chartId+".png");
+      // Draw all of the configured charts
+      if(config.getCharts() != null) {
+        int chartId = 1;
+        for(ChartConfig chartConfig : config.getCharts()) {
+          if(chartConfig.getFilename() == null || chartConfig.getFilename().isEmpty()) {
+            chartConfig.setFilename("chart"+chartId+".png");
+          }
+          chartConfig.setFilename(Paths.get(outputDir.toString(), chartConfig.getFilename()).toString());
+          PhysiologySimulator.drawChart(results, chartConfig);
         }
-        chartConfig.setFilename(Paths.get(outputDir.toString(), chartConfig.getFilename()).toString());
-        PhysiologySimulator.drawChart(results, chartConfig);
       }
 
       // Stop the JavaFX thread
