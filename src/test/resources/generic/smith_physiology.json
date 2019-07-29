@@ -25,9 +25,15 @@
       "sim_duration": 4.0,
       "leadTime": 2.0,
       "inputs": [
-        {"from": "cvs_systemic_resistance", "to": "R_sys"}
+        {"from": "Pulmonary Resistance", "to": "R_pul"},
+        {"from_exp": "#{BMI} * #{BMI Multiplier}", "to": "R_sys"}
       ],
       "outputs": [
+        {
+          "from": "V_ao",
+          "to": "Final Aortal Volume",
+          "type": "Attribute"
+        },
         {
           "from_exp": "((Max(#{V_lv}) - Min(#{V_lv})) / Max(#{V_lv}))*100",
           "to": "LVEF",

@@ -1505,11 +1505,18 @@ public class StateTest {
   public void testPhysiology() throws Exception {
     Module module = TestHelper.getFixture("smith_physiology.json");
     
-    // High systemic resistance as an input for the circulation model (default value is 1.0889)
-    person.attributes.put("cvs_systemic_resistance", 1.814);
+    // BMI is an input parameter so we need to set it
+    person.setVitalSign(VitalSign.BMI, 32.98);
+    
+    // Pulmonary resistance and BMI multiplier are also input parameters
+    person.attributes.put("Pulmonary Resistance", 0.1552);
+    person.attributes.put("BMI Multiplier", 0.055);
 
     State simulateCvs = module.getState("Simulate_CVS");
     assertTrue(simulateCvs.process(person, time));
+    
+    // The "Final Aortal Volume" attribute should have been set
+    assertTrue(person.attributes.containsKey("Final Aortal Volume"));
     
     // LVEF should be diminished and BP should be elevated
     assertTrue("LVEF < 59%", person.getVitalSign(VitalSign.LVEF, time) < 59.0);
