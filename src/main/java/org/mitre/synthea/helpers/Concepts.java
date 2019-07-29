@@ -1,5 +1,6 @@
 package org.mitre.synthea.helpers;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -131,6 +132,15 @@ public class Concepts {
     if (state.has("activities")) {
       List<Code> codes = Code.fromJson(state.getAsJsonArray("activities"));
       inventoryCodes(concepts, codes, module);
+    }
+
+    if (state.has("observations")) {
+        // MultiObservations and DiagnosticReports
+        JsonArray observations = state.getAsJsonArray("observations");
+        observations.forEach(obs -> {
+            // subobservations are full instances of the Observation state
+            inventoryState(concepts, obs.getAsJsonObject(), module);
+        });
     }
 
     if (state.has("prescription")) {
