@@ -154,6 +154,8 @@ public class PhysiologySimulator {
     private String xAxisLabel;
     private String yAxisLabel;
     private List<SeriesConfig> series;
+    private double startTime;
+    private double endTime;
 
     public String getFilename() {
       return filename;
@@ -209,6 +211,22 @@ public class PhysiologySimulator {
 
     public void setSeries(List<SeriesConfig> series) {
       this.series = series;
+    }
+
+    public double getStartTime() {
+      return startTime;
+    }
+
+    public void setStartTime(double startTime) {
+      this.startTime = startTime;
+    }
+
+    public double getEndTime() {
+      return endTime;
+    }
+
+    public void setEndTime(double endTime) {
+      this.endTime = endTime;
     }
   }
 
@@ -509,56 +527,103 @@ public class PhysiologySimulator {
 //    }
 //  }
   
-  private static void drawChart(Path filePath, MultiTable table, ChartType chartType, String title, List<SeriesConfig> seriesConfigs, String yAxisLabel,
-          String xIdentifier, String xAxisLabel) {
+  private static void drawChart(MultiTable table, ChartConfig config) {
     Platform.runLater(() -> {
       NumberAxis xAxis = new NumberAxis();
-      xAxis.setLabel(xAxisLabel);
+      xAxis.setLabel(config.getxAxisLabel());
       xAxis.setAnimated(false); // Need to disable animations for the axis to show up in the image
       NumberAxis yAxis = new NumberAxis();
-      yAxis.setLabel(yAxisLabel);
+      yAxis.setLabel(config.getyAxisLabel());
       yAxis.setAnimated(false); // Need to disable animations for the axis to show up in the image
 
+      // Initialize the line chart
       XYChart<Number,Number> chart;
       
-      // Initialize the chart based on the provided type argument
-      switch(chartType) {
-        case LINE: chart = new LineChart(xAxis,yAxis); break;
-        default:
-        case SCATTER: chart = new ScatterChart(xAxis,yAxis); break;
+      try {
+        switch(ChartType.valueOf(config.getType().toUpperCase())) {
+          default:
+          case LINE:
+            LineChart lineChart = new LineChart(xAxis,yAxis);
+            lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.NONE);
+            chart = lineChart;
+            break;
+          case SCATTER:
+            chart = new ScatterChart(xAxis, yAxis);
+            break;
+        }
+      }
+      catch(IllegalArgumentException ex) {
+        throw new IllegalArgumentException("Invalid chart type: "+config.getType());
       }
       
-      chart.setTitle(title);
+      chart.setTitle(config.getTitle());
       
       // If there's only one series, and there's a title, hide the legend
-      if(title != null && !"".equals(title) && seriesConfigs.size() == 1) {
+      if(config.getTitle() != null && config.getTitle().isEmpty() && config.getSeries().size() == 1) {
         chart.setLegendVisible(false);
       }
       
-      // Get the list of x values. Time is treated specially since it doesn't have a param identifier
-      List<Double> xValues = new ArrayList(table.getRowCount());;
-      if("time".equalsIgnoreCase(xIdentifier)) {
-        for(double timePoint : table.getTimePoints()) {
-          xValues.add(timePoint);
-        }
+      double lastTimePoint = table.getTimePoint(table.getRowCount()-1);
+      
+      // Set the chart end time if not specified
+      if(config.getEndTime() == 0) {
+        config.setEndTime(lastTimePoint);
       }
-      else {
-        Column xCol = table.getColumn(xIdentifier);
-        if(xCol == null) {
-          throw new RuntimeException("Invalid X axis identifier");
+      
+      // Check that the start time is valid
+      if(config.getStartTime() < 0) {
+        throw new IllegalArgumentException("Chart start time must not be negative");
+      }
+      
+      // Check the chart end time is valid
+      if(config.getEndTime() > lastTimePoint) {
+        throw new IllegalArgumentException("Invalid chart end time: "+config.getEndTime()+" is greater than final time point "+lastTimePoint);
+      }
+      
+      // Check the time range is valid
+      if(config.getStartTime() > config.getEndTime()) {
+        throw new IllegalArgumentException("Invalid chart range: "+config.getStartTime()+" to "+config.getEndTime());
+      }
+      
+      // Get the list of x values. Time is treated specially since it doesn't have a param identifier
+      boolean xAxisIsTime = "time".equalsIgnoreCase(config.getxAxis());
+      List<Double> xValues = new ArrayList(table.getRowCount());
+      double[] timePoints = table.getTimePoints();
+      Column xCol = table.getColumn(config.getxAxis());
+      
+      // Check that the x axis identifier is valid
+      if(!xAxisIsTime && xCol == null) {
+        throw new RuntimeException("Invalid X axis identifier: "+config.getxAxis());
+      }
+      
+      int startIndex = Arrays.binarySearch(timePoints, config.getStartTime());
+      int endIndex = Arrays.binarySearch(timePoints, config.getEndTime());
+      
+      // Add the table values to the list of x axis values within the provided time range
+      for(int i=startIndex; i < endIndex; i++) {
+        if(xAxisIsTime) {
+          xValues.add(timePoints[i]);
         }
-        xCol.iterator().forEachRemaining(xValues::add);
+        else {
+          xValues.add(xCol.getValue(i));
+        }
       }
 
       // Add each series to the chart
-      for(SeriesConfig config : seriesConfigs) {
+      for(SeriesConfig seriesConfig : config.getSeries()) {
         XYChart.Series series = new XYChart.Series();
-        series.setName(config.label);
+        series.setName(seriesConfig.getLabel());
 
-        Column col = table.getColumn(config.param);
+        Column col = table.getColumn(seriesConfig.getParam());
+        
+        // Check that the series identifier is valid
+        if(col == null) {
+          throw new RuntimeException("Invalid series identifier: "+seriesConfig.getParam());
+        }
 
-        for(int i=0; i < xValues.size(); i++) {
-          series.getData().add(new XYChart.Data(xValues.get(i), col.getValue(i)));
+        int xIndex = 0;
+        for(int i=startIndex; i < endIndex; i++) {
+          series.getData().add(new XYChart.Data(xValues.get(xIndex++), col.getValue(i)));
         }
 
         chart.getData().add(series);
@@ -570,7 +635,7 @@ public class PhysiologySimulator {
 
       try {
         // Write the image to a png file
-        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new File(filePath.toString()));
+        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new File(config.getFilename()));
       } catch (IOException ex) {
         throw new RuntimeException(ex);
       }
@@ -643,22 +708,18 @@ public class PhysiologySimulator {
       new JFXPanel();
       
       // Draw all of the charts
+      int chartId = 1;
       for(ChartConfig chartConfig : config.getCharts()) {
-        PhysiologySimulator.drawChart(
-                Paths.get(outputDir.toString(), chartConfig.getFilename()),
-                results,
-                ChartType.valueOf(chartConfig.getType().toUpperCase()),
-                chartConfig.getTitle(),
-                chartConfig.getSeries(),
-                chartConfig.getyAxisLabel(),
-                chartConfig.getxAxis(),
-                chartConfig.getxAxisLabel());
+        if(chartConfig.getFilename() == null || chartConfig.getFilename().isEmpty()) {
+          chartConfig.setFilename("chart"+chartId+".png");
+        }
+        chartConfig.setFilename(Paths.get(outputDir.toString(), chartConfig.getFilename()).toString());
+        PhysiologySimulator.drawChart(results, chartConfig);
       }
 
       // Stop the JavaFX thread
       Platform.exit();
     } catch (DerivativeException ex) {
-      Platform.exit();
       throw new RuntimeException(ex);
     }
   }

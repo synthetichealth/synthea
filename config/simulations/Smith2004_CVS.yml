@@ -14,7 +14,7 @@ solver: runge_kutta
 stepSize: 0.01
 
 # Simulation duration in seconds
-duration: 2
+duration: 4
 
 # Model parameter inputs. Any unspecified parameters will use the model's default value.
 inputs:
@@ -32,6 +32,10 @@ charts:
       xAxis: time
       xAxisLabel: time (s)
       yAxisLabel: Pressure (mmhg)
+      # Starting data time point for chart rendering. Defaults to 0.
+      startTime: 0
+      # Ending data time point for chart rendering. Defaults to sim duration.
+      endTime: 4
       series:
         # Each series configuration item requires both the model parameter
         # as well as a series label for the chart
@@ -59,21 +63,23 @@ charts:
           label: Aorta
           
     - filename: left_heart_pv.png
-      type: scatter
+      type: line
       title: Left Ventricle Pressure-Volume Relationship
       xAxis: V_lv
       xAxisLabel: Volume (ml)
       yAxisLabel: Pressure (mmhg)
+      startTime: 2
       series:
         - param: P_lv
           label: Left Ventricle
           
     - filename: right_heart_pv.png
-      type: scatter
+      type: line
       title: Right Ventricle Pressure-Volume Relationship
       xAxis: V_rv
       xAxisLabel: Volume (ml)
       yAxisLabel: Pressure (mmhg)
+      startTime: 2
       series:
         - param: P_rv
           label: Right Ventricle
