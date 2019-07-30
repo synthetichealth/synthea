@@ -157,7 +157,7 @@ public abstract class Transition {
         // Hashmap for the new table
         HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>> newTable
             = new HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>();
-        // Load in the respective CSV file
+        // Load in this transitions's CSV file
         String fileName = Config.get("generate.lookup_tables") + lookupTableName;
         String csv;
         List<? extends Map<String, String>> lookupTable = null;
@@ -306,11 +306,22 @@ public abstract class Transition {
       this.ageRange = range;
     }
 
+    /**
+     * Overrides the hashcode method. Returns the hash of the List of attributes,
+     * forcing age range to be a hash collision.
+     */
     @Override
     public int hashCode() {
       return this.attributes.hashCode();
     }
 
+    /**
+     * Overides the equals method. If there is no age in this tranistion, then it just
+     * returns the default List.equals(). If there is an age range, then the age
+     * must fit in the range for this to return true.
+     * 
+     * @param obj the object to check that this equals.
+     */
     @Override
     public boolean equals(Object obj) {
       if (obj == null || this.getClass() != obj.getClass()) {
@@ -350,6 +361,9 @@ public abstract class Transition {
       return agesMatch && this.attributes.equals(that.attributes);
     }
 
+    /**
+     * Overrides the toString method for LookupTableKey.
+     */
     @Override
     public String toString() {
       String age = (this.age == null ? ageRange.toString() : this.age.toString());
