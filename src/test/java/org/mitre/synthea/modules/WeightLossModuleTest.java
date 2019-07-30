@@ -3,6 +3,7 @@ package org.mitre.synthea.modules;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mitre.synthea.modules.LifecycleModule.bmi;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -74,33 +75,52 @@ public class WeightLossModuleTest {
     person.attributes.put(Person.BIRTHDATE, birthDay);
     person.attributes.put(Person.GENDER, "M");
     person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, 0.9);
+    person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, 0.75);
     person.attributes.put(WeightLossModule.WEIGHT_MANAGEMENT_START, start);
-    person.attributes.put(WeightLossModule.WEIGHT_LOSS_PERCENTAGE, 0.1d);
+    person.attributes.put(WeightLossModule.WEIGHT_LOSS_BMI_PERCENTILE_CHANGE, 0.1d);
     double weight = mod.pediatricRegression(person, twoYears);
-    assertEquals(49.92, weight, 0.1);
+    assertEquals(49.03, weight, 0.1);
     weight = mod.pediatricRegression(person, threeYears);
-    assertEquals(57.42, weight, 0.1);
+    assertEquals(56.51, weight, 0.1);
   }
 
   @Test
   public void testPediatricWeightLoss() {
     long birthDay = TestHelper.timestamp(1990, 1, 1, 0, 0, 0);
     long start = TestHelper.timestamp(2000, 1, 1, 0, 0, 0);
-    long sixMonths = TestHelper.timestamp(2000, 7, 1, 0, 0, 0);
+    long sixMonths = TestHelper.timestamp(2000, 7, 2, 0, 0, 0);
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, birthDay);
+    person.attributes.put(Person.GENDER, "M");
+    person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, 0.90);
+    person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, 0.75);
+    person.attributes.put(WeightLossModule.WEIGHT_MANAGEMENT_START, start);
+    person.attributes.put(WeightLossModule.WEIGHT_LOSS_BMI_PERCENTILE_CHANGE, 0.1d);
+    person.attributes.put(WeightLossModule.PRE_MANAGEMENT_WEIGHT, 41.96d);
+    double weight = mod.pediatricWeightLoss(person, sixMonths);
+    assertEquals(42.53, weight, 0.1);
+  }
+
+  @Test
+  public void testMaintainBMIPercentile() {
+    long birthDay = TestHelper.timestamp(1990, 1, 1, 0, 0, 0);
+    long start = TestHelper.timestamp(2000, 1, 1, 0, 0, 0);
+    long twoYears = TestHelper.timestamp(2002, 1, 1, 0, 0, 0);
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, birthDay);
     person.attributes.put(Person.GENDER, "M");
     person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, 0.9);
+    person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, 0.75);
     person.attributes.put(WeightLossModule.WEIGHT_MANAGEMENT_START, start);
-    person.attributes.put(WeightLossModule.WEIGHT_LOSS_PERCENTAGE, 0.1d);
+    person.attributes.put(WeightLossModule.WEIGHT_LOSS_BMI_PERCENTILE_CHANGE, 0.1d);
     person.attributes.put(WeightLossModule.PRE_MANAGEMENT_WEIGHT, 41.96d);
-    double weight = mod.pediatricWeightLoss(person, sixMonths);
-    assertEquals(39.87, weight, 0.1);
+    double weight = mod.maintainBMIPercentile(person, twoYears);
+    assertEquals(48.42, weight, 0.1);
   }
 
   @Test
   public void testProcess() {
-    long sixMonths = TestHelper.timestamp(2000, 7, 1, 0, 0, 0);
+    long sixMonths = TestHelper.timestamp(2000, 7, 2, 0, 0, 0);
     long oneYear = TestHelper.timestamp(2000, 12, 31, 0, 0, 0);
     long sixYears = TestHelper.timestamp(2006, 1, 1, 0, 0, 0);
     Person person = thirtyYearOld();
@@ -129,15 +149,37 @@ public class WeightLossModuleTest {
     person.attributes.put(Person.GENDER, "M");
     person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, 0.9);
     person.setVitalSign(VitalSign.HEIGHT, 143d);
+    person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, 0.75);
     person.attributes.put(WeightLossModule.WEIGHT_MANAGEMENT_START, start);
-    person.attributes.put(WeightLossModule.WEIGHT_LOSS_PERCENTAGE, 0.1d);
+    person.attributes.put(WeightLossModule.WEIGHT_LOSS_BMI_PERCENTILE_CHANGE, 0.1d);
     person.attributes.put(WeightLossModule.PRE_MANAGEMENT_WEIGHT, 41.96d);
     person.attributes.put(WeightLossModule.ACTIVE_WEIGHT_MANAGEMENT, true);
     person.attributes.put(WeightLossModule.WEIGHT_LOSS_ADHERENCE, true);
     person.attributes.put(WeightLossModule.LONG_TERM_WEIGHT_LOSS, true);
     mod.process(person, sixMonths);
     weight = person.getVitalSign(VitalSign.WEIGHT, sixMonths);
-    assertEquals(39.87, weight, 0.1);
+    assertEquals(42.53, weight, 0.1);
+  }
+
+  @Test
+  public void testMeetsWeightManagementThresholds() {
+    long birthDay = TestHelper.timestamp(1990, 1, 1, 0, 0, 0);
+    long start = TestHelper.timestamp(2000, 1, 1, 0, 0, 0);
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, birthDay);
+    person.attributes.put(Person.GENDER, "M");
+    person.setVitalSign(VitalSign.HEIGHT, 139);
+    person.setVitalSign(VitalSign.WEIGHT, 41);
+    person.setVitalSign(VitalSign.BMI, bmi(139, 41));
+    assertTrue(mod.meetsWeightManagementThresholds(person, start));
+    person.setVitalSign(VitalSign.WEIGHT, 35);
+    person.setVitalSign(VitalSign.BMI, bmi(139, 35));
+    assertFalse(mod.meetsWeightManagementThresholds(person, start));
+    assertTrue(mod.meetsWeightManagementThresholds(thirtyYearOld(), start));
+    Person lighterThirty = thirtyYearOld();
+    lighterThirty.setVitalSign(VitalSign.WEIGHT, 85);
+    lighterThirty.setVitalSign(VitalSign.BMI, bmi(175, 85));
+    assertFalse(mod.meetsWeightManagementThresholds(lighterThirty, start));
   }
 
   /*
@@ -150,8 +192,9 @@ public class WeightLossModuleTest {
     person.attributes.put(Person.BIRTHDATE, birthDay);
     person.attributes.put(Person.GENDER, "M");
     person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, 0.9);
-    person.setVitalSign(VitalSign.WEIGHT, 136d);
-    person.setVitalSign(VitalSign.HEIGHT, 175d);
+    person.setVitalSign(VitalSign.WEIGHT, 136);
+    person.setVitalSign(VitalSign.HEIGHT, 175);
+    person.setVitalSign(VitalSign.BMI, bmi(175, 136));
     person.attributes.put(WeightLossModule.WEIGHT_MANAGEMENT_START, start);
     person.attributes.put(WeightLossModule.WEIGHT_LOSS_PERCENTAGE, 0.1d);
     person.attributes.put(WeightLossModule.PRE_MANAGEMENT_WEIGHT, 136d);

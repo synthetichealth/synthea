@@ -59,4 +59,10 @@ public class LifecycleModuleTest {
       Assert.assertTrue(after < before);
     }
   }
+
+  @Test
+  public void testPercentileForBMI() {
+    double percentile = LifecycleModule.percentileForBMI(18.37736191, "M", 26);
+    Assert.assertEquals(0.9, percentile, 0.01);
+  }
 }
