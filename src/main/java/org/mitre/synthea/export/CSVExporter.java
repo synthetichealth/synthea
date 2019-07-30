@@ -285,10 +285,10 @@ public class CSVExporter {
     for (Payer payer : Payer.getAllPayers()) {
       payer(payer);
       payers.flush();
+    }
     // Export No Insurance statistics
     payer(Payer.noInsurance);
     payers.flush();
-    }
   }
 
   /**
