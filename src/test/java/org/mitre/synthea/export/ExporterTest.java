@@ -38,7 +38,7 @@ public class ExporterTest {
     patient = new Person(12345L);
     Location location = new Location("Massachusetts", null);
     location.assignPoint(patient, location.randomCityName(patient.random));
-    Provider.loadProviders(location);
+    Provider.loadProviders(location, 1L);
     record = patient.record;
     // Ensure Person's Payer is not null.
     Payer.loadNoInsurance();
@@ -46,10 +46,10 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_simple_cutoff() {
-    record.encounterStart(time - years(8), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(8), EncounterType.WELLNESS);
     record.observation(time - years(8), "height", 64);
     
-    record.encounterStart(time - years(4), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(4), EncounterType.WELLNESS);
     record.observation(time - years(4), "weight", 128);
 
     // observations should be filtered to the cutoff date
@@ -73,6 +73,7 @@ public class ExporterTest {
     record.encounterStart(time - years(8), EncounterType.AMBULATORY);
     Medication med = record.medicationStart(time - years(8), "placebitol");
     med.codes.add(code);
+
     record.medicationEnd(time - years(6), "placebitol", DUMMY_CODE);
 
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
@@ -95,6 +96,7 @@ public class ExporterTest {
     record.encounterStart(time - years(8), EncounterType.AMBULATORY);
     med = record.medicationStart(time - years(8), "placebitol");
     med.codes.add(code);
+
     record.medicationEnd(time - years(4), "placebitol", DUMMY_CODE);
 
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
@@ -107,11 +109,11 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_old_active_careplan() {
-    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.careplanStart(time - years(10), "stop_smoking");
     record.careplanEnd(time - years(8), "stop_smoking", DUMMY_CODE);
 
-    record.encounterStart(time - years(12), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(12), EncounterType.WELLNESS);
     record.careplanStart(time - years(12), "healthy_diet");
 
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
@@ -123,7 +125,7 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_careplan_that_ended_during_target() {
-    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.careplanStart(time - years(10), "stop_smoking");
     record.careplanEnd(time - years(1), "stop_smoking", DUMMY_CODE);
 
@@ -137,11 +139,11 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_old_active_conditions() {
-    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.conditionStart(time - years(10), "fakitis");
     record.conditionEnd(time - years(8), "fakitis");
 
-    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.conditionStart(time - years(10), "fakosis");
 
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
@@ -153,11 +155,11 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_condition_that_ended_during_target() {
-    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.conditionStart(time - years(10), "boneitis");
     record.conditionEnd(time - years(2), "boneitis");
 
-    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.conditionStart(time - years(10), "smallpox");
     record.conditionEnd(time - years(9), "smallpox");
 

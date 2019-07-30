@@ -283,12 +283,13 @@ public final class CardiovascularDiseaseModule extends Module {
     int age = person.ageInYears(time);
     String gender = (String) person.attributes.get(Person.GENDER);
     Double sysBP = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time);
+    Double diaBP = person.getVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, time);
     Double chol = person.getVitalSign(VitalSign.TOTAL_CHOLESTEROL, time);
-    if (sysBP == null || chol == null) {
+    if (sysBP == null || diaBP == null || chol == null) {
       return;
     }
 
-    Boolean bpTreated = (Boolean) person.attributes.getOrDefault("bp_treated?", false);
+    Boolean bpTreated = (Boolean) person.attributes.getOrDefault("blood_pressure_controlled", false);
 
     Double hdl = person.getVitalSign(VitalSign.HDL, time);
 
@@ -458,7 +459,7 @@ public final class CardiovascularDiseaseModule extends Module {
       afScore += 1;
     }
 
-    if ((Boolean) person.attributes.getOrDefault("bp_treated?", false)) {
+    if ((Boolean) person.attributes.getOrDefault("blood_pressure_controlled", false)) {
       afScore += 1;
     }
 
@@ -566,8 +567,8 @@ public final class CardiovascularDiseaseModule extends Module {
     strokePoints += getIndexForValueInRangelist(age, age_stroke[genderIndex]);
 
     int bp = bloodPressure.intValue();
-    // TODO treating blood pressure currently is not a feature. Modify this for when it is.
-    if ((Boolean) person.attributes.getOrDefault("bp_treated?", false)) {
+    
+    if ((Boolean) person.attributes.getOrDefault("blood_pressure_controlled", false)) {
       strokePoints += getIndexForValueInRangelist(bp, treated_sys_bp_stroke[genderIndex]);
     } else {
       strokePoints += getIndexForValueInRangelist(bp, untreated_sys_bp_stroke[genderIndex]);
@@ -737,7 +738,7 @@ public final class CardiovascularDiseaseModule extends Module {
           Provider provider = person.getCurrentProvider("Cardiovascular Disease Module");
           // no provider associated with encounter or procedure
           if (provider == null) {
-            provider = person.getProvider(EncounterType.AMBULATORY, time);
+            provider = person.getProvider(EncounterType.WELLNESS, time);
           }
           provider.incrementPrescriptions(year);
         }
@@ -840,7 +841,7 @@ public final class CardiovascularDiseaseModule extends Module {
     Attributes.inventory(attributes, m, Person.SMOKER, true, false, "false");
     Attributes.inventory(attributes, m, "atrial_fibrillation", true, false, "false");
     Attributes.inventory(attributes, m, "atrial_fibrillation_risk", true, false, null);
-    Attributes.inventory(attributes, m, "bp_treated?", true, false, "false");
+    Attributes.inventory(attributes, m, "blood_pressure_controlled", true, false, "false");
     Attributes.inventory(attributes, m, "cardio_risk", true, false, "-1.0");
     Attributes.inventory(attributes, m, "coronary_heart_disease", true, false, "false");
     Attributes.inventory(attributes, m, "cardiovascular_procedures", true, false, null);

@@ -66,7 +66,7 @@ public class TransitionMetricsTest {
       // seeds chosen by experimentation, to ensure we hit "Pre_Examplitis" at least once
       person = new Person(seed); 
       person.attributes.put(Person.GENDER, "M");
-      person.setProvider(EncounterType.AMBULATORY, Mockito.mock(Provider.class));
+      person.setProvider(EncounterType.WELLNESS, Mockito.mock(Provider.class));
       time = System.currentTimeMillis();
       person.attributes.put(Person.BIRTHDATE, time);
       person.events.create(time, Event.BIRTH, "transition metrics test", true);

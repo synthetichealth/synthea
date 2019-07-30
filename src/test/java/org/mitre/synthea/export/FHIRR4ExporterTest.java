@@ -45,6 +45,8 @@ public class FHIRR4ExporterTest {
 
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);
+    
+    generator.options.overflow = false;
 
     for (int i = 0; i < numberOfPeople; i++) {
       int x = validationErrors.size();
@@ -89,6 +91,14 @@ public class FHIRR4ExporterTest {
                  * properly referenced. Running $validate on test servers finds this valid...
                  */
                 valid = true;
+              } else if (emessage.getMessage().contains(
+                  "per-1: If present, start SHALL have a lower value than end")) {
+                /*
+                 * The per-1 invariant does not account for daylight savings time... so, if the
+                 * daylight savings switch happens between the start and end, the validation
+                 * fails, even if it is valid.
+                 */
+                valid = true; // ignore this error
               }
               if (!valid) {
                 System.out.println(parser.encodeResourceToString(entry.getResource()));

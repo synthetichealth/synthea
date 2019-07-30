@@ -830,7 +830,8 @@
           "display": "Cisplatin 50 MG Injection"
         }
       ],
-      "direct_transition": "SCLC Chemotheraphy IB"
+      "direct_transition": "SCLC Chemotheraphy IB",
+      "administration": true
     },
     "SCLC Chemotheraphy IB": {
       "type": "MedicationEnd",
@@ -853,7 +854,8 @@
           "display": "Etoposide 100 MG Injection"
         }
       ],
-      "direct_transition": "SCLC Chemotheraphy IIB"
+      "direct_transition": "SCLC Chemotheraphy IIB",
+      "administration": true
     },
     "SCLC Chemotheraphy IIB": {
       "type": "MedicationEnd",
@@ -937,7 +939,8 @@
           "display": "Cisplatin 50 MG Injection"
         }
       ],
-      "direct_transition": "NSCLC Chemotheraphy IB"
+      "direct_transition": "NSCLC Chemotheraphy IB",
+      "administration": true
     },
     "NSCLC Chemotheraphy IB": {
       "type": "MedicationEnd",
@@ -960,7 +963,8 @@
           "display": "PACLitaxel 100 MG Injection"
         }
       ],
-      "direct_transition": "NSCLC Chemotheraphy IIB"
+      "direct_transition": "NSCLC Chemotheraphy IIB",
+      "administration": true
     },
     "NSCLC Chemotheraphy IIB": {
       "type": "MedicationEnd",

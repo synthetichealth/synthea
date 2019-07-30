@@ -43,8 +43,8 @@ public final class EncounterModule extends Module {
       "Well child visit (procedure)");
   public static final Code GENERAL_EXAM = new Code("SNOMED-CT", "162673000",
       "General examination of patient (procedure)");
-  public static final Code ENCOUNTER_URGENTCARE = new Code("SNOMED-CT", "371883000",
-      "Outpatient procedure (procedure)");
+  public static final Code ENCOUNTER_URGENTCARE = new Code("SNOMED-CT", "702927004",
+      "Urgent care clinic (procedure)");
   // NOTE: if new codes are added, be sure to update getAllCodes below
 
   public EncounterModule() {
@@ -62,7 +62,7 @@ public final class EncounterModule extends Module {
       Encounter encounter = person.encounterStart(time, EncounterType.WELLNESS);
       encounter.name = "Encounter Module Scheduled Wellness";
       encounter.codes.add(ENCOUNTER_CHECKUP);
-      Provider prov = person.getProvider(EncounterType.AMBULATORY, time);
+      Provider prov = person.getProvider(EncounterType.WELLNESS, time);
       prov.incrementEncounters(EncounterType.WELLNESS, year);
       encounter.provider = prov;
       encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
@@ -115,7 +115,7 @@ public final class EncounterModule extends Module {
         person.addressLargestSymptom();
         Encounter encounter = person.encounterStart(time, EncounterType.WELLNESS);
         encounter.name = "Encounter Module Symptom Driven";
-        Provider prov = person.getProvider(EncounterType.AMBULATORY, time);
+        Provider prov = person.getProvider(EncounterType.WELLNESS, time);
         prov.incrementEncounters(EncounterType.WELLNESS, year);
         encounter.provider = prov;
         encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 

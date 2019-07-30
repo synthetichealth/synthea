@@ -181,6 +181,7 @@ public class HealthRecord {
     public Code stopReason;
     public JsonObject prescriptionDetails;
     public Claim claim;
+    public boolean administration;
 
     /**
      * Constructor for Medication HealthRecord Entry.

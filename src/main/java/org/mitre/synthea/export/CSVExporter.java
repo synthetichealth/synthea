@@ -183,7 +183,7 @@ public class CSVExporter {
   private void writeCSVHeaders() throws IOException {
     patients.write("Id,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,"
         + "PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,"
-        + "ADDRESS,CITY,STATE,ZIP");
+        + "ADDRESS,CITY,STATE,COUNTY,ZIP,LAT,LON");
     patients.write(NEWLINE);
     allergies.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION");
     allergies.write(NEWLINE);
@@ -210,9 +210,9 @@ public class CSVExporter {
     imagingStudies.write("Id,DATE,PATIENT,ENCOUNTER,BODYSITE_CODE,BODYSITE_DESCRIPTION,"
         + "MODALITY_CODE,MODALITY_DESCRIPTION,SOP_CODE,SOP_DESCRIPTION");
     imagingStudies.write(NEWLINE);
-    organizations.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,PHONE,REVENUE,UTILIZATION");
+    organizations.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,LAT,LON,PHONE,REVENUE,UTILIZATION");
     organizations.write(NEWLINE);
-    providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,UTILIZATION");
+    providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,LAT,LON,UTILIZATION");
     providers.write(NEWLINE);
     if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
       payers.write("Id,NAME,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,"
@@ -442,10 +442,14 @@ public class CSVExporter {
         Person.ADDRESS,
         Person.CITY,
         Person.STATE,
-        Person.ZIP }) {
+        "county",
+        Person.ZIP
+    }) {
       String value = (String) person.attributes.getOrDefault(attribute, "");
       s.append(',').append(clean(value));
     }
+
+    s.append(',').append(person.getY()).append(',').append(person.getX());
 
     s.append(NEWLINE);
     write(s.toString(), patients);
@@ -879,6 +883,8 @@ public class CSVExporter {
     s.append(org.city).append(',');
     s.append(org.state).append(',');
     s.append(org.zip).append(',');
+    s.append(org.getY()).append(',');
+    s.append(org.getX()).append(',');
     s.append(org.phone).append(',');
     s.append(org.getRevenue()).append(',');
     s.append(utilization);
@@ -906,6 +912,8 @@ public class CSVExporter {
       String value = (String) provider.attributes.getOrDefault(attribute, "");
       s.append(clean(value)).append(',');
     }
+    s.append(provider.getY()).append(',');
+    s.append(provider.getX()).append(',');
     s.append(provider.getEncounterCount());
 
     s.append(NEWLINE);

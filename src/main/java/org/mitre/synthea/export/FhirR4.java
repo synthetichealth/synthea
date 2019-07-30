@@ -71,6 +71,8 @@ import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesInstanceComponent;
 import org.hl7.fhir.r4.model.Immunization;
 import org.hl7.fhir.r4.model.Immunization.ImmunizationStatus;
 import org.hl7.fhir.r4.model.IntegerType;
+import org.hl7.fhir.r4.model.MedicationAdministration;
+import org.hl7.fhir.r4.model.MedicationAdministration.MedicationAdministrationDosageComponent;
 import org.hl7.fhir.r4.model.MedicationRequest;
 import org.hl7.fhir.r4.model.MedicationRequest.MedicationRequestIntent;
 import org.hl7.fhir.r4.model.MedicationRequest.MedicationRequestStatus;
@@ -643,8 +645,8 @@ public class FhirR4 {
         BundleEntryComponent providerOrganization = provider(bundle, encounter.provider);
         encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
       }
-    } else { // no associated provider, patient goes to ambulatory provider
-      Provider provider = person.getProvider(EncounterType.AMBULATORY, encounter.start);
+    } else { // no associated provider, patient goes to wellness provider
+      Provider provider = person.getProvider(EncounterType.WELLNESS, encounter.start);
       String providerFullUrl = findProviderUrl(provider, bundle);
 
       if (providerFullUrl != null) {
@@ -708,7 +710,7 @@ public class FhirR4 {
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource().fhirType().equals("Practitioner")) {
         Practitioner doc = (Practitioner) entry.getResource();
-        if (doc.getIdentifierFirstRep().getValue().equals("" + clinician.seed)) {
+        if (doc.getIdentifierFirstRep().getValue().equals("" + clinician.identifier)) {
           return entry.getFullUrl();
         }
       }
@@ -1662,7 +1664,77 @@ public class FhirR4 {
     medicationClaim(person, personEntry, bundle, encounterEntry,
         medication.claim, medicationEntry);
 
+    // Create new administration for medication, if needed
+    if (medication.administration) {
+      medicationAdministration(personEntry, bundle, encounterEntry, medication, medicationResource);
+    }
+
     return medicationEntry;
+  }
+
+  /**
+   * Add a MedicationAdministration if needed for the given medication
+   * 
+   * @param personEntry       The Entry for the Person
+   * @param bundle            Bundle to add the MedicationAdministration to
+   * @param encounterEntry    Current Encounter entry
+   * @param medication        The Medication
+   * @param medicationRequest The related medicationRequest
+   * @return The added Entry
+   */
+  private static BundleEntryComponent medicationAdministration(BundleEntryComponent personEntry, Bundle bundle,
+      BundleEntryComponent encounterEntry, Medication medication, MedicationRequest medicationRequest) {
+      MedicationAdministration medicationResource = new MedicationAdministration();
+
+    medicationResource.setSubject(new Reference(personEntry.getFullUrl()));
+    medicationResource.setContext(new Reference(encounterEntry.getFullUrl()));
+
+    Code code = medication.codes.get(0);
+    String system = code.system.equals("SNOMED-CT") ? SNOMED_URI : RXNORM_URI;
+
+    medicationResource.setMedication(mapCodeToCodeableConcept(code, system));
+    medicationResource.setEffective(new DateTimeType(new Date(medication.start)));
+
+    medicationResource.setStatus("completed");
+
+    if (medication.prescriptionDetails != null) {
+      JsonObject rxInfo = medication.prescriptionDetails;
+      MedicationAdministrationDosageComponent dosage = new MedicationAdministrationDosageComponent();
+
+      // as_needed is true if present
+      if ((rxInfo.has("dosage")) && (!rxInfo.has("as_needed"))) {
+        Quantity dose = new SimpleQuantity()
+            .setValue(rxInfo.get("dosage").getAsJsonObject().get("amount").getAsDouble());
+        dosage.setDose((SimpleQuantity) dose);
+
+        if (rxInfo.has("instructions")) {
+          for (JsonElement instructionElement : rxInfo.get("instructions").getAsJsonArray()) {
+            JsonObject instruction = instructionElement.getAsJsonObject();
+
+            dosage.setText(instruction.get("display").getAsString());
+          }
+        }
+      }
+      medicationResource.setDosage(dosage);
+    }
+
+    if (!medication.reasons.isEmpty()) {
+      // Only one element in list
+      Code reason = medication.reasons.get(0);
+      for (BundleEntryComponent entry : bundle.getEntry()) {
+        if (entry.getResource().fhirType().equals("Condition")) {
+          Condition condition = (Condition) entry.getResource();
+          // Only one element in list
+          Coding coding = condition.getCode().getCoding().get(0);
+          if (reason.code.equals(coding.getCode())) {
+            medicationResource.addReasonReference().setReference(entry.getFullUrl());
+          }
+        }
+      }
+    }
+
+    BundleEntryComponent medicationAdminEntry = newEntry(bundle, medicationResource);
+    return medicationAdminEntry;
   }
 
   private static final Code PRESCRIPTION_OF_DRUG_CODE =
@@ -1963,7 +2035,7 @@ public class FhirR4 {
       practitionerResource.setMeta(meta);
     }
     practitionerResource.addIdentifier().setSystem("http://hl7.org/fhir/sid/us-npi")
-    .setValue("" + clinician.seed);
+    .setValue("" + clinician.identifier);
     practitionerResource.setActive(true);
     practitionerResource.addName().setFamily(
         (String) clinician.attributes.get(Clinician.LAST_NAME))

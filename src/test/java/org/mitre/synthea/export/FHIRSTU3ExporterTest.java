@@ -51,6 +51,7 @@ public class FHIRSTU3ExporterTest {
 
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);
+    generator.options.overflow = false;
     for (int i = 0; i < numberOfPeople; i++) {
       int x = validationErrors.size();
       TestHelper.exportOff();
@@ -99,6 +100,14 @@ public class FHIRSTU3ExporterTest {
                  * specified if MedicationRequest.requester.agent is practitioner or device.
                  * But the invariant is poorly written and does not correctly handle references
                  * starting with "urn:uuid"
+                 */
+                valid = true; // ignore this error
+              } else if (emessage.getMessage().contains(
+                  "per-1: If present, start SHALL have a lower value than end")) {
+                /*
+                 * The per-1 invariant does not account for daylight savings time... so, if the
+                 * daylight savings switch happens between the start and end, the validation
+                 * fails, even if it is valid.
                  */
                 valid = true; // ignore this error
               }

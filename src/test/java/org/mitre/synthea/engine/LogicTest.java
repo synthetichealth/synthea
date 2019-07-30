@@ -49,8 +49,11 @@ public class LogicTest {
   public void setup() throws IOException {
     person = new Person(0L);
     Provider mock = Mockito.mock(Provider.class);
-    mock.uuid = "Mock-Ambulatory";
-    person.setProvider(EncounterType.AMBULATORY, mock);
+    mock.uuid = "Mock-Provider";
+    for (EncounterType type : EncounterType.values()) {
+      person.setProvider(type, mock);
+    }
+
     mock = Mockito.mock(Provider.class);
     mock.uuid = "Mock-Emergency";
     person.setProvider(EncounterType.EMERGENCY, mock);
@@ -255,8 +258,8 @@ public class LogicTest {
   }
 
   @Test
-  public void test_logic_with_split_record_no_duplicates() {
-    Module module = StateTest.getModule("switching_provider.json");
+  public void test_logic_with_split_record_no_duplicates() throws Exception {
+    Module module = TestHelper.getFixture("switching_provider.json");
     Config.set("exporter.split_records.duplicate_data", "false");
     person.hasMultipleRecords = true;
     person.records = new ConcurrentHashMap<String, HealthRecord>();
@@ -275,8 +278,8 @@ public class LogicTest {
   }
 
   @Test
-  public void test_logic_with_split_record_with_duplicates() {
-    Module module = StateTest.getModule("switching_provider.json");
+  public void test_logic_with_split_record_with_duplicates() throws Exception {
+    Module module = TestHelper.getFixture("switching_provider.json");
     Config.set("exporter.split_records.duplicate_data", "true");
     person.hasMultipleRecords = true;
     person.records = new ConcurrentHashMap<String, HealthRecord>();
