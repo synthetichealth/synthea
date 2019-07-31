@@ -495,7 +495,7 @@ public class Payer {
    * 
    * @param costToPayer the cost of the current encounter, after the patient's copay.
    */
-  public void addCost(double costToPayer) {
+  public void addCoveredCost(double costToPayer) {
     this.costsCovered += costToPayer;
   }
 

@@ -93,10 +93,13 @@ public class Person implements Serializable, QuadTreeData {
   public boolean hasMultipleRecords;
   /** History of the currently active module. */
   public List<State> history;
-  /* Person's Payer. */
-  // Each entry in the payerHistory Array corresponds to the insurance held at that
-  // age
+  /* Person's Payer History. */
+  // Each element in payerHistory Array corresponds to the insurance held at that age.
   public Payer[] payerHistory;
+  /* Yearly Healthcare Expenses. */
+  private Map<Integer, Double> healthcareExpensesYearly;
+  /* Yearly Healthcare Coverage. */
+  private Map<Integer, Double> healthcareCoverageYearly;
 
   /**
    * Person constructor.
@@ -116,6 +119,8 @@ public class Person implements Serializable, QuadTreeData {
     record = new HealthRecord(this);
     // 128 because it's a nice power of 2, and nobody will reach that age
     payerHistory = new Payer[128];
+    healthcareExpensesYearly = new HashMap<Integer, Double>();
+    healthcareCoverageYearly = new HashMap<Integer, Double>();
   }
 
   /**
@@ -555,7 +560,7 @@ public class Person implements Serializable, QuadTreeData {
       Payer currentPayer = this.getPayerAtTime(time);
       if (currentPayer != null) {
         currentPayer.payPremium(currentPayer.getMonthlyPremium());
-        this.addCost(currentPayer.getMonthlyPremium());
+        this.addExpense(currentPayer.getMonthlyPremium(), time);
         // Update the last monthly premium paid.
         this.attributes.put(Person.LAST_MONTH_PAID, currentMonth);
       } else {
@@ -587,8 +592,7 @@ public class Person implements Serializable, QuadTreeData {
     int income = (Integer) this.attributes.get(Person.INCOME);
     double yearlyPremiumTotal = payer.getMonthlyPremium() * 12;
     double yearlyDeductible = payer.getDeductible();
-    double yearlyTotalCost = yearlyPremiumTotal + yearlyDeductible;
-    return income > yearlyTotalCost;
+    return income > (yearlyPremiumTotal + yearlyDeductible);
   }
 
   @SuppressWarnings("unchecked")
@@ -606,13 +610,39 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
-   * Adds the cost of an encounter to this person.
-   * Currently does nothing.
+   * Adds the given cost to the person's expenses.
    * 
    * @param costToPatient the cost, after insurance, to this patient.
+   * @param time the time that the expense was incurred.
    */
-  public void addCost(double costToPatient) {
-    // Not yet implemented.
+  public void addExpense(double costToPatient, long time) {
+    int age = this.ageInYears(time);
+    healthcareExpensesYearly.merge(age, costToPatient, Double::sum);
+  }
+
+  /**
+   * Adds the given cost to the person's coverage.
+   * 
+   * @param payerCoverage the cost, after insurance, to this patient.
+   * @param time the time that the expense was incurred.
+   */
+  public void addCoverage(double payerCoverage, long time) {
+    int age = this.ageInYears(time);
+    healthcareCoverageYearly.merge(age, payerCoverage, Double::sum);
+  }
+
+  /**
+   * Returns the total healthcare expenses for this person.
+   */
+  public double getHealthcareExpenses() {
+    return healthcareExpensesYearly.values().stream().mapToDouble(Double::doubleValue).sum();
+  }
+
+  /**
+   * Returns the total healthcare coverage for this person.
+   */
+  public double getHealthcareCoverage() {
+    return healthcareCoverageYearly.values().stream().mapToDouble(Double::doubleValue).sum();
   }
 
   /**

@@ -119,10 +119,11 @@ public class Claim {
       // QOLS/GBD will be affected here.
     }
 
-    // Update Person's Costs.
-    this.person.addCost(costToPatient);
-    // Update Payer's Costs.
-    this.payer.addCost(costToPayer);
+    // Update Person's Expenses and Coverage.
+    this.person.addExpense(costToPatient, entry.start);
+    this.person.addCoverage(costToPayer, entry.start);
+    // Update Payer's Covered and Uncovered Costs.
+    this.payer.addCoveredCost(costToPayer);
     this.payer.addUncoveredCost(costToPatient);
     // Update the Provider's Revenue if this is an encounter.
     if (encounter != null) {
