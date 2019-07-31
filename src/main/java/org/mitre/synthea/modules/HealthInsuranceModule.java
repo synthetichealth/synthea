@@ -12,7 +12,6 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.behaviors.IPayerFinder;
 
 public class HealthInsuranceModule extends Module {
-  public static final String INSURANCE = "insurance";
 
   // Load properties insurance numbers.
   public static long mandateTime
@@ -101,7 +100,6 @@ public class HealthInsuranceModule extends Module {
    */
   public static void inventoryAttributes(Map<String, Inventory> attributes) {
     String m = HealthInsuranceModule.class.getSimpleName();
-    Attributes.inventory(attributes, m, INSURANCE, true, true, "List<String>");
     Attributes.inventory(attributes, m, "pregnant", true, false, "Boolean");
     Attributes.inventory(attributes, m, "blindness", true, false, "Boolean");
     Attributes.inventory(attributes, m, "end_stage_renal_disease", true, false, "Boolean");

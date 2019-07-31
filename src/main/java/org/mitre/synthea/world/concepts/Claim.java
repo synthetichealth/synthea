@@ -86,37 +86,28 @@ public class Claim {
       return;
     }
 
-    // Entry's initial cost.
+    // Set entry's initial cost.
     totalCost += entry.getCost().doubleValue();
-
-    // Calculate the Patient's Copay.
-    double patientCopay = 0.0;
-    if (this.person != null) {
-      patientCopay = payer.determineCopay(entry);
-    }
-
+    // Determine the payer's copay.
+    double patientCopay = payer.determineCopay(entry);
     double costToPatient = 0.0;
     double costToPayer = 0.0;
 
     // Determine who covers the care and assign the costs accordingly.
     if (this.payer.coversCare(entry)) {
       // Person's Payer covers their care.
-      if (totalCost >= patientCopay) {
-        costToPayer = totalCost - patientCopay;
-        costToPatient = patientCopay;
-      } else {
-        costToPatient = totalCost;
-      }
+      costToPatient = totalCost > patientCopay ? patientCopay : totalCost;
+      costToPayer = totalCost > patientCopay ? totalCost - patientCopay : 0.0;
       this.payerCoversEntry(entry);
-    } else if (person.canAffordCare(entry)) {
-      // Person's Payer will not cover care, but the person will afford it.
+    }  else {
+      // Payer will not cover the care.
       this.payerDoesNotCoverEntry(entry);
       costToPatient = totalCost;
-    } else {
-      // Payer won't cover the care and the person cannot afford it: Person does not recieve care.
-      this.payerDoesNotCoverEntry(entry);
-      costToPatient = totalCost;
-      // QOLS/GBD will be affected here.
+      if (person.canAffordCare(entry)) {
+        // Update the person's costs, they get the procedure.
+      } else {
+        // The person does not get the procedure. Lower their QOLS/GBD
+      }
     }
 
     // Update Person's Expenses and Coverage.

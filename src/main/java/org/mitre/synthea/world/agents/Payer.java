@@ -35,21 +35,21 @@ import org.mitre.synthea.world.geography.Location;
 
 public class Payer {
 
-  /* ArrayList of all Private Payers imported */
+  /* ArrayList of all Private Payers imported. */
   private static ArrayList<Payer> privatePayerList = new ArrayList<Payer>();
-  /* Map of all Government Payers imported */
+  /* Map of all Government Payers imported. */
   private static Map<String, Payer> governmentPayerMap = new HashMap<String,Payer>();
 
-  /* U.S. States loaded */
+  /* U.S. States loaded. */
   private static Set<String> statesLoaded = new HashSet<String>();
 
-  /* Payer Finder */
+  /* Payer Finder. */
   private static IPayerFinder payerFinder;
-  // Provider Selection Behavior algorithm choices:
+  // Payer selction algorithm choices:
   private static final String RANDOM = "random";
   private static final String BESTRATE = "best_rate";
 
-  /* Payer Information */
+  /* Payer Information. */
   private final Map<String, Object> attributes;
   private final String name;
   private final String id;
@@ -60,15 +60,13 @@ public class Payer {
   private double monthlyPremium;
   private String ownership;
 
-  /* The States that this payer covers & operates in */
+  /* The States that this payer covers & operates in. */
   private Set<String> statesCovered;
 
-  /* The services that this payer covers */
-  // Will likely be moved to a Plans class.
-  // If an encounterType is contained in a payer's servicesCovered, then they cover it.
+  /* The services that this payer covers. */ // May be moved to a potential plans class.
   private Set<String> servicesCovered;
 
-  /* Payer Statistics */
+  /* Payer Statistics. */
   private double costsCovered;
   private double costsUncovered;
   private double revenue;
@@ -78,7 +76,7 @@ public class Payer {
   // Unique utilizers of Payer, by Person ID, with number of utilizations per Person.
   private final HashMap<String, AtomicInteger> customerUtilization;
 
-  /* NO_INSURANCE Payer */
+  /* NO_INSURANCE Payer. */
   public static Payer noInsurance;
 
   /**
@@ -92,11 +90,6 @@ public class Payer {
     this.id = id;
     this.uuid = UUID.nameUUIDFromBytes((this.id + this.name).getBytes()).toString();
     this.attributes = new LinkedTreeMap<>();
-    this.deductible = 0.0;
-    this.defaultCoinsurance = 0.0;
-    this.defaultCopay = 0.0;
-    this.monthlyPremium = 0.0;
-    this.ownership = "";
     this.entryUtilization = HashBasedTable.create();
     this.customerUtilization = new HashMap<String, AtomicInteger>();
     this.costsCovered = 0.0;
@@ -176,7 +169,11 @@ public class Payer {
   public static void loadNoInsurance() {
     noInsurance = new Payer("NO_INSURANCE", "000000");
     noInsurance.ownership = "NO_INSURANCE";
-    // noInsurance does not 'cover' any services.
+    noInsurance.deductible = 0.0;
+    noInsurance.defaultCoinsurance = 0.0;
+    noInsurance.defaultCopay = 0.0;
+    noInsurance.monthlyPremium = 0.0;
+    // noInsurance does not cover any services.
     noInsurance.servicesCovered = new HashSet<String>();
     // noInsurance 'covers' all states.
     noInsurance.statesCovered = new HashSet<String>();
@@ -249,8 +246,7 @@ public class Payer {
    * @param governmentPayerName the government payer to get.
    */
   public static Payer getGovernmentPayer(String governmentPayerName) {
-    Payer governmentPayer = Payer.governmentPayerMap.get(governmentPayerName);
-    if (governmentPayer == null) {
+    if (!governmentPayerMap.containsKey(governmentPayerName)) {
       throw new RuntimeException(
           "ERROR: Government Payer '" + governmentPayerName + "' does not exist.");
     }
@@ -437,31 +433,27 @@ public class Payer {
 
     // For now, assume that all payers accept all patients.
     // EXCEPT Medicare/Medicaid.
-    if (this.getOwnership().equals("Government")) {
+    if (this.name.equals("Medicare")) {
+      // Return whether the person satisfies the conditions for Medicare acceptance.
+      boolean esrd = (person.attributes.containsKey("end_stage_renal_disease")
+          && (boolean) person.attributes.get("end_stage_renal_disease"));
+      boolean sixtyFive = (person.ageInYears(time) >= 65);
 
-      if (this.name.equals("Medicare")) {
-        // Return whether the person satisfies the conditions for Medicare acceptance.
-        int age = person.ageInYears(time);
-        boolean esrd = (person.attributes.containsKey("end_stage_renal_disease")
-            && (boolean) person.attributes.get("end_stage_renal_disease"));
-        boolean sixtyFive = (age >= 65);
+      boolean medicareEligible = sixtyFive || esrd;
+      return medicareEligible;
 
-        boolean medicare = sixtyFive || esrd;
-        return medicare;
+    } else if (this.name.equals("Medicaid")) {
+      // Return whether the person satisfies the conditions for Medicaid acceptance.
+      boolean female = (person.attributes.get(Person.GENDER).equals("F"));
+      boolean pregnant = (person.attributes.containsKey("pregnant")
+          && (boolean) person.attributes.get("pregnant"));
+      boolean blind = (person.attributes.containsKey("blindness")
+          && (boolean) person.attributes.get("blindness"));
+      int income = (Integer) person.attributes.get(Person.INCOME);
+      boolean medicaidIncomeEligible = (income <= HealthInsuranceModule.medicaidLevel);
 
-      } else if (this.name.equals("Medicaid")) {
-        // Return whether the person satisfies the conditions for Medicaid acceptance.
-        boolean female = (person.attributes.get(Person.GENDER).equals("F"));
-        boolean pregnant = (person.attributes.containsKey("pregnant")
-            && (boolean) person.attributes.get("pregnant"));
-        boolean blind = (person.attributes.containsKey("blindness")
-            && (boolean) person.attributes.get("blindness"));
-        int income = (Integer) person.attributes.get(Person.INCOME);
-        boolean medicaidIncomeEligible = (income <= HealthInsuranceModule.medicaidLevel);
-
-        boolean medicaid = (female && pregnant) || blind || medicaidIncomeEligible;
-        return medicaid;
-      }
+      boolean medicaidEligible = (female && pregnant) || blind || medicaidIncomeEligible;
+      return medicaidEligible;
     }
     // The payer is not Medicare/Medicaid so they will accept any and every person. For now.
     return true;
@@ -649,14 +641,14 @@ public class Payer {
    * @param qols the Quality of Life Score to be added.
    */
   public void addQols(double qols) {
-    totalQOLS += qols;
+    this.totalQOLS += qols;
   }
 
   /**
    * Returns the average of the payer's QOLS of customers over the number of years covered.
    */
   public double getQOLAverage() {
-    double numYears = this.getNumYearsCovered();
+    int numYears = this.getNumYearsCovered();
     return this.totalQOLS / numYears;
   }
 

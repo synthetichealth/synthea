@@ -505,11 +505,11 @@ public class Person implements Serializable, QuadTreeData {
   /**
    * Sets the person's payer history at the given age to the given payer.
    */
-  public void setPayerAtAge(int age, Payer randomPrivatePayer) {
+  public void setPayerAtAge(int age, Payer payer) {
     if (payerHistory[age] != null) {
       throw new RuntimeException("ERROR: Overwriting a person's insurance at age " + age);
     }
-    this.payerHistory[age] = randomPrivatePayer;
+    this.payerHistory[age] = payer;
   }
 
   /**
@@ -531,10 +531,7 @@ public class Person implements Serializable, QuadTreeData {
    */
   public Payer getPreviousPayer(long time) {
     int age = this.ageInYears(time);
-    if (age <= 0) {
-      return null;
-    }
-    return this.getPayerAtAge(age - 1);
+    return age > 0 ? this.getPayerAtAge(age - 1) : null;
   }
 
   /**
@@ -558,14 +555,10 @@ public class Person implements Serializable, QuadTreeData {
 
       // Pay the payer.
       Payer currentPayer = this.getPayerAtTime(time);
-      if (currentPayer != null) {
-        currentPayer.payPremium(currentPayer.getMonthlyPremium());
-        this.addExpense(currentPayer.getMonthlyPremium(), time);
-        // Update the last monthly premium paid.
-        this.attributes.put(Person.LAST_MONTH_PAID, currentMonth);
-      } else {
-        throw new RuntimeException("ERROR: Attempted to pay monthly premium to null Payer.");
-      }
+      currentPayer.payPremium(currentPayer.getMonthlyPremium());
+      this.addExpense(currentPayer.getMonthlyPremium(), time);
+      // Update the last monthly premium paid.
+      this.attributes.put(Person.LAST_MONTH_PAID, currentMonth);
     }
   }
 
@@ -602,10 +595,6 @@ public class Person implements Serializable, QuadTreeData {
    * @param time the time to retrive the qols for.
    */
   public double getQolsForYear(int year) {
-    if (((Map<Integer, Double>) this.attributes.get("QOL")).get(year) == null) {
-      throw new RuntimeException(
-          "ERROR: Person's QOLS was not calculated for the year " + year + ".");
-    }
     return ((Map<Integer, Double>) this.attributes.get("QOL")).get(year);
   }
 

@@ -104,9 +104,7 @@ public class QualityOfLifeModule extends Module {
       // person.payer.addQALY(personAge/QALY) or .add(DALY)
       // At the end, payer averages this data out
 
-      // I've only ever seen this print statement reached one time.
-      System.out.println("DEATH: "
-          + person.attributes.get(Person.NAME) + ". Lost " + yll + " years.");
+      // TODO - It seems as if this does not get reached as often as it should.
     }
     // get list of conditions
     List<Entry> allConditions = new ArrayList<Entry>();
