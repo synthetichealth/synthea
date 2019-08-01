@@ -113,10 +113,10 @@ public final class EncounterModule extends Module {
       if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
         person.addressLargestSymptom();
-        Encounter encounter = person.encounterStart(time, EncounterType.WELLNESS);
+        Encounter encounter = person.encounterStart(time, EncounterType.OUTPATIENT);
         encounter.name = "Encounter Module Symptom Driven";
-        Provider prov = person.getProvider(EncounterType.WELLNESS, time);
-        prov.incrementEncounters(EncounterType.WELLNESS, year);
+        Provider prov = person.getProvider(EncounterType.OUTPATIENT, time);
+        prov.incrementEncounters(EncounterType.OUTPATIENT, year);
         encounter.provider = prov;
         encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
             person.random);
