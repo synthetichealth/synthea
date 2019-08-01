@@ -166,11 +166,12 @@ public class BloodPressureValueGenerator extends ValueGenerator {
   private double calculateMean(Person person, long time) {
     // TODO: Take additional factors into consideration: age + gender
     boolean hypertension = (Boolean) person.attributes.getOrDefault("hypertension", false);
-    boolean blood_pressure_controlled = (Boolean) person.attributes.getOrDefault("blood_pressure_controlled", false);
+    boolean bloodPressureControlled =
+        (Boolean) person.attributes.getOrDefault("blood_pressure_controlled", false);
 
     if (sysDias == SysDias.SYSTOLIC) {
       if (hypertension) {
-        if (!blood_pressure_controlled) {
+        if (!bloodPressureControlled) {
           return person.rand(HYPERTENSIVE_SYS_BP_RANGE);
         } else {
           return person.rand(NORMAL_SYS_BP_RANGE);
@@ -180,7 +181,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
       }
     } else {
       if (hypertension) {
-        if (!blood_pressure_controlled) {
+        if (!bloodPressureControlled) {
           return person.rand(HYPERTENSIVE_DIA_BP_RANGE);
         } else {
           return person.rand(NORMAL_DIA_BP_RANGE);

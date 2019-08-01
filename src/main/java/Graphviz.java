@@ -596,7 +596,8 @@ public class Graphviz {
         } else if (logic.has("value_code")) {
           JsonObject valueCode = logic.get("value_code").getAsJsonObject();
           valueString = "'" + valueCode.get("system").getAsString() + " ["
-            + valueCode.get("code").getAsString() + "]: " + valueCode.get("display").getAsString() + "'";
+            + valueCode.get("code").getAsString() + "]: "
+            + valueCode.get("display").getAsString() + "'";
         }
         return "Observation " + obs + " \\" + logic.get("operator").getAsString() + " "
             + valueString + NEWLINE;

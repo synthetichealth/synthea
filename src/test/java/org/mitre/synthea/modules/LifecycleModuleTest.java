@@ -6,7 +6,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
@@ -30,7 +29,6 @@ public class LifecycleModuleTest {
     long time = System.currentTimeMillis();
     long birth = time - Utilities.convertCalendarYearsToTime(100);
     person.attributes.put(Person.BIRTHDATE, birth);
-    person.events.create(time, Event.BIRTH, "LifecycleModuleTest", true);
     for (int i = 0; i < 100000; i++) {
       LifecycleModule.death(person, time);
     }

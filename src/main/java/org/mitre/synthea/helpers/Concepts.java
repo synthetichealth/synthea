@@ -135,12 +135,12 @@ public class Concepts {
     }
 
     if (state.has("observations")) {
-        // MultiObservations and DiagnosticReports
-        JsonArray observations = state.getAsJsonArray("observations");
-        observations.forEach(obs -> {
-            // subobservations are full instances of the Observation state
-            inventoryState(concepts, obs.getAsJsonObject(), module);
-        });
+      // MultiObservations and DiagnosticReports
+      JsonArray observations = state.getAsJsonArray("observations");
+      observations.forEach(obs -> {
+        // subobservations are full instances of the Observation state
+        inventoryState(concepts, obs.getAsJsonObject(), module);
+      });
     }
 
     if (state.has("prescription")) {

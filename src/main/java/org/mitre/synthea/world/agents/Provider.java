@@ -322,19 +322,22 @@ public class Provider implements QuadTreeData {
         if (row.get("hasSpecialties") == null
             || row.get("hasSpecialties").equalsIgnoreCase("false")) {
           parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, 
-              parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE, clinicianSeed, clinicianRand));
+              parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE,
+                  clinicianSeed, clinicianRand));
         } else {
           for (String specialty : ClinicianSpecialty.getSpecialties()) { 
             String specialtyCount = row.get(specialty);
             if (specialtyCount != null && !specialtyCount.trim().equals("") 
                 && !specialtyCount.trim().equals("0")) {
               parsed.clinicianMap.put(specialty, 
-                  parsed.generateClinicianList(Integer.parseInt(row.get(specialty)), specialty, clinicianSeed, clinicianRand));
+                  parsed.generateClinicianList(Integer.parseInt(row.get(specialty)), specialty,
+                      clinicianSeed, clinicianRand));
             }
           }
           if (row.get(ClinicianSpecialty.GENERAL_PRACTICE).equals("0")) {
             parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, 
-                parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE, clinicianSeed, clinicianRand));
+                parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE,
+                    clinicianSeed, clinicianRand));
           }
         }
 
@@ -357,11 +360,12 @@ public class Provider implements QuadTreeData {
    * @return
    */
   private ArrayList<Clinician> generateClinicianList(int numClinicians, String specialty, 
-    long clinicianSeed, Random clinicianRand) {
+      long clinicianSeed, Random clinicianRand) {
     ArrayList<Clinician> clinicians = new ArrayList<Clinician>();
     for (int i = 0; i < numClinicians; i++) {
       Clinician clinician = null;
-      clinician = generateClinician(clinicianSeed, clinicianRand, Long.parseLong(loaded + "" + i), this);
+      clinician = generateClinician(clinicianSeed, clinicianRand,
+          Long.parseLong(loaded + "" + i), this);
       clinician.attributes.put(Clinician.SPECIALTY, specialty);
       clinicians.add(clinician);
     }
@@ -375,7 +379,8 @@ public class Provider implements QuadTreeData {
    *          Seed for the random clinician
    * @return generated Clinician
    */
-  private Clinician generateClinician(long clinicianSeed, Random clinicianRand, long clinicianIdentifier, Provider provider) {
+  private Clinician generateClinician(long clinicianSeed, Random clinicianRand,
+      long clinicianIdentifier, Provider provider) {
     Clinician clinician = null;
     try {
       Demographics city = location.randomCity(clinicianRand);

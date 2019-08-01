@@ -32,28 +32,6 @@ public class EncounterModuleTest {
   }
 
   @Test
-  public void testEmergencyEncounterHasClinician() {
-    EncounterModule.emergencyEncounter(person, System.currentTimeMillis());
-    assertNotNull(person.record);
-    assertFalse(person.record.encounters.isEmpty());
-    int last = person.record.encounters.size() - 1;
-    Encounter encounter = person.record.encounters.get(last);
-    assertNotNull("Encounter must have clinician", encounter.clinician);
-    assertNotNull("Encounter must have provider organization", encounter.provider);
-  }
-
-  @Test
-  public void testUrgentcareEncounterHasClinician() {
-    EncounterModule.urgentCareEncounter(person, System.currentTimeMillis());
-    assertNotNull(person.record);
-    assertFalse(person.record.encounters.isEmpty());
-    int last = person.record.encounters.size() - 1;
-    Encounter encounter = person.record.encounters.get(last);
-    assertNotNull("Encounter must have clinician", encounter.clinician);
-    assertNotNull("Encounter must have provider organization", encounter.provider);
-  }
-
-  @Test
   public void testEncounterHasClinician() {
     module.process(person, System.currentTimeMillis());
     assertNotNull(person.record);

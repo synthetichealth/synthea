@@ -15,7 +15,9 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Person;
@@ -55,7 +57,6 @@ public class StateTest {
 
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
-    person.events.create(birthTime, Event.BIRTH, "Generator.run", true);
 
     time = System.currentTimeMillis();
   }
@@ -324,6 +325,38 @@ public class StateTest {
     assertFalse(delay.process(person, time + 1L * 1000 * 60 * 60 * 24 * 365));
     assertFalse(delay.process(person, time + 2L * 1000 * 60 * 60 * 24 * 365));
     assertTrue(delay.process(person, time + 10L * 1000 * 60 * 60 * 24 * 365));
+  }
+
+  @Test
+  public void death_during_delay() throws Exception {
+    Module module = TestHelper.getFixture("death_during_delay.json");
+
+    // patient is alive
+    assertTrue(person.alive(time));
+
+    // patient dies during delay
+    module.process(person, time);
+
+    // patient is still alive now...
+    assertTrue(person.alive(time));
+
+    // patient is dead later...
+    long step = Utilities.convertTime("days", 7);
+    assertFalse(person.alive(time + step));
+
+    // patient has one encounter...
+    assertTrue(person.hadPriorState("Encounter 1"));
+    assertFalse(person.hadPriorState("Encounter Should Not Happen"));
+
+    // next time step...
+    module.process(person, time + step);
+
+    // patient is still dead...
+    assertFalse(person.alive(time + step));
+
+    // patient still has one encounter...
+    assertTrue(person.hadPriorState("Encounter 1"));
+    assertFalse(person.hadPriorState("Encounter Should Not Happen"));
   }
 
   @Test
@@ -1226,6 +1259,27 @@ public class StateTest {
 
     module.process(person, time + Utilities.convertTime("months", 6));
     assertFalse(person.alive(time + Utilities.convertTime("months", 6)));
+  }
+
+  @Test
+  public void the_dead_should_stay_dead() throws Exception {
+    Module module = TestHelper.getFixture("death_life_expectancy.json");
+
+    long timestep = Long.parseLong(Config.get("generate.timestep"));
+    long timeT = time;
+    while (person.alive(timeT)) {
+      module.process(person, timeT);
+      timeT += timestep;
+    }
+
+    long deathTime = (Long) person.attributes.get(Person.DEATHDATE);
+    Encounter lastEncounter = person.record.encounters.get(person.record.encounters.size() - 1);
+    if (lastEncounter.codes.contains(DeathModule.DEATH_CERTIFICATION)) {
+      // one previous... don't count the death certification
+      lastEncounter = person.record.encounters.get(person.record.encounters.size() - 2);
+    }
+    long lastEncounterTime = lastEncounter.start;
+    assertTrue(lastEncounterTime <= deathTime);
   }
 
   @Test

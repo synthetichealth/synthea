@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
-import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.TransitionMetrics.Metric;
 import org.mitre.synthea.modules.EncounterModule;
@@ -68,7 +67,6 @@ public class TransitionMetricsTest {
       person.setProvider(EncounterType.WELLNESS, Mockito.mock(Provider.class));
       time = System.currentTimeMillis();
       person.attributes.put(Person.BIRTHDATE, time);
-      person.events.create(time, Event.BIRTH, "transition metrics test", true);
 
       time = run(person, example, time);
       metrics.recordStats(person, time, modules);

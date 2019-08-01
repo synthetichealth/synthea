@@ -56,6 +56,7 @@ public class LogicTest {
     mock = Mockito.mock(Provider.class);
     mock.uuid = "Mock-Emergency";
     person.setProvider(EncounterType.EMERGENCY, mock);
+    person.attributes.put(Person.BIRTHDATE, 0L);
 
     time = System.currentTimeMillis();
 

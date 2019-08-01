@@ -33,6 +33,7 @@ public class ExporterTest {
     endTime = time = System.currentTimeMillis();
     yearsToKeep = 5;
     patient = new Person(12345L);
+    patient.attributes.put(Person.BIRTHDATE, time - years(30));
     Location location = new Location("Massachusetts", null);
     location.assignPoint(patient, location.randomCityName(patient.random));
     Provider.loadProviders(location, 1L);
@@ -157,7 +158,7 @@ public class ExporterTest {
   @Test public void test_export_filter_should_keep_cause_of_death() {
     HealthRecord.Code causeOfDeath = 
         new HealthRecord.Code("SNOMED-CT", "Todo-lookup-code", "Rabies");
-    patient.recordDeath(time - years(20), causeOfDeath, "death");
+    patient.recordDeath(time - years(20), causeOfDeath);
     
     DeathModule.process(patient, time - years(20));
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);

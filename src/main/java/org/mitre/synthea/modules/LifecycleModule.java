@@ -13,7 +13,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.special.Erf;
-import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
@@ -120,7 +119,6 @@ public final class LifecycleModule extends Module {
 
     attributes.put(Person.ID, UUID.randomUUID().toString());
     attributes.put(Person.BIRTHDATE, time);
-    person.events.create(time, Event.BIRTH, "Generator.run", true);
     String gender = (String) attributes.get(Person.GENDER);
     String language = (String) attributes.get(Person.FIRST_LANGUAGE);
     String firstName = fakeFirstName(gender, language, person.random);
@@ -774,7 +772,7 @@ public final class LifecycleModule extends Module {
       double roll = person.rand();
       double likelihoodOfDeath = likelihoodOfDeath(person.ageInYears(time));
       if (roll < likelihoodOfDeath) {
-        person.recordDeath(time, NATURAL_CAUSES, "death");
+        person.recordDeath(time, NATURAL_CAUSES);
       }
     }
   }
