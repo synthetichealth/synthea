@@ -555,8 +555,7 @@ public class Person implements Serializable, QuadTreeData {
 
       // Pay the payer.
       Payer currentPayer = this.getPayerAtTime(time);
-      currentPayer.payPremium(currentPayer.getMonthlyPremium());
-      this.addExpense(currentPayer.getMonthlyPremium(), time);
+      this.addExpense(currentPayer.payMonthlyPremium(), time);
       // Update the last monthly premium paid.
       this.attributes.put(Person.LAST_MONTH_PAID, currentMonth);
     }
@@ -574,10 +573,8 @@ public class Person implements Serializable, QuadTreeData {
 
   /**
    * Returns whether or not a person can afford a given payer.
-   * If a person's income is greater than:
-   *    -A year of monthly premiums +
-   *    -The deductible
-   * Then they can afford the insurance.
+   * If a person's income is greater than a year of montlhy premiums + deductible
+   * then they can afford the insurance.
    * 
    * @param payer the payer to check.
    */

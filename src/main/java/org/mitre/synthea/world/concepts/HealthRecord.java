@@ -490,7 +490,7 @@ public class HealthRecord {
       Entry condition = new Entry(time, primaryCode);
       Encounter encounter = currentEncounter(time);
       encounter.conditions.add(condition);
-      encounter.claim.addItem(condition);
+      encounter.claim.addLineItem(condition);
       present.put(primaryCode, condition);
     }
     return present.get(primaryCode);
@@ -559,7 +559,7 @@ public class HealthRecord {
     Procedure procedure = new Procedure(time, type);
     Encounter encounter = currentEncounter(time);
     encounter.procedures.add(procedure);
-    encounter.claim.addItem(procedure);
+    encounter.claim.addLineItem(procedure);
     present.put(type, procedure);
     return procedure;
   }
@@ -630,7 +630,7 @@ public class HealthRecord {
     Immunization immunization = new Immunization(time, type);
     Encounter encounter = currentEncounter(time);
     encounter.immunizations.add(immunization);
-    encounter.claim.addItem(immunization);
+    encounter.claim.addLineItem(immunization);
     return immunization;
   }
 

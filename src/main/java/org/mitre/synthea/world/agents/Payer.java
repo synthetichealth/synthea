@@ -59,11 +59,9 @@ public class Payer {
   private double defaultCoinsurance;
   private double monthlyPremium;
   private String ownership;
-
-  /* The States that this payer covers & operates in. */
+  // The States that this payer covers & operates in.
   private Set<String> statesCovered;
-
-  /* The services that this payer covers. */ // May be moved to a potential plans class.
+  // The services that this payer covers. May be moved to a potential plans class.
   private Set<String> servicesCovered;
 
   /* Payer Statistics. */
@@ -339,7 +337,6 @@ public class Payer {
 
   /**
    * Returns the Map of the payer's second class attributes.
-   * Currently: ADDRESS,ZIP,CITY.
    */
   public Map<String, Object> getAttributes() {
     return attributes;
@@ -403,8 +400,8 @@ public class Payer {
     } else if (entry instanceof Immunization) {
       entryType = HealthRecord.IMMUNIZATIONS;
     } else {
-      throw new RuntimeException("Attempted to increment Payer entries with invalid type "
-          + entry.getClass());
+      // Not an entry with a cost.
+      entryType = "no_cost";
     }
     return entryType;
   }
@@ -431,10 +428,8 @@ public class Payer {
    */
   public boolean accepts(Person person, long time) {
 
-    // For now, assume that all payers accept all patients.
-    // EXCEPT Medicare/Medicaid.
+    // For now, assume that all payers accept all patients EXCEPT Medicare/Medicaid.
     if (this.name.equals("Medicare")) {
-      // Return whether the person satisfies the conditions for Medicare acceptance.
       boolean esrd = (person.attributes.containsKey("end_stage_renal_disease")
           && (boolean) person.attributes.get("end_stage_renal_disease"));
       boolean sixtyFive = (person.ageInYears(time) >= 65);
@@ -443,7 +438,6 @@ public class Payer {
       return medicareEligible;
 
     } else if (this.name.equals("Medicaid")) {
-      // Return whether the person satisfies the conditions for Medicaid acceptance.
       boolean female = (person.attributes.get(Person.GENDER).equals("F"));
       boolean pregnant = (person.attributes.containsKey("pregnant")
           && (boolean) person.attributes.get("pregnant"));
@@ -610,8 +604,7 @@ public class Payer {
    * Determines the copay owed for this Payer based on the type of entry.
    * For now, this returns a default copay. But in the future there will be different
    * copays depending on the encounter type covered. If the entry is a wellness visit
-   * and the time is after the madate year, then the copay is $0.00.
-   * May change from encounter to entry to get copays for medications/procedures/etc.\
+   * and the time is after the mandate year, then the copay is $0.00.
    * 
    * @param entry the entry to calculate the copay for.
    */
@@ -627,10 +620,11 @@ public class Payer {
   /**
    * Pays the given premium to the Payer, increasing their revenue.
    * 
-   * @param monthlyPremium the monthly premium to be paid, in dollars.
+   * @return the monthly premium amount.
    */
-  public void payPremium(double monthlyPremium) {
-    this.revenue += monthlyPremium;
+  public double payMonthlyPremium() {
+    this.revenue += this.monthlyPremium;
+    return this.monthlyPremium;
   }
 
   /**

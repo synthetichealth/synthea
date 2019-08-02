@@ -9,9 +9,7 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
-import org.mitre.synthea.world.concepts.HealthRecord.Immunization;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
-import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 
 public class Claim {
 
@@ -19,9 +17,9 @@ public class Claim {
   private Medication medication;
   // The Entries have the actual cost, so the claim has the amount that the payer covered.
   private double coveredCost;
-  public List<Entry> items;
   public Payer payer;
   public Person person;
+  public List<Entry> items;
 
   /**
    * Constructor of a health insurance Claim for an encounter.
@@ -51,8 +49,7 @@ public class Claim {
       Module.processHealthInsuranceModule(this.person, entry.start);
     }
     this.payer = this.person.getPayerAtTime(entry.start);
-    // Initialize additional items as part of this entry.
-    this.items = new ArrayList<>();
+    this.items = new ArrayList<Entry>();
   }
 
   /**
@@ -60,7 +57,14 @@ public class Claim {
    * health insurance is turned off.
    */
   public Claim() {
-    this.items = new ArrayList<>();
+    this.items = new ArrayList<Entry>();
+  }
+
+  /**
+   * Adds non-explicit costs to the Claim. (Procedures/Immunizations/etc).
+   */
+  public void addLineItem(Entry entry) {
+    this.items.add(entry);
   }
 
   /**
@@ -70,15 +74,11 @@ public class Claim {
 
     // Casts either the encounter or medication of the claim depending on which is not null.
     Entry entry;
-    // The total cost of this claim.
-    double totalCost = 0.0;
-
     Provider provider = null;
+
     if (this.encounter != null) {
       entry = (Entry) encounter;
       provider = encounter.provider;
-      // Costs of any immunizations/procedures tied to this encounter.
-      totalCost += this.getAdditionalCosts();
     } else if (this.medication != null) {
       entry = (Entry) medication;
     } else {
@@ -86,9 +86,11 @@ public class Claim {
       return;
     }
 
-    // Set entry's initial cost.
+    // The total cost of this claim.
+    double totalCost = 0.0;
     totalCost += entry.getCost().doubleValue();
-    // Determine the payer's copay.
+    totalCost += this.getLineItemCosts();
+
     double patientCopay = payer.determineCopay(entry);
     double costToPatient = 0.0;
     double costToPayer = 0.0;
@@ -104,9 +106,9 @@ public class Claim {
       this.payerDoesNotCoverEntry(entry);
       costToPatient = totalCost;
       if (person.canAffordCare(entry)) {
-        // Update the person's costs, they get the procedure.
+        // Update the person's costs, they get the encounter.
       } else {
-        // The person does not get the procedure. Lower their QOLS/GBD
+        // The person does not get the encounter. Lower their QOLS/GBD.
       }
     }
 
@@ -127,37 +129,13 @@ public class Claim {
   /**
    * Returns the additional costs from any immunzations/procedures tied to the encounter.
    */
-  private double getAdditionalCosts() {
+  private double getLineItemCosts() {
     double additionalCosts = 0.0;
-    // Sum Immunization costs.
-    for (Immunization immunization : encounter.immunizations) {
-      additionalCosts += immunization.getCost().doubleValue();
-    }
-    // Sum Procedure costs.
-    for (Procedure procedure : encounter.procedures) {
-      additionalCosts += procedure.getCost().doubleValue();
+    // Sum line-item entry costs.
+    for (Entry entry : this.items) {
+      additionalCosts += entry.getCost().doubleValue();
     }
     return additionalCosts;
-  }
-
-  /**
-   * Adds a line item to the total resources used in the encounter. (Ex.
-   * anesthesia, other non-explicit costs beyond encounter)
-   */
-  public void addItem(Entry entry) {
-    items.add(entry);
-  }
-
-  /**
-   * Returns the cost of the non-explicit line items.
-   */
-  public double getLineItemCosts() {
-    double lineItemCosts = 0.0;
-
-    for (Entry lineItem : items) {
-      lineItemCosts += lineItem.getCost().doubleValue();
-    }
-    return lineItemCosts;
   }
 
   /**
@@ -165,11 +143,10 @@ public class Claim {
    */
   public double getTotalClaimCost() {
     double totalCost = 0.0;
+    totalCost += this.getLineItemCosts();
     // Get the main encounter/medication cost.
     if (this.encounter != null) {
       totalCost += this.encounter.getCost().doubleValue();
-      // Get any tied immunization/procedure costs.
-      totalCost += this.getAdditionalCosts();
     } else if (this.medication != null) {
       totalCost += this.medication.getCost().doubleValue();
     }
@@ -187,14 +164,11 @@ public class Claim {
    * Increments the covered entry utilization of the payer.
    */
   private void payerCoversEntry(Entry entry) {
+    // Payer covers the entry.
     this.payer.incrementEntriesCovered(entry);
-    if (this.encounter != null) {
-      for (Procedure procedure : this.encounter.procedures) {
-        this.payer.incrementEntriesCovered(procedure);
-      }
-      for (Immunization immunization : this.encounter.immunizations) {
-        this.payer.incrementEntriesCovered(immunization);
-      }
+    // Payer covers the line items.
+    for (Entry lineItemEntry : this.items) {
+      this.payer.incrementEntriesCovered(lineItemEntry);
     }
   }
 
@@ -202,17 +176,13 @@ public class Claim {
    * Increments the uncovered entry utilization of the payer.
    */
   private void payerDoesNotCoverEntry(Entry entry) {
-    // Person does not recive the entry.
+    // Payer does not cover the entry.
     this.payer.incrementEntriesNotCovered(entry);
-    if (this.encounter != null) {
-      for (Procedure procedure : this.encounter.procedures) {
-        this.payer.incrementEntriesNotCovered(procedure);
-      }
-      for (Immunization immunization : this.encounter.immunizations) {
-        this.payer.incrementEntriesNotCovered(immunization);
-      }
+    // Payer does not cover the line items.
+    for (Entry lineItemEntry : this.items) {
+      this.payer.incrementEntriesNotCovered(lineItemEntry);
     }
-    // Results in adding to NO_INSURANCE's costs, but not their encounter/customer utilization.
+    // Results in adding to NO_INSURANCE's costs uncovered, but not their utilization.
     this.payer = Payer.noInsurance;
   }
 }
