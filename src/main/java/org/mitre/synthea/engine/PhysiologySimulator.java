@@ -65,12 +65,11 @@ import org.yaml.snakeyaml.constructor.Constructor;
 public class PhysiologySimulator {
 
   private static final Map<String, Class> SOLVER_CLASSES;
-  private static final Map<String, AbstractDESSolver> SOLVERS = new HashMap();
   private static Path sbmlPath;
-  private final SBMLinterpreter interpreter;
+  private final Model model;
   private final String[] modelFields;
   private final double[] modelDefaults;
-  private final AbstractDESSolver solver;
+  private final String solverName;
   private final double simDuration;
   private final double leadTime;
   private final double stepSize;
@@ -301,10 +300,19 @@ public class PhysiologySimulator {
    */
   public PhysiologySimulator(String modelPath, String solverName, double stepSize, double simDuration, double leadTime) {
     Path modelFilepath = Paths.get(sbmlPath.toString(), modelPath);
-    interpreter = getInterpreter(modelFilepath.toString());
+    SBMLReader reader = new SBMLReader();
+    File inputFile = new File(modelFilepath.toString());
+    SBMLDocument doc;
+    try {
+        doc = reader.readSBML(inputFile);
+    } catch (IOException | XMLStreamException ex) {
+        throw new RuntimeException(ex);
+    }
+    model = doc.getModel();
+    SBMLinterpreter interpreter = getInterpreter(model);
     modelFields = interpreter.getIdentifiers();
     modelDefaults = interpreter.getInitialValues();
-    solver = getSolver(solverName);
+    this.solverName = solverName;
     this.stepSize = stepSize;
     this.simDuration = simDuration;
     this.leadTime = leadTime;
@@ -334,7 +342,8 @@ public class PhysiologySimulator {
    */
   public MultiTable run(Map<String, Double> inputs) throws DerivativeException {
     // Reset the solver to its initial state
-    solver.reset();
+    SBMLinterpreter interpreter = getInterpreter(model);
+    AbstractDESSolver solver = getSolver(solverName);
     solver.setStepSize(stepSize);
     try {
       // Need to reinitialize the interpreter to prevent old values from affecting the new simulation
@@ -358,7 +367,9 @@ public class PhysiologySimulator {
     }
     
     // Solve the ODE for the specified duration and return the results
-    return solver.solve(interpreter, params, -leadTime, simDuration);
+    MultiTable results = solver.solve(interpreter, params, -leadTime, simDuration);
+    
+    return results;
   }
 
   /**
@@ -386,43 +397,22 @@ public class PhysiologySimulator {
       throw new RuntimeException("Invalid Solver: \"" + solverName + "\"");
     }
 
-    // If this solver has already been instantiated, retrieve it
-    if(SOLVERS.containsKey(solverName)) {
-      return SOLVERS.get(solverName);
-    }
-
-    // It hasn't been instantiated yet so we do so now
     try {
-      SOLVERS.put(solverName, (AbstractDESSolver) SOLVER_CLASSES.get(solverName).newInstance());
+      return (AbstractDESSolver) SOLVER_CLASSES.get(solverName).newInstance();
     } catch (InstantiationException | IllegalAccessException ex) {
       Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, null, ex);
       throw new RuntimeException("Unable to instantiate " + solverName + " solver");
     }
-
-    // Retrieve the solver we just instantiated
-    return SOLVERS.get(solverName);
   }
   
-  private static SBMLinterpreter getInterpreter(String filepath) {
-    SBMLReader reader = new SBMLReader();
-    File inputFile = new File(filepath);
+  private static SBMLinterpreter getInterpreter(Model bioModel) {
     try {
-      SBMLDocument doc = reader.readSBML(inputFile);
-//      System.out.println("Loaded SBML Document successfully!");
-      Model model = doc.getModel();
-      try {
-        SBMLinterpreter interpreter = new SBMLinterpreter(model);
-//        System.out.println("Interpreted SBML Model successfully!");
-        return interpreter;
+      SBMLinterpreter interpreter = new SBMLinterpreter(bioModel);
+      return interpreter;
 
-      } catch (ModelOverdeterminedException | SBMLException ex) {
-        Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, "Error interpreting SBML Model from \""+inputFile+"\".", ex);
-      }
-
-    } catch (IOException | XMLStreamException ex) {
-      Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, "Failed to load SBML document \""+inputFile+"\".", ex);
+    } catch (ModelOverdeterminedException | SBMLException ex) {
+      throw new RuntimeException(ex);
     }
-    return null;
   }
   
   private static void testModel(PhysiologySimulator physio, Path outputFile) {

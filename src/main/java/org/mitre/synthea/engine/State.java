@@ -370,7 +370,7 @@ public abstract class State implements Cloneable {
       }
       
       void initialize(Map<String, String> paramTypes) {
-        if(from_exp != null && !"".equals(from_exp)) {
+        if(expProcessor == null && from_exp != null && !"".equals(from_exp)) {
           expProcessor = new ExpressionProcessor(from_exp, paramTypes);
         }
       }
@@ -388,7 +388,7 @@ public abstract class State implements Cloneable {
         clone.from_list = from_list;
         clone.to = to;
         clone.from_exp = from_exp;
-        clone.expProcessor = expProcessor.clone();
+        clone.expProcessor = expProcessor;
         return clone;
       }
       
@@ -474,6 +474,9 @@ public abstract class State implements Cloneable {
           Object value = person.attributes.get(param);
           if(value instanceof Number) {
             return ((Number) value).doubleValue();
+          }
+          else if(value instanceof Boolean) {
+              return (Boolean) value? 1 : 0;
           }
           else {
             if(expProcessor != null) {
