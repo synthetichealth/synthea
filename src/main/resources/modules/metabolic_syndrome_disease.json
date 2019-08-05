@@ -32,29 +32,52 @@
         "quantity": 18,
         "unit": "years"
       },
-      "direct_transition": "Chance_to_Onset_Hypertension"
+      "direct_transition": "Simulate_CVS"
     },
-    "Chance_to_Onset_Hypertension": {
-      "type": "Simple",
-      "remarks": [
-        "probability: 0.296 # (1.0==100%) http://www.cdc.gov/MMWr/preview/mmwrhtml/su6203a24.htm#Tab"
+    "Simulate_CVS": {
+      "type": "Physiology",
+      "model": "circulation/Smith2004_CVS_human.xml",
+      "solver": "runge_kutta",
+      "step_size": 0.01,
+      "sim_duration": 4.0,
+      "lead_time": 2.0,
+      "inputs": [
+        {"from_exp": "1.1889 + (#{BMI} - 21.5) * 0.0585 + #{smoker} * 0.2", "to": "R_sys"}
+      ],
+      "outputs": [
+        {
+          "from_exp": "((Max(#{V_lv}) - Min(#{V_lv})) / Max(#{V_lv}))*100",
+          "to": "LVEF",
+          "type": "Vital Sign"
+        },
+        {
+          "from_exp": "Max(#{P_ao})",
+          "to": "Systolic Blood Pressure",
+          "type": "Vital Sign"
+        },
+        {
+          "from_exp": "Min(#{P_ao})",
+          "to": "Diastolic Blood Pressure",
+          "type": "Vital Sign"
+        },
+        {
+          "from_exp": "Avg(#{P_ao})",
+          "to": "Mean Arterial Pressure",
+          "type": "Attribute"
+        }
       ],
       "conditional_transition": [
         {
-          "transition": "Veteran",
+          "transition": "Onset_Hypertension",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "veteran",
-            "operator": "is not nil"
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": ">",
+            "value": 140
           }
         },
         {
-          "transition": "Non_Veteran",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "veteran",
-            "operator": "is nil"
-          }
+          "transition": "No_Hypertension"
         }
       ]
     },
