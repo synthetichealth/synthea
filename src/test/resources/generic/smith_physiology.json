@@ -23,7 +23,7 @@
       "solver": "runge_kutta",
       "step_size": 0.01,
       "sim_duration": 4.0,
-      "leadTime": 2.0,
+      "lead_time": 2.0,
       "inputs": [
         {"from": "Pulmonary Resistance", "to": "R_pul"},
         {"from_exp": "#{BMI} * #{BMI Multiplier}", "to": "R_sys"}
