@@ -126,7 +126,6 @@ public abstract class Transition {
         ArrayList<DistributedTransitionOption>>>();
     private List<LookupTableTransitionOption> transitions;
     private ArrayList<String> attributes;
-    private Integer ageIndex;
     private ArrayList<String> stateNames;
     private ArrayList<DistributedTransitionOption> defaultTransitions;
     private String lookupTableName;
@@ -139,7 +138,21 @@ public abstract class Transition {
 
       this.transitions = lookupTableTransitions;
       this.attributes = new ArrayList<String>();
-      // Create Default Transition
+      this.loadDefaultTransitions();
+      this.lookupTableName = lookupTableTransitions.get(0).lookupTableName;
+
+      if (lookupTableName == null) throw new RuntimeException(
+          "LOOKUP TABLE JSON ERROR: Table name cannot be null.");
+
+      if (!lookupTables.containsKey(lookupTableName)) {
+        loadLookupTable();
+      }
+    }
+
+    /**
+     * Loads the default transitions for this transition.
+     */
+    private void loadDefaultTransitions() {
       this.defaultTransitions = new ArrayList<DistributedTransitionOption>();
       for (LookupTableTransitionOption transitionOption : this.transitions) {
         DistributedTransitionOption distributedTransitionOption = new DistributedTransitionOption();
@@ -147,130 +160,129 @@ public abstract class Transition {
         distributedTransitionOption.numericDistribution = transitionOption.defaultProbability;
         defaultTransitions.add(distributedTransitionOption);
       }
-
-      this.lookupTableName = lookupTableTransitions.get(0).lookupTableName;
-      if (lookupTableName == null) {
-        throw new RuntimeException("LOOKUP TABLE JSON ERROR: Table name cannot be null.");
-      }
-      if (!lookupTables.containsKey(lookupTableName)) {
-        System.out.println("Loading Lookup Table: " + lookupTableName);
-        // Hashmap for the new table
-        HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>> newTable
-            = new HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>();
-        // Load in this transitions's CSV file
-        String fileName = Config.get("generate.lookup_tables") + lookupTableName;
-        String csv;
-        List<? extends Map<String, String>> lookupTable = null;
-        try {
-          csv = Utilities.readResource(fileName);
-          if (csv.startsWith("\uFEFF")) {
-            csv = csv.substring(1); // Removes BOM
-          }
-          lookupTable = SimpleCSV.parse(csv);
-        } catch (IOException e1) {
-          e1.printStackTrace();
-        }
-        // Parse List of Attributes
-        this.attributes = new ArrayList<String>(lookupTable.get(0).keySet());
-        this.attributes.subList((this.attributes.size() - lookupTableTransitions.size()),
-            this.attributes.size()).clear();
-        if (this.attributes.contains("age")) {
-          this.ageIndex = this.attributes.indexOf("age");
-        }
-        // Parse list of State Transitions
-        this.stateNames = new ArrayList<String>(lookupTable.get(0).keySet());
-        this.stateNames.subList(0, this.attributes.size()).clear();
-        // Insert each row of CSV into Hashmap
-        for (Map<String, String> currentRow : lookupTable) {
-          ArrayList<String> currentAttributes = new ArrayList<String>(currentRow.values());
-          currentAttributes.subList(this.attributes.size(), currentAttributes.size()).clear();
-          // create ageRange
-          Range<Integer> ageRange = null;
-          if (this.ageIndex != null) {
-            String value = currentAttributes.remove(ageIndex.intValue());
-            if (!value.contains("-")
-                || value.substring(0, value.indexOf("-")).length() < 1
-                || value.substring(value.indexOf("-") + 1).length() < 1) {
-              throw new RuntimeException(
-                  "LOOKUP TABLE '" + fileName
-                  + "' AGE ERROR: Age Range must be in the form: 'ageLow-ageHigh'. Found '"
-                  + value + "'");
-            } else {
-              ageRange = Range.between(
-                  Integer.parseInt(value.substring(0, value.indexOf("-"))),
-                  Integer.parseInt(value.substring(value.indexOf("-") + 1)));
-            }
-          }
-          LookupTableKey attributeRecordsLookupKey =
-              new LookupTableKey(currentAttributes, ageRange);
-          ArrayList<DistributedTransitionOption> transitionProbabilities =
-              new ArrayList<DistributedTransitionOption>();
-          transitionProbabilities = createDistributedTransitionOptions(currentRow);
-          newTable.put(attributeRecordsLookupKey, transitionProbabilities);
-        }
-        // Put new table into Hash map of all tables
-        lookupTables.put(lookupTableName, newTable);
-      }
     }
 
-    // Creates Distributed Transition Options based on CSV probabilities and JSON
-    // States
+    /**
+     * Loads the given lookuptable.
+     */
+    private void loadLookupTable() {
+
+      System.out.println("Loading Lookup Table: " + lookupTableName);
+      // Hashmap for the new lookup table.
+      HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>> newTable
+          = new HashMap<LookupTableKey, ArrayList<DistributedTransitionOption>>();
+      
+      // Load in this transitions's CSV file.
+      String fileName = Config.get("generate.lookup_tables") + lookupTableName;
+      List<? extends Map<String, String>> lookupTable = null;
+      try {
+        String csv = Utilities.readResource(fileName);
+        if (csv.startsWith("\uFEFF")) {
+          csv = csv.substring(1); // Removes BOM.
+        }
+        lookupTable = SimpleCSV.parse(csv);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
+      // Parse the list of attributes.
+      this.attributes = new ArrayList<String>(lookupTable.get(0).keySet());
+      // Removes the states to transition to from the attributes list.
+      this.attributes.subList((this.attributes.size() - this.transitions.size()),
+          this.attributes.size()).clear();
+
+      // Parse the list of states to transition to.
+      this.stateNames = new ArrayList<String>(lookupTable.get(0).keySet());
+      this.stateNames.subList(0, this.attributes.size()).clear();
+
+      // Create keys and insert each row of CSV into lookup table map.
+      for (Map<String, String> currentRow : lookupTable) {
+        ArrayList<String> currentAttributes = new ArrayList<String>(currentRow.values());
+        currentAttributes.subList(this.attributes.size(), currentAttributes.size()).clear();
+        // Create age range for lookup table key if it exists.
+        Range<Integer> ageRange = null;
+        if (this.attributes.contains("age")) {
+          Integer ageIndex = this.attributes.indexOf("age");
+          // Remove and parse the age range.
+          String value = currentAttributes.remove(ageIndex.intValue());
+          if (!value.contains("-")
+              || value.substring(0, value.indexOf("-")).length() < 1
+              || value.substring(value.indexOf("-") + 1).length() < 1) {
+            throw new RuntimeException(
+                "LOOKUP TABLE '" + fileName
+                + "' ERROR: Age Range must be in the form: 'ageLow-ageHigh'. Found '"
+                + value + "'");
+          }
+          ageRange = Range.between(
+              Integer.parseInt(value.substring(0, value.indexOf("-"))),
+              Integer.parseInt(value.substring(value.indexOf("-") + 1)));
+        }
+        // Attributes key to inert into lookup table.
+        LookupTableKey attributesLookupKey =
+            new LookupTableKey(currentAttributes, ageRange);
+        // Transition probabilities to insert into lookup table.
+        ArrayList<DistributedTransitionOption> transitionProbabilities
+            = createDistributedTransitionOptions(currentRow);
+        // Insert the parsed attributes and transition probabilities into lookup table.
+        newTable.put(attributesLookupKey, transitionProbabilities);
+      }
+
+      // Put new table into Hash map of all lookup tables.
+      lookupTables.put(lookupTableName, newTable);
+    }
+
+    /**
+     *  Creates Distributed Transition Options based on CSV row probabilities.
+     */
     private ArrayList<DistributedTransitionOption>
         createDistributedTransitionOptions(Map<String, String> currentRow) {
 
       ArrayList<DistributedTransitionOption> transitionProbabilities
           = new ArrayList<DistributedTransitionOption>();
+      
       for (String transitionName : this.stateNames) {
-        if (currentRow.containsKey(transitionName) && checkTransitionMatch(transitionName)) {
+        if (currentRow.containsKey(transitionName)
+            && transitions.stream().anyMatch(t -> t.transition.equals(transitionName))) {
           DistributedTransitionOption currentOption = new DistributedTransitionOption();
           currentOption.numericDistribution = Double.parseDouble(currentRow.get(transitionName));
           currentOption.transition = transitionName;
           transitionProbabilities.add(currentOption);
         } else {
-          throw new RuntimeException("LOOKUP TABLE CSV/JSON ERROR: CSV column state name '"
-              + transitionName + "' does not match a JSON state to transition to in CSV table '"
+          throw new RuntimeException("LOOKUP TABLE ERROR: CSV column state name '"
+              + transitionName + "' does not match a JSON state to transition to in CSV '"
               + lookupTableName + "'");
         }
       }
       return transitionProbabilities;
     }
 
-    private boolean checkTransitionMatch(String transitionName) {
-      for (LookupTableTransitionOption option : this.transitions) {
-        if (option.transition.equals(transitionName)) {
-          return true;
-        }
-      }
-      return false;
-    }
-
     @Override
     public String follow(Person person, long time) {
       Integer age = null;
-      // Extract Person's list of relevant attributes
+      // Extract Person's list of relevant attributes.
       ArrayList<String> personsAttributes = new ArrayList<String>();
-      for (String attributeToAdd : this.attributes) {
-        attributeToAdd.toLowerCase();
-        if (attributeToAdd.equals("age")) {
+      for (String currentAttribute : this.attributes) {
+        if (currentAttribute.equalsIgnoreCase("age")) {
           age = person.ageInYears(time);
         } else {
-          String currentAttributeToCheck = (String) person.attributes.get(attributeToAdd);
+          String currentAttributeToCheck
+              = (String) person.attributes.get(currentAttribute.toLowerCase());
           if (currentAttributeToCheck == null) {
-            throw new RuntimeException("LOOKUP TABLE CSV ATTRIBUTE ERROR: Attribute '"
-                + attributeToAdd + "' in table '" + this.lookupTableName
+            throw new RuntimeException("LOOKUP TABLE ERROR: Attribute '"
+                + currentAttribute + "' in CSV table '" + this.lookupTableName
                 + "' does not exist as one of this person's attributes.");
           }
           personsAttributes.add(currentAttributeToCheck);
         }
       }
-      // Create Key to get distributions
+      // Create key from person's attributes to get distributions
       LookupTableKey personsAttributesLookupKey = new LookupTableKey(personsAttributes, age);
       if (lookupTables.get(lookupTableName).containsKey(personsAttributesLookupKey)) {
         // Person matches, use their attribute's list of distributedtransitionoptions
         return pickDistributedTransition(
           lookupTables.get(lookupTableName).get(personsAttributesLookupKey), person);
       } else {
-        // No attribute match, use default value
+        // No attribute match, use default transition.
         return pickDistributedTransition(this.defaultTransitions, person);
       }
     }
@@ -278,7 +290,7 @@ public abstract class Transition {
 
   public final class LookupTableKey {
     private final List<String> attributes;
-    /** Age for this patient. May be null if irrelevant. */
+    /** Age for this patient. May be null if lookup table does not use age. */
     private final Integer age;
     /** Age range for this row. Null if this is a person. */
     private final Range<Integer> ageRange;
