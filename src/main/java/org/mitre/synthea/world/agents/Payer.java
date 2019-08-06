@@ -36,9 +36,11 @@ import org.mitre.synthea.world.geography.Location;
 public class Payer {
 
   /* ArrayList of all Private Payers imported. */
-  private static ArrayList<Payer> privatePayerList = new ArrayList<Payer>();
+  private static List<Payer> privatePayers = new ArrayList<Payer>();
   /* Map of all Government Payers imported. */
-  private static Map<String, Payer> governmentPayerMap = new HashMap<String,Payer>();
+  private static Map<String, Payer> governmentPayers = new HashMap<String,Payer>();
+  /* No Insurance Payer. */
+  public static Payer noInsurance;
 
   /* U.S. States loaded. */
   private static Set<String> statesLoaded = new HashSet<String>();
@@ -49,10 +51,9 @@ public class Payer {
   private static final String RANDOM = "random";
   private static final String BESTRATE = "best_rate";
 
-  /* Payer Information. */
+  /* Payer Attributes. */
   private final Map<String, Object> attributes;
   private final String name;
-  private final String id;
   public final String uuid;
   private double deductible;
   private double defaultCopay;
@@ -65,17 +66,14 @@ public class Payer {
   private Set<String> servicesCovered;
 
   /* Payer Statistics. */
+  private double revenue;
   private double costsCovered;
   private double costsUncovered;
-  private double revenue;
   private double totalQOLS; // Total customer quality of life scores.
+  // Unique utilizers of Payer, by Person ID, with number of utilizations per Person.
+  private final Map<String, AtomicInteger> customerUtilization;
   // row: year, column: type, value: count.
   private final Table<Integer, String, AtomicInteger> entryUtilization;
-  // Unique utilizers of Payer, by Person ID, with number of utilizations per Person.
-  private final HashMap<String, AtomicInteger> customerUtilization;
-
-  /* NO_INSURANCE Payer. */
-  public static Payer noInsurance;
 
   /**
    * Payer Constructor.
@@ -85,8 +83,7 @@ public class Payer {
       throw new RuntimeException("ERROR: Payer must have a non-null name.");
     }
     this.name = name;
-    this.id = id;
-    this.uuid = UUID.nameUUIDFromBytes((this.id + this.name).getBytes()).toString();
+    this.uuid = UUID.nameUUIDFromBytes((id + this.name).getBytes()).toString();
     this.attributes = new LinkedTreeMap<>();
     this.entryUtilization = HashBasedTable.create();
     this.customerUtilization = new HashMap<String, AtomicInteger>();
@@ -152,30 +149,13 @@ public class Payer {
         // Put the payer in their correct List/Map based on Government/Private.
         if (parsedPayer.ownership.equalsIgnoreCase("government")) {
           // Government payers go in a map, allowing for easy retrieval of specific gov payers.
-          Payer.governmentPayerMap.put(parsedPayer.getName(), parsedPayer);
+          Payer.governmentPayers.put(parsedPayer.getName(), parsedPayer);
         } else {
           // Private payers go in a list.
-          Payer.privatePayerList.add(parsedPayer);
+          Payer.privatePayers.add(parsedPayer);
         }
       }
     }
-  }
-
-  /**
-   * Loads the noInsurance Payer.
-   */
-  public static void loadNoInsurance() {
-    noInsurance = new Payer("NO_INSURANCE", "000000");
-    noInsurance.ownership = "NO_INSURANCE";
-    noInsurance.deductible = 0.0;
-    noInsurance.defaultCoinsurance = 0.0;
-    noInsurance.defaultCopay = 0.0;
-    noInsurance.monthlyPremium = 0.0;
-    // noInsurance does not cover any services.
-    noInsurance.servicesCovered = new HashSet<String>();
-    // noInsurance 'covers' all states.
-    noInsurance.statesCovered = new HashSet<String>();
-    noInsurance.statesCovered.add("*");
   }
 
   /**
@@ -203,7 +183,7 @@ public class Payer {
   }
 
   /**
-   * Given a Comma Seperated String, convert the data into a Set.
+   * Given a comma seperated string, convert the data into a Set.
    * 
    * @param field the string to extract the Set from.
    * @return the HashSet of services covered.
@@ -215,51 +195,20 @@ public class Payer {
   }
 
   /**
-   * Returns the list of all loaded private payers.
+   * Loads the noInsurance Payer.
    */
-  public static List<Payer> getPrivatePayers() {
-    return Payer.privatePayerList;
-  }
-
-  /**
-   * Returns the List of all loaded government payers.
-   */
-  public static List<Payer> getGovernmentPayers() {
-    return Payer.governmentPayerMap.values().stream().collect(Collectors.toList());
-  }
-
-  /**
-   * Returns a List of all loaded payers.
-   */
-  public static List<Payer> getAllPayers() {
-    List<Payer> allPayers = new ArrayList<>();
-    allPayers.addAll(Payer.getGovernmentPayers());
-    allPayers.addAll(Payer.getPrivatePayers());
-    return allPayers;
-  }
-
-  /**
-   * Returns the government payer with the given name.
-   * 
-   * @param governmentPayerName the government payer to get.
-   */
-  public static Payer getGovernmentPayer(String governmentPayerName) {
-    if (!governmentPayerMap.containsKey(governmentPayerName)) {
-      throw new RuntimeException(
-          "ERROR: Government Payer '" + governmentPayerName + "' does not exist.");
-    }
-    return Payer.governmentPayerMap.get(governmentPayerName);
-  }
-
-  /**
-   * Clear the list of loaded and cached Payers.
-   * Currently only used in tests.
-   */
-  public static void clear() {
-    governmentPayerMap.clear();
-    privatePayerList.clear();
-    statesLoaded.clear();
-    payerFinder = buildPayerFinder();
+  public static void loadNoInsurance() {
+    noInsurance = new Payer("NO_INSURANCE", "000000");
+    noInsurance.ownership = "NO_INSURANCE";
+    noInsurance.deductible = 0.0;
+    noInsurance.defaultCoinsurance = 0.0;
+    noInsurance.defaultCopay = 0.0;
+    noInsurance.monthlyPremium = 0.0;
+    // noInsurance does not cover any services.
+    noInsurance.servicesCovered = new HashSet<String>();
+    // noInsurance 'covers' all states.
+    noInsurance.statesCovered = new HashSet<String>();
+    noInsurance.statesCovered.add("*");
   }
 
   /**
@@ -279,6 +228,54 @@ public class Payer {
         throw new RuntimeException("Not a valid Payer Selction Algorithm: " + behavior);
     }
     return finder;
+  }
+
+  /**
+   * Returns the list of all loaded private payers.
+   */
+  public static List<Payer> getPrivatePayers() {
+    return Payer.privatePayers;
+  }
+
+  /**
+   * Returns the List of all loaded government payers.
+   */
+  public static List<Payer> getGovernmentPayers() {
+    return Payer.governmentPayers.values().stream().collect(Collectors.toList());
+  }
+
+  /**
+   * Returns a List of all loaded payers.
+   */
+  public static List<Payer> getAllPayers() {
+    List<Payer> allPayers = new ArrayList<>();
+    allPayers.addAll(Payer.getGovernmentPayers());
+    allPayers.addAll(Payer.getPrivatePayers());
+    return allPayers;
+  }
+
+  /**
+   * Returns the government payer with the given name.
+   * 
+   * @param governmentPayerName the government payer to get.
+   */
+  public static Payer getGovernmentPayer(String governmentPayerName) {
+    if (!governmentPayers.containsKey(governmentPayerName)) {
+      throw new RuntimeException(
+          "ERROR: Government Payer '" + governmentPayerName + "' does not exist.");
+    }
+    return Payer.governmentPayers.get(governmentPayerName);
+  }
+
+  /**
+   * Clear the list of loaded and cached Payers.
+   * Currently only used in tests.
+   */
+  public static void clear() {
+    governmentPayers.clear();
+    privatePayers.clear();
+    statesLoaded.clear();
+    payerFinder = buildPayerFinder();
   }
 
   /**
@@ -343,6 +340,103 @@ public class Payer {
   }
 
   /**
+   * Returns whether a payer will accept the given patient at this time. Currently returns
+   * true by default, except for Medicare/Medicaid which have hardcoded requirements.
+   * 
+   * @param person Person to consider
+   * @param time   Time the person seeks care
+   * @return whether or not the payer will accept this patient as a customer
+   */
+  public boolean accepts(Person person, long time) {
+
+    // For now, assume that all payers accept all patients EXCEPT Medicare/Medicaid.
+    if (this.name.equals("Medicare")) {
+      boolean esrd = (person.attributes.containsKey("end_stage_renal_disease")
+          && (boolean) person.attributes.get("end_stage_renal_disease"));
+      boolean sixtyFive = (person.ageInYears(time) >= 65);
+
+      boolean medicareEligible = sixtyFive || esrd;
+      return medicareEligible;
+
+    } else if (this.name.equals("Medicaid")) {
+      boolean female = (person.attributes.get(Person.GENDER).equals("F"));
+      boolean pregnant = (person.attributes.containsKey("pregnant")
+          && (boolean) person.attributes.get("pregnant"));
+      boolean blind = (person.attributes.containsKey("blindness")
+          && (boolean) person.attributes.get("blindness"));
+      int income = (Integer) person.attributes.get(Person.INCOME);
+      boolean medicaidIncomeEligible = (income <= HealthInsuranceModule.medicaidLevel);
+
+      boolean medicaidEligible = (female && pregnant) || blind || medicaidIncomeEligible;
+      return medicaidEligible;
+    }
+    // The payer is not Medicare/Medicaid so they will accept any and every person. For now.
+    return true;
+  }
+
+  /**
+   * Returns whether the payer covers the given service.
+   * 
+   * @param service the entry type to check
+   * @return whether the payer covers the given service
+   */
+  public boolean coversService(String service) {
+    return service == null
+        || this.servicesCovered.contains(service)
+        || this.servicesCovered.contains("*");
+  }
+
+  /**
+   * Is the given Provider in this Payer's network?.
+   * Currently just returns true until Networks are implemented.
+   * 
+   * @param provider Provider to consider
+   * @return whether or not the provider is in the payer network
+   */
+  public boolean isInNetwork(Provider provider) {
+    return true;
+  }
+
+  /**
+   * Returns whether or not this payer will cover the given entry.
+   * 
+   * @param entry the entry that needs covering.
+   */
+  public boolean coversCare(Entry entry) {
+    // Payer.isInNetwork() always returns true. For Now.
+    return this.coversService(entry.type)
+        && this.isInNetwork(null);
+    // Entry doesn't have a provider but encounter does, need to find a way to get provider.
+  }
+
+  /**
+   * Determines the copay owed for this Payer based on the type of entry.
+   * For now, this returns a default copay. But in the future there will be different
+   * copays depending on the encounter type covered. If the entry is a wellness visit
+   * and the time is after the mandate year, then the copay is $0.00.
+   * 
+   * @param entry the entry to calculate the copay for.
+   */
+  public double determineCopay(Entry entry) {
+    double copay = this.defaultCopay;
+    if (entry.type.equalsIgnoreCase(EncounterType.WELLNESS.toString())
+        && entry.start > HealthInsuranceModule.mandateTime) {
+      copay = 0.0;
+    }
+    return copay;
+  }
+
+  /**
+   * Pays the given premium to the Payer, increasing their revenue.
+   * 
+   * @return the monthly premium amount.
+   */
+  public double payMonthlyPremium() {
+    this.revenue += this.monthlyPremium;
+    return this.monthlyPremium;
+  }
+
+  /**
    * Increments the number of unique users.
    * 
    * @param person the person to add to the payer.
@@ -359,7 +453,7 @@ public class Payer {
    * 
    * @param entry the entry covered.
    */
-  public void incrementEntriesCovered(Entry entry) {
+  public void incrementCoveredEntries(Entry entry) {
 
     String entryType = getEntryType(entry);
 
@@ -372,7 +466,7 @@ public class Payer {
    * 
    * @param entry the entry covered.
    */
-  public void incrementEntriesNotCovered(Entry entry) {
+  public void incrementUncoveredEntries(Entry entry) {
 
     String entryType = getEntryType(entry);
 
@@ -420,63 +514,6 @@ public class Payer {
   }
 
   /**
-   * Will this payer accept the given person at the given time?.
-   * 
-   * @param person Person to consider
-   * @param time   Time the person seeks care
-   * @return whether or not the payer will accept this patient as a customer
-   */
-  public boolean accepts(Person person, long time) {
-
-    // For now, assume that all payers accept all patients EXCEPT Medicare/Medicaid.
-    if (this.name.equals("Medicare")) {
-      boolean esrd = (person.attributes.containsKey("end_stage_renal_disease")
-          && (boolean) person.attributes.get("end_stage_renal_disease"));
-      boolean sixtyFive = (person.ageInYears(time) >= 65);
-
-      boolean medicareEligible = sixtyFive || esrd;
-      return medicareEligible;
-
-    } else if (this.name.equals("Medicaid")) {
-      boolean female = (person.attributes.get(Person.GENDER).equals("F"));
-      boolean pregnant = (person.attributes.containsKey("pregnant")
-          && (boolean) person.attributes.get("pregnant"));
-      boolean blind = (person.attributes.containsKey("blindness")
-          && (boolean) person.attributes.get("blindness"));
-      int income = (Integer) person.attributes.get(Person.INCOME);
-      boolean medicaidIncomeEligible = (income <= HealthInsuranceModule.medicaidLevel);
-
-      boolean medicaidEligible = (female && pregnant) || blind || medicaidIncomeEligible;
-      return medicaidEligible;
-    }
-    // The payer is not Medicare/Medicaid so they will accept any and every person. For now.
-    return true;
-  }
-
-  /**
-   * Is the given Provider in this Payer's network?.
-   * Currently just returns true until Networks are implemented.
-   * 
-   * @param provider Provider to consider
-   * @return whether or not the provider is in the payer network
-   */
-  public boolean isInNetwork(Provider provider) {
-    return true;
-  }
-
-  /**
-   * Returns whether the payer covers the given service.
-   * 
-   * @param service the entry type to check
-   * @return whether the payer covers the given service
-   */
-  public boolean coversService(String service) {
-    return service == null
-        || this.servicesCovered.contains(service)
-        || this.servicesCovered.contains("*");
-  }
-
-  /**
    * Increases the total costs incurred by the payer by the given amount.
    * 
    * @param costToPayer the cost of the current encounter, after the patient's copay.
@@ -495,19 +532,43 @@ public class Payer {
   }
 
   /**
-   * Returns the number of medications this payer paid for.
+   * Adds the Quality of Life Score (QOLS) of a patient of the current (past?)
+   * year. Increments the total number of years covered (for averaging out
+   * purposes).
+   * 
+   * @param qols the Quality of Life Score to be added.
    */
-  public int getMedicationsCoveredCount() {
-    return entryUtilization.column("covered-"
-        + HealthRecord.MEDICATIONS).values().stream().mapToInt(ai -> ai.get()).sum();
+  public void addQols(double qols) {
+    this.totalQOLS += qols;
   }
 
   /**
-   * Returns the number of medications this payer did not cover for their customers.
+   * Returns the total amount of money recieved from patients.
+   * Consists of monthly premium payments.
    */
-  public int getMedicationsUncoveredCount() {
-    return entryUtilization.column("uncovered-"
-        + HealthRecord.MEDICATIONS).values().stream().mapToInt(ai -> ai.get()).sum();
+  public double getRevenue() {
+    return this.revenue;
+  }
+
+  /**
+   * Returns the number of years the given customer was with this Payer.
+   */
+  public int getCustomerUtilization(Person person) {
+    return customerUtilization.get(person.attributes.get(Person.ID)).get();
+  }
+
+  /**
+   * Returns the total number of unique customers of this payer.
+   */
+  public int getUniqueCustomers() {
+    return customerUtilization.size();
+  }
+
+  /**
+   * Returns the total number of member years covered by this payer.
+   */
+  public int getNumYearsCovered() {
+    return this.customerUtilization.values().stream().mapToInt(AtomicInteger::intValue).sum();
   }
 
   /**
@@ -527,19 +588,19 @@ public class Payer {
   }
 
   /**
-   * Returns the number of immunizations this payer paid for.
+   * Returns the number of medications this payer paid for.
    */
-  public int getImmunizationsCoveredCount() {
+  public int getMedicationsCoveredCount() {
     return entryUtilization.column("covered-"
-        + HealthRecord.IMMUNIZATIONS).values().stream().mapToInt(ai -> ai.get()).sum();
+        + HealthRecord.MEDICATIONS).values().stream().mapToInt(ai -> ai.get()).sum();
   }
 
   /**
-   * Returns the number of immunizations this payer did not cover for their customers.
+   * Returns the number of medications this payer did not cover for their customers.
    */
-  public int getImmunizationsUncoveredCount() {
+  public int getMedicationsUncoveredCount() {
     return entryUtilization.column("uncovered-"
-        + HealthRecord.IMMUNIZATIONS).values().stream().mapToInt(ai -> ai.get()).sum();
+        + HealthRecord.MEDICATIONS).values().stream().mapToInt(ai -> ai.get()).sum();
   }
 
   /**
@@ -559,17 +620,19 @@ public class Payer {
   }
 
   /**
-   * Returns the number of Unique customers of this payer.
+   * Returns the number of immunizations this payer paid for.
    */
-  public int getUniqueCustomers() {
-    return customerUtilization.size();
+  public int getImmunizationsCoveredCount() {
+    return entryUtilization.column("covered-"
+        + HealthRecord.IMMUNIZATIONS).values().stream().mapToInt(ai -> ai.get()).sum();
   }
 
   /**
-   * Returns the number of years the given customer was with this Payer.
+   * Returns the number of immunizations this payer did not cover for their customers.
    */
-  public int getCustomerUtilization(Person person) {
-    return customerUtilization.get(person.attributes.get(Person.ID)).get();
+  public int getImmunizationsUncoveredCount() {
+    return entryUtilization.column("uncovered-"
+        + HealthRecord.IMMUNIZATIONS).values().stream().mapToInt(ai -> ai.get()).sum();
   }
 
   /**
@@ -587,73 +650,10 @@ public class Payer {
   }
 
   /**
-   * Returns the total amount of money recieved from patients.
-   */
-  public double getRevenue() {
-    return this.revenue;
-  }
-
-  /**
-   * Returns the number of member years covered by this payer.
-   */
-  public int getNumYearsCovered() {
-    return this.customerUtilization.values().stream().mapToInt(AtomicInteger::intValue).sum();
-  }
-
-  /**
-   * Determines the copay owed for this Payer based on the type of entry.
-   * For now, this returns a default copay. But in the future there will be different
-   * copays depending on the encounter type covered. If the entry is a wellness visit
-   * and the time is after the mandate year, then the copay is $0.00.
-   * 
-   * @param entry the entry to calculate the copay for.
-   */
-  public double determineCopay(Entry entry) {
-    double copay = this.defaultCopay;
-    if (entry.type.equalsIgnoreCase(EncounterType.WELLNESS.toString())
-        && entry.start > HealthInsuranceModule.mandateTime) {
-      copay = 0.0;
-    }
-    return copay;
-  }
-
-  /**
-   * Pays the given premium to the Payer, increasing their revenue.
-   * 
-   * @return the monthly premium amount.
-   */
-  public double payMonthlyPremium() {
-    this.revenue += this.monthlyPremium;
-    return this.monthlyPremium;
-  }
-
-  /**
-   * Adds the Quality of Life Score (QOLS) of a patient of the current (past?)
-   * year. Increments the total number of years covered (for averaging out
-   * purposes).
-   * 
-   * @param qols the Quality of Life Score to be added.
-   */
-  public void addQols(double qols) {
-    this.totalQOLS += qols;
-  }
-
-  /**
    * Returns the average of the payer's QOLS of customers over the number of years covered.
    */
-  public double getQOLAverage() {
+  public double getQolsAverage() {
     int numYears = this.getNumYearsCovered();
     return this.totalQOLS / numYears;
-  }
-
-  /**
-   * Returns whether or not this payer will cover the given entry.
-   * 
-   * @param entry the entry that needs covering.
-   */
-  public boolean coversCare(Entry entry) {
-    // Payer.isInNetwork() always returns true. For Now.
-    return this.coversService(entry.type)
-        && this.isInNetwork(null);
   }
 }

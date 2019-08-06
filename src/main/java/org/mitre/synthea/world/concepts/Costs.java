@@ -41,10 +41,10 @@ public class Costs {
    * Return the cost of the given entry (Encounter/Procedure/Immunization/Medication).
    * 
    * @param entry the entry to calculate the cost for.
-   * @param patient the person associated with the entry (in order to have the location).
+   * @param person the person associated with the entry.
    * @return the total cost of the entry.
    */
-  public static double determineCostOfEntry(Entry entry, Person patient) {
+  public static double determineCostOfEntry(Entry entry, Person person) {
 
     double defaultCost = 0.0;
     Map<String, CostData> costs = null;
@@ -70,15 +70,15 @@ public class Costs {
     // Retrieve the base cost based on the code.
     double baseCost;
     if (costs != null && costs.containsKey(code)) {
-      baseCost = costs.get(code).chooseCost(patient.random);
+      baseCost = costs.get(code).chooseCost(person.random);
     } else {
       baseCost = defaultCost;
     }
 
     // Retrieve the location adjustment factor.
     double locationAdjustment = 1.0;
-    if (patient != null && patient.attributes.containsKey(Person.STATE)) {
-      String state = (String) patient.attributes.get(Person.STATE);
+    if (person != null && person.attributes.containsKey(Person.STATE)) {
+      String state = (String) person.attributes.get(Person.STATE);
       state = Location.getAbbreviation(state);
       if (LOCATION_ADJUSTMENT_FACTORS.containsKey(state)) {
         locationAdjustment = (double) LOCATION_ADJUSTMENT_FACTORS.get(state);

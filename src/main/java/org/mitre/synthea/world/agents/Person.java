@@ -535,6 +535,30 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
+   * Returns whether or not a person can afford a given payer.
+   * If a person's income is greater than a year of montlhy premiums + deductible
+   * then they can afford the insurance.
+   * 
+   * @param payer the payer to check.
+   */
+  public boolean canAffordPayer(Payer payer) {
+    int income = (Integer) this.attributes.get(Person.INCOME);
+    double yearlyPremiumTotal = payer.getMonthlyPremium() * 12;
+    double yearlyDeductible = payer.getDeductible();
+    return income > (yearlyPremiumTotal + yearlyDeductible);
+  }
+
+  /**
+   * Returns whether or not the person can afford to pay out of pocket for the given encounter.
+   * Defaults to return false for everyone. For now.
+   * 
+   * @param entry the entry to pay for.
+   */
+  public boolean canAffordCare(Entry entry) {
+    return false;
+  }
+
+  /**
    * Checks if the person has paid their monthly premium. If not, the person pays
    * the premium to their current payer.
    * 
@@ -569,30 +593,6 @@ public class Person implements Serializable, QuadTreeData {
   public void resetDeductible(long time) {
     double deductible = this.getPayerAtTime(time).getDeductible();
     this.attributes.put(Person.DEDUCTIBLE, deductible);
-  }
-
-  /**
-   * Returns whether or not a person can afford a given payer.
-   * If a person's income is greater than a year of montlhy premiums + deductible
-   * then they can afford the insurance.
-   * 
-   * @param payer the payer to check.
-   */
-  public boolean canAffordPayer(Payer payer) {
-    int income = (Integer) this.attributes.get(Person.INCOME);
-    double yearlyPremiumTotal = payer.getMonthlyPremium() * 12;
-    double yearlyDeductible = payer.getDeductible();
-    return income > (yearlyPremiumTotal + yearlyDeductible);
-  }
-
-  @SuppressWarnings("unchecked")
-  /**
-   * Returns the person's QOLS at the given time.
-   * 
-   * @param time the time to retrive the qols for.
-   */
-  public double getQolsForYear(int year) {
-    return ((Map<Integer, Double>) this.attributes.get("QOL")).get(year);
   }
 
   /**
@@ -631,14 +631,14 @@ public class Person implements Serializable, QuadTreeData {
     return healthcareCoverageYearly.values().stream().mapToDouble(Double::doubleValue).sum();
   }
 
+  @SuppressWarnings("unchecked")
   /**
-   * Returns whether or not the person can afford to pay out of pocket for the given encounter.
-   * Defaults to return false for everyone. For now.
+   * Returns the person's QOLS at the given time.
    * 
-   * @param entry the entry to pay for.
+   * @param time the time to retrive the qols for.
    */
-  public boolean canAffordCare(Entry entry) {
-    return false;
+  public double getQolsForYear(int year) {
+    return ((Map<Integer, Double>) this.attributes.get("QOL")).get(year);
   }
 
   /*

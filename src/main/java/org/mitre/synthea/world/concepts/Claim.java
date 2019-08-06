@@ -165,10 +165,10 @@ public class Claim {
    */
   private void payerCoversEntry(Entry entry) {
     // Payer covers the entry.
-    this.payer.incrementEntriesCovered(entry);
+    this.payer.incrementCoveredEntries(entry);
     // Payer covers the line items.
     for (Entry lineItemEntry : this.items) {
-      this.payer.incrementEntriesCovered(lineItemEntry);
+      this.payer.incrementCoveredEntries(lineItemEntry);
     }
   }
 
@@ -177,10 +177,10 @@ public class Claim {
    */
   private void payerDoesNotCoverEntry(Entry entry) {
     // Payer does not cover the entry.
-    this.payer.incrementEntriesNotCovered(entry);
+    this.payer.incrementUncoveredEntries(entry);
     // Payer does not cover the line items.
     for (Entry lineItemEntry : this.items) {
-      this.payer.incrementEntriesNotCovered(lineItemEntry);
+      this.payer.incrementUncoveredEntries(lineItemEntry);
     }
     // Results in adding to NO_INSURANCE's costs uncovered, but not their utilization.
     this.payer = Payer.noInsurance;

@@ -952,7 +952,7 @@ public class CSVExporter {
     s.append(payer.getImmunizationsCoveredCount()).append(",");
     s.append(payer.getImmunizationsUncoveredCount()).append(",");
     s.append(payer.getUniqueCustomers()).append(",");
-    s.append(payer.getQOLAverage()).append(",");
+    s.append(payer.getQolsAverage()).append(",");
     // Note that this converts the number of years covered to months.
     s.append(payer.getNumYearsCovered() * 12);
     s.append(NEWLINE);
