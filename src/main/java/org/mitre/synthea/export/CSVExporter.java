@@ -297,7 +297,7 @@ public class CSVExporter {
    * 
    * @throws IOException if any IO errors occur.
    */
-  public void exportPayerTransitions(Person person, long stopTime) throws IOException {
+  private void exportPayerTransitions(Person person, long stopTime) throws IOException {
 
     // The current year starts with the year of the person's birth.
     int currentYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
@@ -311,7 +311,6 @@ public class CSVExporter {
           + Utilities.convertTime("months",
           Utilities.getMonth((long) person.attributes.get(Person.BIRTHDATE)) + 1));
     }
-
 
     String previousPayerID = person.getPayerHistory()[0].getResourceID();
     int startYear = currentYear;
@@ -383,6 +382,9 @@ public class CSVExporter {
       for (ImagingStudy imagingStudy : encounter.imagingStudies) {
         imagingStudy(personID, encounterID, imagingStudy);
       }
+    }
+    if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
+      CSVExporter.getInstance().exportPayerTransitions(person, time);
     }
 
     patients.flush();
@@ -926,6 +928,12 @@ public class CSVExporter {
     write(s.toString(), providers);
   }
 
+  /**
+   * Write a single payer to payers.csv.
+   * 
+   * @param payer The payer to be exported.
+   * @throws IOException if any IO error occurs.
+   */
   private void payer(Payer payer) throws IOException {
     // Id,NAME,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,AMOUNT_UNCOVERED,REVENUE,
     // COVERED_ENCOUNTERS,UNCOVERED_ENCOUNTERS,COVERED_MEDICATIONS,UNCOVERED_MEDICATIONS,
@@ -933,16 +941,23 @@ public class CSVExporter {
     // UNIQUE_CUSTOMERS,QOLS_AVG,MEMBER_MONTHS
 
     StringBuilder s = new StringBuilder();
+    // UUID
     s.append(payer.getResourceID()).append(',');
+    // NAME
     s.append(payer.getName()).append(',');
+    // Second Class Attributes
     for (String attribute : new String[]
         { "address", "city", "state_headquartered", "zip", "phone" }) {
       String value = (String) payer.getAttributes().getOrDefault(attribute, "");
       s.append(clean(value)).append(',');
     }
+    // AMOUNT_COVERED
     s.append(String.format(Locale.US, "%.2f", payer.getAmountCovered())).append(',');
+    // AMOUNT_UNCOVERED
     s.append(String.format(Locale.US, "%.2f", payer.getAmountUncovered())).append(',');
+    // REVENUE
     s.append(String.format(Locale.US, "%.2f", payer.getRevenue())).append(',');
+    // Covered/Uncovered Encounters/Medications/Procedures/Immunizations
     s.append(payer.getEncountersCoveredCount()).append(",");
     s.append(payer.getEncountersUncoveredCount()).append(",");
     s.append(payer.getMedicationsCoveredCount()).append(",");
@@ -951,15 +966,26 @@ public class CSVExporter {
     s.append(payer.getProceduresUncoveredCount()).append(",");
     s.append(payer.getImmunizationsCoveredCount()).append(",");
     s.append(payer.getImmunizationsUncoveredCount()).append(",");
+    // UNIQUE CUSTOMERS
     s.append(payer.getUniqueCustomers()).append(",");
+    // QOLS_AVG
     s.append(payer.getQolsAverage()).append(",");
-    // Note that this converts the number of years covered to months.
+    // MEMBER_MONTHS (Note that this converts the number of years covered to months)
     s.append(payer.getNumYearsCovered() * 12);
-    s.append(NEWLINE);
 
+    s.append(NEWLINE);
     write(s.toString(), payers);
   }
 
+  /**
+   * Write a single range of unchanged payer history to payer_transitions.csv
+   * 
+   * @param person The person whose payer history to write.
+   * @param payer The payer of the person's current range of payer history.
+   * @param startYear The first year of this payer history.
+   * @param endYear The final year of this payer history.
+   * @throws IOException if any IO error occurs
+   */
   private void payerTransition(Person person, Payer payer, int startYear, int endYear)
       throws IOException {
     // PATIENT_ID,START_YEAR,END_YEAR,PAYER_ID,OWNERSHIP
@@ -971,26 +997,20 @@ public class CSVExporter {
     s.append(startYear).append(',');
     // END_YEAR
     s.append(endYear).append(',');
-
-    String payerID = "";
+    // PAYER_ID
+    s.append(payer.getResourceID()).append(',');
+    // OWNERSHIP
     String ownership = "";
-
-    if (payer != null
-        && !payer.getName().equals("NO_INSURANCE")) {
-      // Update the insurance and ownership.
-      payerID = payer.getResourceID();
+    if (!payer.getName().equals("NO_INSURANCE")) {
       ownership = determineOwnership(person, endYear);      
     }
-    // PAYER_ID
-    s.append(payerID).append(',');
-    // OWNERSHIP
     s.append(ownership);
     s.append(NEWLINE);
     write(s.toString(), payerTransitions);
   }
 
   /**
-   * Returns a string of who owns this person's insurance at the current year.
+   * Returns the owner of a person's insurance based on their attributes.
    */
   private String determineOwnership(Person person, int currentYear) {
 
