@@ -20,7 +20,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -167,7 +166,7 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private void writeCSVHeaders() throws IOException {
-    patients.write("Id,BIRTHDATE,DEATHDATE,LAST_ENCOUNTER,SSN,DRIVERS,PASSPORT,"
+    patients.write("Id,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,"
         + "PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,"
         + "ADDRESS,CITY,STATE,COUNTY,ZIP,LAT,LON");
     patients.write(NEWLINE);
@@ -331,13 +330,6 @@ public class CSVExporter {
     if (!person.alive(time)) {
       s.append(dateFromTimestamp((Long) person.attributes.get(Person.DEATHDATE)));
     }
-    s.append(',');
-    Encounter lastEncounter = person.record.encounters.get(person.record.encounters.size() - 1);
-    if (lastEncounter.codes.contains(DeathModule.DEATH_CERTIFICATION)) {
-      // one previous... don't count the death certification
-      lastEncounter = person.record.encounters.get(person.record.encounters.size() - 2);
-    }
-    s.append(dateFromTimestamp(lastEncounter.start));
 
     for (String attribute : new String[] {
         Person.IDENTIFIER_SSN,
