@@ -7,8 +7,10 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -17,9 +19,12 @@ import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.CardiovascularDiseaseModule;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.modules.QualityOfLifeModule;
+import org.mitre.synthea.modules.WeightLossModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -55,10 +60,9 @@ public class StateTest {
     person.setProvider(EncounterType.EMERGENCY, mock);
     person.setProvider(EncounterType.INPATIENT, mock);
 
+    time = System.currentTimeMillis();
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
-
-    time = System.currentTimeMillis();
   }
 
   private void simulateWellnessEncounter(Module module) {
@@ -346,6 +350,7 @@ public class StateTest {
 
     // patient has one encounter...
     assertTrue(person.hadPriorState("Encounter 1"));
+    assertEquals(1, person.record.encounters.size());
     assertFalse(person.hadPriorState("Encounter Should Not Happen"));
 
     // next time step...
@@ -356,6 +361,7 @@ public class StateTest {
 
     // patient still has one encounter...
     assertTrue(person.hadPriorState("Encounter 1"));
+    assertEquals(1, person.record.encounters.size());
     assertFalse(person.hadPriorState("Encounter Should Not Happen"));
   }
 
@@ -1263,6 +1269,55 @@ public class StateTest {
 
   @Test
   public void the_dead_should_stay_dead() throws Exception {
+    // Load all the static modules used in Generator.java
+    EncounterModule encounterModule = new EncounterModule();
+
+    List<Module> modules = new ArrayList<Module>();
+    modules.add(new LifecycleModule());
+    modules.add(new CardiovascularDiseaseModule());
+    modules.add(new QualityOfLifeModule());
+    // modules.add(new HealthInsuranceModule());
+    modules.add(new WeightLossModule());
+    // Make sure the patient dies...
+    modules.add(TestHelper.getFixture("death_life_expectancy.json"));
+    // And make sure the patient has weird delays that are between timesteps...
+    modules.add(Module.getModuleByPath("dialysis"));
+
+    // Set life signs at birth...
+    long timeT = (long) person.attributes.get(Person.BIRTHDATE);
+    LifecycleModule.birth(person, timeT);
+    // Make sure the patient requires dialysis to use that module's
+    // repeating delayed encounters...
+    person.attributes.put("ckd", 5);
+
+    long timestep = Long.parseLong(Config.get("generate.timestep"));
+    long stop = time;
+    while (person.alive(timeT) && timeT < stop) {
+      encounterModule.process(person, timeT);
+      Iterator<Module> iter = modules.iterator();
+      while (iter.hasNext()) {
+        Module module = iter.next();
+        if (module.process(person, timeT)) {
+          iter.remove(); // this module has completed/terminated.
+        }
+      }
+      encounterModule.endWellnessEncounter(person, timeT);
+
+      timeT += timestep;
+    }
+    DeathModule.process(person, time);
+
+    // Now check that the person stayed dead...
+    long deathTime = (Long) person.attributes.get(Person.DEATHDATE);
+    for (Encounter encounter : person.record.encounters) {
+      if (!encounter.codes.contains(DeathModule.DEATH_CERTIFICATION)) {
+        assertTrue(encounter.start < deathTime);
+      }
+    }
+  }
+
+  @Test
+  public void the_dead_should_stay_dead_forever() throws Exception {
     Module module = TestHelper.getFixture("death_life_expectancy.json");
 
     long timestep = Long.parseLong(Config.get("generate.timestep"));
@@ -1272,14 +1327,13 @@ public class StateTest {
       timeT += timestep;
     }
 
+    // Now check that the person stayed dead...
     long deathTime = (Long) person.attributes.get(Person.DEATHDATE);
-    Encounter lastEncounter = person.record.encounters.get(person.record.encounters.size() - 1);
-    if (lastEncounter.codes.contains(DeathModule.DEATH_CERTIFICATION)) {
-      // one previous... don't count the death certification
-      lastEncounter = person.record.encounters.get(person.record.encounters.size() - 2);
+    for (Encounter encounter : person.record.encounters) {
+      if (!encounter.codes.contains(DeathModule.DEATH_CERTIFICATION)) {
+        assertTrue(encounter.start < deathTime);
+      }
     }
-    long lastEncounterTime = lastEncounter.start;
-    assertTrue(lastEncounterTime <= deathTime);
   }
 
   @Test
@@ -1371,7 +1425,7 @@ public class StateTest {
     assertEquals(time + days(5), (long) person.history.get(1).exited);
 
     assertEquals("Terminal", person.history.get(0).name);
-    assertEquals(time + days(5), (long) person.history.get(0).entered);
+    assertEquals(null, person.history.get(0).entered);
     assertEquals(null, person.history.get(0).exited);
   }
 

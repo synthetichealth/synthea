@@ -29,6 +29,9 @@ public final class CardiovascularDiseaseModule extends Module {
 
   @Override
   public boolean process(Person person, long time) {
+    if (!person.alive(time)) {
+      return true;
+    }
     // run through all of the rules defined
     // ruby "rules" are converted to static functions here
     // since this is intended to only be temporary

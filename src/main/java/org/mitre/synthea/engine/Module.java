@@ -194,7 +194,7 @@ public class Module {
   @SuppressWarnings("unchecked")
   public boolean process(Person person, long time) {
     if (!person.alive(time)) {
-      return false;
+      return true;
     }
     person.history = null;
     // what current state is this person in?
@@ -223,10 +223,13 @@ public class Module {
       if (exited != null && exited < time) {
         // stop if the patient died in the meantime...
         if (!person.alive(exited)) {
-          return false;
+          return true;
         }
         // This must be a delay state that expired between cycles, so temporarily rewind time
-        process(person, exited);
+        if (process(person, exited)) {
+          // if the patient died during the delay, stop
+          return true;
+        }
         current = person.history.get(0);
       }
     }

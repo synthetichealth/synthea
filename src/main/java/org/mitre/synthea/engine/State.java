@@ -149,6 +149,9 @@ public abstract class State implements Cloneable {
    */
   public boolean run(Person person, long time) {
     // System.out.format("State: %s\n", this.name);
+    if (!person.alive(time)) {
+      return false;
+    }
     if (this.entered == null) {
       this.entered = time;
     }
@@ -311,7 +314,7 @@ public abstract class State implements Cloneable {
         }
       }
 
-      return time >= this.next;
+      return ((time >= this.next) && person.alive(this.next));
     }
   }
 

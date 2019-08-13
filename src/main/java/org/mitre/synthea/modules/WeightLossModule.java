@@ -46,6 +46,10 @@ public final class WeightLossModule extends Module {
 
   @Override
   public boolean process(Person person, long time) {
+    if (!person.alive(time)) {
+      return true;
+    }
+
     Object activeWeightManagement = person.attributes.get(ACTIVE_WEIGHT_MANAGEMENT);
     // First check to see if they are under active weight management
     if (activeWeightManagement != null && (boolean) activeWeightManagement) {

@@ -27,7 +27,7 @@ public class LifecycleModuleTest {
     LifecycleModule.ENABLE_DEATH_BY_NATURAL_CAUSES = true;
     Person person = new Person(0L);
     long time = System.currentTimeMillis();
-    long birth = time - Utilities.convertCalendarYearsToTime(100);
+    long birth = time - Utilities.convertTime("years", 100);
     person.attributes.put(Person.BIRTHDATE, birth);
     for (int i = 0; i < 100000; i++) {
       LifecycleModule.death(person, time);
@@ -43,7 +43,7 @@ public class LifecycleModuleTest {
       Assert.assertTrue(likelihood >= 0);
     }
   }
-  
+
   @Test
   public void testAdherenceFade() {
     Person person = new Person(0L);

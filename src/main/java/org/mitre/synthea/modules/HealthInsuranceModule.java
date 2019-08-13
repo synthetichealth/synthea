@@ -42,6 +42,9 @@ public class HealthInsuranceModule extends Module {
 
   @SuppressWarnings("unchecked")
   public boolean process(Person person, long time) {
+    if (!person.alive(time)) {
+      return true;
+    }
 
     if (!person.attributes.containsKey(INSURANCE)) {
       // use 128 because it's a nice power of 2, and nobody will reach that age

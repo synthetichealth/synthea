@@ -25,6 +25,7 @@ public class EncounterModuleTest {
   @Before
   public void setup() throws IOException {
     person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
     location = new Location("Massachusetts", null);
     location.assignPoint(person, location.randomCityName(person.random));
     Provider.loadProviders(location, 1L);

@@ -51,6 +51,9 @@ public final class EncounterModule extends Module {
 
   @Override
   public boolean process(Person person, long time) {
+    if (!person.alive(time)) {
+      return true;
+    }
     boolean startedEncounter = false;
     Encounter encounter = null;
 
