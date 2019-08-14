@@ -640,6 +640,8 @@ public class FhirDstu2 {
     // add prescription.
     claimResource.setPrescription(new ResourceReferenceDt(medicationEntry.getFullUrl()));
 
+    // TODO add cost information
+
     return newEntry(bundle, claimResource);
   }
 

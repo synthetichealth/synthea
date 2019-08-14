@@ -555,6 +555,7 @@ public class Person implements Serializable, QuadTreeData {
    * @param entry the entry to pay for.
    */
   public boolean canAffordCare(Entry entry) {
+    // TODO determine if they can afford the care
     return false;
   }
 

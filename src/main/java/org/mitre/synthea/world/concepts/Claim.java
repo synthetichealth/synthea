@@ -108,7 +108,7 @@ public class Claim {
       if (person.canAffordCare(entry)) {
         // Update the person's costs, they get the encounter.
       } else {
-        // The person does not get the encounter. Lower their QOLS/GBD.
+        // TODO The person does not get the encounter. Lower their QOLS/GBD.
       }
     }
 

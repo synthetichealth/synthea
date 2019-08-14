@@ -1022,6 +1022,7 @@ public class CSVExporter {
       return "Guardian";
     } else if ((person.attributes.containsKey(Person.MARITAL_STATUS))
         && person.attributes.get(Person.MARITAL_STATUS).equals("M")) {
+      // TODO: ownership shouldn't be a coin toss every year
       // If a person is married, there is a 50% chance their spouse owns their insurance.
       if (person.rand(0.0, 1.0) < .5) {
         return "Spouse";

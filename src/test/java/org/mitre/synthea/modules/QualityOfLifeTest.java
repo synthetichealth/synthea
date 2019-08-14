@@ -19,7 +19,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 public class QualityOfLifeTest {
 
   private Person person;
-  //private Payer noInsurance;
 
   public static final long stopTime = ((long) (365.25 * 35)) + 1;
 
