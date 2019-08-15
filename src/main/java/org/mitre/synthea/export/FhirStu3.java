@@ -1137,12 +1137,8 @@ public class FhirStu3 {
     }
 
     // Get the insurance info at the time that the encounter happened.
-    Payer payer;
-    if (Boolean.parseBoolean(Config.get("generate.health_insurance"))) {
-      payer = person.getPayerAtTime(encounter.start);
-    } else {
-      payer = Payer.noInsurance;
-    }
+    Payer payer = person.getPayerAtTime(encounter.start);
+
     Coverage coverage = new Coverage();
     coverage.setId("coverage");
     coverage.setType(new CodeableConcept().setText(payer.getName()));

@@ -3,18 +3,15 @@ package org.mitre.synthea.world.concepts;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 
 public class Claim {
 
-  private Encounter encounter;
-  private Medication medication;
+  private Entry mainEntry;
   // The Entries have the actual cost, so the claim has the amount that the payer covered.
   private double coveredCost;
   public Payer payer;
@@ -22,41 +19,20 @@ public class Claim {
   public List<Entry> items;
 
   /**
-   * Constructor of a health insurance Claim for an encounter.
-   */
-  public Claim(Encounter encounter, Person person) {
-    this((Entry) encounter, person);
-    this.encounter = encounter;
-  }
-
-  /**
-   * Constructor of a health insurance Claim for a medication.
-   */
-  public Claim(Medication medication, Person person) {
-    this((Entry) medication, person);
-    this.medication = medication;
-  }
-
-  /**
    * Constructor of a Claim for an Entry.
    */
-  private Claim(Entry entry, Person person) {
+  public Claim(Entry entry, Person person) {
+    // Set the Entry.
+    if ((entry instanceof Encounter) || (entry instanceof Medication)) {
+      this.mainEntry = entry;
+    } else {
+      throw new RuntimeException(
+          "A Claim can only be made with entry types Encounter or Medication.");
+    }
     // Set the Person.
     this.person = person;
     // Set the Payer.
-    if (this.person.getPayerAtTime(entry.start) == null) {
-      // Person hasn't checked to get insurance at this age yet. Will check now.
-      Module.processHealthInsuranceModule(this.person, entry.start);
-    }
     this.payer = this.person.getPayerAtTime(entry.start);
-    this.items = new ArrayList<Entry>();
-  }
-
-  /**
-   * Default constructor to create a blank claim that will be unused because
-   * health insurance is turned off.
-   */
-  public Claim() {
     this.items = new ArrayList<Entry>();
   }
 
@@ -72,40 +48,22 @@ public class Claim {
    */
   public void assignCosts() {
 
-    // Casts either the encounter or medication of the claim depending on which is not null.
-    Entry entry;
-    Provider provider = null;
-
-    if (this.encounter != null) {
-      entry = (Entry) encounter;
-      provider = encounter.provider;
-    } else if (this.medication != null) {
-      entry = (Entry) medication;
-    } else {
-      // Claims can only be made for encounters and medications.
-      return;
-    }
-
-    // The total cost of this claim.
-    double totalCost = 0.0;
-    totalCost += entry.getCost().doubleValue();
-    totalCost += this.getLineItemCosts();
-
-    double patientCopay = payer.determineCopay(entry);
+    double totalCost = this.getTotalClaimCost();
+    double patientCopay = payer.determineCopay(mainEntry);
     double costToPatient = 0.0;
     double costToPayer = 0.0;
 
     // Determine who covers the care and assign the costs accordingly.
-    if (this.payer.coversCare(entry)) {
+    if (this.payer.coversCare(mainEntry)) {
       // Person's Payer covers their care.
       costToPatient = totalCost > patientCopay ? patientCopay : totalCost;
       costToPayer = totalCost > patientCopay ? totalCost - patientCopay : 0.0;
-      this.payerCoversEntry(entry);
+      this.payerCoversEntry(mainEntry);
     }  else {
       // Payer will not cover the care.
-      this.payerDoesNotCoverEntry(entry);
+      this.payerDoesNotCoverEntry(mainEntry);
       costToPatient = totalCost;
-      if (person.canAffordCare(entry)) {
+      if (person.canAffordCare(mainEntry)) {
         // Update the person's costs, they get the encounter.
       } else {
         // TODO The person does not get the encounter. Lower their QOLS/GBD.
@@ -113,14 +71,14 @@ public class Claim {
     }
 
     // Update Person's Expenses and Coverage.
-    this.person.addExpense(costToPatient, entry.start);
-    this.person.addCoverage(costToPayer, entry.start);
+    this.person.addExpense(costToPatient, mainEntry.start);
+    this.person.addCoverage(costToPayer, mainEntry.start);
     // Update Payer's Covered and Uncovered Costs.
     this.payer.addCoveredCost(costToPayer);
     this.payer.addUncoveredCost(costToPatient);
     // Update the Provider's Revenue if this is an encounter.
-    if (encounter != null) {
-      provider.addRevenue(totalCost);
+    if (mainEntry instanceof Encounter) {
+      ((Encounter) mainEntry).provider.addRevenue(totalCost);
     }
     // Update the Claim.
     this.coveredCost = costToPayer;
@@ -144,12 +102,7 @@ public class Claim {
   public double getTotalClaimCost() {
     double totalCost = 0.0;
     totalCost += this.getLineItemCosts();
-    // Get the main encounter/medication cost.
-    if (this.encounter != null) {
-      totalCost += this.encounter.getCost().doubleValue();
-    } else if (this.medication != null) {
-      totalCost += this.medication.getCost().doubleValue();
-    }
+    totalCost = mainEntry.getCost().doubleValue();
     return totalCost;
   }
 

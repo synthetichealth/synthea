@@ -24,6 +24,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
+import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
@@ -187,11 +188,7 @@ public class Generator {
     // initialize hospitals
     Provider.loadProviders(location, options.clinicianSeed);
     // Initialize Payers
-    if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-      Payer.loadPayers(location);
-    } else {
-      Payer.loadNoInsurance();
-    }
+    Payer.loadPayers(location);
     // ensure modules load early
     List<String> coreModuleNames = getModuleNames(Module.getModules(path -> false));
     List<String> moduleNames = getModuleNames(Module.getModules(modulePredicate)); 
@@ -314,18 +311,16 @@ public class Generator {
         person.attributes.put(Person.LOCATION, location);
 
         LifecycleModule.birth(person, start);
-        // Force process HealthInsuranceModule in correct order.
-        if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-          Module.processHealthInsuranceModule(person, start);
-        }
-
-        // HealthInsuranceModule.process(person, start);
+        
+        HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
         EncounterModule encounterModule = new EncounterModule();
 
         long time = start;
         while (person.alive(time) && time < stop) {
 
+          healthInsuranceModule.process(person, time + timestep);
           encounterModule.process(person, time);
+
           Iterator<Module> iter = modules.iterator();
           while (iter.hasNext()) {
             Module module = iter.next();

@@ -256,9 +256,7 @@ public abstract class Exporter {
     if (Boolean.parseBoolean(Config.get("exporter.csv.export"))) {
       try {
         CSVExporter.getInstance().exportOrganizationsAndProviders();
-        if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-          CSVExporter.getInstance().exportPayers();
-        }
+        CSVExporter.getInstance().exportPayers();
       } catch (IOException e) {
         e.printStackTrace();
       }

@@ -66,10 +66,6 @@ public class CSVExporterTest {
       count++;
     }
 
-    if (Boolean.parseBoolean(Config.get("generate.health_insurance"))) {
-      assertEquals("Expected 14 CSV files in the output directory, found " + count, 14, count);
-    } else {
-      assertEquals("Expected 12 CSV files in the output directory, found " + count, 12, count);
-    }
+    assertEquals("Expected 14 CSV files in the output directory, found " + count, 14, count);
   }
 }

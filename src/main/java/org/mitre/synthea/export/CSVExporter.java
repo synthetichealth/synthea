@@ -21,7 +21,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
@@ -158,12 +157,10 @@ public class CSVExporter {
       File providersFile = outputDirectory.resolve("providers.csv").toFile();
       organizations = new FileWriter(organizationsFile, append);
       providers = new FileWriter(providersFile, append);
-      if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-        File payersFile = outputDirectory.resolve("payers.csv").toFile();
-        File payerTransitionsFile = outputDirectory.resolve("payer_transitions.csv").toFile();
-        payers = new FileWriter(payersFile, append);
-        payerTransitions = new FileWriter(payerTransitionsFile, append);
-      }
+      File payersFile = outputDirectory.resolve("payers.csv").toFile();
+      File payerTransitionsFile = outputDirectory.resolve("payer_transitions.csv").toFile();
+      payers = new FileWriter(payersFile, append);
+      payerTransitions = new FileWriter(payerTransitionsFile, append);
 
       if (!append) {
         writeCSVHeaders();
@@ -198,10 +195,10 @@ public class CSVExporter {
     careplans.write(NEWLINE);
     observations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,VALUE,UNITS,TYPE");
     observations.write(NEWLINE);
-    procedures.write("DATE,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,"
+    procedures.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,"
         + "REASONCODE,REASONDESCRIPTION");
     procedures.write(NEWLINE);
-    immunizations.write("DATE,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST");
+    immunizations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,BASE_COST");
     immunizations.write(NEWLINE);
     encounters.write(
         "Id,START,STOP,PATIENT,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,BASE_ENCOUNTER_COST,"
@@ -214,16 +211,14 @@ public class CSVExporter {
     organizations.write(NEWLINE);
     providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,LAT,LON,UTILIZATION");
     providers.write(NEWLINE);
-    if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-      payers.write("Id,NAME,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,"
-          + "AMOUNT_UNCOVERED,REVENUE,COVERED_ENCOUNTERS,UNCOVERED_ENCOUNTERS,COVERED_MEDICATIONS,"
-          + "UNCOVERED_MEDICATIONS,COVERED_PROCEDURES,UNCOVERED_PROCEDURES,"
-          + "COVERED_IMMUNIZATIONS,UNCOVERED_IMMUNIZATIONS,"
-          + "UNIQUE_CUSTOMERS,QOLS_AVG,MEMBER_MONTHS");
-      payers.write(NEWLINE);
-      payerTransitions.write("PATIENT,START_YEAR,END_YEAR,PAYER,OWNERSHIP");
-      payerTransitions.write(NEWLINE);
-    }
+    payers.write("Id,NAME,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,"
+        + "AMOUNT_UNCOVERED,REVENUE,COVERED_ENCOUNTERS,UNCOVERED_ENCOUNTERS,COVERED_MEDICATIONS,"
+        + "UNCOVERED_MEDICATIONS,COVERED_PROCEDURES,UNCOVERED_PROCEDURES,"
+        + "COVERED_IMMUNIZATIONS,UNCOVERED_IMMUNIZATIONS,"
+        + "UNIQUE_CUSTOMERS,QOLS_AVG,MEMBER_MONTHS");
+    payers.write(NEWLINE);
+    payerTransitions.write("PATIENT,START_YEAR,END_YEAR,PAYER,OWNERSHIP");
+    payerTransitions.write(NEWLINE);
   }
 
   /**
@@ -307,25 +302,27 @@ public class CSVExporter {
         && Utilities.getMonth(stopTime)
         <= Utilities.getMonth((long) person.attributes.get(Person.BIRTHDATE))) {
       // If a person's birth month is after the stop month, they don't have a payer for final year.
-      HealthInsuranceModule.processHealthInsuranceModule(person, stopTime
-          + Utilities.convertTime("months",
-          Utilities.getMonth((long) person.attributes.get(Person.BIRTHDATE)) + 1));
+      
     }
 
     String previousPayerID = person.getPayerHistory()[0].getResourceID();
+    String previousOwnership = "Guardian";
     int startYear = currentYear;
 
-    for (Payer payer : person.getPayerHistory()) {
-      if (payer == null) {
+    for (int personAge = 0; personAge < 128; personAge++) {
+      Payer currentPayer = person.getPayerAtAge(personAge);
+      String currentOwnership = person.getPayerOwnershipAtAge(personAge);
+      if (currentPayer == null) {
         return;
       }
       // Only write a new line if these conditions are met to export for year ranges of payers.
-      if (!payer.getResourceID().equals(previousPayerID)
+      if (!currentPayer.getResourceID().equals(previousPayerID)
+          || !currentOwnership.equals(previousOwnership)
           || Utilities.convertCalendarYearsToTime(currentYear) >= stopTime
-          || !person.alive(Utilities.convertCalendarYearsToTime(currentYear + 1))
-          || person.ageInYears(Utilities.convertCalendarYearsToTime(currentYear)) == 17) {
-        payerTransition(person, payer, startYear, currentYear);
-        previousPayerID = payer.getResourceID();
+          || !person.alive(Utilities.convertCalendarYearsToTime(currentYear + 1))) {
+        payerTransition(person, currentPayer, startYear, currentYear);
+        previousPayerID = currentPayer.getResourceID();
+        previousOwnership = currentOwnership;
         startYear = currentYear + 1;
         payerTransitions.flush();
       }
@@ -346,10 +343,7 @@ public class CSVExporter {
     for (Encounter encounter : person.record.encounters) {
 
       String encounterID = encounter(personID, encounter);
-      String payerID = "";
-      if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-        payerID = person.getPayerAtTime(encounter.start).uuid;
-      }
+      String payerID = person.getPayerAtTime(encounter.start).uuid;
 
       for (HealthRecord.Entry condition : encounter.conditions) {
         condition(personID, encounterID, condition);
@@ -364,7 +358,7 @@ public class CSVExporter {
       }
 
       for (Procedure procedure : encounter.procedures) {
-        procedure(personID, encounterID, payerID, procedure);
+        procedure(personID, encounterID, procedure);
       }
 
       for (Medication medication : encounter.medications) {
@@ -372,7 +366,7 @@ public class CSVExporter {
       }
 
       for (HealthRecord.Entry immunization : encounter.immunizations) {
-        immunization(personID, encounterID, payerID, immunization);
+        immunization(personID, encounterID, immunization);
       }
 
       for (CarePlan careplan : encounter.careplans) {
@@ -383,9 +377,7 @@ public class CSVExporter {
         imagingStudy(personID, encounterID, imagingStudy);
       }
     }
-    if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-      CSVExporter.getInstance().exportPayerTransitions(person, time);
-    }
+    CSVExporter.getInstance().exportPayerTransitions(person, time);
 
     patients.flush();
     encounters.flush();
@@ -646,14 +638,13 @@ public class CSVExporter {
    * @param procedure   The procedure itself
    * @throws IOException if any IO error occurs
    */
-  private void procedure(String personID, String encounterID, String payerID,
+  private void procedure(String personID, String encounterID,
       Procedure procedure) throws IOException {
-    // DATE,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
+    // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
     s.append(dateFromTimestamp(procedure.start)).append(',');
     s.append(personID).append(',');
-    s.append(payerID).append(',');
     s.append(encounterID).append(',');
     // CODE
     Code coding = procedure.codes.get(0);
@@ -768,14 +759,13 @@ public class CSVExporter {
    * @param immunization The immunization itself
    * @throws IOException if any IO error occurs
    */
-  private void immunization(String personID, String encounterID, String payerID,
+  private void immunization(String personID, String encounterID,
       Entry immunization) throws IOException {
-    // DATE,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST
+    // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,BASE_COST
     StringBuilder s = new StringBuilder();
 
     s.append(dateFromTimestamp(immunization.start)).append(',');
     s.append(personID).append(',');
-    s.append(payerID).append(',');
     s.append(encounterID).append(',');
     // CODE
     Code coding = immunization.codes.get(0);
@@ -1000,36 +990,9 @@ public class CSVExporter {
     // PAYER_ID
     s.append(payer.getResourceID()).append(',');
     // OWNERSHIP
-    String ownership = "";
-    if (!payer.getName().equals("NO_INSURANCE")) {
-      ownership = determineOwnership(person, endYear);      
-    }
-    s.append(ownership);
+    s.append(person.getPayerOwnershipAtTime(Utilities.convertCalendarYearsToTime(startYear)));
     s.append(NEWLINE);
     write(s.toString(), payerTransitions);
-  }
-
-  /**
-   * Returns the owner of a person's insurance based on their attributes.
-   */
-  private String determineOwnership(Person person, int currentYear) {
-
-    int personAge = person.ageInYears(Utilities.convertCalendarYearsToTime(currentYear));
-
-    if (personAge < 18
-        && !person.getPayerAtAge(personAge).getName().equals("Medicaid")) {
-      // If a person is a minor, their Guardian owns their health plan unless it is Medicaid.
-      return "Guardian";
-    } else if ((person.attributes.containsKey(Person.MARITAL_STATUS))
-        && person.attributes.get(Person.MARITAL_STATUS).equals("M")) {
-      // TODO: ownership shouldn't be a coin toss every year
-      // If a person is married, there is a 50% chance their spouse owns their insurance.
-      if (person.rand(0.0, 1.0) < .5) {
-        return "Spouse";
-      }
-    }
-    // If a person is unmarried and over 18, they own their insurance.
-    return "Self";
   }
 
   /**

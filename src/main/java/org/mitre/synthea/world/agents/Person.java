@@ -94,8 +94,10 @@ public class Person implements Serializable, QuadTreeData {
   /** History of the currently active module. */
   public List<State> history;
   /* Person's Payer History. */
-  // Each element in payerHistory Array corresponds to the insurance held at that age.
+  // Each element in payerHistory array corresponds to the insurance held at that age.
   public Payer[] payerHistory;
+  // Each element in payerOwnerHistory array corresponds to the owner of the insurance at that age. 
+  private String[] payerOwnerHistory;
   /* Yearly Healthcare Expenses. */
   private Map<Integer, Double> healthcareExpensesYearly;
   /* Yearly Healthcare Coverage. */
@@ -119,6 +121,7 @@ public class Person implements Serializable, QuadTreeData {
     record = new HealthRecord(this);
     // 128 because it's a nice power of 2, and nobody will reach that age
     payerHistory = new Payer[128];
+    payerOwnerHistory = new String[128];
     healthcareExpensesYearly = new HashMap<Integer, Double>();
     healthcareCoverageYearly = new HashMap<Integer, Double>();
   }
@@ -510,6 +513,38 @@ public class Person implements Serializable, QuadTreeData {
       throw new RuntimeException("ERROR: Overwriting a person's insurance at age " + age);
     }
     this.payerHistory[age] = payer;
+    this.payerOwnerHistory[age] = determinePayerOwnership(payer, age);
+  }
+
+  /**
+   * Determines and returns what the ownership of the person's insurance at this age.
+   */
+  private String determinePayerOwnership(Payer payer, int age) {
+
+    // Keep previous year's ownership if payer is unchanged and person has not just turned 18.
+    if (this.getPreviousPayerAtAge(age) != null
+        && this.getPreviousPayerAtAge(age).equals(payer)
+        && age != 18) {
+        return this.payerOwnerHistory[age - 1];
+    }
+    // No owner for no insurance.
+    if (payer.equals(Payer.noInsurance)) {
+      return "";
+    }
+    // Standard payer ownership check.
+    if (age < 18 && !payer.getName().equals("Medicaid")) {
+      // If a person is a minor, their Guardian owns their health plan unless it is Medicaid.
+      return "Guardian";
+    } else if ((this.attributes.containsKey(Person.MARITAL_STATUS))
+        && this.attributes.get(Person.MARITAL_STATUS).equals("M")) {
+      // TODO: ownership shouldn't be a coin toss every year
+      // If a person is married, there is a 50% chance their spouse owns their insurance.
+      if (this.rand(0.0, 1.0) < .5) {
+        return "Spouse";
+      }
+    }
+    // If a person is unmarried and over 18, they own their insurance.
+    return "Self";
   }
 
   /**
@@ -529,9 +564,29 @@ public class Person implements Serializable, QuadTreeData {
   /**
    * Returns the person's last year's payer from the given time.
    */
-  public Payer getPreviousPayer(long time) {
-    int age = this.ageInYears(time);
+  public Payer getPreviousPayerAtTime(long time) {
+    return this.getPreviousPayerAtAge(this.ageInYears(time));
+  }
+
+  /**
+   * Returns the person's last year's payer from the given time.
+   */
+  public Payer getPreviousPayerAtAge(int age) {
     return age > 0 ? this.getPayerAtAge(age - 1) : null;
+  }
+
+  /**
+   * Returns the owner of the peron's payer at the given time.
+   */
+  public String getPayerOwnershipAtTime(long time) {
+    return this.payerOwnerHistory[this.ageInYears(time)];
+  }
+
+  /**
+   * Returns the owner of the peron's payer at the given age.
+   */
+  public String getPayerOwnershipAtAge(int age) {
+    return this.payerOwnerHistory[age];
   }
 
   /**

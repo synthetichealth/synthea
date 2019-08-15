@@ -747,13 +747,7 @@ public class FhirR4 {
     claimResource.setUse(org.hl7.fhir.r4.model.Claim.Use.CLAIM);
 
     // Get the insurance info at the time that the encounter occured.
-    Payer payer;
-    if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-      payer = person.getPayerAtTime(
-          encounterResource.getPeriod().getStart().getTime());
-    } else {
-      payer = Payer.noInsurance;
-    }
+    Payer payer = person.getPayerAtTime(encounterResource.getPeriod().getStart().getTime());
     InsuranceComponent insuranceComponent = new InsuranceComponent();
     insuranceComponent.setSequence(1);
     insuranceComponent.setFocal(true);
@@ -815,13 +809,8 @@ public class FhirR4 {
     claimResource.setUse(org.hl7.fhir.r4.model.Claim.Use.CLAIM);
 
     // Get the insurance info at the time that the encounter occured.
-    Payer payer;
-    if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-      payer = person.getPayerAtTime(
-          encounterResource.getPeriod().getStart().getTime());
-    } else {
-      payer = Payer.noInsurance;
-    }
+    Payer payer = person.getPayerAtTime(encounterResource.getPeriod().getStart().getTime());
+
     InsuranceComponent insuranceComponent = new InsuranceComponent();
     insuranceComponent.setSequence(1);
     insuranceComponent.setFocal(true);
@@ -1016,12 +1005,7 @@ public class FhirR4 {
     eob.setReferral(new Reference().setReference("#referral"));
 
     // Get the insurance info at the time that the encounter occured.
-    Payer payer;
-    if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-      payer = person.getPayerAtTime(encounter.start);
-    } else {
-      payer = Payer.noInsurance;
-    }
+    Payer payer = person.getPayerAtTime(encounter.start);
     Coverage coverage = new Coverage();
     coverage.setId("coverage");
     coverage.setStatus(CoverageStatus.ACTIVE);

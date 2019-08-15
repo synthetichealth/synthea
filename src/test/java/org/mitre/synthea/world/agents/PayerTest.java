@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,7 +32,6 @@ public class PayerTest {
   Person person;
   double medicaidLevel;
   long mandateTime;
-  boolean originalHealthInsuranceSetting;
 
   /**
    * Setup for Payer Tests.
@@ -42,10 +40,6 @@ public class PayerTest {
   public void setup() {
     // Clear any Payers that may have already been statically loaded.
     Payer.clear();
-    // Set the config settings correctly.
-    originalHealthInsuranceSetting
-         = Boolean.parseBoolean(Config.get("generate.health_insurance", "true"));
-    Config.set("generate.health_insurance", "true");
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
     // Load in the .csv list of Payers for MA.
@@ -61,11 +55,6 @@ public class PayerTest {
     // Set up Mandate year.
     int mandateYear = Integer.parseInt(Config.get("generate.insurance.mandate.year", "2006"));
     mandateTime = Utilities.convertCalendarYearsToTime(mandateYear);
-  }
-
-  @After
-  public void resetHealthInusanceFlag() {
-    Config.set("generate.health_insurance", Boolean.toString(originalHealthInsuranceSetting));
   }
 
   @Test
@@ -464,6 +453,7 @@ public class PayerTest {
     HealthRecord healthRecord = new HealthRecord(person);
     Encounter encounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
     encounter.codes.add(new Code("SNOMED-CT","705129","Fake SNOMED for null entry"));
+    healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
   }
 
   @Test
@@ -478,9 +468,11 @@ public class PayerTest {
     assertTrue(testPrivatePayer1.coversService(encounter.type));
     healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
     // Person's coverage should equal the cost of the encounter minus the copay.
-    assertEquals(person.getHealthcareCoverage(), encounter.getCost().doubleValue() - testPrivatePayer1.determineCopay(encounter), 0.001);
+    assertEquals(person.getHealthcareCoverage(), encounter.getCost().doubleValue()
+        - testPrivatePayer1.determineCopay(encounter), 0.001);
     // Person's expenses should equal the copay.
-    assertEquals(person.getHealthcareExpenses(), testPrivatePayer1.determineCopay(encounter), 0.001);
+    assertEquals(person.getHealthcareExpenses(),
+        testPrivatePayer1.determineCopay(encounter), 0.001);
   }
 
   @Test

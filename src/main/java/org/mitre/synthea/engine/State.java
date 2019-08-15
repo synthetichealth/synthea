@@ -235,6 +235,9 @@ public abstract class State implements Cloneable {
         person.history.add(0, this);
         // start using the current encounter, it may have changed
         encounter = person.getCurrentEncounter(submod);
+        if (encounter != null) {
+          person.setCurrentEncounter(module, encounter);
+        }
         return true;
       } else {
         // reset person.history to this module's history

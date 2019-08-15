@@ -43,8 +43,9 @@ public class HealthInsuranceModule extends Module {
     // birthday.
     if (person.getPayerAtTime(time) == null) {
       // Update their last payer with person's QOLS for that year.
-      if (person.getPreviousPayer(time) != null) {
-        person.getPreviousPayer(time).addQols(person.getQolsForYear(Utilities.getYear(time) - 1));
+      if (person.getPreviousPayerAtTime(time) != null) {
+        person.getPreviousPayerAtTime(time).addQols(
+            person.getQolsForYear(Utilities.getYear(time) - 1));
       }
 
       // Determine the insurance for this person at this time.
@@ -54,7 +55,7 @@ public class HealthInsuranceModule extends Module {
       // Reset the person's yearly deductible.
       person.resetDeductible(time);
       // Update the new Payer's customer statistics.
-      person.getPayerAtTime(time).incrementCustomers(person);
+      newPayer.incrementCustomers(person);
     }
 
     // Checks if person has paid their premium this month. If not, they pay it.
@@ -81,10 +82,11 @@ public class HealthInsuranceModule extends Module {
       return Payer.getGovernmentPayer("Medicare");
     } else if (Payer.getGovernmentPayer("Medicaid").accepts(person, time)) {
       return Payer.getGovernmentPayer("Medicaid");
-    } else if (person.getPreviousPayer(time) != null
-        && IPayerFinder.meetsBasicRequirements(person.getPreviousPayer(time), person, null, time)) {
+    } else if (person.getPreviousPayerAtTime(time) != null
+        && IPayerFinder.meetsBasicRequirements(
+        person.getPreviousPayerAtTime(time), person, null, time)) {
       // People will keep their previous year's insurance if they can.
-      return person.getPreviousPayer(time);
+      return person.getPreviousPayerAtTime(time);
     } else {
       // Randomly choose one of the remaining private payers.
       // Returns no_insurance if a person cannot afford any of them.

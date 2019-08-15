@@ -944,6 +944,9 @@ public class StateTest {
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
 
+    // Give person a payer at the time to prevent null pointer
+    person.setPayerAtTime(time, Payer.noInsurance);
+
     // Prevent Null Pointer by giving the person their QOLS
     Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
     qolsByYear.put(Utilities.getYear(time) - 1, 1.0);
@@ -1025,6 +1028,9 @@ public class StateTest {
     simulateWellnessEncounter(module);
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
+
+    // Give person a payer at the time to prevent null pointer
+    person.setPayerAtTime(time, Payer.noInsurance);
 
     // Prevent Null Pointer by giving the person their QOLS
     Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();

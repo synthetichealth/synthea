@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
@@ -189,13 +188,8 @@ public class HealthRecord {
     public Medication(long time, String type) {
       super(time, type);
       this.reasons = new ArrayList<Code>();
-      if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-        // Create a medication claim.
-        this.claim = new Claim(this, person);
-      } else {
-        // Create a default, blank, unused claim because health insruance is turned off.
-        this.claim = new Claim();
-      }
+      // Create a medication claim.
+      this.claim = new Claim(this, person);
     }
   }
 
@@ -371,13 +365,7 @@ public class HealthRecord {
       medications = new ArrayList<Medication>();
       careplans = new ArrayList<CarePlan>();
       imagingStudies = new ArrayList<ImagingStudy>();
-      if (Boolean.parseBoolean(Config.get("generate.health_insurance", "false"))) {
-        // Create an insurance claim.
-        this.claim = new Claim(this, person);
-      } else {
-        // Create a blank, unused claim because health insurance is turned off.
-        this.claim = new Claim();
-      }
+      this.claim = new Claim(this, person);
     }
   }
 
