@@ -70,6 +70,7 @@ public class Provider implements QuadTreeData {
   public String type;
   public String ownership;
   public int quality;
+  private double revenue;
   private DirectPosition2D coordinates;
   public ArrayList<EncounterType> servicesProvided;
   public Map<String, ArrayList<Clinician>> clinicianMap;
@@ -82,6 +83,7 @@ public class Provider implements QuadTreeData {
   public Provider() {
     uuid = UUID.randomUUID().toString();
     attributes = new LinkedTreeMap<>();
+    revenue = 0.0;
     utilization = HashBasedTable.create();
     servicesProvided = new ArrayList<EncounterType>();
     clinicianMap = new HashMap<String, ArrayList<Clinician>>();
@@ -175,6 +177,22 @@ public class Provider implements QuadTreeData {
       return false;
     }
     return true;
+  }
+
+  /**
+   * Adds the given amount to the provider's total revenue.
+   * 
+   * @param costOfCare the cost of the care to be added to revenue.
+   */
+  public void addRevenue(double costOfCare) {
+    this.revenue += costOfCare;
+  }
+
+  /**
+   * Returns the total revenue of this provider.
+   */
+  public double getRevenue() {
+    return this.revenue;
   }
 
   /**
@@ -518,5 +536,4 @@ public class Provider implements QuadTreeData {
   public String getFileName() {
     return null;
   }
-
 }

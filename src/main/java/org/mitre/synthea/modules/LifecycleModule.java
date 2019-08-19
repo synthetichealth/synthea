@@ -12,6 +12,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.special.Erf;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
@@ -433,7 +434,15 @@ public final class LifecycleModule extends Module {
 
     person.setVitalSign(VitalSign.HEIGHT, height);
     person.setVitalSign(VitalSign.WEIGHT, weight);
-    person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+    double bmi = bmi(height, weight);
+    person.setVitalSign(VitalSign.BMI, bmi);
+
+    if (age >= 2 && age < 20) {
+      int ageInMonths = person.ageInMonths(time);
+      String gender = (String) person.attributes.get(Person.GENDER);
+      double percentile = percentileForBMI(bmi, gender, ageInMonths);
+      person.attributes.put(Person.BMI_PERCENTILE, percentile);
+    }
   }
 
   private static double childHeightGrowth(Person person, long time) {
@@ -473,16 +482,20 @@ public final class LifecycleModule extends Module {
    * Lookup and calculate values from the CDC growth charts, using the LMS
    * values to calculate the intermediate values.
    * Reference : https://www.cdc.gov/growthcharts/percentile_data_files.htm
-   * @param heightOrWeight "height" | "weight"
+   *
+   * <p>Note: BMI values only available for ageInMonths 24 - 240 as BMI is
+   * not typically useful in patients under 24 months.</p>
+   *
+   * @param heightWeightOrBMI "height" | "weight" | "bmi"
    * @param gender "M" | "F"
    * @param ageInMonths 0 - 240
    * @param percentile 0.0 - 1.0
    * @return The height (cm) or weight (kg)
    */
   @SuppressWarnings("rawtypes")
-  public static double lookupGrowthChart(String heightOrWeight, String gender, int ageInMonths,
+  public static double lookupGrowthChart(String heightWeightOrBMI, String gender, int ageInMonths,
       double percentile) {
-    Map chart = (Map) growthChart.get(heightOrWeight);
+    Map chart = (Map) growthChart.get(heightWeightOrBMI);
     Map byGender = (Map) chart.get(gender);
     Map byAge = (Map) byGender.get(Integer.toString(ageInMonths));
 
@@ -496,6 +509,25 @@ public final class LifecycleModule extends Module {
     } else {
       return m * Math.pow((1 + (l * s * z)), (1.0 / l));
     }
+  }
+
+  /**
+   * Look up the percentile that a given BMI falls into based on gender and age in months.
+   * @param bmi the BMI to find the percentile for
+   * @param gender "M" | "F"
+   * @param ageInMonths 24 - 240
+   * @return 0 - 1.0
+   */
+  public static double percentileForBMI(double bmi, String gender, int ageInMonths) {
+    Map chart = (Map) growthChart.get("bmi");
+    Map byGender = (Map) chart.get(gender);
+    Map byAge = (Map) byGender.get(Integer.toString(ageInMonths));
+
+    double l = Double.parseDouble((String) byAge.get("l"));
+    double m = Double.parseDouble((String) byAge.get("m"));
+    double s = Double.parseDouble((String) byAge.get("s"));
+    double z = zscoreForValue(bmi, l, m, s);
+    return zscoreToPercentile(z);
   }
 
   /**
@@ -524,6 +556,35 @@ public final class LifecycleModule extends Module {
       percentile = 0.001;
     }
     return -1 * Math.sqrt(2) * Erf.erfcInv(2 * percentile);
+  }
+
+  /**
+   * Compute the z-score given a value and the LMS parameters.
+   * @param value the actual value, for example a weight, height or BMI
+   * @param l distribution's L parameter
+   * @param m distribution's M parameter
+   * @param s distribution's S parameter
+   * @return z-score
+   */
+  protected static double zscoreForValue(double value, double l, double m, double s) {
+    if (l == 0) {
+      return Math.log(value / m) / s;
+    } else {
+      return (Math.pow((value / m), l) - 1) / (l * s);
+    }
+  }
+
+  /**
+   * Convert a z-score into a percentile.
+   * @param zscore The ZScore to find the percentile for
+   * @return percentile - 0.0 - 1.0
+   */
+  protected static double zscoreToPercentile(double zscore) {
+    double percentile = 0;
+
+    NormalDistribution dist = new NormalDistribution();
+    percentile = dist.cumulativeProbability(zscore);
+    return percentile;
   }
 
   public static double bmi(double heightCM, double weightKG) {

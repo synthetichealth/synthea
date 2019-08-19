@@ -105,14 +105,14 @@ import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Clinician;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
-import org.mitre.synthea.world.concepts.HealthRecord.Claim;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -745,13 +745,12 @@ public class FhirR4 {
     claimResource.setType(type);
     claimResource.setUse(org.hl7.fhir.r4.model.Claim.Use.CLAIM);
 
-    // get the insurance info at the time that the encounter happened
-    String insurance = HealthInsuranceModule.getCurrentInsurance(person,
-        encounterResource.getPeriod().getStart().getTime());
+    // Get the insurance info at the time that the encounter occured.
+    Payer payer = person.getPayerAtTime(encounterResource.getPeriod().getStart().getTime());
     InsuranceComponent insuranceComponent = new InsuranceComponent();
     insuranceComponent.setSequence(1);
     insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference().setDisplay(insurance));
+    insuranceComponent.setCoverage(new Reference().setDisplay(payer.getName()));
     claimResource.addInsurance(insuranceComponent);
 
     // duration of encounter
@@ -777,7 +776,7 @@ public class FhirR4 {
     claimResource.setPrescription(new Reference(medicationEntry.getFullUrl()));
 
     Money moneyResource = new Money();
-    moneyResource.setValue(claim.total());
+    moneyResource.setValue(claim.getTotalClaimCost());
     moneyResource.setCurrency("USD");
     claimResource.setTotal(moneyResource);
 
@@ -808,13 +807,13 @@ public class FhirR4 {
     claimResource.setType(type);
     claimResource.setUse(org.hl7.fhir.r4.model.Claim.Use.CLAIM);
 
-    // get the insurance info at the time that the encounter happened
-    String insurance = HealthInsuranceModule.getCurrentInsurance(person,
-        encounterResource.getPeriod().getStart().getTime());
+    // Get the insurance info at the time that the encounter occured.
+    Payer payer = person.getPayerAtTime(encounterResource.getPeriod().getStart().getTime());
+
     InsuranceComponent insuranceComponent = new InsuranceComponent();
     insuranceComponent.setSequence(1);
     insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference().setDisplay(insurance));
+    insuranceComponent.setCoverage(new Reference().setDisplay(payer.getName()));
     claimResource.addInsurance(insuranceComponent);
 
     // duration of encounter
@@ -852,7 +851,7 @@ public class FhirR4 {
         // calculate the cost of the procedure
         Money moneyResource = new Money();
         moneyResource.setCurrency("USD");
-        moneyResource.setValue(item.cost());
+        moneyResource.setValue(item.getCost());
         claimItem.setNet(moneyResource);
         claimResource.addItem(claimItem);
 
@@ -901,7 +900,7 @@ public class FhirR4 {
 
     Money moneyResource = new Money();
     moneyResource.setCurrency("USD");
-    moneyResource.setValue(claim.total());
+    moneyResource.setValue(claim.getTotalClaimCost());
     claimResource.setTotal(moneyResource);
 
     return newEntry(bundle, claimResource);
@@ -953,7 +952,7 @@ public class FhirR4 {
     // cost is hardcoded to be USD in claim so this should be fine as well
     Money totalCost = new Money();
     totalCost.setCurrency("USD");
-    totalCost.setValue(encounter.claim.total());
+    totalCost.setValue(encounter.claim.getTotalClaimCost());
     TotalComponent total = eob.addTotal();
     total.setAmount(totalCost);
     Code submitted = new Code("http://terminology.hl7.org/CodeSystem/adjudication",
@@ -1004,21 +1003,21 @@ public class FhirR4 {
     eob.addContained(referral);
     eob.setReferral(new Reference().setReference("#referral"));
 
-    // get the insurance info at the time that the encounter happened
-    String insurance = HealthInsuranceModule.getCurrentInsurance(person, encounter.start);
+    // Get the insurance info at the time that the encounter occured.
+    Payer payer = person.getPayerAtTime(encounter.start);
     Coverage coverage = new Coverage();
     coverage.setId("coverage");
     coverage.setStatus(CoverageStatus.ACTIVE);
-    coverage.setType(new CodeableConcept().setText(insurance));
+    coverage.setType(new CodeableConcept().setText(payer.getName()));
     coverage.setBeneficiary(new Reference(personEntry.getFullUrl()));
-    coverage.addPayor(new Reference().setDisplay(insurance));
+    coverage.addPayor(new Reference().setDisplay(payer.getName()));
     eob.addContained(coverage);
     ExplanationOfBenefit.InsuranceComponent insuranceComponent =
         new ExplanationOfBenefit.InsuranceComponent();
     insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference("#coverage").setDisplay(insurance));
+    insuranceComponent.setCoverage(new Reference("#coverage").setDisplay(payer.getName()));
     eob.addInsurance(insuranceComponent);
-    eob.setInsurer(new Reference().setDisplay(insurance));
+    eob.setInsurer(new Reference().setDisplay(payer.getName()));
 
     org.hl7.fhir.r4.model.Claim claim =
         (org.hl7.fhir.r4.model.Claim) claimEntry.getResource();

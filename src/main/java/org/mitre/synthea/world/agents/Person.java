@@ -18,11 +18,13 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.VitalSign;
 
 public class Person implements Serializable, QuadTreeData {
@@ -72,6 +74,9 @@ public class Person implements Serializable, QuadTreeData {
   public static final String SEXUAL_ORIENTATION = "sexual_orientation";
   public static final String LOCATION = "location";
   public static final String ACTIVE_WEIGHT_MANAGEMENT = "active_weight_management";
+  public static final String BMI_PERCENTILE = "bmi_percentile";
+  private static final String DEDUCTIBLE = "deductible";
+  private static final String LAST_MONTH_PAID = "last_month_paid";
 
   public final Random random;
   public final long seed;
@@ -84,9 +89,21 @@ public class Person implements Serializable, QuadTreeData {
   public HealthRecord record;
   public Map<String, HealthRecord> records;
   public boolean hasMultipleRecords;
-  /** history of the currently active module. */
+  /** History of the currently active module. */
   public List<State> history;
+  /* Person's Payer History. */
+  // Each element in payerHistory array corresponds to the insurance held at that age.
+  public Payer[] payerHistory;
+  // Each element in payerOwnerHistory array corresponds to the owner of the insurance at that age. 
+  private String[] payerOwnerHistory;
+  /* Yearly Healthcare Expenses. */
+  private Map<Integer, Double> healthcareExpensesYearly;
+  /* Yearly Healthcare Coverage. */
+  private Map<Integer, Double> healthcareCoverageYearly;
 
+  /**
+   * Person constructor.
+   */
   public Person(long seed) {
     this.seed = seed; // keep track of seed so it can be exported later
     random = new Random(seed);
@@ -100,39 +117,51 @@ public class Person implements Serializable, QuadTreeData {
       records = new ConcurrentHashMap<String, HealthRecord>();
     }
     record = new HealthRecord(this);
+    // 128 because it's a nice power of 2, and nobody will reach that age
+    payerHistory = new Payer[128];
+    payerOwnerHistory = new String[128];
+    healthcareExpensesYearly = new HashMap<Integer, Double>();
+    healthcareCoverageYearly = new HashMap<Integer, Double>();
   }
 
+  /**
+   * Retuns a random double.
+   */
   public double rand() {
     return random.nextDouble();
   }
 
+  /**
+   * Retuns a random double in the given range.
+   */
   public double rand(double low, double high) {
     return (low + ((high - low) * random.nextDouble()));
   }
-  
+
   /**
-   * Helper function to get a random number based on an array of [min, max].
-   * This should be used primarily when pulling ranges from YML.
+   * Helper function to get a random number based on an array of [min, max]. This
+   * should be used primarily when pulling ranges from YML.
    * 
    * @param range array [min, max]
    * @return random double between min and max
    */
   public double rand(double[] range) {
     if (range == null || range.length != 2) {
-      throw new IllegalArgumentException("input range must be of length 2 -- got "
-          + Arrays.toString(range));
+      throw new IllegalArgumentException(
+          "input range must be of length 2 -- got " + Arrays.toString(range));
     }
-    
+
     if (range[0] > range[1]) {
-      throw new IllegalArgumentException("range must be of the form {low, high} -- got "
-          + Arrays.toString(range));
+      throw new IllegalArgumentException(
+          "range must be of the form {low, high} -- got " + Arrays.toString(range));
     }
-    
+
     return rand(range[0], range[1]);
   }
 
   /**
    * Return one of the options randomly with uniform distribution.
+   * 
    * @param choices The options to be returned.
    * @return One of the options randomly selected.
    */
@@ -141,34 +170,43 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
-   * Helper function to get a random number based on an integer array of [min, max].
-   * This should be used primarily when pulling ranges from YML.
+   * Helper function to get a random number based on an integer array of [min,
+   * max]. This should be used primarily when pulling ranges from YML.
    * 
    * @param range array [min, max]
    * @return random double between min and max
    */
   public double rand(int[] range) {
     if (range == null || range.length != 2) {
-      throw new IllegalArgumentException("input range must be of length 2 -- got "
-          + Arrays.toString(range));
+      throw new IllegalArgumentException(
+          "input range must be of length 2 -- got " + Arrays.toString(range));
     }
-    
+
     if (range[0] > range[1]) {
-      throw new IllegalArgumentException("range must be of the form {low, high} -- got "
-          + Arrays.toString(range));
+      throw new IllegalArgumentException(
+          "range must be of the form {low, high} -- got " + Arrays.toString(range));
     }
-    
+
     return rand(range[0], range[1]);
   }
 
+  /**
+   * Returns a random integer.
+   */
   public int randInt() {
     return random.nextInt();
   }
 
+  /**
+   * Returns a random integer in the given bound.
+   */
   public int randInt(int bound) {
     return random.nextInt(bound);
   }
 
+  /**
+   * Returns a person's age in Period form.
+   */
   public Period age(long time) {
     Period age = Period.ZERO;
 
@@ -183,9 +221,10 @@ public class Person implements Serializable, QuadTreeData {
 
   /**
    * Return the persons age in months at a given time.
+   * 
    * @param time The time when their age should be calculated.
-   * @return age in months. Can never be less than zero,
-   *     even if given a time before they were born.
+   * @return age in months. Can never be less than zero, even if given a time
+   *         before they were born.
    */
   public int ageInMonths(long time) {
     int months = (int) age(time).toTotalMonths();
@@ -196,10 +235,11 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
-   * Return the persons age in years at a given time.
+   * Returns the persons age in years at the given time.
+   * 
    * @param time The time when their age should be calculated.
-   * @return age in years. Can never be less than zero,
-   *     even if given a time before they were born.
+   * @return age in years. Can never be less than zero, even if given a time
+   *         before they were born.
    */
   public int ageInYears(long time) {
     int years = age(time).getYears();
@@ -209,6 +249,9 @@ public class Person implements Serializable, QuadTreeData {
     return years;
   }
 
+  /**
+   * Returns whether a person is alive at the given time.
+   */
   public boolean alive(long time) {
     boolean born = attributes.containsKey(Person.BIRTHDATE);
     Long died = (Long) attributes.get(Person.DEATHDATE);
@@ -237,7 +280,7 @@ public class Person implements Serializable, QuadTreeData {
     return max;
   }
 
-  //Mark the largest valued symptom as addressed.
+  // Mark the largest valued symptom as addressed.
   public void addressLargestSymptom() {
     String highestType = "";
     String highestCause = "";
@@ -260,8 +303,8 @@ public class Person implements Serializable, QuadTreeData {
   public Double getVitalSign(VitalSign vitalSign, long time) {
     ValueGenerator valueGenerator = vitalSigns.get(vitalSign);
     if (valueGenerator == null) {
-      throw new NullPointerException("Vital sign '" + vitalSign
-          + "' not set. Valid vital signs: " + vitalSigns.keySet());
+      throw new NullPointerException(
+          "Vital sign '" + vitalSign + "' not set. Valid vital signs: " + vitalSigns.keySet());
     }
     return valueGenerator.getValue(time);
   }
@@ -277,6 +320,12 @@ public class Person implements Serializable, QuadTreeData {
     setVitalSign(vitalSign, new ConstantValueGenerator(this, value));
   }
 
+  /**
+   * Records a person's death.
+   * 
+   * @param time     the time of death.
+   * @param cause    the cause of death.
+   */
   public void recordDeath(long time, Code cause) {
     if (alive(time)) {
       attributes.put(Person.DEATHDATE, Long.valueOf(time));
@@ -291,7 +340,9 @@ public class Person implements Serializable, QuadTreeData {
 
   /**
    * The total number of all unaddressed symptom severities.
-   * @return total : sum of all the symptom severities. This number drives care-seeking behaviors.
+   * 
+   * @return total : sum of all the symptom severities. This number drives
+   *         care-seeking behaviors.
    */
   public int symptomTotal() {
     int total = 0;
@@ -349,7 +400,7 @@ public class Person implements Serializable, QuadTreeData {
         record.provider = provider;
         records.put(key, record);
       }
-      returnValue = records.get(key);      
+      returnValue = records.get(key);
     }
     return returnValue;
   }
@@ -358,8 +409,8 @@ public class Person implements Serializable, QuadTreeData {
 
   @SuppressWarnings("unchecked")
   public Encounter getCurrentEncounter(Module module) {
-    Map<String, Encounter> moduleToCurrentEncounter = 
-        (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
+    Map<String, Encounter> moduleToCurrentEncounter
+        = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
 
     if (moduleToCurrentEncounter == null) {
       moduleToCurrentEncounter = new HashMap<>();
@@ -371,8 +422,8 @@ public class Person implements Serializable, QuadTreeData {
 
   @SuppressWarnings("unchecked")
   public void setCurrentEncounter(Module module, Encounter encounter) {
-    Map<String, Encounter> moduleToCurrentEncounter = 
-        (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
+    Map<String, Encounter> moduleToCurrentEncounter
+        = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
 
     if (moduleToCurrentEncounter == null) {
       moduleToCurrentEncounter = new HashMap<>();
@@ -396,7 +447,7 @@ public class Person implements Serializable, QuadTreeData {
     }
     return (Provider) attributes.get(key);
   }
-  
+
   public void setProvider(EncounterType type, Provider provider) {
     String key = PREFERREDYPROVIDER + type;
     attributes.put(key, provider);
@@ -435,8 +486,215 @@ public class Person implements Serializable, QuadTreeData {
     }
   }
 
+  /**
+   * Returns the list of this person's Payer history.
+   */
+  public Payer[] getPayerHistory() {
+    return this.payerHistory;
+  }
+
+  /**
+   * Sets the person's payer history at the given time to the given payer.
+   */
+  public void setPayerAtTime(long time, Payer newPayer) {
+    this.setPayerAtAge(this.ageInYears(time), newPayer);
+  }
+
+  /**
+   * Sets the person's payer history at the given age to the given payer.
+   */
+  public void setPayerAtAge(int age, Payer payer) {
+    if (payerHistory[age] != null) {
+      throw new RuntimeException("ERROR: Overwriting a person's insurance at age " + age);
+    }
+    this.payerHistory[age] = payer;
+    this.payerOwnerHistory[age] = determinePayerOwnership(payer, age);
+  }
+
+  /**
+   * Determines and returns what the ownership of the person's insurance at this age.
+   */
+  private String determinePayerOwnership(Payer payer, int age) {
+
+    // Keep previous year's ownership if payer is unchanged and person has not just turned 18.
+    if (this.getPreviousPayerAtAge(age) != null
+        && this.getPreviousPayerAtAge(age).equals(payer)
+        && age != 18) {
+        return this.payerOwnerHistory[age - 1];
+    }
+    // No owner for no insurance.
+    if (payer.equals(Payer.noInsurance)) {
+      return "";
+    }
+    // Standard payer ownership check.
+    if (age < 18 && !payer.getName().equals("Medicaid")) {
+      // If a person is a minor, their Guardian owns their health plan unless it is Medicaid.
+      return "Guardian";
+    } else if ((this.attributes.containsKey(Person.MARITAL_STATUS))
+        && this.attributes.get(Person.MARITAL_STATUS).equals("M")) {
+      // TODO: ownership shouldn't be a coin toss every year
+      // If a person is married, there is a 50% chance their spouse owns their insurance.
+      if (this.rand(0.0, 1.0) < .5) {
+        return "Spouse";
+      }
+    }
+    // If a person is unmarried and over 18, they own their insurance.
+    return "Self";
+  }
+
+  /**
+   * Returns the person's Payer at the given time.
+   */
+  public Payer getPayerAtTime(long time) {
+    return this.payerHistory[this.ageInYears(time)];
+  }
+
+  /**
+   * Returns the person's Payer at the given age.
+   */
+  public Payer getPayerAtAge(int personAge) {
+    return this.payerHistory[personAge];
+  }
+
+  /**
+   * Returns the person's last year's payer from the given time.
+   */
+  public Payer getPreviousPayerAtTime(long time) {
+    return this.getPreviousPayerAtAge(this.ageInYears(time));
+  }
+
+  /**
+   * Returns the person's last year's payer from the given time.
+   */
+  public Payer getPreviousPayerAtAge(int age) {
+    return age > 0 ? this.getPayerAtAge(age - 1) : null;
+  }
+
+  /**
+   * Returns the owner of the peron's payer at the given time.
+   */
+  public String getPayerOwnershipAtTime(long time) {
+    return this.payerOwnerHistory[this.ageInYears(time)];
+  }
+
+  /**
+   * Returns the owner of the peron's payer at the given age.
+   */
+  public String getPayerOwnershipAtAge(int age) {
+    return this.payerOwnerHistory[age];
+  }
+
+  /**
+   * Returns whether or not a person can afford a given payer.
+   * If a person's income is greater than a year of montlhy premiums + deductible
+   * then they can afford the insurance.
+   * 
+   * @param payer the payer to check.
+   */
+  public boolean canAffordPayer(Payer payer) {
+    int income = (Integer) this.attributes.get(Person.INCOME);
+    double yearlyPremiumTotal = payer.getMonthlyPremium() * 12;
+    double yearlyDeductible = payer.getDeductible();
+    return income > (yearlyPremiumTotal + yearlyDeductible);
+  }
+
+  /**
+   * Returns whether or not the person can afford to pay out of pocket for the given encounter.
+   * Defaults to return false for everyone. For now.
+   * 
+   * @param entry the entry to pay for.
+   */
+  public boolean canAffordCare(Entry entry) {
+    // TODO determine if they can afford the care
+    return false;
+  }
+
+  /**
+   * Checks if the person has paid their monthly premium. If not, the person pays
+   * the premium to their current payer.
+   * 
+   * @param time the time that the person checks to pay premium.
+   */
+  public void checkToPayMonthlyPremium(long time) {
+
+    if (!this.attributes.containsKey(Person.LAST_MONTH_PAID)) {
+      this.attributes.put(Person.LAST_MONTH_PAID, 0);
+    }
+
+    int currentMonth = Utilities.getMonth(time);
+    int lastMonthPaid = (int) this.attributes.get(Person.LAST_MONTH_PAID);
+
+    if (currentMonth > lastMonthPaid || (currentMonth == 1 && lastMonthPaid == 12)) {
+
+      // TODO - Check that they can still afford the premium due to any newly incurred health costs.
+
+      // Pay the payer.
+      Payer currentPayer = this.getPayerAtTime(time);
+      this.addExpense(currentPayer.payMonthlyPremium(), time);
+      // Update the last monthly premium paid.
+      this.attributes.put(Person.LAST_MONTH_PAID, currentMonth);
+    }
+  }
+
+  /**
+   * Resets a person's deductible.
+   * 
+   * @param time the time that the person's deductible is reset.
+   */
+  public void resetDeductible(long time) {
+    double deductible = this.getPayerAtTime(time).getDeductible();
+    this.attributes.put(Person.DEDUCTIBLE, deductible);
+  }
+
+  /**
+   * Adds the given cost to the person's expenses.
+   * 
+   * @param costToPatient the cost, after insurance, to this patient.
+   * @param time the time that the expense was incurred.
+   */
+  public void addExpense(double costToPatient, long time) {
+    int age = this.ageInYears(time);
+    healthcareExpensesYearly.merge(age, costToPatient, Double::sum);
+  }
+
+  /**
+   * Adds the given cost to the person's coverage.
+   * 
+   * @param payerCoverage the cost, after insurance, to this patient.
+   * @param time the time that the expense was incurred.
+   */
+  public void addCoverage(double payerCoverage, long time) {
+    int age = this.ageInYears(time);
+    healthcareCoverageYearly.merge(age, payerCoverage, Double::sum);
+  }
+
+  /**
+   * Returns the total healthcare expenses for this person.
+   */
+  public double getHealthcareExpenses() {
+    return healthcareExpensesYearly.values().stream().mapToDouble(Double::doubleValue).sum();
+  }
+
+  /**
+   * Returns the total healthcare coverage for this person.
+   */
+  public double getHealthcareCoverage() {
+    return healthcareCoverageYearly.values().stream().mapToDouble(Double::doubleValue).sum();
+  }
+
+  @SuppressWarnings("unchecked")
+  /**
+   * Returns the person's QOLS at the given time.
+   * 
+   * @param time the time to retrive the qols for.
+   */
+  public double getQolsForYear(int year) {
+    return ((Map<Integer, Double>) this.attributes.get("QOL")).get(year);
+  }
+
   /*
    * (non-Javadoc)
+   * 
    * @see org.apache.sis.index.tree.QuadTreeData#getX()
    */
   @Override
@@ -446,6 +704,7 @@ public class Person implements Serializable, QuadTreeData {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.apache.sis.index.tree.QuadTreeData#getY()
    */
   @Override
@@ -455,6 +714,7 @@ public class Person implements Serializable, QuadTreeData {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.apache.sis.index.tree.QuadTreeData#getLatLon()
    */
   @Override
@@ -464,6 +724,7 @@ public class Person implements Serializable, QuadTreeData {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.apache.sis.index.tree.QuadTreeData#getFileName()
    */
   @Override

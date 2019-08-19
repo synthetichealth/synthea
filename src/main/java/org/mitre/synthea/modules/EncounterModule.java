@@ -91,11 +91,11 @@ public final class EncounterModule extends Module {
         encounter.name = "Encounter Module Symptom Driven";
         person.attributes.put(ACTIVE_URGENT_CARE_ENCOUNTER, true);
         startedEncounter = true;
-      } 
+      }
     } else if (person.symptomTotal() > PCP_SYMPTOM_THRESHOLD) {
       if (!person.attributes.containsKey(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
-      } 
+      }
       if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
         person.addressLargestSymptom();
@@ -104,8 +104,8 @@ public final class EncounterModule extends Module {
         encounter.name = "Encounter Module Symptom Driven";
         person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
         startedEncounter = true;
-      } 
-    } 
+      }
+    }
 
     if (startedEncounter) {
       CardiovascularDiseaseModule.performEncounter(person, time, encounter);

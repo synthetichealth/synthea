@@ -97,10 +97,10 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
-import org.mitre.synthea.world.concepts.HealthRecord.Claim;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -639,6 +639,8 @@ public class FhirDstu2 {
     // add prescription.
     claimResource.setPrescription(new ResourceReferenceDt(medicationEntry.getFullUrl()));
 
+    // TODO add cost information
+
     return newEntry(bundle, claimResource);
   }
 
@@ -704,7 +706,7 @@ public class FhirDstu2 {
         MoneyDt moneyResource = new MoneyDt();
         moneyResource.setCode("USD");
         moneyResource.setSystem("urn:iso:std:iso:4217");
-        moneyResource.setValue(item.cost());
+        moneyResource.setValue(item.getCost());
         procedureItem.setNet(moneyResource);
 
         // assume item type is clinical service invoice

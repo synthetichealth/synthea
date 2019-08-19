@@ -42,7 +42,7 @@ public class QualityOfLifeModule extends Module {
     int year = Utilities.getYear(time);
 
     if (!qalys.containsKey(year)) {
-      // double age = person.ageInYears(time) + 1;
+
       double[] values = calculate(person, time);
 
       dalys.put(year, values[0]);
@@ -50,8 +50,8 @@ public class QualityOfLifeModule extends Module {
       qols.put(year, values[2]);
       person.attributes.put("most-recent-daly", values[0]);
       person.attributes.put("most-recent-qaly", values[1]);
-    }
 
+    }
     // java modules will never "finish"
     return false;
   }
@@ -71,18 +71,20 @@ public class QualityOfLifeModule extends Module {
   }
 
   /**
-   * Calculate the HALYs for this person, at the given time. HALYs include QALY and DALY.
+   * Calculate the HALYs for this person, at the given time. HALYs include QALY
+   * and DALY.
    * 
-   * @param person
-   *          Person to calculate
-   * @param stop
-   *          current timestamp
-   * @return array of [daly (cumulative), qaly (cumulative), current disability weight]
+   * @param person Person to calculate
+   * @param stop   current timestamp
+   * @return array of [daly (cumulative), qaly (cumulative), current disability
+   *         weight]
    */
   public static double[] calculate(Person person, long stop) {
     // Disability-Adjusted Life Year = DALY = YLL + YLD
-    // Years of Life Lost = YLL = (1) * (standard life expectancy at age of death in years)
-    // Years Lost due to Disability = YLD = (disability weight) * (average duration of case)
+    // Years of Life Lost = YLL = (1) * (standard life expectancy at age of death in
+    // years)
+    // Years Lost due to Disability = YLD = (disability weight) * (average duration
+    // of case)
     // from http://www.who.int/healthinfo/global_burden_disease/metrics_daly/en/
     double yll = 0.0;
     double yld = 0.0;
@@ -94,9 +96,15 @@ public class QualityOfLifeModule extends Module {
       // life expectancy equation derived from IHME GBD 2015 Reference Life Table
       // 6E-5x^3 - 0.0054x^2 - 0.8502x + 86.16
       // R^2 = 0.99978
-      double l = ((0.00006 * Math.pow(age, 3)) - (0.0054 * Math.pow(age, 2)) - (0.8502 * age)
-          + 86.16);
+      double l = ((0.00006 * Math.pow(age, 3))
+          - (0.0054 * Math.pow(age, 2)) - (0.8502 * age) + 86.16);
       yll = l;
+
+      // Need to give the yll to the payer here.
+      // person.payer.addQALY(personAge/QALY) or .add(DALY)
+      // At the end, payer averages this data out
+
+      // TODO - It seems as if this does not get reached as often as it should.
     }
     // get list of conditions
     List<Entry> allConditions = new ArrayList<Entry>();
@@ -116,8 +124,8 @@ public class QualityOfLifeModule extends Module {
       disabilityWeight = 0.0;
 
       for (Entry condition : conditionsInYear) {
-        disabilityWeight += (double) disabilityWeights.get(condition.codes.get(0).display)
-            .get("disability_weight");
+        disabilityWeight += (double) disabilityWeights
+            .get(condition.codes.get(0).display).get("disability_weight");
       }
 
       disabilityWeight = Math.min(1.0, weight(disabilityWeight, i + 1));
@@ -130,6 +138,9 @@ public class QualityOfLifeModule extends Module {
     return new double[] { daly, qaly, 1 - disabilityWeight };
   }
 
+  /**
+   * Returns the conditions had in a given year.
+   */
   public static List<Entry> conditionsInYear(List<Entry> conditions, long yearStart, long yearEnd) {
     List<Entry> conditionsInYear = new ArrayList<Entry>();
     for (Entry condition : conditions) {
@@ -154,12 +165,12 @@ public class QualityOfLifeModule extends Module {
   }
 
   /**
-   * Populate the given attribute map with the list of attributes that this
-   * module reads/writes with example values when appropriate.
+   * Populate the given attribute map with the list of attributes that this module
+   * reads/writes with example values when appropriate.
    *
    * @param attributes Attribute map to populate.
    */
-  public static void inventoryAttributes(Map<String,Inventory> attributes) {
+  public static void inventoryAttributes(Map<String, Inventory> attributes) {
     String m = QualityOfLifeModule.class.getSimpleName();
     Attributes.inventory(attributes, m, "QALY", true, true, "LinkedHashMap<Integer, Double>");
     Attributes.inventory(attributes, m, "DALY", true, true, "LinkedHashMap<Integer, Double>");

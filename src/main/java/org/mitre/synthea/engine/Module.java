@@ -28,7 +28,6 @@ import java.util.regex.Matcher;
 
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
 import org.mitre.synthea.modules.EncounterModule;
-import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.modules.WeightLossModule;
@@ -51,9 +50,9 @@ public class Module {
     AtomicInteger submoduleCount = new AtomicInteger();
 
     retVal.put("Lifecycle", new ModuleSupplier(new LifecycleModule()));
+    //retVal.put("Health Insurance", new ModuleSupplier(new HealthInsuranceModule()));
     retVal.put("Cardiovascular Disease", new ModuleSupplier(new CardiovascularDiseaseModule()));
     retVal.put("Quality Of Life", new ModuleSupplier(new QualityOfLifeModule()));
-    retVal.put("Health Insurance", new ModuleSupplier(new HealthInsuranceModule()));
     retVal.put("Weight Loss", new ModuleSupplier(new WeightLossModule()));
 
     try {

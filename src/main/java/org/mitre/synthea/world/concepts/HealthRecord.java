@@ -16,17 +16,22 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 
 /**
- * HealthRecord contains all the coded entries in a person's health record. This class represents a
- * logical health record. Exporters will convert this health record into various standardized
- * formats.
+ * HealthRecord contains all the coded entries in a person's health record. This
+ * class represents a logical health record. Exporters will convert this health
+ * record into various standardized formats.
  */
 public class HealthRecord {
+
+  public static final String ENCOUNTERS = "encounters";
+  public static final String PROCEDURES = "procedures";
+  public static final String MEDICATIONS = "medications";
+  public static final String IMMUNIZATIONS = "immunizations";
+
   /**
    * HealthRecord.Code represents a system, code, and display value.
    */
@@ -41,12 +46,9 @@ public class HealthRecord {
     /**
      * Create a new code.
      *
-     * @param system
-     *          the URI identifier of the code system
-     * @param code
-     *          the code itself
-     * @param display
-     *          human-readable description of the coe
+     * @param system  the URI identifier of the code system
+     * @param code    the code itself
+     * @param display human-readable description of the coe
      */
     public Code(String system, String code, String display) {
       this.system = system;
@@ -57,8 +59,8 @@ public class HealthRecord {
     /**
      * Create a new code from JSON.
      *
-     * @param definition
-     *          JSON object that contains 'system', 'code', and 'display' attributes.
+     * @param definition JSON object that contains 'system', 'code', and 'display'
+     *                   attributes.
      */
     public Code(JsonObject definition) {
       this.system = definition.get("system").getAsString();
@@ -93,13 +95,13 @@ public class HealthRecord {
   }
 
   /**
-   * All things within a HealthRecord are instances of Entry. For example, Observations, Reports,
-   * Medications, etc. All Entries have a name, start and stop times, a type, and a list of
-   * associated codes.
+   * All things within a HealthRecord are instances of Entry. For example,
+   * Observations, Reports, Medications, etc. All Entries have a name, start and
+   * stop times, a type, and a list of associated codes.
    */
   public class Entry {
     /** reference to the HealthRecord this entry belongs to. */
-    private HealthRecord record = HealthRecord.this;
+    HealthRecord record = HealthRecord.this;
     public String fullUrl;
     public String name;
     public long start;
@@ -108,23 +110,37 @@ public class HealthRecord {
     public List<Code> codes;
     private BigDecimal cost;
 
+    /**
+     * Constructor for Entry.
+     */
     public Entry(long start, String type) {
       this.start = start;
       this.type = type;
       this.codes = new ArrayList<Code>();
     }
 
-    public BigDecimal cost() {
-      if (cost == null) {
-        Person patient = record.person;
-        Provider provider = record.provider;
-        String payer = null;
-        cost = BigDecimal.valueOf(Costs.calculateCost(this, patient, provider, payer));
-        cost = cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
-      }
-      return cost;
+    /**
+     * Determines the cost of the entry based on type and location adjustment factors.
+     */
+    void determineCost() {
+      this.cost = BigDecimal.valueOf(Costs.determineCostOfEntry(this, this.record.person));
+      this.cost = this.cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
     }
 
+    /**
+     * Returns the base cost of the entry.
+     */
+    public BigDecimal getCost() {
+      if ((this.cost == null)) {
+        this.determineCost();
+      }
+      return this.cost;
+    }
+
+    /**
+     * Converts the entry to a String.
+     */
+    @Override
     public String toString() {
       return String.format("%s %s", Instant.ofEpochMilli(start).toString(), type);
     }
@@ -137,6 +153,9 @@ public class HealthRecord {
     public List<Observation> observations;
     public Report report;
 
+    /**
+     * Constructor for Observation HealthRecord Entry.
+     */
     public Observation(long time, String type, Object value) {
       super(time, type);
       this.value = value;
@@ -147,6 +166,9 @@ public class HealthRecord {
   public class Report extends Entry {
     public List<Observation> observations;
 
+    /**
+     * Constructor for Report HealthRecord Entry.
+     */
     public Report(long time, String type, List<Observation> observations) {
       super(time, type);
       this.observations = observations;
@@ -160,16 +182,23 @@ public class HealthRecord {
     public Claim claim;
     public boolean administration;
 
+    /**
+     * Constructor for Medication HealthRecord Entry.
+     */
     public Medication(long time, String type) {
       super(time, type);
       this.reasons = new ArrayList<Code>();
-      this.claim = new Claim(this);
+      // Create a medication claim.
+      this.claim = new Claim(this, person);
     }
   }
 
   public class Immunization extends Entry {
     public int series = -1;
 
+    /**
+     * Constructor for Immunization HealthRecord Entry.
+     */
     public Immunization(long start, String type) {
       super(start, type);
     }
@@ -180,6 +209,9 @@ public class HealthRecord {
     public Provider provider;
     public Clinician clinician;
 
+    /**
+     * Constructor for Procedure HealthRecord Entry.
+     */
     public Procedure(long time, String type) {
       super(time, type);
       this.reasons = new ArrayList<Code>();
@@ -193,6 +225,9 @@ public class HealthRecord {
     public Set<JsonObject> goals;
     public Code stopReason;
 
+    /**
+     * Constructor for CarePlan HealthRecord Entry.
+     */
     public CarePlan(long time, String type) {
       super(time, type);
       this.activities = new LinkedHashSet<Code>();
@@ -205,6 +240,9 @@ public class HealthRecord {
     public String dicomUid;
     public List<Series> series;
 
+    /**
+     * Constructor for ImagingStudy HealthRecord Entry.
+     */
     public ImagingStudy(long time, String type) {
       super(time, type);
       this.dicomUid = Utilities.randomDicomUid(0, 0);
@@ -212,16 +250,19 @@ public class HealthRecord {
     }
 
     /**
-     * ImagingStudy.Series represents a series of images that were taken of
-     * a specific part of the body.
+     * ImagingStudy.Series represents a series of images that were taken of a
+     * specific part of the body.
      */
     public class Series {
       /** A randomly assigned DICOM UID. */
       public transient String dicomUid;
       /** A SNOMED-CT body structures code. */
       public Code bodySite;
-      /** A DICOM acquisition modality code.
-       * @see <a href="https://www.hl7.org/fhir/valueset-dicom-cid29.html">DICOM modality codes</a>
+      /**
+       * A DICOM acquisition modality code.
+       * 
+       * @see <a href="https://www.hl7.org/fhir/valueset-dicom-cid29.html">DICOM
+       *      modality codes</a>
        */
       public Code modality;
       /** One or more imaging Instances that belong to this Series. */
@@ -229,8 +270,8 @@ public class HealthRecord {
     }
 
     /**
-     * ImagingStudy.Instance represents a single imaging Instance taken as
-     * part of a Series of images.
+     * ImagingStudy.Instance represents a single imaging Instance taken as part of a
+     * Series of images.
      */
     public class Instance {
       /** A randomly assigned DICOM UID. */
@@ -239,59 +280,16 @@ public class HealthRecord {
       public String title;
       /**
        * A DICOM Service-Object Pair (SOP) class.
+       * 
        * @see <a href="https://www.dicomlibrary.com/dicom/sop/">DICOM SOP codes</a>
        */
       public Code sopClass;
     }
   }
 
-  public class Claim {
-    public double baseCost;
-    public Encounter encounter;
-    public Medication medication;
-    public List<Entry> items;
-    public String insurance;
-
-    public Claim(Encounter encounter) {
-      this.insurance = HealthInsuranceModule.getCurrentInsurance(person, encounter.start);
-
-      // Encounter inpatient
-      if (encounter.type.equalsIgnoreCase("inpatient")) {
-        baseCost = 75.00;
-      } else {
-        // Outpatient Encounter, Encounter for 'checkup', Encounter for symptom, Encounter for
-        // problem,
-        // patient initiated encounter, patient encounter procedure
-        baseCost = 125.00;
-      }
-      this.encounter = encounter;
-      items = new ArrayList<>();
-    }
-
-    public Claim(Medication medication) {
-      baseCost = 255.0;
-      this.medication = medication;
-      items = new ArrayList<>();
-    }
-
-    public void addItem(Entry entry) {
-      items.add(entry);
-    }
-
-    public BigDecimal total() {
-      BigDecimal total = BigDecimal.valueOf(baseCost);
-
-      for (Entry lineItem : items) {
-        total = total.add(lineItem.cost());
-      }
-      return total;
-    }
-  }
-
   public enum EncounterType {
-    WELLNESS("AMB"), AMBULATORY("AMB"),
-    OUTPATIENT("AMB"), INPATIENT("IMP"),
-    EMERGENCY("EMER"), URGENTCARE("AMB");
+    WELLNESS("AMB"), AMBULATORY("AMB"), OUTPATIENT("AMB"),
+        INPATIENT("IMP"), EMERGENCY("EMER"), URGENTCARE("AMB");
 
     // http://www.hl7.org/implement/standards/fhir/v3/ActEncounterCode/vs.html
     private final String code;
@@ -300,9 +298,16 @@ public class HealthRecord {
       this.code = code;
     }
 
+    /**
+     * Convert the given string into an EncounterType.
+     * 
+     * @param value the string to convert.
+     */
     public static EncounterType fromString(String value) {
       if (value == null) {
         return EncounterType.AMBULATORY;
+      } else if (value.equals("super")) {
+        return EncounterType.INPATIENT;
       } else {
         return EncounterType.valueOf(value.toUpperCase());
       }
@@ -312,6 +317,10 @@ public class HealthRecord {
       return this.code;
     }
 
+    /**
+     * Convert this EncounterType into a string.
+     */
+    @Override
     public String toString() {
       return this.name().toLowerCase();
     }
@@ -356,7 +365,7 @@ public class HealthRecord {
       medications = new ArrayList<Medication>();
       careplans = new ArrayList<CarePlan>();
       imagingStudies = new ArrayList<ImagingStudy>();
-      claim = new Claim(this);
+      this.claim = new Claim(this, person);
     }
   }
 
@@ -416,6 +425,7 @@ public class HealthRecord {
       encounter = new Encounter(time, EncounterType.WELLNESS.toString());
       encounter.name = "First Wellness";
       encounters.add(encounter);
+      System.out.println("First encounter at " + person.ageInYears(time));
     }
     return encounter;
   }
@@ -442,8 +452,8 @@ public class HealthRecord {
     int count = numberOfObservations;
     if (encounter.observations.size() >= numberOfObservations) {
       while (count > 0) {
-        observation.observations
-            .add(encounter.observations.remove(encounter.observations.size() - 1));
+        observation.observations.add(encounter.observations.remove(
+            encounter.observations.size() - 1));
         count--;
       }
     }
@@ -468,7 +478,7 @@ public class HealthRecord {
       Entry condition = new Entry(time, primaryCode);
       Encounter encounter = currentEncounter(time);
       encounter.conditions.add(condition);
-      encounter.claim.addItem(condition);
+      encounter.claim.addLineItem(condition);
       present.put(primaryCode, condition);
     }
     return present.get(primaryCode);
@@ -537,7 +547,7 @@ public class HealthRecord {
     Procedure procedure = new Procedure(time, type);
     Encounter encounter = currentEncounter(time);
     encounter.procedures.add(procedure);
-    encounter.claim.addItem(procedure);
+    encounter.claim.addLineItem(procedure);
     present.put(type, procedure);
     return procedure;
   }
@@ -558,13 +568,27 @@ public class HealthRecord {
     return report;
   }
 
+  /**
+   * Starts an encounter of the given type at the given time.
+   * 
+   * @param time the start time of the encounter.
+   * @param type the type of the encounter.
+   * @return
+   */
   public Encounter encounterStart(long time, EncounterType type) {
     Encounter encounter = new Encounter(time, type.toString());
     encounters.add(encounter);
     return encounter;
   }
 
+  /**
+   * Ends an encounter.
+   * 
+   * @param time the end time of the encounter.
+   * @param type the type of the encounter.
+   */
   public void encounterEnd(long time, EncounterType type) {
+
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
       EncounterType encounterType = EncounterType.fromString(encounter.type);
@@ -582,6 +606,9 @@ public class HealthRecord {
             encounter.stop += procedureTime;
           }
         }
+        // Update Costs/Claim infomation.
+        encounter.determineCost();
+        encounter.claim.assignCosts();
         return;
       }
     }
@@ -591,7 +618,7 @@ public class HealthRecord {
     Immunization immunization = new Immunization(time, type);
     Encounter encounter = currentEncounter(time);
     encounter.immunizations.add(immunization);
-    encounter.claim.addItem(immunization);
+    encounter.claim.addLineItem(immunization);
     return immunization;
   }
 
@@ -612,6 +639,9 @@ public class HealthRecord {
       Medication medication = (Medication) present.get(type);
       medication.stop = time;
       medication.stopReason = reason;
+      // Update Costs/Claim infomation.
+      medication.determineCost();
+      medication.claim.assignCosts();
       present.remove(type);
     }
   }
@@ -688,7 +718,9 @@ public class HealthRecord {
   }
 
   /**
-   * Assigns random DICOM UIDs to each Series and Instance in an imaging study after creation.
+   * Assigns random DICOM UIDs to each Series and Instance in an imaging study
+   * after creation.
+   * 
    * @param study the ImagingStudy to populate with DICOM UIDs.
    */
   private void assignImagingStudyDicomUids(ImagingStudy study) {

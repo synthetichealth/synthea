@@ -241,7 +241,6 @@ public abstract class State implements Cloneable {
         if (encounter != null) {
           person.setCurrentEncounter(module, encounter);
         }
-
         return true;
       } else {
         // reset person.history to this module's history

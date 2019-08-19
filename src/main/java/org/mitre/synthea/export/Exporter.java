@@ -259,6 +259,7 @@ public abstract class Exporter {
     if (Boolean.parseBoolean(Config.get("exporter.csv.export"))) {
       try {
         CSVExporter.getInstance().exportOrganizationsAndProviders();
+        CSVExporter.getInstance().exportPayers();
       } catch (IOException e) {
         e.printStackTrace();
       }

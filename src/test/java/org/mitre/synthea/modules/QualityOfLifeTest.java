@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -26,8 +27,13 @@ public class QualityOfLifeTest {
    */
   @Before
   public void init() {
+    // Create Person
     person = new Person(0);
     person.attributes.put(Person.BIRTHDATE, 0L);
+
+    // Ensure Person's payer is not null
+    Payer.loadNoInsurance();
+    person.setPayerAtTime(0L, Payer.noInsurance);
 
     // Diabetes - code = 44054006; dw = 0.049
     // ADD - code = 192127007; dw = 0.045
@@ -40,6 +46,7 @@ public class QualityOfLifeTest {
     // |-----|-----|-----|-----|-----|-----|-----|
     // 0 5 10 15 20 25 30 35
 
+    person.setPayerAtTime(TimeUnit.DAYS.toMillis((long) (365.25 * 10)), Payer.noInsurance);
     Entry addCondition = person.record.conditionStart(TimeUnit.DAYS.toMillis((long) (365.25 * 10)),
         "192127007");
     addCondition.name = "Child attention deficit disorder";
