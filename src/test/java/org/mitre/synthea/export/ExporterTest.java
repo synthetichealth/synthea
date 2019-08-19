@@ -43,7 +43,9 @@ public class ExporterTest {
     record = patient.record;
     // Ensure Person's Payer is not null.
     Payer.loadNoInsurance();
-    patient.setPayerAtTime(time, Payer.noInsurance);
+    for (int i = 0; i < patient.payerHistory.length; i++) {
+      patient.setPayerAtAge(i, Payer.noInsurance);
+    }
   }
 
   @Test public void test_export_filter_simple_cutoff() {

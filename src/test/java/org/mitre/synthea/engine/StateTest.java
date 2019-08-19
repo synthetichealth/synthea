@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
@@ -35,7 +34,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
-import org.mitre.synthea.world.geography.Location;
 import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
 
@@ -74,8 +72,10 @@ public class StateTest {
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
 
-    Payer.loadPayers(new Location("Massachusetts", null));
-    person.setPayerAtTime(time, Payer.noInsurance);
+    Payer.loadNoInsurance();
+    for (int i = 0; i < person.payerHistory.length; i++) {
+      person.setPayerAtAge(i, Payer.noInsurance);
+    }
   }
 
   private void simulateWellnessEncounter(Module module) {
@@ -981,9 +981,6 @@ public class StateTest {
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
 
-    // Give person a payer at the time to prevent null pointer
-    person.setPayerAtTime(time, Payer.noInsurance);
-
     // Prevent Null Pointer by giving the person their QOLS
     Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
     qolsByYear.put(Utilities.getYear(time) - 1, 1.0);
@@ -1065,9 +1062,6 @@ public class StateTest {
     simulateWellnessEncounter(module);
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
-
-    // Give person a payer at the time to prevent null pointer
-    person.setPayerAtTime(time, Payer.noInsurance);
 
     // Prevent Null Pointer by giving the person their QOLS
     Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
@@ -1501,7 +1495,6 @@ public class StateTest {
       Module module = TestHelper.getFixture("recursively_calls_submodules.json");
       while (!module.process(person, time)) {
         time += Utilities.convertTime("years", 1);
-        person.setPayerAtTime(time, Payer.noInsurance);
       }
 
       // main module has 5 states, with the callsubmodule counted 2x

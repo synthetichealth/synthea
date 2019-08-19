@@ -520,7 +520,7 @@ public class Person implements Serializable, QuadTreeData {
     if (this.getPreviousPayerAtAge(age) != null
         && this.getPreviousPayerAtAge(age).equals(payer)
         && age != 18) {
-        return this.payerOwnerHistory[age - 1];
+      return this.payerOwnerHistory[age - 1];
     }
     // No owner for no insurance.
     if (payer.equals(Payer.noInsurance)) {
