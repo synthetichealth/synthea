@@ -107,14 +107,14 @@ import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Clinician;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
-import org.mitre.synthea.world.concepts.HealthRecord.Claim;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -754,7 +754,7 @@ public class FhirStu3 {
     claimResource.setPrescription(new Reference(medicationEntry.getFullUrl()));
 
     Money moneyResource = new Money();
-    moneyResource.setValue(claim.total());
+    moneyResource.setValue(claim.getTotalClaimCost());
     moneyResource.setCode("USD");
     moneyResource.setSystem("urn:iso:std:iso:4217");
     claimResource.setTotal(moneyResource);
@@ -810,7 +810,7 @@ public class FhirStu3 {
         Money moneyResource = new Money();
         moneyResource.setCode("USD");
         moneyResource.setSystem("urn:iso:std:iso:4217");
-        moneyResource.setValue(item.cost());
+        moneyResource.setValue(item.getCost());
         claimItem.setNet(moneyResource);
 
         if (item instanceof HealthRecord.Procedure) {
@@ -860,7 +860,7 @@ public class FhirStu3 {
     Money moneyResource = new Money();
     moneyResource.setCode("USD");
     moneyResource.setSystem("urn:iso:std:iso:4217");
-    moneyResource.setValue(claim.total());
+    moneyResource.setValue(claim.getTotalClaimCost());
     claimResource.setTotal(moneyResource);
 
     return newEntry(bundle, claimResource);
@@ -1121,7 +1121,7 @@ public class FhirStu3 {
     Money totalCost = new Money();
     totalCost.setSystem("urn:iso:std:iso:4217");
     totalCost.setCode("USD");
-    totalCost.setValue(encounter.claim.total());
+    totalCost.setValue(encounter.claim.getTotalClaimCost());
     eob.setTotalCost(totalCost);
 
     // Set References
@@ -1136,11 +1136,12 @@ public class FhirStu3 {
       eob.setOrganization(new Reference().setIdentifier(identifier));
     }
 
-    // get the insurance info at the time that the encounter happened
-    String insurance = HealthInsuranceModule.getCurrentInsurance(person, encounter.start);
+    // Get the insurance info at the time that the encounter happened.
+    Payer payer = person.getPayerAtTime(encounter.start);
+
     Coverage coverage = new Coverage();
     coverage.setId("coverage");
-    coverage.setType(new CodeableConcept().setText(insurance));
+    coverage.setType(new CodeableConcept().setText(payer.getName()));
     eob.addContained(coverage);
     ExplanationOfBenefit.InsuranceComponent insuranceComponent =
         new ExplanationOfBenefit.InsuranceComponent();

@@ -1,7 +1,5 @@
 package org.mitre.synthea.modules;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import org.mitre.synthea.engine.Module;
@@ -9,139 +7,101 @@ import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.Provider;
-import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.agents.behaviors.IPayerFinder;
 
 public class HealthInsuranceModule extends Module {
-  public static final String INSURANCE = "insurance";
 
-  public static final String NO_INSURANCE = "no_insurance";
-  public static final String PRIVATE = "private";
-  public static final String MEDICAID = "medicaid";
-  public static final String MEDICARE = "medicare";
-  public static final String DUAL_ELIGIBLE = "dual_eligible";
+  // Load properties insurance numbers.
+  public static long mandateTime
+      = Utilities.convertCalendarYearsToTime(Integer.parseInt(Config
+      .get("generate.insurance.mandate.year", "2006")));
+  public static double mandateOccupation = Double
+      .parseDouble(Config.get("generate.insurance.mandate.occupation", "0.2"));
+  public static double medicaidLevel = 1.33 * Double
+      .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
 
-  public long mandateTime;
-  public double mandateOccupation;
-  public int privateIncomeThreshold;
-  public double povertyLevel;
-  public double medicaidLevel;
+  /**
+   * HealthInsuranceModule constructor.
+   */
+  public HealthInsuranceModule() {}
 
-  public HealthInsuranceModule() {
-    int mandateYear = Integer.parseInt(Config.get("generate.insurance.mandate.year", "2006"));
-    mandateTime = Utilities.convertCalendarYearsToTime(mandateYear);
-    mandateOccupation = Double
-        .parseDouble(Config.get("generate.insurance.mandate.occupation", "0.2"));
-    privateIncomeThreshold = Integer
-        .parseInt(Config.get("generate.insurance.private.minimum_income", "24000"));
-    povertyLevel = Double
-        .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
-    medicaidLevel = 1.33 * povertyLevel;
-  }
-
-  @SuppressWarnings("unchecked")
+  /**
+   * Process this HealthInsuranceModule with the given Person at the specified
+   * time within the simulation.
+   * 
+   * @param person the person being simulated
+   * @param time   the date within the simulated world
+   * @return completed : whether or not this Module completed.
+   */
+  @Override
   public boolean process(Person person, long time) {
+    
+    // If the payerHistory at the current age is null, they must get insurance for the new year.
+    // Note: This means the person will check to change insurance yearly, just after their
+    // birthday.
+    if (person.getPayerAtTime(time) == null) {
+      // Update their last payer with person's QOLS for that year.
+      if (person.getPreviousPayerAtTime(time) != null) {
+        person.getPreviousPayerAtTime(time).addQols(
+            person.getQolsForYear(Utilities.getYear(time) - 1));
+      }
 
-    if (!person.attributes.containsKey(INSURANCE)) {
-      // use 128 because it's a nice power of 2, and nobody will reach that age
-      // nulls indicate not set
-      person.attributes.put(INSURANCE, Arrays.asList(new String[128]));
+      // Determine the insurance for this person at this time.
+      Payer newPayer = determineInsurance(person, time);
+      // Set this new payer at the current time for the person.
+      person.setPayerAtTime(time, newPayer);
+      // Reset the person's yearly deductible.
+      person.resetDeductible(time);
+      // Update the new Payer's customer statistics.
+      newPayer.incrementCustomers(person);
     }
 
-    List<String> insurance = (List<String>) person.attributes.get(INSURANCE);
-
-    int age = person.ageInYears(time);
-
-    if (insurance.get(age) == null) {
-      String previous = null;
-      if (age >= 1) {
-        previous = insurance.get(age - 1);
-      }
-      String current = determineInsurance(person, age, time);
-      if (current != previous && Provider.PROVIDER_SELECTION_BEHAVIOR.equals(Provider.NETWORK)) {
-        // update providers if we are considering insurance networks
-        for (EncounterType type : EncounterType.values()) {
-          person.setProvider(type, time);
-        }
-      }
-      insurance.set(age, current);
-    }
+    // Checks if person has paid their premium this month. If not, they pay it.
+    person.checkToPayMonthlyPremium(time);
 
     // java modules will never "finish"
     return false;
   }
 
-  private String determineInsurance(Person person, int age, long time) {
-    boolean female = (person.attributes.get(Person.GENDER).equals("F"));
-    boolean pregnant = (person.attributes.containsKey("pregnant")
-        && (boolean) person.attributes.get("pregnant"));
-    boolean blind = (person.attributes.containsKey("blindness")
-        && (boolean) person.attributes.get("blindness"));
-    boolean esrd = (person.attributes.containsKey("end_stage_renal_disease")
-        && (boolean) person.attributes.get("end_stage_renal_disease"));
-    boolean sixtyFive = (age >= 65);
-    double occupation = (Double) person.attributes.get(Person.OCCUPATION_LEVEL);
-    int income = (Integer) person.attributes.get(Person.INCOME);
-    boolean medicaidIncomeEligible = (income <= medicaidLevel);
-
-    boolean medicare = false;
-    boolean medicaid = false;
-
-    if (sixtyFive || esrd) {
-      medicare = true;
-    }
-
-    if ((female && pregnant) || blind || medicaidIncomeEligible) {
-      medicaid = true;
-    }
-
-    if (medicare && medicaid) {
-      return DUAL_ELIGIBLE;
-    } else if (medicare) {
-      return MEDICARE;
-    } else if (medicaid) {
-      return MEDICAID;
-    } else {
-      if (time >= mandateTime && occupation >= mandateOccupation) {
-        return PRIVATE;
-      }
-      if (income >= privateIncomeThreshold) {
-        return PRIVATE;
-      }
-    }
-
-    return NO_INSURANCE;
-  }
-
   /**
-   * Get the insurance recorded for a person at a given time. The time
-   * must not be in the future or beyond the latest simulated date.
-   * @param person The person under question.
-   * @return A string categorization of insurance.
+   * Determine what insurance a person will get based on their attributes.
+   *
+   * @param person the person to cover
+   * @param time   the current time to consider
+   * @return the insurance that this person gets
    */
-  @SuppressWarnings("unchecked")
-  public static String getCurrentInsurance(Person person, long time) {
-    String result = NO_INSURANCE;
-    if (person.attributes.containsKey(INSURANCE)) {
-      List<String> insurance = (List<String>) person.attributes.get(INSURANCE);
-      int age = person.ageInYears(time);
-      if (insurance.size() > age && insurance.get(age) != null) {
-        result = insurance.get(age);
-      }
+  private Payer determineInsurance(Person person, long time) {
+
+    // If Medicare/Medicaid will accept this person, then it takes priority.
+    if (Payer.getGovernmentPayer("Medicare").accepts(person, time)
+        && Payer.getGovernmentPayer("Medicaid").accepts(person, time)) {
+      return Payer.getGovernmentPayer("Dual Eligible");
+    } else if (Payer.getGovernmentPayer("Medicare").accepts(person, time)) {
+      return Payer.getGovernmentPayer("Medicare");
+    } else if (Payer.getGovernmentPayer("Medicaid").accepts(person, time)) {
+      return Payer.getGovernmentPayer("Medicaid");
+    } else if (person.getPreviousPayerAtTime(time) != null
+        && IPayerFinder.meetsBasicRequirements(
+        person.getPreviousPayerAtTime(time), person, null, time)) {
+      // People will keep their previous year's insurance if they can.
+      return person.getPreviousPayerAtTime(time);
+    } else {
+      // Randomly choose one of the remaining private payers.
+      // Returns no_insurance if a person cannot afford any of them.
+      return Payer.findPayer(person, null, time);
     }
-    return result;
   }
 
   /**
-   * Populate the given attribute map with the list of attributes that this
-   * module reads/writes with example values when appropriate.
+   * Populate the given attribute map with the list of attributes that this module
+   * reads/writes with example values when appropriate.
    *
    * @param attributes Attribute map to populate.
    */
-  public static void inventoryAttributes(Map<String,Inventory> attributes) {
+  public static void inventoryAttributes(Map<String, Inventory> attributes) {
     String m = HealthInsuranceModule.class.getSimpleName();
-    Attributes.inventory(attributes, m, INSURANCE, true, true, "List<String>");
     Attributes.inventory(attributes, m, "pregnant", true, false, "Boolean");
     Attributes.inventory(attributes, m, "blindness", true, false, "Boolean");
     Attributes.inventory(attributes, m, "end_stage_renal_disease", true, false, "Boolean");

@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -56,8 +57,10 @@ public class LogicTest {
     mock = Mockito.mock(Provider.class);
     mock.uuid = "Mock-Emergency";
     person.setProvider(EncounterType.EMERGENCY, mock);
-
     time = System.currentTimeMillis();
+    // Ensure Person's Payer is not null.
+    Payer.loadNoInsurance();
+    person.setPayerAtTime(time, Payer.noInsurance);
 
     Path modulesFolder = Paths.get("src/test/resources/generic");
     Path logicFile = modulesFolder.resolve("logic.json");

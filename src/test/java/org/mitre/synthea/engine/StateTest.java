@@ -9,6 +9,9 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import ca.uhn.fhir.model.dstu2.resource.MedicationOrder;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
@@ -16,10 +19,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -27,8 +32,10 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.geography.Location;
 import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
+
 
 public class StateTest {
 
@@ -41,11 +48,16 @@ public class StateTest {
    */
   @Before
   public void setup() throws IOException {
+    time = System.currentTimeMillis();
+
     person = new Person(0L);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.FIRST_LANGUAGE, "spanish");
     person.attributes.put(Person.RACE, "other");
     person.attributes.put(Person.ETHNICITY, "hispanic");
+    person.attributes.put(Person.INCOME, Integer.parseInt(Config
+        .get("generate.demographics.socioeconomic.income.poverty")) * 2);
+    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
 
     person.history = new LinkedList<>();
     Provider mock = Mockito.mock(Provider.class);
@@ -54,12 +66,13 @@ public class StateTest {
     person.setProvider(EncounterType.WELLNESS, mock);
     person.setProvider(EncounterType.EMERGENCY, mock);
     person.setProvider(EncounterType.INPATIENT, mock);
-
+    
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
     person.events.create(birthTime, Event.BIRTH, "Generator.run", true);
 
-    time = System.currentTimeMillis();
+    Payer.loadPayers(new Location("Massachusetts", null));
+    person.setPayerAtTime(time, Payer.noInsurance);
   }
 
   private void simulateWellnessEncounter(Module module) {
@@ -780,6 +793,11 @@ public class StateTest {
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
 
+    // Prevent Null Pointer by giving the person their QOLS
+    Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
+    qolsByYear.put(Utilities.getYear(time) - 1, 1.0);
+    person.attributes.put("QOL", qolsByYear);
+
     // Now process the prescription
     State med = module.getState("Metformin");
     assertTrue(med.process(person, time));
@@ -810,6 +828,11 @@ public class StateTest {
     simulateWellnessEncounter(module);
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
+
+    // Prevent Null Pointer by giving the person their QOLS
+    Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
+    qolsByYear.put(Utilities.getYear(time) - 1, 1.0);
+    person.attributes.put("QOL", qolsByYear);
 
     // Now process the prescription
     State med = module.getState("Metformin_With_Dosage");
@@ -842,6 +865,11 @@ public class StateTest {
     simulateWellnessEncounter(module);
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
+
+    // Prevent Null Pointer by giving the person their QOLS
+    Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
+    qolsByYear.put(Utilities.getYear(time) - 1, 1.0);
+    person.attributes.put("QOL", qolsByYear);
 
     // Now process the prescription
     State med = module.getState("Tylenol_As_Needed");
@@ -916,6 +944,14 @@ public class StateTest {
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
 
+    // Give person a payer at the time to prevent null pointer
+    person.setPayerAtTime(time, Payer.noInsurance);
+
+    // Prevent Null Pointer by giving the person their QOLS
+    Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
+    qolsByYear.put(Utilities.getYear(time) - 1, 1.0);
+    person.attributes.put("QOL", qolsByYear);
+
     // Now process the prescription
     State med = module.getState("Insulin_Start");
     assertTrue(med.process(person, time));
@@ -952,6 +988,11 @@ public class StateTest {
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
 
+    // Prevent Null Pointer by giving the person their QOLS
+    Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
+    qolsByYear.put(Utilities.getYear(time) - 1, 1.0);
+    person.attributes.put("QOL", qolsByYear);
+
     // Now process the prescription
     State med = module.getState("Bromocriptine_Start");
     assertTrue(med.process(person, time));
@@ -987,6 +1028,14 @@ public class StateTest {
     simulateWellnessEncounter(module);
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
+
+    // Give person a payer at the time to prevent null pointer
+    person.setPayerAtTime(time, Payer.noInsurance);
+
+    // Prevent Null Pointer by giving the person their QOLS
+    Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
+    qolsByYear.put(Utilities.getYear(time) - 1, 1.0);
+    person.attributes.put("QOL", qolsByYear);
 
     // Now process the prescription
     State med = module.getState("Metformin_Start");
@@ -1346,6 +1395,7 @@ public class StateTest {
       Module module = TestHelper.getFixture("recursively_calls_submodules.json");
       while (!module.process(person, time)) {
         time += Utilities.convertTime("years", 1);
+        person.setPayerAtTime(time, Payer.noInsurance);
       }
 
       // main module has 5 states, with the callsubmodule counted 2x

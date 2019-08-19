@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -30,6 +31,7 @@ public class DeathModuleTest {
   @Before
   public void setup() throws IOException {
     person = new Person(0L);
+    time = System.currentTimeMillis();
 
     person.history = new LinkedList<>();
     Provider mock = Mockito.mock(Provider.class);
@@ -42,8 +44,8 @@ public class DeathModuleTest {
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
     person.events.create(birthTime, Event.BIRTH, "Generator.run", true);
-
-    time = System.currentTimeMillis();
+    Payer.loadNoInsurance();
+    person.setPayerAtTime(time, Payer.noInsurance);
   }
 
   @Test
