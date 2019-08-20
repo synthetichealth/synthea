@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
@@ -417,7 +416,7 @@ public class CSVExporter {
     s.append(personID).append(',');
     s.append(dateFromTimestamp((long) person.attributes.get(Person.BIRTHDATE))).append(',');
     if (!person.alive(time)) {
-      s.append(dateFromTimestamp(person.events.event(Event.DEATH).time));
+      s.append(dateFromTimestamp((Long) person.attributes.get(Person.DEATHDATE)));
     }
 
     for (String attribute : new String[] {

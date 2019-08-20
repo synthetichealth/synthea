@@ -26,7 +26,8 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "Dialysis"
+      "direct_transition": "Dialysis",
+      "reason": "dialysis_reason"
     },
     "Dialysis": {
       "type": "Procedure",
@@ -85,7 +86,8 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "Record_CMP"
+      "direct_transition": "Record_CMP",
+      "reason": "dialysis_reason"
     },
     "end encounter": {
       "type": "EncounterEnd",

@@ -273,7 +273,6 @@
     },
     "Initial_FEV_Test": {
       "type": "Procedure",
-      "target_encounter": "DiagnosisEncounter",
       "reason": "copd_variant",
       "codes": [
         {
@@ -319,7 +318,6 @@
     },
     "Nonsmoker_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "DiagnosisEncounter",
       "reason": "copd_variant",
       "codes": [
         {
@@ -344,7 +342,6 @@
     },
     "Smoker_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "DiagnosisEncounter",
       "reason": "copd_variant",
       "codes": [
         {
@@ -614,7 +611,6 @@
     },
     "Followup_FEV_Test": {
       "type": "Procedure",
-      "target_encounter": "COPD_Followup_Encounter",
       "reason": "copd_variant",
       "codes": [
         {
@@ -798,7 +794,6 @@
     },
     "Prescribe_Medication": {
       "type": "MedicationOrder",
-      "target_encounter": "COPD_Followup_Encounter",
       "reason": "copd_variant",
       "codes": [
         {
@@ -923,7 +918,6 @@
     },
     "Lung_Transplant": {
       "type": "Procedure",
-      "target_encounter": "Surgery_Encounter",
       "reason": "copd_variant",
       "codes": [
         {
@@ -941,7 +935,6 @@
     },
     "Lung_Volume_Reduction": {
       "type": "Procedure",
-      "target_encounter": "Surgery_Encounter",
       "reason": "copd_variant",
       "codes": [
         {
@@ -958,7 +951,6 @@
     },
     "Pulmonary_Rehab": {
       "type": "Procedure",
-      "target_encounter": "COPD_Followup_Encounter",
       "reason": "copd_variant",
       "codes": [
         {

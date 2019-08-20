@@ -102,7 +102,6 @@ import org.hl7.fhir.r4.model.Type;
 import org.hl7.fhir.r4.model.codesystems.DoseRateType;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
-import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -529,7 +528,7 @@ public class FhirR4 {
 
     if (!person.alive(stopTime)) {
       patientResource.setDeceased(
-          convertFhirDateTime(person.events.event(Event.DEATH).time, true));
+          convertFhirDateTime((Long) person.attributes.get(Person.DEATHDATE), true));
     }
 
     String generatedBySynthea =
@@ -1657,7 +1656,7 @@ public class FhirR4 {
   }
 
   /**
-   * Add a MedicationAdministration if needed for the given medication
+   * Add a MedicationAdministration if needed for the given medication.
    * 
    * @param personEntry       The Entry for the Person
    * @param bundle            Bundle to add the MedicationAdministration to
@@ -1666,9 +1665,11 @@ public class FhirR4 {
    * @param medicationRequest The related medicationRequest
    * @return The added Entry
    */
-  private static BundleEntryComponent medicationAdministration(BundleEntryComponent personEntry, Bundle bundle,
-      BundleEntryComponent encounterEntry, Medication medication, MedicationRequest medicationRequest) {
-      MedicationAdministration medicationResource = new MedicationAdministration();
+  private static BundleEntryComponent medicationAdministration(
+      BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
+      Medication medication, MedicationRequest medicationRequest) {
+
+    MedicationAdministration medicationResource = new MedicationAdministration();
 
     medicationResource.setSubject(new Reference(personEntry.getFullUrl()));
     medicationResource.setContext(new Reference(encounterEntry.getFullUrl()));
@@ -1683,7 +1684,8 @@ public class FhirR4 {
 
     if (medication.prescriptionDetails != null) {
       JsonObject rxInfo = medication.prescriptionDetails;
-      MedicationAdministrationDosageComponent dosage = new MedicationAdministrationDosageComponent();
+      MedicationAdministrationDosageComponent dosage =
+          new MedicationAdministrationDosageComponent();
 
       // as_needed is true if present
       if ((rxInfo.has("dosage")) && (!rxInfo.has("as_needed"))) {

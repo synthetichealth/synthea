@@ -192,6 +192,9 @@ public class Module {
    */
   @SuppressWarnings("unchecked")
   public boolean process(Person person, long time) {
+    if (!person.alive(time)) {
+      return true;
+    }
     person.history = null;
     // what current state is this person in?
     if (!person.attributes.containsKey(this.name)) {
@@ -217,8 +220,15 @@ public class Module {
       current = states.get(nextStateName).clone(); // clone the state so we don't dirty the original
       person.history.add(0, current);
       if (exited != null && exited < time) {
+        // stop if the patient died in the meantime...
+        if (!person.alive(exited)) {
+          return true;
+        }
         // This must be a delay state that expired between cycles, so temporarily rewind time
-        process(person, exited);
+        if (process(person, exited)) {
+          // if the patient died during the delay, stop
+          return true;
+        }
         current = person.history.get(0);
       }
     }

@@ -1198,7 +1198,8 @@
           "display": "End stage renal disease (disorder)"
         }
       ],
-      "direct_transition": "Record_MetabolicPanel_5"
+      "direct_transition": "Record_MetabolicPanel_5",
+      "assign_to_attribute": "dialysis_reason"
     },
     "End_End_Stage_Renal_Disease": {
       "type": "ConditionEnd",
@@ -2268,7 +2269,8 @@
           "display": "Chronic kidney disease stage 4 (disorder)"
         }
       ],
-      "direct_transition": "Record_MetabolicPanel_4"
+      "direct_transition": "Record_MetabolicPanel_4",
+      "assign_to_attribute": "dialysis_reason"
     },
     "Obese_Check": {
       "type": "Simple",

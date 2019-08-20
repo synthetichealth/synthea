@@ -14,8 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.sis.geometry.DirectPosition2D;
 import org.apache.sis.index.tree.QuadTreeData;
-import org.mitre.synthea.engine.Event;
-import org.mitre.synthea.engine.EventList;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
@@ -33,6 +31,7 @@ public class Person implements Serializable, QuadTreeData {
   private static final long serialVersionUID = 4322116644425686379L;
 
   public static final String BIRTHDATE = "birthdate";
+  public static final String DEATHDATE = "deathdate";
   public static final String FIRST_NAME = "first_name";
   public static final String LAST_NAME = "last_name";
   public static final String MAIDEN_NAME = "maiden_name";
@@ -86,8 +85,7 @@ public class Person implements Serializable, QuadTreeData {
   public Map<VitalSign, ValueGenerator> vitalSigns;
   private Map<String, Map<String, Integer>> symptoms;
   private Map<String, Map<String, Boolean>> symptomStatuses;
-  public EventList events;
-  /* The active health record. */
+  /** the active health record. */
   public HealthRecord record;
   public Map<String, HealthRecord> records;
   public boolean hasMultipleRecords;
@@ -113,8 +111,8 @@ public class Person implements Serializable, QuadTreeData {
     vitalSigns = new ConcurrentHashMap<VitalSign, ValueGenerator>();
     symptoms = new ConcurrentHashMap<String, Map<String, Integer>>();
     symptomStatuses = new ConcurrentHashMap<String, Map<String, Boolean>>();
-    events = new EventList();
-    hasMultipleRecords = Boolean.parseBoolean(Config.get("exporter.split_records", "false"));
+    hasMultipleRecords =
+        Boolean.parseBoolean(Config.get("exporter.split_records", "false"));
     if (hasMultipleRecords) {
       records = new ConcurrentHashMap<String, HealthRecord>();
     }
@@ -255,7 +253,9 @@ public class Person implements Serializable, QuadTreeData {
    * Returns whether a person is alive at the given time.
    */
   public boolean alive(long time) {
-    return (events.event(Event.BIRTH) != null && events.before(time, Event.DEATH).isEmpty());
+    boolean born = attributes.containsKey(Person.BIRTHDATE);
+    Long died = (Long) attributes.get(Person.DEATHDATE);
+    return (born && (died == null || died > time));
   }
 
   public void setSymptom(String cause, String type, int value, Boolean addressed) {
@@ -325,21 +325,16 @@ public class Person implements Serializable, QuadTreeData {
    * 
    * @param time     the time of death.
    * @param cause    the cause of death.
-   * @param ruleName the name of the rule or method that created the event (for
-   *                 debugging).
    */
-  public void recordDeath(long time, Code cause, String ruleName) {
-    events.create(time, Event.DEATH, ruleName, true);
-    if (record.death == null || record.death > time) {
-      // it's possible for a person to have a death date in the future
-      // (ex, a condition with some life expectancy sets a future death date)
-      // but then the patient dies sooner because of something else
-      record.death = time;
+  public void recordDeath(long time, Code cause) {
+    if (alive(time)) {
+      attributes.put(Person.DEATHDATE, Long.valueOf(time));
       if (cause == null) {
         attributes.remove(CAUSE_OF_DEATH);
       } else {
         attributes.put(CAUSE_OF_DEATH, cause);
       }
+      record.death = time;
     }
   }
 
@@ -525,7 +520,7 @@ public class Person implements Serializable, QuadTreeData {
     if (this.getPreviousPayerAtAge(age) != null
         && this.getPreviousPayerAtAge(age).equals(payer)
         && age != 18) {
-        return this.payerOwnerHistory[age - 1];
+      return this.payerOwnerHistory[age - 1];
     }
     // No owner for no insurance.
     if (payer.equals(Payer.noInsurance)) {

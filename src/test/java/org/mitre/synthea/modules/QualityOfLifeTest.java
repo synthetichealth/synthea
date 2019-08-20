@@ -29,8 +29,8 @@ public class QualityOfLifeTest {
   public void init() {
     // Create Person
     person = new Person(0);
-    person.events.create(0, "birth", "QualityOfLifeTest", true);
-    person.attributes.put("birthdate", 0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+
     // Ensure Person's payer is not null
     Payer.loadNoInsurance();
     person.setPayerAtTime(0L, Payer.noInsurance);
@@ -87,8 +87,8 @@ public class QualityOfLifeTest {
   @Test
   public void testCalculateDeceased() {
     // deceased patient
-    person.events.create(TimeUnit.DAYS.toMillis((long) (365.25 * 35)), "death", "QualityOfLifeTest",
-        true);
+    long time = TimeUnit.DAYS.toMillis((long) (365.25 * 35));
+    person.recordDeath(time, null);
     double[] qol = QualityOfLifeModule.calculate(person, TimeUnit.DAYS.toMillis(stopTime));
 
     double dalyDeceased = qol[0];

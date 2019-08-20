@@ -37,6 +37,9 @@ public class HealthInsuranceModule extends Module {
    */
   @Override
   public boolean process(Person person, long time) {
+    if (!person.alive(time)) {
+      return true;
+    }
     
     // If the payerHistory at the current age is null, they must get insurance for the new year.
     // Note: This means the person will check to change insurance yearly, just after their
@@ -47,7 +50,6 @@ public class HealthInsuranceModule extends Module {
         person.getPreviousPayerAtTime(time).addQols(
             person.getQolsForYear(Utilities.getYear(time) - 1));
       }
-
       // Determine the insurance for this person at this time.
       Payer newPayer = determineInsurance(person, time);
       // Set this new payer at the current time for the person.

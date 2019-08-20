@@ -82,7 +82,7 @@
     },
     "Alcohol Diagnosis": {
       "type": "ConditionOnset",
-      "target_encounter": "",
+      "target_encounter": "Wellness Encounter",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -193,7 +193,7 @@
     },
     "Opioid Abuse Diagnosis": {
       "type": "ConditionOnset",
-      "target_encounter": "",
+      "target_encounter": "Wellness Encounter",
       "codes": [
         {
           "system": "SNOMED-CT",

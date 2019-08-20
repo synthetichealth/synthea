@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.special.Erf;
-import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
@@ -90,6 +89,9 @@ public final class LifecycleModule extends Module {
 
   @Override
   public boolean process(Person person, long time) {
+    if (!person.alive(time)) {
+      return true;
+    }
     // run through all of the rules defined
     // ruby "rules" are converted to static functions here
     // since this is intended to only be temporary
@@ -121,7 +123,6 @@ public final class LifecycleModule extends Module {
 
     attributes.put(Person.ID, UUID.randomUUID().toString());
     attributes.put(Person.BIRTHDATE, time);
-    person.events.create(time, Event.BIRTH, "Generator.run", true);
     String gender = (String) attributes.get(Person.GENDER);
     String language = (String) attributes.get(Person.FIRST_LANGUAGE);
     String firstName = fakeFirstName(gender, language, person.random);
@@ -835,7 +836,7 @@ public final class LifecycleModule extends Module {
       double roll = person.rand();
       double likelihoodOfDeath = likelihoodOfDeath(person.ageInYears(time));
       if (roll < likelihoodOfDeath) {
-        person.recordDeath(time, NATURAL_CAUSES, "death");
+        person.recordDeath(time, NATURAL_CAUSES);
       }
     }
   }

@@ -7,7 +7,6 @@ import java.util.LinkedList;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
@@ -43,7 +42,6 @@ public class DeathModuleTest {
 
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
-    person.events.create(birthTime, Event.BIRTH, "Generator.run", true);
     Payer.loadNoInsurance();
     person.setPayerAtTime(time, Payer.noInsurance);
   }
@@ -60,7 +58,7 @@ public class DeathModuleTest {
      */
 
     Code causeOfDeath = new Code("SNOMED-CT", "12345", "Some disease");
-    person.recordDeath(time, causeOfDeath, DeathModuleTest.class.getName());
+    person.recordDeath(time, causeOfDeath);
 
     DeathModule.process(person, time);
 

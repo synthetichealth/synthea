@@ -405,7 +405,8 @@
           "display": "Encounter for Problem"
         }
       ],
-      "direct_transition": "Record_CMP"
+      "direct_transition": "Record_CMP",
+      "reason": "CHF Condition Start"
     },
     "CXR_ED": {
       "type": "ImagingStudy",
@@ -470,7 +471,8 @@
           "display": "Inpatient stay (finding)"
         }
       ],
-      "direct_transition": "Inpatient LOS"
+      "direct_transition": "Inpatient LOS",
+      "reason": "CHF Condition Start"
     },
     "Inpatient CarePlan": {
       "type": "CarePlanStart",
@@ -783,7 +785,6 @@
           "unit": "mmol/L"
         }
       ],
-      "target_encounter": "Wellness_Encounter",
       "direct_transition": "Inpatient Daily Transition"
     },
     "Record_CMP": {

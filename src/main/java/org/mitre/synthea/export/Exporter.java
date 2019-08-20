@@ -38,6 +38,9 @@ public abstract class Exporter {
     if (yearsOfHistory > 0) {
       person = filterForExport(person, yearsOfHistory, stopTime);
     }
+    if (!person.alive(stopTime)) {
+      filterAfterDeath(person);
+    }
     if (person.hasMultipleRecords) {
       int i = 0;
       for (String key : person.records.keySet()) {
@@ -416,6 +419,37 @@ public abstract class Exporter {
     }
 
     return false;
+  }
+
+  /**
+   * There is a tiny chance that in the last time step, one module ran to the very end of
+   * the time step, and the next killed the person half-way through. In this case,
+   * it is possible that an encounter (from the first module) occurred post death.
+   * We must filter it out here.
+   *
+   * @param person The dead person.
+   */
+  private static void filterAfterDeath(Person person) {
+    long deathTime = (long) person.attributes.get(Person.DEATHDATE);
+    if (person.hasMultipleRecords) {
+      for (HealthRecord record : person.records.values()) {
+        Iterator<Encounter> iter = record.encounters.iterator();
+        while (iter.hasNext()) {
+          Encounter encounter = iter.next();
+          if (encounter.start > deathTime) {
+            iter.remove();
+          }
+        }
+      }
+    } else {
+      Iterator<Encounter> iter = person.record.encounters.iterator();
+      while (iter.hasNext()) {
+        Encounter encounter = iter.next();
+        if (encounter.start > deathTime) {
+          iter.remove();
+        }
+      }
+    }
   }
 
   /**

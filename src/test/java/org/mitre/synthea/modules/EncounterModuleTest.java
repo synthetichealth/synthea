@@ -26,6 +26,7 @@ public class EncounterModuleTest {
   @Before
   public void setup() throws IOException {
     person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
     location = new Location("Massachusetts", null);
     location.assignPoint(person, location.randomCityName(person.random));
     Provider.loadProviders(location, 1L);
@@ -33,28 +34,6 @@ public class EncounterModuleTest {
     // Ensure Person's Payer is not null.
     Payer.loadNoInsurance();
     person.setPayerAtTime(System.currentTimeMillis(), Payer.noInsurance);
-  }
-
-  @Test
-  public void testEmergencyEncounterHasClinician() {
-    EncounterModule.emergencyEncounter(person, System.currentTimeMillis());
-    assertNotNull(person.record);
-    assertFalse(person.record.encounters.isEmpty());
-    int last = person.record.encounters.size() - 1;
-    Encounter encounter = person.record.encounters.get(last);
-    assertNotNull("Encounter must have clinician", encounter.clinician);
-    assertNotNull("Encounter must have provider organization", encounter.provider);
-  }
-
-  @Test
-  public void testUrgentcareEncounterHasClinician() {
-    EncounterModule.urgentCareEncounter(person, System.currentTimeMillis());
-    assertNotNull(person.record);
-    assertFalse(person.record.encounters.isEmpty());
-    int last = person.record.encounters.size() - 1;
-    Encounter encounter = person.record.encounters.get(last);
-    assertNotNull("Encounter must have clinician", encounter.clinician);
-    assertNotNull("Encounter must have provider organization", encounter.provider);
   }
 
   @Test
