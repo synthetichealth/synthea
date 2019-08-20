@@ -58,9 +58,9 @@ public class Module {
     retVal.put("Weight Loss", new ModuleSupplier(new WeightLossModule()));
 
     try {
-      URI baseFolder = ClassLoader.getSystemClassLoader().getResource("modules").toURI();
-      fixPathFromJar(baseFolder);
-      Path modulesPath = Paths.get(baseFolder);
+      URI modulesURI = ClassLoader.getSystemClassLoader().getResource("modules").toURI();
+      fixPathFromJar(modulesURI);
+      Path modulesPath = Paths.get(modulesURI);
       Path basePath = modulesPath.getParent();
       Files.walk(modulesPath, Integer.MAX_VALUE).filter(Files::isReadable).filter(Files::isRegularFile)
           .filter(p -> p.toString().endsWith(".json")).forEach(t -> {
