@@ -6,35 +6,12 @@
     "states": {
       "Initial": {
         "type": "Initial",
-        "direct_transition": "Choose_Age",
+        "direct_transition": "Determine_Condition",
         "name": "Initial"
       },
       "Terminal": {
         "type": "Terminal",
         "name": "Terminal"
-      },
-      "Choose_Age":{
-        "type": "Simple",
-        "distributed_transition": [
-          {
-            "distribution": 0.5,
-            "transition": "Determine_Condition"
-          },
-          {
-            "distribution": 0.5,
-            "transition": "Delay_50_Years"
-          }
-        ],
-        "name": "Choose_Age"
-      },
-      "Delay_50_Years": {
-        "type": "Delay",
-        "direct_transition": "Determine_Condition",
-        "range": {
-          "low": 51,
-          "high": 51,
-          "unit": "years"
-        }
       },
       "Determine_Condition": {
         "type": "Simple",
