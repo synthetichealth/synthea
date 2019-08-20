@@ -3,14 +3,15 @@ package org.mitre.synthea.engine;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 
 import java.io.File;
-import java.io.FileReader;
-import java.net.URL;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.spi.FileSystemProvider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,6 +27,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
@@ -56,18 +58,20 @@ public class Module {
     retVal.put("Weight Loss", new ModuleSupplier(new WeightLossModule()));
 
     try {
-      URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
-      Path path = Paths.get(modulesFolder.toURI());
-      Files.walk(path, Integer.MAX_VALUE).filter(Files::isReadable).filter(Files::isRegularFile)
+      URI baseFolder = ClassLoader.getSystemClassLoader().getResource("modules").toURI();
+      fixPathFromJar(baseFolder);
+      Path modulesPath = Paths.get(baseFolder);
+      Path basePath = modulesPath.getParent();
+      Files.walk(modulesPath, Integer.MAX_VALUE).filter(Files::isReadable).filter(Files::isRegularFile)
           .filter(p -> p.toString().endsWith(".json")).forEach(t -> {
-            String relativePath = relativePath(t, path);
-            boolean submodule = !t.getParent().equals(path);
+            String relativePath = relativePath(t, modulesPath);
+            boolean submodule = !t.getParent().equals(modulesPath);
             if (submodule) {
               submoduleCount.getAndIncrement();
             }
             retVal.put(relativePath, new ModuleSupplier(submodule, 
                                                         relativePath,
-                () -> loadFile(t, submodule)));
+                () -> loadFile(basePath.relativize(t), submodule)));
           });
     } catch (Exception e) {
       e.printStackTrace();
@@ -78,6 +82,23 @@ public class Module {
                       submoduleCount.get());
 
     return retVal;
+  }
+
+  private static void fixPathFromJar(URI uri) throws IOException {
+    // this function is a hack to enable reading modules from within a JAR file
+    // see https://stackoverflow.com/a/48298758
+    if("jar".equals(uri.getScheme())){
+      for (FileSystemProvider provider: FileSystemProvider.installedProviders()) {
+        if (provider.getScheme().equalsIgnoreCase("jar")) {
+          try {
+            provider.getFileSystem(uri);
+          } catch (FileSystemNotFoundException e) {
+            // in this case we need to initialize it first:
+            provider.newFileSystem(uri, Collections.emptyMap());
+          }
+        }
+      }
+    }
   }
 
   private static String relativePath(Path filePath, Path modulesFolder) {
@@ -93,15 +114,9 @@ public class Module {
 
   private static Module loadFile(Path path, boolean submodule) throws Exception {
     System.out.format("Loading %s %s\n", submodule ? "submodule" : "module", path.toString());
-    JsonObject object = null;
-    FileReader fileReader = null;
-    JsonReader reader = null;
-    fileReader = new FileReader(path.toString());
-    reader = new JsonReader(fileReader);
+    String jsonString = Utilities.readResource(path.toString());
     JsonParser parser = new JsonParser();
-    object = parser.parse(reader).getAsJsonObject();
-    fileReader.close();
-    reader.close();
+    JsonObject object = parser.parse(jsonString).getAsJsonObject();
     return new Module(object, submodule);
   }
 
