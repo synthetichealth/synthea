@@ -149,10 +149,6 @@
         {
           "distribution": 0.334,
           "transition": "Enter_Directed_Use_Condition3"
-        },
-        {
-          "transition": "Initial",
-          "distribution": 1
         }
       ]
     },
@@ -183,7 +179,6 @@
     },
     "Enter_Directed_Use_Procedure1": {
       "type": "Procedure",
-      "target_encounter": "Enter_Directed_Use_Encounter1",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -195,7 +190,6 @@
     },
     "Directed_Use_Prescription1": {
       "type": "MedicationOrder",
-      "target_encounter": "Enter_Directed_Use_Encounter1",
       "assign_to_attribute": "opioid_prescription",
       "codes": [
         {
@@ -233,7 +227,6 @@
     },
     "Directed_Use_Prescription2": {
       "type": "MedicationOrder",
-      "target_encounter": "Enter_Directed_Use_Encounter2",
       "assign_to_attribute": "opioid_prescription",
       "codes": [
         {
@@ -271,7 +264,6 @@
     },
     "Directed_Use_Prescription3": {
       "type": "MedicationOrder",
-      "target_encounter": "Enter_Directed_Use_Encounter3",
       "assign_to_attribute": "opioid_prescription",
       "codes": [
         {
@@ -739,7 +731,6 @@
     },
     "Opioid_Addiction_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Addiction_Overdose_Encounter",
       "assign_to_attribute": "opioid_addiction_careplan",
       "reason": "Addiction_Overdose",
       "codes": [

@@ -15,7 +15,6 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.sis.geometry.DirectPosition2D;
-import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.FactTable;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
@@ -634,7 +633,7 @@ public class CDWExporter {
     if (alive) {
       age = person.ageInYears(time);
     } else {
-      age = person.ageInYears(person.events.event(Event.DEATH).time);
+      age = person.ageInYears((Long) person.attributes.get(Person.DEATHDATE));
     }
     s.append(',').append(age);
     s.append(',').append(iso8601Timestamp((long) person.attributes.get(Person.BIRTHDATE)));
@@ -643,7 +642,7 @@ public class CDWExporter {
       s.append(',').append('N').append(',');
     } else {
       s.append(',').append('Y');
-      s.append(',').append(iso8601Timestamp(person.events.event(Event.DEATH).time));
+      s.append(',').append(iso8601Timestamp((Long) person.attributes.get(Person.DEATHDATE)));
     }
     if (person.attributes.get(Person.GENDER).equals("M")) {
       s.append(",M,Male");

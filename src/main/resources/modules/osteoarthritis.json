@@ -102,7 +102,6 @@
     },
     "OA_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "OA_Diagnosis",
       "assign_to_attribute": "arthritis_careplan",
       "reason": "osteoarthritis",
       "codes": [
@@ -128,7 +127,6 @@
     },
     "OA_Pain_Medication": {
       "type": "MedicationOrder",
-      "target_encounter": "OA_Diagnosis",
       "reason": "osteoarthritis",
       "codes": [
         {

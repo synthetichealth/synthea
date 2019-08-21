@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
@@ -29,7 +28,6 @@ public class VitalsValueGeneratorTest {
     time = System.currentTimeMillis();
     long birthTime = time - Utilities.convertTime("years", 65);
     person.attributes.put(Person.BIRTHDATE, birthTime);
-    person.events.create(birthTime, Event.BIRTH, "Generator.run", true);
   }
 
   @Test

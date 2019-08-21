@@ -1,0 +1,6 @@
+﻿,id,name,address,city,state_headquartered,zip,phone,states_covered,services_covered,deductible,default_coinsurance,default_copay,monthly_premium,ownership
+0,10001,Medicare,7500 Security Blvd,Baltimore,MD,21244,1-800-633-4227,*,*,0,0.7,60,200,Government
+1,10002,Medicaid,7500 Security Blvd,Baltimore,MD,21244,877-267-2323,*,*,0,0.8,40,300,Government
+2,10003,Dual Eligible,7500 Security Blvd,Baltimore,MD,21244,877-267-2323,*,*,0,0.9,100,500,Government
+3,10004,Test Private Payer 1,101 Government Center,BOSTON,MA,2199,111-111-1111,*,*,0,0.1,10,10,Private
+4,10005,Test Private Payer 2,102 Government Center,BOSTON,MA,2199,222-222-2222,*,wellness,0,0.2,20,200,Private

@@ -28,7 +28,6 @@
     },
     "Med_Rec": {
       "type": "Procedure",
-      "target_encounter": "Wellness_Encounter",
       "codes": [
         {
           "system": "SNOMED-CT",

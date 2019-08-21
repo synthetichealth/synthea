@@ -13,6 +13,8 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
+import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.geography.Location;
 
 public class CSVExporterTest {
   /**
@@ -28,6 +30,11 @@ public class CSVExporterTest {
     Config.set("exporter.csv.folder_per_run", "false");
     File tempOutputFolder = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
+
+    Payer.clear();
+    Config.set("generate.payers.insurance_companies.default_file",
+        "generic/payers/test_payers.csv");
+    Payer.loadPayers(new Location("Massachusetts", null));
 
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);
@@ -59,6 +66,6 @@ public class CSVExporterTest {
       count++;
     }
 
-    assertEquals("Expected 12 CSV files in the output directory, found " + count, 12, count);
+    assertEquals("Expected 14 CSV files in the output directory, found " + count, 14, count);
   }
 }

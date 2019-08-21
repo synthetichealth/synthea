@@ -42,8 +42,6 @@
     },
     "annual_wellness_visit": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "codes": [],
       "direct_transition": "wellness_procedure",
       "wellness": true
     },
@@ -1250,7 +1248,6 @@
           }
         }
       ],
-      "target_encounter": "Wellness_Encounter",
       "direct_transition": "Chemotherapy_Hormone Order"
     }
   }

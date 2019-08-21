@@ -39,7 +39,7 @@ public class Utilities {
       case "days":
         return TimeUnit.DAYS.toMillis(value);
       case "years":
-        return TimeUnit.DAYS.toMillis((long) (365.25 * value));
+        return TimeUnit.DAYS.toMillis((long) 365.25 * value);
       case "months":
         return TimeUnit.DAYS.toMillis(30 * value);
       case "weeks":
