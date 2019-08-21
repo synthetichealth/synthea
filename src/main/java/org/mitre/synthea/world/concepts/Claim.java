@@ -33,6 +33,15 @@ public class Claim {
     this.person = person;
     // Set the Payer.
     this.payer = this.person.getPayerAtTime(entry.start);
+    if (this.payer == null) {
+      // This can rarely occur when an death certification encounter
+      // occurs on the birthday or immediately afterwards before a new
+      // insurance plan is selected.
+      this.payer = this.person.getPreviousPayerAtTime(entry.start);
+    }
+    if (this.payer == null) {
+      this.payer = Payer.noInsurance;
+    }
     this.items = new ArrayList<Entry>();
   }
 
