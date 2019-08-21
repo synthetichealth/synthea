@@ -17,7 +17,7 @@ public abstract class TestHelper {
    * @throws Exception On errors.
    */
   public static Module getFixture(String filename) throws Exception {
-    Path modulesFolder = Paths.get("src/test/resources/generic");
+    Path modulesFolder = Paths.get("generic");
     Path module = modulesFolder.resolve(filename);
     return Module.loadFile(module, modulesFolder);
   }
