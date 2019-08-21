@@ -1136,7 +1136,7 @@ public class FhirStu3 {
     }
 
     // Get the insurance info at the time that the encounter happened.
-    Payer payer = person.getPayerAtTime(encounter.start);
+    Payer payer = encounter.claim.payer;
 
     Coverage coverage = new Coverage();
     coverage.setId("coverage");

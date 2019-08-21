@@ -745,12 +745,11 @@ public class FhirR4 {
     claimResource.setType(type);
     claimResource.setUse(org.hl7.fhir.r4.model.Claim.Use.CLAIM);
 
-    // Get the insurance info at the time that the encounter occured.
-    Payer payer = person.getPayerAtTime(encounterResource.getPeriod().getStart().getTime());
+    // Get the insurance info at the time that the encounter occurred.
     InsuranceComponent insuranceComponent = new InsuranceComponent();
     insuranceComponent.setSequence(1);
     insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference().setDisplay(payer.getName()));
+    insuranceComponent.setCoverage(new Reference().setDisplay(claim.payer.getName()));
     claimResource.addInsurance(insuranceComponent);
 
     // duration of encounter
@@ -807,13 +806,10 @@ public class FhirR4 {
     claimResource.setType(type);
     claimResource.setUse(org.hl7.fhir.r4.model.Claim.Use.CLAIM);
 
-    // Get the insurance info at the time that the encounter occured.
-    Payer payer = person.getPayerAtTime(encounterResource.getPeriod().getStart().getTime());
-
     InsuranceComponent insuranceComponent = new InsuranceComponent();
     insuranceComponent.setSequence(1);
     insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference().setDisplay(payer.getName()));
+    insuranceComponent.setCoverage(new Reference().setDisplay(claim.payer.getName()));
     claimResource.addInsurance(insuranceComponent);
 
     // duration of encounter
@@ -1003,8 +999,8 @@ public class FhirR4 {
     eob.addContained(referral);
     eob.setReferral(new Reference().setReference("#referral"));
 
-    // Get the insurance info at the time that the encounter occured.
-    Payer payer = person.getPayerAtTime(encounter.start);
+    // Get the insurance info at the time that the encounter occurred.
+    Payer payer = encounter.claim.payer;
     Coverage coverage = new Coverage();
     coverage.setId("coverage");
     coverage.setStatus(CoverageStatus.ACTIVE);

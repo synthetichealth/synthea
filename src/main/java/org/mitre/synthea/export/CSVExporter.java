@@ -296,14 +296,6 @@ public class CSVExporter {
     // The current year starts with the year of the person's birth.
     int currentYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
 
-    // A person's Payer may not yet have been decided in the final year of simulation.
-    if (person.alive(stopTime)
-        && Utilities.getMonth(stopTime)
-        <= Utilities.getMonth((long) person.attributes.get(Person.BIRTHDATE))) {
-      // If a person's birth month is after the stop month, they don't have a payer for final year.
-      
-    }
-
     String previousPayerID = person.getPayerHistory()[0].getResourceID();
     String previousOwnership = "Guardian";
     int startYear = currentYear;
@@ -342,7 +334,7 @@ public class CSVExporter {
     for (Encounter encounter : person.record.encounters) {
 
       String encounterID = encounter(personID, encounter);
-      String payerID = person.getPayerAtTime(encounter.start).uuid;
+      String payerID = encounter.claim.payer.uuid;
 
       for (HealthRecord.Entry condition : encounter.conditions) {
         condition(personID, encounterID, condition);
