@@ -1148,6 +1148,8 @@ public abstract class State implements Cloneable {
     public boolean process(Person person, long time) {
       String primaryCode = codes.get(0).code;
       Object value = null;
+      Double intermediateVital;
+
       if (exact != null) {
         value = exact.quantity;
       } else if (range != null) {
@@ -1155,7 +1157,17 @@ public abstract class State implements Cloneable {
       } else if (attribute != null) {
         value = person.attributes.get(attribute);
       } else if (vitalSign != null) {
-        value = person.getVitalSign(vitalSign, time);
+        intermediateVital = person.getVitalSign(vitalSign, time);
+ 
+        //OSEHRA/SMH - Round Vitals signs appropriately to integers or a specific number of decimal places
+        //NB: I am using the whole import as "VitalSign" resolves to another class.
+        if (vitalSign == org.mitre.synthea.world.concepts.VitalSign.SYSTOLIC_BLOOD_PRESSURE ||
+          vitalSign == org.mitre.synthea.world.concepts.VitalSign.DIASTOLIC_BLOOD_PRESSURE) {
+          value = Math.round(intermediateVital);
+        }
+        else {
+          value = person.roundVitalSign(vitalSign, intermediateVital);
+        }
       } else if (valueCode != null) {
         value = valueCode;
       }

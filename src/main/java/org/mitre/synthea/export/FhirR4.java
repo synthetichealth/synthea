@@ -1403,9 +1403,11 @@ public class FhirR4 {
     } else if (value instanceof String) {
       return new StringType((String) value);
     } else if (value instanceof Number) {
-      return new Quantity().setValue(((Number) value).doubleValue())
-          .setCode(unit).setSystem(UNITSOFMEASURE_URI)
-          .setUnit(unit);
+      Quantity q = new Quantity();
+      if (value instanceof Long) q.setValue((Long) value);
+      if (value instanceof java.math.BigDecimal) q.setValue((java.math.BigDecimal) value);
+      if (value instanceof Double) q.setValue((Double) value);
+      return q.setCode(unit).setSystem(UNITSOFMEASURE_URI).setUnit(unit);
     } else {
       throw new IllegalArgumentException("unexpected observation value class: "
           + value.getClass().toString() + "; " + value);

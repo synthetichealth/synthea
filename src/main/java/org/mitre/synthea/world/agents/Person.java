@@ -1,6 +1,7 @@
 package org.mitre.synthea.world.agents;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
@@ -730,5 +731,16 @@ public class Person implements Serializable, QuadTreeData {
   @Override
   public String getFileName() {
     return null;
+  }
+
+public BigDecimal roundVitalSign(VitalSign vitalSign, Double intermediateVital) {
+	BigDecimal bd = new BigDecimal(0);
+	Integer scale = 2;
+	if (vitalSign == VitalSign.DIASTOLIC_BLOOD_PRESSURE ||
+			vitalSign == VitalSign.SYSTOLIC_BLOOD_PRESSURE) scale = 0;
+	else if (vitalSign == VitalSign.HEIGHT || vitalSign == VitalSign.WEIGHT) scale = 1;
+	else if (vitalSign == VitalSign.BMI) scale = 2;
+	bd = BigDecimal.valueOf(intermediateVital).setScale(scale, BigDecimal.ROUND_HALF_UP);
+	return bd;
   }
 }

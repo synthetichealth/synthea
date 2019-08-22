@@ -503,7 +503,7 @@ public class StateTest {
     assertTrue(codeObs.process(person, time));
 
     HealthRecord.Observation vitalObservation = person.record.encounters.get(0).observations.get(0);
-    assertEquals(120.0, vitalObservation.value);
+    assertEquals(120, vitalObservation.value);
     assertEquals("vital-signs", vitalObservation.category);
     assertEquals("mm[Hg]", vitalObservation.unit);
 
