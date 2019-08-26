@@ -1852,6 +1852,95 @@ public class FhirR4 {
     return newEntry(bundle, careplanResource);
   }
 
+  /**
+   * Map the JsonObject into a FHIR Goal resource, and add it to the given Bundle.
+   * @param bundle The Bundle to add to
+   * @param goalStatus The GoalStatus
+   * @param goal The JsonObject
+   * @return The added Entry
+   */
+  private static BundleEntryComponent caregoal(
+      Bundle bundle,
+      BundleEntryComponent personEntry,
+      CodeableConcept goalStatus, JsonObject goal) {
+    String resourceID = UUID.randomUUID().toString();
+
+    Goal goalResource = new Goal();
+    if (USE_US_CORE_IG) {
+      Meta meta = new Meta();
+      meta.addProfile(
+          "http://hl7.org/fhir/us/core/StructureDefinition/us-core-goal");
+      goalResource.setMeta(meta);
+    }
+    goalResource.setLifecycleStatus(GoalLifecycleStatus.ACCEPTED);
+    goalResource.setAchievementStatus(goalStatus);
+    goalResource.setId(resourceID);
+    goalResource.setSubject(new Reference(personEntry.getFullUrl()));
+
+    if (goal.has("text")) {
+      CodeableConcept descriptionCodeableConcept = new CodeableConcept();
+
+      descriptionCodeableConcept.setText(goal.get("text").getAsString());
+      goalResource.setDescription(descriptionCodeableConcept);
+    } else if (goal.has("codes")) {
+      CodeableConcept descriptionCodeableConcept = new CodeableConcept();
+
+      JsonObject code =
+          goal.get("codes").getAsJsonArray().get(0).getAsJsonObject();
+      descriptionCodeableConcept.addCoding()
+          .setSystem(LOINC_URI)
+          .setCode(code.get("code").getAsString())
+          .setDisplay(code.get("display").getAsString());
+
+      descriptionCodeableConcept.setText(code.get("display").getAsString());
+      goalResource.setDescription(descriptionCodeableConcept);
+    } else if (goal.has("observation")) {
+      CodeableConcept descriptionCodeableConcept = new CodeableConcept();
+
+      // build up our own text from the observation condition, similar to the graphviz logic
+      JsonObject logic = goal.get("observation").getAsJsonObject();
+
+      String[] text = {
+          logic.get("codes").getAsJsonArray().get(0)
+              .getAsJsonObject().get("display").getAsString(),
+          logic.get("operator").getAsString(),
+          logic.get("value").getAsString()
+      };
+
+      descriptionCodeableConcept.setText(String.join(" ", text));
+      goalResource.setDescription(descriptionCodeableConcept);
+    }
+
+    if (goal.has("addresses")) {
+      for (JsonElement reasonElement : goal.get("addresses").getAsJsonArray()) {
+        if (reasonElement instanceof JsonObject) {
+          JsonObject reasonObject = reasonElement.getAsJsonObject();
+          String reasonCode =
+              reasonObject.get("codes")
+                  .getAsJsonObject()
+                  .get("SNOMED-CT")
+                  .getAsJsonArray()
+                  .get(0)
+                  .getAsString();
+
+          for (BundleEntryComponent entry : bundle.getEntry()) {
+            if (entry.getResource().fhirType().equals("Condition")) {
+              Condition condition = (Condition) entry.getResource();
+              // Only one element in list
+              Coding coding = condition.getCode().getCoding().get(0);
+              if (reasonCode.equals(coding.getCode())) {
+                goalResource.addAddresses()
+                    .setReference(entry.getFullUrl());
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return newEntry(bundle, goalResource);
+  }
+
   private static Identifier generateIdentifier(String uid) {
     Identifier identifier = new Identifier();
     identifier.setUse(Identifier.IdentifierUse.OFFICIAL);
@@ -2041,95 +2130,6 @@ public class FhirR4 {
     }
 
     return newEntry(bundle, practitionerResource, clinician.getResourceID());
-  }
-
-  /**
-   * Map the JsonObject into a FHIR Goal resource, and add it to the given Bundle.
-   * @param bundle The Bundle to add to
-   * @param goalStatus The GoalStatus
-   * @param goal The JsonObject
-   * @return The added Entry
-   */
-  private static BundleEntryComponent caregoal(
-      Bundle bundle,
-      BundleEntryComponent personEntry,
-      CodeableConcept goalStatus, JsonObject goal) {
-    String resourceID = UUID.randomUUID().toString();
-
-    Goal goalResource = new Goal();
-    if (USE_US_CORE_IG) {
-      Meta meta = new Meta();
-      meta.addProfile(
-          "http://hl7.org/fhir/us/core/StructureDefinition/us-core-goal");
-      goalResource.setMeta(meta);
-    }
-    goalResource.setLifecycleStatus(GoalLifecycleStatus.ACCEPTED);
-    goalResource.setAchievementStatus(goalStatus);
-    goalResource.setId(resourceID);
-    goalResource.setSubject(new Reference(personEntry.getFullUrl()));
-
-    if (goal.has("text")) {
-      CodeableConcept descriptionCodeableConcept = new CodeableConcept();
-
-      descriptionCodeableConcept.setText(goal.get("text").getAsString());
-      goalResource.setDescription(descriptionCodeableConcept);
-    } else if (goal.has("codes")) {
-      CodeableConcept descriptionCodeableConcept = new CodeableConcept();
-
-      JsonObject code =
-          goal.get("codes").getAsJsonArray().get(0).getAsJsonObject();
-      descriptionCodeableConcept.addCoding()
-          .setSystem(LOINC_URI)
-          .setCode(code.get("code").getAsString())
-          .setDisplay(code.get("display").getAsString());
-
-      descriptionCodeableConcept.setText(code.get("display").getAsString());
-      goalResource.setDescription(descriptionCodeableConcept);
-    } else if (goal.has("observation")) {
-      CodeableConcept descriptionCodeableConcept = new CodeableConcept();
-
-      // build up our own text from the observation condition, similar to the graphviz logic
-      JsonObject logic = goal.get("observation").getAsJsonObject();
-
-      String[] text = {
-          logic.get("codes").getAsJsonArray().get(0)
-              .getAsJsonObject().get("display").getAsString(),
-          logic.get("operator").getAsString(),
-          logic.get("value").getAsString()
-      };
-
-      descriptionCodeableConcept.setText(String.join(" ", text));
-      goalResource.setDescription(descriptionCodeableConcept);
-    }
-
-    if (goal.has("addresses")) {
-      for (JsonElement reasonElement : goal.get("addresses").getAsJsonArray()) {
-        if (reasonElement instanceof JsonObject) {
-          JsonObject reasonObject = reasonElement.getAsJsonObject();
-          String reasonCode =
-              reasonObject.get("codes")
-                  .getAsJsonObject()
-                  .get("SNOMED-CT")
-                  .getAsJsonArray()
-                  .get(0)
-                  .getAsString();
-
-          for (BundleEntryComponent entry : bundle.getEntry()) {
-            if (entry.getResource().fhirType().equals("Condition")) {
-              Condition condition = (Condition) entry.getResource();
-              // Only one element in list
-              Coding coding = condition.getCode().getCoding().get(0);
-              if (reasonCode.equals(coding.getCode())) {
-                goalResource.addAddresses()
-                    .setReference(entry.getFullUrl());
-              }
-            }
-          }
-        }
-      }
-    }
-
-    return newEntry(bundle, goalResource);
   }
 
   /**
