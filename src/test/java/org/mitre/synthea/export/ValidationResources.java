@@ -2,10 +2,13 @@ package org.mitre.synthea.export;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.validation.FhirValidator;
+import ca.uhn.fhir.validation.IValidatorModule;
+import ca.uhn.fhir.validation.SchemaBaseValidator;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
-import org.hl7.fhir.dstu3.hapi.ctx.IValidationSupport;
-import org.hl7.fhir.dstu3.hapi.validation.DefaultProfileValidationSupport;
+import ca.uhn.fhir.validation.schematron.SchematronBaseValidator;
+
+import org.hl7.fhir.dstu3.hapi.ctx.DefaultProfileValidationSupport;
 import org.hl7.fhir.dstu3.hapi.validation.FhirInstanceValidator;
 import org.hl7.fhir.dstu3.hapi.validation.ValidationSupportChain;
 import org.hl7.fhir.instance.model.api.IBaseResource;
@@ -19,7 +22,6 @@ import org.slf4j.LoggerFactory;
 public class ValidationResources {
   private FhirContext ctx;
   private FhirValidator validator;
-  private FhirInstanceValidator instanceValidator;
   static final Logger logger = LoggerFactory.getLogger(ValidationResources.class);
 
   /**
@@ -29,12 +31,17 @@ public class ValidationResources {
     // Only support for dstu3 for now
     ctx = FhirContext.forDstu3();
     validator = ctx.newValidator();
-
-    instanceValidator = new FhirInstanceValidator();
-    IValidationSupport valSupport = new ValidationSupport();
-    ValidationSupportChain support = new ValidationSupportChain(valSupport,
-        new DefaultProfileValidationSupport());
+    FhirInstanceValidator instanceValidator = new FhirInstanceValidator();
+    ValidationSupport validationSupport = new ValidationSupport();
+    ValidationSupportChain support = new ValidationSupportChain(
+        new DefaultProfileValidationSupport(), validationSupport);
     instanceValidator.setValidationSupport(support);
+
+    IValidatorModule schemaValidator = new SchemaBaseValidator(ctx);
+    IValidatorModule schematronValidator = new SchematronBaseValidator(ctx);
+
+    validator.registerValidatorModule(schemaValidator);
+    validator.registerValidatorModule(schematronValidator);
     validator.registerValidatorModule(instanceValidator);
   }
 
