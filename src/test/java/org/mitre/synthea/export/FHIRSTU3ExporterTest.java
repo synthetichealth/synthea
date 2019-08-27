@@ -121,7 +121,7 @@ public class FHIRSTU3ExporterTest {
           }
           // Check ExplanationOfBenefit Resources against BlueButton
           if (entry.getResource().fhirType().equals("ExplanationOfBenefit")) {
-            ValidationResult bbResult = validationResources.validate(entry.getResource());
+            ValidationResult bbResult = validationResources.validateSTU3(entry.getResource());
 
             for (SingleValidationMessage message : bbResult.getMessages()) {
               if (message.getSeverity() == ResultSeverityEnum.ERROR) {

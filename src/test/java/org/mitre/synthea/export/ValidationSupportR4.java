@@ -15,21 +15,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hl7.fhir.dstu3.hapi.ctx.IValidationSupport;
-import org.hl7.fhir.dstu3.model.CodeSystem;
-import org.hl7.fhir.dstu3.model.CodeSystem.ConceptDefinitionComponent;
-import org.hl7.fhir.dstu3.model.StructureDefinition;
-import org.hl7.fhir.dstu3.model.ValueSet;
-import org.hl7.fhir.dstu3.model.ValueSet.ConceptSetComponent;
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.hapi.ctx.IValidationSupport;
+import org.hl7.fhir.r4.model.CodeSystem;
+import org.hl7.fhir.r4.model.CodeSystem.ConceptDefinitionComponent;
+import org.hl7.fhir.r4.model.StructureDefinition;
+import org.hl7.fhir.r4.model.ValueSet;
+import org.hl7.fhir.r4.model.ValueSet.ConceptSetComponent;
+import org.hl7.fhir.r4.terminologies.ValueSetExpander.ValueSetExpansionOutcome;
 import org.hl7.fhir.utilities.validation.ValidationMessage.IssueSeverity;
 
 /**
  * ValidationSupport provides implementation guide profiles (i.e. StructureDefinitions)
  * to the FHIR validation process. This class does not provide ValueSet expansion.
  */
-public class ValidationSupport implements IValidationSupport {
-  private static String profileDir = "structureDefinitions";
+public class ValidationSupportR4 implements IValidationSupport {
+  private static String profileDir = "structureDefinitions/r4";
 
   private List<IBaseResource> resources;
   private Map<String, IBaseResource> resourcesMap;
@@ -40,7 +41,7 @@ public class ValidationSupport implements IValidationSupport {
   /**
    * Defines the custom validation support for various implementation guides.
    */
-  public ValidationSupport() {
+  public ValidationSupportR4() {
     resources = new ArrayList<IBaseResource>();
     resourcesMap = new HashMap<String, IBaseResource>();
     definitions = new ArrayList<StructureDefinition>();
@@ -62,7 +63,7 @@ public class ValidationSupport implements IValidationSupport {
    */
   private void loadFromDirectory(String rootDir) throws Throwable {
 
-    IParser jsonParser = FhirContext.forDstu3().newJsonParser();
+    IParser jsonParser = FhirContext.forR4().newJsonParser();
     jsonParser.setParserErrorHandler(new StrictErrorHandler());
 
     URL profilesFolder = ClassLoader.getSystemClassLoader().getResource(rootDir);
@@ -92,7 +93,7 @@ public class ValidationSupport implements IValidationSupport {
   }
 
   @Override
-  public ValueSet.ValueSetExpansionComponent expandValueSet(FhirContext theContext,
+  public ValueSetExpansionOutcome expandValueSet(FhirContext theContext,
       ConceptSetComponent theInclude) {
     return null;
   }
@@ -188,7 +189,7 @@ public class ValidationSupport implements IValidationSupport {
 
   @Override
   public StructureDefinition generateSnapshot(
-      StructureDefinition theInput, String theUrl, String theName) {
+      StructureDefinition theInput, String theUrl, String theWebUrl, String theProfileName) {
     return null;
   }
 }
