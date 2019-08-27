@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.engine.Components.Exact;
@@ -1288,8 +1287,8 @@ public abstract class State implements Cloneable {
     @Override
     public boolean process(Person person, long time) {
       // Randomly pick number of series and instances if bounds were provided
-      duplicateSeries();
-      duplicateInstances();
+      duplicateSeries(person);
+      duplicateInstances(person);
 
       // The modality code of the first series is a good approximation
       // of the type of ImagingStudy this is
@@ -1305,12 +1304,12 @@ public abstract class State implements Cloneable {
       return true;
     }
 
-    private void duplicateSeries() {
+    private void duplicateSeries(Person person) {
       if (minNumberSeries > 0 && maxNumberSeries >= minNumberSeries
           && series.size() > 0) {
 
         // Randomly pick the number of series in this study
-        int numberOfSeries = ThreadLocalRandom.current().nextInt(minNumberSeries, maxNumberSeries + 1);
+        int numberOfSeries = (int) person.rand(minNumberSeries, maxNumberSeries + 1);
         HealthRecord.ImagingStudy.Series referenceSeries = series.get(0);
         series = new ArrayList<HealthRecord.ImagingStudy.Series>();
 
@@ -1331,15 +1330,14 @@ public abstract class State implements Cloneable {
       }
     }
 
-    private void duplicateInstances() {
+    private void duplicateInstances(Person person) {
       for (int i = 0; i < series.size(); i++) {
         HealthRecord.ImagingStudy.Series s = series.get(i);
         if (s.minNumberInstances > 0 && s.maxNumberInstances >= s.minNumberInstances
             && s.instances.size() > 0) {
 
           // Randomly pick the number of instances in this series
-          int numberOfInstances = ThreadLocalRandom.current()
-              .nextInt(s.minNumberInstances, s.maxNumberInstances + 1);
+          int numberOfInstances = (int) person.rand(s.minNumberInstances, s.maxNumberInstances + 1);
           HealthRecord.ImagingStudy.Instance referenceInstance = s.instances.get(0);
           s.instances = new ArrayList<HealthRecord.ImagingStudy.Instance>();
 
