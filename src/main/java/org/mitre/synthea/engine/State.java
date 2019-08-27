@@ -3,6 +3,7 @@ package org.mitre.synthea.engine;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -1267,17 +1268,28 @@ public abstract class State implements Cloneable {
     private Code procedureCode;
     /** The Series of Instances that represent this ImagingStudy. */
     private List<HealthRecord.ImagingStudy.Series> series;
+    /** Minimum and maximum number of series in this study.
+     * Actual number is picked uniformly randomly from this range, copying series data from
+     * the first series provided. */
+    public int minNumberSeries = 0;
+    public int maxNumberSeries = 0;
 
     @Override
     public ImagingStudy clone() {
       ImagingStudy clone = (ImagingStudy) super.clone();
       clone.procedureCode = procedureCode;
       clone.series = series;
+      clone.minNumberSeries = minNumberSeries;
+      clone.maxNumberSeries = maxNumberSeries;
       return clone;
     }
 
     @Override
     public boolean process(Person person, long time) {
+      // Randomly pick number of series and instances if bounds were provided
+      duplicateSeries(person);
+      duplicateInstances(person);
+
       // The modality code of the first series is a good approximation
       // of the type of ImagingStudy this is
       String primaryModality = series.get(0).modality.code;
@@ -1290,6 +1302,53 @@ public abstract class State implements Cloneable {
       procedure.codes.add(procedureCode);
       procedure.stop = procedure.start + TimeUnit.MINUTES.toMillis(30);
       return true;
+    }
+
+    private void duplicateSeries(Person person) {
+      if (minNumberSeries > 0 && maxNumberSeries >= minNumberSeries
+          && series.size() > 0) {
+
+        // Randomly pick the number of series in this study
+        int numberOfSeries = (int) person.rand(minNumberSeries, maxNumberSeries + 1);
+        HealthRecord.ImagingStudy.Series referenceSeries = series.get(0);
+        series = new ArrayList<HealthRecord.ImagingStudy.Series>();
+
+        // Create the new series with random series UID
+        for (int i = 0; i < numberOfSeries; i++) {
+          HealthRecord.ImagingStudy.Series newSeries = referenceSeries.clone();
+          newSeries.dicomUid = Utilities.randomDicomUid(i + 1, 0);
+          series.add(newSeries);
+        }
+      } else {
+        // Ensure series references are distinct (required if no. of instances is picked randomly)
+        List<HealthRecord.ImagingStudy.Series> oldSeries = series;
+        series = new ArrayList<HealthRecord.ImagingStudy.Series>();
+        for (int i = 0; i < oldSeries.size(); i++) {
+          HealthRecord.ImagingStudy.Series newSeries = oldSeries.get(i).clone();
+          series.add(newSeries);
+        }
+      }
+    }
+
+    private void duplicateInstances(Person person) {
+      for (int i = 0; i < series.size(); i++) {
+        HealthRecord.ImagingStudy.Series s = series.get(i);
+        if (s.minNumberInstances > 0 && s.maxNumberInstances >= s.minNumberInstances
+            && s.instances.size() > 0) {
+
+          // Randomly pick the number of instances in this series
+          int numberOfInstances = (int) person.rand(s.minNumberInstances, s.maxNumberInstances + 1);
+          HealthRecord.ImagingStudy.Instance referenceInstance = s.instances.get(0);
+          s.instances = new ArrayList<HealthRecord.ImagingStudy.Instance>();
+
+          // Create the new instances with random instance UIDs
+          for (int j = 0; j < numberOfInstances; j++) {
+            HealthRecord.ImagingStudy.Instance newInstance = referenceInstance.clone();
+            newInstance.dicomUid = Utilities.randomDicomUid(i + 1, j + 1);
+            s.instances.add(newInstance);
+          }
+        }
+      }
     }
   }
 
