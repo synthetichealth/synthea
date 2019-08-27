@@ -1516,6 +1516,8 @@
             "code": "CT",
             "display": "Computed Tomography"
           },
+          "min_number_instances": 300,
+          "max_number_instances": 500,
           "instances": [
             {
               "title": "CT Image Storage",
@@ -1549,6 +1551,8 @@
             "code": "CT",
             "display": "Computed Tomography"
           },
+          "min_number_instances": 300,
+          "max_number_instances": 500,
           "instances": [
             {
               "title": "CT Image Storage",

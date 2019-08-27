@@ -253,7 +253,7 @@ public class HealthRecord {
      * ImagingStudy.Series represents a series of images that were taken of a
      * specific part of the body.
      */
-    public class Series {
+    public class Series implements Cloneable {
       /** A randomly assigned DICOM UID. */
       public transient String dicomUid;
       /** A SNOMED-CT body structures code. */
@@ -267,13 +267,30 @@ public class HealthRecord {
       public Code modality;
       /** One or more imaging Instances that belong to this Series. */
       public List<Instance> instances;
+      /** Minimum and maximum number of instances in this series.
+       * Actual number is picked uniformly randomly from this range, copying instance data from
+       * the first instance provided. */
+      public int minNumberInstances = 0;
+      public int maxNumberInstances = 0;
+
+      @Override
+      public Series clone() {
+        Series clone = new Series();
+        clone.dicomUid = dicomUid;
+        clone.bodySite = bodySite;
+        clone.modality = modality;
+        clone.instances = instances;
+        clone.minNumberInstances = minNumberInstances;
+        clone.maxNumberInstances = maxNumberInstances;
+        return clone;
+      }
     }
 
     /**
      * ImagingStudy.Instance represents a single imaging Instance taken as part of a
      * Series of images.
      */
-    public class Instance {
+    public class Instance implements Cloneable {
       /** A randomly assigned DICOM UID. */
       public transient String dicomUid;
       /** A title for this image. */
@@ -284,6 +301,15 @@ public class HealthRecord {
        * @see <a href="https://www.dicomlibrary.com/dicom/sop/">DICOM SOP codes</a>
        */
       public Code sopClass;
+
+      @Override
+      public Instance clone() {
+        Instance clone = new Instance();
+        clone.dicomUid = dicomUid;
+        clone.title = title;
+        clone.sopClass = sopClass;
+        return clone;
+      }
     }
   }
 
