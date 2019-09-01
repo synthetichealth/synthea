@@ -195,8 +195,8 @@ function.      </p>
   <parameter metaid="_685791" id="P_th" name="P_th" value="-4"/>
   <parameter metaid="_685794" id="e_t" name="e_t" constant="false"/>
   <parameter metaid="_685795" id="A" name="A" value="1"/>
-  <parameter metaid="_685796" id="B" name="B" value="80"/>
-  <parameter metaid="_685797" id="C" name="C" value="0.375"/>
+  <parameter metaid="_685796" id="B" name="B" value="45"/>
+  <parameter metaid="_685797" id="C" name="C" value="0.5"/>
   <parameter metaid="_685800" id="tau" name="tau" constant="false"/>
   <parameter metaid="_685801" id="period" name="period" value="0.75"/>
   <parameter metaid="_685802" id="V_pcd" name="V_pcd" constant="false"/>
@@ -884,14 +884,26 @@ function.      </p>
             <times/>
             <apply>
               <minus/>
-              <ci> B </ci>
+              <apply>
+                <divide/>
+                  <ci> B </ci>
+                  <apply>
+                    <power/>
+                    <ci> period </ci>
+                    <cn> 2 </cn>
+                  </apply>
+              </apply>
             </apply>
             <apply>
               <power/>
               <apply>
                 <minus/>
                 <ci> tau </ci>
-                <ci> C </ci>
+                <apply>
+                  <times/>
+                  <ci> C </ci>
+                  <ci> period </ci>
+                </apply>
               </apply>
               <cn> 2 </cn>
             </apply>
