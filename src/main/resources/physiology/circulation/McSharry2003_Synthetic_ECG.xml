@@ -23,10 +23,10 @@ beat-to-beat variation in morphology and timing of the human ECG, including QT
 dispersion and R-peak amplitude modulation are shown to result. This model may
 be employed to assess biomedical signal processing techniques which are used
 to compute clinical statistics from the ECG.      </p>
-            <p>This model has been manually implemented in SBML based on the open-source ECGSYN C source code from      <a href="https://physionet.org/">PhysioNET</a>
+            <p>This model has been manually implemented in SBML based on the open-source ECGSYN C and MATLAB source code from      <a href="https://physionet.org/">PhysioNET</a>
                 <br/>
-          The original model code retrieved from:
-          <a href="https://archive.physionet.org/physiotools/ecgsyn/C/src/">ECGSYN Source Repository</a>
+          The original model code available from the
+          <a href="https://archive.physionet.org/physiotools/ecgsyn/">ECGSYN Source Repository</a>
                 <br/>
           Conversion to SBML completed by:      <br/>
                 <strong>Sivek, Ryan T.</strong>
@@ -293,9 +293,6 @@ to compute clinical statistics from the ECG.      </p>
       <parameter id="a0" name="a0" value="0.0" constant="false"/>
       <parameter id="w0" name="w0" value="0.0" constant="false"/>
       <parameter id="r0" name="r0" value="1.0" constant="false"/>
-      <parameter id="x0" name="x0" value="0.0" constant="false"/>
-      <parameter id="y0" name="y0" value="0.0" constant="false"/>
-      <parameter id="z0" name="z0" value="0.0" constant="false"/>
       <parameter id="zbase" name="zbase" value="0.0" constant="false"/>
       
       <parameter id="x" name="x" value="1.0" constant="false"/>
@@ -357,8 +354,8 @@ to compute clinical statistics from the ECG.      </p>
       <parameter id="dy_" name="dy_" value="0.0" constant="false"/>
       <parameter id="dz_" name="dz_" value="0.0" constant="false"/>
   </listOfParameters>
-  <listOfInitialAssignments>
-    <initialAssignment symbol="rrpc">
+  <listOfRules>
+    <assignmentRule variable="rrpc">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
         <apply>
           <divide/>
@@ -366,8 +363,8 @@ to compute clinical statistics from the ECG.      </p>
           <ci> hrmean </ci>
         </apply>
       </math>
-    </initialAssignment>
-    <initialAssignment symbol="hrfact">
+    </assignmentRule>
+    <assignmentRule variable="hrfact">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
         <apply>
           <root/>
@@ -378,16 +375,16 @@ to compute clinical statistics from the ECG.      </p>
           </apply>
         </apply>
       </math>
-    </initialAssignment>
-    <initialAssignment symbol="hrfact2">
+    </assignmentRule>
+    <assignmentRule variable="hrfact2">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
         <apply>
           <root/>
           <ci> hrfact </ci>
         </apply>
       </math>
-    </initialAssignment>
-    <initialAssignment symbol="bi_f_P">
+    </assignmentRule>
+    <assignmentRule variable="bi_f_P">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
         <apply>
           <times/>
@@ -395,8 +392,8 @@ to compute clinical statistics from the ECG.      </p>
           <ci> bi_P </ci>
         </apply>
       </math>
-    </initialAssignment>
-    <initialAssignment symbol="bi_f_Q">
+    </assignmentRule>
+    <assignmentRule variable="bi_f_Q">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
         <apply>
           <times/>
@@ -404,8 +401,8 @@ to compute clinical statistics from the ECG.      </p>
           <ci> bi_Q </ci>
         </apply>
       </math>
-    </initialAssignment>
-    <initialAssignment symbol="bi_f_R">
+    </assignmentRule>
+    <assignmentRule variable="bi_f_R">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
         <apply>
           <times/>
@@ -413,8 +410,8 @@ to compute clinical statistics from the ECG.      </p>
           <ci> bi_R </ci>
         </apply>
       </math>
-    </initialAssignment>
-    <initialAssignment symbol="bi_f_S">
+    </assignmentRule>
+    <assignmentRule variable="bi_f_S">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
         <apply>
           <times/>
@@ -422,8 +419,8 @@ to compute clinical statistics from the ECG.      </p>
           <ci> bi_S </ci>
         </apply>
       </math>
-    </initialAssignment>
-    <initialAssignment symbol="bi_f_T">
+    </assignmentRule>
+    <assignmentRule variable="bi_f_T">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
         <apply>
           <times/>
@@ -431,8 +428,8 @@ to compute clinical statistics from the ECG.      </p>
           <ci> bi_T </ci>
         </apply>
       </math>
-    </initialAssignment>
-    <initialAssignment symbol="ti_f_P">
+    </assignmentRule>
+    <assignmentRule variable="ti_f_P">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
         <apply>
           <times/>
@@ -448,8 +445,8 @@ to compute clinical statistics from the ECG.      </p>
           <ci> hrfact2 </ci>
         </apply>
       </math>
-    </initialAssignment>
-    <initialAssignment symbol="ti_f_Q">
+    </assignmentRule>
+    <assignmentRule variable="ti_f_Q">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
         <apply>
           <times/>
@@ -465,8 +462,8 @@ to compute clinical statistics from the ECG.      </p>
           <ci> hrfact </ci>
         </apply>
       </math>
-    </initialAssignment>
-    <initialAssignment symbol="ti_f_R">
+    </assignmentRule>
+    <assignmentRule variable="ti_f_R">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
         <apply>
           <times/>
@@ -478,8 +475,8 @@ to compute clinical statistics from the ECG.      </p>
           <ci> ti_R </ci>
         </apply>
       </math>
-    </initialAssignment>
-    <initialAssignment symbol="ti_f_S">
+    </assignmentRule>
+    <assignmentRule variable="ti_f_S">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
         <apply>
           <times/>
@@ -495,8 +492,8 @@ to compute clinical statistics from the ECG.      </p>
           <ci> hrfact </ci>
         </apply>
       </math>
-    </initialAssignment>
-    <initialAssignment symbol="ti_f_T">
+    </assignmentRule>
+    <assignmentRule variable="ti_f_T">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
         <apply>
           <times/>
@@ -512,9 +509,7 @@ to compute clinical statistics from the ECG.      </p>
           <ci> hrfact2 </ci>
         </apply>
       </math>
-    </initialAssignment>
-  </listOfInitialAssignments>
-  <listOfRules>
+    </assignmentRule>
     <assignmentRule variable="w0">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
         <apply>
