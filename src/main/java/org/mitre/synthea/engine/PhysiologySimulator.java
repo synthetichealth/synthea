@@ -537,6 +537,7 @@ public class PhysiologySimulator {
           case LINE:
             LineChart lineChart = new LineChart(xAxis,yAxis);
             lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.NONE);
+            lineChart.setCreateSymbols(false);
             chart = lineChart;
             break;
           case SCATTER:
@@ -551,7 +552,7 @@ public class PhysiologySimulator {
       chart.setTitle(config.getTitle());
       
       // If there's only one series, and there's a title, hide the legend
-      if(config.getTitle() != null && config.getTitle().isEmpty() && config.getSeries().size() == 1) {
+      if(config.getTitle() != null && !config.getTitle().isEmpty() && config.getSeries().size() == 1) {
         chart.setLegendVisible(false);
       }
       
