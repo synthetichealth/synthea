@@ -34,6 +34,8 @@ import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
+import static org.mitre.synthea.world.concepts.VitalSign.*;
+
 public abstract class State implements Cloneable {
   public Module module;
   public String name;
@@ -1158,16 +1160,7 @@ public abstract class State implements Cloneable {
         value = person.attributes.get(attribute);
       } else if (vitalSign != null) {
         intermediateVital = person.getVitalSign(vitalSign, time);
- 
-        //OSEHRA/SMH - Round Vitals signs appropriately to integers or a specific number of decimal places
-        //NB: I am using the whole import as "VitalSign" resolves to another class.
-        if (vitalSign == org.mitre.synthea.world.concepts.VitalSign.SYSTOLIC_BLOOD_PRESSURE ||
-          vitalSign == org.mitre.synthea.world.concepts.VitalSign.DIASTOLIC_BLOOD_PRESSURE) {
-          value = Math.round(intermediateVital);
-        }
-        else {
-          value = person.roundVitalSign(vitalSign, intermediateVital);
-        }
+        value = person.roundVitalSign(vitalSign, intermediateVital);
       } else if (valueCode != null) {
         value = valueCode;
       }
