@@ -95,6 +95,8 @@ import org.hl7.fhir.r4.model.PositiveIntType;
 import org.hl7.fhir.r4.model.Practitioner;
 import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.Procedure.ProcedureStatus;
+import org.hl7.fhir.r4.model.Provenance;
+import org.hl7.fhir.r4.model.Provenance.ProvenanceAgentComponent;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
@@ -284,6 +286,11 @@ public class FhirR4 {
 
       explanationOfBenefit(personEntry, bundle, encounterEntry, person,
           encounterClaim, encounter);
+    }
+
+    if (USE_US_CORE_IG) {
+      // Add Provenance to the Bundle
+      provenance(bundle, person, stopTime);
     }
     return bundle;
   }
@@ -1499,6 +1506,47 @@ public class FhirR4 {
     procedure.fullUrl = procedureEntry.getFullUrl();
 
     return procedureEntry;
+  }
+
+  /**
+   * Create a Provenance entry at the end of this Bundle that
+   * targets all the entries in the Bundle.
+   *
+   * @param bundle The finished complete Bundle.
+   * @param person The person.
+   * @param stopTime The time the simulation stopped.
+   * @return BundleEntryComponent containing a Provenance resource.
+   */
+  private static BundleEntryComponent provenance(Bundle bundle, Person person, long stopTime) {
+    Provenance provenance = new Provenance();
+    if (USE_US_CORE_IG) {
+      Meta meta = new Meta();
+      meta.addProfile(
+          "http://hl7.org/fhir/us/core/StructureDefinition/us-core-provenance");
+      provenance.setMeta(meta);
+    }
+    for(BundleEntryComponent entry : bundle.getEntry()) {
+      provenance.addTarget(new Reference(entry.getFullUrl()));
+    }
+    provenance.setRecorded(new Date(stopTime));
+
+    // Provenance Primary Organization...
+    Provider provider = null;
+    if (person.hasMultipleRecords) {
+      provider = person.record.provider;
+    } else {
+      provider = person.getProvider(EncounterType.WELLNESS, stopTime);
+    }
+    String providerFullUrl = findProviderUrl(provider, bundle);
+
+    ProvenanceAgentComponent agent = provenance.addAgent();
+    agent.setType(mapCodeToCodeableConcept(
+        new Code("http://terminology.hl7.org/CodeSystem/provenance-participant-type",
+            "author", "Author"), null));
+    agent.setWho(new Reference()
+        .setReference(providerFullUrl)
+        .setDisplay(provider.name));
+    return newEntry(bundle, provenance);
   }
 
   private static BundleEntryComponent immunization(BundleEntryComponent personEntry, Bundle bundle,
