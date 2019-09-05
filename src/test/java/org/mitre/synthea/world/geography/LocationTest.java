@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Person;
 
 public class LocationTest {
 
@@ -41,7 +42,7 @@ public class LocationTest {
   @Test
   public void testLocation() {
     Assert.assertTrue(location.getPopulation("Bedford") > 0);
-    Assert.assertTrue(location.getZipCode("Bedford").equals("01730"));
+    Assert.assertTrue(location.getZipCode("Bedford", new Person(1)).equals("01730"));
   }
 
   @Test

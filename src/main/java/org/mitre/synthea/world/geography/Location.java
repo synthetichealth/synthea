@@ -113,9 +113,11 @@ public class Location {
    * If a city has more than one zip code, this picks a random one.
    * 
    * @param cityName Name of the city
+   * @param person Used for a source of repeatable randomness when selecting a zipcode when multiple
+   *               exist for a location
    * @return a zip code for the given city
    */
-  public String getZipCode(String cityName) {
+  public String getZipCode(String cityName, Person person) {
     List<Place> zipsForCity = zipCodes.get(cityName);
     
     if (zipsForCity == null) {
@@ -125,7 +127,8 @@ public class Location {
     if (zipsForCity == null || zipsForCity.isEmpty()) {
       return "00000"; // if we don't have the city, just use a dummy
     } else if (zipsForCity.size() >= 1) {
-      return zipsForCity.get(0).postalCode;
+      int randomChoice = person.randInt(zipsForCity.size());
+      return zipsForCity.get(randomChoice).postalCode;
     }
     return "00000";
   }
