@@ -93,6 +93,7 @@ import org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent;
 import org.hl7.fhir.r4.model.Period;
 import org.hl7.fhir.r4.model.PositiveIntType;
 import org.hl7.fhir.r4.model.Practitioner;
+import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.Procedure.ProcedureStatus;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
@@ -620,7 +621,11 @@ public class FhirR4 {
       encounterResource.addExtension(performedContext);
     }
 
-    encounterResource.setSubject(new Reference(personEntry.getFullUrl()));
+    Patient patient = (Patient) personEntry.getResource();
+    encounterResource.setSubject(new Reference()
+        .setReference(personEntry.getFullUrl())
+        .setDisplay(patient.getNameFirstRep().getNameAsSingleString()));
+
     encounterResource.setStatus(EncounterStatus.FINISHED);
     if (encounter.codes.isEmpty()) {
       // wellness encounter
@@ -655,6 +660,7 @@ public class FhirR4 {
         BundleEntryComponent providerOrganization = provider(bundle, encounter.provider);
         encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
       }
+      encounterResource.getServiceProvider().setDisplay(encounter.provider.name);
     } else { // no associated provider, patient goes to wellness provider
       Provider provider = person.getProvider(EncounterType.WELLNESS, encounter.start);
       String providerFullUrl = findProviderUrl(provider, bundle);
@@ -665,6 +671,7 @@ public class FhirR4 {
         BundleEntryComponent providerOrganization = provider(bundle, provider);
         encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
       }
+      encounterResource.getServiceProvider().setDisplay(provider.name);
     }
 
     if (encounter.clinician != null) {
@@ -676,6 +683,8 @@ public class FhirR4 {
         BundleEntryComponent practitioner = practitioner(bundle, encounter.clinician);
         encounterResource.addParticipant().setIndividual(new Reference(practitioner.getFullUrl()));
       }
+      encounterResource.getParticipantFirstRep().getIndividual()
+          .setDisplay(encounter.clinician.getFullname());
     }
 
     if (encounter.discharge != null) {
@@ -2114,7 +2123,10 @@ public class FhirR4 {
             "116153009",
             "Patient"),
         SNOMED_URI));
-    participant.setMember(new Reference(personEntry.getFullUrl()));
+    Patient patient = (Patient) personEntry.getResource();
+    participant.setMember(new Reference()
+        .setReference(personEntry.getFullUrl())
+        .setDisplay(patient.getNameFirstRep().getNameAsSingleString()));
 
     org.hl7.fhir.r4.model.Encounter encounter =
         (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
@@ -2331,13 +2343,41 @@ public class FhirR4 {
     } else if (clinician.attributes.get(Person.GENDER).equals("F")) {
       practitionerResource.setGender(AdministrativeGender.FEMALE);
     }
+    BundleEntryComponent practitionerEntry =
+        newEntry(bundle, practitionerResource, clinician.getResourceID());
 
     if (USE_US_CORE_IG) {
       // generate an accompanying PractitionerRole resource
-      // TODO
+      PractitionerRole practitionerRole = new PractitionerRole();
+      Meta meta = new Meta();
+      meta.addProfile(
+          "http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitionerrole");
+      practitionerRole.setMeta(meta);
+      practitionerRole.setPractitioner(new Reference()
+          .setReference(practitionerEntry.getFullUrl())
+          .setDisplay(practitionerResource.getNameFirstRep().getNameAsSingleString()));
+      practitionerRole.setOrganization(new Reference()
+          .setReference("urn:uuid:" + clinician.getOrganization().getResourceID())
+          .setDisplay(clinician.getOrganization().name));
+      practitionerRole.addCode(
+          mapCodeToCodeableConcept(
+              new Code("http://nucc.org/provider-taxonomy", "208D00000X", "General Practice"),
+              null));
+      practitionerRole.addSpecialty(
+          mapCodeToCodeableConcept(
+              new Code("http://nucc.org/provider-taxonomy", "208D00000X", "General Practice"),
+              null));
+      // TODO reference Location
+      if (clinician.getOrganization().phone != null
+          && !clinician.getOrganization().phone.isEmpty()) {
+        practitionerRole.addTelecom(new ContactPoint()
+            .setSystem(ContactPointSystem.PHONE)
+            .setValue(clinician.getOrganization().phone));
+      }
+      newEntry(bundle, practitionerRole);
     }
 
-    return newEntry(bundle, practitionerResource, clinician.getResourceID());
+    return practitionerEntry;
   }
 
   /**
