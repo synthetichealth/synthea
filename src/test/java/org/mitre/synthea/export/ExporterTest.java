@@ -71,10 +71,10 @@ public class ExporterTest {
     Code code = new Code("SNOMED-CT","705129","Fake Code");
 
     record.encounterStart(time - years(10), EncounterType.AMBULATORY);
-    record.medicationStart(time - years(10), "fakeitol");
+    record.medicationStart(time - years(10), "fakeitol", true);
 
     record.encounterStart(time - years(8), EncounterType.AMBULATORY);
-    Medication med = record.medicationStart(time - years(8), "placebitol");
+    Medication med = record.medicationStart(time - years(8), "placebitol", true);
     med.codes.add(code);
 
     record.medicationEnd(time - years(6), "placebitol", DUMMY_CODE);
@@ -92,12 +92,12 @@ public class ExporterTest {
     Code code = new Code("SNOMED-CT","705129","Fake Code");
 
     record.encounterStart(time - years(10), EncounterType.AMBULATORY);
-    Medication med = record.medicationStart(time - years(10), "dimoxinil");
+    Medication med = record.medicationStart(time - years(10), "dimoxinil", false);
     med.codes.add(code);
     record.medicationEnd(time - years(9), "dimoxinil", DUMMY_CODE);
 
     record.encounterStart(time - years(8), EncounterType.AMBULATORY);
-    med = record.medicationStart(time - years(8), "placebitol");
+    med = record.medicationStart(time - years(8), "placebitol", true);
     med.codes.add(code);
 
     record.medicationEnd(time - years(4), "placebitol", DUMMY_CODE);
