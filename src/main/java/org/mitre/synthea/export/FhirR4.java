@@ -71,9 +71,12 @@ import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesComponent;
 import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesInstanceComponent;
+import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus;
 import org.hl7.fhir.r4.model.Immunization;
 import org.hl7.fhir.r4.model.Immunization.ImmunizationStatus;
 import org.hl7.fhir.r4.model.IntegerType;
+import org.hl7.fhir.r4.model.Location.LocationPositionComponent;
+import org.hl7.fhir.r4.model.Location.LocationStatus;
 import org.hl7.fhir.r4.model.MedicationAdministration;
 import org.hl7.fhir.r4.model.MedicationAdministration.MedicationAdministrationDosageComponent;
 import org.hl7.fhir.r4.model.MedicationRequest;
@@ -272,8 +275,9 @@ public class FhirR4 {
       }
 
       for (CarePlan careplan : encounter.careplans) {
-        careplan(personEntry, bundle, encounterEntry, careplan);
-        careTeam(personEntry, bundle, encounterEntry, careplan);
+        BundleEntryComponent careTeamEntry =
+            careTeam(personEntry, bundle, encounterEntry, careplan);
+        carePlan(personEntry, bundle, encounterEntry, encounter.provider, careTeamEntry, careplan);
       }
 
       for (ImagingStudy imagingStudy : encounter.imagingStudies) {
@@ -668,6 +672,11 @@ public class FhirR4 {
         encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
       }
       encounterResource.getServiceProvider().setDisplay(encounter.provider.name);
+      if (USE_US_CORE_IG) {
+        encounterResource.addLocation().setLocation(new Reference()
+            .setReference(findLocationUrl(encounter.provider, bundle))
+            .setDisplay(encounter.provider.name));
+      }
     } else { // no associated provider, patient goes to wellness provider
       Provider provider = person.getProvider(EncounterType.WELLNESS, encounter.start);
       String providerFullUrl = findProviderUrl(provider, bundle);
@@ -679,6 +688,11 @@ public class FhirR4 {
         encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
       }
       encounterResource.getServiceProvider().setDisplay(provider.name);
+      if (USE_US_CORE_IG) {
+        encounterResource.addLocation().setLocation(new Reference()
+            .setReference(findLocationUrl(provider, bundle))
+            .setDisplay(provider.name));
+      }
     }
 
     if (encounter.clinician != null) {
@@ -718,6 +732,28 @@ public class FhirR4 {
       if (entry.getResource().fhirType().equals("Organization")) {
         Organization org = (Organization) entry.getResource();
         if (org.getIdentifierFirstRep().getValue().equals(provider.getResourceID())) {
+          return entry.getFullUrl();
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Find the Location entry in this bundle for the given provider, and return the
+   * "fullUrl" attribute.
+   *
+   * @param provider A given provider.
+   * @param bundle The current bundle being generated.
+   * @return Location.fullUrl if found, otherwise null.
+   */
+  private static String findLocationUrl(Provider provider, Bundle bundle) {
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      if (entry.getResource().fhirType().equals("Location")) {
+        org.hl7.fhir.r4.model.Location location =
+            (org.hl7.fhir.r4.model.Location) entry.getResource();
+        if (location.getManagingOrganization()
+            .getReference().endsWith(provider.getResourceID())) {
           return entry.getFullUrl();
         }
       }
@@ -843,8 +879,13 @@ public class FhirR4 {
     claimResource.setBillablePeriod(encounterResource.getPeriod());
     claimResource.setCreated(encounterResource.getPeriod().getEnd());
 
-    claimResource.setPatient(new Reference(personEntry.getFullUrl()));
+    claimResource.setPatient(new Reference()
+        .setReference(personEntry.getFullUrl())
+        .setDisplay((String) person.attributes.get(Person.NAME)));
     claimResource.setProvider(encounterResource.getServiceProvider());
+    if (USE_US_CORE_IG) {
+      claimResource.setFacility(encounterResource.getLocationFirstRep().getLocation());
+    }
 
     // set the required priority
     CodeableConcept priority = new CodeableConcept();
@@ -985,7 +1026,10 @@ public class FhirR4 {
 
     // Set References
     eob.setPatient(new Reference(personEntry.getFullUrl()));
-    
+    if (USE_US_CORE_IG) {
+      eob.setFacility(encounterResource.getLocationFirstRep().getLocation());
+    }
+
     ServiceRequest referral = (ServiceRequest) new ServiceRequest()
         .setStatus(ServiceRequest.ServiceRequestStatus.COMPLETED)
         .setIntent(ServiceRequest.ServiceRequestIntent.ORDER)
@@ -1460,6 +1504,11 @@ public class FhirR4 {
     procedureResource.setStatus(ProcedureStatus.COMPLETED);
     procedureResource.setSubject(new Reference(personEntry.getFullUrl()));
     procedureResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
+    if (USE_US_CORE_IG) {
+      org.hl7.fhir.r4.model.Encounter encounterResource =
+          (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
+      procedureResource.setLocation(encounterResource.getLocationFirstRep().getLocation());
+    }
 
     Code code = procedure.codes.get(0);
     CodeableConcept procCode = mapCodeToCodeableConcept(code, SNOMED_URI);
@@ -1525,7 +1574,7 @@ public class FhirR4 {
           "http://hl7.org/fhir/us/core/StructureDefinition/us-core-provenance");
       provenance.setMeta(meta);
     }
-    for(BundleEntryComponent entry : bundle.getEntry()) {
+    for (BundleEntryComponent entry : bundle.getEntry()) {
       provenance.addTarget(new Reference(entry.getFullUrl()));
     }
     provenance.setRecorded(new Date(stopTime));
@@ -1572,6 +1621,11 @@ public class FhirR4 {
     immResource.setPrimarySource(true);
     immResource.setPatient(new Reference(personEntry.getFullUrl()));
     immResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
+    if (USE_US_CORE_IG) {
+      org.hl7.fhir.r4.model.Encounter encounterResource =
+          (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
+      immResource.setLocation(encounterResource.getLocationFirstRep().getLocation());
+    }
 
     BundleEntryComponent immunizationEntry = newEntry(bundle, immResource);
     immunization.fullUrl = immunizationEntry.getFullUrl();
@@ -1950,11 +2004,13 @@ public class FhirR4 {
    * @param personEntry    The Entry for the Person
    * @param bundle         Bundle to add the CarePlan to
    * @param encounterEntry Current Encounter entry
+   * @param provider       The current provider
    * @param carePlan       The CarePlan to map to FHIR and add to the bundle
    * @return The added Entry
    */
-  private static BundleEntryComponent careplan(BundleEntryComponent personEntry, Bundle bundle,
-      BundleEntryComponent encounterEntry, CarePlan carePlan) {
+  private static BundleEntryComponent carePlan(BundleEntryComponent personEntry, Bundle bundle,
+      BundleEntryComponent encounterEntry, Provider provider,
+      BundleEntryComponent careTeamEntry, CarePlan carePlan) {
     org.hl7.fhir.r4.model.CarePlan careplanResource = new org.hl7.fhir.r4.model.CarePlan();
 
     if (USE_US_CORE_IG) {
@@ -1968,6 +2024,7 @@ public class FhirR4 {
     careplanResource.setIntent(CarePlanIntent.ORDER);
     careplanResource.setSubject(new Reference(personEntry.getFullUrl()));
     careplanResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
+    careplanResource.addCareTeam(new Reference(careTeamEntry.getFullUrl()));
 
     Code code = carePlan.codes.get(0);
     careplanResource.addCategory(mapCodeToCodeableConcept(code, SNOMED_URI));
@@ -1993,6 +2050,8 @@ public class FhirR4 {
 
     if (!carePlan.activities.isEmpty()) {
       narrative += "<br/>Activities: <ul>";
+      String locationUrl = findLocationUrl(provider, bundle);
+
       for (Code activity : carePlan.activities) {
         narrative += "<li>" + code.display + "</li>";
         CarePlanActivityComponent activityComponent = new CarePlanActivityComponent();
@@ -2000,6 +2059,9 @@ public class FhirR4 {
             new CarePlanActivityDetailComponent();
 
         activityDetailComponent.setStatus(activityStatus);
+        activityDetailComponent.setLocation(new Reference()
+            .setReference(locationUrl)
+            .setDisplay(provider.name));
 
         activityDetailComponent.setCode(mapCodeToCodeableConcept(activity, SNOMED_URI));
         activityComponent.setDetail(activityDetailComponent);
@@ -2026,7 +2088,7 @@ public class FhirR4 {
     }
 
     for (JsonObject goal : carePlan.goals) {
-      BundleEntryComponent goalEntry = caregoal(bundle, personEntry, goalStatus, goal);
+      BundleEntryComponent goalEntry = careGoal(bundle, personEntry, goalStatus, goal);
       careplanResource.addGoal().setReference(goalEntry.getFullUrl());
     }
 
@@ -2043,7 +2105,7 @@ public class FhirR4 {
    * @param goal The JsonObject
    * @return The added Entry
    */
-  private static BundleEntryComponent caregoal(
+  private static BundleEntryComponent careGoal(
       Bundle bundle,
       BundleEntryComponent personEntry,
       CodeableConcept goalStatus, JsonObject goal) {
@@ -2227,9 +2289,14 @@ public class FhirR4 {
         new org.hl7.fhir.r4.model.ImagingStudy();
 
     imagingStudyResource.addIdentifier(generateIdentifier(imagingStudy.dicomUid));
-    imagingStudyResource.setStatus(org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus.AVAILABLE);
+    imagingStudyResource.setStatus(ImagingStudyStatus.AVAILABLE);
     imagingStudyResource.setSubject(new Reference(personEntry.getFullUrl()));
     imagingStudyResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
+    if (USE_US_CORE_IG) {
+      org.hl7.fhir.r4.model.Encounter encounterResource =
+          (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
+      imagingStudyResource.setLocation(encounterResource.getLocationFirstRep().getLocation());
+    }
 
     Date startDate = new Date(imagingStudy.start);
     imagingStudyResource.setStarted(startDate);
@@ -2351,7 +2418,60 @@ public class FhirR4 {
       organizationResource.addTelecom(contactPoint);
     }
 
+    if (USE_US_CORE_IG) {
+      providerLocation(bundle, provider);
+    }
+
     return newEntry(bundle, organizationResource, provider.getResourceID());
+  }
+
+  /**
+   * Map the Provider into a FHIR Location resource, and add it to the given Bundle.
+   *
+   * @param bundle   The Bundle to add to
+   * @param provider The Provider
+   * @return The added Entry
+   */
+  protected static BundleEntryComponent providerLocation(Bundle bundle, Provider provider) {
+    org.hl7.fhir.r4.model.Location location = new org.hl7.fhir.r4.model.Location();
+    if (USE_US_CORE_IG) {
+      Meta meta = new Meta();
+      meta.addProfile(
+          "http://hl7.org/fhir/us/core/StructureDefinition/us-core-location");
+      location.setMeta(meta);
+    }
+    location.setStatus(LocationStatus.ACTIVE);
+    location.setName(provider.name);
+    // set telecom
+    if (provider.phone != null && !provider.phone.isEmpty()) {
+      ContactPoint contactPoint = new ContactPoint()
+          .setSystem(ContactPointSystem.PHONE)
+          .setValue(provider.phone);
+      location.addTelecom(contactPoint);
+    } else if (USE_US_CORE_IG) {
+      ContactPoint contactPoint = new ContactPoint()
+          .setSystem(ContactPointSystem.PHONE)
+          .setValue("(555) 555-5555");
+      location.addTelecom(contactPoint);
+    }
+    // set address
+    Address address = new Address()
+        .addLine(provider.address)
+        .setCity(provider.city)
+        .setPostalCode(provider.zip)
+        .setState(provider.state);
+    if (COUNTRY_CODE != null) {
+      address.setCountry(COUNTRY_CODE);
+    }
+    location.setAddress(address);
+    LocationPositionComponent position = new LocationPositionComponent();
+    position.setLatitude(provider.getY());
+    position.setLongitude(provider.getX());
+    location.setPosition(position);
+    location.setManagingOrganization(new Reference()
+        .setReference(getUrlPrefix("Organization") + provider.getResourceID())
+        .setDisplay(provider.name));
+    return newEntry(bundle, location);
   }
 
   /**
@@ -2405,7 +2525,8 @@ public class FhirR4 {
           .setReference(practitionerEntry.getFullUrl())
           .setDisplay(practitionerResource.getNameFirstRep().getNameAsSingleString()));
       practitionerRole.setOrganization(new Reference()
-          .setReference("urn:uuid:" + clinician.getOrganization().getResourceID())
+          .setReference(
+              getUrlPrefix("Organization") + clinician.getOrganization().getResourceID())
           .setDisplay(clinician.getOrganization().name));
       practitionerRole.addCode(
           mapCodeToCodeableConcept(
@@ -2415,7 +2536,9 @@ public class FhirR4 {
           mapCodeToCodeableConcept(
               new Code("http://nucc.org/provider-taxonomy", "208D00000X", "General Practice"),
               null));
-      // TODO reference Location
+      practitionerRole.addLocation()
+          .setReference(findLocationUrl(clinician.getOrganization(), bundle))
+          .setDisplay(clinician.getOrganization().name);
       if (clinician.getOrganization().phone != null
           && !clinician.getOrganization().phone.isEmpty()) {
         practitionerRole.addTelecom(new ContactPoint()
@@ -2531,11 +2654,7 @@ public class FhirR4 {
     BundleEntryComponent entry = bundle.addEntry();
 
     resource.setId(resourceID);
-    if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
-      entry.setFullUrl(resource.fhirType() + "/" + resourceID);
-    } else {
-      entry.setFullUrl("urn:uuid:" + resourceID);
-    }
+    entry.setFullUrl(getUrlPrefix(resource.fhirType()) + resourceID);
     entry.setResource(resource);
 
     if (TRANSACTION_BUNDLE) {
@@ -2546,5 +2665,18 @@ public class FhirR4 {
     }
 
     return entry;
+  }
+
+  /**
+   * Return either "[resourceType]/" or "urn:uuid:" as appropriate.
+   * @param resourceType The resource type being referenced.
+   * @return "[resourceType]/" or "urn:uuid:"
+   */
+  private static String getUrlPrefix(String resourceType) {
+    if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
+      return resourceType + "/";
+    } else {
+      return "urn:uuid:";
+    }
   }
 }
