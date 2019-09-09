@@ -163,7 +163,10 @@ public class FhirR4 {
 
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
-  private static final Table<String, String, String> SHR_MAPPING = loadSHRMapping();
+  private static final Table<String, String, String> SHR_MAPPING =
+      loadMapping("shr_mapping.csv");
+  private static final Table<String, String, String> US_CORE_MAPPING =
+      loadMapping("us_core_mapping.csv");
 
   @SuppressWarnings("rawtypes")
   private static Map loadRaceEthnicityCodes() {
@@ -194,16 +197,12 @@ public class FhirR4 {
   }
 
 
-  private static Table<String, String, String> loadSHRMapping() {
-    if (!USE_SHR_EXTENSIONS) {
-      // don't bother creating the table unless we need it
-      return null;
-    }
+  private static Table<String, String, String> loadMapping(String filename) {
     Table<String, String, String> mappingTable = HashBasedTable.create();
 
     List<LinkedHashMap<String, String>> csvData;
     try {
-      csvData = SimpleCSV.parse(Utilities.readResource("shr_mapping.csv"));
+      csvData = SimpleCSV.parse(Utilities.readResource(filename));
     } catch (IOException e) {
       e.printStackTrace();
       return null;
@@ -1443,7 +1442,19 @@ public class FhirR4 {
     observationResource.setEffective(convertFhirDateTime(observation.start, true));
     observationResource.setIssued(new Date(observation.start));
 
-    if (USE_SHR_EXTENSIONS) {
+    if (USE_US_CORE_IG) {
+      Meta meta = new Meta();
+      // add the specific profile based on code
+      String codeMappingUri = US_CORE_MAPPING.get(LOINC_URI, code.code);
+      if (codeMappingUri != null) {
+        meta.addProfile(codeMappingUri);
+      } else if (observation.report != null) {
+        meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab");
+      }
+      if (meta.hasProfile()) {
+        observationResource.setMeta(meta);
+      }
+    } else if (USE_SHR_EXTENSIONS) {
       Meta meta = new Meta();
       meta.addProfile(SHR_EXT + "shr-finding-Observation"); // all Observations are Observations
       if ("vital-signs".equals(observation.category)) {
@@ -1454,7 +1465,6 @@ public class FhirR4 {
       if (codeMappingUri != null) {
         meta.addProfile(codeMappingUri);
       }
-
       observationResource.setMeta(meta);
     }
 
