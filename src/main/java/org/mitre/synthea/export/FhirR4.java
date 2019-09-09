@@ -2505,7 +2505,18 @@ public class FhirR4 {
         (String) clinician.attributes.get(Clinician.LAST_NAME))
       .addGiven((String) clinician.attributes.get(Clinician.FIRST_NAME))
       .addPrefix((String) clinician.attributes.get(Clinician.NAME_PREFIX));
-
+    String email = (String) clinician.attributes.get(Clinician.FIRST_NAME) +
+        "." + (String) clinician.attributes.get(Clinician.LAST_NAME) +
+        "@example.com";
+    practitionerResource.addTelecom()
+        .setSystem(ContactPointSystem.EMAIL)
+        .setUse(ContactPointUse.WORK)
+        .setValue(email);
+    if (USE_US_CORE_IG) {
+      practitionerResource.getTelecomFirstRep().addExtension()
+          .setUrl("http://hl7.org/fhir/us/core/StructureDefinition/us-core-direct")
+          .setValue(new BooleanType(true));
+    }
     Address address = new Address()
         .addLine((String) clinician.attributes.get(Clinician.ADDRESS))
         .setCity((String) clinician.attributes.get(Clinician.CITY))
