@@ -71,6 +71,9 @@ dependencies {
   compile files('lib/SimulationCoreLibrary_v1.5_slim.jar')
   compile group: 'org.sbml.jsbml', name: 'jsbml', version: '1.4'
   compile group: 'org.apache.commons', name: 'commons-math', version: '2.2'
+  
+  // JfreeChart for drawing physiology charts
+  compile group: 'org.jfree', name: 'jfreechart', version: '1.5.0'
 
   // Use JUnit test framework
   testCompile 'junit:junit:4.12'

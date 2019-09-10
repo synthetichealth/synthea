@@ -1,5 +1,6 @@
 package org.mitre.synthea.engine;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,24 +16,25 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.Scene;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.ScatterChart;
-import javafx.scene.chart.XYChart;
-import javafx.scene.image.WritableImage;
-import javafx.stage.Stage;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.block.BlockBorder;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.title.TextTitle;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import javax.imageio.ImageIO;
 import javax.xml.stream.XMLStreamException;
 import org.apache.commons.math.ode.DerivativeException;
@@ -50,7 +52,6 @@ import org.simulator.math.odes.EulerMethod;
 import org.simulator.math.odes.GraggBulirschStoerSolver;
 import org.simulator.math.odes.HighamHall54Solver;
 import org.simulator.math.odes.MultiTable;
-import org.simulator.math.odes.MultiTable.Block;
 import org.simulator.math.odes.MultiTable.Block.Column;
 import org.simulator.math.odes.RosenbrockSolver;
 import org.simulator.math.odes.RungeKutta_EventSolver;
@@ -60,92 +61,170 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 /**
- * PhysiologySimulator represents the entry point of a physiology simulation submodule.
+ * PhysiologySimulator represents the entry point of a physiology
+ * simulation submodule.
  */
 public class PhysiologySimulator {
 
+  /** Map of user-facing strings to their corresponding Java classes. **/
   private static final Map<String, Class> SOLVER_CLASSES;
+  /** Path to the physiology SBML files. **/
   private static Path sbmlPath;
+  /** Model to use for this simulator. **/
   private final Model model;
+  /** List of fields for the model. **/
   private final String[] modelFields;
+  /** List of default values for the model. **/
   private final double[] modelDefaults;
+  /** User-defined name of the solver to use. **/
   private final String solverName;
+  /** Duration of the simulation in seconds. **/
   private final double simDuration;
-  private final double leadTime;
+  /** Size of each time step for the solver in seconds. **/
   private final double stepSize;
-  
-  public static enum ChartType {
+
+  /** Enumeration of supported chart types. **/
+  public enum ChartType {
+    /** Scatter plot. **/
     SCATTER,
+    /** Line plot. **/
     LINE
   }
-  
-  public static class SimConfig {
-    private String name;
-    private String model;
-    private String solver;
-    private double stepSize;
-    private double duration;
-    private List<ChartConfig> charts;
-    private Map<String,Double> inputs;
 
-    public Map<String, Double> getInputs() {
+  /** Configuration object for the simulation. **/
+  public static class SimConfig {
+    /** Name for the simulator. **/
+    private String name;
+    /** User-defined model to use. **/
+    private String model;
+    /** Differential equation solver instance. **/
+    private String solver;
+    /** Step size to use for the simulation in seconds. **/
+    private double stepSize;
+    /** Duration of the simulation in seconds. **/
+    private double duration;
+    /** List of chart export configurations. **/
+    private List<ChartConfig> charts;
+    /** Map of parameters to their provided input values. **/
+    private Map<String, Double> inputs;
+
+    /**
+     *
+     * @return map of input parameter values
+     */
+    public final Map<String, Double> getInputs() {
       return inputs;
     }
 
-    public void setInputs(Map<String, Double> inputs) {
+    /**
+     *
+     * @param inputs
+     */
+    public final void setInputs(Map<String, Double> inputs) {
       this.inputs = inputs;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
       return name;
     }
 
+    /**
+     *
+     * @param name
+     */
     public void setName(String name) {
       this.name = name;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getModel() {
       return model;
     }
 
+    /**
+     *
+     * @param model
+     */
     public void setModel(String model) {
       this.model = model;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getSolver() {
       return solver;
     }
 
+    /**
+     *
+     * @param solver
+     */
     public void setSolver(String solver) {
       this.solver = solver;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getStepSize() {
       return stepSize;
     }
 
+    /**
+     *
+     * @param stepSize
+     */
     public void setStepSize(double stepSize) {
       this.stepSize = stepSize;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getDuration() {
       return duration;
     }
 
+    /**
+     *
+     * @param duration
+     */
     public void setDuration(double duration) {
       this.duration = duration;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<ChartConfig> getCharts() {
       return charts;
     }
 
+    /**
+     *
+     * @param charts
+     */
     public void setCharts(List<ChartConfig> charts) {
       this.charts = charts;
     }
     
   }
   
+  /**
+   *
+   */
   public static class ChartConfig {
     private String filename;
     private String type;
@@ -157,95 +236,186 @@ public class PhysiologySimulator {
     private double startTime;
     private double endTime;
 
+    /**
+     *
+     * @return
+     */
     public String getFilename() {
       return filename;
     }
 
+    /**
+     *
+     * @param filename
+     */
     public void setFilename(String filename) {
       this.filename = filename;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getType() {
       return type;
     }
 
+    /**
+     *
+     * @param type
+     */
     public void setType(String type) {
       this.type = type;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTitle() {
       return title;
     }
 
+    /**
+     *
+     * @param title
+     */
     public void setTitle(String title) {
       this.title = title;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getxAxis() {
       return xAxis;
     }
 
+    /**
+     *
+     * @param xAxis
+     */
     public void setxAxis(String xAxis) {
       this.xAxis = xAxis;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getxAxisLabel() {
       return xAxisLabel;
     }
 
+    /**
+     *
+     * @param xAxisLabel
+     */
     public void setxAxisLabel(String xAxisLabel) {
       this.xAxisLabel = xAxisLabel;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getyAxisLabel() {
       return yAxisLabel;
     }
 
+    /**
+     *
+     * @param yAxisLabel
+     */
     public void setyAxisLabel(String yAxisLabel) {
       this.yAxisLabel = yAxisLabel;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<SeriesConfig> getSeries() {
       return series;
     }
 
+    /**
+     *
+     * @param series
+     */
     public void setSeries(List<SeriesConfig> series) {
       this.series = series;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getStartTime() {
       return startTime;
     }
 
+    /**
+     *
+     * @param startTime
+     */
     public void setStartTime(double startTime) {
       this.startTime = startTime;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getEndTime() {
       return endTime;
     }
 
+    /**
+     *
+     * @param endTime
+     */
     public void setEndTime(double endTime) {
       this.endTime = endTime;
     }
   }
 
+  /**
+   *
+   */
   public static class SeriesConfig {
     private String param;
     private String label;
 
+    /**
+     *
+     * @return
+     */
     public String getParam() {
       return param;
     }
 
+    /**
+     *
+     * @param param
+     */
     public void setParam(String param) {
       this.param = param;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getLabel() {
       return label;
     }
 
+    /**
+     *
+     * @param label
+     */
     public void setLabel(String label) {
       this.label = label;
     }
@@ -315,7 +485,6 @@ public class PhysiologySimulator {
     this.solverName = solverName;
     this.stepSize = stepSize;
     this.simDuration = simDuration;
-    this.leadTime = leadTime;
   }
   
   /**
@@ -367,7 +536,7 @@ public class PhysiologySimulator {
     }
     
     // Solve the ODE for the specified duration and return the results
-    MultiTable results = solver.solve(interpreter, params, -leadTime, simDuration);
+    MultiTable results = solver.solve(interpreter, params, 0, simDuration);
     
     return results;
   }
@@ -520,126 +689,145 @@ public class PhysiologySimulator {
 //  }
   
   private static void drawChart(MultiTable table, ChartConfig config) {
-    Platform.runLater(() -> {
-      NumberAxis xAxis = new NumberAxis();
-      xAxis.setLabel(config.getxAxisLabel());
-      xAxis.setAnimated(false); // Need to disable animations for the axis to show up in the image
-      NumberAxis yAxis = new NumberAxis();
-      yAxis.setLabel(config.getyAxisLabel());
-      yAxis.setAnimated(false); // Need to disable animations for the axis to show up in the image
+    
+    // If there's only one series, and there's a title, hide the legend
+    
+    double lastTimePoint = table.getTimePoint(table.getRowCount()-1);
+    
+    // Set the chart end time if not specified
+    if(config.getEndTime() == 0) {
+      config.setEndTime(lastTimePoint);
+    }
+    
+    // Check that the start time is valid
+    if(config.getStartTime() < 0) {
+      throw new IllegalArgumentException("Chart start time must not be negative");
+    }
+    
+    // Check the chart end time is valid
+    if(config.getEndTime() > lastTimePoint) {
+      throw new IllegalArgumentException("Invalid chart end time: "+config.getEndTime()+" is greater than final time point "+lastTimePoint);
+    }
+    
+    // Check the time range is valid
+    if(config.getStartTime() > config.getEndTime()) {
+      throw new IllegalArgumentException("Invalid chart range: "+config.getStartTime()+" to "+config.getEndTime());
+    }
+    
+    // Get the list of x values. Time is treated specially since it doesn't have a param identifier
+    boolean xAxisIsTime = "time".equalsIgnoreCase(config.getxAxis());
+    List<Double> xValues = new ArrayList(table.getRowCount());
+    double[] timePoints = table.getTimePoints();
+    Column xCol = table.getColumn(config.getxAxis());
+    
+    // Check that the x axis identifier is valid
+    if(!xAxisIsTime && xCol == null) {
+      throw new RuntimeException("Invalid X axis identifier: "+config.getxAxis());
+    }
+    
+    int startIndex = Arrays.binarySearch(timePoints, config.getStartTime());
+    int endIndex = Arrays.binarySearch(timePoints, config.getEndTime());
+    
+    // Add the table values to the list of x axis values within the provided time range
+    for(int i=startIndex; i < endIndex; i++) {
+      if(xAxisIsTime) {
+        xValues.add(timePoints[i]);
+      }
+      else {
+        xValues.add(xCol.getValue(i));
+      }
+    }
+    
+    XYSeriesCollection dataset = new XYSeriesCollection();
 
-      // Initialize the line chart
-      XYChart<Number,Number> chart;
+    // Add each series to the dataset
+    for(SeriesConfig seriesConfig : config.getSeries()) {
+      // don't auto-sort the series
+      XYSeries series = new XYSeries(seriesConfig.getLabel(), false);
+
+      Column col = table.getColumn(seriesConfig.getParam());
       
-      try {
-        switch(ChartType.valueOf(config.getType().toUpperCase())) {
-          default:
-          case LINE:
-            LineChart lineChart = new LineChart(xAxis,yAxis);
-            lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.NONE);
-            lineChart.setCreateSymbols(false);
-            chart = lineChart;
-            break;
-          case SCATTER:
-            chart = new ScatterChart(xAxis, yAxis);
-            break;
-        }
+      // Check that the series identifier is valid
+      if(col == null) {
+        throw new RuntimeException("Invalid series identifier: "+seriesConfig.getParam());
       }
-      catch(IllegalArgumentException ex) {
-        throw new IllegalArgumentException("Invalid chart type: "+config.getType());
-      }
-      
-      chart.setTitle(config.getTitle());
-      
-      // If there's only one series, and there's a title, hide the legend
-      if(config.getTitle() != null && !config.getTitle().isEmpty() && config.getSeries().size() == 1) {
-        chart.setLegendVisible(false);
-      }
-      
-      double lastTimePoint = table.getTimePoint(table.getRowCount()-1);
-      
-      // Set the chart end time if not specified
-      if(config.getEndTime() == 0) {
-        config.setEndTime(lastTimePoint);
-      }
-      
-      // Check that the start time is valid
-      if(config.getStartTime() < 0) {
-        throw new IllegalArgumentException("Chart start time must not be negative");
-      }
-      
-      // Check the chart end time is valid
-      if(config.getEndTime() > lastTimePoint) {
-        throw new IllegalArgumentException("Invalid chart end time: "+config.getEndTime()+" is greater than final time point "+lastTimePoint);
-      }
-      
-      // Check the time range is valid
-      if(config.getStartTime() > config.getEndTime()) {
-        throw new IllegalArgumentException("Invalid chart range: "+config.getStartTime()+" to "+config.getEndTime());
-      }
-      
-      // Get the list of x values. Time is treated specially since it doesn't have a param identifier
-      boolean xAxisIsTime = "time".equalsIgnoreCase(config.getxAxis());
-      List<Double> xValues = new ArrayList(table.getRowCount());
-      double[] timePoints = table.getTimePoints();
-      Column xCol = table.getColumn(config.getxAxis());
-      
-      // Check that the x axis identifier is valid
-      if(!xAxisIsTime && xCol == null) {
-        throw new RuntimeException("Invalid X axis identifier: "+config.getxAxis());
-      }
-      
-      int startIndex = Arrays.binarySearch(timePoints, config.getStartTime());
-      int endIndex = Arrays.binarySearch(timePoints, config.getEndTime());
-      
-      // Add the table values to the list of x axis values within the provided time range
+
+      int xIndex = 0;
       for(int i=startIndex; i < endIndex; i++) {
-        if(xAxisIsTime) {
-          xValues.add(timePoints[i]);
-        }
-        else {
-          xValues.add(xCol.getValue(i));
-        }
+        series.add((double) xValues.get(xIndex++), col.getValue(i));
       }
 
-      // Add each series to the chart
-      for(SeriesConfig seriesConfig : config.getSeries()) {
-        XYChart.Series series = new XYChart.Series();
-        series.setName(seriesConfig.getLabel());
-
-        Column col = table.getColumn(seriesConfig.getParam());
-        
-        // Check that the series identifier is valid
-        if(col == null) {
-          throw new RuntimeException("Invalid series identifier: "+seriesConfig.getParam());
+      dataset.addSeries(series);
+    }
+    
+    XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+    JFreeChart chart;
+    
+    switch(ChartType.valueOf(config.getType().toUpperCase())) {
+      default:
+      case LINE:
+        chart = ChartFactory.createXYLineChart(
+            config.getTitle(), 
+            config.getxAxisLabel(), 
+            config.getyAxisLabel(), 
+            dataset, 
+            PlotOrientation.VERTICAL,
+            true, 
+            true, 
+            false 
+        );
+        for (int i = 0; i < dataset.getSeriesCount(); i++) {
+          renderer.setSeriesShapesVisible(i, false);
         }
-
-        int xIndex = 0;
-        for(int i=startIndex; i < endIndex; i++) {
-          series.getData().add(new XYChart.Data(xValues.get(xIndex++), col.getValue(i)));
-        }
-
-        chart.getData().add(series);
-      }
-
-      // Render the chart to a scene and capture it as an image
-      Scene scene = new Scene(chart, 1280, 720);
-      WritableImage image = scene.snapshot(null);
-
-      try {
-        // Write the image to a png file
-        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new File(config.getFilename()));
-      } catch (IOException ex) {
-        throw new RuntimeException(ex);
-      }
-    });
+        break;
+      case SCATTER:
+        chart = ChartFactory.createScatterPlot(
+            config.getTitle(), 
+            config.getxAxisLabel(),
+            config.getyAxisLabel(),
+            dataset
+        );
+        break;
+    }
+    
+    if(config.getTitle() != null && !config.getTitle().isEmpty() && config.getSeries().size() == 1) {
+      chart.removeLegend();
+    }
+    else {
+      chart.getLegend().setFrame(BlockBorder.NONE);
+    }
+    
+    XYPlot plot = chart.getXYPlot();
+    
+    plot.setRenderer(renderer);
+    plot.setBackgroundPaint(Color.white);
+    plot.setRangeGridlinesVisible(true);
+    plot.setDomainGridlinesVisible(true);
+    
+    try {
+      ChartUtils.saveChartAsPNG(new File(config.getFilename()), chart, 600, 300);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
+  /**
+   *
+   * @param rangeMin
+   * @param rangeMax
+   * @return
+   */
   public static double randValue(double rangeMin, double rangeMax) {
     Random r = new Random();
     return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
   }
 
+  /**
+   *
+   * @param args
+   * @throws DerivativeException
+   */
   public static void main(String [] args) throws DerivativeException {
 
     if(args.length < 1 || args[0].isEmpty()) {
@@ -697,9 +885,6 @@ public class PhysiologySimulator {
       // Write CSV data file
       multiTableToCsvFile(results, Paths.get(outputDir.toString(), config.getName()+".csv"));
       
-      // Initialize FX Toolkit
-      new JFXPanel();
-      
       // Draw all of the configured charts
       if(config.getCharts() != null) {
         int chartId = 1;
@@ -712,8 +897,6 @@ public class PhysiologySimulator {
         }
       }
 
-      // Stop the JavaFX thread
-      Platform.exit();
     } catch (DerivativeException ex) {
       throw new RuntimeException(ex);
     }
