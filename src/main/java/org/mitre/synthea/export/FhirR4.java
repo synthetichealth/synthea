@@ -1449,7 +1449,9 @@ public class FhirR4 {
       String codeMappingUri = US_CORE_MAPPING.get(LOINC_URI, code.code);
       if (codeMappingUri != null) {
         meta.addProfile(codeMappingUri);
-      } else if (observation.report != null) {
+      } else if (observation.report != null
+          && observationResource.getCategoryFirstRep().getCodingFirstRep()
+          .getCode().equals("laboratory")) {
         meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab");
       }
       if (meta.hasProfile()) {
