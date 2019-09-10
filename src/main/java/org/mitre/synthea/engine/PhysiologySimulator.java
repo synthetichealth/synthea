@@ -12,40 +12,34 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.stream.XMLStreamException;
+import org.apache.commons.math.ode.DerivativeException;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.chart.title.TextTitle;
-import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import javax.imageio.ImageIO;
-import javax.xml.stream.XMLStreamException;
-import org.apache.commons.math.ode.DerivativeException;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.SBMLException;
 import org.sbml.jsbml.validator.ModelOverdeterminedException;
 import org.sbml.jsbml.xml.stax.SBMLReader;
+import org.simulator.math.odes.AbstractDESSolver;
 import org.simulator.math.odes.AdamsBashforthSolver;
 import org.simulator.math.odes.AdamsMoultonSolver;
-import org.simulator.math.odes.AbstractDESSolver;
 import org.simulator.math.odes.DormandPrince54Solver;
 import org.simulator.math.odes.DormandPrince853Solver;
 import org.simulator.math.odes.EulerMethod;
@@ -67,7 +61,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 public class PhysiologySimulator {
 
   /** Map of user-facing strings to their corresponding Java classes. **/
-  private static final Map<String, Class> SOLVER_CLASSES;
+  private static final Map<String, Class<?>> SOLVER_CLASSES;
   /** Path to the physiology SBML files. **/
   private static Path sbmlPath;
   /** Model to use for this simulator. **/
@@ -108,314 +102,178 @@ public class PhysiologySimulator {
     /** Map of parameters to their provided input values. **/
     private Map<String, Double> inputs;
 
-    /**
-     *
-     * @return map of input parameter values
-     */
     public final Map<String, Double> getInputs() {
       return inputs;
     }
 
-    /**
-     *
-     * @param inputs
-     */
     public final void setInputs(Map<String, Double> inputs) {
       this.inputs = inputs;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getName() {
       return name;
     }
 
-    /**
-     *
-     * @param name
-     */
     public void setName(String name) {
       this.name = name;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getModel() {
       return model;
     }
 
-    /**
-     *
-     * @param model
-     */
     public void setModel(String model) {
       this.model = model;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getSolver() {
       return solver;
     }
 
-    /**
-     *
-     * @param solver
-     */
     public void setSolver(String solver) {
       this.solver = solver;
     }
 
-    /**
-     *
-     * @return
-     */
     public double getStepSize() {
       return stepSize;
     }
 
-    /**
-     *
-     * @param stepSize
-     */
     public void setStepSize(double stepSize) {
       this.stepSize = stepSize;
     }
 
-    /**
-     *
-     * @return
-     */
     public double getDuration() {
       return duration;
     }
 
-    /**
-     *
-     * @param duration
-     */
     public void setDuration(double duration) {
       this.duration = duration;
     }
 
-    /**
-     *
-     * @return
-     */
     public List<ChartConfig> getCharts() {
       return charts;
     }
 
-    /**
-     *
-     * @param charts
-     */
     public void setCharts(List<ChartConfig> charts) {
       this.charts = charts;
     }
     
   }
-  
-  /**
-   *
-   */
-  public static class ChartConfig {
-    private String filename;
-    private String type;
-    private String title;
-    private String xAxis;
-    private String xAxisLabel;
-    private String yAxisLabel;
-    private List<SeriesConfig> series;
-    private double startTime;
-    private double endTime;
 
-    /**
-     *
-     * @return
-     */
+  public static class ChartConfig {
+    /** Name of the image file to export. **/
+    private String filename;
+    /** User input for the type of chart to render. **/
+    private String type;
+    /** Chart title. **/
+    private String title;
+    /** Parameter to render on the x axis. **/
+    private String axisParamX;
+    /** X axis label. **/
+    private String axisLabelX;
+    /** Y axis label. **/
+    private String axisLabelY;
+    /** List of series configurations for this chart. **/
+    private List<SeriesConfig> series;
+    /** Simulation time in seconds to start charting points. **/
+    private double startTime;
+    /** Simulation time in seconds to end charting points. **/
+    private double endTime;
+    
     public String getFilename() {
       return filename;
     }
-
-    /**
-     *
-     * @param filename
-     */
+    
     public void setFilename(String filename) {
       this.filename = filename;
     }
-
-    /**
-     *
-     * @return
-     */
+    
     public String getType() {
       return type;
     }
-
-    /**
-     *
-     * @param type
-     */
+    
     public void setType(String type) {
       this.type = type;
     }
-
-    /**
-     *
-     * @return
-     */
+    
     public String getTitle() {
       return title;
     }
-
-    /**
-     *
-     * @param title
-     */
+    
     public void setTitle(String title) {
       this.title = title;
     }
-
-    /**
-     *
-     * @return
-     */
-    public String getxAxis() {
-      return xAxis;
+    
+    public String getAxisParamX() {
+      return axisParamX;
     }
-
-    /**
-     *
-     * @param xAxis
-     */
-    public void setxAxis(String xAxis) {
-      this.xAxis = xAxis;
+    
+    public void setAxisParamX(String axisParamX) {
+      this.axisParamX = axisParamX;
     }
-
-    /**
-     *
-     * @return
-     */
-    public String getxAxisLabel() {
-      return xAxisLabel;
+    
+    public String getAxisLabelX() {
+      return axisLabelX;
     }
-
-    /**
-     *
-     * @param xAxisLabel
-     */
-    public void setxAxisLabel(String xAxisLabel) {
-      this.xAxisLabel = xAxisLabel;
+    
+    public void setAxisLabelX(String axisLabelX) {
+      this.axisLabelX = axisLabelX;
     }
-
-    /**
-     *
-     * @return
-     */
-    public String getyAxisLabel() {
-      return yAxisLabel;
+    
+    public String getAxisLabelY() {
+      return axisLabelY;
     }
-
-    /**
-     *
-     * @param yAxisLabel
-     */
-    public void setyAxisLabel(String yAxisLabel) {
-      this.yAxisLabel = yAxisLabel;
+    
+    public void setAxisLabelY(String axisLabelY) {
+      this.axisLabelY = axisLabelY;
     }
-
-    /**
-     *
-     * @return
-     */
+    
     public List<SeriesConfig> getSeries() {
       return series;
     }
-
-    /**
-     *
-     * @param series
-     */
+    
     public void setSeries(List<SeriesConfig> series) {
       this.series = series;
     }
-
-    /**
-     *
-     * @return
-     */
+    
     public double getStartTime() {
       return startTime;
     }
-
-    /**
-     *
-     * @param startTime
-     */
+    
     public void setStartTime(double startTime) {
       this.startTime = startTime;
     }
-
-    /**
-     *
-     * @return
-     */
+    
     public double getEndTime() {
       return endTime;
     }
-
-    /**
-     *
-     * @param endTime
-     */
+    
     public void setEndTime(double endTime) {
       this.endTime = endTime;
     }
   }
 
   /**
-   *
+   * Configuration for a chart series.
    */
   public static class SeriesConfig {
+    /** Which parameter to plot on this series. **/
     private String param;
+    /** Series label in the legend. **/
     private String label;
 
-    /**
-     *
-     * @return
-     */
     public String getParam() {
       return param;
     }
 
-    /**
-     *
-     * @param param
-     */
     public void setParam(String param) {
       this.param = param;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getLabel() {
       return label;
     }
 
-    /**
-     *
-     * @param label
-     */
     public void setLabel(String label) {
       this.label = label;
     }
@@ -423,7 +281,7 @@ public class PhysiologySimulator {
   }
 
   static {
-    Map<String, Class> initSolvers = new HashMap();
+    Map<String, Class<?>> initSolvers = new HashMap<String, Class<?>>();
 
     // Add all currently available solvers from the SBSCL library
     initSolvers.put("adams_bashforth", AdamsBashforthSolver.class);
@@ -456,7 +314,8 @@ public class PhysiologySimulator {
    * @param stepSize Time step for the simulation
    * @param simDuration Amount of time to simulate
    */
-  public PhysiologySimulator(String modelPath, String solverName, double stepSize, double simDuration) {
+  public PhysiologySimulator(String modelPath, String solverName, double stepSize,
+      double simDuration) {
     this(modelPath, solverName, stepSize, simDuration, 0);
   }
 
@@ -468,15 +327,16 @@ public class PhysiologySimulator {
    * @param simDuration Amount of time to simulate
    * @param leadTime Amount of time to run the simulation before capturing results
    */
-  public PhysiologySimulator(String modelPath, String solverName, double stepSize, double simDuration, double leadTime) {
+  public PhysiologySimulator(String modelPath, String solverName, double stepSize,
+      double simDuration, double leadTime) {
     Path modelFilepath = Paths.get(sbmlPath.toString(), modelPath);
     SBMLReader reader = new SBMLReader();
     File inputFile = new File(modelFilepath.toString());
     SBMLDocument doc;
     try {
-        doc = reader.readSBML(inputFile);
+      doc = reader.readSBML(inputFile);
     } catch (IOException | XMLStreamException ex) {
-        throw new RuntimeException(ex);
+      throw new RuntimeException(ex);
     }
     model = doc.getModel();
     SBMLinterpreter interpreter = getInterpreter(model);
@@ -488,7 +348,7 @@ public class PhysiologySimulator {
   }
   
   /**
-   * Returns a list of all model parameters
+   * Returns a list of all model parameters.
    * @return list of model parameters
    */
   public List<String> getParameters() {
@@ -500,14 +360,15 @@ public class PhysiologySimulator {
    * as initial parameters. Provides the results as a map of value lists where each key is
    * a model parameter. In addition to the model parameters is a "Time" field which provides
    * a list of all simulated time points.
-   * <p>
-   * Note that this method will throw a DerivativeException if the model encounters an error
+   * 
+   * <p>Note that this method will throw a DerivativeException if the model encounters an error
    * while attempting to solve the system.
    * @param inputs Map of model parameter inputs. For any parameters which are not provided
    *               the default value from the model will be used. If null, all default
    *               parameter values will be used.
    * @return map of parameter names to value lists
-   * @throws DerivativeException 
+   * @throws DerivativeException Exception if the solver encounters errors while computing the
+   *        solution to differential equations
    */
   public MultiTable run(Map<String, Double> inputs) throws DerivativeException {
     // Reset the solver to its initial state
@@ -515,21 +376,23 @@ public class PhysiologySimulator {
     AbstractDESSolver solver = getSolver(solverName);
     solver.setStepSize(stepSize);
     try {
-      // Need to reinitialize the interpreter to prevent old values from affecting the new simulation
+      // Reinitialize the interpreter to prevent old values from affecting the new simulation
       interpreter.init(true);
     } catch (ModelOverdeterminedException | SBMLException ex) {
-      // This shouldn't ever happen here since the interpreter has already been instantiated at least once
-      Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, "Error reinitializing SBML interpreter", ex);
+      // This shouldn't ever happen here since the interpreter has already been instantiated
+      // at least once
+      Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE,
+          "Error reinitializing SBML interpreter", ex);
     }
     
     // Create a copy of the default parameters to use
     double[] params = Arrays.copyOf(modelDefaults, modelDefaults.length);
 
     // Overwrite model defaults with the provided input parameters, if present
-    if(inputs != null) {
-      for(int i=0; i < modelFields.length; i++) {
+    if (inputs != null) {
+      for (int i = 0; i < modelFields.length; i++) {
         String field = modelFields[i];
-        if(inputs.containsKey(field)) {
+        if (inputs.containsKey(field)) {
           params[i] = inputs.get(field);
         }
       }
@@ -551,7 +414,7 @@ public class PhysiologySimulator {
   }
 
   /**
-   * Gets the set of valid solver names
+   * Gets the set of valid solver names.
    * @return set of valid solver name strings
    */
   public static Set<String> getSolvers() {
@@ -562,7 +425,7 @@ public class PhysiologySimulator {
 
     // If the provided solver name doesn't exist in our map, it's an invalid
     // value that the programmer needs to correct.
-    if(!checkValidSolver(solverName)) {
+    if (!checkValidSolver(solverName)) {
       throw new RuntimeException("Invalid Solver: \"" + solverName + "\"");
     }
 
@@ -584,24 +447,6 @@ public class PhysiologySimulator {
     }
   }
   
-  private static void testModel(PhysiologySimulator physio, Path outputFile) {
-    // Use all default parameters
-    testModel(physio, outputFile, new HashMap());
-  }
-
-  private static void testModel(PhysiologySimulator physio, Path outputPath, Map<String,Double> inputs) {
-
-    try {
-      MultiTable solution = physio.run(inputs);
-
-      multiTableToCsvFile(solution, outputPath);
-      System.out.println("Success!");
-
-    } catch (DerivativeException ex) {
-      throw new RuntimeException(ex);
-    }
-  }
-  
   private static void multiTableToCsvFile(MultiTable table, Path outputPath) {
     PrintWriter writer;
     try {
@@ -613,18 +458,18 @@ public class PhysiologySimulator {
     int numRows = table.getRowCount();
     int numCols = table.getColumnCount();
 
-    for(int colIdx = 0; colIdx < numCols; colIdx++) {
+    for (int colIdx = 0; colIdx < numCols; colIdx++) {
       writer.print(table.getColumnIdentifier(colIdx));
-      if(colIdx < numCols -1) {
+      if (colIdx < numCols - 1) {
         writer.print(",");
       }
     }
     writer.println();
 
-    for(int rowIdx = 0; rowIdx < numRows; rowIdx++) {
-      for(int colIdx = 0; colIdx < numCols; colIdx++) {
+    for (int rowIdx = 0; rowIdx < numRows; rowIdx++) {
+      for (int colIdx = 0; colIdx < numCols; colIdx++) {
         writer.print(table.getValueAt(rowIdx, colIdx));
-        if(colIdx < numCols -1) {
+        if (colIdx < numCols - 1) {
           writer.print(",");
         }
       }
@@ -632,129 +477,75 @@ public class PhysiologySimulator {
     }
     writer.close();
   }
-
-//  private static void getPerfStats(Path modelPath, String solverName) {
-//    SBMLinterpreter interpreter = getInterpreter(modelPath.toString());
-//    AbstractDESSolver solver = getSolver(solverName);
-////    solver.setStepSize(stepSize);
-//    try {
-//      double[] defaultValues = interpreter.getInitialValues();
-//
-//      PrintWriter statWriter;
-//
-//      try {
-//        statWriter = new PrintWriter("stats.csv", "UTF-8");
-//      } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-//        Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, null, ex);
-//        return;
-//      }
-//
-//      statWriter.print("index,step_size (s),exec_time (ms)");
-//      statWriter.println();
-//
-//      Random r = new Random();
-//
-//      for(int i=0; i < 100; i++) {
-//        System.out.println("Running iteration " + (i+1));
-//        double[] initialVals = defaultValues.clone();
-//        // Generate some random resistance values and initial parameters
-//        initialVals[7] = randValue(0.98, 2);
-//        initialVals[6] = randValue(0.13, 0.17);
-//        initialVals[26] = randValue(10, 80);
-//        initialVals[27] = randValue(2, 130);
-//
-//        double stepSize;
-//        if(r.nextDouble() < 0.4) {
-//          stepSize = randValue(0.001, 0.1);
-//        }
-//        else {
-//          stepSize = randValue(0.001, 0.01);
-//        }
-//
-//        solver.setStepSize(stepSize);
-//
-//        long startTime = System.nanoTime();
-//        solver.solve(interpreter, initialVals, 0, 2);
-//        long endTime = System.nanoTime();
-//        statWriter.print(i + "," + stepSize + "," + ((endTime-startTime)/1000000.0));
-//        statWriter.println();
-//      }
-//
-//      statWriter.close();
-//      System.out.println("Success!");
-//
-//    } catch (DerivativeException ex) {
-//      throw new RuntimeException(ex);
-//    }
-//  }
   
   private static void drawChart(MultiTable table, ChartConfig config) {
     
     // If there's only one series, and there's a title, hide the legend
     
-    double lastTimePoint = table.getTimePoint(table.getRowCount()-1);
+    double lastTimePoint = table.getTimePoint(table.getRowCount() - 1);
     
     // Set the chart end time if not specified
-    if(config.getEndTime() == 0) {
+    if (config.getEndTime() == 0) {
       config.setEndTime(lastTimePoint);
     }
     
     // Check that the start time is valid
-    if(config.getStartTime() < 0) {
+    if (config.getStartTime() < 0) {
       throw new IllegalArgumentException("Chart start time must not be negative");
     }
     
     // Check the chart end time is valid
-    if(config.getEndTime() > lastTimePoint) {
-      throw new IllegalArgumentException("Invalid chart end time: "+config.getEndTime()+" is greater than final time point "+lastTimePoint);
+    if (config.getEndTime() > lastTimePoint) {
+      throw new IllegalArgumentException("Invalid chart end time: " + config.getEndTime()
+          + " is greater than final time point " + lastTimePoint);
     }
     
     // Check the time range is valid
-    if(config.getStartTime() > config.getEndTime()) {
-      throw new IllegalArgumentException("Invalid chart range: "+config.getStartTime()+" to "+config.getEndTime());
+    if (config.getStartTime() > config.getEndTime()) {
+      throw new IllegalArgumentException("Invalid chart range: " + config.getStartTime()
+          + " to " + config.getEndTime());
     }
     
     // Get the list of x values. Time is treated specially since it doesn't have a param identifier
-    boolean xAxisIsTime = "time".equalsIgnoreCase(config.getxAxis());
-    List<Double> xValues = new ArrayList(table.getRowCount());
+    boolean axisXIsTime = "time".equalsIgnoreCase(config.getAxisParamX());
+    List<Double> valuesX = new ArrayList<Double>(table.getRowCount());
     double[] timePoints = table.getTimePoints();
-    Column xCol = table.getColumn(config.getxAxis());
+    Column colX = table.getColumn(config.getAxisParamX());
     
     // Check that the x axis identifier is valid
-    if(!xAxisIsTime && xCol == null) {
-      throw new RuntimeException("Invalid X axis identifier: "+config.getxAxis());
+    if (!axisXIsTime && colX == null) {
+      throw new RuntimeException("Invalid X axis identifier: " + config.getAxisParamX());
     }
     
     int startIndex = Arrays.binarySearch(timePoints, config.getStartTime());
     int endIndex = Arrays.binarySearch(timePoints, config.getEndTime());
     
     // Add the table values to the list of x axis values within the provided time range
-    for(int i=startIndex; i < endIndex; i++) {
-      if(xAxisIsTime) {
-        xValues.add(timePoints[i]);
-      }
-      else {
-        xValues.add(xCol.getValue(i));
+    for (int i = startIndex; i < endIndex; i++) {
+      if (axisXIsTime) {
+        valuesX.add(timePoints[i]);
+      } else {
+        valuesX.add(colX.getValue(i));
       }
     }
     
     XYSeriesCollection dataset = new XYSeriesCollection();
 
     // Add each series to the dataset
-    for(SeriesConfig seriesConfig : config.getSeries()) {
+    for (SeriesConfig seriesConfig : config.getSeries()) {
       // don't auto-sort the series
       XYSeries series = new XYSeries(seriesConfig.getLabel(), false);
 
       Column col = table.getColumn(seriesConfig.getParam());
       
       // Check that the series identifier is valid
-      if(col == null) {
-        throw new RuntimeException("Invalid series identifier: "+seriesConfig.getParam());
+      if (col == null) {
+        throw new RuntimeException("Invalid series identifier: " + seriesConfig.getParam());
       }
 
-      int xIndex = 0;
-      for(int i=startIndex; i < endIndex; i++) {
-        series.add((double) xValues.get(xIndex++), col.getValue(i));
+      int indexX = 0;
+      for (int i = startIndex; i < endIndex; i++) {
+        series.add((double) valuesX.get(indexX++), col.getValue(i));
       }
 
       dataset.addSeries(series);
@@ -763,13 +554,13 @@ public class PhysiologySimulator {
     XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
     JFreeChart chart;
     
-    switch(ChartType.valueOf(config.getType().toUpperCase())) {
+    switch (ChartType.valueOf(config.getType().toUpperCase())) {
       default:
       case LINE:
         chart = ChartFactory.createXYLineChart(
             config.getTitle(), 
-            config.getxAxisLabel(), 
-            config.getyAxisLabel(), 
+            config.getAxisLabelX(), 
+            config.getAxisLabelY(), 
             dataset, 
             PlotOrientation.VERTICAL,
             true, 
@@ -783,17 +574,17 @@ public class PhysiologySimulator {
       case SCATTER:
         chart = ChartFactory.createScatterPlot(
             config.getTitle(), 
-            config.getxAxisLabel(),
-            config.getyAxisLabel(),
+            config.getAxisLabelX(),
+            config.getAxisLabelY(),
             dataset
         );
         break;
     }
     
-    if(config.getTitle() != null && !config.getTitle().isEmpty() && config.getSeries().size() == 1) {
+    if (config.getTitle() != null && !config.getTitle().isEmpty()
+        && config.getSeries().size() == 1) {
       chart.removeLegend();
-    }
-    else {
+    } else {
       chart.getLegend().setFrame(BlockBorder.NONE);
     }
     
@@ -813,24 +604,13 @@ public class PhysiologySimulator {
   }
 
   /**
-   *
-   * @param rangeMin
-   * @param rangeMax
-   * @return
-   */
-  public static double randValue(double rangeMin, double rangeMax) {
-    Random r = new Random();
-    return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
-  }
-
-  /**
-   *
-   * @param args
-   * @throws DerivativeException
+   * Executes a physiology simulation according to a given configuration file.
+   * @param args command line arguments
+   * @throws DerivativeException Error while solving differential equations
    */
   public static void main(String [] args) throws DerivativeException {
 
-    if(args.length < 1 || args[0].isEmpty()) {
+    if (args.length < 1 || args[0].isEmpty()) {
       System.out.println("YAML simulation configuration file path must be provided.");
       System.exit(1);
       return;
@@ -846,7 +626,8 @@ public class PhysiologySimulator {
     try {
       inputStream = new FileInputStream(configFile);
     } catch (FileNotFoundException ex) {
-      System.out.println("Configuration file not found: \""+configFilePath.toAbsolutePath()+"\".");
+      System.out.println("Configuration file not found: \""
+          + configFilePath.toAbsolutePath() + "\".");
       System.exit(2);
       return;
     }
@@ -865,11 +646,16 @@ public class PhysiologySimulator {
     SimConfig config = (SimConfig) yaml.load(inputStream);
     
     // Instantiate our simulator
-    PhysiologySimulator simulator = new PhysiologySimulator(config.getModel(), config.getSolver(), config.getStepSize(), config.getDuration());
+    PhysiologySimulator simulator = new PhysiologySimulator(
+        config.getModel(),
+        config.getSolver(),
+        config.getStepSize(),
+        config.getDuration()
+    );
     
     // Create the output directory if it doesn't already exist
     Path outputDir = Paths.get("output", config.getName());
-    if(Files.notExists(outputDir)) {
+    if (Files.notExists(outputDir)) {
       try {
         Files.createDirectories(outputDir);
       } catch (IOException ex) {
@@ -883,16 +669,17 @@ public class PhysiologySimulator {
       MultiTable results = simulator.run(config.getInputs());
       
       // Write CSV data file
-      multiTableToCsvFile(results, Paths.get(outputDir.toString(), config.getName()+".csv"));
+      multiTableToCsvFile(results, Paths.get(outputDir.toString(), config.getName() + ".csv"));
       
       // Draw all of the configured charts
-      if(config.getCharts() != null) {
+      if (config.getCharts() != null) {
         int chartId = 1;
-        for(ChartConfig chartConfig : config.getCharts()) {
-          if(chartConfig.getFilename() == null || chartConfig.getFilename().isEmpty()) {
-            chartConfig.setFilename("chart"+chartId+".png");
+        for (ChartConfig chartConfig : config.getCharts()) {
+          if (chartConfig.getFilename() == null || chartConfig.getFilename().isEmpty()) {
+            chartConfig.setFilename("chart" + chartId + ".png");
           }
-          chartConfig.setFilename(Paths.get(outputDir.toString(), chartConfig.getFilename()).toString());
+          chartConfig.setFilename(Paths.get(outputDir.toString(),
+              chartConfig.getFilename()).toString());
           PhysiologySimulator.drawChart(results, chartConfig);
         }
       }
