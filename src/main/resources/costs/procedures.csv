@@ -38,7 +38,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 432231006,7753.63,15507.25552,31014.51,Fine needle aspiration biopsy of lung (procedure)
 173160006,4245.28,8490.5551,16981.11,Diagnostic fiberoptic bronchoscopy (procedure)
 698354004,5103.68,10207.35977,20414.72,Magnetic resonance imaging for measurement of brain volume (procedure)
-428191000124101,250.00,500,1000.00,Documentation of current medications
+430193006,250.00,500,1000.00,Medication Reconciliation (procedure)
 180030006,10671.22,21342.44596,42684.89,Amputation of right foot
 79733001,10671.22,21342.44596,42684.89,Amputation of right leg
 46028000,10671.22,21342.44596,42684.89,"Amputation of right hand -- data only has ""amputation of lower extremity; assume the same for upper"
