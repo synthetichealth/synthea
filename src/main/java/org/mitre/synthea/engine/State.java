@@ -29,10 +29,9 @@ import org.mitre.synthea.engine.Transition.DistributedTransitionOption;
 import org.mitre.synthea.engine.Transition.LookupTableTransition;
 import org.mitre.synthea.engine.Transition.LookupTableTransitionOption;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
-import org.mitre.synthea.helpers.RandomValueGenerator;
 import org.mitre.synthea.helpers.ExpressionProcessor;
+import org.mitre.synthea.helpers.RandomValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -275,8 +274,8 @@ public abstract class State implements Cloneable {
     private double stepSize;
     private double simDuration;
     private double leadTime;
-    private List<IOMapper> inputs;
-    private List<IOMapper> outputs;
+    private List<IoMapper> inputs;
+    private List<IoMapper> outputs;
     private transient PhysiologySimulator simulator;
     private transient Map<String,String> paramTypes;
     
@@ -284,8 +283,9 @@ public abstract class State implements Cloneable {
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
       
-      if(leadTime > simDuration) {
-        throw new IllegalArgumentException("Simulation lead time cannot be greater than sim duration!");
+      if (leadTime > simDuration) {
+        throw new IllegalArgumentException(
+            "Simulation lead time cannot be greater than sim duration!");
       }
 
       setup();
@@ -293,19 +293,20 @@ public abstract class State implements Cloneable {
     
     private void setup() {
       simulator = new PhysiologySimulator(model, solver, stepSize, simDuration, leadTime);
-      paramTypes = new HashMap();
+      paramTypes = new HashMap<String, String>();
       
-      for(String param : simulator.getParameters()) {
-        // Assume all physiology model inputs are lists of Decimal objects which is typically the case
+      for (String param : simulator.getParameters()) {
+        // Assume all physiology model inputs are lists of Decimal objects which is typically
+        // the case
         // TODO: Look into whether SBML supports other parameter types, and if so, how we might map
         // those types to CQL types
         paramTypes.put(param, "List<Decimal>");
       }
       
-      for(IOMapper mapper : inputs) {
+      for (IoMapper mapper : inputs) {
         mapper.initialize(paramTypes);
       }
-      for(IOMapper mapper : outputs) {
+      for (IoMapper mapper : outputs) {
         mapper.initialize(paramTypes);
       }
     }
@@ -320,14 +321,14 @@ public abstract class State implements Cloneable {
       clone.simDuration = simDuration;
       clone.leadTime = leadTime;
       
-      List<IOMapper> inputList = new ArrayList(inputs.size());
-      for(IOMapper mapper : inputs) {
+      List<IoMapper> inputList = new ArrayList<IoMapper>(inputs.size());
+      for (IoMapper mapper : inputs) {
         inputList.add(mapper.clone());
       }
       clone.inputs = inputList;
       
-      List<IOMapper> outputList = new ArrayList(outputs.size());
-      for(IOMapper mapper : outputs) {
+      List<IoMapper> outputList = new ArrayList<IoMapper>(outputs.size());
+      for (IoMapper mapper : outputs) {
         outputList.add(mapper.clone());
       }
       clone.outputs = outputList;
@@ -339,65 +340,66 @@ public abstract class State implements Cloneable {
 
     @Override
     public boolean process(Person person, long time) {
-      Map<String,Double> modelInputs = new HashMap();
-      for(IOMapper mapper : inputs) {
+      Map<String,Double> modelInputs = new HashMap<String,Double>();
+      for (IoMapper mapper : inputs) {
         mapper.toModel(person, time, modelInputs);
       }
       try {
         MultiTable results = simulator.run(modelInputs);
-        for(IOMapper mapper : outputs) {
+        for (IoMapper mapper : outputs) {
           mapper.toPerson(results, person, leadTime);
         }
       } catch (DerivativeException ex) {
-        Logger.getLogger(State.class.getName()).log(Level.SEVERE, "Unable to solve simulation \""+model+
-                "\" at time step "+time+" for person "+person.attributes.get(Person.ID), ex);
+        Logger.getLogger(State.class.getName()).log(Level.SEVERE, "Unable to solve simulation \""
+            + model + "\" at time step " + time + " for person "
+            + person.attributes.get(Person.ID), ex);
       }
       return true;
     }
     
     // A private class here to represent input/output handlers
-    private static class IOMapper implements Cloneable {
-      IOType type;
+    private static class IoMapper implements Cloneable {
+      IoType type;
       String from;
       String to;
-      String from_list;
-      String from_exp;
+      String fromList;
+      String fromExp;
       ExpressionProcessor expProcessor;
       
-      enum IOType {
+      enum IoType {
         @SerializedName("Attribute") ATTRIBUTE, 
         @SerializedName("Vital Sign") VITAL_SIGN
       }
       
       void initialize(Map<String, String> paramTypes) {
-        if(expProcessor == null && from_exp != null && !"".equals(from_exp)) {
-          expProcessor = new ExpressionProcessor(from_exp, paramTypes);
+        if (expProcessor == null && fromExp != null && !"".equals(fromExp)) {
+          expProcessor = new ExpressionProcessor(fromExp, paramTypes);
         }
       }
       
       @Override
-      public IOMapper clone() {
+      public IoMapper clone() {
         try {
           super.clone();
         } catch (CloneNotSupportedException ex) {
           throw new RuntimeException(ex);
         }
-        IOMapper clone = new IOMapper();
+        IoMapper clone = new IoMapper();
         clone.type = type;
         clone.from = from;
-        clone.from_list = from_list;
+        clone.fromList = fromList;
         clone.to = to;
-        clone.from_exp = from_exp;
+        clone.fromExp = fromExp;
         clone.expProcessor = expProcessor;
         return clone;
       }
       
       void toModel(Person person, long time, Map<String,Double> modelInputs) {
-        if(expProcessor != null) {
-          Map<String,Object> expParams = new HashMap();
+        if (expProcessor != null) {
+          Map<String,Object> expParams = new HashMap<String,Object>();
           
           // Add all patient parameters to the expression parameter map
-          for(String param : expProcessor.getParamNames()) {
+          for (String param : expProcessor.getParamNames()) {
             double value = getPersonValue(param, person, time);
             expParams.put(param, new BigDecimal(value));
           }
@@ -405,32 +407,32 @@ public abstract class State implements Cloneable {
           // All physiology inputs should evaluate to numeric parameters
           BigDecimal result = expProcessor.evaluateNumeric(expParams);
           modelInputs.put(to, result.doubleValue());
-        }
-        else if(from_list != null) {
-          throw new IllegalArgumentException("Cannot map lists from person attributes / vital signs to model parameters");
-        }
-        else {
+        } else if (fromList != null) {
+          throw new IllegalArgumentException(
+              "Cannot map lists from person attributes / vital signs to model parameters");
+        } else {
           modelInputs.put(to, getPersonValue(from, person, time));
         }
       }
       
       void toPerson(MultiTable results, Person person, double leadTime) {
-        if(expProcessor != null) {
-          Map<String,Object> expParams = new HashMap();
+        if (expProcessor != null) {
+          Map<String,Object> expParams = new HashMap<String,Object>();
           
           int leadTimeIdx = Arrays.binarySearch(results.getTimePoints(), leadTime);
           
           // Add all model outputs to the expression parameter map as lists of decimals
-          for(String param : expProcessor.getParamNames()) {
-            List<BigDecimal> paramList = new ArrayList(results.getRowCount());
+          for (String param : expProcessor.getParamNames()) {
+            List<BigDecimal> paramList = new ArrayList<BigDecimal>(results.getRowCount());
             
             Column col = results.getColumn(param);
-            if(col == null) {
-              throw new IllegalArgumentException("Invalid model parameter \""+param+"\" in expression \""+from+
-                      "\" cannot be mapped to patient parameter \""+to+"\"");
+            if (col == null) {
+              throw new IllegalArgumentException("Invalid model parameter \"" + param
+                  + "\" in expression \"" + from
+                  + "\" cannot be mapped to patient parameter \"" + to + "\"");
             }
             
-            for(int i=leadTimeIdx; i < col.getRowCount(); i++) {
+            for (int i = leadTimeIdx; i < col.getRowCount(); i++) {
               paramList.add(new BigDecimal(col.getValue(i)));
             }
             expParams.put(param, paramList);
@@ -438,104 +440,127 @@ public abstract class State implements Cloneable {
           
           BigDecimal result = expProcessor.evaluateNumeric(expParams);
           modelParamToPerson(result.doubleValue(), person);
-        }
-        else if(from_list != null) {
-          Column col = results.getColumn(from_list);
-          if(col == null) {
-            throw new IllegalArgumentException("Invalid model parameter \""+from_list+"\" cannot be mapped to patient parameter \""+to+"\"");
+        } else if (fromList != null) {
+          Column col = results.getColumn(fromList);
+          if (col == null) {
+            throw new IllegalArgumentException("Invalid model parameter \"" + fromList
+                + "\" cannot be mapped to patient parameter \"" + to + "\"");
           }
-          List<Double> valueList = new ArrayList();
+          List<Double> valueList = new ArrayList<Double>();
           col.iterator().forEachRemaining(valueList::add);
           modelListToPerson(valueList, person);
-        }
-        else {
+        } else {
           int lastRow = results.getRowCount() - 1;
           Column col = results.getColumn(from);
-          if(col == null) {
-            throw new IllegalArgumentException("Invalid model parameter \""+from+"\" cannot be mapped to patient parameter \""+to+"\"");
+          if (col == null) {
+            throw new IllegalArgumentException("Invalid model parameter \"" + from
+                + "\" cannot be mapped to patient parameter \"" + to + "\"");
           }
           modelParamToPerson(col.getValue(lastRow), person);
         }
       }
       
-      // Retrieve the desired value from a Person model. Check for a VitalSign first and then an attribute if there is no
-      // VitalSign by the provided name. Throws an IllegalArgumentException if neither exists.
+      /** 
+       * Retrieve the desired value from a Person model. Check for a VitalSign first and
+       * then an attribute if there is no VitalSign by the provided name.
+       * Throws an IllegalArgumentException if neither exists.
+       * @param param name of the VitalSign or attribute to retrieve from the Person
+       * @param person Person instance to get the parameter from
+       * @param time current time
+       * @return value
+       */
       private double getPersonValue(String param, Person person, long time) {
         org.mitre.synthea.world.concepts.VitalSign vs = null;
         try {
           vs = org.mitre.synthea.world.concepts.VitalSign.fromString(param);
+        } catch (IllegalArgumentException ex) {
+          // Ignore since it actually may not be a vital sign
         }
-        catch(IllegalArgumentException ex) {} // Ignore since it actually may not be a vital sign
 
-        if(vs != null) {
+        if (vs != null) {
           return person.getVitalSign(vs, time);
-        }
-        else if(person.attributes.containsKey(param)) {
+        } else if (person.attributes.containsKey(param)) {
           Object value = person.attributes.get(param);
-          if(value instanceof Number) {
+          
+          if (value instanceof Number) {
             return ((Number) value).doubleValue();
-          }
-          else if(value instanceof Boolean) {
-              return (Boolean) value? 1 : 0;
-          }
-          else {
-            if(expProcessor != null) {
-              throw new IllegalArgumentException("Unable to map person attribute \""+param+"\" in expression \""+from_exp+
-                      "\" for parameter \""+to+"\": Attribute value is not a number.");
+            
+          } else if (value instanceof Boolean) {
+            return (Boolean) value ? 1 : 0;
+            
+          } else {
+            if (expProcessor != null) {
+              throw new IllegalArgumentException("Unable to map person attribute \""
+                  + param + "\" in expression \"" + fromExp + "\" for parameter \""
+                  + to + "\": Attribute value is not a number.");
+            } else {
+              throw new IllegalArgumentException("Unable to map person attribute \""
+                  + param + "\" to parameter \"" + to + "\": Attribute value is not a number.");
             }
-            else {
-              throw new IllegalArgumentException("Unable to map person attribute \""+param+"\" to parameter \""+to+"\": Attribute value is not a number.");
-            }
           }
-        }
-        else {
-          if(expProcessor != null) {
-            throw new IllegalArgumentException("Unable to map \""+param+"\" in expression \""+from_exp+
-                    "\" for parameter \""+to+"\": Invalid person attribute or vital sign.");
-          }
-          else {
-            throw new IllegalArgumentException("Unable to map \""+param+"\" to parameter \""+to+"\": Invalid person attribute or vital sign.");
+        } else {
+          if (expProcessor != null) {
+            throw new IllegalArgumentException("Unable to map \"" + param
+                + "\" in expression \"" + fromExp + "\" for parameter \"" + to
+                + "\": Invalid person attribute or vital sign.");
+          } else {
+            throw new IllegalArgumentException("Unable to map \""
+                + param + "\" to parameter \"" + to
+                + "\": Invalid person attribute or vital sign.");
           }
         }
       }
       
-      // Places a numeric result into the desired field on a Person model. The "type" field must be present to indicate whether it should
-      // map to a VitalSign or an attribute. Attributes will accept any key, but if an invalid VitalSign is provided, an IllegalArgumentException
-      // will be thrown
+      /**
+       * Places a numeric result into the desired field on a Person model. The "type" field
+       * must be present to indicate whether it should map to a VitalSign or an attribute.
+       * Attributes will accept any key, but if an invalid VitalSign is provided, an
+       * IllegalArgumentException will be thrown.
+       * @param value value to set
+       * @param person Person instance to set value on
+       */
       private void modelParamToPerson(Double value, Person person) {
         
-        if(type != IOType.VITAL_SIGN) if(type == IOType.ATTRIBUTE) {
+        if (type == IoType.ATTRIBUTE) {
           person.attributes.put(to, value);
-        }
-        else {
-          throw new IllegalArgumentException("Missing required destination type for mapping of \""+from+"\" to target \""+to+
-                  "\". Mapping must specify either \"Vital Sign\" or \"Attribute\"");
-        }
-        else {
+        } else if (type == IoType.VITAL_SIGN){
           try {
             // Set as a constant value
-            org.mitre.synthea.world.concepts.VitalSign vs = org.mitre.synthea.world.concepts.VitalSign.fromString(to);
+            org.mitre.synthea.world.concepts.VitalSign vs =
+                org.mitre.synthea.world.concepts.VitalSign.fromString(to);
             person.setVitalSign(vs, value);
+          } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Unable to map \"" + from
+                + "\" to invalid vital sign target \"" + to + "\"");
           }
-          catch(IllegalArgumentException ex) {
-            throw new IllegalArgumentException("Unable to map \""+from+"\" to invalid vital sign target \""+to+"\"");
-          }
+        } else {
+          throw new IllegalArgumentException(
+              "Missing required destination type for mapping of \"" + from + "\" to target \""
+              + to + "\". Mapping must specify either \"Vital Sign\" or \"Attribute\"");
         }
       }
       
+      /**
+       * Maps a list of values to a patient attribute. Mapping lists to Vital Signs is
+       * currently unsupported
+       * @param value list of values to assign
+       * @param person Person instance to assign to
+       */
       private void modelListToPerson(List<Double> value, Person person) {
         
-        if(type == IOType.VITAL_SIGN) {
-          // TODO: Look at potential for creating a generator or some other means of providing a vital sign based on simulation results over time
-          throw new IllegalArgumentException("Synthea does not currently support mapping lists to vital signs. Unable to map \""+
-                  from_list+"\" to provided vital sign \""+to+"\"");
-        }
-        else if(type == IOType.ATTRIBUTE) {
+        if (type == IoType.VITAL_SIGN) {
+          // TODO: Look at potential for creating a generator or some other means of providing
+          // a vital sign based on simulation results over time
+          throw new IllegalArgumentException(
+              "Synthea does not currently support mapping lists to vital signs. Unable to map \""
+              + fromList + "\" to provided vital sign \"" + to + "\"");
+        } else if (type == IoType.ATTRIBUTE) {
           person.attributes.put(to, value);
-        }
-        else {
-          throw new IllegalArgumentException("Missing required destination type for mapping of \""+from+"\" to target \""+to+
-                  "\". Mapping must specify either \"Vital Sign\" or \"Attribute\"");
+        } else {
+          throw new IllegalArgumentException(
+              "Missing required destination type for mapping of \"" + from
+              + "\" to target \"" + to
+              + "\". Mapping must specify either \"Vital Sign\" or \"Attribute\"");
         }
       }
     }
