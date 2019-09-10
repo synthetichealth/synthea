@@ -1913,7 +1913,7 @@ public class FhirR4 {
 
     if (medication.reasons != null && !medication.reasons.isEmpty()) {
       for (Code code1 : medication.reasons) {
-        medicationStatement.addReasonCode(mapCodeToCodeableConcept(code1, null));
+        medicationStatement.addReasonCode(mapCodeToCodeableConcept(code1, SNOMED_URI));
       }
     }
 
@@ -2231,7 +2231,7 @@ public class FhirR4 {
 
     if (carePlan.reasons != null && !carePlan.reasons.isEmpty()) {
       for (Code code : carePlan.reasons) {
-        careTeam.addReasonCode(mapCodeToCodeableConcept(code, null));
+        careTeam.addReasonCode(mapCodeToCodeableConcept(code, SNOMED_URI));
       }
     }
 
