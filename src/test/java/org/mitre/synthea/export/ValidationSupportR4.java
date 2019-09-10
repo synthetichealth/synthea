@@ -17,11 +17,14 @@ import java.util.Map;
 
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.hapi.ctx.IValidationSupport;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.CodeSystem;
 import org.hl7.fhir.r4.model.CodeSystem.ConceptDefinitionComponent;
 import org.hl7.fhir.r4.model.StructureDefinition;
 import org.hl7.fhir.r4.model.ValueSet;
 import org.hl7.fhir.r4.model.ValueSet.ConceptSetComponent;
+import org.hl7.fhir.r4.model.ValueSet.ValueSetExpansionContainsComponent;
 import org.hl7.fhir.r4.terminologies.ValueSetExpander.ValueSetExpansionOutcome;
 import org.hl7.fhir.utilities.validation.ValidationMessage.IssueSeverity;
 
@@ -72,29 +75,70 @@ public class ValidationSupportR4 implements IValidationSupport {
         .filter(p -> p.toString().endsWith(".json")).forEach(f -> {
           try {
             IBaseResource resource = jsonParser.parseResource(new FileReader(f.toFile()));
-            resources.add(resource);
-            if (resource instanceof CodeSystem) {
-              CodeSystem cs = (CodeSystem) resource;
-              resourcesMap.put(cs.getUrl(), cs);
-              codeSystemMap.put(cs.getUrl(), cs);
-            } else if (resource instanceof ValueSet) {
-              ValueSet vs = (ValueSet) resource;
-              resourcesMap.put(vs.getUrl(), vs);
-            } else if (resource instanceof StructureDefinition) {
-              StructureDefinition sd = (StructureDefinition) resource;
-              resourcesMap.put(sd.getUrl(), sd);
-              definitions.add(sd);
-              definitionsMap.put(sd.getUrl(), sd);
-            }
+            handleResource(resource);
           } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
           }
         });
   }
 
+  private void handleResource(IBaseResource resource) {
+    if (resource instanceof Bundle) {
+      Bundle bundle = (Bundle) resource;
+      for (BundleEntryComponent entry : bundle.getEntry()) {
+        if (entry.hasResource()) {
+          handleResource(entry.getResource());
+        }
+      }
+    } else {
+      resources.add(resource);
+      if (resource instanceof CodeSystem) {
+        CodeSystem cs = (CodeSystem) resource;
+        resourcesMap.put(cs.getUrl(), cs);
+        codeSystemMap.put(cs.getUrl(), cs);
+      } else if (resource instanceof ValueSet) {
+        ValueSet vs = (ValueSet) resource;
+        resourcesMap.put(vs.getUrl(), vs);
+
+        if (vs.hasExpansion() && vs.getExpansion().hasContains()) {
+          processExpansion(vs.getExpansion().getContains());
+        }
+      } else if (resource instanceof StructureDefinition) {
+        StructureDefinition sd = (StructureDefinition) resource;
+        resourcesMap.put(sd.getUrl(), sd);
+        definitions.add(sd);
+        definitionsMap.put(sd.getUrl(), sd);
+      }
+    }
+  }
+
+  private void processExpansion(List<ValueSetExpansionContainsComponent> list) {
+    CodeSystem codeSystem = null;
+    for (ValueSetExpansionContainsComponent item : list) {
+      if (codeSystemMap.containsKey(item.getSystem())) {
+        codeSystem = codeSystemMap.get(item.getSystem());
+      } else {
+        codeSystem = new CodeSystem();
+        codeSystem.setId(item.getSystem());
+        codeSystem.setUrl(item.getSystem());
+        codeSystemMap.put(item.getSystem(), codeSystem);
+      }
+
+      ConceptDefinitionComponent concept = new ConceptDefinitionComponent();
+      concept.setCode(item.getCode());
+      concept.setDisplay(item.getDisplay());
+      codeSystem.addConcept(concept);
+    }
+  }
+
   @Override
   public ValueSetExpansionOutcome expandValueSet(FhirContext theContext,
       ConceptSetComponent theInclude) {
+    if (theInclude.getSystem().equals("urn:iso:std:iso:4217")) {
+      ValueSet valueset =  (ValueSet) resourcesMap.get("http://hl7.org/fhir/ValueSet/currencies");
+      ValueSetExpansionOutcome expansion = new ValueSetExpansionOutcome(valueset);
+      return expansion;
+    }
     return null;
   }
 

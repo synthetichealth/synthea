@@ -4,7 +4,6 @@ import static org.junit.Assert.assertTrue;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
-import ca.uhn.fhir.validation.FhirValidator;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
 import java.util.ArrayList;
@@ -36,11 +35,7 @@ public class FHIRR4ExporterTest {
 
     FhirContext ctx = FhirContext.forR4();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
-
-    FhirValidator validator = ctx.newValidator();
-    validator.setValidateAgainstStandardSchema(true);
-    validator.setValidateAgainstStandardSchematron(true);
-
+    ValidationResources validator = new ValidationResources();
     List<String> validationErrors = new ArrayList<String>();
 
     int numberOfPeople = 10;
@@ -63,14 +58,14 @@ public class FHIRR4ExporterTest {
       }
       // Now validate the resource...
       IBaseResource resource = ctx.newJsonParser().parseResource(fhirJson);
-      ValidationResult result = validator.validateWithResult(resource);
+      ValidationResult result = validator.validateR4(resource);
       if (!result.isSuccessful()) {
         // If the validation failed, let's crack open the Bundle and validate
         // each individual entry.resource to get context-sensitive error
         // messages...
         Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
         for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-          ValidationResult eresult = validator.validateWithResult(entry.getResource());
+          ValidationResult eresult = validator.validateR4(entry.getResource());
           if (!eresult.isSuccessful()) {
             for (SingleValidationMessage emessage : eresult.getMessages()) {
               boolean valid = false;
@@ -99,6 +94,13 @@ public class FHIRR4ExporterTest {
                  * fails, even if it is valid.
                  */
                 valid = true; // ignore this error
+              } else if (emessage.getMessage().contains("[active, inactive, entered-in-error]")
+                  || emessage.getMessage().contains("MedicationStatusCodes-list")) {
+                /*
+                 * MedicationStatement.status has more legal values than this... including
+                 * completed and stopped.
+                 */
+                valid = true;
               }
               if (!valid) {
                 System.out.println(parser.encodeResourceToString(entry.getResource()));

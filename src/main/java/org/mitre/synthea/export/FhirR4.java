@@ -77,6 +77,7 @@ import org.hl7.fhir.r4.model.Immunization.ImmunizationStatus;
 import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Location.LocationPositionComponent;
 import org.hl7.fhir.r4.model.Location.LocationStatus;
+import org.hl7.fhir.r4.model.Medication.MedicationStatus;
 import org.hl7.fhir.r4.model.MedicationAdministration;
 import org.hl7.fhir.r4.model.MedicationAdministration.MedicationAdministrationDosageComponent;
 import org.hl7.fhir.r4.model.MedicationRequest;
@@ -1885,6 +1886,7 @@ public class FhirR4 {
         ? SNOMED_URI
         : RXNORM_URI;
     medicationResource.setCode(mapCodeToCodeableConcept(code, system));
+    medicationResource.setStatus(MedicationStatus.ACTIVE);
     BundleEntryComponent medicationEntry = newEntry(bundle, medicationResource);
 
     MedicationStatement medicationStatement = new MedicationStatement();
@@ -1988,7 +1990,7 @@ public class FhirR4 {
     if (USE_US_CORE_IG) {
       Meta meta = new Meta();
       meta.addProfile(
-          "http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport");
+          "http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-lab");
       reportResource.setMeta(meta);
     }
     reportResource.setStatus(DiagnosticReportStatus.FINAL);
@@ -2028,6 +2030,9 @@ public class FhirR4 {
       meta.addProfile(
           "http://hl7.org/fhir/us/core/StructureDefinition/us-core-careplan");
       careplanResource.setMeta(meta);
+      careplanResource.addCategory(mapCodeToCodeableConcept(
+          new Code("http://hl7.org/fhir/us/core/CodeSystem/careplan-category", "assess-plan",
+              null), null));
     }
 
     String narrative = "Care Plan for ";
@@ -2505,9 +2510,9 @@ public class FhirR4 {
         (String) clinician.attributes.get(Clinician.LAST_NAME))
       .addGiven((String) clinician.attributes.get(Clinician.FIRST_NAME))
       .addPrefix((String) clinician.attributes.get(Clinician.NAME_PREFIX));
-    String email = (String) clinician.attributes.get(Clinician.FIRST_NAME) +
-        "." + (String) clinician.attributes.get(Clinician.LAST_NAME) +
-        "@example.com";
+    String email = (String) clinician.attributes.get(Clinician.FIRST_NAME)
+        + "." + (String) clinician.attributes.get(Clinician.LAST_NAME)
+        + "@example.com";
     practitionerResource.addTelecom()
         .setSystem(ContactPointSystem.EMAIL)
         .setUse(ContactPointUse.WORK)
@@ -2565,6 +2570,10 @@ public class FhirR4 {
         practitionerRole.addTelecom(new ContactPoint()
             .setSystem(ContactPointSystem.PHONE)
             .setValue(clinician.getOrganization().phone));
+      } else {
+        practitionerRole.addTelecom(new ContactPoint()
+            .setSystem(ContactPointSystem.PHONE)
+            .setValue("(555) 555-5555"));
       }
       newEntry(bundle, practitionerRole);
     }

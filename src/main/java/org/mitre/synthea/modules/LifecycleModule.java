@@ -625,8 +625,8 @@ public final class LifecycleModule extends Module {
       String gender = (String) person.attributes.get(Person.GENDER);
       LinkedHashMap<String, String> entry = null;
       for (LinkedHashMap<String, String> row : weightForLengthChart) {
-        if (row.get("Sex").equals(gender) &&
-            height < Double.parseDouble(row.get("Length"))) {
+        if (row.get("Sex").equals(gender)
+            && height < Double.parseDouble(row.get("Length"))) {
           entry = row;
           break;
         }

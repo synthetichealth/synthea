@@ -58,6 +58,7 @@ public class ValidationResources {
         new org.hl7.fhir.r4.hapi.validation.ValidationSupportChain(
             new org.hl7.fhir.r4.hapi.ctx.DefaultProfileValidationSupport(), validationSupport);
     instanceValidator.setValidationSupport(support);
+    instanceValidator.setNoTerminologyChecks(true);
 
     IValidatorModule schemaValidator = new SchemaBaseValidator(ctx);
     IValidatorModule schematronValidator = new SchematronBaseValidator(ctx);
@@ -91,7 +92,7 @@ public class ValidationResources {
 
   /**
    * Do we have any errors or fatal errors? If so, show the issues.
-   * @param result
+   * @param result Log the validation result.
    */
   private void logIssues(ValidationResult result) {
     for (SingleValidationMessage next : result.getMessages()) {
