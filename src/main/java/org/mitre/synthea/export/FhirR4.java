@@ -53,6 +53,9 @@ import org.hl7.fhir.r4.model.Coverage.CoverageStatus;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DateType;
 import org.hl7.fhir.r4.model.DecimalType;
+import org.hl7.fhir.r4.model.Device;
+import org.hl7.fhir.r4.model.Device.DeviceNameType;
+import org.hl7.fhir.r4.model.Device.FHIRDeviceStatus;
 import org.hl7.fhir.r4.model.DiagnosticReport;
 import org.hl7.fhir.r4.model.DiagnosticReport.DiagnosticReportStatus;
 import org.hl7.fhir.r4.model.Dosage;
@@ -255,6 +258,10 @@ public class FhirR4 {
 
       for (Procedure procedure : encounter.procedures) {
         procedure(personEntry, bundle, encounterEntry, procedure);
+      }
+
+      for (HealthRecord.Device device : encounter.devices) {
+        device(personEntry, bundle, device);
       }
 
       for (Medication medication : encounter.medications) {
@@ -1568,6 +1575,39 @@ public class FhirR4 {
     procedure.fullUrl = procedureEntry.getFullUrl();
 
     return procedureEntry;
+  }
+
+  /**
+   * Map the HealthRecord.Device into a FHIR Device and add it to the Bundle.
+   *
+   * @param personEntry    The Person entry.
+   * @param bundle         Bundle to add to.
+   * @param device         The device to add.
+   * @return The added Entry.
+   */
+  private static BundleEntryComponent device(BundleEntryComponent personEntry, Bundle bundle,
+      HealthRecord.Device device) {
+    Device deviceResource = new Device();
+    if (USE_US_CORE_IG) {
+      Meta meta = new Meta();
+      meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-device");
+      deviceResource.setMeta(meta);
+    }
+    deviceResource.addUdiCarrier()
+        .setDeviceIdentifier(device.deviceIdentifier)
+        .setCarrierHRF(device.udi);
+    deviceResource.setStatus(FHIRDeviceStatus.ACTIVE);
+    deviceResource.setDistinctIdentifier(device.deviceIdentifier);
+    deviceResource.setManufactureDate(new Date(device.manufactureTime));
+    deviceResource.setExpirationDate(new Date(device.expirationTime));
+    deviceResource.setLotNumber(device.lotNumber);
+    deviceResource.setSerialNumber(device.serialNumber);
+    deviceResource.addDeviceName()
+        .setName(device.codes.get(0).display)
+        .setType(DeviceNameType.USERFRIENDLYNAME);
+    deviceResource.setType(mapCodeToCodeableConcept(device.codes.get(0), SNOMED_URI));
+    deviceResource.setPatient(new Reference(personEntry.getFullUrl()));
+    return newEntry(bundle, deviceResource);
   }
 
   /**

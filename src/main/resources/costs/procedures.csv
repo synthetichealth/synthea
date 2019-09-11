@@ -96,3 +96,5 @@ CODE,MIN,MODE,MAX,COMMENTS
 49436004,13027.20,26054.39635,52108.79,Atrial Fibrillation
 433112001,10387.93,20775.85873,41551.72,Percutaneous mechanical thrombectomy of portal vein using fluoroscopic guidance
 415070008,10727.40,21454.79933,42909.60,Percutaneous coronary intervention
+40701008,400.00,1000.0,2000.00,Echocardiography (procedure)
+434158009,400.00,1000.0,2000.00,Transthoracic three dimensional ultrasonography of heart (procedure)

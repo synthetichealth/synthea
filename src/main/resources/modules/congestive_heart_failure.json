@@ -1165,14 +1165,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": "34552-0",
-        "display": "trans thoracic echocardiogram"
+        "code": "434158009",
+        "display": "Transthoracic three dimensional ultrasonography of heart (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 261179002,
+            "code": "261179002",
             "display": "thoracic"
           },
           "modality": {
