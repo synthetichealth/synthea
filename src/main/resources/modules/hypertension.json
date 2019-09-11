@@ -44,7 +44,7 @@
           "unit": "days"
         }
       },
-      "chronic": "true",
+      "chronic": true,
       "direct_transition": "End_Wellness_Encounter",
       "assign_to_attribute": "hypertension_medication",
       "reason": "hypertension_dx"
@@ -66,7 +66,7 @@
           "unit": "days"
         }
       },
-      "chronic": "true",
+      "chronic": true,
       "direct_transition": "End_Wellness_Encounter",
       "assign_to_attribute": "hypertension_medication",
       "reason": "hypertension_dx"
@@ -128,7 +128,7 @@
           "unit": "days"
         }
       },
-      "chronic": "true",
+      "chronic": true,
       "assign_to_attribute": "hypertension_medication_2",
       "reason": "hypertension_dx",
       "direct_transition": "End_Hypertension_Followup_Encounter"
@@ -155,7 +155,7 @@
           "unit": "days"
         }
       },
-      "chronic": "true",
+      "chronic": true,
       "assign_to_attribute": "hypertension_medication_3",
       "reason": "hypertension_dx",
       "direct_transition": "End_Hypertension_Followup_Encounter_2",
