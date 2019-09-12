@@ -6,9 +6,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
-import ca.uhn.fhir.model.dstu2.resource.MedicationOrder;
-
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,9 +18,15 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.CardiovascularDiseaseModule;
+import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.modules.QualityOfLifeModule;
+import org.mitre.synthea.modules.WeightLossModule;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -30,6 +36,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
+
 
 public class StateTest {
 
@@ -42,11 +49,16 @@ public class StateTest {
    */
   @Before
   public void setup() throws IOException {
+    time = System.currentTimeMillis();
+
     person = new Person(0L);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.FIRST_LANGUAGE, "spanish");
     person.attributes.put(Person.RACE, "other");
     person.attributes.put(Person.ETHNICITY, "hispanic");
+    person.attributes.put(Person.INCOME, Integer.parseInt(Config
+        .get("generate.demographics.socioeconomic.income.poverty")) * 2);
+    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
 
     person.history = new LinkedList<>();
     Provider mock = Mockito.mock(Provider.class);
@@ -56,11 +68,14 @@ public class StateTest {
     person.setProvider(EncounterType.EMERGENCY, mock);
     person.setProvider(EncounterType.INPATIENT, mock);
 
+    time = System.currentTimeMillis();
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
-    person.events.create(birthTime, Event.BIRTH, "Generator.run", true);
 
-    time = System.currentTimeMillis();
+    Payer.loadNoInsurance();
+    for (int i = 0; i < person.payerHistory.length; i++) {
+      person.setPayerAtAge(i, Payer.noInsurance);
+    }
   }
 
   private void simulateWellnessEncounter(Module module) {
@@ -327,6 +342,40 @@ public class StateTest {
     assertFalse(delay.process(person, time + 1L * 1000 * 60 * 60 * 24 * 365));
     assertFalse(delay.process(person, time + 2L * 1000 * 60 * 60 * 24 * 365));
     assertTrue(delay.process(person, time + 10L * 1000 * 60 * 60 * 24 * 365));
+  }
+
+  @Test
+  public void death_during_delay() throws Exception {
+    Module module = TestHelper.getFixture("death_during_delay.json");
+
+    // patient is alive
+    assertTrue(person.alive(time));
+
+    // patient dies during delay
+    module.process(person, time);
+
+    // patient is still alive now...
+    assertTrue(person.alive(time));
+
+    // patient is dead later...
+    long step = Utilities.convertTime("days", 7);
+    assertFalse(person.alive(time + step));
+
+    // patient has one encounter...
+    assertTrue(person.hadPriorState("Encounter 1"));
+    assertEquals(1, person.record.encounters.size());
+    assertFalse(person.hadPriorState("Encounter Should Not Happen"));
+
+    // next time step...
+    module.process(person, time + step);
+
+    // patient is still dead...
+    assertFalse(person.alive(time + step));
+
+    // patient still has one encounter...
+    assertTrue(person.hadPriorState("Encounter 1"));
+    assertEquals(1, person.record.encounters.size());
+    assertFalse(person.hadPriorState("Encounter Should Not Happen"));
   }
 
   @Test
@@ -781,6 +830,11 @@ public class StateTest {
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
 
+    // Prevent Null Pointer by giving the person their QOLS
+    Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
+    qolsByYear.put(Utilities.getYear(time) - 1, 1.0);
+    person.attributes.put("QOL", qolsByYear);
+
     // Now process the prescription
     State med = module.getState("Metformin");
     assertTrue(med.process(person, time));
@@ -811,6 +865,11 @@ public class StateTest {
     simulateWellnessEncounter(module);
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
+
+    // Prevent Null Pointer by giving the person their QOLS
+    Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
+    qolsByYear.put(Utilities.getYear(time) - 1, 1.0);
+    person.attributes.put("QOL", qolsByYear);
 
     // Now process the prescription
     State med = module.getState("Metformin_With_Dosage");
@@ -843,6 +902,11 @@ public class StateTest {
     simulateWellnessEncounter(module);
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
+
+    // Prevent Null Pointer by giving the person their QOLS
+    Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
+    qolsByYear.put(Utilities.getYear(time) - 1, 1.0);
+    person.attributes.put("QOL", qolsByYear);
 
     // Now process the prescription
     State med = module.getState("Tylenol_As_Needed");
@@ -917,6 +981,11 @@ public class StateTest {
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
 
+    // Prevent Null Pointer by giving the person their QOLS
+    Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
+    qolsByYear.put(Utilities.getYear(time) - 1, 1.0);
+    person.attributes.put("QOL", qolsByYear);
+
     // Now process the prescription
     State med = module.getState("Insulin_Start");
     assertTrue(med.process(person, time));
@@ -953,6 +1022,11 @@ public class StateTest {
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
 
+    // Prevent Null Pointer by giving the person their QOLS
+    Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
+    qolsByYear.put(Utilities.getYear(time) - 1, 1.0);
+    person.attributes.put("QOL", qolsByYear);
+
     // Now process the prescription
     State med = module.getState("Bromocriptine_Start");
     assertTrue(med.process(person, time));
@@ -988,6 +1062,11 @@ public class StateTest {
     simulateWellnessEncounter(module);
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
+
+    // Prevent Null Pointer by giving the person their QOLS
+    Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
+    qolsByYear.put(Utilities.getYear(time) - 1, 1.0);
+    person.attributes.put("QOL", qolsByYear);
 
     // Now process the prescription
     State med = module.getState("Metformin_Start");
@@ -1232,6 +1311,75 @@ public class StateTest {
   }
 
   @Test
+  public void the_dead_should_stay_dead() throws Exception {
+    // Load all the static modules used in Generator.java
+    EncounterModule encounterModule = new EncounterModule();
+
+    List<Module> modules = new ArrayList<Module>();
+    modules.add(new LifecycleModule());
+    modules.add(new CardiovascularDiseaseModule());
+    modules.add(new QualityOfLifeModule());
+    // modules.add(new HealthInsuranceModule());
+    modules.add(new WeightLossModule());
+    // Make sure the patient dies...
+    modules.add(TestHelper.getFixture("death_life_expectancy.json"));
+    // And make sure the patient has weird delays that are between timesteps...
+    modules.add(Module.getModuleByPath("dialysis"));
+
+    // Set life signs at birth...
+    long timeT = (long) person.attributes.get(Person.BIRTHDATE);
+    LifecycleModule.birth(person, timeT);
+    // Make sure the patient requires dialysis to use that module's
+    // repeating delayed encounters...
+    person.attributes.put("ckd", 5);
+
+    long timestep = Long.parseLong(Config.get("generate.timestep"));
+    long stop = time;
+    while (person.alive(timeT) && timeT < stop) {
+      encounterModule.process(person, timeT);
+      Iterator<Module> iter = modules.iterator();
+      while (iter.hasNext()) {
+        Module module = iter.next();
+        if (module.process(person, timeT)) {
+          iter.remove(); // this module has completed/terminated.
+        }
+      }
+      encounterModule.endWellnessEncounter(person, timeT);
+
+      timeT += timestep;
+    }
+    DeathModule.process(person, time);
+
+    // Now check that the person stayed dead...
+    long deathTime = (Long) person.attributes.get(Person.DEATHDATE);
+    for (Encounter encounter : person.record.encounters) {
+      if (!encounter.codes.contains(DeathModule.DEATH_CERTIFICATION)) {
+        assertTrue(encounter.start < deathTime);
+      }
+    }
+  }
+
+  @Test
+  public void the_dead_should_stay_dead_forever() throws Exception {
+    Module module = TestHelper.getFixture("death_life_expectancy.json");
+
+    long timestep = Long.parseLong(Config.get("generate.timestep"));
+    long timeT = time;
+    while (person.alive(timeT)) {
+      module.process(person, timeT);
+      timeT += timestep;
+    }
+
+    // Now check that the person stayed dead...
+    long deathTime = (Long) person.attributes.get(Person.DEATHDATE);
+    for (Encounter encounter : person.record.encounters) {
+      if (!encounter.codes.contains(DeathModule.DEATH_CERTIFICATION)) {
+        assertTrue(encounter.start < deathTime);
+      }
+    }
+  }
+
+  @Test
   public void cause_of_death_code() throws Exception {
     Module module = TestHelper.getFixture("death_reason.json");
 
@@ -1320,7 +1468,7 @@ public class StateTest {
     assertEquals(time + days(5), (long) person.history.get(1).exited);
 
     assertEquals("Terminal", person.history.get(0).name);
-    assertEquals(time + days(5), (long) person.history.get(0).entered);
+    assertEquals(null, person.history.get(0).entered);
     assertEquals(null, person.history.get(0).exited);
   }
 

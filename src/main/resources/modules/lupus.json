@@ -134,7 +134,6 @@
     },
     "Lupus_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Lupus_Diagnosis",
       "assign_to_attribute": "lupus_careplan",
       "reason": "Lupus",
       "codes": [
@@ -160,7 +159,6 @@
     },
     "Lupus_Nonopioid_Pain_Medication": {
       "type": "MedicationOrder",
-      "target_encounter": "Lupus_Diagnosis",
       "reason": "Lupus",
       "codes": [
         {
@@ -173,7 +171,6 @@
     },
     "Corticosteroid": {
       "type": "MedicationOrder",
-      "target_encounter": "Lupus_Diagnosis",
       "assign_to_attribute": "lupus_corticosteroid",
       "reason": "Lupus",
       "remarks": [
@@ -268,7 +265,6 @@
     },
     "Immune_Suppressant": {
       "type": "MedicationOrder",
-      "target_encounter": "Lupus_Flareup",
       "reason": "Lupus",
       "remarks": [
         "More aggressive immune suppressants are used for subsequent flares."
@@ -284,7 +280,6 @@
     },
     "Flareup_Corticosteroid": {
       "type": "MedicationOrder",
-      "target_encounter": "Lupus_Flareup",
       "assign_to_attribute": "lupus_corticosteroid",
       "reason": "Lupus",
       "remarks": [

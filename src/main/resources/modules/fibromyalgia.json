@@ -169,7 +169,6 @@
     },
     "Fibromyalgia_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Fibromyalgia_Diagnosis",
       "assign_to_attribute": "fibromyalgia_careplan",
       "reason": "Fibromyalgia",
       "codes": [
@@ -195,7 +194,6 @@
     },
     "Strong_NSAID": {
       "type": "MedicationOrder",
-      "target_encounter": "Fibromyalgia_Diagnosis",
       "reason": "Fibromyalgia",
       "remarks": [
         "A stronger NSAID pain reliever than the basic Aleve."
@@ -298,7 +296,6 @@
     },
     "Prescribe_Lyrica": {
       "type": "MedicationOrder",
-      "target_encounter": "Fibromyalgia_Episode",
       "assign_to_attribute": "fibromyalgia_prescription",
       "reason": "Fibromyalgia",
       "codes": [
@@ -312,7 +309,6 @@
     },
     "Prescribe_Cymbalta": {
       "type": "MedicationOrder",
-      "target_encounter": "Fibromyalgia_Episode",
       "assign_to_attribute": "fibromyalgia_prescription",
       "reason": "Fibromyalgia",
       "codes": [
@@ -326,7 +322,6 @@
     },
     "Prescribe_Savella": {
       "type": "MedicationOrder",
-      "target_encounter": "Fibromyalgia_Episode",
       "assign_to_attribute": "fibromyalgia_prescription",
       "reason": "Fibromyalgia",
       "codes": [
@@ -340,7 +335,6 @@
     },
     "Prescribe_Opioid": {
       "type": "MedicationOrder",
-      "target_encounter": "Fibromyalgia_Episode",
       "assign_to_attribute": "opioid_prescription",
       "reason": "Fibromyalgia",
       "remarks": [

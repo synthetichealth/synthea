@@ -261,7 +261,6 @@
     },
     "Dementia_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "DiagnosisEncounter",
       "reason": "Type of Alzheimer's",
       "codes": [
         {
@@ -335,7 +334,6 @@
     },
     "FirstPrescription1": {
       "type": "MedicationOrder",
-      "target_encounter": "DiagnosisEncounter",
       "assign_to_attribute": "Alzheimer's Medication",
       "reason": "Type of Alzheimer's",
       "codes": [
@@ -349,7 +347,6 @@
     },
     "FirstPrescription2": {
       "type": "MedicationOrder",
-      "target_encounter": "DiagnosisEncounter",
       "assign_to_attribute": "Alzheimer's Medication",
       "reason": "Type of Alzheimer's",
       "codes": [
@@ -363,7 +360,6 @@
     },
     "FirstPrescription3": {
       "type": "MedicationOrder",
-      "target_encounter": "DiagnosisEncounter",
       "assign_to_attribute": "Alzheimer's Medication",
       "reason": "Type of Alzheimer's",
       "codes": [
@@ -519,7 +515,6 @@
     },
     "SecondPrescription1": {
       "type": "MedicationOrder",
-      "target_encounter": "ModeratelySevere_Encounter",
       "reason": "Type of Alzheimer's",
       "codes": [
         {
@@ -532,7 +527,6 @@
     },
     "SecondPrescription2": {
       "type": "MedicationOrder",
-      "target_encounter": "ModeratelySevere_Encounter",
       "reason": "Type of Alzheimer's",
       "codes": [
         {
@@ -545,7 +539,6 @@
     },
     "SecondPrescription3": {
       "type": "MedicationOrder",
-      "target_encounter": "ModeratelySevere_Encounter",
       "reason": "Type of Alzheimer's",
       "codes": [
         {

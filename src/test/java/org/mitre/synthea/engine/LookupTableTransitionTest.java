@@ -11,22 +11,71 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.Range;
+import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.FixMethodOrder;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 import org.mitre.synthea.TestHelper;
-import org.mitre.synthea.engine.Generator.GeneratorOptions;
 import org.mitre.synthea.engine.Logic.ActiveCondition;
 import org.mitre.synthea.engine.Transition.DirectTransition;
 import org.mitre.synthea.engine.Transition.LookupTableKey;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.powermock.reflect.Whitebox;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LookupTableTransitionTest {
+
+  // Lookuptablitis Conditions
+  private static ActiveCondition mildLookuptablitis;
+  private static ActiveCondition moderateLookuptablitis;
+  private static ActiveCondition extremeLookuptablitis;
+  // Modules (including lookuptablitis_test module)
+  private static Map<String, Module.ModuleSupplier> modules;
+ 
+  /**
+   * Initalizes the lookuptablitis module and conditions.
+   */
+  @BeforeClass
+  public static void setup() throws Exception {
+    // Set the lookuptable CSV location to the test directory.
+    Config.set("generate.lookup_tables", "generic/lookup_tables/");
+
+    // Hack in the lookuptable_test.json module
+    modules =
+        Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
+    // hack to load these test modules so they can be called by the CallSubmodule state
+    Module lookuptabletestModule = TestHelper.getFixture("lookuptable_test.json");
+    modules.put("lookuptable_test", new Module.ModuleSupplier(lookuptabletestModule));
+
+    /* Create Mild Lookuptablitis Condition */
+    mildLookuptablitis = new ActiveCondition();
+    List<Code> mildLookuptablitisCode = new ArrayList<Code>();
+    mildLookuptablitisCode.add(new Code("SNOMED-CT", "23502007", "Mild_Lookuptablitis"));
+    mildLookuptablitis.codes = mildLookuptablitisCode;
+    /* Create Moderate Lookuptablitis Condition */
+    moderateLookuptablitis = new ActiveCondition();
+    List<Code> moderateLookuptablitisCode = new ArrayList<Code>();
+    moderateLookuptablitisCode.add(new Code("SNOMED-CT", "23502008", "Moderate_Lookuptablitis"));
+    moderateLookuptablitis.codes = moderateLookuptablitisCode;
+    /* Create Extreme Lookuptablitis Condition */
+    extremeLookuptablitis = new ActiveCondition();
+    List<Code> extremeLookuptablitisCode = new ArrayList<Code>();
+    extremeLookuptablitisCode.add(new Code("SNOMED-CT", "23502009", "Extreme_Lookuptablitis"));
+    extremeLookuptablitis.codes = extremeLookuptablitisCode;
+  }
+
+  /**
+   * Reset the modules and lookup tables.
+   */
+  @AfterClass
+  public static void reset() throws Exception {
+    // Set the lookuptable CSV location to the standard directory.
+    Config.set("generic.lookuptables", "modules/lookup_tables");
+    // Remove the lookuptable_test.json module
+    modules.remove("lookuptable_test");
+  }
 
   @Test
   public void keyTestWithAgesMatch() {
@@ -237,331 +286,229 @@ public class LookupTableTransitionTest {
   }
 
   @Test
-  public void lookUpTableTestMassachusetts() {
+  public void englishFemaleMassachusettsUnderFifty() {
 
-    int population = 10;
-    GeneratorOptions standardGO = new GeneratorOptions();
-    standardGO.population = population;
-    standardGO.overflow = false;
+    long birthTime = 0L;
+    // Under Fifty
+    long conditionTime = birthTime + Utilities.convertTime("years", 45);
 
-    // Create Mild Lookuptablitis Condition
-    ActiveCondition mildLookuptablitis = new ActiveCondition();
-    List<org.mitre.synthea.world.concepts.HealthRecord.Code>
-        mildLookuptablitisCode = new ArrayList<Code>();
-    mildLookuptablitisCode.add(new Code("SNOMED-CT", "23502007", "Mild_Lookuptablitis"));
-    mildLookuptablitis.codes = mildLookuptablitisCode;
-    // Create Moderate Lookuptablitis Condition
-    ActiveCondition moderateLookuptablitis = new ActiveCondition();
-    List<org.mitre.synthea.world.concepts.HealthRecord.Code>
-        moderateLookuptablitisCode = new ArrayList<Code>();
-    moderateLookuptablitisCode.add(new Code("SNOMED-CT", "23502008", "Moderate_Lookuptablitis"));
-    moderateLookuptablitis.codes = moderateLookuptablitisCode;
-    // Create Extreme Lookuptablitis Condition
-    ActiveCondition extremeLookuptablitis = new ActiveCondition();
-    List<org.mitre.synthea.world.concepts.HealthRecord.Code>
-        extremeLookuptablitisCode = new ArrayList<Code>();
-    extremeLookuptablitisCode.add(new Code("SNOMED-CT", "23502009", "Extreme_Lookuptablitis"));
-    extremeLookuptablitis.codes = extremeLookuptablitisCode;
+    // Create the person with the preset attributes.
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.ETHNICITY, "english");
+    person.attributes.put(Person.GENDER, "F");
+    person.attributes.put(Person.STATE, "Massachusetts");
 
-    standardGO.state = "Massachusetts";
-    Generator generator = new Generator(standardGO);
+    // Process the lookuptable_test Module.
+    Module lookuptableTestModule = modules.get("lookuptable_test").get();
+    lookuptableTestModule.process(person, conditionTime);
 
-    for (int i = 0; i < population; i++) {
-      // Generate People
-      Person person = generator.generatePerson(i);
-
-      if (person.attributes.get(Person.GENDER).equals("M")) {
-        // Person is MALE
-        if (person.attributes.get(Person.ETHNICITY).equals("english")) {
-          long time = System.currentTimeMillis();
-          if (mildLookuptablitis.test(person, Utilities.getYear(time))) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(mildLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(moderateLookuptablitis.test(person, time));
-            assertFalse(extremeLookuptablitis.test(person, time));
-          } else if (extremeLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(extremeLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
-            assertFalse(moderateLookuptablitis.test(person, time));
-            assertFalse(mildLookuptablitis.test(person, time));
-          }
-        } else if (person.attributes.get(Person.ETHNICITY).equals("irish")) {
-          long time = System.currentTimeMillis();
-          if (mildLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(mildLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
-            assertFalse(moderateLookuptablitis.test(person, time));
-            assertFalse(extremeLookuptablitis.test(person, time));
-          } else if (moderateLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(moderateLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(extremeLookuptablitis.test(person, time));
-            assertFalse(mildLookuptablitis.test(person, time));
-          }
-        } else if (person.attributes.get(Person.ETHNICITY).equals("italian")) {
-          long time = System.currentTimeMillis();
-          if (extremeLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(extremeLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(moderateLookuptablitis.test(person, time));
-            assertFalse(mildLookuptablitis.test(person, time));
-          } else if (moderateLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(moderateLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
-            assertFalse(extremeLookuptablitis.test(person, time));
-            assertFalse(mildLookuptablitis.test(person, time));
-          }
-        }
-      } else {
-        // Person is FEMALE
-        if (person.attributes.get(Person.ETHNICITY).equals("english")) {
-          long time = System.currentTimeMillis();
-          if (moderateLookuptablitis.test(person, time)) {
-            int startYear = Utilities
-                .getYear(person.record.present.get(moderateLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(mildLookuptablitis.test(person, time));
-            assertFalse(extremeLookuptablitis.test(person, time));
-          } else if (mildLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(mildLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
-            assertFalse(moderateLookuptablitis.test(person, time));
-            assertFalse(extremeLookuptablitis.test(person, time));
-          }
-        } else if (person.attributes.get(Person.ETHNICITY).equals("irish")) {
-          long time = System.currentTimeMillis();
-          if (moderateLookuptablitis.test(person, time)) {
-            int startYear = Utilities
-                .getYear(person.record.present.get(moderateLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
-            assertFalse(mildLookuptablitis.test(person, time));
-            assertFalse(extremeLookuptablitis.test(person, time));
-          } else if (extremeLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(extremeLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(moderateLookuptablitis.test(person, time));
-            assertFalse(mildLookuptablitis.test(person, time));
-          }
-        } else if (person.attributes.get(Person.ETHNICITY).equals("italian")) {
-          long time = System.currentTimeMillis();
-          if (mildLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(mildLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(moderateLookuptablitis.test(person, time));
-            assertFalse(extremeLookuptablitis.test(person, time));
-          } else if (extremeLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(extremeLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
-            assertFalse(moderateLookuptablitis.test(person, time));
-            assertFalse(mildLookuptablitis.test(person, time));
-          }
-        }
-      }
-    }
+    // Make sure this person has the correct lookuptablitis.
+    assertFalse(mildLookuptablitis.test(person, conditionTime + 100));
+    assertTrue(moderateLookuptablitis.test(person, conditionTime + 100));
+    assertFalse(extremeLookuptablitis.test(person, conditionTime + 100));
   }
 
   @Test
-  public void lookUpTableTestArizona() throws Exception {
+  public void englishFemaleMassachusettsOverFifty() {
 
-    // Hack in the lookuptable_test.json module
-    Map<String, Module.ModuleSupplier> modules =
-        Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
-    // hack to load these test modules so they can be called by the CallSubmodule state
-    Module lookuptabletestModule = TestHelper.getFixture("lookuptable_test.json");
-    modules.put("lookuptable_test", new Module.ModuleSupplier(lookuptabletestModule));
+    long birthTime = 0L;
+    // Over Fifty
+    long conditionTime = birthTime + Utilities.convertTime("years", 55);
 
-    int population = 10;
-    GeneratorOptions standardGO = new GeneratorOptions();
-    standardGO.population = population;
-    standardGO.overflow = false;
+    // Create the person with the preset attributes.
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.ETHNICITY, "english");
+    person.attributes.put(Person.GENDER, "F");
+    person.attributes.put(Person.STATE, "Massachusetts");
 
-    // Create Mild Lookuptablitis Condition
-    ActiveCondition mildLookuptablitis = new ActiveCondition();
-    List<org.mitre.synthea.world.concepts.HealthRecord.Code>
-        mildLookuptablitisCode = new ArrayList<Code>();
-    mildLookuptablitisCode.add(new Code("SNOMED-CT", "23502007", "Mild_Lookuptablitis"));
-    mildLookuptablitis.codes = mildLookuptablitisCode;
-    // Create Moderate Lookuptablitis Condition
-    ActiveCondition moderateLookuptablitis = new ActiveCondition();
-    List<org.mitre.synthea.world.concepts.HealthRecord.Code>
-        moderateLookuptablitisCode = new ArrayList<Code>();
-    moderateLookuptablitisCode.add(new Code("SNOMED-CT", "23502008", "Moderate_Lookuptablitis"));
-    moderateLookuptablitis.codes = moderateLookuptablitisCode;
-    // Create Extreme Lookuptablitis Condition
-    ActiveCondition extremeLookuptablitis = new ActiveCondition();
-    List<org.mitre.synthea.world.concepts.HealthRecord.Code>
-        extremeLookuptablitisCode = new ArrayList<Code>();
-    extremeLookuptablitisCode.add(new Code("SNOMED-CT", "23502009", "Extreme_Lookuptablitis"));
-    extremeLookuptablitis.codes = extremeLookuptablitisCode;
+    // Process the lookuptable_test Module.
+    Module lookuptableTestModule = modules.get("lookuptable_test").get();
+    lookuptableTestModule.process(person, conditionTime);
 
-    standardGO.state = "Arizona";
-    Generator generator = new Generator(standardGO);
-
-    for (int i = 0; i < population; i++) {
-      // Generate People
-      Person person = generator.generatePerson(i);
-
-      if (person.attributes.get(Person.GENDER).equals("M")) {
-        // Person is MALE
-        if (person.attributes.get(Person.ETHNICITY).equals("english")) {
-          long time = System.currentTimeMillis();
-          if (extremeLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(extremeLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(moderateLookuptablitis.test(person, time));
-            assertFalse(mildLookuptablitis.test(person, time));
-          } else if (mildLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(mildLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
-            assertFalse(moderateLookuptablitis.test(person, time));
-            assertFalse(extremeLookuptablitis.test(person, time));
-          }
-        } else if (person.attributes.get(Person.ETHNICITY).equals("irish")) {
-          long time = System.currentTimeMillis();
-          if (extremeLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(extremeLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
-            assertFalse(moderateLookuptablitis.test(person, time));
-            assertFalse(mildLookuptablitis.test(person, time));
-          } else if (moderateLookuptablitis.test(person, time)) {
-            int startYear = Utilities
-                .getYear(person.record.present.get(moderateLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(extremeLookuptablitis.test(person, time));
-            assertFalse(mildLookuptablitis.test(person, time));
-          }
-        } else if (person.attributes.get(Person.ETHNICITY).equals("italian")) {
-          long time = System.currentTimeMillis();
-          if (mildLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(mildLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(moderateLookuptablitis.test(person, time));
-            assertFalse(extremeLookuptablitis.test(person, time));
-          } else if (moderateLookuptablitis.test(person, time)) {
-            int startYear = Utilities
-                .getYear(person.record.present.get(moderateLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
-            assertFalse(extremeLookuptablitis.test(person, time));
-            assertFalse(mildLookuptablitis.test(person, time));
-          }
-        }
-      } else {
-        // Person is FEMALE
-        if (person.attributes.get(Person.ETHNICITY).equals("english")) {
-          long time = System.currentTimeMillis();
-          if (moderateLookuptablitis.test(person, time)) {
-            int startYear = Utilities
-                .getYear(person.record.present.get(moderateLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(mildLookuptablitis.test(person, time));
-            assertFalse(extremeLookuptablitis.test(person, time));
-          } else if (mildLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(mildLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
-            assertFalse(moderateLookuptablitis.test(person, time));
-            assertFalse(extremeLookuptablitis.test(person, time));
-          }
-        } else if (person.attributes.get(Person.ETHNICITY).equals("irish")) {
-          long time = System.currentTimeMillis();
-          if (moderateLookuptablitis.test(person, time)) {
-            int startYear = Utilities
-                .getYear(person.record.present.get(moderateLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
-            assertFalse(mildLookuptablitis.test(person, time));
-            assertFalse(extremeLookuptablitis.test(person, time));
-          } else if (mildLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(mildLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(moderateLookuptablitis.test(person, time));
-            assertFalse(extremeLookuptablitis.test(person, time));
-          }
-        } else if (person.attributes.get(Person.ETHNICITY).equals("italian")) {
-          long time = System.currentTimeMillis();
-          if (mildLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(mildLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition >= 51);
-            assertFalse(moderateLookuptablitis.test(person, time));
-            assertFalse(extremeLookuptablitis.test(person, time));
-          } else if (extremeLookuptablitis.test(person, time)) {
-            int startYear = Utilities.getYear(person.record.present
-                .get(extremeLookuptablitis.codes.get(0).code).start);
-            int birthYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-            int personAgeOfCondition = startYear - birthYear;
-            assertTrue("Age of Condition: " + personAgeOfCondition, personAgeOfCondition <= 51);
-            assertFalse(moderateLookuptablitis.test(person, time));
-            assertFalse(mildLookuptablitis.test(person, time));
-          }
-        }
-      }
-    }
-    modules.remove("lookuptable_test");
+    // Make sure this person has the correct lookuptablitis.
+    assertTrue(mildLookuptablitis.test(person, conditionTime + 100));
+    assertFalse(moderateLookuptablitis.test(person, conditionTime + 100));
+    assertFalse(extremeLookuptablitis.test(person, conditionTime + 100));
   }
 
   @Test
-  public void zzInvalidAgeRangeTest() {
+  public void englishMaleMassachusettsOverFifty() {
+
+    long birthTime = 0L;
+    // Over Fifty
+    long conditionTime = birthTime + Utilities.convertTime("years", 55);
+
+    // Create the person with the preset attributes.
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.ETHNICITY, "english");
+    person.attributes.put(Person.GENDER, "M");
+    person.attributes.put(Person.STATE, "Massachusetts");
+
+    // Process the lookuptable_test Module.
+    Module lookuptableTestModule = modules.get("lookuptable_test").get();
+    lookuptableTestModule.process(person, conditionTime);
+
+    // Make sure this person has the correct lookuptablitis.
+    assertFalse(mildLookuptablitis.test(person, conditionTime + 100));
+    assertFalse(moderateLookuptablitis.test(person, conditionTime + 100));
+    assertTrue(extremeLookuptablitis.test(person, conditionTime + 100));
+  }
+
+  @Test
+  public void irishMaleMassachusettsUnderFifty() {
+
+    long birthTime = 0L;
+    // Under Fifty
+    long conditionTime = birthTime + Utilities.convertTime("years", 1);
+
+    // Create the person with the preset attributes.
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.ETHNICITY, "irish");
+    person.attributes.put(Person.GENDER, "M");
+    person.attributes.put(Person.STATE, "Massachusetts");
+
+    // Process the lookuptable_test Module.
+    Module lookuptableTestModule = modules.get("lookuptable_test").get();
+    lookuptableTestModule.process(person, conditionTime);
+
+    // Make sure this person has the correct lookuptablitis.
+    assertFalse(mildLookuptablitis.test(person, conditionTime + 100));
+    assertTrue(moderateLookuptablitis.test(person, conditionTime + 100));
+    assertFalse(extremeLookuptablitis.test(person, conditionTime + 100));
+  }
+
+  @Test
+  public void irishFemaleMassachusettsOverFifty() {
+
+    long birthTime = 0L;
+    // Over Fifty
+    long conditionTime = birthTime + Utilities.convertTime("years", 53);
+
+    // Create the person with the preset attributes.
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.ETHNICITY, "irish");
+    person.attributes.put(Person.GENDER, "F");
+    person.attributes.put(Person.STATE, "Massachusetts");
+
+    // Process the lookuptable_test Module.
+    Module lookuptableTestModule = modules.get("lookuptable_test").get();
+    lookuptableTestModule.process(person, conditionTime);
+
+    // Make sure this person has the correct lookuptablitis.
+    assertFalse(mildLookuptablitis.test(person, conditionTime + 100));
+    assertTrue(moderateLookuptablitis.test(person, conditionTime + 100));
+    assertFalse(extremeLookuptablitis.test(person, conditionTime + 100));
+  }
+
+  @Test
+  public void italianMaleArizonaOverFifty() {
+
+    long birthTime = 0L;
+    // Over Fifty
+    long conditionTime = birthTime + Utilities.convertTime("years", 65);
+
+    // Create the person with the preset attributes.
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.ETHNICITY, "italian");
+    person.attributes.put(Person.GENDER, "M");
+    person.attributes.put(Person.STATE, "Arizona");
+
+    // Process the lookuptable_test Module.
+    Module lookuptableTestModule = modules.get("lookuptable_test").get();
+    lookuptableTestModule.process(person, conditionTime);
+
+    // Make sure this person has the correct lookuptablitis.
+    assertFalse(mildLookuptablitis.test(person, conditionTime + 100));
+    assertTrue(moderateLookuptablitis.test(person, conditionTime + 100));
+    assertFalse(extremeLookuptablitis.test(person, conditionTime + 100));
+  }
+
+  @Test
+  public void italianFemaleArizonaUnderFifty() {
+
+    long birthTime = 0L;
+    // Under Fifty
+    long conditionTime = birthTime + Utilities.convertTime("years", 15);
+
+    // Create the person with the preset attributes.
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.ETHNICITY, "italian");
+    person.attributes.put(Person.GENDER, "F");
+    person.attributes.put(Person.STATE, "Arizona");
+
+    // Process the lookuptable_test Module.
+    Module lookuptableTestModule = modules.get("lookuptable_test").get();
+    lookuptableTestModule.process(person, conditionTime);
+
+    // Make sure this person has the correct lookuptablitis.
+    assertFalse(mildLookuptablitis.test(person, conditionTime + 100));
+    assertFalse(moderateLookuptablitis.test(person, conditionTime + 100));
+    assertTrue(extremeLookuptablitis.test(person, conditionTime + 100));
+  }
+
+  @Test
+  public void doesNotMatchAnyEthnicityAttributes() {
+
+    // If a person does not match the table's attributes, they default to Extremelookuptablitis.
+
+    long birthTime = 0L;
+    // Under Fifty
+    long conditionTime = birthTime + Utilities.convertTime("years", 15);
+
+    // Create the person with the preset attributes.
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    // 'spanish' is not accounted for in lookuptabltitis.csv.
+    person.attributes.put(Person.ETHNICITY, "spanish");
+    person.attributes.put(Person.GENDER, "F");
+    person.attributes.put(Person.STATE, "Arizona");
+
+    // Process the lookuptable_test Module.
+    Module lookuptableTestModule = modules.get("lookuptable_test").get();
+    lookuptableTestModule.process(person, conditionTime);
+
+    // Make sure this person has the correct lookuptablitis.
+    assertFalse(mildLookuptablitis.test(person, conditionTime + 100));
+    assertFalse(moderateLookuptablitis.test(person, conditionTime + 100));
+    assertTrue(extremeLookuptablitis.test(person, conditionTime + 100));
+  }
+
+  @Test
+  public void doesNotMatchAnyStateAttributes() {
+
+    // If a person does not match the table's attributes, they default to Extremelookuptablitis.
+
+    long birthTime = 0L;
+    // Under Fifty
+    long conditionTime = birthTime + Utilities.convertTime("years", 15);
+
+    // Create the person with the preset attributes.
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.ETHNICITY, "english");
+    person.attributes.put(Person.GENDER, "F");
+    // 'Alaska' is not accounted for in lookuptabltitis.csv.
+    person.attributes.put(Person.STATE, "Alaska");
+
+    // Process the lookuptable_test Module.
+    Module lookuptableTestModule = modules.get("lookuptable_test").get();
+    lookuptableTestModule.process(person, conditionTime);
+
+    // Make sure this person has the correct lookuptablitis.
+    assertFalse(mildLookuptablitis.test(person, conditionTime + 100));
+    assertFalse(moderateLookuptablitis.test(person, conditionTime + 100));
+    assertTrue(extremeLookuptablitis.test(person, conditionTime + 100));
+  }
+
+  @Test
+  public void invalidCsvAgeRange() {
     try {
       TestHelper.getFixture("lookuptable_agerangetest.json");
     } catch (Exception e) {
@@ -570,7 +517,7 @@ public class LookupTableTransitionTest {
   }
 
   @Test
-  public void aaNoTransitionMatchTest() {
+  public void jsonToCsvNoTransitionMatch() {
     try {
       TestHelper.getFixture("lookuptable_nomatchcolumn.json");
     } catch (Exception e) {
@@ -580,4 +527,3 @@ public class LookupTableTransitionTest {
     }
   }
 }
-

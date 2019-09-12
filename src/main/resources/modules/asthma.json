@@ -222,7 +222,6 @@
     },
     "Asthma_Screening": {
       "type": "Procedure",
-      "target_encounter": "Asthma_Diagnosis",
       "reason": "asthma_condition",
       "codes": [
         {
@@ -235,7 +234,6 @@
     },
     "Prescribe_Maintenance_Inhaler": {
       "type": "MedicationOrder",
-      "target_encounter": "Asthma_Diagnosis",
       "reason": "asthma_condition",
       "codes": [
         {
@@ -251,7 +249,6 @@
     },
     "Prescribe_Emergency_Inhaler": {
       "type": "MedicationOrder",
-      "target_encounter": "Asthma_Diagnosis",
       "reason": "asthma_condition",
       "codes": [
         {
@@ -295,7 +292,6 @@
     },
     "Smoker_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Asthma_Diagnosis",
       "assign_to_attribute": "asthma_careplan",
       "reason": "asthma_condition",
       "codes": [
@@ -326,7 +322,6 @@
     },
     "Nonsmoker_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Asthma_Diagnosis",
       "assign_to_attribute": "asthma_careplan",
       "reason": "asthma_condition",
       "codes": [

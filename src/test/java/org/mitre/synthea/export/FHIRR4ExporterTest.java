@@ -45,12 +45,13 @@ public class FHIRR4ExporterTest {
 
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);
+    
     generator.options.overflow = false;
+
     for (int i = 0; i < numberOfPeople; i++) {
       int x = validationErrors.size();
       TestHelper.exportOff();
       Person person = generator.generatePerson(i);
-      Config.set("exporter.fhir.export", "true");
       FhirR4.TRANSACTION_BUNDLE = person.random.nextBoolean();
       FhirR4.USE_US_CORE_IG = person.random.nextBoolean();
       String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());

@@ -15,7 +15,6 @@
     },
     "Record_Height": {
       "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
       "category": "vital-signs",
       "vital_sign": "Height",
       "codes": [
@@ -30,7 +29,6 @@
     },
     "Record_Weight": {
       "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
       "category": "vital-signs",
       "vital_sign": "Weight",
       "codes": [
@@ -61,7 +59,6 @@
     },
     "Record_BMI": {
       "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
       "category": "vital-signs",
       "vital_sign": "BMI",
       "codes": [
@@ -110,7 +107,6 @@
           "unit": "mm[Hg]"
         }
       ],
-      "target_encounter": "Wellness_Encounter",
       "direct_transition": "Lab_MetabolicPanel"
     },
     "Record_MetabolicPanel": {
@@ -221,7 +217,6 @@
           "unit": "mmol/L"
         }
       ],
-      "target_encounter": "Wellness_Encounter",
       "direct_transition": "Lab_LipidPanel"
     },
     "Record_LipidPanel": {
@@ -284,12 +279,10 @@
           "unit": "mg/dL"
         }
       ],
-      "target_encounter": "Wellness_Encounter",
       "direct_transition": "Lab_ACR"
     },
     "Record_ACR": {
       "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
       "vital_sign": "Microalbumin Creatinine Ratio",
       "category": "laboratory",
       "codes": [
@@ -304,7 +297,6 @@
     },
     "Record_EGFR": {
       "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
       "category": "laboratory",
       "vital_sign": "EGFR",
       "codes": [
@@ -733,12 +725,10 @@
           }
         }
       ],
-      "target_encounter": "Wellness_Encounter",
       "direct_transition": "check_eGFR"
     },
     "Record_Pain": {
       "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
       "category": "vital-signs",
       "codes": [
         {

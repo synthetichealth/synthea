@@ -62,7 +62,6 @@
     },
     "Immunotherapy_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Immunotherapy_Consultation",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -164,7 +163,6 @@
     },
     "Immunotherapy_Procedure": {
       "type": "Procedure",
-      "target_encounter": "Immunotherapy_Treatment",
       "codes": [
         {
           "system": "SNOMED-CT",

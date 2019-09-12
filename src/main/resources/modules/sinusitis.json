@@ -207,7 +207,6 @@
       "remarks": [
         "https://www.drugs.com/dosage/amoxicillin.html#Usual_Adult_Dose_for_Sinusitis"
       ],
-      "target_encounter": "Doctor_Visit",
       "reason": "Sinusitis Condition",
       "codes": [
         {
@@ -471,7 +470,6 @@
     },
     "Sinus_Surgery": {
       "type": "Procedure",
-      "target_encounter": "Chronic_Sinusitis_Followup",
       "codes": [
         {
           "system": "SNOMED-CT",

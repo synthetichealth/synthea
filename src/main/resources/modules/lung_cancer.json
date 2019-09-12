@@ -214,7 +214,6 @@
     },
     "Chest X-Ray": {
       "type": "Procedure",
-      "target_encounter": "Diagnosis Encounter I",
       "reason": "Suspected Lung Cancer",
       "codes": [
         {
@@ -258,7 +257,6 @@
     },
     "Chest CT Scan": {
       "type": "Procedure",
-      "target_encounter": "Diagnosis Encounter II",
       "reason": "Suspected Lung Cancer",
       "codes": [
         {
@@ -371,7 +369,6 @@
     },
     "Sputum Cytology (Phelgm)": {
       "type": "Procedure",
-      "target_encounter": "Diagnosis Encounter III",
       "reason": "Suspected Lung Cancer",
       "codes": [
         {
@@ -384,7 +381,6 @@
     },
     "Thoracentesis (Fluid)": {
       "type": "Procedure",
-      "target_encounter": "Diagnosis Encounter III",
       "reason": "Suspected Lung Cancer",
       "codes": [
         {
@@ -397,7 +393,6 @@
     },
     "Needle Biopsy (Cells)": {
       "type": "Procedure",
-      "target_encounter": "Diagnosis Encounter III",
       "reason": "Suspected Lung Cancer",
       "codes": [
         {
@@ -410,7 +405,6 @@
     },
     "Bronchoscopy (Tube)": {
       "type": "Procedure",
-      "target_encounter": "Diagnosis Encounter III",
       "reason": "Suspected Lung Cancer",
       "codes": [
         {
@@ -725,7 +719,6 @@
     },
     "Lung_Cancer_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Diagnosis Encounter IV",
       "reason": "Lung Cancer Condition",
       "codes": [
         {
@@ -755,7 +748,6 @@
     },
     "MRI Brain": {
       "type": "Procedure",
-      "target_encounter": "Diagnosis Encounter IV",
       "reason": "Lung Cancer Condition",
       "codes": [
         {
@@ -816,7 +808,6 @@
     },
     "SCLC Chemotheraphy I": {
       "type": "MedicationOrder",
-      "target_encounter": "SCLC Treatment Encounter",
       "reason": "Lung Cancer Condition",
       "assign_to_attribute": "chemotherapy1",
       "remarks": [
@@ -840,7 +831,6 @@
     },
     "SCLC Chemotheraphy II": {
       "type": "MedicationOrder",
-      "target_encounter": "SCLC Treatment Encounter",
       "reason": "Lung Cancer Condition",
       "assign_to_attribute": "chemotherapy2",
       "remarks": [
@@ -864,7 +854,6 @@
     },
     "SCLC Radiation": {
       "type": "Procedure",
-      "target_encounter": "SCLC Treatment Encounter",
       "reason": "Lung Cancer Condition",
       "remarks": [
         "The type of radiation therapy most often used to treat SCLC is called external beam radiation therapy (EBRT).",
@@ -924,7 +913,6 @@
     },
     "NSCLC Chemotheraphy I": {
       "type": "MedicationOrder",
-      "target_encounter": "NSCLC Treatment Encounter",
       "reason": "Lung Cancer Condition",
       "assign_to_attribute": "chemotherapy1",
       "remarks": [
@@ -949,7 +937,6 @@
     },
     "NSCLC Chemotheraphy II": {
       "type": "MedicationOrder",
-      "target_encounter": "NSCLC Treatment Encounter",
       "reason": "Lung Cancer Condition",
       "assign_to_attribute": "chemotherapy2",
       "remarks": [
@@ -973,7 +960,6 @@
     },
     "NSCLC Radiation": {
       "type": "Procedure",
-      "target_encounter": "NSCLC Treatment Encounter",
       "reason": "Lung Cancer Condition",
       "remarks": [
         "External beam radiation therapy (EBRT) focuses radiation from outside the body on the cancer. This is the type of radiation therapy most often used to treat NSCLC or its spread to other organs.",
@@ -1530,6 +1516,8 @@
             "code": "CT",
             "display": "Computed Tomography"
           },
+          "min_number_instances": 300,
+          "max_number_instances": 500,
           "instances": [
             {
               "title": "CT Image Storage",
@@ -1563,6 +1551,8 @@
             "code": "CT",
             "display": "Computed Tomography"
           },
+          "min_number_instances": 300,
+          "max_number_instances": 500,
           "instances": [
             {
               "title": "CT Image Storage",
@@ -2312,7 +2302,6 @@
           }
         }
       ],
-      "target_encounter": "Wellness_Encounter",
       "direct_transition": "Hearing_Test"
     },
     "Record_CBC_Panel_2": {
@@ -2492,7 +2481,6 @@
           }
         }
       ],
-      "target_encounter": "Wellness_Encounter",
       "direct_transition": "Hearing Test"
     },
     "Pain_Vital": {

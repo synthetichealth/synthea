@@ -3,10 +3,8 @@ package org.mitre.synthea.modules;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -15,8 +13,9 @@ import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
@@ -30,6 +29,9 @@ public final class CardiovascularDiseaseModule extends Module {
 
   @Override
   public boolean process(Person person, long time) {
+    if (!person.alive(time)) {
+      return true;
+    }
     // run through all of the rules defined
     // ruby "rules" are converted to static functions here
     // since this is intended to only be temporary
@@ -43,9 +45,7 @@ public final class CardiovascularDiseaseModule extends Module {
     getAtrialFibrillation(person, time);
     calculateStrokeRisk(person, time);
     getStroke(person, time);
-    heartHealthyLifestyle(person, time);
-    chdTreatment(person, time);
-    atrialFibrillationTreatment(person, time);
+    endEmergency(person, time);
 
     // java modules will never "finish"
     return false;
@@ -125,6 +125,7 @@ public final class CardiovascularDiseaseModule extends Module {
       0.02, 0.02, 0.03, 0.04, 0.06, 0.08, 0.12, 0.16, 0.22, 0.3 // 10 or greater
   };
 
+  private static final String CVD_ENCOUNTER = "cardiovascular_encounter";
   private static final Map<String, Code> LOOKUP;
   private static final Map<String, Integer> MEDICATION_AVAILABLE;
   private static final Map<String, List<String>> EMERGENCY_MEDS;
@@ -279,6 +280,12 @@ public final class CardiovascularDiseaseModule extends Module {
     return Math.min(Math.max(value, min), max);
   }
 
+  /**
+   * Calculates the risk of cardiovascular disease using Framingham points
+   * and look up tables, putting the current risk in a "cardio_risk" attribute.
+   * @param person The patient.
+   * @param time The risk is calculated for the given time.
+   */
   private static void calculateCardioRisk(Person person, long time) {
     int age = person.ageInYears(time);
     String gender = (String) person.attributes.get(Person.GENDER);
@@ -289,7 +296,8 @@ public final class CardiovascularDiseaseModule extends Module {
       return;
     }
 
-    Boolean bpTreated = (Boolean) person.attributes.getOrDefault("blood_pressure_controlled", false);
+    Boolean bpTreated = (Boolean)
+        person.attributes.getOrDefault("blood_pressure_controlled", false);
 
     Double hdl = person.getVitalSign(VitalSign.HDL, time);
 
@@ -348,6 +356,12 @@ public final class CardiovascularDiseaseModule extends Module {
         Utilities.convertRiskToTimestep(risk, TimeUnit.DAYS.toMillis(3650)));
   }
 
+  /**
+   * The patient rolls the probability dice. If their roll is less than their
+   * "cardio_risk" attribute, then coronary heart disease begins.
+   * @param person The patient.
+   * @param time The time.
+   */
   private static void onsetCoronaryHeartDisease(Person person, long time) {
     if (person.attributes.containsKey("coronary_heart_disease")) {
       return;
@@ -356,10 +370,15 @@ public final class CardiovascularDiseaseModule extends Module {
     double cardioRisk = (double) person.attributes.getOrDefault("cardio_risk", -1.0);
     if (person.rand() < cardioRisk) {
       person.attributes.put("coronary_heart_disease", true);
-      person.events.create(time, "coronary_heart_disease", "onsetCoronaryHeartDisease", true);
     }
   }
 
+  /**
+   * If the patient has "coronary_heart_disease", there is a small chance they
+   * will have a cardiac emergency: "myocardial_infarction" or "cardiac_arrest".
+   * @param person The patient.
+   * @param time The time.
+   */
   private static void coronaryHeartDiseaseProgression(Person person, long time) {
     // numbers are from appendix:
     // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1647098/pdf/amjph00262-0029.pdf
@@ -394,11 +413,12 @@ public final class CardiovascularDiseaseModule extends Module {
         cardiacEvent = "cardiac_arrest";
       }
 
-      person.events.create(time, cardiacEvent, "coronaryHeartDiseaseProgression", false);
-      // creates unprocessed emergency encounter. Will be processed at next time step.
-      person.events.create(time, "emergency_encounter", "coronaryHeartDiseaseProgression", false);
-
-      EncounterModule.emergencyVisit(person, time);
+      // Make sure the Emergency Encounter has started...
+      Code code = LOOKUP.get(cardiacEvent);
+      beginOrContinueEmergency(person, time, code);
+      Entry entry = person.record.conditionStart(time, code.code);
+      entry.codes.add(code);
+      performEmergency(person, time, cardiacEvent);
 
       double survivalRate = 0.095; // http://cpr.heart.org/AHAECC/CPRAndECC/General/UCM_477263_Cardiac-Arrest-Statistics.jsp
       // survival rate triples if a bystander is present
@@ -408,11 +428,17 @@ public final class CardiovascularDiseaseModule extends Module {
       }
 
       if (person.rand() > survivalRate) {
-        person.recordDeath(time, LOOKUP.get(cardiacEvent), "coronaryHeartDiseaseProgression");
+        person.recordDeath(time, LOOKUP.get(cardiacEvent));
       }
     }
   }
 
+  /**
+   * If the patient does NOT have "coronary_heart_disease", there is a very small chance
+   * they will have "cardiac_arrest".
+   * @param person The patient.
+   * @param time The time.
+   */
   private static void noCoronaryHeartDisease(Person person, long time) {
     // chance of getting a sudden cardiac arrest without heart disease. (Most probable cardiac event
     // w/o cause or history)
@@ -424,9 +450,13 @@ public final class CardiovascularDiseaseModule extends Module {
     double cardiacEventChance = Utilities.convertRiskToTimestep(annualRisk,
         TimeUnit.DAYS.toMillis(365));
     if (person.rand() < cardiacEventChance) {
-      person.events.create(time, "cardiac_arrest", "noCoronaryHeartDisease", false);
-      person.events.create(time, "emergency_encounter", "noCoronaryHeartDisease", false);
-      EncounterModule.emergencyVisit(person, time);
+      // Make sure the Emergency Encounter has started...
+      Code code = LOOKUP.get("cardiac_arrest");
+      beginOrContinueEmergency(person, time, code);
+      Entry entry = person.record.conditionStart(time, code.code);
+      entry.codes.add(code);
+      performEmergency(person, time, "cardiac_arrest");
+
       double survivalRate = 1 - (0.00069);
       if (person.rand() < 0.46) {
         survivalRate *= 3.0;
@@ -434,11 +464,17 @@ public final class CardiovascularDiseaseModule extends Module {
       double annualDeathRisk = 1 - survivalRate;
       if (person.rand() < Utilities.convertRiskToTimestep(annualDeathRisk,
           TimeUnit.DAYS.toMillis(365))) {
-        person.recordDeath(time, LOOKUP.get("cardiac_arrest"), "noCoronaryHeartDisease");
+        person.recordDeath(time, LOOKUP.get("cardiac_arrest"));
       }
     }
   }
 
+  /**
+   * Depending on gender, BMI, and blood pressure, there is a small risk of
+   * Atrial Fibrillation which is calculated and stored in "atrial_fibrillation_risk".
+   * @param person The patient.
+   * @param time The time.
+   */
   private static void calculateAtrialFibrillationRisk(Person person, long time) {
     int age = person.ageInYears(time);
     if (age < 45 || person.attributes.containsKey("atrial_fibrillation")
@@ -470,11 +506,17 @@ public final class CardiovascularDiseaseModule extends Module {
         Utilities.convertRiskToTimestep(afRisk, TimeUnit.DAYS.toMillis(3650)));
   }
 
+
+  /**
+   * The patient rolls the probability dice. If their roll is less than their
+   * "atrial_fibrillation_risk" attribute, then "atrial_fibrillation" begins.
+   * @param person The patient.
+   * @param time The time.
+   */
   private static void getAtrialFibrillation(Person person, long time) {
     if (!person.attributes.containsKey("atrial_fibrillation")
         && person.attributes.containsKey("atrial_fibrillation_risk")
         && person.rand() < (Double) person.attributes.get("atrial_fibrillation_risk")) {
-      person.events.create(time, "atrial_fibrillation", "getAtrialFibrillation", false);
       person.attributes.put("atrial_fibrillation", true);
     }
   }
@@ -527,6 +569,13 @@ public final class CardiovascularDiseaseModule extends Module {
   private static final double[] chd_stroke_points = { 4, 2 };
   private static final double[] atrial_fibrillation_stroke_points = { 4, 6 };
 
+  /**
+   * Depending on gender, age, smoking status, and various comorbidities (e.g. diabetes,
+   * coronary heart disease, atrial fibrillation), this function calculates the risk
+   * of a stroke and stores it in the "stroke_risk" attribute.
+   * @param person The patient.
+   * @param time The time.
+   */
   private static void calculateStrokeRisk(Person person, long time) {
     Double bloodPressure = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time);
     if (bloodPressure == null) {
@@ -602,26 +651,37 @@ public final class CardiovascularDiseaseModule extends Module {
     person.attributes.put("stroke_points", strokePoints);
   }
 
+  /**
+   * The patient rolls the probability dice. If their roll is less than their
+   * "stroke_risk" attribute, then "stroke" and "stroke_history" begin.
+   * @param person The patient.
+   * @param time The time.
+   */
   private static void getStroke(Person person, long time) {
     if (person.attributes.containsKey("stroke_risk")
         && person.rand() < (Double) person.attributes.get("stroke_risk")) {
-      person.events.create(time, "stroke", "getStroke", false);
+      // Make sure the Emergency Encounter has started...
+      Code code = LOOKUP.get("stroke");
+      beginOrContinueEmergency(person, time, code);
+      Entry entry = person.record.conditionStart(time, code.code);
+      entry.codes.add(code);
+      performEmergency(person, time, "stroke");
       person.attributes.put("stroke_history", true);
-      person.events.create(time + TimeUnit.MINUTES.toMillis(10), "emergency_encounter", "getStroke",
-          false);
-      EncounterModule.emergencyVisit(person, time);
+
       // Strokes are fatal 10-20 percent of cases
       // https://stroke.nih.gov/materials/strokechallenges.htm
       if (person.rand() < 0.15) {
-        person.recordDeath(time, LOOKUP.get("stroke"), "getStroke");
+        person.recordDeath(time, code);
       }
     }
   }
 
-  private static void heartHealthyLifestyle(Person person, long time) {
-    // TODO - intentionally ignoring this rule for now; it only sets careplan activities and reasons
-  }
-
+  /**
+   * Start or stop medication treatment depending on whether or not the patient has
+   * "coronary_heart_disease" by looking for the attribute "coronary_heart_disease".
+   * @param person The patient.
+   * @param time The time.
+   */
   private static void chdTreatment(Person person, long time) {
     List<String> meds = filter_meds_by_year(
         Arrays.asList("clopidogrel", "simvastatin", "amlodipine", "nitroglycerin"), time);
@@ -632,12 +692,18 @@ public final class CardiovascularDiseaseModule extends Module {
       }
     } else {
       for (String med : meds) {
-        stopMedication(med, person, time);
+        person.record.medicationEnd(time, med, LOOKUP.get("cardiovascular_improved"));
       }
     }
   }
 
-  @SuppressWarnings("unchecked")
+  /**
+   * Start or stop medication treatments and possibly perform a procedural intervention
+   * depending on whether or not the patient has "atrial_fibrillation" by looking for
+   * the attribute "atrial_fibrillation".
+   * @param person The patient.
+   * @param time The time.
+   */
   private static void atrialFibrillationTreatment(Person person, long time) {
     List<String> meds = filter_meds_by_year(Arrays.asList("warfarin", "verapamil", "digoxin"),
         time);
@@ -654,60 +720,43 @@ public final class CardiovascularDiseaseModule extends Module {
       // we arbitrarily chose a 20% chance of getting catheter ablation and 80% of getting
       // cardioversion
       String afibProcedure = person.rand() < 0.2 ? "catheter_ablation" : "electrical_cardioversion";
+      Code code = LOOKUP.get(afibProcedure);
+      Procedure procedure = person.record.procedure(time, code.display);
+      procedure.name = "Atrial Fibrillation Treatment";
+      procedure.codes.add(code);
+      procedure.reasons.add(LOOKUP.get("atrial_fibrillation"));
 
-      Map<String, List<String>> cardiovascularProcedures = 
-          (Map<String, List<String>>) person.attributes.get("cardiovascular_procedures");
-
-      if (cardiovascularProcedures == null) {
-        cardiovascularProcedures = new HashMap<String, List<String>>();
-        person.attributes.put("cardiovascular_procedures", cardiovascularProcedures);
+      // increment number of procedures by respective hospital
+      Encounter encounter = (Encounter) person.attributes.get(CVD_ENCOUNTER);
+      if (encounter != null) {
+        int year = Utilities.getYear(time);
+        encounter.provider.incrementProcedures(year);
       }
-      cardiovascularProcedures.put("atrial_fibrillation", Arrays.asList(afibProcedure));
     } else {
       for (String med : meds) {
-        stopMedication(med, person, time);
+        person.record.medicationEnd(time, med, LOOKUP.get("cardiovascular_improved"));
       }
     }
   }
 
-  @SuppressWarnings("unchecked")
   private static void prescribeMedication(String med, Person person, long time) {
-    if (!person.record.medicationActive(med)) {
-      // add med to med_changes
-      Set<String> medChanges = 
-          (Set<String>) person.attributes.get("cardiovascular_disease_med_changes");
-
-      if (medChanges == null) {
-        medChanges = new HashSet<String>();
-        person.attributes.put("cardiovascular_disease_med_changes", medChanges);
-      }
-      medChanges.add(med);
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  private static void stopMedication(String med, Person person, long time) {
-    if (person.record.medicationActive(med)) {
-      // add med to med_changes
-      Set<String> medChanges = 
-          (Set<String>) person.attributes.get("cardiovascular_disease_med_changes");
-
-      if (medChanges == null) {
-        medChanges = new HashSet<String>();
-        person.attributes.put("cardiovascular_disease_med_changes", medChanges);
-      }
-      medChanges.add(med);
+    Medication entry = person.record.medicationStart(time, med);
+    entry.codes.add(LOOKUP.get(med));
+    // increment number of prescriptions prescribed
+    Encounter encounter = (Encounter) person.attributes.get(CVD_ENCOUNTER);
+    if (encounter != null) {
+      int year = Utilities.getYear(time);
+      encounter.provider.incrementPrescriptions(year);
     }
   }
 
   /**
-   * Perform Cardiovasular Disease Encounter.
+   * Perform Cardiovascular Disease Encounter.
    * @param person The patient.
    * @param time The time of the encounter.
    */
-  @SuppressWarnings("unchecked")
-  public static void performEncounter(Person person, long time) {
-    int year = Utilities.getYear(time);
+  public static void performEncounter(Person person, long time, Encounter encounter) {
+    person.attributes.put(CVD_ENCOUNTER, encounter);
 
     // step 1 - diagnosis
     for (String diagnosis : new String[] { "coronary_heart_disease", "atrial_fibrillation" }) {
@@ -719,62 +768,27 @@ public final class CardiovascularDiseaseModule extends Module {
       }
     }
 
-    // step 2 - care plan
-    // TODO - intentionally ignored at the moment
+    // step 2 - treat
+    chdTreatment(person, time);
+    atrialFibrillationTreatment(person, time);
+  }
 
-    // step 3 - medications
-    Set<String> medChanges = 
-        (Set<String>) person.attributes.get("cardiovascular_disease_med_changes");
-
-    if (medChanges != null) {
-      for (String med : medChanges) {
-        if (person.record.medicationActive(med)) {
-          // This prescription can be stopped...
-          person.record.medicationEnd(time, med, LOOKUP.get("cardiovascular_improved"));
-        } else {
-          Medication entry = person.record.medicationStart(time, med);
-          entry.codes.add(LOOKUP.get(med));
-          // increment number of prescriptions prescribed by respective hospital
-          Provider provider = person.getCurrentProvider("Cardiovascular Disease Module");
-          // no provider associated with encounter or procedure
-          if (provider == null) {
-            provider = person.getProvider(EncounterType.WELLNESS, time);
-          }
-          provider.incrementPrescriptions(year);
-        }
-      }
-
-      medChanges.clear();
+  private static void beginOrContinueEmergency(Person person, long time, Code code) {
+    if (!person.attributes.containsKey(CVD_ENCOUNTER)) {
+      Encounter encounter = EncounterModule.createEncounter(person, time, EncounterType.EMERGENCY,
+          ClinicianSpecialty.GENERAL_PRACTICE, code);
+      person.attributes.put(CVD_ENCOUNTER, encounter);
     }
+  }
 
-    // step 4 - procedures
-    Map<String, List<String>> cardiovascularProcedures = 
-        (Map<String, List<String>>) person.attributes.get("cardiovascular_procedures");
-
-    if (cardiovascularProcedures != null) {
-      for (Map.Entry<String, List<String>> entry : cardiovascularProcedures.entrySet()) {
-        String reason = entry.getKey();
-        List<String> procedures = entry.getValue();
-
-        for (String proc : procedures) {
-          if (!person.record.present.containsKey(proc)) {
-            // TODO: assumes a procedure will only be performed once, might need to be revisited
-            Code code = LOOKUP.get(proc);
-            Procedure procedure = person.record.procedure(time, code.display);
-            procedure.name = "CardiovascularDisease_Encounter";
-            procedure.codes.add(code);
-            procedure.reasons.add(LOOKUP.get(reason));
-
-            // increment number of procedures by respective hospital
-            Provider provider = person.getCurrentProvider("Cardiovascular Disease Module");
-            // no provider associated with encounter or procedure
-            if (provider == null) {
-              provider = person.getProvider(EncounterType.AMBULATORY, time);
-            }
-            provider.incrementProcedures(year);
-          }
-        }
+  private static void endEmergency(Person person, long time) {
+    if (person.attributes.containsKey(CVD_ENCOUNTER)) {
+      Encounter encounter = (Encounter) person.attributes.get(CVD_ENCOUNTER);
+      EncounterType type = EncounterType.fromString(encounter.type);
+      if (type == EncounterType.EMERGENCY) {
+        person.record.encounterEnd(time, type);
       }
+      person.attributes.remove(CVD_ENCOUNTER);
     }
   }
 
@@ -785,30 +799,26 @@ public final class CardiovascularDiseaseModule extends Module {
    * @param diagnosis The diagnosis to be made.
    */
   public static void performEmergency(Person person, long time, String diagnosis) {
-    Provider provider = person.getProvider(EncounterType.EMERGENCY, time);
 
+    Encounter encounter = (Encounter) person.attributes.get(CVD_ENCOUNTER);
     int year = Utilities.getYear(time);
 
     Entry condition = person.record.conditionStart(time, diagnosis);
     condition.codes.add(LOOKUP.get(diagnosis));
 
     for (String med : filter_meds_by_year(EMERGENCY_MEDS.get(diagnosis), time)) {
-      Medication medication = person.record.medicationStart(time, med);
-      medication.codes.add(LOOKUP.get(med));
-      // increment number of prescriptions prescribed by respective hospital
-
-      provider.incrementPrescriptions(year);
+      prescribeMedication(med, person, time);
       person.record.medicationEnd(time + TimeUnit.MINUTES.toMillis(15), med,
           LOOKUP.get("stop_drug"));
     }
 
     for (String proc : EMERGENCY_PROCEDURES.get(diagnosis)) {
       Procedure procedure = person.record.procedure(time, proc);
-      procedure.name = "CardiovascularDisease_Emergency";
+      procedure.name = "Cardiovascular Disease Emergency";
       procedure.codes.add(LOOKUP.get(proc));
       procedure.reasons.add(LOOKUP.get(diagnosis));
       // increment number of procedures performed by respective hospital
-      provider.incrementProcedures(year);
+      encounter.provider.incrementProcedures(year);
     }
 
     for (String cond : HISTORY_CONDITIONS.get(diagnosis)) {

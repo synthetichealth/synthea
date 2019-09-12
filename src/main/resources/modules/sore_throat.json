@@ -437,7 +437,6 @@
     },
     "Prescribe_Antibiotics_Child": {
       "type": "MedicationOrder",
-      "target_encounter": "Doctor_Visit",
       "assign_to_attribute": "Sore Throat Antibiotic",
       "reason": "Sore Throat Condition",
       "remarks": [
@@ -454,7 +453,6 @@
     },
     "Prescribe_Antibiotics_Adult": {
       "type": "MedicationOrder",
-      "target_encounter": "Doctor_Visit",
       "assign_to_attribute": "Sore Throat Antibiotic",
       "reason": "Sore Throat Condition",
       "codes": [
@@ -468,7 +466,6 @@
     },
     "Throat_Culture": {
       "type": "Procedure",
-      "target_encounter": "Doctor_Visit",
       "reason": "Sore Throat Condition",
       "codes": [
         {

@@ -199,7 +199,6 @@
         "high": 180,
         "unit": "minutes"
       },
-      "target_encounter": "Seizure_Encounter",
       "codes": [
         {
           "system": "SNOMED-CT",
