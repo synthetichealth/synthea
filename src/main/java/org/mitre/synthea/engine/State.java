@@ -294,7 +294,7 @@ public abstract class State implements Cloneable {
     }
     
     private void setup() {
-      simulator = new PhysiologySimulator(model, solver, stepSize, simDuration, leadTime);
+      simulator = new PhysiologySimulator(model, solver, stepSize, simDuration);
       paramTypes = new HashMap<String, String>();
       
       for (String param : simulator.getParameters()) {
