@@ -148,6 +148,12 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
+    if (Boolean.parseBoolean(Config.get("exporter.clinical_note.export"))) {
+      File outDirectory = getOutputFolder("notes", person);
+      Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "txt"));
+      String consolidatedNotes = ClinicalNoteExporter.export(person);
+      writeNewFile(outFilePath, consolidatedNotes);
+    }
   }
 
   /**

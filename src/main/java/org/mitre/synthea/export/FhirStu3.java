@@ -8,11 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -600,20 +596,6 @@ public class FhirStu3 {
    */
   private static BundleEntryComponent encounter(Person person, BundleEntryComponent personEntry,
       Bundle bundle, Encounter encounter) {
-    // Generate a clinical note, if necessary
-    if (encounter.clinicalNote == null) {
-      encounter.clinicalNote = ClinicalNoteExporter.export(person, encounter);
-    }
-    // write to the file
-    File outDirectory = Exporter.getOutputFolder("clinical_notes", person);
-    Path outFilePath = outDirectory.toPath().resolve(Exporter.filename_per_encounter(person,
-        ""+encounter.start, "txt"));
-    try {
-      Files.write(outFilePath, encounter.clinicalNote.getBytes(), StandardOpenOption.CREATE_NEW);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
     org.hl7.fhir.dstu3.model.Encounter encounterResource = new org.hl7.fhir.dstu3.model.Encounter();
 
     encounterResource.setSubject(new Reference(personEntry.getFullUrl()));
