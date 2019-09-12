@@ -19,7 +19,6 @@
     "Dialysis_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -27,7 +26,8 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "Dialysis"
+      "direct_transition": "Dialysis",
+      "reason": "dialysis_reason"
     },
     "Dialysis": {
       "type": "Procedure",
@@ -43,7 +43,19 @@
         "high": 4,
         "unit": "hours"
       },
-      "direct_transition": "Dialysis weight record"
+      "conditional_transition": [
+        {
+          "transition": "Prescribe_EPOGEN Ref-RxNorm",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Dialysis weight record"
+        }
+      ]
     },
     "end dialysis": {
       "type": "EncounterEnd",
@@ -67,7 +79,6 @@
     "Physician Monthly Enc": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -75,7 +86,8 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "Record_CMP"
+      "direct_transition": "Record_CMP",
+      "reason": "dialysis_reason"
     },
     "end encounter": {
       "type": "EncounterEnd",
@@ -99,7 +111,20 @@
           }
         ]
       },
-      "direct_transition": "3 day delay"
+      "distributed_transition": [
+        {
+          "transition": "Check_Anemia_Exist",
+          "distribution": 0.534
+        },
+        {
+          "transition": "3 day delay",
+          "distribution": 0.466
+        }
+      ],
+      "remarks": [
+        "The prevalence of anemia increased with stage of CKD, from 8.4% at stage 1 to 53.4% at stage 5\".  Dialysis  is needed at stage 5 - ps://www.ncbi.nlm.nih.gov/pmc/articles/PMC3879360/",
+        ""
+      ]
     },
     "Dialysis weight record": {
       "type": "Observation",
@@ -673,6 +698,48 @@
         "high": 6
       },
       "direct_transition": "end dialysis"
+    },
+    "Anemia_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "anemia/anemia_sub",
+      "direct_transition": "3 day delay"
+    },
+    "Check_Anemia_Exist": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Anemia_Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "3 day delay"
+        }
+      ]
+    },
+    "Prescribe_EPOGEN Ref-RxNorm": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 205923,
+          "display": "1 ML Epoetin Alfa 4000 UNT/ML Injection [Epogen]"
+        }
+      ],
+      "direct_transition": "Epogen_Administered",
+      "remarks": [
+        "Recommended starting dose for adult patients is 50 to 100 Units/kg 3 times weekly. Reduce or interrupt the dose if hemoglobin level approaches or exceeds 11 g/dl - Ref: Section -For Adult Patients with CKD on Dialysis (https://www.rxlist.com/epogen-drug.htm#description)"
+      ],
+      "assign_to_attribute": "anemia_medication",
+      "reason": "anemia"
+    },
+    "Epogen_Administered": {
+      "type": "MedicationEnd",
+      "direct_transition": "Dialysis weight record",
+      "referenced_by_attribute": "anemia_medication"
     }
   }
 }

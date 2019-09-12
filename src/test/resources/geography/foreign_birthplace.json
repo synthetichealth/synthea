@@ -1,0 +1,15 @@
+{
+  "empty_ethnicity": [],
+  "german": [
+    "Munich,Bavaria,DE"
+  ],
+  "west_indian": [
+    "Santo Domingo,National District,DO"
+  ],
+  "too_many_elements": [
+    "Rome,Lazio,IT,extra"
+  ],
+  "not_enough_elements": [
+    "Athens,Athens Prefecture"
+  ]
+}

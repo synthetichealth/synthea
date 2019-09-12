@@ -18,6 +18,7 @@ public class TransitionTest {
   @Before
   public void setup() {
     person = new Person(19L); // seed chosen specifically for testDistributedTransition()
+    person.attributes.put(Person.BIRTHDATE, 0L);
   }
 
   @Test

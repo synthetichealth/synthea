@@ -1,0 +1,10 @@
+﻿,id,name,address,city,state_headquartered,zip,phone,states_covered,services_covered,deductible,default_coinsurance,default_copay,monthly_premium,ownership
+0,10001,Medicare,7500 Security Blvd,Baltimore,MD,21244,1-800-633-4227,*,*,0,0.9,40,250,Government
+1,10002,Medicaid,7500 Security Blvd,Baltimore,MD,21244,1-877-267-2323,*,*,0,0.85,60,250,Government
+2,10003,Dual Eligible,7500 Security Blvd,Baltimore,MD,21244,1-877-267-2323,*,*,0,0.95,100,500,Government
+3,10004,Humana,500 West Main St,Louisville,KY,40018,1-844-330-7799,*,"wellness,medications,ambulatory,inpatient,emergency,urgentcare",1000,0.75,80,1700,Private
+4,10005,Blue Cross Blue Shield,Michigan Plaza,Chicago,IL,60007,1-800-262-2583,*,*,900,0.75,75,1800,Private
+5,10006,UnitedHealthcare,9800 Healthcare Lane,Minnetonka,MN,55436,1-888-545-5205,*,"wellness,ambulatory,inpatient,emergency,urgentcare,medications",800,0.75,70,1900,Private
+6,10007,Aetna,151 Farmington Ave,Hartford,CT,6156,1-800-872-3862,*,"wellness,ambulatory,inpatient,emergency,urgentcare,medications",700,0.75,65,2000,Private
+7,10008,Cigna Health,900 Cottage Grove Rd,Bloomfield,CT,6002,1-800-997-1654,*,"wellness,medications,ambulatory,inpatient,emergency,urgentcare",600,0.75,60,2100,Private
+8,10009,Anthem,220 Virginia Ave,Indianapolis,IN,46204,1-800-331-1476,*,wellness,500,0.75,55,2200,private

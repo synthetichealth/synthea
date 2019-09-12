@@ -10,7 +10,7 @@
             "type" : "VitalSign",
             "vital_sign" : "Systolic Blood Pressure",
             "exact" : { "quantity" : 120 },
-            "unit" : "mmHg",
+            "unit" : "mm[Hg]",
             "direct_transition" : "SomeEncounter"
         },
 
@@ -34,7 +34,7 @@
               "code" : "8480-6",
               "display" : "Systolic Blood Pressure"
             }],
-            "unit" : "mmHg",
+            "unit" : "mm[Hg]",
             "direct_transition" : "CodeObservation"
         },
 

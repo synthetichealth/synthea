@@ -10,7 +10,8 @@ public enum VitalSign {
   @SerializedName("Weight Percentile") WEIGHT_PERCENTILE, 
   @SerializedName("BMI") BMI, 
   @SerializedName("Systolic Blood Pressure") SYSTOLIC_BLOOD_PRESSURE, 
-  @SerializedName("Diastolic Blood Pressure") DIASTOLIC_BLOOD_PRESSURE, 
+  @SerializedName("Diastolic Blood Pressure") DIASTOLIC_BLOOD_PRESSURE,
+  @SerializedName("Oxygen Saturation") OXYGEN_SATURATION,
   @SerializedName("Blood Glucose") BLOOD_GLUCOSE, 
   @SerializedName("Glucose") GLUCOSE, 
   @SerializedName("Urea Nitrogen") UREA_NITROGEN, 
@@ -25,7 +26,8 @@ public enum VitalSign {
   @SerializedName("LDL") LDL,
   @SerializedName("HDL") HDL, 
   @SerializedName("Microalbumin Creatinine Ratio") MICROALBUMIN_CREATININE_RATIO, 
-  @SerializedName("EGFR") EGFR;
+  @SerializedName("EGFR") EGFR,
+  @SerializedName("Left ventricular Ejection fraction") LVEF;
 
   /**
    * Name of the VitalSign. Cached as a string for better lookup performance.

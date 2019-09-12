@@ -1,0 +1,57 @@
+{
+  "name": "Death During Delay",
+  "remarks": [
+    "Unit Test for Death during Delay"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Encounter 1"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Encounter 1": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "Encounter 1"
+        }
+      ],
+      "direct_transition": "Death"
+    },
+    "Death": {
+      "type": "Death",
+      "exact": {
+        "quantity": 2,
+        "unit": "days"
+      },
+      "direct_transition": "Delay"
+    },
+    "Delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 4,
+        "unit": "days"
+      },
+      "direct_transition": "Encounter Should Not Happen"
+    },
+    "Encounter Should Not Happen": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 5678,
+          "display": "No Encounter"
+        }
+      ],
+      "direct_transition": "Terminal"
+    }
+  }
+}

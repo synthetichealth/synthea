@@ -1,7 +1,7 @@
 {
   "name": "Veteran PTSD",
   "remarks": [
-    "Post Traumatic Stress Disorder is one of the top disease conditions (by prevalence), disproportionately affecting veterans.  A majority of the guidelines detailed here in this module "
+    "Post Traumatic Stress Disorder is one of the top disease conditions (by prevalence), disproportionately affecting veterans.  A majority of the guidelines detailed here in this module...  Sources: https://www.ncbi.nlm.nih.gov/pubmed/26243685 ; https://cptforptsd.com/wp-content/uploads/2017/10/1-s2.0-S0005789417300783-main.pdf ; https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5047000/ ; https://www.ptsd.va.gov/apps/decisionaid/compare.aspx ; https://www.nursingtimes.net/post-traumatic-stress-disorder/1996064.article "
   ],
   "states": {
     "Initial": {
@@ -207,25 +207,6 @@
           "display": "Mental health care plan (record artifact)"
         }
       ],
-      "conditional_transition": [
-        {
-          "transition": "end re_evaluation_medication",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "SSRI",
-            "operator": "is not nil"
-          }
-        },
-        {
-          "transition": "PTSD Medication Order",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "SSRI",
-            "operator": "is nil",
-            "value": "Vicodin"
-          }
-        }
-      ],
       "reason": "ptsd",
       "activities": [
         {
@@ -263,6 +244,24 @@
       "remarks": [
         "overall care plan recommendation provided in consultation with Drs Jodie Trafton and Brian Marx, SMEs for PTSD within the VA",
         ""
+      ],
+      "conditional_transition": [
+        {
+          "transition": "end re_evaluation_medication",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "SSRI",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "PTSD Medication Order",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "SSRI",
+            "operator": "is nil"
+          }
+        }
       ]
     },
     "PTSD_Careplan_Psych": {
@@ -364,15 +363,23 @@
         },
         {
           "transition": "PTSD_Careplan_Psych",
-          "distribution": 0.2
+          "distribution": 0.1
         },
         {
           "transition": "PTSD_Careplan_Psych_and_Rx",
-          "distribution": 0.4
+          "distribution": 0.2
         },
         {
           "transition": "PTSD_Careplan_Rx_ONLY",
           "distribution": 0.3
+        },
+        {
+          "transition": "PTSD_Careplan_Telehealth_Psych_and_Rx",
+          "distribution": 0.2
+        },
+        {
+          "transition": "PTSD_Careplan_Telehealth_Psych",
+          "distribution": 0.1
         }
       ],
       "remarks": [
@@ -410,7 +417,7 @@
       "distributed_transition": [
         {
           "transition": "Change_Dx_Not_PTSD",
-          "distribution": 0.48
+          "distribution": 0.22999999999999998
         },
         {
           "transition": "PTSD_Careplan_Psych",
@@ -418,7 +425,7 @@
         },
         {
           "transition": "PTSD_Careplan_Rx_ONLY",
-          "distribution": 0.2
+          "distribution": 0.15
         },
         {
           "transition": "PTSD_Careplan_Psych_and_Rx",
@@ -427,13 +434,34 @@
         {
           "transition": "Inpatient Suicide Assessment",
           "distribution": 0.02
+        },
+        {
+          "transition": "PTSD_Careplan_Telehealth_Psych_and_Rx",
+          "distribution": 0.15
+        },
+        {
+          "transition": "PTSD_Careplan_Telehealth_Psych",
+          "distribution": 0.15
         }
       ],
       "reason": "ptsd"
     },
     "end_Psych_encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "therapy delay"
+      "conditional_transition": [
+        {
+          "transition": "Evaluation Gate delay",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ptsd_careplan",
+            "operator": "==",
+            "value": "PTSD_Careplan_Rx_ONLY"
+          }
+        },
+        {
+          "transition": "therapy delay"
+        }
+      ]
     },
     "PTSD Medication Order": {
       "type": "MedicationOrder",
@@ -780,12 +808,34 @@
     },
     "therapy delay": {
       "type": "Delay",
-      "direct_transition": "Therapy_Visit",
       "range": {
         "low": 5,
         "high": 14,
         "unit": "days"
-      }
+      },
+      "conditional_transition": [
+        {
+          "transition": "Therapy_Visit_Telehealth",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ptsd_careplan",
+            "operator": "==",
+            "value": "PTSD_Careplan_Telehealth_Psych"
+          }
+        },
+        {
+          "transition": "Therapy_Visit_Telehealth",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ptsd_careplan",
+            "operator": "==",
+            "value": "PTSD_Careplan_Telehealth_Psych_and_Rx"
+          }
+        },
+        {
+          "transition": "Therapy_Visit"
+        }
+      ]
     },
     "Therapy_Visit": {
       "type": "Encounter",
@@ -1027,6 +1077,131 @@
       "remarks": [
         "workflow approach provided by Brian "
       ]
+    },
+    "PTSD_Careplan_Telehealth_Psych_and_Rx": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 718347000,
+          "display": "Mental health care plan (record artifact)"
+        }
+      ],
+      "reason": "ptsd",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 385724002,
+          "display": "Coping Support Management (Telehealth)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 406185000,
+          "display": "Trauma Therapy (Telehealth)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 88848003,
+          "display": "Psychiatric Follow-up"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 225337009,
+          "display": "Suicide Risk Assessment"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 76168009,
+          "display": "Group psychotherapy (regime/therapy) (Telehealth)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 719858009,
+          "display": "Telehealth monitoring (regime/therapy)"
+        }
+      ],
+      "assign_to_attribute": "ptsd_careplan",
+      "remarks": [
+        "overall care plan recommendation provided in consultation with Drs Jodie Trafton and Brian Marx, SMEs for PTSD within the VA",
+        ""
+      ],
+      "conditional_transition": [
+        {
+          "transition": "end re_evaluation_medication",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "SSRI",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "PTSD Medication Order",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "SSRI",
+            "operator": "is nil",
+            "value": "Vicodin"
+          }
+        }
+      ]
+    },
+    "PTSD_Careplan_Telehealth_Psych": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 718347000,
+          "display": "Mental health care plan (record artifact)"
+        }
+      ],
+      "reason": "ptsd",
+      "assign_to_attribute": "ptsd_careplan",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 406185000,
+          "display": "Trauma Therapy (Telehealth)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 225337009,
+          "display": "Suicide Risk Assessment"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 385724002,
+          "display": "Coping Support Management (Telehealth)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 88848003,
+          "display": "Psychiatric Follow-up"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 76168009,
+          "display": "Group psychotherapy (regime/therapy) (Telehealth)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 719858009,
+          "display": "Telehealth monitoring (regime/therapy)"
+        }
+      ],
+      "direct_transition": "end_Psych_encounter"
+    },
+    "Therapy_Visit_Telehealth": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "ptsd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Therapy Note"
     }
   }
 }

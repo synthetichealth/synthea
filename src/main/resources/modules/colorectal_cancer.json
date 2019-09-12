@@ -118,7 +118,6 @@
     },
     "Routine_Colonoscopy_Procedure": {
       "type": "Procedure",
-      "target_encounter": "Routine_Colonoscopy_Encounter",
       "remarks": [
         "NIH study on the epidemiology of colorectal adenomas (polyps): ",
         "https://www.ncbi.nlm.nih.gov/pubmed/15666099 ",
@@ -303,7 +302,6 @@
         "will still return postive. This aligns with the likelihood of recurrent ",
         "adenomas being cancerous."
       ],
-      "target_encounter": "Routine_Colonoscopy_Encounter",
       "reason": "colorectal_adenoma",
       "codes": [
         {
@@ -369,7 +367,6 @@
         "large and potentially cancerous a biopsy is then performed. For simplicity ",
         "all large colorectal adenomas found in this module are also cancerous."
       ],
-      "target_encounter": "Routine_Colonoscopy_Encounter",
       "reason": "colorectal_adenoma",
       "codes": [
         {
@@ -397,7 +394,6 @@
     },
     "Adenoma_Biopsy": {
       "type": "Procedure",
-      "target_encounter": "Routine_Colonoscopy_Encounter",
       "reason": "colorectal_adenoma",
       "codes": [
         {
@@ -482,7 +478,6 @@
     },
     "Followup_Colonoscopy_Procedure": {
       "type": "Procedure",
-      "target_encounter": "Followup_Colonoscopy_Encounter",
       "remarks": [
         "Colorectal polyps recur at about 20-30% over a lifetime.",
         "Source: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2780113/"
@@ -576,7 +571,6 @@
     },
     "Recurrent_Adenoma_Removal": {
       "type": "Procedure",
-      "target_encounter": "Followup_Colonoscopy_Encounter",
       "reason": "recurrent_colorectal_adenoma",
       "codes": [
         {
@@ -729,7 +723,6 @@
     },
     "Diagnostic_Colonoscopy_Procedure": {
       "type": "Procedure",
-      "target_encounter": "Diagnostic_Colonoscopy_Encounter",
       "remarks": [
         "The patient is showing all signs of advanced colorectal cancer. ",
         "The prognosis will not be good."
@@ -948,7 +941,83 @@
         "high": 7,
         "unit": "days"
       },
-      "direct_transition": "Oncologist_Encounter"
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 1
+          },
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.4
+            },
+            {
+              "transition": "Oncologist_Encounter",
+              "distribution": 0.6
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.53
+            },
+            {
+              "transition": "Oncologist_Encounter",
+              "distribution": 0.47
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.66
+            },
+            {
+              "transition": "Oncologist_Encounter",
+              "distribution": 0.34
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Oncologist_Encounter",
+              "distribution": 0.2
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer_stage",
+            "operator": "==",
+            "value": 4
+          }
+        }
+      ],
+      "remarks": [
+        "40% of patients with early-stage colon tumors and nearly 80% of patients with advanced disease had anemia - "
+      ]
     },
     "Oncologist_Encounter": {
       "type": "Encounter",
@@ -976,7 +1045,6 @@
         "Caring for colorectal cancer differs by stage. Source for all treatment information: ",
         "http://www.cancer.org/cancer/colonandrectumcancer/detailedguide/colorectal-cancer-treating-by-stage-colon"
       ],
-      "target_encounter": "Oncologist_Encounter",
       "reason": "colorectal_cancer",
       "codes": [
         {
@@ -1123,7 +1191,6 @@
     },
     "Partial_Colectomy_Procedure": {
       "type": "Procedure",
-      "target_encounter": "Partial_Colectomy_Encounter",
       "reason": "colorectal_cancer",
       "codes": [
         {
@@ -1136,7 +1203,6 @@
     },
     "Partial_Colectomy_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Partial_Colectomy_Encounter",
       "reason": "colorectal_cancer",
       "codes": [
         {
@@ -1250,7 +1316,6 @@
     },
     "Diverting_Colostomy_Procedure": {
       "type": "Procedure",
-      "target_encounter": "Diverting_Colostomy_Encounter",
       "reason": "colorectal_cancer",
       "codes": [
         {
@@ -1263,7 +1328,6 @@
     },
     "Diverting_Colostomy_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Diverting_Colostomy_Encounter",
       "reason": "colorectal_cancer",
       "codes": [
         {
@@ -1365,7 +1429,6 @@
     },
     "Chemotherapy_Drugs_I": {
       "type": "MedicationOrder",
-      "target_encounter": "Chemotherapy_Encounter",
       "reason": "colorectal_cancer",
       "codes": [
         {
@@ -1378,7 +1441,6 @@
     },
     "Chemotherapy_Drugs_II": {
       "type": "MedicationOrder",
-      "target_encounter": "Chemotherapy_Encounter",
       "reason": "colorectal_cancer",
       "codes": [
         {
@@ -1391,7 +1453,6 @@
     },
     "Chemotherapy_Procedure": {
       "type": "Procedure",
-      "target_encounter": "Chemotherapy_Encounter",
       "reason": "colorectal_cancer",
       "codes": [
         {
@@ -1925,7 +1986,6 @@
           }
         }
       ],
-      "target_encounter": "Wellness_Encounter",
       "direct_transition": "Chemotherapy_Drugs_I"
     },
     "Pain_Vital": {
@@ -1995,6 +2055,27 @@
         "high": 8
       },
       "direct_transition": "Record_CMP"
+    },
+    "Anemia_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "anemia/anemia_sub",
+      "direct_transition": "Oncologist_Encounter"
+    },
+    "Check_Anemia_Exist": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Anemia_Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Oncologist_Encounter"
+        }
+      ]
     }
   }
 }

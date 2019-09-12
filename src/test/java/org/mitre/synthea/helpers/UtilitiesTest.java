@@ -14,13 +14,23 @@ public class UtilitiesTest {
   @Test
   public void testConvertTime() {
     long year = Utilities.convertCalendarYearsToTime(2005);
-    long date = new Date(104, 0, 1).getTime(); // January 1, 2005
+    long date = new Date(104, 0, 1).getTime(); // January 1, 2004
     System.out.println(year);
     System.out.println(date);
     assertTrue(date <= year);
-    date = new Date(106, 0, 1).getTime(); // January 1, 2005
+    date = new Date(106, 0, 1).getTime(); // January 1, 2006
     System.out.println(date);
     assertTrue(date > year);
+  }
+
+  @Test
+  public void testYears() {
+    int gap = 75;
+    long time = System.currentTimeMillis();
+    int year = Utilities.getYear(time);
+    long earlierTime = time - Utilities.convertTime("years", gap);
+    int earlierYear = Utilities.getYear(earlierTime);
+    assertEquals(gap, (year - earlierYear));
   }
 
   @Test

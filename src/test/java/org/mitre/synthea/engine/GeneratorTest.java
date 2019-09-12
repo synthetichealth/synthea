@@ -36,7 +36,7 @@ public class GeneratorTest {
   public void testGenerateWithDatabase() throws Exception {
     int numberOfPeople = 1;
     Config.set("generate.database_type", "in-memory");
-    Generator generator = new Generator(numberOfPeople, 0L);
+    Generator generator = new Generator(numberOfPeople, 0L, 1L);
     Config.set("generate.database_type", "none");
     assertNotNull(generator.database);
     generator.run();
@@ -47,7 +47,7 @@ public class GeneratorTest {
   public void testGenerateWithMetrics() throws Exception {
     int numberOfPeople = 1;
     Config.set("generate.track_detailed_transition_metrics", "true");
-    Generator generator = new Generator(numberOfPeople, 0L);
+    Generator generator = new Generator(numberOfPeople, 0L, 1L);
     Config.set("generate.track_detailed_transition_metrics", "false");
     assertNotNull(generator.metrics);
     generator.run();
@@ -58,7 +58,7 @@ public class GeneratorTest {
   public void testGenerateWithDetailedLogLevel() throws Exception {
     int numberOfPeople = 1;
     Config.set("generate.log_patients.detail", "detailed");
-    Generator generator = new Generator(numberOfPeople, 0L);
+    Generator generator = new Generator(numberOfPeople, 0L, 1L);
     Config.set("generate.log_patients.detail", "simple");
     generator.run();
     assertEquals(numberOfPeople, generator.stats.get("alive").longValue());

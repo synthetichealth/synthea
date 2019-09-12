@@ -2,10 +2,14 @@ package org.mitre.synthea.modules;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 
+import org.mitre.synthea.helpers.Attributes;
+import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
@@ -24,7 +28,7 @@ public class DeathModule {
 
       Code causeOfDeath = (Code) person.attributes.get(Person.CAUSE_OF_DEATH);
 
-      Encounter deathCertification = person.record.encounterStart(time, "ambulatory");
+      Encounter deathCertification = person.encounterStart(time, EncounterType.WELLNESS);
       deathCertification.codes.add(DEATH_CERTIFICATION);
 
       Observation codObs = person.record.observation(time, CAUSE_OF_DEATH_CODE.code, causeOfDeath);
@@ -43,5 +47,17 @@ public class DeathModule {
    */
   public static Collection<Code> getAllCodes() {
     return Arrays.asList(DEATH_CERTIFICATION, CAUSE_OF_DEATH_CODE, DEATH_CERTIFICATE);
+  }
+
+  /**
+   * Populate the given attribute map with the list of attributes that this
+   * module reads/writes with example values when appropriate.
+   *
+   * @param attributes Attribute map to populate.
+   */
+  public static void inventoryAttributes(Map<String,Inventory> attributes) {
+    String m = DeathModule.class.getSimpleName();
+    // Read
+    Attributes.inventory(attributes, m, Person.CAUSE_OF_DEATH, true, false, null);
   }
 }

@@ -1,6 +1,6 @@
 package org.mitre.synthea.export;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
@@ -51,14 +51,22 @@ public class FHIRSTU3ExporterTest {
 
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);
+    generator.options.overflow = false;
     for (int i = 0; i < numberOfPeople; i++) {
       int x = validationErrors.size();
       TestHelper.exportOff();
       Person person = generator.generatePerson(i);
-      Config.set("exporter.fhir.export", "true");
+      Config.set("exporter.fhir_stu3.export", "true");
       Config.set("exporter.fhir.use_shr_extensions", "true");
       FhirStu3.TRANSACTION_BUNDLE = person.random.nextBoolean();
-      String fhirJson = FhirStu3.convertToFHIR(person, System.currentTimeMillis());
+      String fhirJson = FhirStu3.convertToFHIRJson(person, System.currentTimeMillis());
+      // Check that the fhirJSON doesn't contain unresolved SNOMED-CT strings
+      // (these should have been converted into URIs)
+      if (fhirJson.contains("SNOMED-CT")) {
+        validationErrors.add(
+            "JSON contains unconverted references to 'SNOMED-CT' (should be URIs)");
+      }
+      // Now validate the resource...
       IBaseResource resource = ctx.newJsonParser().parseResource(fhirJson);
       ValidationResult result = validator.validateWithResult(resource);
       if (!result.isSuccessful()) {
@@ -86,6 +94,22 @@ public class FHIRSTU3ExporterTest {
                  * so we must manually validate.
                  */
                 valid = validateCon4((Condition) entry.getResource());
+              } else if (emessage.getMessage().contains("@ MedicationRequest mps-1")) {
+                /*
+                 * The mps-1 invariant says MedicationRequest.requester.onBehalfOf can only be
+                 * specified if MedicationRequest.requester.agent is practitioner or device.
+                 * But the invariant is poorly written and does not correctly handle references
+                 * starting with "urn:uuid"
+                 */
+                valid = true; // ignore this error
+              } else if (emessage.getMessage().contains(
+                  "per-1: If present, start SHALL have a lower value than end")) {
+                /*
+                 * The per-1 invariant does not account for daylight savings time... so, if the
+                 * daylight savings switch happens between the start and end, the validation
+                 * fails, even if it is valid.
+                 */
+                valid = true; // ignore this error
               }
 
               if (!valid) {
@@ -119,7 +143,8 @@ public class FHIRSTU3ExporterTest {
         Exporter.export(person, System.currentTimeMillis());
       }
     }
-    assertEquals(0, validationErrors.size());
+    assertTrue("Validation of exported FHIR bundle failed: "
+        + String.join("|", validationErrors), validationErrors.size() == 0);
   }
 
   /**

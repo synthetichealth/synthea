@@ -12,55 +12,7 @@
     "Wellness_Encounter": {
       "type": "Encounter",
       "wellness": true,
-      "direct_transition": "Check_Hypertension"
-    },
-    "Check_Hypertension": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "hypertension",
-                "operator": "==",
-                "value": true
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "hypertension_dx",
-                "operator": "is nil"
-              }
-            ]
-          },
-          "transition": "Diagnose_Hypertension"
-        },
-        {
-          "transition": "Check_Diabetes",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension",
-            "operator": "!=",
-            "value": true
-          }
-        },
-        {
-          "transition": "Check_Hypertension_BP"
-        }
-      ]
-    },
-    "Diagnose_Hypertension": {
-      "type": "ConditionOnset",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "38341003",
-          "display": "Hypertension"
-        }
-      ],
-      "assign_to_attribute": "hypertension_dx",
-      "direct_transition": "Check_Hypertension_BP"
+      "direct_transition": "Check_Diabetes"
     },
     "Check_Diabetes": {
       "type": "Simple",
@@ -864,7 +816,83 @@
     },
     "Check_Complications": {
       "type": "Simple",
-      "direct_transition": "check CKD"
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 1
+          },
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.084
+            },
+            {
+              "transition": "check CKD",
+              "distribution": 0.916
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 2
+          },
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.121
+            },
+            {
+              "transition": "check CKD",
+              "distribution": 0.879
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.174
+            },
+            {
+              "transition": "check CKD",
+              "distribution": 0.826
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.503
+            },
+            {
+              "transition": "check CKD",
+              "distribution": 0.497
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "The prevalence of anemia increased with stage of CKD, from 8.4% at stage 1 to 53.4% at stage 5 - see https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3879360/"
+      ]
     },
     "Check_Nephropathy": {
       "type": "Simple",
@@ -1170,7 +1198,8 @@
           "display": "End stage renal disease (disorder)"
         }
       ],
-      "direct_transition": "Record_MetabolicPanel_5"
+      "direct_transition": "Record_MetabolicPanel_5",
+      "assign_to_attribute": "dialysis_reason"
     },
     "End_End_Stage_Renal_Disease": {
       "type": "ConditionEnd",
@@ -2153,159 +2182,6 @@
       "type": "Simple",
       "direct_transition": "Wellness_Encounter"
     },
-    "Hypertension_Medication_Low": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 316052,
-          "display": "Hydrochlorothiazide 6.25 MG"
-        }
-      ],
-      "direct_transition": "Check_Diabetes",
-      "assign_to_attribute": "hypertension_medication",
-      "reason": "hypertension_dx"
-    },
-    "Hypertension_Medication_High": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 316049,
-          "display": "Hydrochlorothiazide 25 MG"
-        }
-      ],
-      "direct_transition": "Check_Diabetes",
-      "assign_to_attribute": "hypertension_medication",
-      "reason": "hypertension_dx"
-    },
-    "End_Hypertension_Medication": {
-      "type": "MedicationEnd",
-      "referenced_by_attribute": "hypertension_medication",
-      "conditional_transition": [
-        {
-          "transition": "Hypertension_Medication_Low",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": "<",
-            "value": 160
-          }
-        },
-        {
-          "transition": "Hypertension_Medication_High",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": ">=",
-            "value": 160
-          }
-        }
-      ]
-    },
-    "Check_Hypertension_BP": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Check_Low_Dose",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": "<",
-            "value": 160
-          }
-        },
-        {
-          "transition": "Check_High_Dose",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": ">=",
-            "value": 160
-          }
-        }
-      ]
-    },
-    "Check_Low_Dose": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Check_Diabetes",
-          "condition": {
-            "condition_type": "Active Medication",
-            "codes": [
-              {
-                "system": "RxNorm",
-                "code": 316052,
-                "display": "Hydrochlorothiazide 6.25 MG"
-              }
-            ]
-          }
-        },
-        {
-          "transition": "Check_Diabetes",
-          "condition": {
-            "condition_type": "Active Medication",
-            "codes": [
-              {
-                "system": "RxNorm",
-                "code": 316049,
-                "display": "Hydrochlorothiazide 25 MG"
-              }
-            ]
-          }
-        },
-        {
-          "transition": "Hypertension_Medication_Low",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension",
-            "operator": "==",
-            "value": true
-          }
-        }
-      ]
-    },
-    "Check_High_Dose": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Check_Diabetes",
-          "condition": {
-            "condition_type": "Active Medication",
-            "codes": [
-              {
-                "system": "RxNorm",
-                "code": 316049,
-                "display": "Hydrochlorothiazide 25 MG"
-              }
-            ]
-          }
-        },
-        {
-          "transition": "End_Hypertension_Medication",
-          "condition": {
-            "condition_type": "Active Medication",
-            "codes": [
-              {
-                "system": "RxNorm",
-                "code": 316052,
-                "display": "Hydrochlorothiazide 6.25 MG"
-              }
-            ]
-          }
-        },
-        {
-          "transition": "Hypertension_Medication_High",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension",
-            "operator": "==",
-            "value": true
-          }
-        }
-      ]
-    },
     "check CKD": {
       "type": "Simple",
       "conditional_transition": [
@@ -2352,8 +2228,6 @@
     },
     "CKD1 Diagnosis": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2365,8 +2239,6 @@
     },
     "CKD2 Diagnosis": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2378,7 +2250,6 @@
     },
     "CKD3 Diagnosis": {
       "type": "ConditionOnset",
-      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2391,8 +2262,6 @@
     },
     "CKD4 Diagnosis": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2400,7 +2269,8 @@
           "display": "Chronic kidney disease stage 4 (disorder)"
         }
       ],
-      "direct_transition": "Record_MetabolicPanel_4"
+      "direct_transition": "Record_MetabolicPanel_4",
+      "assign_to_attribute": "dialysis_reason"
     },
     "Obese_Check": {
       "type": "Simple",
@@ -4204,6 +4074,32 @@
         }
       ],
       "direct_transition": "Check_Nephropathy"
+    },
+    "Anemia_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "anemia/anemia_sub",
+      "direct_transition": "check CKD"
+    },
+    "Check_Anemia_Exist": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Anemia_Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "check CKD"
+        }
+      ],
+      "remarks": [
+        "The prevalence of anemia increased with stage of CKD, from 8.4% at stage 1 to 53.4% at stage 5 - see https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3879360/",
+        "",
+        ""
+      ]
     }
   }
 }

@@ -72,6 +72,7 @@
     "Cystic_Fibrosis": {
       "type": "ConditionOnset",
       "target_encounter": "Fibrosis_Screening",
+      "assign_to_attribute": "Cystic_Fibrosis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -231,7 +232,79 @@
     },
     "End_Screening": {
       "type": "EncounterEnd",
-      "direct_transition": "Life_With_Cystic_Fibrosis"
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 11,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.185
+            },
+            {
+              "transition": "Life_With_Cystic_Fibrosis",
+              "distribution": 0.815
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 11,
+                "unit": "years",
+                "value": 0
+              },
+              {
+                "condition_type": "Age",
+                "operator": "<=",
+                "quantity": 18,
+                "unit": "years",
+                "value": 0
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.04
+            },
+            {
+              "transition": "Life_With_Cystic_Fibrosis",
+              "distribution": 0.96
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 18,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "transition": "Check_Anemia_Exist",
+              "distribution": 0.43
+            },
+            {
+              "transition": "Life_With_Cystic_Fibrosis",
+              "distribution": 0.57
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "Anemia prevalence in Cystic Fibrosis -"
+      ]
     },
     "Set_Gene_Mutation": {
       "type": "SetAttribute",
@@ -254,7 +327,6 @@
     },
     "Meconium Ileus": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Fibrosis_Screening",
       "codes": [
         {
@@ -289,7 +361,6 @@
     },
     "Male_Infertility": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Fibrosis_Screening",
       "codes": [
         {
@@ -302,7 +373,6 @@
     },
     "Female_Infertility": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Fibrosis_Screening",
       "codes": [
         {
@@ -621,7 +691,7 @@
         }
       ],
       "direct_transition": "Prescribe_Mucus_Thinner",
-      "reason": "Cystic Fibrosis",
+      "reason": "Cystic_Fibrosis",
       "remarks": [
         "https://www.cff.org/About-Us/Media-Center/Press-Releases/The-Cystic-Fibrosis-Foundation-Applauds-FDA-Approval-of-Kalydeco/"
       ]
@@ -817,7 +887,6 @@
     },
     "Develop_Diabetes": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Quarterly_Checkup",
       "codes": [
         {
@@ -1114,7 +1183,6 @@
     },
     "Develop_Infection_1": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Quarterly_Checkup",
       "codes": [
         {
@@ -1127,7 +1195,6 @@
     },
     "Develop_Infection_2": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Quarterly_Checkup",
       "codes": [
         {
@@ -1296,7 +1363,7 @@
         {
           "system": "SNOMED-CT",
           "code": 50849002,
-          "display": "Emergency room admission"
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "conditional_transition": [
@@ -1638,7 +1705,6 @@
     "Lung_Transplant_Wait": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1660,6 +1726,27 @@
         "high": 14,
         "unit": "weeks"
       }
+    },
+    "Anemia_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "anemia/anemia_sub",
+      "direct_transition": "Life_With_Cystic_Fibrosis"
+    },
+    "Check_Anemia_Exist": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Anemia_Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Life_With_Cystic_Fibrosis"
+        }
+      ]
     }
   }
 }

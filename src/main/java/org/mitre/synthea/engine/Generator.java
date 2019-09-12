@@ -1,5 +1,6 @@
 package org.mitre.synthea.engine;
 
+import java.io.FilenameFilter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,7 +12,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.export.CDWExporter;
 import org.mitre.synthea.export.Exporter;
@@ -19,7 +24,9 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
+import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
@@ -54,9 +61,15 @@ public class Generator {
    * increased memory usage as patients cannot be GC'ed.
    */
   List<Person> internalStore;
-  
+
+  /**
+   * A filename predicate used to filter a subset of modules. Helpful when testing a particular
+   * module. Use "-m filename" on the command line to filter which modules get loaded.
+   */
+  Predicate<String> modulePredicate;
+
   private static final String TARGET_AGE = "target_age";
-  
+
   /**
    * Helper class following the "Parameter Object" pattern.
    * This class provides the default values for Generator, or alternatives may be set.
@@ -64,6 +77,10 @@ public class Generator {
   public static class GeneratorOptions {
     public int population = Integer.parseInt(Config.get("generate.default_population", "1"));
     public long seed = System.currentTimeMillis();
+    public long clinicianSeed = seed;
+    /** Population as exclusively live persons or including deceased.
+     * True for live, false includes deceased */
+    public boolean overflow = true;
     /** Gender to be generated. M for Male, F for Female, null for any. */
     public String gender;
     /** Age range applies. */
@@ -74,6 +91,7 @@ public class Generator {
     public int maxAge = 140;
     public String city;
     public String state;
+    public List<String> enabledModules;
   }
   
   /**
@@ -102,10 +120,11 @@ public class Generator {
    * @param population Target population size
    * @param seed Seed used for randomness
    */
-  public Generator(int population, long seed) {
+  public Generator(int population, long seed, long clinicianSeed) {
     GeneratorOptions options = new GeneratorOptions();
     options.population = population;
     options.seed = seed;
+    options.clinicianSeed = clinicianSeed;
     init(options);
   }
 
@@ -156,6 +175,8 @@ public class Generator {
     this.onlyVeterans = Boolean.parseBoolean(Config.get("generate.veteran_population_override"));
     this.totalGeneratedPopulation = new AtomicInteger(0);
     this.stats = Collections.synchronizedMap(new HashMap<String, AtomicInteger>());
+    this.modulePredicate = getModulePredicate();
+
     stats.put("alive", new AtomicInteger(0));
     stats.put("dead", new AtomicInteger(0));
 
@@ -165,8 +186,12 @@ public class Generator {
     }
 
     // initialize hospitals
-    Provider.loadProviders(location);
-    Module.getModules(); // ensure modules load early
+    Provider.loadProviders(location, options.clinicianSeed);
+    // Initialize Payers
+    Payer.loadPayers(location);
+    // ensure modules load early
+    List<String> coreModuleNames = getModuleNames(Module.getModules(path -> false));
+    List<String> moduleNames = getModuleNames(Module.getModules(modulePredicate)); 
     Costs.loadCostData(); // ensure cost data loads early
     
     String locationName;
@@ -176,15 +201,32 @@ public class Generator {
       locationName = o.city + ", " + o.state;
     }
     System.out.println("Running with options:");
-    System.out.println(String.format("Population: %d\nSeed: %d\nLocation: %s",
-        o.population, o.seed, locationName));
+    System.out.println(String.format("Population: %d\nSeed: %d\nProvider Seed:%d\nLocation: %s",
+        o.population, o.seed, o.clinicianSeed, locationName));
     System.out.println(String.format("Min Age: %d\nMax Age: %d",
         o.minAge, o.maxAge));
     if (o.gender != null) {
       System.out.println(String.format("Gender: %s", o.gender));
     }
+    if (o.enabledModules != null) {
+      moduleNames.removeAll(coreModuleNames);
+      moduleNames.sort(String::compareToIgnoreCase);
+      System.out.println("Modules: " + String.join("\n       & ", moduleNames));
+      System.out.println(String.format("       > [%d loaded]", moduleNames.size()));
+    }
   }
 
+  /**
+   * Extracts a list of names from the supplied list of modules.
+   * @param modules A collection of modules
+   * @return A list of module names.
+   */
+  private List<String> getModuleNames(List<Module> modules) {
+    return modules.stream()
+            .map(m -> m.name)
+            .collect(Collectors.toList());
+  }
+  
   /**
    * Generate the population, using the currently set configuration settings.
    */
@@ -217,7 +259,7 @@ public class Generator {
     System.out.println(stats);
 
     if (this.metrics != null) {
-      metrics.printStats(totalGeneratedPopulation.get());
+      metrics.printStats(totalGeneratedPopulation.get(), Module.getModules(getModulePredicate()));
     }
   }
   
@@ -261,7 +303,7 @@ public class Generator {
       long start = (long) demoAttributes.get(Person.BIRTHDATE);
 
       do {
-        List<Module> modules = Module.getModules();
+        List<Module> modules = Module.getModules(modulePredicate);
 
         person = new Person(personSeed);
         person.populationSeed = this.options.seed;
@@ -269,11 +311,16 @@ public class Generator {
         person.attributes.put(Person.LOCATION, location);
 
         LifecycleModule.birth(person, start);
+        
+        HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
         EncounterModule encounterModule = new EncounterModule();
 
         long time = start;
         while (person.alive(time) && time < stop) {
+
+          healthInsuranceModule.process(person, time + timestep);
           encounterModule.process(person, time);
+
           Iterator<Module> iter = modules.iterator();
           while (iter.hasNext()) {
             Module module = iter.next();
@@ -309,7 +356,7 @@ public class Generator {
         }
         
         if (this.metrics != null) {
-          metrics.recordStats(person, time);
+          metrics.recordStats(person, time, Module.getModules(modulePredicate));
         }
 
         if (!this.logLevel.equals("none")) {
@@ -347,7 +394,8 @@ public class Generator {
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
         Exporter.export(person, time);
-      } while ((!isAlive && !onlyDeadPatients) || (isAlive && onlyDeadPatients));
+      } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
+          || (isAlive && onlyDeadPatients));
       // if the patient is alive and we want only dead ones => loop & try again
       //  (and dont even export, see above)
       // if the patient is dead and we only want dead ones => done
@@ -382,7 +430,7 @@ public class Generator {
       System.out.println("VITAL SIGNS");
       for (VitalSign vitalSign : person.vitalSigns.keySet()) {
         System.out.format("  * %25s = %6.2f\n", vitalSign,
-            person.getVitalSign(vitalSign).doubleValue());
+            person.getVitalSign(vitalSign, time).doubleValue());
       }
       System.out.println("-----");
     }
@@ -392,6 +440,7 @@ public class Generator {
     Map<String, Object> out = new HashMap<>();
     out.put(Person.CITY, city.city);
     out.put(Person.STATE, city.state);
+    out.put("county", city.county);
     
     String race = city.pickRace(random);
     out.put(Person.RACE, race);
@@ -455,5 +504,14 @@ public class Generator {
     long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);
     return 
         (long) (earliestBirthdate + ((latestBirthdate - earliestBirthdate) * random.nextDouble()));
+  }
+  
+  private Predicate<String> getModulePredicate() {
+    if (options.enabledModules == null) {
+      return path -> true;
+    }
+    FilenameFilter filenameFilter = new WildcardFileFilter(options.enabledModules, 
+        IOCase.INSENSITIVE);
+    return path -> filenameFilter.accept(null, path);
   }
 }

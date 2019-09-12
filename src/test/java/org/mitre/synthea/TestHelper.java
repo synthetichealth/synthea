@@ -4,9 +4,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.function.Function;
-
-import org.junit.Assert;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
@@ -20,7 +17,7 @@ public abstract class TestHelper {
    * @throws Exception On errors.
    */
   public static Module getFixture(String filename) throws Exception {
-    Path modulesFolder = Paths.get("src/test/resources/generic");
+    Path modulesFolder = Paths.get("generic");
     Path module = modulesFolder.resolve(filename);
     return Module.loadFile(module, modulesFolder);
   }
@@ -35,16 +32,20 @@ public abstract class TestHelper {
     Config.set("exporter.fhir.use_shr_extensions", "false");
     Config.set("exporter.subfolders_by_id_substring", "false");
     Config.set("exporter.ccda.export", "false");
-    Config.set("exporter.fhir.export", "false");
+    Config.set("exporter.fhir_stu3.export", "false");
     Config.set("exporter.fhir_dstu2.export", "false");
-    Config.set("exporter.fhir_r4.export", "false");
+    Config.set("exporter.fhir.export", "false");
     Config.set("exporter.fhir.transaction_bundle", "false");
     Config.set("exporter.text.export", "false");
     Config.set("exporter.text.per_encounter_export", "false");
     Config.set("exporter.csv.export", "false");
     Config.set("exporter.cdw.export", "false");
-    Config.set("exporter.hospital.fhir.export", "false");
+    Config.set("exporter.hospital.fhir_stu3.export", "false");
     Config.set("exporter.hospital.fhir_dstu2.export", "false");
+    Config.set("exporter.hospital.fhir.export", "false");
+    Config.set("exporter.practitioner.fhir_stu3.export", "false");
+    Config.set("exporter.practitioner.fhir_dstu2.export", "false");
+    Config.set("exporter.practitioner.fhir.export", "false");
     Config.set("exporter.cost_access_outcomes_report", "false");
   }
 

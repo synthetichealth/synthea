@@ -9,12 +9,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.sis.geometry.DirectPosition2D;
-import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.FactTable;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
@@ -454,7 +454,7 @@ public class CDWExporter {
       return;
     }
     int primarySta3n = -1;
-    Provider provider = person.getAmbulatoryProvider(time);
+    Provider provider = person.getProvider(EncounterType.WELLNESS, time);
     if (provider != null) {
       String state = Location.getStateName(provider.state);
       String tz = Location.getTimezoneByState(state);
@@ -633,7 +633,7 @@ public class CDWExporter {
     if (alive) {
       age = person.ageInYears(time);
     } else {
-      age = person.ageInYears(person.events.event(Event.DEATH).time);
+      age = person.ageInYears((Long) person.attributes.get(Person.DEATHDATE));
     }
     s.append(',').append(age);
     s.append(',').append(iso8601Timestamp((long) person.attributes.get(Person.BIRTHDATE)));
@@ -642,7 +642,7 @@ public class CDWExporter {
       s.append(',').append('N').append(',');
     } else {
       s.append(',').append('Y');
-      s.append(',').append(iso8601Timestamp(person.events.event(Event.DEATH).time));
+      s.append(',').append(iso8601Timestamp((Long) person.attributes.get(Person.DEATHDATE)));
     }
     if (person.attributes.get(Person.GENDER).equals("M")) {
       s.append(",M,Male");
@@ -1262,12 +1262,12 @@ public class CDWExporter {
         break;
       case "29463-7": // weight
         // convert from kg to lbs
-        value = String.format("%.1f", ((Double) observation.value * 2.20462));
+        value = String.format(Locale.US, "%.1f", ((Double) observation.value * 2.20462));
         s.append(value).append(",,,");
         break;
       case "8302-2": // height
         // convert from cm to inches
-        value = String.format("%.1f", ((Double) observation.value * 0.393701));
+        value = String.format(Locale.US, "%.1f", ((Double) observation.value * 0.393701));
         s.append(value).append(",,,");
         break;
       case "72514-3": // pain

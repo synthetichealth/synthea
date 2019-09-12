@@ -7,12 +7,13 @@ import java.util.LinkedList;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.mockito.Mockito;
@@ -29,17 +30,20 @@ public class DeathModuleTest {
   @Before
   public void setup() throws IOException {
     person = new Person(0L);
+    time = System.currentTimeMillis();
 
     person.history = new LinkedList<>();
-    person.setAmbulatoryProvider(Mockito.mock(Provider.class));
-    person.setEmergencyProvider(Mockito.mock(Provider.class));
-    person.setInpatientProvider(Mockito.mock(Provider.class));
+    Provider mock = Mockito.mock(Provider.class);
+    mock.uuid = "Mock-UUID";
+    person.setProvider(EncounterType.AMBULATORY, mock);
+    person.setProvider(EncounterType.WELLNESS, mock);
+    person.setProvider(EncounterType.EMERGENCY, mock);
+    person.setProvider(EncounterType.INPATIENT, mock);
 
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
-    person.events.create(birthTime, Event.BIRTH, "Generator.run", true);
-
-    time = System.currentTimeMillis();
+    Payer.loadNoInsurance();
+    person.setPayerAtTime(time, Payer.noInsurance);
   }
 
   @Test
@@ -54,12 +58,12 @@ public class DeathModuleTest {
      */
 
     Code causeOfDeath = new Code("SNOMED-CT", "12345", "Some disease");
-    person.recordDeath(time, causeOfDeath, DeathModuleTest.class.getName());
+    person.recordDeath(time, causeOfDeath);
 
     DeathModule.process(person, time);
 
     Encounter enc = person.record.encounters.get(0);
-    assertEquals("ambulatory", enc.type);
+    assertEquals(EncounterType.WELLNESS.toString(), enc.type);
     assertEquals(time, enc.start);
 
     Code code = enc.codes.get(0);

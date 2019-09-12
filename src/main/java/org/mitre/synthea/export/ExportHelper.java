@@ -2,6 +2,7 @@ package org.mitre.synthea.export;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import org.hl7.fhir.dstu3.model.Condition;
@@ -33,7 +34,7 @@ public abstract class ExportHelper {
       value = (String)observation.value;
     } else if (observation.value instanceof Double) {
       // round to 1 decimal place for display
-      value = String.format("%.1f", observation.value);
+      value = String.format(Locale.US, "%.1f", observation.value);
     } else if (observation.value != null) {
       value = observation.value.toString();
     }
@@ -96,7 +97,7 @@ public abstract class ExportHelper {
   /**
    * Year-Month-Day date format.
    */
-  private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("YYY-MM-dd");
+  private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
   /**
    * Iso8601 date time format.
@@ -131,5 +132,29 @@ public abstract class ExportHelper {
       // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6231579
       return ISO_DATE_FORMAT.format(new Date(time));
     }
+  }
+
+  private static final String SNOMED_URI = "http://snomed.info/sct";
+  private static final String LOINC_URI = "http://loinc.org";
+  private static final String RXNORM_URI = "http://www.nlm.nih.gov/research/umls/rxnorm";
+  private static final String CVX_URI = "http://hl7.org/fhir/sid/cvx";
+
+  /**
+   * Translate the system name (e.g. SNOMED-CT) into the official
+   * FHIR system URI (e.g. http://snomed.info/sct).
+   * @param system SNOMED-CT, LOINC, RxNorm, CVX
+   * @return The FHIR system URI for the given system or the input if not found.
+   */
+  public static String getSystemURI(String system) {
+    if (system.equals("SNOMED-CT")) {
+      system = SNOMED_URI;
+    } else if (system.equals("LOINC")) {
+      system = LOINC_URI;
+    } else if (system.equals("RxNorm")) {
+      system = RXNORM_URI;
+    } else if (system.equals("CVX")) {
+      system = CVX_URI;
+    }
+    return system;
   }
 }

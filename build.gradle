@@ -18,6 +18,10 @@ repositories {
   // Use jcenter for resolving your dependencies.
   // You can declare any Maven/Ivy/file repository here.
   jcenter()
+  mavenCentral()
+  maven {
+    url "https://oss.sonatype.org/content/repositories/snapshots"
+  }
 }
 
 checkstyle {
@@ -28,10 +32,10 @@ checkstyle {
 dependencies {
   // This dependency is found on compile classpath of this component and consumers.
   compile 'com.google.code.gson:gson:2.8.0'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-base:3.4.0'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.4.0'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.4.0'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:3.4.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-base:3.7.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:3.7.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:3.7.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:3.7.0'
   // C-CDA export uses Apache FreeMarker templates
   compile 'org.freemarker:freemarker:2.3.26-incubating'
   // location processing
@@ -65,10 +69,10 @@ dependencies {
   testCompile 'org.mockito:mockito-core:2.19.0'
   testCompile 'org.powermock:powermock-module-junit4:1.7.1'
   testCompile 'org.powermock:powermock-api-mockito2:1.7.1'
-  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation:3.4.0'
-  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:3.4.0'
-  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:3.4.0'
-  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:3.4.0'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation:3.7.0'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:3.7.0'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:3.7.0'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:3.7.0'
   testCompile 'com.helger:ph-schematron:5.0.6'
   testCompile 'com.phloc:phloc-schematron:2.7.1'
   testCompile 'com.phloc:phloc-commons:4.4.11'
@@ -79,6 +83,7 @@ test {
   testLogging {
     exceptionFormat = 'full'
   }
+  maxHeapSize = "2048m"
 }
 
 buildscript {
@@ -103,29 +108,46 @@ jacocoTestReport {
 check.dependsOn jacocoTestReport
 
 task graphviz(type: JavaExec) {
+  group 'Application'
   description 'Generate rule visualization'
   classpath sourceSets.main.runtimeClasspath
   main = "Graphviz"
 }
 
 task concepts(type: JavaExec) {
+  group 'Application'
   description 'Create a list of simulated concepts'
   classpath sourceSets.main.runtimeClasspath
   main = "org.mitre.synthea.helpers.Concepts"
 }
 
+task attributes(type: JavaExec) {
+  group 'Application'
+  description 'Create a list of patient attributes'
+  classpath sourceSets.main.runtimeClasspath
+  main = "org.mitre.synthea.helpers.Attributes"
+}
+
 task versionTxt() {
+  group 'Build'
+  description 'Generates a version file.'
   doLast {
-    // the ruby version uses `git rev-parse HEAD` which just produces the long commit hash.
-    // "git describe" can use tags or fallback to the commit hash if necessary.
-    // this assumes (as does the ruby version) that git will always be present when building
-    String[] cmd = ["git", "describe", "--tags", "--always"]
-    Process p = Runtime.getRuntime().exec(cmd)
-    p.waitFor()
-    def version = org.apache.commons.io.IOUtils.toString(p.getInputStream(), java.nio.charset.StandardCharsets.UTF_8)
-    def file = new File("$projectDir/src/main/resources/version.txt")
-    file.createNewFile()
-    file.text = version
+    try {
+      // the ruby version uses `git rev-parse HEAD` which just produces the long commit hash.
+      // "git describe" can use tags or fallback to the commit hash if necessary.
+      // this assumes (as does the ruby version) that git will always be present when building
+      String[] cmd = ["git", "describe", "--tags", "--always"]
+      Process p = Runtime.getRuntime().exec(cmd)
+      p.waitFor()
+      def version = org.apache.commons.io.IOUtils.toString(p.getInputStream(), java.nio.charset.StandardCharsets.UTF_8)
+      def file = new File("$projectDir/src/main/resources/version.txt")
+      file.createNewFile()
+      file.text = version
+    } catch (e) {
+      // ex. if git is not installed, or if we can't write the file for some reason. it's not critical to the execution so don't crash
+      logger.warn("Warning: unable to create version.txt. Generated records will not indicate which version of Synthea was used to create them.")
+      logger.warn(e.getMessage())
+    }
   }
 }
 

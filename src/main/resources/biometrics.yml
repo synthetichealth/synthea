@@ -67,3 +67,26 @@ cardiovascular:
   sudden_cardiac_arrest: #annual probability of risk of sudden cardiac arrest and death. Used as risk of cardiac event w/o CHD
     risk: 0.00076
     death: 0.00069
+weightloss:
+  # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4990387/
+  adherence: 0.605
+  # For patients over 20, assuming adherence to weight management, loss of 7 - 10% of body weight
+  # 20% chance of maintaining that loss after 5 years
+  # https://academic.oup.com/ajcn/article/82/1/222S/4863393
+  min_management_loss: 0.07
+  max_management_loss: = 0.1
+  maintenance: = 0.2
+
+  # For patients under 20, weight loss will be controlled by change in BMI percentile.
+  # This is the maximum change allowable to a patient's BMI percentile over the course of a year.
+  max_ped_percentile_change: 0.1
+
+  # Earliest age someone will try to lose weight
+  min_age: 5
+  # BMI at which someone will start to consider losing weight for patients over 20
+  start_bmi: 30
+  # BMI percentile at which someone will start to consider losing weight for patients under 20
+  start_percentile: 0.85
+
+  #https://www.cdc.gov/mmwr/volumes/67/wr/mm6741a10.htm?s_cid=mm6741a10_w
+  start_prob: 0.493

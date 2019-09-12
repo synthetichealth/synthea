@@ -214,7 +214,6 @@
     },
     "Chest X-Ray": {
       "type": "Procedure",
-      "target_encounter": "Diagnosis Encounter I",
       "reason": "Suspected Lung Cancer",
       "codes": [
         {
@@ -258,7 +257,6 @@
     },
     "Chest CT Scan": {
       "type": "Procedure",
-      "target_encounter": "Diagnosis Encounter II",
       "reason": "Suspected Lung Cancer",
       "codes": [
         {
@@ -371,7 +369,6 @@
     },
     "Sputum Cytology (Phelgm)": {
       "type": "Procedure",
-      "target_encounter": "Diagnosis Encounter III",
       "reason": "Suspected Lung Cancer",
       "codes": [
         {
@@ -384,7 +381,6 @@
     },
     "Thoracentesis (Fluid)": {
       "type": "Procedure",
-      "target_encounter": "Diagnosis Encounter III",
       "reason": "Suspected Lung Cancer",
       "codes": [
         {
@@ -397,7 +393,6 @@
     },
     "Needle Biopsy (Cells)": {
       "type": "Procedure",
-      "target_encounter": "Diagnosis Encounter III",
       "reason": "Suspected Lung Cancer",
       "codes": [
         {
@@ -410,7 +405,6 @@
     },
     "Bronchoscopy (Tube)": {
       "type": "Procedure",
-      "target_encounter": "Diagnosis Encounter III",
       "reason": "Suspected Lung Cancer",
       "codes": [
         {
@@ -423,7 +417,20 @@
     },
     "End_Diagnosis_Encounter_III": {
       "type": "EncounterEnd",
-      "direct_transition": "Schedule Follow Up III"
+      "distributed_transition": [
+        {
+          "transition": "Check_Anemia_Exist",
+          "distribution": 0.77
+        },
+        {
+          "transition": "Schedule Follow Up III",
+          "distribution": 0.23
+        }
+      ],
+      "remarks": [
+        "1462 of 1900 patients developed anemia at some point during the survey - ",
+        ""
+      ]
     },
     "Schedule Follow Up III": {
       "type": "Delay",
@@ -712,7 +719,6 @@
     },
     "Lung_Cancer_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Diagnosis Encounter IV",
       "reason": "Lung Cancer Condition",
       "codes": [
         {
@@ -742,7 +748,6 @@
     },
     "MRI Brain": {
       "type": "Procedure",
-      "target_encounter": "Diagnosis Encounter IV",
       "reason": "Lung Cancer Condition",
       "codes": [
         {
@@ -803,7 +808,6 @@
     },
     "SCLC Chemotheraphy I": {
       "type": "MedicationOrder",
-      "target_encounter": "SCLC Treatment Encounter",
       "reason": "Lung Cancer Condition",
       "assign_to_attribute": "chemotherapy1",
       "remarks": [
@@ -817,7 +821,8 @@
           "display": "Cisplatin 50 MG Injection"
         }
       ],
-      "direct_transition": "SCLC Chemotheraphy IB"
+      "direct_transition": "SCLC Chemotheraphy IB",
+      "administration": true
     },
     "SCLC Chemotheraphy IB": {
       "type": "MedicationEnd",
@@ -826,7 +831,6 @@
     },
     "SCLC Chemotheraphy II": {
       "type": "MedicationOrder",
-      "target_encounter": "SCLC Treatment Encounter",
       "reason": "Lung Cancer Condition",
       "assign_to_attribute": "chemotherapy2",
       "remarks": [
@@ -840,7 +844,8 @@
           "display": "Etoposide 100 MG Injection"
         }
       ],
-      "direct_transition": "SCLC Chemotheraphy IIB"
+      "direct_transition": "SCLC Chemotheraphy IIB",
+      "administration": true
     },
     "SCLC Chemotheraphy IIB": {
       "type": "MedicationEnd",
@@ -849,7 +854,6 @@
     },
     "SCLC Radiation": {
       "type": "Procedure",
-      "target_encounter": "SCLC Treatment Encounter",
       "reason": "Lung Cancer Condition",
       "remarks": [
         "The type of radiation therapy most often used to treat SCLC is called external beam radiation therapy (EBRT).",
@@ -909,7 +913,6 @@
     },
     "NSCLC Chemotheraphy I": {
       "type": "MedicationOrder",
-      "target_encounter": "NSCLC Treatment Encounter",
       "reason": "Lung Cancer Condition",
       "assign_to_attribute": "chemotherapy1",
       "remarks": [
@@ -924,7 +927,8 @@
           "display": "Cisplatin 50 MG Injection"
         }
       ],
-      "direct_transition": "NSCLC Chemotheraphy IB"
+      "direct_transition": "NSCLC Chemotheraphy IB",
+      "administration": true
     },
     "NSCLC Chemotheraphy IB": {
       "type": "MedicationEnd",
@@ -933,7 +937,6 @@
     },
     "NSCLC Chemotheraphy II": {
       "type": "MedicationOrder",
-      "target_encounter": "NSCLC Treatment Encounter",
       "reason": "Lung Cancer Condition",
       "assign_to_attribute": "chemotherapy2",
       "remarks": [
@@ -947,7 +950,8 @@
           "display": "PACLitaxel 100 MG Injection"
         }
       ],
-      "direct_transition": "NSCLC Chemotheraphy IIB"
+      "direct_transition": "NSCLC Chemotheraphy IIB",
+      "administration": true
     },
     "NSCLC Chemotheraphy IIB": {
       "type": "MedicationEnd",
@@ -956,7 +960,6 @@
     },
     "NSCLC Radiation": {
       "type": "Procedure",
-      "target_encounter": "NSCLC Treatment Encounter",
       "reason": "Lung Cancer Condition",
       "remarks": [
         "External beam radiation therapy (EBRT) focuses radiation from outside the body on the cancer. This is the type of radiation therapy most often used to treat NSCLC or its spread to other organs.",
@@ -1513,6 +1516,8 @@
             "code": "CT",
             "display": "Computed Tomography"
           },
+          "min_number_instances": 300,
+          "max_number_instances": 500,
           "instances": [
             {
               "title": "CT Image Storage",
@@ -1546,6 +1551,8 @@
             "code": "CT",
             "display": "Computed Tomography"
           },
+          "min_number_instances": 300,
+          "max_number_instances": 500,
           "instances": [
             {
               "title": "CT Image Storage",
@@ -2295,7 +2302,6 @@
           }
         }
       ],
-      "target_encounter": "Wellness_Encounter",
       "direct_transition": "Hearing_Test"
     },
     "Record_CBC_Panel_2": {
@@ -2475,7 +2481,6 @@
           }
         }
       ],
-      "target_encounter": "Wellness_Encounter",
       "direct_transition": "Hearing Test"
     },
     "Pain_Vital": {
@@ -2528,6 +2533,27 @@
         "high": 10
       },
       "direct_transition": "Chest_CT"
+    },
+    "Anemia_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "anemia/anemia_sub",
+      "direct_transition": "Schedule Follow Up III"
+    },
+    "Check_Anemia_Exist": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Anemia_Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Schedule Follow Up III"
+        }
+      ]
     }
   }
 }

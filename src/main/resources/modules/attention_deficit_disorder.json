@@ -127,7 +127,6 @@
     },
     "ADHD_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "ADHD_Diagnosis",
       "reason": "ADHD",
       "codes": [
         {
@@ -202,7 +201,6 @@
     },
     "Behavior_Treatment_Procedure": {
       "type": "Procedure",
-      "target_encounter": "Behavior_Treatment_Encounter",
       "reason": "ADHD",
       "codes": [
         {
@@ -329,7 +327,6 @@
     },
     "Ritalin": {
       "type": "MedicationOrder",
-      "target_encounter": "ADHD_Diagnosis",
       "assign_to_attribute": "adhd_medication",
       "reason": "ADHD",
       "codes": [
@@ -352,7 +349,6 @@
     },
     "Strattera": {
       "type": "MedicationOrder",
-      "target_encounter": "ADHD_Diagnosis",
       "assign_to_attribute": "adhd_medication",
       "reason": "ADHD",
       "codes": [

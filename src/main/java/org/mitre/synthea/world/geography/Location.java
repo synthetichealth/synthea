@@ -1,6 +1,7 @@
 package org.mitre.synthea.world.geography;
 
 import com.google.common.collect.Table;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.sis.geometry.DirectPosition2D;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -18,15 +21,19 @@ import org.mitre.synthea.world.agents.Person;
 public class Location {
   private static LinkedHashMap<String, String> stateAbbreviations = loadAbbreviations();
   private static Map<String, String> timezones = loadTimezones();
+  private static Map<String, List<String>> foreignPlacesOfBirth = loadCitiesByLanguage();
 
   private long totalPopulation;
 
   // cache the population by city name for performance
   private Map<String, Long> populationByCity;
+  private Map<String, Long> populationByCityId;
   private Map<String, List<Place>> zipCodes;
 
   public final String city;
+  private Demographics fixedCity;
   public final String state;
+  /** Map of CityId to Demographics. */
   private Map<String, Demographics> demographics;
 
   /**
@@ -47,20 +54,27 @@ public class Location {
       // because allDemographics will only contain that 1 city
       this.demographics = allDemographics.row(state);
 
-      if (city != null && !demographics.containsKey(city)) {
+      if (city != null 
+          && demographics.values().stream().noneMatch(d -> d.city.equalsIgnoreCase(city))) {
         throw new Exception("The city " + city + " was not found in the demographics file.");
       }
 
       long runningPopulation = 0;
-      populationByCity = new LinkedHashMap<>(); // linked to ensure consistent iteration order
+      // linked to ensure consistent iteration order
+      populationByCity = new LinkedHashMap<>();
+      populationByCityId = new LinkedHashMap<>();      
       for (Demographics d : this.demographics.values()) {
         long pop = d.population;
         runningPopulation += pop;
-        populationByCity.put(d.city, pop);
+        if (populationByCity.containsKey(d.city)) {
+          populationByCity.put(d.city, pop + populationByCity.get(d.city));
+        } else {
+          populationByCity.put(d.city, pop);          
+        }
+        populationByCityId.put(d.id, pop);
       }
-      
+
       totalPopulation = runningPopulation;
-      
     } catch (Exception e) {
       System.err.println("ERROR: unable to load demographics");
       e.printStackTrace();
@@ -129,10 +143,15 @@ public class Location {
    */
   public Demographics randomCity(Random random) {
     if (city != null) {
-      // if we're only generating one city at a time, just use that one city
-      return demographics.get(city);
+      // if we're only generating one city at a time, just use the largest entry for that one city
+      if (fixedCity == null) {
+        fixedCity = demographics.values().stream()
+          .filter(d -> d.city.equalsIgnoreCase(city))
+          .sorted().findFirst().get();
+      }
+      return fixedCity;
     }
-    return demographics.get(randomCityName(random));
+    return demographics.get(randomCityId(random));
   }
   
   /**
@@ -141,9 +160,19 @@ public class Location {
    * @return a city name
    */
   public String randomCityName(Random random) {
+    String cityId = randomCityId(random);
+    return demographics.get(cityId).city;
+  }
+
+  /**
+   * Pick a random city id, weighted by population.
+   * @param random Source of randomness
+   * @return a city id
+   */
+  private String randomCityId(Random random) {
     long targetPop = (long) (random.nextDouble() * totalPopulation);
 
-    for (Map.Entry<String, Long> city : populationByCity.entrySet()) {
+    for (Map.Entry<String, Long> city : populationByCityId.entrySet()) {
       targetPop -= city.getValue();
 
       if (targetPop < 0) {
@@ -152,7 +181,57 @@ public class Location {
     }
 
     // should never happen
-    throw new RuntimeException("Unable to select a random city name.");
+    throw new RuntimeException("Unable to select a random city id.");
+  }
+
+  /**
+   * Pick a random birth place, weighted by population.
+   * @param random Source of randomness
+   * @return Array of Strings: [city, state, country, "city, state, country"]
+   */
+  public String[] randomBirthPlace(Random random) {
+    String[] birthPlace = new String[4];
+    birthPlace[0] = randomCityName(random);
+    birthPlace[1] = this.state;
+    birthPlace[2] = "US";
+    birthPlace[3] = birthPlace[0] + ", " + birthPlace[1] + ", " + birthPlace[2];
+    return birthPlace;
+  }
+
+  /**
+   * Method which returns a city from the foreignPlacesOfBirth map if the map contains values
+   * for an ethnicity.
+   * In the case an ethnicity is not present the method returns the value from a call to
+   * randomCityName().
+   *
+   * @param random the Random to base our city selection on
+   * @param ethnicity the ethnicity to look for cities in
+   * @return A String representing the place of birth
+   */
+  public String[] randomBirthplaceByEthnicity(Random random, String ethnicity) {
+    String[] birthPlace;
+
+    List<String> cities = foreignPlacesOfBirth.get(ethnicity.toLowerCase());
+    if (cities != null && cities.size() > 0) {
+      int upperBound = cities.size();
+      String randomBirthPlace = cities.get(random.nextInt(upperBound));
+      String[] split = randomBirthPlace.split(",");
+
+      // make sure we have exactly 3 elements (city, state, country_abbr)
+      // if not fallback to some random US location
+      if (split.length != 3) {
+        birthPlace = randomBirthPlace(random);
+      } else {
+        //concatenate all the results together, adding spaces behind commas for readability
+        birthPlace = ArrayUtils.addAll(split,
+            new String[] {randomBirthPlace.replaceAll(",", ", ")});
+      }
+
+    } else {  //if we can't find a foreign city at least return something
+      birthPlace = randomBirthPlace(random);
+    }
+
+    return birthPlace;
   }
 
   /**
@@ -160,10 +239,8 @@ public class Location {
    * Coordinate. If cityName is given, then Zip and Coordinate are restricted to valid values for
    * that city. If cityName is not given, then picks a random city from the list of all cities.
    * 
-   * @param person
-   *          Person to assign location information
-   * @param cityName
-   *          Name of the city, or null to choose one randomly
+   * @param person Person to assign location information
+   * @param cityName Name of the city, or null to choose one randomly
    */
   public void assignPoint(Person person, String cityName) {
     List<Place> zipsForCity = null;
@@ -187,7 +264,16 @@ public class Location {
     }
     
     if (place != null) {
-      person.attributes.put(Person.COORDINATE, place.getLatLon());
+      // Get the coordinate of the city/town
+      DirectPosition2D coordinate = place.getLatLon().clone();
+      // And now perturbate it slightly.
+      // Precision within 0.001 degree is more or less a neighborhood or street.
+      // Precision within 0.01 is a village or town
+      // Precision within 0.1 is a large city
+      double dx = person.rand(0.001, 0.1);
+      double dy = person.rand(0.001, 0.1);
+      coordinate.setLocation(coordinate.x + dx, coordinate.y + dy);
+      person.attributes.put(Person.COORDINATE, coordinate);
     }
   }
 
@@ -196,10 +282,8 @@ public class Location {
    * Coordinate. If cityName is given, then Zip and Coordinate are restricted to valid values for
    * that city. If cityName is not given, then picks a random city from the list of all cities.
    * 
-   * @param clinician
-   *          Clinician to assign location information
-   * @param cityName
-   *          Name of the city, or null to choose one randomly
+   * @param clinician Clinician to assign location information
+   * @param cityName Name of the city, or null to choose one randomly
    */
   public void assignPoint(Clinician clinician, String cityName) {
     List<Place> zipsForCity = null;
@@ -223,7 +307,16 @@ public class Location {
     }
     
     if (place != null) {
-      clinician.attributes.put(Person.COORDINATE, place.getLatLon());
+      // Get the coordinate of the city/town
+      DirectPosition2D coordinate = place.getLatLon().clone();
+      // And now perturbate it slightly.
+      // Precision within 0.001 degree is more or less a neighborhood or street.
+      // Precision within 0.01 is a village or town
+      // Precision within 0.1 is a large city
+      double dx = clinician.rand() / 10.0;
+      double dy = clinician.rand() / 10.0;
+      coordinate.setLocation(coordinate.x + dx, coordinate.y + dy);
+      clinician.attributes.put(Person.COORDINATE, coordinate);
     }
   }
   
@@ -306,6 +399,37 @@ public class Location {
       e.printStackTrace();
     }
     return timezones;
+  }
+
+  private static Map<String, List<String>> loadCitiesByLanguage() {
+    //get the default foreign_birthplace file if we can't get the file listed in the config
+    String resource = Config.get("generate.geography.foreign.birthplace.default_file",
+            "geography/foreign_birthplace.json");
+    return loadCitiesByLanguage(resource);
+  }
+
+  /**
+   * Load a resource which contains foreign places of birth based on ethnicity in json format:
+   * <p/>
+   * {"ethnicity":["city1,state1,country1", "city2,state2,country2"..., "cityN,stateN,countryN"]}
+   * <p/>
+   * see src/main/resources/foreign_birthplace.json for a working example
+   * package protected for testing
+   * @param resource A json file listing foreign places of birth by ethnicity.
+   * @return Map of ethnicity to Lists of Strings "city,state,country"
+   */
+  @SuppressWarnings("unchecked")
+  protected static Map<String, List<String>> loadCitiesByLanguage(String resource) {
+    Map<String, List<String>> foreignPlacesOfBirth = new HashMap<>();
+    try {
+      String json = Utilities.readResource(resource);
+      foreignPlacesOfBirth = new Gson().fromJson(json, HashMap.class);
+    } catch (Exception e) {
+      System.err.println("ERROR: unable to load foreign places of birth");
+      e.printStackTrace();
+    }
+
+    return foreignPlacesOfBirth;
   }
 
   /**

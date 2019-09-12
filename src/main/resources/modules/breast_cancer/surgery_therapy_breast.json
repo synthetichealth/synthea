@@ -1,0 +1,1087 @@
+{
+  "name": "Surgery_Therapy_Breast",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Surgery encounter"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Mastectomy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 69031006,
+          "display": "Excision of breast tissue (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 3,
+        "unit": "hours"
+      },
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/mastectomy/expectations",
+        "",
+        "https://www.cancer.org/cancer/breast-cancer/treatment/surgery-for-breast-cancer.html",
+        "",
+        "Surgery to remove breast cancer",
+        "There are two main types of surgery to remove breast cancer:",
+        "",
+        "Breast-conserving surgery (also called a lumpectomy, quadrantectomy, partial mastectomy, or segmental mastectomy) – A surgery in which only the part of the breast containing the cancer is removed. The goal is to remove the cancer as well as some surrounding normal tissue. How much of the breast is removed depends on the size and location of the tumor and other factors.",
+        "Mastectomy – A surgery in which the entire breast is removed, including all of the breast tissue and sometimes other nearby tissues. There are several different types of mastectomies. Some women may also get a double mastectomy, in which both breasts are removed.",
+        "Choosing between breast-conserving surgery and mastectomy",
+        "Many women with early-stage cancers can choose between breast-conserving surgery (BCS) and mastectomy. The main advantage of BCS is that a woman keeps most of her breast. But in most cases she will also need radiation. Women who have mastectomy for early stage cancers are less likely to need radiation.",
+        "",
+        "For some women, mastectomy may be a better option, because of the type of breast cancer, the large size of the tumor, previous treatment history, or certain other factors.",
+        "",
+        "Some women might be worried that having a less extensive surgery might raise their risk of the cancer coming back. But the fact is, in most cases, mastectomy does not give you any better chance of long-term survival or a better outcome from treatment. Studies following thousands of women for more than 20 years show that when BCS can be done along with radiation, having a mastectomy instead does not provide any better chance of survival."
+      ],
+      "direct_transition": "End Surgery encounter",
+      "reason": "breast_cancer_condition"
+    },
+    "Breast-conserving surgery (BCS)": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 392021009,
+          "display": "Lumpectomy of breast (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/lumpectomy/expectations",
+        "",
+        "https://www.breastcancer.org/treatment/surgery/mastectomy/expectations",
+        "",
+        "https://www.cancer.org/cancer/breast-cancer/treatment/surgery-for-breast-cancer.html",
+        "",
+        "Surgery to remove breast cancer",
+        "There are two main types of surgery to remove breast cancer:",
+        "",
+        "Breast-conserving surgery (also called a lumpectomy, quadrantectomy, partial mastectomy, or segmental mastectomy) – A surgery in which only the part of the breast containing the cancer is removed. The goal is to remove the cancer as well as some surrounding normal tissue. How much of the breast is removed depends on the size and location of the tumor and other factors.",
+        "Mastectomy – A surgery in which the entire breast is removed, including all of the breast tissue and sometimes other nearby tissues. There are several different types of mastectomies. Some women may also get a double mastectomy, in which both breasts are removed.",
+        "Choosing between breast-conserving surgery and mastectomy",
+        "Many women with early-stage cancers can choose between breast-conserving surgery (BCS) and mastectomy. The main advantage of BCS is that a woman keeps most of her breast. But in most cases she will also need radiation. Women who have mastectomy for early stage cancers are less likely to need radiation.",
+        "",
+        "For some women, mastectomy may be a better option, because of the type of breast cancer, the large size of the tumor, previous treatment history, or certain other factors.",
+        "",
+        "Some women might be worried that having a less extensive surgery might raise their risk of the cancer coming back. But the fact is, in most cases, mastectomy does not give you any better chance of long-term survival or a better outcome from treatment. Studies following thousands of women for more than 20 years show that when BCS can be done along with radiation, having a mastectomy instead does not provide any better chance of survival."
+      ],
+      "direct_transition": "BCS end surgery",
+      "reason": "breast_cancer_condition"
+    },
+    "External Beam Radiation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 33195004,
+          "display": "Teleradiotherapy procedure (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Current Radiation Visit",
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/treatment/radiation-for-breast-cancer.html"
+      ],
+      "reason": "breast_cancer_condition"
+    },
+    "Hypofractionated radiation therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 385798007,
+          "display": "Radiation therapy care (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Current Radiation Visit",
+      "remarks": [
+        "https://www.breastcancer.org/research-news/accelerated-whole-breast-radiation-new-standard"
+      ],
+      "reason": "breast_cancer_condition"
+    },
+    "Intraoperative radiation therapy (IORT)": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 108290001,
+          "display": "Radiation oncology AND/OR radiotherapy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Current Radiation Visit",
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5493441/",
+        "https://uihc.org/health-topics/intraoperative-radiation-therapy-iort"
+      ],
+      "reason": "breast_cancer_condition"
+    },
+    "Brachytherapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "447759004",
+          "display": "Brachytherapy of breast (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 50,
+        "unit": "minutes"
+      },
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/treatment/radiation-for-breast-cancer.html",
+        "https://www.mayoclinic.org/tests-procedures/brachytherapy/about/pac-20385159"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Interstitial Brachytherapy",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Intracavitary brachytherapy",
+          "distribution": 0.5
+        }
+      ],
+      "reason": "breast_cancer_condition"
+    },
+    "Interstitial Brachytherapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 113120007,
+          "display": "Interstitial brachytherapy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Brachytherapy Implant",
+      "remarks": [
+        "https://www.mayoclinic.org/tests-procedures/brachytherapy/about/pac-20385159"
+      ],
+      "reason": "breast_cancer_condition"
+    },
+    "Intracavitary brachytherapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 384692006,
+          "display": "Intracavitary brachytherapy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "remarks": [
+        "https://www.mayoclinic.org/tests-procedures/brachytherapy/about/pac-20385159"
+      ],
+      "direct_transition": "End Brachytherapy Implant",
+      "reason": "breast_cancer_condition"
+    },
+    "chemo": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/chemotherapy_breast",
+      "conditional_transition": [
+        {
+          "transition": "External Beam Radiation",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_triple_negative",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "End Breast Surgery"
+        }
+      ],
+      "remarks": [
+        "https://www.breastcancer.org/research-news/20110925b"
+      ]
+    },
+    "Advanced_drugs": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Denosumab"
+          },
+          "distributions": [
+            {
+              "transition": "Denosumab",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Zoledronic_Acid",
+              "distribution": 1
+            }
+          ],
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Zoledronic_Acid"
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Denosumab",
+              "distribution": 0.34
+            },
+            {
+              "transition": "Zoledronic_Acid",
+              "distribution": 0.33
+            },
+            {
+              "transition": "Pamidronate",
+              "distribution": 0.33
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "https://www.breastcancer.org/research-news/prolia-reduces-recurrence-risk-for-some"
+      ]
+    },
+    "Zoledronic_Acid": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1114085,
+          "display": "100 ML zoledronic acid 0.04 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Advanced Drugs IV Injection",
+      "assign_to_attribute": "adv_drug",
+      "reason": "breast_cancer_condition"
+    },
+    "Denosumab": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 993452,
+          "display": "1 ML denosumab 60 MG/ML Prefilled Syringe"
+        }
+      ],
+      "direct_transition": "Advanced Drugs IV Injection",
+      "assign_to_attribute": "adv_drug",
+      "reason": "breast_cancer_condition"
+    },
+    "Pamidronate": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1737449,
+          "display": "10 ML Pamidronate Disodium 3 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Pamidronate IV Injection",
+      "assign_to_attribute": "adv_drug",
+      "reason": "breast_cancer_condition"
+    },
+    "Breast_Surgery": {
+      "type": "Simple",
+      "remarks": [
+        "https://www.cooperhealth.org/services/radiation-oncology/questions-you-may-have-about-radiation-therapy"
+      ],
+      "direct_transition": "Initialize Breast Surgery Treatment Counter"
+    },
+    "Sentinel_Lymph_Node_Biopsy__SLNB_": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 396487001,
+          "display": "Sentinel lymph node biopsy (procedure)"
+        }
+      ],
+      "direct_transition": "Excision_Of_Sentinel_Lymph_Node",
+      "duration": {
+        "low": 40,
+        "high": 50,
+        "unit": "minutes"
+      },
+      "reason": "breast_cancer_condition"
+    },
+    "Axillary_Lymph_Node_Dissection__ALND_": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 234262008,
+          "display": "Excision of axillary lymph node (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 40,
+        "high": 50,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Lymph_Node_Surgery",
+      "reason": "breast_cancer_condition"
+    },
+    "End Breast Surgery": {
+      "type": "Simple",
+      "direct_transition": "Delay After Treatment"
+    },
+    "Lymph_Node Surgery": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Sentinel_Lymph_Node_Biopsy__SLNB_",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Axillary_Lymph_Node_Dissection__ALND_",
+          "distribution": 0.5
+        }
+      ],
+      "remarks": [
+        "https://www.cancer.org/cancer/breast-cancer/treatment/surgery-for-breast-cancer.html",
+        "",
+        "https://www.cancer.org/cancer/breast-cancer/treatment/surgery-for-breast-cancer/lymph-node-surgery-for-breast-cancer.html",
+        "",
+        "Surgery to remove nearby lymph nodes",
+        "To find out if the breast cancer has spread to axillary (underarm) lymph nodes, one or more of these lymph nodes will be removed and looked at under the microscope. This is an important part of figuring out the stage (extent) of the cancer. Lymph nodes may be removed either as part of the surgery to remove the breast cancer or as a separate operation.",
+        "",
+        "The two main types of surgery to remove lymph nodes are:",
+        "",
+        "Sentinel lymph node biopsy (SLNB) – A procedure in which the surgeon removes only the lymph node(s) under the arm to which the cancer would likely spread first. Removing only one or a few lymph nodes lowers the risk of side effects from the surgery.",
+        "Axillary lymph node dissection (ALND) – A procedure in which the surgeon removes many (usually less than 20) lymph nodes from under the arm. ALND is not done as often as it was in the past, but it might still be the best way to look at the lymph nodes in some situations.",
+        "To learn more about these procedures and when they might be done, see Lymph Node Surgery for Breast Cancer. ",
+        "",
+        ""
+      ]
+    },
+    "End_Lymph_Node_Surgery": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "External Beam Radiation",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_T",
+            "operator": "==",
+            "value": "T0"
+          }
+        },
+        {
+          "transition": "Breast_Surgery"
+        }
+      ]
+    },
+    "Surgery encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "End_Lymph_Node_Surgery",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_N",
+            "operator": "==",
+            "value": "N0"
+          }
+        },
+        {
+          "transition": "Lymph_Node Surgery"
+        }
+      ]
+    },
+    "End Surgery encounter": {
+      "type": "EncounterEnd",
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/mastectomy/expectations"
+      ],
+      "direct_transition": "Delay after Mastectomy"
+    },
+    "BCS end surgery": {
+      "type": "EncounterEnd",
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/lumpectomy/expectations"
+      ],
+      "direct_transition": "Delay After BCS"
+    },
+    "Delay After BCS": {
+      "type": "Delay",
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/lumpectomy/expectations"
+      ],
+      "range": {
+        "low": 5,
+        "high": 14,
+        "unit": "days"
+      },
+      "direct_transition": "BCS Follow-Up Treatment"
+    },
+    "Delay after Mastectomy": {
+      "type": "Delay",
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/mastectomy/expectations"
+      ],
+      "range": {
+        "low": 5,
+        "high": 14,
+        "unit": "days"
+      },
+      "direct_transition": "Mastectomy Follow-Up Therapy"
+    },
+    "Mastectomy Follow-Up Therapy": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_triple_negative",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "chemo"
+        },
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 258215001,
+              "display": "Stage 1 (qualifier value)"
+            }
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "External Beam Radiation"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 258228008,
+              "display": "Stage 4 (qualifier value)"
+            }
+          },
+          "distributions": [
+            {
+              "distribution": 0.01,
+              "transition": "External Beam Radiation"
+            },
+            {
+              "distribution": 0.33,
+              "transition": "chemo"
+            },
+            {
+              "distribution": 0.66,
+              "transition": "Advanced_drugs"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.5,
+              "transition": "External Beam Radiation"
+            },
+            {
+              "distribution": 0.5,
+              "transition": "chemo"
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/mastectomy/expectations",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4493381/",
+        "",
+        "https://www.cancer.org/cancer/breast-cancer/treatment/radiation-for-breast-cancer.html",
+        "",
+        "Radiation for Breast Cancer",
+        "Some women with breast cancer will need radiation, often in addition to other treatments. The need for radiation depends on what type of surgery you had, whether your cancer has spread to the lymph nodes or somewhere else in your body, and in some cases, your age. Tumors that are large or involve the skin might also need radiation. You could have just one type of radiation, or a combination of different types.",
+        "",
+        "Radiation therapy is treatment with high-energy rays (such as x-rays) or particles that destroy cancer cells. Two main types of radiation therapy can be used to treat breast cancer:",
+        "",
+        "External beam radiation: This type of radiation comes from a machine outside the body.",
+        "Internal radiation (brachytherapy): For this treatment, a radioactive source is put inside the body for a short time.",
+        "When might radiation therapy be used?",
+        "Not all women with breast cancer need radiation therapy, but it may be used in several situations:",
+        "",
+        "After breast-conserving surgery (BCS), to help lower the chance that the cancer will come back in the breast or nearby lymph nodes.",
+        "After a mastectomy, especially if the cancer was larger than 5 cm (about 2 inches), or if cancer is found in the lymph nodes.",
+        "If cancer has spread to other parts of the body, such as the bones or brain.",
+        "External beam radiation",
+        "This is the most common type of radiation therapy for women with breast cancer. A machine focuses the radiation on the area affected by the cancer.",
+        "",
+        "Which areas need radiation depends on whether you had a mastectomy or breast-conserving surgery (BCS) and whether or not the cancer has reached nearby lymph nodes.",
+        "",
+        "If you had a mastectomy and no lymph nodes had cancer, radiation is focused on the chest wall, the mastectomy scar, and the places where any drains exited the body after surgery.",
+        "If you had BCS, you will most likely have radiation to the entire breast (called whole breast radiation), and an extra boost of radiation to the area in the breast where the cancer was removed (called the tumor bed) to help prevent it from coming back in that area. The boost is often given after the treatments to the whole breast have ended. It uses the same machine, with lower amounts of radiation, but the beams are aimed at the tumor bed. Most women don’t notice different side effects from boost radiation than from whole breast radiation.",
+        "If cancer was found in the lymph nodes under the arm (axillary lymph nodes), this area may be given radiation, as well. In some cases, the area treated might also include the nodes above the collarbone (supraclavicular lymph nodes) and the nodes beneath the breast bone in the center of the chest (internal mammary lymph nodes).",
+        "When will I get radiation therapy?",
+        "If you will need external radiation therapy after surgery, it is usually not started until your surgery site has healed , which is often a month or longer. If you are getting chemotherapy as well, radiation treatments are usually delayed until chemotherapy is complete.",
+        "",
+        "Preparing for external beam radiation therapy",
+        "Before your treatment starts, the radiation team will carefully figure out the correct angles for aiming the radiation beams and the proper dose of radiation. They will make some ink marks or small tattoos on your skin to focus the radiation on the right area. Check with your health care team whether the marks they use will be permanent.",
+        "",
+        "External radiation therapy is much like getting an x-ray, but the radiation is stronger. The procedure itself is painless. Each treatment lasts only a few minutes, but the setup time—getting you into place for treatment—usually takes longer.",
+        "",
+        "Types and schedules of external beam radiation",
+        "The traditional schedule for getting whole breast radiation has been 5 days a week (Monday through Friday) for about 5 to 6 weeks. But many doctors are now using accelerated breast irradiation in select patients to give larger doses over a shorter time. There are several different types of accelerated breast irradiation:",
+        "",
+        "Hypofractionated radiation therapy: In this approach, radiation is given in larger doses using fewer treatments – typically for only 3 weeks. In women treated with breast-conserving surgery (BCS) and without cancer spread to underarm lymph nodes, this schedule has been shown to be just as good at keeping the cancer from coming back in the same breast as giving the radiation over 5 weeks. It might also lead to fewer short-term side effects.",
+        "Intraoperative radiation therapy (IORT): In this approach, a single large dose of radiation is given in the operating room right after BCS (before the breast incision is closed). IORT requires special equipment and is not widely available.",
+        "3D-conformal radiotherapy: In this technique, the radiation is given with special machines so that it is better aimed at the area where the tumor was removed (tumor bed). This allows more of the healthy breast to be spared. Treatments are given twice a day for 5 days. Because only part of the breast is treated, this is considered to be a form of accelerated partial breast irradiation. (Other forms of accelerated partial breast irradiation are described under Brachytherapy.)",
+        "Since more research is needed to know if all of the newer methods will have the same long-term results as standard radiation, not all doctors use them. Women who are interested in these approaches may want to ask their doctor about taking part in clinical trials of accelerated breast irradiation going on now.",
+        "",
+        "Possible side effects of external radiation",
+        "The main short-term side effects of external beam radiation therapy to the breast are:",
+        "",
+        "Swelling in the breast",
+        "Skin changes in the treated area similar to a sunburn (redness, skin peeling, darkening of the skin)",
+        "Fatigue",
+        "Your health care team may advise you to avoid exposing the treated skin to the sun because it could make the skin changes worse. Most skin changes get better within a few months. Changes to the breast tissue usually go away in 6 to 12 months, but it can take longer.",
+        "",
+        "External beam radiation therapy can also cause side effects later on:",
+        "",
+        "Some women may find that radiation therapy causes the breast to become smaller and firmer.",
+        "Radiation may affect your options for breast reconstruction later on. It can also raise the risk of problems if it’s given after reconstruction, especially tissue flap procedures.",
+        "Women who have had breast radiation may have problems breastfeeding later on.",
+        "Radiation to the breast can sometimes damage some of the nerves to the arm. This is called brachial plexopathy and can lead to numbness, pain, and weakness in the shoulder, arm, and hand.",
+        "Radiation to the underarm lymph nodes can cause lymphedema, a type of pain and swelling in the arm or chest.",
+        "In rare cases, radiation therapy may weaken the ribs, which could lead to a fracture.",
+        "In the past, parts of the lungs and heart were more likely to get some radiation, which could lead to long-term damage of these organs in some women. Modern radiation therapy equipment allows doctors to better focus the radiation beams, so these problems are rare today.",
+        "A very rare complication of radiation to the breast is the development of another cancer called an angiosarcoma.",
+        "Brachytherapy",
+        "Brachytherapy, also known as internal radiation, is another way to deliver radiation therapy. Instead of aiming radiation beams from outside the body, a device containing radioactive seeds or pellets is placed into the breast tissue for a short time in the area where the cancer had been removed.",
+        "",
+        "For women who had breast-conserving surgery (BCS), brachytherapy can be used along with external beam radiation as a way to add an extra boost of radiation to the tumor site. It may also be used by itself (instead of radiation to the whole breast) as a form of accelerated partial breast irradiation. Tumor size, location, and other factors may limit who can get brachytherapy.",
+        "",
+        "Types of brachytherapy",
+        "There are different types of brachytherapy:",
+        "",
+        "Interstitial brachytherapy: In this approach, several small, hollow tubes called catheters are inserted into the breast around the area where the cancer was removed and are left in place for several days. Radioactive pellets are inserted into the catheters for short periods of time each day and then removed. This method of brachytherapy has been around longer (and has more evidence to support it), but it is not used as much anymore.",
+        "Intracavitary brachytherapy: This is the most common type of brachytherapy for women with breast cancer. A device is put into the space left from BCS and is left in place until treatment is complete. There are several different devices available (including MammoSite, SAVI, Axxent, and Contura), most of which require surgical training for proper placement . They all go into the breast as a small catheter (tube). The end of the device inside the breast is then expanded so that it stays securely in place for the entire treatment. The other end of the catheter sticks out of the breast. For each treatment, one or more sources of radiation (often pellets) are placed down through the tube and into the device for a short time and then removed. Treatments are typically given twice a day for 5 days as an outpatient. After the last treatment, the device is collapsed down again and removed.",
+        "Early studies of intracavitary brachytherapy as the only radiation after BCS have had promising results as far as having at least equal cancer control compared with standard whole breast radiation, but may have more complications including poor cosmetic results. Studies of this treatment are being done and more follow-up is needed.  ",
+        "",
+        "Possible side effects of intracavitary brachytherapy",
+        "As with external beam radiation, intracavitary brachytherapy can have side effects, including:",
+        "",
+        "Redness at the treatment site",
+        "Bruising at the treatment site",
+        "Breast pain",
+        "Infection",
+        "Damage to fatty tissue in the breast",
+        "Weakness and fracture of the ribs in rare cases",
+        "Fluid collecting in the breast (seroma) ",
+        " "
+      ]
+    },
+    "BCS Follow-Up Treatment": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_triple_negative",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "chemo"
+        },
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 258215001,
+              "display": "Stage 1 (qualifier value)"
+            }
+          },
+          "distributions": [
+            {
+              "distribution": 0.4,
+              "transition": "External Beam Radiation"
+            },
+            {
+              "distribution": 0.1,
+              "transition": "Intraoperative radiation therapy (IORT)"
+            },
+            {
+              "distribution": 0.4,
+              "transition": "Hypofractionated radiation therapy"
+            },
+            {
+              "distribution": 0.1,
+              "transition": "Brachytherapy"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "21908-9",
+                "display": "Stage group.clinical Cancer"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": 258228008,
+              "display": "Stage 4 (qualifier value)"
+            }
+          },
+          "distributions": [
+            {
+              "distribution": 0.02,
+              "transition": "External Beam Radiation"
+            },
+            {
+              "distribution": 0.04,
+              "transition": "Hypofractionated radiation therapy"
+            },
+            {
+              "distribution": 0.04,
+              "transition": "Intraoperative radiation therapy (IORT)"
+            },
+            {
+              "distribution": 0.1,
+              "transition": "Brachytherapy"
+            },
+            {
+              "distribution": 0.1,
+              "transition": "chemo"
+            },
+            {
+              "distribution": 0.7,
+              "transition": "Advanced_drugs"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.3,
+              "transition": "External Beam Radiation"
+            },
+            {
+              "distribution": 0.3,
+              "transition": "Hypofractionated radiation therapy"
+            },
+            {
+              "distribution": 0.1,
+              "transition": "Intraoperative radiation therapy (IORT)"
+            },
+            {
+              "distribution": 0.1,
+              "transition": "Brachytherapy"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "chemo"
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "https://www.breastcancer.org/treatment/surgery/lumpectomy/expectations",
+        "",
+        "https://www.cancer.org/cancer/breast-cancer/treatment/radiation-for-breast-cancer.html",
+        "",
+        "Radiation for Breast Cancer",
+        "Some women with breast cancer will need radiation, often in addition to other treatments. The need for radiation depends on what type of surgery you had, whether your cancer has spread to the lymph nodes or somewhere else in your body, and in some cases, your age. Tumors that are large or involve the skin might also need radiation. You could have just one type of radiation, or a combination of different types.",
+        "",
+        "Radiation therapy is treatment with high-energy rays (such as x-rays) or particles that destroy cancer cells. Two main types of radiation therapy can be used to treat breast cancer:",
+        "",
+        "External beam radiation: This type of radiation comes from a machine outside the body.",
+        "Internal radiation (brachytherapy): For this treatment, a radioactive source is put inside the body for a short time.",
+        "When might radiation therapy be used?",
+        "Not all women with breast cancer need radiation therapy, but it may be used in several situations:",
+        "",
+        "After breast-conserving surgery (BCS), to help lower the chance that the cancer will come back in the breast or nearby lymph nodes.",
+        "After a mastectomy, especially if the cancer was larger than 5 cm (about 2 inches), or if cancer is found in the lymph nodes.",
+        "If cancer has spread to other parts of the body, such as the bones or brain.",
+        "External beam radiation",
+        "This is the most common type of radiation therapy for women with breast cancer. A machine focuses the radiation on the area affected by the cancer.",
+        "",
+        "Which areas need radiation depends on whether you had a mastectomy or breast-conserving surgery (BCS) and whether or not the cancer has reached nearby lymph nodes.",
+        "",
+        "If you had a mastectomy and no lymph nodes had cancer, radiation is focused on the chest wall, the mastectomy scar, and the places where any drains exited the body after surgery.",
+        "If you had BCS, you will most likely have radiation to the entire breast (called whole breast radiation), and an extra boost of radiation to the area in the breast where the cancer was removed (called the tumor bed) to help prevent it from coming back in that area. The boost is often given after the treatments to the whole breast have ended. It uses the same machine, with lower amounts of radiation, but the beams are aimed at the tumor bed. Most women don’t notice different side effects from boost radiation than from whole breast radiation.",
+        "If cancer was found in the lymph nodes under the arm (axillary lymph nodes), this area may be given radiation, as well. In some cases, the area treated might also include the nodes above the collarbone (supraclavicular lymph nodes) and the nodes beneath the breast bone in the center of the chest (internal mammary lymph nodes).",
+        "When will I get radiation therapy?",
+        "If you will need external radiation therapy after surgery, it is usually not started until your surgery site has healed , which is often a month or longer. If you are getting chemotherapy as well, radiation treatments are usually delayed until chemotherapy is complete.",
+        "",
+        "Preparing for external beam radiation therapy",
+        "Before your treatment starts, the radiation team will carefully figure out the correct angles for aiming the radiation beams and the proper dose of radiation. They will make some ink marks or small tattoos on your skin to focus the radiation on the right area. Check with your health care team whether the marks they use will be permanent.",
+        "",
+        "External radiation therapy is much like getting an x-ray, but the radiation is stronger. The procedure itself is painless. Each treatment lasts only a few minutes, but the setup time—getting you into place for treatment—usually takes longer.",
+        "",
+        "Types and schedules of external beam radiation",
+        "The traditional schedule for getting whole breast radiation has been 5 days a week (Monday through Friday) for about 5 to 6 weeks. But many doctors are now using accelerated breast irradiation in select patients to give larger doses over a shorter time. There are several different types of accelerated breast irradiation:",
+        "",
+        "Hypofractionated radiation therapy: In this approach, radiation is given in larger doses using fewer treatments – typically for only 3 weeks. In women treated with breast-conserving surgery (BCS) and without cancer spread to underarm lymph nodes, this schedule has been shown to be just as good at keeping the cancer from coming back in the same breast as giving the radiation over 5 weeks. It might also lead to fewer short-term side effects.",
+        "Intraoperative radiation therapy (IORT): In this approach, a single large dose of radiation is given in the operating room right after BCS (before the breast incision is closed). IORT requires special equipment and is not widely available.",
+        "3D-conformal radiotherapy: In this technique, the radiation is given with special machines so that it is better aimed at the area where the tumor was removed (tumor bed). This allows more of the healthy breast to be spared. Treatments are given twice a day for 5 days. Because only part of the breast is treated, this is considered to be a form of accelerated partial breast irradiation. (Other forms of accelerated partial breast irradiation are described under Brachytherapy.)",
+        "Since more research is needed to know if all of the newer methods will have the same long-term results as standard radiation, not all doctors use them. Women who are interested in these approaches may want to ask their doctor about taking part in clinical trials of accelerated breast irradiation going on now.",
+        "",
+        "Possible side effects of external radiation",
+        "The main short-term side effects of external beam radiation therapy to the breast are:",
+        "",
+        "Swelling in the breast",
+        "Skin changes in the treated area similar to a sunburn (redness, skin peeling, darkening of the skin)",
+        "Fatigue",
+        "Your health care team may advise you to avoid exposing the treated skin to the sun because it could make the skin changes worse. Most skin changes get better within a few months. Changes to the breast tissue usually go away in 6 to 12 months, but it can take longer.",
+        "",
+        "External beam radiation therapy can also cause side effects later on:",
+        "",
+        "Some women may find that radiation therapy causes the breast to become smaller and firmer.",
+        "Radiation may affect your options for breast reconstruction later on. It can also raise the risk of problems if it’s given after reconstruction, especially tissue flap procedures.",
+        "Women who have had breast radiation may have problems breastfeeding later on.",
+        "Radiation to the breast can sometimes damage some of the nerves to the arm. This is called brachial plexopathy and can lead to numbness, pain, and weakness in the shoulder, arm, and hand.",
+        "Radiation to the underarm lymph nodes can cause lymphedema, a type of pain and swelling in the arm or chest.",
+        "In rare cases, radiation therapy may weaken the ribs, which could lead to a fracture.",
+        "In the past, parts of the lungs and heart were more likely to get some radiation, which could lead to long-term damage of these organs in some women. Modern radiation therapy equipment allows doctors to better focus the radiation beams, so these problems are rare today.",
+        "A very rare complication of radiation to the breast is the development of another cancer called an angiosarcoma.",
+        "Brachytherapy",
+        "Brachytherapy, also known as internal radiation, is another way to deliver radiation therapy. Instead of aiming radiation beams from outside the body, a device containing radioactive seeds or pellets is placed into the breast tissue for a short time in the area where the cancer had been removed.",
+        "",
+        "For women who had breast-conserving surgery (BCS), brachytherapy can be used along with external beam radiation as a way to add an extra boost of radiation to the tumor site. It may also be used by itself (instead of radiation to the whole breast) as a form of accelerated partial breast irradiation. Tumor size, location, and other factors may limit who can get brachytherapy.",
+        "",
+        "Types of brachytherapy",
+        "There are different types of brachytherapy:",
+        "",
+        "Interstitial brachytherapy: In this approach, several small, hollow tubes called catheters are inserted into the breast around the area where the cancer was removed and are left in place for several days. Radioactive pellets are inserted into the catheters for short periods of time each day and then removed. This method of brachytherapy has been around longer (and has more evidence to support it), but it is not used as much anymore.",
+        "Intracavitary brachytherapy: This is the most common type of brachytherapy for women with breast cancer. A device is put into the space left from BCS and is left in place until treatment is complete. There are several different devices available (including MammoSite, SAVI, Axxent, and Contura), most of which require surgical training for proper placement . They all go into the breast as a small catheter (tube). The end of the device inside the breast is then expanded so that it stays securely in place for the entire treatment. The other end of the catheter sticks out of the breast. For each treatment, one or more sources of radiation (often pellets) are placed down through the tube and into the device for a short time and then removed. Treatments are typically given twice a day for 5 days as an outpatient. After the last treatment, the device is collapsed down again and removed.",
+        "Early studies of intracavitary brachytherapy as the only radiation after BCS have had promising results as far as having at least equal cancer control compared with standard whole breast radiation, but may have more complications including poor cosmetic results. Studies of this treatment are being done and more follow-up is needed.  ",
+        "",
+        "Possible side effects of intracavitary brachytherapy",
+        "As with external beam radiation, intracavitary brachytherapy can have side effects, including:",
+        "",
+        "Redness at the treatment site",
+        "Bruising at the treatment site",
+        "Breast pain",
+        "Infection",
+        "Damage to fatty tissue in the breast",
+        "Weakness and fracture of the ribs in rare cases",
+        "Fluid collecting in the breast (seroma) ",
+        " "
+      ]
+    },
+    "Pamidronate IV Injection": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 43060002,
+          "display": "Intravenous injection (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 24,
+        "unit": "hours"
+      },
+      "direct_transition": "End Pamidronate Infusion Encounter",
+      "reason": "breast_cancer_condition"
+    },
+    "End Pamidronate Infusion Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "End Pamidronate Medication"
+    },
+    "Advanced Drugs IV Injection": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 43060002,
+          "display": "Intravenous injection (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 120,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Advanced Drug Medication",
+      "reason": "breast_cancer_condition"
+    },
+    "End Current Advanced Drug Infusion": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Increment treatment counter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_treat_count",
+            "operator": "<",
+            "value": 7
+          }
+        },
+        {
+          "transition": "End Breast Surgery"
+        }
+      ]
+    },
+    "End Advanced Drug Medication": {
+      "type": "MedicationEnd",
+      "direct_transition": "End Current Advanced Drug Infusion",
+      "referenced_by_attribute": "adv_drug"
+    },
+    "End Pamidronate Medication": {
+      "type": "MedicationEnd",
+      "direct_transition": "End Breast Surgery",
+      "referenced_by_attribute": "adv_drug"
+    },
+    "Increment treatment counter": {
+      "type": "Counter",
+      "attribute": "breast_cancer_treat_count",
+      "action": "increment",
+      "direct_transition": "6 Month Delay"
+    },
+    "6 Month Delay": {
+      "type": "Delay",
+      "direct_transition": "Start New Advanced Drug Cycle",
+      "range": {
+        "low": 5,
+        "high": 7,
+        "unit": "months"
+      },
+      "remarks": [
+        "Prolia (chemical name: denosumab) is a targeted therapy used to treat bone loss in women taking aromatase inhibitors as part of their breast cancer treatment. Prolia is given as an injection under the skin every 6 months at a dose of 60 mg:",
+        "https://www.breastcancer.org/research-news/prolia-reduces-recurrence-risk-for-some"
+      ]
+    },
+    "Start New Advanced Drug Cycle": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Advanced_drugs"
+    },
+    "Delay After Treatment": {
+      "type": "Delay",
+      "direct_transition": "Terminal",
+      "range": {
+        "low": 2,
+        "high": 7,
+        "unit": "days"
+      }
+    },
+    "Radiation_Buffer_After_Brachytherapy": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 8,
+        "unit": "weeks"
+      },
+      "direct_transition": "End Breast Surgery"
+    },
+    "End Brachytherapy Implant": {
+      "type": "EncounterEnd",
+      "direct_transition": "Radiation_Buffer_After_Brachytherapy"
+    },
+    "End Current Radiation Visit": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Increment Radiation Treatment Count",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_treat_count",
+            "operator": "<",
+            "value": 33
+          }
+        },
+        {
+          "transition": "End Breast Surgery"
+        }
+      ]
+    },
+    "Increment Radiation Treatment Count": {
+      "type": "Counter",
+      "attribute": "breast_cancer_treat_count",
+      "action": "increment",
+      "direct_transition": "Delay Until Next Cycle"
+    },
+    "Delay Until Next Cycle": {
+      "type": "Delay",
+      "direct_transition": "Next Day Radiation Treatment",
+      "range": {
+        "low": 24,
+        "high": 36,
+        "unit": "hours"
+      }
+    },
+    "Next Day Radiation Treatment": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "External Beam Radiation",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "External Beam Radiation"
+          }
+        },
+        {
+          "transition": "Intraoperative radiation therapy (IORT)",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Intraoperative radiation therapy (IORT)"
+          }
+        },
+        {
+          "transition": "Hypofractionated radiation therapy",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Hypofractionated radiation therapy"
+          }
+        }
+      ]
+    },
+    "Excision_Of_Sentinel_Lymph_Node": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 443497002,
+          "display": "Excision of sentinel lymph node (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 40,
+        "high": 50,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Lymph_Node_Surgery",
+      "reason": "breast_cancer_condition"
+    },
+    "Initialize Breast Surgery Treatment Counter": {
+      "type": "SetAttribute",
+      "attribute": "breast_cancer_treat_count",
+      "distributed_transition": [
+        {
+          "transition": "Breast-conserving surgery (BCS)",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Mastectomy",
+          "distribution": 0.4
+        }
+      ],
+      "remarks": [
+        "https://www.cooperhealth.org/services/radiation-oncology/questions-you-may-have-about-radiation-therapy"
+      ],
+      "value": 0
+    }
+  }
+}

@@ -1,0 +1,1221 @@
+{
+  "name": "anemia_sub",
+  "remarks": [
+    "Anemia"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Anemia"
+    },
+    "Anemia": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "anemia",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 271737000,
+          "display": "Anemia (disorder)"
+        }
+      ],
+      "direct_transition": "Anemia_Encounter"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Review_Of_Systems": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 415300000,
+          "display": "Review of systems (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 20,
+        "unit": "minutes"
+      },
+      "direct_transition": "Collect_Social_and_Nutrition_History",
+      "remarks": [
+        "Future model: This should be a submodule that records social habits, nutrition, alcohol consumption."
+      ]
+    },
+    "Brief_Examination": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 162676008,
+          "display": "Brief general examination (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 20,
+        "unit": "minutes"
+      },
+      "remarks": [
+        "Remarks:",
+        "- Percent of severe patients estimated (needs verification)",
+        ""
+      ],
+      "conditional_transition": [
+        {
+          "transition": "End_Initial_Encounter",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "20570-8",
+                    "display": "Hematocrit"
+                  }
+                ],
+                "operator": "<=",
+                "value": 28
+              },
+              {
+                "condition_type": "Gender",
+                "gender": "F"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "End_Initial_Encounter",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Gender",
+                "gender": "M"
+              },
+              {
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "20570-8",
+                    "display": "Hematocrit"
+                  }
+                ],
+                "operator": "<=",
+                "value": 27
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Administer_Medications_2"
+        }
+      ]
+    },
+    "End_Initial_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay"
+    },
+    "Male": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "CBC_Panel_M_Severe",
+          "distribution": 0.07
+        },
+        {
+          "transition": "CBC_Panel_M_Routine",
+          "distribution": 0.93
+        }
+      ]
+    },
+    "Female": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "pregnant",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "CBC_Panel_F_Severe",
+              "distribution": 0.28
+            },
+            {
+              "transition": "CBC_Panel_F_Routine",
+              "distribution": 0.72
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "CBC_Panel_F_Severe",
+              "distribution": 0.07
+            },
+            {
+              "transition": "CBC_Panel_F_Routine",
+              "distribution": 0.93
+            }
+          ]
+        }
+      ]
+    },
+    "Transfusion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 180207008,
+          "display": "Intravenous blood transfusion of packed cells (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Transfusion_Encounter"
+    },
+    "Peripheral_Blood_Smear": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 14768001,
+          "display": "Peripheral blood smear interpretation"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Review_Of_Systems"
+    },
+    "Medication_Reconciliation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 430193006,
+          "display": "Medication Reconciliation (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 20,
+        "unit": "minutes"
+      },
+      "direct_transition": "Brief_Examination"
+    },
+    "Administer_Medications": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Iron_Supplement",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Vitamin B12 Booster",
+          "distribution": 0.1
+        },
+        {
+          "transition": "End_Consult_Referral to_Experts_Encounter",
+          "distribution": 0.8
+        }
+      ]
+    },
+    "Iron_Supplement": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 310325,
+          "display": "ferrous sulfate 325 MG Oral Tablet"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Vitamin B12 Booster",
+          "distribution": 0.1
+        },
+        {
+          "transition": "End_Consult_Referral to_Experts_Encounter",
+          "distribution": 0.9
+        }
+      ]
+    },
+    "Vitamin B12 Booster": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 2001499,
+          "display": "Vitamin B 12 5 MG/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "End_Consult_Referral to_Experts_Encounter"
+    },
+    "Transfusion_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "anemia",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Transfusion"
+    },
+    "Anemia_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Male",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          }
+        }
+      ],
+      "reason": "anemia"
+    },
+    "Administer_Medications_2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Iron_Supplement_2",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Vitamin_B12_Booster",
+          "distribution": 0.1
+        },
+        {
+          "transition": "End_Anemia_Encounter",
+          "distribution": 0.8
+        }
+      ]
+    },
+    "Iron_Supplement_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 310325,
+          "display": "ferrous sulfate 325 MG Oral Tablet"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Vitamin_B12_Booster",
+          "distribution": 0.1
+        },
+        {
+          "transition": "End_Anemia_Encounter",
+          "distribution": 0.9
+        }
+      ]
+    },
+    "Vitamin_B12_Booster": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 2001499,
+          "display": "Vitamin B 12 5 MG/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "End_Anemia_Encounter"
+    },
+    "End_Anemia_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "CBC_Panel_F_Routine": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 11,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "direct_transition": "Peripheral_Blood_Smear",
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 11,
+            "high": 11.9
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20570-8",
+              "display": "Hematocrit [Volume Fraction] of Blood"
+            }
+          ],
+          "range": {
+            "low": 33,
+            "high": 36
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6690-2",
+              "display": "WBC Auto (Bld) [#/Vol]"
+            }
+          ],
+          "range": {
+            "low": 3.5,
+            "high": 10.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*6/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "789-8",
+              "display": "RBC Auto (Bld) [#/Vol]"
+            }
+          ],
+          "range": {
+            "low": 3.9,
+            "high": 5.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "787-2",
+              "display": "MCV [Entitic volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 80,
+            "high": 95
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "pg",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "785-6",
+              "display": "MCH [Entitic mass] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 27,
+            "high": 33
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "786-4",
+              "display": "MCHC [Mass/volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 33,
+            "high": 36
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "21000-5",
+              "display": "RDW - Erythrocyte distribution width Auto (RBC) [Entitic vol]"
+            }
+          ],
+          "range": {
+            "low": 39,
+            "high": 46
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "777-3",
+              "display": "Platelets [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 150,
+            "high": 450
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "32207-3",
+              "display": "Platelet distribution width [Entitic volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 150,
+            "high": 520
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "32623-1",
+              "display": "Platelet mean volume [Entitic volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 9.4,
+            "high": 12.3
+          }
+        }
+      ]
+    },
+    "CBC_Panel_M_Severe": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 11,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 6.7,
+            "high": 10
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20570-8",
+              "display": "Hematocrit [Volume Fraction] of Blood"
+            }
+          ],
+          "range": {
+            "low": 20,
+            "high": 30
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6690-2",
+              "display": "WBC Auto (Bld) [#/Vol]"
+            }
+          ],
+          "range": {
+            "low": 3.5,
+            "high": 10.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*6/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "789-8",
+              "display": "RBC Auto (Bld) [#/Vol]"
+            }
+          ],
+          "range": {
+            "low": 3.9,
+            "high": 5.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "787-2",
+              "display": "MCV [Entitic volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 80,
+            "high": 95
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "pg",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "785-6",
+              "display": "MCH [Entitic mass] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 27,
+            "high": 33
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "786-4",
+              "display": "MCHC [Mass/volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 33,
+            "high": 36
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "21000-5",
+              "display": "RDW - Erythrocyte distribution width Auto (RBC) [Entitic vol]"
+            }
+          ],
+          "range": {
+            "low": 39,
+            "high": 46
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "777-3",
+              "display": "Platelets [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 150,
+            "high": 450
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "32207-3",
+              "display": "Platelet distribution width [Entitic volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 150,
+            "high": 520
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "32623-1",
+              "display": "Platelet mean volume [Entitic volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 9.4,
+            "high": 12.3
+          }
+        }
+      ],
+      "direct_transition": "Peripheral_Blood_Smear"
+    },
+    "CBC_Panel_F_Severe": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 11,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 7,
+            "high": 10.9
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20570-8",
+              "display": "Hematocrit [Volume Fraction] of Blood"
+            }
+          ],
+          "range": {
+            "low": 21,
+            "high": 32.9
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6690-2",
+              "display": "WBC Auto (Bld) [#/Vol]"
+            }
+          ],
+          "range": {
+            "low": 3.5,
+            "high": 10.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*6/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "789-8",
+              "display": "RBC Auto (Bld) [#/Vol]"
+            }
+          ],
+          "range": {
+            "low": 3.9,
+            "high": 5.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "787-2",
+              "display": "MCV [Entitic volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 80,
+            "high": 95
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "pg",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "785-6",
+              "display": "MCH [Entitic mass] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 27,
+            "high": 33
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "786-4",
+              "display": "MCHC [Mass/volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 33,
+            "high": 36
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "21000-5",
+              "display": "RDW - Erythrocyte distribution width Auto (RBC) [Entitic vol]"
+            }
+          ],
+          "range": {
+            "low": 39,
+            "high": 46
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "777-3",
+              "display": "Platelets [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 150,
+            "high": 450
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "32207-3",
+              "display": "Platelet distribution width [Entitic volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 150,
+            "high": 520
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "32623-1",
+              "display": "Platelet mean volume [Entitic volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 9.4,
+            "high": 12.3
+          }
+        }
+      ],
+      "direct_transition": "Peripheral_Blood_Smear"
+    },
+    "CBC_Panel_M_Routine": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 11,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "direct_transition": "Peripheral_Blood_Smear",
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 10,
+            "high": 11.9
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20570-8",
+              "display": "Hematocrit [Volume Fraction] of Blood"
+            }
+          ],
+          "range": {
+            "low": 30.1,
+            "high": 35
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6690-2",
+              "display": "WBC Auto (Bld) [#/Vol]"
+            }
+          ],
+          "range": {
+            "low": 3.5,
+            "high": 10.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*6/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "789-8",
+              "display": "RBC Auto (Bld) [#/Vol]"
+            }
+          ],
+          "range": {
+            "low": 3.9,
+            "high": 5.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "787-2",
+              "display": "MCV [Entitic volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 80,
+            "high": 95
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "pg",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "785-6",
+              "display": "MCH [Entitic mass] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 27,
+            "high": 33
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "786-4",
+              "display": "MCHC [Mass/volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 33,
+            "high": 36
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "21000-5",
+              "display": "RDW - Erythrocyte distribution width Auto (RBC) [Entitic vol]"
+            }
+          ],
+          "range": {
+            "low": 39,
+            "high": 46
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "777-3",
+              "display": "Platelets [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 150,
+            "high": 450
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "32207-3",
+              "display": "Platelet distribution width [Entitic volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 150,
+            "high": 520
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "32623-1",
+              "display": "Platelet mean volume [Entitic volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 9.4,
+            "high": 12.3
+          }
+        }
+      ]
+    },
+    "End Transfusion_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_One_Day"
+    },
+    "Consult_Referral_to_Experts_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Anemia",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Blood_Panel_F_Routine",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Blood_Panel_M_Routine",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          }
+        }
+      ]
+    },
+    "End_Consult_Referral to_Experts_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Collect_Social_and_Nutrition_History": {
+      "type": "Simple",
+      "remarks": [
+        "Done in review of systems.  Document alcohol and tobacco use."
+      ],
+      "direct_transition": "Medication_Reconciliation"
+    },
+    "Delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "hours"
+      },
+      "direct_transition": "Transfusion_Encounter"
+    },
+    "Blood_Panel_M_Routine": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24360-0",
+          "display": "Hemoglobin and Hematocrit panel - Blood"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 10,
+            "high": 11.9
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20570-8",
+              "display": "Hematocrit [Volume Fraction] of Blood"
+            }
+          ],
+          "range": {
+            "low": 30.1,
+            "high": 35
+          }
+        }
+      ],
+      "direct_transition": "Administer_Medications"
+    },
+    "Blood_Panel_F_Routine": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24360-0",
+          "display": "Hemoglobin and Hematocrit panel - Blood"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 11,
+            "high": 11.9
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20570-8",
+              "display": "Hematocrit [Volume Fraction] of Blood"
+            }
+          ],
+          "range": {
+            "low": 33,
+            "high": 36
+          }
+        }
+      ],
+      "direct_transition": "Administer_Medications"
+    },
+    "Delay_One_Day": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Consult_Referral_to_Experts_Encounter"
+    }
+  }
+}

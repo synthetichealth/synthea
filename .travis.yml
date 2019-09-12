@@ -1,31 +1,19 @@
 language: java
 jdk:
-  - oraclejdk8
-  - oraclejdk10
-
-# gradle projects have "gradle assemble" and "gradle check" run automatically
-# so a script setting is not required to verify the code compiles or run tests
-# script:
-
-# from: https://docs.travis-ci.com/user/languages/java/#Caching
-# A peculiarity of dependency caching in Gradle means that
-#  to avoid uploading the cache after every build
-#  you need to add the following lines to your .travis.yml:
+- openjdk8
 before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
 script:
-  - travis_wait ./gradlew check
+- travis_wait ./gradlew check
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
-  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash deploy.sh
+- bash <(curl -s https://codecov.io/bash)
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash deploy.sh
 notifications:
-  slack: mitrecorp:HNikOgsZALD9WxBZh5oSJve9
-  webhooks:
-    urls:
-      - https://synthea.zulipchat.com/api/v1/external/travis?stream=development&topic=build-status&api_key=XQ5SyfiEkfgjoT9uelJboOTQQOsKYCV2
-
+  slack:
+    rooms:
+      secure: kkhOz7bqwfxC8x9Ml5RBBJJNID7u9ZW2VkG41bMENkp93E3+z+dlNV7vokJOQy6BqwDZn5BcsIJdhpXHONRWMZCcUzJEyiP9QkorWVoN6xtNaKwyRq9vDHeayvQ1Ks/JL6KoI4vTZqDYQgjZ4LgpKpB9resUxdwpW5dBrYulkEzpDogduIM64TGgnLxq6pgN78kyDlqIn7GlInSYouTYQyVtv+2eQUCVdKSpTIVh02abNmHlsEeJf4KtD4eMwYbN3xS0QTnKYjxnk/0KbUz+9c7EF671ttix3GNQbY2DvSXyhEg2TXXXUpopZO495Bl4eFnSmhskh7pizVRUAItgDv52AS67RGzVx+gVDNxG82QZyyvOywzzJxTXo1+I5W8CVsm27XdfWJgmSv6vBsF0ad/HpHRtl/CPo+wlwnVlXr+dv6HPsF9FSYH+SMl0J9KZ/VcXRCKlM1xklPhP9QY+jJY6oljH9l9tGzwoSfjDv+cNmZQPh5rkm6eAkfeqovE75t1aa2vEyllQIoJIZmtdH0kvnE5RO30RaA6BFCJ4Vmu2+5k7b+bpt5r1/ve5vGaIdycq4NDaFHTTKKVyjA4OOfiCZ7EM0zlfSKf5zwTUkeU8Qv6HK8h+lAUN9j/1Xer6yjsDv/9FWn0wZ1OuvYHvm2Ik4oM/eRJZw8N4pfT7BrY=

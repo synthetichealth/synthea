@@ -23,8 +23,9 @@ import org.mitre.synthea.helpers.Utilities;
  * maps so they are more accessible and useful. TODO: merge this with Location somehow. they
  * probably don't need to be separate classes
  */
-public class Demographics {
+public class Demographics implements Comparable<Demographics> {
   public long population;
+  public String id;
   public String city;
   public String state;
   public String county;
@@ -371,11 +372,11 @@ public class Demographics {
   }
   
   /**
-   * Get a Table of (State, City, Demographics), with the given restrictions on state and city.
+   * Get a Table of (State, CityId, Demographics), with the given restrictions on state and city.
    * 
    * @param state
    *          The state that is desired. Other states will be excluded from the results.
-   * @return Table of (State, City, Demographics)
+   * @return Table of (State, CityId, Demographics)
    * @throws IOException
    *           if any exception occurs in reading the demographics file
    */
@@ -389,14 +390,14 @@ public class Demographics {
     Table<String, String, Demographics> table = HashBasedTable.create();
     
     for (Map<String,String> demographicsLine : demographicsCsv) {
-      String currCity = demographicsLine.get("NAME");
+      String currCityId = demographicsLine.get("ID");
       String currState = demographicsLine.get("STNAME");
       
       // for now, only allow one state at a time
       if (state != null && state.equalsIgnoreCase(currState)) {
         Demographics parsed = csvLineToDemographics(demographicsLine);
         
-        table.put(currState, currCity, parsed);
+        table.put(currState, currCityId, parsed);
       }
     }
     
@@ -428,12 +429,13 @@ public class Demographics {
    * @param line Line representing one city, parsed via SimpleCSV
    * @return the Demographics for that city
    */
-  public static Demographics csvLineToDemographics(Map<String,String> line) {
+  private static Demographics csvLineToDemographics(Map<String,String> line) {
     Demographics d = new Demographics();
     
     d.population = Double.valueOf(line.get("POPESTIMATE2015")).longValue(); 
     // some .0's seem to sneak in there and break Long.valueOf
-    
+
+    d.id = line.get("ID");
     d.city = line.get("NAME");
     d.state = line.get("STNAME");
     d.county = line.get("CTYNAME");
@@ -491,5 +493,10 @@ public class Demographics {
       distribution.add(e.getValue(), e.getKey());
     }
     return distribution;
+  }
+
+  @Override
+  public int compareTo(Demographics o) {
+    return (int) (this.population - o.population);
   }
 }

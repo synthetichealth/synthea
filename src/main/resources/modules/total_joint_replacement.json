@@ -84,7 +84,6 @@
     },
     "Knee_Replacement_Procedure": {
       "type": "Procedure",
-      "target_encounter": "Joint_Replacement_Encounter",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -96,7 +95,6 @@
     },
     "Hip_Replacement_Procedure": {
       "type": "Procedure",
-      "target_encounter": "Joint_Replacement_Encounter",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -108,7 +106,6 @@
     },
     "Post_Op_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Joint_Replacement_Encounter",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -226,7 +223,6 @@
     "Pre_Procedure_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -267,7 +263,6 @@
     "Post_Procedure_Encounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",

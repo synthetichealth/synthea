@@ -186,7 +186,7 @@
           ],
           "condition": {
             "condition_type": "Gender",
-            "gender": "M"
+            "gender": "F"
           }
         }
       ],
@@ -443,7 +443,7 @@
         {
           "condition": {
             "condition_type": "Gender",
-            "gender": "M"
+            "gender": "F"
           },
           "distributions": [
             {

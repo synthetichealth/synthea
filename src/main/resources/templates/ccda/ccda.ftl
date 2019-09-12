@@ -52,13 +52,13 @@
       </assignedAuthoringDevice>
       <representedOrganization>
         <id nullFlavor="NA"/>
-        <name>${preferredAmbulatoryProvider.name?replace("&", "&amp;")}</name>
+        <name>${preferredProviderwellness.name?replace("&", "&amp;")}</name>
         <telecom nullFlavor="NA"/>
         <addr>
-          <streetAddressLine>${preferredAmbulatoryProvider.address?replace("&", "&amp;")}</streetAddressLine>
-          <city>${preferredAmbulatoryProvider.city}</city>
-          <state>${preferredAmbulatoryProvider.state}</state>
-          <postalCode>${preferredAmbulatoryProvider.zip}</postalCode>
+          <streetAddressLine>${preferredProviderwellness.address?replace("&", "&amp;")}</streetAddressLine>
+          <city>${preferredProviderwellness.city}</city>
+          <state>${preferredProviderwellness.state}</state>
+          <postalCode>${preferredProviderwellness.zip}</postalCode>
         </addr>
       </representedOrganization>
     </assignedAuthor>
@@ -67,13 +67,13 @@
     <assignedCustodian>
       <representedCustodianOrganization>
         <id nullFlavor="NA"/>
-        <name>${preferredAmbulatoryProvider.name?replace("&", "&amp;")}</name>
+        <name>${preferredProviderwellness.name?replace("&", "&amp;")}</name>
         <telecom nullFlavor="NA"/>
         <addr>
-          <streetAddressLine>${preferredAmbulatoryProvider.address?replace("&", "&amp;")}</streetAddressLine>
-          <city>${preferredAmbulatoryProvider.city}</city>
-          <state>${preferredAmbulatoryProvider.state}</state>
-          <postalCode>${preferredAmbulatoryProvider.zip}</postalCode>
+          <streetAddressLine>${preferredProviderwellness.address?replace("&", "&amp;")}</streetAddressLine>
+          <city>${preferredProviderwellness.city}</city>
+          <state>${preferredProviderwellness.state}</state>
+          <postalCode>${preferredProviderwellness.zip}</postalCode>
         </addr>
       </representedCustodianOrganization>
     </assignedCustodian>

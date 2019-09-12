@@ -1,0 +1,25 @@
+{
+  "name": "Symptom50",
+  "remarks": [
+    "A test module with a 50% chance of having a Symptom"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Symptom50"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Symptom50": {
+      "type": "Symptom",
+      "symptom": "Headache",
+      "cause": "Symptom50",
+      "probability": 0.5,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "Terminal"
+    }
+  }
+}

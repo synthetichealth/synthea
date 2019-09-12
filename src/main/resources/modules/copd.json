@@ -1,4 +1,3 @@
-
 {
   "name": "COPD",
   "remarks": [
@@ -274,7 +273,6 @@
     },
     "Initial_FEV_Test": {
       "type": "Procedure",
-      "target_encounter": "DiagnosisEncounter",
       "reason": "copd_variant",
       "codes": [
         {
@@ -320,7 +318,6 @@
     },
     "Nonsmoker_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "DiagnosisEncounter",
       "reason": "copd_variant",
       "codes": [
         {
@@ -345,7 +342,6 @@
     },
     "Smoker_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "DiagnosisEncounter",
       "reason": "copd_variant",
       "codes": [
         {
@@ -370,7 +366,20 @@
     },
     "End_Diagnosis_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Living_with_COPD"
+      "distributed_transition": [
+        {
+          "transition": "Check_Anemia_Exist",
+          "distribution": 0.21
+        },
+        {
+          "transition": "Living_with_COPD",
+          "distribution": 0.79
+        }
+      ],
+      "remarks": [
+        "The prevalence of anemia in patients with COPD varies from 7.5% to 33% - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4372868/",
+        ""
+      ]
     },
     "Living_with_COPD": {
       "type": "Simple",
@@ -602,7 +611,6 @@
     },
     "Followup_FEV_Test": {
       "type": "Procedure",
-      "target_encounter": "COPD_Followup_Encounter",
       "reason": "copd_variant",
       "codes": [
         {
@@ -786,7 +794,6 @@
     },
     "Prescribe_Medication": {
       "type": "MedicationOrder",
-      "target_encounter": "COPD_Followup_Encounter",
       "reason": "copd_variant",
       "codes": [
         {
@@ -911,7 +918,6 @@
     },
     "Lung_Transplant": {
       "type": "Procedure",
-      "target_encounter": "Surgery_Encounter",
       "reason": "copd_variant",
       "codes": [
         {
@@ -929,7 +935,6 @@
     },
     "Lung_Volume_Reduction": {
       "type": "Procedure",
-      "target_encounter": "Surgery_Encounter",
       "reason": "copd_variant",
       "codes": [
         {
@@ -946,7 +951,6 @@
     },
     "Pulmonary_Rehab": {
       "type": "Procedure",
-      "target_encounter": "COPD_Followup_Encounter",
       "reason": "copd_variant",
       "codes": [
         {
@@ -971,6 +975,27 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Anemia_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "anemia/anemia_sub",
+      "direct_transition": "Living_with_COPD"
+    },
+    "Check_Anemia_Exist": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Anemia_Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Living_with_COPD"
+        }
+      ]
     }
   }
 }

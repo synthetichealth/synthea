@@ -21,14 +21,14 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
 
-public class HospitalExporterTest {
+public class HospitalExporterTestR4 {
 
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
   @Test
   public void testFHIRExport() throws Exception {
-    FhirContext ctx = FhirContext.forDstu3();
+    FhirContext ctx = FhirContext.forR4();
     FhirValidator validator = ctx.newValidator();
     validator.setValidateAgainstStandardSchema(true);
     validator.setValidateAgainstStandardSchematron(true);
@@ -37,13 +37,15 @@ public class HospitalExporterTest {
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
     Config.set("exporter.hospital.fhir.export", "true");
     Config.set("exporter.fhir.transaction_bundle", "true");
+    FhirR4.TRANSACTION_BUNDLE = true; // set this manually, in case it has already been loaded.
     Location location = new Location("Massachusetts", null);
-    Provider.loadProviders(location);
+    Provider.clear();
+    Provider.loadProviders(location, 1L);
     assertNotNull(Provider.getProviderList());
     assertFalse(Provider.getProviderList().isEmpty());
 
-    Provider.getProviderList().get(0).incrementEncounters(EncounterType.WELLNESS.toString(), 0);
-    HospitalExporter.export(0L);
+    Provider.getProviderList().get(0).incrementEncounters(EncounterType.WELLNESS, 0);
+    HospitalExporterR4.export(0L);
 
     File expectedExportFolder = tempOutputFolder.toPath().resolve("fhir").toFile();
     assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());

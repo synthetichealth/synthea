@@ -42,8 +42,6 @@
     },
     "annual_wellness_visit": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "codes": [],
       "direct_transition": "wellness_procedure",
       "wellness": true
     },
@@ -540,7 +538,6 @@
     },
     "Stage 4 Prostate Cancer": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Prostate_Cancer_Therapy",
       "codes": [
         {
@@ -553,7 +550,6 @@
     },
     "In Situ Prostate Cancer": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Prostate_Cancer_Therapy",
       "codes": [
         {
@@ -1252,7 +1248,6 @@
           }
         }
       ],
-      "target_encounter": "Wellness_Encounter",
       "direct_transition": "Chemotherapy_Hormone Order"
     }
   }

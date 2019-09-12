@@ -26,7 +26,7 @@ public class SimpleYML {
    */
   public SimpleYML(String rawContent)  {
     Yaml yaml = new Yaml();
-    internalMap = (Map<String,?>)yaml.load(rawContent);
+    internalMap = (Map<String,?>) yaml.load(rawContent);
   }
   
   /**

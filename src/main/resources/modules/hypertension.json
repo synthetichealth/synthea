@@ -1,0 +1,515 @@
+{
+  "name": "Hypertension",
+  "remarks": [
+    "Hypertension modelled after the JNC 8 Hypertension Guideline Algorithm.",
+    "",
+    "The hypertension model section located in the beginning of the Metabolic Syndrome Standard of Care   ",
+    "",
+    "The recommendation for first-line therapy for hypertension remains a beta blocker or diuretic given in a low dosage. A target blood pressure of less than 140/90 mm Hg is achieved in about 50 percent of patients treated with monotherapy; two or more agents from different pharmacologic classes are often needed to achieve adequate blood pressure control. Single-dose combination antihypertension therapy is an important option that combines efficacy of blood pressure reduction and a low side effect profile with convenient once-daily dosing to enhance compliance. Combination antihypertensives include combined agents from the following pharmacologic classes: diuretics and potassium-sparing diuretics, beta blockers and diuretics, angiotensin-converting enzyme (ACE) inhibitors and diuretics, angiotensin-II antagonists and diuretics, and calcium channel blockers and ACE inhibitors - https://www.aafp.org/afp/2000/0515/p3049.html"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "remarks": [
+        "Initial impl == direct translation of ruby module"
+      ],
+      "direct_transition": "Wellness_Encounter"
+    },
+    "Diagnose_Hypertension": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 59621000,
+          "display": "Hypertension"
+        }
+      ],
+      "assign_to_attribute": "hypertension_dx",
+      "direct_transition": "Set_BP_Not Controlled"
+    },
+    "Hypertension_Medication_Low": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 429503,
+          "display": "Hydrochlorothiazide 12.5 MG"
+        }
+      ],
+      "direct_transition": "End_Wellness_Encounter",
+      "assign_to_attribute": "hypertension_medication",
+      "reason": "hypertension_dx"
+    },
+    "Hypertension_Medication_High": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 316049,
+          "display": "Hydrochlorothiazide 25 MG"
+        }
+      ],
+      "direct_transition": "End_Wellness_Encounter",
+      "assign_to_attribute": "hypertension_medication",
+      "reason": "hypertension_dx"
+    },
+    "Hypertension_Followup_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 390906007,
+          "display": "Hypertension follow-up encounter"
+        }
+      ],
+      "direct_transition": "Record_BP"
+    },
+    "End_Hypertension_Followup_Encounter": {
+      "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "blood_pressure_controlled",
+            "operator": "==",
+            "value": false
+          },
+          "distributions": [
+            {
+              "transition": "Set_BP_Controlled_2",
+              "distribution": 0.49
+            },
+            {
+              "transition": "Delay 2_Month",
+              "distribution": 0.51
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Wellness_Encounter"
+        }
+      ]
+    },
+    "Hypertension_Combination_Medication": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 746030,
+          "display": "Atenolol 50 MG / Chlorthalidone 25 MG Oral Tablet"
+        }
+      ],
+      "assign_to_attribute": "hypertension_medication_2",
+      "reason": "hypertension_dx",
+      "direct_transition": "End_Hypertension_Followup_Encounter"
+    },
+    "End_Hypertension_Comb_Medication": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "hypertension_medication_2",
+      "direct_transition": "Hypertension_Combination_Medication_2"
+    },
+    "Hypertension_Combination_Medication_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 999969,
+          "display": "Amlodipine 5 MG / Hydrochlorothiazide 12.5 MG / Olmesartan medoxomil 20 MG"
+        }
+      ],
+      "assign_to_attribute": "hypertension_medication_3",
+      "reason": "hypertension_dx",
+      "direct_transition": "End_Hypertension_Followup_Encounter_2",
+      "remarks": [
+        "Olmesartan is an angiotensin II receptor blocker (ARB) that relaxes the blood vessels.",
+        "Amlodipine is a calcium channel blocker that relaxes the blood vessels.",
+        "Hydrochlorothiazide is a thiazide diuretic (water pill). It is used to help reduce the amount of water in the body by increasing the flow of urine."
+      ]
+    },
+    "Hypertension_Followup_Encounter_2": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 390906007,
+          "display": "Hypertension follow-up encounter"
+        }
+      ],
+      "direct_transition": "Record_BP_2"
+    },
+    "Hypertension_Followup_Encounter_3": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 390906007,
+          "display": "Hypertension follow-up encounter"
+        }
+      ],
+      "direct_transition": "Record_BP_3"
+    },
+    "End_Hypertension_Followup_Encounter_2": {
+      "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "blood_pressure_controlled",
+            "operator": "==",
+            "value": false
+          },
+          "distributions": [
+            {
+              "transition": "Set_BP_Controlled_3",
+              "distribution": 0.49
+            },
+            {
+              "transition": "Delay_2_Month_2",
+              "distribution": 0.51
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Wellness_Encounter"
+        }
+      ]
+    },
+    "End_Hypertension_Followup_Encounter_3": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wellness_Encounter"
+    },
+    "LifeStyle_Modifications_Hypertension_CarePlan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 443402002,
+          "display": "Lifestyle education regarding hypertension"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 386463000,
+          "display": "Prescribed activity/exercise education"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 413473000,
+          "display": "Counseling about alcohol consumption"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 1151000175103,
+          "display": "Dietary approaches to stop hypertension diet"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 225323000,
+          "display": "Smoking cessation education"
+        }
+      ],
+      "goals": [
+        {
+          "addresses": [
+            "hypertension_dx"
+          ],
+          "text": "Maintain blood pressure below 140/90 mm[Hg]"
+        },
+        {
+          "addresses": [
+            "hypertension_dx"
+          ],
+          "text": "Reduce sodium intake to no more than 2,400 mg/day"
+        }
+      ],
+      "reason": "hypertension_dx",
+      "conditional_transition": [
+        {
+          "transition": "Hypertension_Medication_Low",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": "<",
+            "value": 160
+          }
+        },
+        {
+          "transition": "Hypertension_Medication_High",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": ">=",
+            "value": 160
+          }
+        }
+      ]
+    },
+    "End_Hypertension_Medication": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "hypertension_medication",
+      "direct_transition": "Hypertension_Combination_Medication"
+    },
+    "Wellness_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "conditional_transition": [
+        {
+          "transition": "Diagnose_Hypertension",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "hypertension",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hypertension_dx",
+                "operator": "is nil"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Wellness_Encounter"
+        }
+      ]
+    },
+    "End_Wellness_Encounter": {
+      "type": "EncounterEnd",
+      "distributed_transition": [
+        {
+          "transition": "Set_BP_Controlled",
+          "distribution": 0.49
+        },
+        {
+          "transition": "Delay_One_Month",
+          "distribution": 0.51
+        }
+      ]
+    },
+    "Delay_One_Month": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "direct_transition": "Hypertension_Followup_Encounter"
+    },
+    "Record_BP": {
+      "type": "MultiObservation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "55284-4",
+          "display": "Blood Pressure"
+        }
+      ],
+      "observations": [
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8480-6",
+              "display": "Systolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Systolic Blood Pressure"
+        },
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8462-4",
+              "display": "Diastolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Diastolic Blood Pressure"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "End_Hypertension_Medication",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "blood_pressure_controlled",
+            "operator": "==",
+            "value": false
+          }
+        },
+        {
+          "transition": "End_Hypertension_Followup_Encounter"
+        }
+      ]
+    },
+    "Record_BP_2": {
+      "type": "MultiObservation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "55284-4",
+          "display": "Blood Pressure"
+        }
+      ],
+      "observations": [
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8480-6",
+              "display": "Systolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Systolic Blood Pressure"
+        },
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8462-4",
+              "display": "Diastolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Diastolic Blood Pressure"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "End_Hypertension_Comb_Medication",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "blood_pressure_controlled",
+            "operator": "==",
+            "value": false
+          }
+        },
+        {
+          "transition": "End_Hypertension_Followup_Encounter_2"
+        }
+      ]
+    },
+    "Record_BP_3": {
+      "type": "MultiObservation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "55284-4",
+          "display": "Blood Pressure"
+        }
+      ],
+      "observations": [
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8480-6",
+              "display": "Systolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Systolic Blood Pressure"
+        },
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8462-4",
+              "display": "Diastolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Diastolic Blood Pressure"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Referral To Hypertension Clinic",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "blood_pressure_controlled",
+            "operator": "==",
+            "value": false
+          }
+        },
+        {
+          "transition": "End_Hypertension_Followup_Encounter_3"
+        }
+      ]
+    },
+    "Referral To Hypertension Clinic": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183856001,
+          "display": "Referral to hypertension clinic"
+        }
+      ],
+      "direct_transition": "End_Hypertension_Followup_Encounter_3"
+    },
+    "Set_BP_Not Controlled": {
+      "type": "SetAttribute",
+      "attribute": "blood_pressure_controlled",
+      "direct_transition": "LifeStyle_Modifications_Hypertension_CarePlan",
+      "value": false
+    },
+    "Delay 2_Month": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 2,
+        "unit": "months"
+      },
+      "direct_transition": "Hypertension_Followup_Encounter_2"
+    },
+    "Delay_2_Month_2": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 2,
+        "unit": "months"
+      },
+      "direct_transition": "Hypertension_Followup_Encounter_3"
+    },
+    "Set_BP_Controlled": {
+      "type": "SetAttribute",
+      "attribute": "blood_pressure_controlled",
+      "value": true,
+      "direct_transition": "Delay_One_Month"
+    },
+    "Set_BP_Controlled_2": {
+      "type": "SetAttribute",
+      "attribute": "blood_pressure_controlled",
+      "value": true,
+      "direct_transition": "Delay 2_Month"
+    },
+    "Set_BP_Controlled_3": {
+      "type": "SetAttribute",
+      "attribute": "blood_pressure_controlled",
+      "value": true,
+      "direct_transition": "Delay_2_Month_2"
+    }
+  }
+}
