@@ -313,7 +313,7 @@ public class HealthRecord {
     public void generateUDI(Person person) {
       deviceIdentifier = trimLong(person.random.nextLong(), 14);
       manufactureTime = start - Utilities.convertTime("weeks", 3);
-      expirationTime = start + Utilities.convertTime("years", 100);
+      expirationTime = start + Utilities.convertTime("years", 25);
       lotNumber = trimLong(person.random.nextLong(), (int) person.rand(4, 20));
       serialNumber = trimLong(person.random.nextLong(), (int) person.rand(4, 20));
 
