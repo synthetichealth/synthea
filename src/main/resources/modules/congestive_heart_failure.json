@@ -1350,7 +1350,7 @@
     "Daily self-measurement": {
       "type": "MultiObservation",
       "category": "vital-signs",
-      "number_of_observations": 0,
+      "number_of_observations": 2,
       "codes": [
         {
           "system": "LOINC",
@@ -1362,7 +1362,7 @@
       "observations": [
         {
           "category": "vital-signs",
-          "unit": "",
+          "unit": "mm[Hg]",
           "codes": [
             {
               "system": "LOINC",
@@ -1374,7 +1374,7 @@
         },
         {
           "category": "vital-signs",
-          "unit": "",
+          "unit": "mm[Hg]",
           "codes": [
             {
               "system": "LOINC",
