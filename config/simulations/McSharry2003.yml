@@ -28,13 +28,13 @@ charts:
       # Currently only "line" or "scatter" charts are supported. "scatter" is the default
       type: line
       title: ECG
-      xAxis: time
-      xAxisLabel: time (s)
-      yAxisLabel: Current (A)
+      axisParamX: time
+      axisLabelX: time (s)
+      axisLabelY: Current (A)
       # Starting data time point for chart rendering. Defaults to 0.
       startTime: 0
       # Ending data time point for chart rendering. Defaults to sim duration.
-      endTime: 3
+      endTime: 10
       series:
         # Each series configuration item requires both the model parameter
         # as well as a series label for the chart

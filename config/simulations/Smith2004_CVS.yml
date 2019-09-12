@@ -29,9 +29,9 @@ charts:
       # Currently only "line" or "scatter" charts are supported. "scatter" is the default
       type: line
       title: Cardiovascular Pressures
-      xAxis: time
-      xAxisLabel: time (s)
-      yAxisLabel: Pressure (mmhg)
+      axisParamX: time
+      axisLabelX: time (s)
+      axisLabelY: Pressure (mmhg)
       # Starting data time point for chart rendering. Defaults to 0.
       startTime: 0
       # Ending data time point for chart rendering. Defaults to sim duration.
@@ -51,9 +51,9 @@ charts:
     - filename: volumes.png
       type: line
       title: Cardiovascular Volumes
-      xAxis: time
-      xAxisLabel: time (s)
-      yAxisLabel: utf-8Volume (ml)utf-8
+      axisParamX: time
+      axisLabelX: time (s)
+      axisLabelY: utf-8Volume (ml)utf-8
       series:
         - param: V_lv
           label: Left Ventricle
@@ -65,9 +65,9 @@ charts:
     - filename: left_heart_pv.png
       type: line
       title: Left Ventricle Pressure-Volume Relationship
-      xAxis: V_lv
-      xAxisLabel: Volume (ml)
-      yAxisLabel: Pressure (mmhg)
+      axisParamX: V_lv
+      axisLabelX: Volume (ml)
+      axisLabelY: Pressure (mmhg)
       startTime: 2
       series:
         - param: P_lv
@@ -76,9 +76,9 @@ charts:
     - filename: right_heart_pv.png
       type: line
       title: Right Ventricle Pressure-Volume Relationship
-      xAxis: V_rv
-      xAxisLabel: Volume (ml)
-      yAxisLabel: Pressure (mmhg)
+      axisParamX: V_rv
+      axisLabelX: Volume (ml)
+      axisLabelY: Pressure (mmhg)
       startTime: 2
       series:
         - param: P_rv
