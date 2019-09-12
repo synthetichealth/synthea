@@ -1,6 +1,6 @@
 
-# Data and charts will be placed in output/{name}/
-# Data file will always be output/{name}/{name}.csv
+# Data and charts will be placed in output/physiology/{name}/
+# Data file will always be output/physiology/{name}/{name}.csv
 name: Smith2004_CVS
 
 # Name of the model file
@@ -26,19 +26,23 @@ inputs:
 # If you need more control over the chart, import the csv file into another program with that capability.
 charts:
     - filename: pressures.png
-      # Currently only "line" or "scatter" charts are supported. "scatter" is the default
+      # Currently only "line" or "scatter" charts are supported.
       type: line
+      # Title will be rendered above the chart
       title: Cardiovascular Pressures
+      # Model parameter for the x axis
       axisParamX: time
+      # Label for the X axis
       axisLabelX: time (s)
+      # Label for the Y axis
       axisLabelY: Pressure (mmhg)
       # Starting data time point for chart rendering. Defaults to 0.
       startTime: 0
       # Ending data time point for chart rendering. Defaults to sim duration.
       endTime: 4
       series:
-        # Each series configuration item requires both the model parameter
-        # as well as a series label for the chart
+          # Each series configuration item requires the model parameter
+          # Labels are optional. If not provided, the param name will be used in the legend
         - param: P_lv
           label: Left Ventricle
         - param: P_rv
