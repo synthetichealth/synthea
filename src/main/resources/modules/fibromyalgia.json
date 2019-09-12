@@ -174,14 +174,14 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "872781000000100",
+          "code": "408869004",
           "display": "Musculoskeletal care"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "872781000000100",
+          "code": "386294003",
           "display": "Joint mobility exercises"
         },
         {

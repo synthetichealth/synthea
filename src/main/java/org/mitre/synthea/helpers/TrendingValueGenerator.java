@@ -2,11 +2,7 @@ package org.mitre.synthea.helpers;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import java.security.SecureRandom;
-import java.util.Random;
-
 import org.mitre.synthea.world.agents.Person;
-
 
 /**
  * A ValueGenerator for generation of trending values. 

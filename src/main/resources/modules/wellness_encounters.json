@@ -41,16 +41,13 @@
       "unit": "kg",
       "conditional_transition": [
         {
+          "transition": "Record_Weight_For_Length_Percentile",
           "condition": {
             "condition_type": "Age",
-            "operator": "<",
-            "quantity": 2,
+            "operator": "<=",
+            "quantity": 3,
             "unit": "years"
-          },
-          "remarks": [
-            "BMI is not particularly meaningful for children under 2"
-          ],
-          "transition": "Record_BP"
+          }
         },
         {
           "transition": "Record_BMI"
@@ -69,7 +66,31 @@
         }
       ],
       "unit": "kg/m2",
-      "direct_transition": "Record_BP"
+      "conditional_transition": [
+        {
+          "transition": "Record_BMI_Percentile",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 2,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Age",
+                "operator": "<",
+                "quantity": 20,
+                "unit": "years"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Record_BP"
+        }
+      ]
     },
     "Record_BP": {
       "type": "MultiObservation",
@@ -743,6 +764,47 @@
         "low": 0,
         "high": 4
       }
+    },
+    "Record_BMI_Percentile": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "%",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "59576-9",
+          "display": "Body mass index (BMI) [Percentile] Per age and gender"
+        }
+      ],
+      "direct_transition": "Record_BP",
+      "attribute": "bmi_percentile"
+    },
+    "Record_Weight_For_Length_Percentile": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "%",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "77606-2",
+          "display": "Weight-for-length Per age and sex"
+        }
+      ],
+      "attribute": "current_weight_length_percentile",
+      "conditional_transition": [
+        {
+          "transition": "Record_BMI",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 2,
+            "unit": "years"
+          }
+        },
+        {
+          "transition": "Record_BP"
+        }
+      ]
     }
   }
 }

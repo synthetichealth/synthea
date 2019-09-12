@@ -36,7 +36,7 @@
             <#elseif entry.value?is_boolean>
             <value xsi:type="BL" value="${entry.value}" />
             <#elseif entry.value?is_string>
-            <value xsi:type="ST">{entry.value}</value>
+            <value xsi:type="ST">${entry.value}</value>
             </#if>
           </observation>
         </component>
@@ -59,7 +59,7 @@
             <#elseif obs.value?is_boolean>
             <value xsi:type="BL" value="${obs.value}" />
             <#elseif obs.value?is_string>
-            <value xsi:type="ST">{entry.value}</value>
+            <value xsi:type="ST">${entry.value}</value>
             </#if>
             <#else>
             <value xsi:type="PQ" nullFlavor="UNK"/>

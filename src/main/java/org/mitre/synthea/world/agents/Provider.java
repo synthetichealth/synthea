@@ -418,7 +418,7 @@ public class Provider implements QuadTreeData {
       }
       out.put(Person.GENDER, gender);
 
-      clinician = new Clinician(clinicianSeed, clinicianRand, clinicianIdentifier);
+      clinician = new Clinician(clinicianSeed, clinicianRand, clinicianIdentifier, this);
       clinician.attributes.putAll(out);
       clinician.attributes.put(Person.ADDRESS, provider.address);
       clinician.attributes.put(Person.CITY, provider.city);

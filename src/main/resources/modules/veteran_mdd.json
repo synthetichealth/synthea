@@ -93,7 +93,7 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "vetreran",
+            "attribute": "veteran",
             "operator": "==",
             "value": "Between_KW_and_VW"
           },
