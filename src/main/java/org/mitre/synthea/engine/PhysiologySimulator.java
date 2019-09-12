@@ -563,8 +563,14 @@ public class PhysiologySimulator {
 
     // Add each series to the dataset
     for (SeriesConfig seriesConfig : config.getSeries()) {
+      // If a label is not provided, use the parameter as the label
+      String seriesLabel = seriesConfig.getLabel();
+      if (seriesLabel == null) {
+        seriesLabel = seriesConfig.getParam();
+      }
+      
       // don't auto-sort the series
-      XYSeries series = new XYSeries(seriesConfig.getLabel(), false);
+      XYSeries series = new XYSeries(seriesLabel, false);
 
       Column col = table.getColumn(seriesConfig.getParam());
       
@@ -689,7 +695,7 @@ public class PhysiologySimulator {
     );
     
     // Create the output directory if it doesn't already exist
-    Path outputDir = Paths.get("output", config.getName());
+    Path outputDir = Paths.get("output", "physiology", config.getName());
     if (Files.notExists(outputDir)) {
       try {
         Files.createDirectories(outputDir);
