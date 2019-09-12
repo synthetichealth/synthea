@@ -1,16 +1,12 @@
 package org.mitre.synthea.helpers;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.bind.JAXBException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.mitre.synthea.world.agents.Person;
@@ -18,17 +14,17 @@ import org.mitre.synthea.world.agents.Person;
 public class ExpressionProcessorTest {
   @Test
   public void testBasic() {
-    String exp = "10 + 3";
-    Object result = ExpressionProcessor.evaluate(exp, null, 0L);
-    assertEquals(13, result);
+    ExpressionProcessor expProcessor = new ExpressionProcessor("10 + 3");
+    Number result = (Number) expProcessor.evaluate(null, 0L);
+    assertEquals(13, result.intValue());
     
-    exp = "25 / 2";
-    result = ExpressionProcessor.evaluate(exp, null, 0L);
-    assertEquals(12.5, result);
+    expProcessor = new ExpressionProcessor("25 / 2");
+    result = (Number) expProcessor.evaluate(null, 0L);
+    assertEquals(12.5, result.doubleValue(), 0.001);
     
-    exp = "2 * (10 + 6) + 4 + 3 * ((10 / 2) * (9 / 3))";
-    result = ExpressionProcessor.evaluate(exp, null, 0L);
-    assertEquals(81L, result);
+    expProcessor = new ExpressionProcessor("2 * (10 + 6) + 4 + 3 * ((10 / 2) * (9 / 3))");
+    result = (Number) expProcessor.evaluate(null, 0L);
+    assertEquals(81L, result.doubleValue(), 0.001);
   } 
   
   @Test
@@ -36,30 +32,32 @@ public class ExpressionProcessorTest {
     Person p = new Person(0L);
     p.attributes.put("age", 26);
     String exp = "#{age} / 2 + 7";
-    Object result = ExpressionProcessor.evaluate(exp, p, 0L);
-    assertTrue(result instanceof Number);
-    assertEquals(20L, ((Number)result).longValue());
+    ExpressionProcessor expProcessor = new ExpressionProcessor(exp);
+    Number result = (Number) expProcessor.evaluate(p, 0L);
+    assertEquals(20L, result.longValue());
   }
   
   @Test
   public void testInstance() {
-    Map<String,String> typeMap = new HashMap();
+    Map<String,String> typeMap = new HashMap<String,String>();
     typeMap.put("var_one", "Decimal");
     typeMap.put("var_two", "Decimal");
     typeMap.put("var_three", "List<Decimal>");
-    ExpressionProcessor expProcessor = new ExpressionProcessor("#{var_one} * (#{var_two} + 3.0) + Max(#{var_three})", typeMap);
     
-    Map<String,Object> params = new HashMap();
+    List<BigDecimal> varThree = new ArrayList<BigDecimal>();
+    varThree.add(new BigDecimal(3.0));
+    varThree.add(new BigDecimal(1.2342));
+    varThree.add(new BigDecimal(5.25512));
+    varThree.add(new BigDecimal(12.0));
     
-    List<BigDecimal> var_three = new ArrayList();
-    var_three.add(new BigDecimal(3.0));
-    var_three.add(new BigDecimal(1.2342));
-    var_three.add(new BigDecimal(5.25512));
-    var_three.add(new BigDecimal(12.0));
+    Map<String,Object> params = new HashMap<String,Object>();
     
     params.put("var_one", new BigDecimal(2.0));
     params.put("var_two", new BigDecimal(3.0));
-    params.put("var_three", var_three);
+    params.put("var_three", varThree);
+    
+    ExpressionProcessor expProcessor = new ExpressionProcessor(
+        "#{var_one} * (#{var_two} + 3.0) + Max(#{var_three})", typeMap);
     
     double result = expProcessor.evaluateNumeric(params).doubleValue();
     
@@ -68,12 +66,13 @@ public class ExpressionProcessorTest {
   
   @Test
   public void testWithSpaces() {
-    Map<String,String> typeMap = new HashMap();
+    Map<String,String> typeMap = new HashMap<String,String>();
     typeMap.put("var one", "Decimal");
     typeMap.put("var two", "Decimal");
-    ExpressionProcessor expProcessor = new ExpressionProcessor("#{var one} * (#{var two} + 3.0)", typeMap);
+    ExpressionProcessor expProcessor = new ExpressionProcessor(
+        "#{var one} * (#{var two} + 3.0)", typeMap);
     
-    Map<String,Object> params = new HashMap();
+    Map<String,Object> params = new HashMap<String,Object>();
     
     params.put("var one", new BigDecimal(2.0));
     params.put("var two", new BigDecimal(3.0));

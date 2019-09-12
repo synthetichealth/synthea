@@ -523,7 +523,7 @@ public abstract class State implements Cloneable {
         
         if (type == IoType.ATTRIBUTE) {
           person.attributes.put(to, value);
-        } else if (type == IoType.VITAL_SIGN){
+        } else if (type == IoType.VITAL_SIGN) {
           try {
             // Set as a constant value
             org.mitre.synthea.world.concepts.VitalSign vs =
@@ -676,10 +676,16 @@ public abstract class State implements Cloneable {
     private String attribute;
     private Object value;
     private String expression;
+    private transient ExpressionProcessor expProcessor;
 
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
+      
+      // If there's an expression, create the processor for it
+      if (this.expression != null) { 
+        expProcessor = new ExpressionProcessor(this.expression);
+      }
 
       // special handling for integers
       if (value instanceof Double) {
@@ -697,13 +703,14 @@ public abstract class State implements Cloneable {
       clone.attribute = attribute;
       clone.value = value;
       clone.expression = expression;
+      clone.expProcessor = expProcessor;
       return clone;
     }
 
     @Override
     public boolean process(Person person, long time) {
-      if (expression != null) {
-        value = ExpressionProcessor.evaluate(expression, person, time);
+      if (expProcessor != null) {
+        value = expProcessor.evaluate(person, time);
       }
 
       if (value != null) {
@@ -1109,7 +1116,8 @@ public abstract class State implements Cloneable {
    * after the target Encounter state and before the EncounterEnd. See the Encounter section above
    * for more details. The MedicationOrder state supports identifying a previous ConditionOnset or
    * the name of an attribute as the reason for the prescription. Adding a 'administration' field
-   * allows for the MedicationOrder to also export a MedicationAdministration into the exported FHIR record.
+   * allows for the MedicationOrder to also export a MedicationAdministration into the exported
+   * FHIR record.
    */
   public static class MedicationOrder extends State {
     private List<Code> codes;
@@ -1403,6 +1411,17 @@ public abstract class State implements Cloneable {
     private Range<Double> range;
     private Exact<Double> exact;
     private String expression;
+    private transient ExpressionProcessor expProcessor;
+    
+    @Override
+    protected void initialize(Module module, String name, JsonObject definition) {
+      super.initialize(module, name, definition);
+      
+      // If there's an expression, create the processor for it
+      if (this.expression != null) { 
+        expProcessor = new ExpressionProcessor(this.expression);
+      }
+    }
 
     @Override
     public VitalSign clone() {
@@ -1412,6 +1431,7 @@ public abstract class State implements Cloneable {
       clone.vitalSign = vitalSign;
       clone.unit = unit;
       clone.expression = expression;
+      clone.expProcessor = expProcessor;
       return clone;
     }
 
@@ -1421,8 +1441,8 @@ public abstract class State implements Cloneable {
         person.setVitalSign(vitalSign, new ConstantValueGenerator(person, exact.quantity));
       } else if (range != null) {
         person.setVitalSign(vitalSign, new RandomValueGenerator(person, range.low, range.high));
-      } else if (expression != null) {
-        Number value = (Number) ExpressionProcessor.evaluate(expression, person, time);
+      } else if (expProcessor != null) {
+        Number value = (Number) expProcessor.evaluate(person, time);
         person.setVitalSign(vitalSign, value.doubleValue());
       } else {
         throw new RuntimeException(
@@ -1475,6 +1495,17 @@ public abstract class State implements Cloneable {
     private String category;
     private String unit;
     private String expression;
+    private transient ExpressionProcessor expProcessor;
+    
+    @Override
+    protected void initialize(Module module, String name, JsonObject definition) {
+      super.initialize(module, name, definition);
+      
+      // If there's an expression, create the processor for it
+      if (this.expression != null) { 
+        expProcessor = new ExpressionProcessor(this.expression);
+      }
+    }
 
     @Override
     public Observation clone() {
@@ -1505,8 +1536,8 @@ public abstract class State implements Cloneable {
         value = person.getVitalSign(vitalSign, time);
       } else if (valueCode != null) {
         value = valueCode;
-      } else if (expression != null) {
-        value = ExpressionProcessor.evaluate(expression, person, time);
+      } else if (expProcessor != null) {
+        value = expProcessor.evaluate(person, time);
       } 
       HealthRecord.Observation observation = person.record.observation(time, primaryCode, value);
       entry = observation;
