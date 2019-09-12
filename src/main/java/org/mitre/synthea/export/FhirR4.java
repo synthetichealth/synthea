@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -58,11 +59,14 @@ import org.hl7.fhir.r4.model.Device.DeviceNameType;
 import org.hl7.fhir.r4.model.Device.FHIRDeviceStatus;
 import org.hl7.fhir.r4.model.DiagnosticReport;
 import org.hl7.fhir.r4.model.DiagnosticReport.DiagnosticReportStatus;
+import org.hl7.fhir.r4.model.DocumentReference;
+import org.hl7.fhir.r4.model.DocumentReference.DocumentReferenceContextComponent;
 import org.hl7.fhir.r4.model.Dosage;
 import org.hl7.fhir.r4.model.Dosage.DosageDoseAndRateComponent;
 import org.hl7.fhir.r4.model.Encounter.EncounterHospitalizationComponent;
 import org.hl7.fhir.r4.model.Encounter.EncounterStatus;
 import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
+import org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatus;
 import org.hl7.fhir.r4.model.ExplanationOfBenefit;
 import org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome;
 import org.hl7.fhir.r4.model.ExplanationOfBenefit.TotalComponent;
@@ -289,6 +293,13 @@ public class FhirR4 {
 
       for (ImagingStudy imagingStudy : encounter.imagingStudies) {
         imagingStudy(personEntry, bundle, encounterEntry, imagingStudy);
+      }
+
+      if (USE_US_CORE_IG) {
+        String clinicalNoteText = ClinicalNoteExporter.export(person, encounter);
+        boolean lastNote =
+            (encounter == person.record.encounters.get(person.record.encounters.size() - 1));
+        clinicalNote(personEntry, bundle, encounterEntry, clinicalNoteText, lastNote);
       }
 
       // one claim per encounter
@@ -653,7 +664,6 @@ public class FhirR4 {
       Code code = encounter.codes.get(0);
       encounterResource.addType(mapCodeToCodeableConcept(code, SNOMED_URI));
     }
-
 
     Coding classCode = new Coding();
     classCode.setCode(EncounterType.fromString(encounter.type).code());
@@ -2050,6 +2060,77 @@ public class FhirR4 {
     }
 
     return newEntry(bundle, reportResource);
+  }
+
+  /**
+   * Add a clinical note to the Bundle, which adds both a DocumentReference and a
+   * DiagnosticReport.
+   *
+   * @param personEntry    The Entry for the Person
+   * @param bundle         Bundle to add the Report to
+   * @param encounterEntry Current Encounter entry
+   * @param clinicalNoteText The plain text contents of the note.
+   * @param currentNote If this is the most current note.
+   * @return The entry for the DocumentReference.
+   */
+  private static BundleEntryComponent clinicalNote(BundleEntryComponent personEntry, Bundle bundle,
+      BundleEntryComponent encounterEntry, String clinicalNoteText, boolean currentNote) {
+    // We'll need the encounter...
+    org.hl7.fhir.r4.model.Encounter encounter =
+        (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
+
+    // Add a DiagnosticReport
+    DiagnosticReport reportResource = new DiagnosticReport();
+    if (USE_US_CORE_IG) {
+      Meta meta = new Meta();
+      meta.addProfile(
+          "http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-note");
+      reportResource.setMeta(meta);
+    }
+    reportResource.setStatus(DiagnosticReportStatus.FINAL);
+    reportResource.addCategory(new CodeableConcept(
+        new Coding(LOINC_URI, "51847-2", "Evaluation+Plan note")));
+    reportResource.setCode(reportResource.getCategoryFirstRep());
+    reportResource.setSubject(new Reference(personEntry.getFullUrl()));
+    reportResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
+    reportResource.setEffective(encounter.getPeriod().getStartElement());
+    reportResource.setIssued(encounter.getPeriod().getStart());
+    if (encounter.hasParticipant()) {
+      reportResource.addPerformer(encounter.getParticipantFirstRep().getIndividual());
+    } else {
+      reportResource.addPerformer(encounter.getServiceProvider());
+    }
+    reportResource.addPresentedForm()
+        .setContentType("text/plain")
+        .setData(Base64.getEncoder().encode(clinicalNoteText.getBytes()));
+    newEntry(bundle, reportResource);
+
+    // Add a DocumentReference
+    DocumentReference documentReference = new DocumentReference();
+    if (USE_US_CORE_IG) {
+      Meta meta = new Meta();
+      meta.addProfile(
+          "http://hl7.org/fhir/us/core/StructureDefinition/us-core-documentreference");
+      documentReference.setMeta(meta);
+    }
+    if (currentNote) {
+      documentReference.setStatus(DocumentReferenceStatus.CURRENT);
+    } else {
+      documentReference.setStatus(DocumentReferenceStatus.SUPERSEDED);
+    }
+    documentReference.setType(reportResource.getCategoryFirstRep());
+    documentReference.addCategory(new CodeableConcept(
+        new Coding("http://hl7.org/fhir/us/core/CodeSystem/us-core-documentreference-category",
+            "clinical-note", "Clinical Note")));
+    documentReference.setSubject(new Reference(personEntry.getFullUrl()));
+    documentReference.setDate(encounter.getPeriod().getStart());
+    documentReference.addAuthor(reportResource.getPerformerFirstRep());
+    documentReference.addContent().setAttachment(reportResource.getPresentedFormFirstRep());
+    documentReference.setContext(new DocumentReferenceContextComponent()
+        .addEncounter(reportResource.getEncounter())
+        .setPeriod(encounter.getPeriod()));
+
+    return newEntry(bundle, documentReference);
   }
 
   /**
