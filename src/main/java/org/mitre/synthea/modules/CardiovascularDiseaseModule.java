@@ -837,13 +837,13 @@ public final class CardiovascularDiseaseModule extends Module {
       procedure.reasons.add(LOOKUP.get(diagnosis));
 
       if (proc.equals("implant_cardioverter_defib")) {
-        if (!person.record.present.containsKey(proc)) {
-          Entry device = person.record.deviceImplant(time, proc);
+        if (!person.record.present.containsKey("defibrillator")) {
+          Entry device = person.record.deviceImplant(time, "defibrillator");
           device.codes.add(LOOKUP.get("defibrillator"));
         }
       } else if (proc.equals("percutaneous_coronary_intervention")) {
-        if (!person.record.present.containsKey(proc)) {
-          Entry device = person.record.deviceImplant(time, proc);
+        if (!person.record.present.containsKey("stent")) {
+          Entry device = person.record.deviceImplant(time, "stent");
           device.codes.add(LOOKUP.get("stent"));
         }
       }
