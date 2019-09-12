@@ -836,68 +836,13 @@ to compute clinical statistics from the ECG.      </p>
             <ci> dz_T </ci>
           </apply>
           <apply>
-            <minus/>
+            <plus/>
             <ci> z </ci>
             <ci> zbase </ci>
           </apply>
         </apply>
       </math>
     </rateRule>
-    <assignmentRule variable="dx_">
-      <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <apply>
-          <minus/>
-          <apply>
-            <times/>
-            <ci> a0 </ci>
-            <ci> x </ci>
-          </apply>
-          <apply>
-            <times/>
-            <ci> w0 </ci>
-            <ci> y </ci>
-          </apply>
-        </apply>
-      </math>
-    </assignmentRule>
-    <assignmentRule variable="dy_">
-      <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <apply>
-          <plus/>
-          <apply>
-            <times/>
-            <ci> a0 </ci>
-            <ci> y </ci>
-          </apply>
-          <apply>
-            <times/>
-            <ci> w0 </ci>
-            <ci> x </ci>
-          </apply>
-        </apply>
-      </math>
-    </assignmentRule>
-    <assignmentRule variable="dz_">
-      <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <apply>
-          <minus/>
-          <cn> 0.0 </cn>
-          <apply>
-            <plus/>
-            <ci> dz_P </ci>
-            <ci> dz_Q </ci>
-            <ci> dz_R </ci>
-            <ci> dz_S </ci>
-            <ci> dz_T </ci>
-          </apply>
-          <apply>
-            <minus/>
-            <ci> z </ci>
-            <ci> zbase </ci>
-          </apply>
-        </apply>
-      </math>
-    </assignmentRule>
   </listOfRules>
   </model>
 </sbml>
