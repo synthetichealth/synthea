@@ -55,8 +55,7 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 /**
- * PhysiologySimulator represents the entry point of a physiology
- * simulation submodule.
+ * Executes simulations of physiology models represented in SBML files.
  */
 public class PhysiologySimulator {
 
@@ -85,7 +84,7 @@ public class PhysiologySimulator {
     LINE
   }
 
-  /** Configuration object for the simulation. **/
+  /** POJO configuration for the simulation. **/
   public static class SimConfig {
     /** Name for the simulator. **/
     private String name;
@@ -160,6 +159,9 @@ public class PhysiologySimulator {
     
   }
 
+  /**
+   * POJO configuration for a chart.
+   **/
   public static class ChartConfig {
     /** Name of the image file to export. **/
     private String filename;
@@ -254,7 +256,7 @@ public class PhysiologySimulator {
   }
 
   /**
-   * Configuration for a chart series.
+   * POJO configuration for a chart series.
    */
   public static class SeriesConfig {
     /** Which parameter to plot on this series. **/
@@ -281,6 +283,7 @@ public class PhysiologySimulator {
   }
 
   static {
+    // Initialize our static map of solvers
     Map<String, Class<?>> initSolvers = new HashMap<String, Class<?>>();
 
     // Add all currently available solvers from the SBSCL library
@@ -297,14 +300,13 @@ public class PhysiologySimulator {
     // Make unmodifiable so it doesn't change after initialization
     SOLVER_CLASSES = Collections.unmodifiableMap(initSolvers);
     
-    // get the path to our physiology models directory containing SBML files
+    // Get the path to our physiology models directory containing SBML files
     URL physiologyFolder = ClassLoader.getSystemClassLoader().getResource("physiology");
     try {
       sbmlPath = Paths.get(physiologyFolder.toURI());
     } catch (URISyntaxException ex) {
-      Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, null, ex);
+      throw new RuntimeException(ex);
     }
-    
   }
   
   /**
@@ -421,7 +423,13 @@ public class PhysiologySimulator {
     return SOLVER_CLASSES.keySet();
   }
 
-  private static AbstractDESSolver getSolver(String solverName) throws RuntimeException {
+  /**
+   * Retrieves the solver for the given solver name. If the provided string is
+   * invalid, a RuntimeException will be thrown
+   * @param solverName user-facing name of the solver to instantiate
+   * @return solver instance
+   */
+  private static AbstractDESSolver getSolver(String solverName) {
 
     // If the provided solver name doesn't exist in our map, it's an invalid
     // value that the programmer needs to correct.
@@ -429,35 +437,48 @@ public class PhysiologySimulator {
       throw new RuntimeException("Invalid Solver: \"" + solverName + "\"");
     }
 
+    // Attempt to instantiate the solver.
     try {
       return (AbstractDESSolver) SOLVER_CLASSES.get(solverName).newInstance();
     } catch (InstantiationException | IllegalAccessException ex) {
-      Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE, null, ex);
       throw new RuntimeException("Unable to instantiate " + solverName + " solver");
     }
   }
   
+  /**
+   * Retrieves the interpreter for a given SBML Model.
+   * @param bioModel SBML model to interpret
+   * @return interpreter instance
+   */
   private static SBMLinterpreter getInterpreter(Model bioModel) {
     try {
       SBMLinterpreter interpreter = new SBMLinterpreter(bioModel);
       return interpreter;
-
     } catch (ModelOverdeterminedException | SBMLException ex) {
+      // If there are problems with the model, we can't proceed
       throw new RuntimeException(ex);
     }
   }
   
+  /**
+   * Writes the contents of a MultiTable to a CSV file.
+   * @param table MultiTable to write
+   * @param outputPath path to the output CSV file
+   */
   private static void multiTableToCsvFile(MultiTable table, Path outputPath) {
     PrintWriter writer;
+    // Open our output file for writing
     try {
       writer = new PrintWriter(outputPath.toString(), "UTF-8");
     } catch (FileNotFoundException | UnsupportedEncodingException ex) {
       throw new RuntimeException("Unable to open output file:" + outputPath);
     }
 
+    // Get the number of rows and columns
     int numRows = table.getRowCount();
     int numCols = table.getColumnCount();
 
+    // Write the header line
     for (int colIdx = 0; colIdx < numCols; colIdx++) {
       writer.print(table.getColumnIdentifier(colIdx));
       if (colIdx < numCols - 1) {
@@ -466,6 +487,7 @@ public class PhysiologySimulator {
     }
     writer.println();
 
+    // Write each of the row values in sequence
     for (int rowIdx = 0; rowIdx < numRows; rowIdx++) {
       for (int colIdx = 0; colIdx < numCols; colIdx++) {
         writer.print(table.getValueAt(rowIdx, colIdx));
@@ -478,6 +500,11 @@ public class PhysiologySimulator {
     writer.close();
   }
   
+  /**
+   * Draw a JFreeChart to an image based on values from a MultiTable.
+   * @param table MultiTable to retrieve values from
+   * @param config chart configuration options
+   */
   private static void drawChart(MultiTable table, ChartConfig config) {
     
     // If there's only one series, and there's a title, hide the legend
@@ -551,9 +578,11 @@ public class PhysiologySimulator {
       dataset.addSeries(series);
     }
     
+    // Instantiate our renderer to draw the chart
     XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
     JFreeChart chart;
     
+    // Determine the appropriate Chart from the configuration options
     switch (ChartType.valueOf(config.getType().toUpperCase())) {
       default:
       case LINE:
@@ -581,6 +610,7 @@ public class PhysiologySimulator {
         break;
     }
     
+    // If there's only one series, and there's a chart title, the legend is unnecessary
     if (config.getTitle() != null && !config.getTitle().isEmpty()
         && config.getSeries().size() == 1) {
       chart.removeLegend();
@@ -588,6 +618,8 @@ public class PhysiologySimulator {
       chart.getLegend().setFrame(BlockBorder.NONE);
     }
     
+    // Instantiate the plot and set some reasonable styles
+    // TODO eventually we can make these more configurable if desired
     XYPlot plot = chart.getXYPlot();
     
     plot.setRenderer(renderer);
@@ -595,10 +627,10 @@ public class PhysiologySimulator {
     plot.setRangeGridlinesVisible(true);
     plot.setDomainGridlinesVisible(true);
     
+    // Save the chart as a PNG image to the file system
     try {
       ChartUtils.saveChartAsPNG(new File(config.getFilename()), chart, 600, 300);
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
