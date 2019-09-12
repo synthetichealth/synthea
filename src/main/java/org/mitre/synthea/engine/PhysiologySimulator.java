@@ -61,8 +61,11 @@ public class PhysiologySimulator {
 
   /** Map of user-facing strings to their corresponding Java classes. **/
   private static final Map<String, Class<?>> SOLVER_CLASSES;
+  /** Map of cached SBML Models. **/
+  private static Map<String, Model> MODEL_CACHE;
   /** Path to the physiology SBML files. **/
-  private static Path sbmlPath;
+  private static Path SBML_PATH;
+  
   /** Model to use for this simulator. **/
   private final Model model;
   /** List of fields for the model. **/
@@ -303,12 +306,15 @@ public class PhysiologySimulator {
     // Get the path to our physiology models directory containing SBML files
     URL physiologyFolder = ClassLoader.getSystemClassLoader().getResource("physiology");
     try {
-      sbmlPath = Paths.get(physiologyFolder.toURI());
+      SBML_PATH = Paths.get(physiologyFolder.toURI());
     } catch (URISyntaxException ex) {
       throw new RuntimeException(ex);
     }
+    
+    // Initialize our model cache
+    MODEL_CACHE = new HashMap<String, Model>();
   }
-  
+
   /**
    * PhysiologySimulator constructor.
    * @param modelPath Path to the SBML file to load relative to resources/physiology
@@ -318,29 +324,26 @@ public class PhysiologySimulator {
    */
   public PhysiologySimulator(String modelPath, String solverName, double stepSize,
       double simDuration) {
-    this(modelPath, solverName, stepSize, simDuration, 0);
-  }
-
-  /**
-   * PhysiologySimulator constructor.
-   * @param modelPath Path to the SBML file to load relative to resources/physiology
-   * @param solverName Name of the solver to use
-   * @param stepSize Time step for the simulation
-   * @param simDuration Amount of time to simulate
-   * @param leadTime Amount of time to run the simulation before capturing results
-   */
-  public PhysiologySimulator(String modelPath, String solverName, double stepSize,
-      double simDuration, double leadTime) {
-    Path modelFilepath = Paths.get(sbmlPath.toString(), modelPath);
-    SBMLReader reader = new SBMLReader();
-    File inputFile = new File(modelFilepath.toString());
-    SBMLDocument doc;
-    try {
-      doc = reader.readSBML(inputFile);
-    } catch (IOException | XMLStreamException ex) {
-      throw new RuntimeException(ex);
+    
+    // Get the model from cache if it has already been loaded
+    if (MODEL_CACHE.containsKey(modelPath)) {
+      model = MODEL_CACHE.get(modelPath);
+    } else {
+      // Load and instantiate the model from the SBML file
+      Path modelFilepath = Paths.get(SBML_PATH.toString(), modelPath);
+      SBMLReader reader = new SBMLReader();
+      File inputFile = new File(modelFilepath.toString());
+      SBMLDocument doc;
+      try {
+        doc = reader.readSBML(inputFile);
+      } catch (IOException | XMLStreamException ex) {
+        throw new RuntimeException(ex);
+      }
+      model = doc.getModel();
+      
+      // Add the loaded model to the cache so we don't need to load it again
+      MODEL_CACHE.put(modelPath, model);
     }
-    model = doc.getModel();
     SBMLinterpreter interpreter = getInterpreter(model);
     modelFields = interpreter.getIdentifiers();
     modelDefaults = interpreter.getInitialValues();
