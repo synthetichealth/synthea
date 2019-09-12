@@ -596,6 +596,7 @@ public class FhirStu3 {
    */
   private static BundleEntryComponent encounter(Person person, BundleEntryComponent personEntry,
       Bundle bundle, Encounter encounter) {
+
     org.hl7.fhir.dstu3.model.Encounter encounterResource = new org.hl7.fhir.dstu3.model.Encounter();
 
     encounterResource.setSubject(new Reference(personEntry.getFullUrl()));
