@@ -2000,6 +2000,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 5,
         "high": 8
       },
@@ -2017,6 +2018,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 5,
         "high": 10
       },
@@ -2034,6 +2036,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 5,
         "high": 10
       },
@@ -2051,6 +2054,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 2,
         "high": 8
       },

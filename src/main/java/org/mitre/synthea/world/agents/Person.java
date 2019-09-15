@@ -137,10 +137,21 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
-   * Retuns a random double in the given range.
+   * Returns a random double in the given range.
    */
   public double rand(double low, double high) {
     return (low + ((high - low) * random.nextDouble()));
+  }
+
+  /**
+   * Returns a random double in the given range with no more that the specified
+   * number of decimal places.
+   */
+  public double rand(double low, double high, Integer decimals) {
+    double value = rand(low, high);
+    if (decimals != null)
+      value = BigDecimal.valueOf(value).setScale(decimals, RoundingMode.HALF_UP).doubleValue();
+    return value;
   }
 
   /**

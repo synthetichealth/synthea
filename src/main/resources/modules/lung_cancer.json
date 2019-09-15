@@ -2495,6 +2495,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 4,
         "high": 8
       },
@@ -2512,6 +2513,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 4,
         "high": 10
       },
@@ -2529,6 +2531,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 4,
         "high": 10
       },

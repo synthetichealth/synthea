@@ -393,6 +393,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 5,
         "high": 10
       },
