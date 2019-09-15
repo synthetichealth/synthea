@@ -1510,7 +1510,7 @@ public class FhirR4 {
       double dblVal = ((Number)value).doubleValue();
       // round to 5 significant figures
       MathContext mctx = new MathContext(5, RoundingMode.HALF_UP);
-      BigDecimal bigVal = new BigDecimal(dblVal, mctx);
+      BigDecimal bigVal = new BigDecimal(dblVal, mctx).stripTrailingZeros();
       return new Quantity().setValue(bigVal)
           .setCode(unit).setSystem(UNITSOFMEASURE_URI)
           .setUnit(unit);

@@ -1,6 +1,8 @@
 package org.mitre.synthea.world.agents;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
@@ -325,7 +327,21 @@ public class Person implements Serializable, QuadTreeData {
       throw new NullPointerException(
           "Vital sign '" + vitalSign + "' not set. Valid vital signs: " + vitalSigns.keySet());
     }
-    return valueGenerator.getValue(time);
+    double value = valueGenerator.getValue(time);
+    int decimalPlaces;
+    switch (vitalSign) {
+      case DIASTOLIC_BLOOD_PRESSURE:
+      case SYSTOLIC_BLOOD_PRESSURE:
+        decimalPlaces = 0;
+        break;
+      case HEIGHT:
+      case WEIGHT:
+        decimalPlaces = 1;
+        break;
+      default:
+        decimalPlaces = 2;
+    }
+    return BigDecimal.valueOf(value).setScale(decimalPlaces, RoundingMode.HALF_UP).doubleValue();
   }
 
   public void setVitalSign(VitalSign vitalSign, ValueGenerator valueGenerator) {
