@@ -33,6 +33,7 @@ import org.mitre.synthea.world.concepts.VitalSign;
 
 public class Person implements Serializable, QuadTreeData {
   private static final long serialVersionUID = 4322116644425686379L;
+  private static final ZoneId timeZone = ZoneId.systemDefault();
 
   public static final String BIRTHDATE = "birthdate";
   public static final String DEATHDATE = "deathdate";
@@ -227,9 +228,9 @@ public class Person implements Serializable, QuadTreeData {
     Period age = Period.ZERO;
 
     if (attributes.containsKey(BIRTHDATE)) {
-      LocalDate now = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
+      LocalDate now = Instant.ofEpochMilli(time).atZone(timeZone).toLocalDate();
       LocalDate birthdate = Instant.ofEpochMilli((long) attributes.get(BIRTHDATE))
-          .atZone(ZoneId.systemDefault()).toLocalDate();
+          .atZone(timeZone).toLocalDate();
       age = Period.between(birthdate, now);
     }
     return age;
