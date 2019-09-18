@@ -24,7 +24,7 @@ public abstract class Components {
     public R high;
     
     /**
-     * Decimal places for value within the range
+     * Decimal places for value within the range.
      */
     public Integer decimals;
   }

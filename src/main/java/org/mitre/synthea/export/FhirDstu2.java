@@ -84,6 +84,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -896,7 +898,10 @@ public class FhirDstu2 {
       return new StringDt((String) value);
 
     } else if (value instanceof Number) {
-      return new QuantityDt().setValue(((Number) value).doubleValue())
+      double dblVal = ((Number) value).doubleValue();
+      BigDecimal bigVal =
+          BigDecimal.valueOf(dblVal).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros();
+      return new QuantityDt().setValue(bigVal)
           .setCode(unit).setSystem("http://unitsofmeasure.org")
           .setUnit(unit);
 

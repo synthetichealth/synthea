@@ -8,7 +8,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -1507,10 +1506,9 @@ public class FhirR4 {
     } else if (value instanceof String) {
       return new StringType((String) value);
     } else if (value instanceof Number) {
-      double dblVal = ((Number)value).doubleValue();
-      // round to 5 significant figures
-      MathContext mctx = new MathContext(5, RoundingMode.HALF_UP);
-      BigDecimal bigVal = new BigDecimal(dblVal, mctx).stripTrailingZeros();
+      double dblVal = ((Number) value).doubleValue();
+      BigDecimal bigVal =
+          BigDecimal.valueOf(dblVal).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros();
       return new Quantity().setValue(bigVal)
           .setCode(unit).setSystem(UNITSOFMEASURE_URI)
           .setUnit(unit);

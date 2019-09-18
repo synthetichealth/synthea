@@ -150,8 +150,9 @@ public class Person implements Serializable, QuadTreeData {
    */
   public double rand(double low, double high, Integer decimals) {
     double value = rand(low, high);
-    if (decimals != null)
+    if (decimals != null) {
       value = BigDecimal.valueOf(value).setScale(decimals, RoundingMode.HALF_UP).doubleValue();
+    }
     return value;
   }
 

@@ -210,7 +210,8 @@ public class CSVExporter {
     imagingStudies.write(NEWLINE);
     organizations.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,LAT,LON,PHONE,REVENUE,UTILIZATION");
     organizations.write(NEWLINE);
-    providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,LAT,LON,UTILIZATION");
+    providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,LAT,LON,"
+        + "UTILIZATION");
     providers.write(NEWLINE);
     payers.write("Id,NAME,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,"
         + "AMOUNT_UNCOVERED,REVENUE,COVERED_ENCOUNTERS,UNCOVERED_ENCOUNTERS,COVERED_MEDICATIONS,"
@@ -381,9 +382,9 @@ public class CSVExporter {
     Calendar now = Calendar.getInstance();
     Calendar birthDay = Calendar.getInstance();
     birthDay.setTimeInMillis((long) person.attributes.get(Person.BIRTHDATE));
-    String[] GBD = { "QALY", "DALY", "QOL" };
+    String[] gbdMetrics = { "QALY", "DALY", "QOL" };
     String unit = null;
-    for (String score : GBD) {
+    for (String score : gbdMetrics) {
       if (score.equals("QOL")) {
         unit = "{score}";
       } else {
