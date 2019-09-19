@@ -59,49 +59,35 @@ import org.yaml.snakeyaml.constructor.Constructor;
  */
 public class PhysiologySimulator {
 
-  /** Map of user-facing strings to their corresponding Java classes. **/
+  private static final URL MODELS_RESOURCE = ClassLoader.getSystemClassLoader()
+      .getResource("physiology/models");
   private static final Map<String, Class<?>> SOLVER_CLASSES;
-  /** Map of cached SBML Models. **/
   private static Map<String, Model> MODEL_CACHE;
-  /** Path to the physiology SBML files. **/
   private static Path SBML_PATH;
   
-  /** Model to use for this simulator. **/
   private final Model model;
-  /** List of fields for the model. **/
+  private final SBMLinterpreter interpreter;
+  private final AbstractDESSolver solver;
   private final String[] modelFields;
-  /** List of default values for the model. **/
   private final double[] modelDefaults;
-  /** User-defined name of the solver to use. **/
   private final String solverName;
-  /** Duration of the simulation in seconds. **/
   private final double simDuration;
-  /** Size of each time step for the solver in seconds. **/
   private final double stepSize;
 
   /** Enumeration of supported chart types. **/
   public enum ChartType {
-    /** Scatter plot. **/
     SCATTER,
-    /** Line plot. **/
     LINE
   }
 
   /** POJO configuration for the simulation. **/
   public static class SimConfig {
-    /** Name for the simulator. **/
     private String name;
-    /** User-defined model to use. **/
     private String model;
-    /** Differential equation solver instance. **/
     private String solver;
-    /** Step size to use for the simulation in seconds. **/
     private double stepSize;
-    /** Duration of the simulation in seconds. **/
     private double duration;
-    /** List of chart export configurations. **/
     private List<ChartConfig> charts;
-    /** Map of parameters to their provided input values. **/
     private Map<String, Double> inputs;
 
     public final Map<String, Double> getInputs() {
@@ -303,10 +289,8 @@ public class PhysiologySimulator {
     // Make unmodifiable so it doesn't change after initialization
     SOLVER_CLASSES = Collections.unmodifiableMap(initSolvers);
     
-    // Get the path to our physiology models directory containing SBML files
-    URL physiologyFolder = ClassLoader.getSystemClassLoader().getResource("physiology");
     try {
-      SBML_PATH = Paths.get(physiologyFolder.toURI());
+      SBML_PATH = Paths.get(MODELS_RESOURCE.toURI());
     } catch (URISyntaxException ex) {
       throw new RuntimeException(ex);
     }
@@ -344,7 +328,9 @@ public class PhysiologySimulator {
       // Add the loaded model to the cache so we don't need to load it again
       MODEL_CACHE.put(modelPath, model);
     }
-    SBMLinterpreter interpreter = getInterpreter(model);
+    interpreter = getInterpreter(model);
+    solver = getSolver(solverName);
+    solver.setStepSize(stepSize);
     modelFields = interpreter.getIdentifiers();
     modelDefaults = interpreter.getInitialValues();
     this.solverName = solverName;
@@ -376,18 +362,13 @@ public class PhysiologySimulator {
    *        solution to differential equations
    */
   public MultiTable run(Map<String, Double> inputs) throws DerivativeException {
-    // Reset the solver to its initial state
-    SBMLinterpreter interpreter = getInterpreter(model);
-    AbstractDESSolver solver = getSolver(solverName);
-    solver.setStepSize(stepSize);
     try {
       // Reinitialize the interpreter to prevent old values from affecting the new simulation
       interpreter.init(true);
     } catch (ModelOverdeterminedException | SBMLException ex) {
       // This shouldn't ever happen here since the interpreter has already been instantiated
       // at least once
-      Logger.getLogger(PhysiologySimulator.class.getName()).log(Level.SEVERE,
-          "Error reinitializing SBML interpreter", ex);
+      throw new RuntimeException(ex);
     }
     
     // Create a copy of the default parameters to use
@@ -707,7 +688,11 @@ public class PhysiologySimulator {
     try {
       
       // Run with all default parameters
+      long startTime = System.nanoTime();
       MultiTable results = simulator.run(config.getInputs());
+      long duration = System.nanoTime() - startTime;
+      
+      System.out.println("Simulation took " + (duration / 1000000.0) + " ms");
       
       // Write CSV data file
       multiTableToCsvFile(results, Paths.get(outputDir.toString(), config.getName() + ".csv"));
