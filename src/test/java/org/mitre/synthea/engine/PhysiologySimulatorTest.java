@@ -1,38 +1,25 @@
 package org.mitre.synthea.engine;
 
-import com.google.common.collect.Lists;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
+import com.google.common.collect.Lists;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Predicate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.math.ode.DerivativeException;
-
 import org.junit.Test;
-import org.powermock.reflect.Whitebox;
 import org.simulator.math.odes.MultiTable;
 
 public class PhysiologySimulatorTest {
 
   @Test
-  public void testCVSSimulation() {
+  public void testCvsSimulation() {
     try {
       
-      PhysiologySimulator physio = new PhysiologySimulator("circulation/Smith2004_CVS_human.xml", "runge_kutta", 0.01, 4, 0.0);
+      PhysiologySimulator physio = new PhysiologySimulator("circulation/Smith2004_CVS_human.xml",
+          "runge_kutta", 0.01, 4);
       
       // Ensure we can get parameters. Check a couple
       List<String> params = physio.getParameters();
@@ -42,7 +29,7 @@ public class PhysiologySimulatorTest {
       assertTrue("P_ao", params.contains("P_ao"));
       
       // First run with all default parameters
-      MultiTable results = physio.run(new HashMap());
+      MultiTable results = physio.run(new HashMap<String,Double>());
       
       List<Double> pao = Lists.newArrayList(results.getColumn("P_ao"));
       Double sys = Collections.max(pao);
@@ -53,7 +40,7 @@ public class PhysiologySimulatorTest {
       assertTrue("dia > 70", dia > 70);
       assertTrue("dia < 80", dia < 80);
       
-      Map<String,Double> inputs = new HashMap();
+      Map<String,Double> inputs = new HashMap<String,Double>();
       inputs.put("R_sys", 1.814);
       
       // Run with some inputs
