@@ -85,6 +85,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
@@ -123,6 +124,7 @@ public class FhirDstu2 {
   private static final String CVX_URI = "http://hl7.org/fhir/sid/cvx";
   private static final String DISCHARGE_URI = "http://www.nubc.org/patient-discharge";
   private static final String SYNTHEA_EXT = "http://synthetichealth.github.io/synthea/";
+  private static final String UNITSOFMEASURE_URI = "http://unitsofmeasure.org";
   private static final String DICOM_DCM_URI = "http://dicom.nema.org/resources/ontology/DCM";
 
   @SuppressWarnings("rawtypes")
@@ -883,7 +885,7 @@ public class FhirDstu2 {
     return entry;
   }
 
-  private static IDatatype mapValueToFHIRType(Object value, String unit) {
+  static IDatatype mapValueToFHIRType(Object value, String unit) {
     if (value == null) {
       return null;
 
@@ -899,12 +901,11 @@ public class FhirDstu2 {
 
     } else if (value instanceof Number) {
       double dblVal = ((Number) value).doubleValue();
-      BigDecimal bigVal =
-          BigDecimal.valueOf(dblVal).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros();
+      MathContext mctx = new MathContext(5, RoundingMode.HALF_UP);
+      BigDecimal bigVal = new BigDecimal(dblVal, mctx).stripTrailingZeros();
       return new QuantityDt().setValue(bigVal)
-          .setCode(unit).setSystem("http://unitsofmeasure.org")
+          .setCode(unit).setSystem(UNITSOFMEASURE_URI)
           .setUnit(unit);
-
     } else {
       throw new IllegalArgumentException("unexpected observation value class: "
           + value.getClass().toString() + "; " + value);
