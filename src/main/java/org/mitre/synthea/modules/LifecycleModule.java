@@ -2,6 +2,7 @@ package org.mitre.synthea.modules;
 
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,12 +13,14 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.special.Erf;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.PhysiologyValueGenerator;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.Utilities;
@@ -233,10 +236,23 @@ public final class LifecycleModule extends Module {
    * @param person The person to generate vital signs for.
    */
   private static void setupVitalSignGenerators(Person person) {
+    boolean usePhysiology = Boolean.parseBoolean(Config.get("physiology.enabled", "false"));
+    
     person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE,
         new BloodPressureValueGenerator(person, SysDias.SYSTOLIC));
     person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE,
         new BloodPressureValueGenerator(person, SysDias.DIASTOLIC));
+    
+    if (usePhysiology) {
+
+      List<PhysiologyValueGenerator> physioGenerators = PhysiologyValueGenerator.loadAll(person);
+      
+      for (PhysiologyValueGenerator physioGenerator : physioGenerators) {
+        person.setVitalSign(physioGenerator.getVitalSign(), physioGenerator);
+      }
+    } else {
+      System.out.println("Not using physiology");
+    }
   }
 
   /**
