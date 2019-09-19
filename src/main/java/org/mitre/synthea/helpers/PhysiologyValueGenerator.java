@@ -142,10 +142,20 @@ public class PhysiologyValueGenerator extends ValueGenerator {
   
   /**
    * Retrieves the PhysiologyValueGenerator configuration from the given path.
-   * @param configPath Path to the generator configuration file
+   * @param configPath path to the generator configuration file
    * @return generator configuration object
    */
-  private static PhysiologyGeneratorConfig getConfig(File configFile) {
+  public static PhysiologyGeneratorConfig getConfig(String configPath) {
+    File configFile = new File(GENERATORS_RESOURCE.getPath(), configPath);
+    return getConfig(configFile);
+  }
+  
+  /**
+   * Retrieves the PhysiologyValueGenerator configuration from the given file.
+   * @param configFile generator configuration file
+   * @return generator configuration object
+   */
+  public static PhysiologyGeneratorConfig getConfig(File configFile) {
     
     String relativePath;
     try {
