@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.function.Predicate;
 
 import org.mitre.synthea.engine.Generator;
@@ -32,8 +33,9 @@ public abstract class Exporter {
    *
    * @param person   Patient to export
    * @param stopTime Time at which the simulation stopped
+   * @param recordQueue Generator's record queue (may be null)
    */
-  public static void export(Person person, long stopTime) {
+  public static void export(Person person, long stopTime, BlockingQueue<String> recordQueue) {
     int yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
     if (yearsOfHistory > 0) {
       person = filterForExport(person, yearsOfHistory, stopTime);
@@ -45,12 +47,23 @@ public abstract class Exporter {
       int i = 0;
       for (String key : person.records.keySet()) {
         person.record = person.records.get(key);
-        exportRecord(person, Integer.toString(i), stopTime);
+        exportRecord(person, Integer.toString(i), stopTime, recordQueue);
         i++;
       }
     } else {
-      exportRecord(person, "", stopTime);
+      exportRecord(person, "", stopTime, recordQueue);
     }
+  }
+  
+  /**
+   * Export a single patient, into all the formats supported. (Formats may be enabled or disabled by
+   * configuration)
+   *
+   * @param person   Patient to export
+   * @param stopTime Time at which the simulation stopped
+   */
+  public static void export(Person person, long stopTime) {
+	  export(person, stopTime, null);
   }
 
   /**
@@ -60,8 +73,9 @@ public abstract class Exporter {
    * @param person   Patient to export, with Patient.record being set.
    * @param fileTag  An identifier to tag the file with.
    * @param stopTime Time at which the simulation stopped
+   * @param recordQueue Generator's record queue (may be null)
    */
-  private static void exportRecord(Person person, String fileTag, long stopTime) {
+  private static void exportRecord(Person person, String fileTag, long stopTime, BlockingQueue<String> recordQueue) {
 
     if (Boolean.parseBoolean(Config.get("exporter.fhir_stu3.export"))) {
       File outDirectory = getOutputFolder("fhir_stu3", person);
@@ -154,6 +168,14 @@ public abstract class Exporter {
       String consolidatedNotes = ClinicalNoteExporter.export(person);
       writeNewFile(outFilePath, consolidatedNotes);
     }
+    if (recordQueue != null) {
+    	try {
+			recordQueue.put(FhirStu3.convertToFHIRJson(person, stopTime));
+    	} catch(InterruptedException ie) {
+		} catch(Exception e) {
+    		e.printStackTrace();
+		}
+	}
   }
 
   /**

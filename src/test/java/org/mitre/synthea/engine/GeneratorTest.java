@@ -163,4 +163,43 @@ public class GeneratorTest {
     }
   }
   
+  @Test
+  public void testGenerateRecordQueue() throws Exception {
+    int numberOfPeople = 10;
+    Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
+    opts.population = numberOfPeople;
+    opts.enableRecordQueue = true;
+    
+    // Create and start generator thread
+    Generator generator = new Generator(opts);
+    Thread generateThread = new Thread() {
+	    public void run() {
+	    	generator.run();
+	    }
+	};
+	generateThread.start();
+	
+	int count = 0;
+	while(generateThread.isAlive()) {
+		generator.getNextRecord();
+		++count;
+		
+		if (count == numberOfPeople) {
+			// Break out if we have gotten enough records.
+			break;
+		}
+	}
+	
+	if (count < numberOfPeople) {
+		// Generator thread terminated but we have not gotten enough records yet. Check queue.
+		if(!generator.isRecordQueueEmpty()) {			
+			generator.getNextRecord();
+			++count;
+		}
+	}
+	
+	assertEquals(numberOfPeople, count);
+
+	generateThread.interrupt();
+  }
 }
