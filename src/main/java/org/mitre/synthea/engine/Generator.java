@@ -102,6 +102,7 @@ public class Generator {
     public List<String> enabledModules;
     /** If true, enable thread-safe record queue. */
     public boolean enableRecordQueue = false;
+    public int yearsOfHistory=Integer.parseInt(Config.get("exporter.years_of_history"));
   }
   
   /**
@@ -408,7 +409,7 @@ public class Generator {
 
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
-        Exporter.export(person, time, recordQueue);
+        Exporter.export(person, time, recordQueue, options.yearsOfHistory);
       } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
           || (isAlive && onlyDeadPatients));
       // if the patient is alive and we want only dead ones => loop & try again

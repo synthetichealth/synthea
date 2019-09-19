@@ -34,9 +34,9 @@ public abstract class Exporter {
    * @param person   Patient to export
    * @param stopTime Time at which the simulation stopped
    * @param recordQueue Generator's record queue (may be null)
+   * @param yearsOfHistory The number of years of patient history to include in patient record. Set this to 0 to keep all history.
    */
-  public static void export(Person person, long stopTime, BlockingQueue<String> recordQueue) {
-    int yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
+  public static void export(Person person, long stopTime, BlockingQueue<String> recordQueue, int yearsOfHistory) {
     if (yearsOfHistory > 0) {
       person = filterForExport(person, yearsOfHistory, stopTime);
     }
@@ -63,7 +63,7 @@ public abstract class Exporter {
    * @param stopTime Time at which the simulation stopped
    */
   public static void export(Person person, long stopTime) {
-	  export(person, stopTime, null);
+	  export(person, stopTime, null, Integer.parseInt(Config.get("exporter.years_of_history")));
   }
 
   /**
