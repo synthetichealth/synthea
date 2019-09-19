@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.time.temporal.IsoFields;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -215,6 +216,24 @@ public class Person implements Serializable, QuadTreeData {
       LocalDate birthdate = Instant.ofEpochMilli((long) attributes.get(BIRTHDATE))
           .atZone(ZoneId.systemDefault()).toLocalDate();
       age = Period.between(birthdate, now);
+    }
+    return age;
+  }
+
+  /**
+   * Returns a person's age in decimal years. (ex. 7.5 ~ 7 years 6 months old)
+   *
+   * @param time The time when their age should be calculated.
+   * @return decimal age in years
+   */
+  public double ageInDecimalYears(long time) {
+    double age = 0.0;
+
+    if (attributes.containsKey(BIRTHDATE)) {
+      LocalDate now = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
+      LocalDate birthdate = Instant.ofEpochMilli((long) attributes.get(BIRTHDATE))
+          .atZone(ZoneId.systemDefault()).toLocalDate();
+      age = birthdate.until(now, IsoFields.QUARTER_YEARS) / 4.0;
     }
     return age;
   }
