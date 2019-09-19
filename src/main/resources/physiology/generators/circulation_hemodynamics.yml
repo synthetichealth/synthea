@@ -1,0 +1,69 @@
+
+# Name of the model file
+model: circulation/Smith2004_CVS_human.xml
+
+# Which differential equation solver to use.
+# Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsch_stoer, higham_hall_54, rosenbrock, runge_kutta
+solver: runge_kutta
+
+# Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
+stepSize: 0.01
+
+# Simulation duration in seconds
+simDuration: 4.0
+
+# Simulation lead time in seconds before output data is captured
+leadTime: 2.0
+
+# List of input definitions for the model
+# Field descriptions:
+#   "from"              -   attribute or vital sign value to use directly from a Person.
+#                           The "type" field must also be provided to specify which one.
+#   "fromExp"           -   A mathematical expression. Both attributes and vital signs
+#                           can be used within #{} blocks. The result will be assigned to
+#                           the model input parameter indicated by "to".
+#   "to"                -   Target model input parameter to assign
+#   "varianceThreshold" -   Amount of variance to allow in the input parameter
+#                           without performing a re-run of the simulation.
+#                           This can significantly effect overall Synthea runtime.
+#                           Defaults to 0.
+#   "type"              -   Type of the input value "from", if applicable. Must be one of
+#                           "ATTRIBUTE" or "VITAL_SIGN".
+inputs:
+    - fromExp: "1.1889 + (#{BMI} - 21.5) * 0.025 + 0.1 * #{age} / 65"
+      to: R_sys
+      # varianceThreshold: 0.1
+    - fromExp: "0.7913 + 0.2 * #{age} / 65"
+      to: E_es_ao
+      # varianceThreshold: 0.01
+      
+# List of output definitions for the model
+# Field descriptions:
+#   "from"              -   Model parameter to pull from directly.
+#   "fromExp"           -   A mathematical expression. Any model parameter can be used
+#                           within #{} blocks and will be a List of values for that
+#                           parameter at each time step. The result will be assigned to
+#                           the model input parameter indicated by "to".
+#   "to"                -   Target Person attribute or vital sign to assign. Note that
+#                           attributes are assigned as a side-effect of simulation
+#                           execution, so the model must provide at least one vital sign
+#                           output for the simulation to actually execute.
+#   "varianceThreshold" -   Amount of variance to allow in the input parameter
+#                           without performing a re-run of the simulation.
+#                           This can significantly effect overall Synthea runtime.
+#                           Defaults to 0.
+#   "type"              -   Type of the output value "to". Must be "ATTRIBUTE" or "VITAL_SIGN".
+outputs:
+    - fromList: P_ao
+      to: Arterial Pressure Values
+      type: ATTRIBUTE
+    - fromExp: "((Max(#{V_lv}) - Min(#{V_lv})) / Max(#{V_lv}))*100"
+      to: Left ventricular Ejection fraction
+      type: VITAL_SIGN
+    - fromExp: "Max(#{P_ao})"
+      to: Systolic Blood Pressure
+      type: VITAL_SIGN
+    - fromExp: "Min(#{P_ao})"
+      to: Diastolic Blood Pressure
+      type: VITAL_SIGN
+

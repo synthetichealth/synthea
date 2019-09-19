@@ -1,10 +1,14 @@
 package org.mitre.synthea.helpers;
 
-import com.google.gson.annotations.SerializedName;
-
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,31 +17,40 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.math.ode.DerivativeException;
-import org.mitre.synthea.engine.Module;
+import org.cqframework.cql.cql2elm.CqlSemanticException;
 import org.mitre.synthea.engine.PhysiologySimulator;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.simulator.math.odes.MultiTable;
 import org.simulator.math.odes.MultiTable.Block.Column;
+import org.yaml.snakeyaml.TypeDescription;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
 
 /**
  * A ValueGenerator for generation of values from a physiology simulation.
  */
 public class PhysiologyValueGenerator extends ValueGenerator {
+  public static final URL GENERATORS_RESOURCE = ClassLoader.getSystemClassLoader()
+      .getResource("physiology/generators");
   private static ConcurrentMap<String,SimRunner> RUNNER_CACHE
       = new ConcurrentHashMap<String,SimRunner>();
+  private static ConcurrentMap<String,PhysiologyGeneratorConfig> CONFIG_CACHE
+      = new ConcurrentHashMap<String,PhysiologyGeneratorConfig>();
   private SimRunner simRunner;
-  private PhysiologyConfig config;
+  private PhysiologyGeneratorConfig config;
   private VitalSign vitalSign;
   
   /**
-   * A generator of values from a physiology simulation.
-   * @param config simulation configuration parameters
+   * A generator of VitalSign values from a physiology simulation.
+   * @param config physiology configuration file
    * @param person Person instance to generate VitalSigns for
    */
-  public PhysiologyValueGenerator(PhysiologyConfig config, Person person, VitalSign vitalSign) {
+  public PhysiologyValueGenerator(PhysiologyGeneratorConfig config, VitalSign vitalSign,
+      Person person) {
     super(person);
     this.config = config;
     this.vitalSign = vitalSign;
@@ -57,161 +70,340 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     }
   }
   
-  /** Class for handling execution of a PhysiologySimulator. **/
-  private static class SimRunner {
-    private PhysiologyConfig config;
-    private Person person;
-    private PhysiologySimulator simulator;
-    private Map<String,String> paramTypes = new HashMap<String, String>();
-    private Map<String,Double> prevInputs = new HashMap<String, Double>();
-    private Map<VitalSign,Double> vitalSignResults = new HashMap<VitalSign,Double>();
+  /**
+   * Returns a List of all PhysiologyValueGenerators defined in the configuration directory.
+   * @return List of PhysiologyValueGenerator
+   */
+  public static List<PhysiologyValueGenerator> loadAll(Person person) {
+    return loadAll(person, "");
+  }
+  
+  /**
+   * Loads all PhysiologyValueGenerators defined in the given generator configuration subdirectory.
+   * @param person Person to generate values for
+   * @param subfolder generator sub directory to load configurations from
+   * @return List of PhysiologyValueGenerator
+   */
+  public static List<PhysiologyValueGenerator> loadAll(Person person, String subfolder) {
+    String generatorsResource = GENERATORS_RESOURCE.getPath();
+
+    String[] configExt = {"yml"};
     
-    /**
-     * Handles execution of a PhysiologySimulator.
-     * @param config simulation configuration
-     */
-    public SimRunner(PhysiologyConfig config, Person person) {
-      this.config = config;
-      this.person = person;
-      simulator = new PhysiologySimulator(
-          config.getModel(),
-          config.getSolver(),
-          config.getStepSize(),
-          config.getSimDuration()
-      );
-      
-      for (String param : simulator.getParameters()) {
-        // Assume all physiology model parameters are numeric
-        // TODO: May need to handle alternative types in the future
-        paramTypes.put(param, "List<Decimal>");
-      }
-      
-      for (IoMapper mapper : config.getInputs()) {
-        mapper.initialize(paramTypes);
-      }
-      for (IoMapper mapper : config.getOutputs()) {
-        mapper.initialize(paramTypes);
+    // Get all of the configuration files in the generator configuration path and all
+    // of its subdirectories
+    File baseFolder = new File(generatorsResource, subfolder);
+    Collection<File> physiologyConfigFiles = FileUtils.listFiles(baseFolder, configExt, true);
+    
+    List<PhysiologyValueGenerator> allGenerators = new ArrayList<PhysiologyValueGenerator>();
+    
+    // Set the ValueGenerator for each VitalSign output in each configuration
+    for (File cfgFile : physiologyConfigFiles) {
+      allGenerators.addAll(PhysiologyValueGenerator.fromConfig(cfgFile, person));
+    }
+  
+    return allGenerators;
+  }
+  
+  /**
+   * Instantiates PhysiologyValueGenerators for each VitalSign output in the generator
+   * configuration at the provided path.
+   * 
+   * @param configFile generator configuration file
+   * @param person Person to generate VitalSigns for
+   * @return List of PhysiologyValueGenerator instances
+   */
+  public static List<PhysiologyValueGenerator> fromConfig(File configFile, Person person) {
+    return fromConfig(getConfig(configFile), person);
+  }
+  
+  /**
+   * Instantiates PhysiologyValueGenerators for each VitalSign output in the generator
+   * configuration.
+   * 
+   * @param generatorConfig generator configuration object
+   * @param person Person to generate VitalSigns for
+   * @return List of PhysiologyValueGenerator instances
+   */
+  public static List<PhysiologyValueGenerator> fromConfig(
+      PhysiologyGeneratorConfig generatorConfig, Person person) {
+    List<PhysiologyValueGenerator> generators = new ArrayList<PhysiologyValueGenerator>();
+    
+    for (IoMapper mapper : generatorConfig.getOutputs()) {
+      if (mapper.getType() == IoMapper.IoType.VITAL_SIGN) {
+        generators.add(new PhysiologyValueGenerator(
+            generatorConfig,
+            VitalSign.fromString(mapper.getTo()),
+            person));
       }
     }
     
-    /**
-     * Retrieves the simulation configuration.
-     * @return simulation configuration
-     */
-    public PhysiologyConfig getConfig() {
-      return config;
+    return generators;
+  }
+  
+  /**
+   * Retrieves the PhysiologyValueGenerator configuration from the given path.
+   * @param configPath Path to the generator configuration file
+   * @return generator configuration object
+   */
+  private static PhysiologyGeneratorConfig getConfig(File configFile) {
+    
+    String relativePath;
+    try {
+      relativePath = GENERATORS_RESOURCE.toURI().relativize(configFile.toURI()).getPath();
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
     }
     
-    public double getVitalSignValue(VitalSign parameter) {
-      return vitalSignResults.get(parameter);
+    // key is the path to the config file
+    String configKey = relativePath;
+    
+    // if this config has already been loaded, grab it from cache
+    if (CONFIG_CACHE.containsKey(configKey)) {
+      return CONFIG_CACHE.get(configKey);
     }
     
+    System.out.println("Loading physiology generator \"" + relativePath + "\"");
+    
+    FileInputStream inputStream;
+
+    try {
+      inputStream = new FileInputStream(configFile);
+    } catch (FileNotFoundException ex) {
+      throw new RuntimeException("PhysiologyValueGenerator configuration not found: \""
+          + configFile.getPath() + "\".");
+    }
+    
+    // Add type descriptions so Yaml knows how to instantiate our Lists
+    Constructor constructor = new Constructor(PhysiologyGeneratorConfig.class);
+    TypeDescription configDescription = new TypeDescription(PhysiologyGeneratorConfig.class);
+    configDescription.addPropertyParameters("inputs", IoMapper.class);
+    configDescription.addPropertyParameters("outputs", IoMapper.class);
+    constructor.addTypeDescription(configDescription);
+    
+    // Parse the PhysiologyConfig from the yaml file
+    Yaml yaml = new Yaml(constructor);
+    PhysiologyGeneratorConfig config = (PhysiologyGeneratorConfig) yaml.load(inputStream);
+    
+    // Validate the configuration
+    config.validate();
+    
+    // Add the config to the cache in case there are other PhysiologyValueGenerators
+    // that need it
+    CONFIG_CACHE.put(configKey, config);
+    
+    return config;
+  }
+  
+  /**
+   * Returns the VitalSign this generator targets.
+   * @return VitalSign target
+   */
+  public VitalSign getVitalSign() {
+    return vitalSign;
+  }
+
+  @Override
+  public String toString() {
+
+    final StringBuilder sb = new StringBuilder("PhysiologyValueGenerator {");
+
+    sb.append("model=").append(config.getModel());
+    
+    sb.append(", VitalSigns=[");
+    for (IoMapper mapper : config.getOutputs()) {
+      if (mapper.getType() == IoMapper.IoType.VITAL_SIGN) {
+        sb.append(mapper.getTo()).append(",");
+      }
+    }
+    
+    sb.append("], Attributes=[");
+    for (IoMapper mapper : config.getOutputs()) {
+      if (mapper.getType() == IoMapper.IoType.ATTRIBUTE) {
+        sb.append(mapper.getTo()).append(",");
+      }
+    }
+    
+    sb.append("]}");
+
+    return sb.toString();
+  }
+
+  @Override
+  public double getValue(long time) {
+    simRunner.execute(time);
+    return simRunner.getVitalSignValue(vitalSign);
+  }
+  
+  /**
+   * ValueGenerator configuration for a physiology model file.
+   * @author RSIVEK
+   *
+   */
+  public static class PhysiologyGeneratorConfig {
+    private String model;
+    private String solver;
+    private double stepSize;
+    private double simDuration;
+    private double leadTime;
+    private List<IoMapper> inputs;
+    private List<IoMapper> outputs;
+    
     /**
-     * Executes the simulation if any input values are beyond the variance threshold.
-     * @param time simulation time
+     * Validates that all inputs are appropriate and within bounds.
      */
-    public void execute(long time) {
-      // Flag to indicate if the input values have sufficiently changed
-      boolean sufficientChange = false;
+    protected void validate() {
+      if (leadTime >= simDuration) {
+        throw new IllegalArgumentException(
+            "Simulation lead time must be less than simulation duration!");
+      }
       
-      // Get our map of inputs
-      Map<String,Double> modelInputs = new HashMap<String,Double>();
-      for (IoMapper mapper : config.getInputs()) {
-        double inputResult = mapper.toModelInputs(person, time, modelInputs);
-        
-        // If we have previous results, check if there has been a sufficient
-        // change in the input parameter
-        if (!prevInputs.isEmpty() && Math.abs(inputResult
-            - prevInputs.get(mapper.getDestination()))
-            > mapper.getVarianceThreshold()) {
-          sufficientChange = true;
+      for (IoMapper mapper : outputs) {
+        // Will throw an IllegalArgumentException if the provided VitalSign is invalid
+        if (mapper.getType() == IoMapper.IoType.VITAL_SIGN) {
+          VitalSign.fromString(mapper.getTo());
         }
       }
-      
-      // If the simulation has never been run, or there's sufficient change
-      // in the input parameters, run the simulation
-      if (vitalSignResults.isEmpty() || sufficientChange) {
-        // Save our input parameters for future threshold checks
-        prevInputs = modelInputs;
-        MultiTable results = runSim(time, modelInputs);
-        
-        // Set all of the results
-        for (IoMapper mapper : config.getOutputs()) {
-          switch (mapper.getType()) {
-            default:
-            case ATTRIBUTE:
-              person.attributes.put(mapper.getDestination(),
-                  mapper.getOutputResult(results, config.getLeadTime()));
-              break;
-            case VITAL_SIGN:
-              VitalSign vs = VitalSign.fromString(mapper.getDestination());
-              Object result = mapper.getOutputResult(results, config.getLeadTime());
-              if (result instanceof List) {
-                throw new IllegalArgumentException(
-                    "Mapping lists to VitalSigns is currently unsupported. "
-                    + "Cannot map list to VitalSign \"" + mapper.getDestination() + "\".");
-              }
-              vitalSignResults.put(vs, (double) result);
-              break;
-          }
-        }
-      }
-      
     }
-    
-    /**
-     * Runs the simulation and returns the results.
-     * @param time simulation time
-     * @return simulation results
-     */
-    private MultiTable runSim(long time, Map<String,Double> modelInputs) {
-      try {
-        MultiTable results = simulator.run(modelInputs);
-        return results;
-      } catch (DerivativeException ex) {
-        Logger.getLogger(this.getClass().getName()).log(
-            Level.SEVERE, "Unable to solve simulation \""
-            + config.model + "\" at time step " + time + " for person "
-            + person.attributes.get(Person.ID), ex);
-      }
-      return null;
+
+    public String getModel() {
+      return model;
+    }
+
+    public void setModel(String model) {
+      this.model = model;
+    }
+
+    public String getSolver() {
+      return solver;
+    }
+
+    public void setSolver(String solver) {
+      this.solver = solver;
+    }
+
+    public double getStepSize() {
+      return stepSize;
+    }
+
+    public void setStepSize(double stepSize) {
+      this.stepSize = stepSize;
+    }
+
+    public double getSimDuration() {
+      return simDuration;
+    }
+
+    public void setSimDuration(double simDuration) {
+      this.simDuration = simDuration;
+    }
+
+    public double getLeadTime() {
+      return leadTime;
+    }
+
+    public void setLeadTime(double leadTime) {
+      this.leadTime = leadTime;
+    }
+
+    public List<IoMapper> getInputs() {
+      return inputs;
+    }
+
+    public void setInputs(List<IoMapper> inputs) {
+      this.inputs = inputs;
+    }
+
+    public List<IoMapper> getOutputs() {
+      return outputs;
+    }
+
+    public void setOutputs(List<IoMapper> outputs) {
+      this.outputs = outputs;
     }
   }
   
   /** Class for handling simulation inputs and outputs. **/
-  private static class IoMapper {
-    IoType type;
-    String from;
-    String to;
-    String fromList;
-    String fromExp;
-    double varianceThreshold;
-    ExpressionProcessor expProcessor;
+  public static class IoMapper {
+    private IoType type;
+    private String from;
+    private String to;
+    private String fromList;
+    private String fromExp;
+    private double varianceThreshold;
+    private ExpressionProcessor expProcessor;
     
     enum IoType {
-      @SerializedName("Attribute") ATTRIBUTE, 
-      @SerializedName("Vital Sign") VITAL_SIGN
+      ATTRIBUTE, 
+      VITAL_SIGN
     }
     
     public IoType getType() {
       return type;
     }
-    
+
+    public void setType(IoType type) {
+      this.type = type;
+    }
+
+    public String getFrom() {
+      return from;
+    }
+
+    public void setFrom(String from) {
+      this.from = from;
+    }
+
+    public String getTo() {
+      return to;
+    }
+
+    public void setTo(String to) {
+      this.to = to;
+    }
+
+    public String getFromList() {
+      return fromList;
+    }
+
+    public void setFromList(String fromList) {
+      this.fromList = fromList;
+    }
+
+    public String getFromExp() {
+      return fromExp;
+    }
+
+    public void setFromExp(String fromExp) {
+      this.fromExp = fromExp;
+    }
+
     public double getVarianceThreshold() {
       return varianceThreshold;
     }
-    
-    public String getDestination() {
-      return to;
+
+    public void setVarianceThreshold(double varianceThreshold) {
+      this.varianceThreshold = varianceThreshold;
     }
-    
+
+    public ExpressionProcessor getExpProcessor() {
+      return expProcessor;
+    }
+
+    public void setExpProcessor(ExpressionProcessor expProcessor) {
+      this.expProcessor = expProcessor;
+    }
+
     /**
      * Initializes the expression processor if needed.
      * @param paramTypes map of parameters to their CQL types
      */
     public void initialize(Map<String, String> paramTypes) {
-      if (expProcessor == null && fromExp != null && !"".equals(fromExp)) {
-        expProcessor = new ExpressionProcessor(fromExp, paramTypes);
+      try {
+        if (expProcessor == null && fromExp != null && !"".equals(fromExp)) {
+          expProcessor = new ExpressionProcessor(fromExp, paramTypes);
+        }
+      } catch (CqlSemanticException e) {
+        throw new RuntimeException(e);
       }
     }
     
@@ -230,7 +422,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
         
         // Add all patient parameters to the expression parameter map
         for (String param : expProcessor.getParamNames()) {
-          expParams.put(param, getPersonValue(param, person, time));
+          expParams.put(param, new BigDecimal(getPersonValue(param, person, time)));
         }
         
         // All physiology inputs should evaluate to numeric parameters
@@ -333,6 +525,12 @@ public class PhysiologyValueGenerator extends ValueGenerator {
      * @return value
      */
     private Double getPersonValue(String param, Person person, long time) {
+      
+      // Treat "age" as a special case. In expressions, age is represented in decimal years
+      if (param.equals("age")) {
+        return person.ageInDecimalYears(time);
+      }
+      
       org.mitre.synthea.world.concepts.VitalSign vs = null;
       try {
         vs = org.mitre.synthea.world.concepts.VitalSign.fromString(param);
@@ -373,113 +571,129 @@ public class PhysiologyValueGenerator extends ValueGenerator {
         }
       }
     }
-    
   }
   
-  public static class PhysiologyConfig {
-    private String model;
-    private String solver;
-    private double stepSize;
-    private double simDuration;
-    private double leadTime;
-    private List<IoMapper> inputs;
-    private List<IoMapper> outputs;
+  /** Class for handling execution of a PhysiologySimulator. **/
+  private static class SimRunner {
+    private PhysiologyGeneratorConfig config;
+    private Person person;
+    private PhysiologySimulator simulator;
+    private Map<String,String> paramTypes = new HashMap<String, String>();
+    private Map<String,Double> prevInputs = new HashMap<String, Double>();
+    private Map<VitalSign,Double> vitalSignResults = new HashMap<VitalSign,Double>();
     
-    protected void validate(Module module, String name) {
-      if (leadTime > simDuration) {
-        throw new IllegalArgumentException(
-            "Simulation lead time cannot be greater than sim duration!");
+    /**
+     * Handles execution of a PhysiologySimulator.
+     * @param config simulation configuration
+     */
+    public SimRunner(PhysiologyGeneratorConfig config, Person person) {
+      this.config = config;
+      this.person = person;
+      simulator = new PhysiologySimulator(
+          config.getModel(),
+          config.getSolver(),
+          config.getStepSize(),
+          config.getSimDuration()
+      );
+      
+      for (String param : simulator.getParameters()) {
+        // Assume all physiology model parameters are numeric
+        // TODO: May need to handle alternative types in the future
+        paramTypes.put(param, "List<Decimal>");
       }
-    }
-
-    public String getModel() {
-      return model;
-    }
-
-    public void setModel(String model) {
-      this.model = model;
-    }
-
-    public String getSolver() {
-      return solver;
-    }
-
-    public void setSolver(String solver) {
-      this.solver = solver;
-    }
-
-    public double getStepSize() {
-      return stepSize;
-    }
-
-    public void setStepSize(double stepSize) {
-      this.stepSize = stepSize;
-    }
-
-    public double getSimDuration() {
-      return simDuration;
-    }
-
-    public void setSimDuration(double simDuration) {
-      this.simDuration = simDuration;
-    }
-
-    public double getLeadTime() {
-      return leadTime;
-    }
-
-    public void setLeadTime(double leadTime) {
-      this.leadTime = leadTime;
-    }
-
-    public List<IoMapper> getInputs() {
-      return inputs;
-    }
-
-    public void setInputs(List<IoMapper> inputs) {
-      this.inputs = inputs;
-    }
-
-    public List<IoMapper> getOutputs() {
-      return outputs;
-    }
-
-    public void setOutputs(List<IoMapper> outputs) {
-      this.outputs = outputs;
-    }
-    
-    
-  }
-
-  @Override
-  public String toString() {
-
-    final StringBuilder sb = new StringBuilder("PhysiologyValueGenerator {");
-
-    sb.append("model=").append(config.getModel());
-    
-    sb.append(", VitalSigns=[");
-    for (IoMapper mapper : config.getOutputs()) {
-      if (mapper.getType() == IoMapper.IoType.VITAL_SIGN) {
-        sb.append(mapper.getDestination()).append(",");
+      
+      for (IoMapper mapper : config.getInputs()) {
+        mapper.initialize(paramTypes);
+      }
+      for (IoMapper mapper : config.getOutputs()) {
+        mapper.initialize(paramTypes);
       }
     }
     
-    sb.append("], Attributes=[");
-    for (IoMapper mapper : config.getOutputs()) {
-      if (mapper.getType() == IoMapper.IoType.ATTRIBUTE) {
-        sb.append(mapper.getDestination()).append(",");
-      }
+    /**
+     * Retrieves the simulation configuration.
+     * @return simulation configuration
+     */
+    public PhysiologyGeneratorConfig getConfig() {
+      return config;
     }
     
-    sb.append("]}");
-
-    return sb.toString();
-  }
-
-  @Override
-  public double getValue(long time) {
-    simRunner.execute(time);
-    return simRunner.getVitalSignValue(vitalSign);
+    public double getVitalSignValue(VitalSign parameter) {
+      return vitalSignResults.get(parameter);
+    }
+    
+    /**
+     * Executes the simulation if any input values are beyond the variance threshold.
+     * @param time simulation time
+     */
+    public void execute(long time) {
+      // Flag to indicate if the input values have sufficiently changed
+      boolean sufficientChange = false;
+      
+      // Get our map of inputs
+      Map<String,Double> modelInputs = new HashMap<String,Double>();
+      for (IoMapper mapper : config.getInputs()) {
+        double inputResult = mapper.toModelInputs(person, time, modelInputs);
+        
+        // If we have previous results, check if there has been a sufficient
+        // change in the input parameter
+        if (!prevInputs.isEmpty() && Math.abs(inputResult
+            - prevInputs.get(mapper.getTo()))
+            > mapper.getVarianceThreshold()) {
+          sufficientChange = true;
+        }
+      }
+      
+      // If the simulation has never been run, or there's sufficient change
+      // in the input parameters, run the simulation
+      if (vitalSignResults.isEmpty() || sufficientChange) {
+        // Save our input parameters for future threshold checks
+        prevInputs = modelInputs;
+        MultiTable results = runSim(time, modelInputs);
+        
+//        System.out.println("Running simulation");
+        
+        // Set all of the results
+        for (IoMapper mapper : config.getOutputs()) {
+          switch (mapper.getType()) {
+            default:
+            case ATTRIBUTE:
+              person.attributes.put(mapper.getTo(),
+                  mapper.getOutputResult(results, config.getLeadTime()));
+              break;
+            case VITAL_SIGN:
+              VitalSign vs = VitalSign.fromString(mapper.getTo());
+              Object result = mapper.getOutputResult(results, config.getLeadTime());
+              if (result instanceof List) {
+                throw new IllegalArgumentException(
+                    "Mapping lists to VitalSigns is currently unsupported. "
+                    + "Cannot map list to VitalSign \"" + mapper.getTo() + "\".");
+              }
+              vitalSignResults.put(vs, (double) result);
+//              System.out.println(vitalSignResults);
+              break;
+          }
+        }
+      }
+      
+    }
+    
+    /**
+     * Runs the simulation and returns the results.
+     * @param time simulation time
+     * @return simulation results
+     */
+    private MultiTable runSim(long time, Map<String,Double> modelInputs) {
+      try {
+        MultiTable results = simulator.run(modelInputs);
+        return results;
+      } catch (DerivativeException ex) {
+        Logger.getLogger(this.getClass().getName()).log(
+            Level.SEVERE, "Unable to solve simulation \""
+            + config.model + "\" at time step " + time + " for person "
+            + person.attributes.get(Person.ID), ex);
+      }
+      return null;
+    }
   }
 }
