@@ -28,15 +28,15 @@ import org.opencds.cqf.cql.execution.Context;
 import org.opencds.cqf.cql.execution.CqlLibraryReader;
 
 public class ExpressionProcessor implements Cloneable {
-  private static final ModelManager MODEL_MANAGER = new ModelManager();
-  private static final LibraryManager LIBRARY_MANAGER = new LibraryManager(MODEL_MANAGER);
   private static final String LIBRARY_NAME = "Synthea";
-  String expression;
-  Library library;
-  Context context;
-  String elm;
-  Map<String,String> paramTypeMap;
-  BiMap<String,String> cqlParamMap;
+  private static final ModelManager modelManager = new ModelManager();
+  private final LibraryManager libraryManager = new LibraryManager(modelManager);
+  private String expression;
+  private Library library;
+  private Context context;
+  private String elm;
+  private Map<String,String> paramTypeMap;
+  private BiMap<String,String> cqlParamMap;
 
   /**
    * Evaluate the given expression, within the context of the given Person and timestamp.
@@ -52,8 +52,8 @@ public class ExpressionProcessor implements Cloneable {
    * @return result of the expression
    */
 
-  private static String cqlToElm(String cql) {
-    CqlTranslator translator = CqlTranslator.fromText(cql, MODEL_MANAGER, LIBRARY_MANAGER);
+  private String cqlToElm(String cql) {
+    CqlTranslator translator = CqlTranslator.fromText(cql, modelManager, libraryManager);
     
     if (translator.getErrors().size() > 0) {
       throw translator.getErrors().get(0);
@@ -149,6 +149,12 @@ public class ExpressionProcessor implements Cloneable {
    * @return value
    */
   private Object getPersonValue(String param, Person person, long time) {
+    
+    // Treat "age" as a special case. In expressions, age is represented in decimal years
+    if (param == "age") {
+      return person.ageInDecimalYears(time);
+    }
+    
     org.mitre.synthea.world.concepts.VitalSign vs = null;
     try {
       vs = org.mitre.synthea.world.concepts.VitalSign.fromString(param);
