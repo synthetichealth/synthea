@@ -34,9 +34,10 @@ public abstract class Exporter {
    * @param person   Patient to export
    * @param stopTime Time at which the simulation stopped
    * @param recordQueue Generator's record queue (may be null)
+   * @param csvExporter CSVExporter to use for CSV export (may be null)
    * @param yearsOfHistory The number of years of patient history to include in patient record. Set this to 0 to keep all history.
    */
-  public static void export(Person person, long stopTime, BlockingQueue<String> recordQueue, int yearsOfHistory) {
+  public static void export(Person person, long stopTime, BlockingQueue<String> recordQueue, CSVExporter csvExporter, int yearsOfHistory) {
     if (yearsOfHistory > 0) {
       person = filterForExport(person, yearsOfHistory, stopTime);
     }
@@ -47,11 +48,11 @@ public abstract class Exporter {
       int i = 0;
       for (String key : person.records.keySet()) {
         person.record = person.records.get(key);
-        exportRecord(person, Integer.toString(i), stopTime, recordQueue);
+        exportRecord(person, Integer.toString(i), stopTime, recordQueue, csvExporter);
         i++;
       }
     } else {
-      exportRecord(person, "", stopTime, recordQueue);
+      exportRecord(person, "", stopTime, recordQueue, csvExporter);
     }
   }
   
@@ -63,7 +64,7 @@ public abstract class Exporter {
    * @param stopTime Time at which the simulation stopped
    */
   public static void export(Person person, long stopTime) {
-	  export(person, stopTime, null, Integer.parseInt(Config.get("exporter.years_of_history")));
+	  export(person, stopTime, null, null, Integer.parseInt(Config.get("exporter.years_of_history")));
   }
 
   /**
@@ -74,8 +75,9 @@ public abstract class Exporter {
    * @param fileTag  An identifier to tag the file with.
    * @param stopTime Time at which the simulation stopped
    * @param recordQueue Generator's record queue (may be null)
+   * @param csvExporter CSVExporter to use for CSV export (may be null)
    */
-  private static void exportRecord(Person person, String fileTag, long stopTime, BlockingQueue<String> recordQueue) {
+  private static void exportRecord(Person person, String fileTag, long stopTime, BlockingQueue<String> recordQueue, CSVExporter csvExporter) {
 
     if (Boolean.parseBoolean(Config.get("exporter.fhir_stu3.export"))) {
       File outDirectory = getOutputFolder("fhir_stu3", person);
@@ -134,7 +136,13 @@ public abstract class Exporter {
       Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "xml"));
       writeNewFile(outFilePath, ccdaXml);
     }
-    if (Boolean.parseBoolean(Config.get("exporter.csv.export"))) {
+    if (csvExporter != null) {
+		try {
+			csvExporter.export(person, stopTime);
+		} catch (IOException ioex) {
+			ioex.printStackTrace();
+		}
+	} else if (Boolean.parseBoolean(Config.get("exporter.csv.export"))) {
       try {
         CSVExporter.getInstance().export(person, stopTime);
       } catch (IOException e) {
