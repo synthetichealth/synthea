@@ -2173,6 +2173,14 @@ public class FhirStu3 {
     }
     organizationResource.addAddress(address);
 
+    DirectPosition2D coord = provider.getLatLon();
+    if (coord != null) {
+      Extension geolocation = address.addExtension();
+      geolocation.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
+      geolocation.addExtension("latitude", new DecimalType(coord.getY()));
+      geolocation.addExtension("longitude", new DecimalType(coord.getX()));
+    }
+    
     if (provider.phone != null && !provider.phone.isEmpty()) {
       ContactPoint contactPoint = new ContactPoint()
           .setSystem(ContactPointSystem.PHONE)
