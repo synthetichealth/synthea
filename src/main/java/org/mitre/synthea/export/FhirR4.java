@@ -411,7 +411,7 @@ public class FhirR4 {
     String raceNum = (String) raceEthnicityCodes.get(race);
 
     if (race.equals("hispanic")) {
-      Extension raceDetailExtension = new Extension("detail");
+      Extension raceDetailExtension = new Extension("detailed");
       Coding raceCoding = new Coding();
       raceCoding.setSystem("urn:oid:2.16.840.1.113883.6.238");
       raceCoding.setCode("2131-1");
