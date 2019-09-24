@@ -413,7 +413,15 @@ public class FhirR4 {
 
     String raceNum = (String) raceEthnicityCodes.get(race);
 
-    if (race != "hispanic") {
+    if (race.equals("hispanic")) {
+      Extension raceDetailExtension = new Extension("detailed");
+      Coding raceCoding = new Coding();
+      raceCoding.setSystem("urn:oid:2.16.840.1.113883.6.238");
+      raceCoding.setCode("2131-1");
+      raceCoding.setDisplay("Other Races");
+      raceDetailExtension.setValue(raceCoding);
+      raceExtension.addExtension(raceDetailExtension);
+    } else {
       Extension raceCodingExtension = new Extension("ombCategory");
       Coding raceCoding = new Coding();
       raceCoding.setSystem("urn:oid:2.16.840.1.113883.6.238");
@@ -434,7 +442,7 @@ public class FhirR4 {
     String ethnicity = (String) person.attributes.get(Person.ETHNICITY);
 
     String ethnicityDisplay;
-    if (race == "hispanic") {
+    if (race.equals("hispanic")) {
       ethnicity = "hispanic";
       ethnicityDisplay = "Hispanic or Latino";
     } else {
