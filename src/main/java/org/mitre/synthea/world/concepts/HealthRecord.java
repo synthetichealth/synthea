@@ -5,8 +5,10 @@ import com.google.gson.JsonObject;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -314,6 +316,58 @@ public class HealthRecord {
     }
   }
 
+  /**
+   * Device is an implantable device such as a coronary stent, artificial knee
+   * or hip, heart pacemaker, or implantable defibrillator.
+   */
+  public class Device extends Entry {
+    /** UDI == Unique Device Identifier. */
+    public String udi;
+    public long manufactureTime;
+    public long expirationTime;
+    public String deviceIdentifier;
+    public String lotNumber;
+    public String serialNumber;
+
+    public Device(long start, String type) {
+      super(start, type);
+    }
+
+    /**
+     * Set the human readable form of the UDI for this Person's device.
+     * @param person The person who owns or contains the device.
+     */
+    public void generateUDI(Person person) {
+      deviceIdentifier = trimLong(person.random.nextLong(), 14);
+      manufactureTime = start - Utilities.convertTime("weeks", 3);
+      expirationTime = start + Utilities.convertTime("years", 25);
+      lotNumber = trimLong(person.random.nextLong(), (int) person.rand(4, 20));
+      serialNumber = trimLong(person.random.nextLong(), (int) person.rand(4, 20));
+
+      udi = "(01)" + deviceIdentifier;
+      udi += "(11)" + udiDate(manufactureTime);
+      udi += "(17)" + udiDate(expirationTime);
+      udi += "(10)" + lotNumber;
+      udi += "(21)" + serialNumber;
+    }
+
+    private String udiDate(long time) {
+      SimpleDateFormat format = new SimpleDateFormat("YYMMdd");
+      return format.format(new Date(time));
+    }
+
+    private String trimLong(Long value, int length) {
+      String retVal = Long.toString(value);
+      if (retVal.startsWith("-")) {
+        retVal = retVal.substring(1);
+      }
+      if (retVal.length() > length) {
+        retVal = retVal.substring(0, length);
+      }
+      return retVal;
+    }
+  }
+
   public enum EncounterType {
     WELLNESS("AMB"), AMBULATORY("AMB"), OUTPATIENT("AMB"),
         INPATIENT("IMP"), EMERGENCY("EMER"), URGENTCARE("AMB");
@@ -363,6 +417,7 @@ public class HealthRecord {
     public List<Medication> medications;
     public List<CarePlan> careplans;
     public List<ImagingStudy> imagingStudies;
+    public List<Device> devices;
     public Claim claim; // for now assume 1 claim per encounter
     public Code reason;
     public Code discharge;
@@ -371,6 +426,7 @@ public class HealthRecord {
     public boolean ended;
     // Track if we renewed meds at this encounter. Used in State.java encounter state.
     public boolean chronicMedsRenewed;
+    public String clinicalNote;
 
     public Encounter(long time, String type) {
       super(time, type);
@@ -395,6 +451,7 @@ public class HealthRecord {
       medications = new ArrayList<Medication>();
       careplans = new ArrayList<CarePlan>();
       imagingStudies = new ArrayList<ImagingStudy>();
+      devices = new ArrayList<Device>();
       this.claim = new Claim(this, person);
     }
   }
@@ -580,6 +637,33 @@ public class HealthRecord {
     encounter.claim.addLineItem(procedure);
     present.put(type, procedure);
     return procedure;
+  }
+
+  /**
+   * Implant or assign a device to this patient.
+   * @param time The time the device is implanted or assigned.
+   * @param type The type of device.
+   * @return The device entry.
+   */
+  public Device deviceImplant(long time, String type) {
+    Device device = new Device(time, type);
+    device.generateUDI(person);
+    Encounter encounter = currentEncounter(time);
+    encounter.devices.add(device);
+    present.put(type, device);
+    return device;
+  }
+
+  /**
+   * Remove a device from the patient.
+   * @param time The time the device is removed.
+   * @param type The type of device.
+   */
+  public void deviceRemove(long time, String type) {
+    if (present.containsKey(type)) {
+      present.get(type).stop = time;
+      present.remove(type);
+    }
   }
 
   public Report report(long time, String type, int numberOfObservations) {

@@ -3,6 +3,7 @@ package org.mitre.synthea.modules;
 import static org.mitre.synthea.modules.LifecycleModule.bmi;
 import static org.mitre.synthea.modules.LifecycleModule.lookupGrowthChart;
 import static org.mitre.synthea.modules.LifecycleModule.percentileForBMI;
+import static org.mitre.synthea.modules.LifecycleModule.setCurrentWeightForLengthPercentile;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Utilities;
@@ -123,6 +124,7 @@ public final class WeightLossModule extends Module {
     double height = person.getVitalSign(VitalSign.HEIGHT, time);
     person.setVitalSign(VitalSign.WEIGHT, weight);
     person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+    setCurrentWeightForLengthPercentile(person, time);
   }
 
   /**
@@ -148,6 +150,7 @@ public final class WeightLossModule extends Module {
           person.setVitalSign(VitalSign.WEIGHT, weight);
           person.setVitalSign(VitalSign.HEIGHT, height);
           person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+          setCurrentWeightForLengthPercentile(person, time);
         }
       } else {
         double weight;
@@ -178,6 +181,7 @@ public final class WeightLossModule extends Module {
         person.setVitalSign(VitalSign.HEIGHT, height);
         person.setVitalSign(VitalSign.WEIGHT, weight);
         person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+        setCurrentWeightForLengthPercentile(person, time);
       }
     } else {
       if (age < 20) {
@@ -189,6 +193,7 @@ public final class WeightLossModule extends Module {
         person.setVitalSign(VitalSign.HEIGHT, height);
         person.setVitalSign(VitalSign.WEIGHT, weight);
         person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+        setCurrentWeightForLengthPercentile(person, time);
       }
     }
   }

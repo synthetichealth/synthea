@@ -1,15 +1,19 @@
 package org.mitre.synthea.world.agents;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.sis.geometry.DirectPosition2D;
@@ -29,6 +33,7 @@ import org.mitre.synthea.world.concepts.VitalSign;
 
 public class Person implements Serializable, QuadTreeData {
   private static final long serialVersionUID = 4322116644425686379L;
+  private static final ZoneId timeZone = ZoneId.systemDefault();
 
   public static final String BIRTHDATE = "birthdate";
   public static final String DEATHDATE = "deathdate";
@@ -75,6 +80,7 @@ public class Person implements Serializable, QuadTreeData {
   public static final String LOCATION = "location";
   public static final String ACTIVE_WEIGHT_MANAGEMENT = "active_weight_management";
   public static final String BMI_PERCENTILE = "bmi_percentile";
+  public static final String CURRENT_WEIGHT_LENGTH_PERCENTILE = "current_weight_length_percentile";
   private static final String DEDUCTIBLE = "deductible";
   private static final String LAST_MONTH_PAID = "last_month_paid";
 
@@ -135,10 +141,22 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
-   * Retuns a random double in the given range.
+   * Returns a random double in the given range.
    */
   public double rand(double low, double high) {
     return (low + ((high - low) * random.nextDouble()));
+  }
+
+  /**
+   * Returns a random double in the given range with no more that the specified
+   * number of decimal places.
+   */
+  public double rand(double low, double high, Integer decimals) {
+    double value = rand(low, high);
+    if (decimals != null) {
+      value = BigDecimal.valueOf(value).setScale(decimals, RoundingMode.HALF_UP).doubleValue();
+    }
+    return value;
   }
 
   /**
@@ -214,9 +232,9 @@ public class Person implements Serializable, QuadTreeData {
     Period age = Period.ZERO;
 
     if (attributes.containsKey(BIRTHDATE)) {
-      LocalDate now = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
+      LocalDate now = Instant.ofEpochMilli(time).atZone(timeZone).toLocalDate();
       LocalDate birthdate = Instant.ofEpochMilli((long) attributes.get(BIRTHDATE))
-          .atZone(ZoneId.systemDefault()).toLocalDate();
+          .atZone(timeZone).toLocalDate();
       age = Period.between(birthdate, now);
     }
     return age;
@@ -283,6 +301,22 @@ public class Person implements Serializable, QuadTreeData {
     return max;
   }
 
+  /**
+   * Get active symptoms above some threshold.
+   * TODO These symptoms are not filtered by time.
+   * @return list of active symptoms above the threshold.
+   */
+  public Set<String> getSymptoms() {
+    Set<String> active = new HashSet<String>(symptoms.keySet());
+    for (String symptom : symptomStatuses.keySet()) {
+      int severity = getSymptom(symptom);
+      if (severity < 20) {
+        active.remove(symptom);
+      }
+    }
+    return active;
+  }
+
   // Mark the largest valued symptom as addressed.
   public void addressLargestSymptom() {
     String highestType = "";
@@ -309,7 +343,21 @@ public class Person implements Serializable, QuadTreeData {
       throw new NullPointerException(
           "Vital sign '" + vitalSign + "' not set. Valid vital signs: " + vitalSigns.keySet());
     }
-    return valueGenerator.getValue(time);
+    double value = valueGenerator.getValue(time);
+    int decimalPlaces;
+    switch (vitalSign) {
+      case DIASTOLIC_BLOOD_PRESSURE:
+      case SYSTOLIC_BLOOD_PRESSURE:
+        decimalPlaces = 0;
+        break;
+      case HEIGHT:
+      case WEIGHT:
+        decimalPlaces = 1;
+        break;
+      default:
+        decimalPlaces = 2;
+    }
+    return BigDecimal.valueOf(value).setScale(decimalPlaces, RoundingMode.HALF_UP).doubleValue();
   }
 
   public void setVitalSign(VitalSign vitalSign, ValueGenerator valueGenerator) {

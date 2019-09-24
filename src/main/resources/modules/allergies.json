@@ -139,8 +139,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "326051000000105",
-          "display": "Self care"
+          "code": "384758001",
+          "display": "Self-care interventions (procedure)"
         }
       ],
       "activities": [

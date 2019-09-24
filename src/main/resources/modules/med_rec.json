@@ -31,8 +31,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "428191000124101",
-          "display": "Documentation of current medications"
+          "code": "430193006",
+          "display": "Medication Reconciliation (procedure)"
         }
       ],
       "direct_transition": "Initial"

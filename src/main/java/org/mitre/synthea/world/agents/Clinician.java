@@ -41,20 +41,51 @@ public class Clinician implements Serializable, QuadTreeData {
   public final String uuid;
   public Map<String, Object> attributes;
   private ArrayList<String> servicesProvided;
+  private Provider organization;
   private int encounters;
   public long populationSeed;
-  
-  public Clinician(long clinicianSeed, Random clinicianRand, long identifier) {
-    
+
+  /**
+   * Create a new clinician.
+   * @param clinicianSeed The seed for this clinician.
+   * @param clinicianRand The random number generator to use for this clinician.
+   * @param identifier The clinician's organizational unique identifier.
+   * @param organization The organization this clinician belongs to. May be null.
+   */
+  public Clinician(long clinicianSeed, Random clinicianRand,
+      long identifier, Provider organization) {
     this.uuid =  new UUID(clinicianSeed, identifier).toString();    
     this.random = clinicianRand;
     this.identifier = identifier;
+    this.organization = organization;
     attributes = new ConcurrentHashMap<String, Object>();
     servicesProvided = new ArrayList<String>();
   }
 
+  /**
+   * Get the Clinician's UUID.
+   * @return UUID as String.
+   */
   public String getResourceID() {
     return uuid;
+  }
+
+  /**
+   * Get the Clinician's Organization.
+   * @return Provider organization. May be null.
+   */
+  public Provider getOrganization() {
+    return organization;
+  }
+
+  /**
+   * Get the clinician's full name, with title (e.g. "Dr.")
+   * @return full name as string.
+   */
+  public String getFullname() {
+    String prefix = (String) attributes.get(NAME_PREFIX);
+    String name = (String) attributes.get(NAME);
+    return prefix + " " + name;
   }
 
   public double rand() {

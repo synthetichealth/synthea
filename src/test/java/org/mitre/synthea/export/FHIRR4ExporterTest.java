@@ -4,14 +4,15 @@ import static org.junit.Assert.assertTrue;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
-import ca.uhn.fhir.validation.FhirValidator;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Quantity;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -29,6 +30,27 @@ public class FHIRR4ExporterTest {
    */
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
+  
+  @Test
+  public void testDecimalRounding() {
+    Integer i = 123456;
+    Object v = FhirR4.mapValueToFHIRType(i,"fake");
+    assertTrue(v instanceof Quantity);
+    Quantity q = (Quantity)v;
+    assertTrue(q.getValue().compareTo(BigDecimal.valueOf(123460)) == 0);
+
+    Double d = 0.000123456;
+    v = FhirR4.mapValueToFHIRType(d, "fake");
+    assertTrue(v instanceof Quantity);
+    q = (Quantity)v;
+    assertTrue(q.getValue().compareTo(BigDecimal.valueOf(0.00012346)) == 0);
+
+    d = 0.00012345678901234;
+    v = FhirR4.mapValueToFHIRType(d, "fake");
+    assertTrue(v instanceof Quantity);
+    q = (Quantity)v;
+    assertTrue(q.getValue().compareTo(BigDecimal.valueOf(0.00012346)) == 0);
+  }
 
   @Test
   public void testFHIRR4Export() throws Exception {
@@ -36,11 +58,7 @@ public class FHIRR4ExporterTest {
 
     FhirContext ctx = FhirContext.forR4();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
-
-    FhirValidator validator = ctx.newValidator();
-    validator.setValidateAgainstStandardSchema(true);
-    validator.setValidateAgainstStandardSchematron(true);
-
+    ValidationResources validator = new ValidationResources();
     List<String> validationErrors = new ArrayList<String>();
 
     int numberOfPeople = 10;
@@ -54,6 +72,7 @@ public class FHIRR4ExporterTest {
       Person person = generator.generatePerson(i);
       FhirR4.TRANSACTION_BUNDLE = person.random.nextBoolean();
       FhirR4.USE_US_CORE_IG = person.random.nextBoolean();
+      FhirR4.USE_SHR_EXTENSIONS = false;
       String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
       // Check that the fhirJSON doesn't contain unresolved SNOMED-CT strings
       // (these should have been converted into URIs)
@@ -63,14 +82,14 @@ public class FHIRR4ExporterTest {
       }
       // Now validate the resource...
       IBaseResource resource = ctx.newJsonParser().parseResource(fhirJson);
-      ValidationResult result = validator.validateWithResult(resource);
+      ValidationResult result = validator.validateR4(resource);
       if (!result.isSuccessful()) {
         // If the validation failed, let's crack open the Bundle and validate
         // each individual entry.resource to get context-sensitive error
         // messages...
         Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
         for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-          ValidationResult eresult = validator.validateWithResult(entry.getResource());
+          ValidationResult eresult = validator.validateR4(entry.getResource());
           if (!eresult.isSuccessful()) {
             for (SingleValidationMessage emessage : eresult.getMessages()) {
               boolean valid = false;
@@ -99,6 +118,13 @@ public class FHIRR4ExporterTest {
                  * fails, even if it is valid.
                  */
                 valid = true; // ignore this error
+              } else if (emessage.getMessage().contains("[active, inactive, entered-in-error]")
+                  || emessage.getMessage().contains("MedicationStatusCodes-list")) {
+                /*
+                 * MedicationStatement.status has more legal values than this... including
+                 * completed and stopped.
+                 */
+                valid = true;
               }
               if (!valid) {
                 System.out.println(parser.encodeResourceToString(entry.getResource()));
