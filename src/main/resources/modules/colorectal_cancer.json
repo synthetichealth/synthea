@@ -306,8 +306,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1015401000000102",
-          "display": "Fecal occult blood test"
+          "code": "104435004",
+          "display": "Screening for occult blood in feces (procedure)"
         }
       ],
       "conditional_transition": [
@@ -2000,6 +2000,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 5,
         "high": 8
       },
@@ -2017,6 +2018,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 5,
         "high": 10
       },
@@ -2034,6 +2036,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 5,
         "high": 10
       },
@@ -2051,6 +2054,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 2,
         "high": 8
       },

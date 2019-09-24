@@ -761,6 +761,7 @@
       "unit": "{score}",
       "direct_transition": "Record_Weight",
       "range": {
+        "decimals": 0,
         "low": 0,
         "high": 4
       }

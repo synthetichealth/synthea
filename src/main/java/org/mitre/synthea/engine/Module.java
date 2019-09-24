@@ -62,7 +62,9 @@ public class Module {
       fixPathFromJar(modulesURI);
       Path modulesPath = Paths.get(modulesURI);
       Path basePath = modulesPath.getParent();
-      Files.walk(modulesPath, Integer.MAX_VALUE).filter(Files::isReadable).filter(Files::isRegularFile)
+      Files.walk(modulesPath, Integer.MAX_VALUE)
+          .filter(Files::isReadable)
+          .filter(Files::isRegularFile)
           .filter(p -> p.toString().endsWith(".json")).forEach(t -> {
             String relativePath = relativePath(t, modulesPath);
             boolean submodule = !t.getParent().equals(modulesPath);

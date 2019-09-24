@@ -423,6 +423,7 @@
       ],
       "direct_transition": "OA_CarePlan",
       "range": {
+        "decimals": 0,
         "low": 5,
         "high": 10
       }

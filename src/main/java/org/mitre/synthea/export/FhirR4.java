@@ -7,6 +7,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
@@ -1493,7 +1496,7 @@ public class FhirR4 {
     return entry;
   }
 
-  private static Type mapValueToFHIRType(Object value, String unit) {
+  static Type mapValueToFHIRType(Object value, String unit) {
     if (value == null) {
       return null;
     } else if (value instanceof Condition) {
@@ -1504,7 +1507,10 @@ public class FhirR4 {
     } else if (value instanceof String) {
       return new StringType((String) value);
     } else if (value instanceof Number) {
-      return new Quantity().setValue(((Number) value).doubleValue())
+      double dblVal = ((Number) value).doubleValue();
+      MathContext mctx = new MathContext(5, RoundingMode.HALF_UP);
+      BigDecimal bigVal = new BigDecimal(dblVal, mctx).stripTrailingZeros();
+      return new Quantity().setValue(bigVal)
           .setCode(unit).setSystem(UNITSOFMEASURE_URI)
           .setUnit(unit);
     } else {

@@ -1152,7 +1152,7 @@ public abstract class State implements Cloneable {
       if (exact != null) {
         value = exact.quantity;
       } else if (range != null) {
-        value = person.rand(range.low, range.high);
+        value = person.rand(range.low, range.high, range.decimals);
       } else if (attribute != null) {
         value = person.attributes.get(attribute);
       } else if (vitalSign != null) {
