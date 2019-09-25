@@ -486,7 +486,8 @@
         }
       ],
       "reason": "Diagnose_Diabetes",
-      "direct_transition": "Bitherapy"
+      "direct_transition": "Bitherapy",
+      "chronic": true
     },
     "Bitherapy": {
       "type": "Simple",
@@ -557,7 +558,8 @@
         }
       ],
       "reason": "Diagnose_Diabetes",
-      "direct_transition": "Tritherapy"
+      "direct_transition": "Tritherapy",
+      "chronic": true
     },
     "End_Liraglutide": {
       "type": "MedicationEnd",
@@ -733,7 +735,8 @@
         }
       ],
       "reason": "Diagnose_Diabetes",
-      "direct_transition": "Check_Complications"
+      "direct_transition": "Check_Complications",
+      "chronic": true
     },
     "End_Basal_Insulin_Towards_Prandial": {
       "type": "MedicationEnd",
@@ -756,7 +759,8 @@
         }
       ],
       "reason": "Diagnose_Diabetes",
-      "direct_transition": "Check_Complications"
+      "direct_transition": "Check_Complications",
+      "chronic": true
     },
     "End_Insulin": {
       "type": "Simple",

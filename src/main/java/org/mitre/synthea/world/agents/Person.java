@@ -91,6 +91,7 @@ public class Person implements Serializable, QuadTreeData {
   public Map<VitalSign, ValueGenerator> vitalSigns;
   private Map<String, Map<String, Integer>> symptoms;
   private Map<String, Map<String, Boolean>> symptomStatuses;
+  public Map<String, HealthRecord.Medication> chronicMedications;
   /** the active health record. */
   public HealthRecord record;
   public Map<String, HealthRecord> records;
@@ -117,6 +118,8 @@ public class Person implements Serializable, QuadTreeData {
     vitalSigns = new ConcurrentHashMap<VitalSign, ValueGenerator>();
     symptoms = new ConcurrentHashMap<String, Map<String, Integer>>();
     symptomStatuses = new ConcurrentHashMap<String, Map<String, Boolean>>();
+    /* Chronic Medications which will be renewed at each Wellness Encounter */
+    chronicMedications = new ConcurrentHashMap<String, HealthRecord.Medication>();
     hasMultipleRecords =
         Boolean.parseBoolean(Config.get("exporter.split_records", "false"));
     if (hasMultipleRecords) {

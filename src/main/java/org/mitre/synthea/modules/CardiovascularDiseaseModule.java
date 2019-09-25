@@ -693,7 +693,7 @@ public final class CardiovascularDiseaseModule extends Module {
 
     if ((Boolean) person.attributes.getOrDefault("coronary_heart_disease", false)) {
       for (String med : meds) {
-        prescribeMedication(med, person, time);
+        prescribeMedication(med, person, time, true);
       }
     } else {
       for (String med : meds) {
@@ -715,7 +715,7 @@ public final class CardiovascularDiseaseModule extends Module {
 
     if ((Boolean) person.attributes.getOrDefault("atrial_fibrillation", false)) {
       for (String med : meds) {
-        prescribeMedication(med, person, time);
+        prescribeMedication(med, person, time, true);
       }
 
       // catheter ablation is a more extreme measure than electrical cardioversion and is usually
@@ -751,8 +751,8 @@ public final class CardiovascularDiseaseModule extends Module {
     }
   }
 
-  private static void prescribeMedication(String med, Person person, long time) {
-    Medication entry = person.record.medicationStart(time, med);
+  private static void prescribeMedication(String med, Person person, long time, boolean chronic) {
+    Medication entry = person.record.medicationStart(time, med, chronic);
     entry.codes.add(LOOKUP.get(med));
     // increment number of prescriptions prescribed
     Encounter encounter = (Encounter) person.attributes.get(CVD_ENCOUNTER);
@@ -819,7 +819,7 @@ public final class CardiovascularDiseaseModule extends Module {
     condition.codes.add(LOOKUP.get(diagnosis));
 
     for (String med : filter_meds_by_year(EMERGENCY_MEDS.get(diagnosis), time)) {
-      prescribeMedication(med, person, time);
+      prescribeMedication(med, person, time, false);
       person.record.medicationEnd(time + TimeUnit.MINUTES.toMillis(15), med,
           LOOKUP.get("stop_drug"));
     }

@@ -183,6 +183,7 @@ public class HealthRecord {
     public JsonObject prescriptionDetails;
     public Claim claim;
     public boolean administration;
+    public boolean chronic;
 
     /**
      * Constructor for Medication HealthRecord Entry.
@@ -262,7 +263,7 @@ public class HealthRecord {
       public Code bodySite;
       /**
        * A DICOM acquisition modality code.
-       * 
+       *
        * @see <a href="https://www.hl7.org/fhir/valueset-dicom-cid29.html">DICOM
        *      modality codes</a>
        */
@@ -299,7 +300,7 @@ public class HealthRecord {
       public String title;
       /**
        * A DICOM Service-Object Pair (SOP) class.
-       * 
+       *
        * @see <a href="https://www.dicomlibrary.com/dicom/sop/">DICOM SOP codes</a>
        */
       public Code sopClass;
@@ -380,7 +381,7 @@ public class HealthRecord {
 
     /**
      * Convert the given string into an EncounterType.
-     * 
+     *
      * @param value the string to convert.
      */
     public static EncounterType fromString(String value) {
@@ -423,6 +424,8 @@ public class HealthRecord {
     public Provider provider;
     public Clinician clinician;
     public boolean ended;
+    // Track if we renewed meds at this encounter. Used in State.java encounter state.
+    public boolean chronicMedsRenewed;
     public String clinicalNote;
 
     public Encounter(long time, String type) {
@@ -438,6 +441,7 @@ public class HealthRecord {
         this.stop = this.start + TimeUnit.MINUTES.toMillis(15);
       }
       ended = false;
+      chronicMedsRenewed = false;
       observations = new ArrayList<Observation>();
       reports = new ArrayList<Report>();
       conditions = new ArrayList<Entry>();
@@ -680,7 +684,7 @@ public class HealthRecord {
 
   /**
    * Starts an encounter of the given type at the given time.
-   * 
+   *
    * @param time the start time of the encounter.
    * @param type the type of the encounter.
    * @return
@@ -693,7 +697,7 @@ public class HealthRecord {
 
   /**
    * Ends an encounter.
-   * 
+   *
    * @param time the end time of the encounter.
    * @param type the type of the encounter.
    */
@@ -732,15 +736,22 @@ public class HealthRecord {
     return immunization;
   }
 
-  public Medication medicationStart(long time, String type) {
+  public Medication medicationStart(long time, String type, boolean chronic) {
     Medication medication;
     if (!present.containsKey(type)) {
       medication = new Medication(time, type);
+      medication.chronic = chronic;
       currentEncounter(time).medications.add(medication);
       present.put(type, medication);
     } else {
       medication = (Medication) present.get(type);
     }
+
+    // Add Chronic Medications to Map
+    if (chronic) {
+      person.chronicMedications.put(type, medication);
+    }
+
     return medication;
   }
 
@@ -749,6 +760,9 @@ public class HealthRecord {
       Medication medication = (Medication) present.get(type);
       medication.stop = time;
       medication.stopReason = reason;
+
+      chronicMedicationEnd(type);
+
       // Update Costs/Claim infomation.
       medication.determineCost();
       medication.claim.assignCosts();
@@ -769,7 +783,19 @@ public class HealthRecord {
     if (medication != null) {
       medication.stop = time;
       medication.stopReason = reason;
+      chronicMedicationEnd(medication.type);
       present.remove(medication.type);
+    }
+  }
+
+  /**
+   * Remove Chronic Medication if stopped medication is a Chronic Medication.
+   *
+   * @param Primary code (RxNorm) for the medication.
+   */
+  private void chronicMedicationEnd(String type) {
+    if (person.chronicMedications.containsKey(type)) {
+      person.chronicMedications.remove(type);
     }
   }
 
@@ -830,7 +856,7 @@ public class HealthRecord {
   /**
    * Assigns random DICOM UIDs to each Series and Instance in an imaging study
    * after creation.
-   * 
+   *
    * @param study the ImagingStudy to populate with DICOM UIDs.
    */
   private void assignImagingStudyDicomUids(ImagingStudy study) {
