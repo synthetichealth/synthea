@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -467,6 +468,16 @@ public class HealthRecord {
     this.person = person;
     encounters = new ArrayList<Encounter>();
     present = new HashMap<String, Entry>();
+  }
+
+  public int providerCount() {
+    List<String> uuids = new ArrayList<String>();
+    for (Encounter enc : encounters) {
+      uuids.add(enc.provider.uuid);
+    }
+    Set<String> uniqueUuids = new HashSet<String>(uuids);
+    System.out.print(uniqueUuids.size());
+    return uniqueUuids.size();
   }
 
   public String textSummary() {

@@ -2,6 +2,7 @@ package org.mitre.synthea.world.geography;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -41,6 +42,7 @@ public class Demographics implements Comparable<Demographics> {
   private RandomCollection<String> incomeDistribution;
   public Map<String, Double> education;
   private RandomCollection<String> educationDistribution;
+  private static Map<String, List<Map<String,Map<String,String>>>> patientInfo = loadPatients();
 
   /**
    * Pick an age based on the population distribution for the city.
@@ -70,14 +72,14 @@ public class Demographics implements Comparable<Demographics> {
     return random.nextInt((high - low) + 1) + low;
   }
 
-  /**
-   * Pick a gender based on the population distribution for the city.
-   * @param random random to use
-   * @return the gender
-   */
-  public String pickGender(Random random) {
+  public String pickGender(Random random, int index) {
+    // TODO: Switch back to !=
+    if (patientInfo != null) {
+      List<Map<String,Map<String,String>>> entries = patientInfo.get("entry");
+      // TODO make so it seed file can be < -p or overwrite -p
+      return entries.get(index).get("resource").get("gender");
     // lazy-load in case this randomcollection isn't necessary
-    if (genderDistribution == null) {
+    } else if (genderDistribution == null) {
       genderDistribution = buildRandomCollectionFromMap(gender);
     }
 
@@ -314,7 +316,7 @@ public class Demographics implements Comparable<Demographics> {
         return 0.0;
     }
   }
-  
+
   private static double rand(Random r, double low, double high) {
     return (low + ((high - low) * r.nextDouble()));
   }
@@ -345,56 +347,76 @@ public class Demographics implements Comparable<Demographics> {
       return "Low";
     }
   }
-  
+
   /**
    * Get a Table of (State, CityId, Demographics), with the given restrictions on state and city.
-   * 
+   *
    * @param state
    *          The state that is desired. Other states will be excluded from the results.
    * @return Table of (State, CityId, Demographics)
    * @throws IOException
    *           if any exception occurs in reading the demographics file
    */
-  public static Table<String, String, Demographics> load(String state) 
+  public static Table<String, String, Demographics> load(String state)
       throws IOException {
     String filename = Config.get("generate.demographics.default_file");
     String csv = Utilities.readResource(filename);
-    
+
     List<? extends Map<String,String>> demographicsCsv = SimpleCSV.parse(csv);
-    
+
     Table<String, String, Demographics> table = HashBasedTable.create();
-    
+
     for (Map<String,String> demographicsLine : demographicsCsv) {
       String currCityId = demographicsLine.get("ID");
       String currState = demographicsLine.get("STNAME");
-      
+
       // for now, only allow one state at a time
       if (state != null && state.equalsIgnoreCase(currState)) {
         Demographics parsed = csvLineToDemographics(demographicsLine);
-        
+
         table.put(currState, currCityId, parsed);
       }
     }
-    
+
     return table;
   }
-  
+
+  /**
+   * Load a patient record with seed demographics in json format:
+   * see src/main/resources/patient_template.json for a working example
+   * @param resource A json file listing demographics info for a group of patient records.
+   * @return Map of patients to Lists of Strings "city,state,country"
+   */
+  public static Map<String, List<Map<String,Map<String,String>>>> loadPatients() {
+    Map<String, List<Map<String,Map<String,String>>>> patientsInfo = new HashMap<>();
+    try {
+      String filename = Config.get("generate.demographics.patient_file");
+      String json = Utilities.readResource(filename);
+      patientsInfo = new Gson().fromJson(json, HashMap.class);
+    } catch (Exception e) {
+      System.err.println("ERROR: unable to load patients");
+      e.printStackTrace();
+    }
+
+    return patientsInfo;
+  }
+
   /**
    * The index of the entry in this list + 1 == the column header in the CSV for that age group.
    * For example, age range 0-4 is stored in the CSV with column header "1".
    */
   private static final List<String> CSV_AGE_GROUPS = Arrays.asList(
-          "0..4", "5..9", "10..14", "15..19", "20..24", "25..29", 
-          "30..34", "35..39", "40..44", "45..49", "50..54", 
+          "0..4", "5..9", "10..14", "15..19", "20..24", "25..29",
+          "30..34", "35..39", "40..44", "45..49", "50..54",
           "55..59", "60..64", "65..69", "70..74", "75..79", "80..84", "85..110");
-  
+
   private static final List<String> CSV_RACES = Arrays.asList(
       "WHITE", "BLACK", "ASIAN", "NATIVE", "OTHER");
   
   private static final List<String> CSV_INCOMES = Arrays.asList(
       "00..10", "10..15", "15..25", "25..35", "35..50",
       "50..75", "75..100", "100..150", "150..200", "200..999");
-  
+
   private static final List<String> CSV_EDUCATIONS = Arrays.asList(
       "LESS_THAN_HS", "HS_DEGREE", "SOME_COLLEGE", "BS_DEGREE");
 
@@ -402,41 +424,41 @@ public class Demographics implements Comparable<Demographics> {
 
   /**
    * Map a single line of the demographics CSV file into a Demographics object.
-   * 
+   *
    * @param line Line representing one city, parsed via SimpleCSV
    * @return the Demographics for that city
    */
   private static Demographics csvLineToDemographics(Map<String,String> line) {
     Demographics d = new Demographics();
-    
-    d.population = Double.valueOf(line.get("POPESTIMATE2015")).longValue(); 
+
+    d.population = Double.valueOf(line.get("POPESTIMATE2015")).longValue();
     // some .0's seem to sneak in there and break Long.valueOf
 
     d.id = line.get("ID");
     d.city = line.get("NAME");
     d.state = line.get("STNAME");
     d.county = line.get("CTYNAME");
-    
-    d.ages = new HashMap();
-    
+
+    d.ages = new HashMap<String, Double>();
+
     int i = 1;
     for (String ageGroup : CSV_AGE_GROUPS) {
       String csvHeader = Integer.toString(i++);
       double percentage = Double.parseDouble(line.get(csvHeader));
       d.ages.put(ageGroup, percentage);
     }
-    
-    d.gender = new HashMap();
+
+    d.gender = new HashMap<String, Double>();
     d.gender.put("male", Double.parseDouble(line.get("TOT_MALE")));
     d.gender.put("female", Double.parseDouble(line.get("TOT_FEMALE")));
-    
-    d.race = new HashMap();
+
+    d.race = new HashMap<String, Double>();
     for (String race : CSV_RACES) {
       double percentage = Double.parseDouble(line.get(race));
       d.race.put(race.toLowerCase(), percentage);
     }
-    
-    d.income = new HashMap();
+
+    d.income = new HashMap<String, Double>();
     for (String income : CSV_INCOMES) {
       String incomeString = line.get(income);
       if (incomeString.isEmpty()) {
@@ -446,8 +468,8 @@ public class Demographics implements Comparable<Demographics> {
         d.income.put(income, percentage);
       }
     }
-    
-    d.education = new HashMap();
+
+    d.education = new HashMap<String, Double>();
     for (String education : CSV_EDUCATIONS) {
       String educationString = line.get(education);
       if (educationString.isEmpty()) {

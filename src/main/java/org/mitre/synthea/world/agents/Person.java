@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
@@ -315,6 +318,18 @@ public class Person implements Serializable, QuadTreeElement {
     boolean born = attributes.containsKey(Person.BIRTHDATE);
     Long died = (Long) attributes.get(Person.DEATHDATE);
     return (born && (died == null || died > time));
+  }
+
+  public int providerCount() {
+    int count = 1;
+    if (hasMultipleRecords) {
+      List<String> uuids = new ArrayList<String>(records.keySet());
+      Set<String> uniqueUuids = new HashSet<String>(uuids);
+      count = uniqueUuids.size();
+    } else {
+      count = record.providerCount();
+    }
+    return count;
   }
 
   public void setSymptom(String cause, String type, int value, Boolean addressed) {

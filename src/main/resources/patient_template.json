@@ -1,0 +1,100 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "gender": "male",
+        "birthDate": "1954-07-22",
+        "address": [
+          {
+            "line": [
+              "237 Mohr Wynd"
+            ],
+            "city": "Boston",
+            "state": "Massachusetts",
+            "postalCode": "02108",
+            "country": "US"
+          }
+        ],
+        "maritalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+              "code": "M",
+              "display": "M"
+            }
+          ],
+          "text": "M"
+        },
+        "multipleBirthBoolean": false,
+        "communication": [
+          {
+            "language": {
+              "coding": [
+                {
+                  "system": "urn:ietf:bcp:47",
+                  "code": "es",
+                  "display": "Spanish"
+                }
+              ],
+              "text": "Spanish"
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Patient"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "gender": "female",
+        "birthDate": "1954-07-22",
+        "address": [
+          {
+            "line": [
+              "237 Mohr Wynd"
+            ],
+            "city": "Boston",
+            "state": "Massachusetts",
+            "postalCode": "02108",
+            "country": "US"
+          }
+        ],
+        "maritalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+              "code": "M",
+              "display": "M"
+            }
+          ],
+          "text": "M"
+        },
+        "multipleBirthBoolean": false,
+        "communication": [
+          {
+            "language": {
+              "coding": [
+                {
+                  "system": "urn:ietf:bcp:47",
+                  "code": "es",
+                  "display": "Spanish"
+                }
+              ],
+              "text": "Spanish"
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Patient"
+      }
+    }
+  ]
+}

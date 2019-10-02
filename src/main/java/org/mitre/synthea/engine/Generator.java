@@ -320,8 +320,10 @@ public class Generator {
       Random randomForDemographics = new Random(personSeed);
       Demographics city = location.randomCity(randomForDemographics);
       
-      Map<String, Object> demoAttributes = pickDemographics(randomForDemographics, city);
+      Map<String, Object> demoAttributes = pickDemographics(randomForDemographics, city, index);
       long start = (long) demoAttributes.get(Person.BIRTHDATE);
+      int providerMinimum = Integer.parseInt(Config.get("generate.providers.minimum", "1"));
+      int providerCount = 0;
 
       do {
         List<Module> modules = Module.getModules(modulePredicate);
@@ -335,7 +337,6 @@ public class Generator {
         
         HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
         EncounterModule encounterModule = new EncounterModule();
-
         long time = start;
         while (person.alive(time) && time < stop) {
 
@@ -386,6 +387,8 @@ public class Generator {
 
         String key = isAlive ? "alive" : "dead";
 
+        providerCount = person.providerCount();
+
         AtomicInteger count = stats.get(key);
         count.incrementAndGet();
 
@@ -416,13 +419,14 @@ public class Generator {
         // this means export must be the LAST THING done with the person
         Exporter.export(person, time, exporterRuntimeOptions);
       } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
-          || (isAlive && onlyDeadPatients));
+          || (isAlive && onlyDeadPatients) || (providerCount < providerMinimum));
       // if the patient is alive and we want only dead ones => loop & try again
       //  (and dont even export, see above)
       // if the patient is dead and we only want dead ones => done
       // if the patient is dead and we want live ones => loop & try again
       //  (but do export the record anyway)
       // if the patient is alive and we want live ones => done
+      // if the provider count is less than the target provider minimym => loop & try again
     } catch (Throwable e) {
       // lots of fhir things throw errors for some reason
       e.printStackTrace();
@@ -457,7 +461,7 @@ public class Generator {
     }
   }
 
-  private Map<String, Object> pickDemographics(Random random, Demographics city) {
+  private Map<String, Object> pickDemographics(Random random, Demographics city, int index) {
     Map<String, Object> out = new HashMap<>();
     out.put(Person.CITY, city.city);
     out.put(Person.STATE, city.state);
@@ -474,7 +478,7 @@ public class Generator {
     if (options.gender != null) {
       gender = options.gender;
     } else {
-      gender = city.pickGender(random);
+      gender = city.pickGender(random, index);
       if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
         gender = "M";
       } else {
