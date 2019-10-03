@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -423,10 +424,13 @@ public class PhysiologySimulator {
 
     // Attempt to instantiate the solver.
     try {
-      return (AbstractDESSolver) SOLVER_CLASSES.get(solverName).newInstance();
-    } catch (InstantiationException | IllegalAccessException ex) {
-      throw new RuntimeException("Unable to instantiate " + solverName + " solver");
+      return (AbstractDESSolver) SOLVER_CLASSES.get(solverName).getDeclaredConstructor()
+          .newInstance();
+    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+        | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+      throw new RuntimeException(e);
     }
+
   }
   
   /**
