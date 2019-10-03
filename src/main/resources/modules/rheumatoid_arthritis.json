@@ -189,8 +189,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "105586",
-          "display": "Methotrexate 10 MG Oral Tablet"
+          "code": "105585",
+          "display": "Methotrexate 2.5 MG Oral Tablet"
         }
       ],
       "direct_transition": "Encounter_Ends_After_DMARD"

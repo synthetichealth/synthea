@@ -1009,8 +1009,8 @@
                 "codes": [
                   {
                     "system": "RxNorm",
-                    "code": 10324,
-                    "display": "Tamoxifen"
+                    "code": "198240",
+                    "display": "Tamoxifen 10 MG Oral Tablet"
                   }
                 ]
               },
@@ -1019,8 +1019,8 @@
                 "codes": [
                   {
                     "system": "RxNorm",
-                    "code": 38409,
-                    "display": "Toremifene"
+                    "code": "313428",
+                    "display": "Toremifene 60 MG Oral Tablet"
                   }
                 ]
               }
@@ -1082,8 +1082,8 @@
                 "codes": [
                   {
                     "system": "RxNorm",
-                    "code": 258494,
-                    "display": "exemestane"
+                    "code": "310261",
+                    "display": "exemestane 25 MG Oral Tablet"
                   }
                 ]
               },
@@ -1095,8 +1095,8 @@
                     "codes": [
                       {
                         "system": "RxNorm",
-                        "code": 84857,
-                        "display": "anastrozole"
+                        "code": "199224",
+                        "display": "anastrozole 1 MG Oral Tablet"
                       }
                     ]
                   },
@@ -1105,8 +1105,8 @@
                     "codes": [
                       {
                         "system": "RxNorm",
-                        "code": 72965,
-                        "display": "letrozole"
+                        "code": "200064",
+                        "display": "letrozole 2.5 MG Oral Tablet"
                       }
                     ]
                   }

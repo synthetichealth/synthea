@@ -152,8 +152,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 4337,
-          "display": "Fentanyl"
+          "code": "1735006",
+          "display": "10 ML Fentanyl 0.05 MG/ML Injection"
         }
       ],
       "direct_transition": "Fentanyl_End",
@@ -189,8 +189,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 73032,
-          "display": "Remifentanil"
+          "code": "1729584",
+          "display": "remifentanil 2 MG Injection"
         }
       ],
       "direct_transition": "Remifentanil_End",
@@ -201,8 +201,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 480,
-          "display": "Alfentanil"
+          "code": "1723208",
+          "display": "10 ML Alfentanil 0.5 MG/ML Injection"
         }
       ],
       "direct_transition": "Alfentanil_End",
@@ -213,8 +213,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 56795,
-          "display": "Sufentanil"
+          "code": "1809104",
+          "display": "5 ML SUFentanil 0.05 MG/ML Injection"
         }
       ],
       "direct_transition": "Sufentanil_End",
