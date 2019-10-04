@@ -23,6 +23,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
+
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math.ode.DerivativeException;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
@@ -627,6 +629,15 @@ public class PhysiologySimulator {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+  
+  /**
+   * Retrieves the default value for a model parameter.
+   * @param param parameter to search for
+   * @return initial value
+   */
+  public double getParamDefault(String param) {
+    return modelDefaults[ArrayUtils.indexOf(interpreter.getIdentifiers(), param)];
   }
 
   /**

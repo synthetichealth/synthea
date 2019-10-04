@@ -15,6 +15,13 @@ simDuration: 4.0
 # Simulation lead time in seconds before output data is captured
 leadTime: 2.0
 
+# Whether the simulation should use other generators before any input thresholds
+# are reached.
+# Very useful for preventing simulation execution when the inputs (and results)
+# are within normal ranges. If this is true, preGenerator attributes must be
+# defined for each output
+usePreGenerators: true
+
 # List of input definitions for the model
 # Field descriptions:
 #   "from"              -   attribute or vital sign value to use directly from a Person.
@@ -30,12 +37,13 @@ leadTime: 2.0
 #   "type"              -   Type of the input value "from", if applicable. Must be one of
 #                           "ATTRIBUTE" or "VITAL_SIGN".
 inputs:
-    - fromExp: "1.1889 + (#{BMI} - 21.5) * 0.025 + 0.1 * #{age} / 65"
+      # BMI effect on peripheral resistance estimated 
+    - fromExp: "1.0889 + #{age} / 65"
       to: R_sys
-      # varianceThreshold: 0.1
+      varianceThreshold: 0.1
     - fromExp: "0.7913 + 0.2 * #{age} / 65"
       to: E_es_ao
-      # varianceThreshold: 0.01
+      varianceThreshold: 0.1
       
 # List of output definitions for the model
 # Field descriptions:
@@ -60,10 +68,24 @@ outputs:
     - fromExp: "((Max(#{V_lv}) - Min(#{V_lv})) / Max(#{V_lv}))*100"
       to: Left ventricular Ejection fraction
       type: VITAL_SIGN
+      preGenerator:
+         className: org.mitre.synthea.helpers.RandomValueGenerator
+         args: # Args 2+ for the constructor
+            # From https://my.clevelandclinic.org/health/diseases/17069-heart-failure-understanding-heart-failure
+            - {"value": 55.0, "type": "java.lang.Double", "primitive": true}
+            - {"value": 70.0, "type": "java.lang.Double", "primitive": true}
     - fromExp: "Max(#{P_ao})"
       to: Systolic Blood Pressure
       type: VITAL_SIGN
+      preGenerator:
+         className: org.mitre.synthea.modules.BloodPressureValueGenerator
+         args: # Args 2+ for the constructor
+            - {"value": SYSTOLIC, "type": "org.mitre.synthea.modules.BloodPressureValueGenerator$SysDias"}
     - fromExp: "Min(#{P_ao})"
       to: Diastolic Blood Pressure
       type: VITAL_SIGN
+      preGenerator:
+         className: org.mitre.synthea.modules.BloodPressureValueGenerator
+         args: # Args 2+ for the constructor
+            - {"value": DIASTOLIC, type: "org.mitre.synthea.modules.BloodPressureValueGenerator$SysDias"}
 

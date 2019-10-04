@@ -186,7 +186,7 @@ function.      </p>
   <parameter metaid="_685778" id="R_tc" name="R_tc" value="0.0237"/>
   <parameter metaid="_685779" id="R_pv" name="R_pv" value="0.0055"/>
   <parameter metaid="_685780" id="R_pul" name="R_pul" value="0.1552"/>
-  <parameter metaid="_685783" id="R_sys" name="R_sys" value="1.0889"/>
+  <parameter metaid="_685783" id="R_sys" name="R_sys" value="1.1889"/>
   <parameter metaid="_685784" id="L_tc" name="L_tc" value="8.0093e-05"/>
   <parameter metaid="_685785" id="L_pv" name="L_pv" value="0.00014868"/>
   <parameter metaid="_685786" id="L_mt" name="L_mt" value="7.6968e-05"/>
@@ -198,7 +198,7 @@ function.      </p>
   <parameter metaid="_685796" id="B" name="B" value="45"/>
   <parameter metaid="_685797" id="C" name="C" value="0.5"/>
   <parameter metaid="_685800" id="tau" name="tau" constant="false"/>
-  <parameter metaid="_685801" id="period" name="period" value="0.75"/>
+  <parameter metaid="_685801" id="period" name="period" value="1"/>
   <parameter metaid="_685802" id="V_pcd" name="V_pcd" constant="false"/>
   <parameter metaid="_685803" id="P_pcd" name="P_pcd" constant="false"/>
   <parameter metaid="_685806" id="P_peri" name="P_peri" constant="false"/>
@@ -243,7 +243,7 @@ function.      </p>
   <parameter metaid="_685867" id="V_pu" name="V_pu" value="808.4579" constant="false"/>
   <parameter metaid="_685868" id="V_d_pu" name="V_d_pu" value="0"/>
   <parameter metaid="_685871" id="P_ao" name="P_ao" constant="false"/>
-  <parameter metaid="_685872" id="E_es_ao" name="E_es_ao" value="0.6913"/>
+  <parameter metaid="_685872" id="E_es_ao" name="E_es_ao" value="1.0913"/>
   <parameter metaid="_685873" id="V_ao" name="V_ao" value="133.3381" constant="false"/>
   <parameter metaid="_685874" id="V_d_ao" name="V_d_ao" value="0"/>
   <parameter metaid="_685877" id="P_vc" name="P_vc" constant="false"/>

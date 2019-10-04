@@ -315,4 +315,65 @@ public class Utilities {
     int saltInt = rand.nextInt(MAX - MIN + 1) + MIN;
     return String.valueOf(saltInt);
   }
+  
+  /**
+   * Utility function to convert from a Java wrapper class to primitive type class.
+   * @param clazz type to convert to primitive type
+   * @return primitive class
+   */
+  public static Class<?> toPrimitiveClass(Class<?> clazz) {
+    if (Boolean.class == clazz) {
+      return Boolean.TYPE;
+    }
+    if (Byte.class == clazz) {
+      return Byte.TYPE;
+    }
+    if (Short.class == clazz) {
+      return Short.TYPE;
+    }
+    if (Integer.class == clazz) {
+      return Integer.TYPE;
+    }
+    if (Long.class == clazz) {
+      return Long.TYPE;
+    }
+    if (Float.class == clazz) {
+      return Float.TYPE;
+    }
+    if (Double.class == clazz) {
+      return Double.TYPE;
+    }
+    throw new IllegalArgumentException("No primitive class for " + clazz);
+  }
+  
+  /**
+   * Utility function to convert from string to a base Java object type.
+   * @param clazz type to convert to
+   * @param value string value to convert
+   * @return converted value
+   */
+  public static Object strToObject(Class<?> clazz, String value) {
+    if (Boolean.class == clazz || Boolean.TYPE == clazz) {
+      return Boolean.parseBoolean(value);
+    }
+    if (Byte.class == clazz || Byte.TYPE == clazz) {
+      return Byte.parseByte(value);
+    }
+    if (Short.class == clazz || Short.TYPE == clazz) {
+      return Short.parseShort(value);
+    }
+    if (Integer.class == clazz || Integer.TYPE == clazz) {
+      return Integer.parseInt(value);
+    }
+    if (Long.class == clazz || Long.TYPE == clazz) {
+      return Long.parseLong(value);
+    }
+    if (Float.class == clazz || Float.TYPE == clazz) {
+      return Float.parseFloat(value);
+    }
+    if (Double.class == clazz || Double.TYPE == clazz) {
+      return Double.parseDouble(value);
+    }
+    throw new IllegalArgumentException("Cannot parse value for class " + clazz);
+  }
 }

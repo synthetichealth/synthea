@@ -3,6 +3,7 @@ package org.mitre.synthea.helpers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -43,6 +44,8 @@ public class PhysiologyValueGenerator extends ValueGenerator {
   private SimRunner simRunner;
   private PhysiologyGeneratorConfig config;
   private VitalSign vitalSign;
+  private ValueGenerator preGenerator;
+  private boolean isPreGenerating = false;
   
   /**
    * A generator of VitalSign values from a physiology simulation.
@@ -56,6 +59,32 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     this.vitalSign = vitalSign;
     String runnerId = person.attributes.get(Person.ID) + ":" + config.getModel();
     
+    // If pre-simulation generators are being used, instantiate the generator
+    if (config.isUsePreGenerators()) {
+      // Get the IoMapper for this VitalSign output
+      IoMapper outMapper = null;
+      for (IoMapper mapper : config.getOutputs()) {
+        if (mapper.getType() == IoMapper.IoType.VITAL_SIGN
+            && VitalSign.fromString(mapper.to) == vitalSign) {
+          outMapper = mapper;
+        }
+      }
+      
+      // This shouldn't ever happen, since it wouldn't make sense to be instantiating a
+      // PhysiologyValueGenerator for a VitalSign that's not in the config
+      if (outMapper == null) {
+        throw new RuntimeException("Unable to find corresponding IoMapper for " + vitalSign);
+      }
+      
+      // Check for missing preGenerator configuration
+      if (outMapper.getPreGenerator() == null) {
+        throw new RuntimeException("usePreGenerators is true but no preGenerator "
+            + "is defined for output " + vitalSign);
+      }
+      
+      preGenerator = outMapper.getPreGenerator().getGenerator(person);
+    }
+    
     if (RUNNER_CACHE.containsKey(runnerId)) {
       simRunner = RUNNER_CACHE.get(runnerId);
       
@@ -66,6 +95,12 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       }
     } else {
       simRunner = new SimRunner(config, person);
+      // If we're using pre-simulation generators, set the runner to compare against
+      // defaults so we don't run until a sufficient input change is detected.
+      if (config.isUsePreGenerators()) {
+        simRunner.compareDefaultInputs();
+        isPreGenerating = true;
+      }
       RUNNER_CACHE.put(runnerId, simRunner);
     }
   }
@@ -189,6 +224,12 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     configDescription.addPropertyParameters("inputs", IoMapper.class);
     configDescription.addPropertyParameters("outputs", IoMapper.class);
     constructor.addTypeDescription(configDescription);
+    configDescription = new TypeDescription(IoMapper.class);
+    configDescription.addPropertyParameters("preGenerator", PreGenerator.class);
+    constructor.addTypeDescription(configDescription);
+    configDescription = new TypeDescription(PreGenerator.class);
+    configDescription.addPropertyParameters("args", PreGeneratorArg.class);
+    constructor.addTypeDescription(configDescription);
     
     // Parse the PhysiologyConfig from the yaml file
     Yaml yaml = new Yaml(constructor);
@@ -240,8 +281,20 @@ public class PhysiologyValueGenerator extends ValueGenerator {
 
   @Override
   public double getValue(long time) {
-    simRunner.execute(time);
-    return simRunner.getVitalSignValue(vitalSign);
+    // setInputs returns true if sufficient changes to the input
+    // values has occurred
+    if (simRunner.setInputs(time)) {
+      simRunner.execute(time);
+      isPreGenerating = false;
+    }
+    
+    // If we haven't executed the simulator yet, use the pre-simulation
+    // generator values until it does run
+    if (isPreGenerating) {
+      return preGenerator.getValue(time);
+    } else {
+      return simRunner.getVitalSignValue(vitalSign);
+    }
   }
   
   /**
@@ -255,6 +308,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     private double stepSize;
     private double simDuration;
     private double leadTime;
+    private boolean usePreGenerators;
     private List<IoMapper> inputs;
     private List<IoMapper> outputs;
     
@@ -315,6 +369,14 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       this.leadTime = leadTime;
     }
 
+    public boolean isUsePreGenerators() {
+      return usePreGenerators;
+    }
+
+    public void setUsePreGenerators(boolean usePreGenerators) {
+      this.usePreGenerators = usePreGenerators;
+    }
+
     public List<IoMapper> getInputs() {
       return inputs;
     }
@@ -341,6 +403,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     private String fromExp;
     private double varianceThreshold;
     private ExpressionProcessor expProcessor;
+    private PreGenerator preGenerator;
     
     enum IoType {
       ATTRIBUTE, 
@@ -401,6 +464,14 @@ public class PhysiologyValueGenerator extends ValueGenerator {
 
     public void setExpProcessor(ExpressionProcessor expProcessor) {
       this.expProcessor = expProcessor;
+    }
+
+    public PreGenerator getPreGenerator() {
+      return preGenerator;
+    }
+
+    public void setPreGenerator(PreGenerator preGenerator) {
+      this.preGenerator = preGenerator;
     }
 
     /**
@@ -583,6 +654,130 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     }
   }
   
+  /** Class for handling pre-simulation outputs. **/
+  public static class PreGenerator {
+    private String className;
+    private List<PreGeneratorArg> args;
+    
+    public String getClassName() {
+      return className;
+    }
+
+    public void setClassName(String className) {
+      this.className = className;
+    }
+
+    public List<PreGeneratorArg> getArgs() {
+      return args;
+    }
+
+    public void setArgs(List<PreGeneratorArg> args) {
+      this.args = args;
+    }
+
+    /**
+     * Instantiates the ValueGenerator from the configuration options.
+     * @return new ValueGenerator instance
+     */
+    public ValueGenerator getGenerator(Person person) {
+      
+      // Check that all input parameters were provided
+      if (className == null) {
+        throw new IllegalArgumentException("Each preGenerator must provide a 'className'");
+      }
+      if (args == null) {
+        // If args isn't provided, assume the only constructor arg is the Person
+        args = new ArrayList<PreGeneratorArg>();
+      }
+      
+      Class<?>[] parameterTypes = new Class<?>[args.size() + 1];
+      
+      // First argument is always the person instance
+      parameterTypes[0] = Person.class;
+      
+      // Add the rest of the parameter types from the configuration
+      for (int i = 0; i < args.size(); i++) {
+        PreGeneratorArg arg = args.get(i);
+        try {
+          if (arg.isPrimitive()) {
+            parameterTypes[i + 1] = Utilities.toPrimitiveClass(Class.forName(arg.getType()));
+          } else {
+            parameterTypes[i + 1] = Class.forName(arg.getType());
+          }
+        } catch (ClassNotFoundException e) {
+          throw new RuntimeException(e);
+        }
+      }
+      
+      // Our list of arguments for the constructor
+      List<Object> objArgs = new ArrayList<Object>();
+      
+      // First argument is always the person instance
+      objArgs.add(person);
+      
+      // convert our string arguments to the correct types for the constructor
+      for (int i = 0; i < args.size(); i++) {
+        // Off by one since the inherent person arg isn't explicitly defined in the config
+        Class<?> argClass = parameterTypes[i + 1];
+        
+        PreGeneratorArg arg = args.get(i);
+        
+        if (argClass.isEnum()) {
+          objArgs.add(Enum.valueOf((Class<Enum>) argClass, arg.getValue()));
+        } else if (String.class == argClass) {
+          objArgs.add(args.get(i));
+        } else {
+          objArgs.add(Utilities.strToObject(argClass, arg.getValue()));
+        }
+      }
+      
+      try {
+        // Get the constructor that corresponds to the provided argument types
+        java.lang.reflect.Constructor<?> constructor = Class.forName(className)
+            .getConstructor(parameterTypes);
+        
+        // Call the constructor with our argument objects
+        return (ValueGenerator) constructor.newInstance(objArgs.toArray());
+        
+      } catch (NoSuchMethodException | SecurityException | ClassNotFoundException
+          | InstantiationException | IllegalAccessException | IllegalArgumentException
+          | InvocationTargetException e) {
+        throw new RuntimeException(e);
+      }
+      
+    }
+  }
+  
+  public static class PreGeneratorArg {
+    private String type;
+    private String value;
+    private boolean primitive;
+    
+    public String getType() {
+      return type;
+    }
+    
+    public void setType(String type) {
+      this.type = type;
+    }
+    
+    public String getValue() {
+      return value;
+    }
+    
+    public void setValue(String value) {
+      this.value = value;
+    }
+    
+    public boolean isPrimitive() {
+      return primitive;
+    }
+    
+    public void setPrimitive(boolean primitive) {
+      this.primitive = primitive;
+    }
+  }
+  
   /** Class for handling execution of a PhysiologySimulator. **/
   private static class SimRunner {
     private PhysiologyGeneratorConfig config;
@@ -591,6 +786,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     private Map<String,String> paramTypes = new HashMap<String, String>();
     private Map<String,Double> prevInputs = new HashMap<String, Double>();
     private Map<VitalSign,Double> vitalSignResults = new HashMap<VitalSign,Double>();
+    Map<String,Double> modelInputs = new HashMap<String,Double>();
     
     /**
      * Handles execution of a PhysiologySimulator.
@@ -633,15 +829,26 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     }
     
     /**
-     * Executes the simulation if any input values are beyond the variance threshold.
-     * @param time simulation time
+     * Sets the inputs to compare to the model default inputs.
+     * Necessary to prevent initial execution if the initial input
+     * parameters are within threshold ranges.
      */
-    public void execute(long time) {
-      // Flag to indicate if the input values have sufficiently changed
-      boolean sufficientChange = false;
-      
+    public void compareDefaultInputs() {
+      for (IoMapper mapper : config.getInputs()) {
+        prevInputs.put(mapper.getTo(), simulator.getParamDefault(mapper.getTo()));
+      }
+    }
+    
+    /**
+     * Sets up the model inputs for execution and determines if the simulation
+     * needs to run due to sufficient change in inputs.
+     * @param time synthea time
+     * @return true if inputs have sufficiently changed to warrant sim execution.
+     */
+    public boolean setInputs(long time) {
+      // System.out.println("Setting inputs...");
+      boolean sufficientChange = prevInputs.isEmpty();
       // Get our map of inputs
-      Map<String,Double> modelInputs = new HashMap<String,Double>();
       for (IoMapper mapper : config.getInputs()) {
         double inputResult = mapper.toModelInputs(person, time, modelInputs);
         
@@ -653,39 +860,42 @@ public class PhysiologyValueGenerator extends ValueGenerator {
           sufficientChange = true;
         }
       }
+      // System.out.println("Sufficient change? " + sufficientChange);
+      return sufficientChange;
+    }
+    
+    /**
+     * Executes the simulation if any input values are beyond the variance threshold.
+     * @param time simulation time
+     */
+    public void execute(long time) {
+      // Copy our input parameters for future threshold checks
+      prevInputs = new HashMap<String,Double>(modelInputs);
+      MultiTable results = runSim(time, modelInputs);
       
-      // If the simulation has never been run, or there's sufficient change
-      // in the input parameters, run the simulation
-      if (vitalSignResults.isEmpty() || sufficientChange) {
-        // Save our input parameters for future threshold checks
-        prevInputs = modelInputs;
-        MultiTable results = runSim(time, modelInputs);
-        
-//        System.out.println("Running simulation");
-        
-        // Set all of the results
-        for (IoMapper mapper : config.getOutputs()) {
-          switch (mapper.getType()) {
-            default:
-            case ATTRIBUTE:
-              person.attributes.put(mapper.getTo(),
-                  mapper.getOutputResult(results, config.getLeadTime()));
-              break;
-            case VITAL_SIGN:
-              VitalSign vs = VitalSign.fromString(mapper.getTo());
-              Object result = mapper.getOutputResult(results, config.getLeadTime());
-              if (result instanceof List) {
-                throw new IllegalArgumentException(
-                    "Mapping lists to VitalSigns is currently unsupported. "
-                    + "Cannot map list to VitalSign \"" + mapper.getTo() + "\".");
-              }
-              vitalSignResults.put(vs, (double) result);
-//              System.out.println(vitalSignResults);
-              break;
-          }
+      System.out.println("Running simulation");
+      
+      // Set all of the results
+      for (IoMapper mapper : config.getOutputs()) {
+        switch (mapper.getType()) {
+          default:
+          case ATTRIBUTE:
+            person.attributes.put(mapper.getTo(),
+                mapper.getOutputResult(results, config.getLeadTime()));
+            break;
+          case VITAL_SIGN:
+            VitalSign vs = VitalSign.fromString(mapper.getTo());
+            Object result = mapper.getOutputResult(results, config.getLeadTime());
+            if (result instanceof List) {
+              throw new IllegalArgumentException(
+                  "Mapping lists to VitalSigns is currently unsupported. "
+                  + "Cannot map list to VitalSign \"" + mapper.getTo() + "\".");
+            }
+            vitalSignResults.put(vs, (double) result);
+            System.out.println(vitalSignResults);
+            break;
         }
       }
-      
     }
     
     /**
