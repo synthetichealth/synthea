@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -73,9 +71,7 @@ public class PhysiologySimulator {
   private final AbstractDESSolver solver;
   private final String[] modelFields;
   private final double[] modelDefaults;
-  private final String solverName;
   private final double simDuration;
-  private final double stepSize;
 
   /** Enumeration of supported chart types. **/
   public enum ChartType {
@@ -336,8 +332,6 @@ public class PhysiologySimulator {
     solver.setStepSize(stepSize);
     modelFields = interpreter.getIdentifiers();
     modelDefaults = interpreter.getInitialValues();
-    this.solverName = solverName;
-    this.stepSize = stepSize;
     this.simDuration = simDuration;
   }
   
