@@ -686,8 +686,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 1655927,
-          "display": "Ivacaftor"
+          "code": 1243052,
+          "display": "Kalydeco 150 MG Oral Tablet"
         }
       ],
       "direct_transition": "Prescribe_Mucus_Thinner",
@@ -1225,8 +1225,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 1160499,
-          "display": "IV antibiotic Vancomycin"
+          "code": 313572,
+          "display": "Vancomycin 50 MG/ML Injectable Solution"
         }
       ],
       "direct_transition": "Pulmonary_Function_Test",
