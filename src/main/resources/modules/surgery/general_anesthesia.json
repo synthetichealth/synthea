@@ -260,8 +260,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 200252,
-          "display": "desflurane 990 MG/ML Inhalant Solution"
+          "code": "562366",
+          "display": "desflurane 1000 MG/ML Inhalation Solution"
         }
       ],
       "direct_transition": "Desflurane_End",

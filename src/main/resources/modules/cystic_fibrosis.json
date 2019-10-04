@@ -479,8 +479,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 210856,
-          "display": "Pancreatin 4X 600 MG Oral Tablet"
+          "code": "198767",
+          "display": "Pancreatin 600 MG Oral Tablet"
         }
       ],
       "direct_transition": "CF_CarePlan",
@@ -1210,8 +1210,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 998755,
-          "display": "Ciprofloxacin 10MG/ML"
+          "code": 1665227,
+          "display": "20 ML Ciprofloxacin 10 MG/ML Injection"
         }
       ],
       "direct_transition": "Pulmonary_Function_Test",

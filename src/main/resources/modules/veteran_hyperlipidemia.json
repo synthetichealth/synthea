@@ -210,8 +210,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 316672,
-          "display": "Simvistatin 10 MG"
+          "code": 314231,
+          "display": "Simvastatin 10 MG Oral Tablet"
         }
       ],
       "direct_transition": "followup encounter end",
@@ -815,8 +815,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 316672,
-          "display": "Simvistatin 10 MG"
+          "code": 314231,
+          "display": "Simvastatin 10 MG Oral Tablet"
         }
       ],
       "reason": "hyperlipidemia",

@@ -1233,8 +1233,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 314659,
-          "display": "heparin sodium, porcine"
+          "code": "1659263",
+          "display": "1 ML heparin sodium, porcine 5000 UNT/ML Injection"
         }
       ],
       "direct_transition": "Heparin_End"

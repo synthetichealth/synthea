@@ -327,8 +327,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "833137",
-          "display": "Milnacipran hydrochloride 100 MG [Savella]"
+          "code": "833135",
+          "display": "Milnacipran hydrochloride 100 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Episode_Encounter"

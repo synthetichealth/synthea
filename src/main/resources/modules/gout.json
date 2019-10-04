@@ -204,8 +204,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "858069",
-          "display": "Colchicine 0.6 MG [Colcrys]"
+          "code": "197541",
+          "display": "Colchicine 0.6 MG Oral Tablet"
         }
       ],
       "direct_transition": "Uric_Acid_Reducer"

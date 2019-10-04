@@ -236,8 +236,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "567645",
-          "display": "predniSONE 2.5 MG [Deltasone]"
+          "code": "312615",
+          "display": "predniSONE 20 MG Oral Tablet"
         }
       ],
       "direct_transition": "Encounter_Ends_After_Corticosteroids"

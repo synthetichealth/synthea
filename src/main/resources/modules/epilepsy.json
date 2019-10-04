@@ -301,8 +301,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "563026",
-          "display": "Diazepam [Valium]"
+          "code": "197591",
+          "display": "Diazepam 5 MG Oral Tablet"
         }
       ],
       "assign_to_attribute": "seizure_meds",

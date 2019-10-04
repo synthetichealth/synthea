@@ -54,8 +54,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 316049,
-          "display": "Hydrochlorothiazide 25 MG"
+          "code": 310798,
+          "display": "Hydrochlorothiazide 25 MG Oral Tablet"
         }
       ],
       "prescription": {
@@ -143,8 +143,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 999969,
-          "display": "Amlodipine 5 MG / Hydrochlorothiazide 12.5 MG / Olmesartan medoxomil 20 MG"
+          "code": 999967,
+          "display": "amLODIPine 5 MG / Hydrochlorothiazide 12.5 MG / Olmesartan medoxomil 20 MG Oral Tablet"
         }
       ],
       "prescription": {

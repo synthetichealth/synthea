@@ -292,8 +292,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 315971,
-          "display": "Lasix 40mg"
+          "code": "313988",
+          "display": "Furosemide 40 MG Oral Tablet"
         }
       ],
       "direct_transition": "Assign CHF care plan",
