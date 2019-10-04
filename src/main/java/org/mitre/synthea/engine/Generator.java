@@ -21,7 +21,6 @@ import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.export.CDWExporter;
-import org.mitre.synthea.export.CSVExporter;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.TransitionMetrics;
@@ -104,14 +103,7 @@ public class Generator {
     /** If true, enable thread-safe record queue. */
     public boolean enableRecordQueue = false;
     public int yearsOfHistory=Integer.parseInt(Config.get("exporter.years_of_history"));
-    /** If not null, this will enable CSV exports for this generator, using the specified sub-directory. */
-    public String csvExportSubdirectory;
   }
-  
-  /**
-   * CSV exporter for this generator instance
-   */
-  private CSVExporter csvExporter;
   
   /**
    * Create a Generator, using all default settings.
@@ -236,12 +228,6 @@ public class Generator {
     if (o.enableRecordQueue) {
     	// Create the record queue
     	recordQueue = new LinkedBlockingQueue<String>(1);
-    }
-    
-    String subDirectoryName = options.csvExportSubdirectory;
-    if (subDirectoryName != null) {
-    	// Create the CSV exporter
-    	csvExporter = new CSVExporter(subDirectoryName);
     }
   }
 
@@ -423,7 +409,7 @@ public class Generator {
 
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
-        Exporter.export(person, time, recordQueue, csvExporter, options.yearsOfHistory);
+        Exporter.export(person, time, recordQueue, options.yearsOfHistory);
       } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
           || (isAlive && onlyDeadPatients));
       // if the patient is alive and we want only dead ones => loop & try again
