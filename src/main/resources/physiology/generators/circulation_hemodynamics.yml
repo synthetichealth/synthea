@@ -40,10 +40,10 @@ inputs:
       # BMI effect on peripheral resistance estimated 
     - fromExp: "1.0889 + #{age} / 65"
       to: R_sys
-      varianceThreshold: 0.1
+      variance: 0.1 # Allowable variance in input to avoid running simulation
     - fromExp: "0.7913 + 0.2 * #{age} / 65"
       to: E_es_ao
-      varianceThreshold: 0.1
+      variance: 0.1 # Allowable variance in input to avoid running simulation
       
 # List of output definitions for the model
 # Field descriptions:
@@ -68,6 +68,7 @@ outputs:
     - fromExp: "((Max(#{V_lv}) - Min(#{V_lv})) / Max(#{V_lv}))*100"
       to: Left ventricular Ejection fraction
       type: VITAL_SIGN
+      variance: 3.0
       preGenerator:
          className: org.mitre.synthea.helpers.RandomValueGenerator
          args: # Args 2+ for the constructor
@@ -77,6 +78,7 @@ outputs:
     - fromExp: "Max(#{P_ao})"
       to: Systolic Blood Pressure
       type: VITAL_SIGN
+      variance: 10.0
       preGenerator:
          className: org.mitre.synthea.modules.BloodPressureValueGenerator
          args: # Args 2+ for the constructor
@@ -84,6 +86,7 @@ outputs:
     - fromExp: "Min(#{P_ao})"
       to: Diastolic Blood Pressure
       type: VITAL_SIGN
+      variance: 5.0
       preGenerator:
          className: org.mitre.synthea.modules.BloodPressureValueGenerator
          args: # Args 2+ for the constructor

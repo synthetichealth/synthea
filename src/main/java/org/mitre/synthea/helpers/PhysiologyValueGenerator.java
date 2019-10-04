@@ -46,6 +46,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
   private VitalSign vitalSign;
   private ValueGenerator preGenerator;
   private boolean isPreGenerating = false;
+  private double variance;
   
   /**
    * A generator of VitalSign values from a physiology simulation.
@@ -53,10 +54,11 @@ public class PhysiologyValueGenerator extends ValueGenerator {
    * @param person Person instance to generate VitalSigns for
    */
   public PhysiologyValueGenerator(PhysiologyGeneratorConfig config, VitalSign vitalSign,
-      Person person) {
+      Person person, double variance) {
     super(person);
     this.config = config;
     this.vitalSign = vitalSign;
+    this.variance = variance;
     String runnerId = person.attributes.get(Person.ID) + ":" + config.getModel();
     
     // If pre-simulation generators are being used, instantiate the generator
@@ -168,7 +170,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
         generators.add(new PhysiologyValueGenerator(
             generatorConfig,
             VitalSign.fromString(mapper.getTo()),
-            person));
+            person, mapper.getVariance()));
       }
     }
     
@@ -288,13 +290,19 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       isPreGenerating = false;
     }
     
+    double result;
+    
     // If we haven't executed the simulator yet, use the pre-simulation
     // generator values until it does run
     if (isPreGenerating) {
-      return preGenerator.getValue(time);
+      result = preGenerator.getValue(time);
     } else {
-      return simRunner.getVitalSignValue(vitalSign);
+      result = simRunner.getVitalSignValue(vitalSign) + (person.rand()-0.5)*variance;
     }
+    
+    System.out.println(vitalSign + ": " + result);
+    
+    return result;
   }
   
   /**
@@ -401,7 +409,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     private String to;
     private String fromList;
     private String fromExp;
-    private double varianceThreshold;
+    private double variance;
     private ExpressionProcessor expProcessor;
     private PreGenerator preGenerator;
     
@@ -450,12 +458,12 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       this.fromExp = fromExp;
     }
 
-    public double getVarianceThreshold() {
-      return varianceThreshold;
+    public double getVariance() {
+      return variance;
     }
 
-    public void setVarianceThreshold(double varianceThreshold) {
-      this.varianceThreshold = varianceThreshold;
+    public void setVariance(double varianceThreshold) {
+      this.variance = varianceThreshold;
     }
 
     public ExpressionProcessor getExpProcessor() {
@@ -856,7 +864,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
         // change in the input parameter
         if (!prevInputs.isEmpty() && Math.abs(inputResult
             - prevInputs.get(mapper.getTo()))
-            > mapper.getVarianceThreshold()) {
+            > mapper.getVariance()) {
           sufficientChange = true;
         }
       }
