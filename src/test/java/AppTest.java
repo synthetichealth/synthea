@@ -153,6 +153,17 @@ public class AppTest {
   }
   
   @Test
+  public void testAppWithLocalConfigFile() throws Exception {
+    TestHelper.exportOff();
+    Config.set("test.bar", "42");
+    String[] args = {"-s", "0", "-p", "0",
+        "-c", "src/test/resources/test2.properties"};
+    App.main(args);
+    
+    Assert.assertEquals("24", Config.get("test.bar"));
+  }
+  
+  @Test
   public void testInvalidArgs() throws Exception {
     String[] args = {"-s", "foo", "-p", "foo", "Massachusetts", "Bedford"};
     final PrintStream original = System.out;
