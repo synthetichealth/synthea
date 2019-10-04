@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
@@ -63,6 +64,8 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     
     // If pre-simulation generators are being used, instantiate the generator
     if (config.isUsePreGenerators()) {
+      isPreGenerating = true;
+      
       // Get the IoMapper for this VitalSign output
       IoMapper outMapper = null;
       for (IoMapper mapper : config.getOutputs()) {
@@ -101,7 +104,6 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       // defaults so we don't run until a sufficient input change is detected.
       if (config.isUsePreGenerators()) {
         simRunner.compareDefaultInputs();
-        isPreGenerating = true;
       }
       RUNNER_CACHE.put(runnerId, simRunner);
     }
@@ -165,6 +167,15 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       PhysiologyGeneratorConfig generatorConfig, Person person) {
     List<PhysiologyValueGenerator> generators = new ArrayList<PhysiologyValueGenerator>();
     
+    // Set any patient attribute default values
+    if (generatorConfig.getPersonAttributeDefaults() != null) {
+      for (Entry<String, Object> entry : generatorConfig.getPersonAttributeDefaults().entrySet()) {
+        if (!person.attributes.containsKey(entry.getKey())) {
+          person.attributes.put(entry.getKey(), entry.getValue());
+        }
+      }
+    }
+    
     for (IoMapper mapper : generatorConfig.getOutputs()) {
       if (mapper.getType() == IoMapper.IoType.VITAL_SIGN) {
         generators.add(new PhysiologyValueGenerator(
@@ -209,7 +220,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       return CONFIG_CACHE.get(configKey);
     }
     
-    System.out.println("Loading physiology generator \"" + relativePath + "\"");
+    System.out.println("Loading physiology generator configuration \"" + relativePath + "\"");
     
     FileInputStream inputStream;
 
@@ -287,20 +298,17 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     // values has occurred
     if (simRunner.setInputs(time)) {
       simRunner.execute(time);
-      isPreGenerating = false;
     }
     
     double result;
     
     // If we haven't executed the simulator yet, use the pre-simulation
     // generator values until it does run
-    if (isPreGenerating) {
+    if (!simRunner.hasExecuted()) {
       result = preGenerator.getValue(time);
     } else {
-      result = simRunner.getVitalSignValue(vitalSign) + (person.rand()-0.5)*variance;
+      result = simRunner.getVitalSignValue(vitalSign) + (person.rand() - 0.5) * variance;
     }
-    
-    System.out.println(vitalSign + ": " + result);
     
     return result;
   }
@@ -319,6 +327,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     private boolean usePreGenerators;
     private List<IoMapper> inputs;
     private List<IoMapper> outputs;
+    private Map<String, Object> personAttributeDefaults;
     
     /**
      * Validates that all inputs are appropriate and within bounds.
@@ -400,6 +409,15 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     public void setOutputs(List<IoMapper> outputs) {
       this.outputs = outputs;
     }
+
+    public Map<String, Object> getPersonAttributeDefaults() {
+      return personAttributeDefaults;
+    }
+
+    public void setPersonAttributeDefaults(Map<String, Object> personAttributeDefaults) {
+      this.personAttributeDefaults = personAttributeDefaults;
+    }
+    
   }
   
   /** Class for handling simulation inputs and outputs. **/
@@ -795,6 +813,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     private Map<String,Double> prevInputs = new HashMap<String, Double>();
     private Map<VitalSign,Double> vitalSignResults = new HashMap<VitalSign,Double>();
     Map<String,Double> modelInputs = new HashMap<String,Double>();
+    boolean firstExecution;
     
     /**
      * Handles execution of a PhysiologySimulator.
@@ -831,9 +850,13 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     public PhysiologyGeneratorConfig getConfig() {
       return config;
     }
-    
+
     public double getVitalSignValue(VitalSign parameter) {
       return vitalSignResults.get(parameter);
+    }
+    
+    public boolean hasExecuted() {
+      return firstExecution;
     }
     
     /**
@@ -881,7 +904,8 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       prevInputs = new HashMap<String,Double>(modelInputs);
       MultiTable results = runSim(time, modelInputs);
       
-      System.out.println("Running simulation");
+      // System.out.println("Running simulation");
+      firstExecution = true;
       
       // Set all of the results
       for (IoMapper mapper : config.getOutputs()) {
@@ -900,10 +924,11 @@ public class PhysiologyValueGenerator extends ValueGenerator {
                   + "Cannot map list to VitalSign \"" + mapper.getTo() + "\".");
             }
             vitalSignResults.put(vs, (double) result);
-            System.out.println(vitalSignResults);
             break;
         }
       }
+      
+      // System.out.println(vitalSignResults);
     }
     
     /**
