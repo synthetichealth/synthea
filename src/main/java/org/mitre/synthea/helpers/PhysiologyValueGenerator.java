@@ -17,7 +17,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,7 +49,6 @@ public class PhysiologyValueGenerator extends ValueGenerator {
   private PhysiologyGeneratorConfig config;
   private VitalSign vitalSign;
   private ValueGenerator preGenerator;
-  private boolean isPreGenerating = false;
   private double outputVariance;
   
   /**
@@ -68,7 +66,6 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     
     // If pre-simulation generators are being used, instantiate the generator
     if (config.isUsePreGenerators()) {
-      isPreGenerating = true;
       
       // Get the IoMapper for this VitalSign output
       IoMapper outMapper = null;
@@ -916,13 +913,13 @@ public class PhysiologyValueGenerator extends ValueGenerator {
           sufficientChange = true;
         }
       }
-      if (sufficientChange) {
-        System.out.println("inputs changed for " + person.attributes.get(Person.FIRST_NAME)
-            + " " + person.attributes.get(Person.LAST_NAME) + " (age " + person.ageInYears(time)
-            + ", BMI " + person.getVitalSign(VitalSign.BMI, time) + ": "
-            + modelInputs + " vs " + prevInputs);
-      }
-      // System.out.println("Sufficient change? " + sufficientChange);
+      //if (sufficientChange) {
+      //  System.out.println("inputs changed for " + person.attributes.get(Person.FIRST_NAME)
+      //      + " " + person.attributes.get(Person.LAST_NAME) + " (age " + person.ageInYears(time)
+      //      + ", BMI " + person.getVitalSign(VitalSign.BMI, time) + ": "
+      //      + modelInputs + " vs " + prevInputs);
+      //}
+      //System.out.println("Sufficient change? " + sufficientChange);
       return sufficientChange;
     }
     
@@ -935,10 +932,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       prevInputs = new HashMap<String,Double>(modelInputs);
       MultiTable results = runSim(time, modelInputs);
       
-//      System.out.println("Running simulation for " + person.attributes.get(person.FIRST_NAME)
-//      + " " + person.attributes.get(Person.LAST_NAME) + " (age " + person.ageInYears(time)
-//      + ", BMI " + person.getVitalSign(VitalSign.BMI, time) + ": "
-//      + modelInputs + " vs " + prevInputs);
+      firstExecution = true;
       
       // Set all of the results
       for (IoMapper mapper : config.getOutputs()) {
