@@ -41,11 +41,14 @@ public class PhysiologyValueGeneratorTest {
     PhysiologyGeneratorConfig config = PhysiologyValueGenerator.getConfig(
         "circulation_hemodynamics.yml");
     
-    // Set the input threshold for R_sys to 0.1 so a small change will not
+    // Don't use pre generators so the model will run initially
+    config.setUsePreGenerators(false);
+    
+    // Set the input variance threshold for R_sys to 0.1 so a small change will not
     // cause a re-run of the simulation
     for (IoMapper mapper : config.getInputs()) {
       if (mapper.getTo() == "R_sys") {
-        mapper.setVarianceThreshold(0.1);
+        mapper.setVariance(0.1);
       }
     }
     
@@ -54,7 +57,7 @@ public class PhysiologyValueGeneratorTest {
     
     // Get the generator for systolic BP
     PhysiologyValueGenerator generator = new PhysiologyValueGenerator(config,
-        VitalSign.SYSTOLIC_BLOOD_PRESSURE, person);
+        VitalSign.SYSTOLIC_BLOOD_PRESSURE, person, 0.0);
     
     double sys1 = generator.getValue(simTime);
     
@@ -70,13 +73,21 @@ public class PhysiologyValueGeneratorTest {
     
     // Change the time by several years. Now the simulation should definitely run
     // again, which will change the output value.
-    simTime = dateToSimTime("2040-09-19");
+    simTime = dateToSimTime("2070-09-19");
     double sys3 = generator.getValue(simTime);
     
     // Make sure it's a reasonable value
     assertTrue("sys3 is a reasonable systolic bp value", (100 < sys1) && (sys1 < 160));
     
     assertNotEquals(sys1, sys3);
+    
+    // Change the output variance to a small amount and verify that the result is no longer
+    // exactly the same but within the variance amount.
+    generator.setOutputVariacne(1.0);
+    double sys4 = generator.getValue(simTime);
+    assertEquals(sys3, sys4, 1.0);
+    assertNotEquals(sys3, sys4);
+    
   }
   
   @Test
