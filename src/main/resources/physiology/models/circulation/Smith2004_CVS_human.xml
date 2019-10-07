@@ -243,7 +243,7 @@ function.      </p>
   <parameter metaid="_685867" id="V_pu" name="V_pu" value="808.4579" constant="false"/>
   <parameter metaid="_685868" id="V_d_pu" name="V_d_pu" value="0"/>
   <parameter metaid="_685871" id="P_ao" name="P_ao" constant="false"/>
-  <parameter metaid="_685872" id="E_es_ao" name="E_es_ao" value="1.0913"/>
+  <parameter metaid="_685872" id="E_es_ao" name="E_es_ao" value="0.8413"/>
   <parameter metaid="_685873" id="V_ao" name="V_ao" value="133.3381" constant="false"/>
   <parameter metaid="_685874" id="V_d_ao" name="V_d_ao" value="0"/>
   <parameter metaid="_685877" id="P_vc" name="P_vc" constant="false"/>
