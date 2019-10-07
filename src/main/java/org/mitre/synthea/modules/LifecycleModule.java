@@ -251,7 +251,7 @@ public final class LifecycleModule extends Module {
         person.setVitalSign(physioGenerator.getVitalSign(), physioGenerator);
       }
     } else {
-      System.out.println("Not using physiology");
+      System.out.println("Physiology simulation disabled");
     }
   }
 
