@@ -51,7 +51,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
   private VitalSign vitalSign;
   private ValueGenerator preGenerator;
   private boolean isPreGenerating = false;
-  private double variance;
+  private double outputVariance;
   
   /**
    * A generator of VitalSign values from a physiology simulation.
@@ -59,11 +59,11 @@ public class PhysiologyValueGenerator extends ValueGenerator {
    * @param person Person instance to generate VitalSigns for
    */
   public PhysiologyValueGenerator(PhysiologyGeneratorConfig config, VitalSign vitalSign,
-      Person person, double variance) {
+      Person person, double outputVariance) {
     super(person);
     this.config = config;
     this.vitalSign = vitalSign;
-    this.variance = variance;
+    this.outputVariance = outputVariance;
     String runnerId = person.attributes.get(Person.ID) + ":" + config.getModel();
     
     // If pre-simulation generators are being used, instantiate the generator
@@ -313,10 +313,18 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     if (!simRunner.hasExecuted()) {
       result = preGenerator.getValue(time);
     } else {
-      result = simRunner.getVitalSignValue(vitalSign) + (person.rand() - 0.5) * variance;
+      result = simRunner.getVitalSignValue(vitalSign) + (person.rand() - 0.5) * outputVariance;
     }
     
     return result;
+  }
+  
+  /**
+   * Sets the amount of variance to generate for the output VitalSign.
+   * @param variance amount of variance
+   */
+  public void setOutputVariacne(double variance) {
+    outputVariance = variance;
   }
   
   /**
