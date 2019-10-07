@@ -58,7 +58,7 @@ public class Module {
     retVal.put("Weight Loss", new ModuleSupplier(new WeightLossModule()));
 
     try {
-      URI modulesURI = ClassLoader.getSystemClassLoader().getResource("modules").toURI();
+      URI modulesURI = Module.class.getClassLoader().getResource("modules").toURI();
       fixPathFromJar(modulesURI);
       Path modulesPath = Paths.get(modulesURI);
       Path basePath = modulesPath.getParent();
