@@ -1,8 +1,8 @@
 package org.mitre.synthea.helpers;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,12 +40,12 @@ public class ConfigTest {
     Set<String> propertyNames = Config.allPropertyNames();
     assertFalse(propertyNames.isEmpty());
 
-    String[] expected_from_first_config = {"test.foo.bar", "test.foo.baz", "test.bar", "foo"};
-    for (String key : expected_from_first_config) {
+    String[] expectedFromFirstConfig = {"test.foo.bar", "test.foo.baz", "test.bar", "foo"};
+    for (String key : expectedFromFirstConfig) {
       assertTrue(propertyNames.contains(key));
     }
-    String[] expected_from_second_config = {"test.foo.bar2", "test.foo.baz2"};
-    for (String key : expected_from_second_config) {
+    String[] expectedFromSecondConfig = {"test.foo.bar2", "test.foo.baz2"};
+    for (String key : expectedFromSecondConfig) {
       assertTrue(propertyNames.contains(key));
     }
     assertEquals("24", Config.get("test.bar"));

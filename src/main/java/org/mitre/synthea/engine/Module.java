@@ -74,7 +74,8 @@ public class Module {
     return retVal;
   }
 
-  private static int walkModuleTree(Path modulesPath, Map<String, ModuleSupplier> retVal) throws IOException {
+  private static int walkModuleTree(Path modulesPath, Map<String, ModuleSupplier> retVal)
+          throws IOException {
     AtomicInteger submoduleCount = new AtomicInteger();
     Path basePath = modulesPath.getParent();
     Files.walk(modulesPath, Integer.MAX_VALUE)
@@ -87,8 +88,8 @@ public class Module {
                 submoduleCount.getAndIncrement();
               }
               retVal.put(relativePath, new ModuleSupplier(submodule,
-                      relativePath,
-                      () -> loadFile(basePath.relativize(t), submodule)));
+                  relativePath,
+                  () -> loadFile(basePath.relativize(t), submodule)));
             });
     return submoduleCount.get();
   }
