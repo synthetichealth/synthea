@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Predicate;
 
 import org.mitre.synthea.engine.Generator;
@@ -27,15 +28,75 @@ import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 public abstract class Exporter {
+  
+  /**
+   * Supported FHIR versions.
+   */
+  public enum SupportedFhirVersion {
+    DSTU2,
+    STU3,
+    R4
+  }
+   
+  /**
+   * Runtime configuration of the record exporter.
+   */
+  public static class ExporterRuntimeOptions {
+    
+    public int yearsOfHistory;
+    private BlockingQueue<String> recordQueue;
+    private SupportedFhirVersion fhirVersion;
+    
+    public ExporterRuntimeOptions() {
+      yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
+    }
+    
+    /**
+     * Enables a blocking queue to which FHIR patient records will be written.
+     * @param version specifies the version of FHIR that will be written to the queue.
+     */
+    public void enableQueue(SupportedFhirVersion version) {
+      recordQueue = new LinkedBlockingQueue<>(1);
+      fhirVersion = version;
+    }
+    
+    public SupportedFhirVersion queuedFhirVersion() {
+      return fhirVersion;
+    }
+    
+    public boolean isQueueEnabled() {
+      return recordQueue != null;
+    }
+
+    /**
+     * Returns the newest generated patient record (in FHIR STU 3 JSON format) 
+     * or blocks until next record becomes available.
+     * Returns null if the generator does not have a record queue.
+     */
+    public String getNextRecord() throws InterruptedException {
+      if (recordQueue == null) {
+        return null;
+      }
+      return recordQueue.take();
+    }
+
+    /**
+     * Returns true if record queue is empty or null. Otherwise returns false.
+     */
+    public boolean isRecordQueueEmpty() {
+      return recordQueue == null || recordQueue.size() == 0;
+    }
+  }
+  
   /**
    * Export a single patient, into all the formats supported. (Formats may be enabled or disabled by
    * configuration)
    *
    * @param person   Patient to export
    * @param stopTime Time at which the simulation stopped
-   * @param recordQueue Generator's record queue (may be null)
+   * @param options Runtime exporter options
    */
-  public static void export(Person person, long stopTime, BlockingQueue<String> recordQueue) {
+  public static void export(Person person, long stopTime, ExporterRuntimeOptions options) {
     int yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
     if (yearsOfHistory > 0) {
       person = filterForExport(person, yearsOfHistory, stopTime);
@@ -47,11 +108,11 @@ public abstract class Exporter {
       int i = 0;
       for (String key : person.records.keySet()) {
         person.record = person.records.get(key);
-        exportRecord(person, Integer.toString(i), stopTime, recordQueue);
+        exportRecord(person, Integer.toString(i), stopTime, options);
         i++;
       }
     } else {
-      exportRecord(person, "", stopTime, recordQueue);
+      exportRecord(person, "", stopTime, options);
     }
   }
   
@@ -63,7 +124,7 @@ public abstract class Exporter {
    * @param stopTime Time at which the simulation stopped
    */
   public static void export(Person person, long stopTime) {
-    export(person, stopTime, null);
+    export(person, stopTime, new ExporterRuntimeOptions());
   }
 
   /**
@@ -73,10 +134,10 @@ public abstract class Exporter {
    * @param person   Patient to export, with Patient.record being set.
    * @param fileTag  An identifier to tag the file with.
    * @param stopTime Time at which the simulation stopped
-   * @param recordQueue Generator's record queue (may be null)
+   * @param options Generator's record queue (may be null)
    */
   private static void exportRecord(Person person, String fileTag, long stopTime,
-          BlockingQueue<String> recordQueue) {
+          ExporterRuntimeOptions options) {
 
     if (Boolean.parseBoolean(Config.get("exporter.fhir_stu3.export"))) {
       File outDirectory = getOutputFolder("fhir_stu3", person);
@@ -169,9 +230,19 @@ public abstract class Exporter {
       String consolidatedNotes = ClinicalNoteExporter.export(person);
       writeNewFile(outFilePath, consolidatedNotes);
     }
-    if (recordQueue != null) {
+    if (options.isQueueEnabled()) {
       try {
-        recordQueue.put(FhirStu3.convertToFHIRJson(person, stopTime));
+        switch (options.queuedFhirVersion()) {
+          case DSTU2:
+            options.recordQueue.put(FhirDstu2.convertToFHIRJson(person, stopTime));
+            break;
+          case STU3:
+            options.recordQueue.put(FhirStu3.convertToFHIRJson(person, stopTime));
+            break;
+          default:
+            options.recordQueue.put(FhirR4.convertToFHIRJson(person, stopTime));
+            break;
+        }
       } catch (InterruptedException ie) {
         // ignore
       } catch (Exception e) {

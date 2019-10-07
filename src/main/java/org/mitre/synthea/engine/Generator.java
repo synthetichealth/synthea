@@ -9,10 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -57,6 +55,7 @@ public class Generator {
   private boolean onlyVeterans;
   public TransitionMetrics metrics;
   public static final String DEFAULT_STATE = "Massachusetts";
+  private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
 
   /**
    * Used only for testing and debugging. Populate this field to keep track of all patients
@@ -71,12 +70,6 @@ public class Generator {
    */
   Predicate<String> modulePredicate;
   
-  /**
-   * Use this queue to make generated records available to another thread.
-   * Will contain records in FHIR STU 3 JSON format.
-   */
-  private BlockingQueue<String> recordQueue;
-
   private static final String TARGET_AGE = "target_age";
 
   /**
@@ -104,15 +97,13 @@ public class Generator {
      * any locally created modules. */
     public File localModuleDir; 
     public List<String> enabledModules;
-    /** If true, enable thread-safe record queue. */
-    public boolean enableRecordQueue = false;
   }
   
   /**
    * Create a Generator, using all default settings.
    */
   public Generator() {
-    this(new GeneratorOptions());
+    this(new GeneratorOptions(), new Exporter.ExporterRuntimeOptions());
   }
 
   /**
@@ -122,9 +113,9 @@ public class Generator {
    * @param population Target population size
    */
   public Generator(int population) {
-    GeneratorOptions options = new GeneratorOptions();
+    this(new GeneratorOptions(), new Exporter.ExporterRuntimeOptions());
     options.population = population;
-    init(options);
+    init();
   }
   
   /**
@@ -135,11 +126,11 @@ public class Generator {
    * @param seed Seed used for randomness
    */
   public Generator(int population, long seed, long clinicianSeed) {
-    GeneratorOptions options = new GeneratorOptions();
+    this(new GeneratorOptions(), new Exporter.ExporterRuntimeOptions());
     options.population = population;
     options.seed = seed;
     options.clinicianSeed = clinicianSeed;
-    init(options);
+    init();
   }
 
   /**
@@ -147,10 +138,23 @@ public class Generator {
    * @param o Desired configuration options
    */
   public Generator(GeneratorOptions o) {
-    init(o);
+    options = o;
+    exporterRuntimeOptions = new Exporter.ExporterRuntimeOptions();
+    init();
+  }
+  
+  /**
+   * Create a Generator, with the given options.
+   * @param o Desired configuration options
+   * @param ero Desired exporter options
+   */
+  public Generator(GeneratorOptions o, Exporter.ExporterRuntimeOptions ero) {
+    options = o;
+    exporterRuntimeOptions = ero;
+    init();
   }
 
-  private void init(GeneratorOptions o) {
+  private void init() {
     String dbType = Config.get("generate.database_type");
 
     switch (dbType) {
@@ -169,20 +173,19 @@ public class Generator {
                 + "' . Valid values are file, in-memory, or none.");
     }
 
-    if (o.state == null) {
-      o.state = DEFAULT_STATE;
+    if (options.state == null) {
+      options.state = DEFAULT_STATE;
     }
-    int stateIndex = Location.getIndex(o.state);
+    int stateIndex = Location.getIndex(options.state);
     if (Boolean.parseBoolean(Config.get("exporter.cdw.export"))) {
       CDWExporter.getInstance().setKeyStart((stateIndex * 1_000_000) + 1);
     }
 
-    this.options = o;
-    this.random = new Random(o.seed);
+    this.random = new Random(options.seed);
     this.timestep = Long.parseLong(Config.get("generate.timestep"));
     this.stop = System.currentTimeMillis();
 
-    this.location = new Location(o.state, o.city);
+    this.location = new Location(options.state, options.city);
 
     this.logLevel = Config.get("generate.log_patients.detail", "simple");
     this.onlyDeadPatients = Boolean.parseBoolean(Config.get("generate.only_dead_patients"));
@@ -212,28 +215,24 @@ public class Generator {
     Costs.loadCostData(); // ensure cost data loads early
     
     String locationName;
-    if (o.city == null) {
-      locationName = o.state;
+    if (options.city == null) {
+      locationName = options.state;
     } else {
-      locationName = o.city + ", " + o.state;
+      locationName = options.city + ", " + options.state;
     }
     System.out.println("Running with options:");
     System.out.println(String.format("Population: %d\nSeed: %d\nProvider Seed:%d\nLocation: %s",
-        o.population, o.seed, o.clinicianSeed, locationName));
+        options.population, options.seed, options.clinicianSeed, locationName));
     System.out.println(String.format("Min Age: %d\nMax Age: %d",
-        o.minAge, o.maxAge));
-    if (o.gender != null) {
-      System.out.println(String.format("Gender: %s", o.gender));
+        options.minAge, options.maxAge));
+    if (options.gender != null) {
+      System.out.println(String.format("Gender: %s", options.gender));
     }
-    if (o.enabledModules != null) {
+    if (options.enabledModules != null) {
       moduleNames.removeAll(coreModuleNames);
       moduleNames.sort(String::compareToIgnoreCase);
       System.out.println("Modules: " + String.join("\n       & ", moduleNames));
       System.out.println(String.format("       > [%d loaded]", moduleNames.size()));
-    }
-    if (o.enableRecordQueue) {
-      // Create the record queue
-      recordQueue = new LinkedBlockingQueue<String>(1);
     }
   }
 
@@ -415,7 +414,7 @@ public class Generator {
 
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
-        Exporter.export(person, time, recordQueue);
+        Exporter.export(person, time, exporterRuntimeOptions);
       } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
           || (isAlive && onlyDeadPatients));
       // if the patient is alive and we want only dead ones => loop & try again
@@ -535,24 +534,5 @@ public class Generator {
     FilenameFilter filenameFilter = new WildcardFileFilter(options.enabledModules, 
         IOCase.INSENSITIVE);
     return path -> filenameFilter.accept(null, path);
-  }
-  
-  /**
-   * Returns the newest generated patient record (in FHIR STU 3 JSON format) 
-   * or blocks until next record becomes available.
-   * Returns null if the generator does not have a record queue.
-   */
-  public String getNextRecord() throws InterruptedException {
-    if (recordQueue == null) {
-      return null;
-    }
-    return recordQueue.take();
-  }
-  
-  /**
-   * Returns true if record queue is empty or null. Otherwise returns false.
-   */
-  public boolean isRecordQueueEmpty() {
-    return recordQueue == null || recordQueue.size() == 0;
   }
 }
