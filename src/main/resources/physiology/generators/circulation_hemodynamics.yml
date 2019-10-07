@@ -42,10 +42,10 @@ personAttributeDefaults:
 #   "type"              -   Type of the input value "from", if applicable. Must be one of
 #                           "ATTRIBUTE" or "VITAL_SIGN".
 inputs:
-      # Effects of age and BMI estimated from a comprehensive study on adult blood pressure percentiles
-      # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4553889/
+      # Effects of age and BMI loosely estimated from a comprehensive study on adult blood pressure 
+      # percentiles (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4553889/)
       # TODO: This really should involve more than just systemic resistance and aortal
-      # elasticity. This was just a quick and dirty way to get relatively accurate results.
+      # elasticity. This was just a quick and dirty way to get reasonable results.
       # More research is needed to determine appropriate age / BMI effects on all model parameters.
     - fromExp: "1.1889 + 0.025 * (#{BMI} - 21.7) + 0.75 * #{age} / 65 - 0.6 * #{blood_pressure_controlled}"
       to: R_sys
