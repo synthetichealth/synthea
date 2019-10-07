@@ -63,7 +63,7 @@ public abstract class Exporter {
    * @param stopTime Time at which the simulation stopped
    */
   public static void export(Person person, long stopTime) {
-	  export(person, stopTime, null);
+    export(person, stopTime, null);
   }
 
   /**
@@ -75,7 +75,8 @@ public abstract class Exporter {
    * @param stopTime Time at which the simulation stopped
    * @param recordQueue Generator's record queue (may be null)
    */
-  private static void exportRecord(Person person, String fileTag, long stopTime, BlockingQueue<String> recordQueue) {
+  private static void exportRecord(Person person, String fileTag, long stopTime,
+          BlockingQueue<String> recordQueue) {
 
     if (Boolean.parseBoolean(Config.get("exporter.fhir_stu3.export"))) {
       File outDirectory = getOutputFolder("fhir_stu3", person);
@@ -169,13 +170,14 @@ public abstract class Exporter {
       writeNewFile(outFilePath, consolidatedNotes);
     }
     if (recordQueue != null) {
-    	try {
-			recordQueue.put(FhirStu3.convertToFHIRJson(person, stopTime));
-    	} catch(InterruptedException ie) {
-		} catch(Exception e) {
-    		e.printStackTrace();
-		}
-	}
+      try {
+        recordQueue.put(FhirStu3.convertToFHIRJson(person, stopTime));
+      } catch (InterruptedException ie) {
+        // ignore
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   /**

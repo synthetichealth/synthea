@@ -232,8 +232,8 @@ public class Generator {
       System.out.println(String.format("       > [%d loaded]", moduleNames.size()));
     }
     if (o.enableRecordQueue) {
-    	// Create the record queue
-    	recordQueue = new LinkedBlockingQueue<String>(1);
+      // Create the record queue
+      recordQueue = new LinkedBlockingQueue<String>(1);
     }
   }
 
@@ -266,8 +266,8 @@ public class Generator {
         System.out.println("Waiting for threads to finish... " + threadPool);
       }
     } catch (InterruptedException e) {
-    	System.out.println("Generator interrupted. Attempting to shut down associated thread pool.");
-        threadPool.shutdownNow();
+      System.out.println("Generator interrupted. Attempting to shut down associated thread pool.");
+      threadPool.shutdownNow();
     }
 
     // have to store providers at the end to correctly capture utilization #s
@@ -538,20 +538,21 @@ public class Generator {
   }
   
   /**
-   * Returns the newest generated patient record (in FHIR STU 3 JSON format) or blocks until next record becomes available.
+   * Returns the newest generated patient record (in FHIR STU 3 JSON format) 
+   * or blocks until next record becomes available.
    * Returns null if the generator does not have a record queue.
    */
   public String getNextRecord() throws InterruptedException {
-	  if (recordQueue == null) {
-		  return null;
-	  } 
-	  return recordQueue.take();
+    if (recordQueue == null) {
+      return null;
+    }
+    return recordQueue.take();
   }
   
   /**
    * Returns true if record queue is empty or null. Otherwise returns false.
    */
   public boolean isRecordQueueEmpty() {
-	  return recordQueue == null || recordQueue.size() == 0;
+    return recordQueue == null || recordQueue.size() == 0;
   }
 }
