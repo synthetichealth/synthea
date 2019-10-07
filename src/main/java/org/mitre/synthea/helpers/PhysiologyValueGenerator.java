@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,6 +44,8 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       = new ConcurrentHashMap<String,SimRunner>();
   private static ConcurrentMap<String,PhysiologyGeneratorConfig> CONFIG_CACHE
       = new ConcurrentHashMap<String,PhysiologyGeneratorConfig>();
+  private static ConcurrentMap<String,Lock> CONFIG_LOCKS
+      = new ConcurrentHashMap<String,Lock>();
   private SimRunner simRunner;
   private PhysiologyGeneratorConfig config;
   private VitalSign vitalSign;
@@ -203,7 +207,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
    * @param configFile generator configuration file
    * @return generator configuration object
    */
-  public static PhysiologyGeneratorConfig getConfig(File configFile) {
+  public static synchronized PhysiologyGeneratorConfig getConfig(File configFile) {
     
     String relativePath;
     try {
@@ -215,11 +219,12 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     // key is the path to the config file
     String configKey = relativePath;
     
-    // if this config has already been loaded, grab it from cache
+    // If it exists in the cache, go ahead and get it
     if (CONFIG_CACHE.containsKey(configKey)) {
       return CONFIG_CACHE.get(configKey);
     }
-    
+
+    // Resource isn't already loaded, so we've got to load the resource
     System.out.println("Loading physiology generator configuration \"" + relativePath + "\"");
     
     FileInputStream inputStream;
@@ -227,6 +232,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     try {
       inputStream = new FileInputStream(configFile);
     } catch (FileNotFoundException ex) {
+      CONFIG_LOCKS.get(configKey).unlock();
       throw new RuntimeException("PhysiologyValueGenerator configuration not found: \""
           + configFile.getPath() + "\".");
     }
@@ -428,7 +434,10 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     private String fromList;
     private String fromExp;
     private double variance;
-    private ExpressionProcessor expProcessor;
+    // ExpressionProcessor instances are not thread safe, so we need
+    // to have a separate processor for each thread
+    private ThreadLocal<ExpressionProcessor> threadExpProcessor
+        = new ThreadLocal<ExpressionProcessor>();
     private PreGenerator preGenerator;
     
     enum IoType {
@@ -484,14 +493,6 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       this.variance = varianceThreshold;
     }
 
-    public ExpressionProcessor getExpProcessor() {
-      return expProcessor;
-    }
-
-    public void setExpProcessor(ExpressionProcessor expProcessor) {
-      this.expProcessor = expProcessor;
-    }
-
     public PreGenerator getPreGenerator() {
       return preGenerator;
     }
@@ -499,15 +500,23 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     public void setPreGenerator(PreGenerator preGenerator) {
       this.preGenerator = preGenerator;
     }
+    
+    /**
+     * Initializes the expression processor if needed with all inputs
+     * set as the default type (Decimal).
+     */
+    public void initialize() {
+      initialize(new HashMap<String,String>());
+    }
 
     /**
-     * Initializes the expression processor if needed.
+     * Initializes the expression processor for each thread if needed.
      * @param paramTypes map of parameters to their CQL types
      */
     public void initialize(Map<String, String> paramTypes) {
       try {
-        if (expProcessor == null && fromExp != null && !"".equals(fromExp)) {
-          expProcessor = new ExpressionProcessor(fromExp, paramTypes);
+        if (threadExpProcessor.get() == null && fromExp != null && !"".equals(fromExp)) {
+          threadExpProcessor.set(new ExpressionProcessor(fromExp, paramTypes));
         }
       } catch (CqlSemanticException e) {
         throw new RuntimeException(e);
@@ -522,6 +531,8 @@ public class PhysiologyValueGenerator extends ValueGenerator {
      */
     public double toModelInputs(Person person, long time, Map<String,Double> modelInputs) {
       double resultValue;
+      
+      ExpressionProcessor expProcessor = threadExpProcessor.get();
       
       // Evaluate the expression if one is provided
       if (expProcessor != null) {
@@ -553,6 +564,8 @@ public class PhysiologyValueGenerator extends ValueGenerator {
      * @return BigDecimal result value
      */
     private BigDecimal getExpressionResult(MultiTable results, double leadTime) {
+      ExpressionProcessor expProcessor = threadExpProcessor.get();
+      
       if (expProcessor == null) {
         throw new RuntimeException("No expression to process");
       }
@@ -591,6 +604,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
      * @return double value or List of Double values
      */
     public Object getOutputResult(MultiTable results, double leadTime) {
+      ExpressionProcessor expProcessor = threadExpProcessor.get();
       
       if (expProcessor != null) {
         // Evaluate the expression and return the result
@@ -657,7 +671,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
           return (Boolean) value ? 1.0 : 0.0;
           
         } else {
-          if (expProcessor != null) {
+          if (threadExpProcessor.get() != null) {
             throw new IllegalArgumentException("Unable to map person attribute \""
                 + param + "\" in expression \"" + fromExp + "\" for parameter \""
                 + to + "\": Attribute value is not a number.");
@@ -667,7 +681,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
           }
         }
       } else {
-        if (expProcessor != null) {
+        if (threadExpProcessor.get() != null) {
           throw new IllegalArgumentException("Unable to map \"" + param
               + "\" in expression \"" + fromExp + "\" for parameter \"" + to
               + "\": Invalid person attribute or vital sign.");
@@ -812,7 +826,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     private Map<String,String> paramTypes = new HashMap<String, String>();
     private Map<String,Double> prevInputs = new HashMap<String, Double>();
     private Map<VitalSign,Double> vitalSignResults = new HashMap<VitalSign,Double>();
-    Map<String,Double> modelInputs = new HashMap<String,Double>();
+    private Map<String,Double> modelInputs = new HashMap<String,Double>();
     boolean firstExecution;
     
     /**
@@ -829,15 +843,18 @@ public class PhysiologyValueGenerator extends ValueGenerator {
           config.getSimDuration()
       );
       
+      // All Patient parameters are set to the default Decimal type
+      // TODO: May need to find a way to handle alternative types in the future
+      for (IoMapper mapper : config.getInputs()) {
+        mapper.initialize();
+      }
+      
       for (String param : simulator.getParameters()) {
         // Assume all physiology model parameters are numeric
         // TODO: May need to handle alternative types in the future
         paramTypes.put(param, "List<Decimal>");
       }
-      
-      for (IoMapper mapper : config.getInputs()) {
-        mapper.initialize(paramTypes);
-      }
+
       for (IoMapper mapper : config.getOutputs()) {
         mapper.initialize(paramTypes);
       }
@@ -891,6 +908,12 @@ public class PhysiologyValueGenerator extends ValueGenerator {
           sufficientChange = true;
         }
       }
+      if (sufficientChange) {
+        System.out.println("inputs changed for " + person.attributes.get(Person.FIRST_NAME)
+            + " " + person.attributes.get(Person.LAST_NAME) + " (age " + person.ageInYears(time)
+            + ", BMI " + person.getVitalSign(VitalSign.BMI, time) + ": "
+            + modelInputs + " vs " + prevInputs);
+      }
       // System.out.println("Sufficient change? " + sufficientChange);
       return sufficientChange;
     }
@@ -904,8 +927,10 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       prevInputs = new HashMap<String,Double>(modelInputs);
       MultiTable results = runSim(time, modelInputs);
       
-      // System.out.println("Running simulation");
-      firstExecution = true;
+//      System.out.println("Running simulation for " + person.attributes.get(person.FIRST_NAME)
+//      + " " + person.attributes.get(Person.LAST_NAME) + " (age " + person.ageInYears(time)
+//      + ", BMI " + person.getVitalSign(VitalSign.BMI, time) + ": "
+//      + modelInputs + " vs " + prevInputs);
       
       // Set all of the results
       for (IoMapper mapper : config.getOutputs()) {
