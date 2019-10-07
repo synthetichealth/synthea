@@ -11,6 +11,7 @@ import static org.junit.Assert.fail;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
+import java.io.File;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -50,6 +51,14 @@ public class ModuleTest {
     Module module = Module.getModuleByPath("copd");
     assertNotNull(module);
     assertEquals("COPD Module", module.name);
+  }
+  
+  @Test
+  public void addLocalModules() {
+    Module.addModules(new File("src/test/resources/module"));
+    List<Module> allModules = Module.getModules();
+    allModules = Module.getModules();
+    assertTrue(allModules.stream().filter(filterOnModuleName("COPD_TEST")).count() == 1);
   }
 
   @Test

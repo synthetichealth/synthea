@@ -1,5 +1,6 @@
 package org.mitre.synthea.engine;
 
+import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Collections;
 import java.util.HashMap;
@@ -99,6 +100,9 @@ public class Generator {
     public int maxAge = 140;
     public String city;
     public String state;
+    /** When Synthea is used as a standalone library, this directory holds
+     * any locally created modules. */
+    public File localModuleDir; 
     public List<String> enabledModules;
     /** If true, enable thread-safe record queue. */
     public boolean enableRecordQueue = false;
@@ -200,6 +204,9 @@ public class Generator {
     // Initialize Payers
     Payer.loadPayers(location);
     // ensure modules load early
+    if (options.localModuleDir != null) {
+      Module.addModules(options.localModuleDir);
+    }
     List<String> coreModuleNames = getModuleNames(Module.getModules(path -> false));
     List<String> moduleNames = getModuleNames(Module.getModules(modulePredicate)); 
     Costs.loadCostData(); // ensure cost data loads early
