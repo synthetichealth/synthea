@@ -1,0 +1,3580 @@
+{
+  "resourceType": "ImplementationGuide",
+  "id": "hl7.fhir.us.core-3.0.0",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><h2>USCoreR4</h2><p>The official URL for this implementation guide is: </p><pre>http://hl7.org/fhir/us/core/ImplementationGuide/hl7.fhir.us.core-3.0.0</pre></div>"
+  },
+  "url": "http://hl7.org/fhir/us/core/ImplementationGuide/hl7.fhir.us.core-3.0.0",
+  "version": "3.0.0",
+  "name": "USCoreR4",
+  "title": "US Core R4",
+  "status": "active",
+  "publisher": "HL7 International - US Realm Steering Committee",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.hl7.org/Special/committees/usrealm/index.cfm"
+        }
+      ]
+    }
+  ],
+  "copyright": "Used by permission of HL7 International - US Realm Steering Committee, all rights reserved Creative Commons License",
+  "packageId": "hl7.fhir.us.core",
+  "license": "CC0-1.0",
+  "fhirVersion": [
+    "4.0.0"
+  ],
+  "definition": {
+    "grouping": [
+      {
+        "name": "base"
+      },
+      {
+        "id": "medicationrequest-us-core-profile-spreadsheet.xml",
+        "name": "USCoreMedicationRequestProfile"
+      },
+      {
+        "id": "goal-us-core-profile-spreadsheet.xml",
+        "name": "USCoreGoalProfile"
+      },
+      {
+        "id": "observation-us-core-pediatric-weight-for-height-spreadsheet.xml",
+        "name": "USCorePediatricWeightForHeightObservationProfile"
+      },
+      {
+        "id": "condition-us-core-profile-spreadsheet.xml",
+        "name": "USCoreCondition"
+      },
+      {
+        "id": "organization-us-core-profile-spreadsheet.xml",
+        "name": "USCoreOrganizationProfile"
+      },
+      {
+        "id": "observation-us-core-smokingstatus-profile-spreadsheet.xml",
+        "name": "USCoreSmokingStatusProfile"
+      },
+      {
+        "id": "careplan-us-core-profile-spreadsheet.xml",
+        "name": "USCoreCarePlanProfile"
+      },
+      {
+        "id": "careteam-us-core-profile-spreadsheet.xml",
+        "name": "USCoreCareTeam"
+      },
+      {
+        "id": "device-us-core-profile-spreadsheet.xml",
+        "name": "USCoreDeviceProfile"
+      },
+      {
+        "id": "documentreference-us-core-profile-spreadsheet.xml",
+        "name": "USCoreDocumentReferenceProfile"
+      },
+      {
+        "id": "medication-us-core-profile-spreadsheet.xml",
+        "name": "USCoreMedicationProfile"
+      },
+      {
+        "id": "procedure-us-core-profile-spreadsheet.xml",
+        "name": "USCoreProcedureProfile"
+      },
+      {
+        "id": "location-us-core-profile-spreadsheet.xml",
+        "name": "USCoreLocation"
+      },
+      {
+        "id": "medicationstatement-us-core-profile-spreadsheet.xml",
+        "name": "USCoreMedicationStatementProfile"
+      },
+      {
+        "id": "patient-us-core-profile-spreadsheet.xml",
+        "name": "USCorePatientProfile"
+      },
+      {
+        "id": "encounter-us-core-profile-spreadsheet.xml",
+        "name": "C:\\Users\\lynn\\Documents\\GitHub\\hl7.fhir.us.core#3.0.0\\source\\resources\\encounter-us-core-profile-spreadsheet"
+      },
+      {
+        "id": "practitioner-us-core-profile-spreadsheet.xml",
+        "name": "USCorePractitionerProfile"
+      },
+      {
+        "id": "allergyintolerance-us-core-profile-spreadsheet.xml",
+        "name": "USCoreAllergyIntolerance"
+      },
+      {
+        "id": "observation-us-core-pediatric-bmi-for age-spreadsheet.xml",
+        "name": "USCorePediatricBMIforAgeObservationProfile"
+      },
+      {
+        "id": "us-core-observation-lab-profile-spreadsheet.xml",
+        "name": "USCoreLaboratoryResultObservationProfile"
+      },
+      {
+        "id": "practitionerrole-us-core-profile-spreadsheet.xml",
+        "name": "C:\\Users\\lynn\\Documents\\GitHub\\hl7.fhir.us.core#3.0.0\\source\\resources\\practitionerrole-us-core-profile-spreadsheet"
+      },
+      {
+        "id": "immunization-us-core-profile-spreadsheet.xml",
+        "name": "USCoreImmunizationProfile"
+      }
+    ],
+    "resource": [
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-urine-glucose.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/urine-glucose"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Procedure-rehab.html"
+          }
+        ],
+        "reference": {
+          "reference": "Procedure/rehab"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "CareTeam-example.html"
+          }
+        ],
+        "reference": {
+          "reference": "CareTeam/example"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-urine-leukocyte-esterase.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/urine-leukocyte-esterase"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Bundle-66c8856b-ba11-4876-8aa8-467aad8c11a2.html"
+          }
+        ],
+        "reference": {
+          "reference": "Bundle/66c8856b-ba11-4876-8aa8-467aad8c11a2"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-urine-bilirubin.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/urine-bilirubin"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Condition-hc1.html"
+          }
+        ],
+        "reference": {
+          "reference": "Condition/hc1"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-urine-sediment.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/urine-sediment"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Immunization-imm-1.html"
+          }
+        ],
+        "reference": {
+          "reference": "Immunization/imm-1"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-pediatric-wt-example.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/pediatric-wt-example"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Organization-saint-luke-w-endpoint.html"
+          }
+        ],
+        "reference": {
+          "reference": "Organization/saint-luke-w-endpoint"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-urine-ph.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/urine-ph"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Encounter-example-1.html"
+          }
+        ],
+        "reference": {
+          "reference": "Encounter/example-1"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "DiagnosticReport-chest-xray-report.html"
+          }
+        ],
+        "reference": {
+          "reference": "DiagnosticReport/chest-xray-report"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-serum-sodium.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/serum-sodium"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "DiagnosticReport-cbc.html"
+          }
+        ],
+        "reference": {
+          "reference": "DiagnosticReport/cbc"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-serum-potassium.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/serum-potassium"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Encounter-1036.html"
+          }
+        ],
+        "reference": {
+          "reference": "Encounter/1036"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-some-day-smoker.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/some-day-smoker"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Location-hl7east.html"
+          }
+        ],
+        "reference": {
+          "reference": "Location/hl7east"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-serum-co2.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/serum-co2"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-urine-protein.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/urine-protein"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Procedure-defib-implant.html"
+          }
+        ],
+        "reference": {
+          "reference": "Procedure/defib-implant"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-usg.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/usg"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-serum-chloride.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/serum-chloride"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-serum-calcium.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/serum-calcium"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-urine-color.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/urine-color"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-bp-data-absent.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/bp-data-absent"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Patient-example.html"
+          }
+        ],
+        "reference": {
+          "reference": "Patient/example"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-temperature.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/temperature"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-bmi.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/bmi"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Medication-uscore-med2.html"
+          }
+        ],
+        "reference": {
+          "reference": "Medication/uscore-med2"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-urine-cells.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/urine-cells"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-length.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/length"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Device-udi-2.html"
+          }
+        ],
+        "reference": {
+          "reference": "Device/udi-2"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "MedicationRequest-uscore-mo1.html"
+          }
+        ],
+        "reference": {
+          "reference": "MedicationRequest/uscore-mo1"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Practitioner-practitioner-2.html"
+          }
+        ],
+        "reference": {
+          "reference": "Practitioner/practitioner-2"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Goal-goal-1.html"
+          }
+        ],
+        "reference": {
+          "reference": "Goal/goal-1"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-urine-rbcs.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/urine-rbcs"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-urobilinogen.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/urobilinogen"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Medication-uscore-med1.html"
+          }
+        ],
+        "reference": {
+          "reference": "Medication/uscore-med1"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-urine-bacteria.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/urine-bacteria"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Bundle-uscore-mo3.html"
+          }
+        ],
+        "reference": {
+          "reference": "Bundle/uscore-mo3"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-head-circumference.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/head-circumference"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "DiagnosticReport-metabolic-panel.html"
+          }
+        ],
+        "reference": {
+          "reference": "DiagnosticReport/metabolic-panel"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "MedicationRequest-uscore-mo2.html"
+          }
+        ],
+        "reference": {
+          "reference": "MedicationRequest/uscore-mo2"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-bun.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/bun"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Practitioner-practitioner-1.html"
+          }
+        ],
+        "reference": {
+          "reference": "Practitioner/practitioner-1"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-neutrophils.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/neutrophils"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-urine-nitrite.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/urine-nitrite"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-oxygen-saturation.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/oxygen-saturation"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "DiagnosticReport-cardiology-report.html"
+          }
+        ],
+        "reference": {
+          "reference": "DiagnosticReport/cardiology-report"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-vitals-panel.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/vitals-panel"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-blood-pressure.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/blood-pressure"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-urine-wbcs.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/urine-wbcs"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-height.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/height"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Organization-acme-lab.html"
+          }
+        ],
+        "reference": {
+          "reference": "Organization/acme-lab"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Device-udi-1.html"
+          }
+        ],
+        "reference": {
+          "reference": "Device/udi-1"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-hemoglobin.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/hemoglobin"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "DocumentReference-episode-summary.html"
+          }
+        ],
+        "reference": {
+          "reference": "DocumentReference/episode-summary"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-urine-hemoglobin.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/urine-hemoglobin"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-heart-rate.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/heart-rate"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-urine-epi-cells.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/urine-epi-cells"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "AllergyIntolerance-example.html"
+          }
+        ],
+        "reference": {
+          "reference": "AllergyIntolerance/example"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-blood-glucose.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/blood-glucose"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "DiagnosticReport-urinalysis.html"
+          }
+        ],
+        "reference": {
+          "reference": "DiagnosticReport/urinalysis"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Condition-example.html"
+          }
+        ],
+        "reference": {
+          "reference": "Condition/example"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "MedicationStatement-uscore-ms2.html"
+          }
+        ],
+        "reference": {
+          "reference": "MedicationStatement/uscore-ms2"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-serum-creatinine.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/serum-creatinine"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Bundle-uscore-ms3.html"
+          }
+        ],
+        "reference": {
+          "reference": "Bundle/uscore-ms3"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-serum-total-bilirubin.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/serum-total-bilirubin"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "MedicationStatement-uscore-ms1.html"
+          }
+        ],
+        "reference": {
+          "reference": "MedicationStatement/uscore-ms1"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-pediatric-bmi-example.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/pediatric-bmi-example"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Organization-example-organization-2.html"
+          }
+        ],
+        "reference": {
+          "reference": "Organization/example-organization-2"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-weight.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/weight"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-mchc.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/mchc"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-urine-clarity.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/urine-clarity"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "CarePlan-colonoscopy.html"
+          }
+        ],
+        "reference": {
+          "reference": "CarePlan/colonoscopy"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-erythrocytes.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/erythrocytes"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-urine-ketone.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/urine-ketone"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "Observation-respiratory-rate.html"
+          }
+        ],
+        "reference": {
+          "reference": "Observation/respiratory-rate"
+        },
+        "exampleBoolean": true
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-medication-codes.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-medication-codes"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-immunization.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-immunization"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-location-address-state.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-location-address-state"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-practitionerrole-practitioner.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-practitionerrole-practitioner"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-observation-smokingstatus.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-observation-smokingstatus"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-medicationstatement-status.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-medicationstatement-status"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-omb-race-category.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/omb-race-category"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-practitionerrole.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-practitionerrole"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-allergy-substance.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-allergy-substance"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-narrative-status.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-narrative-status"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "CodeSystem-cdcrec.html"
+          }
+        ],
+        "reference": {
+          "reference": "CodeSystem/cdcrec"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-organization-name.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-organization-name"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-observation-lab.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-observation-lab"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-diagnosticreport-code.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-diagnosticreport-code"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-pediatric-bmi-for-age.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/pediatric-bmi-for-age"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-allergyintolerance.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-allergyintolerance"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-goal-lifecycle-status.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-goal-lifecycle-status"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-procedure-code.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-procedure-code"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-documentreference-type.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-documentreference-type"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-patient-gender.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-patient-gender"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-practitioner.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-practitioner"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-diagnosticreport-note.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-diagnosticreport-note"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-omb-ethnicity-category.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/omb-ethnicity-category"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "OperationDefinition-docref.html"
+          }
+        ],
+        "reference": {
+          "reference": "OperationDefinition/docref"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-condition-clinical-status.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-condition-clinical-status"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-birthsex.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-birthsex"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-documentreference-id.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-documentreference-id"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-careplan-category.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-careplan-category"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-encounter-class.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-encounter-class"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-medicationrequest-patient.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-medicationrequest-patient"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "CapabilityStatement-us-core-server.html"
+          }
+        ],
+        "reference": {
+          "reference": "CapabilityStatement/us-core-server"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-condition-category.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-condition-category"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-detailed-ethnicity.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/detailed-ethnicity"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-documentreference-patient.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-documentreference-patient"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-encounter.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-encounter"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-ndc-vaccine-codes.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-ndc-vaccine-codes"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-patient.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-patient"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-diagnosticreport-date.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-diagnosticreport-date"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-medicationstatement.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-medicationstatement"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-procedure-icd10pcs.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-procedure-icd10pcs"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-provider-specialty.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-provider-specialty"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-procedure-date.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-procedure-date"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-vaccines-cvx.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-vaccines-cvx"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-allergyintolerance-clinical-status.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-allergyintolerance-clinical-status"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-documentreference-date.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-documentreference-date"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-location.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-location"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-location-address.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-location-address"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-observation-smoking-status-status.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-observation-smoking-status-status"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-usps-state.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-usps-state"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-practitioner-name.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-practitioner-name"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-encounter-type.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-encounter-type"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-documentreference-period.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-documentreference-period"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-observation-code.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-observation-code"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-location-name.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-location-name"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-condition-onset-date.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-condition-onset-date"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-patient-given.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-patient-given"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-procedure.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-procedure"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-encounter-type.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-encounter-type"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-problem.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-problem"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "CodeSystem-condition-category.html"
+          }
+        ],
+        "reference": {
+          "reference": "CodeSystem/condition-category"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-encounter-patient.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-encounter-patient"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-organization-address.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-organization-address"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-observation-category.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-observation-category"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-medication.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-medication"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-diagnosticreport-status.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-diagnosticreport-status"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-observation-date.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-observation-date"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-birthsex.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/birthsex"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-diagnosticreport-category.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-diagnosticreport-category"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-observation-status.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-observation-status"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-diagnosticreport-report-and-note-codes.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-diagnosticreport-report-and-note-codes"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-provider-role.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-provider-role"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-ethnicity.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-ethnicity"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-documentreference.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-documentreference"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-direct.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-direct"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-smoking-status-observation-codes.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-smoking-status-observation-codes"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-careteam-provider-roles.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-careteam-provider-roles"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-documentreference-type.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-documentreference-type"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-encounter-date.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-encounter-date"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-diagnosticreport-category.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-diagnosticreport-category"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-device.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-device"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-patient-birthdate.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-patient-birthdate"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-careteam.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-careteam"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-procedure-status.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-procedure-status"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-clinical-note-type.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-clinical-note-type"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-encounter-status.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-encounter-status"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ConceptMap-ndc-cvx.html"
+          }
+        ],
+        "reference": {
+          "reference": "ConceptMap/ndc-cvx"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-ethnicity.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-ethnicity"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-careplan-status.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-careplan-status"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-careplan.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-careplan"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-condition-patient.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-condition-patient"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-allergyintolerance-patient.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-allergyintolerance-patient"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-device-patient.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-device-patient"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-condition-code.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-condition-code"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-observation-patient.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-observation-patient"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-race.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-race"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-careplan-patient.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-careplan-patient"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-patient-family.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-patient-family"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-smokingstatus.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-smokingstatus"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-medicationrequest-status.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-medicationrequest-status"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-medicationstatement-effective.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-medicationstatement-effective"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-race.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-race"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-medicationstatement-patient.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-medicationstatement-patient"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-location-address-postalcode.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-location-address-postalcode"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-encounter-id.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-encounter-id"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-medicationrequest-authoredon.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-medicationrequest-authoredon"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-documentreference-status.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-documentreference-status"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-documentreference-category.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-documentreference-category"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-procedure-patient.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-procedure-patient"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-goal-target-date.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-goal-target-date"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-diagnosticreport-patient.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-diagnosticreport-patient"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-careplan-date.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-careplan-date"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-careteam-patient.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-careteam-patient"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-organization.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-organization"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-immunization-date.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-immunization-date"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-encounter-identifier.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-encounter-identifier"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-practitionerrole-specialty.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-practitionerrole-specialty"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-patient-name.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-patient-name"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-device-type.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-device-type"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-procedure-code.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-procedure-code"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-diagnosticreport-lab.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-diagnosticreport-lab"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-goal-patient.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-goal-patient"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-simple-language.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/simple-language"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-immunization-patient.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-immunization-patient"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-condition.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-condition"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-pediatric-weight-for-height.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/pediatric-weight-for-height"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-observation-value-codes.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-observation-value-codes"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-patient-id.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-patient-id"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-location-address-city.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-location-address-city"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-goal.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-goal"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-careteam-status.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-careteam-status"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "CodeSystem-us-core-documentreference-category.html"
+          }
+        ],
+        "reference": {
+          "reference": "CodeSystem/us-core-documentreference-category"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-us-core-diagnosticreport-lab-codes.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/us-core-diagnosticreport-lab-codes"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "CodeSystem-careplan-category.html"
+          }
+        ],
+        "reference": {
+          "reference": "CodeSystem/careplan-category"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-documentreference-category.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-documentreference-category"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "CapabilityStatement-us-core-client.html"
+          }
+        ],
+        "reference": {
+          "reference": "CapabilityStatement/us-core-client"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-practitioner-identifier.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-practitioner-identifier"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-patient-identifier.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-patient-identifier"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-condition-category.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-condition-category"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "SearchParameter-us-core-immunization-status.html"
+          }
+        ],
+        "reference": {
+          "reference": "SearchParameter/us-core-immunization-status"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "StructureDefinition-us-core-medicationrequest.html"
+          }
+        ],
+        "reference": {
+          "reference": "StructureDefinition/us-core-medicationrequest"
+        },
+        "exampleBoolean": false
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/implementationguide-page",
+            "valueUri": "ValueSet-detailed-race.html"
+          }
+        ],
+        "reference": {
+          "reference": "ValueSet/detailed-race"
+        },
+        "exampleBoolean": false
+      }
+    ],
+    "page": {
+      "nameUrl": "index.html",
+      "title": "Home",
+      "generation": "markdown",
+      "page": [
+        {
+          "nameUrl": "guidance.html",
+          "title": "Guidance",
+          "generation": "markdown",
+          "page": [
+            {
+              "nameUrl": "general-guidance.html",
+              "title": "General Guidance",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "clinical-notes-guidance.html",
+              "title": "Clinical Notes Guidance",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "future-of-us-core.html",
+              "title": "Future of US Core",
+              "generation": "markdown"
+            }
+          ]
+        },
+        {
+          "nameUrl": "profiles.html",
+          "title": "Profiles and Extensions",
+          "generation": "markdown",
+          "page": [
+            {
+              "nameUrl": "StructureDefinition-us-core-immunization.html",
+              "title": "StructureDefinition US Core Immunization",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-practitionerrole.html",
+              "title": "StructureDefinition US Core PractitionerRole",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-observation-lab.html",
+              "title": "StructureDefinition US Core Observation Lab",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-pediatric-bmi-for-age.html",
+              "title": "StructureDefinition Pediatric Bmi For Age",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-allergyintolerance.html",
+              "title": "StructureDefinition US Core AllergyIntolerance",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-practitioner.html",
+              "title": "StructureDefinition US Core Practitioner",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-diagnosticreport-note.html",
+              "title": "StructureDefinition US Core DiagnosticReport Note",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-birthsex.html",
+              "title": "StructureDefinition US Core Birthsex",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-encounter.html",
+              "title": "StructureDefinition US Core Encounter",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-patient.html",
+              "title": "StructureDefinition US Core Patient",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-medicationstatement.html",
+              "title": "StructureDefinition US Core MedicationStatement",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-location.html",
+              "title": "StructureDefinition US Core Location",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-procedure.html",
+              "title": "StructureDefinition US Core Procedure",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-medication.html",
+              "title": "StructureDefinition US Core Medication",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-documentreference.html",
+              "title": "StructureDefinition US Core DocumentReference",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-direct.html",
+              "title": "StructureDefinition US Core Direct",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-device.html",
+              "title": "StructureDefinition US Core Device",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-careteam.html",
+              "title": "StructureDefinition US Core CareTeam",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-ethnicity.html",
+              "title": "StructureDefinition US Core Ethnicity",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-careplan.html",
+              "title": "StructureDefinition US Core CarePlan",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-smokingstatus.html",
+              "title": "StructureDefinition US Core Smokingstatus",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-race.html",
+              "title": "StructureDefinition US Core Race",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-organization.html",
+              "title": "StructureDefinition US Core Organization",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-diagnosticreport-lab.html",
+              "title": "StructureDefinition US Core DiagnosticReport Lab",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-condition.html",
+              "title": "StructureDefinition US Core Condition",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-pediatric-weight-for-height.html",
+              "title": "StructureDefinition Pediatric Weight For Height",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-goal.html",
+              "title": "StructureDefinition US Core Goal",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "StructureDefinition-us-core-medicationrequest.html",
+              "title": "StructureDefinition US Core MedicationRequest",
+              "generation": "generated"
+            }
+          ]
+        },
+        {
+          "nameUrl": "operations.html",
+          "title": "Operations",
+          "generation": "markdown",
+          "page": [
+            {
+              "nameUrl": "OperationDefinition-docref.html",
+              "title": "OperationDefinition Docref",
+              "generation": "generated"
+            }
+          ]
+        },
+        {
+          "nameUrl": "terminology.html",
+          "title": "Terminology",
+          "generation": "markdown",
+          "page": [
+            {
+              "nameUrl": "ValueSet-us-core-medication-codes.html",
+              "title": "ValueSet US Core Medication Codes",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-observation-smokingstatus.html",
+              "title": "ValueSet US Core Observation Smokingstatus",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-omb-race-category.html",
+              "title": "ValueSet Omb Race Category",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-allergy-substance.html",
+              "title": "ValueSet US Core Allergy Substance",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-narrative-status.html",
+              "title": "ValueSet US Core Narrative Status",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-documentreference-type.html",
+              "title": "ValueSet US Core DocumentReference Type",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-omb-ethnicity-category.html",
+              "title": "ValueSet Omb Ethnicity Category",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-condition-category.html",
+              "title": "ValueSet US Core Condition Category",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-detailed-ethnicity.html",
+              "title": "ValueSet Detailed Ethnicity",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-ndc-vaccine-codes.html",
+              "title": "ValueSet US Core Ndc Vaccine Codes",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-procedure-icd10pcs.html",
+              "title": "ValueSet US Core Procedure Icd10pcs",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-provider-specialty.html",
+              "title": "ValueSet US Core Provider Specialty",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-vaccines-cvx.html",
+              "title": "ValueSet US Core Vaccines Cvx",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-observation-smoking-status-status.html",
+              "title": "ValueSet US Core Observation Smoking Status Status",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-usps-state.html",
+              "title": "ValueSet US Core Usps State",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-encounter-type.html",
+              "title": "ValueSet US Core Encounter Type",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-problem.html",
+              "title": "ValueSet US Core Problem",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-birthsex.html",
+              "title": "ValueSet Birthsex",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-diagnosticreport-report-and-note-codes.html",
+              "title": "ValueSet US Core DiagnosticReport Report And Note Codes",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-provider-role.html",
+              "title": "ValueSet US Core Provider Role",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-smoking-status-observation-codes.html",
+              "title": "ValueSet US Core Smoking Status Observation Codes",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-careteam-provider-roles.html",
+              "title": "ValueSet US Core CareTeam Provider Roles",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-diagnosticreport-category.html",
+              "title": "ValueSet US Core DiagnosticReport Category",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-clinical-note-type.html",
+              "title": "ValueSet US Core Clinical Note Type",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-documentreference-category.html",
+              "title": "ValueSet US Core DocumentReference Category",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-procedure-code.html",
+              "title": "ValueSet US Core Procedure Code",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-simple-language.html",
+              "title": "ValueSet Simple Language",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-observation-value-codes.html",
+              "title": "ValueSet US Core Observation Value Codes",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-us-core-diagnosticreport-lab-codes.html",
+              "title": "ValueSet US Core DiagnosticReport Lab Codes",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ValueSet-detailed-race.html",
+              "title": "ValueSet Detailed Race",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "CodeSystem-cdcrec.html",
+              "title": "CodeSystem Cdcrec",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "CodeSystem-condition-category.html",
+              "title": "CodeSystem Condition Category",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "CodeSystem-us-core-documentreference-category.html",
+              "title": "CodeSystem US Core DocumentReference Category",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "CodeSystem-careplan-category.html",
+              "title": "CodeSystem CarePlan Category",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "ConceptMap-ndc-cvx.html",
+              "title": "ConceptMap Ndc Cvx",
+              "generation": "generated"
+            }
+          ]
+        },
+        {
+          "nameUrl": "searchparameters.html",
+          "title": "Search Parameters",
+          "generation": "markdown",
+          "page": [
+            {
+              "nameUrl": "SearchParameter-us-core-location-address-state.html",
+              "title": "SearchParameter US Core Location Address State",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-practitionerrole-practitioner.html",
+              "title": "SearchParameter US Core PractitionerRole Practitioner",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-medicationstatement-status.html",
+              "title": "SearchParameter US Core MedicationStatement Status",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-organization-name.html",
+              "title": "SearchParameter US Core Organization Name",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-diagnosticreport-code.html",
+              "title": "SearchParameter US Core DiagnosticReport Code",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-goal-lifecycle-status.html",
+              "title": "SearchParameter US Core Goal Lifecycle Status",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-procedure-code.html",
+              "title": "SearchParameter US Core Procedure Code",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-patient-gender.html",
+              "title": "SearchParameter US Core Patient Gender",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-condition-clinical-status.html",
+              "title": "SearchParameter US Core Condition Clinical Status",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-documentreference-id.html",
+              "title": "SearchParameter US Core DocumentReference Id",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-careplan-category.html",
+              "title": "SearchParameter US Core CarePlan Category",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-encounter-class.html",
+              "title": "SearchParameter US Core Encounter Class",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-medicationrequest-patient.html",
+              "title": "SearchParameter US Core MedicationRequest Patient",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-documentreference-patient.html",
+              "title": "SearchParameter US Core DocumentReference Patient",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-diagnosticreport-date.html",
+              "title": "SearchParameter US Core DiagnosticReport Date",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-procedure-date.html",
+              "title": "SearchParameter US Core Procedure Date",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-allergyintolerance-clinical-status.html",
+              "title": "SearchParameter US Core AllergyIntolerance Clinical Status",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-documentreference-date.html",
+              "title": "SearchParameter US Core DocumentReference Date",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-location-address.html",
+              "title": "SearchParameter US Core Location Address",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-practitioner-name.html",
+              "title": "SearchParameter US Core Practitioner Name",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-documentreference-period.html",
+              "title": "SearchParameter US Core DocumentReference Period",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-observation-code.html",
+              "title": "SearchParameter US Core Observation Code",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-location-name.html",
+              "title": "SearchParameter US Core Location Name",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-condition-onset-date.html",
+              "title": "SearchParameter US Core Condition Onset Date",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-patient-given.html",
+              "title": "SearchParameter US Core Patient Given",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-encounter-type.html",
+              "title": "SearchParameter US Core Encounter Type",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-encounter-patient.html",
+              "title": "SearchParameter US Core Encounter Patient",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-organization-address.html",
+              "title": "SearchParameter US Core Organization Address",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-observation-category.html",
+              "title": "SearchParameter US Core Observation Category",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-diagnosticreport-status.html",
+              "title": "SearchParameter US Core DiagnosticReport Status",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-observation-date.html",
+              "title": "SearchParameter US Core Observation Date",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-diagnosticreport-category.html",
+              "title": "SearchParameter US Core DiagnosticReport Category",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-observation-status.html",
+              "title": "SearchParameter US Core Observation Status",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-ethnicity.html",
+              "title": "SearchParameter US Core Ethnicity",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-documentreference-type.html",
+              "title": "SearchParameter US Core DocumentReference Type",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-encounter-date.html",
+              "title": "SearchParameter US Core Encounter Date",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-patient-birthdate.html",
+              "title": "SearchParameter US Core Patient Birthdate",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-procedure-status.html",
+              "title": "SearchParameter US Core Procedure Status",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-encounter-status.html",
+              "title": "SearchParameter US Core Encounter Status",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-careplan-status.html",
+              "title": "SearchParameter US Core CarePlan Status",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-condition-patient.html",
+              "title": "SearchParameter US Core Condition Patient",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-allergyintolerance-patient.html",
+              "title": "SearchParameter US Core AllergyIntolerance Patient",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-device-patient.html",
+              "title": "SearchParameter US Core Device Patient",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-condition-code.html",
+              "title": "SearchParameter US Core Condition Code",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-observation-patient.html",
+              "title": "SearchParameter US Core Observation Patient",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-race.html",
+              "title": "SearchParameter US Core Race",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-careplan-patient.html",
+              "title": "SearchParameter US Core CarePlan Patient",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-patient-family.html",
+              "title": "SearchParameter US Core Patient Family",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-medicationrequest-status.html",
+              "title": "SearchParameter US Core MedicationRequest Status",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-medicationstatement-effective.html",
+              "title": "SearchParameter US Core MedicationStatement Effective",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-medicationstatement-patient.html",
+              "title": "SearchParameter US Core MedicationStatement Patient",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-location-address-postalcode.html",
+              "title": "SearchParameter US Core Location Address Postalcode",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-encounter-id.html",
+              "title": "SearchParameter US Core Encounter Id",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-medicationrequest-authoredon.html",
+              "title": "SearchParameter US Core MedicationRequest Authoredon",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-documentreference-status.html",
+              "title": "SearchParameter US Core DocumentReference Status",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-procedure-patient.html",
+              "title": "SearchParameter US Core Procedure Patient",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-goal-target-date.html",
+              "title": "SearchParameter US Core Goal Target Date",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-diagnosticreport-patient.html",
+              "title": "SearchParameter US Core DiagnosticReport Patient",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-careplan-date.html",
+              "title": "SearchParameter US Core CarePlan Date",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-careteam-patient.html",
+              "title": "SearchParameter US Core CareTeam Patient",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-immunization-date.html",
+              "title": "SearchParameter US Core Immunization Date",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-encounter-identifier.html",
+              "title": "SearchParameter US Core Encounter Identifier",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-practitionerrole-specialty.html",
+              "title": "SearchParameter US Core PractitionerRole Specialty",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-patient-name.html",
+              "title": "SearchParameter US Core Patient Name",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-device-type.html",
+              "title": "SearchParameter US Core Device Type",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-goal-patient.html",
+              "title": "SearchParameter US Core Goal Patient",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-immunization-patient.html",
+              "title": "SearchParameter US Core Immunization Patient",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-patient-id.html",
+              "title": "SearchParameter US Core Patient Id",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-location-address-city.html",
+              "title": "SearchParameter US Core Location Address City",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-careteam-status.html",
+              "title": "SearchParameter US Core CareTeam Status",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-documentreference-category.html",
+              "title": "SearchParameter US Core DocumentReference Category",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-practitioner-identifier.html",
+              "title": "SearchParameter US Core Practitioner Identifier",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-patient-identifier.html",
+              "title": "SearchParameter US Core Patient Identifier",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-condition-category.html",
+              "title": "SearchParameter US Core Condition Category",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "SearchParameter-us-core-immunization-status.html",
+              "title": "SearchParameter US Core Immunization Status",
+              "generation": "generated"
+            }
+          ]
+        },
+        {
+          "nameUrl": "capstatements.html",
+          "title": "Capability Statements",
+          "generation": "markdown",
+          "page": [
+            {
+              "nameUrl": "CapabilityStatement-us-core-server.html",
+              "title": "CapabilityStatement US Core Server",
+              "generation": "generated"
+            },
+            {
+              "nameUrl": "CapabilityStatement-us-core-client.html",
+              "title": "CapabilityStatement US Core Client",
+              "generation": "generated"
+            }
+          ]
+        },
+        {
+          "nameUrl": "security.html",
+          "title": "Security",
+          "generation": "markdown"
+        },
+        {
+          "nameUrl": "downloads.html",
+          "title": "Downloads",
+          "generation": "markdown"
+        },
+        {
+          "nameUrl": "all-examples.html",
+          "title": "All Examples",
+          "generation": "markdown"
+        },
+        {
+          "nameUrl": "toc.html",
+          "title": "Table of Contents",
+          "generation": "html"
+        }
+      ]
+    }
+  }
+}

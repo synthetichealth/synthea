@@ -802,7 +802,8 @@
           "display": "60 ACTUAT Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT Dry Powder Inhaler"
         }
       ],
-      "direct_transition": "Consider_Surgery"
+      "direct_transition": "Consider_Surgery",
+      "chronic": true
     },
     "Consider_Surgery": {
       "type": "Simple",

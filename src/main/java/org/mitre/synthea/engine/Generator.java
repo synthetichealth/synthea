@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -67,6 +69,12 @@ public class Generator {
    * module. Use "-m filename" on the command line to filter which modules get loaded.
    */
   Predicate<String> modulePredicate;
+  
+  /**
+   * Use this queue to make generated records available to another thread.
+   * Will contain records in FHIR STU 3 JSON format.
+   */
+  private BlockingQueue<String> recordQueue;
 
   private static final String TARGET_AGE = "target_age";
 
@@ -92,6 +100,8 @@ public class Generator {
     public String city;
     public String state;
     public List<String> enabledModules;
+    /** If true, enable thread-safe record queue. */
+    public boolean enableRecordQueue = false;
   }
   
   /**
@@ -214,6 +224,10 @@ public class Generator {
       System.out.println("Modules: " + String.join("\n       & ", moduleNames));
       System.out.println(String.format("       > [%d loaded]", moduleNames.size()));
     }
+    if (o.enableRecordQueue) {
+    	// Create the record queue
+    	recordQueue = new LinkedBlockingQueue<String>(1);
+    }
   }
 
   /**
@@ -245,7 +259,8 @@ public class Generator {
         System.out.println("Waiting for threads to finish... " + threadPool);
       }
     } catch (InterruptedException e) {
-      e.printStackTrace();
+    	System.out.println("Generator interrupted. Attempting to shut down associated thread pool.");
+        threadPool.shutdownNow();
     }
 
     // have to store providers at the end to correctly capture utilization #s
@@ -393,7 +408,7 @@ public class Generator {
 
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
-        Exporter.export(person, time);
+        Exporter.export(person, time, recordQueue);
       } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
           || (isAlive && onlyDeadPatients));
       // if the patient is alive and we want only dead ones => loop & try again
@@ -513,5 +528,23 @@ public class Generator {
     FilenameFilter filenameFilter = new WildcardFileFilter(options.enabledModules, 
         IOCase.INSENSITIVE);
     return path -> filenameFilter.accept(null, path);
+  }
+  
+  /**
+   * Returns the newest generated patient record (in FHIR STU 3 JSON format) or blocks until next record becomes available.
+   * Returns null if the generator does not have a record queue.
+   */
+  public String getNextRecord() throws InterruptedException {
+	  if (recordQueue == null) {
+		  return null;
+	  } 
+	  return recordQueue.take();
+  }
+  
+  /**
+   * Returns true if record queue is empty or null. Otherwise returns false.
+   */
+  public boolean isRecordQueueEmpty() {
+	  return recordQueue == null || recordQueue.size() == 0;
   }
 }

@@ -36,7 +36,7 @@ public class CostsTest {
     double minCost = 8.5;
     double maxCost = 400;
     
-    Entry fakeMedication = person.record.medicationStart(time, code.display);
+    Entry fakeMedication = person.record.medicationStart(time, code.display, true);
     fakeMedication.codes.add(code);
     
     double cost = Costs.determineCostOfEntry(fakeMedication, person);
@@ -66,7 +66,7 @@ public class CostsTest {
   
   @Test public void testCostByUnknownCode() {
     Code code = new Code("RxNorm","111111111111111111","Exaplitol");
-    Entry fakeMedication = person.record.medicationStart(time, code.display);
+    Entry fakeMedication = person.record.medicationStart(time, code.display, false);
     fakeMedication.codes.add(code);
     
     double cost = Costs.determineCostOfEntry(fakeMedication, person);

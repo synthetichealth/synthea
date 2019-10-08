@@ -143,6 +143,12 @@ public final class EncounterModule extends Module {
     return encounter;
   }
 
+  /**
+   * Get the correct Wellness Visit Code by age of patient.
+   * @param person The patient.
+   * @param time The time of the encounter which we translate to age of patient.
+   * @return SNOMED-CT code for Wellness Visit.
+   */
   public static Code getWellnessVisitCode(Person person, long time) {
     int age = person.ageInYears(time);
     if (age < 18) {
@@ -152,28 +158,50 @@ public final class EncounterModule extends Module {
     }
   }
 
+  /**
+   * Recommended time between Wellness Visits by age of patient and whether 
+   * they have chronic medications.
+   * @param person The patient.
+   * @param time The time of the encounter which we translate to age of patient.
+   * @return Recommended time between Wellness Visits in milliseconds
+   */
   public long recommendedTimeBetweenWellnessVisits(Person person, long time) {
     int ageInYears = person.ageInYears(time);
+    boolean hasChronicMeds = !person.chronicMedications.isEmpty();
+
+    long interval; // return variable
+
     if (ageInYears <= 3) {
       int ageInMonths = person.ageInMonths(time);
       if (ageInMonths <= 1) {
-        return Utilities.convertTime("months", 1);
+        interval = Utilities.convertTime("months", 1);
       } else if (ageInMonths <= 5) {
-        return Utilities.convertTime("months", 2);
+        interval = Utilities.convertTime("months", 2);
       } else if (ageInMonths <= 17) {
-        return Utilities.convertTime("months", 3);
+        interval = Utilities.convertTime("months", 3);
       } else {
-        return Utilities.convertTime("months", 6);
+        interval = Utilities.convertTime("months", 6);
       }
     } else if (ageInYears <= 19) {
-      return Utilities.convertTime("years", 1);
+      interval = Utilities.convertTime("years", 1);
     } else if (ageInYears <= 39) {
-      return Utilities.convertTime("years", 3);
+      interval = Utilities.convertTime("years", 3);
     } else if (ageInYears <= 49) {
-      return Utilities.convertTime("years", 2);
+      interval = Utilities.convertTime("years", 2);
     } else {
-      return Utilities.convertTime("years", 1);
+      interval = Utilities.convertTime("years", 1);
     }
+
+    // If the patients has chronic medications, they need to see their
+    // provider at least once a year to get their medications renewed.
+    // TODO: In the future, we need even more frequent wellness encounters
+    // by condition: e.g. Diabetes every 3 months or 6 month; but
+    // Contraception every 1 year.
+    if (hasChronicMeds && interval > Utilities.convertTime("years", 1)) {
+      interval = Utilities.convertTime("years", 1);
+    }
+
+    return interval;
   }
 
   public void endWellnessEncounter(Person person, long time) {

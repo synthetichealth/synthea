@@ -7,7 +7,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 399208008,3805.29,7610.58,15221.16,Plain chest X-ray (procedure)
 269911007,3048.51,6097.0171,12194.03,Sputum examination (procedure)
 73761001,5856.40,11712.80115,23425.60,Colonoscopy
-1015401000000100,3048.51,6097.0171,12194.03,Fecal occult blood test
+104435004,3048.51,6097.0171,12194.03,Screening for occult blood in feces (procedure)
 274031008,5062.49,10124.97792,20249.96,Rectal polypectomy
 76164006,5856.40,11712.80115,23425.60,Biopsy of colon
 43075005,11874.36,23748.71475,47497.43,Partial resection of colon
@@ -38,7 +38,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 432231006,7753.63,15507.25552,31014.51,Fine needle aspiration biopsy of lung (procedure)
 173160006,4245.28,8490.5551,16981.11,Diagnostic fiberoptic bronchoscopy (procedure)
 698354004,5103.68,10207.35977,20414.72,Magnetic resonance imaging for measurement of brain volume (procedure)
-428191000124101,250.00,500,1000.00,Documentation of current medications
+430193006,250.00,500,1000.00,Medication Reconciliation (procedure)
 180030006,10671.22,21342.44596,42684.89,Amputation of right foot
 79733001,10671.22,21342.44596,42684.89,Amputation of right leg
 46028000,10671.22,21342.44596,42684.89,"Amputation of right hand -- data only has ""amputation of lower extremity; assume the same for upper"
@@ -96,3 +96,5 @@ CODE,MIN,MODE,MAX,COMMENTS
 49436004,13027.20,26054.39635,52108.79,Atrial Fibrillation
 433112001,10387.93,20775.85873,41551.72,Percutaneous mechanical thrombectomy of portal vein using fluoroscopic guidance
 415070008,10727.40,21454.79933,42909.60,Percutaneous coronary intervention
+40701008,400.00,1000.0,2000.00,Echocardiography (procedure)
+434158009,400.00,1000.0,2000.00,Transthoracic three dimensional ultrasonography of heart (procedure)

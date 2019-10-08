@@ -694,6 +694,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 2,
         "high": 6
       },

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -22,6 +23,7 @@ import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.PhysiologyValueGenerator;
 import org.mitre.synthea.helpers.RandomCollection;
+import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.BloodPressureValueGenerator.SysDias;
@@ -35,6 +37,8 @@ import org.mitre.synthea.world.geography.Location;
 public final class LifecycleModule extends Module {
   @SuppressWarnings("rawtypes")
   private static final Map growthChart = loadGrowthChart();
+  private static final List<LinkedHashMap<String, String>> weightForLengthChart =
+      loadWeightForLengthChart();
   private static final String AGE = "AGE";
   private static final String AGE_MONTHS = "AGE_MONTHS";
   public static final String QUIT_SMOKING_PROBABILITY = "quit smoking probability";
@@ -63,6 +67,18 @@ public final class LifecycleModule extends Module {
       return g.fromJson(json, HashMap.class);
     } catch (Exception e) {
       System.err.println("ERROR: unable to load json: " + filename);
+      e.printStackTrace();
+      throw new ExceptionInInitializerError(e);
+    }
+  }
+
+  private static List<LinkedHashMap<String, String>> loadWeightForLengthChart() {
+    String filename = "cdc_wtleninf.csv";
+    try {
+      String data = Utilities.readResource(filename);
+      return SimpleCSV.parse(data);
+    } catch (Exception e) {
+      System.err.println("ERROR: unable to load csv: " + filename);
       e.printStackTrace();
       throw new ExceptionInInitializerError(e);
     }
@@ -453,11 +469,15 @@ public final class LifecycleModule extends Module {
     double bmi = bmi(height, weight);
     person.setVitalSign(VitalSign.BMI, bmi);
 
+    if (age <= 3) {
+      setCurrentWeightForLengthPercentile(person, time);
+    }
+
     if (age >= 2 && age < 20) {
       int ageInMonths = person.ageInMonths(time);
       String gender = (String) person.attributes.get(Person.GENDER);
       double percentile = percentileForBMI(bmi, gender, ageInMonths);
-      person.attributes.put(Person.BMI_PERCENTILE, percentile);
+      person.attributes.put(Person.BMI_PERCENTILE, percentile * 100.0);
     }
   }
 
@@ -605,6 +625,39 @@ public final class LifecycleModule extends Module {
 
   public static double bmi(double heightCM, double weightKG) {
     return (weightKG / ((heightCM / 100.0) * (heightCM / 100.0)));
+  }
+
+  /**
+   * If the person is 36 months old or less, then the "weight for length"
+   * percentile attribute is set. Otherwise, it is removed.
+   *
+   * @param person The person.
+   * @param time The time during the simulation.
+   */
+  public static void setCurrentWeightForLengthPercentile(Person person, long time) {
+    if (person.ageInMonths(time) <= 36) {
+      double height = person.getVitalSign(VitalSign.HEIGHT, time);
+      double weight = person.getVitalSign(VitalSign.WEIGHT, time);
+      String gender = (String) person.attributes.get(Person.GENDER);
+      LinkedHashMap<String, String> entry = null;
+      for (LinkedHashMap<String, String> row : weightForLengthChart) {
+        if (row.get("Sex").equals(gender)
+            && height < Double.parseDouble(row.get("Length"))) {
+          entry = row;
+          break;
+        }
+      }
+      if (entry == null) {
+        person.attributes.put(Person.CURRENT_WEIGHT_LENGTH_PERCENTILE, 99.0);
+      } else {
+        double l = Double.parseDouble(entry.get("L"));
+        double m = Double.parseDouble(entry.get("M"));
+        double s = Double.parseDouble(entry.get("S"));
+        double z = zscoreForValue(weight, l, m, s);
+        double percentile = zscoreToPercentile(z) * 100.0;
+        person.attributes.put(Person.CURRENT_WEIGHT_LENGTH_PERCENTILE, percentile);
+      }
+    }
   }
 
   /**

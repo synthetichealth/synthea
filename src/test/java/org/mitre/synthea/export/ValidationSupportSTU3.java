@@ -28,8 +28,8 @@ import org.hl7.fhir.utilities.validation.ValidationMessage.IssueSeverity;
  * ValidationSupport provides implementation guide profiles (i.e. StructureDefinitions)
  * to the FHIR validation process. This class does not provide ValueSet expansion.
  */
-public class ValidationSupport implements IValidationSupport {
-  private static String profileDir = "structureDefinitions";
+public class ValidationSupportSTU3 implements IValidationSupport {
+  private static String profileDir = "structureDefinitions/stu3";
 
   private List<IBaseResource> resources;
   private Map<String, IBaseResource> resourcesMap;
@@ -40,7 +40,7 @@ public class ValidationSupport implements IValidationSupport {
   /**
    * Defines the custom validation support for various implementation guides.
    */
-  public ValidationSupport() {
+  public ValidationSupportSTU3() {
     resources = new ArrayList<IBaseResource>();
     resourcesMap = new HashMap<String, IBaseResource>();
     definitions = new ArrayList<StructureDefinition>();
@@ -159,5 +159,36 @@ public class ValidationSupport implements IValidationSupport {
     }
 
     return new CodeValidationResult(severity, message);
+  }
+
+  @Override
+  public LookupCodeResult lookupCode(FhirContext theContext, String theSystem, String theCode) {
+    if (isCodeSystemSupported(theContext, theSystem)) {
+      LookupCodeResult result = new LookupCodeResult();
+      result.setSearchedForSystem(theSystem);
+      result.setSearchedForCode(theCode);
+      result.setFound(false);
+
+      CodeSystem cs = codeSystemMap.get(theSystem);
+      for (ConceptDefinitionComponent def : cs.getConcept()) {
+        if (def.getCode().equals(theCode)) {
+          result.setCodeDisplay(def.getDisplay());
+          result.setFound(true);
+          return result;
+        }
+      }
+    }
+    return LookupCodeResult.notFound(theSystem, theCode);
+  }
+
+  @Override
+  public ValueSet fetchValueSet(FhirContext theContext, String uri) {
+    return (ValueSet) resourcesMap.get(uri);
+  }
+
+  @Override
+  public StructureDefinition generateSnapshot(
+      StructureDefinition theInput, String theUrl, String theName) {
+    return null;
   }
 }

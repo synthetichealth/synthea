@@ -22,6 +22,11 @@ public abstract class Components {
      * Maximum value of the range.
      */
     public R high;
+    
+    /**
+     * Decimal places for value within the range.
+     */
+    public Integer decimals;
   }
   
   /**

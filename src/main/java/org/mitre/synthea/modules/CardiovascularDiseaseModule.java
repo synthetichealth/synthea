@@ -20,6 +20,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+
 import org.mitre.synthea.world.concepts.VitalSign;
 
 public final class CardiovascularDiseaseModule extends Module {
@@ -221,6 +222,16 @@ public final class CardiovascularDiseaseModule extends Module {
         "Percutaneous mechanical thrombectomy of portal vein using fluoroscopic guidance"));
     LOOKUP.put("electrical_cardioversion",
         new Code("SNOMED-CT", "180325003", "Electrical cardioversion"));
+    LOOKUP.put("echocardiogram",
+        new Code("SNOMED-CT", "40701008", "Echocardiography (procedure)"));
+
+    // devices
+    LOOKUP.put("defibrillator",
+        new Code("SNOMED-CT", "72506001", "Implantable defibrillator, device (physical object)"));
+    LOOKUP.put("stent",
+        new Code("SNOMED-CT", "705643001", "Coronary artery stent (physical object)"));
+    LOOKUP.put("pacemaker",
+        new Code("SNOMED-CT", "706004007", "Implantable cardiac pacemaker (physical object)"));
 
     // medications
     LOOKUP.put("clopidogrel", new Code("RxNorm", "309362", "Clopidogrel 75 MG Oral Tablet"));
@@ -406,7 +417,7 @@ public final class CardiovascularDiseaseModule extends Module {
     if (person.rand() < cardiacEventChance) {
       String cardiacEvent;
 
-      // Proportion of coronary attacks that are MI ,given history of CHD
+      // Proportion of coronary attacks that are MI, given history of CHD
       if (person.rand() < 0.8) {
         cardiacEvent = "myocardial_infarction";
       } else {
@@ -416,8 +427,6 @@ public final class CardiovascularDiseaseModule extends Module {
       // Make sure the Emergency Encounter has started...
       Code code = LOOKUP.get(cardiacEvent);
       beginOrContinueEmergency(person, time, code);
-      Entry entry = person.record.conditionStart(time, code.code);
-      entry.codes.add(code);
       performEmergency(person, time, cardiacEvent);
 
       double survivalRate = 0.095; // http://cpr.heart.org/AHAECC/CPRAndECC/General/UCM_477263_Cardiac-Arrest-Statistics.jsp
@@ -453,8 +462,6 @@ public final class CardiovascularDiseaseModule extends Module {
       // Make sure the Emergency Encounter has started...
       Code code = LOOKUP.get("cardiac_arrest");
       beginOrContinueEmergency(person, time, code);
-      Entry entry = person.record.conditionStart(time, code.code);
-      entry.codes.add(code);
       performEmergency(person, time, "cardiac_arrest");
 
       double survivalRate = 1 - (0.00069);
@@ -663,8 +670,6 @@ public final class CardiovascularDiseaseModule extends Module {
       // Make sure the Emergency Encounter has started...
       Code code = LOOKUP.get("stroke");
       beginOrContinueEmergency(person, time, code);
-      Entry entry = person.record.conditionStart(time, code.code);
-      entry.codes.add(code);
       performEmergency(person, time, "stroke");
       person.attributes.put("stroke_history", true);
 
@@ -688,7 +693,7 @@ public final class CardiovascularDiseaseModule extends Module {
 
     if ((Boolean) person.attributes.getOrDefault("coronary_heart_disease", false)) {
       for (String med : meds) {
-        prescribeMedication(med, person, time);
+        prescribeMedication(med, person, time, true);
       }
     } else {
       for (String med : meds) {
@@ -710,7 +715,7 @@ public final class CardiovascularDiseaseModule extends Module {
 
     if ((Boolean) person.attributes.getOrDefault("atrial_fibrillation", false)) {
       for (String med : meds) {
-        prescribeMedication(med, person, time);
+        prescribeMedication(med, person, time, true);
       }
 
       // catheter ablation is a more extreme measure than electrical cardioversion and is usually
@@ -726,6 +731,13 @@ public final class CardiovascularDiseaseModule extends Module {
       procedure.codes.add(code);
       procedure.reasons.add(LOOKUP.get("atrial_fibrillation"));
 
+      if (afibProcedure.equals("catheter_ablation") && person.rand() <= 0.1) {
+        // 10.0% chance the patient will receive a pacemaker.
+        if (!person.record.present.containsKey("pacemaker")) {
+          Entry device = person.record.deviceImplant(time, "pacemaker");
+          device.codes.add(LOOKUP.get("pacemaker"));
+        }
+      }
       // increment number of procedures by respective hospital
       Encounter encounter = (Encounter) person.attributes.get(CVD_ENCOUNTER);
       if (encounter != null) {
@@ -739,8 +751,8 @@ public final class CardiovascularDiseaseModule extends Module {
     }
   }
 
-  private static void prescribeMedication(String med, Person person, long time) {
-    Medication entry = person.record.medicationStart(time, med);
+  private static void prescribeMedication(String med, Person person, long time, boolean chronic) {
+    Medication entry = person.record.medicationStart(time, med, chronic);
     entry.codes.add(LOOKUP.get(med));
     // increment number of prescriptions prescribed
     Encounter encounter = (Encounter) person.attributes.get(CVD_ENCOUNTER);
@@ -807,16 +819,34 @@ public final class CardiovascularDiseaseModule extends Module {
     condition.codes.add(LOOKUP.get(diagnosis));
 
     for (String med : filter_meds_by_year(EMERGENCY_MEDS.get(diagnosis), time)) {
-      prescribeMedication(med, person, time);
+      prescribeMedication(med, person, time, false);
       person.record.medicationEnd(time + TimeUnit.MINUTES.toMillis(15), med,
           LOOKUP.get("stop_drug"));
     }
 
+    // In these type of emergencies, everyone gets an echocardiogram
+    Procedure procedure = person.record.procedure(time, "echocardiogram");
+    procedure.name = "Echocardiogram";
+    procedure.codes.add(LOOKUP.get("echocardiogram"));
+    procedure.reasons.add(LOOKUP.get(diagnosis));
+
     for (String proc : EMERGENCY_PROCEDURES.get(diagnosis)) {
-      Procedure procedure = person.record.procedure(time, proc);
+      procedure = person.record.procedure(time, proc);
       procedure.name = "Cardiovascular Disease Emergency";
       procedure.codes.add(LOOKUP.get(proc));
       procedure.reasons.add(LOOKUP.get(diagnosis));
+
+      if (proc.equals("implant_cardioverter_defib")) {
+        if (!person.record.present.containsKey("defibrillator")) {
+          Entry device = person.record.deviceImplant(time, "defibrillator");
+          device.codes.add(LOOKUP.get("defibrillator"));
+        }
+      } else if (proc.equals("percutaneous_coronary_intervention")) {
+        if (!person.record.present.containsKey("stent")) {
+          Entry device = person.record.deviceImplant(time, "stent");
+          device.codes.add(LOOKUP.get("stent"));
+        }
+      }
       // increment number of procedures performed by respective hospital
       encounter.provider.incrementProcedures(year);
     }

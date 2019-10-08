@@ -5,8 +5,10 @@ import com.google.gson.JsonObject;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -181,6 +183,7 @@ public class HealthRecord {
     public JsonObject prescriptionDetails;
     public Claim claim;
     public boolean administration;
+    public boolean chronic;
 
     /**
      * Constructor for Medication HealthRecord Entry.
@@ -260,7 +263,7 @@ public class HealthRecord {
       public Code bodySite;
       /**
        * A DICOM acquisition modality code.
-       * 
+       *
        * @see <a href="https://www.hl7.org/fhir/valueset-dicom-cid29.html">DICOM
        *      modality codes</a>
        */
@@ -297,7 +300,7 @@ public class HealthRecord {
       public String title;
       /**
        * A DICOM Service-Object Pair (SOP) class.
-       * 
+       *
        * @see <a href="https://www.dicomlibrary.com/dicom/sop/">DICOM SOP codes</a>
        */
       public Code sopClass;
@@ -310,6 +313,58 @@ public class HealthRecord {
         clone.sopClass = sopClass;
         return clone;
       }
+    }
+  }
+
+  /**
+   * Device is an implantable device such as a coronary stent, artificial knee
+   * or hip, heart pacemaker, or implantable defibrillator.
+   */
+  public class Device extends Entry {
+    /** UDI == Unique Device Identifier. */
+    public String udi;
+    public long manufactureTime;
+    public long expirationTime;
+    public String deviceIdentifier;
+    public String lotNumber;
+    public String serialNumber;
+
+    public Device(long start, String type) {
+      super(start, type);
+    }
+
+    /**
+     * Set the human readable form of the UDI for this Person's device.
+     * @param person The person who owns or contains the device.
+     */
+    public void generateUDI(Person person) {
+      deviceIdentifier = trimLong(person.random.nextLong(), 14);
+      manufactureTime = start - Utilities.convertTime("weeks", 3);
+      expirationTime = start + Utilities.convertTime("years", 25);
+      lotNumber = trimLong(person.random.nextLong(), (int) person.rand(4, 20));
+      serialNumber = trimLong(person.random.nextLong(), (int) person.rand(4, 20));
+
+      udi = "(01)" + deviceIdentifier;
+      udi += "(11)" + udiDate(manufactureTime);
+      udi += "(17)" + udiDate(expirationTime);
+      udi += "(10)" + lotNumber;
+      udi += "(21)" + serialNumber;
+    }
+
+    private String udiDate(long time) {
+      SimpleDateFormat format = new SimpleDateFormat("YYMMdd");
+      return format.format(new Date(time));
+    }
+
+    private String trimLong(Long value, int length) {
+      String retVal = Long.toString(value);
+      if (retVal.startsWith("-")) {
+        retVal = retVal.substring(1);
+      }
+      if (retVal.length() > length) {
+        retVal = retVal.substring(0, length);
+      }
+      return retVal;
     }
   }
 
@@ -326,7 +381,7 @@ public class HealthRecord {
 
     /**
      * Convert the given string into an EncounterType.
-     * 
+     *
      * @param value the string to convert.
      */
     public static EncounterType fromString(String value) {
@@ -362,12 +417,16 @@ public class HealthRecord {
     public List<Medication> medications;
     public List<CarePlan> careplans;
     public List<ImagingStudy> imagingStudies;
+    public List<Device> devices;
     public Claim claim; // for now assume 1 claim per encounter
     public Code reason;
     public Code discharge;
     public Provider provider;
     public Clinician clinician;
     public boolean ended;
+    // Track if we renewed meds at this encounter. Used in State.java encounter state.
+    public boolean chronicMedsRenewed;
+    public String clinicalNote;
 
     public Encounter(long time, String type) {
       super(time, type);
@@ -382,6 +441,7 @@ public class HealthRecord {
         this.stop = this.start + TimeUnit.MINUTES.toMillis(15);
       }
       ended = false;
+      chronicMedsRenewed = false;
       observations = new ArrayList<Observation>();
       reports = new ArrayList<Report>();
       conditions = new ArrayList<Entry>();
@@ -391,6 +451,7 @@ public class HealthRecord {
       medications = new ArrayList<Medication>();
       careplans = new ArrayList<CarePlan>();
       imagingStudies = new ArrayList<ImagingStudy>();
+      devices = new ArrayList<Device>();
       this.claim = new Claim(this, person);
     }
   }
@@ -578,6 +639,33 @@ public class HealthRecord {
     return procedure;
   }
 
+  /**
+   * Implant or assign a device to this patient.
+   * @param time The time the device is implanted or assigned.
+   * @param type The type of device.
+   * @return The device entry.
+   */
+  public Device deviceImplant(long time, String type) {
+    Device device = new Device(time, type);
+    device.generateUDI(person);
+    Encounter encounter = currentEncounter(time);
+    encounter.devices.add(device);
+    present.put(type, device);
+    return device;
+  }
+
+  /**
+   * Remove a device from the patient.
+   * @param time The time the device is removed.
+   * @param type The type of device.
+   */
+  public void deviceRemove(long time, String type) {
+    if (present.containsKey(type)) {
+      present.get(type).stop = time;
+      present.remove(type);
+    }
+  }
+
   public Report report(long time, String type, int numberOfObservations) {
     Encounter encounter = currentEncounter(time);
     List<Observation> observations = new ArrayList<Observation>();
@@ -596,7 +684,7 @@ public class HealthRecord {
 
   /**
    * Starts an encounter of the given type at the given time.
-   * 
+   *
    * @param time the start time of the encounter.
    * @param type the type of the encounter.
    * @return
@@ -609,7 +697,7 @@ public class HealthRecord {
 
   /**
    * Ends an encounter.
-   * 
+   *
    * @param time the end time of the encounter.
    * @param type the type of the encounter.
    */
@@ -648,15 +736,22 @@ public class HealthRecord {
     return immunization;
   }
 
-  public Medication medicationStart(long time, String type) {
+  public Medication medicationStart(long time, String type, boolean chronic) {
     Medication medication;
     if (!present.containsKey(type)) {
       medication = new Medication(time, type);
+      medication.chronic = chronic;
       currentEncounter(time).medications.add(medication);
       present.put(type, medication);
     } else {
       medication = (Medication) present.get(type);
     }
+
+    // Add Chronic Medications to Map
+    if (chronic) {
+      person.chronicMedications.put(type, medication);
+    }
+
     return medication;
   }
 
@@ -665,6 +760,9 @@ public class HealthRecord {
       Medication medication = (Medication) present.get(type);
       medication.stop = time;
       medication.stopReason = reason;
+
+      chronicMedicationEnd(type);
+
       // Update Costs/Claim infomation.
       medication.determineCost();
       medication.claim.assignCosts();
@@ -685,7 +783,19 @@ public class HealthRecord {
     if (medication != null) {
       medication.stop = time;
       medication.stopReason = reason;
+      chronicMedicationEnd(medication.type);
       present.remove(medication.type);
+    }
+  }
+
+  /**
+   * Remove Chronic Medication if stopped medication is a Chronic Medication.
+   *
+   * @param Primary code (RxNorm) for the medication.
+   */
+  private void chronicMedicationEnd(String type) {
+    if (person.chronicMedications.containsKey(type)) {
+      person.chronicMedications.remove(type);
     }
   }
 
@@ -746,7 +856,7 @@ public class HealthRecord {
   /**
    * Assigns random DICOM UIDs to each Series and Instance in an imaging study
    * after creation.
-   * 
+   *
    * @param study the ImagingStudy to populate with DICOM UIDs.
    */
   private void assignImagingStudyDicomUids(ImagingStudy study) {
