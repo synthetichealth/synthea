@@ -65,6 +65,7 @@ public class PhysiologySimulator {
   private static final Map<String, Class<?>> SOLVER_CLASSES;
   private static Map<String, Model> MODEL_CACHE;
   private static Path SBML_PATH;
+  private static Path OUTPUT_PATH = Paths.get("output", "physiology");
   
   private final Model model;
   private final SBMLinterpreter interpreter;
@@ -296,6 +297,22 @@ public class PhysiologySimulator {
     
     // Initialize our model cache
     MODEL_CACHE = new HashMap<String, Model>();
+  }
+  
+  /**
+   * Sets the path to search for SBML model files.
+   * @param newPath new path to use
+   */
+  public static void setModelsPath(Path newPath) {
+    SBML_PATH = newPath;
+  }
+  
+  /**
+   * Sets the path to place main simulation results in.
+   * @param newPath new path to use
+   */
+  public static void setOutputPath(Path newPath) {
+    OUTPUT_PATH = newPath;
   }
 
   /**
@@ -637,9 +654,8 @@ public class PhysiologySimulator {
   /**
    * Executes a physiology simulation according to a given configuration file.
    * @param args command line arguments
-   * @throws DerivativeException Error while solving differential equations
    */
-  public static void main(String [] args) throws DerivativeException {
+  public static void main(String [] args) {
 
     if (args.length < 1 || args[0].isEmpty()) {
       System.out.println("YAML simulation configuration file path must be provided.");
@@ -685,12 +701,13 @@ public class PhysiologySimulator {
     );
     
     // Create the output directory if it doesn't already exist
-    Path outputDir = Paths.get("output", "physiology", config.getName());
+    Path outputDir = Paths.get(OUTPUT_PATH.toString(), config.getName());
     if (Files.notExists(outputDir)) {
       try {
         Files.createDirectories(outputDir);
       } catch (IOException ex) {
         System.out.println("Unable to write output directory. Check user permissions.");
+        throw new RuntimeException(ex);
       }
     }
     

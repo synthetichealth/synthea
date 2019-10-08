@@ -5,13 +5,21 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.Lists;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.math.ode.DerivativeException;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.simulator.math.odes.MultiTable;
 import org.simulator.math.odes.MultiTable.Block.Column;
 
@@ -73,5 +81,44 @@ public class PhysiologySimulatorTest {
     } catch (DerivativeException ex) {
       throw new RuntimeException(ex);
     }
+  }
+  
+  @Test
+  public void testPhysiologyMain() throws DerivativeException, URISyntaxException, IOException {
+    ClassLoader loader = getClass().getClassLoader();
+    Path configPath = Paths.get(loader.getResource("config/simulations/Smith2004_CVS.yml").toURI());
+    Path modelFolder = Paths.get(loader.getResource("physiology/models").toURI());
+    TemporaryFolder outFolder = new TemporaryFolder();
+    
+    // Create our temporary output directory
+    outFolder.create();
+    
+    // Set test paths for our PhysiologySimulator to use
+    PhysiologySimulator.setModelsPath(modelFolder);
+    PhysiologySimulator.setOutputPath(outFolder.getRoot().toPath());
+    
+    String[] args = {configPath.toAbsolutePath().toString()};
+    PhysiologySimulator.main(args);
+    
+    // Path to the folder the main function should have created
+    Path testOut = Paths.get(outFolder.getRoot().getAbsolutePath(), "Smith2004_CVS");
+    
+    assertTrue("output folder created", testOut.toFile().exists());
+    
+    // Verify that the output folder contains the csv file
+    File csvFile = Paths.get(testOut.toString(), "Smith2004_CVS.csv").toFile();
+    
+    assertTrue("csv file exported", csvFile.exists());
+    assertTrue("non-empty csv file", csvFile.length() > 0);
+    
+    // Verify that the 4 images have written successfully
+    int pngCount = 0;
+    for (File file : testOut.toFile().listFiles()) {
+      if (FilenameUtils.getExtension(file.getPath()).equals("png")) {
+        pngCount++;
+      }
+    }
+    
+    assertEquals(4, pngCount);
   }
 }
