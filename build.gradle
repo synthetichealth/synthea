@@ -113,6 +113,27 @@ task graphviz(type: JavaExec) {
   main = "Graphviz"
 }
 
+task uberJar(type: Jar) {
+    def versionFile = new File("$projectDir/src/main/resources/version.txt")
+    def versionText = "N/A"
+    if (versionFile.exists()) {
+      versionText = versionFile.text.trim()
+    }
+    manifest {
+        attributes(
+            'Main-Class'     : 'App',
+            'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+            'Build-Version'  : versionText,
+            'Created-By'     : "Gradle ${gradle.gradleVersion}",
+            'Build-Jdk'      : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+            'Build-OS'       : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
+        )
+    }
+    baseName = 'synthea-with-dependencies'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 task concepts(type: JavaExec) {
   group 'Application'
   description 'Create a list of simulated concepts'
@@ -151,6 +172,7 @@ task versionTxt() {
 }
 
 compileJava.dependsOn versionTxt
+uberJar.dependsOn versionTxt
 
 task cleanOutput {
   doLast {
