@@ -23,8 +23,6 @@ import org.mitre.synthea.world.concepts.VitalSign;
 public class PhysiologyValueGeneratorTest {
   
   private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-  public static Path modelsFolder;
-  public static Path generatorsFolder;
   
   long dateToSimTime(String dateStr) {
     try {
@@ -32,19 +30,6 @@ public class PhysiologyValueGeneratorTest {
     } catch (ParseException e) {
       throw new RuntimeException(e);
     }
-  }
-  
-  /**
-   * Sets up classes with the test file paths.
-   * @throws URISyntaxException when test paths are badly formed
-   */
-  @Before
-  public void setupTestPaths() throws URISyntaxException {
-    ClassLoader loader = getClass().getClassLoader();
-    modelsFolder = Paths.get(loader.getResource("physiology/models").toURI());
-    generatorsFolder = Paths.get(loader.getResource("physiology/generators").toURI());
-    PhysiologySimulator.setModelsPath(modelsFolder);
-    PhysiologyValueGenerator.setGeneratorsPath(generatorsFolder);
   }
   
   @Test
@@ -59,7 +44,7 @@ public class PhysiologyValueGeneratorTest {
     person.setVitalSign(VitalSign.BMI, 22.0);
     
     PhysiologyGeneratorConfig config = PhysiologyValueGenerator.getConfig(
-        "circulation_hemodynamics_test.yml");
+        "circulation_hemodynamics.yml");
     
     // Don't use pre generators so the model will run initially
     config.setUsePreGenerators(false);
@@ -119,7 +104,7 @@ public class PhysiologyValueGeneratorTest {
     person.setVitalSign(VitalSign.BMI, 22.0);
     
     PhysiologyGeneratorConfig config = PhysiologyValueGenerator.getConfig(
-        "circulation_hemodynamics_test.yml");
+        "circulation_hemodynamics.yml");
     
     List<PhysiologyValueGenerator> generators = PhysiologyValueGenerator.fromConfig(config, person);
     
@@ -158,13 +143,13 @@ public class PhysiologyValueGeneratorTest {
     person.setVitalSign(VitalSign.BMI, 22.0);
     
     PhysiologyGeneratorConfig config = PhysiologyValueGenerator.getConfig(
-        "circulation_hemodynamics_test.yml");
+        "circulation_hemodynamics.yml");
     
     // Get the generator for systolic BP
     PhysiologyValueGenerator generator = new PhysiologyValueGenerator(config,
         VitalSign.SYSTOLIC_BLOOD_PRESSURE, person, 0.0);
     
-    assertEquals("PhysiologyValueGenerator {model=circulation/Smith2004_CVS_human_test.xml, "
+    assertEquals("PhysiologyValueGenerator {model=circulation/Smith2004_CVS_human.xml, "
         + "VitalSigns=[LVEF, SYSTOLIC_BLOOD_PRESSURE, DIASTOLIC_BLOOD_PRESSURE], "
         + "Attributes=[Arterial Pressure Values]}", generator.toString());
   }

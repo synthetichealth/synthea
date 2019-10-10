@@ -28,26 +28,16 @@ import org.simulator.math.odes.MultiTable.Block.Column;
 public class PhysiologySimulatorTest {
   
   public static final TemporaryFolder outFolder = new TemporaryFolder();
-  public static Path modelFolder;
-  public static Path configPath;
   
   /**
-   * Sets up test file paths.
+   * Sets up a temporary output folder.
    * @throws URISyntaxException when the paths are badly formed
    * @throws IOException when the output folder cannot be created
    */
   @Before
   public void setupTestPaths() throws URISyntaxException, IOException {
-    ClassLoader loader = getClass().getClassLoader();
-    modelFolder = Paths.get(loader.getResource("physiology/models").toURI());
-    configPath = Paths.get(getClass().getClassLoader()
-        .getResource("config/simulations/Smith2004_CVS_test.yml").toURI());
-    
     // Create our temporary output directory
     outFolder.create();
-    
-    // Set test paths for our PhysiologySimulator to use
-    PhysiologySimulator.setModelsPath(modelFolder);
     PhysiologySimulator.setOutputPath(outFolder.getRoot().toPath());
   }
 
@@ -56,7 +46,7 @@ public class PhysiologySimulatorTest {
     try {
       
       PhysiologySimulator physio = new PhysiologySimulator(
-          "circulation/Smith2004_CVS_human_test.xml", "runge_kutta", 0.01, 4);
+          "circulation/Smith2004_CVS_human.xml", "runge_kutta", 0.01, 4);
       
       // Ensure we can get parameters. Check a couple
       List<String> params = physio.getParameters();
