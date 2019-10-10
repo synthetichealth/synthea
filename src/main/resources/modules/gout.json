@@ -282,6 +282,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 4,
         "high": 8
       },

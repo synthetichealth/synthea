@@ -46,7 +46,7 @@ public class Clinician implements Serializable, QuadTreeData {
   public long populationSeed;
 
   /**
-   * Create a new clinician
+   * Create a new clinician.
    * @param clinicianSeed The seed for this clinician.
    * @param clinicianRand The random number generator to use for this clinician.
    * @param identifier The clinician's organizational unique identifier.

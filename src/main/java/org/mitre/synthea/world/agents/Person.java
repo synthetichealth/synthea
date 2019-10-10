@@ -1,6 +1,8 @@
 package org.mitre.synthea.world.agents;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
@@ -31,6 +33,7 @@ import org.mitre.synthea.world.concepts.VitalSign;
 
 public class Person implements Serializable, QuadTreeData {
   private static final long serialVersionUID = 4322116644425686379L;
+  private static final ZoneId timeZone = ZoneId.systemDefault();
 
   public static final String BIRTHDATE = "birthdate";
   public static final String DEATHDATE = "deathdate";
@@ -88,6 +91,7 @@ public class Person implements Serializable, QuadTreeData {
   public Map<VitalSign, ValueGenerator> vitalSigns;
   private Map<String, Map<String, Integer>> symptoms;
   private Map<String, Map<String, Boolean>> symptomStatuses;
+  public Map<String, HealthRecord.Medication> chronicMedications;
   /** the active health record. */
   public HealthRecord record;
   public Map<String, HealthRecord> records;
@@ -114,6 +118,8 @@ public class Person implements Serializable, QuadTreeData {
     vitalSigns = new ConcurrentHashMap<VitalSign, ValueGenerator>();
     symptoms = new ConcurrentHashMap<String, Map<String, Integer>>();
     symptomStatuses = new ConcurrentHashMap<String, Map<String, Boolean>>();
+    /* Chronic Medications which will be renewed at each Wellness Encounter */
+    chronicMedications = new ConcurrentHashMap<String, HealthRecord.Medication>();
     hasMultipleRecords =
         Boolean.parseBoolean(Config.get("exporter.split_records", "false"));
     if (hasMultipleRecords) {
@@ -135,10 +141,22 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
-   * Retuns a random double in the given range.
+   * Returns a random double in the given range.
    */
   public double rand(double low, double high) {
     return (low + ((high - low) * random.nextDouble()));
+  }
+
+  /**
+   * Returns a random double in the given range with no more that the specified
+   * number of decimal places.
+   */
+  public double rand(double low, double high, Integer decimals) {
+    double value = rand(low, high);
+    if (decimals != null) {
+      value = BigDecimal.valueOf(value).setScale(decimals, RoundingMode.HALF_UP).doubleValue();
+    }
+    return value;
   }
 
   /**
@@ -214,9 +232,9 @@ public class Person implements Serializable, QuadTreeData {
     Period age = Period.ZERO;
 
     if (attributes.containsKey(BIRTHDATE)) {
-      LocalDate now = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
+      LocalDate now = Instant.ofEpochMilli(time).atZone(timeZone).toLocalDate();
       LocalDate birthdate = Instant.ofEpochMilli((long) attributes.get(BIRTHDATE))
-          .atZone(ZoneId.systemDefault()).toLocalDate();
+          .atZone(timeZone).toLocalDate();
       age = Period.between(birthdate, now);
     }
     return age;
@@ -325,7 +343,21 @@ public class Person implements Serializable, QuadTreeData {
       throw new NullPointerException(
           "Vital sign '" + vitalSign + "' not set. Valid vital signs: " + vitalSigns.keySet());
     }
-    return valueGenerator.getValue(time);
+    double value = valueGenerator.getValue(time);
+    int decimalPlaces;
+    switch (vitalSign) {
+      case DIASTOLIC_BLOOD_PRESSURE:
+      case SYSTOLIC_BLOOD_PRESSURE:
+        decimalPlaces = 0;
+        break;
+      case HEIGHT:
+      case WEIGHT:
+        decimalPlaces = 1;
+        break;
+      default:
+        decimalPlaces = 2;
+    }
+    return BigDecimal.valueOf(value).setScale(decimalPlaces, RoundingMode.HALF_UP).doubleValue();
   }
 
   public void setVitalSign(VitalSign vitalSign, ValueGenerator valueGenerator) {

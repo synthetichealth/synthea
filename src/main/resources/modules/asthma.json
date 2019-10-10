@@ -166,7 +166,7 @@
       ],
       "direct_transition": "Asthma_Symptom1"
     },
-     "Asthma_Symptom1": {
+    "Asthma_Symptom1": {
       "type": "Symptom",
       "symptom": "Wheezing",
       "range": {
@@ -245,7 +245,8 @@
       "prescription": {
         "as_needed": true
       },
-      "direct_transition": "Prescribe_Emergency_Inhaler"
+      "direct_transition": "Prescribe_Emergency_Inhaler",
+      "chronic": true
     },
     "Prescribe_Emergency_Inhaler": {
       "type": "MedicationOrder",
@@ -260,7 +261,8 @@
       "prescription": {
         "as_needed": true
       },
-      "direct_transition": "Asthma_CarePlan_Selector"
+      "direct_transition": "Asthma_CarePlan_Selector",
+      "chronic": true
     },
     "Asthma_CarePlan_Selector": {
       "type": "Simple",
@@ -550,7 +552,7 @@
       },
       "direct_transition": "Asthma_Symptom2_Ends"
     },
-     "Asthma_Symptom2_Ends": {
+    "Asthma_Symptom2_Ends": {
       "type": "Symptom",
       "symptom": "Shortness of Breath",
       "exact": {
@@ -558,7 +560,7 @@
       },
       "direct_transition": "Asthma_Symptom3_Ends"
     },
-     "Asthma_Symptom3_Ends": {
+    "Asthma_Symptom3_Ends": {
       "type": "Symptom",
       "symptom": "Chest Pressure",
       "exact": {
@@ -566,7 +568,7 @@
       },
       "direct_transition": "Asthma_Symptom4_Ends"
     },
-     "Asthma_Symptom4_Ends": {
+    "Asthma_Symptom4_Ends": {
       "type": "Symptom",
       "symptom": "Cough",
       "exact": {
@@ -574,7 +576,7 @@
       },
       "direct_transition": "Asthma_Symptom5_Ends"
     },
-     "Asthma_Symptom5_Ends": {
+    "Asthma_Symptom5_Ends": {
       "type": "Symptom",
       "symptom": "Nasal Congestion",
       "exact": {
@@ -582,7 +584,7 @@
       },
       "direct_transition": "Asthma_Symptom6_Ends"
     },
-     "Asthma_Symptom6_Ends": {
+    "Asthma_Symptom6_Ends": {
       "type": "Symptom",
       "symptom": "Mucus Secretion",
       "exact": {

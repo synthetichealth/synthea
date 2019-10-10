@@ -1,5 +1,6 @@
 package org.mitre.synthea.engine;
 
+import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,6 +55,7 @@ public class Generator {
   private boolean onlyVeterans;
   public TransitionMetrics metrics;
   public static final String DEFAULT_STATE = "Massachusetts";
+  private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
 
   /**
    * Used only for testing and debugging. Populate this field to keep track of all patients
@@ -67,7 +69,7 @@ public class Generator {
    * module. Use "-m filename" on the command line to filter which modules get loaded.
    */
   Predicate<String> modulePredicate;
-
+  
   private static final String TARGET_AGE = "target_age";
 
   /**
@@ -91,6 +93,9 @@ public class Generator {
     public int maxAge = 140;
     public String city;
     public String state;
+    /** When Synthea is used as a standalone library, this directory holds
+     * any locally created modules. */
+    public File localModuleDir; 
     public List<String> enabledModules;
   }
   
@@ -98,7 +103,7 @@ public class Generator {
    * Create a Generator, using all default settings.
    */
   public Generator() {
-    this(new GeneratorOptions());
+    this(new GeneratorOptions(), new Exporter.ExporterRuntimeOptions());
   }
 
   /**
@@ -108,9 +113,9 @@ public class Generator {
    * @param population Target population size
    */
   public Generator(int population) {
-    GeneratorOptions options = new GeneratorOptions();
+    this(new GeneratorOptions(), new Exporter.ExporterRuntimeOptions());
     options.population = population;
-    init(options);
+    init();
   }
   
   /**
@@ -121,11 +126,11 @@ public class Generator {
    * @param seed Seed used for randomness
    */
   public Generator(int population, long seed, long clinicianSeed) {
-    GeneratorOptions options = new GeneratorOptions();
+    this(new GeneratorOptions(), new Exporter.ExporterRuntimeOptions());
     options.population = population;
     options.seed = seed;
     options.clinicianSeed = clinicianSeed;
-    init(options);
+    init();
   }
 
   /**
@@ -133,10 +138,23 @@ public class Generator {
    * @param o Desired configuration options
    */
   public Generator(GeneratorOptions o) {
-    init(o);
+    options = o;
+    exporterRuntimeOptions = new Exporter.ExporterRuntimeOptions();
+    init();
+  }
+  
+  /**
+   * Create a Generator, with the given options.
+   * @param o Desired configuration options
+   * @param ero Desired exporter options
+   */
+  public Generator(GeneratorOptions o, Exporter.ExporterRuntimeOptions ero) {
+    options = o;
+    exporterRuntimeOptions = ero;
+    init();
   }
 
-  private void init(GeneratorOptions o) {
+  private void init() {
     String dbType = Config.get("generate.database_type");
 
     switch (dbType) {
@@ -155,20 +173,19 @@ public class Generator {
                 + "' . Valid values are file, in-memory, or none.");
     }
 
-    if (o.state == null) {
-      o.state = DEFAULT_STATE;
+    if (options.state == null) {
+      options.state = DEFAULT_STATE;
     }
-    int stateIndex = Location.getIndex(o.state);
+    int stateIndex = Location.getIndex(options.state);
     if (Boolean.parseBoolean(Config.get("exporter.cdw.export"))) {
       CDWExporter.getInstance().setKeyStart((stateIndex * 1_000_000) + 1);
     }
 
-    this.options = o;
-    this.random = new Random(o.seed);
+    this.random = new Random(options.seed);
     this.timestep = Long.parseLong(Config.get("generate.timestep"));
     this.stop = System.currentTimeMillis();
 
-    this.location = new Location(o.state, o.city);
+    this.location = new Location(options.state, options.city);
 
     this.logLevel = Config.get("generate.log_patients.detail", "simple");
     this.onlyDeadPatients = Boolean.parseBoolean(Config.get("generate.only_dead_patients"));
@@ -190,25 +207,28 @@ public class Generator {
     // Initialize Payers
     Payer.loadPayers(location);
     // ensure modules load early
+    if (options.localModuleDir != null) {
+      Module.addModules(options.localModuleDir);
+    }
     List<String> coreModuleNames = getModuleNames(Module.getModules(path -> false));
     List<String> moduleNames = getModuleNames(Module.getModules(modulePredicate)); 
     Costs.loadCostData(); // ensure cost data loads early
     
     String locationName;
-    if (o.city == null) {
-      locationName = o.state;
+    if (options.city == null) {
+      locationName = options.state;
     } else {
-      locationName = o.city + ", " + o.state;
+      locationName = options.city + ", " + options.state;
     }
     System.out.println("Running with options:");
     System.out.println(String.format("Population: %d\nSeed: %d\nProvider Seed:%d\nLocation: %s",
-        o.population, o.seed, o.clinicianSeed, locationName));
+        options.population, options.seed, options.clinicianSeed, locationName));
     System.out.println(String.format("Min Age: %d\nMax Age: %d",
-        o.minAge, o.maxAge));
-    if (o.gender != null) {
-      System.out.println(String.format("Gender: %s", o.gender));
+        options.minAge, options.maxAge));
+    if (options.gender != null) {
+      System.out.println(String.format("Gender: %s", options.gender));
     }
-    if (o.enabledModules != null) {
+    if (options.enabledModules != null) {
       moduleNames.removeAll(coreModuleNames);
       moduleNames.sort(String::compareToIgnoreCase);
       System.out.println("Modules: " + String.join("\n       & ", moduleNames));
@@ -245,7 +265,8 @@ public class Generator {
         System.out.println("Waiting for threads to finish... " + threadPool);
       }
     } catch (InterruptedException e) {
-      e.printStackTrace();
+      System.out.println("Generator interrupted. Attempting to shut down associated thread pool.");
+      threadPool.shutdownNow();
     }
 
     // have to store providers at the end to correctly capture utilization #s
@@ -393,7 +414,7 @@ public class Generator {
 
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
-        Exporter.export(person, time);
+        Exporter.export(person, time, exporterRuntimeOptions);
       } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
           || (isAlive && onlyDeadPatients));
       // if the patient is alive and we want only dead ones => loop & try again

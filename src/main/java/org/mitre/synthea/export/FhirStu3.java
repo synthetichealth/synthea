@@ -9,6 +9,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -359,7 +362,15 @@ public class FhirStu3 {
 
     String raceNum = (String) raceEthnicityCodes.get(race);
 
-    if (race != "hispanic") {
+    if (race.equals("hispanic")) {
+      Extension raceDetailExtension = new Extension("detailed");
+      Coding raceCoding = new Coding();
+      raceCoding.setSystem("urn:oid:2.16.840.1.113883.6.238");
+      raceCoding.setCode("2131-1");
+      raceCoding.setDisplay("Other Races");
+      raceDetailExtension.setValue(raceCoding);
+      raceExtension.addExtension(raceDetailExtension);
+    } else {
       Extension raceCodingExtension = new Extension("ombCategory");
       Coding raceCoding = new Coding();
       raceCoding.setSystem("urn:oid:2.16.840.1.113883.6.238");
@@ -382,7 +393,7 @@ public class FhirStu3 {
     String ethnicity = (String) person.attributes.get(Person.ETHNICITY);
 
     String ethnicityDisplay;
-    if (race == "hispanic") {
+    if (race.equals("hispanic")) {
       ethnicity = "hispanic";
       ethnicityDisplay = "Hispanic or Latino";
     } else {
@@ -1634,7 +1645,7 @@ public class FhirStu3 {
     return entry;
   }
 
-  private static Type mapValueToFHIRType(Object value, String unit) {
+  static Type mapValueToFHIRType(Object value, String unit) {
     if (value == null) {
       return null;
 
@@ -1649,7 +1660,10 @@ public class FhirStu3 {
       return new StringType((String) value);
 
     } else if (value instanceof Number) {
-      return new Quantity().setValue(((Number) value).doubleValue())
+      double dblVal = ((Number) value).doubleValue();
+      MathContext mctx = new MathContext(5, RoundingMode.HALF_UP);
+      BigDecimal bigVal = new BigDecimal(dblVal, mctx).stripTrailingZeros();
+      return new Quantity().setValue(bigVal)
           .setCode(unit).setSystem(UNITSOFMEASURE_URI)
           .setUnit(unit);
     } else {
@@ -2173,6 +2187,14 @@ public class FhirStu3 {
     }
     organizationResource.addAddress(address);
 
+    DirectPosition2D coord = provider.getLatLon();
+    if (coord != null) {
+      Extension geolocation = address.addExtension();
+      geolocation.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
+      geolocation.addExtension("latitude", new DecimalType(coord.getY()));
+      geolocation.addExtension("longitude", new DecimalType(coord.getX()));
+    }
+    
     if (provider.phone != null && !provider.phone.isEmpty()) {
       ContactPoint contactPoint = new ContactPoint()
           .setSystem(ContactPointSystem.PHONE)

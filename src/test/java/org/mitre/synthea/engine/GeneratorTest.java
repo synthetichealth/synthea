@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.export.Exporter;
+import org.mitre.synthea.export.Exporter.SupportedFhirVersion;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Person;
 
@@ -163,4 +165,44 @@ public class GeneratorTest {
     }
   }
   
+  @Test
+  public void testGenerateRecordQueue() throws Exception {
+    int numberOfPeople = 10;
+    Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
+    opts.population = numberOfPeople;
+    Exporter.ExporterRuntimeOptions ero = new Exporter.ExporterRuntimeOptions();
+    ero.enableQueue(SupportedFhirVersion.STU3);
+    
+    // Create and start generator thread
+    Generator generator = new Generator(opts, ero);
+    Thread generateThread = new Thread() {
+      public void run() {
+        generator.run();
+      }
+  };
+  generateThread.start();
+  
+  int count = 0;
+  while(generateThread.isAlive()) {
+    ero.getNextRecord();
+    ++count;
+    
+    if (count == numberOfPeople) {
+      // Break out if we have gotten enough records.
+      break;
+    }
+  }
+  
+  if (count < numberOfPeople) {
+    // Generator thread terminated but we have not gotten enough records yet. Check queue.
+    if(!ero.isRecordQueueEmpty()) {      
+      ero.getNextRecord();
+      ++count;
+    }
+  }
+  
+  assertEquals(numberOfPeople, count);
+
+  generateThread.interrupt();
+  }
 }
