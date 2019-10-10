@@ -265,10 +265,12 @@ public abstract class State implements Cloneable {
   }
   
   /**
-   * The CallSubmodule state immediately processes a reusable series of states contained in a
-   * submodule. These states are processes in the same time step, starting with the submodule's
-   * Initial state. Once the submodule's Terminal state is reached, execution of the calling module
-   * resumes.
+   * The Physiology state executes a physiology simulation according to the provided
+   * configuration options. Expressions can be used to map Patient attributes /
+   * VitalSigns to model parameters, and vice versa, or they can be mapped directly.
+   * This is an alternative way to get simulation results applicable for a specific
+   * module. If a simulation is intended to provide VitalSign values, a physiology
+   * value generator should be used instead.
    */
   public static class Physiology extends State {
     private String model;
