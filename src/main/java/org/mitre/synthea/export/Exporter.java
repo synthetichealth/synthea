@@ -103,7 +103,7 @@ public abstract class Exporter {
         org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
         IParser parser = FhirContext.forR4().newJsonParser().setPrettyPrint(false);
         for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-          String filename = entry.getResource().getResourceType().toString() + ".ndjson";
+          String filename = entry.getResource().getResourceType().toString() +"_"+ entry.hashCode() + ".ndjson";
           Path outFilePath = outDirectory.toPath().resolve(filename);
           String entryJson = parser.encodeResourceToString(entry.getResource());
           appendToFile(outFilePath, entryJson);

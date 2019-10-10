@@ -21,3 +21,6 @@ src/main/resources/version.txt
 # VS Code launch settings
 .vscode/launch.test.json
 .vscode/launch.json
+/bin/
+/bin/
+/bin/
