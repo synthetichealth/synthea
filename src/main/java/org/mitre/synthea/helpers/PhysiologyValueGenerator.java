@@ -7,6 +7,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,19 +39,29 @@ import org.yaml.snakeyaml.constructor.Constructor;
  * A ValueGenerator for generation of values from a physiology simulation.
  */
 public class PhysiologyValueGenerator extends ValueGenerator {
-  public static final URL GENERATORS_RESOURCE = ClassLoader.getSystemClassLoader()
-      .getResource("physiology/generators");
+  public static Path GENERATORS_PATH;
   private static ConcurrentMap<String,SimRunner> RUNNER_CACHE
       = new ConcurrentHashMap<String,SimRunner>();
   private static ConcurrentMap<String,PhysiologyGeneratorConfig> CONFIG_CACHE
       = new ConcurrentHashMap<String,PhysiologyGeneratorConfig>();
-  private static ConcurrentMap<String,Lock> CONFIG_LOCKS
-      = new ConcurrentHashMap<String,Lock>();
   private SimRunner simRunner;
   private PhysiologyGeneratorConfig config;
   private VitalSign vitalSign;
   private ValueGenerator preGenerator;
   private double outputVariance;
+  
+  static {
+    try {
+      GENERATORS_PATH = Paths.get(ClassLoader.getSystemClassLoader()
+          .getResource("physiology/generators").toURI());
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  public static void setGeneratorsPath(Path newPath) {
+    GENERATORS_PATH = newPath;
+  }
   
   /**
    * A generator of VitalSign values from a physiology simulation.
@@ -134,13 +146,12 @@ public class PhysiologyValueGenerator extends ValueGenerator {
    * @return List of PhysiologyValueGenerator
    */
   public static List<PhysiologyValueGenerator> loadAll(Person person, String subfolder) {
-    String generatorsResource = GENERATORS_RESOURCE.getPath();
 
     String[] configExt = {"yml"};
     
     // Get all of the configuration files in the generator configuration path and all
     // of its subdirectories
-    File baseFolder = new File(generatorsResource, subfolder);
+    File baseFolder = new File(GENERATORS_PATH.toString(), subfolder);
     Collection<File> physiologyConfigFiles = FileUtils.listFiles(baseFolder, configExt, true);
     
     List<PhysiologyValueGenerator> allGenerators = new ArrayList<PhysiologyValueGenerator>();
@@ -181,7 +192,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       if (mapper.getType() == IoMapper.IoType.VITAL_SIGN) {
         generators.add(new PhysiologyValueGenerator(
             generatorConfig,
-            mapper.getVitalSign(),
+            VitalSign.fromString(mapper.getTo()),
             person, mapper.getVariance()));
       }
     }
@@ -195,7 +206,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
    * @return generator configuration object
    */
   public static PhysiologyGeneratorConfig getConfig(String configPath) {
-    File configFile = new File(GENERATORS_RESOURCE.getPath(), configPath);
+    File configFile = new File(GENERATORS_PATH.toString(), configPath);
     return getConfig(configFile);
   }
   
@@ -207,11 +218,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
   public static synchronized PhysiologyGeneratorConfig getConfig(File configFile) {
     
     String relativePath;
-    try {
-      relativePath = GENERATORS_RESOURCE.toURI().relativize(configFile.toURI()).getPath();
-    } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
-    }
+    relativePath = GENERATORS_PATH.toUri().relativize(configFile.toURI()).getPath();
     
     // key is the path to the config file
     String configKey = relativePath;
@@ -229,7 +236,6 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     try {
       inputStream = new FileInputStream(configFile);
     } catch (FileNotFoundException ex) {
-      CONFIG_LOCKS.get(configKey).unlock();
       throw new RuntimeException("PhysiologyValueGenerator configuration not found: \""
           + configFile.getPath() + "\".");
     }
@@ -286,7 +292,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
         } else {
           firstVital = true;
         }
-        sb.append(mapper.getVitalSign().name());
+        sb.append(mapper.getVitalSignTarget().name());
       }
     }
     
@@ -515,7 +521,15 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       this.preGenerator = preGenerator;
     }
     
-    public VitalSign getVitalSign() {
+    /**
+     * Retrieves the VitalSign corresponding to this IoMapper's "to" field.
+     * @return target VitalSign Enum
+     */
+    public VitalSign getVitalSignTarget() {
+      // if this is a VitalSign, set the VitalSign value
+      if (vitalSign == null && type == IoType.VITAL_SIGN) {
+        vitalSign = VitalSign.fromString(this.to);
+      }
       return vitalSign;
     }
     
@@ -540,10 +554,6 @@ public class PhysiologyValueGenerator extends ValueGenerator {
         throw new RuntimeException(e);
       }
       
-      // if this is a VitalSign, set the VitalSign value
-      if (type == IoType.VITAL_SIGN) {
-        vitalSign = VitalSign.fromString(this.to);
-      }
     }
     
     /**
@@ -917,7 +927,6 @@ public class PhysiologyValueGenerator extends ValueGenerator {
      * @return true if inputs have sufficiently changed to warrant sim execution.
      */
     public boolean setInputs(long time) {
-      // System.out.println("Setting inputs...");
       boolean sufficientChange = prevInputs.isEmpty();
       // Get our map of inputs
       for (IoMapper mapper : config.getInputs()) {
@@ -931,13 +940,6 @@ public class PhysiologyValueGenerator extends ValueGenerator {
           sufficientChange = true;
         }
       }
-      //if (sufficientChange) {
-      //  System.out.println("inputs changed for " + person.attributes.get(Person.FIRST_NAME)
-      //      + " " + person.attributes.get(Person.LAST_NAME) + " (age " + person.ageInYears(time)
-      //      + ", BMI " + person.getVitalSign(VitalSign.BMI, time) + ": "
-      //      + modelInputs + " vs " + prevInputs);
-      //}
-      //System.out.println("Sufficient change? " + sufficientChange);
       return sufficientChange;
     }
     
@@ -961,7 +963,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
                 mapper.getOutputResult(results, config.getLeadTime()));
             break;
           case VITAL_SIGN:
-            VitalSign vs = mapper.getVitalSign();
+            VitalSign vs = mapper.getVitalSignTarget();
             Object result = mapper.getOutputResult(results, config.getLeadTime());
             if (result instanceof List) {
               throw new IllegalArgumentException(
@@ -972,8 +974,6 @@ public class PhysiologyValueGenerator extends ValueGenerator {
             break;
         }
       }
-      
-      // System.out.println(vitalSignResults);
     }
     
     /**
