@@ -49,6 +49,8 @@ public final class LifecycleModule extends Module {
 
   public static final boolean appendNumbersToNames =
       Boolean.parseBoolean(Config.get("generate.append_numbers_to_person_names", "false"));
+  public static final boolean usePhysiology =
+      Boolean.parseBoolean(Config.get("physiology.enabled", "false"));
   
   private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
 
@@ -252,7 +254,6 @@ public final class LifecycleModule extends Module {
    * @param person The person to generate vital signs for.
    */
   private static void setupVitalSignGenerators(Person person) {
-    boolean usePhysiology = Boolean.parseBoolean(Config.get("physiology.enabled", "false"));
     
     person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE,
         new BloodPressureValueGenerator(person, SysDias.SYSTOLIC));
