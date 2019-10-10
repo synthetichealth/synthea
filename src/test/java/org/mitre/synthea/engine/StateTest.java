@@ -1673,16 +1673,16 @@ public class StateTest {
     assertTrue(person.attributes.get("Arterial Pressure Values") instanceof List);
     
     // LVEF should be diminished and BP should be elevated
-    assertTrue("LVEF < 59%", person.getVitalSign(VitalSign.LVEF, time) < 60.0);
-    assertTrue("LVEF > 57%", person.getVitalSign(VitalSign.LVEF, time) > 50.0);
+    assertTrue("LVEF < 59%", (double) person.attributes.get("LVEF") < 60.0);
+    assertTrue("LVEF > 57%", (double) person.attributes.get("LVEF") > 50.0);
     assertTrue("SYS BP < 150 mmhg",
-        person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time) < 150.0);
+        (double) person.attributes.get("SBP") < 150.0);
     assertTrue("SYS BP > 130 mmhg",
-        person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time) > 130.0);
+        (double) person.attributes.get("SBP") > 130.0);
     assertTrue("DIA BP < 100 mmhg",
-        person.getVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, time) < 100.0);
+        (double) person.attributes.get("DBP") < 100.0);
     assertTrue("DIA BP > 80 mmhg",
-        person.getVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, time) > 80.0);
+        (double) person.attributes.get("DBP") > 80.0);
     
     // test that the state can be effectively cloned
     State cvsClone = simulateCvs.clone();
