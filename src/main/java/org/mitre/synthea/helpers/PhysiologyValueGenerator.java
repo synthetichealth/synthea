@@ -64,6 +64,15 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     this.outputVariance = outputVariance;
     String runnerId = person.attributes.get(Person.ID) + ":" + config.getModel();
     
+    // Set any patient attribute default values
+    if (config.getPersonAttributeDefaults() != null) {
+      for (Entry<String, Object> entry : config.getPersonAttributeDefaults().entrySet()) {
+        if (!person.attributes.containsKey(entry.getKey())) {
+          person.attributes.put(entry.getKey(), entry.getValue());
+        }
+      }
+    }
+    
     // If pre-simulation generators are being used, instantiate the generator
     if (config.isUsePreGenerators()) {
       
@@ -167,15 +176,6 @@ public class PhysiologyValueGenerator extends ValueGenerator {
   public static List<PhysiologyValueGenerator> fromConfig(
       PhysiologyGeneratorConfig generatorConfig, Person person) {
     List<PhysiologyValueGenerator> generators = new ArrayList<PhysiologyValueGenerator>();
-    
-    // Set any patient attribute default values
-    if (generatorConfig.getPersonAttributeDefaults() != null) {
-      for (Entry<String, Object> entry : generatorConfig.getPersonAttributeDefaults().entrySet()) {
-        if (!person.attributes.containsKey(entry.getKey())) {
-          person.attributes.put(entry.getKey(), entry.getValue());
-        }
-      }
-    }
     
     for (IoMapper mapper : generatorConfig.getOutputs()) {
       if (mapper.getType() == IoMapper.IoType.VITAL_SIGN) {
