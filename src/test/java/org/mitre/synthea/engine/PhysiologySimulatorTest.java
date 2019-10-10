@@ -18,19 +18,45 @@ import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.math.ode.DerivativeException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mitre.synthea.helpers.PhysiologyValueGenerator;
 import org.simulator.math.odes.MultiTable;
 import org.simulator.math.odes.MultiTable.Block.Column;
 
 public class PhysiologySimulatorTest {
+  
+  public static final TemporaryFolder outFolder = new TemporaryFolder();
+  public static Path modelFolder;
+  public static Path configPath;
+  
+  /**
+   * Sets up test file paths.
+   * @throws URISyntaxException when the paths are badly formed
+   * @throws IOException when the output folder cannot be created
+   */
+  @Before
+  public void setupTestPaths() throws URISyntaxException, IOException {
+    ClassLoader loader = getClass().getClassLoader();
+    modelFolder = Paths.get(loader.getResource("physiology/models").toURI());
+    configPath = Paths.get(getClass().getClassLoader()
+        .getResource("config/simulations/Smith2004_CVS_test.yml").toURI());
+    
+    // Create our temporary output directory
+    outFolder.create();
+    
+    // Set test paths for our PhysiologySimulator to use
+    PhysiologySimulator.setModelsPath(modelFolder);
+    PhysiologySimulator.setOutputPath(outFolder.getRoot().toPath());
+  }
 
   @Test
   public void testCvsSimulation() {
     try {
       
-      PhysiologySimulator physio = new PhysiologySimulator("circulation/Smith2004_CVS_human.xml",
-          "runge_kutta", 0.01, 4);
+      PhysiologySimulator physio = new PhysiologySimulator(
+          "circulation/Smith2004_CVS_human_test.xml", "runge_kutta", 0.01, 4);
       
       // Ensure we can get parameters. Check a couple
       List<String> params = physio.getParameters();
@@ -86,16 +112,8 @@ public class PhysiologySimulatorTest {
   @Test
   public void testPhysiologyMain() throws DerivativeException, URISyntaxException, IOException {
     ClassLoader loader = getClass().getClassLoader();
-    Path configPath = Paths.get(loader.getResource("config/simulations/Smith2004_CVS.yml").toURI());
-    Path modelFolder = Paths.get(loader.getResource("physiology/models").toURI());
-    TemporaryFolder outFolder = new TemporaryFolder();
-    
-    // Create our temporary output directory
-    outFolder.create();
-    
-    // Set test paths for our PhysiologySimulator to use
-    PhysiologySimulator.setModelsPath(modelFolder);
-    PhysiologySimulator.setOutputPath(outFolder.getRoot().toPath());
+    Path configPath = Paths.get(loader.getResource("config/simulations/Smith2004_CVS_test.yml")
+        .toURI());
     
     String[] args = {configPath.toAbsolutePath().toString()};
     PhysiologySimulator.main(args);

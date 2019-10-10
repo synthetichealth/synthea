@@ -4,7 +4,7 @@
 name: Smith2004_CVS
 
 # Name of the model file
-model: circulation/Smith2004_CVS_human.xml
+model: circulation/Smith2004_CVS_human_test.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
@@ -69,7 +69,7 @@ charts:
           label: Aorta
           
     - filename: left_heart_pv.png
-      type: line
+      type: scatter
       title: Left Ventricle Pressure-Volume Relationship
       axisParamX: V_lv
       axisLabelX: Volume (ml)
@@ -80,7 +80,7 @@ charts:
           label: Left Ventricle
           
     - filename: right_heart_pv.png
-      type: line
+      type: scatter
       title: Right Ventricle Pressure-Volume Relationship
       axisParamX: V_rv
       axisLabelX: Volume (ml)

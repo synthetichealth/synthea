@@ -2,6 +2,7 @@ package org.mitre.synthea.engine;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -1682,5 +1683,11 @@ public class StateTest {
         person.getVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, time) < 100.0);
     assertTrue("DIA BP > 80 mmhg",
         person.getVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, time) > 80.0);
+    
+    // test that the state can be effectively cloned
+    State cvsClone = simulateCvs.clone();
+    
+    assertNotEquals(cvsClone, simulateCvs);
+    assertTrue(cvsClone.process(person, time));
   }
 }
