@@ -248,15 +248,16 @@ public class Person implements Serializable, QuadTreeData {
    * @return decimal age in years
    */
   public double ageInDecimalYears(long time) {
-    double age = 0.0;
-
-    if (attributes.containsKey(BIRTHDATE)) {
-      LocalDate now = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
-      LocalDate birthdate = Instant.ofEpochMilli((long) attributes.get(BIRTHDATE))
-          .atZone(ZoneId.systemDefault()).toLocalDate();
-      age = birthdate.until(now, IsoFields.QUARTER_YEARS) / 4.0;
+    Period agePeriod = age(time);
+    
+    double years = agePeriod.getYears() + agePeriod.getMonths() / 12.0
+        + agePeriod.getDays() / 365.2425;
+    
+    if (years < 0) {
+      years = 0;
     }
-    return age;
+    
+    return years;
   }
 
   /**
