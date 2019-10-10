@@ -26,3 +26,9 @@ free in IHTSDO Member territories including the United States, in low income
 countries, and for Qualifying Research Projects in any country. To learn more,
 please see the IHTSDO SNOMED CT and Licensing page
 (https://www.snomed.org/snomed-ct/get-snomed-ct).
+
+This material includes the Systems Biology Simulation Core Library (SBSCL) as an
+unmodified, publicly released version of the software in the form of a Java archive
+(JAR) file and makes use of its interfaces under provision of the GNU Lesser
+General Public License v3 (https://www.gnu.org/licenses/lgpl-3.0.txt). Releases of
+the SBSCL library can be found at https://github.com/draeger-lab/SBSCL/releases/.

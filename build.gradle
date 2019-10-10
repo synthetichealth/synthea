@@ -68,7 +68,7 @@ dependencies {
   // compile "org.slf4j:slf4j-nop:1.6.1" // SLF4J seems to already be provided by org.apache.logging.log4j
   
   // Physiology simulation dependencies
-  compile files('lib/SimulationCoreLibrary_v1.5_slim.jar')
+  compile files('lib/sbscl/SimulationCoreLibrary_v1.5_slim.jar')
   compile group: 'org.sbml.jsbml', name: 'jsbml', version: '1.4'
   compile group: 'org.apache.commons', name: 'commons-math', version: '2.2'
   
