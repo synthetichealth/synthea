@@ -181,7 +181,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       if (mapper.getType() == IoMapper.IoType.VITAL_SIGN) {
         generators.add(new PhysiologyValueGenerator(
             generatorConfig,
-            VitalSign.fromString(mapper.getTo()),
+            mapper.getVitalSign(),
             person, mapper.getVariance()));
       }
     }
@@ -277,16 +277,30 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     sb.append("model=").append(config.getModel());
     
     sb.append(", VitalSigns=[");
+
+    boolean firstVital = false;
     for (IoMapper mapper : config.getOutputs()) {
       if (mapper.getType() == IoMapper.IoType.VITAL_SIGN) {
-        sb.append(mapper.getTo()).append(",");
+        if (firstVital) {
+          sb.append(", ");
+        } else {
+          firstVital = true;
+        }
+        sb.append(mapper.getVitalSign().name());
       }
     }
     
     sb.append("], Attributes=[");
+    
+    boolean firstAttr = false;
     for (IoMapper mapper : config.getOutputs()) {
       if (mapper.getType() == IoMapper.IoType.ATTRIBUTE) {
-        sb.append(mapper.getTo()).append(",");
+        if (firstAttr) {
+          sb.append(", ");
+        } else {
+          firstAttr = true;
+        }
+        sb.append(mapper.getTo());
       }
     }
     
@@ -347,13 +361,6 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       if (leadTime >= simDuration) {
         throw new IllegalArgumentException(
             "Simulation lead time must be less than simulation duration!");
-      }
-      
-      for (IoMapper mapper : outputs) {
-        // Will throw an IllegalArgumentException if the provided VitalSign is invalid
-        if (mapper.getType() == IoMapper.IoType.VITAL_SIGN) {
-          VitalSign.fromString(mapper.getTo());
-        }
       }
     }
 
@@ -439,6 +446,8 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     private String fromList;
     private String fromExp;
     private double variance;
+    private VitalSign vitalSign;
+    
     // ExpressionProcessor instances are not thread safe, so we need
     // to have a separate processor for each thread
     private ThreadLocal<ExpressionProcessor> threadExpProcessor
@@ -506,6 +515,10 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       this.preGenerator = preGenerator;
     }
     
+    public VitalSign getVitalSign() {
+      return vitalSign;
+    }
+    
     /**
      * Initializes the expression processor if needed with all inputs
      * set as the default type (Decimal).
@@ -525,6 +538,11 @@ public class PhysiologyValueGenerator extends ValueGenerator {
         }
       } catch (CqlSemanticException e) {
         throw new RuntimeException(e);
+      }
+      
+      // if this is a VitalSign, set the VitalSign value
+      if (type == IoType.VITAL_SIGN) {
+        vitalSign = VitalSign.fromString(this.to);
       }
     }
     
@@ -943,7 +961,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
                 mapper.getOutputResult(results, config.getLeadTime()));
             break;
           case VITAL_SIGN:
-            VitalSign vs = VitalSign.fromString(mapper.getTo());
+            VitalSign vs = mapper.getVitalSign();
             Object result = mapper.getOutputResult(results, config.getLeadTime());
             if (result instanceof List) {
               throw new IllegalArgumentException(
