@@ -158,4 +158,44 @@ public class UtilitiesTest {
       assertTrue(message, d.equals(Utilities.primitive(p)));
     }
   }
+  
+  @Test
+  public void testToPrimitiveClass() {
+    // Test each of the primitive classes
+    assertEquals(Boolean.TYPE, Utilities.toPrimitiveClass(Boolean.class));
+    assertEquals(Byte.TYPE, Utilities.toPrimitiveClass(Byte.class));
+    assertEquals(Short.TYPE, Utilities.toPrimitiveClass(Short.class));
+    assertEquals(Integer.TYPE, Utilities.toPrimitiveClass(Integer.class));
+    assertEquals(Long.TYPE, Utilities.toPrimitiveClass(Long.class));
+    assertEquals(Float.TYPE, Utilities.toPrimitiveClass(Float.class));
+    assertEquals(Double.TYPE, Utilities.toPrimitiveClass(Double.class));
+    
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testInvalidToPrimitiveClass() {
+    // Trying to get the primitive class for a type that doesn't have
+    // a primitive class results in an IllegalArgumentException
+    Utilities.toPrimitiveClass(Date.class);
+  }
+  
+  @Test
+  public void testStrToObject() {
+    
+    assertEquals(true, Utilities.strToObject(Boolean.class, "true"));
+    assertEquals((byte) 2, Utilities.strToObject(Byte.class, "2"));
+    assertEquals((short) 3, Utilities.strToObject(Short.class, "3"));
+    assertEquals(5, Utilities.strToObject(Integer.class, "5"));
+    assertEquals(7L, Utilities.strToObject(Long.class, "7"));
+    assertEquals(2.5f, Utilities.strToObject(Float.class, "2.5"));
+    assertEquals(4.8, Utilities.strToObject(Double.class, "4.8"));
+
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testInvalidStrToObject() {
+    // Trying to parse a non-primitive class type results in an
+    // IllegalArgumentException
+    Utilities.strToObject(Date.class, "oops");
+  }
 }
