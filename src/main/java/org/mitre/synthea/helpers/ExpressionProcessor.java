@@ -87,9 +87,8 @@ public class ExpressionProcessor implements Cloneable {
     
     String cleanExpression = replaceParameters(expression);
     String wrappedExpression = convertParameterizedExpressionToCql(cleanExpression);
-    // System.out.println("Wrapped Expression:");
-    // System.out.println(wrappedExpression);
     
+    // Compile our constructed CQL expression into elm once for execution
     this.elm = cqlToElm(wrappedExpression);
     try {
       this.library = CqlLibraryReader.read(new ByteArrayInputStream(

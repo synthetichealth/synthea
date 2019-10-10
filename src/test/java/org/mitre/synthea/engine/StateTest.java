@@ -1671,10 +1671,6 @@ public class StateTest {
     // The "Arterial Pressure Values" attribute should have been set to a list
     assertTrue(person.attributes.get("Arterial Pressure Values") instanceof List);
     
-    //System.out.println("LVEF: " + person.getVitalSign(VitalSign.LVEF, time));
-    //System.out.println("SYS: " + person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time));
-    //System.out.println("DIA: " + person.getVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, time));
-    
     // LVEF should be diminished and BP should be elevated
     assertTrue("LVEF < 59%", person.getVitalSign(VitalSign.LVEF, time) < 60.0);
     assertTrue("LVEF > 57%", person.getVitalSign(VitalSign.LVEF, time) > 50.0);
