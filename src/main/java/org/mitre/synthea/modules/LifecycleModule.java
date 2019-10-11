@@ -2,7 +2,6 @@ package org.mitre.synthea.modules;
 
 import com.google.gson.Gson;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,7 +13,6 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.special.Erf;
 import org.mitre.synthea.engine.Module;

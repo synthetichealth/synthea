@@ -21,7 +21,6 @@ import org.apache.commons.math.ode.DerivativeException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.mitre.synthea.helpers.PhysiologyValueGenerator;
 import org.simulator.math.odes.MultiTable;
 import org.simulator.math.odes.MultiTable.Block.Column;
 

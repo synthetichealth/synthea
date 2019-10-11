@@ -2,10 +2,7 @@ package org.mitre.synthea.engine;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import java.util.List;
@@ -38,7 +35,6 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord;
-import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -46,7 +42,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.simulator.math.odes.MultiTable;
-import org.simulator.math.odes.MultiTable.Block.Column;
 
 public abstract class State implements Cloneable {
   public Module module;
