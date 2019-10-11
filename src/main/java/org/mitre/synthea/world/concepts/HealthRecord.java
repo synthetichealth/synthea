@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
@@ -137,6 +138,16 @@ public class HealthRecord {
         this.determineCost();
       }
       return this.cost;
+    }
+
+    /**
+     * Determines if the given entry contains the provided code in its list of codes.
+     * @param code clinical term
+     * @param system system for the code
+     * @return true if the code is there
+     */
+    public boolean containsCode(String code, String system) {
+      return this.codes.stream().anyMatch(c -> code.equals(c.code) && system.equals(c.system));
     }
 
     /**
@@ -546,6 +557,14 @@ public class HealthRecord {
     }
     encounter.observations.add(observation);
     return observation;
+  }
+
+  public List<Encounter> encountersWithObservationsOfCode(String code, String system) {
+    return encounters.stream().filter(e ->
+        e.observations.stream().anyMatch(o ->
+            o.codes.stream().anyMatch(c ->
+                c.code.equals(code) && c.system.equals(system))))
+        .collect(Collectors.toList());
   }
 
   public Observation getLatestObservation(String type) {
