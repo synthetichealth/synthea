@@ -4,19 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.mitre.synthea.engine.PhysiologySimulator;
-import org.mitre.synthea.helpers.PhysiologyValueGenerator.IoMapper;
-import org.mitre.synthea.helpers.PhysiologyValueGenerator.PhysiologyGeneratorConfig;
+import org.mitre.synthea.helpers.physiology.IoMapper;
+import org.mitre.synthea.helpers.physiology.PhysiologyGeneratorConfig;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.VitalSign;
 

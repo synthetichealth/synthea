@@ -42,17 +42,17 @@
         {
           "from_exp": "((Max(#{V_lv}) - Min(#{V_lv})) / Max(#{V_lv}))*100",
           "to": "LVEF",
-          "type": "Vital Sign"
+          "type": "Attribute"
         },
         {
           "from_exp": "Max(#{P_ao})",
-          "to": "Systolic Blood Pressure",
-          "type": "Vital Sign"
+          "to": "SBP",
+          "type": "Attribute"
         },
         {
           "from_exp": "Min(#{P_ao})",
-          "to": "Diastolic Blood Pressure",
-          "type": "Vital Sign"
+          "to": "DBP",
+          "type": "Attribute"
         }
       ],
       "direct_transition": "Main_Terminal"
