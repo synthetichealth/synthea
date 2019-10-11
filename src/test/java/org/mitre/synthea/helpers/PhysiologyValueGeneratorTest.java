@@ -83,7 +83,7 @@ public class PhysiologyValueGeneratorTest {
     
     // Change the output variance to a small amount and verify that the result is no longer
     // exactly the same but within the variance amount.
-    generator.setOutputVariacne(1.0);
+    generator.setOutputVariance(1.0);
     double sys4 = generator.getValue(simTime);
     assertEquals(sys3, sys4, 1.0);
     assertNotEquals(sys3, sys4);

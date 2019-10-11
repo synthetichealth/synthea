@@ -331,7 +331,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
    * Sets the amount of variance to generate for the output VitalSign.
    * @param variance amount of variance
    */
-  public void setOutputVariacne(double variance) {
+  public void setOutputVariance(double variance) {
     outputVariance = variance;
   }
 
