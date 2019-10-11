@@ -235,7 +235,7 @@ public class IoMapper {
       Column col = results.getColumn(fromList);
       if (col == null) {
         throw new IllegalArgumentException("Invalid model parameter \"" + fromList
-            + "\" cannot be mapped to patient attribute \"" + to + "\"");
+            + "\" cannot be mapped to patient value \"" + to + "\"");
       }
       
       // Make it an ArrayList for more natural usage throughout the rest of the application
@@ -250,7 +250,7 @@ public class IoMapper {
       Column col = results.getColumn(from);
       if (col == null) {
         throw new IllegalArgumentException("Invalid model parameter \"" + from
-            + "\" cannot be mapped to VitalSign \"" + to + "\"");
+            + "\" cannot be mapped to patient value \"" + to + "\"");
       }
       return col.getValue(lastRow);
     }
