@@ -7,8 +7,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -26,6 +29,8 @@ import org.cqframework.cql.elm.execution.Library;
 import org.mitre.synthea.world.agents.Person;
 import org.opencds.cqf.cql.execution.Context;
 import org.opencds.cqf.cql.execution.CqlLibraryReader;
+import org.simulator.math.odes.MultiTable;
+import org.simulator.math.odes.MultiTable.Block.Column;
 
 public class ExpressionProcessor implements Cloneable {
   private static final String LIBRARY_NAME = "Synthea";
@@ -97,6 +102,7 @@ public class ExpressionProcessor implements Cloneable {
       throw new RuntimeException(ex);
     }
     this.context = new Context(library);
+    this.expression = expression;
   }
   
   @Override
@@ -147,10 +153,23 @@ public class ExpressionProcessor implements Cloneable {
    * @param time current time
    * @return value
    */
-  private Object getPersonValue(String param, Person person, long time) {
+  public static Double getPersonValue(String param, Person person, long time) {
+    return getPersonValue(param, person, time, null);
+  }
+  
+  /** 
+   * Retrieve the desired value from a Person model. Check for a VitalSign first and
+   * then an attribute if there is no VitalSign by the provided name.
+   * Throws an IllegalArgumentException if neither exists.
+   * @param param name of the VitalSign or attribute to retrieve from the Person
+   * @param person Person instance to get the parameter from
+   * @param time current time
+   * @return value
+   */
+  public static Double getPersonValue(String param, Person person, long time, String expression) {
     
     // Treat "age" as a special case. In expressions, age is represented in decimal years
-    if (param == "age") {
+    if (param.equals("age")) {
       return person.ageInDecimalYears(time);
     }
     
@@ -162,24 +181,70 @@ public class ExpressionProcessor implements Cloneable {
     }
 
     if (vs != null) {
-      return new BigDecimal(person.getVitalSign(vs, time));
+      return person.getVitalSign(vs, time);
     } else if (person.attributes.containsKey(param)) {
       Object value = person.attributes.get(param);
       
       if (value instanceof Number) {
-        return new BigDecimal(((Number) value).doubleValue());
+        return ((Number) value).doubleValue();
         
       } else if (value instanceof Boolean) {
-        return new BigDecimal((Boolean) value ? 1 : 0);
+        return (Boolean) value ? 1.0 : 0.0;
         
       } else {
-        throw new IllegalArgumentException("Unable to map person attribute \""
-            + param + "\" in expression \"" + expression + "\": Attribute value is not a number.");
+        if (expression != null) {
+          throw new IllegalArgumentException("Unable to map person attribute \""
+              + param + "\" in expression \"" + expression
+              + "\": Attribute value is not a number.");
+        } else {
+          throw new IllegalArgumentException("Unable to map person attribute \""
+              + param + "\": Attribute value is not a number.");
+        }
       }
     } else {
-      throw new IllegalArgumentException("Unable to map \"" + param
-          + "\" in expression \"" + expression + "\": Invalid person attribute or vital sign.");
+      if (expression != null) {
+        throw new IllegalArgumentException("Unable to map \"" + param
+            + "\" in expression \"" + expression
+            + "\": Invalid person attribute or vital sign.");
+      } else {
+        throw new IllegalArgumentException("Unable to map \""
+            + param + "\": Invalid person attribute or vital sign.");
+      }
     }
+  }
+  
+  /**
+   * Evaluates the provided expression given the simulation results.
+   * @param results table of simulation results
+   * @param leadTime lead time in seconds before using table values
+   * @return BigDecimal result value
+   */
+  public BigDecimal evaluateFromSimResults(MultiTable results, double leadTime) {
+    
+    // Create our map of expression parameters
+    Map<String,Object> expParams = new HashMap<String,Object>();
+    
+    // Get the index past the lead time to start getting values
+    int leadTimeIdx = Arrays.binarySearch(results.getTimePoints(), leadTime);
+    
+    // Add all model outputs to the expression parameter map as lists of decimals
+    for (String param : getParamNames()) {
+      List<BigDecimal> paramList = new ArrayList<BigDecimal>(results.getRowCount());
+      
+      Column col = results.getColumn(param);
+      if (col == null) {
+        throw new IllegalArgumentException("Invalid model parameter \"" + param
+            + "\" in expression \"" + expression + "\".");
+      }
+      
+      for (int i = leadTimeIdx; i < col.getRowCount(); i++) {
+        paramList.add(new BigDecimal(col.getValue(i)));
+      }
+      expParams.put(param, paramList);
+    }
+    
+    // Evaluate the expression
+    return evaluateNumeric(expParams);
   }
   
   /**
@@ -192,7 +257,7 @@ public class ExpressionProcessor implements Cloneable {
     Map<String,Object> params = new HashMap<String,Object>();
     
     for (String paramName : getParamNames()) {
-      params.put(paramName, getPersonValue(paramName, person, time));
+      params.put(paramName, new BigDecimal(getPersonValue(paramName, person, time, expression)));
     }
     
     return evaluate(params);

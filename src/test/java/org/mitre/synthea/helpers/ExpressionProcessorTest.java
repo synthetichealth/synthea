@@ -30,8 +30,8 @@ public class ExpressionProcessorTest {
   @Test
   public void testWithPersonAttributes() {
     Person p = new Person(0L);
-    p.attributes.put("age", 26);
-    String exp = "#{age} / 2 + 7";
+    p.attributes.put("age_attr", 26);
+    String exp = "#{age_attr} / 2 + 7";
     ExpressionProcessor expProcessor = new ExpressionProcessor(exp);
     Number result = (Number) expProcessor.evaluate(p, 0L);
     assertEquals(20L, result.longValue());

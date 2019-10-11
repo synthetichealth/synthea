@@ -160,7 +160,8 @@ public class IoMapper {
       
       // Add all patient parameters to the expression parameter map
       for (String param : expProcessor.getParamNames()) {
-        expParams.put(param, new BigDecimal(getPersonValue(param, person, time)));
+        expParams.put(param, new BigDecimal(ExpressionProcessor
+            .getPersonValue(param, person, time, expProcessor.getExpression())));
       }
       
       // All physiology inputs should evaluate to numeric parameters
@@ -170,51 +171,11 @@ public class IoMapper {
       throw new IllegalArgumentException(
           "Cannot map lists from person attributes / vital signs to model parameters");
     } else {
-      resultValue = getPersonValue(from, person, time);
+      resultValue = ExpressionProcessor.getPersonValue(from, person, time, null);
     }
     
     modelInputs.put(to, resultValue);
     return resultValue;
-  }
-  
-  /**
-   * Evaluates the provided expression given the simulation results.
-   * @param results simulation results
-   * @param leadTime lead time in seconds before using simulation values
-   * @return BigDecimal result value
-   */
-  private BigDecimal getExpressionResult(MultiTable results, double leadTime) {
-    ExpressionProcessor expProcessor = threadExpProcessor.get();
-    
-    if (expProcessor == null) {
-      throw new RuntimeException("No expression to process");
-    }
-    
-    // Create our map of expression parameters
-    Map<String,Object> expParams = new HashMap<String,Object>();
-    
-    // Get the index past the lead time to start getting values
-    int leadTimeIdx = Arrays.binarySearch(results.getTimePoints(), leadTime);
-    
-    // Add all model outputs to the expression parameter map as lists of decimals
-    for (String param : expProcessor.getParamNames()) {
-      List<BigDecimal> paramList = new ArrayList<BigDecimal>(results.getRowCount());
-      
-      Column col = results.getColumn(param);
-      if (col == null) {
-        throw new IllegalArgumentException("Invalid model parameter \"" + param
-            + "\" in expression \"" + from
-            + "\" cannot be mapped to patient attribute \"" + to + "\"");
-      }
-      
-      for (int i = leadTimeIdx; i < col.getRowCount(); i++) {
-        paramList.add(new BigDecimal(col.getValue(i)));
-      }
-      expParams.put(param, paramList);
-    }
-    
-    // Evaluate the expression
-    return expProcessor.evaluateNumeric(expParams);
   }
   
   /**
@@ -228,7 +189,7 @@ public class IoMapper {
     
     if (expProcessor != null) {
       // Evaluate the expression and return the result
-      return getExpressionResult(results, leadTime).doubleValue();
+      return expProcessor.evaluateFromSimResults(results, leadTime).doubleValue();
       
     } else if (fromList != null) {
       // Get the column for the requested list
@@ -253,63 +214,6 @@ public class IoMapper {
             + "\" cannot be mapped to patient value \"" + to + "\"");
       }
       return col.getValue(lastRow);
-    }
-  }
-  
-  /** 
-   * Retrieve the desired value from a Person model. Check for a VitalSign first and
-   * then an attribute if there is no VitalSign by the provided name.
-   * Throws an IllegalArgumentException if neither exists.
-   * @param param name of the VitalSign or attribute to retrieve from the Person
-   * @param person Person instance to get the parameter from
-   * @param time current time
-   * @return value
-   */
-  private Double getPersonValue(String param, Person person, long time) {
-    
-    // Treat "age" as a special case. In expressions, age is represented in decimal years
-    if (param.equals("age")) {
-      return person.ageInDecimalYears(time);
-    }
-    
-    org.mitre.synthea.world.concepts.VitalSign vs = null;
-    try {
-      vs = org.mitre.synthea.world.concepts.VitalSign.fromString(param);
-    } catch (IllegalArgumentException ex) {
-      // Ignore since it actually may not be a vital sign
-    }
-
-    if (vs != null) {
-      return person.getVitalSign(vs, time);
-    } else if (person.attributes.containsKey(param)) {
-      Object value = person.attributes.get(param);
-      
-      if (value instanceof Number) {
-        return ((Number) value).doubleValue();
-        
-      } else if (value instanceof Boolean) {
-        return (Boolean) value ? 1.0 : 0.0;
-        
-      } else {
-        if (threadExpProcessor.get() != null) {
-          throw new IllegalArgumentException("Unable to map person attribute \""
-              + param + "\" in expression \"" + fromExp + "\" for parameter \""
-              + to + "\": Attribute value is not a number.");
-        } else {
-          throw new IllegalArgumentException("Unable to map person attribute \""
-              + param + "\" to parameter \"" + to + "\": Attribute value is not a number.");
-        }
-      }
-    } else {
-      if (threadExpProcessor.get() != null) {
-        throw new IllegalArgumentException("Unable to map \"" + param
-            + "\" in expression \"" + fromExp + "\" for parameter \"" + to
-            + "\": Invalid person attribute or vital sign.");
-      } else {
-        throw new IllegalArgumentException("Unable to map \""
-            + param + "\" to parameter \"" + to
-            + "\": Invalid person attribute or vital sign.");
-      }
     }
   }
 }

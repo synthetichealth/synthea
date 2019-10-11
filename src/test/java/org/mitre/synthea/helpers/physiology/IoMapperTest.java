@@ -41,8 +41,8 @@ public class IoMapperTest {
     try {
       testMapper.toModelInputs(person, 0, modelInputs);
     } catch (IllegalArgumentException e) {
-      assertEquals("Unable to map \"test attribute\" to parameter \"model_param\": "
-          + "Invalid person attribute or vital sign.", e.getMessage());
+      assertEquals("Unable to map \"test attribute\": Invalid person "
+          + "attribute or vital sign.", e.getMessage());
     }
     
     // set the attribute and try again
@@ -61,8 +61,8 @@ public class IoMapperTest {
     try {
       testMapper.toModelInputs(person, 0, modelInputs);
     } catch (IllegalArgumentException e) {
-      assertEquals("Unable to map person attribute \"test attribute\" to parameter"
-          + " \"model_param\": Attribute value is not a number.", e.getMessage());
+      assertEquals("Unable to map person attribute \"test attribute\":"
+          + " Attribute value is not a number.", e.getMessage());
     }
     
     // Now use an expression with attributes and VitalSigns instead of a direct mapping
@@ -80,8 +80,7 @@ public class IoMapperTest {
       testMapper.toModelInputs(person, 0, modelInputs);
     } catch (IllegalArgumentException e) {
       assertEquals("Unable to map \"attr2\" in expression \"#{test attribute} * #{BMI} "
-          + "+ #{attr2}\" for parameter \"model_param\": "
-          + "Invalid person attribute or vital sign.", e.getMessage());
+          + "+ #{attr2}\": Invalid person attribute or vital sign.", e.getMessage());
     }
     
     // Again, if it's a non numeric value, it should also throw an exception
@@ -90,7 +89,7 @@ public class IoMapperTest {
       testMapper.toModelInputs(person, 0, modelInputs);
     } catch (IllegalArgumentException e) {
       assertEquals("Unable to map person attribute \"attr2\" in expression "
-          + "\"#{test attribute} * #{BMI} + #{attr2}\" for parameter \"model_param\": "
+          + "\"#{test attribute} * #{BMI} + #{attr2}\": "
           + "Attribute value is not a number.", e.getMessage());
     }
     
