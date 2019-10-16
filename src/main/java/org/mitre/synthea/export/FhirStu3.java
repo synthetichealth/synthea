@@ -584,7 +584,7 @@ public class FhirStu3 {
       patientResource.addExtension(qalyExtension);
     }
 
-    return newEntry(bundle, patientResource);
+    return newEntry(bundle, patientResource, (String) person.attributes.get(Person.ID));
   }
 
   /**

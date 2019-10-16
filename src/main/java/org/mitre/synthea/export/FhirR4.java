@@ -622,7 +622,7 @@ public class FhirR4 {
       patientResource.addExtension(qalyExtension);
     }
 
-    return newEntry(bundle, patientResource);
+    return newEntry(bundle, patientResource, (String) person.attributes.get(Person.ID));
   }
 
   /**
@@ -2830,7 +2830,7 @@ public class FhirR4 {
    * @param resourceType The resource type being referenced.
    * @return "[resourceType]/" or "urn:uuid:"
    */
-  private static String getUrlPrefix(String resourceType) {
+  protected static String getUrlPrefix(String resourceType) {
     if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
       return resourceType + "/";
     } else {

@@ -189,6 +189,7 @@ public abstract class Exporter {
         Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
         writeNewFile(outFilePath, bundleJson);
       }
+      FhirGroupExporterR4.addPatient((String) person.attributes.get(Person.ID));
     }
     if (Boolean.parseBoolean(Config.get("exporter.ccda.export"))) {
       String ccdaXml = CCDAExporter.export(person, stopTime);
@@ -293,6 +294,14 @@ public abstract class Exporter {
    */
   public static void runPostCompletionExports(Generator generator) {
     String bulk = Config.get("exporter.fhir.bulk_data");
+
+    // Before we force bulk data to be off...
+    try {
+      FhirGroupExporterR4.exportAndSave(generator.stop);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
     Config.set("exporter.fhir.bulk_data", "false");
     try {
       HospitalExporterR4.export(generator.stop);
