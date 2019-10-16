@@ -33,15 +33,15 @@ public abstract class FhirGroupExporterR4 {
 
   /**
    * Add the patient to the patient list.
-   * @param resourceId
+   * @param resourceId The resource ID of the patient.
    */
-  public synchronized static void addPatient(String resourceId) {
+  public static synchronized void addPatient(String resourceId) {
     patientList.add(resourceId);
   }
 
   /**
    * Export the patient list as a FHIR Group resource.
-   * @param stop
+   * @param stop The stop time.
    * @return FHIR Group resource.
    */
   public static Group export(long stop) {
