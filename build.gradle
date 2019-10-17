@@ -12,6 +12,8 @@ apply plugin: 'application'
 apply plugin: 'eclipse'
 apply plugin: 'checkstyle'
 apply plugin: 'jacoco'
+apply plugin: "maven-publish"
+
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -190,4 +192,37 @@ run {
   if (project.hasProperty("arams")) {
     args Eval.me(arams)
   }
+}
+
+task sourceJar(type: Jar) {
+    classifier "sources"
+    from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier "javadoc"
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives jar
+    archives sourceJar
+    archives javadocJar
+}
+
+publishing {
+    publications {
+        synthea(MavenPublication) {
+            groupId 'org.mitre'
+            version '2.4.1-SNAPSHOT'
+            from components.java
+            
+            artifact(sourceJar) {
+                classifier = 'sources'
+            }
+            artifact(javadocJar) {
+                classifier = 'javadoc'
+            }
+        }
+    }
 }
