@@ -543,8 +543,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "998582",
-          "display": "Donepezil hydrochloride 23 MG [Aricept]"
+          "code": "1100184",
+          "display": "Donepezil hydrochloride 23 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_ModeratelySevere_Encounter"

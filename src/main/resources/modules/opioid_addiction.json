@@ -194,8 +194,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1310197",
-          "display": "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]"
+          "code": "856987",
+          "display": "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Directed_Use_Encounter"

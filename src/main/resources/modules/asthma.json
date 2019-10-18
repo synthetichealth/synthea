@@ -254,8 +254,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "745679",
-          "display": "200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
+          "code": "2123111",
+          "display": "NDA020503 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
         }
       ],
       "prescription": {
