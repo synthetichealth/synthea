@@ -12,7 +12,8 @@ apply plugin: 'application'
 apply plugin: 'eclipse'
 apply plugin: 'checkstyle'
 apply plugin: 'jacoco'
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 
 // In this section you declare where to find the dependencies of your project
@@ -213,8 +214,8 @@ artifacts {
 publishing {
     publications {
         synthea(MavenPublication) {
-            groupId 'org.mitre'
-            version '2.4.1-SNAPSHOT'
+            groupId 'org.mitre.synthea'
+            version '2.5.0-SNAPSHOT'
             from components.java
             
             artifact(sourceJar) {
@@ -223,6 +224,44 @@ publishing {
             artifact(javadocJar) {
                 classifier = 'javadoc'
             }
+            pom {
+                name = 'Synthea'
+                description = 'Synthetic Patient Population Simulator'
+                url = 'https://github.com/synthetichealth/synthea'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/synthetichealth/synthea.git'
+                    developerConnection = 'scm:git:ssh://github.com:synthetichealth/synthea.git'
+                    url = 'http://github.com/synthetichealth/synthea/tree/master'
+                }
+                developers {
+                    developer {
+                        name = 'Jason Walonoski'
+                        email = 'jwalonoski@mitre.org'
+                        organization = 'The MITRE Corporation'
+                        organizationUrl = 'http://www.mitre.org/'
+                    }
+                }
+            }
         }
     }
+    repositories {
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots'
+//            url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            credentials {
+                username sonatypeUsername
+                password sonatypePassword
+            }
+        }
+    }
+}
+
+signing {
+  sign publishing.publications.synthea
 }
