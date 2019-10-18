@@ -900,7 +900,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/​1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
             }
           ],
           "range": {
@@ -915,7 +915,7 @@
             {
               "system": "LOINC",
               "code": "2885-2",
-              "display": "Protein [Mass/​volume] in Serum or Plasma"
+              "display": "Protein [Mass/volume] in Serum or Plasma"
             }
           ],
           "range": {
@@ -930,7 +930,7 @@
             {
               "system": "LOINC",
               "code": "1751-7",
-              "display": "Albumin [Mass/​volume] in Serum or Plasma"
+              "display": "Albumin [Mass/volume] in Serum or Plasma"
             }
           ],
           "range": {
@@ -945,7 +945,7 @@
             {
               "system": "LOINC",
               "code": "10834-0",
-              "display": "Globulin [Mass/​volume] in Serum by calculation"
+              "display": "Globulin [Mass/volume] in Serum by calculation"
             }
           ],
           "range": {
@@ -960,7 +960,7 @@
             {
               "system": "LOINC",
               "code": "1975-2",
-              "display": "Bilirubin.total [Mass/​volume] in Serum or Plasma"
+              "display": "Bilirubin.total [Mass/volume] in Serum or Plasma"
             }
           ],
           "range": {
@@ -975,7 +975,7 @@
             {
               "system": "LOINC",
               "code": "6768-6",
-              "display": "Alkaline phosphatase [Enzymatic activity/​volume] in Serum or Plasma"
+              "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
             }
           ],
           "range": {
@@ -990,7 +990,7 @@
             {
               "system": "LOINC",
               "code": "1742-6",
-              "display": "Alanine aminotransferase [Enzymatic activity/​volume] in Serum or Plasma"
+              "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
             }
           ],
           "range": {
@@ -1005,7 +1005,7 @@
             {
               "system": "LOINC",
               "code": "1920-8",
-              "display": "Aspartate aminotransferase [Enzymatic activity/​volume] in Serum or Plasma"
+              "display": "Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
             }
           ],
           "range": {
