@@ -255,13 +255,16 @@ publishing {
             url 'https://oss.sonatype.org/content/repositories/snapshots'
 //            url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
             credentials {
-                username sonatypeUsername
-                password sonatypePassword
+                def user = project.hasProperty('sonatypeUsername') ? sonatypeUsername : ''
+                def pw = project.hasProperty('sonatypePassword') ? sonatypePassword : ''
+                username user
+                password pw 
             }
         }
     }
 }
 
 signing {
+  required { project.hasProperty('signing.keyId') }
   sign publishing.publications.synthea
 }
