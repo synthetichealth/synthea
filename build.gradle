@@ -211,11 +211,14 @@ artifacts {
     archives javadocJar
 }
 
+def mavenGroup = 'org.mitre.synthea'
+def mavenVersion = '2.5.0-SNAPSHOT'
+
 publishing {
     publications {
         synthea(MavenPublication) {
-            groupId 'org.mitre.synthea'
-            version '2.5.0-SNAPSHOT'
+            groupId mavenGroup
+            version mavenVersion
             from components.java
             
             artifact(sourceJar) {
@@ -252,8 +255,9 @@ publishing {
     }
     repositories {
         maven {
-            url 'https://oss.sonatype.org/content/repositories/snapshots'
-//            url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
+            def releaseUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            url mavenVersion.endsWith('SNAPSHOT') ? snapshotUrl : releaseUrl
             credentials {
                 def user = project.hasProperty('sonatypeUsername') ? sonatypeUsername : ''
                 def pw = project.hasProperty('sonatypePassword') ? sonatypePassword : ''
