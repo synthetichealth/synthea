@@ -12,6 +12,7 @@ import java.util.List;
 import org.junit.Test;
 import org.mitre.synthea.helpers.physiology.IoMapper;
 import org.mitre.synthea.helpers.physiology.PhysiologyGeneratorConfig;
+import org.mitre.synthea.helpers.physiology.SimRunner;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.VitalSign;
 
@@ -55,8 +56,10 @@ public class PhysiologyValueGeneratorTest {
     // Set our current simulation time
     long simTime = dateToSimTime("2019-09-19");
     
+    SimRunner runner = new SimRunner(config, person);
+    
     // Get the generator for systolic BP
-    PhysiologyValueGenerator generator = new PhysiologyValueGenerator(config,
+    PhysiologyValueGenerator generator = new PhysiologyValueGenerator(config, runner,
         VitalSign.SYSTOLIC_BLOOD_PRESSURE, person, 0.0);
     
     double sys1 = generator.getValue(simTime);
@@ -140,8 +143,10 @@ public class PhysiologyValueGeneratorTest {
     PhysiologyGeneratorConfig config = PhysiologyValueGenerator.getConfig(
         "circulation_hemodynamics.yml");
     
+    SimRunner runner = new SimRunner(config, person);
+    
     // Get the generator for systolic BP
-    PhysiologyValueGenerator generator = new PhysiologyValueGenerator(config,
+    PhysiologyValueGenerator generator = new PhysiologyValueGenerator(config, runner,
         VitalSign.SYSTOLIC_BLOOD_PRESSURE, person, 0.0);
     
     assertEquals("PhysiologyValueGenerator {model=circulation/Smith2004_CVS_human.xml, "
