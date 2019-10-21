@@ -44,8 +44,6 @@ personAttributeDefaults:
 inputs:
       # Effects of age and BMI loosely estimated from a comprehensive study on adult blood pressure 
       # percentiles (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4553889/)
-      # TODO: This really should involve more than just systemic resistance and aortal
-      # elasticity. This was just a quick and dirty way to get reasonable results.
       # More research is needed to determine appropriate age / BMI effects on all model parameters.
     - fromExp: "1.1889 + 0.025 * (#{BMI} - 21.7) + (if #{blood_pressure_controlled} != 0 then 0 else (0.0112 * #{age}))"
       to: R_sys
@@ -71,9 +69,6 @@ inputs:
 #                           Defaults to 0.
 #   "type"              -   Type of the output value "to". Must be "ATTRIBUTE" or "VITAL_SIGN".
 outputs:
-    - fromList: P_ao
-      to: Arterial Pressure Values
-      type: ATTRIBUTE
     - fromExp: "((Max(#{V_lv}) - Min(#{V_lv})) / Max(#{V_lv}))*100"
       to: Left ventricular Ejection fraction
       type: VITAL_SIGN
