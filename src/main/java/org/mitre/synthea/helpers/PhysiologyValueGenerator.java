@@ -57,13 +57,14 @@ public class PhysiologyValueGenerator extends ValueGenerator {
    * @param config physiology configuration file
    * @param person Person instance to generate VitalSigns for
    */
-  public PhysiologyValueGenerator(PhysiologyGeneratorConfig config, VitalSign vitalSign,
+  public PhysiologyValueGenerator(PhysiologyGeneratorConfig config, SimRunner runner, 
+      VitalSign vitalSign,
       Person person, double outputVariance) {
     super(person);
     this.config = config;
     this.vitalSign = vitalSign;
     this.outputVariance = outputVariance;
-    this.simRunner = person.getSimRunner(config);
+    this.simRunner = runner;
     
     // Set any patient attribute default values
     if (config.getPersonAttributeDefaults() != null) {
@@ -159,10 +160,13 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       PhysiologyGeneratorConfig generatorConfig, Person person) {
     List<PhysiologyValueGenerator> generators = new ArrayList<PhysiologyValueGenerator>();
     
+    SimRunner runner = new SimRunner(generatorConfig, person);
+    
     for (IoMapper mapper : generatorConfig.getOutputs()) {
       if (mapper.getType() == IoMapper.IoType.VITAL_SIGN) {
         generators.add(new PhysiologyValueGenerator(
             generatorConfig,
+            runner,
             VitalSign.fromString(mapper.getTo()),
             person, mapper.getVariance()));
       }
