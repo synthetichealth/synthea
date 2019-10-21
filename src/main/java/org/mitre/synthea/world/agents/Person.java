@@ -24,6 +24,8 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
+import org.mitre.synthea.helpers.physiology.PhysiologyGeneratorConfig;
+import org.mitre.synthea.helpers.physiology.SimRunner;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -107,6 +109,12 @@ public class Person implements Serializable, QuadTreeData {
   private Map<Integer, Double> healthcareExpensesYearly;
   /* Yearly Healthcare Coverage. */
   private Map<Integer, Double> healthcareCoverageYearly;
+  
+  /* 
+   * Store SimRunner instances on each Person so they get GC'd when the Person is GC'd
+   * Declared transient so that it's not included in serialization
+   */
+  private final transient Map<String, SimRunner> simRunners = new HashMap<String, SimRunner>();
 
   /**
    * Person constructor.
@@ -800,5 +808,28 @@ public class Person implements Serializable, QuadTreeData {
   @Override
   public String getFileName() {
     return null;
+  }
+  
+  /**
+   * Retrieves a SimRunner instance for this Person for the given physiology generator
+   * configuration. If one doesn't already exist, it will be created.
+   * @param generatorConfig physiology generator configuration object
+   * @return true if a new SimRunner was created, false if the SimRunner already exists
+   */
+  public SimRunner getSimRunner(PhysiologyGeneratorConfig generatorConfig) {
+    if (!this.simRunners.containsKey(generatorConfig.getModel())) {
+      SimRunner runner = new SimRunner(generatorConfig, this);
+      this.simRunners.put(generatorConfig.getModel(), runner);
+      
+      // If this physiology generator is using pre-generators, ensure the new
+      // runner compares against Default inputs so it doesn't run until
+      // values change from the defaults
+      if (generatorConfig.isUsePreGenerators()) {
+        runner.compareDefaultInputs();
+      }
+      
+      return runner;
+    }
+    return this.simRunners.get(generatorConfig.getModel());
   }
 }

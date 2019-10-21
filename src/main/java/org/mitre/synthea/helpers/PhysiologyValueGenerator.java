@@ -31,8 +31,6 @@ import org.yaml.snakeyaml.constructor.Constructor;
  */
 public class PhysiologyValueGenerator extends ValueGenerator {
   public static Path GENERATORS_PATH;
-  private static ConcurrentMap<String,SimRunner> RUNNER_CACHE
-      = new ConcurrentHashMap<String,SimRunner>();
   private static ConcurrentMap<String,PhysiologyGeneratorConfig> CONFIG_CACHE
       = new ConcurrentHashMap<String,PhysiologyGeneratorConfig>();
   private SimRunner simRunner;
@@ -65,7 +63,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     this.config = config;
     this.vitalSign = vitalSign;
     this.outputVariance = outputVariance;
-    String runnerId = person.attributes.get(Person.ID) + ":" + config.getModel();
+    this.simRunner = person.getSimRunner(config);
     
     // Set any patient attribute default values
     if (config.getPersonAttributeDefaults() != null) {
@@ -101,24 +99,6 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       }
       
       preGenerator = outMapper.getPreGenerator().getGenerator(person);
-    }
-    
-    if (RUNNER_CACHE.containsKey(runnerId)) {
-      simRunner = RUNNER_CACHE.get(runnerId);
-      
-      // If a different configuration was provided with the same model, throw an error
-      if (!simRunner.getConfig().equals(config)) {
-        throw new RuntimeException("ERROR: Conflicting configurations for physiology model \""
-            + config.getModel() + "\"");
-      }
-    } else {
-      simRunner = new SimRunner(config, person);
-      // If we're using pre-simulation generators, set the runner to compare against
-      // defaults so we don't run until a sufficient input change is detected.
-      if (config.isUsePreGenerators()) {
-        simRunner.compareDefaultInputs();
-      }
-      RUNNER_CACHE.put(runnerId, simRunner);
     }
   }
   
