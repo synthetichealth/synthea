@@ -270,8 +270,8 @@ public class Location {
       // Precision within 0.001 degree is more or less a neighborhood or street.
       // Precision within 0.01 is a village or town
       // Precision within 0.1 is a large city
-      double dx = person.rand(0.001, 0.1);
-      double dy = person.rand(0.001, 0.1);
+      double dx = person.rand(-0.05, 0.05);
+      double dy = person.rand(-0.001, 0.05);
       coordinate.setLocation(coordinate.x + dx, coordinate.y + dy);
       person.attributes.put(Person.COORDINATE, coordinate);
     }
