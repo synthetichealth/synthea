@@ -151,6 +151,6 @@ public class PhysiologyValueGeneratorTest {
     
     assertEquals("PhysiologyValueGenerator {model=circulation/Smith2004_CVS_human.xml, "
         + "VitalSigns=[LVEF, SYSTOLIC_BLOOD_PRESSURE, DIASTOLIC_BLOOD_PRESSURE], "
-        + "Attributes=[Arterial Pressure Values]}", generator.toString());
+        + "Attributes=[]}", generator.toString());
   }
 }
