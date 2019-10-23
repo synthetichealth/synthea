@@ -15,9 +15,11 @@ fi
 
 rev=$(git rev-parse --short HEAD)
 
-./gradlew graphviz uberJar
+./gradlew graphviz uberJar javadoc
 mkdir -p output/build/libs
 mv build/libs/*.jar output/build/libs
+mkdir -p output/build/javadoc
+mv build/docs/javadoc/* output/build/javadoc
 
 cd output
 
@@ -32,5 +34,5 @@ git reset upstream/gh-pages
 # echo "synthea.org" > CNAME
 
 git add -A graphviz build
-git commit -m "rebuild graphs and binary distribution at ${rev}"
+git commit -m "rebuild graphs, javadoc and binary distribution at ${rev}"
 git push -q upstream HEAD:gh-pages
