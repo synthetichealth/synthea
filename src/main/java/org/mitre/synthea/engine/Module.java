@@ -127,9 +127,8 @@ public class Module {
   }
 
   private static String relativePath(Path filePath, Path modulesFolder) {
-    String folderString = Matcher.quoteReplacement(modulesFolder.toString() + File.separator);
-    return filePath.toString().replaceFirst(folderString, "").replaceFirst(".json", "")
-        .replace("\\", "/");
+    String relativeFilePath = modulesFolder.relativize(filePath).toString().replaceFirst(".json", "");
+    return relativeFilePath;
   }
 
   public static Module loadFile(Path path, Path modulesFolder) throws Exception {
