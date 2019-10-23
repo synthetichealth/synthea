@@ -20,13 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.regex.Matcher;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
@@ -127,7 +125,8 @@ public class Module {
   }
 
   private static String relativePath(Path filePath, Path modulesFolder) {
-    String relativeFilePath = modulesFolder.relativize(filePath).toString().replaceFirst(".json", "");
+    String relativeFilePath = modulesFolder.relativize(filePath).toString()
+        .replaceFirst(".json", "").replace("\\", "/");
     return relativeFilePath;
   }
 
