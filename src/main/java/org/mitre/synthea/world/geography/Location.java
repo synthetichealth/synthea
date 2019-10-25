@@ -3,6 +3,7 @@ package org.mitre.synthea.world.geography;
 import com.google.common.collect.Table;
 import com.google.gson.Gson;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -11,7 +12,6 @@ import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.sis.geometry.DirectPosition2D;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -265,7 +265,8 @@ public class Location {
     
     if (place != null) {
       // Get the coordinate of the city/town
-      DirectPosition2D coordinate = place.getLatLon().clone();
+      Point2D.Double coordinate = new Point2D.Double();
+      coordinate.setLocation(place.coordinate);
       // And now perturbate it slightly.
       // Precision within 0.001 degree is more or less a neighborhood or street.
       // Precision within 0.01 is a village or town
@@ -308,13 +309,14 @@ public class Location {
     
     if (place != null) {
       // Get the coordinate of the city/town
-      DirectPosition2D coordinate = place.getLatLon().clone();
+      Point2D.Double coordinate = new Point2D.Double();
+      coordinate.setLocation(place.coordinate);
       // And now perturbate it slightly.
       // Precision within 0.001 degree is more or less a neighborhood or street.
       // Precision within 0.01 is a village or town
       // Precision within 0.1 is a large city
-      double dx = clinician.rand() / 10.0;
-      double dy = clinician.rand() / 10.0;
+      double dx = (clinician.rand() * 0.1) - 0.05;
+      double dy = (clinician.rand() * 0.1) - 0.05;
       coordinate.setLocation(coordinate.x + dx, coordinate.y + dy);
       clinician.attributes.put(Person.COORDINATE, coordinate);
     }

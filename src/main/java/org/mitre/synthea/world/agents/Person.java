@@ -1,5 +1,6 @@
 package org.mitre.synthea.world.agents;
 
+import java.awt.geom.Point2D;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -16,8 +17,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.sis.geometry.DirectPosition2D;
-import org.apache.sis.index.tree.QuadTreeData;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
@@ -30,8 +29,9 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
-public class Person implements Serializable, QuadTreeData {
+public class Person implements Serializable, QuadTreeElement {
   private static final long serialVersionUID = 4322116644425686379L;
   private static final ZoneId timeZone = ZoneId.systemDefault();
 
@@ -743,43 +743,17 @@ public class Person implements Serializable, QuadTreeData {
     return ((Map<Integer, Double>) this.attributes.get("QOL")).get(year);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.sis.index.tree.QuadTreeData#getX()
-   */
   @Override
   public double getX() {
-    return getLatLon().getX();
+    return getLonLat().getX();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.sis.index.tree.QuadTreeData#getY()
-   */
   @Override
   public double getY() {
-    return getLatLon().getY();
+    return getLonLat().getY();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.sis.index.tree.QuadTreeData#getLatLon()
-   */
-  @Override
-  public DirectPosition2D getLatLon() {
-    return (DirectPosition2D) attributes.get(Person.COORDINATE);
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.sis.index.tree.QuadTreeData#getFileName()
-   */
-  @Override
-  public String getFileName() {
-    return null;
+  public Point2D.Double getLonLat() {
+    return (Point2D.Double) attributes.get(Person.COORDINATE);
   }
 }

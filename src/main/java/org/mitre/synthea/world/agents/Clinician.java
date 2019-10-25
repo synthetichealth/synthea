@@ -1,5 +1,6 @@
 package org.mitre.synthea.world.agents;
 
+import java.awt.geom.Point2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
@@ -7,10 +8,9 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.sis.geometry.DirectPosition2D;
-import org.apache.sis.index.tree.QuadTreeData;
+import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
-public class Clinician implements Serializable, QuadTreeData {
+public class Clinician implements Serializable, QuadTreeElement {
   private static final long serialVersionUID = 1370111157423846567L;
 
   public static final String WELLNESS = "wellness";
@@ -123,40 +123,20 @@ public class Clinician implements Serializable, QuadTreeData {
   public int randInt(int bound) {
     return random.nextInt(bound);
   }
-  
-  /*
-   * (non-Javadoc)
-   * @see org.apache.sis.index.tree.QuadTreeData#getX()
-   */
+
   @Override
   public double getX() {
-    return getLatLon().getX();
+    // TODO Auto-generated method stub
+    return getLonLat().getX();
   }
 
-  /*
-   * (non-Javadoc)
-   * @see org.apache.sis.index.tree.QuadTreeData#getY()
-   */
   @Override
   public double getY() {
-    return getLatLon().getY();
+    // TODO Auto-generated method stub
+    return getLonLat().getY();
   }
 
-  /*
-   * (non-Javadoc)
-   * @see org.apache.sis.index.tree.QuadTreeData#getLatLon()
-   */
-  @Override
-  public DirectPosition2D getLatLon() {
-    return (DirectPosition2D) attributes.get(Person.COORDINATE);
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see org.apache.sis.index.tree.QuadTreeData#getFileName()
-   */
-  @Override
-  public String getFileName() {
-    return null;
+  public Point2D.Double getLonLat() {
+    return (Point2D.Double) attributes.get(Person.COORDINATE);
   }
 }
