@@ -49,7 +49,7 @@ public class DemographicsTest {
         hispanic++;
       }
     }
-    assertTrue(hispanic > 1100 && hispanic < 1500);
+    assertTrue(hispanic > 1000 && hispanic < 1600);
   }
 
   @Test
