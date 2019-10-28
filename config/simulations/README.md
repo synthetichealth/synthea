@@ -11,5 +11,5 @@ part of the normal Synthea execution procedure.
 
 ## Usage
 
-`./gradlew physiology --args="configs/simulations/[config name].yml"`
+`./gradlew physiology --args="config/simulations/[config name].yml"`
 
