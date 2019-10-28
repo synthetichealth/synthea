@@ -317,36 +317,6 @@ public class Utilities {
   }
   
   /**
-   * Utility function to convert from a Java wrapper class to primitive type class.
-   * @param clazz type to convert to primitive type
-   * @return primitive class
-   */
-  public static Class<?> toPrimitiveClass(Class<?> clazz) {
-    if (Boolean.class == clazz) {
-      return Boolean.TYPE;
-    }
-    if (Byte.class == clazz) {
-      return Byte.TYPE;
-    }
-    if (Short.class == clazz) {
-      return Short.TYPE;
-    }
-    if (Integer.class == clazz) {
-      return Integer.TYPE;
-    }
-    if (Long.class == clazz) {
-      return Long.TYPE;
-    }
-    if (Float.class == clazz) {
-      return Float.TYPE;
-    }
-    if (Double.class == clazz) {
-      return Double.TYPE;
-    }
-    throw new IllegalArgumentException("No primitive class for " + clazz);
-  }
-  
-  /**
    * Utility function to convert from string to a base Java object type.
    * @param clazz type to convert to
    * @param value string value to convert

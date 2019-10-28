@@ -160,26 +160,6 @@ public class UtilitiesTest {
   }
   
   @Test
-  public void testToPrimitiveClass() {
-    // Test each of the primitive classes
-    assertEquals(Boolean.TYPE, Utilities.toPrimitiveClass(Boolean.class));
-    assertEquals(Byte.TYPE, Utilities.toPrimitiveClass(Byte.class));
-    assertEquals(Short.TYPE, Utilities.toPrimitiveClass(Short.class));
-    assertEquals(Integer.TYPE, Utilities.toPrimitiveClass(Integer.class));
-    assertEquals(Long.TYPE, Utilities.toPrimitiveClass(Long.class));
-    assertEquals(Float.TYPE, Utilities.toPrimitiveClass(Float.class));
-    assertEquals(Double.TYPE, Utilities.toPrimitiveClass(Double.class));
-    
-  }
-  
-  @Test(expected = IllegalArgumentException.class)
-  public void testInvalidToPrimitiveClass() {
-    // Trying to get the primitive class for a type that doesn't have
-    // a primitive class results in an IllegalArgumentException
-    Utilities.toPrimitiveClass(Date.class);
-  }
-  
-  @Test
   public void testStrToObject() {
     
     assertEquals(true, Utilities.strToObject(Boolean.class, "true"));

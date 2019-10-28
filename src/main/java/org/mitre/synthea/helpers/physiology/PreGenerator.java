@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.world.agents.Person;
@@ -54,7 +55,7 @@ public class PreGenerator {
       PreGeneratorArg arg = args.get(i);
       try {
         if (arg.isPrimitive()) {
-          parameterTypes[i + 1] = Utilities.toPrimitiveClass(Class.forName(arg.getType()));
+          parameterTypes[i + 1] = ClassUtils.wrapperToPrimitive(Class.forName(arg.getType()));
         } else {
           parameterTypes[i + 1] = Class.forName(arg.getType());
         }
