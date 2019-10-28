@@ -19,6 +19,16 @@
     "system": "urn:ietf:bcp:47",
     "display": "Chinese"
   },
+  "japanese": {
+    "code": "ja",
+    "system": "urn:ietf:bcp:47",
+    "display": "Japanese"
+  },
+  "korean": {
+    "code": "ko",
+    "system": "urn:ietf:bcp:47",
+    "display": "Korean"
+  },
   "french": {
     "code": "fr-FR",
     "system": "urn:ietf:bcp:47",
@@ -63,6 +73,11 @@
     "code": "de-DE",
     "system": "urn:ietf:bcp:47",
     "display": "German (Germany)"
+  },
+  "polish": {
+    "code": "pl",
+    "system": "urn:ietf:bcp:47",
+    "display": "Polish"
   },
   "hindi": {
     "code": "hi",
