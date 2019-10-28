@@ -210,8 +210,7 @@ public class BirthStatistics {
    * @return True if the mother is hispanic, otherwise false.
    */
   private static boolean isHispanic(Person mother) {
-    String race = (String) mother.attributes.get(Person.RACE);
     String ethnicity = (String) mother.attributes.get(Person.ETHNICITY);
-    return (race.equalsIgnoreCase("hispanic") || ethnicity.equalsIgnoreCase("hispanic"));
+    return (ethnicity.equalsIgnoreCase("hispanic"));
   }
 }

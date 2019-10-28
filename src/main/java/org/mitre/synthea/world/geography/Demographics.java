@@ -42,6 +42,11 @@ public class Demographics implements Comparable<Demographics> {
   public Map<String, Double> education;
   private RandomCollection<String> educationDistribution;
 
+  /**
+   * Pick an age based on the population distribution for the city.
+   * @param random random to use
+   * @return the age in years
+   */
   public int pickAge(Random random) {
     // lazy-load in case this randomcollection isn't necessary
     if (ageDistribution == null) {
@@ -65,6 +70,11 @@ public class Demographics implements Comparable<Demographics> {
     return random.nextInt((high - low) + 1) + low;
   }
 
+  /**
+   * Pick a gender based on the population distribution for the city.
+   * @param random random to use
+   * @return the gender
+   */
   public String pickGender(Random random) {
     // lazy-load in case this randomcollection isn't necessary
     if (genderDistribution == null) {
@@ -78,8 +88,14 @@ public class Demographics implements Comparable<Demographics> {
     return genderDistribution.next(random);
   }
 
+  /**
+   * Pick a race based on the population distribution for the city.
+   * Uses the US Census definition for race
+   * @param random random to use
+   * @return the race
+   */
   public String pickRace(Random random) {
-    // lazy-load in case this randomcollection isn't necessary
+    // lazy-load in case this random collection isn't necessary
     if (raceDistribution == null) {
       raceDistribution = buildRandomCollectionFromMap(race);
     }
@@ -93,6 +109,13 @@ public class Demographics implements Comparable<Demographics> {
     return raceDistribution.next(random);
   }
 
+  /**
+   * Pick an ethnicity based on the population distribution for the city.
+   * Uses the US Census definition for ethnicity.
+   *
+   * @param random random to use
+   * @return "hispanic" or "nonhispanic"
+   */
   public String pickEthnicity(Random random) {
     if (ethnicityDistribution == null) {
       ethnicityDistribution = new RandomCollection();
@@ -102,6 +125,15 @@ public class Demographics implements Comparable<Demographics> {
     return ethnicityDistribution.next(random);
   }
 
+  /**
+   * Selects a language based on race and ethnicity.
+   * For those of Hispanic ethnicity, language statistics are pulled from the national distribution
+   * of spoken languages. For non-Hispanic, national distributions by race are used.
+   * @param race US Census race
+   * @param ethnicity "hispanic" or "nonhispanic"
+   * @param random random to use
+   * @return the language spoken
+   */
   public String languageFromRaceAndEthnicity(String race, String ethnicity, Random random) {
     if (ethnicity.equals("hispanic")) {
       RandomCollection<String> hispanicLanguageUsage = new RandomCollection<>();
@@ -139,7 +171,8 @@ public class Demographics implements Comparable<Demographics> {
           whiteLanguageUsage.add(0.984, "english");
           return whiteLanguageUsage.next(random);
         case "black":
-          // Only 3% of people who report a race of black or African American alone speak English less than very well.
+          // Only 3% of people who report a race of black or African American alone speak English
+          // less than very well.
           // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005B&prodType=table
           RandomCollection<String> blackLanguageUsage = new RandomCollection();
           blackLanguageUsage.add(0.004, "french");
@@ -174,19 +207,26 @@ public class Demographics implements Comparable<Demographics> {
         case "other":
           // 36% of people who report a race of something else speak English less than well
           // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005F&prodType=table
-          // There are 924,374 Arabic speakers estimated nationally. Since there are 14,270,613, people report some other
-          // race, we'll give people in this race category a 6.5% chance of speaking Arabic.
+          // There are 924,374 Arabic speakers estimated nationally. Since there are 14,270,613
+          // people report some other race, we'll give people in this race category a 6.5% chance
+          // of speaking Arabic.
           // TODO: Figure out what languages to assign to the missing 30%
           RandomCollection<String> otherLanguageUsage = new RandomCollection();
           otherLanguageUsage.add(0.065, "arabic");
           otherLanguageUsage.add(0.935, "english");
           return otherLanguageUsage.next(random);
+        default:
+          // Should never happen
+          return "english";
       }
     }
-    // Should never happen
-    return "english";
   }
 
+  /**
+   * Pick an ethnicity based on the population distribution for the city.
+   * @param random the random to use
+   * @return the income
+   */
   public int pickIncome(Random random) {
     // lazy-load in case this randomcollection isn't necessary
     if (incomeDistribution == null) {
