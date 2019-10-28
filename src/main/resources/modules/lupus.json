@@ -181,8 +181,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "567645",
-          "display": "predniSONE 2.5 MG [Deltasone]"
+          "code": "312615",
+          "display": "predniSONE 20 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Diagnosis_Encounter"
@@ -272,8 +272,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "835900",
-          "display": "cycloSPORINE, modified 100 MG [Neoral]"
+          "code": "241834",
+          "display": "cycloSPORINE, modified 100 MG Oral Capsule"
         }
       ],
       "direct_transition": "Flareup_Corticosteroid"
@@ -290,8 +290,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "567645",
-          "display": "predniSONE 2.5 MG [Deltasone]"
+          "code": "312615",
+          "display": "predniSONE 20 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Flareup_Encounter"

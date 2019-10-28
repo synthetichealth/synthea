@@ -124,8 +124,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1000156",
-          "display": "0.65 ML medroxyprogesterone acetate 160 MG/ML Prefilled Syringe"
+          "code": "1000126",
+          "display": "1 ML medroxyPROGESTERone acetate 150 MG/ML Injection"
         }
       ],
       "direct_transition": "Initial_Injection_By_Physician"

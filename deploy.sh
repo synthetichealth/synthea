@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # --------------------------------------------------------------------------
-# This script deploys rendered graphs of the Synthea modules to github pages
+# This script deploys rendered graphs of the Synthea modules and the
+# Synthea binary distribution to github pages
 # --------------------------------------------------------------------------
 
 set -o errexit -o nounset
@@ -14,7 +15,12 @@ fi
 
 rev=$(git rev-parse --short HEAD)
 
-./gradlew graphviz
+./gradlew graphviz uberJar javadoc
+mkdir -p output/build/libs
+mv build/libs/*.jar output/build/libs
+mkdir -p output/build/javadoc
+mv build/docs/javadoc/* output/build/javadoc
+
 cd output
 
 git init
@@ -22,13 +28,11 @@ git config user.name "Jason Walonoski"
 git config user.email "jwalonoski@mitre.org"
 
 git remote add upstream "https://$GH_TOKEN@github.com/synthetichealth/synthea.git"
-git fetch upstream
+git fetch upstream gh-pages
 git reset upstream/gh-pages
 
 # echo "synthea.org" > CNAME
 
-touch graphviz
-
-git add -A graphviz/
-git commit -m "rebuild graphs at ${rev}"
+git add -A graphviz build
+git commit -m "rebuild graphs, javadoc and binary distribution at ${rev}"
 git push -q upstream HEAD:gh-pages

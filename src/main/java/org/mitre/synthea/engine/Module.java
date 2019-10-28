@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.regex.Matcher;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
@@ -46,10 +45,10 @@ import org.mitre.synthea.world.agents.Person;
 public class Module {
 
   private static final Map<String, ModuleSupplier> modules = loadModules();
-
+  
   private static Map<String, ModuleSupplier> loadModules() {
     Map<String, ModuleSupplier> retVal = new ConcurrentHashMap<>();
-    AtomicInteger submoduleCount = new AtomicInteger();
+    int submoduleCount = 0;
 
     retVal.put("Lifecycle", new ModuleSupplier(new LifecycleModule()));
     //retVal.put("Health Insurance", new ModuleSupplier(new HealthInsuranceModule()));
@@ -61,29 +60,51 @@ public class Module {
       URI modulesURI = Module.class.getClassLoader().getResource("modules").toURI();
       fixPathFromJar(modulesURI);
       Path modulesPath = Paths.get(modulesURI);
-      Path basePath = modulesPath.getParent();
-      Files.walk(modulesPath, Integer.MAX_VALUE)
-          .filter(Files::isReadable)
-          .filter(Files::isRegularFile)
-          .filter(p -> p.toString().endsWith(".json")).forEach(t -> {
-            String relativePath = relativePath(t, modulesPath);
-            boolean submodule = !t.getParent().equals(modulesPath);
-            if (submodule) {
-              submoduleCount.getAndIncrement();
-            }
-            retVal.put(relativePath, new ModuleSupplier(submodule, 
-                                                        relativePath,
-                () -> loadFile(basePath.relativize(t), submodule)));
-          });
+      submoduleCount = walkModuleTree(modulesPath, retVal);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     System.out.format("Scanned %d modules and %d submodules.\n", 
-                      retVal.size() - submoduleCount.get(), 
-                      submoduleCount.get());
+                      retVal.size() - submoduleCount, 
+                      submoduleCount);
 
     return retVal;
+  }
+
+  private static int walkModuleTree(Path modulesPath, Map<String, ModuleSupplier> retVal)
+          throws IOException {
+    AtomicInteger submoduleCount = new AtomicInteger();
+    Path basePath = modulesPath.getParent();
+    Files.walk(modulesPath, Integer.MAX_VALUE)
+            .filter(Files::isReadable)
+            .filter(Files::isRegularFile)
+            .filter(p -> p.toString().endsWith(".json")).forEach(t -> {
+              String relativePath = relativePath(t, modulesPath);
+              boolean submodule = !t.getParent().equals(modulesPath);
+              if (submodule) {
+                submoduleCount.getAndIncrement();
+              }
+              retVal.put(relativePath, new ModuleSupplier(submodule,
+                  relativePath,
+                  () -> loadFile(basePath.relativize(t), submodule)));
+            });
+    return submoduleCount.get();
+  }
+  
+  public static void addModules(File dir) {
+    int submoduleCount = 0;
+    int originalModuleCount = modules.size();
+    try {
+      walkModuleTree(dir.toPath(), modules);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    System.out.format("Scanned %d local modules and %d local submodules.\n", 
+                      modules.size() - (originalModuleCount + submoduleCount), 
+                      submoduleCount);
+
   }
 
   private static void fixPathFromJar(URI uri) throws IOException {
@@ -104,9 +125,9 @@ public class Module {
   }
 
   private static String relativePath(Path filePath, Path modulesFolder) {
-    String folderString = Matcher.quoteReplacement(modulesFolder.toString() + File.separator);
-    return filePath.toString().replaceFirst(folderString, "").replaceFirst(".json", "")
-        .replace("\\", "/");
+    String relativeFilePath = modulesFolder.relativize(filePath).toString()
+        .replaceFirst(".json", "").replace("\\", "/");
+    return relativeFilePath;
   }
 
   public static Module loadFile(Path path, Path modulesFolder) throws Exception {

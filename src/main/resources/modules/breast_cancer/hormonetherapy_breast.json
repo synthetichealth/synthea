@@ -343,8 +343,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 1946831,
-          "display": "abemaciclib 100 MG Oral Tablet"
+          "code": 1946840,
+          "display": "Verzenio 100 MG Oral Tablet"
         }
       ],
       "direct_transition": "ER_PR_medication_end",

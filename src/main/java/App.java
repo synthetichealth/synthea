@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -20,6 +21,8 @@ public class App {
     System.out.println("         [-g gender] [-a minAge-maxAge]");
     System.out.println("         [-o overflowPopulation]");
     System.out.println("         [-m moduleFileWildcardList]");
+    System.out.println("         [-c localConfigFilePath]");
+    System.out.println("         [-d localModulesDirPath]");
     System.out.println("         [--config* value]");
     System.out.println("          * any setting from src/main/resources/synthea.properties");
     System.out.println("Examples:");
@@ -88,6 +91,25 @@ public class App {
             String value = argsQ.poll();
             String[] values = value.split(File.pathSeparator);
             options.enabledModules = Arrays.asList(values);
+          } else if (currArg.equalsIgnoreCase("-c")) {
+            // TODO: if the user specifies configuration options either here or
+            // using --config.setting, those values will not be used to
+            // initialize the Generator.GeneratorOptions options declared above.
+            // Currently only generate.default_population Config setting is used
+            // by Generator.GeneratorOptions so this should not be an issue.
+            String value = argsQ.poll();
+            File configFile = new File(value);
+            Config.load(configFile);
+          } else if (currArg.equalsIgnoreCase("-d")) {
+            String value = argsQ.poll();
+            File localModuleDir = new File(value);
+            if (localModuleDir.exists() && localModuleDir.isDirectory()) {
+              options.localModuleDir = localModuleDir;
+            } else {
+              throw new FileNotFoundException(String.format(
+                      "Specified local module directory (%s) is not a directory",
+                      localModuleDir.getAbsolutePath()));
+            }
           } else if (currArg.startsWith("--")) {
             String configSetting;
             String value;
