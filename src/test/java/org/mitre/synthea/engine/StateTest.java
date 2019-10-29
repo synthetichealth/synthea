@@ -1690,4 +1690,26 @@ public class StateTest {
     assertNotEquals(cvsClone, simulateCvs);
     assertTrue(cvsClone.process(person, time));
   }
+  
+  @Test
+  public void testExpressionUse() throws Exception {
+    
+    // Birth makes the vital signs come alive :-)
+    LifecycleModule.birth(person, (long)person.attributes.get(Person.BIRTHDATE));
+
+    Module module = TestHelper.getFixture("expression_use.json");
+    
+    State attrExpression = module.getState("Set_Attr");
+    assertTrue(attrExpression.process(person, time));
+    
+    State vitalExpression = module.getState("Set_Vital");
+    assertTrue(vitalExpression.process(person, time));
+    
+    State observeExpression = module.getState("Observe");
+    assertTrue(observeExpression.process(person, time));
+    
+    // Verify that the Person now has an LVEF value of 60
+    assertEquals(person.getVitalSign(VitalSign.LVEF, time), 60.0, 0.00001);
+    
+  }
 }
