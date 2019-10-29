@@ -479,15 +479,20 @@ public abstract class State implements Cloneable {
     private String attribute;
     private Object value;
     private String expression;
-    private transient ExpressionProcessor expProcessor;
+    private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
 
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
       
+      // If the ThreadLocal instance hasn't been created yet, create it now
+      if (threadExpProcessor == null) {
+        threadExpProcessor = new ThreadLocal<ExpressionProcessor>();
+      }
+      
       // If there's an expression, create the processor for it
-      if (this.expression != null) { 
-        expProcessor = new ExpressionProcessor(this.expression);
+      if (this.expression != null && threadExpProcessor.get() == null) { 
+        threadExpProcessor.set(new ExpressionProcessor(this.expression));
       }
 
       // special handling for integers
@@ -506,14 +511,14 @@ public abstract class State implements Cloneable {
       clone.attribute = attribute;
       clone.value = value;
       clone.expression = expression;
-      clone.expProcessor = expProcessor;
+      clone.threadExpProcessor = threadExpProcessor;
       return clone;
     }
 
     @Override
     public boolean process(Person person, long time) {
-      if (expProcessor != null) {
-        value = expProcessor.evaluate(person, time);
+      if (threadExpProcessor.get() != null) {
+        value = threadExpProcessor.get().evaluate(person, time);
       }
 
       if (value != null) {
@@ -1258,15 +1263,20 @@ public abstract class State implements Cloneable {
     private Range<Double> range;
     private Exact<Double> exact;
     private String expression;
-    private transient ExpressionProcessor expProcessor;
+    private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
     
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
       
+      // If the ThreadLocal instance hasn't been created yet, create it now
+      if (threadExpProcessor == null) {
+        threadExpProcessor = new ThreadLocal<ExpressionProcessor>();
+      }
+      
       // If there's an expression, create the processor for it
-      if (this.expression != null) { 
-        expProcessor = new ExpressionProcessor(this.expression);
+      if (this.expression != null && threadExpProcessor.get() == null) { 
+        threadExpProcessor.set(new ExpressionProcessor(this.expression));
       }
     }
 
@@ -1278,7 +1288,7 @@ public abstract class State implements Cloneable {
       clone.vitalSign = vitalSign;
       clone.unit = unit;
       clone.expression = expression;
-      clone.expProcessor = expProcessor;
+      clone.threadExpProcessor = threadExpProcessor;
       return clone;
     }
 
@@ -1288,8 +1298,8 @@ public abstract class State implements Cloneable {
         person.setVitalSign(vitalSign, new ConstantValueGenerator(person, exact.quantity));
       } else if (range != null) {
         person.setVitalSign(vitalSign, new RandomValueGenerator(person, range.low, range.high));
-      } else if (expProcessor != null) {
-        Number value = (Number) expProcessor.evaluate(person, time);
+      } else if (threadExpProcessor.get() != null) {
+        Number value = (Number) threadExpProcessor.get().evaluate(person, time);
         person.setVitalSign(vitalSign, value.doubleValue());
       } else {
         throw new RuntimeException(
@@ -1342,15 +1352,20 @@ public abstract class State implements Cloneable {
     private String category;
     private String unit;
     private String expression;
-    private transient ExpressionProcessor expProcessor;
+    private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
     
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
       
+      // If the ThreadLocal instance hasn't been created yet, create it now
+      if (threadExpProcessor == null) {
+        threadExpProcessor = new ThreadLocal<ExpressionProcessor>();
+      }
+      
       // If there's an expression, create the processor for it
       if (this.expression != null) { 
-        expProcessor = new ExpressionProcessor(this.expression);
+        threadExpProcessor.set(new ExpressionProcessor(this.expression));
       }
     }
 
@@ -1366,6 +1381,7 @@ public abstract class State implements Cloneable {
       clone.category = category;
       clone.unit = unit;
       clone.expression = expression;
+      clone.threadExpProcessor = threadExpProcessor;
       return clone;
     }
 
@@ -1383,8 +1399,8 @@ public abstract class State implements Cloneable {
         value = person.getVitalSign(vitalSign, time);
       } else if (valueCode != null) {
         value = valueCode;
-      } else if (expProcessor != null) {
-        value = expProcessor.evaluate(person, time);
+      } else if (threadExpProcessor.get() != null) {
+        value = threadExpProcessor.get().evaluate(person, time);
       } 
       HealthRecord.Observation observation = person.record.observation(time, primaryCode, value);
       entry = observation;
