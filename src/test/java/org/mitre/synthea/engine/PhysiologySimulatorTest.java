@@ -15,18 +15,32 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.math.ode.DerivativeException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mitre.synthea.engine.PhysiologySimulator.ChartConfig;
 import org.simulator.math.odes.MultiTable;
 import org.simulator.math.odes.MultiTable.Block.Column;
 
 public class PhysiologySimulatorTest {
   
   public static final TemporaryFolder outFolder = new TemporaryFolder();
+  
+  /**
+   * Returns a mock MultiTable to test PhysiologySimulator methods.
+   * @return mock MultiTable instance
+   */
+  public static MultiTable getMockTable() {
+    double[] timePoints = {1.0,2.0,3.0,4.0,5.0};
+    String[] identifiers = {"test1", "test2"};
+    double[][] data = {{1.0,2.0,3.0,4.0,5.0},{1.0,1.0,1.0,1.0,1.0}};
+    
+    return new MultiTable(timePoints, data, identifiers);
+  }
   
   /**
    * Sets up a temporary output folder.
@@ -127,5 +141,76 @@ public class PhysiologySimulatorTest {
     }
     
     assertEquals(4, pngCount);
+  }
+  
+  @Test
+  public void testGetSolvers() {
+    Set<String> solvers = PhysiologySimulator.getSolvers();
+    assertTrue(solvers.size() > 0);
+  }
+  
+  @Test
+  public void testGetParamDefault() {
+    PhysiologySimulator physio = new PhysiologySimulator(
+        "circulation/Smith2004_CVS_human.xml", "runge_kutta", 0.01, 4);
+    
+    assertEquals(1.0, physio.getParamDefault("period"), 0.001);
+  }
+  
+  @Test(expected = RuntimeException.class)
+  public void testInvalidModelFile() {
+    new PhysiologySimulator("i_dont_exist.xml", "runge_kutta", 0.01, 4);
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testInvalidChartConfigStart() throws URISyntaxException {
+    ChartConfig config = new ChartConfig();
+    
+    config.setStartTime(-1);
+    
+    PhysiologySimulator.drawChart(getMockTable(), config);
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testInvalidChartConfigEnd() throws URISyntaxException {
+    ChartConfig config = new ChartConfig();
+    
+    // Mock only goes up to 5.0, so end is invalid
+    config.setEndTime(10.0);
+
+    PhysiologySimulator.drawChart(getMockTable(), config);
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testInvalidChartTimeSpan() throws URISyntaxException {
+    ChartConfig config = new ChartConfig();
+    
+    config.setEndTime(1.0);
+    config.setStartTime(2.0);
+
+    PhysiologySimulator.drawChart(getMockTable(), config);
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testInvalidChartAxis() throws URISyntaxException {
+    ChartConfig config = new ChartConfig();
+    
+    config.setStartTime(0.0);
+    config.setEndTime(1.0);
+    config.setAxisParamX("oops");
+
+    PhysiologySimulator.drawChart(getMockTable(), config);
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testNoConfigArgument() throws URISyntaxException {
+    String[] args = {};
+    PhysiologySimulator.main(args);
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testBadConfigArgument() throws URISyntaxException {
+    String[] args = {"i_dont_exist.yml"};
+    PhysiologySimulator.main(args);
   }
 }

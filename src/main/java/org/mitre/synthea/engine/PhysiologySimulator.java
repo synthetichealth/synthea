@@ -506,7 +506,7 @@ public class PhysiologySimulator {
    * @param table MultiTable to retrieve values from
    * @param config chart configuration options
    */
-  private static void drawChart(MultiTable table, ChartConfig config) {
+  public static void drawChart(MultiTable table, ChartConfig config) {
     
     // If there's only one series, and there's a title, hide the legend
     
@@ -542,7 +542,7 @@ public class PhysiologySimulator {
     
     // Check that the x axis identifier is valid
     if (!axisXIsTime && colX == null) {
-      throw new RuntimeException("Invalid X axis identifier: " + config.getAxisParamX());
+      throw new IllegalArgumentException("Invalid X axis identifier: " + config.getAxisParamX());
     }
     
     int startIndex = Arrays.binarySearch(timePoints, config.getStartTime());
@@ -574,7 +574,7 @@ public class PhysiologySimulator {
       
       // Check that the series identifier is valid
       if (col == null) {
-        throw new RuntimeException("Invalid series identifier: " + seriesConfig.getParam());
+        throw new IllegalArgumentException("Invalid series identifier: " + seriesConfig.getParam());
       }
 
       int indexX = 0;
@@ -658,9 +658,8 @@ public class PhysiologySimulator {
   public static void main(String [] args) {
 
     if (args.length < 1 || args[0].isEmpty()) {
-      System.out.println("YAML simulation configuration file path must be provided.");
-      System.exit(1);
-      return;
+      throw new IllegalArgumentException(
+          "YAML simulation configuration file path must be provided.");
     }
     
     // Open the config file
@@ -673,10 +672,8 @@ public class PhysiologySimulator {
     try {
       inputStream = new FileInputStream(configFile);
     } catch (FileNotFoundException ex) {
-      System.out.println("Configuration file not found: \""
+      throw new IllegalArgumentException("Configuration file not found: \""
           + configFilePath.toAbsolutePath() + "\".");
-      System.exit(2);
-      return;
     }
     
     // Add type descriptions so Yaml knows how to instantiate our Lists
