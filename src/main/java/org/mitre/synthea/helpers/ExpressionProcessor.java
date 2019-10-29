@@ -27,14 +27,16 @@ import org.cqframework.cql.cql2elm.ModelManager;
 import org.cqframework.cql.elm.execution.ExpressionDef;
 import org.cqframework.cql.elm.execution.Library;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.VitalSign;
 import org.opencds.cqf.cql.execution.Context;
 import org.opencds.cqf.cql.execution.CqlLibraryReader;
 import org.simulator.math.odes.MultiTable;
 import org.simulator.math.odes.MultiTable.Block.Column;
 
-public class ExpressionProcessor implements Cloneable {
+public class ExpressionProcessor {
   private static final String LIBRARY_NAME = "Synthea";
   private static final ModelManager modelManager = new ModelManager();
+  private static final Map<String, VitalSign> vitalSignCache = new HashMap<String, VitalSign>();
   private final LibraryManager libraryManager = new LibraryManager(modelManager);
   private String expression;
   private Library library;
@@ -105,11 +107,6 @@ public class ExpressionProcessor implements Cloneable {
     this.expression = expression;
   }
   
-  @Override
-  public ExpressionProcessor clone() {
-    return new ExpressionProcessor(expression, paramTypeMap);
-  }
-  
   /**
    * Returns the expression associated with this expression processor.
    * @return expression
@@ -173,16 +170,29 @@ public class ExpressionProcessor implements Cloneable {
       return person.ageInDecimalYears(time);
     }
     
+    // If this param is in the cache, check if we have a VitalSign or not
     org.mitre.synthea.world.concepts.VitalSign vs = null;
-    try {
-      vs = org.mitre.synthea.world.concepts.VitalSign.fromString(param);
-    } catch (IllegalArgumentException ex) {
-      // Ignore since it actually may not be a vital sign
+    
+    if (vitalSignCache.containsKey(param)) {
+      vs = vitalSignCache.get(param);
+    } else {
+      try {
+        vs = org.mitre.synthea.world.concepts.VitalSign.fromString(param);
+        
+        // Take note that this parameter is a VitalSign so we don't have to repeatedly
+        // call fromString, which can get expensive
+        vitalSignCache.put(param, vs);
+      } catch (IllegalArgumentException ex) {
+        // Take note that this parameter is not a VitalSign so we don't have to repeatedly
+        // call fromString, which can get expensive
+        vitalSignCache.put(param, null);
+      }
     }
 
     if (vs != null) {
       return person.getVitalSign(vs, time);
     } else if (person.attributes.containsKey(param)) {
+      
       Object value = person.attributes.get(param);
       
       if (value instanceof Number) {
@@ -293,7 +303,6 @@ public class ExpressionProcessor implements Cloneable {
     Object retVal = null;
 
     for (ExpressionDef statement : library.getStatements().getDef()) {
-      // System.out.println("Evaluating library statement: " + statement.getName());
       retVal = statement.evaluate(context);
     }
 
