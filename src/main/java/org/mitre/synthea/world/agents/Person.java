@@ -89,8 +89,8 @@ public class Person implements Serializable, QuadTreeElement {
   public final JDKRandomGenerator random;
   public final long seed;
   public long populationSeed;
-  public Map<String, Object> attributes;
-  public Map<VitalSign, ValueGenerator> vitalSigns;
+  public transient Map<String, Object> attributes;
+  public transient Map<VitalSign, ValueGenerator> vitalSigns;
   private Map<String, Map<String, Integer>> symptoms;
   private Map<String, Map<String, Boolean>> symptomStatuses;
   public Map<String, HealthRecord.Medication> chronicMedications;

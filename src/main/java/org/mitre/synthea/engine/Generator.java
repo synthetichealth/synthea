@@ -1,7 +1,10 @@
 package org.mitre.synthea.engine;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,6 +17,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOCase;
@@ -71,6 +76,20 @@ public class Generator {
   Predicate<String> modulePredicate;
   
   private static final String TARGET_AGE = "target_age";
+
+  private void testSerialization(Person person) {
+    try {
+      File tf = File.createTempFile("patient", "synthea");
+      FileOutputStream fos = new FileOutputStream(tf);
+      ObjectOutputStream oos = new ObjectOutputStream(fos);
+      oos.writeObject(person);
+      oos.close();
+      fos.close();
+      System.out.printf("Patient written to: %s\n", tf.getAbsolutePath());
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    }
+  }
 
   /**
    * Helper class following the "Parameter Object" pattern.
@@ -439,6 +458,7 @@ public class Generator {
 
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
+        testSerialization(person);
         Exporter.export(person, time, exporterRuntimeOptions);
       } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
           || (isAlive && onlyDeadPatients));
