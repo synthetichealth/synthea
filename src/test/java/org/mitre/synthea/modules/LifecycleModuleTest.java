@@ -69,8 +69,8 @@ public class LifecycleModuleTest {
   
   @Test
   public void testPhysiologyEnabled() {
-    boolean enablePhysiology = LifecycleModule.ENABLE_PHYSIOLOGY;
-    LifecycleModule.ENABLE_PHYSIOLOGY = true;
+    boolean enablePhysiology = LifecycleModule.ENABLE_PHYSIOLOGY_GENERATORS;
+    LifecycleModule.ENABLE_PHYSIOLOGY_GENERATORS = true;
     Person person = new Person(0L);
     
     // Need to set some attributes for birth to work properly
@@ -86,6 +86,6 @@ public class LifecycleModuleTest {
     Assert.assertEquals(person.vitalSigns.get(VitalSign.DIASTOLIC_BLOOD_PRESSURE).getClass(),
         PhysiologyValueGenerator.class);
     
-    LifecycleModule.ENABLE_PHYSIOLOGY = enablePhysiology;
+    LifecycleModule.ENABLE_PHYSIOLOGY_GENERATORS = enablePhysiology;
   }
 }

@@ -256,7 +256,7 @@ public final class LifecycleModule extends Module {
     person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE,
         new BloodPressureValueGenerator(person, SysDias.DIASTOLIC));
     
-    if (ENABLE_PHYSIOLOGY) {
+    if (ENABLE_PHYSIOLOGY_GENERATORS) {
       List<PhysiologyValueGenerator> physioGenerators = PhysiologyValueGenerator.loadAll(person);
       
       for (PhysiologyValueGenerator physioGenerator : physioGenerators) {
@@ -891,8 +891,8 @@ public final class LifecycleModule extends Module {
   protected static boolean ENABLE_DEATH_BY_NATURAL_CAUSES =
       Boolean.parseBoolean(Config.get("lifecycle.death_by_natural_causes"));
   
-  protected static boolean ENABLE_PHYSIOLOGY =
-      Boolean.parseBoolean(Config.get("physiology.enabled", "false"));
+  protected static boolean ENABLE_PHYSIOLOGY_GENERATORS =
+      Boolean.parseBoolean(Config.get("physiology.generators.enabled", "false"));
   
   private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000",
       "Natural death with unknown cause");
