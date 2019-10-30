@@ -9,12 +9,15 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -36,7 +39,10 @@ import org.simulator.math.odes.MultiTable.Block.Column;
 public class ExpressionProcessor {
   private static final String LIBRARY_NAME = "Synthea";
   private static final ModelManager modelManager = new ModelManager();
-  private static final Map<String, VitalSign> vitalSignCache = new HashMap<String, VitalSign>();
+  private static final ConcurrentMap<String, VitalSign> vitalSignCache =
+      new ConcurrentHashMap<String, VitalSign>();
+  private static final Set<String> attributeSet =
+      Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
   private final LibraryManager libraryManager = new LibraryManager(modelManager);
   private String expression;
   private Library library;
@@ -171,11 +177,9 @@ public class ExpressionProcessor {
     }
     
     // If this param is in the cache, check if we have a VitalSign or not
-    org.mitre.synthea.world.concepts.VitalSign vs = null;
+    org.mitre.synthea.world.concepts.VitalSign vs = vitalSignCache.get(param);
     
-    if (vitalSignCache.containsKey(param)) {
-      vs = vitalSignCache.get(param);
-    } else {
+    if (vs == null && !attributeSet.contains(param)) {
       try {
         vs = org.mitre.synthea.world.concepts.VitalSign.fromString(param);
         
@@ -183,9 +187,9 @@ public class ExpressionProcessor {
         // call fromString, which can get expensive
         vitalSignCache.put(param, vs);
       } catch (IllegalArgumentException ex) {
-        // Take note that this parameter is not a VitalSign so we don't have to repeatedly
+        // Take note that this parameter is an attribute so we don't have to repeatedly
         // call fromString, which can get expensive
-        vitalSignCache.put(param, null);
+        attributeSet.add(param);
       }
     }
 
