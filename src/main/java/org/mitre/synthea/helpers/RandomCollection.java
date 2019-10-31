@@ -1,5 +1,6 @@
 package org.mitre.synthea.helpers;
 
+import java.io.Serializable;
 import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
@@ -8,7 +9,7 @@ import java.util.TreeMap;
  * Random collection of objects, with weightings. Intended to be an equivalent to the ruby Pickup
  * gem. Adapted from https://stackoverflow.com/a/6409791/630384
  */
-public class RandomCollection<E> {
+public class RandomCollection<E> implements Serializable {
   private final NavigableMap<Double, E> map = new TreeMap<Double, E>();
   private double total = 0;
 

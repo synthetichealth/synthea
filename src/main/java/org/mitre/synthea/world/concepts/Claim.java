@@ -1,5 +1,6 @@
 package org.mitre.synthea.world.concepts;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 
-public class Claim {
+public class Claim implements Serializable {
 
   private Entry mainEntry;
   // The Entries have the actual cost, so the claim has the amount that the payer covered.

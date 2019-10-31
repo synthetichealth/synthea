@@ -6,6 +6,7 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,7 +33,7 @@ import org.mitre.synthea.world.geography.Location;
 import org.mitre.synthea.world.geography.quadtree.QuadTree;
 import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
-public class Provider implements QuadTreeElement {
+public class Provider implements QuadTreeElement, Serializable {
 
   public static final String ENCOUNTERS = "encounters";
   public static final String PROCEDURES = "procedures";
@@ -75,7 +76,7 @@ public class Provider implements QuadTreeElement {
   public ArrayList<EncounterType> servicesProvided;
   public Map<String, ArrayList<Clinician>> clinicianMap;
   // row: year, column: type, value: count
-  private Table<Integer, String, AtomicInteger> utilization;
+  private transient Table<Integer, String, AtomicInteger> utilization;
 
   /**
    * Create a new Provider with no information.

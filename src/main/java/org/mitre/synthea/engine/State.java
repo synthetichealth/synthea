@@ -2,14 +2,16 @@ package org.mitre.synthea.engine;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.commons.math.ode.DerivativeException;
 
 import org.mitre.synthea.engine.Components.Exact;
@@ -43,7 +45,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.simulator.math.odes.MultiTable;
 
-public abstract class State implements Cloneable {
+public abstract class State implements Cloneable, Serializable {
   public Module module;
   public String name;
   public Long entered;
@@ -978,7 +980,7 @@ public abstract class State implements Cloneable {
   public static class MedicationOrder extends State {
     private List<Code> codes;
     private String reason;
-    private JsonObject prescription; // TODO make this a Component
+    private transient JsonObject prescription; // TODO make this a Component
     private String assignToAttribute;
     private boolean administration;
     private boolean chronic;
@@ -1092,7 +1094,7 @@ public abstract class State implements Cloneable {
   public static class CarePlanStart extends State {
     private List<Code> codes;
     private List<Code> activities;
-    private List<JsonObject> goals; // TODO: make this a Component
+    private transient List<JsonObject> goals; // TODO: make this a Component
     private String reason;
     private String assignToAttribute;
 

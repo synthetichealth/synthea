@@ -89,10 +89,10 @@ public class Person implements Serializable, QuadTreeElement {
   public final JDKRandomGenerator random;
   public final long seed;
   public long populationSeed;
-  public transient Map<String, Object> attributes;
+  public Map<String, Object> attributes;
   public transient Map<VitalSign, ValueGenerator> vitalSigns;
-  private Map<String, Map<String, Integer>> symptoms;
-  private Map<String, Map<String, Boolean>> symptomStatuses;
+  Map<String, Map<String, Integer>> symptoms;
+  Map<String, Map<String, Boolean>> symptomStatuses;
   public Map<String, HealthRecord.Medication> chronicMedications;
   /** The active health record. */
   public HealthRecord record;
@@ -153,7 +153,7 @@ public class Person implements Serializable, QuadTreeElement {
     annualHealthExpenses = new HashMap<Integer, Double>();
     annualHealthCoverage = new HashMap<Integer, Double>();
   }
-
+  
   /**
    * Retuns a random double.
    */

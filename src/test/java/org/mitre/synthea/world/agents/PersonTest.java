@@ -1,19 +1,56 @@
 package org.mitre.synthea.world.agents;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import static org.junit.Assert.assertEquals;
 import static org.mitre.synthea.TestHelper.timestamp;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.helpers.Config;
 
 public class PersonTest {
   private Person person;
 
   @Before
   public void setup() throws IOException {
+    TestHelper.exportOff();
+    Config.set("generate.only_dead_patients", "false");
     person = new Person(0L);
+  }
+  
+  @Test
+  public void testSerializationAndDeserialization() throws Exception {
+    Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
+    opts.population = 1;
+    opts.minAge = 50;
+    opts.maxAge = 100;
+    Generator generator = new Generator(opts);
+
+    Person original = generator.generatePerson(0, 0);
+    File tf = File.createTempFile("patient", "synthea");
+    FileOutputStream fos = new FileOutputStream(tf);
+    ObjectOutputStream oos = new ObjectOutputStream(fos);
+    oos.writeObject(original);
+    oos.close();
+    fos.close();
+    FileInputStream fis = new FileInputStream(tf);
+    ObjectInputStream ois = new ObjectInputStream(fis);
+    Person rehydrated = (Person)ois.readObject();
+    assertEquals(original.random.nextInt(), rehydrated.random.nextInt());
+    assertEquals(original.seed, rehydrated.seed);
+    assertEquals(original.populationSeed, rehydrated.populationSeed);
+    assertEquals(original.symptoms, rehydrated.symptoms);
+    assertEquals(original.symptomStatuses, rehydrated.symptomStatuses);
+    assertEquals(original.hasMultipleRecords, rehydrated.hasMultipleRecords);
+    assertEquals(original.attributes.keySet(), rehydrated.attributes.keySet());
   }
 
   @Test

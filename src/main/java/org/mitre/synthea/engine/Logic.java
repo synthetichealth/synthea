@@ -1,5 +1,6 @@
 package org.mitre.synthea.engine;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -22,7 +23,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
  * must not modify state as instances of Logic within Modules are shared
  * across the population.
  */
-public abstract class Logic {
+public abstract class Logic implements Serializable {
   public List<String> remarks;
 
   /**

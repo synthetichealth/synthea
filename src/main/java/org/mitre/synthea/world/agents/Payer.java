@@ -5,6 +5,7 @@ import com.google.common.collect.Table;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.geography.Location;
 
-public class Payer {
+public class Payer implements Serializable {
 
   /* ArrayList of all Private Payers imported. */
   private static List<Payer> privatePayers = new ArrayList<Payer>();
@@ -73,7 +74,7 @@ public class Payer {
   // Unique utilizers of Payer, by Person ID, with number of utilizations per Person.
   private final Map<String, AtomicInteger> customerUtilization;
   // row: year, column: type, value: count.
-  private final Table<Integer, String, AtomicInteger> entryUtilization;
+  private final transient Table<Integer, String, AtomicInteger> entryUtilization;
 
   /**
    * Payer Constructor.

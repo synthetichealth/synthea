@@ -39,7 +39,7 @@ public class GeneratorTest {
   public void before() throws Exception {
     Config.set("generate.only_dead_patients", "false");
   }
-
+  
   @Test
   public void testGeneratorCreatesPeople() throws Exception {
     int numberOfPeople = 1;

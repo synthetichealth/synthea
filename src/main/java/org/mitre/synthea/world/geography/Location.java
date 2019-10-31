@@ -2,6 +2,7 @@ package org.mitre.synthea.world.geography;
 
 import com.google.common.collect.Table;
 import com.google.gson.Gson;
+import java.io.Serializable;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 
-public class Location {
+public class Location implements Serializable {
   private static LinkedHashMap<String, String> stateAbbreviations = loadAbbreviations();
   private static Map<String, String> timezones = loadTimezones();
   private static Map<String, List<String>> foreignPlacesOfBirth = loadCitiesByLanguage();
@@ -53,7 +54,9 @@ public class Location {
       
       // this still works even if only 1 city given,
       // because allDemographics will only contain that 1 city
-      this.demographics = allDemographics.row(state);
+      // we copy the Map returned by the Google Table.row since the implementing
+      // class is not serializable
+      this.demographics = new HashMap(allDemographics.row(state));
 
       if (city != null 
           && demographics.values().stream().noneMatch(d -> d.city.equalsIgnoreCase(city))) {

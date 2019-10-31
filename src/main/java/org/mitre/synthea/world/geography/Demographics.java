@@ -4,6 +4,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,7 @@ import org.mitre.synthea.helpers.Utilities;
  * maps so they are more accessible and useful. TODO: merge this with Location somehow. they
  * probably don't need to be separate classes
  */
-public class Demographics implements Comparable<Demographics> {
+public class Demographics implements Comparable<Demographics>, Serializable {
   public long population;
   public String id;
   public String city;
