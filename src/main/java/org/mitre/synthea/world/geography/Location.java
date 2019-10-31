@@ -270,8 +270,8 @@ public class Location {
       // Precision within 0.001 degree is more or less a neighborhood or street.
       // Precision within 0.01 is a village or town
       // Precision within 0.1 is a large city
-      double dx = person.rand(0.001, 0.1);
-      double dy = person.rand(0.001, 0.1);
+      double dx = person.rand(-0.05, 0.05);
+      double dy = person.rand(-0.05, 0.05);
       coordinate.setLocation(coordinate.x + dx, coordinate.y + dy);
       person.attributes.put(Person.COORDINATE, coordinate);
     }
@@ -410,9 +410,9 @@ public class Location {
 
   /**
    * Load a resource which contains foreign places of birth based on ethnicity in json format:
-   * <p/>
+   * <p></p>
    * {"ethnicity":["city1,state1,country1", "city2,state2,country2"..., "cityN,stateN,countryN"]}
-   * <p/>
+   * <p></p>
    * see src/main/resources/foreign_birthplace.json for a working example
    * package protected for testing
    * @param resource A json file listing foreign places of birth by ethnicity.
