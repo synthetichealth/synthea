@@ -410,9 +410,9 @@ public class Location {
 
   /**
    * Load a resource which contains foreign places of birth based on ethnicity in json format:
-   * <p/>
+   * <p></p>
    * {"ethnicity":["city1,state1,country1", "city2,state2,country2"..., "cityN,stateN,countryN"]}
-   * <p/>
+   * <p></p>
    * see src/main/resources/foreign_birthplace.json for a working example
    * package protected for testing
    * @param resource A json file listing foreign places of birth by ethnicity.
