@@ -28,6 +28,8 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
 import org.mitre.synthea.world.concepts.BirthStatistics;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
 
@@ -881,8 +883,14 @@ public final class LifecycleModule extends Module {
   protected static boolean ENABLE_DEATH_BY_NATURAL_CAUSES =
       Boolean.parseBoolean(Config.get("lifecycle.death_by_natural_causes"));
   
+  // Death From Natural Causes SNOMED Code
   private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000",
       "Natural death with unknown cause");
+  // Death From Lack of Treatment SNOMED Code (Due to a Payer not covering treatment)
+  // Note: This SNOMED Code (397709008) is just for death - not death from lack of treatment.
+  public static final Code LOSS_OF_CARE = new Code("SNOMED-CT", "397709008",
+      "Death due to Uncovered and Unreceived Treatment");
+
 
   protected static void death(Person person, long time) {
     if (ENABLE_DEATH_BY_NATURAL_CAUSES) {
@@ -891,6 +899,10 @@ public final class LifecycleModule extends Module {
       if (roll < likelihoodOfDeath) {
         person.recordDeath(time, NATURAL_CAUSES);
       }
+    }
+
+    if (deathFromLossOfCare(person)) {
+      person.recordDeath(time, LOSS_OF_CARE);
     }
   }
 
@@ -927,6 +939,34 @@ public final class LifecycleModule extends Module {
     double adjustedRisk = Utilities.convertRiskToTimestep(yearlyRisk, oneYearInMs);
 
     return adjustedRisk;
+  }
+
+  /**
+   * Determines whether a person dies due to loss-of-care and lack of
+   * necessary treatment.
+   * 
+   * @param person
+   */
+  public boolean deathFromLossOfCare(Person person) {
+
+    Random r = new Random();
+
+    // Search the person's lossOfCareHealthRecord for missed treatments.
+    // Based on missed treatments, increase likelihood of death.
+    for (Encounter encounter : person.lossOfCareHealthRecord.encounters) {
+      for (Procedure procedure : encounter.procedures) {
+        for (Code code : procedure.codes) {
+          /**
+           * INSERT DEATH PROBABILIITIES FOR LACK OF TREATMENTS HERE
+           * 
+           * ex)
+           * if (code.code.equals("33195004")) {
+           *  return r.nextDouble)_ < 0.6;
+           * }
+           */
+        }
+      }
+    }
   }
 
   private static void startSmoking(Person person, long time) {
