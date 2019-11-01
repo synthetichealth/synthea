@@ -4,6 +4,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ import org.mitre.synthea.world.concepts.RaceAndEthnicity;
 /**
  * Export C-CDA R2.1 files using Apache FreeMarker templates.
  */
-public class CCDAExporter {
+public class CCDAExporter implements Serializable {
 
   private static final Configuration TEMPLATES = templateConfiguration();
   /**

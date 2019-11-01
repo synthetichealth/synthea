@@ -1,17 +1,18 @@
 package org.mitre.synthea.world.agents;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import static org.junit.Assert.assertEquals;
 import static org.mitre.synthea.TestHelper.timestamp;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
