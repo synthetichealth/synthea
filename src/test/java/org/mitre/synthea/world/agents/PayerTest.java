@@ -326,6 +326,8 @@ public class PayerTest {
   public void monthlyPremiumPayment() {
 
     person = new Person(0L);
+    // Give person an income to prevent null pointer.
+    person.attributes.put(Person.INCOME, 100000);
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.ID, UUID.randomUUID().toString());
     // Predetermine person's Payer.

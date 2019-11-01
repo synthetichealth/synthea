@@ -48,6 +48,8 @@ public class LogicTest {
   @Before
   public void setup() throws IOException {
     person = new Person(0L);
+    // Give person an income to prevent null pointer.
+    person.attributes.put(Person.INCOME, 100000);
     Provider mock = Mockito.mock(Provider.class);
     mock.uuid = "Mock-Provider";
     for (EncounterType type : EncounterType.values()) {
