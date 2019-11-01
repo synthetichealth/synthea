@@ -945,7 +945,7 @@ public final class LifecycleModule extends Module {
    * Determines whether a person dies due to loss-of-care and lack of
    * necessary treatment.
    * 
-   * @param person
+   * @param person the person to check for loss of care death.
    */
   public static boolean deathFromLossOfCare(Person person) {
 
@@ -961,7 +961,7 @@ public final class LifecycleModule extends Module {
            * 
            * ex)
            * if (code.code.equals("33195004")) {
-           *  return r.nextDouble)_ < 0.6;
+           *  return r.nextDouble() < 0.6;
            * }
            */
         }

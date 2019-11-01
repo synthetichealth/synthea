@@ -477,11 +477,11 @@ public class CSVExporter {
     // HEALTHCARE_EXPENSES
     s.append(person.getHealthcareExpenses()).append(',');
     // HEALTHCARE_COVERAGE
-    s.append(person.getHealthcareCoverage()).append(',');
+    s.append(person.getHealthcareCoverage());
     // QALYS
-    s.append(person.attributes.get("most-recent-qaly")).append(',');
-    // DALYS
-    s.append(person.attributes.get("most-recent-daly"));
+    // s.append(person.attributes.get("most-recent-qaly")).append(',');
+    // // DALYS
+    // s.append(person.attributes.get("most-recent-daly"));
 
     s.append(NEWLINE);
     write(s.toString(), patients);

@@ -143,7 +143,8 @@ public class LossOfCareHealthRecordTest {
     assertTrue(person.getPayerAtTime(time).equals(Payer.noInsurance));
 
     // Encounter is uncovered and unaffordable.
-    Encounter uncoveredEncounter3 = person.encounterStart(time + oneMonth * 7, EncounterType.WELLNESS);
+    Encounter uncoveredEncounter3
+        = person.encounterStart(time + oneMonth * 7, EncounterType.WELLNESS);
     uncoveredEncounter3.codes.add(code);
     uncoveredEncounter3.provider = new Provider();
     person.record.encounterEnd(time + oneMonth * 7, EncounterType.WELLNESS);
@@ -186,7 +187,8 @@ public class LossOfCareHealthRecordTest {
     long oneYear = Utilities.convertTime("years", 1) + 1;
     person.setPayerAtTime(time + oneYear, Payer.noInsurance);
     // First encounter of next year is uncovered but affordable.
-    Encounter coveredEncounterYearTwo = person.encounterStart(time + oneYear, EncounterType.WELLNESS);
+    Encounter coveredEncounterYearTwo
+        = person.encounterStart(time + oneYear, EncounterType.WELLNESS);
     coveredEncounterYearTwo.codes.add(code);
     coveredEncounterYearTwo.provider = new Provider();
     person.record.encounterEnd(time + oneYear, EncounterType.WELLNESS);
@@ -195,7 +197,8 @@ public class LossOfCareHealthRecordTest {
     assertFalse(person.lossOfCareHealthRecord.encounters.contains(coveredEncounterYearTwo));
 
     // Second encounter of next year is uncovered and not affordable.
-    Encounter uncoveredEncounterYearTwo = person.encounterStart(time + oneYear, EncounterType.WELLNESS);
+    Encounter uncoveredEncounterYearTwo
+        = person.encounterStart(time + oneYear, EncounterType.WELLNESS);
     uncoveredEncounterYearTwo.codes.add(code);
     uncoveredEncounterYearTwo.provider = new Provider();
     person.record.encounterEnd(time + oneYear, EncounterType.WELLNESS);

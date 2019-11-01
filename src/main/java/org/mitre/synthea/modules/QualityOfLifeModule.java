@@ -164,10 +164,13 @@ public class QualityOfLifeModule extends Module {
         + coveredProcedureCount + coveredImmunizationCount;
     int uncoveredEntries = uncoveredEncounterCount + uncoveredMedicationCount
         + uncoveredProcedureCount + uncoveredImmunizationCount;
+    if (coveredEntries < 1) {
+      coveredEntries = 1;
+    }
     double percentageOfCoveredCare = coveredEntries / (coveredEntries + uncoveredEntries);
 
     // Create a list of all conditions to be used in calculating disability weight.
-    allCoveredConditions.addAll(allLossOfCareConditions);  // Temp way to get all conditions.
+    allCoveredConditions.addAll(allLossOfCareConditions);
     List<Entry> allConditions = allCoveredConditions;
 
     double disabilityWeight = 0.0;
@@ -265,11 +268,11 @@ public class QualityOfLifeModule extends Module {
      * Uses a triangular distribution where perecentageOfCoveredCare = 1.0 means all care
      * was covered and 0 means no care was covered.
      * 
-     * @param percentageOfCoveredCare
+     * @param percentageOfCoveredCare the percentage of this person's care that was covered.
      * @return
      */
     public double getWeight(double percentageOfCoveredCare) {
-      return triangularDistribution(percentageOfCoveredCare);
+      return triangularDistribution(1 - percentageOfCoveredCare);
     }
 
     /**
@@ -279,11 +282,11 @@ public class QualityOfLifeModule extends Module {
      * @return
      */
     public double triangularDistribution(double position) {
-      double F = (medium - low) / (high - low);
-      if (position < F) {
-          return low + Math.sqrt(position * (high - low) * (medium - low));
+      double f = (medium - low) / (high - low);
+      if (position < f) {
+        return low + Math.sqrt(position * (high - low) * (medium - low));
       } else {
-          return high - Math.sqrt((1 - position) * (high - low) * (high - medium));
+        return high - Math.sqrt((1 - position) * (high - low) * (high - medium));
       }
     }
 

@@ -30,6 +30,7 @@ public class QualityOfLifeTest {
     // Create Person
     person = new Person(0);
     person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.INCOME, 1000000);
 
     // Ensure Person's payer is not null
     Payer.loadNoInsurance();
@@ -46,6 +47,8 @@ public class QualityOfLifeTest {
     //           |-----|     |-----------------|
     // |---|-----|-----|-----|-----|-----|-----|
     // 0   5     10    15    20    25    30   35
+
+    person.record = person.coveredHealthRecord;
 
     // ADD starts
     Entry addCondition = person.record.conditionStart(
@@ -83,8 +86,9 @@ public class QualityOfLifeTest {
 
     double dalyLiving = qol[0];
     double qalyLiving = qol[1];
-    assertEquals(true, (dalyLiving > 2.2 && dalyLiving < 2.3));
-    assertEquals(true, (qalyLiving > 32 && qalyLiving < 33));
+    // All care was recieved so the person recieves least QOL impact.
+    assertEquals(true, (dalyLiving > 1.2 && dalyLiving < 1.3));
+    assertEquals(true, (qalyLiving > 33 && qalyLiving < 34));
   }
 
   @Test
@@ -96,8 +100,9 @@ public class QualityOfLifeTest {
 
     double dalyDeceased = qol[0];
     double qalyDeceased = qol[1];
-    assertEquals(true, (dalyDeceased > 54 && dalyDeceased < 55));
-    assertEquals(true, (qalyDeceased > 32 && qalyDeceased < 33));
+    // All care was recieved so the person recieves least QOL impact.
+    assertEquals(true, (dalyDeceased > 53 && dalyDeceased < 54));
+    assertEquals(true, (qalyDeceased > 33 && qalyDeceased < 34));
   }
 
   @Test

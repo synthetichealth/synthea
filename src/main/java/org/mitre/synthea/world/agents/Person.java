@@ -130,9 +130,9 @@ public class Person implements Serializable, QuadTreeData {
     if (hasMultipleRecords) {
       records = new ConcurrentHashMap<String, HealthRecord>();
     }
-    record = new HealthRecord(this);
     coveredHealthRecord = new HealthRecord(this);
     lossOfCareHealthRecord = new HealthRecord(this);
+    record = coveredHealthRecord;
     // 128 because it's a nice power of 2, and nobody will reach that age
     payerHistory = new Payer[128];
     payerOwnerHistory = new String[128];
@@ -460,7 +460,7 @@ public class Person implements Serializable, QuadTreeData {
       return this.lossOfCareHealthRecord;
     }
 
-    HealthRecord returnValue = this.record;
+    HealthRecord returnValue = this.coveredHealthRecord;
     if (hasMultipleRecords) {
       String key = provider.uuid;
       if (!records.containsKey(key)) {
@@ -658,16 +658,17 @@ public class Person implements Serializable, QuadTreeData {
     return this.payerOwnerHistory[age];
   }
 
-   /**
-   * Returns the sum of QALYS of this person's life.
-   */
+  /**
+  * Returns the sum of QALYS of this person's life.
+  */
   public double getQalys() {
 
-    Map<Integer, Double> qalys = (Map<Integer, Double>) this.attributes.get(QualityOfLifeModule.QALY);
+    Map<Integer, Double> qalys
+        = (Map<Integer, Double>) this.attributes.get(QualityOfLifeModule.QALY);
 
     double sum = 0.0;
     for (double currQaly : qalys.values()) {
-        sum += currQaly;
+      sum += currQaly;
     }
     return sum;
   }
@@ -677,11 +678,12 @@ public class Person implements Serializable, QuadTreeData {
    */
   public double getDalys() {
 
-    Map<Integer, Double> dalys = (Map<Integer, Double>) this.attributes.get(QualityOfLifeModule.DALY);
+    Map<Integer, Double> dalys
+        = (Map<Integer, Double>) this.attributes.get(QualityOfLifeModule.DALY);
 
     double sum = 0.0;
     for (double currDaly : dalys.values()) {
-        sum += currDaly;
+      sum += currDaly;
     }
     return sum;
   }

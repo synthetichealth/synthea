@@ -529,7 +529,8 @@ public class PayerTest {
 
     // Get private insurance for 55 years.
     for (int year = 0; year <= 55; year++) {
-      ((Map<Integer, Double>) person.attributes.get(QualityOfLifeModule.QOLS)).put(2000 + year, 1.0);
+      ((Map<Integer, Double>)
+          person.attributes.get(QualityOfLifeModule.QOLS)).put(2000 + year, 1.0);
       long currentTime = startTime + Utilities.convertTime("years", year);
       healthInsuranceModule.process(person, currentTime);
     }
