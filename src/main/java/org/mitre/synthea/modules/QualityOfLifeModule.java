@@ -28,6 +28,10 @@ public class QualityOfLifeModule extends Module {
    */
   private static Map<String, DisabilityWeight> disabilityWeights = loadDisabilityWeights();
 
+  public static final String QALY = "QALY";
+  public static final String DALY = "DALY";
+  public static final String QOLS = "QOLS";
+
   public QualityOfLifeModule() {
     this.name = "Quality of Life";
   }
@@ -35,16 +39,16 @@ public class QualityOfLifeModule extends Module {
   @SuppressWarnings("unchecked")
   @Override
   public boolean process(Person person, long time) {
-    if (!person.attributes.containsKey("QALY")) {
-      person.attributes.put("QALY", new LinkedHashMap<Integer, Double>());
-      person.attributes.put("DALY", new LinkedHashMap<Integer, Double>());
-      person.attributes.put("QOL", new LinkedHashMap<Integer, Double>());
+    if (!person.attributes.containsKey(QALY)) {
+      person.attributes.put(QALY, new LinkedHashMap<Integer, Double>());
+      person.attributes.put(DALY, new LinkedHashMap<Integer, Double>());
+      person.attributes.put(QOLS, new LinkedHashMap<Integer, Double>());
       // linked hashmaps to preserve insertion order, and then we can iterate by year
     }
 
-    Map<Integer, Double> qalys = (Map<Integer, Double>) person.attributes.get("QALY");
-    Map<Integer, Double> dalys = (Map<Integer, Double>) person.attributes.get("DALY");
-    Map<Integer, Double> qols = (Map<Integer, Double>) person.attributes.get("QOL");
+    Map<Integer, Double> qalys = (Map<Integer, Double>) person.attributes.get(QALY);
+    Map<Integer, Double> dalys = (Map<Integer, Double>) person.attributes.get(DALY);
+    Map<Integer, Double> qols = (Map<Integer, Double>) person.attributes.get(QOLS);
 
     int year = Utilities.getYear(time);
 
@@ -121,13 +125,50 @@ public class QualityOfLifeModule extends Module {
 
       // TODO - It seems as if this does not get reached as often as it should.
     }
-    // get list of conditions
-    List<Entry> allConditions = new ArrayList<Entry>();
-    for (Encounter encounter : person.record.encounters) {
+
+    // Get counts of covered healthcare.
+    List<Entry> allCoveredConditions = new ArrayList<Entry>();
+    int coveredMedicationCount = 0;
+    int coveredProcedureCount = 0;
+    int coveredImmunizationCount = 0;
+    int coveredEncounterCount = 0;
+    for (Encounter encounter : person.coveredHealthRecord.encounters) {
       for (Entry condition : encounter.conditions) {
-        allConditions.add(condition);
+        allCoveredConditions.add(condition);
       }
+      coveredMedicationCount += encounter.medications.size();
+      coveredProcedureCount += encounter.procedures.size();
+      coveredImmunizationCount += encounter.immunizations.size();
+      coveredEncounterCount++;
     }
+
+    // Get counts of uncovered healthcare.
+    List<Entry> allLossOfCareConditions = new ArrayList<Entry>();
+    int uncoveredMedicationCount = 0;
+    int uncoveredProcedureCount = 0;
+    int uncoveredImmunizationCount = 0;
+    int uncoveredEncounterCount = 0;
+    for (Encounter encounter : person.uncoveredHealthRecord.encounters) {
+      for (Entry condition : encounter.conditions) {
+        allLossOfCareConditions.add(condition);
+      }
+      uncoveredMedicationCount += encounter.medications.size();
+      uncoveredProcedureCount += encounter.procedures.size();
+      uncoveredImmunizationCount += encounter.immunizations.size();
+      uncoveredEncounterCount++;
+    }
+
+    // Determine the percentage of covered care.
+    // NOTE: This percentageOfCoveredCare is based on entire life, not just current year.
+    int coveredEntries = coveredEncounterCount + coveredMedicationCount
+        + coveredProcedureCount + coveredImmunizationCount;
+    int uncoveredEntries = uncoveredEncounterCount + uncoveredMedicationCount
+        + uncoveredProcedureCount + uncoveredImmunizationCount;
+    double percentageOfCoveredCare = coveredEntries / (coveredEntries + uncoveredEntries);
+
+    // Create a list of all conditions to be used in calculating disability weight.
+    allCoveredConditions.addAll(allLossOfCareConditions);  // Temp way to get all conditions.
+    List<Entry> allConditions = allCoveredConditions;
 
     double disabilityWeight = 0.0;
     // calculate yld with yearly timestep
@@ -139,7 +180,10 @@ public class QualityOfLifeModule extends Module {
       disabilityWeight = 0.0;
 
       for (Entry condition : conditionsInYear) {
-        disabilityWeight += (double) disabilityWeights.get(condition.codes.get(0).code).medium;
+        // Get the disability weight for this condition based on the percentageOfCoveredCare.
+        disabilityWeight +=
+            (double) disabilityWeights.get(condition.codes.get(0).code)
+            .getWeight(percentageOfCoveredCare);
       }
 
       disabilityWeight = Math.min(1.0, weight(disabilityWeight, i + 1));
@@ -197,9 +241,9 @@ public class QualityOfLifeModule extends Module {
    */
   public static void inventoryAttributes(Map<String, Inventory> attributes) {
     String m = QualityOfLifeModule.class.getSimpleName();
-    Attributes.inventory(attributes, m, "QALY", true, true, "LinkedHashMap<Integer, Double>");
-    Attributes.inventory(attributes, m, "DALY", true, true, "LinkedHashMap<Integer, Double>");
-    Attributes.inventory(attributes, m, "QOL", true, true, "LinkedHashMap<Integer, Double>");
+    Attributes.inventory(attributes, m, QALY, true, true, "LinkedHashMap<Integer, Double>");
+    Attributes.inventory(attributes, m, DALY, true, true, "LinkedHashMap<Integer, Double>");
+    Attributes.inventory(attributes, m, QOLS, true, true, "LinkedHashMap<Integer, Double>");
     Attributes.inventory(attributes, m, Person.BIRTHDATE, true, false, null);
     Attributes.inventory(attributes, m, "most-recent-daly", false, true, "Numeric");
     Attributes.inventory(attributes, m, "most-recent-qaly", false, true, "Numeric");
@@ -214,6 +258,33 @@ public class QualityOfLifeModule extends Module {
       this.low = parseDouble(values.getOrDefault("LOW", "0.0"));
       this.medium = parseDouble(values.getOrDefault("MED", "0.0"));
       this.high = parseDouble(values.getOrDefault("HIGH", "0.0"));
+    }
+
+    /**
+     * Get the weight of this disability weight based on the percentage of covered care.
+     * Uses a triangular distribution where perecentageOfCoveredCare = 1.0 means all care
+     * was covered and 0 means no care was covered.
+     * 
+     * @param percentageOfCoveredCare
+     * @return
+     */
+    public double getWeight(double percentageOfCoveredCare) {
+      return triangularDistribution(percentageOfCoveredCare);
+    }
+
+    /**
+     * Returns a value based on a triangular distribution with high, medium, and low points.
+     * 
+     * @param position the position along the triangular distribution to return.
+     * @return
+     */
+    public double triangularDistribution(double position) {
+      double F = (medium - low) / (high - low);
+      if (position < F) {
+          return low + Math.sqrt(position * (high - low) * (medium - low));
+      } else {
+          return high - Math.sqrt((1 - position) * (high - low) * (high - medium));
+      }
     }
 
     private double parseDouble(String value) {
