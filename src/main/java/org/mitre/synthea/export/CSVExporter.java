@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
@@ -382,10 +383,11 @@ public class CSVExporter {
     Calendar now = Calendar.getInstance();
     Calendar birthDay = Calendar.getInstance();
     birthDay.setTimeInMillis((long) person.attributes.get(Person.BIRTHDATE));
-    String[] gbdMetrics = { "QALY", "DALY", "QOL" };
+    String[] gbdMetrics = { QualityOfLifeModule.QALY, QualityOfLifeModule.DALY,
+        QualityOfLifeModule.QOLS };
     String unit = null;
     for (String score : gbdMetrics) {
-      if (score.equals("QOL")) {
+      if (score.equals(QualityOfLifeModule.QOLS)) {
         unit = "{score}";
       } else {
         // years in UCUM is "a" for Latin "Annus"

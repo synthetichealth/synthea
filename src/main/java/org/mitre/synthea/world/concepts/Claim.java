@@ -72,11 +72,6 @@ public class Claim {
       // Payer will not cover the care.
       this.payerDoesNotCoverEntry(mainEntry);
       costToPatient = totalCost;
-      if (person.canAffordCare(mainEntry)) {
-        // Update the person's costs, they get the encounter.
-      } else {
-        // TODO The person does not get the encounter. Lower their QOLS/GBD.
-      }
     }
 
     // Update Person's Expenses and Coverage.

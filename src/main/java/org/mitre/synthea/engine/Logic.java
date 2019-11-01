@@ -209,7 +209,7 @@ public abstract class Logic {
           if (last == null) {
             // If the observation is not in the current record,
             // it could be in the uncovered health record.
-            last = person.uncoveredHealthRecord.getLatestObservation(code.code);
+            last = person.lossOfCareHealthRecord.getLatestObservation(code.code);
           }
           if (last == null) {
             // If the observation still is not in the uncovered health record,

@@ -148,7 +148,7 @@ public class QualityOfLifeModule extends Module {
     int uncoveredProcedureCount = 0;
     int uncoveredImmunizationCount = 0;
     int uncoveredEncounterCount = 0;
-    for (Encounter encounter : person.uncoveredHealthRecord.encounters) {
+    for (Encounter encounter : person.lossOfCareHealthRecord.encounters) {
       for (Entry condition : encounter.conditions) {
         allLossOfCareConditions.add(condition);
       }

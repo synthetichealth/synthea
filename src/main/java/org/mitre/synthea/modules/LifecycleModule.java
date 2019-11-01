@@ -947,7 +947,7 @@ public final class LifecycleModule extends Module {
    * 
    * @param person
    */
-  public boolean deathFromLossOfCare(Person person) {
+  public static boolean deathFromLossOfCare(Person person) {
 
     Random r = new Random();
 
@@ -967,6 +967,7 @@ public final class LifecycleModule extends Module {
         }
       }
     }
+    return false;
   }
 
   private static void startSmoking(Person person, long time) {
