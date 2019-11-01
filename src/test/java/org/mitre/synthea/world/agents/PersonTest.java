@@ -1,6 +1,7 @@
 package org.mitre.synthea.world.agents;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mitre.synthea.TestHelper.timestamp;
 
 import java.io.File;
@@ -9,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,22 +31,28 @@ public class PersonTest {
   
   @Test
   public void testSerializationAndDeserialization() throws Exception {
+    // Generate a filled-ou patient record to test on
     Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
     opts.population = 1;
     opts.minAge = 50;
     opts.maxAge = 100;
     Generator generator = new Generator(opts);
-
     Person original = generator.generatePerson(0, 0);
+    
+    // Serialize patient
     File tf = File.createTempFile("patient", "synthea");
     FileOutputStream fos = new FileOutputStream(tf);
     ObjectOutputStream oos = new ObjectOutputStream(fos);
     oos.writeObject(original);
     oos.close();
     fos.close();
+    
+    // Deserialize patient
     FileInputStream fis = new FileInputStream(tf);
     ObjectInputStream ois = new ObjectInputStream(fis);
     Person rehydrated = (Person)ois.readObject();
+    
+    // Compare the original to the serialized+deserialized version
     assertEquals(original.random.nextInt(), rehydrated.random.nextInt());
     assertEquals(original.seed, rehydrated.seed);
     assertEquals(original.populationSeed, rehydrated.populationSeed);
@@ -52,6 +60,13 @@ public class PersonTest {
     assertEquals(original.symptomStatuses, rehydrated.symptomStatuses);
     assertEquals(original.hasMultipleRecords, rehydrated.hasMultipleRecords);
     assertEquals(original.attributes.keySet(), rehydrated.attributes.keySet());
+    assertEquals(original.vitalSigns.keySet(), rehydrated.vitalSigns.keySet());
+    assertEquals(original.chronicMedications.keySet(), rehydrated.chronicMedications.keySet());
+    assertEquals(original.hasMultipleRecords, rehydrated.hasMultipleRecords);
+    if (original.hasMultipleRecords) {
+      assertEquals(original.records.keySet(), rehydrated.records.keySet());
+    }
+    assertTrue(Arrays.equals(original.payerHistory, rehydrated.payerHistory));
   }
 
   @Test

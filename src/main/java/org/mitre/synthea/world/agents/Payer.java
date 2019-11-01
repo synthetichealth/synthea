@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -654,4 +655,106 @@ public class Payer implements Serializable {
     int numYears = this.getNumYearsCovered();
     return this.totalQOLS / numYears;
   }
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 53 * hash + Objects.hashCode(this.attributes);
+    hash = 53 * hash + Objects.hashCode(this.name);
+    hash = 53 * hash + Objects.hashCode(this.uuid);
+    hash = 53 * hash + (int) (Double.doubleToLongBits(this.deductible)
+            ^ (Double.doubleToLongBits(this.deductible) >>> 32));
+    hash = 53 * hash + (int) (Double.doubleToLongBits(this.defaultCopay)
+            ^ (Double.doubleToLongBits(this.defaultCopay) >>> 32));
+    hash = 53 * hash + (int) (Double.doubleToLongBits(this.defaultCoinsurance)
+            ^ (Double.doubleToLongBits(this.defaultCoinsurance) >>> 32));
+    hash = 53 * hash + (int) (Double.doubleToLongBits(this.monthlyPremium)
+            ^ (Double.doubleToLongBits(this.monthlyPremium) >>> 32));
+    hash = 53 * hash + Objects.hashCode(this.ownership);
+    hash = 53 * hash + Objects.hashCode(this.statesCovered);
+    hash = 53 * hash + Objects.hashCode(this.servicesCovered);
+    hash = 53 * hash + (int) (Double.doubleToLongBits(this.revenue)
+            ^ (Double.doubleToLongBits(this.revenue) >>> 32));
+    hash = 53 * hash + (int) (Double.doubleToLongBits(this.costsCovered)
+            ^ (Double.doubleToLongBits(this.costsCovered) >>> 32));
+    hash = 53 * hash + (int) (Double.doubleToLongBits(this.costsUncovered)
+            ^ (Double.doubleToLongBits(this.costsUncovered) >>> 32));
+    hash = 53 * hash + (int) (Double.doubleToLongBits(this.totalQOLS)
+            ^ (Double.doubleToLongBits(this.totalQOLS) >>> 32));
+    hash = 53 * hash + Objects.hashCode(this.customerUtilization);
+    // TODO uncomment when entryUtilization is no longer transient
+    // hash = 53 * hash + Objects.hashCode(this.entryUtilization);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final Payer other = (Payer) obj;
+    if (Double.doubleToLongBits(this.deductible)
+            != Double.doubleToLongBits(other.deductible)) {
+      return false;
+    }
+    if (Double.doubleToLongBits(this.defaultCopay)
+            != Double.doubleToLongBits(other.defaultCopay)) {
+      return false;
+    }
+    if (Double.doubleToLongBits(this.defaultCoinsurance)
+            != Double.doubleToLongBits(other.defaultCoinsurance)) {
+      return false;
+    }
+    if (Double.doubleToLongBits(this.monthlyPremium)
+            != Double.doubleToLongBits(other.monthlyPremium)) {
+      return false;
+    }
+    if (Double.doubleToLongBits(this.revenue)
+            != Double.doubleToLongBits(other.revenue)) {
+      return false;
+    }
+    if (Double.doubleToLongBits(this.costsCovered)
+            != Double.doubleToLongBits(other.costsCovered)) {
+      return false;
+    }
+    if (Double.doubleToLongBits(this.costsUncovered)
+            != Double.doubleToLongBits(other.costsUncovered)) {
+      return false;
+    }
+    if (Double.doubleToLongBits(this.totalQOLS)
+            != Double.doubleToLongBits(other.totalQOLS)) {
+      return false;
+    }
+    if (!Objects.equals(this.name, other.name)) {
+      return false;
+    }
+    if (!Objects.equals(this.uuid, other.uuid)) {
+      return false;
+    }
+    if (!Objects.equals(this.ownership, other.ownership)) {
+      return false;
+    }
+    if (!Objects.equals(this.attributes, other.attributes)) {
+      return false;
+    }
+    if (!Objects.equals(this.statesCovered, other.statesCovered)) {
+      return false;
+    }
+    if (!Objects.equals(this.servicesCovered, other.servicesCovered)) {
+      return false;
+    }
+    // TODO uncomment when entryUtilization is no longer transient
+    // if (!Objects.equals(this.customerUtilization, other.customerUtilization)) {
+    //   return false;
+    // }
+    return true;
+  }
+  
+  
 }

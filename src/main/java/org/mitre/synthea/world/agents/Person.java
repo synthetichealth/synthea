@@ -90,7 +90,7 @@ public class Person implements Serializable, QuadTreeElement {
   public final long seed;
   public long populationSeed;
   public Map<String, Object> attributes;
-  public transient Map<VitalSign, ValueGenerator> vitalSigns;
+  public Map<VitalSign, ValueGenerator> vitalSigns;
   Map<String, Map<String, Integer>> symptoms;
   Map<String, Map<String, Boolean>> symptomStatuses;
   public Map<String, HealthRecord.Medication> chronicMedications;
