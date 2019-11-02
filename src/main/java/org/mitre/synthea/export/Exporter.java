@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -190,6 +192,27 @@ public abstract class Exporter {
         writeNewFile(outFilePath, bundleJson);
       }
     }
+    if (Boolean.parseBoolean(Config.get("exporter.fhir.webservice.export"))) {
+		if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
+			org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
+			IParser parser = FhirContext.forR4().newJsonParser().setPrettyPrint(false);
+			for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+				String entryJson = parser.encodeResourceToString(entry.getResource());
+				try {
+					WebServiceExporter.POSTRequest(entry.getResource().getResourceType().toString(), entryJson);
+				} catch (IOException | KeyManagementException | NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				}
+			}
+		} else {
+			String bundleJson = FhirR4.convertToFHIRJson(person, stopTime);
+			try {
+				WebServiceExporter.POSTRequest("Bundle", bundleJson);
+			} catch (IOException | KeyManagementException | NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
+		}
+	}
     if (Boolean.parseBoolean(Config.get("exporter.ccda.export"))) {
       String ccdaXml = CCDAExporter.export(person, stopTime);
       File outDirectory = getOutputFolder("ccda", person);
