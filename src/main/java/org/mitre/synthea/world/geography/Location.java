@@ -200,18 +200,18 @@ public class Location {
 
   /**
    * Method which returns a city from the foreignPlacesOfBirth map if the map contains values
-   * for an ethnicity.
-   * In the case an ethnicity is not present the method returns the value from a call to
+   * for an language.
+   * In the case an language is not present the method returns the value from a call to
    * randomCityName().
    *
    * @param random the Random to base our city selection on
-   * @param ethnicity the ethnicity to look for cities in
+   * @param language the language to look for cities in
    * @return A String representing the place of birth
    */
-  public String[] randomBirthplaceByEthnicity(Random random, String ethnicity) {
+  public String[] randomBirthplaceByLanguage(Random random, String language) {
     String[] birthPlace;
 
-    List<String> cities = foreignPlacesOfBirth.get(ethnicity.toLowerCase());
+    List<String> cities = foreignPlacesOfBirth.get(language.toLowerCase());
     if (cities != null && cities.size() > 0) {
       int upperBound = cities.size();
       String randomBirthPlace = cities.get(random.nextInt(upperBound));
