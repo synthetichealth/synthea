@@ -82,7 +82,7 @@ public class BirthStatistics {
   /**
    * Sets attributes on the mother on when her baby will be born,
    * the baby sex, and the birth height and weight.
-   * <p/>
+   * <p></p>
    * These attributes will be overridden on subsequent pregnancies.
    * @param mother The baby's mother.
    * @param time The time.

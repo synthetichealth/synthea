@@ -62,7 +62,7 @@ public abstract class Components {
    * Defining this in a separate class makes it easier to define
    * where units are and are not required.
    * 
-   * @param <T >Type of quantity
+   * @param <T> Type of quantity
    */
   public static class ExactWithUnit<T> extends Exact<T> {
     /**
