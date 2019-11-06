@@ -195,8 +195,15 @@ function.      </p>
   <parameter metaid="_685791" id="P_th" name="P_th" value="-4"/>
   <parameter metaid="_685794" id="e_t" name="e_t" constant="false"/>
   <parameter metaid="_685795" id="A" name="A" value="1"/>
-  <parameter metaid="_685796" id="B" name="B" value="45"/>
-  <parameter metaid="_685797" id="C" name="C" value="0.5"/>
+  <parameter metaid="_685796" id="B" name="B" value="80"/>
+  <parameter metaid="_685797" id="C" name="C" value="0.27"/>
+  <parameter metaid="_685797" id="R" name="R" value="0"/>
+  <parameter metaid="_685797" id="rng" name="rng" value="0.0" constant="false"/>
+  <parameter metaid="_685797" id="e_variance" name="e_variance" value="0.1"/>
+  <parameter metaid="_685797" id="arr_tau_0" name="arr_tau_0" value="0.75"/>
+  <parameter metaid="_685797" id="arr_tau_1" name="arr_tau_1" value="1.0"/>
+  <parameter metaid="_685797" id="e_delay" name="e_delay" value="0" constant="false"/>
+  <parameter metaid="_685797" id="e_delay_rate" name="e_delay_rate" value="0" constant="false"/>
   <parameter metaid="_685800" id="tau" name="tau" constant="false"/>
   <parameter metaid="_685801" id="period" name="period" value="1"/>
   <parameter metaid="_685802" id="V_pcd" name="V_pcd" constant="false"/>
@@ -256,6 +263,7 @@ function.      </p>
   <parameter metaid="_685888" id="Q_av" name="Q_av" value="0" constant="false"/>
   <parameter metaid="_685889" id="Q_tc" name="Q_tc" value="190.0661" constant="false"/>
   <parameter metaid="_685890" id="Q_pv" name="Q_pv" value="0" constant="false"/>
+  <parameter metaid="_685890" id="t_prev" name="t_prev" value="0" constant="false"/>
 </listOfParameters><listOfRules>
   <rateRule metaid="_685729" variable="V_lv">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -623,253 +631,143 @@ function.      </p>
       </piecewise>
     </math>
   </rateRule>
+  <rateRule metaid="_685742" variable="e_delay">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <piecewise>
+        <piece>
+          <cn> 0 </cn>
+          <apply>
+            <and/>
+            <apply>
+              <geq/>
+              <ci> tau </ci>
+              <ci> arr_tau_0 </ci>
+            </apply>
+            <apply>
+              <lt/>
+              <ci> tau </ci>
+              <ci> arr_tau_1 </ci>
+            </apply>
+          </apply>
+        </piece>
+        <otherwise>
+          <ci> e_delay_rate </ci>
+        </otherwise>
+      </piecewise>
+    </math>
+  </rateRule>
+  <assignmentRule metaid="_68574356" variable="rng">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <abs/>
+        <apply>
+          <sin/>
+          <apply>
+            <exp/>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                <cn> 3 </cn>
+                <ci> R </ci>
+              </apply>
+              <cn> 2 </cn>
+            </apply>
+          </apply>
+        </apply>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_68574356" variable="e_delay_rate">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <piecewise>
+        <piece>
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> e_variance </ci>
+              <apply>
+                <times/>
+                <ci> rng </ci>
+                <apply>
+                  <times/>
+                  <ci> e_variance </ci>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <cn> 0.9 </cn>
+          </apply>
+          <apply>
+            <and/>
+            <apply>
+              <geq/>
+              <ci> tau </ci>
+              <ci> arr_tau_0 </ci>
+            </apply>
+            <apply>
+              <lt/>
+              <ci> tau </ci>
+              <ci> arr_tau_1 </ci>
+            </apply>
+          </apply>
+        </piece>
+        <otherwise>
+          <ci> e_delay_rate </ci>
+        </otherwise>
+      </piecewise>
+    </math>
+  </assignmentRule>
   <assignmentRule metaid="_685743" variable="tau">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <piecewise>
         <piece>
-          <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+          <cn> 0 </cn>
           <apply>
             <leq/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <ci> period </ci>
+            <apply>
+              <minus/>
+              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              <ci> e_delay </ci>
+            </apply>
+            <cn> 0 </cn>
           </apply>
         </piece>
-        <piece>
+        <otherwise>
           <apply>
             <minus/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <ci> period </ci>
-          </apply>
-          <apply>
-            <leq/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <cn>0.5</cn>
             <apply>
               <times/>
-              <ci> period </ci>
-              <cn> 2 </cn>
+              <apply>
+                <divide/>
+                <cn> 1 </cn>
+                <pi/>
+              </apply>
+              <apply>
+                <arctan/>
+                <apply>
+                  <cot/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <pi/>
+                      <apply>
+                        <minus/>
+                        <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                        <ci> e_delay </ci>
+                      </apply>
+                    </apply>
+                    <ci> period </ci>
+                  </apply>
+                </apply>
+              </apply>
             </apply>
           </apply>
-        </piece>
-        <piece>
-          <apply>
-            <minus/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 2 </cn>
-            </apply>
-          </apply>
-          <apply>
-            <leq/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 3 </cn>
-            </apply>
-          </apply>
-        </piece>
-        <piece>
-          <apply>
-            <minus/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 3 </cn>
-            </apply>
-          </apply>
-          <apply>
-            <leq/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 4 </cn>
-            </apply>
-          </apply>
-        </piece>
-        <piece>
-          <apply>
-            <minus/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 4 </cn>
-            </apply>
-          </apply>
-          <apply>
-            <leq/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 5 </cn>
-            </apply>
-          </apply>
-        </piece>
-        <piece>
-          <apply>
-            <minus/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 5 </cn>
-            </apply>
-          </apply>
-          <apply>
-            <leq/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 6 </cn>
-            </apply>
-          </apply>
-        </piece>
-        <piece>
-          <apply>
-            <minus/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 6 </cn>
-            </apply>
-          </apply>
-          <apply>
-            <leq/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 7 </cn>
-            </apply>
-          </apply>
-        </piece>
-        <piece>
-          <apply>
-            <minus/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 7 </cn>
-            </apply>
-          </apply>
-          <apply>
-            <leq/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 8 </cn>
-            </apply>
-          </apply>
-        </piece>
-        <piece>
-          <apply>
-            <minus/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 8 </cn>
-            </apply>
-          </apply>
-          <apply>
-            <leq/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 9 </cn>
-            </apply>
-          </apply>
-        </piece>
-        <piece>
-          <apply>
-            <minus/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 9 </cn>
-            </apply>
-          </apply>
-          <apply>
-            <leq/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 10 </cn>
-            </apply>
-          </apply>
-        </piece>
-        <piece>
-          <apply>
-            <minus/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 10 </cn>
-            </apply>
-          </apply>
-          <apply>
-            <leq/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 11 </cn>
-            </apply>
-          </apply>
-        </piece>
-        <piece>
-          <apply>
-            <minus/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 11 </cn>
-            </apply>
-          </apply>
-          <apply>
-            <leq/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 12 </cn>
-            </apply>
-          </apply>
-        </piece>
-        <piece>
-          <apply>
-            <minus/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 12 </cn>
-            </apply>
-          </apply>
-          <apply>
-            <leq/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-            <apply>
-              <times/>
-              <ci> period </ci>
-              <cn> 13 </cn>
-            </apply>
-          </apply>
-        </piece>
+        </otherwise>
       </piecewise>
     </math>
   </assignmentRule>
@@ -1190,6 +1088,11 @@ function.      </p>
         </apply>
         <ci> R_pul </ci>
       </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule metaid="_685234773" variable="t_prev">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
     </math>
   </assignmentRule>
 </listOfRules>
