@@ -205,6 +205,8 @@ function.      </p>
   <parameter metaid="_685797" id="e_delay" name="e_delay" value="0" constant="false"/>
   <parameter metaid="_685797" id="e_delay_rate" name="e_delay_rate" value="0" constant="false"/>
   <parameter metaid="_685800" id="tau" name="tau" constant="false"/>
+  <parameter metaid="_685797" id="vfib_start" name="vfib_start" value="0" constant="false"/>
+  <parameter metaid="_685797" id="vfib_end" name="vfib_end" value="0" constant="false"/>
   <parameter metaid="_685801" id="period" name="period" value="1"/>
   <parameter metaid="_685802" id="V_pcd" name="V_pcd" constant="false"/>
   <parameter metaid="_685803" id="P_pcd" name="P_pcd" constant="false"/>
@@ -685,19 +687,8 @@ function.      </p>
         <piece>
           <apply>
             <times/>
-            <apply>
-              <minus/>
-              <ci> e_variance </ci>
-              <apply>
-                <times/>
-                <ci> rng </ci>
-                <apply>
-                  <times/>
-                  <ci> e_variance </ci>
-                  <cn> 2 </cn>
-                </apply>
-              </apply>
-            </apply>
+            <ci> rng </ci>
+            <ci> e_variance </ci>
             <cn> 0.9 </cn>
           </apply>
           <apply>
@@ -773,41 +764,81 @@ function.      </p>
   </assignmentRule>
   <assignmentRule metaid="_685746" variable="e_t">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <apply>
-        <times/>
-        <ci> A </ci>
-        <apply>
-          <exp/>
+      <piecewise>
+        <piece>
           <apply>
-            <times/>
+            <plus/>
+            <cn> 0.3 </cn>
             <apply>
-              <minus/>
+              <times/>
+              <cn> 0.3 </cn>
               <apply>
-                <divide/>
-                  <ci> B </ci>
-                  <apply>
-                    <power/>
-                    <ci> period </ci>
-                    <cn> 2 </cn>
-                  </apply>
-              </apply>
-            </apply>
-            <apply>
-              <power/>
-              <apply>
-                <minus/>
-                <ci> tau </ci>
+                <plus/>
+                <cn> 1 </cn>
                 <apply>
-                  <times/>
-                  <ci> C </ci>
-                  <ci> period </ci>
+                  <sin/>
+                  <apply>
+                    <times/>
+                    <cn> 6 </cn>
+                    <ci> tau </ci>
+                    <pi/>
+                  </apply>
                 </apply>
               </apply>
-              <cn> 2 </cn>
             </apply>
           </apply>
-        </apply>
-      </apply>
+          <apply>
+            <and/>
+            <apply>
+              <geq/>
+              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              <ci> vfib_start </ci>
+            </apply>
+            <apply>
+              <lt/>
+              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              <ci> vfib_end </ci>
+            </apply>
+          </apply>
+        </piece>
+        <otherwise>
+          <apply>
+            <times/>
+            <ci> A </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                      <ci> B </ci>
+                      <apply>
+                        <power/>
+                        <ci> period </ci>
+                        <cn> 2 </cn>
+                      </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <minus/>
+                    <ci> tau </ci>
+                    <apply>
+                      <times/>
+                      <ci> C </ci>
+                      <ci> period </ci>
+                    </apply>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </otherwise>
+      </piecewise>
     </math>
   </assignmentRule>
   <assignmentRule metaid="_685747" variable="V_pcd">

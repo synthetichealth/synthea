@@ -18,11 +18,12 @@ duration: 10
 
 # Model parameter inputs. Any unspecified parameters will use the model's default value.
 inputs:
-    R: 0.2
-    e_variance: 0.9
-    arr_tau_0: 0.25
+    e_variance: 1
+    arr_tau_0: 0.2
     arr_tau_1: 0.5
-    period: 0.75
+    period: 0.5
+    vfib_start: 5
+    vfib_end: 10
 
 # What charts to draw. Results will be plotted on PNG images.
 # Note that chart support is a convenience feature and many chart options cannot be manipulated here.
