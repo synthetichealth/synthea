@@ -125,7 +125,35 @@ function.      </p>
       </bqbiol:isVersionOf>
     </rdf:Description>
   </rdf:RDF>
-</annotation><listOfUnitDefinitions>
+</annotation><listOfFunctionDefinitions>
+  <functionDefinition id="rng">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <lambda>
+        <bvar><ci> seed </ci></bvar>
+        <bvar><ci> time </ci></bvar>
+        <apply>
+          <abs/>
+          <apply>
+            <sin/>
+            <apply>
+              <exp/>
+              <apply>
+                <power/>
+                <apply>
+                  <plus/>
+                  <ci> time </ci>
+                  <ci> seed </ci>
+                  <cn> 3 </cn>
+                </apply>
+                <cn> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </apply>
+      </lambda>
+    </math>
+  </functionDefinition>
+</listOfFunctionDefinitions><listOfUnitDefinitions>
   <unitDefinition metaid="_199995" id="kPa" name="kPa">
     <listOfUnits>
       <unit metaid="_200007" kind="pascal" scale="3"/>
@@ -197,8 +225,7 @@ function.      </p>
   <parameter metaid="_685795" id="A" name="A" value="1"/>
   <parameter metaid="_685796" id="B" name="B" value="80"/>
   <parameter metaid="_685797" id="C" name="C" value="0.27"/>
-  <parameter metaid="_685797" id="R" name="R" value="0"/>
-  <parameter metaid="_685797" id="rng" name="rng" value="0.0" constant="false"/>
+  <parameter metaid="_685797" id="rng_seed" name="rng_seed" value="0"/>
   <parameter metaid="_685797" id="e_variance" name="e_variance" value="0.1"/>
   <parameter metaid="_685797" id="arr_tau_0" name="arr_tau_0" value="0.75"/>
   <parameter metaid="_685797" id="arr_tau_1" name="arr_tau_1" value="1.0"/>
@@ -658,36 +685,17 @@ function.      </p>
       </piecewise>
     </math>
   </rateRule>
-  <assignmentRule metaid="_68574356" variable="rng">
-    <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <apply>
-        <abs/>
-        <apply>
-          <sin/>
-          <apply>
-            <exp/>
-            <apply>
-              <power/>
-              <apply>
-                <plus/>
-                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-                <cn> 3 </cn>
-                <ci> R </ci>
-              </apply>
-              <cn> 2 </cn>
-            </apply>
-          </apply>
-        </apply>
-      </apply>
-    </math>
-  </assignmentRule>
   <assignmentRule metaid="_68574356" variable="e_delay_rate">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <piecewise>
         <piece>
           <apply>
             <times/>
-            <ci> rng </ci>
+            <apply>
+              <ci> rng </ci>
+              <ci> rng_seed </ci>
+              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            </apply>
             <ci> e_variance </ci>
             <cn> 0.9 </cn>
           </apply>
