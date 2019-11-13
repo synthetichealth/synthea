@@ -1,10 +1,10 @@
 
 # Data and charts will be placed in output/physiology/{name}/
 # Data file will always be output/physiology/{name}/{name}.csv
-name: Smith2004_CVS_arrhythmia
+name: Smith2004_CVS_arrhythmia2
 
 # Name of the model file
-model: circulation/Smith2004_CVS_human.xml
+model: circulation/Smith2004_CVS_human_arr.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
@@ -18,12 +18,10 @@ duration: 10
 
 # Model parameter inputs. Any unspecified parameters will use the model's default value.
 inputs:
-    e_variance: 1
-    arr_tau_0: 0.2
-    arr_tau_1: 0.5
+    e_variance: 0.6
+    arr_tau_0: 0.6
+    arr_tau_1: 0.9
     period: 0.5
-    vfib_start: 5
-    vfib_end: 10
 
 # What charts to draw. Results will be plotted on PNG images.
 # Note that chart support is a convenience feature and many chart options cannot be manipulated here.

@@ -18,8 +18,11 @@ duration: 4
 
 # Model parameter inputs. Any unspecified parameters will use the model's default value.
 inputs:
-    R_sys: 1.213
-    E_es_lvf: 2.212
+    #R_sys: 1.213
+    #E_es_lvf: 2.212
+    e_variance: 1
+    #R: 0.004
+    period: 0.75
 
 # What charts to draw. Results will be plotted on PNG images.
 # Note that chart support is a convenience feature and many chart options cannot be manipulated here.
@@ -37,9 +40,9 @@ charts:
       # Label for the Y axis
       axisLabelY: Pressure (mmhg)
       # Starting data time point for chart rendering. Defaults to 0.
-      startTime: 0
+      #startTime: 0
       # Ending data time point for chart rendering. Defaults to sim duration.
-      endTime: 4
+      #endTime: 4
       series:
           # Each series configuration item requires the model parameter
           # Labels are optional. If not provided, the param name will be used in the legend
