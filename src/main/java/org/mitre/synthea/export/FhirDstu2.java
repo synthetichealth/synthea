@@ -289,13 +289,6 @@ public class FhirDstu2 {
     ethnicityExtension.setUrl("http://hl7.org/fhir/StructureDefinition/us-core-ethnicity");
     String ethnicity = (String) person.attributes.get(Person.ETHNICITY);
 
-    if (race.equals("hispanic")) {
-      race = "other";
-      ethnicity = "hispanic";
-    } else {
-      ethnicity = "nonhispanic";
-    }
-
     String raceDisplay;
     switch (race) {
       case "white":
@@ -310,7 +303,7 @@ public class FhirDstu2 {
       case "native":
         raceDisplay = "American Indian or Alaska Native";
         break;
-      default: // Hispanic or Other (Put Hawaiian and Pacific Islander here for now)
+      default: // Other (Put Hawaiian and Pacific Islander here for now)
         raceDisplay = "Other";
         break;
     }

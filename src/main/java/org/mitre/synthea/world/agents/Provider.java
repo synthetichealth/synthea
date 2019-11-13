@@ -404,9 +404,9 @@ public class Provider implements QuadTreeElement {
 
       String race = city.pickRace(clinicianRand);
       out.put(Person.RACE, race);
-      String ethnicity = city.ethnicityFromRace(race, clinicianRand);
+      String ethnicity = city.pickEthnicity(clinicianRand);
       out.put(Person.ETHNICITY, ethnicity);
-      String language = city.languageFromEthnicity(ethnicity, clinicianRand);
+      String language = city.languageFromRaceAndEthnicity(race, ethnicity, clinicianRand);
       out.put(Person.FIRST_LANGUAGE, language);
       String gender = city.pickGender(clinicianRand);
       if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {

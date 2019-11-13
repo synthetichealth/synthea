@@ -135,7 +135,7 @@ public class LocationTest {
   @Test
   public void testGetForeignPlaceOfBirth_HappyPath() {
     Random random = new Random(4L);
-    String[] placeOfBirth = location.randomBirthplaceByEthnicity(random, "german");
+    String[] placeOfBirth = location.randomBirthplaceByLanguage(random, "german");
     Assert.assertEquals("Expected to receive 'Munich'", "Munich", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Bavaria'", "Bavaria", placeOfBirth[1]);
     Assert.assertEquals("Expected to receive 'DE'", "DE", placeOfBirth[2]);
@@ -146,7 +146,7 @@ public class LocationTest {
   @Test
   public void testGetForeignPlaceOfBirth_ValidStringInvalidFormat_1() {
     Random random = new Random(0L);
-    String[] placeOfBirth = location.randomBirthplaceByEthnicity(random, "too_many_elements");
+    String[] placeOfBirth = location.randomBirthplaceByLanguage(random, "too_many_elements");
     Assert.assertEquals("Expected to receive 'Stoughton'", "Stoughton", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Massachusetts'", "Massachusetts", placeOfBirth[1]);
     Assert.assertEquals("Expected to receive 'US'", "US", placeOfBirth[2]);
@@ -157,7 +157,7 @@ public class LocationTest {
   @Test
   public void testGetForeignPlaceOfBirth_ValidStringInvalidFormat_2() {
     Random random = new Random(0L);
-    String[] placeOfBirth = location.randomBirthplaceByEthnicity(random, "not_enough_elements");
+    String[] placeOfBirth = location.randomBirthplaceByLanguage(random, "not_enough_elements");
     Assert.assertEquals("Expected to receive 'Stoughton'", "Stoughton", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Massachusetts'", "Massachusetts", placeOfBirth[1]);
     Assert.assertEquals("Expected to receive 'US'", "US", placeOfBirth[2]);
@@ -168,7 +168,7 @@ public class LocationTest {
   @Test
   public void testGetForeignPlaceOfBirth_MissingValue() {
     Random random = new Random(0L);
-    String[] placeOfBirth = location.randomBirthplaceByEthnicity(random, "unknown_ethnicity");
+    String[] placeOfBirth = location.randomBirthplaceByLanguage(random, "unknown_ethnicity");
     Assert.assertEquals("Expected to receive 'Rehoboth'", "Rehoboth", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Massachusetts'", "Massachusetts", placeOfBirth[1]);
     Assert.assertEquals("Expected to receive 'US'", "US", placeOfBirth[2]);
@@ -179,7 +179,7 @@ public class LocationTest {
   @Test
   public void testGetForeignPlaceOfBirth_EmptyValue() {
     Random random = new Random(0L);
-    String[] placeOfBirth = location.randomBirthplaceByEthnicity(random, "empty_ethnicity");
+    String[] placeOfBirth = location.randomBirthplaceByLanguage(random, "empty_ethnicity");
     Assert.assertEquals("Expected to receive 'Rehoboth'", "Rehoboth", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Massachusetts'", "Massachusetts", placeOfBirth[1]);
     Assert.assertEquals("Expected to receive 'US'", "US", placeOfBirth[2]);

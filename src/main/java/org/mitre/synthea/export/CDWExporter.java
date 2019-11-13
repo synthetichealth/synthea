@@ -730,9 +730,10 @@ public class CDWExporter {
 
     //patientrace.write("PatientRaceSID,PatientSID,Race");
     String race = (String) person.attributes.get(Person.RACE);
-    if (race.equals("white")) {
+    String ethnicity = (String) person.attributes.get(Person.ETHNICITY);
+    if (race.equals("white") && !ethnicity.equals("hispanic")) {
       race = "WHITE NOT OF HISP ORIG";
-    } else if (race.equals("hispanic")) {
+    } else if (race.equals("white") && ethnicity.equals("hispanic")) {
       race = "WHITE";
     } else if (race.equals("black")) {
       race = "BLACK OR AFRICAN AMERICAN";

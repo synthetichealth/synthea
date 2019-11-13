@@ -465,12 +465,12 @@ public class Generator {
     
     String race = city.pickRace(random);
     out.put(Person.RACE, race);
-    String ethnicity = city.ethnicityFromRace(race, random);
+    String ethnicity = city.pickEthnicity(random);
     out.put(Person.ETHNICITY, ethnicity);
-    String language = city.languageFromEthnicity(ethnicity, random);
+    String language = city.languageFromRaceAndEthnicity(race, ethnicity, random);
     out.put(Person.FIRST_LANGUAGE, language);
 
-    String gender = null;
+    String gender;
     if (options.gender != null) {
       gender = options.gender;
     } else {
