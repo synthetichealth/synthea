@@ -4,6 +4,7 @@ import static org.mitre.synthea.export.ExportHelper.iso8601Timestamp;
 
 import com.google.gson.JsonObject;
 
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,7 +15,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.sis.geometry.DirectPosition2D;
 import org.mitre.synthea.helpers.FactTable;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
@@ -690,7 +690,7 @@ public class CDWExporter {
     s.append(person.attributes.get(Person.ZIP)).append(',');
     s.append(person.attributes.get(Person.ZIP)).append(",USA,,,");
 
-    DirectPosition2D coord = (DirectPosition2D) person.attributes.get(Person.COORDINATE);
+    Point2D.Double coord = person.getLonLat();
     if (coord != null) {
       s.append(coord.x).append(',').append(coord.y).append(',');
     } else {

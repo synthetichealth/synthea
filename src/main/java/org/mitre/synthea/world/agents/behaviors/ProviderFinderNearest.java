@@ -18,7 +18,7 @@ public class ProviderFinderNearest implements IProviderFinder {
     for (Provider provider : providers) {
       if (provider.accepts(person, time)
           && (provider.hasService(service) || service == null)) {
-        distance = provider.getLatLon().distance(person.getLatLon());
+        distance = provider.getLonLat().distance(person.getLonLat());
         if (distance < minDistance) {
           options.clear();
           options.add(provider);

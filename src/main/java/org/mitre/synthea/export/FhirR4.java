@@ -6,6 +6,8 @@ import com.google.common.collect.Table;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -19,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import org.apache.sis.geometry.DirectPosition2D;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.AllergyIntolerance;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCategory;
@@ -570,7 +571,7 @@ public class FhirR4 {
               "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus"));
     }
 
-    DirectPosition2D coord = person.getLatLon();
+    Point2D.Double coord = person.getLonLat();
     if (coord != null) {
       Extension geolocation = addrResource.addExtension();
       geolocation.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
