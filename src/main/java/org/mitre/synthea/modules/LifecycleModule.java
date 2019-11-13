@@ -170,13 +170,13 @@ public final class LifecycleModule extends Module {
     if (location != null) {
       // should never happen in practice, but can happen in unit tests
       location.assignPoint(person, city);
-      person.attributes.put(Person.ZIP, location.getZipCode(city));
+      person.attributes.put(Person.ZIP, location.getZipCode(city, person));
       String[] birthPlace;
       if ("english".equalsIgnoreCase((String) attributes.get(Person.FIRST_LANGUAGE))) {
         birthPlace = location.randomBirthPlace(person.random);
       } else {
-        birthPlace = location.randomBirthplaceByEthnicity(
-            person.random, (String) person.attributes.get(Person.ETHNICITY));
+        birthPlace = location.randomBirthplaceByLanguage(
+            person.random, (String) person.attributes.get(Person.FIRST_LANGUAGE));
       }
       attributes.put(Person.BIRTH_CITY, birthPlace[0]);
       attributes.put(Person.BIRTH_STATE, birthPlace[1]);

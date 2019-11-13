@@ -21,7 +21,7 @@
         " INCIDENCE                                                            ",
         "======================================================================",
         "Initial breakdown by gender and race. For simplicity, grouping race into only 3 categories: ",
-        "white, hispanic, and the rest. For the rest, I averaged the incidence rates: (6.3 + 5.9 + 5.5) / 3 = 5.9 ",
+        "white, native, and the rest. For the rest, I averaged the incidence rates: (6.3 + 5.9 + 5.5) / 3 = 5.9 ",
         "The assumption here is that all races have the same relative ratios of attempts to completions (12:1).",
         "Females ATTEMPT suicide 3x as often as males, but males complete 3.5x as often. If the death rate ",
         "is 12.93/100k and attempt rates are estimated at 12x that number, then the average ATTEMPT rates ",

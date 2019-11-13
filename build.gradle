@@ -41,9 +41,6 @@ dependencies {
   compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:4.0.3'
   // C-CDA export uses Apache FreeMarker templates
   compile 'org.freemarker:freemarker:2.3.26-incubating'
-  // location processing
-  compile group: 'org.apache.sis.core', name: 'sis-referencing', version: '0.8'
-  compile group: 'org.apache.sis.storage', name: 'sis-storage', version: '0.8'
   compile group: 'com.h2database', name: 'h2', version: '1.4.196'
   // google guava for some data structures
   compile 'com.google.guava:guava:23.0'

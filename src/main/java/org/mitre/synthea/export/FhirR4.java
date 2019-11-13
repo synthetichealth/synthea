@@ -6,6 +6,8 @@ import com.google.common.collect.Table;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -19,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import org.apache.sis.geometry.DirectPosition2D;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.AllergyIntolerance;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCategory;
@@ -406,30 +407,20 @@ public class FhirR4 {
       case "native":
         raceDisplay = "American Indian or Alaska Native";
         break;
-      default: // Hispanic or Other (Put Hawaiian and Pacific Islander here for now)
+      default: // Other (Put Hawaiian and Pacific Islander here for now)
         raceDisplay = "Other";
         break;
     }
 
     String raceNum = (String) raceEthnicityCodes.get(race);
 
-    if (race.equals("hispanic")) {
-      Extension raceDetailExtension = new Extension("detailed");
-      Coding raceCoding = new Coding();
-      raceCoding.setSystem("urn:oid:2.16.840.1.113883.6.238");
-      raceCoding.setCode("2131-1");
-      raceCoding.setDisplay("Other Races");
-      raceDetailExtension.setValue(raceCoding);
-      raceExtension.addExtension(raceDetailExtension);
-    } else {
-      Extension raceCodingExtension = new Extension("ombCategory");
-      Coding raceCoding = new Coding();
-      raceCoding.setSystem("urn:oid:2.16.840.1.113883.6.238");
-      raceCoding.setCode(raceNum);
-      raceCoding.setDisplay(raceDisplay);
-      raceCodingExtension.setValue(raceCoding);
-      raceExtension.addExtension(raceCodingExtension);
-    }
+    Extension raceCodingExtension = new Extension("ombCategory");
+    Coding raceCoding = new Coding();
+    raceCoding.setSystem("urn:oid:2.16.840.1.113883.6.238");
+    raceCoding.setCode(raceNum);
+    raceCoding.setDisplay(raceDisplay);
+    raceCodingExtension.setValue(raceCoding);
+    raceExtension.addExtension(raceCodingExtension);
 
     Extension raceTextExtension = new Extension("text");
     raceTextExtension.setValue(new StringType(raceDisplay));
@@ -570,7 +561,7 @@ public class FhirR4 {
               "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus"));
     }
 
-    DirectPosition2D coord = person.getLatLon();
+    Point2D.Double coord = person.getLonLat();
     if (coord != null) {
       Extension geolocation = addrResource.addExtension();
       geolocation.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");
