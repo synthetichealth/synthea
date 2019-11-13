@@ -1,6 +1,8 @@
 package org.mitre.synthea.world.geography;
 
 import com.google.common.collect.ImmutableSet;
+
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -9,7 +11,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.sis.geometry.DirectPosition2D;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -95,7 +96,7 @@ public class LocationTest {
     Person p = new Person(1);
     p.attributes.put(Person.ZIP, "02151");
     location.assignPoint(p, "Boston");
-    DirectPosition2D coord = (DirectPosition2D) p.attributes.get(Person.COORDINATE);
+    Point2D.Double coord = (Point2D.Double) p.attributes.get(Person.COORDINATE);
     Assert.assertEquals(-71.001251, coord.x, 0.05);
     Assert.assertEquals(42.41829, coord.y, 0.05);
   }
