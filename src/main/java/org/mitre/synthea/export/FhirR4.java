@@ -78,6 +78,7 @@ import org.hl7.fhir.r4.model.ExplanationOfBenefit.Use;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Goal;
 import org.hl7.fhir.r4.model.Goal.GoalLifecycleStatus;
+import org.hl7.fhir.r4.model.Identifier.IdentifierUse;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesComponent;
@@ -729,7 +730,16 @@ public class FhirR4 {
       encounterResource.setHospitalization(hospitalization);
     }
 
-    return newEntry(bundle, encounterResource);
+    BundleEntryComponent entry = newEntry(bundle, encounterResource);
+    if (USE_US_CORE_IG) {
+      // US Core Encounters should have an identifier to support the required
+      // Encounter.identifier search parameter
+      encounterResource.addIdentifier()
+          .setUse(IdentifierUse.OFFICIAL)
+          .setSystem("https://github.com/synthetichealth/synthea")
+          .setValue(encounterResource.getId());
+    }
+    return entry;
   }
 
   /**
