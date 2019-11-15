@@ -518,7 +518,7 @@
               {
                 "system": "LOINC",
                 "code": "59408-5",
-                "display": "oxygen saturation in arterial blood by pulse oximetry"
+                "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
               }
             ],
             "operator": ">",
@@ -527,7 +527,7 @@
         }
       ]
     },
-    "Lasix IV": {
+    "Furosemide": {
       "type": "MedicationOrder",
       "codes": [
         {
@@ -588,7 +588,7 @@
       "type": "VitalSign",
       "vital_sign": "Oxygen Saturation",
       "unit": "%",
-      "direct_transition": "CXR_Inpt_daily",
+      "direct_transition": "Record O2",
       "range": {
         "low": 65,
         "high": 85
@@ -1255,7 +1255,7 @@
     },
     "Inpatient daily routine": {
       "type": "Simple",
-      "direct_transition": "Lasix IV"
+      "direct_transition": "Furosemide"
     },
     "Death": {
       "type": "Death",
@@ -1406,7 +1406,7 @@
     "Set 3D Echo": {
       "type": "SetAttribute",
       "attribute": "3decho",
-      "direct_transition": "CXR_Inpt_daily",
+      "direct_transition": "O2 Vitals",
       "value": true
     },
     "Reset 3D Echo": {
@@ -1434,6 +1434,20 @@
           "transition": "intra_encounter time gate"
         }
       ]
+    },
+    "Record O2": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "%",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "59408-5",
+          "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
+        }
+      ],
+      "direct_transition": "CXR_Inpt_daily",
+      "vital_sign": "Oxygen Saturation"
     }
   }
 }
