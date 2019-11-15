@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -2016,7 +2015,9 @@ public class FhirR4 {
     }
     reportResource.setStatus(DiagnosticReportStatus.FINAL);
     reportResource.addCategory(new CodeableConcept(
-        new Coding(LOINC_URI, "51847-2", "Evaluation+Plan note")));
+        new Coding(LOINC_URI, "34117-2", "History and physical note")));
+    reportResource.getCategoryFirstRep().addCoding(
+        new Coding(LOINC_URI, "51847-2", "Evaluation+Plan note"));
     reportResource.setCode(reportResource.getCategoryFirstRep());
     reportResource.setSubject(new Reference(personEntry.getFullUrl()));
     reportResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
@@ -2029,7 +2030,7 @@ public class FhirR4 {
     }
     reportResource.addPresentedForm()
         .setContentType("text/plain")
-        .setData(Base64.getEncoder().encode(clinicalNoteText.getBytes()));
+        .setData(clinicalNoteText.getBytes());
     newEntry(bundle, reportResource);
 
     // Add a DocumentReference
@@ -2153,7 +2154,8 @@ public class FhirR4 {
     }
 
     for (JsonObject goal : carePlan.goals) {
-      BundleEntryComponent goalEntry = careGoal(bundle, personEntry, goalStatus, goal);
+      BundleEntryComponent goalEntry =
+          careGoal(bundle, personEntry, carePlan.start, goalStatus, goal);
       careplanResource.addGoal().setReference(goalEntry.getFullUrl());
     }
 
@@ -2172,7 +2174,7 @@ public class FhirR4 {
    */
   private static BundleEntryComponent careGoal(
       Bundle bundle,
-      BundleEntryComponent personEntry,
+      BundleEntryComponent personEntry, long carePlanStart,
       CodeableConcept goalStatus, JsonObject goal) {
     String resourceID = UUID.randomUUID().toString();
 
@@ -2221,6 +2223,8 @@ public class FhirR4 {
       descriptionCodeableConcept.setText(String.join(" ", text));
       goalResource.setDescription(descriptionCodeableConcept);
     }
+    goalResource.addTarget().setMeasure(goalResource.getDescription())
+        .setDue(new DateType(new Date(carePlanStart + Utilities.convertTime("days", 30))));
 
     if (goal.has("addresses")) {
       for (JsonElement reasonElement : goal.get("addresses").getAsJsonArray()) {
