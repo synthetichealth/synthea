@@ -1442,6 +1442,17 @@ public class FhirR4 {
 
     Code code = observation.codes.get(0);
     observationResource.setCode(mapCodeToCodeableConcept(code, LOINC_URI));
+    // add extra codes, if there are any...
+    if (observation.codes.size() > 1) {
+      for (int i=1; i < observation.codes.size(); i++) {
+        code = observation.codes.get(i);
+        Coding coding = new Coding();
+        coding.setCode(code.code);
+        coding.setDisplay(code.display);
+        coding.setSystem(LOINC_URI);
+        observationResource.getCode().addCoding(coding);
+      }
+    }
 
     observationResource.addCategory().addCoding().setCode(observation.category)
         .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
