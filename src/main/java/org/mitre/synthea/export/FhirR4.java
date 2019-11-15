@@ -76,8 +76,8 @@ import org.hl7.fhir.r4.model.ExplanationOfBenefit.Use;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Goal;
 import org.hl7.fhir.r4.model.Goal.GoalLifecycleStatus;
-import org.hl7.fhir.r4.model.Identifier.IdentifierUse;
 import org.hl7.fhir.r4.model.HumanName;
+import org.hl7.fhir.r4.model.Identifier.IdentifierUse;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesComponent;
 import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesInstanceComponent;
@@ -1453,7 +1453,7 @@ public class FhirR4 {
     observationResource.setCode(mapCodeToCodeableConcept(code, LOINC_URI));
     // add extra codes, if there are any...
     if (observation.codes.size() > 1) {
-      for (int i=1; i < observation.codes.size(); i++) {
+      for (int i = 1; i < observation.codes.size(); i++) {
         code = observation.codes.get(i);
         Coding coding = new Coding();
         coding.setCode(code.code);
