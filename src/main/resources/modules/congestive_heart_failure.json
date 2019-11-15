@@ -1442,6 +1442,11 @@
       "codes": [
         {
           "system": "LOINC",
+          "code": "2708-6",
+          "display": "Oxygen saturation in Arterial blood"
+        },
+        {
+          "system": "LOINC",
           "code": "59408-5",
           "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
         }

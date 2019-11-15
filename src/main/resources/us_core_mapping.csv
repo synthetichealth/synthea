@@ -2,4 +2,5 @@ SYSTEM,CODE,URL
 "http://loinc.org","59576-9","http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age"
 "http://loinc.org","77606-2","http://hl7.org/fhir/us/core/StructureDefinition/pediatric-weight-for-height"
 "http://loinc.org","72166-2","http://hl7.org/fhir/us/core/StructureDefinition/us-core-smokingstatus"
+"http://loinc.org","2708-6","http://hl7.org/fhir/us/core/StructureDefinition/us-core-pulse-oximetry"
 "http://loinc.org","59408-5","http://hl7.org/fhir/us/core/StructureDefinition/us-core-pulse-oximetry"
