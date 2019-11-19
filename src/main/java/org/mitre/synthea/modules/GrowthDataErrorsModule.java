@@ -1,12 +1,13 @@
 package org.mitre.synthea.modules;
 
 import com.google.gson.Gson;
-import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.engine.HealthRecordModule;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -17,21 +18,18 @@ import java.util.stream.Collectors;
  *
  * https://academic.oup.com/jamia/article/24/6/1080/3767271
  *
- * The following module is intended to run after the simulation for the person is complete. At that
- * point the module will potentially introduce errors into the height and weight Observations for
- * the person.
- *
  * If a height or weight is changed, if the Encounter has an associated BMI, it will be recomputed
  * based on the new, error values.
  *
  * This module will only operate on Observations that take place while the patient is less than
  * MAX_AGE.
  */
-public class GrowthDataErrorsModule extends Module {
-  public GrowthDataErrorsModule() { this.name = "Growth Data Errors";}
+public class GrowthDataErrorsModule implements HealthRecordModule {
+  public GrowthDataErrorsModule() { }
 
   public static int MAX_AGE = 20;
   public static double POUNDS_PER_KG = 2.205;
+  public static double INCHES_PER_CM = 0.394;
 
   private static final Config config = loadConfig();
 
@@ -65,27 +63,52 @@ public class GrowthDataErrorsModule extends Module {
   }
 
   @Override
-  public boolean process(Person person, long time) {
-    List<HealthRecord.Encounter> encountersWithWeights = person.record.encountersWithObservationsOfCode("29463-7",
+  public boolean shouldRun(Person person, HealthRecord record, long time) {
+    return person.ageInYears(time) <= MAX_AGE;
+  }
+
+  public void process(Person person, List<HealthRecord.Encounter> encounters, long time, Random random) {
+    List<HealthRecord.Encounter> encountersWithWeights = encountersWithObservationsOfCode(encounters, "29463-7",
         "http://loinc.org");
-    List<HealthRecord.Encounter> weightEncountersInRange = encountersInAgeRange(person, encountersWithWeights);
-    weightEncountersInRange.forEach(e -> {
-      if (person.rand() <= config.weightUnitErrorRate) {
+    encountersWithWeights.forEach(e -> {
+      if (random.nextDouble() <= config.weightUnitErrorRate) {
         introduceWeightUnitError(e);
         recalculateBMI(e);
       }
-      if (person.rand() <= config.weightTransposeErrorRate) {
-        introduceWeightTransposeError(e);
+      if (random.nextDouble() <= config.weightTransposeErrorRate) {
+        introduceTransposeError(e, "weight");
         recalculateBMI(e);
       }
-      if (person.rand() <= config.weightSwitchErrorRate) {
+      if (random.nextDouble() <= config.weightSwitchErrorRate) {
         introduceWeightSwitchError(e);
         recalculateBMI(e);
       }
-
+      if (random.nextDouble() <= config.weightExtremeErrorRate) {
+        introduceWeightExtremeError(e);
+        recalculateBMI(e);
+      }
+      if (random.nextDouble() <= config.weightDuplicateErrorRate) {
+        introduceWeightDuplicateError(e, random);
+        recalculateBMI(e);
+      }
+      if (random.nextDouble() <= config.weightCarriedForwardErrorRate) {
+        introduceWeightCarriedForwardError(e);
+        recalculateBMI(e);
+      }
     });
 
-    return config.heightAbsoluteErrorRate < 1;
+    List<HealthRecord.Encounter> encountersWithHeights = encountersWithObservationsOfCode(encounters, "8302-2",
+        "http://loinc.org");
+    encountersWithHeights.forEach(e -> {
+      if (random.nextDouble() <= config.heightUnitErrorRate) {
+        introduceHeightUnitError(e);
+        recalculateBMI(e);
+      }
+      if (random.nextDouble() <= config.heightTransposeErrorRate) {
+        introduceTransposeError(e, "height");
+        recalculateBMI(e);
+      }
+    });
   }
 
   public static void introduceWeightUnitError(HealthRecord.Encounter encounter) {
@@ -94,26 +117,36 @@ public class GrowthDataErrorsModule extends Module {
     obs.value = originalWeight * POUNDS_PER_KG;
   }
 
-  public static void introduceWeightTransposeError(HealthRecord.Encounter encounter) {
-    HealthRecord.Observation obs = weightObservation(encounter);
-    Double originalWeight = (Double) obs.value;
-    if (originalWeight >= 10) {
-      String weightString = originalWeight.toString();
-      int decimalPointPosition = weightString.indexOf('.');
-      char[] weightChars = weightString.toCharArray();
-      char tens = weightChars[decimalPointPosition - 2];
-      char ones = weightChars[decimalPointPosition - 1];
-      weightChars[decimalPointPosition - 2] = ones;
-      weightChars[decimalPointPosition - 1] = tens;
-      obs.value = Double.parseDouble(weightChars.toString());
+  public static void introduceHeightUnitError(HealthRecord.Encounter encounter) {
+    HealthRecord.Observation obs = heightObservation(encounter);
+    double originalHeight = (Double) obs.value;
+    obs.value = originalHeight * INCHES_PER_CM;
+  }
+
+  public static void introduceTransposeError(HealthRecord.Encounter encounter, String obsType) {
+    HealthRecord.Observation obs;
+    if (obsType.equals("weight")) {
+      obs = weightObservation(encounter);
     } else {
-      // for those with a single digit weight, just shift the ones to the tens
-      double ones = Math.floor(originalWeight);
-      double newTens = ones * 10;
-      obs.value = originalWeight - ones + newTens;
+      obs = heightObservation(encounter);
     }
 
-    obs.value = originalWeight * POUNDS_PER_KG;
+    Double original = (Double) obs.value;
+    if (original >= 10) {
+      String originalString = original.toString();
+      int decimalPointPosition = originalString.indexOf('.');
+      char[] originalChars = originalString.toCharArray();
+      char tens = originalChars[decimalPointPosition - 2];
+      char ones = originalChars[decimalPointPosition - 1];
+      originalChars[decimalPointPosition - 2] = ones;
+      originalChars[decimalPointPosition - 1] = tens;
+      obs.value = Double.parseDouble(originalChars.toString());
+    } else {
+      // for those with a single digit, just shift the ones to the tens
+      double ones = Math.floor(original);
+      double newTens = ones * 10;
+      obs.value = original - ones + newTens;
+    }
   }
 
   public static void introduceWeightSwitchError(HealthRecord.Encounter encounter) {
@@ -130,6 +163,31 @@ public class GrowthDataErrorsModule extends Module {
       wtObs.value = htValue;
       htObs.value = wtValue;
     }
+  }
+
+  public static void introduceWeightExtremeError(HealthRecord.Encounter encounter) {
+    HealthRecord.Observation wtObs = weightObservation(encounter);
+    double weightValue = (Double) wtObs.value;
+    wtObs.value = weightValue * 10;
+  }
+
+  public static void introduceWeightDuplicateError(HealthRecord.Encounter encounter, Random random) {
+    HealthRecord.Observation wtObs = weightObservation(encounter);
+    double weightValue = (Double) wtObs.value;
+    double jitter = random.nextDouble() - 0.5;
+    encounter.addObservation(wtObs.start, wtObs.type, weightValue + jitter);
+  }
+
+  public static void introduceWeightCarriedForwardError(HealthRecord.Encounter encounter) {
+    HealthRecord.Observation wtObs = weightObservation(encounter);
+    HealthRecord.Encounter previousEncounter = encounter.previousEncounter();
+    if (previousEncounter != null) {
+      HealthRecord.Observation previousWt = weightObservation(previousEncounter);
+      if (previousWt != null) {
+        wtObs.value = previousWt.value;
+      }
+    }
+
   }
 
   private static HealthRecord.Observation weightObservation(HealthRecord.Encounter encounter) {
@@ -165,10 +223,12 @@ public class GrowthDataErrorsModule extends Module {
     }
   }
 
-  private static List<HealthRecord.Encounter> encountersInAgeRange(Person person, List<HealthRecord.Encounter> encounters) {
-    return encounters
-        .stream()
-        .filter(e -> person.ageInYears(e.start) < MAX_AGE)
+  public List<HealthRecord.Encounter> encountersWithObservationsOfCode(List<HealthRecord.Encounter> encounters,
+                                                                       String code, String system) {
+    return encounters.stream().filter(e ->
+        e.observations.stream().anyMatch(o ->
+            o.codes.stream().anyMatch(c ->
+                c.code.equals(code) && c.system.equals(system))))
         .collect(Collectors.toList());
   }
 

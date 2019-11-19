@@ -3,6 +3,8 @@ package org.mitre.synthea.modules;
 import org.junit.Test;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.*;
 
 public class GrowthDataErrorsModuleTest {
@@ -10,7 +12,7 @@ public class GrowthDataErrorsModuleTest {
   @Test
   public void process() {
     GrowthDataErrorsModule m = new GrowthDataErrorsModule();
-    assertTrue(m.process(null, 1));
+    m.process(null, new ArrayList<>(), 1, null);
   }
 
 }
