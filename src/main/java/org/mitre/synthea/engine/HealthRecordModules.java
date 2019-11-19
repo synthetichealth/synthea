@@ -6,6 +6,7 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class HealthRecordModules {
   private static HealthRecordModules instance;
@@ -26,10 +27,14 @@ public class HealthRecordModules {
     this.registeredModules.add(module);
   }
 
-  public void executeAll(Person person, HealthRecord record, long time, Random random) {
+  public void executeAll(Person person, HealthRecord record, long time, long step, Random random) {
+    long start = time - step;
+    List<HealthRecord.Encounter> encountersThisStep = record.encounters.stream()
+        .filter(e -> e.start > start )
+        .collect(Collectors.toList());
     this.registeredModules.forEach(m -> {
       if (m.shouldRun(person, record, time)) {
-        m.process(person, record, time, random);
+        m.process(person, encountersThisStep, time, random);
       }
     });
   }

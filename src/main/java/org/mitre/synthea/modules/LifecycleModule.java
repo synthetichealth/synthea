@@ -497,11 +497,9 @@ public final class LifecycleModule extends Module {
         weight = lookupGrowthChart("weight", gender, ageInMonths,
             person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
       } else if (age <= ADULT_MAX_WEIGHT_AGE) {
-        // getting older and fatter
         double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
         weight += adultWeightGain;
       } else if (age >= GERIATRIC_WEIGHT_LOSS_AGE) {
-        // getting older and wasting away
         double geriatricWeightLoss = person.rand(GERIATRIC_WEIGHT_LOSS_RANGE);
         weight -= geriatricWeightLoss;
       }

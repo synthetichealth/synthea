@@ -465,6 +465,24 @@ public class HealthRecord {
       devices = new ArrayList<Device>();
       this.claim = new Claim(this, person);
     }
+
+    public void addObservation(long time, String type, Object value) {
+      Observation observation = new Observation(time, type, value);
+      this.observations.add(observation);
+    }
+
+    public Encounter previousEncounter() {
+      if (record.encounters.size() < 2) {
+        return null;
+      } else {
+        int index = record.encounters.indexOf(this);
+        if (index == 0) {
+          return null;
+        } else {
+          return record.encounters.get(index - 1);
+        }
+      }
+    }
   }
 
   private Person person;
@@ -557,14 +575,6 @@ public class HealthRecord {
     }
     encounter.observations.add(observation);
     return observation;
-  }
-
-  public List<Encounter> encountersWithObservationsOfCode(String code, String system) {
-    return encounters.stream().filter(e ->
-        e.observations.stream().anyMatch(o ->
-            o.codes.stream().anyMatch(c ->
-                c.code.equals(code) && c.system.equals(system))))
-        .collect(Collectors.toList());
   }
 
   public Observation getLatestObservation(String type) {
@@ -810,7 +820,7 @@ public class HealthRecord {
   /**
    * Remove Chronic Medication if stopped medication is a Chronic Medication.
    *
-   * @param Primary code (RxNorm) for the medication.
+   * @param type Primary code (RxNorm) for the medication.
    */
   private void chronicMedicationEnd(String type) {
     if (person.chronicMedications.containsKey(type)) {
