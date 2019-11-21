@@ -3,15 +3,15 @@
     "",
     "\\src",
     "\\src\\main",
-    "\\src\\main\\java",
-    "\\src\\main\\java\\org",
-    "\\src\\main\\java\\org\\mitre",
-    "\\src\\main\\java\\org\\mitre\\synthea",
-    "\\src\\main\\java\\org\\mitre\\synthea\\export",
     "\\src\\main\\resources",
     "\\src\\test",
+    "\\src\\test\\java",
+    "\\src\\test\\java\\org",
+    "\\src\\test\\java\\org\\mitre",
+    "\\src\\test\\java\\org\\mitre\\synthea",
+    "\\src\\test\\java\\org\\mitre\\synthea\\export",
     "\\src\\test\\resources"
   ],
-  "SelectedNode": "\\build.gradle",
+  "SelectedNode": "\\src\\test\\java\\org\\mitre\\synthea\\export\\CPCDSExporterTest.java",
   "PreviewInSolutionExplorer": false
 }
