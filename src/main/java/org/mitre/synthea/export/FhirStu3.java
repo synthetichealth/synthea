@@ -364,9 +364,15 @@ public class FhirStu3 {
 
     Extension raceCodingExtension = new Extension("ombCategory");
     Coding raceCoding = new Coding();
-    raceCoding.setSystem("urn:oid:2.16.840.1.113883.6.238");
-    raceCoding.setCode(raceNum);
-    raceCoding.setDisplay(raceDisplay);
+    if (raceDisplay.equals("Other")) {
+      raceCoding.setSystem("http://hl7.org/fhir/v3/NullFlavor");
+      raceCoding.setCode("UNK");
+      raceCoding.setDisplay("Unknown");
+    } else {
+      raceCoding.setSystem("urn:oid:2.16.840.1.113883.6.238");
+      raceCoding.setCode(raceNum);
+      raceCoding.setDisplay(raceDisplay);
+    };
     raceCodingExtension.setValue(raceCoding);
     raceExtension.addExtension(raceCodingExtension);
 
