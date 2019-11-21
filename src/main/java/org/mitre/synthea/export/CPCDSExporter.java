@@ -3,39 +3,25 @@ package org.mitre.synthea.export;
 import static org.mitre.synthea.export.ExportHelper.dateFromTimestamp;
 import static org.mitre.synthea.export.ExportHelper.iso8601Timestamp;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
-import org.mitre.synthea.modules.HealthInsuranceModule;
 
 import com.google.gson.JsonObject;
 
@@ -45,16 +31,16 @@ public class CPCDSExporter {
 	 * CONSTANTS
 	 */
 	private static final String[] COVERAGE_TYPES = {"HMO", "PPO", "EPO", "POS"};
-	private static final String[] GROUP_NAMES = {"Targaryan Analytics",
-		  "Bolton Industries",
-		  "Tarly Dynamics",
-		  "Stark Cryogenic Technologies",
-		  "Drogo Expeditions",
-		  "Baratheon LLC",
-		  "Walker Corp",
-		  "Castle Black Securities",
-		  "Frey IT",
-		  "Lannister Financial"};
+	private static final String[] GROUP_NAMES = {"Freya Analytics",
+		  "Thorton Industries",
+		  "Apollo Dynamics",
+		  "Cryocast Technologies",
+		  "Draugr Expeditions",
+		  "Odin Group LLC",
+		  "LowKey",
+		  "Black Castle Securities",
+		  "NewWave Technologies",
+		  "Realms Financial"};
 	
 	private final int[] GROUP_IDS = {(int) randomLongWithBounds(100000000, 999999999),
 			(int) randomLongWithBounds(100000000, 999999999),
@@ -97,7 +83,7 @@ public class CPCDSExporter {
       output.mkdirs();
       Path outputDirectory = output.toPath();
 
-      if (Boolean.parseBoolean(Config.get("exporter.csv.folder_per_run"))) {
+      if (Boolean.parseBoolean(Config.get("exporter.cpcds.folder_per_run"))) {
         // we want a folder per run, so name it based on the timestamp
         String timestamp = ExportHelper.iso8601Timestamp(System.currentTimeMillis());
         String subfolderName = timestamp.replaceAll("\\W+", "_"); // make sure it's filename-safe
@@ -108,7 +94,7 @@ public class CPCDSExporter {
       File patientsFile = outputDirectory.resolve("CPCDS_Patients.csv").toFile();
       
       boolean append =
-          patientsFile.exists() && Boolean.parseBoolean(Config.get("exporter.csv.append_mode"));
+          patientsFile.exists() && Boolean.parseBoolean(Config.get("exporter.cpcds.append_mode"));
       
 
       File coverageFile = outputDirectory.resolve("CPCDS_Coverages.csv").toFile();
@@ -226,7 +212,6 @@ public class CPCDSExporter {
     int groupId = GROUP_IDS[(int) randomLongWithBounds(0, GROUP_IDS.length - 1)];
     String groupName = GROUP_NAMES[(int) randomLongWithBounds(0, GROUP_NAMES.length - 1)];
     
-    int i = 1;
     for (Encounter encounter : person.record.encounters) {
 
       String encounterID = UUID.randomUUID().toString();
@@ -254,7 +239,6 @@ public class CPCDSExporter {
       		k++;
 		  }
       }
-      i++;
     }
     
     patients.flush();
