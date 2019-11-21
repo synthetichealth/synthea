@@ -389,7 +389,7 @@ public class FhirStu3 {
     String ethnicity = (String) person.attributes.get(Person.ETHNICITY);
 
     String ethnicityDisplay;
-    if (race.equals("hispanic")) {
+    if (ethnicity.equals("hispanic")) {
       ethnicity = "hispanic";
       ethnicityDisplay = "Hispanic or Latino";
     } else {
