@@ -1197,7 +1197,7 @@ public class CDWExporter {
   private static Map<String,String> vitalSignCodes() {
     Map<String,String> codes = new HashMap<String,String>();
     codes.put("29463-7", "4500639");
-    codes.put("55284-4", "4500634");
+    codes.put("85354-9", "4500634");
     codes.put("72514-3", "4500635");
     codes.put("8302-2", "4688724");
     return codes;
@@ -1245,7 +1245,7 @@ public class CDWExporter {
     s.append(vitalTypeSID).append(',');
     String value = null;
     switch (code) {
-      case "55284-4": // blood pressure
+      case "85354-9": // blood pressure
         s.append(',');
         value = ExportHelper.getObservationValue(observation, "8480-6"); // systolic
         if (value != null && value.indexOf('.') >= 0) {

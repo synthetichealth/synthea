@@ -1490,9 +1490,10 @@ public class FhirR4 {
       String codeMappingUri = US_CORE_MAPPING.get(LOINC_URI, code.code);
       if (codeMappingUri != null) {
         meta.addProfile(codeMappingUri);
-      } else if (observation.report != null
-          && observationResource.getCategoryFirstRep().getCodingFirstRep()
-          .getCode().equals("laboratory")) {
+        if (!codeMappingUri.contains("/us/core/") && observation.category.equals("vital-signs")) {
+          meta.addProfile("http://hl7.org/fhir/StructureDefinition/vitalsigns");
+        }
+      } else if (observation.report != null && observation.category.equals("laboratory")) {
         meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab");
       }
       if (meta.hasProfile()) {
