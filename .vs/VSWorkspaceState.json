@@ -1,0 +1,17 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\main",
+    "\\src\\main\\java",
+    "\\src\\main\\java\\org",
+    "\\src\\main\\java\\org\\mitre",
+    "\\src\\main\\java\\org\\mitre\\synthea",
+    "\\src\\main\\java\\org\\mitre\\synthea\\export",
+    "\\src\\main\\resources",
+    "\\src\\test",
+    "\\src\\test\\resources"
+  ],
+  "SelectedNode": "\\build.gradle",
+  "PreviewInSolutionExplorer": false
+}

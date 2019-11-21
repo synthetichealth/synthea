@@ -239,21 +239,21 @@ public class CPCDSExporter {
       }
       
       if (encounter.medications.size() == 0 && encounter.procedures.size() == 0) {
-      	claim(encounter, personID, encounterID, medRecordNumber, encounterAttributes, i, payerId);
+      	claim(encounter, personID, encounterID, medRecordNumber, encounterAttributes, 1, payerId);
       }
+      else {
+		  int j = 1;
+		  for (Medication medication : encounter.medications) {
+			medication(encounter, personID, encounterID, medRecordNumber, medication, encounterAttributes, j, time, payerId);
+			j++;
+		  }
       
-      int j = 1;
-      for (Medication medication : encounter.medications) {
-        medication(encounter, personID, encounterID, medRecordNumber, medication, encounterAttributes, j, time, payerId);
-        j++;
+		  int k = 1;
+		  for (Procedure procedure : encounter.procedures) {
+      		procedure(encounter, personID, encounterID, medRecordNumber, procedure, encounterAttributes, k, payerId);
+      		k++;
+		  }
       }
-      
-      int k = 1;
-      for (Procedure procedure : encounter.procedures) {
-      	procedure(encounter, personID, encounterID, medRecordNumber, procedure, encounterAttributes, k, payerId);
-      	k++;
-      }
-      
       i++;
     }
     
