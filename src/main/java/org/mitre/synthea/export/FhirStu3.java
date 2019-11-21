@@ -372,7 +372,7 @@ public class FhirStu3 {
       raceCoding.setSystem("urn:oid:2.16.840.1.113883.6.238");
       raceCoding.setCode(raceNum);
       raceCoding.setDisplay(raceDisplay);
-    };
+    }
     raceCodingExtension.setValue(raceCoding);
     raceExtension.addExtension(raceCodingExtension);
 
