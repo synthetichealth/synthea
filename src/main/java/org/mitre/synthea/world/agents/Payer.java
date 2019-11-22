@@ -5,6 +5,8 @@ import com.google.common.collect.Table;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,7 +77,57 @@ public class Payer implements Serializable {
   // Unique utilizers of Payer, by Person ID, with number of utilizations per Person.
   private final Map<String, AtomicInteger> customerUtilization;
   // row: year, column: type, value: count.
-  private final transient Table<Integer, String, AtomicInteger> entryUtilization;
+  private transient Table<Integer, String, AtomicInteger> entryUtilization;
+  
+  /**
+   * Simple bean used to add Java Serialization support to 
+   * com.google.common.collect.Table&lt;Integer, String, AtomicInteger&gt; which doesn't natively
+   * support Serialization.
+   */
+  static class UtilizationBean implements Serializable {
+    public Integer year;
+    public String type;
+    public AtomicInteger count;
+    
+    public UtilizationBean(Integer year, String type, AtomicInteger count) {
+      this.year = year;
+      this.type = type;
+      this.count = count;
+    }
+  }
+  
+  /**
+   * Java Serialization support for the entryUtilization field.
+   * @param oos stream to write to
+   */
+  private void writeObject(ObjectOutputStream oos) throws IOException {
+    oos.defaultWriteObject();
+    ArrayList<UtilizationBean> entryUtilizationElements = null;
+    if (entryUtilization != null) {
+      entryUtilizationElements = new ArrayList<>(entryUtilization.size());
+      for (Table.Cell<Integer, String, AtomicInteger> cell: entryUtilization.cellSet()) {
+        entryUtilizationElements.add(
+                new UtilizationBean(cell.getRowKey(), cell.getColumnKey(), cell.getValue()));
+      }
+    }
+    oos.writeObject(entryUtilizationElements);
+  }
+
+  /**
+   * Java Serialization support for the entryUtilization field.
+   * @param ois stream to read from
+   */
+  private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+    ois.defaultReadObject();
+    ArrayList<UtilizationBean> entryUtilizationElements = 
+            (ArrayList<UtilizationBean>)ois.readObject();
+    if (entryUtilizationElements != null) {
+      this.entryUtilization = HashBasedTable.create();
+      for (UtilizationBean u: entryUtilizationElements) {
+        this.entryUtilization.put(u.year, u.type, u.count);
+      }
+    }
+  }
 
   /**
    * Payer Constructor.
@@ -506,10 +558,12 @@ public class Payer implements Serializable {
    * @param key the key (the encounter type and whether it was covered/uncovered)
    */
   private synchronized void incrementEntries(Integer year, String key) {
-    if (!entryUtilization.contains(year, key)) {
-      entryUtilization.put(year, key, new AtomicInteger(0));
+    if (entryUtilization != null) { // TODO remove once entryUtilization is serializable
+      if (!entryUtilization.contains(year, key)) {
+        entryUtilization.put(year, key, new AtomicInteger(0));
+      }
+      entryUtilization.get(year, key).incrementAndGet();
     }
-    entryUtilization.get(year, key).incrementAndGet();
   }
 
   /**
@@ -681,9 +735,6 @@ public class Payer implements Serializable {
             ^ (Double.doubleToLongBits(this.costsUncovered) >>> 32));
     hash = 53 * hash + (int) (Double.doubleToLongBits(this.totalQOLS)
             ^ (Double.doubleToLongBits(this.totalQOLS) >>> 32));
-    hash = 53 * hash + Objects.hashCode(this.customerUtilization);
-    // TODO uncomment when entryUtilization is no longer transient
-    // hash = 53 * hash + Objects.hashCode(this.entryUtilization);
     return hash;
   }
 
@@ -749,10 +800,6 @@ public class Payer implements Serializable {
     if (!Objects.equals(this.servicesCovered, other.servicesCovered)) {
       return false;
     }
-    // TODO uncomment when entryUtilization is no longer transient
-    // if (!Objects.equals(this.customerUtilization, other.customerUtilization)) {
-    //   return false;
-    // }
     return true;
   }
   

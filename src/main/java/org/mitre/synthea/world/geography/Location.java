@@ -2,9 +2,9 @@ package org.mitre.synthea.world.geography;
 
 import com.google.common.collect.Table;
 import com.google.gson.Gson;
-import java.io.Serializable;
 
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

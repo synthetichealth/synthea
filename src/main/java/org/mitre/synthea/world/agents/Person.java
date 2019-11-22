@@ -89,6 +89,14 @@ public class Person implements Serializable, QuadTreeElement {
   public final JDKRandomGenerator random;
   public final long seed;
   public long populationSeed;
+  /** 
+   * Tracks the last time that the person was updated over a serialize/deserialize
+   */
+  public long lastUpdated;
+  /**
+   * Tracks the remaining modules for a person over a serialize/deserialize
+   */
+  public List<Module> currentModules;
   public Map<String, Object> attributes;
   public Map<VitalSign, ValueGenerator> vitalSigns;
   Map<String, Map<String, Integer>> symptoms;
@@ -658,14 +666,23 @@ public class Person implements Serializable, QuadTreeElement {
    * Returns the person's Payer at the given time.
    */
   public Payer getPayerAtTime(long time) {
-    return this.payerHistory[this.ageInYears(time)];
+    int ageInYears = this.ageInYears(time);
+    if (this.payerHistory.length > ageInYears) {
+      return this.payerHistory[ageInYears];
+    } else {
+      return null;
+    }
   }
 
   /**
    * Returns the person's Payer at the given age.
    */
   public Payer getPayerAtAge(int personAge) {
-    return this.payerHistory[personAge];
+    if (this.payerHistory.length > personAge) {
+      return this.payerHistory[personAge];
+    } else {
+      return null;
+    }
   }
 
   /**

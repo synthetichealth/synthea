@@ -1,7 +1,11 @@
 package org.mitre.synthea.world.concepts;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import java.math.BigDecimal;
@@ -206,6 +210,32 @@ public class HealthRecord implements Serializable {
       // Create a medication claim.
       this.claim = new Claim(this, person);
     }
+    
+    /**
+     * Java Serialization support for the prescriptionDetails field.
+     * @param oos stream to write to
+     */
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+      oos.defaultWriteObject();
+      if (prescriptionDetails != null) {
+        oos.writeObject(prescriptionDetails.toString());
+      } else {
+        oos.writeObject(null);
+      }
+    }
+    
+    /**
+     * Java Serialization support for the prescriptionDetails field.
+     * @param ois stream to read from
+     */
+    private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+      ois.defaultReadObject();
+      String prescriptionJson = (String) ois.readObject();
+      if (prescriptionJson != null) {
+        Gson gson = Utilities.getGson();
+        this.prescriptionDetails = gson.fromJson(prescriptionJson, JsonObject.class);
+      }
+    }
   }
 
   public class Immunization extends Entry {
@@ -249,6 +279,25 @@ public class HealthRecord implements Serializable {
       this.reasons = new ArrayList<Code>();
       this.goals = new LinkedHashSet<JsonObject>();
     }
+
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+      oos.defaultWriteObject();
+      ArrayList<String> stringifiedGoals = new ArrayList<>(this.goals.size());
+      for (JsonObject o: goals) {
+        stringifiedGoals.add(o.toString());
+      }
+      oos.writeObject(stringifiedGoals);
+    }
+    
+    private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+      ois.defaultReadObject();
+      ArrayList<String> stringifiedGoals = (ArrayList<String>)ois.readObject();
+      Gson gson = Utilities.getGson();
+      this.goals = new LinkedHashSet<JsonObject>();
+      for (String stringifiedGoal: stringifiedGoals) {
+        goals.add(gson.fromJson(stringifiedGoal, JsonObject.class));
+      }
+    }
   }
 
   public class ImagingStudy extends Entry {
@@ -270,7 +319,7 @@ public class HealthRecord implements Serializable {
      */
     public class Series implements Cloneable, Serializable {
       /** A randomly assigned DICOM UID. */
-      public transient String dicomUid;
+      public String dicomUid;
       /** A SNOMED-CT body structures code. */
       public Code bodySite;
       /**

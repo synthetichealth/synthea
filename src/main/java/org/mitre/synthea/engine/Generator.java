@@ -314,7 +314,7 @@ public class Generator {
     long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
     return generatePerson(index, personSeed);
   }
-
+  
   /**
    * Generate a random Person, from the given seed. The returned person will be alive at the end of
    * the simulation. This means that if in the course of the simulation the person dies, a new
@@ -334,48 +334,13 @@ public class Generator {
       boolean isAlive = true;
       int tryNumber = 0; // number of tries to create these demographics
       Random randomForDemographics = new Random(personSeed);
-      Demographics city = location.randomCity(randomForDemographics);
-      
-      Map<String, Object> demoAttributes = pickDemographics(randomForDemographics, city);
-      long start = (long) demoAttributes.get(Person.BIRTHDATE);
+      Map<String, Object> demoAttributes = randomDemographics(randomForDemographics);
 
       do {
-        List<Module> modules = Module.getModules(modulePredicate);
+        person = createPerson(personSeed, demoAttributes);
+        long finishTime = person.lastUpdated + timestep;
 
-        person = new Person(personSeed);
-        person.populationSeed = this.options.seed;
-        person.attributes.putAll(demoAttributes);
-        person.attributes.put(Person.LOCATION, location);
-
-        LifecycleModule.birth(person, start);
-        
-        HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
-        EncounterModule encounterModule = new EncounterModule();
-        HealthRecordEditors hrm = HealthRecordEditors.getInstance();
-        long time = start;
-        while (person.alive(time) && time < stop) {
-
-          healthInsuranceModule.process(person, time + timestep);
-          encounterModule.process(person, time);
-
-          Iterator<Module> iter = modules.iterator();
-          while (iter.hasNext()) {
-            Module module = iter.next();
-            // System.out.format("Processing module %s\n", module.name);
-            if (module.process(person, time)) {
-              // System.out.format("Removing module %s\n", module.name);
-              iter.remove(); // this module has completed/terminated.
-            }
-          }
-          encounterModule.endWellnessEncounter(person, time);
-          hrm.executeAll(person, person.record, time, timestep, person.random);
-
-          time += timestep;
-        }
-
-        DeathModule.process(person, time);
-
-        isAlive = person.alive(time);
+        isAlive = person.alive(finishTime);
 
         if (isAlive && onlyDeadPatients) {
           // rotate the seed so the next attempt gets a consistent but different one
@@ -385,36 +350,7 @@ public class Generator {
           // note that this skips ahead to the while check and doesn't automatically re-loop
         }
 
-        if (!isAlive && onlyAlivePatients) {
-          // rotate the seed so the next attempt gets a consistent but different one
-          personSeed = new Random(personSeed).nextLong();
-          continue;
-          // skip the other stuff if the patient is dead and we only want alive patients
-          // note that this skips ahead to the while check and doesn't automatically re-loop
-        }
-
-        if (database != null) {
-          database.store(person);
-        }
-
-        if (internalStore != null) {
-          internalStore.add(person);
-        }
-        
-        if (this.metrics != null) {
-          metrics.recordStats(person, time, Module.getModules(modulePredicate));
-        }
-
-        if (!this.logLevel.equals("none")) {
-          writeToConsole(person, index, time, isAlive);
-        }
-
-        String key = isAlive ? "alive" : "dead";
-
-        AtomicInteger count = stats.get(key);
-        count.incrementAndGet();
-
-        totalGeneratedPopulation.incrementAndGet();
+        recordPerson(person, index);
         
         tryNumber++;
         if (!isAlive) {
@@ -433,13 +369,12 @@ public class Generator {
             demoAttributes.put(TARGET_AGE, newTargetAge);
             long birthdate = birthdateFromTargetAge(newTargetAge, randomForDemographics);
             demoAttributes.put(Person.BIRTHDATE, birthdate);
-            start = birthdate;
           }
         }
 
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
-        Exporter.export(person, time, exporterRuntimeOptions);
+        Exporter.export(person, finishTime, exporterRuntimeOptions);
       } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
           || (isAlive && onlyDeadPatients));
       // if the patient is alive and we want only dead ones => loop & try again
@@ -454,6 +389,106 @@ public class Generator {
       throw e;
     }
     return person;
+  }
+
+  /**
+   * Update a previously created person from the time they were last updated until Generator.stop or
+   * they die, whichever comes sooner.
+   * @param person the previously created person to update
+   */
+  public void updatePerson(Person person) {
+    HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
+    EncounterModule encounterModule = new EncounterModule();
+
+    long time = person.lastUpdated;
+    while (person.alive(time) && time < stop) {
+
+      healthInsuranceModule.process(person, time + timestep);
+      encounterModule.process(person, time);
+
+      Iterator<Module> iter = person.currentModules.iterator();
+      while (iter.hasNext()) {
+        Module module = iter.next();
+        // System.out.format("Processing module %s\n", module.name);
+        if (module.process(person, time)) {
+          // System.out.format("Removing module %s\n", module.name);
+          iter.remove(); // this module has completed/terminated.
+        }
+      }
+      encounterModule.endWellnessEncounter(person, time);
+      person.lastUpdated = time;
+      HealthRecordEditors.getInstance().executeAll(person, person.record, time, timestep, person.random);
+      time += timestep;
+    }
+
+    DeathModule.process(person, time);
+  }
+  
+  /**
+   * Create a new person and update them until until Generator.stop or
+   * they die, whichever comes sooner.
+   * @param personSeed Seed for the random person
+   * @param demoAttributes Demographic attributes for the new person, {@link #randomDemographics}
+   * @return the new person
+   */
+  public Person createPerson(long personSeed, Map<String, Object> demoAttributes) {
+    Person person = new Person(personSeed);
+    person.populationSeed = this.options.seed;
+    person.attributes.putAll(demoAttributes);
+    person.attributes.put(Person.LOCATION, location);
+    person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
+
+    LifecycleModule.birth(person, person.lastUpdated);
+    person.currentModules = Module.getModules(modulePredicate);
+
+    updatePerson(person);
+    
+    return person;
+  }
+  
+  /**
+   * Create a set of random demographics.
+   * @param seed The random seed to use
+   * @return demographics
+   */
+  public Map<String, Object> randomDemographics(Random seed) {
+    Demographics city = location.randomCity(seed);
+    Map<String, Object> demoAttributes = pickDemographics(seed, city);
+    return demoAttributes;
+  }
+  
+  /**
+   * Record the person using whatever tracking mechanisms are currently configured.
+   * @param person the person to record
+   * @param index the index of the person being recorded, e.g. if generating 100 people, the index
+   * would identify which of those 100 is being recorded.
+   */
+  public void recordPerson(Person person, int index) {
+    long finishTime = person.lastUpdated + timestep;
+    boolean isAlive = person.alive(finishTime);
+    
+    if (database != null) {
+      database.store(person);
+    }
+
+    if (internalStore != null) {
+      internalStore.add(person);
+    }
+
+    if (this.metrics != null) {
+      metrics.recordStats(person, finishTime, Module.getModules(modulePredicate));
+    }
+
+    if (!this.logLevel.equals("none")) {
+      writeToConsole(person, index, finishTime, isAlive);
+    }
+
+    String key = isAlive ? "alive" : "dead";
+
+    AtomicInteger count = stats.get(key);
+    count.incrementAndGet();
+
+    totalGeneratedPopulation.incrementAndGet();
   }
 
   private synchronized void writeToConsole(Person person, int index, long time, boolean isAlive) {

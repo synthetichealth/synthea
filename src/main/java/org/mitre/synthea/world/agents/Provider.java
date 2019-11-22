@@ -6,6 +6,8 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,6 +81,39 @@ public class Provider implements QuadTreeElement, Serializable {
   private transient Table<Integer, String, AtomicInteger> utilization;
 
   /**
+   * Java Serialization support for the utilization field.
+   * @param oos stream to write to
+   */
+  private void writeObject(ObjectOutputStream oos) throws IOException {
+    oos.defaultWriteObject();
+    ArrayList<Payer.UtilizationBean> entryUtilizationElements = null;
+    if (utilization != null) {
+      entryUtilizationElements = new ArrayList<>(utilization.size());
+      for (Table.Cell<Integer, String, AtomicInteger> cell: utilization.cellSet()) {
+        entryUtilizationElements.add(
+                new Payer.UtilizationBean(cell.getRowKey(), cell.getColumnKey(), cell.getValue()));
+      }
+    }
+    oos.writeObject(entryUtilizationElements);
+  }
+
+  /**
+   * Java Serialization support for the utilization field.
+   * @param ois stream to read from
+   */
+  private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+    ois.defaultReadObject();
+    ArrayList<Payer.UtilizationBean> entryUtilizationElements = 
+            (ArrayList<Payer.UtilizationBean>)ois.readObject();
+    if (entryUtilizationElements != null) {
+      this.utilization = HashBasedTable.create();
+      for (Payer.UtilizationBean u: entryUtilizationElements) {
+        this.utilization.put(u.year, u.type, u.count);
+      }
+    }
+  }
+  
+  /**
    * Create a new Provider with no information.
    */
   public Provider() {
@@ -141,11 +176,13 @@ public class Provider implements QuadTreeElement, Serializable {
   }
 
   private synchronized void increment(Integer year, String key) {
-    if (!utilization.contains(year, key)) {
-      utilization.put(year, key, new AtomicInteger(0));
-    }
+    if (utilization != null) { // TODO remove once utilization stats are made serializable
+      if (!utilization.contains(year, key)) {
+        utilization.put(year, key, new AtomicInteger(0));
+      }
 
-    utilization.get(year, key).incrementAndGet();
+      utilization.get(year, key).incrementAndGet();
+    }
   }
 
   public Table<Integer, String, AtomicInteger> getUtilization() {

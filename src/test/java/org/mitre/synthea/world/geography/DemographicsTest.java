@@ -3,6 +3,7 @@ package org.mitre.synthea.world.geography;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.Table;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;

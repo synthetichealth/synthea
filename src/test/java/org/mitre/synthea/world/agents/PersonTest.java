@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +31,32 @@ public class PersonTest {
     person = new Person(0L);
   }
   
+  /**
+   * Serialize a person, then deserialize and return the person. Note that when serializing
+   * more than one person it is much more efficient to serialize them within a collection since
+   * shared objects will only be serialized once and deserialization will not create duplicate
+   * objects in memory.
+   * @param original person to serialize
+   * @return person following serialization and deserialization process
+   */
+  public static Person serializeAndDeserialize(Person original)
+          throws IOException, ClassNotFoundException {
+    // Serialize
+    File tf = File.createTempFile("patient", "synthea");
+    FileOutputStream fos = new FileOutputStream(tf);
+    ObjectOutputStream oos = new ObjectOutputStream(fos);
+    oos.writeObject(original);
+    oos.close();
+    fos.close();
+    
+    // Deserialize
+    FileInputStream fis = new FileInputStream(tf);
+    ObjectInputStream ois = new ObjectInputStream(fis);
+    Person rehydrated = (Person)ois.readObject();
+    
+    return rehydrated;
+  }
+  
   @Test
   public void testSerializationAndDeserialization() throws Exception {
     // Generate a filled-ou patient record to test on
@@ -37,20 +65,12 @@ public class PersonTest {
     opts.minAge = 50;
     opts.maxAge = 100;
     Generator generator = new Generator(opts);
-    Person original = generator.generatePerson(0, 0);
+    int personSeed = 0;
+    Random randomForDemographics = new Random(personSeed);
+    Map<String, Object> demoAttributes = generator.randomDemographics(randomForDemographics);
+    Person original = generator.createPerson(0, demoAttributes);
     
-    // Serialize patient
-    File tf = File.createTempFile("patient", "synthea");
-    FileOutputStream fos = new FileOutputStream(tf);
-    ObjectOutputStream oos = new ObjectOutputStream(fos);
-    oos.writeObject(original);
-    oos.close();
-    fos.close();
-    
-    // Deserialize patient
-    FileInputStream fis = new FileInputStream(tf);
-    ObjectInputStream ois = new ObjectInputStream(fis);
-    Person rehydrated = (Person)ois.readObject();
+    Person rehydrated = serializeAndDeserialize(original);
     
     // Compare the original to the serialized+deserialized version
     assertEquals(original.random.nextInt(), rehydrated.random.nextInt());

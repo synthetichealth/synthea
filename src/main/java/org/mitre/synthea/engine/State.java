@@ -2,6 +2,9 @@ package org.mitre.synthea.engine;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -984,6 +987,34 @@ public abstract class State implements Cloneable, Serializable {
     private String assignToAttribute;
     private boolean administration;
     private boolean chronic;
+    
+    /**
+     * Java Serialization support method to serialize the JsonObject prescription which isn't
+     * natively serializable.
+     * @param oos the stream to write to
+     */
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+      oos.defaultWriteObject();
+      if (prescription != null) {
+        oos.writeObject(prescription.toString());
+      } else {
+        oos.writeObject(null);
+      }
+    }
+    
+    /**
+     * Java Serialization support method to deserialize the JsonObject prescription which isn't
+     * natively serializable.
+     * @param ois the stream to read from
+     */
+    private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+      ois.defaultReadObject();
+      String prescriptionJson = (String) ois.readObject();
+      if (prescriptionJson != null) {
+        Gson gson = Utilities.getGson();
+        this.prescription = gson.fromJson(prescriptionJson, JsonObject.class);
+      }
+    }
 
     @Override
     public MedicationOrder clone() {
