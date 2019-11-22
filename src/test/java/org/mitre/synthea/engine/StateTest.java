@@ -1275,8 +1275,8 @@ public class StateTest {
 
     assertEquals(1, cp.activities.size());
     Code activity = cp.activities.iterator().next();
-    assertEquals("764101000000108", activity.code);
-    assertEquals("Allergen immunotherapy drugs band 1", activity.display);
+    assertEquals("182678001", activity.code);
+    assertEquals("Hyposensitization to allergens (procedure)", activity.display);
   }
 
   @Test
