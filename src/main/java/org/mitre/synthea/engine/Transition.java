@@ -513,7 +513,7 @@ public abstract class Transition implements Serializable {
       option.numericDistribution = (Double) option.distribution;
     } else {
       @SuppressWarnings("unchecked")
-      LinkedTreeMap<String, Object> map = (LinkedTreeMap<String, Object>) option.distribution;
+      Map<String, Object> map = (Map<String, Object>) option.distribution;
       option.namedDistribution = new NamedDistribution(map);
     }
   }
@@ -532,7 +532,7 @@ public abstract class Transition implements Serializable {
       this.defaultDistribution = definition.get("default").getAsDouble();
     }
 
-    public NamedDistribution(LinkedTreeMap<String, ?> definition) {
+    public NamedDistribution(Map<String, ?> definition) {
       this.attribute = (String) definition.get("attribute");
       this.defaultDistribution = (Double) definition.get("default");
     }

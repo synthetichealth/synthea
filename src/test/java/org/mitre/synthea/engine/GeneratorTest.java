@@ -28,6 +28,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.geography.Location;
+import org.mitre.synthea.world.agents.Provider;
 
 public class GeneratorTest {
 
@@ -50,6 +51,7 @@ public class GeneratorTest {
   @Before
   public void before() throws Exception {
     Config.set("generate.only_dead_patients", "false");
+    Provider.clear();
   }
   
   @Test
