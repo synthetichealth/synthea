@@ -26,6 +26,7 @@ import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.export.Exporter.SupportedFhirVersion;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.geography.Location;
 import org.mitre.synthea.world.agents.Provider;
@@ -52,6 +53,7 @@ public class GeneratorTest {
   public void before() throws Exception {
     Config.set("generate.only_dead_patients", "false");
     Provider.clear();
+    Payer.clear();
   }
   
   @Test
@@ -333,7 +335,7 @@ public class GeneratorTest {
       Random randomForDemographics = new Random(personSeed);
       Map<String, Object> demoAttributes = generator.randomDemographics(randomForDemographics);
       people[i] = generator.createPerson(personSeed, demoAttributes);
-      generator.recordPerson(people[i], i);
+      //generator.recordPerson(people[i], i);
     }
     
     people = serializeAndDeserialize(people);
