@@ -90,11 +90,11 @@ public class Person implements Serializable, QuadTreeElement {
   public final long seed;
   public long populationSeed;
   /** 
-   * Tracks the last time that the person was updated over a serialize/deserialize
+   * Tracks the last time that the person was updated over a serialize/deserialize.
    */
   public long lastUpdated;
   /**
-   * Tracks the remaining modules for a person over a serialize/deserialize
+   * Tracks the remaining modules for a person over a serialize/deserialize.
    */
   public List<Module> currentModules;
   public Map<String, Object> attributes;
@@ -407,7 +407,15 @@ public class Person implements Serializable, QuadTreeElement {
       default:
         decimalPlaces = 2;
     }
-    return BigDecimal.valueOf(value).setScale(decimalPlaces, RoundingMode.HALF_UP).doubleValue();
+    Double retVal = value;
+    try {
+      retVal = BigDecimal.valueOf(value)
+              .setScale(decimalPlaces, RoundingMode.HALF_UP)
+              .doubleValue();
+    } catch (NumberFormatException e) {
+      // Ignore, value was NaN or infinity.
+    }
+    return retVal;
   }
 
   public void setVitalSign(VitalSign vitalSign, ValueGenerator valueGenerator) {

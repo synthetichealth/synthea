@@ -409,6 +409,7 @@ public final class LifecycleModule extends Module {
       case 30:
         // "overeducated" -> suffix
         if ((person.attributes.get(Person.NAME_SUFFIX) == null)
+            && (person.attributes.get(Person.EDUCATION_LEVEL) != null)
             && ((double) person.attributes.get(Person.EDUCATION_LEVEL) >= 0.95)) {
           List<String> suffixList = Arrays.asList("PhD", "JD", "MD");
           person.attributes.put(Person.NAME_SUFFIX,

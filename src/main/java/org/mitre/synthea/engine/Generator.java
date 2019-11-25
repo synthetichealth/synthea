@@ -461,7 +461,7 @@ public class Generator {
    * Record the person using whatever tracking mechanisms are currently configured.
    * @param person the person to record
    * @param index the index of the person being recorded, e.g. if generating 100 people, the index
-   * would identify which of those 100 is being recorded.
+   *     would identify which of those 100 is being recorded.
    */
   public void recordPerson(Person person, int index) {
     long finishTime = person.lastUpdated + timestep;
