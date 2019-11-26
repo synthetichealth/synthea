@@ -1147,7 +1147,7 @@
       ],
       "observations": [
         {
-          "category": "vital-sign",
+          "category": "laboratory",
           "unit": "%",
           "codes": [
             {
