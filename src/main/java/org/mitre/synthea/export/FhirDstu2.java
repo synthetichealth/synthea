@@ -84,6 +84,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.awt.geom.Point2D;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -94,7 +95,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.sis.geometry.DirectPosition2D;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
@@ -289,13 +289,6 @@ public class FhirDstu2 {
     ethnicityExtension.setUrl("http://hl7.org/fhir/StructureDefinition/us-core-ethnicity");
     String ethnicity = (String) person.attributes.get(Person.ETHNICITY);
 
-    if (race.equals("hispanic")) {
-      race = "other";
-      ethnicity = "hispanic";
-    } else {
-      ethnicity = "nonhispanic";
-    }
-
     String raceDisplay;
     switch (race) {
       case "white":
@@ -310,7 +303,7 @@ public class FhirDstu2 {
       case "native":
         raceDisplay = "American Indian or Alaska Native";
         break;
-      default: // Hispanic or Other (Put Hawaiian and Pacific Islander here for now)
+      default: // Other (Put Hawaiian and Pacific Islander here for now)
         raceDisplay = "Other";
         break;
     }
@@ -408,7 +401,7 @@ public class FhirDstu2 {
       addrResource.setCountry(COUNTRY_CODE);
     }
 
-    DirectPosition2D coord = person.getLatLon();
+    Point2D.Double coord = person.getLonLat();
     if (coord != null) {
       ExtensionDt geolocationExtension = new ExtensionDt();
       geolocationExtension.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation");

@@ -1,7 +1,5 @@
 package org.mitre.synthea.modules;
 
-import com.google.gson.Gson;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,8 +11,6 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.math3.distribution.NormalDistribution;
-import org.apache.commons.math3.special.Erf;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
@@ -28,13 +24,16 @@ import org.mitre.synthea.modules.BloodPressureValueGenerator.SysDias;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
 import org.mitre.synthea.world.concepts.BirthStatistics;
+import org.mitre.synthea.world.concepts.GrowthChart;
+import org.mitre.synthea.world.concepts.GrowthChartEntry;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
 
 public final class LifecycleModule extends Module {
   @SuppressWarnings("rawtypes")
-  private static final Map growthChart = loadGrowthChart();
+  private static final Map<GrowthChart.ChartType, GrowthChart> growthChart =
+      GrowthChart.loadCharts();
   private static final List<LinkedHashMap<String, String>> weightForLengthChart =
       loadWeightForLengthChart();
   private static final String AGE = "AGE";
@@ -54,20 +53,6 @@ public final class LifecycleModule extends Module {
   
   public LifecycleModule() {
     this.name = "Lifecycle";
-  }
-
-  @SuppressWarnings("rawtypes")
-  private static Map loadGrowthChart() {
-    String filename = "cdc_growth_charts.json";
-    try {
-      String json = Utilities.readResource(filename);
-      Gson g = new Gson();
-      return g.fromJson(json, HashMap.class);
-    } catch (Exception e) {
-      System.err.println("ERROR: unable to load json: " + filename);
-      e.printStackTrace();
-      throw new ExceptionInInitializerError(e);
-    }
   }
 
   private static List<LinkedHashMap<String, String>> loadWeightForLengthChart() {
@@ -186,13 +171,13 @@ public final class LifecycleModule extends Module {
     if (location != null) {
       // should never happen in practice, but can happen in unit tests
       location.assignPoint(person, city);
-      person.attributes.put(Person.ZIP, location.getZipCode(city));
+      person.attributes.put(Person.ZIP, location.getZipCode(city, person));
       String[] birthPlace;
       if ("english".equalsIgnoreCase((String) attributes.get(Person.FIRST_LANGUAGE))) {
         birthPlace = location.randomBirthPlace(person.random);
       } else {
-        birthPlace = location.randomBirthplaceByEthnicity(
-            person.random, (String) person.attributes.get(Person.ETHNICITY));
+        birthPlace = location.randomBirthplaceByLanguage(
+            person.random, (String) person.attributes.get(Person.FIRST_LANGUAGE));
       }
       attributes.put(Person.BIRTH_CITY, birthPlace[0]);
       attributes.put(Person.BIRTH_STATE, birthPlace[1]);
@@ -522,22 +507,19 @@ public final class LifecycleModule extends Module {
    * @param percentile 0.0 - 1.0
    * @return The height (cm) or weight (kg)
    */
-  @SuppressWarnings("rawtypes")
   public static double lookupGrowthChart(String heightWeightOrBMI, String gender, int ageInMonths,
       double percentile) {
-    Map chart = (Map) growthChart.get(heightWeightOrBMI);
-    Map byGender = (Map) chart.get(gender);
-    Map byAge = (Map) byGender.get(Integer.toString(ageInMonths));
-
-    double l = Double.parseDouble((String) byAge.get("l"));
-    double m = Double.parseDouble((String) byAge.get("m"));
-    double s = Double.parseDouble((String) byAge.get("s"));
-    double z = calculateZScore(percentile);
-
-    if (l == 0) {
-      return m * Math.exp((s * z));
-    } else {
-      return m * Math.pow((1 + (l * s * z)), (1.0 / l));
+    switch (heightWeightOrBMI) {
+      case "height":
+        return growthChart.get(GrowthChart.ChartType.HEIGHT).lookUp(ageInMonths,
+            gender, percentile);
+      case "weight":
+        return growthChart.get(GrowthChart.ChartType.WEIGHT).lookUp(ageInMonths,
+            gender, percentile);
+      case "bmi":
+        return growthChart.get(GrowthChart.ChartType.BMI).lookUp(ageInMonths, gender, percentile);
+      default:
+        throw new IllegalArgumentException("Unknown chart type: " + heightWeightOrBMI);
     }
   }
 
@@ -549,72 +531,7 @@ public final class LifecycleModule extends Module {
    * @return 0 - 1.0
    */
   public static double percentileForBMI(double bmi, String gender, int ageInMonths) {
-    Map chart = (Map) growthChart.get("bmi");
-    Map byGender = (Map) chart.get(gender);
-    Map byAge = (Map) byGender.get(Integer.toString(ageInMonths));
-
-    double l = Double.parseDouble((String) byAge.get("l"));
-    double m = Double.parseDouble((String) byAge.get("m"));
-    double s = Double.parseDouble((String) byAge.get("s"));
-    double z = zscoreForValue(bmi, l, m, s);
-    return zscoreToPercentile(z);
-  }
-
-  /**
-   * Z is the z-score that corresponds to the percentile.
-   * z-scores correspond exactly to percentiles, e.g.,
-   * z-scores of:
-   * -1.881, // 3rd
-   * -1.645, // 5th
-   * -1.282, // 10th
-   * -0.674, // 25th
-   *  0,     // 50th
-   *  0.674, // 75th
-   *  1.036, // 85th
-   *  1.282, // 90th
-   *  1.645, // 95th
-   *  1.881  // 97th
-   * @param percentile 0.0 - 1.0
-   * @return z-score that corresponds to the percentile.
-   */
-  protected static double calculateZScore(double percentile) {
-    // Set percentile gt0 and lt1, otherwise the error
-    // function will return Infinity.
-    if (percentile >= 1.0) {
-      percentile = 0.999;
-    } else if (percentile <= 0.0) {
-      percentile = 0.001;
-    }
-    return -1 * Math.sqrt(2) * Erf.erfcInv(2 * percentile);
-  }
-
-  /**
-   * Compute the z-score given a value and the LMS parameters.
-   * @param value the actual value, for example a weight, height or BMI
-   * @param l distribution's L parameter
-   * @param m distribution's M parameter
-   * @param s distribution's S parameter
-   * @return z-score
-   */
-  protected static double zscoreForValue(double value, double l, double m, double s) {
-    if (l == 0) {
-      return Math.log(value / m) / s;
-    } else {
-      return (Math.pow((value / m), l) - 1) / (l * s);
-    }
-  }
-
-  /**
-   * Convert a z-score into a percentile.
-   * @param zscore The ZScore to find the percentile for
-   * @return percentile - 0.0 - 1.0
-   */
-  protected static double zscoreToPercentile(double zscore) {
-    double percentile = 0;
-
-    NormalDistribution dist = new NormalDistribution();
-    percentile = dist.cumulativeProbability(zscore);
-    return percentile;
+    return growthChart.get(GrowthChart.ChartType.BMI).percentileFor(ageInMonths, gender, bmi);
   }
 
   public static double bmi(double heightCM, double weightKG) {
@@ -647,8 +564,8 @@ public final class LifecycleModule extends Module {
         double l = Double.parseDouble(entry.get("L"));
         double m = Double.parseDouble(entry.get("M"));
         double s = Double.parseDouble(entry.get("S"));
-        double z = zscoreForValue(weight, l, m, s);
-        double percentile = zscoreToPercentile(z) * 100.0;
+        double z = new GrowthChartEntry(l, m, s).zscoreForValue(weight);
+        double percentile = GrowthChart.zscoreToPercentile(z) * 100.0;
         person.attributes.put(Person.CURRENT_WEIGHT_LENGTH_PERCENTILE, percentile);
       }
     }
