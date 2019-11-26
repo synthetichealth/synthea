@@ -32,3 +32,7 @@ unmodified, publicly released version of the software in the form of a Java arch
 (JAR) file and makes use of its interfaces under provision of the GNU Lesser
 General Public License v3 (https://www.gnu.org/licenses/lgpl-3.0.txt). Releases of
 the SBSCL library can be found at https://github.com/draeger-lab/SBSCL/releases/.
+
+SBSCL Original Publication:
+Keller, R., Dörr, A., Tabira, A. et al. The systems biology simulation core
+algorithm. BMC Syst Biol 7, 55 (2013) doi:10.1186/1752-0509-7-55
