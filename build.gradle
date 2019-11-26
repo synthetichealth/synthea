@@ -48,9 +48,14 @@ dependencies {
   // CSV Stuff
   compile group: 'org.apache.commons', name: 'commons-csv', version: '1.5'
   compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: '2.8.8'
-  compile group: 'org.yaml', name: 'snakeyaml', version: '1.19'
+  compile group: 'org.yaml', name: 'snakeyaml', version: '1.25'
   compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
   compile group: 'org.apache.commons', name: 'commons-text', version: '1.2'
+
+  compile group: 'org.opencds.cqf', name: 'cql-engine', version: '1.3.10-SNAPSHOT'
+  compile group: 'info.cqframework', name: 'cql', version: '1.3.17'
+  compile group: 'info.cqframework', name: 'model', version: '1.3.17'
+  compile group: 'info.cqframework', name: 'cql-to-elm', version: '1.3.17'
 
   // Java 9 no longer includes these APIs by default
   compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
@@ -60,7 +65,15 @@ dependencies {
   // get rid of SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
   // if we switch to a real logging framework we may want to switch this
   compile "org.slf4j:slf4j-api:1.6.1"
-  compile "org.slf4j:slf4j-nop:1.6.1"
+  // compile "org.slf4j:slf4j-nop:1.6.1" // SLF4J seems to already be provided by org.apache.logging.log4j
+  
+  // Physiology simulation dependencies
+  compile files('lib/sbscl/SimulationCoreLibrary_v1.5_slim.jar')
+  compile group: 'org.sbml.jsbml', name: 'jsbml', version: '1.4'
+  compile group: 'org.apache.commons', name: 'commons-math', version: '2.2'
+  
+  // JfreeChart for drawing physiology charts
+  compile group: 'org.jfree', name: 'jfreechart', version: '1.5.0'
 
   // Use JUnit test framework
   testCompile 'junit:junit:4.12'
@@ -146,6 +159,13 @@ task attributes(type: JavaExec) {
   description 'Create a list of patient attributes'
   classpath sourceSets.main.runtimeClasspath
   main = "org.mitre.synthea.helpers.Attributes"
+}
+
+task physiology(type: JavaExec) {
+    group 'Application'
+    description 'Test a physiology simulation'
+    classpath sourceSets.main.runtimeClasspath
+    main = "org.mitre.synthea.engine.PhysiologySimulator"
 }
 
 task versionTxt() {

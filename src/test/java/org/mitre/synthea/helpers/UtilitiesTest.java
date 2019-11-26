@@ -158,4 +158,31 @@ public class UtilitiesTest {
       assertTrue(message, d.equals(Utilities.primitive(p)));
     }
   }
+  
+  @Test
+  public void testStrToObject() {
+    
+    assertEquals(true, Utilities.strToObject(Boolean.class, "true"));
+    assertEquals(true, Utilities.strToObject(Boolean.TYPE, "true"));
+    assertEquals((byte) 2, Utilities.strToObject(Byte.class, "2"));
+    assertEquals((byte) 2, Utilities.strToObject(Byte.TYPE, "2"));
+    assertEquals((short) 3, Utilities.strToObject(Short.class, "3"));
+    assertEquals((short) 3, Utilities.strToObject(Short.TYPE, "3"));
+    assertEquals(5, Utilities.strToObject(Integer.class, "5"));
+    assertEquals(5, Utilities.strToObject(Integer.TYPE, "5"));
+    assertEquals(7L, Utilities.strToObject(Long.class, "7"));
+    assertEquals(7L, Utilities.strToObject(Long.TYPE, "7"));
+    assertEquals(2.5f, Utilities.strToObject(Float.class, "2.5"));
+    assertEquals(2.5f, Utilities.strToObject(Float.TYPE, "2.5"));
+    assertEquals(4.8, Utilities.strToObject(Double.class, "4.8"));
+    assertEquals(4.8, Utilities.strToObject(Double.TYPE, "4.8"));
+
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testInvalidStrToObject() {
+    // Trying to parse a non-primitive class type results in an
+    // IllegalArgumentException
+    Utilities.strToObject(Date.class, "oops");
+  }
 }

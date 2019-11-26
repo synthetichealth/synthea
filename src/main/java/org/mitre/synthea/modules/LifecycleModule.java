@@ -15,6 +15,7 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.PhysiologyValueGenerator;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.SimpleYML;
@@ -234,10 +235,19 @@ public final class LifecycleModule extends Module {
    * @param person The person to generate vital signs for.
    */
   private static void setupVitalSignGenerators(Person person) {
+    
     person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE,
         new BloodPressureValueGenerator(person, SysDias.SYSTOLIC));
     person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE,
         new BloodPressureValueGenerator(person, SysDias.DIASTOLIC));
+    
+    if (ENABLE_PHYSIOLOGY_GENERATORS) {
+      List<PhysiologyValueGenerator> physioGenerators = PhysiologyValueGenerator.loadAll(person);
+      
+      for (PhysiologyValueGenerator physioGenerator : physioGenerators) {
+        person.setVitalSign(physioGenerator.getVitalSign(), physioGenerator);
+      }
+    }
   }
 
   /**
@@ -808,6 +818,9 @@ public final class LifecycleModule extends Module {
 
   protected static boolean ENABLE_DEATH_BY_NATURAL_CAUSES =
       Boolean.parseBoolean(Config.get("lifecycle.death_by_natural_causes"));
+  
+  protected static boolean ENABLE_PHYSIOLOGY_GENERATORS =
+      Boolean.parseBoolean(Config.get("physiology.generators.enabled", "false"));
   
   private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000",
       "Natural death with unknown cause");

@@ -6,8 +6,11 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.PhysiologyValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.VitalSign;
 
 public class LifecycleModuleTest {
   public static boolean deathByNaturalCauses;
@@ -74,5 +77,27 @@ public class LifecycleModuleTest {
 //    }
 //    long end = System.currentTimeMillis();
 //    System.out.println("Time to complete: " + (end - start));
+  }
+  
+  @Test
+  public void testPhysiologyEnabled() {
+    boolean enablePhysiology = LifecycleModule.ENABLE_PHYSIOLOGY_GENERATORS;
+    LifecycleModule.ENABLE_PHYSIOLOGY_GENERATORS = true;
+    Person person = new Person(0L);
+    
+    // Need to set some attributes for birth to work properly
+    person.attributes.put(Person.GENDER, "F");
+    person.attributes.put(Person.RACE, "white");
+    person.attributes.put(Person.ETHNICITY, "english");
+    
+    LifecycleModule.birth(person, 0);
+    
+    // Person should have some PhysiologyValueGenerators
+    Assert.assertEquals(person.vitalSigns.get(VitalSign.SYSTOLIC_BLOOD_PRESSURE).getClass(),
+        PhysiologyValueGenerator.class);
+    Assert.assertEquals(person.vitalSigns.get(VitalSign.DIASTOLIC_BLOOD_PRESSURE).getClass(),
+        PhysiologyValueGenerator.class);
+    
+    LifecycleModule.ENABLE_PHYSIOLOGY_GENERATORS = enablePhysiology;
   }
 }
