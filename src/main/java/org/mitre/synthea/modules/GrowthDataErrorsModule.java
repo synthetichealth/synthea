@@ -108,6 +108,26 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
         introduceTransposeError(e, "height");
         recalculateBMI(e);
       }
+      if (random.nextDouble() <= config.heightSwitchErrorRate) {
+        introduceHeightSwitchError(e);
+        recalculateBMI(e);
+      }
+      if (random.nextDouble() <= config.heightExtremeErrorRate) {
+        introduceHeightExtremeError(e);
+        recalculateBMI(e);
+      }
+      if (random.nextDouble() <= config.heightAbsoluteErrorRate) {
+        introduceHeightAbsoluteError(e);
+        recalculateBMI(e);
+      }
+      if (random.nextDouble() <= config.heightDuplicateErrorRate) {
+        introduceHeightDuplicateError(e, random);
+        recalculateBMI(e);
+      }
+      if (random.nextDouble() <= config.heightCarriedForwardErrorRate) {
+        introduceHeightCarriedForwardError(e);
+        recalculateBMI(e);
+      }
     });
   }
 
@@ -165,10 +185,38 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
     }
   }
 
+  public static void introduceHeightSwitchError(HealthRecord.Encounter encounter) {
+    HealthRecord.Observation wtObs = weightObservation(encounter);
+    HealthRecord.Observation htObs = heightObservation(encounter);
+    if (wtObs == null) {
+      // If there is no existing weight observation, change the height observation into a weight
+      // one
+      htObs.unit = "kg";
+      htObs.codes.get(0).code = "29463-7";
+    } else {
+      Object wtValue = wtObs.value;
+      Object htValue = htObs.value;
+      wtObs.value = htValue;
+      htObs.value = wtValue;
+    }
+  }
+
   public static void introduceWeightExtremeError(HealthRecord.Encounter encounter) {
     HealthRecord.Observation wtObs = weightObservation(encounter);
     double weightValue = (Double) wtObs.value;
     wtObs.value = weightValue * 10;
+  }
+
+  public static void introduceHeightExtremeError(HealthRecord.Encounter encounter) {
+    HealthRecord.Observation htObs = heightObservation(encounter);
+    double heightValue = (Double) htObs.value;
+    htObs.value = heightValue * 10;
+  }
+
+  public static void introduceHeightAbsoluteError(HealthRecord.Encounter encounter) {
+    HealthRecord.Observation htObs = heightObservation(encounter);
+    double heightValue = (Double) htObs.value;
+    htObs.value = heightValue - 3;
   }
 
   public static void introduceWeightDuplicateError(HealthRecord.Encounter encounter, Random random) {
@@ -176,6 +224,13 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
     double weightValue = (Double) wtObs.value;
     double jitter = random.nextDouble() - 0.5;
     encounter.addObservation(wtObs.start, wtObs.type, weightValue + jitter);
+  }
+
+  public static void introduceHeightDuplicateError(HealthRecord.Encounter encounter, Random random) {
+    HealthRecord.Observation htObs = heightObservation(encounter);
+    double heightValue = (Double) htObs.value;
+    double jitter = random.nextDouble() - 0.5;
+    encounter.addObservation(htObs.start, htObs.type, heightValue + jitter);
   }
 
   public static void introduceWeightCarriedForwardError(HealthRecord.Encounter encounter) {
@@ -187,7 +242,17 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
         wtObs.value = previousWt.value;
       }
     }
+  }
 
+  public static void introduceHeightCarriedForwardError(HealthRecord.Encounter encounter) {
+    HealthRecord.Observation htObs = heightObservation(encounter);
+    HealthRecord.Encounter previousEncounter = encounter.previousEncounter();
+    if (previousEncounter != null) {
+      HealthRecord.Observation previousHt = heightObservation(previousEncounter);
+      if (previousHt != null) {
+        htObs.value = previousHt.value;
+      }
+    }
   }
 
   private static HealthRecord.Observation weightObservation(HealthRecord.Encounter encounter) {
