@@ -468,7 +468,16 @@ public class HealthRecord {
 
     public void addObservation(long time, String type, Object value) {
       Observation observation = new Observation(time, type, value);
+      observation.codes.add(new Code("http://loinc.org", type, type));
       this.observations.add(observation);
+    }
+
+    public Observation findObservation(String code) {
+      return observations
+          .stream()
+          .filter(o -> o.containsCode(code, "http://loinc.org"))
+          .findFirst()
+          .orElse(null);
     }
 
     public Encounter previousEncounter() {
