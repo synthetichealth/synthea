@@ -100,7 +100,7 @@ public class GrowthDataErrorsModuleTest {
   public void introduceWeightDuplicateError() {
     GrowthDataErrorsModule.introduceWeightDuplicateError(first, new Random());
     long obsCount = first.observations.stream()
-        .filter(o -> o.containsCode("29463-7", "http://loinc.org"))
+        .filter(o -> o.containsCode("29463-7", "LOINC"))
         .count();
     assertEquals(2, obsCount);
   }
@@ -109,7 +109,7 @@ public class GrowthDataErrorsModuleTest {
   public void introduceHeightDuplicateError() {
     GrowthDataErrorsModule.introduceHeightDuplicateError(first, new Random());
     long obsCount = first.observations.stream()
-        .filter(o -> o.containsCode("8302-2", "http://loinc.org"))
+        .filter(o -> o.containsCode("8302-2", "LOINC"))
         .count();
     assertEquals(2, obsCount);
   }
@@ -130,7 +130,7 @@ public class GrowthDataErrorsModuleTest {
   public void encountersWithObservationsOfCode() {
     GrowthDataErrorsModule mod = new GrowthDataErrorsModule();
     List<HealthRecord.Encounter> es = mod.encountersWithObservationsOfCode(record.encounters,
-        "8302-2", "http://loinc.org");
+        "8302-2", "LOINC");
     assertEquals(2, es.size());
 
   }
