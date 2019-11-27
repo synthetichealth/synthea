@@ -12,6 +12,9 @@ apply plugin: 'application'
 apply plugin: 'eclipse'
 apply plugin: 'checkstyle'
 apply plugin: 'jacoco'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -32,15 +35,12 @@ checkstyle {
 dependencies {
   // This dependency is found on compile classpath of this component and consumers.
   compile 'com.google.code.gson:gson:2.8.0'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-base:4.0.3'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:4.0.3'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:4.0.3'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:4.0.3'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-base:4.1.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:4.1.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:4.1.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:4.1.0'
   // C-CDA export uses Apache FreeMarker templates
   compile 'org.freemarker:freemarker:2.3.26-incubating'
-  // location processing
-  compile group: 'org.apache.sis.core', name: 'sis-referencing', version: '0.8'
-  compile group: 'org.apache.sis.storage', name: 'sis-storage', version: '0.8'
   compile group: 'com.h2database', name: 'h2', version: '1.4.196'
   // google guava for some data structures
   compile 'com.google.guava:guava:23.0'
@@ -82,10 +82,10 @@ dependencies {
   testCompile 'org.mockito:mockito-core:2.19.0'
   testCompile 'org.powermock:powermock-module-junit4:1.7.1'
   testCompile 'org.powermock:powermock-api-mockito2:1.7.1'
-  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation:4.0.3'
-  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:4.0.3'
-  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:4.0.3'
-  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:4.0.3'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation:4.1.0'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:4.1.0'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:4.1.0'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:4.1.0'
   testCompile 'com.helger:ph-schematron:5.0.4'
   testCompile 'com.helger:ph-commons:9.1.1'
 }
@@ -210,4 +210,82 @@ run {
   if (project.hasProperty("arams")) {
     args Eval.me(arams)
   }
+}
+
+task sourceJar(type: Jar) {
+    classifier "sources"
+    from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier "javadoc"
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives jar
+    archives sourceJar
+    archives javadocJar
+}
+
+def mavenGroup = 'org.mitre.synthea'
+def mavenVersion = '2.6.0-SNAPSHOT'
+
+publishing {
+    publications {
+        synthea(MavenPublication) {
+            groupId mavenGroup
+            version mavenVersion
+            from components.java
+            
+            artifact(sourceJar) {
+                classifier = 'sources'
+            }
+            artifact(javadocJar) {
+                classifier = 'javadoc'
+            }
+            pom {
+                name = 'Synthea'
+                description = 'Synthetic Patient Population Simulator'
+                url = 'https://github.com/synthetichealth/synthea'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/synthetichealth/synthea.git'
+                    developerConnection = 'scm:git:ssh://github.com:synthetichealth/synthea.git'
+                    url = 'http://github.com/synthetichealth/synthea/tree/master'
+                }
+                developers {
+                    developer {
+                        name = 'Jason Walonoski'
+                        email = 'jwalonoski@mitre.org'
+                        organization = 'The MITRE Corporation'
+                        organizationUrl = 'http://www.mitre.org/'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def snapshotUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
+            def releaseUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            url mavenVersion.endsWith('SNAPSHOT') ? snapshotUrl : releaseUrl
+            credentials {
+                def user = project.hasProperty('sonatypeUsername') ? sonatypeUsername : ''
+                def pw = project.hasProperty('sonatypePassword') ? sonatypePassword : ''
+                username user
+                password pw 
+            }
+        }
+    }
+}
+
+signing {
+  required { project.hasProperty('signing.keyId') }
+  sign publishing.publications.synthea
 }

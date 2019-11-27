@@ -72,8 +72,8 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "764101000000108",
-          "display": "Allergen immunotherapy drugs Band 1"
+          "code": "182678001",
+          "display": "Hyposensitization to allergens (procedure)"
         }
       ],
       "direct_transition": "Benchmark_Allergy_Test"

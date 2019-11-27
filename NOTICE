@@ -32,3 +32,9 @@ unmodified, publicly released version of the software in the form of a Java arch
 (JAR) file and makes use of its interfaces under provision of the GNU Lesser
 General Public License v3 (https://www.gnu.org/licenses/lgpl-3.0.txt). Releases of
 the SBSCL library can be found at https://github.com/draeger-lab/SBSCL/releases/.
+
+SBSCL Citation:
+Roland Keller, Alexander Dörr, Akito Tabira, Akira Funahashi, Michael J. Ziller,
+Richard Adams, Nicolas Rodriguez, Nicolas Le Novère, Noriko Hiroi, Hannes
+Planatscher, Andreas Zell, and Andreas Dräger. The systems biology simulation core
+algorithm. BMC Systems Biology, 7:55, July 2013.

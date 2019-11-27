@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
@@ -102,7 +103,12 @@ public class ClinicalNoteExporter {
       }
     }
 
-    person.attributes.put("ehr_insurance", person.getPayerAtTime(encounter.start).getName());
+    Payer payer = person.getPayerAtTime(encounter.start);
+    if (payer == null) {
+      person.attributes.put("ehr_insurance", "unknown insurance coverage");
+    } else {
+      person.attributes.put("ehr_insurance", payer.getName());
+    }
     person.attributes.put("ehr_ageInYears", person.ageInYears(encounter.start));
     person.attributes.put("ehr_ageInMonths", person.ageInMonths(encounter.start));
     person.attributes.put("ehr_symptoms", person.getSymptoms());

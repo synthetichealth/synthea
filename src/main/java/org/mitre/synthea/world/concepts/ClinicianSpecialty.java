@@ -5,9 +5,9 @@ package org.mitre.synthea.world.concepts;
  * Clinician can possess. Each of the values (e.g. "ADDICTION MEDICINE")
  * corresponds to a column header in the primary care facilities file
  * identified by the Synthea property:
- * <p/>
+ * <p></p>
  * generate.providers.primarycare.default_file = "providers/primary_care_facilities.csv"
- * <p/>The numeric value in each cell identifies how many of clinicians should be
+ * <p></p>The numeric value in each cell identifies how many of clinicians should be
  * generated with each specialty. These specialties can then be used to select
  * an appropriate clinician for any encounter.
  */

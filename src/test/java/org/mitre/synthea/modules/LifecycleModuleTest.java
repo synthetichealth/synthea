@@ -66,6 +66,18 @@ public class LifecycleModuleTest {
     double percentile = LifecycleModule.percentileForBMI(18.37736191, "M", 26);
     Assert.assertEquals(0.9, percentile, 0.01);
   }
+
+  @Test
+  public void lookupGrowthChart() {
+//    Uncomment to check performance.
+//    long start = System.currentTimeMillis();
+//    for (int i = 0; i < 1000000; i++) {
+    double height = LifecycleModule.lookupGrowthChart("height", "M", 24, 0.5);
+    Assert.assertEquals(86.86160934, height, 0.01);
+//    }
+//    long end = System.currentTimeMillis();
+//    System.out.println("Time to complete: " + (end - start));
+  }
   
   @Test
   public void testPhysiologyEnabled() {

@@ -378,15 +378,15 @@ public class TextExporter {
     textRecord.add(name.replaceAll("[A-Za-z0-9 ]", "=")); // "underline" the characters in the name
 
     String race = (String) person.attributes.get(Person.RACE);
-    if (race.equals("hispanic")) {
-      textRecord.add("Race:                Other");
-      String ethnicity = (String) person.attributes.get(Person.ETHNICITY);
-      ethnicity = WordUtils.capitalize(ethnicity.replace('_', ' '));
-      textRecord.add("Ethnicity:           " + ethnicity);
+    String ethnicity = (String) person.attributes.get(Person.ETHNICITY);
+    String displayEthnicity;
+    if (ethnicity.equals("hispanic")) {
+      displayEthnicity = "Hispanic";
     } else {
-      textRecord.add("Race:                " + WordUtils.capitalize(race));
-      textRecord.add("Ethnicity:           Non-Hispanic");
+      displayEthnicity = "Non-Hispanic";
     }
+    textRecord.add("Race:                " + WordUtils.capitalize(race));
+    textRecord.add("Ethnicity:           " + displayEthnicity);
 
     textRecord.add("Gender:              " + person.attributes.get(Person.GENDER));
 
