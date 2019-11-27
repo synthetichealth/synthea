@@ -474,7 +474,7 @@ public class HealthRecord {
      */
     public void addObservation(long time, String type, Object value) {
       Observation observation = new Observation(time, type, value);
-      observation.codes.add(new Code("http://loinc.org", type, type));
+      observation.codes.add(new Code("LOINC", type, type));
       this.observations.add(observation);
     }
 
@@ -486,7 +486,7 @@ public class HealthRecord {
     public Observation findObservation(String code) {
       return observations
           .stream()
-          .filter(o -> o.containsCode(code, "http://loinc.org"))
+          .filter(o -> o.containsCode(code, "LOINC"))
           .findFirst()
           .orElse(null);
     }
