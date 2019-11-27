@@ -1,28 +1,30 @@
 package org.mitre.synthea.modules;
 
 import com.google.gson.Gson;
-import org.mitre.synthea.engine.HealthRecordModule;
-import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.HealthRecord;
 
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.mitre.synthea.engine.HealthRecordModule;
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
+
 /**
  * This module simulates errors that occur in growth data as it would be collected in a clinical
  * setting. This module is an implementation of the protocol for simulating growth data errors as
  * specified in Supplemental File 5 in the paper "Automated identification of implausible values
- * in growth data from pediatric electronic health records"
- *
+ * in growth data from pediatric electronic health records":
  * https://academic.oup.com/jamia/article/24/6/1080/3767271
- *
+ * <p>
  * If a height or weight is changed, if the Encounter has an associated BMI, it will be recomputed
  * based on the new, error values.
- *
+ * </p>
+ * <p>
  * This module will only operate on Observations that take place while the patient is less than
  * MAX_AGE.
+ * </p>
  */
 public class GrowthDataErrorsModule implements HealthRecordModule {
   public GrowthDataErrorsModule() { }
@@ -62,14 +64,29 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
     }
   }
 
+  /**
+   * Checks to see if the person is under MAX_AGE.
+   * @param person The Synthea person to check on whether the module should be run
+   * @param record The person's HealthRecord
+   * @param time The current time in the simulation
+   * @return True if the person is under MAX_AGE
+   */
   @Override
   public boolean shouldRun(Person person, HealthRecord record, long time) {
     return person.ageInYears(time) <= MAX_AGE;
   }
 
-  public void process(Person person, List<HealthRecord.Encounter> encounters, long time, Random random) {
-    List<HealthRecord.Encounter> encountersWithWeights = encountersWithObservationsOfCode(encounters, "29463-7",
-        "http://loinc.org");
+  /**
+   * Potentially mess up heights and weights in the encounters.
+   * @param person The Synthea person to check on whether the module should be run
+   * @param encounters The encounters that took place during the last time step of the simulation
+   * @param time The current time in the simulation
+   * @param random Random generator that should be used when randomness is needed
+   */
+  public void process(Person person, List<HealthRecord.Encounter> encounters, long time,
+                      Random random) {
+    List<HealthRecord.Encounter> encountersWithWeights =
+        encountersWithObservationsOfCode(encounters, "29463-7", "http://loinc.org");
     encountersWithWeights.forEach(e -> {
       if (random.nextDouble() <= config.weightUnitErrorRate) {
         introduceWeightUnitError(e);
@@ -97,8 +114,8 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
       }
     });
 
-    List<HealthRecord.Encounter> encountersWithHeights = encountersWithObservationsOfCode(encounters, "8302-2",
-        "http://loinc.org");
+    List<HealthRecord.Encounter> encountersWithHeights =
+        encountersWithObservationsOfCode(encounters, "8302-2", "http://loinc.org");
     encountersWithHeights.forEach(e -> {
       if (random.nextDouble() <= config.heightUnitErrorRate) {
         introduceHeightUnitError(e);
@@ -117,7 +134,7 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
         recalculateBMI(e);
       }
       if (random.nextDouble() <= config.heightAbsoluteErrorRate) {
-        introduceHeightAbsoluteError(e);
+        introduceHeightAbsoluteError(e, random);
         recalculateBMI(e);
       }
       if (random.nextDouble() <= config.heightDuplicateErrorRate) {
@@ -131,18 +148,33 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
     });
   }
 
+  /**
+   * Convert the weight observation value from kg to lbs. The unit is not updated because we are
+   * intentionally messing things up.
+   * @param encounter The encounter that contains the observation
+   */
   public static void introduceWeightUnitError(HealthRecord.Encounter encounter) {
     HealthRecord.Observation obs = weightObservation(encounter);
     double originalWeight = (Double) obs.value;
     obs.value = originalWeight * POUNDS_PER_KG;
   }
 
+  /**
+   * Convert the height observation from cm to in. Again, we're intentionally messing things up
+   * here.
+   * @param encounter The encounter that contains the observation
+   */
   public static void introduceHeightUnitError(HealthRecord.Encounter encounter) {
     HealthRecord.Observation obs = heightObservation(encounter);
     double originalHeight = (Double) obs.value;
     obs.value = originalHeight * INCHES_PER_CM;
   }
 
+  /**
+   * Flip the tens and ones place in the desired observation value.
+   * @param encounter The encounter that contains the observation
+   * @param obsType "height" or "weight"
+   */
   public static void introduceTransposeError(HealthRecord.Encounter encounter, String obsType) {
     HealthRecord.Observation obs;
     if (obsType.equals("weight")) {
@@ -160,7 +192,7 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
       char ones = originalChars[decimalPointPosition - 1];
       originalChars[decimalPointPosition - 2] = ones;
       originalChars[decimalPointPosition - 1] = tens;
-      obs.value = Double.parseDouble(originalChars.toString());
+      obs.value = Double.parseDouble(new String(originalChars));
     } else {
       // for those with a single digit, just shift the ones to the tens
       double ones = Math.floor(original);
@@ -169,6 +201,11 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
     }
   }
 
+  /**
+   * Swap weight and height. This will work even if height is null. It will set weight to null
+   * and height to the weight value.
+   * @param encounter The encounter that contains the observation
+   */
   public static void introduceWeightSwitchError(HealthRecord.Encounter encounter) {
     HealthRecord.Observation wtObs = weightObservation(encounter);
     HealthRecord.Observation htObs = heightObservation(encounter);
@@ -185,6 +222,11 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
     }
   }
 
+  /**
+   * Swap height and weight. This will work even if weight is null. It will set height to null
+   * and weight to height.
+   * @param encounter The encounter that contains the observation
+   */
   public static void introduceHeightSwitchError(HealthRecord.Encounter encounter) {
     HealthRecord.Observation wtObs = weightObservation(encounter);
     HealthRecord.Observation htObs = heightObservation(encounter);
@@ -201,38 +243,67 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
     }
   }
 
+  /**
+   * Shift the decimal place for the weight observation once place to the right.
+   * @param encounter The encounter that contains the observation
+   */
   public static void introduceWeightExtremeError(HealthRecord.Encounter encounter) {
     HealthRecord.Observation wtObs = weightObservation(encounter);
     double weightValue = (Double) wtObs.value;
     wtObs.value = weightValue * 10;
   }
 
+  /**
+   * Shift the decimal place for the height observation once place to the right.
+   * @param encounter The encounter that contains the observation
+   */
   public static void introduceHeightExtremeError(HealthRecord.Encounter encounter) {
     HealthRecord.Observation htObs = heightObservation(encounter);
     double heightValue = (Double) htObs.value;
     htObs.value = heightValue * 10;
   }
 
-  public static void introduceHeightAbsoluteError(HealthRecord.Encounter encounter) {
+  /**
+   * Reduce the height observation by 3 to 6 cm. It looks like someone forgot to take off their
+   * shoes before getting measured.
+   * @param encounter The encounter that contains the observation
+   */
+  public static void introduceHeightAbsoluteError(HealthRecord.Encounter encounter, Random random) {
     HealthRecord.Observation htObs = heightObservation(encounter);
     double heightValue = (Double) htObs.value;
-    htObs.value = heightValue - 3;
+    double additionalAbsolute = random.nextDouble() * 3;
+    htObs.value = heightValue - (3 + additionalAbsolute);
   }
 
-  public static void introduceWeightDuplicateError(HealthRecord.Encounter encounter, Random random) {
+  /**
+   * Create a duplicate weight observation in the encounter that is off slightly.
+   * @param encounter The encounter that contains the observation
+   */
+  public static void introduceWeightDuplicateError(HealthRecord.Encounter encounter,
+                                                   Random random) {
     HealthRecord.Observation wtObs = weightObservation(encounter);
     double weightValue = (Double) wtObs.value;
     double jitter = random.nextDouble() - 0.5;
     encounter.addObservation(wtObs.start, wtObs.type, weightValue + jitter);
   }
 
-  public static void introduceHeightDuplicateError(HealthRecord.Encounter encounter, Random random) {
+  /**
+   * Create a duplicate height observation in the encounter that is off slightly.
+   * @param encounter The encounter that contains the observation
+   */
+  public static void introduceHeightDuplicateError(HealthRecord.Encounter encounter,
+                                                   Random random) {
     HealthRecord.Observation htObs = heightObservation(encounter);
     double heightValue = (Double) htObs.value;
     double jitter = random.nextDouble() - 0.5;
     encounter.addObservation(htObs.start, htObs.type, heightValue + jitter);
   }
 
+  /**
+   * Replace the weight observation in this encounter with the value from the person's last
+   * encounter.
+   * @param encounter The encounter that contains the observation
+   */
   public static void introduceWeightCarriedForwardError(HealthRecord.Encounter encounter) {
     HealthRecord.Observation wtObs = weightObservation(encounter);
     HealthRecord.Encounter previousEncounter = encounter.previousEncounter();
@@ -244,6 +315,11 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
     }
   }
 
+  /**
+   * Replace the height observation in this encounter with the value from the person's last
+   * encounter.
+   * @param encounter The encounter that contains the observation
+   */
   public static void introduceHeightCarriedForwardError(HealthRecord.Encounter encounter) {
     HealthRecord.Observation htObs = heightObservation(encounter);
     HealthRecord.Encounter previousEncounter = encounter.previousEncounter();
@@ -267,7 +343,8 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
     return findObservation(encounter, "39156-5");
   }
 
-  private static HealthRecord.Observation findObservation(HealthRecord.Encounter encounter, String code) {
+  private static HealthRecord.Observation findObservation(HealthRecord.Encounter encounter,
+                                                          String code) {
     return encounter.observations
         .stream()
         .filter(o -> o.containsCode(code, "http://loinc.org"))
@@ -275,6 +352,11 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
         .orElse(null);
   }
 
+  /**
+   * Recalculate the BMI based on the existing height and weigh observations in the encounter.
+   * Only recreates a BMI if one already exists. Otherwise, it does nothing.
+   * @param encounter to recalculate BMI on
+   */
   public static void recalculateBMI(HealthRecord.Encounter encounter) {
     HealthRecord.Observation bmi = bmiObservation(encounter);
     if (bmi != null) {
@@ -288,8 +370,16 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
     }
   }
 
-  public List<HealthRecord.Encounter> encountersWithObservationsOfCode(List<HealthRecord.Encounter> encounters,
-                                                                       String code, String system) {
+  /**
+   * Filter a list of encounters to find all that have an observation with a particular code.
+   * @param encounters The list to filter
+   * @param code The code to look for
+   * @param system The code system of the code
+   * @return The filtered list. If there are no matching encounters, then an empty list.
+   */
+  public List<HealthRecord.Encounter> encountersWithObservationsOfCode(
+      List<HealthRecord.Encounter> encounters,
+      String code, String system) {
     return encounters.stream().filter(e ->
         e.observations.stream().anyMatch(o ->
             o.codes.stream().anyMatch(c ->

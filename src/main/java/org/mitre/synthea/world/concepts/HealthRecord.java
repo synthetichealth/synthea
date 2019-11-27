@@ -466,12 +466,23 @@ public class HealthRecord {
       this.claim = new Claim(this, person);
     }
 
+    /**
+     * Add an observation to the encounter.
+     * @param time The time of the observation
+     * @param type The LOINC code for the observation
+     * @param value The observation value
+     */
     public void addObservation(long time, String type, Object value) {
       Observation observation = new Observation(time, type, value);
       observation.codes.add(new Code("http://loinc.org", type, type));
       this.observations.add(observation);
     }
 
+    /**
+     * Find the first observation in the encounter with the given LOINC code.
+     * @param code The LOINC code to look for
+     * @return A single observation or null
+     */
     public Observation findObservation(String code) {
       return observations
           .stream()
@@ -480,6 +491,10 @@ public class HealthRecord {
           .orElse(null);
     }
 
+    /**
+     * Find the encounter that happened before this one.
+     * @return The previous encounter or null if this is the first
+     */
     public Encounter previousEncounter() {
       if (record.encounters.size() < 2) {
         return null;
