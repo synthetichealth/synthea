@@ -23,10 +23,7 @@ import org.mitre.synthea.export.CDWExporter;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.TransitionMetrics;
-import org.mitre.synthea.modules.DeathModule;
-import org.mitre.synthea.modules.EncounterModule;
-import org.mitre.synthea.modules.HealthInsuranceModule;
-import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.modules.*;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -234,6 +231,12 @@ public class Generator {
       System.out.println("Modules: " + String.join("\n       & ", moduleNames));
       System.out.println(String.format("       > [%d loaded]", moduleNames.size()));
     }
+
+    if (Boolean.parseBoolean(
+        Config.get("growtherrors.enable", "false"))) {
+      HealthRecordModules hrm = HealthRecordModules.getInstance();
+      hrm.registerModule(new GrowthDataErrorsModule());
+    }
   }
 
   /**
@@ -335,7 +338,7 @@ public class Generator {
         
         HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
         EncounterModule encounterModule = new EncounterModule();
-
+        HealthRecordModules hrm = HealthRecordModules.getInstance();
         long time = start;
         while (person.alive(time) && time < stop) {
 
@@ -352,6 +355,7 @@ public class Generator {
             }
           }
           encounterModule.endWellnessEncounter(person, time);
+          hrm.executeAll(person, person.record, time, timestep, person.random);
 
           time += timestep;
         }
