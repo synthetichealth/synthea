@@ -86,7 +86,7 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
   public void process(Person person, List<HealthRecord.Encounter> encounters, long time,
                       Random random) {
     List<HealthRecord.Encounter> encountersWithWeights =
-        encountersWithObservationsOfCode(encounters, "29463-7", "http://loinc.org");
+        encountersWithObservationsOfCode(encounters, "29463-7", "LOINC");
     encountersWithWeights.forEach(e -> {
       if (random.nextDouble() <= config.weightUnitErrorRate) {
         introduceWeightUnitError(e);
@@ -115,7 +115,7 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
     });
 
     List<HealthRecord.Encounter> encountersWithHeights =
-        encountersWithObservationsOfCode(encounters, "8302-2", "http://loinc.org");
+        encountersWithObservationsOfCode(encounters, "8302-2", "LOINC");
     encountersWithHeights.forEach(e -> {
       if (random.nextDouble() <= config.heightUnitErrorRate) {
         introduceHeightUnitError(e);
@@ -347,7 +347,7 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
                                                           String code) {
     return encounter.observations
         .stream()
-        .filter(o -> o.containsCode(code, "http://loinc.org"))
+        .filter(o -> o.containsCode(code, "LOINC"))
         .findFirst()
         .orElse(null);
   }
