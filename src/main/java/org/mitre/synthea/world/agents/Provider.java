@@ -4,6 +4,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,9 +17,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.sis.geometry.DirectPosition2D;
-import org.apache.sis.index.tree.QuadTree;
-import org.apache.sis.index.tree.QuadTreeData;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -31,8 +29,10 @@ import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
+import org.mitre.synthea.world.geography.quadtree.QuadTree;
+import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
-public class Provider implements QuadTreeData {
+public class Provider implements QuadTreeElement {
 
   public static final String ENCOUNTERS = "encounters";
   public static final String PROCEDURES = "procedures";
@@ -52,7 +52,7 @@ public class Provider implements QuadTreeData {
   private static int loaded = 0;
 
   private static final double MAX_PROVIDER_SEARCH_DISTANCE =
-      Double.parseDouble(Config.get("generate.providers.maximum_search_distance", "500"));
+      Double.parseDouble(Config.get("generate.providers.maximum_search_distance", "2"));
   public static final String PROVIDER_SELECTION_BEHAVIOR =
       Config.get("generate.providers.selection_behavior", "nearest").toLowerCase();
   private static IProviderFinder providerFinder = buildProviderFinder();
@@ -71,7 +71,7 @@ public class Provider implements QuadTreeData {
   public String ownership;
   public int quality;
   private double revenue;
-  private DirectPosition2D coordinates;
+  private Point2D.Double coordinates;
   public ArrayList<EncounterType> servicesProvided;
   public Map<String, ArrayList<Clinician>> clinicianMap;
   // row: year, column: type, value: count
@@ -87,7 +87,7 @@ public class Provider implements QuadTreeData {
     utilization = HashBasedTable.create();
     servicesProvided = new ArrayList<EncounterType>();
     clinicianMap = new HashMap<String, ArrayList<Clinician>>();
-    coordinates = new DirectPosition2D();
+    coordinates = new Point2D.Double();
   }
 
   private static IProviderFinder buildProviderFinder() {
@@ -204,17 +204,16 @@ public class Provider implements QuadTreeData {
    */
   public static Provider findService(Person person, EncounterType service, long time) {
     double maxDistance = MAX_PROVIDER_SEARCH_DISTANCE;
-    double distance = 100;
-    double step = 100;
+    double degrees = 0.125;
     List<Provider> options = null;
     Provider provider = null;
-    while (distance <= maxDistance) {
-      options = findProvidersByLocation(person, distance);
+    while (degrees <= maxDistance) {
+      options = findProvidersByLocation(person, degrees);
       provider = providerFinder.find(options, person, service, time);
       if (provider != null) {
         return provider;
       }
-      distance += step;
+      degrees *= 2.0;
     }
     return null;
   }
@@ -222,14 +221,13 @@ public class Provider implements QuadTreeData {
   /**
    * Find a service around a given point.
    * @param person The patient who requires the service.
-   * @param distance in kilometers
+   * @param distance in degrees
    * @return List of providers within the given distance.
    */
   private static List<Provider> findProvidersByLocation(Person person, double distance) {
-    DirectPosition2D coord = person.getLatLon();
-    List<QuadTreeData> results = providerMap.queryByPointRadius(coord, distance);
+    List<QuadTreeElement> results = providerMap.query(person, distance);
     List<Provider> providers = new ArrayList<Provider>();
-    for (QuadTreeData item : results) {
+    for (QuadTreeElement item : results) {
       providers.add((Provider) item);
     }
     return providers;
@@ -251,7 +249,7 @@ public class Provider implements QuadTreeData {
    * @return QuadTree.
    */
   private static QuadTree generateQuadTree() {
-    return new QuadTree(7500, 25); // capacity, depth
+    return new QuadTree();
   }
   
   /**
@@ -406,9 +404,9 @@ public class Provider implements QuadTreeData {
 
       String race = city.pickRace(clinicianRand);
       out.put(Person.RACE, race);
-      String ethnicity = city.ethnicityFromRace(race, clinicianRand);
+      String ethnicity = city.pickEthnicity(clinicianRand);
       out.put(Person.ETHNICITY, ethnicity);
-      String language = city.languageFromEthnicity(ethnicity, clinicianRand);
+      String language = city.languageFromRaceAndEthnicity(race, ethnicity, clinicianRand);
       out.put(Person.FIRST_LANGUAGE, language);
       String gender = city.pickGender(clinicianRand);
       if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
@@ -424,7 +422,7 @@ public class Provider implements QuadTreeData {
       clinician.attributes.put(Person.CITY, provider.city);
       clinician.attributes.put(Person.STATE, provider.state);
       clinician.attributes.put(Person.ZIP, provider.zip);
-      clinician.attributes.put(Person.COORDINATE, provider.getLatLon());
+      clinician.attributes.put(Person.COORDINATE, provider.coordinates);
 
       String firstName = LifecycleModule.fakeFirstName(gender, language, clinician.random);
       String lastName = LifecycleModule.fakeLastName(language, clinician.random);
@@ -501,39 +499,17 @@ public class Provider implements QuadTreeData {
     return providerList;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see org.apache.sis.index.tree.QuadTreeData#getX()
-   */
   @Override
   public double getX() {
     return coordinates.getX();
   }
 
-  /*
-   * (non-Javadoc)
-   * @see org.apache.sis.index.tree.QuadTreeData#getY()
-   */
   @Override
   public double getY() {
     return coordinates.getY();
   }
 
-  /*
-   * (non-Javadoc)
-   * @see org.apache.sis.index.tree.QuadTreeData#getLatLon()
-   */
-  @Override
-  public DirectPosition2D getLatLon() {
+  public Point2D.Double getLonLat() {
     return coordinates;
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see org.apache.sis.index.tree.QuadTreeData#getFileName()
-   */
-  @Override
-  public String getFileName() {
-    return null;
   }
 }

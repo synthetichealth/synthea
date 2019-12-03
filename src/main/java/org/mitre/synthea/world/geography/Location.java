@@ -3,6 +3,7 @@ package org.mitre.synthea.world.geography;
 import com.google.common.collect.Table;
 import com.google.gson.Gson;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -11,7 +12,6 @@ import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.sis.geometry.DirectPosition2D;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -113,9 +113,11 @@ public class Location {
    * If a city has more than one zip code, this picks a random one.
    * 
    * @param cityName Name of the city
+   * @param person Used for a source of repeatable randomness when selecting a zipcode when multiple
+   *               exist for a location
    * @return a zip code for the given city
    */
-  public String getZipCode(String cityName) {
+  public String getZipCode(String cityName, Person person) {
     List<Place> zipsForCity = zipCodes.get(cityName);
     
     if (zipsForCity == null) {
@@ -125,7 +127,8 @@ public class Location {
     if (zipsForCity == null || zipsForCity.isEmpty()) {
       return "00000"; // if we don't have the city, just use a dummy
     } else if (zipsForCity.size() >= 1) {
-      return zipsForCity.get(0).postalCode;
+      int randomChoice = person.randInt(zipsForCity.size());
+      return zipsForCity.get(randomChoice).postalCode;
     }
     return "00000";
   }
@@ -200,18 +203,18 @@ public class Location {
 
   /**
    * Method which returns a city from the foreignPlacesOfBirth map if the map contains values
-   * for an ethnicity.
-   * In the case an ethnicity is not present the method returns the value from a call to
+   * for an language.
+   * In the case an language is not present the method returns the value from a call to
    * randomCityName().
    *
    * @param random the Random to base our city selection on
-   * @param ethnicity the ethnicity to look for cities in
+   * @param language the language to look for cities in
    * @return A String representing the place of birth
    */
-  public String[] randomBirthplaceByEthnicity(Random random, String ethnicity) {
+  public String[] randomBirthplaceByLanguage(Random random, String language) {
     String[] birthPlace;
 
-    List<String> cities = foreignPlacesOfBirth.get(ethnicity.toLowerCase());
+    List<String> cities = foreignPlacesOfBirth.get(language.toLowerCase());
     if (cities != null && cities.size() > 0) {
       int upperBound = cities.size();
       String randomBirthPlace = cities.get(random.nextInt(upperBound));
@@ -243,7 +246,7 @@ public class Location {
    * @param cityName Name of the city, or null to choose one randomly
    */
   public void assignPoint(Person person, String cityName) {
-    List<Place> zipsForCity = null;
+    List<Place> zipsForCity;
 
     if (cityName == null) {
       int size = zipCodes.keySet().size();
@@ -255,17 +258,25 @@ public class Location {
       zipsForCity = zipCodes.get(cityName + " Town");
     }
     
-    Place place = null;
+    Place place;
     if (zipsForCity.size() == 1) {
       place = zipsForCity.get(0);
     } else {
-      // pick a random one
-      place = zipsForCity.get(person.randInt(zipsForCity.size()));
+      String personZip = (String) person.attributes.get(Person.ZIP);
+      if (personZip == null) {
+        place = zipsForCity.get(person.randInt(zipsForCity.size()));
+      } else {
+        place = zipsForCity.stream()
+            .filter(c -> personZip.equals(c.postalCode))
+            .findFirst()
+            .orElse(zipsForCity.get(person.randInt(zipsForCity.size())));
+      }
     }
     
     if (place != null) {
       // Get the coordinate of the city/town
-      DirectPosition2D coordinate = place.getLatLon().clone();
+      Point2D.Double coordinate = new Point2D.Double();
+      coordinate.setLocation(place.coordinate);
       // And now perturbate it slightly.
       // Precision within 0.001 degree is more or less a neighborhood or street.
       // Precision within 0.01 is a village or town
@@ -308,13 +319,14 @@ public class Location {
     
     if (place != null) {
       // Get the coordinate of the city/town
-      DirectPosition2D coordinate = place.getLatLon().clone();
+      Point2D.Double coordinate = new Point2D.Double();
+      coordinate.setLocation(place.coordinate);
       // And now perturbate it slightly.
       // Precision within 0.001 degree is more or less a neighborhood or street.
       // Precision within 0.01 is a village or town
       // Precision within 0.1 is a large city
-      double dx = clinician.rand() / 10.0;
-      double dy = clinician.rand() / 10.0;
+      double dx = (clinician.rand() * 0.1) - 0.05;
+      double dy = (clinician.rand() * 0.1) - 0.05;
       coordinate.setLocation(coordinate.x + dx, coordinate.y + dy);
       clinician.attributes.put(Person.COORDINATE, coordinate);
     }

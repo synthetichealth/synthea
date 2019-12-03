@@ -3,6 +3,7 @@ package org.mitre.synthea.modules;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.mitre.synthea.world.concepts.GrowthChart;
 
 public class GrowthChartTest {
   @Test
@@ -24,7 +25,7 @@ public class GrowthChartTest {
     double[] zscores = {-1.881, -1.645, -1.282, -0.674,  0.0, 0.674, 1.036, 1.282, 1.645, 1.881};
     double[] percent = { 0.03, 0.05, 0.10, 0.25, 0.50, 0.75, 0.85, 0.90, 0.95, 0.97};
     for (int i = 0; i < percent.length; i++) {
-      double z = LifecycleModule.calculateZScore(percent[i]);
+      double z = GrowthChart.calculateZScore(percent[i]);
       assertEquals(zscores[i], z, 0.01);
     }
   }

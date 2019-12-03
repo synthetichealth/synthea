@@ -20,6 +20,7 @@ import org.hl7.fhir.dstu3.model.CodeSystem;
 import org.hl7.fhir.dstu3.model.CodeSystem.ConceptDefinitionComponent;
 import org.hl7.fhir.dstu3.model.StructureDefinition;
 import org.hl7.fhir.dstu3.model.ValueSet;
+import org.hl7.fhir.dstu3.model.ValueSet.ConceptReferenceComponent;
 import org.hl7.fhir.dstu3.model.ValueSet.ConceptSetComponent;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.utilities.validation.ValidationMessage.IssueSeverity;
@@ -131,7 +132,7 @@ public class ValidationSupportSTU3 implements IValidationSupport {
 
   @Override
   public CodeValidationResult validateCode(FhirContext theContext, String theCodeSystem,
-      String theCode, String theDisplay) {
+      String theCode, String theDisplay, String theValueSetUrl) {
     IssueSeverity severity = IssueSeverity.WARNING;
     String message = "Unsupported CodeSystem";
 
@@ -153,6 +154,20 @@ public class ValidationSupportSTU3 implements IValidationSupport {
           } else {
             severity = IssueSeverity.WARNING;
             message = "Validated Code; No display";
+          }
+        }
+      }
+    }
+
+    ValueSet vs = fetchValueSet(theContext, theValueSetUrl);
+    if (vs != null && vs.hasCompose() && vs.getCompose().hasExclude()) {
+      for (ConceptSetComponent exclude : vs.getCompose().getExclude()) {
+        if (exclude.getSystem().equals(theCodeSystem) && exclude.hasConcept()) {
+          for (ConceptReferenceComponent concept : exclude.getConcept()) {
+            if (concept.getCode().equals(theCode)) {
+              severity = IssueSeverity.ERROR;
+              message += "; Code Excluded from ValueSet";
+            }
           }
         }
       }

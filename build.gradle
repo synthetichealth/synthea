@@ -35,15 +35,12 @@ checkstyle {
 dependencies {
   // This dependency is found on compile classpath of this component and consumers.
   compile 'com.google.code.gson:gson:2.8.0'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-base:4.0.3'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:4.0.3'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:4.0.3'
-  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:4.0.3'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-base:4.1.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:4.1.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:4.1.0'
+  compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:4.1.0'
   // C-CDA export uses Apache FreeMarker templates
   compile 'org.freemarker:freemarker:2.3.26-incubating'
-  // location processing
-  compile group: 'org.apache.sis.core', name: 'sis-referencing', version: '0.8'
-  compile group: 'org.apache.sis.storage', name: 'sis-storage', version: '0.8'
   compile group: 'com.h2database', name: 'h2', version: '1.4.196'
   // google guava for some data structures
   compile 'com.google.guava:guava:23.0'
@@ -51,9 +48,14 @@ dependencies {
   // CSV Stuff
   compile group: 'org.apache.commons', name: 'commons-csv', version: '1.5'
   compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: '2.8.8'
-  compile group: 'org.yaml', name: 'snakeyaml', version: '1.19'
+  compile group: 'org.yaml', name: 'snakeyaml', version: '1.25'
   compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
   compile group: 'org.apache.commons', name: 'commons-text', version: '1.2'
+
+  compile group: 'org.opencds.cqf', name: 'cql-engine', version: '1.3.10-SNAPSHOT'
+  compile group: 'info.cqframework', name: 'cql', version: '1.3.17'
+  compile group: 'info.cqframework', name: 'model', version: '1.3.17'
+  compile group: 'info.cqframework', name: 'cql-to-elm', version: '1.3.17'
 
   // Java 9 no longer includes these APIs by default
   compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
@@ -63,7 +65,15 @@ dependencies {
   // get rid of SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
   // if we switch to a real logging framework we may want to switch this
   compile "org.slf4j:slf4j-api:1.6.1"
-  compile "org.slf4j:slf4j-nop:1.6.1"
+  // compile "org.slf4j:slf4j-nop:1.6.1" // SLF4J seems to already be provided by org.apache.logging.log4j
+  
+  // Physiology simulation dependencies
+  compile files('lib/sbscl/SimulationCoreLibrary_v1.5_slim.jar')
+  compile group: 'org.sbml.jsbml', name: 'jsbml', version: '1.4'
+  compile group: 'org.apache.commons', name: 'commons-math', version: '2.2'
+  
+  // JfreeChart for drawing physiology charts
+  compile group: 'org.jfree', name: 'jfreechart', version: '1.5.0'
 
   // Use JUnit test framework
   testCompile 'junit:junit:4.12'
@@ -72,10 +82,10 @@ dependencies {
   testCompile 'org.mockito:mockito-core:2.19.0'
   testCompile 'org.powermock:powermock-module-junit4:1.7.1'
   testCompile 'org.powermock:powermock-api-mockito2:1.7.1'
-  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation:4.0.3'
-  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:4.0.3'
-  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:4.0.3'
-  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:4.0.3'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation:4.1.0'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:4.1.0'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:4.1.0'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:4.1.0'
   testCompile 'com.helger:ph-schematron:5.0.4'
   testCompile 'com.helger:ph-commons:9.1.1'
 }
@@ -151,6 +161,13 @@ task attributes(type: JavaExec) {
   main = "org.mitre.synthea.helpers.Attributes"
 }
 
+task physiology(type: JavaExec) {
+    group 'Application'
+    description 'Test a physiology simulation'
+    classpath sourceSets.main.runtimeClasspath
+    main = "org.mitre.synthea.engine.PhysiologySimulator"
+}
+
 task versionTxt() {
   group 'Build'
   description 'Generates a version file.'
@@ -212,7 +229,7 @@ artifacts {
 }
 
 def mavenGroup = 'org.mitre.synthea'
-def mavenVersion = '2.5.0-SNAPSHOT'
+def mavenVersion = '2.6.0-SNAPSHOT'
 
 publishing {
     publications {
