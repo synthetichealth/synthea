@@ -882,6 +882,8 @@ public final class LifecycleModule extends Module {
 
   protected static boolean ENABLE_DEATH_BY_NATURAL_CAUSES =
       Boolean.parseBoolean(Config.get("lifecycle.death_by_natural_causes"));
+  protected static boolean ENABLE_DEATH_BY_LOSS_OF_CARE =
+      Boolean.parseBoolean(Config.get("lifecycle.death_by_loss_of_care"));
   
   // Death From Natural Causes SNOMED Code
   private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000",
@@ -901,7 +903,7 @@ public final class LifecycleModule extends Module {
       }
     }
 
-    if (deathFromLossOfCare(person)) {
+    if (ENABLE_DEATH_BY_LOSS_OF_CARE && deathFromLossOfCare(person)) {
       person.recordDeath(time, LOSS_OF_CARE);
     }
   }
@@ -948,22 +950,19 @@ public final class LifecycleModule extends Module {
    * @param person the person to check for loss of care death.
    */
   public static boolean deathFromLossOfCare(Person person) {
-
-    Random r = new Random();
-
     // Search the person's lossOfCareHealthRecord for missed treatments.
     // Based on missed treatments, increase likelihood of death.
-    for (Encounter encounter : person.lossOfCareHealthRecord.encounters) {
-      for (Procedure procedure : encounter.procedures) {
-        for (Code code : procedure.codes) {
-          /**
-           * INSERT DEATH PROBABILIITIES FOR LACK OF TREATMENTS HERE
-           * 
-           * ex)
-           * if (code.code.equals("33195004")) {
-           *  return r.nextDouble() < 0.6;
-           * }
-           */
+    if (person.lossOfCareEnabled) {
+      for (Encounter encounter : person.lossOfCareRecord.encounters) {
+        for (Procedure procedure : encounter.procedures) {
+          for (Code code : procedure.codes) {
+            /*
+             * TODO USE A LOOKUP TABLE FOR DEATH PROBABILITIES FOR LACK OF TREATMENTS HERE
+             */
+            if (code.code.equals("33195004")) {
+              return person.rand() < 0.6;
+            }
+          }
         }
       }
     }

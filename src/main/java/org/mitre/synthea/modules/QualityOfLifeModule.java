@@ -118,60 +118,56 @@ public class QualityOfLifeModule extends Module {
       double l = ((0.00006 * Math.pow(age, 3))
           - (0.0054 * Math.pow(age, 2)) - (0.8502 * age) + 86.16);
       yll = l;
-
-      // Need to give the yll to the payer here.
-      // person.payer.addQALY(personAge/QALY) or .add(DALY)
-      // At the end, payer averages this data out
-
-      // TODO - It seems as if this does not get reached as often as it should.
     }
 
     // Get counts of covered healthcare.
-    List<Entry> allCoveredConditions = new ArrayList<Entry>();
+    List<Entry> allConditions = new ArrayList<Entry>();
     int coveredMedicationCount = 0;
     int coveredProcedureCount = 0;
     int coveredImmunizationCount = 0;
     int coveredEncounterCount = 0;
-    for (Encounter encounter : person.coveredHealthRecord.encounters) {
+    for (Encounter encounter : person.defaultRecord.encounters) {
       for (Entry condition : encounter.conditions) {
-        allCoveredConditions.add(condition);
+        allConditions.add(condition);
       }
       coveredMedicationCount += encounter.medications.size();
       coveredProcedureCount += encounter.procedures.size();
       coveredImmunizationCount += encounter.immunizations.size();
       coveredEncounterCount++;
     }
+    int coveredEntries = coveredEncounterCount + coveredMedicationCount
+        + coveredProcedureCount + coveredImmunizationCount;
 
     // Get counts of uncovered healthcare.
-    List<Entry> allLossOfCareConditions = new ArrayList<Entry>();
-    int uncoveredMedicationCount = 0;
-    int uncoveredProcedureCount = 0;
-    int uncoveredImmunizationCount = 0;
-    int uncoveredEncounterCount = 0;
-    for (Encounter encounter : person.lossOfCareHealthRecord.encounters) {
-      for (Entry condition : encounter.conditions) {
-        allLossOfCareConditions.add(condition);
+    int uncoveredEntries;
+    if (person.lossOfCareEnabled) {
+      List<Entry> allLossOfCareConditions = new ArrayList<Entry>();
+      int uncoveredMedicationCount = 0;
+      int uncoveredProcedureCount = 0;
+      int uncoveredImmunizationCount = 0;
+      int uncoveredEncounterCount = 0;
+      for (Encounter encounter : person.lossOfCareRecord.encounters) {
+        for (Entry condition : encounter.conditions) {
+          allLossOfCareConditions.add(condition);
+        }
+        uncoveredMedicationCount += encounter.medications.size();
+        uncoveredProcedureCount += encounter.procedures.size();
+        uncoveredImmunizationCount += encounter.immunizations.size();
+        uncoveredEncounterCount++;
       }
-      uncoveredMedicationCount += encounter.medications.size();
-      uncoveredProcedureCount += encounter.procedures.size();
-      uncoveredImmunizationCount += encounter.immunizations.size();
-      uncoveredEncounterCount++;
+      uncoveredEntries = uncoveredEncounterCount + uncoveredMedicationCount
+          + uncoveredProcedureCount + uncoveredImmunizationCount;
+      allConditions.addAll(allLossOfCareConditions);
+    } else {
+      uncoveredEntries = 0;
     }
 
     // Determine the percentage of covered care.
     // NOTE: This percentageOfCoveredCare is based on entire life, not just current year.
-    int coveredEntries = coveredEncounterCount + coveredMedicationCount
-        + coveredProcedureCount + coveredImmunizationCount;
-    int uncoveredEntries = uncoveredEncounterCount + uncoveredMedicationCount
-        + uncoveredProcedureCount + uncoveredImmunizationCount;
     if (coveredEntries < 1) {
       coveredEntries = 1;
     }
     double percentageOfCoveredCare = coveredEntries / (coveredEntries + uncoveredEntries);
-
-    // Create a list of all conditions to be used in calculating disability weight.
-    allCoveredConditions.addAll(allLossOfCareConditions);
-    List<Entry> allConditions = allCoveredConditions;
 
     double disabilityWeight = 0.0;
     // calculate yld with yearly timestep

@@ -480,7 +480,7 @@ public class CSVExporter {
     s.append(person.getHealthcareCoverage());
     // QALYS
     // s.append(person.attributes.get("most-recent-qaly")).append(',');
-    // // DALYS
+    // DALYS
     // s.append(person.attributes.get("most-recent-daly"));
 
     s.append(NEWLINE);

@@ -92,26 +92,34 @@ public class Person implements Serializable, QuadTreeData {
   private Map<String, Map<String, Integer>> symptoms;
   private Map<String, Map<String, Boolean>> symptomStatuses;
   public Map<String, HealthRecord.Medication> chronicMedications;
-  /** the active health record. */
+  /** The active health record. */
   public HealthRecord record;
-  // Full Real Covered HealthRecord entries
-  public HealthRecord coveredHealthRecord;
-  // lossOfCare Health Record entries that should have, but did not, occur.
-  public HealthRecord lossOfCareHealthRecord;
-  // Individual provider Health Records (If hasMultipleRecords)
+  /** Default health record. If "lossOfCareEnabled" is true, this is also the
+   * record with entries that were covered by insurance. */
+  public HealthRecord defaultRecord;
+  /** Only used if "lossOfCareEnabled" is true. In that case, this health record
+   * contains entries that should have, but did not, occur. */
+  public HealthRecord lossOfCareRecord;
+  /** Experimental feature flag. When "lossOfCareEnabled" is true, patients can miss
+   * care due to cost or lack of health insurance coverage. */
+  public boolean lossOfCareEnabled;
+  /** Individual provider health records (if "hasMultipleRecords" is enabled). */
   public Map<String, HealthRecord> records;
+  /** Flag that enables each provider having a different health record for each patient.
+   * In other words, the patients entire record is split across provider systems. */
   public boolean hasMultipleRecords;
   /** History of the currently active module. */
   public List<State> history;
-  /* Person's Payer History. */
-  // Each element in payerHistory array corresponds to the insurance held at that age.
+  /** Person's Payer History.
+   * Each element in payerHistory array corresponds to the insurance held at that age.
+   */
   public Payer[] payerHistory;
   // Each element in payerOwnerHistory array corresponds to the owner of the insurance at that age.
   private String[] payerOwnerHistory;
-  /* Yearly Healthcare Expenses. */
-  private Map<Integer, Double> healthcareExpensesYearly;
-  /* Yearly Healthcare Coverage. */
-  private Map<Integer, Double> healthcareCoverageYearly;
+  /* Annual Health Expenses. */
+  private Map<Integer, Double> annualHealthExpenses;
+  /* Annual Health Coverage. */
+  private Map<Integer, Double> annualHealthCoverage;
 
   /**
    * Person constructor.
@@ -130,14 +138,18 @@ public class Person implements Serializable, QuadTreeData {
     if (hasMultipleRecords) {
       records = new ConcurrentHashMap<String, HealthRecord>();
     }
-    coveredHealthRecord = new HealthRecord(this);
-    lossOfCareHealthRecord = new HealthRecord(this);
-    record = coveredHealthRecord;
+    defaultRecord = new HealthRecord(this);
+    lossOfCareEnabled =
+        Boolean.parseBoolean(Config.get("generate.payers.loss_of_care", "false"));
+    if (lossOfCareEnabled) {
+      lossOfCareRecord = new HealthRecord(this);
+    }
+    record = defaultRecord;
     // 128 because it's a nice power of 2, and nobody will reach that age
     payerHistory = new Payer[128];
     payerOwnerHistory = new String[128];
-    healthcareExpensesYearly = new HashMap<Integer, Double>();
-    healthcareCoverageYearly = new HashMap<Integer, Double>();
+    annualHealthExpenses = new HashMap<Integer, Double>();
+    annualHealthCoverage = new HashMap<Integer, Double>();
   }
 
   /**
@@ -445,22 +457,22 @@ public class Person implements Serializable, QuadTreeData {
   }
 
   /**
-   * Returns the current healthrecord based on the provider. If the person has no more remaining
-   * income, Uncovered Helath Record is returned.
+   * Returns the current HealthRecord based on the provider. If the person has no more remaining
+   * income, Uncovered HealthRecord is returned.
    * 
    * @param provider the provider of the encounter
    * @param time the current time (To determine person's current income and payer)
    */
-  public synchronized HealthRecord getHealthRecord(Provider provider, long time) {
+  private synchronized HealthRecord getHealthRecord(Provider provider, long time) {
 
     // If the person has no more income at this time, then operate on the UncoveredHealthRecord.
     // Note: If person has no more income then they can no longer afford copays/premiums/etc.
-    // meaning we can gaurantee that they currently have no insurance.
-    if (!this.stillHasIncome(time)) {
-      return this.lossOfCareHealthRecord;
+    // meaning we can guarantee that they currently have no insurance.
+    if (lossOfCareEnabled && !this.stillHasIncome(time)) {
+      return this.lossOfCareRecord;
     }
 
-    HealthRecord returnValue = this.coveredHealthRecord;
+    HealthRecord returnValue = this.defaultRecord;
     if (hasMultipleRecords) {
       String key = provider.uuid;
       if (!records.containsKey(key)) {
@@ -712,8 +724,8 @@ public class Person implements Serializable, QuadTreeData {
   private boolean stillHasIncome(long time) {
 
     double currentYearlyExpenses;
-    if (this.healthcareExpensesYearly.containsKey(this.ageInYears(time))) {
-      currentYearlyExpenses = this.healthcareExpensesYearly.get(this.ageInYears(time));
+    if (this.annualHealthExpenses.containsKey(this.ageInYears(time))) {
+      currentYearlyExpenses = this.annualHealthExpenses.get(this.ageInYears(time));
     } else {
       currentYearlyExpenses = 0.0;
     }
@@ -774,7 +786,7 @@ public class Person implements Serializable, QuadTreeData {
    */
   public void addExpense(double costToPatient, long time) {
     int age = this.ageInYears(time);
-    healthcareExpensesYearly.merge(age, costToPatient, Double::sum);
+    annualHealthExpenses.merge(age, costToPatient, Double::sum);
   }
 
   /**
@@ -785,21 +797,21 @@ public class Person implements Serializable, QuadTreeData {
    */
   public void addCoverage(double payerCoverage, long time) {
     int age = this.ageInYears(time);
-    healthcareCoverageYearly.merge(age, payerCoverage, Double::sum);
+    annualHealthCoverage.merge(age, payerCoverage, Double::sum);
   }
 
   /**
    * Returns the total healthcare expenses for this person.
    */
   public double getHealthcareExpenses() {
-    return healthcareExpensesYearly.values().stream().mapToDouble(Double::doubleValue).sum();
+    return annualHealthExpenses.values().stream().mapToDouble(Double::doubleValue).sum();
   }
 
   /**
    * Returns the total healthcare coverage for this person.
    */
   public double getHealthcareCoverage() {
-    return healthcareCoverageYearly.values().stream().mapToDouble(Double::doubleValue).sum();
+    return annualHealthCoverage.values().stream().mapToDouble(Double::doubleValue).sum();
   }
 
   @SuppressWarnings("unchecked")

@@ -48,7 +48,7 @@ public class QualityOfLifeTest {
     // |---|-----|-----|-----|-----|-----|-----|
     // 0   5     10    15    20    25    30   35
 
-    person.record = person.coveredHealthRecord;
+    person.record = person.defaultRecord;
 
     // ADD starts
     Entry addCondition = person.record.conditionStart(
