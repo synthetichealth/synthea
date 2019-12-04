@@ -14,7 +14,7 @@ import org.mitre.synthea.helpers.Utilities;
  */
 public class GrowthChart {
   public enum ChartType {
-    HEIGHT, WEIGHT, BMI
+    HEIGHT, WEIGHT, BMI, HEAD
   }
 
   private ChartType chartType;
@@ -143,7 +143,10 @@ public class GrowthChart {
           new GrowthChart(ChartType.HEIGHT, (Map) allCharts.get("height")));
       returnMap.put(ChartType.WEIGHT,
           new GrowthChart(ChartType.WEIGHT, (Map) allCharts.get("weight")));
-      returnMap.put(ChartType.BMI, new GrowthChart(ChartType.BMI, (Map) allCharts.get("bmi")));
+      returnMap.put(ChartType.BMI,
+          new GrowthChart(ChartType.BMI, (Map) allCharts.get("bmi")));
+      returnMap.put(ChartType.HEAD,
+          new GrowthChart(ChartType.HEAD, (Map) allCharts.get("head")));
       return returnMap;
     } catch (Exception e) {
       System.err.println("ERROR: unable to load json: " + filename);

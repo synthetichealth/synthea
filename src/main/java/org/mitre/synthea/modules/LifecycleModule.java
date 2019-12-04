@@ -31,7 +31,6 @@ import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
 
 public final class LifecycleModule extends Module {
-  @SuppressWarnings("rawtypes")
   private static final Map<GrowthChart.ChartType, GrowthChart> growthChart =
       GrowthChart.loadCharts();
   private static final List<LinkedHashMap<String, String>> weightForLengthChart =
@@ -450,6 +449,9 @@ public final class LifecycleModule extends Module {
 
     if (age <= 3) {
       setCurrentWeightForLengthPercentile(person, time);
+
+      double headCircumference = childHeadCircumference(person, time);
+      person.setVitalSign(VitalSign.HEAD, headCircumference);
     }
 
     if (age >= 2 && age < 20) {
@@ -464,6 +466,13 @@ public final class LifecycleModule extends Module {
     String gender = (String) person.attributes.get(Person.GENDER);
     int ageInMonths = person.ageInMonths(time);
     return lookupGrowthChart("height", gender, ageInMonths,
+        person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+  }
+
+  private static double childHeadCircumference(Person person, long time) {
+    String gender = (String) person.attributes.get(Person.GENDER);
+    int ageInMonths = person.ageInMonths(time);
+    return lookupGrowthChart("head", gender, ageInMonths,
         person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
   }
 
@@ -501,15 +510,15 @@ public final class LifecycleModule extends Module {
    * <p>Note: BMI values only available for ageInMonths 24 - 240 as BMI is
    * not typically useful in patients under 24 months.</p>
    *
-   * @param heightWeightOrBMI "height" | "weight" | "bmi"
+   * @param chartType "height" | "weight" | "bmi" | "head"
    * @param gender "M" | "F"
    * @param ageInMonths 0 - 240
    * @param percentile 0.0 - 1.0
-   * @return The height (cm) or weight (kg)
+   * @return The height (cm), weight (kg), bmi (%), or head (cm)
    */
-  public static double lookupGrowthChart(String heightWeightOrBMI, String gender, int ageInMonths,
+  public static double lookupGrowthChart(String chartType, String gender, int ageInMonths,
       double percentile) {
-    switch (heightWeightOrBMI) {
+    switch (chartType) {
       case "height":
         return growthChart.get(GrowthChart.ChartType.HEIGHT).lookUp(ageInMonths,
             gender, percentile);
@@ -518,8 +527,10 @@ public final class LifecycleModule extends Module {
             gender, percentile);
       case "bmi":
         return growthChart.get(GrowthChart.ChartType.BMI).lookUp(ageInMonths, gender, percentile);
+      case "head":
+        return growthChart.get(GrowthChart.ChartType.HEAD).lookUp(ageInMonths, gender, percentile);
       default:
-        throw new IllegalArgumentException("Unknown chart type: " + heightWeightOrBMI);
+        throw new IllegalArgumentException("Unknown chart type: " + chartType);
     }
   }
 

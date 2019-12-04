@@ -792,6 +792,19 @@
         }
       ],
       "attribute": "current_weight_length_percentile",
+      "direct_transition": "Record Head Circumference"
+    },
+    "Record Head Circumference": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "cm",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "9843-4",
+          "display": "Head Occipital-frontal circumference"
+        }
+      ],
       "conditional_transition": [
         {
           "transition": "Record_BMI",
@@ -805,7 +818,8 @@
         {
           "transition": "Record_BP"
         }
-      ]
+      ],
+      "vital_sign": "Head Circumference"
     }
   }
 }
