@@ -23,7 +23,11 @@ import org.mitre.synthea.export.CDWExporter;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.TransitionMetrics;
-import org.mitre.synthea.modules.*;
+import org.mitre.synthea.modules.DeathModule;
+import org.mitre.synthea.modules.EncounterModule;
+import org.mitre.synthea.modules.GrowthDataErrorsModule;
+import org.mitre.synthea.modules.HealthInsuranceModule;
+import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -233,7 +237,7 @@ public class Generator {
     }
 
     if (Boolean.parseBoolean(
-        Config.get("growtherrors.enable", "false"))) {
+        Config.get("growtherrors", "false"))) {
       HealthRecordModules hrm = HealthRecordModules.getInstance();
       hrm.registerModule(new GrowthDataErrorsModule());
     }

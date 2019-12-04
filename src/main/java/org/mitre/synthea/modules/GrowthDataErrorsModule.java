@@ -27,6 +27,11 @@ import org.mitre.synthea.world.concepts.HealthRecord;
  * </p>
  */
 public class GrowthDataErrorsModule implements HealthRecordModule {
+
+  public static final String HEIGHT_LOINC_CODE = "8302-2";
+  public static final String WEIGHT_LOINC_CODE = "29463-7";
+  public static final String BMI_LOINC_CODE = "39156-5";
+
   public GrowthDataErrorsModule() { }
 
   public static int MAX_AGE = 20;
@@ -332,15 +337,15 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
   }
 
   private static HealthRecord.Observation weightObservation(HealthRecord.Encounter encounter) {
-    return findObservation(encounter, "29463-7");
+    return findObservation(encounter, WEIGHT_LOINC_CODE);
   }
 
   private static HealthRecord.Observation heightObservation(HealthRecord.Encounter encounter) {
-    return findObservation(encounter, "8302-2");
+    return findObservation(encounter, HEIGHT_LOINC_CODE);
   }
 
   private static HealthRecord.Observation bmiObservation(HealthRecord.Encounter encounter) {
-    return findObservation(encounter, "39156-5");
+    return findObservation(encounter, BMI_LOINC_CODE);
   }
 
   private static HealthRecord.Observation findObservation(HealthRecord.Encounter encounter,
