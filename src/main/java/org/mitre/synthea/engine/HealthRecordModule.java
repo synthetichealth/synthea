@@ -7,7 +7,7 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
 /**
- * The HealthRecordModule offers an interface that can be implemented to modify a Sythea Person's
+ * The HealthRecordModule offers an interface that can be implemented to modify a Synthea Person's
  * HealthRecord. At the end of every time step in the simulation, the Synthea framework will invoke
  * the shouldRun method. If the shouldRun function returns true, the framework will then invoke
  * the process method. The process method will be passed any encounters that were created in the
