@@ -237,7 +237,14 @@ public abstract class Logic {
       } else if (operator.equals("is not nil")) {
         return observation != null;
       } else if (observation == null) {
-        throw new NullPointerException("Required observation is null.");
+        if (this.codes != null) {
+          throw new NullPointerException("Required observation " + this.codes + " is null.");
+        } else if (this.referencedByAttribute != null) {
+          throw new NullPointerException("Required observation \""
+              + this.referencedByAttribute + "\" is null.");
+        } else {
+          throw new NullPointerException("Required observation is null.");
+        }
       } else {
         return Utilities.compare(observation.value, this.value, operator);
       }

@@ -6,7 +6,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.PhysiologyValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -78,7 +77,13 @@ public class LifecycleModuleTest {
 //    long end = System.currentTimeMillis();
 //    System.out.println("Time to complete: " + (end - start));
   }
-  
+
+  @Test
+  public void lookupHeadCircumference() {
+    double head = LifecycleModule.lookupGrowthChart("head", "F", 36, 0.9);
+    Assert.assertEquals(50.57, head, 0.01);
+  }
+
   @Test
   public void testPhysiologyEnabled() {
     boolean enablePhysiology = LifecycleModule.ENABLE_PHYSIOLOGY_GENERATORS;

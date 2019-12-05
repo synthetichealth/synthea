@@ -208,6 +208,7 @@ public final class LifecycleModule extends Module {
         (double) mother.attributes.get(BirthStatistics.BIRTH_HEIGHT)); // cm
     person.setVitalSign(VitalSign.WEIGHT,
         (double) mother.attributes.get(BirthStatistics.BIRTH_WEIGHT)); // kg
+    person.setVitalSign(VitalSign.HEAD, childHeadCircumference(person, time)); // cm
 
     attributes.put(AGE, 0);
     attributes.put(AGE_MONTHS, 0);
@@ -434,11 +435,13 @@ public final class LifecycleModule extends Module {
 
   private static void grow(Person person, long time) {
     int age = person.ageInYears(time);
+    int ageInMonths = 0; // we only need this if they are less than 20 years old.
 
     double height = person.getVitalSign(VitalSign.HEIGHT, time);
 
     if (age < 20) {
       height = childHeightGrowth(person, time);
+      ageInMonths = person.ageInMonths(time);
     }
     double weight = adjustWeight(person, time);
 
@@ -450,12 +453,13 @@ public final class LifecycleModule extends Module {
     if (age <= 3) {
       setCurrentWeightForLengthPercentile(person, time);
 
-      double headCircumference = childHeadCircumference(person, time);
-      person.setVitalSign(VitalSign.HEAD, headCircumference);
+      if (ageInMonths <= 36) {
+        double headCircumference = childHeadCircumference(person, time);
+        person.setVitalSign(VitalSign.HEAD, headCircumference);
+      }
     }
 
     if (age >= 2 && age < 20) {
-      int ageInMonths = person.ageInMonths(time);
       String gender = (String) person.attributes.get(Person.GENDER);
       double percentile = percentileForBMI(bmi, gender, ageInMonths);
       person.attributes.put(Person.BMI_PERCENTILE, percentile * 100.0);

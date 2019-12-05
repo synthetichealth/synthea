@@ -349,8 +349,8 @@
                 "codes": [
                   {
                     "system": "LOINC",
-                    "code": "8331-1",
-                    "display": "Oral temperature"
+                    "code": "8310-5",
+                    "display": "Body temperature"
                   }
                 ],
                 "operator": ">",
@@ -400,8 +400,8 @@
                 "codes": [
                   {
                     "system": "LOINC",
-                    "code": "8331-1",
-                    "display": "Oral temperature"
+                    "code": "8310-5",
+                    "display": "Body temperature"
                   }
                 ],
                 "operator": ">",

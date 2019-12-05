@@ -28,8 +28,8 @@ public class GrowthChart {
    */
   public GrowthChart(ChartType chartType, Map<String, Map<String, Map<String, String>>> rawChart) {
     this.chartType = chartType;
-    this.maleEntries = new HashMap();
-    this.femaleEntries = new HashMap();
+    this.maleEntries = new HashMap<Integer, GrowthChartEntry>();
+    this.femaleEntries = new HashMap<Integer, GrowthChartEntry>();
     Map<String, Map<String, String>> maleValues = rawChart.get("M");
     maleValues.keySet().forEach(ageMonth -> {
       Map<String, String> percentileInfo = maleValues.get(ageMonth);
@@ -39,7 +39,7 @@ public class GrowthChart {
       maleEntries.put(Integer.parseInt(ageMonth), entry);
     });
     this.chartType = chartType;
-    Map<String, Map<String, String>> femaleValues = rawChart.get("M");
+    Map<String, Map<String, String>> femaleValues = rawChart.get("F");
     femaleValues.keySet().forEach(ageMonth -> {
       Map<String, String> percentileInfo = femaleValues.get(ageMonth);
       GrowthChartEntry entry = new GrowthChartEntry(Double.parseDouble(percentileInfo.get("l")),
@@ -65,6 +65,11 @@ public class GrowthChart {
       entry = maleEntries.get(ageInMonths);
     } else {
       entry = femaleEntries.get(ageInMonths);
+    }
+    if (entry == null) {
+      throw new RuntimeException(
+          "GrowthChart \"" + chartType + "\" does not have data for ageInMonths=" + ageInMonths
+          + ", gender=" + gender + ", percentile=" + percentile);
     }
     return entry.lookUp(percentile);
   }
@@ -138,7 +143,7 @@ public class GrowthChart {
       String json = Utilities.readResource(filename);
       Gson g = new Gson();
       HashMap allCharts = g.fromJson(json, HashMap.class);
-      HashMap<ChartType, GrowthChart> returnMap = new HashMap();
+      HashMap<ChartType, GrowthChart> returnMap = new HashMap<ChartType, GrowthChart>();
       returnMap.put(ChartType.HEIGHT,
           new GrowthChart(ChartType.HEIGHT, (Map) allCharts.get("height")));
       returnMap.put(ChartType.WEIGHT,
