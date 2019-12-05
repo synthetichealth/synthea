@@ -91,7 +91,7 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
   public void process(Person person, List<HealthRecord.Encounter> encounters, long time,
                       Random random) {
     List<HealthRecord.Encounter> encountersWithWeights =
-        encountersWithObservationsOfCode(encounters, "29463-7", "LOINC");
+        encountersWithObservationsOfCode(encounters, WEIGHT_LOINC_CODE, "LOINC");
     encountersWithWeights.forEach(e -> {
       if (random.nextDouble() <= config.weightUnitErrorRate) {
         introduceWeightUnitError(e);
@@ -120,7 +120,7 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
     });
 
     List<HealthRecord.Encounter> encountersWithHeights =
-        encountersWithObservationsOfCode(encounters, "8302-2", "LOINC");
+        encountersWithObservationsOfCode(encounters, HEIGHT_LOINC_CODE, "LOINC");
     encountersWithHeights.forEach(e -> {
       if (random.nextDouble() <= config.heightUnitErrorRate) {
         introduceHeightUnitError(e);
@@ -218,7 +218,7 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
       // If there is no existing height observation, change the weight observation into a height
       // one
       wtObs.unit = "cm";
-      wtObs.codes.get(0).code = "8302-2";
+      wtObs.codes.get(0).code = HEIGHT_LOINC_CODE;
     } else {
       Object wtValue = wtObs.value;
       Object htValue = htObs.value;
@@ -239,7 +239,7 @@ public class GrowthDataErrorsModule implements HealthRecordModule {
       // If there is no existing weight observation, change the height observation into a weight
       // one
       htObs.unit = "kg";
-      htObs.codes.get(0).code = "29463-7";
+      htObs.codes.get(0).code = WEIGHT_LOINC_CODE;
     } else {
       Object wtValue = wtObs.value;
       Object htValue = htObs.value;
