@@ -1,5 +1,11 @@
 package org.mitre.synthea.engine;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.mitre.synthea.helpers.TimeSeriesData;
+import org.mitre.synthea.world.agents.Person;
+
 /**
  * Various components used in the generic module framework.
  * All components should be defined within this class.
@@ -79,6 +85,51 @@ public abstract class Components {
     public int minute;
     public int second;
     public int millisecond;
+  }
+  
+  public static class SampledData {
+    public double originValue; // Zero value
+    public double factor; // Multiply data by this before adding to origin
+    public double lowerLimit; // Lower limit of detection
+    public double upperLimit; // Upper limit of detection
+    public List<String> timeSeriesAttributes; // Person attributes containing TimeSeriesData objects
+    public transient List<TimeSeriesData> dataLists; // List of actual series data collections
+    
+    // Format for the output decimal numbers
+    // See https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html
+    public String decimalFormat;
+    
+    /**
+     * Retrieves the actual data lists from the given Person according to
+     * the provided timeSeriesAttributes values.
+     * @param person Person to get time series data from
+     */
+    public void setDataLists(Person person) {
+      int dataLen = 0;
+      double dataPeriod = 0;
+      for (String attr : timeSeriesAttributes) {
+        TimeSeriesData data = (TimeSeriesData) person.attributes.get(attr);
+        if (dataLen == 0) {
+          dataLen = data.getValues().size();
+          dataPeriod = data.getPeriod();
+        } else {
+          // Verify that each series is consistent in length
+          if (data.getValues().size() != dataLen) {
+            throw new IllegalArgumentException("Provided series ["
+                + StringUtils.join(timeSeriesAttributes, ", ")
+                + "] have inconsistent lengths!");
+          }
+          
+          // Verify that each series has identical period
+          if (data.getPeriod() != dataPeriod) {
+            throw new IllegalArgumentException("Provided series ["
+                + StringUtils.join(timeSeriesAttributes, ", ")
+                + "] have inconsistent periods!");
+          }
+        }
+        dataLists.add(data);
+      }
+    }
   }
 
 }

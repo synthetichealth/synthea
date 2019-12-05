@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -106,6 +107,7 @@ import org.hl7.fhir.dstu3.model.Timing.UnitsOfTime;
 import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
+import org.mitre.synthea.engine.Components;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -1666,6 +1668,56 @@ public class FhirStu3 {
       throw new IllegalArgumentException("unexpected observation value class: "
           + value.getClass().toString() + "; " + value);
     }
+  }
+  
+  /**
+   * Maps a Synthea internal SampledData object to the FHIR standard SampledData
+   * representation.
+   * 
+   * @param value Synthea internal SampledData instance
+   * @param unit Observation unit value
+   * @return
+   */
+  static org.hl7.fhir.dstu3.model.SampledData mapValueToSampledData(
+      Components.SampledData value, String unit) {
+    
+    org.hl7.fhir.dstu3.model.SampledData recordData = new org.hl7.fhir.dstu3.model.SampledData();
+    
+    SimpleQuantity origin = new SimpleQuantity();
+    origin.setValue(new BigDecimal(value.originValue))
+      .setCode(unit).setSystem(UNITSOFMEASURE_URI)
+      .setUnit(unit);
+    
+    recordData.setOrigin(origin);
+    
+    recordData.setPeriod(value.dataLists.get(0).getPeriod());
+    recordData.setFactor(value.factor);
+    recordData.setLowerLimit(value.lowerLimit);
+    recordData.setUpperLimit(value.upperLimit);
+    recordData.setDimensions(value.dataLists.size());
+    
+    int numSamples = value.dataLists.get(0).getValues().size();
+    
+    DecimalFormat df;
+    
+    if (value.decimalFormat != null) {
+      df = new DecimalFormat(value.decimalFormat);
+    } else {
+      df = new DecimalFormat();
+    }
+    
+    // Build the data string from all list values
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < numSamples; i++) {
+      for (double num : value.dataLists.get(i).getValues()) {
+        sb.append(df.format(num));
+        sb.append(" ");
+      }
+    }
+    
+    recordData.setData(sb.toString());
+    
+    return recordData;
   }
 
   /**
