@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.cqframework.cql.cql2elm.CqlSemanticException;
 import org.mitre.synthea.helpers.ExpressionProcessor;
+import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.simulator.math.odes.MultiTable;
@@ -199,12 +200,13 @@ public class IoMapper {
             + "\" cannot be mapped to patient value \"" + to + "\"");
       }
       
-      // Make it an ArrayList for more natural usage throughout the rest of the application
-      List<Double> valueList = new ArrayList<Double>();
-      col.iterator().forEachRemaining(valueList::add);
+      // Make it a SampledValueList, which is just an ArrayList with sample frequency information
+      TimeSeriesData seriesData = new TimeSeriesData(results.getRowCount(),
+          results.getTimePoint(1) - results.getTimePoint(0));
+      col.iterator().forEachRemaining(seriesData::addValue);
       
-      // Return the list
-      return valueList;
+      // Return the sampled values
+      return seriesData;
     } else {
       // Result is the last value of the requested parameter
       int lastRow = results.getRowCount() - 1;
