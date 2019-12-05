@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
 import org.mitre.synthea.modules.DeathModule;
@@ -1670,7 +1671,7 @@ public class StateTest {
     assertTrue(person.attributes.containsKey("Final Aortal Volume"));
     
     // The "Arterial Pressure Values" attribute should have been set to a list
-    assertTrue(person.attributes.get("Arterial Pressure Values") instanceof List);
+    assertTrue(person.attributes.get("Arterial Pressure Values") instanceof TimeSeriesData);
     
     // LVEF should be diminished and BP should be elevated
     assertTrue("LVEF < 59%", (double) person.attributes.get("LVEF") < 60.0);
