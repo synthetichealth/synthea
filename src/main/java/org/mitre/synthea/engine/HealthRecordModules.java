@@ -52,14 +52,16 @@ public class HealthRecordModules {
    * @param random The source of randomness that modules should use
    */
   public void executeAll(Person person, HealthRecord record, long time, long step, Random random) {
-    long start = time - step;
-    List<HealthRecord.Encounter> encountersThisStep = record.encounters.stream()
-        .filter(e -> e.start >= start)
-        .collect(Collectors.toList());
-    this.registeredModules.forEach(m -> {
-      if (m.shouldRun(person, record, time)) {
-        m.process(person, encountersThisStep, time, random);
-      }
-    });
+    if (this.registeredModules.size() > 0) {
+      long start = time - step;
+      List<HealthRecord.Encounter> encountersThisStep = record.encounters.stream()
+          .filter(e -> e.start >= start)
+          .collect(Collectors.toList());
+      this.registeredModules.forEach(m -> {
+        if (m.shouldRun(person, record, time)) {
+          m.process(person, encountersThisStep, time, random);
+        }
+      });
+    }
   }
 }
