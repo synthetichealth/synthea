@@ -1,46 +1,25 @@
 
 # Data and charts will be placed in output/physiology/{name}/
 # Data file will always be output/physiology/{name}/{name}.csv
-name: ECG
+name: kidneys
 
 # Name of the model file
-model: circulation/McSharry2003_Synthetic_ECG.xml
+model: kidneys/Hallow2017_Renal_Function.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
 solver: runge_kutta
 
 # Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
-stepSize: 0.01
+stepSize: 0.001
 
 # Simulation duration in seconds
 duration: 10
 
 # Model parameter inputs. Any unspecified parameters will use the model's default value.
-inputs:
-    hrmean: 100
-    arr_t0: -1.0
-    arr_t1: -0.75
-    arr_base: 1
-    rng_seed: 0.54345
-    e_variance: 1
-    ai_P: 1
-    ai_T: 1
-    noise_amp: 0.008
-    #vfib_start: 5
-    #vfib_end: 10
+#inputs:
 
 # What charts to draw. Results will be plotted on PNG images.
 # Note that chart support is a convenience feature and many chart options cannot be manipulated here.
 # If you need more control over the chart, import the csv file into another program with that capability.
-charts:
-    - filename: ecg.png
-      type: line
-      title: "ECG: AFib"
-      axisParamX: time
-      axisLabelX: time (s)
-      axisLabelY: Current (A)
-      lowerBoundY: -0.05
-      upperBoundY: 0.15
-      series:
-        - param: zf
+#charts:

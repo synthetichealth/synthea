@@ -1,0 +1,4616 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" level="3" version="1">
+  <model name="Hallow2017_Renal_Function" id="Hallow2017_Renal_Function" metaid="metaid_0000002">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p>This a model from the article:      <br/>
+                <strong>A quantitative systems physiology model of renal function and blood pressure regulation: Model description</strong>
+                <br/>
+          Hallow, K. M., and Y. Gebremichael.      <em>CPT: pharmacometrics and systems pharmacology</em>
+          2017 Jun;6(6):383-92.      <a href="http://www.ncbi.nlm.nih.gov/pubmed/PMC5488122">PMC5488122</a>
+          ,      <br/>
+                <strong>Abstract:</strong>
+                <br/>
+          Renal function plays a central role in cardiovascular, kidney, and multiple other diseases, and many existing and novel therapies act through renal mechanisms. Even with decades of accumulated knowledge of renal physiology, pathophysiology, and pharmacology, the dynamics of renal function remain difficult to understand and predict, often resulting in unexpected or counterintuitive therapy responses. Quantitative systems pharmacology modeling of renal function integrates this accumulated knowledge into a quantitative framework, allowing evaluation of competing hypotheses, identification of knowledge gaps, and generation of new experimentally testable hypotheses. Here we present a model of renal physiology and control mechanisms involved in maintaining sodium and water homeostasis. This model represents the core renal physiological processes involved in many research questions in drug development. The model runs in R and the code is made available. In a companion article, we present a case study using the model to explore mechanisms and pharmacology of salt‐sensitive hypertension.      </p>
+            <p>This model has been manually implemented in SBML based on the open-source R source code from      <a href="https://github.com/hallowkm/RenalModel">GitHub</a>
+                <br/>
+          Conversion to SBML completed by:      <br/>
+                <strong>Sivek, Ryan T.</strong>
+                <br/>
+          rsivek@mitre.org      <br/>
+          The MITRE Corporation      <br/>
+                <br/>
+          in support of the      <a href="https://synthetichealth.github.io/synthea/">Synthea</a>
+          project      <br/>
+                </p>
+            </body>
+      
+    </notes>
+    <annotation>
+<COPASI xmlns="http://www.copasi.org/static/sbml">
+        <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+          <rdf:Description rdf:about="#COPASI38">
+            <dcterms:created>
+              <rdf:Description>
+                <dcterms:W3CDTF>2019-07-26T15:19:16Z</dcterms:W3CDTF>
+              </rdf:Description>
+            </dcterms:created>
+          </rdf:Description>
+        </rdf:RDF>
+      </COPASI>
+                                    </annotation>
+      <listOfCompartments>
+      <compartment id="COMpartment" units="litre" size="1"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter name="nL_mL" constant="true" id="nL_mL" value="1000000"/>
+      <parameter constant="true" id="dl_ml" value="0.01"/>
+      <parameter constant="true" id="L_dL" value="10"/>
+      <parameter constant="true" id="L_mL" value="1000"/>
+      <parameter constant="true" id="L_m3" value="0.001"/>
+      <parameter constant="true" id="g_mg" value="0.001"/>
+      <parameter constant="true" id="ng_mg" value="1E-6"/>
+      <parameter constant="true" id="secs_mins" value="60"/>
+      <parameter constant="true" id="min_hr" value="60"/>
+      <parameter constant="true" id="hr_day" value="24"/>
+      <parameter constant="true" id="min_day" value="1440"/>
+      <parameter constant="true" id="MW_creatinine" value="113.12"/>
+      <parameter constant="true" id="viscosity_length_constant" value="1.5E-9"/>
+      <parameter constant="true" id="gamma" value="1.16667E-5">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        viscosity of tubular fluid</p>
+          
+        </notes>
+</parameter>
+      <parameter constant="true" id="mmHg_Nperm2_conv" value="133.32"/>
+      <parameter constant="false" id="nominal_map_setpoint" value="93"/>
+      <parameter constant="false" id="CO_nom" value="5"/>
+      <parameter constant="false" id="ECF_nom" value="15"/>
+      <parameter constant="false" id="blood_volume_nom" value="5"/>
+      <parameter constant="false" id="Na_intake_rate" value="0.06944444444"/>
+      <parameter constant="false" id="nom_water_intake" value="2.1"/>
+      <parameter constant="false" id="ref_Na_concentration" value="140"/>
+      <parameter constant="false" id="plasma_protein_concentration" value="7"/>
+      <parameter constant="false" id="equilibrium_serum_creatinine" value="0.92"/>
+      <parameter constant="false" id="P_venous" value="4"/>
+      <parameter constant="false" id="R_venous" value="3.4"/>
+      <parameter constant="false" id="nom_right_atrial_pressure" value="0.87"/>
+      <parameter constant="false" id="nom_mean_filling_pressure" value="7"/>
+      <parameter constant="false" id="venous_compliance" value="0.13"/>
+      <parameter constant="false" id="nom_renal_blood_flow_L_min" value="1"/>
+      <parameter constant="false" id="baseline_nephrons" value="2000000"/>
+      <parameter constant="false" id="nom_Kf" value="3.9"/>
+      <parameter constant="false" id="nom_oncotic_pressure_difference" value="28"/>
+      <parameter constant="false" id="P_renal_vein" value="4"/>
+      <parameter constant="false" id="nom_preafferent_arteriole_resistance" value="19"/>
+      <parameter constant="false" id="nom_afferent_diameter" value="1.5E-5"/>
+      <parameter constant="false" id="nom_efferent_diameter" value="1.1E-5"/>
+      <parameter constant="false" id="Dc_pt_nom" value="2.7E-5"/>
+      <parameter constant="false" id="Dc_lh" value="1.7E-5"/>
+      <parameter constant="false" id="Dc_dt" value="1.7E-5"/>
+      <parameter constant="false" id="Dc_cd" value="2.2E-5"/>
+      <parameter constant="false" id="L_pt_s1_nom" value="0.005"/>
+      <parameter constant="false" id="L_pt_s2_nom" value="0.005"/>
+      <parameter constant="false" id="L_pt_s3_nom" value="0.004"/>
+      <parameter constant="false" id="L_lh_des" value="0.01"/>
+      <parameter constant="false" id="L_lh_asc" value="0.01"/>
+      <parameter constant="false" id="L_dct" value="0.005"/>
+      <parameter constant="false" id="L_cd" value="0.01"/>
+      <parameter constant="false" id="tubular_compliance" value="0.2"/>
+      <parameter constant="false" id="Pc_pt_mmHg" value="14"/>
+      <parameter constant="false" id="Pc_lh_des_mmHg" value="10.5"/>
+      <parameter constant="false" id="Pc_lh_asc_mmHg" value="7"/>
+      <parameter constant="false" id="Pc_dt_mmHg" value="3"/>
+      <parameter constant="false" id="Pc_cd_mmHg" value="2"/>
+      <parameter constant="false" id="P_interstitial_mmHg" value="5"/>
+      <parameter constant="false" id="nominal_pt_na_reabsorption" value="0.7"/>
+      <parameter constant="false" id="nominal_loh_na_reabsorption" value="0.8"/>
+      <parameter constant="false" id="nominal_dt_na_reabsorption" value="0.5"/>
+      <parameter constant="false" id="LoH_flow_dependence" value="1"/>
+      <parameter constant="false" id="concentration_to_renin_activity_conversion_plasma" value="61"/>
+      <parameter constant="false" id="nominal_equilibrium_PRA" value="1000"/>
+      <parameter constant="false" id="nominal_equilibrium_AngI" value="7.5"/>
+      <parameter constant="false" id="nominal_equilibrium_AngII" value="4.75"/>
+      <parameter constant="false" id="nominal_renin_half_life" value="0.1733"/>
+      <parameter constant="false" id="nominal_AngI_half_life" value="0.0083333333333"/>
+      <parameter constant="false" id="nominal_AngII_half_life" value="0.011"/>
+      <parameter constant="false" id="nominal_AT1_bound_AngII_half_life" value="0.2"/>
+      <parameter constant="false" id="nominal_AT2_bound_AngII_half_life" value="0.2"/>
+      <parameter constant="false" id="ACE_chymase_fraction" value="0.95">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        % of AngI converted by ACE. The rest is converted by chymase</p>
+          
+        </notes>
+</parameter>
+      <parameter constant="false" id="fraction_AT1_bound_AngII" value="0.75">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        assume AngII preferentially binds to AT1 vs AT2</p>
+          
+        </notes>
+</parameter>
+      <parameter constant="false" id="AT1_svr_slope" value="0"/>
+      <parameter constant="false" id="AT1_preaff_scale" value="0.5"/>
+      <parameter constant="false" id="AT1_preaff_slope" value="7"/>
+      <parameter constant="false" id="AT1_aff_scale" value="0.5"/>
+      <parameter constant="false" id="AT1_aff_slope" value="7"/>
+      <parameter constant="false" id="AT1_eff_scale" value="0.3"/>
+      <parameter constant="false" id="AT1_eff_slope" value="7"/>
+      <parameter constant="false" id="AT1_PT_scale" value="0.1"/>
+      <parameter constant="false" id="AT1_PT_slope" value="7"/>
+      <parameter constant="false" id="AT1_aldo_slope" value="0.05"/>
+      <parameter constant="false" id="nominal_aldosterone_concentration" value="85"/>
+      <parameter constant="false" id="aldo_DCT_scale" value="0"/>
+      <parameter constant="false" id="aldo_DCT_slope" value="0.5"/>
+      <parameter constant="false" id="aldo_CD_scale" value="0.3"/>
+      <parameter constant="false" id="aldo_CD_slope" value="0.5"/>
+      <parameter constant="false" id="aldo_renin_slope" value="-0.05"/>
+      <parameter constant="false" id="Q_water" value="1">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Na transfer between blood, ECF</p>
+          
+        </notes>
+</parameter>
+      <parameter constant="false" id="Q_Na" value="1">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        water transfer between blood, ECF</p>
+          
+        </notes>
+</parameter>
+      <parameter constant="false" id="Na_controller_gain" value="2"/>
+      <parameter constant="false" id="Kp_VP" value="0.05"/>
+      <parameter constant="false" id="Ki_VP" value="2E-5"/>
+      <parameter constant="false" id="nom_ADH_urea_permeability" value="0.98"/>
+      <parameter constant="false" id="nom_ADH_water_permeability" value="0.98"/>
+      <parameter constant="false" id="nominal_vasopressin_conc" value="4"/>
+      <parameter constant="false" id="water_intake_vasopressin_scale" value="0"/>
+      <parameter constant="false" id="water_intake_vasopressin_slope" value="-0.5"/>
+      <parameter constant="false" id="S_tubulo_glomerular_feedback" value="0.7"/>
+      <parameter constant="false" id="F_md_scale_tubulo_glomerular_feedback" value="6"/>
+      <parameter constant="false" id="MD_Na_concentration_setpoint" value="62.4"/>
+      <parameter constant="false" id="md_renin_A" value="1"/>
+      <parameter constant="false" id="md_renin_tau" value="2"/>
+      <parameter constant="false" id="preaff_diameter_range" value="0.25"/>
+      <parameter constant="false" id="afferent_diameter_range" value="1.2E-5"/>
+      <parameter constant="false" id="efferent_diameter_range" value="3E-6"/>
+      <parameter constant="false" id="preaff_signal_nonlin_scale" value="3"/>
+      <parameter constant="false" id="afferent_signal_nonlin_scale" value="3"/>
+      <parameter constant="false" id="efferent_signal_nonlin_scale" value="3"/>
+      <parameter constant="false" id="AngI_half_life" value="0.008333"/>
+      <parameter constant="false" id="AngII_half_life" value="0.011"/>
+      <parameter constant="false" id="AT1_bound_AngII_half_life" value="0.2"/>
+      <parameter constant="false" id="AT1_PRC_slope" value="-1.2"/>
+      <parameter constant="false" id="AT1_PRC_yint" value="0"/>
+      <parameter constant="false" id="AT2_bound_AngII_half_life" value="0.2"/>
+      <parameter constant="false" id="nominal_ACE_activity" value="48.9"/>
+      <parameter constant="false" id="nominal_AT1_receptor_binding_rate" value="12.1"/>
+      <parameter constant="false" id="nominal_AT2_receptor_binding_rate" value="4"/>
+      <parameter constant="false" id="nominal_chymase_activity" value="1.25"/>
+      <parameter constant="false" id="nominal_equilibrium_AT1_bound_AngII" value="16.63"/>
+      <parameter constant="false" id="nominal_equilibrium_PRC" value="16.4"/>
+      <parameter constant="false" id="renin_half_life" value="0.1733"/>
+      <parameter constant="false" id="C_aldo_secretion" value="1000"/>
+      <parameter constant="false" id="C_P_bowmans" value="1000"/>
+      <parameter constant="false" id="C_P_oncotic" value="1000"/>
+      <parameter constant="false" id="C_tgf_reset" value="0"/>
+      <parameter constant="false" id="C_cardiac_output_delayed" value="0.001"/>
+      <parameter constant="false" id="C_co_error" value="1E-5"/>
+      <parameter constant="false" id="C_vasopressin_delay" value="1"/>
+      <parameter constant="false" id="C_md_flow" value="0.001">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Time delay between MD sodium flow and renin secretion</p>
+          
+        </notes>
+</parameter>
+      <parameter constant="false" id="C_tgf" value="1"/>
+      <parameter constant="false" id="C_na_excretion_na_amount" value="-1"/>
+      <parameter constant="false" id="C_na_intake_na_amount" value="1"/>
+      <parameter constant="false" id="C_urine_flow_ecf_volume" value="-1"/>
+      <parameter constant="false" id="C_water_intake_ecf_volume" value="1"/>
+      <parameter constant="false" id="C_Na_error" value="0.16666666666666666"/>
+      <parameter constant="false" id="C_serum_creatinine" value="1"/>
+      <parameter constant="false" id="HCTZ_effect_on_DT_Na_reabs" value="1"/>
+      <parameter constant="false" id="HCTZ_effect_on_renin_secretion" value="1"/>
+      <parameter constant="false" id="DRI_effect_on_PRA" value="1"/>
+      <parameter constant="false" id="CCB_effect_on_preafferent_resistance" value="1"/>
+      <parameter constant="false" id="CCB_effect_on_afferent_resistance" value="1"/>
+      <parameter constant="false" id="CCB_effect_on_efferent_resistance" value="1"/>
+      <parameter constant="false" id="MR_antagonist_effect_on_aldo_MR" value="1"/>
+      <parameter constant="false" id="pct_target_inhibition_ARB" value="0"/>
+      <parameter constant="false" id="pct_target_inhibition_ACEi" value="0"/>
+      <parameter constant="false" id="tissue_autoreg_scale" value="1"/>
+      <parameter constant="false" id="Kp_CO" value="1.5"/>
+      <parameter constant="false" id="Ki_CO" value="30"/>
+      <parameter constant="false" id="K_Na_ratio_effect_on_aldo" value="1">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Normalized_aldo_secretion</p>
+          
+        </notes>
+</parameter>
+      <parameter constant="false" id="gp_autoreg_scale" value="0"/>
+      <parameter constant="false" id="preaff_autoreg_scale" value="0.5"/>
+      <parameter constant="false" id="myogenic_steepness" value="2"/>
+      <parameter constant="false" id="max_pt_reabs_rate" value="0.995"/>
+      <parameter constant="false" id="pressure_natriuresis_PT_scale" value="1"/>
+      <parameter constant="false" id="pressure_natriuresis_PT_slope" value="1"/>
+      <parameter constant="false" id="pressure_natriuresis_LoH_scale" value="1"/>
+      <parameter constant="false" id="pressure_natriuresis_LoH_slope" value="1"/>
+      <parameter constant="false" id="pressure_natriuresis_DCT_scale" value="1"/>
+      <parameter constant="false" id="pressure_natriuresis_DCT_slope" value="1"/>
+      <parameter constant="false" id="max_cd_reabs_rate" value="0.995"/>
+      <parameter constant="false" id="pressure_natriuresis_CD_scale" value="3"/>
+      <parameter constant="false" id="pressure_natriuresis_CD_slope" value="1"/>
+      <parameter constant="false" id="ECF_scale_species" value="1"/>
+      <parameter constant="false" id="BV_scale_species" value="1"/>
+      <parameter constant="false" id="water_intake_species_scale" value="1"/>
+      <parameter constant="false" id="CO_scale_species" value="1"/>
+      <parameter constant="false" id="nom_preafferent_pressure" value="0"/>
+      <parameter constant="false" id="nom_glomerular_pressure" value="0"/>
+      <parameter constant="false" id="nom_postglomerular_pressure" value="0"/>
+      <parameter constant="false" id="RIHP0"/>
+      <parameter constant="false" id="nom_GFR"/>
+      <parameter constant="false" id="nom_filtered_sodium_load"/>
+      <parameter constant="false" id="nom_PT_Na_outflow"/>
+      <parameter constant="false" id="nom_Na_in_AscLoH"/>
+      <parameter constant="false" id="AscLoH_Reab_Rate"/>
+      <parameter constant="false" id="nom_LoH_Na_outflow"/>
+      <parameter constant="false" id="nom_DT_Na_outflow"/>
+      <parameter constant="false" id="nominal_cd_na_reabsorption"/>
+      <parameter constant="false" id="nom_RVR"/>
+      <parameter constant="false" id="nom_peritubular_resistance"/>
+      <parameter constant="false" id="nom_TPR"/>
+      <parameter constant="false" id="nom_systemic_arterial_resistance"/>
+      <parameter constant="false" id="creatinine_synthesis_rate"/>
+      <parameter constant="false" id="nominal_AngI_degradation_rate"/>
+      <parameter constant="false" id="nominal_AngII_degradation_rate"/>
+      <parameter constant="false" id="nominal_AT1_bound_AngII_degradation_rate"/>
+      <parameter constant="false" id="nominal_AT2_bound_AngII_degradation_rate"/>
+      <parameter constant="false" id="nominal_equilibrium_AT2_bound_AngII"/>
+      <parameter constant="false" id="tissue_autoregulation_signal_part"/>
+      <parameter constant="false" id="tissue_autoregulation_signal"/>
+      <parameter constant="false" id="AT1_svr_int"/>
+      <parameter constant="false" id="AT1_bound_AngII_effect_on_SVR"/>
+      <parameter constant="false" id="systemic_arterial_resistance"/>
+      <parameter constant="false" id="resistance_to_venous_return"/>
+      <parameter constant="false" id="mean_filling_pressure"/>
+      <parameter constant="false" id="cardiac_output"/>
+      <parameter constant="false" id="total_peripheral_resistance"/>
+      <parameter constant="false" id="mean_arterial_pressure_MAP" value="98"/>
+      <parameter constant="false" id="AT1_preaff_int"/>
+      <parameter constant="false" id="AT1_effect_on_preaff"/>
+      <parameter constant="false" id="AT1_aff_int"/>
+      <parameter constant="false" id="AT1_effect_on_aff"/>
+      <parameter constant="false" id="AT1_eff_int"/>
+      <parameter constant="false" id="AT1_effect_on_eff"/>
+      <parameter constant="false" id="preaff_arteriole_signal_multiplier"/>
+      <parameter constant="false" id="preaff_arteriole_adjusted_signal_multiplier"/>
+      <parameter constant="false" id="preafferent_arteriole_resistance"/>
+      <parameter constant="false" id="nom_afferent_arteriole_resistance"/>
+      <parameter constant="false" id="afferent_arteriole_signal_multiplier"/>
+      <parameter constant="false" id="afferent_arteriole_adjusted_signal_multiplier"/>
+      <parameter constant="false" id="afferent_arteriole_resistance"/>
+      <parameter constant="false" id="nom_efferent_arteriole_resistance"/>
+      <parameter constant="false" id="efferent_arteriole_signal_multiplier"/>
+      <parameter constant="false" id="efferent_arteriole_adjusted_signal_multiplier"/>
+      <parameter constant="false" id="efferent_arteriole_resistance"/>
+      <parameter constant="false" id="peritubular_resistance"/>
+      <parameter constant="false" id="renal_vascular_resistance"/>
+      <parameter constant="false" id="renal_blood_flow_L_min" value="1"/>
+      <parameter constant="false" id="renal_blood_flow_ml_hr" value="1.66667E-5"/>
+      <parameter constant="false" id="preafferent_pressure"/>
+      <parameter constant="false" id="glomerular_pressure"/>
+      <parameter constant="false" id="postglomerular_pressure"/>
+      <parameter constant="false" id="preaff_autoreg_int"/>
+      <parameter constant="false" id="preafferent_pressure_autoreg_function"/>
+      <parameter constant="false" id="gp_autoreg_int"/>
+      <parameter constant="false" id="glomerular_pressure_autoreg_function"/>
+      <parameter constant="false" id="glomerular_hydrostatic_conductance_Kf"/>
+      <parameter constant="false" id="number_of_functional_nephrons"/>
+      <parameter constant="false" id="net_filtration_pressure"/>
+      <parameter constant="false" id="SNGFR_nL_min"/>
+      <parameter constant="false" id="GFR" value="90"/>
+      <parameter constant="false" id="GFR_ml_min" value="0.0015"/>
+      <parameter constant="false" id="serum_creatinine_concentration"/>
+      <parameter constant="false" id="creatinine_clearance_rate"/>
+      <parameter constant="false" id="Oncotic_pressure_in"/>
+      <parameter constant="false" id="SNRBF_nl_min"/>
+      <parameter constant="false" id="plasma_protein_concentration_out"/>
+      <parameter constant="false" id="Oncotic_pressure_out"/>
+      <parameter constant="false" id="oncotic_pressure_avg"/>
+      <parameter constant="false" id="Na_concentration"/>
+      <parameter constant="false" id="ECF_Na_concentration"/>
+      <parameter constant="false" id="Na_water_controller">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Control of vasopressin secretion.        <br/>
+            A proportional-integral controller is used to ensure there is no steady state error in sodium concentration.        <br/>
+            Relative gains of the P and I controller must be chosen carefully.        <br/>
+            In order to permit a steady-state error, the integral controller can be removed. But care should be given then in choosing the proportional gain        </p>
+          
+        </notes>
+</parameter>
+      <parameter constant="false" id="normalized_vasopressin_concentration"/>
+      <parameter constant="false" id="vasopressin_concentration"/>
+      <parameter constant="false" id="water_intake_vasopressin_int"/>
+      <parameter constant="false" id="water_intake"/>
+      <parameter constant="false" id="daily_water_intake"/>
+      <parameter constant="false" id="Dc_pt"/>
+      <parameter constant="false" id="L_pt"/>
+      <parameter constant="false" id="SN_filtered_Na_load"/>
+      <parameter constant="false" id="filtered_Na_load"/>
+      <parameter constant="false" id="pressure_natriuresis_PT_int"/>
+      <parameter constant="false" id="pressure_natriuresis_PT_effect_part"/>
+      <parameter constant="false" id="pressure_natriuresis_PT_effect"/>
+      <parameter constant="false" id="pressure_natriuresis_LoH_int"/>
+      <parameter constant="false" id="pressure_natriuresis_LoH_effect_part"/>
+      <parameter constant="false" id="pressure_natriuresis_LoH_effect"/>
+      <parameter constant="false" id="pressure_natriuresis_DCT_magnitude"/>
+      <parameter constant="false" id="pressure_natriuresis_DCT_int"/>
+      <parameter constant="false" id="pressure_natriuresis_DCT_effect_part"/>
+      <parameter constant="false" id="pressure_natriuresis_DCT_effect"/>
+      <parameter constant="false" id="pressure_natriuresis_CD_magnitude"/>
+      <parameter constant="false" id="pressure_natriuresis_CD_int"/>
+      <parameter constant="false" id="pressure_natriuresis_CD_effect_part"/>
+      <parameter constant="false" id="pressure_natriuresis_CD_effect"/>
+      <parameter constant="false" id="AT1_PT_int"/>
+      <parameter constant="false" id="AT1_effect_on_PT"/>
+      <parameter constant="false" id="aldosterone_concentration"/>
+      <parameter constant="false" id="Aldo_MR_normalised_effect"/>
+      <parameter constant="false" id="aldo_DCT_int"/>
+      <parameter constant="false" id="aldo_effect_on_DCT"/>
+      <parameter constant="false" id="aldo_CD_int"/>
+      <parameter constant="false" id="aldo_effect_on_CD"/>
+      <parameter constant="false" id="e_pt_sodreab_part"/>
+      <parameter constant="false" id="e_pt_sodreab"/>
+      <parameter constant="false" id="e_dct_sodreab_part"/>
+      <parameter constant="false" id="e_dct_sodreab"/>
+      <parameter constant="false" id="e_cd_sodreab_part"/>
+      <parameter constant="false" id="e_cd_sodreab"/>
+      <parameter constant="false" id="Na_reabs_per_unit_length"/>
+      <parameter constant="false" id="Na_pt_out"/>
+      <parameter constant="false" id="water_out_pt"/>
+      <parameter constant="false" id="PT_Na_reabs_fraction"/>
+      <parameter constant="false" id="PT_water_reabs_fraction"/>
+      <parameter constant="false" id="Na_concentration_out_pt"/>
+      <parameter constant="false" id="PT_Na_outflow"/>
+      <parameter constant="false" id="water_in_DescLoH"/>
+      <parameter constant="false" id="Na_in_DescLoH"/>
+      <parameter constant="false" id="Na_concentration_in_DescLoH"/>
+      <parameter constant="false" id="Na_out_DescLoH"/>
+      <parameter constant="false" id="deltaLoH_NaFlow">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        The rate of reabsorption per unit length may be flow-dependent, and may be modulated by tubular pressure-natriuresis.        <br/>
+            If LoH_flow_dependence = 0, then no flow dependence. If LoH_flow_dependence = 1, perfect flow dependence        </p>
+          
+        </notes>
+</parameter>
+      <parameter constant="false" id="effective_AscLoH_Reab_Rate"/>
+      <parameter constant="false" id="Na_concentration_out_DescLoH"/>
+      <parameter constant="false" id="water_out_DescLoH"/>
+      <parameter constant="false" id="Na_in_AscLoH"/>
+      <parameter constant="false" id="Na_concentration_in_AscLoH"/>
+      <parameter constant="false" id="water_in_AscLoH"/>
+      <parameter constant="false" id="Na_concentration_out_AscLoH"/>
+      <parameter constant="false" id="Na_reabsorbed_AscLoH"/>
+      <parameter constant="false" id="Na_out_AscLoH" value="0.001"/>
+      <parameter constant="false" id="water_out_AscLoH">
+        <notes>
+          <body xmlns="http://www.w3.org/1999/xhtml">
+                <p/>
+                    </body>
+          
+        </notes>
+</parameter>
+      <parameter constant="false" id="LoH_reabs_fraction"/>
+      <parameter constant="false" id="SN_macula_densa_Na_flow">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Macula Densa Na Flow</p>
+          
+        </notes>
+</parameter>
+      <parameter constant="false" id="MD_Na_concentration">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Macula Densa Na Concentration</p>
+          
+        </notes>
+</parameter>
+      <parameter constant="false" id="TGF0_tubulo_glomerular_feedback"/>
+      <parameter constant="false" id="tubulo_glomerular_feedback_signal"/>
+      <parameter constant="false" id="water_in_DCT"/>
+      <parameter constant="false" id="Na_in_DCT"/>
+      <parameter constant="false" id="Na_concentration_in_DCT"/>
+      <parameter constant="false" id="water_out_DCT"/>
+      <parameter constant="false" id="R_dct"/>
+      <parameter constant="false" id="Na_out_DCT"/>
+      <parameter constant="false" id="Na_concentration_out_DCT"/>
+      <parameter constant="false" id="DCT_Na_reabs_fraction"/>
+      <parameter constant="false" id="water_in_CD"/>
+      <parameter constant="false" id="Na_in_CD"/>
+      <parameter constant="false" id="Na_concentration_in_CD"/>
+      <parameter constant="false" id="R_cd"/>
+      <parameter constant="false" id="Na_out_CD"/>
+      <parameter constant="false" id="CD_Na_reabs_fraction"/>
+      <parameter constant="false" id="ADH_water_permeability_part"/>
+      <parameter constant="false" id="ADH_water_permeability">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Vasopressin (ADH) effect on water reabsorption through regulation of aquaporin</p>
+          
+        </notes>
+</parameter>
+      <parameter constant="false" id="max_water_reabs_CD"/>
+      <parameter constant="false" id="water_out_CD"/>
+      <parameter constant="false" id="urine_flow_rate"/>
+      <parameter constant="false" id="daily_urine_flow"/>
+      <parameter constant="false" id="Na_excretion_via_urine"/>
+      <parameter constant="false" id="Na_balance"/>
+      <parameter constant="false" id="water_balance"/>
+      <parameter constant="false" id="FENA"/>
+      <parameter constant="false" id="Pc_pt"/>
+      <parameter constant="false" id="Pc_lh_des"/>
+      <parameter constant="false" id="Pc_lh_asc"/>
+      <parameter constant="false" id="Pc_dt"/>
+      <parameter constant="false" id="Pc_cd"/>
+      <parameter constant="false" id="P_interstitial"/>
+      <parameter constant="false" id="B1"/>
+      <parameter constant="false" id="mean_cd_water_flow"/>
+      <parameter constant="false" id="B2_cd"/>
+      <parameter constant="false" id="P_in_cd"/>
+      <parameter constant="false" id="P_in_cd_mmHg" value="1.66667E-5"/>
+      <parameter constant="false" id="B2_dt"/>
+      <parameter constant="false" id="P_in_dt"/>
+      <parameter constant="false" id="P_in_dt_mmHg" value="1.66667E-5"/>
+      <parameter constant="false" id="B2_lh_asc"/>
+      <parameter constant="false" id="P_in_lh_asc"/>
+      <parameter constant="false" id="P_in_lh_asc_mmHg"/>
+      <parameter constant="false" id="A_lh_des"/>
+      <parameter constant="false" id="B2_lh_des"/>
+      <parameter constant="false" id="P_in_lh_des"/>
+      <parameter constant="false" id="P_in_lh_des_mmHg"/>
+      <parameter constant="false" id="A_na"/>
+      <parameter constant="false" id="flow_integral_pt"/>
+      <parameter constant="false" id="B2_pt"/>
+      <parameter constant="false" id="B3_pt"/>
+      <parameter constant="false" id="P_in_pt"/>
+      <parameter constant="false" id="P_in_pt_mmHg"/>
+      <parameter constant="false" id="AT1_aldo_int"/>
+      <parameter constant="false" id="AngII_effect_on_aldo">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        AT1-bound AngII effect on Aldosterone</p>
+          
+        </notes>
+</parameter>
+      <parameter constant="false" id="normalized_aldosterone_level"/>
+      <parameter constant="false" id="md_effect_on_renin_secretion">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Macula Densa Sodium flow effect on renin secretion</p>
+          
+        </notes>
+</parameter>
+      <parameter constant="false" id="AT1_bound_AngII_effect_on_PRA"/>
+      <parameter constant="false" id="aldo_renin_intercept"/>
+      <parameter constant="false" id="aldo_effect_on_renin_secretion"/>
+      <parameter constant="false" id="plasma_renin_activity"/>
+      <parameter constant="false" id="renin_secretion_rate"/>
+      <parameter constant="false" id="renin_degradation_rate"/>
+      <parameter constant="false" id="AngI_degradation_rate"/>
+      <parameter constant="false" id="AngII_degradation_rate"/>
+      <parameter constant="false" id="AT1_bound_AngII_degradation_rate"/>
+      <parameter constant="false" id="AT2_bound_AngII_degradation_rate"/>
+      <parameter constant="false" id="ACE_activity"/>
+      <parameter constant="false" id="chymase_activity"/>
+      <parameter constant="false" id="AT1_receptor_binding_rate"/>
+      <parameter constant="false" id="AT2_receptor_binding_rate"/>
+      <parameter constant="false" id="AngI" value="8.164"/>
+      <parameter constant="false" id="AngII" value="5.17"/>
+      <parameter constant="false" id="AT1_bound_AngII" value="16.6"/>
+      <parameter constant="false" id="AT2_bound_AngII" value="5.5"/>
+      <parameter constant="false" id="plasma_renin_concentration" value="17.845"/>
+      <parameter constant="false" id="blood_volume_L"/>
+      <parameter constant="false" id="extracellular_fluid_volume"/>
+      <parameter constant="false" id="sodium_amount"/>
+      <parameter constant="false" id="ECF_sodium_amount"/>
+      <parameter constant="false" id="tubulo_glomerular_feedback_effect" value="1"/>
+      <parameter constant="false" id="normalized_aldosterone_level_delayed" value="1"/>
+      <parameter constant="false" id="preafferent_pressure_autoreg_signal" value="1"/>
+      <parameter constant="false" id="glomerular_pressure_autoreg_signal" value="1"/>
+      <parameter constant="false" id="cardiac_output_delayed"/>
+      <parameter constant="false" id="CO_error" value="0"/>
+      <parameter constant="false" id="Na_concentration_error" value="0"/>
+      <parameter constant="false" id="normalized_vasopressin_concentration_delayed" value="0"/>
+      <parameter constant="false" id="F0_TGF"/>
+      <parameter constant="false" id="P_bowmans"/>
+      <parameter constant="false" id="oncotic_pressure_difference"/>
+      <parameter constant="false" id="SN_macula_densa_Na_flow_delayed"/>
+      <parameter constant="false" id="serum_creatinine"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="nom_preafferent_pressure">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <ci> nominal_map_setpoint </ci>
+            <apply>
+              <times/>
+              <ci> nom_renal_blood_flow_L_min </ci>
+              <ci> nom_preafferent_arteriole_resistance </ci>
+            </apply>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nom_glomerular_pressure">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <ci> nom_preafferent_pressure </ci>
+            <apply>
+              <times/>
+              <ci> nom_renal_blood_flow_L_min </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> L_m3 </ci>
+                    <ci> viscosity_length_constant </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> nom_afferent_diameter </ci>
+                    <cn type="integer"> 4 </cn>
+                  </apply>
+                </apply>
+                <ci> baseline_nephrons </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nom_postglomerular_pressure">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <ci> nom_preafferent_pressure </ci>
+            <apply>
+              <times/>
+              <ci> nom_renal_blood_flow_L_min </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <times/>
+                    <ci> L_m3 </ci>
+                    <ci> viscosity_length_constant </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <power/>
+                        <ci> nom_afferent_diameter </ci>
+                        <cn type="integer"> 4 </cn>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <power/>
+                        <ci> nom_efferent_diameter </ci>
+                        <cn type="integer"> 4 </cn>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <ci> baseline_nephrons </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="RIHP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> nom_postglomerular_pressure </ci>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nom_GFR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> nom_Kf </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <minus/>
+                    <ci> nom_glomerular_pressure </ci>
+                    <ci> nom_oncotic_pressure_difference </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <ci> Pc_pt_mmHg </ci>
+                    <ci> P_interstitial_mmHg </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> nL_mL </ci>
+            </apply>
+            <ci> baseline_nephrons </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nom_filtered_sodium_load">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> nom_GFR </ci>
+              <ci> L_mL </ci>
+            </apply>
+            <ci> ref_Na_concentration </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nom_PT_Na_outflow">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> nom_filtered_sodium_load </ci>
+            <apply>
+              <minus/>
+              <cn type="integer"> 1 </cn>
+              <ci> nominal_pt_na_reabsorption </ci>
+            </apply>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nom_Na_in_AscLoH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <ci> nom_PT_Na_outflow </ci>
+            <ci> baseline_nephrons </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="AscLoH_Reab_Rate">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        osmoles reabsorbed per unit length per minute. factor of 2 because osmoles = 2</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <apply>
+                <times/>
+                <cn type="integer"> 2 </cn>
+                <ci> nominal_loh_na_reabsorption </ci>
+              </apply>
+              <ci> nom_Na_in_AscLoH </ci>
+            </apply>
+            <ci> L_lh_des </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nom_LoH_Na_outflow">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> nom_PT_Na_outflow </ci>
+            <apply>
+              <minus/>
+              <cn type="integer"> 1 </cn>
+              <ci> nominal_loh_na_reabsorption </ci>
+            </apply>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nom_DT_Na_outflow">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> nom_LoH_Na_outflow </ci>
+            <apply>
+              <minus/>
+              <cn type="integer"> 1 </cn>
+              <ci> nominal_dt_na_reabsorption </ci>
+            </apply>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nominal_cd_na_reabsorption">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> Na_intake_rate </ci>
+              <ci> nom_DT_Na_outflow </ci>
+            </apply>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nom_RVR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> nominal_map_setpoint </ci>
+              <ci> P_venous </ci>
+            </apply>
+            <ci> nom_renal_blood_flow_L_min </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nom_peritubular_resistance">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <ci> nom_RVR </ci>
+            <apply>
+              <plus/>
+              <ci> nom_preafferent_arteriole_resistance </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <times/>
+                    <ci> L_m3 </ci>
+                    <ci> viscosity_length_constant </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <power/>
+                        <ci> nom_afferent_diameter </ci>
+                        <cn type="integer"> 4 </cn>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <power/>
+                        <ci> nom_efferent_diameter </ci>
+                        <cn type="integer"> 4 </cn>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <ci> baseline_nephrons </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nom_TPR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <ci> nominal_map_setpoint </ci>
+            <ci> CO_nom </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nom_systemic_arterial_resistance">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <ci> nom_TPR </ci>
+            <ci> R_venous </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="creatinine_synthesis_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <times/>
+              <ci> equilibrium_serum_creatinine </ci>
+              <ci> dl_ml </ci>
+            </apply>
+            <ci> nom_GFR </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nominal_equilibrium_PRC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <ci> nominal_equilibrium_PRA </ci>
+            <ci> concentration_to_renin_activity_conversion_plasma </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nominal_AngI_degradation_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <ci> nominal_AngI_half_life </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nominal_AngII_degradation_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <ci> nominal_AngII_half_life </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nominal_AT1_bound_AngII_degradation_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <ci> nominal_AT1_bound_AngII_half_life </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nominal_AT2_bound_AngII_degradation_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <ci> nominal_AT2_bound_AngII_half_life </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nominal_ACE_activity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> ACE_chymase_fraction </ci>
+              <apply>
+                <minus/>
+                <ci> nominal_equilibrium_PRA </ci>
+                <apply>
+                  <times/>
+                  <ci> nominal_AngI_degradation_rate </ci>
+                  <ci> nominal_equilibrium_AngI </ci>
+                </apply>
+              </apply>
+            </apply>
+            <ci> nominal_equilibrium_AngI </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nominal_chymase_activity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <ci> ACE_chymase_fraction </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> nominal_equilibrium_PRA </ci>
+                <apply>
+                  <times/>
+                  <ci> nominal_AngI_degradation_rate </ci>
+                  <ci> nominal_equilibrium_AngI </ci>
+                </apply>
+              </apply>
+            </apply>
+            <ci> nominal_equilibrium_AngI </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nominal_AT1_receptor_binding_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> fraction_AT1_bound_AngII </ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> nominal_equilibrium_AngI </ci>
+                  <apply>
+                    <plus/>
+                    <ci> nominal_ACE_activity </ci>
+                    <ci> nominal_chymase_activity </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> nominal_AngII_degradation_rate </ci>
+                  <ci> nominal_equilibrium_AngII </ci>
+                </apply>
+              </apply>
+            </apply>
+            <ci> nominal_equilibrium_AngII </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nominal_AT2_receptor_binding_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <ci> fraction_AT1_bound_AngII </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> nominal_equilibrium_AngI </ci>
+                  <apply>
+                    <plus/>
+                    <ci> nominal_ACE_activity </ci>
+                    <ci> nominal_chymase_activity </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> nominal_AngII_degradation_rate </ci>
+                  <ci> nominal_equilibrium_AngII </ci>
+                </apply>
+              </apply>
+            </apply>
+            <ci> nominal_equilibrium_AngII </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nominal_equilibrium_AT1_bound_AngII">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> nominal_equilibrium_AngII </ci>
+              <ci> nominal_AT1_receptor_binding_rate </ci>
+            </apply>
+            <ci> nominal_AT1_bound_AngII_degradation_rate </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="nominal_equilibrium_AT2_bound_AngII">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> nominal_equilibrium_AngII </ci>
+              <ci> nominal_AT2_receptor_binding_rate </ci>
+            </apply>
+            <ci> nominal_AT2_bound_AngII_degradation_rate </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="blood_volume_L">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> blood_volume_nom </ci>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="extracellular_fluid_volume">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> ECF_nom </ci>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="sodium_amount">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> blood_volume_nom </ci>
+            <ci> ref_Na_concentration </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="ECF_sodium_amount">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> ECF_nom </ci>
+            <ci> ref_Na_concentration </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="cardiac_output_delayed">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> CO_nom </ci>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="F0_TGF">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> nom_LoH_Na_outflow </ci>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="P_bowmans">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> Pc_pt_mmHg </ci>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="oncotic_pressure_difference">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> nom_oncotic_pressure_difference </ci>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="SN_macula_densa_Na_flow_delayed">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <ci> nom_LoH_Na_outflow </ci>
+            <ci> baseline_nephrons </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="serum_creatinine">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> equilibrium_serum_creatinine </ci>
+            <ci> blood_volume_nom </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <assignmentRule variable="tissue_autoregulation_signal_part">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> tissue_autoreg_scale </ci>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Kp_CO </ci>
+                    <ci> CO_scale_species </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> cardiac_output_delayed </ci>
+                    <ci> CO_nom </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> Ki_CO </ci>
+                  <ci> CO_scale_species </ci>
+                </apply>
+              </apply>
+              <ci> CO_error </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="tissue_autoregulation_signal">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <piecewise>
+            <piece>
+              <ci> tissue_autoregulation_signal_part </ci>
+              <apply>
+                <geq/>
+                <ci> tissue_autoregulation_signal_part </ci>
+                <cn> 0.1 </cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn> 0.1 </cn>
+            </otherwise>
+          </piecewise>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AT1_svr_int">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <times/>
+              <ci> AT1_svr_slope </ci>
+              <ci> nominal_equilibrium_AT1_bound_AngII </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AT1_bound_AngII">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> AT1_svr_int </ci>
+            <apply>
+              <times/>
+              <ci> AT1_svr_slope </ci>
+              <ci> AT1_bound_AngII </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="systemic_arterial_resistance">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <times/>
+              <ci> nom_systemic_arterial_resistance </ci>
+              <ci> tissue_autoregulation_signal </ci>
+            </apply>
+            <ci> AT1_bound_AngII_effect_on_SVR </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="resistance_to_venous_return">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <cn type="integer"> 8 </cn>
+                <ci> R_venous </ci>
+              </apply>
+              <ci> systemic_arterial_resistance </ci>
+            </apply>
+            <cn type="integer"> 31 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="mean_filling_pressure">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> nom_mean_filling_pressure </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <ci> blood_volume_L </ci>
+                  <ci> BV_scale_species </ci>
+                </apply>
+                <ci> blood_volume_nom </ci>
+              </apply>
+              <ci> venous_compliance </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="cardiac_output">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <ci> mean_filling_pressure </ci>
+            <ci> resistance_to_venous_return </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="total_peripheral_resistance">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> systemic_arterial_resistance </ci>
+            <ci> R_venous </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="mean_arterial_pressure_MAP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> cardiac_output </ci>
+            <ci> total_peripheral_resistance </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AT1_preaff_int">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> AT1_preaff_scale </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AT1_effect_on_preaff">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> AT1_preaff_int </ci>
+            <apply>
+              <divide/>
+              <ci> AT1_preaff_scale </ci>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <apply>
+                        <minus/>
+                        <ci> AT1_bound_AngII </ci>
+                        <ci> nominal_equilibrium_AT1_bound_AngII </ci>
+                      </apply>
+                    </apply>
+                    <ci> AT1_preaff_slope </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AT1_aff_int">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> AT1_aff_scale </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AT1_effect_on_aff">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> AT1_aff_int </ci>
+            <apply>
+              <divide/>
+              <ci> AT1_aff_scale </ci>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <apply>
+                        <minus/>
+                        <ci> AT1_bound_AngII </ci>
+                        <ci> nominal_equilibrium_AT1_bound_AngII </ci>
+                      </apply>
+                    </apply>
+                    <ci> AT1_aff_slope </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AT1_eff_int">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> AT1_eff_scale </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AT1_effect_on_eff">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> AT1_eff_int </ci>
+            <apply>
+              <divide/>
+              <ci> AT1_eff_scale </ci>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <apply>
+                        <minus/>
+                        <ci> AT1_bound_AngII </ci>
+                        <ci> nominal_equilibrium_AT1_bound_AngII </ci>
+                      </apply>
+                    </apply>
+                    <ci> AT1_eff_slope </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="preaff_arteriole_signal_multiplier">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <times/>
+              <ci> AT1_effect_on_preaff </ci>
+              <ci> preafferent_pressure_autoreg_signal </ci>
+            </apply>
+            <ci> CCB_effect_on_preafferent_resistance </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="preaff_arteriole_adjusted_signal_multiplier">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <times/>
+                    <ci> preaff_signal_nonlin_scale </ci>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> preaff_arteriole_signal_multiplier </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <cn> 0.5 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="preafferent_arteriole_resistance">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> nom_preafferent_arteriole_resistance </ci>
+            <ci> preaff_arteriole_adjusted_signal_multiplier </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="nom_afferent_arteriole_resistance">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> L_m3 </ci>
+              <ci> viscosity_length_constant </ci>
+            </apply>
+            <apply>
+              <power/>
+              <ci> nom_afferent_diameter </ci>
+              <cn type="integer"> 4 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="afferent_arteriole_signal_multiplier">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <times/>
+              <apply>
+                <times/>
+                <ci> tubulo_glomerular_feedback_effect </ci>
+                <ci> AT1_effect_on_aff </ci>
+              </apply>
+              <ci> glomerular_pressure_autoreg_signal </ci>
+            </apply>
+            <ci> CCB_effect_on_afferent_resistance </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="afferent_arteriole_adjusted_signal_multiplier">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <times/>
+                    <ci> afferent_signal_nonlin_scale </ci>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> afferent_arteriole_signal_multiplier </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <cn> 0.5 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="afferent_arteriole_resistance">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> nom_afferent_arteriole_resistance </ci>
+            <ci> afferent_arteriole_adjusted_signal_multiplier </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="nom_efferent_arteriole_resistance">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> L_m3 </ci>
+              <ci> viscosity_length_constant </ci>
+            </apply>
+            <apply>
+              <power/>
+              <ci> nom_efferent_diameter </ci>
+              <cn type="integer"> 4 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="efferent_arteriole_signal_multiplier">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> AT1_effect_on_eff </ci>
+            <ci> CCB_effect_on_efferent_resistance </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="efferent_arteriole_adjusted_signal_multiplier">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <times/>
+                    <ci> efferent_signal_nonlin_scale </ci>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> efferent_arteriole_signal_multiplier </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <cn> 0.5 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="efferent_arteriole_resistance">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> nom_efferent_arteriole_resistance </ci>
+            <ci> efferent_arteriole_adjusted_signal_multiplier </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="peritubular_resistance">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> nom_peritubular_resistance </ci>
+            <ci> baseline_nephrons </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="renal_vascular_resistance">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> preafferent_arteriole_resistance </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <plus/>
+                <apply>
+                  <plus/>
+                  <ci> afferent_arteriole_resistance </ci>
+                  <ci> efferent_arteriole_resistance </ci>
+                </apply>
+                <ci> peritubular_resistance </ci>
+              </apply>
+              <ci> baseline_nephrons </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="renal_blood_flow_L_min">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> mean_arterial_pressure_MAP </ci>
+              <ci> P_venous </ci>
+            </apply>
+            <ci> renal_vascular_resistance </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="renal_blood_flow_ml_hr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <times/>
+              <ci> renal_blood_flow_L_min </ci>
+              <cn type="integer"> 1000 </cn>
+            </apply>
+            <cn type="integer"> 60 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="preafferent_pressure">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <ci> mean_arterial_pressure_MAP </ci>
+            <apply>
+              <times/>
+              <ci> renal_blood_flow_L_min </ci>
+              <ci> preafferent_arteriole_resistance </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="glomerular_pressure">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <ci> mean_arterial_pressure_MAP </ci>
+            <apply>
+              <times/>
+              <ci> renal_blood_flow_L_min </ci>
+              <apply>
+                <plus/>
+                <ci> preafferent_arteriole_resistance </ci>
+                <apply>
+                  <divide/>
+                  <ci> afferent_arteriole_resistance </ci>
+                  <ci> baseline_nephrons </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="postglomerular_pressure">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <ci> mean_arterial_pressure_MAP </ci>
+            <apply>
+              <times/>
+              <ci> renal_blood_flow_L_min </ci>
+              <apply>
+                <plus/>
+                <ci> preafferent_arteriole_resistance </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <ci> afferent_arteriole_resistance </ci>
+                    <ci> efferent_arteriole_resistance </ci>
+                  </apply>
+                  <ci> baseline_nephrons </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="preaff_autoreg_int">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> preaff_autoreg_scale </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="preafferent_pressure_autoreg_function">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> preaff_autoreg_int </ci>
+            <apply>
+              <divide/>
+              <ci> preaff_autoreg_scale </ci>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> nom_preafferent_pressure </ci>
+                      <ci> preafferent_pressure </ci>
+                    </apply>
+                    <ci> myogenic_steepness </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="gp_autoreg_int">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> gp_autoreg_scale </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="glomerular_pressure_autoreg_function">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> gp_autoreg_int </ci>
+            <apply>
+              <divide/>
+              <ci> gp_autoreg_scale </ci>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> nom_glomerular_pressure </ci>
+                      <ci> glomerular_pressure </ci>
+                    </apply>
+                    <ci> myogenic_steepness </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="glomerular_hydrostatic_conductance_Kf">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> nom_Kf </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="number_of_functional_nephrons">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> baseline_nephrons </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="net_filtration_pressure">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <ci> glomerular_pressure </ci>
+              <ci> oncotic_pressure_difference </ci>
+            </apply>
+            <ci> P_bowmans </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SNGFR_nL_min">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> glomerular_hydrostatic_conductance_Kf </ci>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <ci> glomerular_pressure </ci>
+                <ci> oncotic_pressure_difference </ci>
+              </apply>
+              <ci> P_bowmans </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="GFR">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        GFR is calculated according to Starling's equation</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <ci> SNGFR_nL_min </ci>
+                <cn type="integer"> 1000 </cn>
+              </apply>
+              <cn type="integer"> 1000000 </cn>
+            </apply>
+            <ci> number_of_functional_nephrons </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="GFR_ml_min">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> GFR </ci>
+            <cn type="integer"> 1000 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="serum_creatinine_concentration">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <ci> serum_creatinine </ci>
+            <ci> blood_volume_L </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="creatinine_clearance_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <times/>
+              <ci> GFR_ml_min </ci>
+              <ci> dl_ml </ci>
+            </apply>
+            <ci> serum_creatinine_concentration </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Oncotic_pressure_in">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Landis Pappenheimer equation used to calculate oncotic pressure at entrance and exit to glomerulus.        <br/>
+            Oncotic pressure is approximated as varying linearly along the glomerulus. Oncotic pressure in the Bowman's space is zero.        <br/>
+            We do not consider filtration equilibrium.        </p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <cn> 1.629 </cn>
+              <ci> plasma_protein_concentration </ci>
+            </apply>
+            <apply>
+              <times/>
+              <cn> 0.2935 </cn>
+              <apply>
+                <power/>
+                <ci> plasma_protein_concentration </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SNRBF_nl_min">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <apply>
+                <times/>
+                <cn type="e-notation"> 1 <sep/> 6 </cn>
+                <cn type="integer"> 1000 </cn>
+              </apply>
+              <ci> renal_blood_flow_L_min </ci>
+            </apply>
+            <ci> number_of_functional_nephrons </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="plasma_protein_concentration_out">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> SNRBF_nl_min </ci>
+              <ci> plasma_protein_concentration </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> SNRBF_nl_min </ci>
+              <ci> SNGFR_nL_min </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Oncotic_pressure_out">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Landis Pappenheimer equation used to calculate oncotic pressure at entrance and exit to glomerulus.        <br/>
+            Oncotic pressure is approximated as varying linearly along the glomerulus. Oncotic pressure in the Bowman's space is zero.        <br/>
+            We do not consider filtration equilibrium.        </p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <cn> 1.629 </cn>
+              <ci> plasma_protein_concentration_out </ci>
+            </apply>
+            <apply>
+              <times/>
+              <cn> 0.2935 </cn>
+              <apply>
+                <power/>
+                <ci> plasma_protein_concentration_out </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="oncotic_pressure_avg">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        the average pressure difference is the average of the entrance and exit oncotic pressure</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> Oncotic_pressure_in </ci>
+              <ci> Oncotic_pressure_out </ci>
+            </apply>
+            <cn type="integer"> 2 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_concentration">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <ci> sodium_amount </ci>
+            <ci> blood_volume_L </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ECF_Na_concentration">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <ci> ECF_sodium_amount </ci>
+            <ci> extracellular_fluid_volume </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_water_controller">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        A proportional-integral controller is used to ensure there is no steady state error in sodium concentration.        <br/>
+            Relative gains of the P and I controller must be chosen carefully.        <br/>
+            In order to permit a steady-state error, the integral controller can be removed. But care should be given then in choosing the proportional gain        </p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> Na_controller_gain </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> Kp_VP </ci>
+                <apply>
+                  <minus/>
+                  <ci> Na_concentration </ci>
+                  <ci> ref_Na_concentration </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Ki_VP </ci>
+                <ci> Na_concentration_error </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="normalized_vasopressin_concentration">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <cn type="integer"> 1 </cn>
+            <ci> Na_water_controller </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="vasopressin_concentration">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> nominal_vasopressin_conc </ci>
+            <ci> normalized_vasopressin_concentration </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="water_intake_vasopressin_int">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> water_intake_vasopressin_scale </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="water_intake">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <times/>
+              <ci> water_intake_species_scale </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <divide/>
+                  <ci> nom_water_intake </ci>
+                  <cn type="integer"> 60 </cn>
+                </apply>
+                <cn type="integer"> 24 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> water_intake_vasopressin_int </ci>
+              <apply>
+                <divide/>
+                <ci> water_intake_vasopressin_scale </ci>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <minus/>
+                        <ci> normalized_vasopressin_concentration_delayed </ci>
+                        <cn type="integer"> 1 </cn>
+                      </apply>
+                      <ci> water_intake_vasopressin_slope </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="daily_water_intake">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <times/>
+              <ci> water_intake </ci>
+              <cn type="integer"> 24 </cn>
+            </apply>
+            <cn type="integer"> 60 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Dc_pt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> Dc_pt_nom </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="L_pt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <apply>
+              <plus/>
+              <ci> L_pt_s1_nom </ci>
+              <ci> L_pt_s2_nom </ci>
+            </apply>
+            <ci> L_pt_s3_nom </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SN_filtered_Na_load">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <ci> SNGFR_nL_min </ci>
+                <cn type="integer"> 1000 </cn>
+              </apply>
+              <cn type="integer"> 1000000 </cn>
+            </apply>
+            <ci> Na_concentration </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="filtered_Na_load">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> SN_filtered_Na_load </ci>
+            <ci> number_of_functional_nephrons </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pressure_natriuresis_PT_int">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> pressure_natriuresis_PT_scale </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pressure_natriuresis_PT_effect_part">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> pressure_natriuresis_PT_int </ci>
+            <apply>
+              <divide/>
+              <ci> pressure_natriuresis_PT_scale </ci>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> postglomerular_pressure </ci>
+                      <ci> RIHP0 </ci>
+                    </apply>
+                    <ci> pressure_natriuresis_PT_slope </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pressure_natriuresis_PT_effect">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <piecewise>
+            <piece>
+              <ci> pressure_natriuresis_PT_effect_part </ci>
+              <apply>
+                <gt/>
+                <ci> pressure_natriuresis_PT_effect_part </ci>
+                <cn> 0.001 </cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn> 0.001 </cn>
+            </otherwise>
+          </piecewise>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pressure_natriuresis_LoH_int">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> pressure_natriuresis_LoH_scale </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pressure_natriuresis_LoH_effect">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> pressure_natriuresis_LoH_int </ci>
+            <apply>
+              <divide/>
+              <ci> pressure_natriuresis_LoH_scale </ci>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> postglomerular_pressure </ci>
+                      <ci> RIHP0 </ci>
+                    </apply>
+                    <ci> pressure_natriuresis_LoH_slope </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pressure_natriuresis_LoH_effect">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <piecewise>
+            <piece>
+              <ci> pressure_natriuresis_LoH_effect </ci>
+              <apply>
+                <gt/>
+                <ci> pressure_natriuresis_LoH_effect </ci>
+                <cn> 0.001 </cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn> 0.001 </cn>
+            </otherwise>
+          </piecewise>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pressure_natriuresis_DCT_magnitude">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <piecewise>
+            <piece>
+              <ci> pressure_natriuresis_DCT_scale </ci>
+              <apply>
+                <gt/>
+                <ci> pressure_natriuresis_DCT_scale </ci>
+                <cn> 0 </cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn> 0 </cn>
+            </otherwise>
+          </piecewise>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pressure_natriuresis_DCT_int">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> pressure_natriuresis_DCT_magnitude </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pressure_natriuresis_DCT_effect_part">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> pressure_natriuresis_DCT_int </ci>
+            <apply>
+              <divide/>
+              <ci> pressure_natriuresis_DCT_magnitude </ci>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> postglomerular_pressure </ci>
+                      <ci> RIHP0 </ci>
+                    </apply>
+                    <ci> pressure_natriuresis_DCT_slope </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pressure_natriuresis_DCT_effect">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <piecewise>
+            <piece>
+              <ci> pressure_natriuresis_DCT_effect_part </ci>
+              <apply>
+                <gt/>
+                <ci> pressure_natriuresis_DCT_effect_part </ci>
+                <cn> 0.001 </cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn> 0.001 </cn>
+            </otherwise>
+          </piecewise>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pressure_natriuresis_CD_magnitude">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <piecewise>
+            <piece>
+              <ci> pressure_natriuresis_CD_scale </ci>
+              <apply>
+                <gt/>
+                <ci> pressure_natriuresis_CD_scale </ci>
+                <cn> 0 </cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn> 0 </cn>
+            </otherwise>
+          </piecewise>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pressure_natriuresis_CD_int">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> pressure_natriuresis_CD_magnitude </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pressure_natriuresis_CD_effect_part">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> pressure_natriuresis_CD_int </ci>
+            <apply>
+              <divide/>
+              <ci> pressure_natriuresis_CD_magnitude </ci>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> postglomerular_pressure </ci>
+                      <ci> RIHP0 </ci>
+                    </apply>
+                    <ci> pressure_natriuresis_CD_slope </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pressure_natriuresis_CD_effect">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <piecewise>
+            <piece>
+              <ci> pressure_natriuresis_CD_effect_part </ci>
+              <apply>
+                <gt/>
+                <ci> pressure_natriuresis_CD_effect_part </ci>
+                <cn> 0.001 </cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn> 0.001 </cn>
+            </otherwise>
+          </piecewise>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AT1_PT_int">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> AT1_PT_scale </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AT1_effect_on_PT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> AT1_PT_int </ci>
+            <apply>
+              <divide/>
+              <ci> AT1_PT_scale </ci>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <apply>
+                        <minus/>
+                        <ci> AT1_bound_AngII </ci>
+                        <ci> nominal_equilibrium_AT1_bound_AngII </ci>
+                      </apply>
+                    </apply>
+                    <ci> AT1_PT_slope </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="aldosterone_concentration">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> normalized_aldosterone_level_delayed </ci>
+            <ci> nominal_aldosterone_concentration </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Aldo_MR_normalised_effect">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> normalized_aldosterone_level_delayed </ci>
+            <ci> MR_antagonist_effect_on_aldo_MR </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="aldo_DCT_int">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> aldo_DCT_scale </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="aldo_effect_on_DCT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> aldo_DCT_int </ci>
+            <apply>
+              <divide/>
+              <ci> aldo_DCT_scale </ci>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> Aldo_MR_normalised_effect </ci>
+                    </apply>
+                    <ci> aldo_DCT_slope </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="aldo_CD_int">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> aldo_CD_scale </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="aldo_effect_on_CD">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> aldo_CD_int </ci>
+            <apply>
+              <divide/>
+              <ci> aldo_CD_scale </ci>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> Aldo_MR_normalised_effect </ci>
+                    </apply>
+                    <ci> aldo_CD_slope </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="e_pt_sodreab_part">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> nominal_pt_na_reabsorption </ci>
+            <ci> AT1_effect_on_PT </ci>
+            <ci> pressure_natriuresis_PT_effect </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="e_pt_sodreab">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <piecewise>
+            <piece>
+              <ci> e_pt_sodreab_part </ci>
+              <apply>
+                <lt/>
+                <ci> e_pt_sodreab_part </ci>
+                <cn> 1 </cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn> 1 </cn>
+            </otherwise>
+          </piecewise>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="e_dct_sodreab_part">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> nominal_dt_na_reabsorption </ci>
+            <ci> aldo_effect_on_DCT </ci>
+            <ci> pressure_natriuresis_DCT_effect </ci>
+            <ci> HCTZ_effect_on_DT_Na_reabs </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="e_dct_sodreab">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <piecewise>
+            <piece>
+              <ci> e_dct_sodreab_part </ci>
+              <apply>
+                <leq/>
+                <ci> e_dct_sodreab_part </ci>
+                <cn> 1 </cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn> 1 </cn>
+            </otherwise>
+          </piecewise>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="e_cd_sodreab_part">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> nominal_cd_na_reabsorption </ci>
+            <ci> aldo_effect_on_CD </ci>
+            <ci> pressure_natriuresis_CD_effect </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="e_cd_sodreab">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <piecewise>
+            <piece>
+              <ci> e_cd_sodreab_part </ci>
+              <apply>
+                <leq/>
+                <ci> e_cd_sodreab_part </ci>
+                <cn> 1 </cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn> 1 </cn>
+            </otherwise>
+          </piecewise>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_reabs_per_unit_length">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <ln/>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> e_pt_sodreab </ci>
+                </apply>
+              </apply>
+            </apply>
+            <ci> L_pt </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_pt_out">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> SN_filtered_Na_load </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> Na_reabs_per_unit_length </ci>
+                </apply>
+                <ci> L_pt </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="water_out_pt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <apply>
+                  <divide/>
+                  <ci> SNGFR_nL_min </ci>
+                  <cn type="integer"> 1000 </cn>
+                </apply>
+                <cn type="integer"> 1000000 </cn>
+              </apply>
+              <ci> SN_filtered_Na_load </ci>
+            </apply>
+            <ci> Na_pt_out </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="PT_Na_reabs_fraction">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> Na_pt_out </ci>
+              <ci> SN_filtered_Na_load </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="PT_water_reabs_fraction">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> water_out_pt </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <divide/>
+                  <ci> SNGFR_nL_min </ci>
+                  <cn type="integer"> 1000 </cn>
+                </apply>
+                <cn type="integer"> 1000000 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_concentration_out_pt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <ci> Na_pt_out </ci>
+            <ci> water_out_pt </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="PT_Na_outflow">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> Na_pt_out </ci>
+            <ci> number_of_functional_nephrons </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="water_in_DescLoH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> water_out_pt </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_in_DescLoH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> Na_pt_out </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_concentration_in_DescLoH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> Na_concentration_out_pt </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_out_DescLoH">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        No solute reabsorption in Descending Limb</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> Na_in_DescLoH </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="deltaLoH_NaFlow">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        The rate of reabsorption per unit length may be flow-dependent, and may be modulated by tubular pressure-natriuresis        <br/>
+            If LoH_flow_dependence = 0, then no flow dependence. If LoH_flow_dependence = 1, perfect flow dependence        </p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> LoH_flow_dependence </ci>
+            <apply>
+              <minus/>
+              <ci> Na_out_DescLoH </ci>
+              <ci> nom_Na_in_AscLoH </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AscLoH_Reab_Rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> nominal_loh_na_reabsorption </ci>
+              <apply>
+                <plus/>
+                <ci> nom_Na_in_AscLoH </ci>
+                <ci> deltaLoH_NaFlow </ci>
+              </apply>
+            </apply>
+            <ci> L_lh_des </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="effective_AscLoH_Reab_Rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> AscLoH_Reab_Rate </ci>
+            <ci> pressure_natriuresis_LoH_effect </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_concentration_out_DescLoH_part">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> effective_AscLoH_Reab_Rate </ci>
+            <ci> L_lh_des </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_concentration_out_DescLoH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <piecewise>
+            <piece>
+              <apply>
+                <times/>
+                <ci> Na_concentration_in_DescLoH </ci>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> effective_AscLoH_Reab_Rate </ci>
+                      <ci> L_lh_des </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> water_in_DescLoH </ci>
+                      <ci> Na_concentration_in_DescLoH </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <lt/>
+                <apply>
+                  <times/>
+                  <ci> effective_AscLoH_Reab_Rate </ci>
+                  <ci> L_lh_des </ci>
+                </apply>
+                <ci> Na_in_DescLoH </ci>
+              </apply>
+            </piece>
+            <otherwise>
+              <apply>
+                <times/>
+                <ci> Na_concentration_in_DescLoH </ci>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <ci> Na_in_DescLoH </ci>
+                    <apply>
+                      <times/>
+                      <ci> water_in_DescLoH </ci>
+                      <ci> Na_concentration_in_DescLoH </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </otherwise>
+          </piecewise>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="water_out_DescLoH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> water_in_DescLoH </ci>
+              <ci> Na_concentration_in_DescLoH </ci>
+            </apply>
+            <ci> Na_concentration_out_DescLoH </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_in_AscLoH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> Na_out_DescLoH </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_concentration_in_AscLoH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> Na_concentration_out_DescLoH </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="water_in_AscLoH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> water_out_DescLoH </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_concentration_out_AscLoH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <piecewise>
+            <piece>
+              <apply>
+                <minus/>
+                <ci> Na_concentration_in_AscLoH </ci>
+                <apply>
+                  <times/>
+                  <apply>
+                    <times/>
+                    <ci> L_lh_des </ci>
+                    <ci> effective_AscLoH_Reab_Rate </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <divide/>
+                        <apply>
+                          <times/>
+                          <ci> L_lh_des </ci>
+                          <ci> effective_AscLoH_Reab_Rate </ci>
+                        </apply>
+                        <apply>
+                          <times/>
+                          <ci> water_in_DescLoH </ci>
+                          <ci> Na_concentration_in_DescLoH </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                    <ci> water_in_DescLoH </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <lt/>
+                <apply>
+                  <times/>
+                  <ci> L_lh_des </ci>
+                  <ci> effective_AscLoH_Reab_Rate </ci>
+                </apply>
+                <ci> Na_in_DescLoH </ci>
+              </apply>
+            </piece>
+            <otherwise>
+              <apply>
+                <minus/>
+                <ci> Na_concentration_in_AscLoH </ci>
+                <apply>
+                  <times/>
+                  <ci> Na_in_DescLoH </ci>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <divide/>
+                        <ci> Na_in_DescLoH </ci>
+                        <apply>
+                          <times/>
+                          <ci> water_in_DescLoH </ci>
+                          <ci> Na_concentration_in_DescLoH </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                    <ci> water_in_DescLoH </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </otherwise>
+          </piecewise>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_reabsorbed_AscLoH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> Na_concentration_in_AscLoH </ci>
+              <ci> Na_concentration_out_AscLoH </ci>
+            </apply>
+            <ci> water_in_AscLoH </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_out_AscLoH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <piecewise>
+            <piece>
+              <apply>
+                <minus/>
+                <ci> Na_in_AscLoH </ci>
+                <ci> Na_reabsorbed_AscLoH </ci>
+              </apply>
+              <apply>
+                <gt/>
+                <apply>
+                  <minus/>
+                  <ci> Na_in_AscLoH </ci>
+                  <ci> Na_reabsorbed_AscLoH </ci>
+                </apply>
+                <cn> 0.0001 </cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn> 0.0001 </cn>
+            </otherwise>
+          </piecewise>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="water_out_AscLoH">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Ascending limb is impermeable to water - no water reabsorption</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> water_in_AscLoH </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_concentration_out_AscLoH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <ci> Na_out_AscLoH </ci>
+            <ci> water_out_AscLoH </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="LoH_reabs_fraction">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> Na_out_AscLoH </ci>
+              <ci> Na_in_AscLoH </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SN_macula_densa_Na_flow">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> Na_out_AscLoH </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="MD_Na_concentration">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> Na_concentration_out_AscLoH </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="TGF0_tubulo_glomerular_feedback">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> S_tubulo_glomerular_feedback </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="tubulo_glomerular_feedback_signal">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> TGF0_tubulo_glomerular_feedback </ci>
+            <apply>
+              <divide/>
+              <ci> S_tubulo_glomerular_feedback </ci>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> MD_Na_concentration_setpoint </ci>
+                      <ci> MD_Na_concentration </ci>
+                    </apply>
+                    <ci> F_md_scale_tubulo_glomerular_feedback </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="water_in_DCT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> water_out_AscLoH </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_in_DCT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> Na_out_AscLoH </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_concentration_in_DCT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> Na_concentration_out_AscLoH </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="water_out_DCT">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Assume DCT is impermeable to water</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> water_in_DCT </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="R_dct">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Assume sodium reabsorption at a constant fraction of delivery</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <ln/>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> e_dct_sodreab </ci>
+                </apply>
+              </apply>
+            </apply>
+            <ci> L_dct </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_out_DCT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> Na_in_DCT </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> R_dct </ci>
+                </apply>
+                <ci> L_dct </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_concentration_out_DCT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <ci> Na_out_DCT </ci>
+            <ci> water_out_DCT </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="DCT_Na_reabs_fraction">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> Na_out_DCT </ci>
+              <ci> Na_in_DCT </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="water_in_CD">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> water_out_DCT </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_in_CD">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> Na_out_DCT </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_concentration_in_CD">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> Na_concentration_out_DCT </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="R_cd">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <ln/>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> e_cd_sodreab </ci>
+                </apply>
+              </apply>
+            </apply>
+            <ci> L_cd </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_out_CD">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> Na_in_CD </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> R_cd </ci>
+                </apply>
+                <ci> L_cd </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="CD_Na_reabs_fraction">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> Na_out_CD </ci>
+              <ci> Na_in_CD </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ADH_water_permeability_part">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Vasopressin (ADH) effect on water reabsorption through regulation of aquaporin</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> nom_ADH_water_permeability </ci>
+            <ci> normalized_vasopressin_concentration </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ADH_water_permeability">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Vasopressin (ADH) effect on water reabsorption through regulation of aquaporin</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <piecewise>
+            <piece>
+              <cn> 0 </cn>
+              <apply>
+                <lt/>
+                <ci> ADH_water_permeability_part </ci>
+                <cn> 0 </cn>
+              </apply>
+            </piece>
+            <piece>
+              <cn> 1 </cn>
+              <apply>
+                <gt/>
+                <ci> ADH_water_permeability_part </ci>
+                <cn> 1 </cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <ci> ADH_water_permeability_part </ci>
+            </otherwise>
+          </piecewise>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="max_water_reabs_CD">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <ci> water_in_CD </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> Na_concentration_in_CD </ci>
+                  <ci> water_in_CD </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Na_in_CD </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <times/>
+                        <apply>
+                          <minus/>
+                          <ci> R_cd </ci>
+                        </apply>
+                        <ci> L_cd </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> Na_concentration_in_AscLoH </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="water_out_CD">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <piecewise>
+            <piece>
+              <apply>
+                <minus/>
+                <ci> water_in_CD </ci>
+                <apply>
+                  <times/>
+                  <ci> ADH_water_permeability </ci>
+                  <ci> max_water_reabs_CD </ci>
+                </apply>
+              </apply>
+              <apply>
+                <gt/>
+                <apply>
+                  <minus/>
+                  <ci> water_in_CD </ci>
+                  <apply>
+                    <times/>
+                    <ci> ADH_water_permeability </ci>
+                    <ci> max_water_reabs_CD </ci>
+                  </apply>
+                </apply>
+                <cn> 0 </cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn> 0 </cn>
+            </otherwise>
+          </piecewise>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="urine_flow_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> water_out_CD </ci>
+            <ci> number_of_functional_nephrons </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="daily_urine_flow">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <times/>
+              <ci> urine_flow_rate </ci>
+              <cn type="integer"> 60 </cn>
+            </apply>
+            <cn type="integer"> 24 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_excretion_via_urine">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> Na_out_CD </ci>
+            <ci> number_of_functional_nephrons </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_balance">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <ci> Na_intake_rate </ci>
+            <ci> Na_excretion_via_urine </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="water_balance">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <ci> daily_water_intake </ci>
+            <ci> daily_urine_flow </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="FENA">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Fractional Excretion of Sodium</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <ci> Na_excretion_via_urine </ci>
+            <ci> filtered_Na_load </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Pc_pt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> Pc_pt_mmHg </ci>
+            <ci> mmHg_Nperm2_conv </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Pc_lh_des">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> Pc_lh_des_mmHg </ci>
+            <ci> mmHg_Nperm2_conv </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Pc_lh_asc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> Pc_lh_asc_mmHg </ci>
+            <ci> mmHg_Nperm2_conv </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Pc_dt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> Pc_dt_mmHg </ci>
+            <ci> mmHg_Nperm2_conv </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Pc_cd">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> Pc_cd_mmHg </ci>
+            <ci> mmHg_Nperm2_conv </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_interstitial">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> P_interstitial_mmHg </ci>
+            <ci> mmHg_Nperm2_conv </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="B1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 4 </cn>
+                    <ci> tubular_compliance </ci>
+                  </apply>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+                <cn type="integer"> 128 </cn>
+              </apply>
+              <ci> gamma </ci>
+            </apply>
+            <pi/>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="mean_cd_water_flow">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> water_in_CD </ci>
+              <ci> water_out_CD </ci>
+            </apply>
+            <cn type="integer"> 2 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="B2_cd">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <power/>
+              <ci> Pc_cd </ci>
+              <apply>
+                <times/>
+                <cn type="integer"> 4 </cn>
+                <ci> tubular_compliance </ci>
+              </apply>
+            </apply>
+            <apply>
+              <power/>
+              <ci> Dc_cd </ci>
+              <cn type="integer"> 4 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_in_cd">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <power/>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <cn type="integer"> 0 </cn>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 4 </cn>
+                    <ci> tubular_compliance </ci>
+                  </apply>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <times/>
+                    <ci> B1 </ci>
+                    <ci> B2_cd </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> mean_cd_water_flow </ci>
+                    <cn type="e-notation"> 1 <sep/> 3 </cn>
+                  </apply>
+                </apply>
+                <ci> L_cd </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 4 </cn>
+                  <ci> tubular_compliance </ci>
+                </apply>
+                <cn type="integer"> 1 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_in_cd_mmHg">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> P_in_cd </ci>
+              <ci> P_interstitial </ci>
+            </apply>
+            <ci> mmHg_Nperm2_conv </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="B2_dt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <power/>
+              <ci> Pc_dt </ci>
+              <apply>
+                <times/>
+                <cn type="integer"> 4 </cn>
+                <ci> tubular_compliance </ci>
+              </apply>
+            </apply>
+            <apply>
+              <power/>
+              <ci> Dc_dt </ci>
+              <cn type="integer"> 4 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_in_dt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <power/>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <ci> P_in_cd </ci>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 4 </cn>
+                    <ci> tubular_compliance </ci>
+                  </apply>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <times/>
+                    <ci> B1 </ci>
+                    <ci> B2_dt </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> water_in_DCT </ci>
+                    <cn type="e-notation"> 1 <sep/> 3 </cn>
+                  </apply>
+                </apply>
+                <ci> L_dct </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 4 </cn>
+                  <ci> tubular_compliance </ci>
+                </apply>
+                <cn type="integer"> 1 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_in_dt_mmHg">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> P_in_dt </ci>
+              <ci> P_interstitial </ci>
+            </apply>
+            <ci> mmHg_Nperm2_conv </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="B2_lh_asc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <power/>
+              <ci> Pc_lh_asc </ci>
+              <apply>
+                <times/>
+                <cn type="integer"> 4 </cn>
+                <ci> tubular_compliance </ci>
+              </apply>
+            </apply>
+            <apply>
+              <power/>
+              <ci> Dc_lh </ci>
+              <cn type="integer"> 4 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_in_lh_asc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <power/>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <ci> P_in_dt </ci>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 4 </cn>
+                    <ci> tubular_compliance </ci>
+                  </apply>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <times/>
+                    <ci> B1 </ci>
+                    <ci> B2_lh_asc </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> water_in_AscLoH </ci>
+                    <cn type="e-notation"> 1 <sep/> 3 </cn>
+                  </apply>
+                </apply>
+                <ci> L_lh_asc </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 4 </cn>
+                  <ci> tubular_compliance </ci>
+                </apply>
+                <cn type="integer"> 1 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_in_lh_asc_mmHg">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> P_in_lh_asc </ci>
+              <ci> P_interstitial </ci>
+            </apply>
+            <ci> mmHg_Nperm2_conv </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="A_lh_des">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <ci> effective_AscLoH_Reab_Rate </ci>
+            <apply>
+              <times/>
+              <ci> water_in_DescLoH </ci>
+              <ci> Na_concentration_in_DescLoH </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="B2_lh_des">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <apply>
+                <power/>
+                <ci> Pc_lh_des </ci>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 4 </cn>
+                  <ci> tubular_compliance </ci>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <ci> water_in_DescLoH </ci>
+                <cn type="e-notation"> 1 <sep/> 3 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <power/>
+                <ci> Dc_lh </ci>
+                <cn type="integer"> 4 </cn>
+              </apply>
+              <ci> A_lh_des </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_in_lh_des">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <power/>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <ci> P_in_lh_asc </ci>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 4 </cn>
+                    <ci> tubular_compliance </ci>
+                  </apply>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <times/>
+                  <ci> B1 </ci>
+                  <ci> B2_lh_des </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <times/>
+                      <apply>
+                        <minus/>
+                        <ci> A_lh_des </ci>
+                      </apply>
+                      <ci> L_lh_des </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 4 </cn>
+                  <ci> tubular_compliance </ci>
+                </apply>
+                <cn type="integer"> 1 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_in_lh_des_mmHg">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> P_in_lh_des </ci>
+              <ci> P_interstitial </ci>
+            </apply>
+            <ci> mmHg_Nperm2_conv </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="A_na">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> Na_reabs_per_unit_length </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="flow_integral_pt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> SN_filtered_Na_load </ci>
+              <ci> A_na </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> A_na </ci>
+                  </apply>
+                  <ci> L_pt </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="B2_pt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <power/>
+              <ci> Pc_pt </ci>
+              <apply>
+                <times/>
+                <cn type="integer"> 4 </cn>
+                <ci> tubular_compliance </ci>
+              </apply>
+            </apply>
+            <apply>
+              <power/>
+              <ci> Dc_pt </ci>
+              <cn type="integer"> 4 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="B3_pt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <divide/>
+              <ci> SNGFR_nL_min </ci>
+              <cn type="e-notation"> 1 <sep/> 12 </cn>
+            </apply>
+            <ci> SN_filtered_Na_load </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_in_pt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <power/>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <ci> P_in_lh_des </ci>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 4 </cn>
+                    <ci> tubular_compliance </ci>
+                  </apply>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <times/>
+                    <ci> B1 </ci>
+                    <ci> B2_pt </ci>
+                  </apply>
+                  <ci> B3_pt </ci>
+                </apply>
+                <ci> flow_integral_pt </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 4 </cn>
+                  <ci> tubular_compliance </ci>
+                </apply>
+                <cn type="integer"> 1 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_in_pt_mmHg">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> P_in_pt </ci>
+              <ci> P_interstitial </ci>
+            </apply>
+            <ci> mmHg_Nperm2_conv </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AT1_aldo_int">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <times/>
+              <ci> AT1_aldo_slope </ci>
+              <ci> nominal_equilibrium_AT1_bound_AngII </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AngII_effect_on_aldo">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        AT1-bound AngII effect on Aldosterone</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> AT1_aldo_int </ci>
+            <apply>
+              <times/>
+              <ci> AT1_aldo_slope </ci>
+              <ci> AT1_bound_AngII </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="normalized_aldosterone_level">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <times/>
+              <ci> K_Na_ratio_effect_on_aldo </ci>
+              <ci> AngII_effect_on_aldo </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="md_effect_on_renin_secretion">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Macula Densa Sodium flow effect on renin secretion.        <br/>
+            This relationship is known to be non-linear, and md_renin_tau can be calibrated based on data on changes in renin as a functoin of sodium intake        </p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> md_renin_A </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> md_renin_tau </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> SN_macula_densa_Na_flow_delayed </ci>
+                    <ci> baseline_nephrons </ci>
+                  </apply>
+                  <ci> nom_LoH_Na_outflow </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AT1_bound_AngII_effect_on_PRA">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        AT1-bound AngII feedback on renin secretion</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <power/>
+            <cn type="integer"> 10 </cn>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> AT1_PRC_slope </ci>
+                <apply>
+                  <log/>
+                  <apply>
+                    <divide/>
+                    <ci> AT1_bound_AngII </ci>
+                    <ci> nominal_equilibrium_AT1_bound_AngII </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> AT1_PRC_yint </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="aldo_renin_intercept">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <ci> aldo_renin_slope </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="aldo_effect_on_renin_secretion">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> aldo_renin_slope </ci>
+              <ci> normalized_aldosterone_level </ci>
+            </apply>
+            <ci> aldo_renin_intercept </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="plasma_renin_activity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <times/>
+              <ci> concentration_to_renin_activity_conversion_plasma </ci>
+              <ci> plasma_renin_concentration </ci>
+            </apply>
+            <ci> DRI_effect_on_PRA </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="renin_secretion_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <times/>
+              <apply>
+                <times/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <ln/>
+                        <cn type="integer"> 2 </cn>
+                      </apply>
+                      <ci> renin_half_life </ci>
+                    </apply>
+                    <ci> nominal_equilibrium_PRC </ci>
+                  </apply>
+                  <ci> AT1_bound_AngII_effect_on_PRA </ci>
+                </apply>
+                <ci> md_effect_on_renin_secretion </ci>
+              </apply>
+              <ci> HCTZ_effect_on_renin_secretion </ci>
+            </apply>
+            <ci> aldo_effect_on_renin_secretion </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="AngI">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <ci> plasma_renin_activity </ci>
+              <apply>
+                <times/>
+                <ci> AngI </ci>
+                <apply>
+                  <plus/>
+                  <ci> chymase_activity </ci>
+                  <ci> ACE_activity </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> AngI </ci>
+              <ci> AngI_degradation_rate </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="AngII">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> AngI </ci>
+                  <apply>
+                    <plus/>
+                    <ci> chymase_activity </ci>
+                    <ci> ACE_activity </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> AngII </ci>
+                  <ci> AngII_degradation_rate </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> AngII </ci>
+                <ci> AT1_receptor_binding_rate </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> AngII </ci>
+              <ci> AT2_receptor_binding_rate </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="AT1_bound_AngII">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> AngII </ci>
+              <ci> AT1_receptor_binding_rate </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> AT1_bound_AngII_degradation_rate </ci>
+              <ci> AT1_bound_AngII </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="AT2_bound_AngII">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> AngII </ci>
+              <ci> AT2_receptor_binding_rate </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> AT2_bound_AngII_degradation_rate </ci>
+              <ci> AT2_bound_AngII </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="plasma_renin_concentration">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <ci> renin_secretion_rate </ci>
+            <apply>
+              <times/>
+              <ci> plasma_renin_concentration </ci>
+              <ci> renin_degradation_rate </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="blood_volume_L">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> C_water_intake_ecf_volume </ci>
+                <ci> water_intake </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> C_urine_flow_ecf_volume </ci>
+                <ci> urine_flow_rate </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> Q_water </ci>
+              <apply>
+                <minus/>
+                <ci> Na_concentration </ci>
+                <ci> ECF_Na_concentration </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="extracellular_fluid_volume">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Change in Extracellular fluid volume over time is determined by the different between water intake and urine outflow</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> Q_water </ci>
+            <apply>
+              <minus/>
+              <ci> ECF_Na_concentration </ci>
+              <ci> Na_concentration </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="sodium_amount">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Change in total body sodium over time is determined by the different between sodium intake and excretion</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> C_na_excretion_na_amount </ci>
+                <ci> Na_excretion_via_urine </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> C_na_intake_na_amount </ci>
+                <ci> Na_intake_rate </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> Q_Na </ci>
+              <apply>
+                <minus/>
+                <ci> ECF_Na_concentration </ci>
+                <ci> Na_concentration </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="ECF_sodium_amount">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> Q_Na </ci>
+            <apply>
+              <minus/>
+              <ci> Na_concentration </ci>
+              <ci> ECF_Na_concentration </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="tubulo_glomerular_feedback_effect">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> C_tgf </ci>
+            <apply>
+              <minus/>
+              <ci> tubulo_glomerular_feedback_signal </ci>
+              <ci> tubulo_glomerular_feedback_effect </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="normalized_aldosterone_level_delayed">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> C_aldo_secretion </ci>
+            <apply>
+              <minus/>
+              <ci> normalized_aldosterone_level </ci>
+              <ci> normalized_aldosterone_level_delayed </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="preafferent_pressure_autoreg_signal">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <cn type="integer"> 500 </cn>
+            <apply>
+              <minus/>
+              <ci> preafferent_pressure_autoreg_function </ci>
+              <ci> preafferent_pressure_autoreg_signal </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="glomerular_pressure_autoreg_signal">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <cn type="integer"> 500 </cn>
+            <apply>
+              <minus/>
+              <ci> glomerular_pressure_autoreg_function </ci>
+              <ci> glomerular_pressure_autoreg_signal </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="cardiac_output_delayed">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> C_cardiac_output_delayed </ci>
+            <apply>
+              <minus/>
+              <ci> cardiac_output </ci>
+              <ci> cardiac_output_delayed </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="CO_error">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Error signals for PI controllers of cardiac output</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> C_co_error </ci>
+            <apply>
+              <minus/>
+              <ci> cardiac_output </ci>
+              <ci> CO_nom </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Na_concentration_error">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        Error signals for PI controllers of sodium concentration</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> C_Na_error </ci>
+            <apply>
+              <minus/>
+              <ci> Na_concentration </ci>
+              <ci> ref_Na_concentration </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="normalized_vasopressin_concentration_delayed">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        This equation allows a delay between the secretion of vasopression and its effect on water intake and tubular water reabsorption</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> C_vasopressin_delay </ci>
+            <apply>
+              <minus/>
+              <ci> normalized_vasopressin_concentration </ci>
+              <ci> normalized_vasopressin_concentration_delayed </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="F0_TGF">
+        <notes>
+          <p xmlns="http://www.w3.org/1999/xhtml">
+        TGF resetting. If C_tgf_reset = 0, no TGF resetting occurs. If it is greater than zero, the setpoint will change over time and will eventually come to equal the ambient MD sodium flow rate.</p>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> C_tgf_reset </ci>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> SN_macula_densa_Na_flow </ci>
+                <ci> baseline_nephrons </ci>
+              </apply>
+              <ci> F0_TGF </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="P_bowmans">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> C_P_bowmans </ci>
+            <apply>
+              <minus/>
+              <ci> P_in_pt_mmHg </ci>
+              <ci> P_bowmans </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="oncotic_pressure_difference">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> C_P_oncotic </ci>
+            <apply>
+              <minus/>
+              <ci> oncotic_pressure_avg </ci>
+              <ci> oncotic_pressure_difference </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="SN_macula_densa_Na_flow_delayed">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> C_md_flow </ci>
+            <apply>
+              <minus/>
+              <ci> SN_macula_densa_Na_flow </ci>
+              <ci> SN_macula_densa_Na_flow_delayed </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="serum_creatinine">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <minus/>
+            <ci> creatinine_synthesis_rate </ci>
+            <ci> creatinine_clearance_rate </ci>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>
