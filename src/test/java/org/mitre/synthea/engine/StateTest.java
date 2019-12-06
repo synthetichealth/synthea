@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.engine.Components.SampledData;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.helpers.Utilities;
@@ -497,12 +498,19 @@ public class StateTest {
     State encounter = module.getState("SomeEncounter");
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
+    
+    State physiology = module.getState("Simulate_CVS");
+    assertTrue(physiology.process(person, time));
+    person.history.add(physiology);
 
     State vitalObs = module.getState("VitalSignObservation");
     assertTrue(vitalObs.process(person, time));
 
     State codeObs = module.getState("CodeObservation");
     assertTrue(codeObs.process(person, time));
+    
+    State sampleObs = module.getState("SampledDataObservation");
+    assertTrue(sampleObs.process(person, time));
 
     HealthRecord.Observation vitalObservation = person.record.encounters.get(0).observations.get(0);
     assertEquals(120.0, vitalObservation.value);
@@ -525,6 +533,17 @@ public class StateTest {
     Code codeObsCode = codeObservation.codes.get(0);
     assertEquals("24356-8", codeObsCode.code);
     assertEquals("Urinalysis complete panel - Urine", codeObsCode.display);
+    
+    HealthRecord.Observation sampleObservation = person.record.encounters.get(0)
+        .observations.get(2);
+    assertEquals("procedure", sampleObservation.category);
+    assertEquals("mmHg", sampleObservation.unit);
+    assertTrue(sampleObservation.value instanceof SampledData);
+    SampledData sampledData = (SampledData) sampleObservation.value;
+    assertEquals("P_ao", sampledData.attributes.get(0));
+    assertEquals("P_lv", sampledData.attributes.get(1));
+    assertEquals("P_rv", sampledData.attributes.get(2));
+    assertEquals(3, sampledData.series.size());
   }
 
   @Test
