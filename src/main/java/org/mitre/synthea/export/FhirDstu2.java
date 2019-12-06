@@ -930,13 +930,23 @@ public class FhirDstu2 {
     
     recordData.setOrigin(origin);
     
-    recordData.setPeriod(new BigDecimal(value.dataLists.get(0).getPeriod()));
-    recordData.setFactor(new BigDecimal(value.factor));
-    recordData.setLowerLimit(new BigDecimal(value.lowerLimit));
-    recordData.setUpperLimit(new BigDecimal(value.upperLimit));
-    recordData.setDimensions(value.dataLists.size());
+    // Use the period from the first series. They should all be the same.
+    recordData.setPeriod(value.series.get(0).getPeriod());
     
-    int numSamples = value.dataLists.get(0).getValues().size();
+    // Set optional fields if they were provided
+    if (value.factor != null) {
+      recordData.setFactor(value.factor);
+    }
+    if (value.lowerLimit != null) {
+      recordData.setLowerLimit(value.lowerLimit);
+    }
+    if (value.upperLimit != null) {
+      recordData.setUpperLimit(value.upperLimit);
+    }
+    
+    recordData.setDimensions(value.series.size());
+    
+    int numSamples = value.series.get(0).getValues().size();
     
     DecimalFormat df;
     
@@ -949,7 +959,7 @@ public class FhirDstu2 {
     // Build the data string from all list values
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < numSamples; i++) {
-      for (double num : value.dataLists.get(i).getValues()) {
+      for (double num : value.series.get(i).getValues()) {
         sb.append(df.format(num));
         sb.append(" ");
       }

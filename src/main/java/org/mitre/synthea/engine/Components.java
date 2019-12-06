@@ -1,5 +1,6 @@
 package org.mitre.synthea.engine;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -88,12 +89,12 @@ public abstract class Components {
   }
   
   public static class SampledData {
-    public double originValue; // Zero value
-    public double factor; // Multiply data by this before adding to origin
-    public double lowerLimit; // Lower limit of detection
-    public double upperLimit; // Upper limit of detection
-    public List<String> timeSeriesAttributes; // Person attributes containing TimeSeriesData objects
-    public transient List<TimeSeriesData> dataLists; // List of actual series data collections
+    public Double originValue; // Zero value
+    public Double factor; // Multiply data by this before adding to origin
+    public Double lowerLimit; // Lower limit of detection
+    public Double upperLimit; // Upper limit of detection
+    public List<String> attributes; // Person attributes containing TimeSeriesData objects
+    public transient List<TimeSeriesData> series; // List of actual series data collections
     
     // Format for the output decimal numbers
     // See https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html
@@ -104,10 +105,12 @@ public abstract class Components {
      * the provided timeSeriesAttributes values.
      * @param person Person to get time series data from
      */
-    public void setDataLists(Person person) {
+    public void setSeriesData(Person person) {
       int dataLen = 0;
       double dataPeriod = 0;
-      for (String attr : timeSeriesAttributes) {
+      series = new ArrayList<TimeSeriesData>(attributes.size());
+      
+      for (String attr : attributes) {
         TimeSeriesData data = (TimeSeriesData) person.attributes.get(attr);
         if (dataLen == 0) {
           dataLen = data.getValues().size();
@@ -116,18 +119,18 @@ public abstract class Components {
           // Verify that each series is consistent in length
           if (data.getValues().size() != dataLen) {
             throw new IllegalArgumentException("Provided series ["
-                + StringUtils.join(timeSeriesAttributes, ", ")
+                + StringUtils.join(attributes, ", ")
                 + "] have inconsistent lengths!");
           }
           
           // Verify that each series has identical period
           if (data.getPeriod() != dataPeriod) {
             throw new IllegalArgumentException("Provided series ["
-                + StringUtils.join(timeSeriesAttributes, ", ")
+                + StringUtils.join(attributes, ", ")
                 + "] have inconsistent periods!");
           }
         }
-        dataLists.add(data);
+        series.add(data);
       }
     }
   }

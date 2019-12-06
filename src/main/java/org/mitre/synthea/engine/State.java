@@ -1405,12 +1405,8 @@ public abstract class State implements Cloneable {
       } else if (threadExpProcessor.get() != null) {
         value = threadExpProcessor.get().evaluate(person, time);
       } else if (sampledData != null) {
-        // If factor wasn't provided, default to 1
-        if (sampledData.factor == 0) {
-          sampledData.factor = 1;
-        }
         // Capture the data lists from person attributes
-        sampledData.setDataLists(person);
+        sampledData.setSeriesData(person);
         value = sampledData;
       }
       HealthRecord.Observation observation = person.record.observation(time, primaryCode, value);
