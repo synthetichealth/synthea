@@ -89,7 +89,7 @@ public abstract class Components {
   }
   
   public static class SampledData {
-    public Double originValue; // Zero value
+    public double originValue; // Zero value
     public Double factor; // Multiply data by this before adding to origin
     public Double lowerLimit; // Lower limit of detection
     public Double upperLimit; // Upper limit of detection
