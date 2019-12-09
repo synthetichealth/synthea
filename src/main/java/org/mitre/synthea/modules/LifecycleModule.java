@@ -19,6 +19,7 @@ import org.mitre.synthea.helpers.PhysiologyValueGenerator;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.SimpleYML;
+import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.BloodPressureValueGenerator.SysDias;
 import org.mitre.synthea.world.agents.Person;
@@ -240,7 +241,7 @@ public final class LifecycleModule extends Module {
         new BloodPressureValueGenerator(person, SysDias.SYSTOLIC));
     person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE,
         new BloodPressureValueGenerator(person, SysDias.DIASTOLIC));
-    
+
     if (ENABLE_PHYSIOLOGY_GENERATORS) {
       List<PhysiologyValueGenerator> physioGenerators = PhysiologyValueGenerator.loadAll(person);
       
@@ -672,6 +673,10 @@ public final class LifecycleModule extends Module {
       BiometricsConfig.ints("cardiovascular.oxygen_saturation.normal");
   private static final int[] BLOOD_OXYGEN_SATURATION_HYPOXEMIA =
       BiometricsConfig.ints("cardiovascular.oxygen_saturation.hypoxemia");
+  private static final double[] HEART_RATE_NORMAL =
+      BiometricsConfig.doubles("cardiovascular.heart_rate.normal");
+  private static final double[] RESPIRATION_RATE_NORMAL =
+      BiometricsConfig.doubles("respiratory.respiration_rate.normal");
 
   /**
    * Calculate this person's vital signs, 
@@ -773,6 +778,19 @@ public final class LifecycleModule extends Module {
     person.setVitalSign(VitalSign.POTASSIUM, person.rand(POTASSIUM_RANGE));
     person.setVitalSign(VitalSign.CARBON_DIOXIDE, person.rand(CO2_RANGE));
     person.setVitalSign(VitalSign.SODIUM, person.rand(SODIUM_RANGE));
+
+    long timestep = Long.parseLong(Config.get("generate.timestep"));
+    double heartStart = person.rand(HEART_RATE_NORMAL);
+    double heartEnd = person.rand(HEART_RATE_NORMAL);
+    person.setVitalSign(VitalSign.HEART_RATE,
+        new TrendingValueGenerator(person, 1.0, heartStart, heartEnd,
+            time, time + timestep, HEART_RATE_NORMAL[0], HEART_RATE_NORMAL[1]));
+
+    double respirationStart = person.rand(RESPIRATION_RATE_NORMAL);
+    double respirationEnd = person.rand(RESPIRATION_RATE_NORMAL);
+    person.setVitalSign(VitalSign.RESPIRATION_RATE,
+        new TrendingValueGenerator(person, 1.0, respirationStart, respirationEnd,
+            time, time + timestep, RESPIRATION_RATE_NORMAL[0], RESPIRATION_RATE_NORMAL[1]));
   }
 
   /**

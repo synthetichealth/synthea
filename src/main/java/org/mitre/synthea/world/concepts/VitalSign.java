@@ -28,7 +28,9 @@ public enum VitalSign {
   @SerializedName("HDL") HDL, 
   @SerializedName("Microalbumin Creatinine Ratio") MICROALBUMIN_CREATININE_RATIO, 
   @SerializedName("EGFR") EGFR,
-  @SerializedName("Left ventricular Ejection fraction") LVEF;
+  @SerializedName("Left ventricular Ejection fraction") LVEF,
+  @SerializedName("Heart Rate") HEART_RATE,
+  @SerializedName("Respiration Rate") RESPIRATION_RATE;
 
   /**
    * Name of the VitalSign. Cached as a string for better lookup performance.
