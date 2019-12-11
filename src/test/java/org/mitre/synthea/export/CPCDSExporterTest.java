@@ -27,7 +27,7 @@ public class CPCDSExporterTest {
   public void testCPCDSExport() throws Exception {
     TestHelper.exportOff();
     Config.set("exporter.cpcds.export", "true");
-    Config.set("exporter.csv.folder_per_run", "false");
+    Config.set("exporter.cpcds.folder_per_run", "false");
     File tempOutputFolder = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
 
@@ -66,6 +66,10 @@ public class CPCDSExporterTest {
       count++;
     }
 
-    assertEquals("Expected 3 CSV files in the output directory, found " + count, 3, count);
+    if (Boolean.parseBoolean(Config.get("exporter.cpcds.postprocess"))) {
+    	assertEquals("Expected 3 CSV files in the output directory, found " + count, 4, count);
+    } else {
+    	assertEquals("Expected 3 CSV files in the output directory, found " + count, 3, count);
+    }
   }
 }

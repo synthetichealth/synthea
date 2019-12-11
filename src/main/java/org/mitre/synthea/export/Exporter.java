@@ -189,7 +189,6 @@ public abstract class Exporter {
         Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
         writeNewFile(outFilePath, bundleJson);
       }
-      FhirGroupExporterR4.addPatient((String) person.attributes.get(Person.ID));
     }
     if (Boolean.parseBoolean(Config.get("exporter.ccda.export"))) {
       String ccdaXml = CCDAExporter.export(person, stopTime);
@@ -204,13 +203,13 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
-	if (Boolean.parseBoolean(Config.get("exporter.cpcds.export"))) {
+    if (Boolean.parseBoolean(Config.get("exporter.cpcds.export"))) {
       try {
         CPCDSExporter.getInstance().export(person, stopTime);
       } catch (IOException e) {
         e.printStackTrace();
       }
-	}
+    }
     if (Boolean.parseBoolean(Config.get("exporter.text.export"))) {
       try {
         TextExporter.exportAll(person, fileTag, stopTime);
@@ -301,14 +300,6 @@ public abstract class Exporter {
    */
   public static void runPostCompletionExports(Generator generator) {
     String bulk = Config.get("exporter.fhir.bulk_data");
-
-    // Before we force bulk data to be off...
-    try {
-      FhirGroupExporterR4.exportAndSave(generator.stop);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
     Config.set("exporter.fhir.bulk_data", "false");
     try {
       HospitalExporterR4.export(generator.stop);
@@ -371,6 +362,16 @@ public abstract class Exporter {
 
     if (Boolean.parseBoolean(Config.get("exporter.cdw.export"))) {
       CDWExporter.getInstance().writeFactTables();
+    }
+    
+    if (Boolean.parseBoolean(Config.get("exporter.cpcds.postprocess"))) {
+    	try {
+//      	CPCDSPostProcess CPCDSpp = new CPCDSPostProcess();
+//				TODO: Call any post processing methods from the CPCDSPostPocess class
+      } catch (Exception e) {
+      	System.err.println("CPCDS Patient post processing failed!");
+      	e.printStackTrace();
+      }
     }
 
     if (Boolean.parseBoolean(Config.get("exporter.csv.export"))) {
