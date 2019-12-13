@@ -1,0 +1,50 @@
+{
+  "3": {
+    "correlation": 0.768,
+    "diff": 0.08
+  },
+  "4": {
+    "correlation": 0.836,
+    "diff": 0.094
+  },
+  "5": {
+    "correlation": 0.866,
+    "diff": 0.019
+  },
+  "6": {
+    "correlation": 0.887,
+    "diff": -0.045
+  },
+  "7": {
+    "correlation": 0.903,
+    "diff": 0.022
+  },
+  "8": {
+    "correlation": 0.923,
+    "diff": 0.080
+  },
+  "9": {
+    "correlation": 0.935,
+    "diff": -0.039
+  },
+  "10": {
+    "correlation": 0.944,
+    "diff": 0.068
+  },
+  "11": {
+    "correlation": 0.947,
+    "diff": 0.066
+  },
+  "12": {
+    "correlation": 0.945,
+    "diff": 0
+  },
+  "13": {
+    "correlation": 0.944,
+    "diff": 0.024
+  },
+  "14": {
+    "correlation": 0.945,
+    "diff": -0.018
+  }
+}
