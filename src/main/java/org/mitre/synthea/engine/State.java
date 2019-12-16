@@ -485,11 +485,8 @@ public abstract class State implements Cloneable, Serializable {
     private Object value;
     private String expression;
     private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
-
-    @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-      
+    
+    private ThreadLocal<ExpressionProcessor> getExpProcessor() {
       // If the ThreadLocal instance hasn't been created yet, create it now
       if (threadExpProcessor == null) {
         threadExpProcessor = new ThreadLocal<ExpressionProcessor>();
@@ -500,6 +497,13 @@ public abstract class State implements Cloneable, Serializable {
         threadExpProcessor.set(new ExpressionProcessor(this.expression));
       }
 
+      return threadExpProcessor;
+    }
+
+    @Override
+    protected void initialize(Module module, String name, JsonObject definition) {
+      super.initialize(module, name, definition);
+      
       // special handling for integers
       if (value instanceof Double) {
         double doubleVal = (double)value;
@@ -522,8 +526,9 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
-      if (threadExpProcessor.get() != null) {
-        value = threadExpProcessor.get().evaluate(person, time);
+      ThreadLocal<ExpressionProcessor> expProcessor = getExpProcessor();
+      if (expProcessor.get() != null) {
+        value = expProcessor.get().evaluate(person, time);
       }
 
       if (value != null) {
