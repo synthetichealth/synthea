@@ -1,5 +1,6 @@
 package org.mitre.synthea.export;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import ca.uhn.fhir.context.FhirContext;
@@ -10,12 +11,14 @@ import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.Condition;
 import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.dstu3.model.Quantity;
+import org.hl7.fhir.dstu3.model.SampledData;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -23,8 +26,15 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mockito.Mockito;
 
 /**
  * Uses HAPI FHIR project to validate FHIR export. http://hapifhir.io/doc_validation.html
@@ -195,6 +205,64 @@ public class FHIRSTU3ExporterTest {
     return (con.hasAbatement()
         && con.getClinicalStatus() != Condition.ConditionClinicalStatus.ACTIVE)
         || !con.hasAbatement();
+  }
+  
+  @Test
+  public void testSampledDataExport() throws Exception {
+
+    Person person = new Person(0L);
+    person.attributes.put(Person.GENDER, "F");
+    person.attributes.put(Person.FIRST_LANGUAGE, "spanish");
+    person.attributes.put(Person.RACE, "other");
+    person.attributes.put(Person.ETHNICITY, "hispanic");
+    person.attributes.put(Person.INCOME, Integer.parseInt(Config
+        .get("generate.demographics.socioeconomic.income.poverty")) * 2);
+    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+
+    person.history = new LinkedList<>();
+    Provider mock = Mockito.mock(Provider.class);
+    mock.uuid = "Mock-UUID";
+    person.setProvider(EncounterType.AMBULATORY, mock);
+    person.setProvider(EncounterType.WELLNESS, mock);
+    person.setProvider(EncounterType.EMERGENCY, mock);
+    person.setProvider(EncounterType.INPATIENT, mock);
+
+    Long time = System.currentTimeMillis();
+    long birthTime = time - Utilities.convertTime("years", 35);
+    person.attributes.put(Person.BIRTHDATE, birthTime);
+
+    Payer.loadNoInsurance();
+    for (int i = 0; i < person.payerHistory.length; i++) {
+      person.setPayerAtAge(i, Payer.noInsurance);
+    }
+    
+    Module module = TestHelper.getFixture("observation.json");
+    
+    State encounter = module.getState("SomeEncounter");
+    assertTrue(encounter.process(person, time));
+    person.history.add(encounter);
+    
+    State physiology = module.getState("Simulate_CVS");
+    assertTrue(physiology.process(person, time));
+    person.history.add(physiology);
+    
+    State sampleObs = module.getState("SampledDataObservation");
+    assertTrue(sampleObs.process(person, time));
+    person.history.add(sampleObs);
+    
+    FhirContext ctx = FhirContext.forDstu3();
+    IParser parser = ctx.newJsonParser().setPrettyPrint(true);
+    String fhirJson = FhirStu3.convertToFHIRJson(person, System.currentTimeMillis());
+    Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
+    
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      if (entry.getResource() instanceof Observation) {
+        Observation obs = (Observation) entry.getResource();
+        assertTrue(obs.getValue() instanceof SampledData);
+        SampledData data = (SampledData) obs.getValue();
+        assertEquals(3, (int) data.getDimensions());
+      }
+    }
   }
 
 }
