@@ -2,12 +2,13 @@ package org.mitre.synthea.helpers;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class TimeSeriesData {
   /** Provides a collection of time series values as well as sampling metadata
    *  concerning those values.
    */
-  private Collection<Double> values;
+  private List<Double> values;
   private double period; // number of seconds between samples
   
   public TimeSeriesData(double period) {
@@ -15,7 +16,7 @@ public class TimeSeriesData {
     this.setPeriod(period);
   }
   
-  public TimeSeriesData(Collection<Double> values, double period) {
+  public TimeSeriesData(List<Double> values, double period) {
     this.setValues(values);
     this.setPeriod(period);
   }
@@ -25,11 +26,11 @@ public class TimeSeriesData {
     this.setPeriod(period);
   }
   
-  public Collection<Double> getValues() {
+  public List<Double> getValues() {
     return values;
   }
 
-  public void setValues(Collection<Double> values) {
+  public void setValues(List<Double> values) {
     this.values = values;
   }
   
