@@ -1,12 +1,13 @@
 package org.mitre.synthea.world.concepts;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
-import java.util.HashMap;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -165,7 +166,8 @@ public class PediatricGrowthTrajectory {
     try {
       String json = Utilities.readResource(filename);
       Gson g = new Gson();
-      return g.fromJson(json, HashMap.class);
+      Type hashType = new TypeToken<Map<String, YearInformation>>() {}.getType();
+      return g.fromJson(json, hashType);
     } catch (Exception e) {
       System.err.println("ERROR: unable to load json: " + filename);
       e.printStackTrace();
