@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Random;
@@ -39,7 +40,8 @@ public class Utilities {
       case "days":
         return TimeUnit.DAYS.toMillis(value);
       case "years":
-        return TimeUnit.DAYS.toMillis((long) 365.25 * value);
+        BigDecimal vbd = new BigDecimal(value);
+        return TimeUnit.DAYS.toMillis(vbd.multiply(new BigDecimal(365.25)).longValue());
       case "months":
         return TimeUnit.DAYS.toMillis(30 * value);
       case "weeks":

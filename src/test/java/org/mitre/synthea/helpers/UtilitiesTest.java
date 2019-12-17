@@ -28,7 +28,8 @@ public class UtilitiesTest {
     int gap = 75;
     long time = System.currentTimeMillis();
     int year = Utilities.getYear(time);
-    long earlierTime = time - Utilities.convertTime("years", gap);
+    long seventyFiveYears =  Utilities.convertTime("years", gap);
+    long earlierTime = time - seventyFiveYears;
     int earlierYear = Utilities.getYear(earlierTime);
     assertEquals(gap, (year - earlierYear));
   }

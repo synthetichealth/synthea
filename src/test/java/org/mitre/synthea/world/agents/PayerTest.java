@@ -528,6 +528,7 @@ public class PayerTest {
     for (int year = 0; year <= 55; year++) {
       ((Map<Integer, Double>) person.attributes.get("QOL")).put(2000 + year, 1.0);
       long currentTime = startTime + Utilities.convertTime("years", year);
+      currentTime = currentTime - (year * 60 * 60 * 6 * 1000);
       healthInsuranceModule.process(person, currentTime);
     }
     int totalYearsCovered = testPrivatePayer1.getNumYearsCovered()
