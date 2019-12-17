@@ -99,6 +99,7 @@ import java.util.UUID;
 
 import org.mitre.synthea.engine.Components;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
@@ -956,10 +957,10 @@ public class FhirDstu2 {
       df = new DecimalFormat();
     }
     
-    // Build the data string from all list values
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < numSamples; i++) {
-      for (double num : value.series.get(i).getValues()) {
+      for (TimeSeriesData series : value.series) {
+        double num = series.getValues().get(i);
         sb.append(df.format(num));
         sb.append(" ");
       }

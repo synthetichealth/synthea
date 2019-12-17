@@ -127,6 +127,7 @@ import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 import org.mitre.synthea.engine.Components;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
+import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Payer;
@@ -760,7 +761,8 @@ public class FhirR4 {
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource().fhirType().equals("Organization")) {
         Organization org = (Organization) entry.getResource();
-        if (org.getIdentifierFirstRep().getValue().equals(provider.getResourceID())) {
+        if (org.getIdentifierFirstRep().getValue() != null
+            && org.getIdentifierFirstRep().getValue().equals(provider.getResourceID())) {
           return entry.getFullUrl();
         }
       }
@@ -1587,7 +1589,8 @@ public class FhirR4 {
     // Build the data string from all list values
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < numSamples; i++) {
-      for (double num : value.series.get(i).getValues()) {
+      for (TimeSeriesData series : value.series) {
+        double num = series.getValues().get(i);
         sb.append(df.format(num));
         sb.append(" ");
       }

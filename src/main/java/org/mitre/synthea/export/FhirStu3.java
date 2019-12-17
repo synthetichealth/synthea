@@ -110,6 +110,7 @@ import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 import org.mitre.synthea.engine.Components;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
+import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Payer;
@@ -1664,6 +1665,8 @@ public class FhirStu3 {
       return new Quantity().setValue(bigVal)
           .setCode(unit).setSystem(UNITSOFMEASURE_URI)
           .setUnit(unit);
+    } else if (value instanceof Components.SampledData) {
+      return mapValueToSampledData((Components.SampledData) value, unit);
     } else {
       throw new IllegalArgumentException("unexpected observation value class: "
           + value.getClass().toString() + "; " + value);
@@ -1719,7 +1722,8 @@ public class FhirStu3 {
     // Build the data string from all list values
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < numSamples; i++) {
-      for (double num : value.series.get(i).getValues()) {
+      for (TimeSeriesData series : value.series) {
+        double num = series.getValues().get(i);
         sb.append(df.format(num));
         sb.append(" ");
       }
