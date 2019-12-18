@@ -278,6 +278,7 @@ public class Provider implements QuadTreeElement, Serializable {
     providerList.clear();
     statesLoaded.clear();
     providerMap = generateQuadTree();
+    providerFinder = buildProviderFinder();
     loaded = 0;
   }
 

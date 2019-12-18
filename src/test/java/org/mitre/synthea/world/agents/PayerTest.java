@@ -490,7 +490,7 @@ public class PayerTest {
     assertEquals(totalCost, person.getHealthcareExpenses(), 0.001);
   }
 
-  @Ignore @Test(expected = RuntimeException.class)
+  @Test(expected = RuntimeException.class)
   public void determineCoveredCostWithNullPayer() {
 
     person = new Person(0L);

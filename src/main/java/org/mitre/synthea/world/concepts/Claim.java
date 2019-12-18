@@ -84,9 +84,7 @@ public class Claim implements Serializable {
     // Update the Provider's Revenue if this is an encounter.
     if (mainEntry instanceof Encounter) {
       Encounter e = (Encounter) mainEntry;
-      if (e.provider != null) {
-        e.provider.addRevenue(totalCost);
-      }
+      e.provider.addRevenue(totalCost);
     }
     // Update the Claim.
     this.coveredCost = costToPayer;
