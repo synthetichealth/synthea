@@ -119,6 +119,14 @@ jacocoTestReport {
 
 check.dependsOn jacocoTestReport
 
+task modulelist(type: JavaExec) {
+  group "Application"
+  description "Generate a list of known Synthea modules"
+  classpath sourceSets.main.runtimeClasspath
+  main = "org.mitre.synthea.helpers.Modules"
+
+}
+
 task graphviz(type: JavaExec) {
   group 'Application'
   description 'Generate rule visualization'
