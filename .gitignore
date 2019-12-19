@@ -6,6 +6,10 @@
 /build/**
 bin/**
 
+# Intellij handling
+.idea/*
+out/*
+
 /.gradle/
 /bin/
 

@@ -3,6 +3,11 @@ package org.mitre.synthea.world.concepts;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Clinician;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
@@ -16,11 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
-import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Clinician;
-import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.Provider;
 
 /**
  * HealthRecord contains all the coded entries in a person's health record. This
@@ -45,17 +45,39 @@ public class HealthRecord {
     /** The human-readable description of the code. */
     public String display;
 
+    /** The Codes System that the Display Value Comes from (e.g. LOINC, RxNorm, SNOMED).
+     * The system might not match if using the SnomedConversion.java class in the case
+     * that a code translation was found but not a display value for that code.
+     */
+    public String displaySystem;
+
     /**
      * Create a new code.
      *
      * @param system  the URI identifier of the code system
      * @param code    the code itself
-     * @param display human-readable description of the coe
+     * @param display human-readable description of the code
      */
     public Code(String system, String code, String display) {
       this.system = system;
       this.code = code;
       this.display = display;
+      this.displaySystem = system;
+    }
+
+    /**
+     * Constructor to make a new code that includes a display system value.
+     *
+     * @param system the URI identifier of the code system
+     * @param code the code itself
+     * @param display human-readable description of the code
+     * @param displaySystem the URI identifier of the display code system
+     */
+    public Code(String system, String code, String display, String displaySystem) {
+      this.system = system;
+      this.code = code;
+      this.display = display;
+      this.displaySystem = displaySystem;
     }
 
     /**
@@ -68,10 +90,20 @@ public class HealthRecord {
       this.system = definition.get("system").getAsString();
       this.code = definition.get("code").getAsString();
       this.display = definition.get("display").getAsString();
+      this.displaySystem = definition.get("display").getAsString();
     }
 
     public boolean equals(Code other) {
       return this.system.equals(other.system) && this.code.equals(other.code);
+    }
+
+    /**
+     * Checks to see if the display coding system is the same as the code coding system.
+     *
+     * @return true if both are the same (e.g., SNOMED-CT and SNOMED-CT)
+     */
+    public boolean equalsSystemDisplaySystem() {
+      return this.system.equals(this.displaySystem);
     }
 
     public String toString() {
@@ -111,6 +143,7 @@ public class HealthRecord {
     public String type;
     public List<Code> codes;
     private BigDecimal cost;
+    public ClaimCosts claimLineCosts;
 
     /**
      * Constructor for Entry.
@@ -119,6 +152,7 @@ public class HealthRecord {
       this.start = start;
       this.type = type;
       this.codes = new ArrayList<Code>();
+      this.claimLineCosts = new ClaimCosts();
     }
 
     /**
@@ -791,7 +825,7 @@ public class HealthRecord {
   /**
    * Remove Chronic Medication if stopped medication is a Chronic Medication.
    *
-   * @param Primary code (RxNorm) for the medication.
+   * @param type - Primary code (RxNorm) for the medication.
    */
   private void chronicMedicationEnd(String type) {
     if (person.chronicMedications.containsKey(type)) {

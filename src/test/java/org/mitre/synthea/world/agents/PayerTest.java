@@ -1,17 +1,7 @@
 package org.mitre.synthea.world.agents;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
@@ -21,6 +11,15 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 public class PayerTest {
 
@@ -367,9 +366,11 @@ public class PayerTest {
     fakeEncounter.provider = new Provider();
     double totalCost = fakeEncounter.getCost().doubleValue();
     person.record.encounterEnd(0L, EncounterType.WELLNESS);
-    // The total cost should equal the Cost to the Payer summed with the Payer's copay amount.
+    // The total cost should equal the Cost to the Payer summed with
+    // the Payer's copay amount plus patient coinsurance.
     assertEquals(totalCost, testPrivatePayer1.getAmountCovered()
-        + testPrivatePayer1.determineCopay(fakeEncounter), 0.001);
+        + testPrivatePayer1.determineCopay(fakeEncounter)
+        + fakeEncounter.claim.claimCosts.getPatientCoinsurance(), 0.001);
     // The total cost should equal the Payer's uncovered costs plus the Payer's covered costs.
     assertEquals(totalCost, testPrivatePayer1.getAmountCovered()
         + testPrivatePayer1.getAmountUncovered(), 0.001);
@@ -467,12 +468,15 @@ public class PayerTest {
     encounter.codes.add(new Code("SNOMED-CT","705129","Fake SNOMED for null entry"));
     assertTrue(testPrivatePayer1.coversService(encounter.type));
     healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
-    // Person's coverage should equal the cost of the encounter minus the copay.
+    // Person's coverage should equal the cost of the
+    // encounter minus the copay plus patient coinsurance.
     assertEquals(person.getHealthcareCoverage(), encounter.getCost().doubleValue()
-        - testPrivatePayer1.determineCopay(encounter), 0.001);
-    // Person's expenses should equal the copay.
+        - (testPrivatePayer1.determineCopay(encounter)
+        + encounter.claim.claimCosts.getPatientCoinsurance()), 0.001);
+    // Person's expenses should equal the copay plus patient coinsurance.
     assertEquals(person.getHealthcareExpenses(),
-        testPrivatePayer1.determineCopay(encounter), 0.001);
+        (testPrivatePayer1.determineCopay(encounter)
+            + encounter.claim.claimCosts.getPatientCoinsurance()), 0.001);
   }
 
   @Test

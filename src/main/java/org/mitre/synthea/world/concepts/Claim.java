@@ -1,21 +1,28 @@
 package org.mitre.synthea.world.concepts;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 public class Claim {
 
   private Entry mainEntry;
   // The Entries have the actual cost, so the claim has the amount that the payer covered.
+  // Used as amount allowed.
   private double coveredCost;
+  private double uncoveredCost;
+
+  // Claim cost calculations object that factors in deductible
+  public ClaimCosts claimCosts;
   public Payer payer;
   public Person person;
+  public String claimId;
   public List<Entry> items;
 
   /**
@@ -31,6 +38,7 @@ public class Claim {
     }
     // Set the Person.
     this.person = person;
+    this.claimId = UUID.randomUUID().toString();
     // Set the Payer.
     this.payer = this.person.getPayerAtTime(entry.start);
     if (this.payer == null) {
@@ -43,6 +51,7 @@ public class Claim {
       this.payer = Payer.noInsurance;
     }
     this.items = new ArrayList<Entry>();
+    this.claimCosts = new ClaimCosts();
   }
 
   /**
@@ -61,17 +70,26 @@ public class Claim {
     double patientCopay = payer.determineCopay(mainEntry);
     double costToPatient = 0.0;
     double costToPayer = 0.0;
+    this.claimCosts.setOverallCost(totalCost);
 
     // Determine who covers the care and assign the costs accordingly.
     if (this.payer.coversCare(mainEntry)) {
       // Person's Payer covers their care.
-      costToPatient = totalCost > patientCopay ? patientCopay : totalCost;
-      costToPayer = totalCost > patientCopay ? totalCost - patientCopay : 0.0;
+
+      // Calculates costs for payer and patient with deductible
+      // and returns total cost to patient.
+      costToPatient = claimCosts.determineClaimCosts(this);
+      costToPayer = totalCost - costToPatient;
       this.payerCoversEntry(mainEntry);
     }  else {
       // Payer will not cover the care.
+      // Calculates costs for payer and patient with deductible
+      // and returns total cost to patient.  With no insurance,
+      // all costs assigned to patient.  Coinsurance is 100%
+      // patient liability.
       this.payerDoesNotCoverEntry(mainEntry);
-      costToPatient = totalCost;
+      // assigns cost to patient and returns that cost
+      costToPatient = claimCosts.determineClaimCosts(this);
       if (person.canAffordCare(mainEntry)) {
         // Update the person's costs, they get the encounter.
       } else {
@@ -91,6 +109,7 @@ public class Claim {
     }
     // Update the Claim.
     this.coveredCost = costToPayer;
+    this.uncoveredCost = costToPatient;
   }
 
   /**
@@ -105,13 +124,17 @@ public class Claim {
     return additionalCosts;
   }
 
+  public Entry getMainEntry() {
+    return mainEntry;
+  }
+
   /**
    * Returns the total cost of the Claim, including immunizations/procedures tied to the encounter.
    */
   public double getTotalClaimCost() {
     double totalCost = 0.0;
     totalCost += this.getLineItemCosts();
-    totalCost = mainEntry.getCost().doubleValue();
+    totalCost += mainEntry.getCost().doubleValue();
     return totalCost;
   }
 
@@ -120,6 +143,10 @@ public class Claim {
    */
   public double getCoveredCost() {
     return this.coveredCost;
+  }
+
+  public double getUncoveredCost() {
+    return uncoveredCost;
   }
 
   /**
@@ -146,5 +173,9 @@ public class Claim {
     }
     // Results in adding to NO_INSURANCE's costs uncovered, but not their utilization.
     this.payer = Payer.noInsurance;
+  }
+
+  public ClaimCosts getClaimCosts() {
+    return claimCosts;
   }
 }

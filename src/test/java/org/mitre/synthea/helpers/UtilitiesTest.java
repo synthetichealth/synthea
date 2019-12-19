@@ -1,12 +1,13 @@
 package org.mitre.synthea.helpers;
 
+import com.google.gson.JsonPrimitive;
+import org.junit.Test;
+
+import java.util.Date;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import com.google.gson.JsonPrimitive;
-import java.util.Date;
-import org.junit.Test;
 
 public class UtilitiesTest {
 
@@ -23,6 +24,9 @@ public class UtilitiesTest {
     assertTrue(date > year);
   }
 
+  // The convertTime("years",.. function doesn't produce a consistent result (or pass)
+  //  with a date 75 years earlier when run in late December
+  //  fixing the function to round-trip dates correctly would change a lot of other behaviour
   @Test
   public void testYears() {
     int gap = 75;

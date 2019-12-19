@@ -1,5 +1,19 @@
 package org.mitre.synthea.world.agents;
 
+import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.engine.State;
+import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.ConstantValueGenerator;
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.helpers.ValueGenerator;
+import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.HealthRecord.Entry;
+import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
+
 import java.awt.geom.Point2D;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -16,22 +30,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.mitre.synthea.engine.Module;
-import org.mitre.synthea.engine.State;
-import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.helpers.ConstantValueGenerator;
-import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.helpers.ValueGenerator;
-import org.mitre.synthea.helpers.physiology.PhysiologyGeneratorConfig;
-import org.mitre.synthea.helpers.physiology.SimRunner;
-import org.mitre.synthea.world.concepts.HealthRecord;
-import org.mitre.synthea.world.concepts.HealthRecord.Code;
-import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
-import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
-import org.mitre.synthea.world.concepts.HealthRecord.Entry;
-import org.mitre.synthea.world.concepts.VitalSign;
-import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
 public class Person implements Serializable, QuadTreeElement {
   private static final long serialVersionUID = 4322116644425686379L;
@@ -716,6 +714,24 @@ public class Person implements Serializable, QuadTreeElement {
   public void resetDeductible(long time) {
     double deductible = this.getPayerAtTime(time).getDeductible();
     this.attributes.put(Person.DEDUCTIBLE, deductible);
+  }
+
+  /**
+   * Change the deductable to remaining amount
+   *
+   * @param deductible - new amount
+   */
+  public void setDeductible(double deductible) {
+    this.attributes.put(Person.DEDUCTIBLE, deductible);
+  }
+
+  /**
+   * Getter instead of accessing the attribute directly
+   *
+   * @return  (double) for current deductable amount
+   */
+  public double getDeductible() {
+    return ((double) this.attributes.getOrDefault(Person.DEDUCTIBLE, 0.0));
   }
 
   /**

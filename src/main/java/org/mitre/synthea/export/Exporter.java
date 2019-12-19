@@ -2,6 +2,15 @@ package org.mitre.synthea.export;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
+import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.DeathModule;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.Observation;
+import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,16 +25,6 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Predicate;
-
-import org.mitre.synthea.engine.Generator;
-import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.modules.DeathModule;
-import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.HealthRecord;
-import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
-import org.mitre.synthea.world.concepts.HealthRecord.Observation;
-import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 public abstract class Exporter {
   
@@ -204,13 +203,21 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
-	if (Boolean.parseBoolean(Config.get("exporter.cpcds.export"))) {
+    if (Boolean.parseBoolean(Config.get("exporter.cpcds.export"))) {
       try {
         CPCDSExporter.getInstance().export(person, stopTime);
       } catch (IOException e) {
         e.printStackTrace();
       }
-	}
+    }
+    if (Boolean.parseBoolean(Config.get("exporter.healthsparq.cpcds.export"))) {
+      try {
+        CPCDSExporter.getInstance().export(person, stopTime);
+        HealthsparqCPCDSExporter.getInstance().export(person, stopTime);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
     if (Boolean.parseBoolean(Config.get("exporter.text.export"))) {
       try {
         TextExporter.exportAll(person, fileTag, stopTime);

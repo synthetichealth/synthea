@@ -3,6 +3,19 @@ package org.mitre.synthea.helpers;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Sets;
+import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.LibraryManager;
+import org.cqframework.cql.cql2elm.ModelManager;
+import org.cqframework.cql.elm.execution.ExpressionDef;
+import org.cqframework.cql.elm.execution.Library;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.VitalSign;
+import org.opencds.cqf.cql.execution.Context;
+import org.opencds.cqf.cql.execution.CqlLibraryReader;
+import org.simulator.math.odes.MultiTable;
+import org.simulator.math.odes.MultiTable.Block.Column;
+
+import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -22,19 +35,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.xml.bind.JAXBException;
-
-import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.LibraryManager;
-import org.cqframework.cql.cql2elm.ModelManager;
-import org.cqframework.cql.elm.execution.ExpressionDef;
-import org.cqframework.cql.elm.execution.Library;
-import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.VitalSign;
-import org.opencds.cqf.cql.execution.Context;
-import org.opencds.cqf.cql.execution.CqlLibraryReader;
-import org.simulator.math.odes.MultiTable;
-import org.simulator.math.odes.MultiTable.Block.Column;
 
 public class ExpressionProcessor {
   private static final String LIBRARY_NAME = "Synthea";
@@ -58,10 +58,10 @@ public class ExpressionProcessor {
    *  - In: "10 + 3", Out: (Integer)13
    *  - In: "25 / 2", Out: (Double)12.5
    *  - In: "#{age} / 3", Person{age = 27}, Out: (Integer) 9
-   * 
-   * @param expression "CQL-lite" expression, with attribute references wrapped in "#{ attr }"
-   * @param person Person to evaluate expression against.
-   * @param time Timestamp
+   *
+   * @param cql - expression "CQL-lite" expression, with attribute references wrapped in "#{ attr }"
+  //   * @param person Person to evaluate expression against.
+  //   * @param time Timestamp
    * @return result of the expression
    */
 
