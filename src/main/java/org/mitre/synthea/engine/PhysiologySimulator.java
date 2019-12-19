@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.block.BlockBorder;
+import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
@@ -170,6 +172,14 @@ public class PhysiologySimulator {
     private double startTime;
     /** Simulation time in seconds to end charting points. **/
     private double endTime;
+    /** Chart width in pixels **/
+    private int width = 600;
+    /** Chart height in pixels **/
+    private int height = 300;
+    /** Whether the X Axis is visible **/
+    private boolean axisHiddenX = false;
+    /** CWhether the Y Axis is visible **/
+    private boolean axisHiddenY = false;
     
     public String getFilename() {
       return filename;
@@ -242,6 +252,40 @@ public class PhysiologySimulator {
     public void setEndTime(double endTime) {
       this.endTime = endTime;
     }
+
+    public int getWidth() {
+      return width;
+    }
+
+    public void setWidth(int width) {
+      this.width = width;
+    }
+
+    public int getHeight() {
+      return height;
+    }
+
+    public void setHeight(int height) {
+      this.height = height;
+    }
+
+    public boolean isAxisHiddenX() {
+      return axisHiddenX;
+    }
+
+    public void setAxisHiddenX(boolean axisHiddenX) {
+      this.axisHiddenX = axisHiddenX;
+    }
+
+    public boolean isAxisHiddenY() {
+      return axisHiddenY;
+    }
+
+    public void setAxisHiddenY(boolean axisHiddenY) {
+      this.axisHiddenY = axisHiddenY;
+    }
+    
+    
   }
 
   /**
@@ -502,11 +546,11 @@ public class PhysiologySimulator {
   }
   
   /**
-   * Draw a JFreeChart to an image based on values from a MultiTable.
+   * Create a JFreeChart object based on values from a MultiTable.
    * @param table MultiTable to retrieve values from
    * @param config chart configuration options
    */
-  public static void drawChart(MultiTable table, ChartConfig config) {
+  private static JFreeChart createChart(MultiTable table, ChartConfig config) {
     
     // If there's only one series, and there's a title, hide the legend
     
@@ -629,17 +673,51 @@ public class PhysiologySimulator {
     // TODO eventually we can make these more configurable if desired
     XYPlot plot = chart.getXYPlot();
     
+    if (config.isAxisHiddenX()) {
+      plot.getDomainAxis().setVisible(false);
+    }
+    
+    if (config.isAxisHiddenY()) {
+      plot.getRangeAxis().setVisible(false);
+    }
+    
     plot.setRenderer(renderer);
     plot.setBackgroundPaint(Color.white);
     plot.setRangeGridlinesVisible(true);
     plot.setDomainGridlinesVisible(true);
     
+    return chart;
+  }
+  
+  /**
+   * Draw a JFreeChart to an image based on values from a MultiTable.
+   * @param table MultiTable to retrieve values from
+   * @param config chart configuration options
+   */
+  public static void drawChart(MultiTable table, ChartConfig config) {
+    
+    JFreeChart chart = createChart(table, config);
+    
     // Save the chart as a PNG image to the file system
     try {
-      ChartUtils.saveChartAsPNG(new File(config.getFilename()), chart, 600, 300);
+      ChartUtils.saveChartAsPNG(new File(config.getFilename()), chart, config.getWidth(), config.getHeight());
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+  
+  /**
+   * Draw a JFreeChart to a base64 encoded image based on values from a MultiTable.
+   * @param table MultiTable to retrieve values from
+   * @param config chart configuration options
+   * @throws IOException 
+   */
+  public static String drawBase64Chart(MultiTable table, ChartConfig config) throws IOException {
+    
+    JFreeChart chart = createChart(table, config);
+
+    byte[] imgBytes = ChartUtils.encodeAsPNG(chart.createBufferedImage(config.getWidth(), config.getHeight()));
+    return new String(Base64.getEncoder().encode(imgBytes));
   }
   
   /**
