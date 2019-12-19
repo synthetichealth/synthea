@@ -13,6 +13,7 @@ import ca.uhn.fhir.model.dstu2.composite.NarrativeDt;
 import ca.uhn.fhir.model.dstu2.composite.PeriodDt;
 import ca.uhn.fhir.model.dstu2.composite.QuantityDt;
 import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
+import ca.uhn.fhir.model.dstu2.composite.SampledDataDt;
 import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.composite.TimingDt;
 import ca.uhn.fhir.model.dstu2.composite.TimingDt.Repeat;
@@ -88,6 +89,7 @@ import java.awt.geom.Point2D;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -95,7 +97,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.mitre.synthea.engine.Components;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
@@ -899,10 +903,72 @@ public class FhirDstu2 {
       return new QuantityDt().setValue(bigVal)
           .setCode(unit).setSystem(UNITSOFMEASURE_URI)
           .setUnit(unit);
+    } else if (value instanceof Components.SampledData) {
+      return mapValueToSampledData((Components.SampledData) value, unit);
     } else {
       throw new IllegalArgumentException("unexpected observation value class: "
           + value.getClass().toString() + "; " + value);
     }
+  }
+  
+  /**
+   * Maps a Synthea internal SampledData object to the FHIR standard SampledData
+   * representation.
+   * 
+   * @param value Synthea internal SampledData instance
+   * @param unit Observation unit value
+   * @return
+   */
+  static SampledDataDt mapValueToSampledData(
+      Components.SampledData value, String unit) {
+    
+    SampledDataDt recordData = new SampledDataDt();
+    
+    SimpleQuantityDt origin = new SimpleQuantityDt();
+    origin.setValue(new BigDecimal(value.originValue))
+      .setCode(unit).setSystem(UNITSOFMEASURE_URI)
+      .setUnit(unit);
+    
+    recordData.setOrigin(origin);
+    
+    // Use the period from the first series. They should all be the same.
+    recordData.setPeriod(value.series.get(0).getPeriod());
+    
+    // Set optional fields if they were provided
+    if (value.factor != null) {
+      recordData.setFactor(value.factor);
+    }
+    if (value.lowerLimit != null) {
+      recordData.setLowerLimit(value.lowerLimit);
+    }
+    if (value.upperLimit != null) {
+      recordData.setUpperLimit(value.upperLimit);
+    }
+    
+    recordData.setDimensions(value.series.size());
+    
+    int numSamples = value.series.get(0).getValues().size();
+    
+    DecimalFormat df;
+    
+    if (value.decimalFormat != null) {
+      df = new DecimalFormat(value.decimalFormat);
+    } else {
+      df = new DecimalFormat();
+    }
+    
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < numSamples; i++) {
+      for (TimeSeriesData series : value.series) {
+        double num = series.getValues().get(i);
+        sb.append(df.format(num));
+        sb.append(" ");
+      }
+    }
+    
+    recordData.setData(sb.toString());
+    
+    return recordData;
   }
 
   /**

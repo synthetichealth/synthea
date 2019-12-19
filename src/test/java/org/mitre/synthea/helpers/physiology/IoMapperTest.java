@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.simulator.math.odes.MultiTable;
@@ -152,7 +153,10 @@ public class IoMapperTest {
     
     // Mapper should provide a list of all values
     List<Double> expectedValues = Arrays.asList(0.0, 1.0, 2.0, 3.0);
-    assertEquals(expectedValues, testMapper.getOutputResult(mockResults, 0));
+    TimeSeriesData seriesData =
+        (TimeSeriesData) testMapper.getOutputResult(mockResults, 0);
+    assertEquals(expectedValues, seriesData.getValues());
+    assertEquals(1.0, seriesData.getPeriod(), 0.00001);
     
     // Test an expression
     testMapper.setFromList(null);

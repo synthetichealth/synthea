@@ -16,6 +16,7 @@ import org.mitre.synthea.engine.Components.Exact;
 import org.mitre.synthea.engine.Components.ExactWithUnit;
 import org.mitre.synthea.engine.Components.Range;
 import org.mitre.synthea.engine.Components.RangeWithUnit;
+import org.mitre.synthea.engine.Components.SampledData;
 import org.mitre.synthea.engine.Transition.ComplexTransition;
 import org.mitre.synthea.engine.Transition.ComplexTransitionOption;
 import org.mitre.synthea.engine.Transition.ConditionalTransition;
@@ -1349,6 +1350,7 @@ public abstract class State implements Cloneable {
     private Code valueCode;
     private String attribute;
     private org.mitre.synthea.world.concepts.VitalSign vitalSign;
+    private SampledData sampledData;
     private String category;
     private String unit;
     private String expression;
@@ -1378,6 +1380,7 @@ public abstract class State implements Cloneable {
       clone.valueCode = valueCode;
       clone.attribute = attribute;
       clone.vitalSign = vitalSign;
+      clone.sampledData = sampledData;
       clone.category = category;
       clone.unit = unit;
       clone.expression = expression;
@@ -1401,7 +1404,11 @@ public abstract class State implements Cloneable {
         value = valueCode;
       } else if (threadExpProcessor.get() != null) {
         value = threadExpProcessor.get().evaluate(person, time);
-      } 
+      } else if (sampledData != null) {
+        // Capture the data lists from person attributes
+        sampledData.setSeriesData(person);
+        value = sampledData;
+      }
       HealthRecord.Observation observation = person.record.observation(time, primaryCode, value);
       entry = observation;
       observation.name = this.name;

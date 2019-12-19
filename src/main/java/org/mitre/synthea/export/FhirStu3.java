@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -106,8 +107,10 @@ import org.hl7.fhir.dstu3.model.Timing.UnitsOfTime;
 import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
+import org.mitre.synthea.engine.Components;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
+import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Payer;
@@ -1662,10 +1665,73 @@ public class FhirStu3 {
       return new Quantity().setValue(bigVal)
           .setCode(unit).setSystem(UNITSOFMEASURE_URI)
           .setUnit(unit);
+    } else if (value instanceof Components.SampledData) {
+      return mapValueToSampledData((Components.SampledData) value, unit);
     } else {
       throw new IllegalArgumentException("unexpected observation value class: "
           + value.getClass().toString() + "; " + value);
     }
+  }
+  
+  /**
+   * Maps a Synthea internal SampledData object to the FHIR standard SampledData
+   * representation.
+   * 
+   * @param value Synthea internal SampledData instance
+   * @param unit Observation unit value
+   * @return
+   */
+  static org.hl7.fhir.dstu3.model.SampledData mapValueToSampledData(
+      Components.SampledData value, String unit) {
+    
+    org.hl7.fhir.dstu3.model.SampledData recordData = new org.hl7.fhir.dstu3.model.SampledData();
+    
+    SimpleQuantity origin = new SimpleQuantity();
+    origin.setValue(new BigDecimal(value.originValue))
+      .setCode(unit).setSystem(UNITSOFMEASURE_URI)
+      .setUnit(unit);
+    
+    recordData.setOrigin(origin);
+    
+    // Use the period from the first series. They should all be the same.
+    recordData.setPeriod(value.series.get(0).getPeriod());
+    
+    // Set optional fields if they were provided
+    if (value.factor != null) {
+      recordData.setFactor(value.factor);
+    }
+    if (value.lowerLimit != null) {
+      recordData.setLowerLimit(value.lowerLimit);
+    }
+    if (value.upperLimit != null) {
+      recordData.setUpperLimit(value.upperLimit);
+    }
+    
+    recordData.setDimensions(value.series.size());
+    
+    int numSamples = value.series.get(0).getValues().size();
+    
+    DecimalFormat df;
+    
+    if (value.decimalFormat != null) {
+      df = new DecimalFormat(value.decimalFormat);
+    } else {
+      df = new DecimalFormat();
+    }
+    
+    // Build the data string from all list values
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < numSamples; i++) {
+      for (TimeSeriesData series : value.series) {
+        double num = series.getValues().get(i);
+        sb.append(df.format(num));
+        sb.append(" ");
+      }
+    }
+    
+    recordData.setData(sb.toString());
+    
+    return recordData;
   }
 
   /**

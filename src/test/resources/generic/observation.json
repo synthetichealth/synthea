@@ -11,8 +11,36 @@
             "vital_sign" : "Systolic Blood Pressure",
             "exact" : { "quantity" : 120 },
             "unit" : "mm[Hg]",
-            "direct_transition" : "SomeEncounter"
+            "direct_transition" : "Simulate_CVS"
         },
+        
+        "Simulate_CVS": {
+	      "type": "Physiology",
+	      "model": "circulation/Smith2004_CVS_human.xml",
+	      "solver": "runge_kutta",
+	      "step_size": 0.01,
+	      "sim_duration": 4.0,
+	      "lead_time": 2.0,
+	      "inputs": [],
+	      "outputs": [
+	        {
+	          "from_list": "P_ao",
+	          "to": "P_ao",
+	          "type": "Attribute"
+	        },
+	        {
+	          "from_list": "P_lv",
+	          "to": "P_lv",
+	          "type": "Attribute"
+	        },
+	        {
+	          "from_list": "P_rv",
+	          "to": "P_rv",
+	          "type": "Attribute"
+	        }
+	      ],
+	      "direct_transition": "SomeEncounter"
+	    },
 
         "SomeEncounter" : {
             "type" : "Encounter",
@@ -56,6 +84,27 @@
                 "code": "25428-4",
                 "display": "Glucose [Presence] in Urine by Test strip"
             },
+            "direct_transition" : "Terminal"
+        },
+        
+        "SampledDataObservation" : {
+            "type" : "Observation",
+            "category" : "procedure",
+            "unit": "mmHg",
+            "codes" : [
+                {
+		          "system": "SNOMED-CT",
+		          "code": 29303009,
+		          "display": "Electrocardiographic procedure"
+		        }
+            ],
+            "sampled_data": {
+		      	"attributes": [
+		      		"P_ao",
+		      		"P_lv",
+		      		"P_rv"
+		      	]
+		    },
             "direct_transition" : "Terminal"
         },
 
