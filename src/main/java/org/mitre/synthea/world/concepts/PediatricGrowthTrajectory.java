@@ -2,6 +2,7 @@ package org.mitre.synthea.world.concepts;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.mitre.synthea.helpers.Utilities;
@@ -44,16 +45,31 @@ import java.util.Map;
  * </p>
  */
 public class PediatricGrowthTrajectory {
+  public static int TWO_YEARS_IN_MONTHS = 24;
+
   // Sigma is approximated using a quadratic formula, with different weights based on sex
   // The following constants are for those weights assuming a quadratic formula of:
   // ax^2 + bx +c
+  public static double SIGMA_FEMALE_A = 0.0011;
+  public static double SIGMA_FEMALE_B = 0.3712;
+  public static double SIGMA_FEMALE_C = 0.8334;
+
   public static double SIGMA_MALE_A = 0.0091;
   public static double SIGMA_MALE_B = 0.5196;
   public static double SIGMA_MALE_C = 0.3728;
 
-  public static double SIGMA_FEMALE_A = 0.0011;
-  public static double SIGMA_FEMALE_B = 0.3712;
-  public static double SIGMA_FEMALE_C = 0.8334;
+  // BMIs for two year olds are modeled as a log normal distribution. Values were gathered
+  // from a sample population and fit using SciPy lognorm
+  // https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.lognorm.html#scipy.stats.lognorm
+  // Values here are listed as they are returned from SciPy to avoid translation errors if
+  // adjustments are made in the future
+  public static double TWO_YEAR_SCALE_FEMALE = Math.log(10.398732191294927);
+  public static double TWO_YEAR_LOC_FEMALE = 5.842995291195533;
+  public static double TWO_YEAR_SPREAD_FEMALE = 0.15361497654415895;
+
+  public static double TWO_YEAR_SCALE_MALE = Math.log(8.19131225494582);
+  public static double TWO_YEAR_LOC_MALE = 8.380790632904484;
+  public static double TWO_YEAR_SPREAD_MALE = 0.20310092636666977;
 
   private static final Map<GrowthChart.ChartType, GrowthChart> growthChart =
       GrowthChart.loadCharts();
@@ -72,6 +88,44 @@ public class PediatricGrowthTrajectory {
   }
 
   /**
+   * Generates a random BMI for a two year old based on sex. Values are selected from a
+   * log normal distribution fit to match the US two year old population
+   * @param sex of the person to generate the new BMI for
+   * @param randomGenerator Apache Commons Math random thingy needed to sample a value
+   * @return a BMI for that person when they turn two years old
+   */
+  public static double generateTwoYearBMI(String sex, JDKRandomGenerator randomGenerator) {
+    LogNormalDistribution dist;
+    double offset;
+    if (sex.equals("F")) {
+      dist = new LogNormalDistribution(randomGenerator, TWO_YEAR_SCALE_FEMALE,
+          TWO_YEAR_SPREAD_FEMALE);
+      offset = TWO_YEAR_LOC_FEMALE;
+    } else {
+      dist = new LogNormalDistribution(randomGenerator, TWO_YEAR_SCALE_MALE, TWO_YEAR_SPREAD_MALE);
+      offset = TWO_YEAR_LOC_MALE;
+    }
+    return offset + dist.sample();
+  }
+
+  /**
+   * Given the sex, BMI and height percentile at age 2, calculate the correct weight percentile.
+   * @param sex of the person to get the weight percentile for
+   * @param bmi at two years old
+   * @param heightPercentile or the person
+   * @return the weight percentile the person would have to be in, given their height percentile
+   * and BMI
+   */
+  public static double reverseTwoYearWeightPercentile(String sex, double bmi,
+                                                      double heightPercentile) {
+    double height = growthChart.get(GrowthChart.ChartType.HEIGHT).lookUp(TWO_YEARS_IN_MONTHS, sex,
+        heightPercentile);
+    double weight = BMI.weightForHeightAndBMI(height, bmi);
+    return growthChart.get(GrowthChart.ChartType.WEIGHT).percentileFor(TWO_YEARS_IN_MONTHS, sex,
+        weight);
+  }
+
+  /**
    * Generates a BMI for the person one year later. BMIs are generated based on correlations
    * measured between years of age and differences in mean BMI. This takes into special
    * consideration people at or above the 95th percentile, as the growth charts start to break down.
@@ -81,7 +135,7 @@ public class PediatricGrowthTrajectory {
    * @return what the person's BMI should be next year
    */
   public static double generateNextYearBMI(Person person, long time,
-                                          JDKRandomGenerator randomGenerator) {
+                                           JDKRandomGenerator randomGenerator) {
     double age = person.ageInDecimalYears(time);
     double nextAgeYear = age + 1;
     String sex = (String) person.attributes.get(Person.GENDER);

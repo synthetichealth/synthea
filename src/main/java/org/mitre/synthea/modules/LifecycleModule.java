@@ -1,5 +1,6 @@
 package org.mitre.synthea.modules;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.BloodPressureValueGenerator.SysDias;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.BMI;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
 import org.mitre.synthea.world.concepts.BirthStatistics;
 import org.mitre.synthea.world.concepts.GrowthChart;
@@ -30,6 +32,7 @@ import org.mitre.synthea.world.concepts.GrowthChartEntry;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.PediatricGrowthTrajectory;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
 
@@ -194,10 +197,16 @@ public final class LifecycleModule extends Module {
     attributes.put(Person.ACTIVE_WEIGHT_MANAGEMENT, false);
     // TODO: Why are the percentiles a vital sign? Sounds more like an attribute?
     double heightPercentile = person.rand();
-    double weightPercentile = person.rand();
+    double twoYearBMI = PediatricGrowthTrajectory.generateTwoYearBMI(gender, person.mathRandom);
+    double weightPercentile = PediatricGrowthTrajectory.reverseTwoYearWeightPercentile(gender,
+        twoYearBMI, heightPercentile);
     person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, heightPercentile);
     person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, weightPercentile);
-
+    person.attributes.put(Person.TWO_YEAR_BMI, twoYearBMI);
+    // TODO: Fix when we have all of the correlations
+    double[] bmiVector = new double[15];
+    bmiVector[2] = twoYearBMI;
+    person.attributes.put(Person.BMI_VECTOR, bmiVector);
     // Temporarily generate a mother
     Person mother = new Person(person.random.nextLong());
     mother.attributes.put(Person.GENDER, "F");
@@ -450,7 +459,7 @@ public final class LifecycleModule extends Module {
 
     person.setVitalSign(VitalSign.HEIGHT, height);
     person.setVitalSign(VitalSign.WEIGHT, weight);
-    double bmi = bmi(height, weight);
+    double bmi = BMI.calculate(height, weight);
     person.setVitalSign(VitalSign.BMI, bmi);
 
     if (age <= 3) {
@@ -485,17 +494,35 @@ public final class LifecycleModule extends Module {
 
   private static double adjustWeight(Person person, long time) {
     double weight = person.getVitalSign(VitalSign.WEIGHT, time);
+    String gender = (String) person.attributes.get(Person.GENDER);
+    double heightPercentile = person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time);
     Object weightManagement = person.attributes.get(Person.ACTIVE_WEIGHT_MANAGEMENT);
     // If there is active weight management,
     // changing of weight will be handled by the WeightLossModule
     if (weightManagement != null && ! (boolean) weightManagement) {
       int age = person.ageInYears(time);
-      if (age < 20) {
+      if (age < 2) {
         // follow growth charts
-        String gender = (String) person.attributes.get(Person.GENDER);
         int ageInMonths = person.ageInMonths(time);
         weight = lookupGrowthChart("weight", gender, ageInMonths,
             person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
+      } else if (age <= 20) {
+        double[] bmiVector = (double[]) person.attributes.get(Person.BMI_VECTOR);
+        double yearStartBMI = bmiVector[age];
+        double nextYearBMI;
+        if (bmiVector[age + 1] == 0) {
+          nextYearBMI = PediatricGrowthTrajectory.generateNextYearBMI(person, time, person.mathRandom);
+          bmiVector[age + 1] = nextYearBMI;
+        } else {
+          nextYearBMI = bmiVector[age + 1];
+        }
+        double yearStartHeight = growthChart.get(GrowthChart.ChartType.HEIGHT).lookUp(age * 12, gender,
+            heightPercentile);
+        double nextYearHeight = growthChart.get(GrowthChart.ChartType.HEIGHT).lookUp((age + 1) * 12,
+            gender, heightPercentile);
+        double yearStartWeight = BMI.weightForHeightAndBMI(yearStartHeight, yearStartBMI);
+        double yearEndWeight = BMI.weightForHeightAndBMI(nextYearHeight, nextYearBMI);
+        weight = yearStartWeight + (yearEndWeight - yearStartWeight) * (person.ageInDecimalYears(time) - age);
       } else if (age <= ADULT_MAX_WEIGHT_AGE) {
         // getting older and fatter
         double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
@@ -550,10 +577,6 @@ public final class LifecycleModule extends Module {
    */
   public static double percentileForBMI(double bmi, String gender, int ageInMonths) {
     return growthChart.get(GrowthChart.ChartType.BMI).percentileFor(ageInMonths, gender, bmi);
-  }
-
-  public static double bmi(double heightCM, double weightKG) {
-    return (weightKG / ((heightCM / 100.0) * (heightCM / 100.0)));
   }
 
   /**

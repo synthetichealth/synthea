@@ -40,8 +40,6 @@ import org.mitre.synthea.world.geography.Location;
  */
 public class Generator {
 
-  public static final long ONE_HUNDRED_YEARS = 100L * TimeUnit.DAYS.toMillis(365);
-  public static final int MAX_TRIES = 10;
   public DataStore database;
   public GeneratorOptions options;
   private Random random;

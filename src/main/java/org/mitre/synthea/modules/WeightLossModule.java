@@ -1,6 +1,6 @@
 package org.mitre.synthea.modules;
 
-import static org.mitre.synthea.modules.LifecycleModule.bmi;
+import static org.mitre.synthea.world.concepts.BMI.calculate;
 import static org.mitre.synthea.modules.LifecycleModule.lookupGrowthChart;
 import static org.mitre.synthea.modules.LifecycleModule.percentileForBMI;
 import static org.mitre.synthea.modules.LifecycleModule.setCurrentWeightForLengthPercentile;
@@ -80,7 +80,7 @@ public final class WeightLossModule extends Module {
             double weight = maintainBMIPercentile(person, time);
             person.setVitalSign(VitalSign.WEIGHT, weight);
             person.setVitalSign(VitalSign.HEIGHT, height);
-            person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+            person.setVitalSign(VitalSign.BMI, calculate(height, weight));
           }
         } else {
           stopWeightManagement(person);
@@ -123,7 +123,7 @@ public final class WeightLossModule extends Module {
     }
     double height = person.getVitalSign(VitalSign.HEIGHT, time);
     person.setVitalSign(VitalSign.WEIGHT, weight);
-    person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+    person.setVitalSign(VitalSign.BMI, calculate(height, weight));
     setCurrentWeightForLengthPercentile(person, time);
   }
 
@@ -149,7 +149,7 @@ public final class WeightLossModule extends Module {
           double weight = maintainBMIPercentile(person, time);
           person.setVitalSign(VitalSign.WEIGHT, weight);
           person.setVitalSign(VitalSign.HEIGHT, height);
-          person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+          person.setVitalSign(VitalSign.BMI, calculate(height, weight));
           setCurrentWeightForLengthPercentile(person, time);
         }
       } else {
@@ -180,7 +180,7 @@ public final class WeightLossModule extends Module {
 
         person.setVitalSign(VitalSign.HEIGHT, height);
         person.setVitalSign(VitalSign.WEIGHT, weight);
-        person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+        person.setVitalSign(VitalSign.BMI, calculate(height, weight));
         setCurrentWeightForLengthPercentile(person, time);
       }
     } else {
@@ -192,7 +192,7 @@ public final class WeightLossModule extends Module {
             person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
         person.setVitalSign(VitalSign.HEIGHT, height);
         person.setVitalSign(VitalSign.WEIGHT, weight);
-        person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+        person.setVitalSign(VitalSign.BMI, calculate(height, weight));
         setCurrentWeightForLengthPercentile(person, time);
       }
     }
@@ -293,7 +293,7 @@ public final class WeightLossModule extends Module {
         regressionEndAgeInMonths, assignedWeightPercentile);
     double endHeight = lookupGrowthChart("height", gender,
         regressionEndAgeInMonths, assignedHeightPercentile);
-    double endBMI = bmi(endHeight, endWeight);
+    double endBMI = calculate(endHeight, endWeight);
     double percentOfTimeElapsed = (time - start - Utilities.convertTime("years", 1))
         / (double) Utilities.convertTime("years", 4);
     double currentBMI = endBMI - ((endBMI - lowestBMI) * (1 - percentOfTimeElapsed));
@@ -437,7 +437,7 @@ public final class WeightLossModule extends Module {
         assignedWeightPercentile);
     double startHeight = lookupGrowthChart("height", gender, startAgeInMonths,
         assignedHeightPercentile);
-    double startBMI = bmi(startHeight, startWeight);
+    double startBMI = calculate(startHeight, startWeight);
     double startBMIPercentile = percentileForBMI(startBMI, gender, startAgeInMonths);
     return startBMIPercentile - percentileChange;
   }
@@ -461,6 +461,6 @@ public final class WeightLossModule extends Module {
         assignedWeightPercentile);
     double startHeight = lookupGrowthChart("height", gender, startAgeInMonths,
         assignedHeightPercentile);
-    return bmi(startHeight, startWeight);
+    return calculate(startHeight, startWeight);
   }
 }
