@@ -67,7 +67,6 @@ dependencies {
 
   // get rid of SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
   // if we switch to a real logging framework we may want to switch this
-  compile "org.slf4j:slf4j-api:1.6.1"
   // compile "org.slf4j:slf4j-nop:1.6.1" // SLF4J seems to already be provided by org.apache.logging.log4j
   
   // Physiology simulation dependencies

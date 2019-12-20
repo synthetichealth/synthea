@@ -1,0 +1,5 @@
+Order Number,Code,Valid for HIPAA Transactions,Short Description,Long Description
+1,A00,0,Cholera,Cholera
+2,A000,1,"Cholera due to Vibrio cholerae 01, biovar cholerae","Cholera due to Vibrio cholerae 01, biovar cholerae"
+3,Q5529,1,Other congenital malformations of testis and scrotum,Other congenital malformations of testis and scrotum
+4,Q784,1,Enchondromatosis,Enchondromatosis
