@@ -33,27 +33,17 @@ public class ChartRenderer {
   /**
    * POJO configuration for a chart.
    **/
-  public static class ChartConfig {
-    /** Name of the image file to export. **/
+  public static abstract class ChartConfig {
+    /** Name of the image file to export **/
     private String filename;
     /** User input for the type of chart to render. **/
     private String type;
     /** Chart title. **/
     private String title;
-    /** Parameter to render on the x axis (if providing a MultiTable). **/
-    private String axisParamX;
-    /** Person attribute to render on the x axis (if providing a Person). **/
-    private String axisAttributeX;
     /** X axis label. **/
     private String axisLabelX;
     /** Y axis label. **/
     private String axisLabelY;
-    /** List of series configurations for this chart. **/
-    private List<SeriesConfig> series;
-    /** Simulation time in seconds to start charting points (if providing a MultiTable). **/
-    private double startTime;
-    /** Simulation time in seconds to end charting points (if providing a MultiTable). **/
-    private double endTime;
     /** Chart width in pixels **/
     private int width = 600;
     /** Chart height in pixels **/
@@ -86,22 +76,6 @@ public class ChartRenderer {
     public void setTitle(String title) {
       this.title = title;
     }
-    
-    public String getAxisParamX() {
-      return axisParamX;
-    }
-    
-    public void setAxisParamX(String axisParamX) {
-      this.axisParamX = axisParamX;
-    }
-    
-    public String getAxisAttributeX() {
-      return axisAttributeX;
-    }
-
-    public void setAxisAttributeX(String axisAttributeX) {
-      this.axisAttributeX = axisAttributeX;
-    }
 
     public String getAxisLabelX() {
       return axisLabelX;
@@ -117,30 +91,6 @@ public class ChartRenderer {
     
     public void setAxisLabelY(String axisLabelY) {
       this.axisLabelY = axisLabelY;
-    }
-    
-    public List<SeriesConfig> getSeries() {
-      return series;
-    }
-    
-    public void setSeries(List<SeriesConfig> series) {
-      this.series = series;
-    }
-    
-    public double getStartTime() {
-      return startTime;
-    }
-    
-    public void setStartTime(double startTime) {
-      this.startTime = startTime;
-    }
-    
-    public double getEndTime() {
-      return endTime;
-    }
-    
-    public void setEndTime(double endTime) {
-      this.endTime = endTime;
     }
 
     public int getWidth() {
@@ -175,33 +125,87 @@ public class ChartRenderer {
       this.axisHiddenY = axisHiddenY;
     }
   }
+  
+  /**
+   * POJO configuration for a chart with data from a MultiTable.
+   **/
+  public static class MultiTableChartConfig extends ChartConfig{
+    /** Parameter to render on the x axis. **/
+    private String axisParamX;
+    /** Simulation time in seconds to start charting points. **/
+    private double startTime;
+    /** Simulation time in seconds to end charting points. **/
+    private double endTime;
+    /** List of series configurations for this chart. **/
+    private List<MultiTableSeriesConfig> series;
+    
+    public String getAxisParamX() {
+      return axisParamX;
+    }
+    
+    public void setAxisParamX(String axisParamX) {
+      this.axisParamX = axisParamX;
+    }
+    
+    public double getStartTime() {
+      return startTime;
+    }
+    
+    public void setStartTime(double startTime) {
+      this.startTime = startTime;
+    }
+    
+    public double getEndTime() {
+      return endTime;
+    }
+    
+    public void setEndTime(double endTime) {
+      this.endTime = endTime;
+    }
+
+    public List<MultiTableSeriesConfig> getSeries() {
+      return series;
+    }
+
+    public void setSeries(List<MultiTableSeriesConfig> series) {
+      this.series = series;
+    }
+    
+  }
+  
+  /**
+   * POJO configuration for a chart with data from a Person object.
+   **/
+  public static class PersonChartConfig extends ChartConfig{
+    /** Person attribute to render on the x axis. **/
+    private String axisAttributeX;
+    /** List of series configurations for this chart. **/
+    private List<PersonSeriesConfig> series;
+    
+    public String getAxisAttributeX() {
+      return axisAttributeX;
+    }
+
+    public void setAxisAttributeX(String axisAttributeX) {
+      this.axisAttributeX = axisAttributeX;
+    }
+
+    public List<PersonSeriesConfig> getSeries() {
+      return series;
+    }
+
+    public void setSeries(List<PersonSeriesConfig> series) {
+      this.series = series;
+    }
+    
+  }
 
   /**
    * POJO configuration for a chart series.
    */
-  public static class SeriesConfig {
-    /** Which parameter to plot on this series. (if providing a MultiTable) **/
-    private String param;
-    /** Which attribute to plot on this series. (if providing a Person) **/
-    private String attribute;
+  private static abstract class SeriesConfig {
     /** Series label in the legend. **/
     private String label;
-
-    public String getParam() {
-      return param;
-    }
-
-    public void setParam(String param) {
-      this.param = param;
-    }
-
-    public String getAttribute() {
-      return attribute;
-    }
-
-    public void setAttribute(String attr) {
-      this.attribute = attr;
-    }
 
     public String getLabel() {
       return label;
@@ -214,11 +218,45 @@ public class ChartRenderer {
   }
   
   /**
+   * POJO configuration for a chart series with data from a MultiTable.
+   */
+  public static class MultiTableSeriesConfig extends SeriesConfig {
+    /** Which parameter to plot on this series. (if providing a MultiTable) **/
+    private String param;
+
+    public String getParam() {
+      return param;
+    }
+
+    public void setParam(String param) {
+      this.param = param;
+    }
+
+  }
+  
+  /**
+   * POJO configuration for a chart series with data from a Person object.
+   */
+  public static class PersonSeriesConfig extends SeriesConfig {
+    /** Which attribute to plot on this series. (if providing a Person) **/
+    private String attribute;
+
+    public String getAttribute() {
+      return attribute;
+    }
+
+    public void setAttribute(String attr) {
+      this.attribute = attr;
+    }
+
+  }
+  
+  /**
    * Create a JFreeChart object based on values from a MultiTable.
    * @param table MultiTable to retrieve values from
    * @param config chart configuration options
    */
-  public static JFreeChart createChart(MultiTable table, ChartConfig config) {
+  public static JFreeChart createChart(MultiTable table, MultiTableChartConfig config) {
     
     double lastTimePoint = table.getTimePoint(table.getRowCount() - 1);
     
@@ -270,7 +308,7 @@ public class ChartRenderer {
     XYSeriesCollection dataset = new XYSeriesCollection();
 
     // Add each series to the dataset
-    for (SeriesConfig seriesConfig : config.getSeries()) {
+    for (MultiTableSeriesConfig seriesConfig : config.getSeries()) {
       // If a label is not provided, use the parameter as the label
       String seriesLabel = seriesConfig.getLabel();
       if (seriesLabel == null) {
@@ -361,7 +399,7 @@ public class ChartRenderer {
    * @param config chart configuration options
    */
   @SuppressWarnings("unchecked")
-  public static JFreeChart createChart(Person person, ChartConfig config) {
+  public static JFreeChart createChart(Person person, PersonChartConfig config) {
     
     // Get the list of x values.
     Object xAttrValue = person.attributes.get(config.getAxisAttributeX());
@@ -376,11 +414,11 @@ public class ChartRenderer {
     XYSeriesCollection dataset = new XYSeriesCollection();
 
     // Add each series to the dataset
-    for (SeriesConfig seriesConfig : config.getSeries()) {
+    for (PersonSeriesConfig seriesConfig : config.getSeries()) {
       // If a label is not provided, use the parameter as the label
       String seriesLabel = seriesConfig.getLabel();
       if (seriesLabel == null) {
-        seriesLabel = seriesConfig.getParam();
+        seriesLabel = seriesConfig.getAttribute();
       }
       
       // don't auto-sort the series
@@ -475,7 +513,7 @@ public class ChartRenderer {
    * @param table MultiTable to retrieve values from
    * @param config chart configuration options
    */
-  public static void drawChartAsFile(MultiTable table, ChartConfig config) {
+  public static void drawChartAsFile(MultiTable table, MultiTableChartConfig config) {
     
     JFreeChart chart = createChart(table, config);
     
@@ -492,7 +530,7 @@ public class ChartRenderer {
    * @param table MultiTable to retrieve values from
    * @param config chart configuration options
    */
-  public static void drawChartAsFile(Person person, ChartConfig config) {
+  public static void drawChartAsFile(Person person, PersonChartConfig config) {
     
     JFreeChart chart = createChart(person, config);
     
@@ -510,7 +548,7 @@ public class ChartRenderer {
    * @param config chart configuration options
    * @throws IOException 
    */
-  public static String drawChartAsBase64(MultiTable table, ChartConfig config) throws IOException {
+  public static String drawChartAsBase64(MultiTable table, MultiTableChartConfig config) throws IOException {
     
     JFreeChart chart = createChart(table, config);
 
@@ -524,7 +562,7 @@ public class ChartRenderer {
    * @param config chart configuration options
    * @throws IOException 
    */
-  public static String drawChartAsBase64(Person person, ChartConfig config) throws IOException {
+  public static String drawChartAsBase64(Person person, PersonChartConfig config) throws IOException {
     
     JFreeChart chart = createChart(person, config);
 
