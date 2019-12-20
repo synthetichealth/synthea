@@ -2,6 +2,8 @@ package org.mitre.synthea.engine;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -10,8 +12,10 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.math.ode.DerivativeException;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.math.ode.DerivativeException;
+import org.hl7.fhir.r4.model.codesystems.MediaType;
 import org.mitre.synthea.engine.Components.Exact;
 import org.mitre.synthea.engine.Components.ExactWithUnit;
 import org.mitre.synthea.engine.Components.Range;
@@ -26,6 +30,9 @@ import org.mitre.synthea.engine.Transition.DistributedTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransitionOption;
 import org.mitre.synthea.engine.Transition.LookupTableTransition;
 import org.mitre.synthea.engine.Transition.LookupTableTransitionOption;
+import org.mitre.synthea.helpers.ChartRenderer;
+import org.mitre.synthea.helpers.ChartRenderer.ChartConfig;
+import org.mitre.synthea.helpers.ChartRenderer.PersonChartConfig;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.ExpressionProcessor;
 import org.mitre.synthea.helpers.RandomValueGenerator;
@@ -36,6 +43,7 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.Attachment;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -1417,6 +1425,144 @@ public abstract class State implements Cloneable {
       observation.unit = unit;
 
       return true;
+    }
+  }
+  
+  /**
+   * The Media state type indicates a point in the module where an image, video, or audio recording
+   * is captured and preserved in the patient's health record. Like Observation states, Media states
+   * may only be processed during an Encounter, and so must occur after the target Encounter state
+   * and before the EncounterEnd. See the Encounter section above for more details.
+   *
+   * <p>In general, ImagingStudy is the preferred state for diagnostic images. The Media state,
+   * however, contains functionality for generating inline PNG images of charts generated from data
+   * captured in Patient attributes. For instance, such data could be results from a prior
+   * Physiology state which simulated physiological data over time. That data could then be captured
+   * by a measurement device and plotted on a chart (such as an ECG signal).
+   */
+  public static class Media extends State {
+    
+    private Code code;
+    private String type;
+    private Code typeCode;
+    private Code reasonCode;
+    private Code bodySite;
+    private Code modality;
+    private Code view;
+    private String deviceName;
+    private int height;
+    private int width;
+    private double duration;
+    private Code language;
+    private PersonChartConfig chart;
+    private String url;
+    private String data;
+    private int size;
+    private String title;
+    private long timestamp;
+
+    @Override
+    protected void initialize(Module module, String name, JsonObject definition) {
+      super.initialize(module, name, definition);
+      
+      this.validate();
+    }
+
+    @Override
+    public Media clone() {
+      Media clone = (Media) super.clone();
+      clone.code = code;
+      clone.type = type;
+      clone.reasonCode = reasonCode;
+      clone.bodySite = bodySite;
+      clone.modality = modality;
+      clone.view = view;
+      clone.deviceName = deviceName;
+      clone.height = height;
+      clone.width = width;
+      clone.duration = duration;
+      clone.language = language;
+      clone.chart = chart;
+      clone.url = url;
+      clone.data = data;
+      clone.size = size;
+      clone.title = title;
+      clone.timestamp = timestamp;
+      clone.typeCode = typeCode;
+      return clone;
+    }
+    
+    @Override
+    public boolean process(Person person, long time) {
+      Attachment content = person.record.new Attachment();
+      content.data = data;
+      content.url = url;
+      content.language = language;
+      content.size = size;
+      content.title = title;
+      
+      HealthRecord.Media media = person.record.media(time, typeCode.code, content);
+      entry = media;
+      media.type = typeCode;
+      media.bodySite = bodySite;
+      media.codes = new ArrayList<Code>();
+      media.deviceName = deviceName;
+      media.reasonCode = reasonCode;
+      media.modality = modality;
+      media.height = height;
+      media.width = width;
+      media.duration = duration;
+      media.view = view;
+      
+      // Check if chart configuration is provided to generate an image based on data
+      // stored in the patient's attributes
+      if (chart != null) {
+        try {
+          content.data = ChartRenderer.drawChartAsBase64(person, chart);
+        } catch (IOException ex) {
+          throw new RuntimeException(ex);
+        }
+        
+        // Override height and width with the chart parameters
+        media.height = chart.getHeight();
+        media.width = chart.getWidth();
+      }
+      
+      if (content.data != null) {
+        // The ratio of output bytes to input bytes is 4:3 (33% overhead).
+        // Specifically, given an input of n bytes, the output will be 4*ceil(n/3) bytes long, including padding characters.
+        // See https://en.wikipedia.org/wiki/Base64
+        content.size = (int) (4*Math.ceil(content.data.length()/3.0));
+      }
+
+      return true;
+    }
+    
+    protected void validate() {
+      
+      if (type != null) {
+        // Will throw an IllegalArgumentException if type is invalid
+        typeCode = HealthRecord.MediaTypeCode.fromString(type);
+      }
+      
+      // Module should define one, and only one, of "chart", "url", or "data"
+      if (chart == null || url == null || data == null) {
+        throw new RuntimeException("Media state definition must provide one of:\n"
+            + "1. \"chart\": a chart rendering configuration\n"
+            + "2. \"url\": media location URL\n"
+            + "3. \"data\": base64 encoded binary data");
+      }
+      
+      if (chart != null && (url != null || data != null)) {
+        throw new RuntimeException("Only 1 of \"chart\", \"url\", or \"data\" must be defined.");
+      } else if (url != null && data != null) {
+        throw new RuntimeException("Only 1 of \"chart\", \"url\", or \"data\" must be defined.");
+      }
+      
+      if (data != null && !Base64.isBase64(data)) {
+        throw new RuntimeException("Invalid Media data \"" + data
+            + "\". If provided, this must be a Base64 encoded string.");
+      }
     }
   }
 

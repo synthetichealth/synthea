@@ -418,6 +418,7 @@ public class HealthRecord {
     public List<CarePlan> careplans;
     public List<ImagingStudy> imagingStudies;
     public List<Device> devices;
+    public List<Media> mediaItems;
     public Claim claim; // for now assume 1 claim per encounter
     public Code reason;
     public Code discharge;
@@ -454,6 +455,72 @@ public class HealthRecord {
       devices = new ArrayList<Device>();
       this.claim = new Claim(this, person);
     }
+  }
+  
+  /**
+   * An audio, video, or image to include in a patient's health record.
+   * In general, ImagingStudy should be the preferred Entry type for diagnostic images.
+   * See https://www.hl7.org/fhir/media.html.
+   */
+  public class Media extends Entry {
+    public Code type;
+    /** A SNOMED-CT reason code. */
+    public Code reasonCode;
+    /** A SNOMED-CT body structures code. */
+    public Code bodySite;
+    /** A DICOM acquisition modality code. */
+    public Code modality;
+    /** Imaging view, e.g. Lateral or Antero-posterior **/
+    public Code view;
+    /** Name of the device/manufacturer **/
+    public String deviceName;
+    /** Height of the image in pixels (image/video) **/
+    public int height;
+    /** Width of the image in pixels (image/video) **/
+    public int width;
+    /** Length in seconds (audio/video) **/
+    public double duration;
+    /** Reference or inline Data for the image, video, or audio **/
+    public Attachment content;
+
+    /**
+     * Constructor for Media Entry.
+     */
+    public Media(long time, String type, Attachment content) {
+      super(time, type);
+      this.content = content;
+    }
+  }
+  
+  // Convenience translations for Media types from simple text forms to their coded forms.
+  public static class MediaTypeCode {
+
+    public static final Code IMAGE = new Code("http://terminology.hl7.org/CodeSystem/media-type", "image", "Image");
+    public static final Code VIDEO = new Code("http://terminology.hl7.org/CodeSystem/media-type", "video", "Video");
+    public static final Code AUDIO = new Code("http://terminology.hl7.org/CodeSystem/media-type", "audio", "Audio");
+    
+    public static Code fromString(String type) {
+      if (type.equalsIgnoreCase("IMAGE")) {
+        return IMAGE;
+      } else if (type.equalsIgnoreCase("VIDEO")) {
+        return VIDEO;
+      } else if (type.equalsIgnoreCase("AUDIO")) {
+        return AUDIO;
+      } else {
+        throw new IllegalArgumentException("Cannot convert string \"" + type
+            + "\" to a valid Media Type code");
+      }
+    }
+  }
+  
+  public class Attachment {
+    public Code contentType;
+    public Code language;
+    public String data;
+    public String url;
+    public int size;
+    public String hash;
+    public String title;
   }
 
   private Person person;
@@ -531,6 +598,12 @@ public class HealthRecord {
     Observation observation = new Observation(time, type, value);
     currentEncounter(time).observations.add(observation);
     return observation;
+  }
+  
+  public Media media(long time, String type, Attachment content) {
+    Media media = new Media(time, type, content);
+    currentEncounter(time).mediaItems.add(media);
+    return media;
   }
 
   public Observation multiObservation(long time, String type, int numberOfObservations) {
