@@ -403,13 +403,21 @@ public class ChartRenderer {
     
     // Get the list of x values.
     Object xAttrValue = person.attributes.get(config.getAxisAttributeX());
-    if (!(xAttrValue instanceof List) || !(((List<?>) xAttrValue).get(0) instanceof Double)) {
+    
+    boolean xAxisIsTime = false;
+    List<Double> valuesX = null;
+    
+    if (config.getAxisAttributeX().equalsIgnoreCase("time")) {
+      xAxisIsTime = true;
+    } else if (xAttrValue instanceof TimeSeriesData) {
+      valuesX = ((TimeSeriesData) xAttrValue).getValues();
+    } else if (xAttrValue instanceof List && ((List<?>) xAttrValue).get(0) instanceof Double) {
+      valuesX = (List<Double>) xAttrValue;
+    } else {
       throw new RuntimeException("Invalid Person attribute \""
           + config.getAxisAttributeX() + "\"provided for chart X Axis: "
-          + xAttrValue + ". Attribute value type must be a List<Double>.");
+          + xAttrValue + ". Attribute must either be \"time\" or refer to a TimeSeriesData or List<Double> Object.");
     }
-    
-    List<Double> valuesX = (List<Double>) xAttrValue;
     
     XYSeriesCollection dataset = new XYSeriesCollection();
 
@@ -424,15 +432,35 @@ public class ChartRenderer {
       // don't auto-sort the series
       XYSeries series = new XYSeries(seriesLabel, false);
       
-      Object seriesValue = person.attributes.get(seriesConfig.getAttribute());
+      Object seriesObject = person.attributes.get(seriesConfig.getAttribute());
       
-      if (!(seriesValue instanceof List) || !(((List<?>) seriesValue).get(0) instanceof Double)) {
+      List<Double> seriesValues;
+      
+      if (seriesObject instanceof TimeSeriesData) {
+        TimeSeriesData timeSeries = (TimeSeriesData) seriesObject;
+        seriesValues = timeSeries.getValues();
+        
+        // If time is defined for the X axis, and it hasn't yet been created,
+        // create the time axis values now
+        if (valuesX == null && xAxisIsTime) {
+          valuesX = new ArrayList<Double>(timeSeries.getValues().size());
+
+          for (int i=0; i < timeSeries.getValues().size(); i++) {
+            valuesX.add(timeSeries.getPeriod()*i);
+          }
+        }
+      } else if (seriesObject instanceof List && ((List<?>) seriesObject).get(0) instanceof Double) {
+        seriesValues = (List<Double>) seriesObject;
+      } else {
         throw new RuntimeException("Invalid Person attribute \""
-            + seriesConfig.getAttribute() + "\"provided for chart X Axis: "
-            + seriesValue + ". Attribute value type must be a List<Double>.");
+            + seriesConfig.getAttribute() + "\"provided for chart series: "
+            + seriesObject + ". Attribute value must be a TimeSeriesData or List<Double> Object.");
       }
       
-      List<Double> seriesValues = (List<Double>) seriesValue;
+      if (valuesX == null) {
+        throw new RuntimeException("When the special attribute \"time\" is provided for the X axis, "
+            + "the first series attribute MUST point to a valid TimeSeriesData object.");
+      }
       
       Iterator<Double> xIter = valuesX.iterator();
       Iterator<Double> seriesIter = seriesValues.iterator();
@@ -440,7 +468,7 @@ public class ChartRenderer {
       while(xIter.hasNext()) {
         if (!seriesIter.hasNext()) {
           throw new RuntimeException("List for attribute \"" + seriesConfig.getAttribute()
-              + "\" does not have the same length as the x axis list \"" + config.getAxisAttributeX() + "\"");
+              + "\" does not have the same length as the x axis values \"" + config.getAxisAttributeX() + "\"");
         }
         series.add(xIter.next(), seriesIter.next());
       }
