@@ -1443,8 +1443,8 @@ public abstract class State implements Cloneable {
   public static class Media extends State {
     
     private Code code;
-    private String type;
-    private Code typeCode;
+    private String mediaType;
+    private Code mediaTypeCode;
     private Code reasonCode;
     private Code bodySite;
     private Code modality;
@@ -1472,7 +1472,7 @@ public abstract class State implements Cloneable {
     public Media clone() {
       Media clone = (Media) super.clone();
       clone.code = code;
-      clone.type = type;
+      clone.mediaType = mediaType;
       clone.reasonCode = reasonCode;
       clone.bodySite = bodySite;
       clone.modality = modality;
@@ -1488,7 +1488,7 @@ public abstract class State implements Cloneable {
       clone.size = size;
       clone.title = title;
       clone.timestamp = timestamp;
-      clone.typeCode = typeCode;
+      clone.mediaTypeCode = mediaTypeCode;
       return clone;
     }
     
@@ -1501,9 +1501,9 @@ public abstract class State implements Cloneable {
       content.size = size;
       content.title = title;
       
-      HealthRecord.Media media = person.record.media(time, typeCode.code, content);
+      HealthRecord.Media media = person.record.media(time, mediaTypeCode.code, content);
       entry = media;
-      media.mediaType = typeCode;
+      media.mediaType = mediaTypeCode;
       media.bodySite = bodySite;
       media.codes = new ArrayList<Code>();
       media.deviceName = deviceName;
@@ -1540,13 +1540,16 @@ public abstract class State implements Cloneable {
     
     protected void validate() {
       
-      if (type != null) {
+      if (mediaType != null) {
         // Will throw an IllegalArgumentException if type is invalid
-        typeCode = HealthRecord.MediaTypeCode.fromString(type);
+        mediaTypeCode = HealthRecord.MediaTypeCode.fromString(mediaType);
+      }
+      else {
+        throw new IllegalArgumentException("Media state must have 'media_type' defined.");
       }
       
       // Module should define one, and only one, of "chart", "url", or "data"
-      if (chart == null || url == null || data == null) {
+      if (chart == null && url == null && data == null) {
         throw new RuntimeException("Media state definition must provide one of:\n"
             + "1. \"chart\": a chart rendering configuration\n"
             + "2. \"url\": media location URL\n"
