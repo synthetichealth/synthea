@@ -23,8 +23,8 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math.ode.DerivativeException;
 import org.mitre.synthea.helpers.ChartRenderer;
-import org.mitre.synthea.helpers.ChartRenderer.ChartConfig;
-import org.mitre.synthea.helpers.ChartRenderer.SeriesConfig;
+import org.mitre.synthea.helpers.ChartRenderer.MultiTableChartConfig;
+import org.mitre.synthea.helpers.ChartRenderer.MultiTableSeriesConfig;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.SBMLException;
@@ -72,7 +72,7 @@ public class PhysiologySimulator {
     private String solver;
     private double stepSize;
     private double duration;
-    private List<ChartConfig> charts;
+    private List<MultiTableChartConfig> charts;
     private Map<String, Double> inputs;
 
     public final Map<String, Double> getInputs() {
@@ -123,11 +123,11 @@ public class PhysiologySimulator {
       this.duration = duration;
     }
 
-    public List<ChartConfig> getCharts() {
+    public List<MultiTableChartConfig> getCharts() {
       return charts;
     }
 
-    public void setCharts(List<ChartConfig> charts) {
+    public void setCharts(List<MultiTableChartConfig> charts) {
       this.charts = charts;
     }
     
@@ -400,10 +400,10 @@ public class PhysiologySimulator {
     // Add type descriptions so Yaml knows how to instantiate our Lists
     Constructor constructor = new Constructor(SimConfig.class);
     TypeDescription simConfigDescription = new TypeDescription(SimConfig.class);
-    simConfigDescription.addPropertyParameters("charts", ChartConfig.class);
+    simConfigDescription.addPropertyParameters("charts", MultiTableChartConfig.class);
     constructor.addTypeDescription(simConfigDescription);
-    TypeDescription chartConfigDescription = new TypeDescription(ChartConfig.class);
-    chartConfigDescription.addPropertyParameters("series", SeriesConfig.class);
+    TypeDescription chartConfigDescription = new TypeDescription(MultiTableSeriesConfig.class);
+    chartConfigDescription.addPropertyParameters("series", MultiTableSeriesConfig.class);
     constructor.addTypeDescription(chartConfigDescription);
     
     // Parse the SimConfig from the yaml file
@@ -444,7 +444,7 @@ public class PhysiologySimulator {
       // Draw all of the configured charts
       if (config.getCharts() != null) {
         int chartId = 1;
-        for (ChartConfig chartConfig : config.getCharts()) {
+        for (MultiTableChartConfig chartConfig : config.getCharts()) {
           if (chartConfig.getFilename() == null || chartConfig.getFilename().isEmpty()) {
             chartConfig.setFilename("chart" + chartId + ".png");
           }
