@@ -260,6 +260,11 @@ public class ChartRenderer {
     
     double lastTimePoint = table.getTimePoint(table.getRowCount() - 1);
     
+    // If no chart type was provided, throw an exception
+    if (config.getType() == null) {
+      throw new IllegalArgumentException("Chart type must be provided");
+    }
+    
     // Set the chart end time if not specified
     if (config.getEndTime() == 0) {
       config.setEndTime(lastTimePoint);
