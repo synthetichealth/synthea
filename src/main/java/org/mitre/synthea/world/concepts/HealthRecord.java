@@ -463,7 +463,7 @@ public class HealthRecord {
    * See https://www.hl7.org/fhir/media.html.
    */
   public class Media extends Entry {
-    public Code type;
+    public Code mediaType;
     /** A SNOMED-CT reason code. */
     public Code reasonCode;
     /** A SNOMED-CT body structures code. */

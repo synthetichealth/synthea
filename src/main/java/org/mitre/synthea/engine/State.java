@@ -1503,7 +1503,7 @@ public abstract class State implements Cloneable {
       
       HealthRecord.Media media = person.record.media(time, typeCode.code, content);
       entry = media;
-      media.type = typeCode;
+      media.mediaType = typeCode;
       media.bodySite = bodySite;
       media.codes = new ArrayList<Code>();
       media.deviceName = deviceName;
