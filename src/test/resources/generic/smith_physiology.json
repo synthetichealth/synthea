@@ -16,6 +16,17 @@
       "value" : 1.814,
       "direct_transition": "Simulate_CVS"
     },
+    
+    "SomeEncounter" : {
+        "type" : "Encounter",
+        "encounter_class": "inpatient",
+        "codes": [{
+            "system": "SNOMED-CT",
+            "code": "32485007",
+            "display": "Hospital admission"
+        }],
+        "direct_transition" : "VitalSignObservation"
+    },
 
     "Simulate_CVS": {
       "type": "Physiology",
@@ -55,6 +66,22 @@
           "type": "Attribute"
         }
       ],
+      "direct_transition": "Media"
+    },
+    
+    "Media": {
+      "type": "Media",
+      "media_type": "image",
+      "chart": {
+      	"type": "line",
+      	"title": "Media Test",
+      	"axis_attribute_x": "time",
+      	"width": 400,
+      	"height": 200,
+      	"series": [
+      		{"attribute": "Arterial Pressure Values"}
+      	]
+      },
       "direct_transition": "Main_Terminal"
     },
 

@@ -3,6 +3,7 @@ package org.mitre.synthea.engine;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
@@ -36,6 +38,8 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.HealthRecord.Media;
+import org.mitre.synthea.world.concepts.HealthRecord.MediaTypeCode;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
@@ -1730,6 +1734,37 @@ public class StateTest {
     
     // Verify that the Person now has an LVEF value of 60
     assertEquals(person.getVitalSign(VitalSign.LVEF, time), 60.0, 0.00001);
+    
+  }
+  
+  @Test
+  public void testMedia() throws Exception {
+    
+    // BMI is an input parameter so we need to set it
+    person.setVitalSign(VitalSign.BMI, 32.98);
+    
+    // Pulmonary resistance and BMI multiplier are also input parameters
+    person.attributes.put("Pulmonary Resistance", 0.1552);
+    person.attributes.put("BMI Multiplier", 0.055);
+
+    Module module = TestHelper.getFixture("smith_physiology.json");
+    
+    State encounter = module.getState("SomeEncounter");
+    assertTrue(encounter.process(person, time));
+    
+    State simulateCvs = module.getState("Simulate_CVS");
+    assertTrue(simulateCvs.process(person, time));
+    
+    State mediaState = module.getState("Media");
+    assertTrue(mediaState.process(person, time));
+    
+    Media media = person.record.encounters.get(0).mediaItems.get(0);
+    
+    assertNotNull(media);
+    assertEquals(MediaTypeCode.IMAGE, media.mediaType);
+    assertEquals(400, media.width);
+    assertEquals(200, media.height);
+    assertTrue(Base64.isBase64(media.content.data));
     
   }
 }
