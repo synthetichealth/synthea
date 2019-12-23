@@ -453,6 +453,7 @@ public class HealthRecord {
       careplans = new ArrayList<CarePlan>();
       imagingStudies = new ArrayList<ImagingStudy>();
       devices = new ArrayList<Device>();
+      mediaItems = new ArrayList<Media>();
       this.claim = new Claim(this, person);
     }
   }
