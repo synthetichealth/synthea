@@ -465,8 +465,8 @@ public class HealthRecord {
    */
   public class Media extends Entry {
     public Code mediaType;
-    /** A SNOMED-CT reason code. */
-    public Code reasonCode;
+    /** A list of SNOMED-CT reason codes. */
+    public List<Code> reasonCode;
     /** A SNOMED-CT body structures code. */
     public Code bodySite;
     /** A DICOM acquisition modality code. */
@@ -515,8 +515,8 @@ public class HealthRecord {
   }
   
   public class Attachment {
-    public Code contentType;
-    public Code language;
+    public String contentType;
+    public String language;
     public String data;
     public String url;
     public int size;

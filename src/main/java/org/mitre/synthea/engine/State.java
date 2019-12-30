@@ -1442,10 +1442,9 @@ public abstract class State implements Cloneable {
    */
   public static class Media extends State {
     
-    private Code code;
     private String mediaType;
     private Code mediaTypeCode;
-    private Code reasonCode;
+    private List<Code> reasonCode;
     private Code bodySite;
     private Code modality;
     private Code view;
@@ -1453,7 +1452,7 @@ public abstract class State implements Cloneable {
     private int height;
     private int width;
     private double duration;
-    private Code language;
+    private String language;
     private PersonChartConfig chart;
     private String url;
     private String data;
@@ -1471,7 +1470,6 @@ public abstract class State implements Cloneable {
     @Override
     public Media clone() {
       Media clone = (Media) super.clone();
-      clone.code = code;
       clone.mediaType = mediaType;
       clone.reasonCode = reasonCode;
       clone.bodySite = bodySite;
