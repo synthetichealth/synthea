@@ -53,6 +53,7 @@ import ca.uhn.fhir.model.dstu2.valueset.ConditionVerificationStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointSystemEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointUseEnum;
 import ca.uhn.fhir.model.dstu2.valueset.DiagnosticReportStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.DigitalMediaTypeEnum;
 import ca.uhn.fhir.model.dstu2.valueset.EncounterClassEnum;
 import ca.uhn.fhir.model.dstu2.valueset.EncounterStateEnum;
 import ca.uhn.fhir.model.dstu2.valueset.GoalStatusEnum;
@@ -107,11 +108,13 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.Attachment;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
+import org.mitre.synthea.world.concepts.HealthRecord.Media;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
@@ -130,6 +133,7 @@ public class FhirDstu2 {
   private static final String SYNTHEA_EXT = "http://synthetichealth.github.io/synthea/";
   private static final String UNITSOFMEASURE_URI = "http://unitsofmeasure.org";
   private static final String DICOM_DCM_URI = "http://dicom.nema.org/resources/ontology/DCM";
+  private static final String MEDIA_VIEW_URI = "http://hl7.org/fhir/ValueSet/media-view";
 
   @SuppressWarnings("rawtypes")
   private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
@@ -224,6 +228,10 @@ public class FhirDstu2 {
 
       for (ImagingStudy imagingStudy : encounter.imagingStudies) {
         imagingStudy(personEntry, bundle, encounterEntry, imagingStudy);
+      }
+      
+      for (Media media : encounter.mediaItems) {
+        media(personEntry, bundle, encounterEntry, media);
       }
 
       // one claim per encounter
@@ -1427,6 +1435,66 @@ public class FhirDstu2 {
     imagingStudyResource.setNumberOfInstances(totalNumberOfInstances);
 
     return newEntry(bundle, imagingStudyResource);
+  }
+  
+  /**
+   * Map the given Media element to a FHIR Media resource, and add it to the given Bundle.
+   *
+   * @param personEntry    The Entry for the Person
+   * @param bundle         Bundle to add the Media to
+   * @param encounterEntry Current Encounter entry
+   * @param media   The Media to map to FHIR and add to the bundle
+   * @return The added Entry
+   */
+  private static Entry media(Entry personEntry, Bundle bundle, Entry encounterEntry, Media media) {
+    ca.uhn.fhir.model.dstu2.resource.Media mediaResource =
+        new ca.uhn.fhir.model.dstu2.resource.Media();
+
+    switch(media.mediaType.code) {
+      default:
+      case "image":
+        mediaResource.setType(DigitalMediaTypeEnum.PHOTO);
+        break;
+      case "video":
+        mediaResource.setType(DigitalMediaTypeEnum.VIDEO);
+        mediaResource.setDuration((int) media.duration);
+        break;
+      case "audio":
+        mediaResource.setType(DigitalMediaTypeEnum.AUDIO);
+        mediaResource.setDuration((int) media.duration);
+        break;
+    }
+    
+    mediaResource.setSubject(new ResourceReferenceDt(personEntry.getFullUrl()));
+    mediaResource.setWidth(media.width);
+    mediaResource.setHeight(media.height);
+
+    if (media.view != null) {
+      mediaResource.setView(mapCodeToCodeableConcept(media.view, MEDIA_VIEW_URI));
+    }
+
+    Attachment content = media.content;
+    ca.uhn.fhir.model.dstu2.composite.AttachmentDt contentResource = new ca.uhn.fhir.model.dstu2.composite.AttachmentDt();
+    
+    contentResource.setContentType(content.contentType);
+    contentResource.setLanguage(content.language);
+    
+    ca.uhn.fhir.model.primitive.Base64BinaryDt data = new ca.uhn.fhir.model.primitive.Base64BinaryDt();
+    data.setValueAsString(content.data);
+    contentResource.setData(data);
+    
+    contentResource.setUrl(content.url);
+    contentResource.setSize(content.size);
+    contentResource.setTitle(content.title);
+    if (content.hash != null) {
+      ca.uhn.fhir.model.primitive.Base64BinaryDt hash = new ca.uhn.fhir.model.primitive.Base64BinaryDt();
+      hash.setValueAsString(content.hash);
+      contentResource.setHash(hash);
+    }
+    
+    mediaResource.setContent(contentResource);
+
+    return newEntry(bundle, mediaResource);
   }
 
   /**

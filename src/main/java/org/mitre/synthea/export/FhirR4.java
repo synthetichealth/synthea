@@ -89,6 +89,7 @@ import org.hl7.fhir.r4.model.Immunization.ImmunizationStatus;
 import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Location.LocationPositionComponent;
 import org.hl7.fhir.r4.model.Location.LocationStatus;
+import org.hl7.fhir.r4.model.Media.MediaStatus;
 import org.hl7.fhir.r4.model.Medication.MedicationStatus;
 import org.hl7.fhir.r4.model.MedicationAdministration;
 import org.hl7.fhir.r4.model.MedicationAdministration.MedicationAdministrationDosageComponent;
@@ -136,11 +137,13 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.Attachment;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
+import org.mitre.synthea.world.concepts.HealthRecord.Media;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
@@ -161,6 +164,9 @@ public class FhirR4 {
   private static final String SYNTHEA_EXT = "http://synthetichealth.github.io/synthea/";
   private static final String UNITSOFMEASURE_URI = "http://unitsofmeasure.org";
   private static final String DICOM_DCM_URI = "http://dicom.nema.org/resources/ontology/DCM";
+  private static final String MEDIA_TYPE_URI = "http://hl7.org/fhir/ValueSet/digital-media-type";
+  private static final String MEDIA_VIEW_URI = "http://hl7.org/fhir/ValueSet/media-view";
+  private static final String PROCEDURE_REASON_URI = "http://hl7.org/fhir/ValueSet/procedure-reason";
 
   @SuppressWarnings("rawtypes")
   private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
@@ -293,6 +299,10 @@ public class FhirR4 {
 
       for (ImagingStudy imagingStudy : encounter.imagingStudies) {
         imagingStudy(personEntry, bundle, encounterEntry, imagingStudy);
+      }
+      
+      for (Media media : encounter.mediaItems) {
+        media(personEntry, bundle, encounterEntry, media);
       }
 
       if (USE_US_CORE_IG) {
@@ -2486,6 +2496,64 @@ public class FhirR4 {
     imagingStudyResource.setSeries(seriesResourceList);
     imagingStudyResource.setNumberOfInstances(totalNumberOfInstances);
     return newEntry(bundle, imagingStudyResource);
+  }
+  
+  /**
+   * Map the given Media element to a FHIR Media resource, and add it to the given Bundle.
+   *
+   * @param personEntry    The Entry for the Person
+   * @param bundle         Bundle to add the Media to
+   * @param encounterEntry Current Encounter entry
+   * @param media   The Media to map to FHIR and add to the bundle
+   * @return The added Entry
+   */
+  private static BundleEntryComponent media(BundleEntryComponent personEntry, Bundle bundle,
+      BundleEntryComponent encounterEntry, Media media) {
+    org.hl7.fhir.r4.model.Media mediaResource =
+        new org.hl7.fhir.r4.model.Media();
+
+    mediaResource.setType(mapCodeToCodeableConcept(media.mediaType, MEDIA_TYPE_URI));
+    mediaResource.setStatus(MediaStatus.COMPLETED);
+    mediaResource.setSubject(new Reference(personEntry.getFullUrl()));
+    mediaResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
+    mediaResource.setDeviceName(media.deviceName);
+    mediaResource.setWidth(media.width);
+    mediaResource.setHeight(media.height);
+    mediaResource.setDuration(media.duration);
+
+    if (media.bodySite != null) {
+      mediaResource.setBodySite(mapCodeToCodeableConcept(media.bodySite, SNOMED_URI));
+    }
+    if (media.modality != null) {
+      mediaResource.setModality(mapCodeToCodeableConcept(media.modality, DICOM_DCM_URI));
+    }
+    if (media.view != null) {
+      mediaResource.setView(mapCodeToCodeableConcept(media.view, MEDIA_VIEW_URI));
+    }
+    if (media.reasonCode != null) {
+      List<CodeableConcept> reasonResource = new ArrayList<CodeableConcept>();
+      for (Code rCode : media.reasonCode) {
+        reasonResource.add(mapCodeToCodeableConcept(rCode, PROCEDURE_REASON_URI));
+      }
+      mediaResource.setReasonCode(reasonResource);
+    }
+
+    Attachment content = media.content;
+    org.hl7.fhir.r4.model.Attachment contentResource = new org.hl7.fhir.r4.model.Attachment();
+    
+    contentResource.setContentType(content.contentType);
+    contentResource.setLanguage(content.language);
+    contentResource.setDataElement(new org.hl7.fhir.r4.model.Base64BinaryType(content.data));
+    contentResource.setUrl(content.url);
+    contentResource.setSize(content.size);
+    contentResource.setTitle(content.title);
+    if (content.hash != null) {
+      contentResource.setHashElement(new org.hl7.fhir.r4.model.Base64BinaryType(content.hash));
+    }
+    
+    mediaResource.setContent(contentResource);
+
+    return newEntry(bundle, mediaResource);
   }
 
   /**
