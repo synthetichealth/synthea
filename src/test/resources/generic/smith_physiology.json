@@ -25,7 +25,7 @@
             "code": "32485007",
             "display": "Hospital admission"
         }],
-        "direct_transition" : "VitalSignObservation"
+        "direct_transition" : "Simulate_CVS"
     },
 
     "Simulate_CVS": {
@@ -72,6 +72,23 @@
     "Media": {
       "type": "Media",
       "media_type": "image",
+      "reasonCode": [{
+      	  "system": "SNOMED-CT",
+      	  "code": "15825003",
+      	  "display": "Aortic structure"
+      }],
+      "bodySite": {
+      	"system": "SNOMED-CT",
+      	"code": "360543005",
+      	"display": "Branch of bracial artery"
+      },
+      "modality": {
+      	"system": "SNOMED-CT",
+      	"code": "386532001",
+      	"display": "Invasive arterial pressure"
+      },
+      "deviceName": "Arterial line",
+      "language": "en",
       "chart": {
       	"type": "line",
       	"title": "Media Test",
