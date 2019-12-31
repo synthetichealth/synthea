@@ -21,64 +21,65 @@ import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
-import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 
 import com.google.gson.JsonObject;
 
-public class CPCDSExporter {
-	
-	/**
-	 * CONSTANTS
-	 */
-	private static final String[] COVERAGE_TYPES = {"HMO", "PPO", "EPO", "POS"};
-	private static final String[] GROUP_NAMES = {"Freya Analytics",
-		  "Thorton Industries",
-		  "Apollo Dynamics",
-		  "Cryocast Technologies",
-		  "Draugr Expeditions",
-		  "Odin Group LLC",
-		  "LowKey",
-		  "Black Castle Securities",
-		  "NewWave Technologies",
-		  "Realms Financial"};
-	
-	private final int[] GROUP_IDS = {(int) randomLongWithBounds(100000000, 999999999),
-			(int) randomLongWithBounds(100000000, 999999999),
-			(int) randomLongWithBounds(100000000, 999999999),
-			(int) randomLongWithBounds(100000000, 999999999),
-			(int) randomLongWithBounds(100000000, 999999999),
-			(int) randomLongWithBounds(100000000, 999999999),
-			(int) randomLongWithBounds(100000000, 999999999),
-			(int) randomLongWithBounds(100000000, 999999999),
-			(int) randomLongWithBounds(100000000, 999999999),
-			(int) randomLongWithBounds(100000000, 999999999)};
+import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 
-	/**
-	 * Writer for CPCDS_Patients.csv
-	 */
-	private FileWriter patients;
-	
-	/**
-	 * Writer for CPCDS_Coverages.csv
-	 */
-	private FileWriter coverages;
-	
-	/**
-	 * Writer for CPCDS_Claims.csv
-	 */
-	private FileWriter claims;
-	
-	/**
-	 * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
-	 */
-	private static final String NEWLINE = System.lineSeparator();
-	  
-	/**
-	 * Constructor for the CSVExporter - initialize the 9 specified files and store
-	 * the writers in fields.
-	 */
-	private CPCDSExporter() {
-		try {
+public class CPCDSExporter {
+  
+  /**
+   * CONSTANTS.
+   */
+  private static final String[] COVERAGE_TYPES = {"HMO", "PPO", "EPO", "POS"};
+  private static final String[] GROUP_NAMES = {"Freya Analytics",
+      "Thorton Industries",
+      "Apollo Dynamics",
+      "Cryocast Technologies",
+      "Draugr Expeditions",
+      "Odin Group LLC",
+      "LowKey",
+      "Black Castle Securities",
+      "NewWave Technologies",
+      "Realms Financial"};
+  
+  private final int[] GROUP_IDS = {(int) randomLongWithBounds(100000000, 999999999),
+      (int) randomLongWithBounds(100000000, 999999999),
+      (int) randomLongWithBounds(100000000, 999999999),
+      (int) randomLongWithBounds(100000000, 999999999),
+      (int) randomLongWithBounds(100000000, 999999999),
+      (int) randomLongWithBounds(100000000, 999999999),
+      (int) randomLongWithBounds(100000000, 999999999),
+      (int) randomLongWithBounds(100000000, 999999999),
+      (int) randomLongWithBounds(100000000, 999999999),
+      (int) randomLongWithBounds(100000000, 999999999)};
+
+  /**
+   * Writer for CPCDS_Patients.csv
+   */
+  private FileWriter patients;
+  
+  /**
+   * Writer for CPCDS_Coverages.csv
+   */
+  private FileWriter coverages;
+  
+  /**
+   * Writer for CPCDS_Claims.csv
+   */
+  private FileWriter claims;
+  
+  /**
+   * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
+   */
+  private static final String NEWLINE = System.lineSeparator();
+    
+  /**
+   * Constructor for the CSVExporter - initialize the 9 specified files and store
+   * the writers in fields.
+   */
+  private CPCDSExporter() {
+    try {
       File output = Exporter.getOutputFolder("cpcds", null);
       output.mkdirs();
       Path outputDirectory = output.toPath();
@@ -113,9 +114,9 @@ public class CPCDSExporter {
       // and if these do throw ioexceptions there's nothing we can do anyway
       throw new RuntimeException(e);
     }
-	}
-	
-	/**
+  }
+  
+  /**
    * Write the headers to each of the CSV files.
    * @throws IOException if any IO error occurs
    */
@@ -125,55 +126,55 @@ public class CPCDSExporter {
     patients.write(NEWLINE);
     
     coverages.write("Subscriber id,Coverage type,Coverage status,Start date,"
-    		+ "End date,Group id,Group name,Plan,Payer");
+        + "End date,Group id,Group name,Plan,Payer");
     coverages.write(NEWLINE);
     
     String cpcdsClaimColumnHeaders = "Claim service start date,Claim service end date,Claim paid date,"
-    		+ "Claim received date,Member admission date,Member discharge date,"
-    		+ "Patient account number,Medical record number,"
-    		+ "Claim unique identifier,Claim adjusted from identifier,"
-    		+ "Claim adjusted to identifier,Claim source inpatient admission code,"
-    		+ "Claim inpatient admission type code,Claim bill facility type code,"
-    		+ "Claim service classification type code,Claim frequency code,"
-    		+ "Claim status code,Claim type,Claim sub type,"
-    		+ "Patient discharge status code,Claim billing provider NPI,"
-    		+ "Claim billing provider network status,"
-    		+ "Claim attending physician NPI,"
-    		+ "Claim attending physician network status,Claim site of service NPI,"
-    		+ "Claim referring provider NPI,"
-    		+ "Claim referring provider network status,"
-    		+ "Claim performing provider NPI,"
-    		+ "Claim performing provider network status,"
-    		+ "Claim operating physician NPI,"
-    		+ "Claim operating physician network status,Claim other physician NPI,"
-    		+ "Claim other physician network status,Claim rendering physician NPI,"
-    		+ "Claim rendering physician network status,"
-    		+ "Claim service location NPI,Claim PCP,"
-    		+ "Claim total submitted amount,Claim total allowed amount,"
-    		+ "Amount paid by patient,Claim amount paid to provider,"
-    		+ "Member reimbursement,Claim payment amount,"
-    		+ "Claim payment denial code,Claim disallowed amount,"
-    		+ "Member paid deductable,Co-insurance liability amount,"
-    		+ "Copay amount,Member liability,Claim primary payer code,"
-    		+ "Claim primary payer paid amount,Claim secondary payer paid amount,"
-    		+ "NDC code,Fill date,Quantity,Days supply,Units,"
-    		+ "RX service reference number,Compound code,"
-    		+ "DAW product selection code,Fill number,Dispensing status code,"
-    		+ "Drug cost,Prescription origin code,IsBrand,"
-    		+ "Pharmacy service type code,Patient residence code,"
-    		+ "Submission clarification code,Service from date,Line number,"
-    		+ "Service to date,Type of service,Place of service code,"
-    		+ "Revenue center code,Quantity qualifier code,"
-    		+ "Line non covered charged amount,Line amount paid to member,"
-    		+ "Line patient paid amount,Line payment amount,"
-    		+ "Line member reimbursement,Line payment amount to provider,"
-    		+ "Line patient deductible,Line primary payer paid amount,"
-    		+ "Line secondary payer paid amount,Line coinsurance amount,"
-    		+ "Line submitted amount,Line allowed amount,Line member liability,"
-    		+ "Line copay amount,Diagnosis code,Is admitting diagnosis code,"
-    		+ "Diagnosis code type,Diagnosis type,Is E code,Procedure code,"
-    		+ "Procedure date,Procedure code type,Modifier Code-1,Modifier Code-2,"
-    		+ "Modifier Code-3,Modifier Code-4";
+          + "Claim received date,Member admission date,Member discharge date,"
+          + "Patient account number,Medical record number,"
+          + "Claim unique identifier,Claim adjusted from identifier,"
+          + "Claim adjusted to identifier,Claim source inpatient admission code,"
+          + "Claim inpatient admission type code,Claim bill facility type code,"
+          + "Claim service classification type code,Claim frequency code,"
+          + "Claim status code,Claim type,Claim sub type,"
+          + "Patient discharge status code,Claim billing provider NPI,"
+          + "Claim billing provider network status,"
+          + "Claim attending physician NPI,"
+          + "Claim attending physician network status,Claim site of service NPI,"
+          + "Claim referring provider NPI,"
+          + "Claim referring provider network status,"
+          + "Claim performing provider NPI,"
+          + "Claim performing provider network status,"
+          + "Claim operating physician NPI,"
+          + "Claim operating physician network status,Claim other physician NPI,"
+          + "Claim other physician network status,Claim rendering physician NPI,"
+          + "Claim rendering physician network status,"
+          + "Claim service location NPI,Claim PCP,"
+          + "Claim total submitted amount,Claim total allowed amount,"
+          + "Amount paid by patient,Claim amount paid to provider,"
+          + "Member reimbursement,Claim payment amount,"
+          + "Claim payment denial code,Claim disallowed amount,"
+          + "Member paid deductable,Co-insurance liability amount,"
+          + "Copay amount,Member liability,Claim primary payer code,"
+          + "Claim primary payer paid amount,Claim secondary payer paid amount,"
+          + "NDC code,Fill date,Quantity,Days supply,Units,"
+          + "RX service reference number,Compound code,"
+          + "DAW product selection code,Fill number,Dispensing status code,"
+          + "Drug cost,Prescription origin code,IsBrand,"
+          + "Pharmacy service type code,Patient residence code,"
+          + "Submission clarification code,Service from date,Line number,"
+          + "Service to date,Type of service,Place of service code,"
+          + "Revenue center code,Quantity qualifier code,"
+          + "Line non covered charged amount,Line amount paid to member,"
+          + "Line patient paid amount,Line payment amount,"
+          + "Line member reimbursement,Line payment amount to provider,"
+          + "Line patient deductible,Line primary payer paid amount,"
+          + "Line secondary payer paid amount,Line coinsurance amount,"
+          + "Line submitted amount,Line allowed amount,Line member liability,"
+          + "Line copay amount,Diagnosis code,Is admitting diagnosis code,"
+          + "Diagnosis code type,Diagnosis type,Is E code,Procedure code,"
+          + "Procedure date,Procedure code type,Modifier Code-1,Modifier Code-2,"
+          + "Modifier Code-3,Modifier Code-4";
     
     claims.write(cpcdsClaimColumnHeaders);
     claims.write(NEWLINE);
@@ -218,26 +219,26 @@ public class CPCDSExporter {
       String payerId = encounter.claim.payer.uuid.toString();
       long medRecordNumber = randomLongWithBounds(1000000000, 9999999999L);
       CPCDSAttributes encounterAttributes = new CPCDSAttributes(encounter);
-    		  
+          
       for (CarePlan careplan : encounter.careplans) {
         coverage(personID, encounterID, careplan, payerId, type, groupId, groupName);
       }
       
       if (encounter.medications.size() == 0 && encounter.procedures.size() == 0) {
-      	claim(encounter, personID, encounterID, medRecordNumber, encounterAttributes, 1, payerId);
+        claim(encounter, personID, encounterID, medRecordNumber, encounterAttributes, 1, payerId);
       }
       else {
-		  int j = 1;
-		  for (Medication medication : encounter.medications) {
-			medication(encounter, personID, encounterID, medRecordNumber, medication, encounterAttributes, j, time, payerId);
-			j++;
-		  }
+      int j = 1;
+      for (Medication medication : encounter.medications) {
+      medication(encounter, personID, encounterID, medRecordNumber, medication, encounterAttributes, j, time, payerId);
+      j++;
+      }
       
-		  int k = 1;
-		  for (Procedure procedure : encounter.procedures) {
-      		procedure(encounter, personID, encounterID, medRecordNumber, procedure, encounterAttributes, k, payerId);
-      		k++;
-		  }
+      int k = 1;
+      for (Procedure procedure : encounter.procedures) {
+          procedure(encounter, personID, encounterID, medRecordNumber, procedure, encounterAttributes, k, payerId);
+          k++;
+      }
       }
     }
     
@@ -269,28 +270,28 @@ public class CPCDSExporter {
     s.append(personID).append(',');
     s.append(dateFromTimestamp((long) person.attributes.get(Person.BIRTHDATE))).append(',');
     if (!person.alive(time)) {
-      s.append(dateFromTimestamp((Long) person.attributes.get(Person.DEATHDATE))).append(',');
+      s.append(dateFromTimestamp((long) person.attributes.get(Person.DEATHDATE))).append(',');
     } else {
-    	s.append(',');
+      s.append(',');
     }
     s.append(person.attributes.getOrDefault("county", "")).append(',');
     s.append(person.attributes.getOrDefault(Person.STATE, "")).append(',');
     s.append(person.attributes.getOrDefault("country", "United States"));
     
-	  for (String attribute : new String[] {
-	      Person.ZIP,
-	      Person.RACE,
-	      Person.ETHNICITY,
-	      Person.GENDER,
-	      Person.NAME,
-	  }) {
-	    String value = (String) person.attributes.getOrDefault(attribute, "");
-	    s.append(',').append(clean(value));
-	  }
+    for (String attribute : new String[] {
+          Person.ZIP,
+          Person.RACE,
+          Person.ETHNICITY,
+          Person.GENDER,
+          Person.NAME,
+    }) {
+      String value = (String) person.attributes.getOrDefault(attribute, "");
+      s.append(',').append(clean(value));
+    }
 
     // TODO: Relationship to Subscriber and Subscriber ID
-	  s.append(',').append(person.attributes.getOrDefault("Relationship", "self")).append(',');
-	  s.append(personID).append(',');
+    s.append(',').append(person.attributes.getOrDefault("Relationship", "self")).append(',');
+    s.append(personID).append(',');
 
     s.append(NEWLINE);
     write(s.toString(), patients);
@@ -299,56 +300,56 @@ public class CPCDSExporter {
   }
   
   /**
-	 * Write a single Coverage CPCDS file
-	 *
-	 * @param personID    ID of the person prescribed the careplan.
-	 * @param encounterID ID of the encounter where the careplan was prescribed
-	 * @param careplan    The careplan itself
-	 * @throws IOException if any IO error occurs
-	 */
-	private void coverage(String personID, String encounterID, CarePlan careplan, String payerId, String type, int groupId, String groupName)
-			throws IOException {
-
-		StringBuilder s = new StringBuilder();
-		s.append(personID).append(',');
-		s.append(type).append(',');
-		
-		if (careplan.stop != 0L) {
-			s.append("inactive").append(',');
-		} else {
-			s.append("active").append(',');
-		}
-		
-		s.append(dateFromTimestamp(careplan.start)).append(',');
-		if (careplan.stop != 0L) {
-			s.append(dateFromTimestamp(careplan.stop));
-		}
-		
-		s.append(',');
-		s.append(groupId).append(',');
-		s.append(groupName).append(',');
-		s.append(careplan.name).append(',');
-		s.append(payerId);
-		s.append(NEWLINE);
-		write(s.toString(), coverages);
-	}
-
-	/**
-	 * Write a single Encounter to CPCDS_Claims.csv.
+   * Write a single Coverage CPCDS file
    *
-	 * @param encounter The encounter itself
-	 * @param personID ID of the person on whom the procedure was performed.
-	 * @param encounterID ID of the encounter where the procedure was performed
-	 * @param medRecordNumber The medical record number of the person on whom
-	 * 												the procedure was performed.
-	 * @param attributes 
-	 * @param index An index for keeping track of line number
-	 * @throws IOException if any IO error occurs
-	 */
-	private void claim(Encounter encounter, String personID, String encounterID,
-			long medRecordNumber, CPCDSAttributes attributes, int index, String payerId)
-			throws IOException{
-		
+   * @param personID    ID of the person prescribed the careplan.
+   * @param encounterID ID of the encounter where the careplan was prescribed
+   * @param careplan    The careplan itself
+   * @throws IOException if any IO error occurs
+   */
+  private void coverage(String personID, String encounterID, CarePlan careplan, String payerId, String type, int groupId, String groupName)
+      throws IOException {
+
+    StringBuilder s = new StringBuilder();
+    s.append(personID).append(',');
+    s.append(type).append(',');
+    
+    if (careplan.stop != 0L) {
+      s.append("inactive").append(',');
+    } else {
+      s.append("active").append(',');
+    }
+    
+    s.append(dateFromTimestamp(careplan.start)).append(',');
+    if (careplan.stop != 0L) {
+      s.append(dateFromTimestamp(careplan.stop));
+    }
+    
+    s.append(',');
+    s.append(groupId).append(',');
+    s.append(groupName).append(',');
+    s.append(careplan.name).append(',');
+    s.append(payerId);
+    s.append(NEWLINE);
+    write(s.toString(), coverages);
+  }
+
+  /**
+   * Write a single Encounter to CPCDS_Claims.csv.
+   *
+   * @param encounter The encounter itself
+   * @param personID ID of the person on whom the procedure was performed.
+   * @param encounterID ID of the encounter where the procedure was performed
+   * @param medRecordNumber The medical record number of the person on whom
+   *                         the procedure was performed.
+   * @param attributes 
+   * @param index An index for keeping track of line number
+   * @throws IOException if any IO error occurs
+   */
+  private void claim(Encounter encounter, String personID, String encounterID,
+      long medRecordNumber, CPCDSAttributes attributes, int index, String payerId)
+      throws IOException{
+    
     StringBuilder s = new StringBuilder();
     
     s.append(iso8601Timestamp(encounter.start)).append(',');
@@ -420,26 +421,26 @@ public class CPCDSExporter {
     
     s.append(NEWLINE);
     write(s.toString(), claims);
-	}
+  }
 
-	/**
-	 * Write a single Medication to CPCDS_Claims.csv.
+  /**
+   * Write a single Medication to CPCDS_Claims.csv.
    *
-	 * @param encounter The encounter itself
-	 * @param personID ID of the person on whom the procedure was performed.
-	 * @param encounterID ID of the encounter where the procedure was performed
-	 * @param medRecordNumber The medical record number of the person on whom
-	 * 												the procedure was performed.
-	 * @param medication The medication itself
-	 * @param Attributes 
-	 * @param index An index for keeping track of line number
-	 * @param stopTime Time the simulation ended, to calculate medication stop
-	 * @throws IOException if any IO error occurs
-	 */
-	private void medication(Encounter encounter, String personID, String encounterID,
-			long medRecordNumber, Medication medication, CPCDSAttributes attributes,
-			int index, long stopTime, String payerId)
-			throws IOException {
+   * @param encounter The encounter itself
+   * @param personID ID of the person on whom the procedure was performed.
+   * @param encounterID ID of the encounter where the procedure was performed
+   * @param medRecordNumber The medical record number of the person on whom
+   *                         the procedure was performed.
+   * @param medication The medication itself
+   * @param Attributes 
+   * @param index An index for keeping track of line number
+   * @param stopTime Time the simulation ended, to calculate medication stop
+   * @throws IOException if any IO error occurs
+   */
+  private void medication(Encounter encounter, String personID, String encounterID,
+      long medRecordNumber, Medication medication, CPCDSAttributes attributes,
+      int index, long stopTime, String payerId)
+      throws IOException {
     
     Map<String, String> msiscodes = new HashMap<String, String>();
     msiscodes.put("outpatient", "11");
@@ -453,11 +454,11 @@ public class CPCDSExporter {
     String type = attributes.getType();
     String subtype = attributes.getSubtype();
     try {
-    	cop = attributes.getCopay() / medication.codes.size();
+      cop = attributes.getCopay() / medication.codes.size();
       type = "PHARMACY";
       subtype = "4700";
     } catch(Exception e) {
-    	cop = 0;
+      cop = 0;
     }
 
     long dispenses = 1;
@@ -598,38 +599,38 @@ public class CPCDSExporter {
       
       s.append(NEWLINE);
       write(s.toString(), claims);
-		} else {
-			for (Procedure procedure : encounter.procedures) {
-				// TODO: Figure out how to do the index for each of these
-				StringBuilder proc = new StringBuilder();
-				proc.append(s);
-				
-				StringBuilder procDiag = procDiagBuilder(procedure);
-	      proc.append(procDiag);
-	      
-	      proc.append(NEWLINE);
-	      write(proc.toString(), claims);
-			}
-		}
-	}
+    } else {
+      for (Procedure procedure : encounter.procedures) {
+        // TODO: Figure out how to do the index for each of these
+        StringBuilder proc = new StringBuilder();
+        proc.append(s);
+        
+        StringBuilder procDiag = procDiagBuilder(procedure);
+        proc.append(procDiag);
+        
+        proc.append(NEWLINE);
+        write(proc.toString(), claims);
+      }
+    }
+  }
 
-	/**
-	 * Write a single Procedure to CPCDS_Claims.csv.
+  /**
+   * Write a single Procedure to CPCDS_Claims.csv.
    *
-	 * @param encounter The encounter itself
-	 * @param personID ID of the person on whom the procedure was performed.
-	 * @param encounterID ID of the encounter where the procedure was performed
-	 * @param medRecordNumber The medical record number of the person on whom
-	 * 												the procedure was performed.
-	 * @param procedure The procedure itself
-	 * @param attributes 
-	 * @param index An index for keeping track of line number
-	 * @throws IOException if any IO error occurs
-	 */
-	private void procedure(Encounter encounter, String personID, String encounterID,
-			long medRecordNumber, Procedure procedure, CPCDSAttributes attributes, int index, String payerId)
-			throws IOException {
-		 
+   * @param encounter The encounter itself
+   * @param personID ID of the person on whom the procedure was performed.
+   * @param encounterID ID of the encounter where the procedure was performed
+   * @param medRecordNumber The medical record number of the person on whom
+   *                         the procedure was performed.
+   * @param procedure The procedure itself
+   * @param attributes 
+   * @param index An index for keeping track of line number
+   * @throws IOException if any IO error occurs
+   */
+  private void procedure(Encounter encounter, String personID, String encounterID,
+      long medRecordNumber, Procedure procedure, CPCDSAttributes attributes, int index, String payerId)
+      throws IOException {
+     
     StringBuilder procDiag = procDiagBuilder(procedure);
     StringBuilder s = new StringBuilder();
     
@@ -701,20 +702,20 @@ public class CPCDSExporter {
     
     s.append(NEWLINE);
     write(s.toString(), claims);
-	}
-	
-	/**
-	 * A helper method for creating the procedure diagnosis string.
-	 * 
-	 * @param procedure The procedure itself
-	 * @return a StringBuilder for the procedure diagnosis
-	 */
-	private StringBuilder procDiagBuilder(Procedure procedure) {
-		StringBuilder procDiag = new StringBuilder();
-		
-		Code procCoding = procedure.codes.get(0);
+  }
+  
+  /**
+   * A helper method for creating the procedure diagnosis string.
+   * 
+   * @param procedure The procedure itself
+   * @return a StringBuilder for the procedure diagnosis
+   */
+  private StringBuilder procDiagBuilder(Procedure procedure) {
+    StringBuilder procDiag = new StringBuilder();
+    
+    Code procCoding = procedure.codes.get(0);
     procDiag.append(procCoding.code).append(',');
-		String[] isAdmittingDiagCode = {"Y", "N", "Y", "Y"};
+    String[] isAdmittingDiagCode = {"Y", "N", "Y", "Y"};
     procDiag.append(isAdmittingDiagCode[(int) randomLongWithBounds(0, isAdmittingDiagCode.length - 1)]).append(',');
     procDiag.append("SNOMED").append(',');
     procDiag.append("primary").append(',');
@@ -725,7 +726,7 @@ public class CPCDSExporter {
     procDiag.append(',').append(',').append(',').append(',');
     
     return procDiag;
-	}
+  }
   
   /**
    * Replaces commas and line breaks in the source string with a single space.
@@ -754,157 +755,157 @@ public class CPCDSExporter {
   }
   
   /**
-	 * Create a random long between an upper and lower bound. Utilizing
-	 * longs to cope with 10+ digit integers.
-	 * 
-	 * @param lower the lower bound for the integer, inclusive
-	 * @param upper the upper bound for the integer, inclusive
-	 * @return a random long between the lower and upper bounds
-	 */
-	private long randomLongWithBounds(long lower, long upper) {
-		if (lower >= upper) {
-			throw new IllegalArgumentException("upper bound must be greater than lower");
-		}
+   * Create a random long between an upper and lower bound. Utilizing
+   * longs to cope with 10+ digit integers.
+   * 
+   * @param lower the lower bound for the integer, inclusive
+   * @param upper the upper bound for the integer, inclusive
+   * @return a random long between the lower and upper bounds
+   */
+  private long randomLongWithBounds(long lower, long upper) {
+    if (lower >= upper) {
+      throw new IllegalArgumentException("upper bound must be greater than lower");
+    }
 
-		Random random = new Random();
-		long range = upper - lower + 1;
-		long fraction = (long) (range * random.nextDouble());
-		return fraction + lower;
-	}
+    Random random = new Random();
+    long range = upper - lower + 1;
+    long fraction = (long) (range * random.nextDouble());
+    return fraction + lower;
+  }
 
-	private boolean randomTrueOrFalse() {
-		Random random = new Random();
-		return random.nextBoolean();
-	}
-	
-	/**
-	 * A helper class for storing CPCDS derived encounter attributes
-	 * to eliminate reusing the same code in multiple areas.
-	 */
-	private class CPCDSAttributes {
+  private boolean randomTrueOrFalse() {
+    Random random = new Random();
+    return random.nextBoolean();
+  }
+  
+  /**
+   * A helper class for storing CPCDS derived encounter attributes
+   * to eliminate reusing the same code in multiple areas.
+   */
+  private class CPCDSAttributes {
 
-		private Encounter ENCOUNTER;
-		private String inout;
-		private String subtype;
-		private String code;
-		private String type;
-		
-		private long disallowed;
-		private long liability;
-		private String deductable;
-		private long copay;
-		
-		public CPCDSAttributes(Encounter encounter) {
-			ENCOUNTER = encounter;
-			
-			if (encounter.reason == null) {
-	      setInout("out of network");
-	      setSubtype("4013");
-	      setCode("3");
-	      setType("OUTPATIENT");
-			} else {
-	      setInout("in network");
-	      if (randomTrueOrFalse()) {
-	        setSubtype("4011");
-	        setCode("1");
-	      } else {
-	        setSubtype("4041");
-	        setCode("2");
-	      }
-	      setType("INPATIENT");
-			}
-			
-	    long baseEcounterCost = encounter.getCost().longValue();
-	    long totalClaimCost = (long) encounter.claim.getTotalClaimCost();
-	    long payerCoverage = (long) encounter.claim.getCoveredCost();
-			if (totalClaimCost >= baseEcounterCost) {
-				setDisallowed(0);
-			  setLiability(0);
-			} else {
-				setDisallowed(baseEcounterCost - totalClaimCost);
-			  setLiability(baseEcounterCost - totalClaimCost);
-			}
-	    if (payerCoverage == totalClaimCost) {
-	    	setDeductable("True");
-	      setCopay(0);
-	    } else {
-	    	setDeductable("False");
-	      setCopay(totalClaimCost - payerCoverage);
-	    }
-		}
-		
-		public String getNpiProvider() {
-			String npiProvider;
-			if (ENCOUNTER.provider == null) {
-	      npiProvider = "";
-	    } else {
-	      npiProvider = ENCOUNTER.provider.getResourceID();
-	    }
-			return npiProvider;
-		}
+    private Encounter ENCOUNTER;
+    private String inout;
+    private String subtype;
+    private String code;
+    private String type;
+    
+    private long disallowed;
+    private long liability;
+    private String deductable;
+    private long copay;
+    
+    public CPCDSAttributes(Encounter encounter) {
+      ENCOUNTER = encounter;
+      
+      if (encounter.reason == null) {
+        setInout("out of network");
+        setSubtype("4013");
+        setCode("3");
+        setType("OUTPATIENT");
+      } else {
+        setInout("in network");
+        if (randomTrueOrFalse()) {
+          setSubtype("4011");
+          setCode("1");
+        } else {
+          setSubtype("4041");
+          setCode("2");
+        }
+        setType("INPATIENT");
+      }
+      
+      long baseEcounterCost = encounter.getCost().longValue();
+      long totalClaimCost = (long) encounter.claim.getTotalClaimCost();
+      long payerCoverage = (long) encounter.claim.getCoveredCost();
+      if (totalClaimCost >= baseEcounterCost) {
+        setDisallowed(0);
+        setLiability(0);
+      } else {
+        setDisallowed(baseEcounterCost - totalClaimCost);
+        setLiability(baseEcounterCost - totalClaimCost);
+      }
+      if (payerCoverage == totalClaimCost) {
+        setDeductable("True");
+        setCopay(0);
+      } else {
+        setDeductable("False");
+        setCopay(totalClaimCost - payerCoverage);
+      }
+    }
+    
+    public String getNpiProvider() {
+      String npiProvider;
+      if (ENCOUNTER.provider == null) {
+        npiProvider = "";
+      } else {
+        npiProvider = ENCOUNTER.provider.getResourceID();
+      }
+      return npiProvider;
+    }
 
-		public String getInout() {
-			return inout;
-		}
+    public String getInout() {
+      return inout;
+    }
 
-		private void setInout(String inout) {
-			this.inout = inout;
-		}
+    private void setInout(String inout) {
+      this.inout = inout;
+    }
 
-		public String getSubtype() {
-			return subtype;
-		}
+    public String getSubtype() {
+      return subtype;
+    }
 
-		private void setSubtype(String subtype) {
-			this.subtype = subtype;
-		}
+    private void setSubtype(String subtype) {
+      this.subtype = subtype;
+    }
 
-		public String getCode() {
-			return code;
-		}
+    public String getCode() {
+      return code;
+    }
 
-		private void setCode(String code) {
-			this.code = code;
-		}
+    private void setCode(String code) {
+      this.code = code;
+    }
 
-		public String getType() {
-			return type;
-		}
+    public String getType() {
+      return type;
+    }
 
-		private void setType(String type) {
-			this.type = type;
-		}
+    private void setType(String type) {
+      this.type = type;
+    }
 
-		public long getDisallowed() {
-			return disallowed;
-		}
+    public long getDisallowed() {
+      return disallowed;
+    }
 
-		private void setDisallowed(long disallowed) {
-			this.disallowed = disallowed;
-		}
+    private void setDisallowed(long disallowed) {
+      this.disallowed = disallowed;
+    }
 
-		public long getLiability() {
-			return liability;
-		}
+    public long getLiability() {
+      return liability;
+    }
 
-		private void setLiability(long liability) {
-			this.liability = liability;
-		}
+    private void setLiability(long liability) {
+      this.liability = liability;
+    }
 
-		public String getDeductable() {
-			return deductable;
-		}
+    public String getDeductable() {
+      return deductable;
+    }
 
-		private void setDeductable(String deductable) {
-			this.deductable = deductable;
-		}
+    private void setDeductable(String deductable) {
+      this.deductable = deductable;
+    }
 
-		public long getCopay() {
-			return copay;
-		}
+    public long getCopay() {
+      return copay;
+    }
 
-		private void setCopay(long copay) {
-			this.copay = copay;
-		}
-	}
+    private void setCopay(long copay) {
+      this.copay = copay;
+    }
+  }
 }
