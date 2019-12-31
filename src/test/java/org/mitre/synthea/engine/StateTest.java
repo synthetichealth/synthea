@@ -2,6 +2,7 @@ package org.mitre.synthea.engine;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -1275,8 +1276,8 @@ public class StateTest {
 
     assertEquals(1, cp.activities.size());
     Code activity = cp.activities.iterator().next();
-    assertEquals("764101000000108", activity.code);
-    assertEquals("Allergen immunotherapy drugs band 1", activity.display);
+    assertEquals("182678001", activity.code);
+    assertEquals("Hyposensitization to allergens (procedure)", activity.display);
   }
 
   @Test
@@ -1648,5 +1649,67 @@ public class StateTest {
     assertEquals(2, o.observations.size());
     assertEquals("8462-4", o.observations.get(0).codes.get(0).code); // diastolic
     assertEquals("8480-6", o.observations.get(1).codes.get(0).code); // systolic
+  }
+  
+  @Test
+  public void testPhysiology() throws Exception {
+    
+    // BMI is an input parameter so we need to set it
+    person.setVitalSign(VitalSign.BMI, 32.98);
+    
+    // Pulmonary resistance and BMI multiplier are also input parameters
+    person.attributes.put("Pulmonary Resistance", 0.1552);
+    person.attributes.put("BMI Multiplier", 0.055);
+
+    Module module = TestHelper.getFixture("smith_physiology.json");
+    
+    State simulateCvs = module.getState("Simulate_CVS");
+    assertTrue(simulateCvs.process(person, time));
+    
+    // The "Final Aortal Volume" attribute should have been set
+    assertTrue(person.attributes.containsKey("Final Aortal Volume"));
+    
+    // The "Arterial Pressure Values" attribute should have been set to a list
+    assertTrue(person.attributes.get("Arterial Pressure Values") instanceof List);
+    
+    // LVEF should be diminished and BP should be elevated
+    assertTrue("LVEF < 59%", (double) person.attributes.get("LVEF") < 60.0);
+    assertTrue("LVEF > 57%", (double) person.attributes.get("LVEF") > 50.0);
+    assertTrue("SYS BP < 150 mmhg",
+        (double) person.attributes.get("SBP") < 150.0);
+    assertTrue("SYS BP > 130 mmhg",
+        (double) person.attributes.get("SBP") > 130.0);
+    assertTrue("DIA BP < 100 mmhg",
+        (double) person.attributes.get("DBP") < 100.0);
+    assertTrue("DIA BP > 80 mmhg",
+        (double) person.attributes.get("DBP") > 80.0);
+    
+    // test that the state can be effectively cloned
+    State cvsClone = simulateCvs.clone();
+    
+    assertNotEquals(cvsClone, simulateCvs);
+    assertTrue(cvsClone.process(person, time));
+  }
+  
+  @Test
+  public void testExpressionUse() throws Exception {
+    
+    // Birth makes the vital signs come alive :-)
+    LifecycleModule.birth(person, (long)person.attributes.get(Person.BIRTHDATE));
+
+    Module module = TestHelper.getFixture("expression_use.json");
+    
+    State attrExpression = module.getState("Set_Attr");
+    assertTrue(attrExpression.process(person, time));
+    
+    State vitalExpression = module.getState("Set_Vital");
+    assertTrue(vitalExpression.process(person, time));
+    
+    State observeExpression = module.getState("Observe");
+    assertTrue(observeExpression.process(person, time));
+    
+    // Verify that the Person now has an LVEF value of 60
+    assertEquals(person.getVitalSign(VitalSign.LVEF, time), 60.0, 0.00001);
+    
   }
 }

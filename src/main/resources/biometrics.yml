@@ -52,6 +52,9 @@ metabolic:
       severe_kidney_damage: [15,29] # ml/min/BSA
       esrd: [1,15] # ml/min/BSA
 cardiovascular:
+  oxygen_saturation:
+    normal: [90,99] # https://www.mayoclinic.org/symptoms/hypoxemia/basics/definition/sym-20050930
+    hypoxemia: [75,89] # https://en.wikipedia.org/wiki/Oxygen_saturation_(medicine)#Medical_significance
   stroke:
     #https://www.heart.org/idc/groups/heart-public/@wcm/@sop/@smd/documents/downloadable/ucm_449858.pdf
     rate_20_39: [0.002, 0.007] #Prevalence of stroke by age and sex (Male, Female)

@@ -1,0 +1,45 @@
+{
+  "name": "Smith 2004 CVS Physiology Simulation",
+  "remarks": [
+    "This module invokes the physiology simulation of cardiovascular dynamics."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Set_Systemic_Resistance"
+    },
+    
+    "Set_Attr": {
+      "type": "SetAttribute",
+      "attribute" : "expression_example",
+      "expression" : "2.5 + 10/4 - 15.0",
+      "direct_transition": "Set_Vital"
+    },
+
+    "Set_Vital": {
+	  "type": "VitalSign",
+	  "vital_sign": "Left ventricular Ejection fraction",
+	  "unit": "%",
+	  "expression": "70 + #{expression_example}",
+	  "direct_transition": "Observe"
+    },
+    
+    "Observe" : {
+	    "type" : "Observation",
+	    "expression" : "#{LVEF} * 2.0",
+	    "category" : "vital-signs",
+	    "codes" : [{
+	      "system" : "LOINC",
+	      "code" : "8480-6",
+	      "display" : "Systolic Blood Pressure"
+	    }],
+	    "unit" : "mm[Hg]",
+	    "direct_transition" : "Main_Terminal"
+    },
+
+    "Main_Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

@@ -23,6 +23,8 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
+import org.mitre.synthea.helpers.physiology.PhysiologyGeneratorConfig;
+import org.mitre.synthea.helpers.physiology.SimRunner;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -238,6 +240,25 @@ public class Person implements Serializable, QuadTreeElement {
       age = Period.between(birthdate, now);
     }
     return age;
+  }
+
+  /**
+   * Returns a person's age in decimal years. (ex. 7.5 ~ 7 years 6 months old)
+   *
+   * @param time The time when their age should be calculated.
+   * @return decimal age in years
+   */
+  public double ageInDecimalYears(long time) {
+    Period agePeriod = age(time);
+    
+    double years = agePeriod.getYears() + agePeriod.getMonths() / 12.0
+        + agePeriod.getDays() / 365.2425;
+    
+    if (years < 0) {
+      years = 0;
+    }
+    
+    return years;
   }
 
   /**

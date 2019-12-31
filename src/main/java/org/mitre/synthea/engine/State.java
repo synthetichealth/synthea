@@ -2,10 +2,15 @@ package org.mitre.synthea.engine;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.math.ode.DerivativeException;
 
 import org.mitre.synthea.engine.Components.Exact;
 import org.mitre.synthea.engine.Components.ExactWithUnit;
@@ -21,8 +26,10 @@ import org.mitre.synthea.engine.Transition.DistributedTransitionOption;
 import org.mitre.synthea.engine.Transition.LookupTableTransition;
 import org.mitre.synthea.engine.Transition.LookupTableTransitionOption;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
+import org.mitre.synthea.helpers.ExpressionProcessor;
 import org.mitre.synthea.helpers.RandomValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.helpers.physiology.IoMapper;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -34,6 +41,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
+import org.simulator.math.odes.MultiTable;
 
 public abstract class State implements Cloneable {
   public Module module;
@@ -252,6 +260,115 @@ public abstract class State implements Cloneable {
       }
     }
   }
+  
+  /**
+   * The Physiology state executes a physiology simulation according to the provided
+   * configuration options. Expressions can be used to map Patient attributes /
+   * VitalSigns to model parameters, and vice versa, or they can be mapped directly.
+   * This is an alternative way to get simulation results applicable for a specific
+   * module. If a simulation is intended to provide VitalSign values, a physiology
+   * value generator should be used instead.
+   */
+  public static class Physiology extends State {
+    private String model;
+    private String solver;
+    private double stepSize;
+    private double simDuration;
+    private double leadTime;
+    private List<IoMapper> inputs;
+    private List<IoMapper> outputs;
+    private transient PhysiologySimulator simulator;
+    private transient Map<String,String> paramTypes;
+    
+    @Override
+    protected void initialize(Module module, String name, JsonObject definition) {
+      super.initialize(module, name, definition);
+      
+      if (leadTime > simDuration) {
+        throw new IllegalArgumentException(
+            "Simulation lead time cannot be greater than sim duration!");
+      }
+
+      setup();
+    }
+    
+    private void setup() {
+      simulator = new PhysiologySimulator(model, solver, stepSize, simDuration);
+      paramTypes = new HashMap<String, String>();
+      
+      for (String param : simulator.getParameters()) {
+        // Assume all physiology model inputs are lists of Decimal objects which is typically
+        // the case
+        // TODO: Look into whether SBML supports other parameter types, and if so, how we might map
+        // those types to CQL types
+        paramTypes.put(param, "List<Decimal>");
+      }
+      
+      for (IoMapper mapper : inputs) {
+        mapper.initialize(paramTypes);
+      }
+      for (IoMapper mapper : outputs) {
+        mapper.initialize(paramTypes);
+      }
+    }
+
+    @Override
+    public Physiology clone() {
+      super.clone();
+      Physiology clone = (Physiology) super.clone();
+      clone.model = model;
+      clone.solver = solver;
+      clone.stepSize = stepSize;
+      clone.simDuration = simDuration;
+      clone.leadTime = leadTime;
+      
+      List<IoMapper> inputList = new ArrayList<IoMapper>(inputs.size());
+      for (IoMapper mapper : inputs) {
+        inputList.add(new IoMapper(mapper));
+      }
+      clone.inputs = inputList;
+      
+      List<IoMapper> outputList = new ArrayList<IoMapper>(outputs.size());
+      for (IoMapper mapper : outputs) {
+        outputList.add(new IoMapper(mapper));
+      }
+      clone.outputs = outputList;
+      
+      clone.setup();
+      
+      return clone;
+    }
+
+    @Override
+    public boolean process(Person person, long time) {
+      Map<String,Double> modelInputs = new HashMap<String,Double>();
+      for (IoMapper mapper : inputs) {
+        mapper.toModelInputs(person, time, modelInputs);
+      }
+      try {
+        MultiTable results = simulator.run(modelInputs);
+        for (IoMapper mapper : outputs) {
+          switch (mapper.getType()) {
+            default:
+            case ATTRIBUTE:
+              person.attributes.put(mapper.getTo(),
+                  mapper.getOutputResult(results, leadTime));
+              break;
+            case VITAL_SIGN:
+              throw new IllegalArgumentException(
+                    "Mapping to VitalSigns is unsupported in the Physiology State. "
+                    + "Define a physiology generator instead for \"" + mapper.getTo() + "\".");
+          }
+        }
+      } catch (DerivativeException ex) {
+        Logger.getLogger(State.class.getName()).log(Level.SEVERE, "Unable to solve simulation \""
+            + model + "\" at time step " + time + " for person "
+            + person.attributes.get(Person.ID), ex);
+      }
+      return true;
+    }
+    
+  }
 
   /**
    * The Terminal state type indicates the end of the module progression. Once a Terminal state is
@@ -361,10 +478,22 @@ public abstract class State implements Cloneable {
   public static class SetAttribute extends State {
     private String attribute;
     private Object value;
+    private String expression;
+    private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
 
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
+      
+      // If the ThreadLocal instance hasn't been created yet, create it now
+      if (threadExpProcessor == null) {
+        threadExpProcessor = new ThreadLocal<ExpressionProcessor>();
+      }
+      
+      // If there's an expression, create the processor for it
+      if (this.expression != null && threadExpProcessor.get() == null) { 
+        threadExpProcessor.set(new ExpressionProcessor(this.expression));
+      }
 
       // special handling for integers
       if (value instanceof Double) {
@@ -381,11 +510,17 @@ public abstract class State implements Cloneable {
       SetAttribute clone = (SetAttribute) super.clone();
       clone.attribute = attribute;
       clone.value = value;
+      clone.expression = expression;
+      clone.threadExpProcessor = threadExpProcessor;
       return clone;
     }
 
     @Override
     public boolean process(Person person, long time) {
+      if (threadExpProcessor.get() != null) {
+        value = threadExpProcessor.get().evaluate(person, time);
+      }
+
       if (value != null) {
         person.attributes.put(attribute, value);
       } else if (person.attributes.containsKey(attribute)) {
@@ -1127,6 +1262,23 @@ public abstract class State implements Cloneable {
     private String unit;
     private Range<Double> range;
     private Exact<Double> exact;
+    private String expression;
+    private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
+    
+    @Override
+    protected void initialize(Module module, String name, JsonObject definition) {
+      super.initialize(module, name, definition);
+      
+      // If the ThreadLocal instance hasn't been created yet, create it now
+      if (threadExpProcessor == null) {
+        threadExpProcessor = new ThreadLocal<ExpressionProcessor>();
+      }
+      
+      // If there's an expression, create the processor for it
+      if (this.expression != null && threadExpProcessor.get() == null) { 
+        threadExpProcessor.set(new ExpressionProcessor(this.expression));
+      }
+    }
 
     @Override
     public VitalSign clone() {
@@ -1135,6 +1287,8 @@ public abstract class State implements Cloneable {
       clone.exact = exact;
       clone.vitalSign = vitalSign;
       clone.unit = unit;
+      clone.expression = expression;
+      clone.threadExpProcessor = threadExpProcessor;
       return clone;
     }
 
@@ -1144,6 +1298,9 @@ public abstract class State implements Cloneable {
         person.setVitalSign(vitalSign, new ConstantValueGenerator(person, exact.quantity));
       } else if (range != null) {
         person.setVitalSign(vitalSign, new RandomValueGenerator(person, range.low, range.high));
+      } else if (threadExpProcessor.get() != null) {
+        Number value = (Number) threadExpProcessor.get().evaluate(person, time);
+        person.setVitalSign(vitalSign, value.doubleValue());
       } else {
         throw new RuntimeException(
             "VitalSign state has no exact quantity or low/high range: " + this);
@@ -1194,6 +1351,23 @@ public abstract class State implements Cloneable {
     private org.mitre.synthea.world.concepts.VitalSign vitalSign;
     private String category;
     private String unit;
+    private String expression;
+    private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
+    
+    @Override
+    protected void initialize(Module module, String name, JsonObject definition) {
+      super.initialize(module, name, definition);
+      
+      // If the ThreadLocal instance hasn't been created yet, create it now
+      if (threadExpProcessor == null) {
+        threadExpProcessor = new ThreadLocal<ExpressionProcessor>();
+      }
+      
+      // If there's an expression, create the processor for it
+      if (this.expression != null) { 
+        threadExpProcessor.set(new ExpressionProcessor(this.expression));
+      }
+    }
 
     @Override
     public Observation clone() {
@@ -1206,6 +1380,8 @@ public abstract class State implements Cloneable {
       clone.vitalSign = vitalSign;
       clone.category = category;
       clone.unit = unit;
+      clone.expression = expression;
+      clone.threadExpProcessor = threadExpProcessor;
       return clone;
     }
 
@@ -1223,7 +1399,9 @@ public abstract class State implements Cloneable {
         value = person.getVitalSign(vitalSign, time);
       } else if (valueCode != null) {
         value = valueCode;
-      }
+      } else if (threadExpProcessor.get() != null) {
+        value = threadExpProcessor.get().evaluate(person, time);
+      } 
       HealthRecord.Observation observation = person.record.observation(time, primaryCode, value);
       entry = observation;
       observation.name = this.name;

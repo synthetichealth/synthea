@@ -15,6 +15,7 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.PhysiologyValueGenerator;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.SimpleYML;
@@ -234,10 +235,19 @@ public final class LifecycleModule extends Module {
    * @param person The person to generate vital signs for.
    */
   private static void setupVitalSignGenerators(Person person) {
+    
     person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE,
         new BloodPressureValueGenerator(person, SysDias.SYSTOLIC));
     person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE,
         new BloodPressureValueGenerator(person, SysDias.DIASTOLIC));
+    
+    if (ENABLE_PHYSIOLOGY_GENERATORS) {
+      List<PhysiologyValueGenerator> physioGenerators = PhysiologyValueGenerator.loadAll(person);
+      
+      for (PhysiologyValueGenerator physioGenerator : physioGenerators) {
+        person.setVitalSign(physioGenerator.getVitalSign(), physioGenerator);
+      }
+    }
   }
 
   /**
@@ -607,7 +617,6 @@ public final class LifecycleModule extends Module {
   private static final double[] CALCIUM_RANGE =
       BiometricsConfig.doubles("metabolic.basic_panel.normal.calcium");
 
-
   private static final int[] MILD_KIDNEY_DMG_CC_RANGE = 
       BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.mild_kidney_damage");
   private static final int[] MODERATE_KIDNEY_DMG_CC_RANGE = 
@@ -643,7 +652,12 @@ public final class LifecycleModule extends Module {
       BiometricsConfig.doubles("metabolic.basic_panel.normal.carbon_dioxide");
   private static final double[] SODIUM_RANGE = 
       BiometricsConfig.doubles("metabolic.basic_panel.normal.sodium");
-  
+
+  private static final int[] BLOOD_OXYGEN_SATURATION_NORMAL =
+      BiometricsConfig.ints("cardiovascular.oxygen_saturation.normal");
+  private static final int[] BLOOD_OXYGEN_SATURATION_HYPOXEMIA =
+      BiometricsConfig.ints("cardiovascular.oxygen_saturation.hypoxemia");
+
   /**
    * Calculate this person's vital signs, 
    * based on their conditions, medications, body composition, etc.
@@ -684,9 +698,16 @@ public final class LifecycleModule extends Module {
         }
       }
     }
-
     person.setVitalSign(VitalSign.BLOOD_GLUCOSE, hbA1c);
-    
+
+    int oxygenSaturation;
+    if (person.attributes.containsKey("chf")) {
+      oxygenSaturation = (int) person.rand(BLOOD_OXYGEN_SATURATION_HYPOXEMIA);
+    } else {
+      oxygenSaturation = (int) person.rand(BLOOD_OXYGEN_SATURATION_NORMAL);
+    }
+    person.setVitalSign(VitalSign.OXYGEN_SATURATION, oxygenSaturation);
+
     // CKD == stage of "Chronic Kidney Disease" or the level of diabetic kidney damage
     int kidneyDamage = (Integer) person.attributes.getOrDefault("ckd", 0);
     int[] ccRange;
@@ -797,6 +818,9 @@ public final class LifecycleModule extends Module {
 
   protected static boolean ENABLE_DEATH_BY_NATURAL_CAUSES =
       Boolean.parseBoolean(Config.get("lifecycle.death_by_natural_causes"));
+  
+  protected static boolean ENABLE_PHYSIOLOGY_GENERATORS =
+      Boolean.parseBoolean(Config.get("physiology.generators.enabled", "false"));
   
   private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000",
       "Natural death with unknown cause");

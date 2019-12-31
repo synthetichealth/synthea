@@ -15,6 +15,13 @@
         "Set_Attribute_2": {
             "type": "SetAttribute",
             "attribute" : "Current Opioid Prescription",
+            "direct_transition": "Set_Attribute_3"
+        },
+        
+        "Set_Attribute_3": {
+            "type": "SetAttribute",
+            "attribute" : "Maximum Heart Rate",
+            "expression": "220 - #{age}",
             "direct_transition": "Terminal"
         },
 
