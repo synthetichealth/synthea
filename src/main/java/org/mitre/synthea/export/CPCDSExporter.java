@@ -20,6 +20,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.HealthRecord.Device;
 
 import com.google.gson.JsonObject;
 
@@ -282,6 +283,7 @@ public class CPCDSExporter {
 
     StringBuilder s = new StringBuilder();
 
+    
     int i = 1;
 
     while (i <= attributes.getLength()) {
@@ -491,7 +493,7 @@ public class CPCDSExporter {
         if (procedure.reasons.size() != 0) {
           Code reasons = procedure.reasons.get(0);
           proc.append(reasons.code).append(',');
-          proc.append(reasons.display).append(',');
+          proc.append(clean(reasons.display)).append(',');
           proc.append(presentOnAdmission).append(',');
           proc.append(diagnosisCode).append(',');
           proc.append(diagnosisType).append(',');
@@ -507,7 +509,7 @@ public class CPCDSExporter {
 
         Code procedureCode = procedure.codes.get(0);
         proc.append(procedureCode.code).append(',');
-        proc.append(procedureCode.display).append(',');
+        proc.append(clean(procedureCode.display)).append(',');
         proc.append(dateFromTimestamp(procedure.start)).append(',');
         proc.append(diagnosisCode).append(',');
         proc.append(procedureType).append(',');
@@ -679,6 +681,80 @@ public class CPCDSExporter {
         i++;
       }
 
+      //Devices
+      for (Device device : encounter.devices) {
+        String diagnosisCode = "SNOMED";
+        String deviceType = "";
+
+
+        StringBuilder dev = new StringBuilder();
+        dev.append(ADMIN);
+        dev.append(",").append(",").append(",").append(",").append(",").append(",");
+        dev.append("01,").append(attributes.getResidence()).append(',');
+        dev.append(PROVIDER);
+        dev.append(TOTALS);
+
+        String typeOfService = "01";
+        if (attributes.getNetworkStatus().equals("out")) {
+          typeOfService = "11";
+        }
+
+        dev.append(dateFromTimestamp(device.start)).append(',');
+        dev.append(i).append(',');
+        dev.append(dateFromTimestamp(device.stop)).append(',');
+        dev.append(typeOfService).append(',');
+        dev.append(attributes.getPlaceOfService()).append(',');
+        dev.append(attributes.getRevenueCenterCode()).append(',');
+        dev.append("").append(',');
+        dev.append("").append(',');
+        dev.append("").append(',');
+        dev.append("").append(',');
+        dev.append("").append(',');
+        dev.append(attributes.getBenefitPaymentStatus()).append(',');
+        dev.append(attributes.getDenialCode()).append(',');
+
+        BigDecimal cost = device.getCost();
+
+        dev.append(0.00).append(',');
+        dev.append(0.00).append(',');
+        dev.append(0.00).append(',');
+        dev.append("").append(',');
+        dev.append(cost).append(',');
+        dev.append(cost).append(',');
+        dev.append(encounter.claim.person.getHealthcareCoverage()).append(',');
+        dev.append(cost).append(',');
+        dev.append(0.00).append(',');
+        dev.append(cost).append(',');
+        dev.append(cost).append(',');
+        dev.append(0.00).append(',');
+        dev.append(0.00).append(',');
+        dev.append(0.00).append(',');
+        
+        
+        dev.append("").append(',');
+        dev.append("").append(',');
+        dev.append("").append(',');
+        dev.append("").append(',');
+        dev.append("").append(',');
+      
+
+        dev.append("").append(',');
+
+        Code deviceCode = device.codes.get(0);
+        dev.append(deviceCode.code).append(',');
+        dev.append(clean(deviceCode.display)).append(',');
+        dev.append(dateFromTimestamp(device.start)).append(',');
+        dev.append(diagnosisCode).append(',');
+        dev.append(deviceType).append(',');
+        dev.append("").append(',');
+        dev.append("").append(',');
+        dev.append("").append(',');
+        dev.append("").append(NEWLINE);
+
+        s.append(dev.toString());
+        i++;
+      }
+
     }
 
     write(s.toString(), claims);
@@ -764,18 +840,24 @@ public class CPCDSExporter {
       if (ENCOUNTER.medications.size() != 0 && ENCOUNTER.procedures.size() == 0) {
         setClaimType("pharmacy");
       } else {
-        if (this.sourceAdminCode.equals("outp")) {
-          setClaimType("outpatient-facility");
-        } else {
-          setClaimType("inpatient-facility");
+        if (ENCOUNTER.devices.size() > 0 && ENCOUNTER.medications.size() == 0 && ENCOUNTER.procedures.size() == 0) {
+          setClaimType("professional-nonclinician");
+        }
+        else {
+          if (this.sourceAdminCode.equals("outp")) {
+            setClaimType("outpatient-facility");
+          } else {
+            setClaimType("inpatient-facility");
+          }
         }
       }
+      
 
       String statuses[] = { "ar001", "ar002" };
       setBenefitPaymentStatus(statuses[(int) randomLongWithBounds(0, 1)]);
 
       setServiceSiteNPI(UUID.randomUUID());
-      setLength(ENCOUNTER.medications.size() + ENCOUNTER.procedures.size() + ENCOUNTER.conditions.size());
+      setLength(ENCOUNTER.medications.size() + ENCOUNTER.procedures.size() + ENCOUNTER.conditions.size() + ENCOUNTER.devices.size());
 
       if (networkStatus == "out") {
         setPlaceOfService("19");
