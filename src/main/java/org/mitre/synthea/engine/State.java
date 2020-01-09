@@ -1436,9 +1436,9 @@ public abstract class State implements Cloneable {
    *
    * <p>In general, ImagingStudy is the preferred state for diagnostic images. The Media state,
    * however, contains functionality for generating inline PNG images of charts generated from data
-   * captured in Patient attributes. For instance, such data could be results from a prior
-   * Physiology state which simulated physiological data over time. That data could then be captured
-   * by a measurement device and plotted on a chart (such as an ECG signal).
+   * captured in Patient attributes. This data, for instance, may be results from a prior Physiology
+   * state which simulated physiological data over time. That data could then be captured by a
+   * measurement device and plotted on a chart (such as an ECG signal).
    */
   public static class Media extends State {
     
