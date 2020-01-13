@@ -18,13 +18,12 @@ duration: 10
 
 # Model parameter inputs. Any unspecified parameters will use the model's default value.
 inputs:
-    hrmean: 100
-    arr_t0: -1.0
-    arr_t1: -0.75
-    arr_base: 0.3
+    hrmean: 80
+    arr_t0: 0.25
+    arr_t1: 0.35
+    arr_base: 0.2
     rng_seed: 0.54345
-    e_variance: 0.3
-    ai_P: 1
+    #e_variance: 0.3
     #vfib_start: 5
     #vfib_end: 10
 
