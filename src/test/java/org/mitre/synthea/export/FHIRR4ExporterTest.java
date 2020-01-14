@@ -265,6 +265,14 @@ public class FHIRR4ExporterTest {
     assertTrue(mediaState.process(person, time));
     person.history.add(mediaState);
     
+    State mediaState2 = module.getState("Media2");
+    assertTrue(mediaState2.process(person, time));
+    person.history.add(mediaState2);
+    
+    State mediaState3 = module.getState("Media3");
+    assertTrue(mediaState3.process(person, time));
+    person.history.add(mediaState3);
+    
     FhirContext ctx = FhirContext.forR4();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
@@ -273,9 +281,26 @@ public class FHIRR4ExporterTest {
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource() instanceof Media) {
         Media media = (Media) entry.getResource();
-        assertEquals(400, media.getWidth());
-        assertEquals(200, media.getHeight());
-        assertTrue(Base64.isBase64(media.getContent().getDataElement().getValueAsString()));
+        if(media.getType().getText().equals("Image")) {
+          assertEquals(400, media.getWidth());
+          assertEquals(200, media.getHeight());
+          assertEquals("Branch of bracial artery", media.getBodySite().getText());
+          assertEquals("Invasive arterial pressure", media.getModality().getText());
+          assertEquals("Aortic structure", media.getReasonCode().get(0).getText());
+          assertTrue(Base64.isBase64(media.getContent().getDataElement().getValueAsString()));
+        }
+        else if(media.getType().getText().equals("Video")) {
+          assertEquals("https://example.com/video/12498596132", media.getContent().getUrl());
+          assertTrue(media.getDuration().compareTo(new BigDecimal(0)) > 0);
+          assertEquals("en", media.getContent().getLanguage());
+          assertTrue(media.getContent().getSize() > 0);
+        }
+        else if(media.getType().getText().equals("Audio")) {
+          assertEquals("https://example.com/audio/12498596132", media.getContent().getUrl());
+          assertTrue(media.getDuration().compareTo(new BigDecimal(0)) > 0);
+          assertEquals("en", media.getContent().getLanguage());
+          assertTrue(media.getContent().getSize() > 0);
+        }
       }
     }
   }

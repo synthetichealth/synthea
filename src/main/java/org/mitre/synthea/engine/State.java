@@ -1511,6 +1511,7 @@ public abstract class State implements Cloneable {
       media.width = width;
       media.duration = duration;
       media.view = view;
+      media.fullUrl = url;
       
       // Check if chart configuration is provided to generate an image based on data
       // stored in the patient's attributes

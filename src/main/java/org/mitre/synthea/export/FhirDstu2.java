@@ -1479,9 +1479,11 @@ public class FhirDstu2 {
     contentResource.setContentType(content.contentType);
     contentResource.setLanguage(content.language);
     
-    ca.uhn.fhir.model.primitive.Base64BinaryDt data = new ca.uhn.fhir.model.primitive.Base64BinaryDt();
-    data.setValueAsString(content.data);
-    contentResource.setData(data);
+    if (content.data != null) {
+      ca.uhn.fhir.model.primitive.Base64BinaryDt data = new ca.uhn.fhir.model.primitive.Base64BinaryDt();
+      data.setValueAsString(content.data);
+      contentResource.setData(data);
+    }
     
     contentResource.setUrl(content.url);
     contentResource.setSize(content.size);

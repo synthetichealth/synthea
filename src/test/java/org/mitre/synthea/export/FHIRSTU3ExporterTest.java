@@ -315,6 +315,14 @@ public class FHIRSTU3ExporterTest {
     assertTrue(mediaState.process(person, time));
     person.history.add(mediaState);
     
+    State mediaState2 = module.getState("Media2");
+    assertTrue(mediaState2.process(person, time));
+    person.history.add(mediaState2);
+    
+    State mediaState3 = module.getState("Media3");
+    assertTrue(mediaState3.process(person, time));
+    person.history.add(mediaState3);
+    
     FhirContext ctx = FhirContext.forDstu3();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirStu3.convertToFHIRJson(person, System.currentTimeMillis());
@@ -323,9 +331,23 @@ public class FHIRSTU3ExporterTest {
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource() instanceof Media) {
         Media media = (Media) entry.getResource();
-        assertEquals(400, media.getWidth());
-        assertEquals(200, media.getHeight());
-        assertTrue(Base64.isBase64(media.getContent().getDataElement().getValueAsString()));
+        if(media.getType().equals(Media.DigitalMediaType.PHOTO)) {
+          assertEquals(400, media.getWidth());
+          assertEquals(200, media.getHeight());
+          assertTrue(Base64.isBase64(media.getContent().getDataElement().getValueAsString()));
+        }
+        else if(media.getType().equals(Media.DigitalMediaType.VIDEO)) {
+          assertEquals("https://example.com/video/12498596132", media.getContent().getUrl());
+          assertTrue(media.getDuration() > 0);
+          assertEquals("en", media.getContent().getLanguage());
+          assertTrue(media.getContent().getSize() > 0);
+        }
+        else if(media.getType().equals(Media.DigitalMediaType.AUDIO)) {
+          assertEquals("https://example.com/audio/12498596132", media.getContent().getUrl());
+          assertTrue(media.getDuration() > 0);
+          assertEquals("en", media.getContent().getLanguage());
+          assertTrue(media.getContent().getSize() > 0);
+        }
       }
     }
   }

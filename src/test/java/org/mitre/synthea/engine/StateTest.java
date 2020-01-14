@@ -1758,6 +1758,12 @@ public class StateTest {
     State mediaState = module.getState("Media");
     assertTrue(mediaState.process(person, time));
     
+    State mediaState2 = module.getState("Media2");
+    assertTrue(mediaState2.process(person, time));
+    
+    State mediaState3 = module.getState("Media3");
+    assertTrue(mediaState3.process(person, time));
+    
     Media media = person.record.encounters.get(0).mediaItems.get(0);
     
     assertNotNull(media);
@@ -1765,6 +1771,22 @@ public class StateTest {
     assertEquals(400, media.width);
     assertEquals(200, media.height);
     assertTrue(Base64.isBase64(media.content.data));
+    
+    Media media2 = person.record.encounters.get(0).mediaItems.get(1);
+    
+    assertNotNull(media2);
+    assertEquals(MediaTypeCode.VIDEO, media2.mediaType);
+    assertEquals("https://example.com/video/12498596132", media2.fullUrl);
+    assertEquals("en", media2.content.language);
+    assertTrue(media2.duration > 0.0);
+    
+    Media media3 = person.record.encounters.get(0).mediaItems.get(2);
+    
+    assertNotNull(media3);
+    assertEquals(MediaTypeCode.AUDIO, media3.mediaType);
+    assertEquals("https://example.com/audio/12498596132", media3.fullUrl);
+    assertEquals("en", media3.content.language);
+    assertTrue(media3.duration > 0.0);
     
   }
 }

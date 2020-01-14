@@ -2543,7 +2543,9 @@ public class FhirR4 {
     
     contentResource.setContentType(content.contentType);
     contentResource.setLanguage(content.language);
-    contentResource.setDataElement(new org.hl7.fhir.r4.model.Base64BinaryType(content.data));
+    if(content.data != null) {
+      contentResource.setDataElement(new org.hl7.fhir.r4.model.Base64BinaryType(content.data));
+    }
     contentResource.setUrl(content.url);
     contentResource.setSize(content.size);
     contentResource.setTitle(content.title);

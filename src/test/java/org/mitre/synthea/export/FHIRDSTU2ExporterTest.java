@@ -8,6 +8,7 @@ import ca.uhn.fhir.model.dstu2.composite.QuantityDt;
 import ca.uhn.fhir.model.dstu2.composite.SampledDataDt;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
+import ca.uhn.fhir.model.dstu2.valueset.DigitalMediaTypeEnum;
 import ca.uhn.fhir.model.dstu2.resource.Media;
 import ca.uhn.fhir.model.dstu2.resource.Observation;
 import ca.uhn.fhir.parser.IParser;
@@ -238,6 +239,14 @@ public class FHIRDSTU2ExporterTest {
     assertTrue(mediaState.process(person, time));
     person.history.add(mediaState);
     
+    State mediaState2 = module.getState("Media2");
+    assertTrue(mediaState2.process(person, time));
+    person.history.add(mediaState2);
+    
+    State mediaState3 = module.getState("Media3");
+    assertTrue(mediaState3.process(person, time));
+    person.history.add(mediaState3);
+    
     FhirContext ctx = FhirContext.forDstu2();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirDstu2.convertToFHIRJson(person, System.currentTimeMillis());
@@ -247,9 +256,23 @@ public class FHIRDSTU2ExporterTest {
     for (Entry entry : bundle.getEntry()) {
       if (entry.getResource() instanceof Media) {
         Media media = (Media) entry.getResource();
-        assertEquals(400, (int)media.getWidth());
-        assertEquals(200, (int)media.getHeight());
-        assertTrue(Base64.isBase64(media.getContent().getDataElement().getValueAsString()));
+        if(media.getType().equalsIgnoreCase("Image")) {
+          assertEquals(400, (int)media.getWidth());
+          assertEquals(200, (int)media.getHeight());
+          assertTrue(Base64.isBase64(media.getContent().getDataElement().getValueAsString()));
+        }
+        else if(media.getType().equalsIgnoreCase("Video")) {
+          assertEquals("https://example.com/video/12498596132", media.getContent().getUrl());
+          assertTrue(media.getDuration() > 0);
+          assertEquals("en", media.getContent().getLanguage());
+          assertTrue(media.getContent().getSize() > 0);
+        }
+        else if(media.getType().equalsIgnoreCase("Audio")) {
+          assertEquals("https://example.com/audio/12498596132", media.getContent().getUrl());
+          assertTrue(media.getDuration() > 0);
+          assertEquals("en", media.getContent().getLanguage());
+          assertTrue(media.getContent().getSize() > 0);
+        }
       }
     }
   }
