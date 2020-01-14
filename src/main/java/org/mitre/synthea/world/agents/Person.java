@@ -369,6 +369,8 @@ public class Person implements Serializable, QuadTreeElement {
     switch (vitalSign) {
       case DIASTOLIC_BLOOD_PRESSURE:
       case SYSTOLIC_BLOOD_PRESSURE:
+      case HEART_RATE:
+      case RESPIRATION_RATE:
         decimalPlaces = 0;
         break;
       case HEIGHT:

@@ -128,7 +128,7 @@
           "unit": "mm[Hg]"
         }
       ],
-      "direct_transition": "Lab_MetabolicPanel"
+      "direct_transition": "Record_Heart_Rate"
     },
     "Record_MetabolicPanel": {
       "type": "DiagnosticReport",
@@ -792,6 +792,19 @@
         }
       ],
       "attribute": "current_weight_length_percentile",
+      "direct_transition": "Record Head Circumference"
+    },
+    "Record Head Circumference": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "cm",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "9843-4",
+          "display": "Head Occipital-frontal circumference"
+        }
+      ],
       "conditional_transition": [
         {
           "transition": "Record_BMI",
@@ -805,7 +818,36 @@
         {
           "transition": "Record_BP"
         }
-      ]
+      ],
+      "vital_sign": "Head Circumference"
+    },
+    "Record_Heart_Rate": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "/min",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8867-4",
+          "display": "Heart rate"
+        }
+      ],
+      "direct_transition": "Record_Respiratory_Rate",
+      "vital_sign": "Heart Rate"
+    },
+    "Record_Respiratory_Rate": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "/min",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "9279-1",
+          "display": "Respiratory rate"
+        }
+      ],
+      "direct_transition": "Lab_MetabolicPanel",
+      "vital_sign": "Respiration Rate"
     }
   }
 }
