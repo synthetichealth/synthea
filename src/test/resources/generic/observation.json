@@ -99,6 +99,9 @@
 		        }
             ],
             "sampled_data": {
+            	"factor": 1.0,
+            	"lower_limit": -100.0,
+            	"upper_limit": 200.0,
 		      	"attributes": [
 		      		"P_ao",
 		      		"P_lv",
