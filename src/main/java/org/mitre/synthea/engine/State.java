@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -1532,6 +1534,18 @@ public abstract class State implements Cloneable {
         // Specifically, given an input of n bytes, the output will be 4*ceil(n/3) bytes long, including padding characters.
         // See https://en.wikipedia.org/wiki/Base64
         content.size = (int) (4*Math.ceil(content.data.length()/3.0));
+        
+        // Generate the SHA-1 hash if it hasn't been provided
+        if (content.hash == null) {
+          MessageDigest md;
+          try {
+            md = MessageDigest.getInstance("SHA-1");
+          } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+          }
+          byte[] data = Base64.decodeBase64(content.data);
+          content.hash = Base64.encodeBase64String(md.digest(data));
+        }
       }
 
       return true;

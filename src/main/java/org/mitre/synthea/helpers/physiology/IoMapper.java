@@ -200,7 +200,7 @@ public class IoMapper {
             + "\" cannot be mapped to patient value \"" + to + "\"");
       }
       
-      // Make it a SampledValueList, which is just an ArrayList with sample frequency information
+      // Make it a TimeSeriesData object, which is just an ArrayList with sample frequency information
       TimeSeriesData seriesData = new TimeSeriesData(results.getRowCount(),
           results.getTimePoint(1) - results.getTimePoint(0));
       col.iterator().forEachRemaining(seriesData::addValue);
