@@ -203,8 +203,7 @@ public final class LifecycleModule extends Module {
     person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, heightPercentile);
     person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, weightPercentile);
     person.attributes.put(Person.TWO_YEAR_BMI, twoYearBMI);
-    // TODO: Fix when we have all of the correlations
-    double[] bmiVector = new double[15];
+    double[] bmiVector = new double[21];
     bmiVector[2] = twoYearBMI;
     person.attributes.put(Person.BMI_VECTOR, bmiVector);
     // Temporarily generate a mother
@@ -496,41 +495,43 @@ public final class LifecycleModule extends Module {
     double weight = person.getVitalSign(VitalSign.WEIGHT, time);
     String gender = (String) person.attributes.get(Person.GENDER);
     double heightPercentile = person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time);
-    Object weightManagement = person.attributes.get(Person.ACTIVE_WEIGHT_MANAGEMENT);
-    // If there is active weight management,
-    // changing of weight will be handled by the WeightLossModule
-    if (weightManagement != null && ! (boolean) weightManagement) {
-      int age = person.ageInYears(time);
-      if (age < 2) {
-        // follow growth charts
-        int ageInMonths = person.ageInMonths(time);
-        weight = lookupGrowthChart("weight", gender, ageInMonths,
-            person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
-      } else if (age <= 20) {
-        double[] bmiVector = (double[]) person.attributes.get(Person.BMI_VECTOR);
-        double yearStartBMI = bmiVector[age];
-        double nextYearBMI;
-        if (bmiVector[age + 1] == 0) {
-          nextYearBMI = PediatricGrowthTrajectory.generateNextYearBMI(person, time, person.mathRandom);
-          bmiVector[age + 1] = nextYearBMI;
-        } else {
-          nextYearBMI = bmiVector[age + 1];
+    int age = person.ageInYears(time);
+    if (age < 2) {
+      // follow growth charts
+      int ageInMonths = person.ageInMonths(time);
+      weight = lookupGrowthChart("weight", gender, ageInMonths,
+          person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
+    } else if (age < 20) {
+      double[] bmiVector = (double[]) person.attributes.get(Person.BMI_VECTOR);
+      double yearStartBMI = bmiVector[age];
+      double nextYearBMI;
+      if (bmiVector[age + 1] == 0) {
+        nextYearBMI = PediatricGrowthTrajectory.generateNextYearBMI(person, time, person.mathRandom);
+        bmiVector[age + 1] = nextYearBMI;
+      } else {
+        nextYearBMI = bmiVector[age + 1];
+      }
+      double yearStartHeight = growthChart.get(GrowthChart.ChartType.HEIGHT).lookUp(age * 12, gender,
+          heightPercentile);
+      double nextYearHeight = growthChart.get(GrowthChart.ChartType.HEIGHT).lookUp((age + 1) * 12,
+          gender, heightPercentile);
+      double yearStartWeight = BMI.weightForHeightAndBMI(yearStartHeight, yearStartBMI);
+      double yearEndWeight = BMI.weightForHeightAndBMI(nextYearHeight, nextYearBMI);
+      weight = yearStartWeight + (yearEndWeight - yearStartWeight) * (person.ageInDecimalYears(time) - age);
+    } else {
+      Object weightManagement = person.attributes.get(Person.ACTIVE_WEIGHT_MANAGEMENT);
+      // If there is active weight management,
+      // changing of weight will be handled by the WeightLossModule
+      if (weightManagement != null && ! (boolean) weightManagement) {
+        if (age <= ADULT_MAX_WEIGHT_AGE) {
+          // getting older and fatter
+          double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
+          weight += adultWeightGain;
+        } else if (age >= GERIATRIC_WEIGHT_LOSS_AGE) {
+          // getting older and wasting away
+          double geriatricWeightLoss = person.rand(GERIATRIC_WEIGHT_LOSS_RANGE);
+          weight -= geriatricWeightLoss;
         }
-        double yearStartHeight = growthChart.get(GrowthChart.ChartType.HEIGHT).lookUp(age * 12, gender,
-            heightPercentile);
-        double nextYearHeight = growthChart.get(GrowthChart.ChartType.HEIGHT).lookUp((age + 1) * 12,
-            gender, heightPercentile);
-        double yearStartWeight = BMI.weightForHeightAndBMI(yearStartHeight, yearStartBMI);
-        double yearEndWeight = BMI.weightForHeightAndBMI(nextYearHeight, nextYearBMI);
-        weight = yearStartWeight + (yearEndWeight - yearStartWeight) * (person.ageInDecimalYears(time) - age);
-      } else if (age <= ADULT_MAX_WEIGHT_AGE) {
-        // getting older and fatter
-        double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
-        weight += adultWeightGain;
-      } else if (age >= GERIATRIC_WEIGHT_LOSS_AGE) {
-        // getting older and wasting away
-        double geriatricWeightLoss = person.rand(GERIATRIC_WEIGHT_LOSS_RANGE);
-        weight -= geriatricWeightLoss;
       }
     }
     return weight;
