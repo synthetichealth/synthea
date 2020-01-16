@@ -12,10 +12,13 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Predicate;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
@@ -37,6 +40,9 @@ public abstract class Exporter {
     STU3,
     R4
   }
+  
+  private static final List<Pair<Person, Long>> deferredExports = 
+          Collections.synchronizedList(new LinkedList<>());
    
   /**
    * Runtime configuration of the record exporter.
@@ -44,11 +50,19 @@ public abstract class Exporter {
   public static class ExporterRuntimeOptions {
     
     public int yearsOfHistory;
+    public boolean deferExports = false;
     private BlockingQueue<String> recordQueue;
     private SupportedFhirVersion fhirVersion;
     
     public ExporterRuntimeOptions() {
       yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
+    }
+    
+    public ExporterRuntimeOptions(ExporterRuntimeOptions init) {
+      yearsOfHistory = init.yearsOfHistory;
+      deferExports = init.deferExports;
+      recordQueue = init.recordQueue;
+      fhirVersion = init.fhirVersion;
     }
     
     /**
@@ -69,7 +83,7 @@ public abstract class Exporter {
     }
 
     /**
-     * Returns the newest generated patient record (in FHIR STU 3 JSON format) 
+     * Returns the newest generated patient record 
      * or blocks until next record becomes available.
      * Returns null if the generator does not have a record queue.
      */
@@ -97,28 +111,32 @@ public abstract class Exporter {
    * @param options Runtime exporter options
    */
   public static void export(Person person, long stopTime, ExporterRuntimeOptions options) {
-    int yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
-    if (yearsOfHistory > 0) {
-      person = filterForExport(person, yearsOfHistory, stopTime);
-    }
-    if (!person.alive(stopTime)) {
-      filterAfterDeath(person);
-    }
-    if (person.hasMultipleRecords) {
-      int i = 0;
-      for (String key : person.records.keySet()) {
-        person.record = person.records.get(key);
-        exportRecord(person, Integer.toString(i), stopTime, options);
-        i++;
-      }
+    if (options.deferExports) {
+      deferredExports.add(new ImmutablePair<Person, Long>(person, stopTime));
     } else {
-      exportRecord(person, "", stopTime, options);
+      int yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
+      if (yearsOfHistory > 0) {
+        person = filterForExport(person, yearsOfHistory, stopTime);
+      }
+      if (!person.alive(stopTime)) {
+        filterAfterDeath(person);
+      }
+      if (person.hasMultipleRecords) {
+        int i = 0;
+        for (String key : person.records.keySet()) {
+          person.record = person.records.get(key);
+          exportRecord(person, Integer.toString(i), stopTime, options);
+          i++;
+        }
+      } else {
+        exportRecord(person, "", stopTime, options);
+      }
     }
   }
   
   /**
    * Export a single patient, into all the formats supported. (Formats may be enabled or disabled by
-   * configuration)
+   * configuration). This method variant is only currently used by test classes.
    *
    * @param person   Patient to export
    * @param stopTime Time at which the simulation stopped
@@ -300,6 +318,25 @@ public abstract class Exporter {
    * @param generator Generator that generated the patients
    */
   public static void runPostCompletionExports(Generator generator) {
+    runPostCompletionExports(generator, new ExporterRuntimeOptions());
+  }
+  
+  /**
+   * Run any exporters that require the full dataset to be generated prior to exporting.
+   * (E.g., an aggregate statistical exporter)
+   *
+   * @param generator Generator that generated the patients
+   */
+  public static void runPostCompletionExports(Generator generator, ExporterRuntimeOptions options) {
+    
+    if (options.deferExports) {
+      ExporterRuntimeOptions nonDeferredOptions = new ExporterRuntimeOptions(options);
+      nonDeferredOptions.deferExports = false;
+      for (Pair<Person, Long> entry: deferredExports) {
+        export(entry.getLeft(), entry.getRight(), nonDeferredOptions);
+      }
+    }
+    
     String bulk = Config.get("exporter.fhir.bulk_data");
 
     // Before we force bulk data to be off...
