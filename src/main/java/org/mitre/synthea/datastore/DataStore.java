@@ -13,6 +13,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -602,9 +603,9 @@ public class DataStore {
 
       }
 
-      Map<Integer, Double> qalys = (Map<Integer, Double>) p.attributes.get("QALY");
-      Map<Integer, Double> dalys = (Map<Integer, Double>) p.attributes.get("DALY");
-      Map<Integer, Double> qols = (Map<Integer, Double>) p.attributes.get("QOL");
+      Map<Integer, Double> qalys = (Map<Integer, Double>) p.attributes.get(QualityOfLifeModule.QALY);
+      Map<Integer, Double> dalys = (Map<Integer, Double>) p.attributes.get(QualityOfLifeModule.DALY);
+      Map<Integer, Double> qols = (Map<Integer, Double>) p.attributes.get(QualityOfLifeModule.QOLS);
       if (qols != null) {
         // TODO - would rather have something more generic
         stmt = connection.prepareStatement(

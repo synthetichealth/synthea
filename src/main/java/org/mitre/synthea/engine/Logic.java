@@ -206,8 +206,20 @@ public abstract class Logic {
         for (Code code : this.codes) {
           // First, look in the current health record for the latest observation
           HealthRecord.Observation last = person.record.getLatestObservation(code.code);
+          if (person.lossOfCareEnabled) {
+            if (last == null) {
+              // If the observation is not in the current record,
+              // it could be in the uncovered health record.
+              last = person.lossOfCareRecord.getLatestObservation(code.code);
+            }
+            if (last == null) {
+              // If the observation still is not in the uncovered health record,
+              // it could be in the covered health record.
+              last = person.defaultRecord.getLatestObservation(code.code);
+            }
+          }
           if (last == null && person.hasMultipleRecords) {
-            // If the latest observation is not in the current health record,
+            // If the latest observation is not in the covered/uncovered health record,
             // then look in the module history.
             last = (HealthRecord.Observation)
                 findEntryFromHistory(person, HealthRecord.Observation.class, code);
