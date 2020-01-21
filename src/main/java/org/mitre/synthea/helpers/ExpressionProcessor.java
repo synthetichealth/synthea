@@ -156,7 +156,7 @@ public class ExpressionProcessor {
    * @param time current time
    * @return value
    */
-  public static Double getPersonValue(String param, Person person, long time) {
+  public static Object getPersonValue(String param, Person person, long time) {
     return getPersonValue(param, person, time, null);
   }
   
@@ -169,7 +169,7 @@ public class ExpressionProcessor {
    * @param time current time
    * @return value
    */
-  public static Double getPersonValue(String param, Person person, long time, String expression) {
+  public static Object getPersonValue(String param, Person person, long time, String expression) {
     
     // Treat "age" as a special case. In expressions, age is represented in decimal years
     if (param.equals("age")) {
@@ -195,27 +195,11 @@ public class ExpressionProcessor {
 
     if (vs != null) {
       return person.getVitalSign(vs, time);
-    } else if (person.attributes.containsKey(param)) {
-      
-      Object value = person.attributes.get(param);
-      
-      if (value instanceof Number) {
-        return ((Number) value).doubleValue();
-        
-      } else if (value instanceof Boolean) {
-        return (Boolean) value ? 1.0 : 0.0;
-        
-      } else {
-        if (expression != null) {
-          throw new IllegalArgumentException("Unable to map person attribute \""
-              + param + "\" in expression \"" + expression
-              + "\": Attribute value is not a number.");
-        } else {
-          throw new IllegalArgumentException("Unable to map person attribute \""
-              + param + "\": Attribute value is not a number.");
-        }
-      }
-    } else {
+    }
+    
+    Object value = person.attributes.get(param);
+    
+    if (value == null) {
       if (expression != null) {
         throw new IllegalArgumentException("Unable to map \"" + param
             + "\" in expression \"" + expression
@@ -223,8 +207,56 @@ public class ExpressionProcessor {
       } else {
         throw new IllegalArgumentException("Unable to map \""
             + param + "\": Invalid person attribute or vital sign.");
+      } 
+    }
+    
+    if (value instanceof Integer) {
+      // Use integers as-is
+      return value;
+    } else if (value instanceof Number) {
+      // If it's any numeric type other than integer, use a BigDecimal
+      return new BigDecimal(value.toString());
+    } else if (value instanceof String) {
+      return value;
+    } else {
+      if (expression != null) {
+        throw new IllegalArgumentException("Unable to map person attribute \""
+            + param + "\" in expression \"" + expression
+            + "\": Unsupported type: " + value.getClass().getTypeName() + ".");
+      } else {
+        throw new IllegalArgumentException("Unable to map person attribute \""
+            + param + "\": Unsupported type: " + value.getClass().getTypeName() + ".");
       }
     }
+      
+//    } else if (person.attributes.containsKey(param)) {
+//
+//      Object value = person.attributes.get(param);
+//      
+//      if (value instanceof Number) {
+//        return ((Number) value).doubleValue();
+//      } else if (value instanceof Boolean) {
+//        return (Boolean) value ? 1.0 : 0.0;
+//      } else {
+//        if (expression != null) {
+//          throw new IllegalArgumentException("Unable to map person attribute \""
+//              + param + "\" in expression \"" + expression
+//              + "\": Attribute value is not a number.");
+//        } else {
+//          throw new IllegalArgumentException("Unable to map person attribute \""
+//              + param + "\": Attribute value is not a number.");
+//        }
+//      }
+//    } else {
+//      if (expression != null) {
+//        throw new IllegalArgumentException("Unable to map \"" + param
+//            + "\" in expression \"" + expression
+//            + "\": Invalid person attribute or vital sign.");
+//      } else {
+//        throw new IllegalArgumentException("Unable to map \""
+//            + param + "\": Invalid person attribute or vital sign.");
+//      }
+//    }
   }
   
   /**
@@ -271,7 +303,7 @@ public class ExpressionProcessor {
     Map<String,Object> params = new HashMap<String,Object>();
     
     for (String paramName : getParamNames()) {
-      params.put(paramName, new BigDecimal(getPersonValue(paramName, person, time, expression)));
+      params.put(paramName, getPersonValue(paramName, person, time, expression));
     }
     
     return evaluate(params);
@@ -350,7 +382,7 @@ public class ExpressionProcessor {
         .append("\nparameter ")
         .append(paramEntry.getValue())
         .append(" ")
-        .append(paramTypeMap.getOrDefault(paramEntry.getKey(), "Decimal"));
+        .append(paramTypeMap.getOrDefault(paramEntry.getKey(), "Any"));
     }
 
     wrappedExpression.append("\n\ncontext Patient\n\ndefine result: ");
