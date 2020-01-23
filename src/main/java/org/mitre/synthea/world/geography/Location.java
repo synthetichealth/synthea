@@ -22,6 +22,7 @@ public class Location {
   private static LinkedHashMap<String, String> stateAbbreviations = loadAbbreviations();
   private static Map<String, String> timezones = loadTimezones();
   private static Map<String, List<String>> foreignPlacesOfBirth = loadCitiesByLanguage();
+  private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
   private long totalPopulation;
 
@@ -196,7 +197,7 @@ public class Location {
     String[] birthPlace = new String[4];
     birthPlace[0] = randomCityName(random);
     birthPlace[1] = this.state;
-    birthPlace[2] = "US";
+    birthPlace[2] = COUNTRY_CODE;
     birthPlace[3] = birthPlace[0] + ", " + birthPlace[1] + ", " + birthPlace[2];
     return birthPlace;
   }

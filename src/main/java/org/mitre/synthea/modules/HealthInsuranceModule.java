@@ -21,6 +21,12 @@ public class HealthInsuranceModule extends Module {
       .parseDouble(Config.get("generate.insurance.mandate.occupation", "0.2"));
   public static double medicaidLevel = 1.33 * Double
       .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
+  private static String MEDICARE =
+      Config.get("generate.payers.insurance_companies.medicare", "Medicare");
+  private static String MEDICAID =
+      Config.get("generate.payers.insurance_companies.medicaid", "Medicaid");
+  private static String DUAL_ELIGIBLE =
+      Config.get("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
 
   /**
    * HealthInsuranceModule constructor.
@@ -77,13 +83,13 @@ public class HealthInsuranceModule extends Module {
   private Payer determineInsurance(Person person, long time) {
 
     // If Medicare/Medicaid will accept this person, then it takes priority.
-    if (Payer.getGovernmentPayer("Medicare").accepts(person, time)
-        && Payer.getGovernmentPayer("Medicaid").accepts(person, time)) {
-      return Payer.getGovernmentPayer("Dual Eligible");
-    } else if (Payer.getGovernmentPayer("Medicare").accepts(person, time)) {
-      return Payer.getGovernmentPayer("Medicare");
-    } else if (Payer.getGovernmentPayer("Medicaid").accepts(person, time)) {
-      return Payer.getGovernmentPayer("Medicaid");
+    if (Payer.getGovernmentPayer(MEDICARE).accepts(person, time)
+        && Payer.getGovernmentPayer(MEDICAID).accepts(person, time)) {
+      return Payer.getGovernmentPayer(DUAL_ELIGIBLE);
+    } else if (Payer.getGovernmentPayer(MEDICARE).accepts(person, time)) {
+      return Payer.getGovernmentPayer(MEDICARE);
+    } else if (Payer.getGovernmentPayer(MEDICAID).accepts(person, time)) {
+      return Payer.getGovernmentPayer(MEDICAID);
     } else if (person.getPreviousPayerAtTime(time) != null
         && IPayerFinder.meetsBasicRequirements(
         person.getPreviousPayerAtTime(time), person, null, time)) {
