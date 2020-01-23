@@ -81,4 +81,28 @@ public class ExpressionProcessorTest {
     
     assertEquals(12.0, result, 0.0001);
   }
+  
+  @Test
+  public void testStringInput() {
+    
+    Map<String,Object> params = new HashMap<String,Object>();
+    
+    params.put("var_one", new BigDecimal(2.0));
+    params.put("var_two", "male");
+    
+    ExpressionProcessor expProcessor = new ExpressionProcessor(
+        "define expected: \"male\"\n"
+        + "if #{var_two} = expected then 1.0 else var_one*2");
+    
+    double result = expProcessor.evaluateNumeric(params).doubleValue();
+    
+    assertEquals(1.0, result, 0.0001);
+    
+    params.put("var_two", "female");
+    
+    result = expProcessor.evaluateNumeric(params).doubleValue();
+    
+    assertEquals(4.0, result, 0.0001);
+    
+  }
 }

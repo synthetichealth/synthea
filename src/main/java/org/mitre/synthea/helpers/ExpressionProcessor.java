@@ -101,6 +101,8 @@ public class ExpressionProcessor {
     String cleanExpression = replaceParameters(expression);
     String wrappedExpression = convertParameterizedExpressionToCql(cleanExpression);
     
+    System.out.println(wrappedExpression);
+    
     // Compile our constructed CQL expression into elm once for execution
     this.elm = cqlToElm(wrappedExpression);
     try {
@@ -385,8 +387,18 @@ public class ExpressionProcessor {
         .append(paramTypeMap.getOrDefault(paramEntry.getKey(), "Any"));
     }
 
-    wrappedExpression.append("\n\ncontext Patient\n\ndefine result: ");
-    wrappedExpression.append(expression);
+    wrappedExpression.append("\n\ncontext Patient\n\n");
+    
+    String[] statements = expression.split("\n");
+    
+    for (int i=0; i < statements.length; i++) {
+      if (i == statements.length -1) {
+        wrappedExpression.append("define result: " + statements[i]);
+      }
+      else {
+        wrappedExpression.append(statements[i] + "\n");
+      }
+    }
     
     return wrappedExpression.toString();
   }
