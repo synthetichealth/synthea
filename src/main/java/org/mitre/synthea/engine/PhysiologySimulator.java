@@ -171,13 +171,13 @@ public class PhysiologySimulator {
     private double startTime;
     /** Simulation time in seconds to end charting points. **/
     private double endTime;
-    /** X Axis Lower Bound **/
+    /** X Axis Lower Bound. **/
     private double lowerBoundX;
-    /** X Axis Upper Bound **/
+    /** X Axis Upper Bound. **/
     private double upperBoundX;
-    /** Y Axis Lower Bound **/
+    /** Y Axis Lower Bound. **/
     private double lowerBoundY;
-    /** Y Axis Upper Bound **/
+    /** Y Axis Upper Bound. **/
     private double upperBoundY;
     
     public String getFilename() {
