@@ -1,0 +1,159 @@
+.\Create-FhirServerSamplesEnvironment.ps1 -EnvironmentName ADGHealth -EnvironmentLocation westus2 -FhirApiLocation westus2 -DeployAdf $true -AdminPassword $(ConvertTo-SecureString -AsPlainText -Force "ADGH3alth!")
+
+PS C:\users\ivanjud\projects\fhir-server-samples\deploy\scripts> .\Create-FhirServerSamplesEnvironment.ps1 -EnvironmentName adghealth -EnvironmentLocation westus2 -FhirApiLocation westus2 -DeployAdf $true -AdminPassword $(ConvertTo-SecureString -AsPlainText -Force "ADGH3alth!")
+Current context is user: ivanjud@microsoft.com
+adghealth
+FhirServer PS module is loaded
+Creating keyvault with the name adghealth-ts
+Current context is user: ivanjud@microsoft.com
+Adding permission to keyvault for f18a8f58-4027-4c99-95f7-f332fa3e3f81
+Ensuring API application exists
+Checking if UserPrincipalName exists
+User not, will create.
+
+
+DeploymentName          : azuredeploy-sandbox
+ResourceGroupName       : adghealth
+ProvisioningState       : Succeeded
+Timestamp               : 10/30/2019 4:58:24 AM
+Mode                    : Incremental
+TemplateLink            :
+                          Uri            : https://raw.githubusercontent.com/Microsoft/fhir-server-samples/master/deploy/templates/azuredeploy-sandbox.json
+                          ContentVersion : 1.0.0.0
+
+Parameters              :
+                          Name                             Type                       Value
+                          ===============================  =========================  ==========
+                          environmentName                  String                     adghealth
+                          appServicePlanSku                String                     S1
+                          aadAuthority                     String
+                          https://login.microsoftonline.com/ADGHealth.onmicrosoft.com
+                          aadFhirServerAudience            String
+                          aadDashboardClientId             String
+                          a94c308e-3034-4984-9ddd-7bce534f68b4
+                          aadDashboardClientSecret         String
+                          kaAjYUMaGqjKWCrcCuwfctWIVK+KIsT1HYdlNetGkY4=
+                          aadServiceClientId               String                                                                                 28b387bb-d311-494c-b10d-b6df02a98182                                                                                    aadServiceClientSecret           String                                                                                 fr8W0JRW9IztRseq7DE10IzLdWPQCYa7AfHZ59lahdU=                                                                            smartAppClientId                 String
+                          ac501234-e2fc-416d-87ed-abb99540bc44
+                          fhirServerTemplateUrl            String                     https://raw.githubusercontent.com
+                          /microsoft/fhir-server/master/samples/templates/default-azuredeploy.json
+                          sqlAdminPassword                 SecureString
+                          fhirDashboardJSTemplateUrl       String                     https://raw.githubusercontent.com
+                          /Microsoft/fhir-server-samples/master/deploy/templates/azuredeploy-fhirdashboard-js.json
+                          fhirApiLocation                  String                     westus2
+                          fhirVersion                      String                     R4
+                          fhirImporterTemplateUrl          String                     https://raw.githubusercontent.com
+                          /Microsoft/fhir-server-samples/master/deploy/templates/azuredeploy-importer.json
+                          smartAppTemplateUrl              String
+                          adfTemplateUrl                   String
+                          fhirDashboardRepositoryUrl       String
+                          https://github.com/Microsoft/fhir-server-samples
+                          fhirDashboardRepositoryBranch    String                     master
+                          deployDashboardSourceCode        Bool                       True
+                          usePaaS                          Bool                       True
+                          accessPolicies                   Array                      [
+                            {
+                              "objectId": "f18a8f58-4027-4c99-95f7-f332fa3e3f81"
+                            },
+                            {
+                              "objectId": "62b69e66-6050-41b4-bc93-ce6ea5078c9a"
+                            },
+                            {
+                              "objectId": "7746f289-c695-4978-b565-2b315f01b508"
+                            }
+                          ]
+                          deployAdf                        Bool                       True
+                          adfExportResourceTypes           Array                      [
+                            "Patient",
+                            "Observation",
+                            "Encounter",
+                            "Practitioner",
+                            "MedicationRequest"
+                          ]
+                          solutionType                     String                     FhirServerSamples
+
+Outputs                 :
+DeploymentDebugLogLevel :
+
+Key   : fhirServerUrl
+Value : https://adghealth.azurehealthcareapis.com
+Name  : fhirServerUrl
+
+
+Key   : dashboardUserPassword
+Value : ADGH3alth!
+Name  : dashboardUserPassword
+
+
+Key   : dashboardUserUpn
+Value : adghealth-admin@ADGHealth.onmicrosoft.com
+Name  : dashboardUserUpn
+
+
+Key   : dashboardUrl
+Value : https://adghealthdash.azurewebsites.net
+Name  : dashboardUrl
+
+Subject: Re: FHIR content from london
+
+https://github.com/microsoft/fhir-server-samples/blob/master/README.md
+
+
+Command to deploy:
+./Create-FhirServerSamplesEnvironment.ps1 -EnvironmentName london17 -EnvironmentLocation uksouth -FhirApiLocation uksouth -DeployAdf $true -AdminPassword $(ConvertTo-SecureString -AsPlainText -Force "L0nd0nD3m0!!") 
+
+java -Xmx16G -Xms16G -Xss16G -jar synthea-with-dependencies.jarls -p 7500000 --exporter.csv.export true --exporter.baseDirectory WA-7.5M  Washington
+
+time java -Xmx16G -Xms16G -Xss16G -jar synthea-with-dependencies.jar -p 7500000 --exporter.csv.export true --exporter.baseDirectory WA-7.5M --exporter.text.per_encounter_export true --exporter.clinical_not.export true --exporter.cost_access_outcomes_report true --exporter.prevalance_report true --generate.log_patients_detail none --generate.providers.selection_behavior network --generate.providers.maximum_search_distance 50 --generate.payers.selection_behavior best_rate Washington 
+
+$storageAccountName="adgsyntheadata"
+$resourceGroupName="adgsynthea"
+$storageAccount = Get-AzStorageAccount -ResourceGroupName $resourceGroupName -Name $storageAccountName
+Test-NetConnection -ComputerName ([System.Uri]::new($storageAccount.Context.FileEndPoint).Host) -Port 445
+
+Invoke-Expression -Command ("cmdkey /add:$([System.Uri]::new($storageAccount.Context.FileEndPoint).Host) " + "/user:AZURE\$($storageAccount.StorageAccountName) /pass:$($storageAccountKeys[0].Value)")
+
+cmdkey /add:adgsyntheadata.file.core.windows.net /user:Azure\adgsyntheadata /pass:O3Jo/JUjwtlRETcatXtsOSK9CKcmscsDxWxgvenXDU6LtMhz+41J0Q5QVOkVHG0WJAjTDsVOPa6W8KRqVdrEHQ==
+
+net use Z: \\adgsyntheadata.file.core.windows.net\datarepo /persistent:Yes
+
+13.77.184.76
+adgsyntheadata.file.core.windows.net
+
+ssh irjudson@52.229.31.191
+
+
+$Path = 'c:\temp\somedata.csv'
+
+(Get-Content -Path $Path) | Set-Content -Path $Path -Encoding UTF8 
+
+Seattle 1M:
+ wc -l *
+     556326 allergies.csv
+    3398864 careplans.csv
+    8077073 conditions.csv
+   49337320 encounters.csv
+     694510 imaging_studies.csv
+   15173601 immunizations.csv
+   38068449 medications.csv
+  252734747 observations.csv
+       1409 organizations.csv
+    1147455 patients.csv
+    3395973 payer_transitions.csv
+         11 payers.csv
+   34078851 procedures.csv
+       1409 providers.csv
+
+Order of SQL Scripts:
+
+1) Generate Database
+2) Load Database
+3) Reduce Organizations
+4) Correct Provider Mapping
+5) Generate Encounter Statistics
+6) More Statistics
+
+SQL Azure: 
+instance: washington-population-health
+admin: pophealthadmin
+password: P0p$Health20191111
