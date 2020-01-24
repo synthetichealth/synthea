@@ -262,6 +262,33 @@ to compute clinical statistics from the ECG.      </p>
           </lambda>
         </math>
       </functionDefinition>
+      <functionDefinition id="rng">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar><ci> seed </ci></bvar>
+            <bvar><ci> time </ci></bvar>
+            <apply>
+              <abs/>
+              <apply>
+                <sin/>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <ci> time </ci>
+                      <ci> seed </ci>
+                      <cn> 3 </cn>
+                    </apply>
+                    <cn> 2.5 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
     </listOfFunctionDefinitions>
     <listOfUnitDefinitions>
       <unitDefinition id="Hz" name="Hz">
@@ -298,6 +325,7 @@ to compute clinical statistics from the ECG.      </p>
       <parameter id="x" name="x" value="1.0" constant="false"/>
       <parameter id="y" name="y" value="0.0" constant="false"/>
       <parameter id="z" name="z" value="0.04" constant="false"/>
+      <parameter id="zf" name="zf" value="0.04" constant="false"/>
       <parameter id="ta" name="ta" value="0.0" constant="false"/>
       
       <parameter id="fresp" name="fresp" value="0.25" constant="true"/>
@@ -312,19 +340,19 @@ to compute clinical statistics from the ECG.      </p>
       <parameter id="ti_Q" name="ti_Q" value="-15.0" constant="true"/>
       <parameter id="ti_R" name="ti_R" value="0.0" constant="true"/>
       <parameter id="ti_S" name="ti_S" value="15.0" constant="true"/>
-      <parameter id="ti_T" name="ti_T" value="130.0" constant="true"/>
+      <parameter id="ti_T" name="ti_T" value="100.0" constant="true"/>
       
-      <parameter id="ai_P" name="ai_P" value="0.75" constant="true"/>
+      <parameter id="ai_P" name="ai_P" value="3.0" constant="true"/>
       <parameter id="ai_Q" name="ai_Q" value="-5.0" constant="true"/>
       <parameter id="ai_R" name="ai_R" value="30.0" constant="true"/>
       <parameter id="ai_S" name="ai_S" value="-7.5" constant="true"/>
-      <parameter id="ai_T" name="ai_T" value="0.75" constant="true"/>
+      <parameter id="ai_T" name="ai_T" value="3.0" constant="true"/>
       
-      <parameter id="bi_P" name="bi_P" value="0.25" constant="true"/>
+      <parameter id="bi_P" name="bi_P" value="0.15" constant="true"/>
       <parameter id="bi_Q" name="bi_Q" value="0.1" constant="true"/>
       <parameter id="bi_R" name="bi_R" value="0.1" constant="true"/>
       <parameter id="bi_S" name="bi_S" value="0.1" constant="true"/>
-      <parameter id="bi_T" name="bi_T" value="0.4" constant="true"/>
+      <parameter id="bi_T" name="bi_T" value="0.2" constant="true"/>
       
       <parameter id="ti_f_P" name="ti_f_P" value="0.0" constant="false"/>
       <parameter id="ti_f_Q" name="ti_f_Q" value="0.0" constant="false"/>
@@ -350,17 +378,69 @@ to compute clinical statistics from the ECG.      </p>
       <parameter id="dz_S" name="dz_S" value="0.0" constant="false"/>
       <parameter id="dz_T" name="dz_T" value="0.0" constant="false"/>
       
-      <parameter id="dx_" name="dx_" value="0.0" constant="false"/>
-      <parameter id="dy_" name="dy_" value="0.0" constant="false"/>
-      <parameter id="dz_" name="dz_" value="0.0" constant="false"/>
+      <parameter id="rng_seed" name="rng_seed" value="0" constant="false"/>
+      <parameter id="hr_adjusted" name="hr_adjusted" value="60" constant="false"/>
+      <parameter id="e_delay_rate" name="e_delay_rate" value="0" constant="false"/>
+      <parameter id="e_delay" name="e_delay" value="0" constant="false"/>
+      <parameter id="e_variance" name="e_variance" value="0.1" constant="false"/>
+      <parameter id="arr_base" name="arr_base" value="1.0" constant="false"/>
+      <parameter id="arr_t0" name="arr_t0" value="0" constant="false"/>
+      <parameter id="arr_t1" name="arr_t1" value="0" constant="false"/>
+      <parameter id="noise_amp" name="noise_amp" value="0.005" constant="false"/>
+      
+      <parameter metaid="_685797" id="vfib_start" name="vfib_start" value="0" constant="false"/>
+      <parameter metaid="_685797" id="vfib_end" name="vfib_end" value="0" constant="false"/>
+      
   </listOfParameters>
   <listOfRules>
+    <assignmentRule variable="hr_adjusted">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <piecewise>
+          <piece>
+            <apply>
+              <times/>
+              <ci> hrmean </ci>
+              <ci> arr_base </ci>
+              <apply>
+                <minus/>
+                <cn> 1.0 </cn>
+                <ci> e_delay_rate </ci>
+              </apply>
+            </apply>
+            <apply>
+              <and/>
+              <apply>
+                <geq/>
+                <apply>
+                  <divide/>
+                  <ci> ta </ci>
+                  <pi/>
+                </apply>
+                <ci> arr_t0 </ci>
+              </apply>
+              <apply>
+                <lt/>
+                <apply>
+                  <divide/>
+                  <ci> ta </ci>
+                  <pi/>
+                </apply>
+                <ci> arr_t1 </ci>
+              </apply>
+            </apply>
+          </piece>
+          <otherwise>
+            <ci> hrmean </ci>
+          </otherwise>
+        </piecewise>
+      </math>
+    </assignmentRule>
     <assignmentRule variable="rrpc">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
         <apply>
           <divide/>
           <cn> 60 </cn>
-          <ci> hrmean </ci>
+          <ci> hr_adjusted </ci>
         </apply>
       </math>
     </assignmentRule>
@@ -370,7 +450,7 @@ to compute clinical statistics from the ECG.      </p>
           <root/>
           <apply>
               <divide/>
-              <ci> hrmean </ci>
+              <ci> hr_adjusted </ci>
               <cn> 60.0 </cn>
           </apply>
         </apply>
@@ -788,6 +868,69 @@ to compute clinical statistics from the ECG.      </p>
         </apply>
       </math>
     </assignmentRule>
+    <assignmentRule variable="e_delay_rate">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <piecewise>
+          <piece>
+            <apply>
+              <times/>
+              <apply>
+                <ci> rng </ci>
+                <ci> rng_seed </ci>
+                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              </apply>
+              <ci> e_variance </ci>
+              <cn> 0.9 </cn>
+            </apply>
+            <apply>
+              <or/>
+              <apply>
+                <lt/>
+                <apply>
+                  <divide/>
+                  <ci> ta </ci>
+                  <pi/>
+                </apply>
+                <ci> arr_t0 </ci>
+              </apply>
+              <apply>
+                <geq/>
+                <apply>
+                  <divide/>
+                  <ci> ta </ci>
+                  <pi/>
+                </apply>
+                <ci> arr_t1 </ci>
+              </apply>
+            </apply>
+          </piece>
+          <otherwise>
+            <ci> e_delay_rate </ci>
+          </otherwise>
+        </piecewise>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="zf">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <ci> z </ci>
+          <apply>
+            <times/>
+            <ci> noise_amp </ci>
+            <apply>
+              <minus/>
+              <cn> 0.5 </cn>
+              <apply>
+                <ci> rng </ci>
+                <ci> rng_seed </ci>
+                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              </apply>
+            </apply>
+          </apply>
+        </apply>
+      </math>
+    </assignmentRule>
     <rateRule variable="x">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
         <apply>
@@ -824,23 +967,96 @@ to compute clinical statistics from the ECG.      </p>
     </rateRule>
     <rateRule variable="z">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <apply>
-          <minus/>
-          <cn> 0.0 </cn>
-          <apply>
-            <plus/>
-            <ci> dz_P </ci>
-            <ci> dz_Q </ci>
-            <ci> dz_R </ci>
-            <ci> dz_S </ci>
-            <ci> dz_T </ci>
-          </apply>
-          <apply>
-            <plus/>
-            <ci> z </ci>
-            <ci> zbase </ci>
-          </apply>
-        </apply>
+        <piecewise>
+          <piece>
+            <apply>
+              <plus/>
+              <ci> zbase </ci>
+              <apply>
+                <times/>
+                <cn> 0.25 </cn>
+                <apply>
+                  <sin/>
+                  <apply>
+                    <times/>
+                    <cn> 8 </cn>
+                    <apply>
+                      <minus/>
+                      <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                      <ci> e_delay </ci>
+                    </apply>
+                    <pi/>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <and/>
+              <apply>
+                <geq/>
+                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                <ci> vfib_start </ci>
+              </apply>
+              <apply>
+                <lt/>
+                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                <ci> vfib_end </ci>
+              </apply>
+            </apply>
+          </piece>
+          <otherwise>
+            <apply>
+              <minus/>
+              <cn> 0.0 </cn>
+              <apply>
+                <plus/>
+                <ci> dz_P </ci>
+                <ci> dz_Q </ci>
+                <ci> dz_R </ci>
+                <ci> dz_S </ci>
+                <ci> dz_T </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> z </ci>
+                <ci> zbase </ci>
+              </apply>
+            </apply>
+          </otherwise>
+        </piecewise>
+      </math>
+    </rateRule>
+    <rateRule metaid="_685742" variable="e_delay">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <piecewise>
+          <piece>
+            <cn> 0.0 </cn>
+            <apply>
+              <or/>
+              <apply>
+                <lt/>
+                <apply>
+                  <divide/>
+                  <ci> ta </ci>
+                  <pi/>
+                </apply>
+                <ci> arr_t0 </ci>
+              </apply>
+              <apply>
+                <geq/>
+                <apply>
+                  <divide/>
+                  <ci> ta </ci>
+                  <pi/>
+                </apply>
+                <ci> arr_t1 </ci>
+              </apply>
+            </apply>
+          </piece>
+          <otherwise>
+            <ci> e_delay_rate </ci>
+          </otherwise>
+        </piecewise>
       </math>
     </rateRule>
   </listOfRules>

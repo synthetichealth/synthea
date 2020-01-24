@@ -1,10 +1,10 @@
 
 # Data and charts will be placed in output/physiology/{name}/
 # Data file will always be output/physiology/{name}/{name}.csv
-name: Smith2004_CVS
+name: Smith2004_CVS_arrhythmia2
 
 # Name of the model file
-model: circulation/Smith2004_CVS_human.xml
+model: circulation/Smith2004_CVS_human_arr.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
@@ -14,15 +14,14 @@ solver: runge_kutta
 stepSize: 0.01
 
 # Simulation duration in seconds
-duration: 4
+duration: 10
 
 # Model parameter inputs. Any unspecified parameters will use the model's default value.
 inputs:
-    #R_sys: 1.213
-    #E_es_lvf: 2.212
-    e_variance: 1
-    #R: 0.004
-    period: 0.75
+    e_variance: 0.6
+    arr_tau_0: 0.6
+    arr_tau_1: 0.9
+    period: 0.5
 
 # What charts to draw. Results will be plotted on PNG images.
 # Note that chart support is a convenience feature and many chart options cannot be manipulated here.
@@ -40,7 +39,7 @@ charts:
       # Label for the Y axis
       axisLabelY: Pressure (mmhg)
       # Starting data time point for chart rendering. Defaults to 0.
-      #startTime: 0
+      #startTime: 2
       # Ending data time point for chart rendering. Defaults to sim duration.
       #endTime: 4
       series:
@@ -60,7 +59,7 @@ charts:
       title: Cardiovascular Volumes
       axisParamX: time
       axisLabelX: time (s)
-      axisLabelY: utf-8Volume (ml)utf-8
+      axisLabelY: Volume (ml)
       series:
         - param: V_lv
           label: Left Ventricle

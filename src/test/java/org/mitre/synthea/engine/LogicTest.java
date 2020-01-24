@@ -48,6 +48,8 @@ public class LogicTest {
   @Before
   public void setup() throws IOException {
     person = new Person(0L);
+    // Give person an income to prevent null pointer.
+    person.attributes.put(Person.INCOME, 10000000);
     Provider mock = Mockito.mock(Provider.class);
     mock.uuid = "Mock-Provider";
     for (EncounterType type : EncounterType.values()) {
@@ -285,6 +287,7 @@ public class LogicTest {
     person.hasMultipleRecords = true;
     person.records = new ConcurrentHashMap<String, HealthRecord>();
     module.process(person, time);
+    person.record = person.records.get("Mock-Provider");
     assertTrue(person.hasMultipleRecords);
     assertEquals(2, person.records.size());
     assertEquals(1, person.record.currentEncounter(time).conditions.size());

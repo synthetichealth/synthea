@@ -59,7 +59,7 @@ public class CPCDSExporterTest {
 
       String csvData = new String(Files.readAllBytes(csvFile.toPath()));
 
-      // the CSV exporter doesn't use the SimpleCSV class to write the data,
+      // the CPCDS exporter doesn't use the SimpleCSV class to write the data,
       // so we can use it here for a level of validation
       SimpleCSV.parse(csvData);
 

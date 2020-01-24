@@ -206,8 +206,20 @@ public abstract class Logic {
         for (Code code : this.codes) {
           // First, look in the current health record for the latest observation
           HealthRecord.Observation last = person.record.getLatestObservation(code.code);
+          if (person.lossOfCareEnabled) {
+            if (last == null) {
+              // If the observation is not in the current record,
+              // it could be in the uncovered health record.
+              last = person.lossOfCareRecord.getLatestObservation(code.code);
+            }
+            if (last == null) {
+              // If the observation still is not in the uncovered health record,
+              // it could be in the covered health record.
+              last = person.defaultRecord.getLatestObservation(code.code);
+            }
+          }
           if (last == null && person.hasMultipleRecords) {
-            // If the latest observation is not in the current health record,
+            // If the latest observation is not in the covered/uncovered health record,
             // then look in the module history.
             last = (HealthRecord.Observation)
                 findEntryFromHistory(person, HealthRecord.Observation.class, code);
@@ -237,7 +249,14 @@ public abstract class Logic {
       } else if (operator.equals("is not nil")) {
         return observation != null;
       } else if (observation == null) {
-        throw new NullPointerException("Required observation is null.");
+        if (this.codes != null) {
+          throw new NullPointerException("Required observation " + this.codes + " is null.");
+        } else if (this.referencedByAttribute != null) {
+          throw new NullPointerException("Required observation \""
+              + this.referencedByAttribute + "\" is null.");
+        } else {
+          throw new NullPointerException("Required observation is null.");
+        }
       } else {
         return Utilities.compare(observation.value, this.value, operator);
       }
