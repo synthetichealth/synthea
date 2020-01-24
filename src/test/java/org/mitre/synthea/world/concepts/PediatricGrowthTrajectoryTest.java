@@ -4,6 +4,7 @@ import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
 import java.util.Map;
@@ -15,25 +16,20 @@ public class PediatricGrowthTrajectoryTest {
   @Test
   public void generateNextYearBMI() {
     long birthDay = TestHelper.timestamp(2017, 1, 1, 0, 0, 0);
-    long now = TestHelper.timestamp(2019, 1, 1, 0, 0, 0);
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, birthDay);
     person.attributes.put(Person.GENDER, "M");
-    person.setVitalSign(VitalSign.BMI,
-        GrowthChart.loadCharts().get(GrowthChart.ChartType.BMI).lookUp(24, "M", 0.5));
     JDKRandomGenerator random = new JDKRandomGenerator(6454);
-    double percentile = GrowthChart.zscoreToPercentile(PediatricGrowthTrajectory.loadCorrelations().get("3").diff);
-    double threeYearBMI =
-        GrowthChart.loadCharts().get(GrowthChart.ChartType.BMI).lookUp(36, "M", percentile);
-    double generatedBMI[] = new double[1000];
-    for (int i = 0; i < 1000; i++) {
-      generatedBMI[i] = PediatricGrowthTrajectory.generateNextYearBMI(person, now, random);
-    }
-    double mean =  StatUtils.mean(generatedBMI);
-    // It would be nice to have a smaller delta in the assertion. That said, this test case will
-    // have times when the generated BMI ends up above the 95th percentile and extended values
-    // are used. That causes the mean to shift slightly above what is expected.
-    assertEquals(threeYearBMI, mean, 0.1);
+    PediatricGrowthTrajectory pgt = new PediatricGrowthTrajectory(0L, birthDay);
+    // This will be the initial NHANES Sample
+    long sampleSimulationTime = pgt.tail().timeInSimulation;
+    double initialBMI = pgt.tail().bmi;
+    long sixMonthsAfterInitial = sampleSimulationTime + Utilities.convertTime("months", 6);
+    // Will cause generateNextYearBMI to be run
+    double sixMonthLaterBMI = pgt.currentBMI(person, sixMonthsAfterInitial, random);
+    double oneYearLaterBMI = pgt.tail().bmi;
+    double bmiDiff = oneYearLaterBMI - initialBMI;
+    assertEquals(initialBMI + (0.5 * bmiDiff), sixMonthLaterBMI, 0.01);
   }
 
   @Test
@@ -77,7 +73,7 @@ public class PediatricGrowthTrajectoryTest {
     Map<String, PediatricGrowthTrajectory.YearInformation> correlations =
         PediatricGrowthTrajectory.loadCorrelations();
     PediatricGrowthTrajectory.YearInformation yi = correlations.get("3");
-    assertEquals(0.768, yi.correlation, 0.001);
-    assertEquals(0.08, yi.diff, 0.001);
+    assertEquals(0.773, yi.correlation, 0.001);
+    assertEquals(0.211, yi.diff, 0.001);
   }
 }

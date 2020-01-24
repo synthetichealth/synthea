@@ -2,13 +2,15 @@ package org.mitre.synthea.world.concepts;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.apache.commons.math3.distribution.LogNormalDistribution;
+import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
 import java.lang.reflect.Type;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,7 +47,6 @@ import java.util.Map;
  * </p>
  */
 public class PediatricGrowthTrajectory {
-  public static int TWO_YEARS_IN_MONTHS = 24;
 
   // Sigma is approximated using a quadratic formula, with different weights based on sex
   // The following constants are for those weights assuming a quadratic formula of:
@@ -58,24 +59,16 @@ public class PediatricGrowthTrajectory {
   public static double SIGMA_MALE_B = 0.5196;
   public static double SIGMA_MALE_C = 0.3728;
 
-  // BMIs for two year olds are modeled as a log normal distribution. Values were gathered
-  // from a sample population and fit using SciPy lognorm
-  // https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.lognorm.html#scipy.stats.lognorm
-  // Values here are listed as they are returned from SciPy to avoid translation errors if
-  // adjustments are made in the future
-  public static double TWO_YEAR_SCALE_FEMALE = Math.log(10.398732191294927);
-  public static double TWO_YEAR_LOC_FEMALE = 5.842995291195533;
-  public static double TWO_YEAR_SPREAD_FEMALE = 0.15361497654415895;
-
-  public static double TWO_YEAR_SCALE_MALE = Math.log(8.19131225494582);
-  public static double TWO_YEAR_LOC_MALE = 8.380790632904484;
-  public static double TWO_YEAR_SPREAD_MALE = 0.20310092636666977;
+  public static long ONE_YEAR = Utilities.convertTime("years", 1);
+  public static int NINETEEN_YEARS_IN_MONTHS = 228;
 
   private static final Map<GrowthChart.ChartType, GrowthChart> growthChart =
       GrowthChart.loadCharts();
 
   private static Map<String, YearInformation> yearCorrelations = loadCorrelations();
   private static NormalDistribution normalDistribution = new NormalDistribution();
+  private static EnumeratedDistribution<NHANESSample> nhanesSamples =
+      NHANESSample.loadDistribution();
 
   /**
    * Container for data on changes between years for BMI information
@@ -88,40 +81,49 @@ public class PediatricGrowthTrajectory {
   }
 
   /**
-   * Generates a random BMI for a two year old based on sex. Values are selected from a
-   * log normal distribution fit to match the US two year old population
-   * @param sex of the person to generate the new BMI for
-   * @param randomGenerator Apache Commons Math random thingy needed to sample a value
-   * @return a BMI for that person when they turn two years old
+   * A representation of a point in the growth trajectory
    */
-  public static double generateTwoYearBMI(String sex, JDKRandomGenerator randomGenerator) {
-    LogNormalDistribution dist;
-    double offset;
-    if (sex.equals("F")) {
-      dist = new LogNormalDistribution(randomGenerator, TWO_YEAR_SCALE_FEMALE,
-          TWO_YEAR_SPREAD_FEMALE);
-      offset = TWO_YEAR_LOC_FEMALE;
-    } else {
-      dist = new LogNormalDistribution(randomGenerator, TWO_YEAR_SCALE_MALE, TWO_YEAR_SPREAD_MALE);
-      offset = TWO_YEAR_LOC_MALE;
-    }
-    return offset + dist.sample();
+  public class Point {
+    public int ageInMonths;
+    public long timeInSimulation;
+    public double bmi;
+  }
+
+  private NHANESSample initialSample;
+  private List<Point> trajectory;
+
+
+  /**
+   * Starts a new pediatric growth trajectory. Selects a start BMI between 2 and 3 years old by
+   * pulling a weighted sample from NHANES.
+   *
+   * @param personSeed The person's seed to allow for repeatable randomization
+   * @param birthTime The time the individual was born in the simulation
+   */
+  public PediatricGrowthTrajectory(long personSeed, long birthTime) {
+    // TODO: Make the selection sex specific
+    nhanesSamples.reseedRandomGenerator(personSeed);
+    this.initialSample = nhanesSamples.sample();
+    this.trajectory = new LinkedList();
+    Point p = new Point();
+    p.ageInMonths = this.initialSample.agem;
+    p.bmi = this.initialSample.bmi;
+    p.timeInSimulation = birthTime + Utilities.convertTime("months", this.initialSample.agem);
+    this.trajectory.add(p);
   }
 
   /**
    * Given the sex, BMI and height percentile at age 2, calculate the correct weight percentile.
    * @param sex of the person to get the weight percentile for
-   * @param bmi at two years old
    * @param heightPercentile or the person
    * @return the weight percentile the person would have to be in, given their height percentile
    * and BMI
    */
-  public static double reverseTwoYearWeightPercentile(String sex, double bmi,
-                                                      double heightPercentile) {
-    double height = growthChart.get(GrowthChart.ChartType.HEIGHT).lookUp(TWO_YEARS_IN_MONTHS, sex,
-        heightPercentile);
-    double weight = BMI.weightForHeightAndBMI(height, bmi);
-    return growthChart.get(GrowthChart.ChartType.WEIGHT).percentileFor(TWO_YEARS_IN_MONTHS, sex,
+  public double reverseWeightPercentile(String sex, double heightPercentile) {
+    double height = growthChart.get(GrowthChart.ChartType.HEIGHT).lookUp(this.initialSample.agem,
+        sex, heightPercentile);
+    double weight = BMI.weightForHeightAndBMI(height, this.initialSample.bmi);
+    return growthChart.get(GrowthChart.ChartType.WEIGHT).percentileFor(this.initialSample.agem, sex,
         weight);
   }
 
@@ -132,25 +134,81 @@ public class PediatricGrowthTrajectory {
    * @param person to generate the new BMI for
    * @param time current time
    * @param randomGenerator Apache Commons Math random thingy needed to sample a value
-   * @return what the person's BMI should be next year
    */
-  public static double generateNextYearBMI(Person person, long time,
-                                           JDKRandomGenerator randomGenerator) {
+  public void generateNextYearBMI(Person person, long time,
+                                    JDKRandomGenerator randomGenerator) {
     double age = person.ageInDecimalYears(time);
     double nextAgeYear = age + 1;
     String sex = (String) person.attributes.get(Person.GENDER);
     int nextRoundedYear = (int) Math.floor(nextAgeYear);
     YearInformation yi = yearCorrelations.get(Integer.toString(nextRoundedYear));
     double sigma = sigma(sex, age);
-    double currentBMI = person.getVitalSign(VitalSign.BMI, time);
-    double ezscore = extendedZScore(currentBMI, person.ageInMonths(time), sex, sigma);
+    Point lastPoint = this.tail();
+    double currentBMI = lastPoint.bmi;
+    double ezscore = extendedZScore(currentBMI, lastPoint.ageInMonths, sex, sigma);
     double mean = yi.correlation * ezscore + yi.diff;
     double sd = Math.sqrt(1 - Math.pow(yi.correlation, 2));
     NormalDistribution nextZDistro = new NormalDistribution(randomGenerator, mean, sd);
     double nextYearZscore = nextZDistro.sample();
     double nextYearPercentile = GrowthChart.zscoreToPercentile(nextYearZscore);
-    return percentileToBMI(nextYearPercentile, person.ageInMonths(time) + 12,
+    double nextPointBMI = percentileToBMI(nextYearPercentile, lastPoint.ageInMonths + 12,
         sex, sigma(sex, nextAgeYear));
+    Point nextPoint = new Point();
+    nextPoint.timeInSimulation = lastPoint.timeInSimulation + ONE_YEAR;
+    nextPoint.ageInMonths = lastPoint.ageInMonths + 12;
+    nextPoint.bmi = nextPointBMI;
+    this.trajectory.add(nextPoint);
+  }
+
+  /**
+   * Finds the last point of the growth trajectory.
+   * @return the point
+   */
+  public Point tail() {
+    return this.trajectory.get(this.trajectory.size() - 1);
+  }
+
+  /**
+   * Finds the second to last point of the growth trajectory.
+   * @return the point
+   */
+  public Point penultimate() {
+    return this.trajectory.get(this.trajectory.size() - 2);
+  }
+
+  /**
+   * Determines whether the given time is before or after the NHANES sample selected as the seed
+   * for this growth trajectory.
+   * @param time The time to check
+   * @return true if the time is before the sample
+   */
+  public boolean beforeInitialSample(long time) {
+    return this.trajectory.get(0).timeInSimulation > time;
+  }
+
+  /**
+   * Provides the BMI for the individual at the supplied time. If the time provided is beyond the
+   * current length of the trajectory, it will generate a new point in the trajectory, if that point
+   * will happen before the person is 20 years old.
+   * @param person to get the BMI for
+   * @param time the time at which you want the BMI
+   * @param randomGenerator Apache Commons Math random thingy needed to sample a value
+   * @return a BMI value
+   */
+  public double currentBMI(Person person, long time, JDKRandomGenerator randomGenerator) {
+    Point lastPoint = tail();
+    if (lastPoint.timeInSimulation < time) {
+      if (lastPoint.ageInMonths > NINETEEN_YEARS_IN_MONTHS) {
+        return lastPoint.bmi;
+      }
+      generateNextYearBMI(person, time, randomGenerator);
+      lastPoint = tail();
+    }
+    Point previous = penultimate();
+    double percentOfTimeBetweenPointsElapsed = ((double) time - previous.timeInSimulation) / ONE_YEAR;
+    double bmiDifference = lastPoint.bmi - previous.bmi;
+
+    return previous.bmi + (bmiDifference * percentOfTimeBetweenPointsElapsed);
   }
 
   /**
@@ -199,7 +257,7 @@ public class PediatricGrowthTrajectory {
   }
 
   /**
-   * Calculate the paramater needed to model the half normal distribution for BMI values at or above
+   * Calculate the parameter needed to model the half normal distribution for BMI values at or above
    * the 95th percentile
    *
    * @param sex of the person
@@ -215,6 +273,10 @@ public class PediatricGrowthTrajectory {
     }
   }
 
+  /**
+   * Load correlations of extended BMI Z Scores from age year to age year.
+   * @return The correlations keyed by age year
+   */
   public static Map<String, YearInformation> loadCorrelations() {
     String filename = "bmi_correlations.json";
     try {

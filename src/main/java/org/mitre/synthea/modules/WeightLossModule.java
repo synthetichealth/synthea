@@ -226,7 +226,7 @@ public final class WeightLossModule extends Module {
    * of time in the regression period.
    */
   public void pediatricRegression(Person person) {
-    double[] bmiVector = (double[]) person.attributes.get(Person.BMI_VECTOR);
+    double[] bmiVector = null; //(double[]) person.attributes.get(Person.BMI_VECTOR);
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
     int startAge = person.ageInYears(start);
     int regressionStartAge = startAge + 3;
@@ -244,7 +244,7 @@ public final class WeightLossModule extends Module {
         double desiredBMI = bmiChart.lookUp((regressionStartAge + i) * 12, gender, desiredPercentile);
         bmiVector[regressionStartAge + i] = desiredBMI;
       }
-      person.attributes.put(Person.BMI_VECTOR, bmiVector);
+      //person.attributes.put(Person.BMI_VECTOR, bmiVector);
     }
   }
 
@@ -255,7 +255,7 @@ public final class WeightLossModule extends Module {
    */
   public double transitionRegression(Person person, long time) {
     GrowthChart bmiChart = growthChart.get(GrowthChart.ChartType.BMI);
-    double[] bmiVector = (double[]) person.attributes.get(Person.BMI_VECTOR);
+    double[] bmiVector = null;//(double[]) person.attributes.get(Person.BMI_VECTOR);
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
     int startAge = person.ageInYears(start);
     double bmiAtStartOfAgeYear = bmiVector[startAge];
@@ -278,7 +278,7 @@ public final class WeightLossModule extends Module {
     String gender = (String) person.attributes.get(Person.GENDER);
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
     int startAgeInMonths = person.ageInMonths(start);
-    double[] bmiVector = (double[]) person.attributes.get(Person.BMI_VECTOR);
+    double[] bmiVector = null; //(double[]) person.attributes.get(Person.BMI_VECTOR);
     double percentileChange = (double) person.attributes.get(WEIGHT_LOSS_BMI_PERCENTILE_CHANGE);
     int startAge = startAgeInMonths / 12;
     double bmiAtStartOfAgeYear = bmiVector[startAge];
@@ -291,7 +291,7 @@ public final class WeightLossModule extends Module {
     double twoYearOutBMI = bmiChart.lookUp(startAgeInMonths + 24, gender, targetPercentile);
     bmiVector[startAge + 2] = twoYearOutBMI;
 
-    person.attributes.put(Person.BMI_VECTOR, bmiVector);
+    //person.attributes.put(Person.BMI_VECTOR, bmiVector);
   }
 
   /**
@@ -301,7 +301,7 @@ public final class WeightLossModule extends Module {
    */
   public void maintainBMIPercentile(Person person, long time) {
     GrowthChart bmiChart = growthChart.get(GrowthChart.ChartType.BMI);
-    double[] bmiVector = (double[]) person.attributes.get(Person.BMI_VECTOR);
+    double[] bmiVector = null; //(double[]) person.attributes.get(Person.BMI_VECTOR);
     int age = person.ageInYears(time);
     if (age < 20 && bmiVector[age + 1] == 0) {
       String gender = (String) person.attributes.get(Person.GENDER);
@@ -309,7 +309,7 @@ public final class WeightLossModule extends Module {
       double percentile = bmiChart.percentileFor(age * 12, gender, bmi);
       double nextYearBMI = bmiChart.lookUp((age + 1) * 12, gender, percentile);
       bmiVector[age + 1] = nextYearBMI;
-      person.attributes.put(Person.BMI_VECTOR, bmiVector);
+      //person.attributes.put(Person.BMI_VECTOR, bmiVector);
     }
   }
 

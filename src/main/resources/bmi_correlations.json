@@ -1,74 +1,74 @@
 {
   "3": {
-    "correlation": 0.768,
-    "diff": 0.08
+    "correlation": 0.773,
+    "diff": 0.211
   },
   "4": {
     "correlation": 0.836,
-    "diff": 0.094
+    "diff": 0.087
   },
   "5": {
     "correlation": 0.866,
-    "diff": 0.019
+    "diff": 0.029
   },
   "6": {
-    "correlation": 0.887,
-    "diff": -0.045
-  },
-  "7": {
-    "correlation": 0.903,
+    "correlation": 0.889,
     "diff": 0.022
   },
+  "7": {
+    "correlation": 0.907,
+    "diff": 0.048
+  },
   "8": {
-    "correlation": 0.923,
-    "diff": 0.080
+    "correlation": 0.925,
+    "diff": 0.053
   },
   "9": {
-    "correlation": 0.935,
-    "diff": -0.039
+    "correlation": 0.936,
+    "diff": 0.034
   },
   "10": {
     "correlation": 0.944,
-    "diff": 0.068
+    "diff": 0.015
   },
   "11": {
     "correlation": 0.947,
-    "diff": 0.066
+    "diff": 0.005
   },
   "12": {
-    "correlation": 0.945,
-    "diff": 0
+    "correlation": 0.946,
+    "diff": 0.013
   },
   "13": {
     "correlation": 0.944,
-    "diff": 0.024
+    "diff": 0.016
   },
   "14": {
     "correlation": 0.945,
-    "diff": -0.018
+    "diff": 0.009
   },
   "15": {
     "correlation": 0.945,
-    "diff": -0.018
+    "diff": 0.001
   },
   "16": {
-    "correlation": 0.945,
-    "diff": -0.018
+    "correlation": 0.947,
+    "diff": -0.021
   },
   "17": {
-    "correlation": 0.945,
-    "diff": -0.018
+    "correlation": 0.946,
+    "diff": -0.041
   },
   "18": {
-    "correlation": 0.945,
-    "diff": -0.018
+    "correlation": 0.944,
+    "diff": -0.036
   },
   "19": {
-    "correlation": 0.945,
-    "diff": -0.018
+    "correlation": 0.935,
+    "diff": -0.031
   },
   "20": {
     "correlation": 0.945,
-    "diff": -0.018
+    "diff": -0.030
   }
 }
