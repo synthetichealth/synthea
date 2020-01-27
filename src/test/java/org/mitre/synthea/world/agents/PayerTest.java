@@ -33,6 +33,8 @@ public class PayerTest {
   Person person;
   double medicaidLevel;
   long mandateTime;
+  String medicareName;
+  String medicaidName;
 
   /**
    * Setup for Payer Tests.
@@ -56,6 +58,8 @@ public class PayerTest {
     // Set up Mandate year.
     int mandateYear = Integer.parseInt(Config.get("generate.insurance.mandate.year", "2006"));
     mandateTime = Utilities.convertCalendarYearsToTime(mandateYear);
+    medicareName = Config.get("generate.payers.insurance_companies.medicare", "Medicare");
+    medicaidName = Config.get("generate.payers.insurance_companies.medicaid", "Medicaid");
   }
 
   @Test
@@ -141,7 +145,7 @@ public class PayerTest {
         - Utilities.convertTime("years", 1), testPrivatePayer1);
     // At time olderThanSixtyFiveTime, the person is 65 and qualifies for Medicare.
     healthInsuranceModule.process(person, olderThanSixtyFiveTime);
-    assertEquals("Medicare", person.getPayerAtTime(olderThanSixtyFiveTime).getName());
+    assertEquals(medicareName, person.getPayerAtTime(olderThanSixtyFiveTime).getName());
     assertTrue(person.getPayerAtTime(olderThanSixtyFiveTime)
         .accepts(person, olderThanSixtyFiveTime));
 
@@ -154,7 +158,7 @@ public class PayerTest {
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
     healthInsuranceModule.process(person, 0L);
-    assertEquals("Medicare", person.getPayerAtTime(0L).getName());
+    assertEquals(medicareName, person.getPayerAtTime(0L).getName());
   }
 
   @Test
@@ -293,8 +297,8 @@ public class PayerTest {
   @Test
   public void loadGovernmentPayers() {
 
-    assertTrue(Payer.getGovernmentPayer("Medicare")
-        != null && Payer.getGovernmentPayer("Medicaid") != null);
+    assertTrue(Payer.getGovernmentPayer(medicareName)
+        != null && Payer.getGovernmentPayer(medicaidName) != null);
 
     for (Payer payer : Payer.getGovernmentPayers()) {
       assertEquals("Government", payer.getOwnership());
