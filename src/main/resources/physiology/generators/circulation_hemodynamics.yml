@@ -45,10 +45,10 @@ inputs:
       # Effects of age and BMI loosely estimated from a comprehensive study on adult blood pressure 
       # percentiles (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4553889/)
       # More research is needed to determine appropriate age / BMI effects on all model parameters.
-    - fromExp: "1.1889 + 0.025 * (#{BMI} - 21.7) + (if #{blood_pressure_controlled} != 0 then 0 else (0.0112 * #{age}))"
+    - fromExp: "1.1889 + 0.025 * (#{BMI} - 21.7) + (if #{blood_pressure_controlled} then 0 else (0.0112 * #{age}))"
       to: R_sys
       variance: 0.25 # Allowable variance in input to avoid running simulation
-    - fromExp: "0.8413 + (if #{age} > 20 then 0.0175 * (#{age} - 20) else 0)"
+    - fromExp: "0.8413 + (if #{age} > 20.0 then 0.0175 * (#{age} - 20.0) else 0)"
       to: E_es_ao
       variance: 0.2 # Allowable variance in input to avoid running simulation
       

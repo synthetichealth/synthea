@@ -62,8 +62,7 @@ public class IoMapperTest {
     try {
       testMapper.toModelInputs(person, 0, modelInputs);
     } catch (IllegalArgumentException e) {
-      assertEquals("Unable to map person attribute \"test attribute\":"
-          + " Attribute value is not a number.", e.getMessage());
+      assertEquals("Non-numeric attribute: \"test attribute\"", e.getMessage());
     }
     
     // Now use an expression with attributes and VitalSigns instead of a direct mapping
@@ -161,7 +160,10 @@ public class IoMapperTest {
     // Test an expression
     testMapper.setFromList(null);
     testMapper.setFromExp("Sum(#{model_output})");
-    testMapper.initialize();
+    
+    Map<String, String> paramTypes = new HashMap<String, String>();
+    paramTypes.put("model_output", "List<Decimal>");
+    testMapper.initialize(paramTypes);
     
     // Should result in the sum of all values for 'model_output'
     assertEquals(6.0, (double) testMapper.getOutputResult(mockResults, 0), 0.0001);

@@ -176,7 +176,7 @@ public class IoMapper {
         resultValue = ((Number) personValue).doubleValue();
       }
       else {
-        throw new IllegalArgumentException("Non numeric attribute: " + from );
+        throw new IllegalArgumentException("Non-numeric attribute: \"" + from + "\"");
       }
     }
     
