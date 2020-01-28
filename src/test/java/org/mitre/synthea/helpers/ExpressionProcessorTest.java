@@ -93,7 +93,7 @@ public class ExpressionProcessorTest {
     params.put("var_two", "male");
     
     ExpressionProcessor expProcessor = new ExpressionProcessor(
-        "if #{var_two} = 'male' then 1.0 else #{var_one}*2.0");
+        "if #s{var_two} = 'male' then 1.0 else #d{var_one}*2.0");
     
     BigDecimal result = expProcessor.evaluateNumeric(params);
     
