@@ -1,6 +1,7 @@
 package org.mitre.synthea.helpers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class ExpressionProcessorTest {
     String exp = "#{age_attr} / 2 + 7";
     ExpressionProcessor expProcessor = new ExpressionProcessor(exp);
     Number result = (Number) expProcessor.evaluate(p, 0L);
+    assertNotNull(result);
     assertEquals(20L, result.longValue());
   }
   
@@ -91,18 +93,19 @@ public class ExpressionProcessorTest {
     params.put("var_two", "male");
     
     ExpressionProcessor expProcessor = new ExpressionProcessor(
-        "define expected: \"male\"\n"
-        + "if #{var_two} = expected then 1.0 else var_one*2");
+        "if #{var_two} = 'male' then 1.0 else #{var_one}*2.0");
     
-    double result = expProcessor.evaluateNumeric(params).doubleValue();
+    BigDecimal result = expProcessor.evaluateNumeric(params);
     
-    assertEquals(1.0, result, 0.0001);
+    assertNotNull(result);
+    assertEquals(1.0, result.doubleValue(), 0.0001);
     
     params.put("var_two", "female");
     
-    result = expProcessor.evaluateNumeric(params).doubleValue();
+    result = expProcessor.evaluateNumeric(params);
     
-    assertEquals(4.0, result, 0.0001);
+    assertNotNull(result);
+    assertEquals(4.0, result.doubleValue(), 0.0001);
     
   }
 }

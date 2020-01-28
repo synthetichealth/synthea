@@ -175,7 +175,7 @@ public class ExpressionProcessor {
     
     // Treat "age" as a special case. In expressions, age is represented in decimal years
     if (param.equals("age")) {
-      return person.ageInDecimalYears(time);
+      return new BigDecimal(person.ageInDecimalYears(time));
     }
     
     // If this param is in the cache, check if we have a VitalSign or not
@@ -196,7 +196,7 @@ public class ExpressionProcessor {
     }
 
     if (vs != null) {
-      return person.getVitalSign(vs, time);
+      return new BigDecimal(person.getVitalSign(vs, time));
     }
     
     Object value = person.attributes.get(param);
@@ -212,13 +212,11 @@ public class ExpressionProcessor {
       } 
     }
     
-    if (value instanceof Integer) {
-      // Use integers as-is
-      return value;
-    } else if (value instanceof Number) {
-      // If it's any numeric type other than integer, use a BigDecimal
+    if (value instanceof Number) {
+      // If it's any numeric type, use a BigDecimal
       return new BigDecimal(value.toString());
-    } else if (value instanceof String) {
+    } else if (value instanceof String || value instanceof Boolean) {
+      // Provide strings and booleans as-is
       return value;
     } else {
       if (expression != null) {
@@ -323,6 +321,10 @@ public class ExpressionProcessor {
       // Set the CQL compatible parameter name in the context
       context.setParameter(null, cqlParamMap.get(entry.getKey()), entry.getValue());
       setParams.add(entry.getKey());
+    }
+    
+    for (Entry<String, Object> e : params.entrySet()) {
+      System.out.println(e.getKey() + ": " + e.getValue().getClass().getName());
     }
     
     Set<String> missing = Sets.difference(cqlParamMap.keySet(), setParams);
