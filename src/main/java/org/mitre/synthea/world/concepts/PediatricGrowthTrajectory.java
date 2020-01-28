@@ -169,11 +169,34 @@ public class PediatricGrowthTrajectory {
   }
 
   /**
-   * Finds the second to last point of the growth trajectory.
-   * @return the point
+   * Finds the closest point occurring before the given time
+   * @param time time of interest
+   * @return Point just before it or null if it doesn't exist
    */
-  public Point penultimate() {
-    return this.trajectory.get(this.trajectory.size() - 2);
+  public Point justBefore(long time) {
+    Point p = null;
+    for (int i = 0; i < this.trajectory.size(); i++) {
+      if (this.trajectory.get(i).timeInSimulation < time) {
+        p = this.trajectory.get(i);
+      } else {
+        return p;
+      }
+    }
+    return p;
+  }
+
+  /**
+   * Finds the closest point occurring after the given time
+   * @param time time of interest
+   * @return Point just after it or null if it doesn't exist
+   */
+  public Point justAfter(long time) {
+    for (int i = 0; i < this.trajectory.size(); i++) {
+      if (this.trajectory.get(i).timeInSimulation > time) {
+        return this.trajectory.get(i);
+      }
+    }
+    return null;
   }
 
   /**
@@ -184,6 +207,17 @@ public class PediatricGrowthTrajectory {
    */
   public boolean beforeInitialSample(long time) {
     return this.trajectory.get(0).timeInSimulation > time;
+  }
+
+  public void addPoint(int ageInMonths, long timeInSimulation, double bmi) {
+    Point p = new Point();
+    p.ageInMonths = ageInMonths;
+    p.timeInSimulation = timeInSimulation;
+    p.bmi = bmi;
+    if (tail().timeInSimulation > timeInSimulation) {
+      throw new IllegalArgumentException("Must extend beyond end of current trajectory");
+    }
+    trajectory.add(p);
   }
 
   /**
@@ -202,11 +236,12 @@ public class PediatricGrowthTrajectory {
         return lastPoint.bmi;
       }
       generateNextYearBMI(person, time, randomGenerator);
-      lastPoint = tail();
     }
-    Point previous = penultimate();
-    double percentOfTimeBetweenPointsElapsed = ((double) time - previous.timeInSimulation) / ONE_YEAR;
-    double bmiDifference = lastPoint.bmi - previous.bmi;
+    Point previous = justBefore(time);
+    Point next = justAfter(time);
+    double percentOfTimeBetweenPointsElapsed = ((double) time - previous.timeInSimulation) /
+        (next.timeInSimulation - previous.timeInSimulation);
+    double bmiDifference = next.bmi - previous.bmi;
 
     return previous.bmi + (bmiDifference * percentOfTimeBetweenPointsElapsed);
   }
