@@ -358,16 +358,34 @@ public class ExpressionProcessor {
     
     // identify the parameters that are used
     // we identify parameters with #{attr}
-    Pattern pattern = Pattern.compile("#\\{.+?\\}");
+    Pattern pattern = Pattern.compile("#([dlbs]?)\\{(.+?)\\}");
     Matcher matcher = pattern.matcher(expression);
 
     while (matcher.find()) {
       String key = matcher.group();
-      String param = key.substring(2, key.length() - 1).trim(); // lop off #{ and }
+      String typeKey = matcher.group(1);
+      String param = matcher.group(2);
       String cqlParam = param.replace(" ", "_");
       
       // Add the bi-directional mapping from params to CQL compatible params
       cqlParamMap.put(param, cqlParam);
+      
+      if(!typeKey.isEmpty()) {
+        switch (typeKey) {
+        case "d":
+          paramTypeMap.put(cqlParam, "Decimal");
+          break;
+        case "l":
+          paramTypeMap.put(cqlParam, "List<Decimal>");
+          break;
+        case "b":
+          paramTypeMap.put(cqlParam, "Boolean");
+          break;
+        case "s":
+          paramTypeMap.put(cqlParam, "String");
+          break;
+        }
+      }
 
       // clean up the expression so we can plug it in later
       cleanExpression = cleanExpression.replace(key, cqlParam);
@@ -386,7 +404,7 @@ public class ExpressionProcessor {
         .append("\nparameter ")
         .append(paramEntry.getValue())
         .append(" ")
-        .append(paramTypeMap.getOrDefault(paramEntry.getKey(), "Any"));
+        .append(paramTypeMap.getOrDefault(paramEntry.getKey(), "Decimal"));
     }
 
     wrappedExpression.append("\n\ncontext Patient\n\n");

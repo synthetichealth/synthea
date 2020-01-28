@@ -82,14 +82,14 @@ public class IoMapperTest {
           + "+ #{attr2}\": Invalid person attribute or vital sign.", e.getMessage());
     }
     
-    // Again, if it's a non numeric value, it should also throw an exception
-    person.attributes.put("attr2", "not a number again");
+    // Again, if it's an unsupported value, it should also throw an exception
+    person.attributes.put("attr2", (byte) 0);
     try {
       testMapper.toModelInputs(person, 0, modelInputs);
     } catch (IllegalArgumentException e) {
       assertEquals("Unable to map person attribute \"attr2\" in expression "
           + "\"#{test attribute} * #{BMI} + #{attr2}\": "
-          + "Attribute value is not a number.", e.getMessage());
+          + "Unsupported type: byte.", e.getMessage());
     }
     
     // now set 'attr2' and try again
