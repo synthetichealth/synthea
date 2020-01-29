@@ -101,6 +101,8 @@ public class ExpressionProcessor {
     String cleanExpression = replaceParameters(expression);
     String wrappedExpression = convertParameterizedExpressionToCql(cleanExpression);
     
+    System.out.println(wrappedExpression);
+    
     // Compile our constructed CQL expression into elm once for execution
     this.elm = cqlToElm(wrappedExpression);
     try {
@@ -156,7 +158,7 @@ public class ExpressionProcessor {
    * @param time current time
    * @return value
    */
-  public static Double getPersonValue(String param, Person person, long time) {
+  public static Object getPersonValue(String param, Person person, long time) {
     return getPersonValue(param, person, time, null);
   }
   
@@ -169,11 +171,11 @@ public class ExpressionProcessor {
    * @param time current time
    * @return value
    */
-  public static Double getPersonValue(String param, Person person, long time, String expression) {
+  public static Object getPersonValue(String param, Person person, long time, String expression) {
     
     // Treat "age" as a special case. In expressions, age is represented in decimal years
     if (param.equals("age")) {
-      return person.ageInDecimalYears(time);
+      return new BigDecimal(person.ageInDecimalYears(time));
     }
     
     // If this param is in the cache, check if we have a VitalSign or not
@@ -194,28 +196,12 @@ public class ExpressionProcessor {
     }
 
     if (vs != null) {
-      return person.getVitalSign(vs, time);
-    } else if (person.attributes.containsKey(param)) {
-      
-      Object value = person.attributes.get(param);
-      
-      if (value instanceof Number) {
-        return ((Number) value).doubleValue();
-        
-      } else if (value instanceof Boolean) {
-        return (Boolean) value ? 1.0 : 0.0;
-        
-      } else {
-        if (expression != null) {
-          throw new IllegalArgumentException("Unable to map person attribute \""
-              + param + "\" in expression \"" + expression
-              + "\": Attribute value is not a number.");
-        } else {
-          throw new IllegalArgumentException("Unable to map person attribute \""
-              + param + "\": Attribute value is not a number.");
-        }
-      }
-    } else {
+      return new BigDecimal(person.getVitalSign(vs, time));
+    }
+    
+    Object value = person.attributes.get(param);
+    
+    if (value == null) {
       if (expression != null) {
         throw new IllegalArgumentException("Unable to map \"" + param
             + "\" in expression \"" + expression
@@ -223,8 +209,54 @@ public class ExpressionProcessor {
       } else {
         throw new IllegalArgumentException("Unable to map \""
             + param + "\": Invalid person attribute or vital sign.");
+      } 
+    }
+    
+    if (value instanceof Number) {
+      // If it's any numeric type, use a BigDecimal
+      return new BigDecimal(value.toString());
+    } else if (value instanceof String || value instanceof Boolean) {
+      // Provide strings and booleans as-is
+      return value;
+    } else {
+      if (expression != null) {
+        throw new IllegalArgumentException("Unable to map person attribute \""
+            + param + "\" in expression \"" + expression
+            + "\": Unsupported type: " + value.getClass().getTypeName() + ".");
+      } else {
+        throw new IllegalArgumentException("Unable to map person attribute \""
+            + param + "\": Unsupported type: " + value.getClass().getTypeName() + ".");
       }
     }
+      
+//    } else if (person.attributes.containsKey(param)) {
+//
+//      Object value = person.attributes.get(param);
+//      
+//      if (value instanceof Number) {
+//        return ((Number) value).doubleValue();
+//      } else if (value instanceof Boolean) {
+//        return (Boolean) value ? 1.0 : 0.0;
+//      } else {
+//        if (expression != null) {
+//          throw new IllegalArgumentException("Unable to map person attribute \""
+//              + param + "\" in expression \"" + expression
+//              + "\": Attribute value is not a number.");
+//        } else {
+//          throw new IllegalArgumentException("Unable to map person attribute \""
+//              + param + "\": Attribute value is not a number.");
+//        }
+//      }
+//    } else {
+//      if (expression != null) {
+//        throw new IllegalArgumentException("Unable to map \"" + param
+//            + "\" in expression \"" + expression
+//            + "\": Invalid person attribute or vital sign.");
+//      } else {
+//        throw new IllegalArgumentException("Unable to map \""
+//            + param + "\": Invalid person attribute or vital sign.");
+//      }
+//    }
   }
   
   /**
@@ -271,7 +303,7 @@ public class ExpressionProcessor {
     Map<String,Object> params = new HashMap<String,Object>();
     
     for (String paramName : getParamNames()) {
-      params.put(paramName, new BigDecimal(getPersonValue(paramName, person, time, expression)));
+      params.put(paramName, getPersonValue(paramName, person, time, expression));
     }
     
     return evaluate(params);
@@ -289,6 +321,10 @@ public class ExpressionProcessor {
       // Set the CQL compatible parameter name in the context
       context.setParameter(null, cqlParamMap.get(entry.getKey()), entry.getValue());
       setParams.add(entry.getKey());
+    }
+    
+    for (Entry<String, Object> e : params.entrySet()) {
+      System.out.println(e.getKey() + ": " + e.getValue().getClass().getName());
     }
     
     Set<String> missing = Sets.difference(cqlParamMap.keySet(), setParams);
@@ -322,16 +358,34 @@ public class ExpressionProcessor {
     
     // identify the parameters that are used
     // we identify parameters with #{attr}
-    Pattern pattern = Pattern.compile("#\\{.+?\\}");
+    Pattern pattern = Pattern.compile("#([dlbs]?)\\{(.+?)\\}");
     Matcher matcher = pattern.matcher(expression);
 
     while (matcher.find()) {
       String key = matcher.group();
-      String param = key.substring(2, key.length() - 1).trim(); // lop off #{ and }
+      String typeKey = matcher.group(1);
+      String param = matcher.group(2);
       String cqlParam = param.replace(" ", "_");
       
       // Add the bi-directional mapping from params to CQL compatible params
       cqlParamMap.put(param, cqlParam);
+      
+      if(!typeKey.isEmpty()) {
+        switch (typeKey) {
+        case "d":
+          paramTypeMap.put(cqlParam, "Decimal");
+          break;
+        case "l":
+          paramTypeMap.put(cqlParam, "List<Decimal>");
+          break;
+        case "b":
+          paramTypeMap.put(cqlParam, "Boolean");
+          break;
+        case "s":
+          paramTypeMap.put(cqlParam, "String");
+          break;
+        }
+      }
 
       // clean up the expression so we can plug it in later
       cleanExpression = cleanExpression.replace(key, cqlParam);
@@ -353,8 +407,18 @@ public class ExpressionProcessor {
         .append(paramTypeMap.getOrDefault(paramEntry.getKey(), "Decimal"));
     }
 
-    wrappedExpression.append("\n\ncontext Patient\n\ndefine result: ");
-    wrappedExpression.append(expression);
+    wrappedExpression.append("\n\ncontext Patient\n\n");
+    
+    String[] statements = expression.split("\n");
+    
+    for (int i=0; i < statements.length; i++) {
+      if (i == statements.length -1) {
+        wrappedExpression.append("define result: " + statements[i]);
+      }
+      else {
+        wrappedExpression.append(statements[i] + "\n");
+      }
+    }
     
     return wrappedExpression.toString();
   }
