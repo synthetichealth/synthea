@@ -204,6 +204,13 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
+    if (Boolean.parseBoolean(Config.get("exporter.cpcds.export"))) {
+      try {
+        CPCDSExporter.getInstance().export(person, stopTime);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
     if (Boolean.parseBoolean(Config.get("exporter.text.export"))) {
       try {
         TextExporter.exportAll(person, fileTag, stopTime);

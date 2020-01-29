@@ -91,7 +91,14 @@ public class Module {
             });
     return submoduleCount.get();
   }
-  
+
+  /**
+   * Recursively adds a folder or directory of module files to the static list
+   * of modules. This does not need to be executed by the core software. It only
+   * is used when the user wants to add another local module folder or during
+   * unit tests.
+   * @param dir - the folder or directory to add.
+   */
   public static void addModules(File dir) {
     int submoduleCount = 0;
     int originalModuleCount = modules.size();
@@ -104,7 +111,6 @@ public class Module {
     System.out.format("Scanned %d local modules and %d local submodules.\n", 
                       modules.size() - (originalModuleCount + submoduleCount), 
                       submoduleCount);
-
   }
 
   private static void fixPathFromJar(URI uri) throws IOException {
@@ -278,6 +284,11 @@ public class Module {
     return states.get("Initial"); // all Initial states have name Initial
   }
 
+  /**
+   * Get a state by name.
+   * @param name - case-sensitive state name.
+   * @return State if it exists, otherwise null.
+   */
   public State getState(String name) {
     return states.get(name);
   }
