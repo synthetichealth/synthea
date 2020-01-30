@@ -7,14 +7,14 @@
                 <strong>A quantitative systems physiology model of renal function and blood pressure regulation: Model description</strong>
                 <br/>
           Hallow, K. M., and Y. Gebremichael.      <em>CPT: pharmacometrics and systems pharmacology</em>
-          2017 Jun;6(6):383-92.      <a href="http://www.ncbi.nlm.nih.gov/pubmed/PMC5488122">PMC5488122</a>
+          2017 Jun;6(6):383-92.      <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5488122/">PMC5488122</a>
           ,      <br/>
                 <strong>Abstract:</strong>
                 <br/>
           Renal function plays a central role in cardiovascular, kidney, and multiple other diseases, and many existing and novel therapies act through renal mechanisms. Even with decades of accumulated knowledge of renal physiology, pathophysiology, and pharmacology, the dynamics of renal function remain difficult to understand and predict, often resulting in unexpected or counterintuitive therapy responses. Quantitative systems pharmacology modeling of renal function integrates this accumulated knowledge into a quantitative framework, allowing evaluation of competing hypotheses, identification of knowledge gaps, and generation of new experimentally testable hypotheses. Here we present a model of renal physiology and control mechanisms involved in maintaining sodium and water homeostasis. This model represents the core renal physiological processes involved in many research questions in drug development. The model runs in R and the code is made available. In a companion article, we present a case study using the model to explore mechanisms and pharmacology of salt‐sensitive hypertension.      </p>
             <p>This model has been manually implemented in SBML based on the open-source R source code from      <a href="https://github.com/hallowkm/RenalModel">GitHub</a>
                 <br/>
-          Conversion to SBML completed by:      <br/>
+          Implementation in SBML completed by:      <br/>
                 <strong>Sivek, Ryan T.</strong>
                 <br/>
           rsivek@mitre.org      <br/>
@@ -302,7 +302,7 @@
       <parameter constant="false" id="peritubular_resistance"/>
       <parameter constant="false" id="renal_vascular_resistance"/>
       <parameter constant="false" id="renal_blood_flow_L_min" value="1"/>
-      <parameter constant="false" id="renal_blood_flow_ml_hr" value="1.66667E-5"/>
+      <parameter constant="false" id="renal_blood_flow_ml_hr" value="1.66667E5"/>
       <parameter constant="false" id="preafferent_pressure"/>
       <parameter constant="false" id="glomerular_pressure"/>
       <parameter constant="false" id="postglomerular_pressure"/>
@@ -509,9 +509,9 @@
       <parameter constant="false" id="AT1_bound_AngII_degradation_rate"/>
       <parameter constant="false" id="AT2_bound_AngII_degradation_rate"/>
       <parameter constant="false" id="ACE_activity"/>
-      <parameter constant="false" id="chymase_activity"/>
+      <parameter constant="false" id="chymase_activity" value="1.25"/>
       <parameter constant="false" id="AT1_receptor_binding_rate"/>
-      <parameter constant="false" id="AT2_receptor_binding_rate"/>
+      <parameter constant="false" id="AT2_receptor_binding_rate" value="4"/>
       <parameter constant="false" id="AngI" value="8.164"/>
       <parameter constant="false" id="AngII" value="5.17"/>
       <parameter constant="false" id="AT1_bound_AngII" value="16.6"/>
@@ -1104,32 +1104,36 @@
       <assignmentRule variable="tissue_autoregulation_signal_part">
         <math xmlns="http://www.w3.org/1998/Math/MathML">        
           <apply>
-            <times/>
-            <ci> tissue_autoreg_scale </ci>
+            <plus/>
+            <cn> 1 </cn>
             <apply>
               <times/>
+              <ci> tissue_autoreg_scale </ci>
               <apply>
-                <plus/>
+                <times/>
                 <apply>
-                  <times/>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <divide/>
+                      <ci> Kp_CO </ci>
+                      <ci> CO_scale_species </ci>
+                    </apply>
+                    <apply>
+                      <minus/>
+                      <ci> cardiac_output_delayed </ci>
+                      <ci> CO_nom </ci>
+                    </apply>
+                  </apply>
                   <apply>
                     <divide/>
-                    <ci> Kp_CO </ci>
+                    <ci> Ki_CO </ci>
                     <ci> CO_scale_species </ci>
                   </apply>
-                  <apply>
-                    <minus/>
-                    <ci> cardiac_output_delayed </ci>
-                    <ci> CO_nom </ci>
-                  </apply>
                 </apply>
-                <apply>
-                  <divide/>
-                  <ci> Ki_CO </ci>
-                  <ci> CO_scale_species </ci>
-                </apply>
+                <ci> CO_error </ci>
               </apply>
-              <ci> CO_error </ci>
             </apply>
           </apply>
         </math>
@@ -1164,7 +1168,7 @@
           </apply>
         </math>
       </assignmentRule>
-      <assignmentRule variable="AT1_bound_AngII">
+      <assignmentRule variable="AT1_bound_AngII_effect_on_SVR">
         <math xmlns="http://www.w3.org/1998/Math/MathML">        
           <apply>
             <plus/>
@@ -4216,6 +4220,92 @@
               <ci> HCTZ_effect_on_renin_secretion </ci>
             </apply>
             <ci> aldo_effect_on_renin_secretion </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="renin_degradation_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn> 2 </cn>
+            </apply>
+            <ci> renin_half_life </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AngI_degradation_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn> 2 </cn>
+            </apply>
+            <ci> AngI_half_life </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <!--<assignmentRule variable="AngII_degradation_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn> 2 </cn>
+            </apply>
+            <ci> AngII_half_life </ci>
+          </apply>
+        </math>
+      </assignmentRule>-->
+      <assignmentRule variable="AT1_bound_AngII_degradation_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn> 2 </cn>
+            </apply>
+            <ci> AT1_bound_AngII_half_life </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AT2_bound_AngII_degradation_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn> 2 </cn>
+            </apply>
+            <ci> AT2_bound_AngII_half_life </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ACE_activity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> nominal_ACE_activity </ci>
+            <apply>
+              <minus/>
+              <cn> 1 </cn>
+              <ci> pct_target_inhibition_ACEi </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AT1_receptor_binding_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> nominal_AT1_receptor_binding_rate </ci>
+            <apply>
+              <minus/>
+              <cn> 1 </cn>
+              <ci> pct_target_inhibition_ARB </ci>
+            </apply>
           </apply>
         </math>
       </assignmentRule>
