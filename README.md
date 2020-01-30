@@ -20,7 +20,9 @@ Currently, Synthea<sup>TM</sup> features include:
   - CPCDS (set `exporter.cpcds.export = true` to activate)
 - Rendering Rules and Disease Modules with Graphviz
 
-## Quick Start
+## Developer Quick Start
+
+These instructions are intended for those wishing to examine the Synthea source code, extend it or build the code locally. Those just wishing to run Synthea should follow the [Basic Setup and Running](https://github.com/synthetichealth/synthea/wiki/Basic-Setup-and-Running) instructions instead.
 
 ### Installation
 

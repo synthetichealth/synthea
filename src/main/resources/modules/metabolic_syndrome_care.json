@@ -486,7 +486,8 @@
         }
       ],
       "reason": "Diagnose_Diabetes",
-      "direct_transition": "Bitherapy"
+      "direct_transition": "Bitherapy",
+      "chronic": true
     },
     "Bitherapy": {
       "type": "Simple",
@@ -557,7 +558,8 @@
         }
       ],
       "reason": "Diagnose_Diabetes",
-      "direct_transition": "Tritherapy"
+      "direct_transition": "Tritherapy",
+      "chronic": true
     },
     "End_Liraglutide": {
       "type": "MedicationEnd",
@@ -733,7 +735,8 @@
         }
       ],
       "reason": "Diagnose_Diabetes",
-      "direct_transition": "Check_Complications"
+      "direct_transition": "Check_Complications",
+      "chronic": true
     },
     "End_Basal_Insulin_Towards_Prandial": {
       "type": "MedicationEnd",
@@ -756,7 +759,8 @@
         }
       ],
       "reason": "Diagnose_Diabetes",
-      "direct_transition": "Check_Complications"
+      "direct_transition": "Check_Complications",
+      "chronic": true
     },
     "End_Insulin": {
       "type": "Simple",
@@ -1198,7 +1202,8 @@
           "display": "End stage renal disease (disorder)"
         }
       ],
-      "direct_transition": "Record_MetabolicPanel_5"
+      "direct_transition": "Record_MetabolicPanel_5",
+      "assign_to_attribute": "dialysis_reason"
     },
     "End_End_Stage_Renal_Disease": {
       "type": "ConditionEnd",
@@ -2268,7 +2273,8 @@
           "display": "Chronic kidney disease stage 4 (disorder)"
         }
       ],
-      "direct_transition": "Record_MetabolicPanel_4"
+      "direct_transition": "Record_MetabolicPanel_4",
+      "assign_to_attribute": "dialysis_reason"
     },
     "Obese_Check": {
       "type": "Simple",
@@ -2438,7 +2444,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/​1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
             }
           ],
           "range": {
@@ -2565,7 +2571,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/​1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
             }
           ],
           "range": {
@@ -2692,7 +2698,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/​1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
             }
           ],
           "range": {
@@ -2819,7 +2825,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/​1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
             }
           ],
           "range": {
@@ -2946,7 +2952,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/​1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
             }
           ],
           "range": {
@@ -3037,7 +3043,7 @@
             {
               "system": "LOINC",
               "code": "5792-7",
-              "display": "Glucose [Mass/​volume] in Urine by Test strip"
+              "display": "Glucose [Mass/volume] in Urine by Test strip"
             }
           ],
           "unit": "mg/dL",
@@ -3068,7 +3074,7 @@
             {
               "system": "LOINC",
               "code": "20505-4",
-              "display": "Bilirubin.total [Mass/​volume] in Urine by Test strip"
+              "display": "Bilirubin.total [Mass/volume] in Urine by Test strip"
             }
           ],
           "unit": "mg/dL",
@@ -3100,7 +3106,7 @@
             {
               "system": "LOINC",
               "code": "5797-6",
-              "display": "Ketones [Mass/​volume] in Urine by Test strip"
+              "display": "Ketones [Mass/volume] in Urine by Test strip"
             }
           ],
           "range": {
@@ -3161,7 +3167,7 @@
             {
               "system": "LOINC",
               "code": "5804-0",
-              "display": "Protein [Mass/​volume] in Urine by Test strip"
+              "display": "Protein [Mass/volume] in Urine by Test strip"
             }
           ],
           "range": {
@@ -3316,7 +3322,7 @@
             {
               "system": "LOINC",
               "code": "5792-7",
-              "display": "Glucose [Mass/​volume] in Urine by Test strip"
+              "display": "Glucose [Mass/volume] in Urine by Test strip"
             }
           ],
           "unit": "mg/dL",
@@ -3347,7 +3353,7 @@
             {
               "system": "LOINC",
               "code": "20505-4",
-              "display": "Bilirubin.total [Mass/​volume] in Urine by Test strip"
+              "display": "Bilirubin.total [Mass/volume] in Urine by Test strip"
             }
           ],
           "unit": "mg/dL",
@@ -3379,7 +3385,7 @@
             {
               "system": "LOINC",
               "code": "5797-6",
-              "display": "Ketones [Mass/​volume] in Urine by Test strip"
+              "display": "Ketones [Mass/volume] in Urine by Test strip"
             }
           ],
           "range": {
@@ -3440,7 +3446,7 @@
             {
               "system": "LOINC",
               "code": "5804-0",
-              "display": "Protein [Mass/​volume] in Urine by Test strip"
+              "display": "Protein [Mass/volume] in Urine by Test strip"
             }
           ],
           "range": {
@@ -3595,7 +3601,7 @@
             {
               "system": "LOINC",
               "code": "5792-7",
-              "display": "Glucose [Mass/​volume] in Urine by Test strip"
+              "display": "Glucose [Mass/volume] in Urine by Test strip"
             }
           ],
           "unit": "mg/dL",
@@ -3626,7 +3632,7 @@
             {
               "system": "LOINC",
               "code": "20505-4",
-              "display": "Bilirubin.total [Mass/​volume] in Urine by Test strip"
+              "display": "Bilirubin.total [Mass/volume] in Urine by Test strip"
             }
           ],
           "unit": "mg/dL",
@@ -3658,7 +3664,7 @@
             {
               "system": "LOINC",
               "code": "5797-6",
-              "display": "Ketones [Mass/​volume] in Urine by Test strip"
+              "display": "Ketones [Mass/volume] in Urine by Test strip"
             }
           ],
           "range": {
@@ -3719,7 +3725,7 @@
             {
               "system": "LOINC",
               "code": "5804-0",
-              "display": "Protein [Mass/​volume] in Urine by Test strip"
+              "display": "Protein [Mass/volume] in Urine by Test strip"
             }
           ],
           "range": {
@@ -3874,7 +3880,7 @@
             {
               "system": "LOINC",
               "code": "5792-7",
-              "display": "Glucose [Mass/​volume] in Urine by Test strip"
+              "display": "Glucose [Mass/volume] in Urine by Test strip"
             }
           ],
           "unit": "mg/dL",
@@ -3905,7 +3911,7 @@
             {
               "system": "LOINC",
               "code": "20505-4",
-              "display": "Bilirubin.total [Mass/​volume] in Urine by Test strip"
+              "display": "Bilirubin.total [Mass/volume] in Urine by Test strip"
             }
           ],
           "unit": "mg/dL",
@@ -3937,7 +3943,7 @@
             {
               "system": "LOINC",
               "code": "5797-6",
-              "display": "Ketones [Mass/​volume] in Urine by Test strip"
+              "display": "Ketones [Mass/volume] in Urine by Test strip"
             }
           ],
           "range": {
@@ -3998,7 +4004,7 @@
             {
               "system": "LOINC",
               "code": "5804-0",
-              "display": "Protein [Mass/​volume] in Urine by Test strip"
+              "display": "Protein [Mass/volume] in Urine by Test strip"
             }
           ],
           "range": {

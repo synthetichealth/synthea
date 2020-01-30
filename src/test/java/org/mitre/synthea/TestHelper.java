@@ -17,7 +17,7 @@ public abstract class TestHelper {
    * @throws Exception On errors.
    */
   public static Module getFixture(String filename) throws Exception {
-    Path modulesFolder = Paths.get("src/test/resources/generic");
+    Path modulesFolder = Paths.get("generic");
     Path module = modulesFolder.resolve(filename);
     return Module.loadFile(module, modulesFolder);
   }
@@ -39,6 +39,7 @@ public abstract class TestHelper {
     Config.set("exporter.text.export", "false");
     Config.set("exporter.text.per_encounter_export", "false");
     Config.set("exporter.csv.export", "false");
+    Config.set("exporter.cpcds.export", "false");
     Config.set("exporter.cdw.export", "false");
     Config.set("exporter.hospital.fhir_stu3.export", "false");
     Config.set("exporter.hospital.fhir_dstu2.export", "false");

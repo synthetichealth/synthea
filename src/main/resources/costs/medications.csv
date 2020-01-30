@@ -2,7 +2,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 312617,2,7,25,predniSONE 5 MG Oral Tablet
 1870230,150,350,530,NDA020800 0.3 ML Epinephrine 1 MG/ML Auto-Injector
 895994,6,20,60,120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler -- note that brand name Flovent HFA ranges from 130 - 500
-745679,5,65,300,200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler
+2123111,0.72,62.31,1174.83,NDA020503 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhale
 1091392,20,90,250,"Methylphenidate Hydrochloride 20 MG Oral Tablet -- note high variability on this one, I see 20-250, avg is ~90"
 608139,100,300,700,atomoxetine 100 MG Oral Capsule
 1043400,4,8,12,Acetaminophen 21.7 MG/ML / Dextromethorphan Hydrobromide 1 MG/ML / doxylamine succinate 0.417 MG/ML Oral Solution - OTC cough syrup
@@ -12,7 +12,6 @@ CODE,MIN,MODE,MAX,COMMENTS
 1366343,300,600,800,Levonorgestrel 0.00354 MG/HR Drug Implant -- using 365 from https://www.washingtonpost.com/archive/lifestyle/wellness/1993/11/16/the-price-of-norplant/fc4fb471-7b53-4b87-9abb-bad368b88042/ adjusted to 2018 dollars
 389221,300,600,800, Etonogestrel 68 MG Drug Implant-- assuming the same cost for all 3 implants
 1000126,20,55,715,1 ML medroxyprogesterone acetate 150 MG/ML Injection - est https://clearhealthcosts.com/blog/2014/05/much-depo-provera-cost-draft/
-1000156,20,55,715,0.65 ML medroxyprogesterone acetate 160 MG/ML Prefilled Syringe
 807283,800,1000,1494,"Mirena 52 MG Intrauterine System -- all 3 IUDs estimated at 1000, based on http://time.com/4985605/iud-birth-control-health-insurance/"
 1605257,800,1000,1494,Liletta 52 MG Intrauterine System
 1856546,800,1000,1494,Kyleena 19.5 MG Intrauterine System
@@ -36,24 +35,24 @@ CODE,MIN,MODE,MAX,COMMENTS
 313185,1280,1350,1447,Tacrine 10 MG Oral Capsule -- using yearly cost from https://webcache.googleusercontent.com/search?q=cache:tEYxPDcg0UoJ:https://www.thepharmaletter.com/article/cognex-approved-for-alzheimer-s-in-usa+&cd=12&hl=en&ct=clnk&gl=us&client=firefox-b-1
 1599803,400,450,600,24 HR Donepezil hydrochloride 10 MG / Memantine hydrochloride 28 MG Extended Release Oral Capsule -- https://www.drugs.com/price-guide/namzaric
 996740,33,275,900,Memantine hydrochloride 2 MG/ML Oral Solution
-998582,2,250,630,"Donepezil hydrochloride 23 MG [Aricept] -- note aricept expensive, generic only ~10"
+1100184,1.19,19.76,1417.21,Donepezil hydrochloride 23 MG Oral Tablet
 106258,3,7,12,Hydrocortisone 10 MG/ML Topical Cream - OTC
 308971,2,35,500,Carbamazepine[Tegretol] -- note fairly high variability
-563026,0.66,6,200,Diazepam [Valium]
-1153378,1.5,8,150,Clonazepam [Klonopin]
+197591,0.24,9.77,3120.45,Diazepam 5 MG Oral Tablet
+204892,0.11,9.36,1097.62,clonazePAM 0.25 MG Oral Tablet
 198014,3,8,30,Naproxen 500 MG Oral Tablet
 483438,40,300,1200,pregabalin 100 MG Oral Capsule
 596926,32,200,750,duloxetine 20 MG Delayed Release Oral Capsule
-833137,80,225,415,Milnacipran hydrochloride 100 MG [Savella]
-1049636,3,50,1300,Acetaminophen 325 MG / oxyCODONE Hydrochloride 2.5 MG [Percocet]
-858069,20,250,550,Colchicine 0.6 MG [Colcrys]
+833135,36.12,306.20,930.26,Milnacipran hydrochloride 100 MG Oral Tablet
+1049635,1.39,45.37,5767.86,Acetaminophen 325 MG / oxyCODONE Hydrochloride 2.5 MG Oral Tablet
+197541,7,219.82,1186.61,Colchicine 0.6 MG Oral Tablet
 197319,2,10,35,Allopurinol 100 MG Oral Tablet
 1736854,400,445,500,Cisplatin 50 MG Injection -- https://www.mskcc.org/sites/default/files/node/25097/documents/drug-prices-table-bach-center-health-policy-and-outcomes-v2.pdf
 1734340,150,200,250,Etoposide 100 MG Injection -- https://www.drugs.com/price-guide/etoposide
 583214,6000,6500,6800,PACLitaxel 100 MG Injection -- few instances in data set
 849574,6,8,11,Naproxen sodium 220 MG Oral Tablet - OTC
-567645,2,7,25,predniSONE 2.5 MG [Deltasone]
-835900,50,200,650,cycloSPORINE  modified 100 MG [Neoral]
+312615,0.74,8.12,6882.55,predniSONE 20 MG Oral Tablet
+241834,17.05,177.41,913.68,cycloSPORIN modified 100 MG Oral Capsule
 105078,0.01,7,43,Penicillin G 375 MG/ML Injectable Solution
 789980,11,175,350,Ampicillin 100 MG/ML Injectable Solution
 1652673,8.8,60,733,Doxycycline Monohydrate 50 MG Oral Tablet
@@ -78,7 +77,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 1014676,15,19,25,cetirizine hydrochloride 5 MG Oral Tablet - OTC [zyrtec]
 1014678,15,19,25,cetirizine hydrochloride 10 MG Oral Tablet - OTC [zyrtec]
 243670,4,6.5,12,Aspirin 81 MG Oral Tablet - OTC
-282464,3,4,8,Acetaminophen 160 MG Oral Tablet - OTC
+313820,3,4,8,Acetaminophen 160 MG Chewable Tablet - OTC
 313782,4,5,10,Acetaminophen 325 MG Oral Tablet - OTC
 198405,1.11,7,45,Ibuprofen 100 MG Oral Tablet
 310965,1.11,8,45,Ibuprofen 200 MG Oral Tablet
@@ -90,11 +89,11 @@ CODE,MIN,MODE,MAX,COMMENTS
 1373463,75,400,885,canagliflozin 100 MG Oral Tablet
 106892,25,250,1000,insulin human  isophane 70 UNT/ML / Regular Insulin  Human 30 UNT/ML Injectable Suspension [Humulin]
 865098,75,350,1800,Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]
-1310197,2.36,50,500,Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG [Vicodin]
+856987,1.11,21.28,2424.04,Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG Oral Tablet
 1860154,3,200,2700,Abuse-Deterrent 12 HR Oxycodone Hydrochloride 15 MG Extended Release Oral Tablet
 1049221,2.83,800,2258,Acetaminophen 325 MG / Oxycodone Hydrochloride 5 MG Oral Tablet -- see other percocet above
 904419,2.55,110,303,Alendronic acid 10 MG Oral Tablet -- SEE ALENDRONATE SODIUM
-105586,5.5,70,180,Methotrexate 10 MG Oral Tablet
+105585,1.13,51.66,539.60,Methotrexate 2.5 MG Oral Tablet
 562251,3,16,153,Amoxicillin 250 MG / Clavulanate 125 MG Oral Tablet -- see AMOX TR-POTASSIUM CLAVULANATE
 834061,0.01,7,43,Penicillin V Potassium 250 MG Oral Tablet
 834102,0.01,7,43,Penicillin V Potassium 500 MG Oral Tablet

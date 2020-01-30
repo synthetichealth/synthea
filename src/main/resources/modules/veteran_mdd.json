@@ -93,7 +93,7 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "vetreran",
+            "attribute": "veteran",
             "operator": "==",
             "value": "Between_KW_and_VW"
           },
@@ -532,8 +532,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 406022,
-          "display": "Fluoxetine 25MG"
+          "code": 310385,
+          "display": "FLUoxetine 20 MG Oral Capsule"
         }
       ],
       "assign_to_attribute": "ssri",

@@ -269,7 +269,7 @@
                 "condition_type": "Not",
                 "condition": {
                   "condition_type": "PriorState",
-                  "name": "Renew_Contraceptive_Implant",
+                  "name": "Replace_Contraceptive_Implant",
                   "within": {
                     "quantity": 4,
                     "unit": "years"
@@ -315,23 +315,7 @@
           "display": "Patient encounter procedure"
         }
       ],
-      "direct_transition": "Renew_Contraceptive_Implant"
-    },
-    "Renew_Contraceptive_Implant": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "755621000000101",
-          "display": "Replacement of subcutaneous contraceptive"
-        }
-      ],
-      "duration": {
-        "low": 20,
-        "high": 40,
-        "unit": "minutes"
-      },
-      "direct_transition": "End_Renew_Implant_Encounter"
+      "direct_transition": "Remove_Implant_Before_Replacement"
     },
     "End_Renew_Implant_Encounter": {
       "type": "EncounterEnd",
@@ -480,6 +464,38 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Replace_Contraceptive_Implant": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 169553002,
+          "display": "Insertion of subcutaneous contraceptive"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Renew_Implant_Encounter"
+    },
+    "Remove_Implant_Before_Replacement": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 301807007,
+          "display": "Removal of subcutaneous contraceptive"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "direct_transition": "Replace_Contraceptive_Implant"
     }
   }
 }

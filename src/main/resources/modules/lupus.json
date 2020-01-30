@@ -134,13 +134,12 @@
     },
     "Lupus_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Lupus_Diagnosis",
       "assign_to_attribute": "lupus_careplan",
       "reason": "Lupus",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "872781000000100",
+          "code": "408869004",
           "display": "Musculoskeletal care"
         }
       ],
@@ -160,7 +159,6 @@
     },
     "Lupus_Nonopioid_Pain_Medication": {
       "type": "MedicationOrder",
-      "target_encounter": "Lupus_Diagnosis",
       "reason": "Lupus",
       "codes": [
         {
@@ -173,7 +171,6 @@
     },
     "Corticosteroid": {
       "type": "MedicationOrder",
-      "target_encounter": "Lupus_Diagnosis",
       "assign_to_attribute": "lupus_corticosteroid",
       "reason": "Lupus",
       "remarks": [
@@ -184,8 +181,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "567645",
-          "display": "predniSONE 2.5 MG [Deltasone]"
+          "code": "312615",
+          "display": "predniSONE 20 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Diagnosis_Encounter"
@@ -268,7 +265,6 @@
     },
     "Immune_Suppressant": {
       "type": "MedicationOrder",
-      "target_encounter": "Lupus_Flareup",
       "reason": "Lupus",
       "remarks": [
         "More aggressive immune suppressants are used for subsequent flares."
@@ -276,15 +272,14 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "835900",
-          "display": "cycloSPORINE, modified 100 MG [Neoral]"
+          "code": "241834",
+          "display": "cycloSPORINE, modified 100 MG Oral Capsule"
         }
       ],
       "direct_transition": "Flareup_Corticosteroid"
     },
     "Flareup_Corticosteroid": {
       "type": "MedicationOrder",
-      "target_encounter": "Lupus_Flareup",
       "assign_to_attribute": "lupus_corticosteroid",
       "reason": "Lupus",
       "remarks": [
@@ -295,8 +290,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "567645",
-          "display": "predniSONE 2.5 MG [Deltasone]"
+          "code": "312615",
+          "display": "predniSONE 20 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Flareup_Encounter"

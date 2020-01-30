@@ -1,6 +1,8 @@
 package org.mitre.synthea.world.geography;
 
 import com.google.common.collect.ImmutableSet;
+
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -8,12 +10,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Person;
 
 public class LocationTest {
 
@@ -41,7 +45,7 @@ public class LocationTest {
   @Test
   public void testLocation() {
     Assert.assertTrue(location.getPopulation("Bedford") > 0);
-    Assert.assertTrue(location.getZipCode("Bedford").equals("01730"));
+    Assert.assertTrue(location.getZipCode("Bedford", new Person(1)).equals("01730"));
   }
 
   @Test
@@ -88,6 +92,16 @@ public class LocationTest {
   }
 
   @Test
+  public void testAssignPointInMultiZipCodeCity() {
+    Person p = new Person(1);
+    p.attributes.put(Person.ZIP, "02151");
+    location.assignPoint(p, "Boston");
+    Point2D.Double coord = (Point2D.Double) p.attributes.get(Person.COORDINATE);
+    Assert.assertEquals(-71.001251, coord.x, 0.05);
+    Assert.assertEquals(42.41829, coord.y, 0.05);
+  }
+
+  @Test
   public void testForeignPlaceOfBirthFileLoad() {
     Map<String, List<String>> map =
         Location.loadCitiesByLanguage("geography/foreign_birthplace_simple.json");
@@ -121,7 +135,7 @@ public class LocationTest {
   @Test
   public void testGetForeignPlaceOfBirth_HappyPath() {
     Random random = new Random(4L);
-    String[] placeOfBirth = location.randomBirthplaceByEthnicity(random, "german");
+    String[] placeOfBirth = location.randomBirthplaceByLanguage(random, "german");
     Assert.assertEquals("Expected to receive 'Munich'", "Munich", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Bavaria'", "Bavaria", placeOfBirth[1]);
     Assert.assertEquals("Expected to receive 'DE'", "DE", placeOfBirth[2]);
@@ -132,7 +146,7 @@ public class LocationTest {
   @Test
   public void testGetForeignPlaceOfBirth_ValidStringInvalidFormat_1() {
     Random random = new Random(0L);
-    String[] placeOfBirth = location.randomBirthplaceByEthnicity(random, "too_many_elements");
+    String[] placeOfBirth = location.randomBirthplaceByLanguage(random, "too_many_elements");
     Assert.assertEquals("Expected to receive 'Stoughton'", "Stoughton", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Massachusetts'", "Massachusetts", placeOfBirth[1]);
     Assert.assertEquals("Expected to receive 'US'", "US", placeOfBirth[2]);
@@ -143,7 +157,7 @@ public class LocationTest {
   @Test
   public void testGetForeignPlaceOfBirth_ValidStringInvalidFormat_2() {
     Random random = new Random(0L);
-    String[] placeOfBirth = location.randomBirthplaceByEthnicity(random, "not_enough_elements");
+    String[] placeOfBirth = location.randomBirthplaceByLanguage(random, "not_enough_elements");
     Assert.assertEquals("Expected to receive 'Stoughton'", "Stoughton", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Massachusetts'", "Massachusetts", placeOfBirth[1]);
     Assert.assertEquals("Expected to receive 'US'", "US", placeOfBirth[2]);
@@ -154,7 +168,7 @@ public class LocationTest {
   @Test
   public void testGetForeignPlaceOfBirth_MissingValue() {
     Random random = new Random(0L);
-    String[] placeOfBirth = location.randomBirthplaceByEthnicity(random, "unknown_ethnicity");
+    String[] placeOfBirth = location.randomBirthplaceByLanguage(random, "unknown_ethnicity");
     Assert.assertEquals("Expected to receive 'Rehoboth'", "Rehoboth", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Massachusetts'", "Massachusetts", placeOfBirth[1]);
     Assert.assertEquals("Expected to receive 'US'", "US", placeOfBirth[2]);
@@ -165,7 +179,7 @@ public class LocationTest {
   @Test
   public void testGetForeignPlaceOfBirth_EmptyValue() {
     Random random = new Random(0L);
-    String[] placeOfBirth = location.randomBirthplaceByEthnicity(random, "empty_ethnicity");
+    String[] placeOfBirth = location.randomBirthplaceByLanguage(random, "empty_ethnicity");
     Assert.assertEquals("Expected to receive 'Rehoboth'", "Rehoboth", placeOfBirth[0]);
     Assert.assertEquals("Expected to receive 'Massachusetts'", "Massachusetts", placeOfBirth[1]);
     Assert.assertEquals("Expected to receive 'US'", "US", placeOfBirth[2]);

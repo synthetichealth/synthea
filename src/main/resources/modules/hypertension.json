@@ -36,6 +36,15 @@
           "display": "Hydrochlorothiazide 12.5 MG"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        }
+      },
+      "chronic": true,
       "direct_transition": "End_Wellness_Encounter",
       "assign_to_attribute": "hypertension_medication",
       "reason": "hypertension_dx"
@@ -45,10 +54,19 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 316049,
-          "display": "Hydrochlorothiazide 25 MG"
+          "code": 310798,
+          "display": "Hydrochlorothiazide 25 MG Oral Tablet"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        }
+      },
+      "chronic": true,
       "direct_transition": "End_Wellness_Encounter",
       "assign_to_attribute": "hypertension_medication",
       "reason": "hypertension_dx"
@@ -102,6 +120,15 @@
           "display": "Atenolol 50 MG / Chlorthalidone 25 MG Oral Tablet"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        }
+      },
+      "chronic": true,
       "assign_to_attribute": "hypertension_medication_2",
       "reason": "hypertension_dx",
       "direct_transition": "End_Hypertension_Followup_Encounter"
@@ -116,10 +143,19 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 999969,
-          "display": "Amlodipine 5 MG / Hydrochlorothiazide 12.5 MG / Olmesartan medoxomil 20 MG"
+          "code": 999967,
+          "display": "amLODIPine 5 MG / Hydrochlorothiazide 12.5 MG / Olmesartan medoxomil 20 MG Oral Tablet"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        }
+      },
+      "chronic": true,
       "assign_to_attribute": "hypertension_medication_3",
       "reason": "hypertension_dx",
       "direct_transition": "End_Hypertension_Followup_Encounter_2",
@@ -313,7 +349,7 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": "55284-4",
+          "code": "85354-9",
           "display": "Blood Pressure"
         }
       ],
@@ -343,7 +379,6 @@
           "vital_sign": "Diastolic Blood Pressure"
         }
       ],
-      "target_encounter": "Hypertension_Followup_Encounter",
       "conditional_transition": [
         {
           "transition": "End_Hypertension_Medication",
@@ -365,7 +400,7 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": "55284-4",
+          "code": "85354-9",
           "display": "Blood Pressure"
         }
       ],
@@ -395,7 +430,6 @@
           "vital_sign": "Diastolic Blood Pressure"
         }
       ],
-      "target_encounter": "Hypertension_Followup_Encounter",
       "conditional_transition": [
         {
           "transition": "End_Hypertension_Comb_Medication",
@@ -417,7 +451,7 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": "55284-4",
+          "code": "85354-9",
           "display": "Blood Pressure"
         }
       ],
@@ -447,7 +481,6 @@
           "vital_sign": "Diastolic Blood Pressure"
         }
       ],
-      "target_encounter": "Hypertension_Followup_Encounter",
       "conditional_transition": [
         {
           "transition": "Referral To Hypertension Clinic",

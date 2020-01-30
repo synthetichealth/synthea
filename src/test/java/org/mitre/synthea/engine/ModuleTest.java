@@ -8,8 +8,18 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+import java.io.File;
+
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -41,6 +51,14 @@ public class ModuleTest {
     Module module = Module.getModuleByPath("copd");
     assertNotNull(module);
     assertEquals("COPD Module", module.name);
+  }
+  
+  @Test
+  public void addLocalModules() {
+    Module.addModules(new File("src/test/resources/module"));
+    List<Module> allModules = Module.getModules();
+    allModules = Module.getModules();
+    assertTrue(allModules.stream().filter(filterOnModuleName("COPD_TEST")).count() == 1);
   }
 
   @Test
@@ -109,5 +127,40 @@ public class ModuleTest {
   public interface FaultyModuleScope extends AutoCloseable {
     @Override
     void close();
+  }
+
+  /*
+   * Test that all only "*Onset" states have a "target_encounter" attribute.
+   */
+  @Test
+  public void targetEncounters() throws Exception {
+    URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
+    Path path = Paths.get(modulesFolder.toURI());
+
+    Files.walk(path, Integer.MAX_VALUE)
+        .filter(Files::isReadable)
+        .filter(Files::isRegularFile)
+        .filter(p -> p.toString().endsWith(".json"))
+        .forEach(t -> {
+          try {
+            FileReader fileReader = new FileReader(t.toString());
+            JsonReader reader = new JsonReader(fileReader);
+            JsonParser parser = new JsonParser();
+            JsonObject object = parser.parse(reader).getAsJsonObject();
+            JsonObject states = object.getAsJsonObject("states");
+            for (String stateName : states.keySet()) {
+              JsonObject state = states.getAsJsonObject(stateName);
+              if (state.has("target_encounter")) {
+                String type = state.get("type").getAsString();
+                if (!type.endsWith("Onset")) {
+                  System.err.println(t.toString() + " => " + stateName + "(" + type + ")");
+                }
+                assertTrue(type.endsWith("Onset"));
+              }
+            }
+          } catch (Exception e) {
+            fail(e.getMessage());
+          }
+        });
   }
 }

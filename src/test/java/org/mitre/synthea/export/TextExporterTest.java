@@ -27,6 +27,7 @@ public class TextExporterTest {
     
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);
+    generator.options.overflow = false;
     for (int i = 0; i < numberOfPeople; i++) {
       TestHelper.exportOff();
       Person person = generator.generatePerson(i);

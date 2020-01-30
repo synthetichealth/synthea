@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -47,14 +48,22 @@ public class LogicTest {
   @Before
   public void setup() throws IOException {
     person = new Person(0L);
+    // Give person an income to prevent null pointer.
+    person.attributes.put(Person.INCOME, 10000000);
     Provider mock = Mockito.mock(Provider.class);
-    mock.uuid = "Mock-Ambulatory";
-    person.setProvider(EncounterType.AMBULATORY, mock);
+    mock.uuid = "Mock-Provider";
+    for (EncounterType type : EncounterType.values()) {
+      person.setProvider(type, mock);
+    }
+
     mock = Mockito.mock(Provider.class);
     mock.uuid = "Mock-Emergency";
     person.setProvider(EncounterType.EMERGENCY, mock);
-
+    person.attributes.put(Person.BIRTHDATE, 0L);
     time = System.currentTimeMillis();
+    // Ensure Person's Payer is not null.
+    Payer.loadNoInsurance();
+    person.setPayerAtTime(time, Payer.noInsurance);
 
     Path modulesFolder = Paths.get("src/test/resources/generic");
     Path logicFile = modulesFolder.resolve("logic.json");
@@ -278,6 +287,7 @@ public class LogicTest {
     person.hasMultipleRecords = true;
     person.records = new ConcurrentHashMap<String, HealthRecord>();
     module.process(person, time);
+    person.record = person.records.get("Mock-Provider");
     assertTrue(person.hasMultipleRecords);
     assertEquals(2, person.records.size());
     assertEquals(1, person.record.currentEncounter(time).conditions.size());

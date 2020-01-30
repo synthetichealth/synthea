@@ -1,0 +1,34 @@
+
+# Data and charts will be placed in output/physiology/{name}/
+# Data file will always be output/physiology/{name}/{name}.csv
+name: McSharry2003
+
+# Name of the model file
+model: circulation/McSharry2003_Synthetic_ECG.xml
+
+# Which differential equation solver to use.
+# Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
+solver: runge_kutta
+
+# Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
+stepSize: 0.002
+
+# Simulation duration in seconds
+duration: 10
+
+# Model parameter inputs. Any unspecified parameters will use the model's default value.
+# inputs:
+    # hrmean: 120
+
+# What charts to draw. Results will be plotted on PNG images.
+# Note that chart support is a convenience feature and many chart options cannot be manipulated here.
+# If you need more control over the chart, import the csv file into another program with that capability.
+charts:
+    - filename: ecg.png
+      type: line
+      title: ECG
+      axisParamX: time
+      axisLabelX: time (s)
+      axisLabelY: Current (A)
+      series:
+        - param: z

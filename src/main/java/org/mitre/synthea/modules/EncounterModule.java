@@ -3,9 +3,7 @@ package org.mitre.synthea.modules;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
@@ -53,21 +51,19 @@ public final class EncounterModule extends Module {
 
   @Override
   public boolean process(Person person, long time) {
+    if (!person.alive(time)) {
+      return true;
+    }
     boolean startedEncounter = false;
-    int year = Utilities.getYear(time);
+    Encounter encounter = null;
 
     // add a wellness encounter if this is the right time
     if (person.record.timeSinceLastWellnessEncounter(time)
         >= recommendedTimeBetweenWellnessVisits(person, time)) {
-      Encounter encounter = person.encounterStart(time, EncounterType.WELLNESS);
+      Code code = getWellnessVisitCode(person, time);
+      encounter = createEncounter(person, time, EncounterType.WELLNESS,
+          ClinicianSpecialty.GENERAL_PRACTICE, code);
       encounter.name = "Encounter Module Scheduled Wellness";
-      encounter.codes.add(ENCOUNTER_CHECKUP);
-      Provider prov = person.getProvider(EncounterType.WELLNESS, time);
-      prov.incrementEncounters(EncounterType.WELLNESS, year);
-      encounter.provider = prov;
-      encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
-          person.random);
-      encounter.codes.add(getWellnessVisitCode(person, time));
       person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
       startedEncounter = true;
     } else if (person.symptomTotal() > EMERGENCY_SYMPTOM_THRESHOLD) {
@@ -77,14 +73,9 @@ public final class EncounterModule extends Module {
       if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
         person.addressLargestSymptom();
-        Encounter encounter = person.encounterStart(time, EncounterType.EMERGENCY);
+        encounter = createEncounter(person, time, EncounterType.EMERGENCY,
+            ClinicianSpecialty.GENERAL_PRACTICE, ENCOUNTER_EMERGENCY);
         encounter.name = "Encounter Module Symptom Driven";
-        Provider prov = person.getProvider(EncounterType.EMERGENCY, time);
-        prov.incrementEncounters(EncounterType.EMERGENCY, year);
-        encounter.provider = prov;
-        encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
-            person.random);
-        encounter.codes.add(ENCOUNTER_EMERGENCY);
         person.attributes.put(ACTIVE_EMERGENCY_ENCOUNTER, true);
         startedEncounter = true;
       }
@@ -95,39 +86,29 @@ public final class EncounterModule extends Module {
       if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
         person.addressLargestSymptom();
-        Encounter encounter = person.encounterStart(time, EncounterType.URGENTCARE);
+        encounter = createEncounter(person, time, EncounterType.URGENTCARE,
+            ClinicianSpecialty.GENERAL_PRACTICE, ENCOUNTER_URGENTCARE);
         encounter.name = "Encounter Module Symptom Driven";
-        Provider prov = person.getProvider(EncounterType.URGENTCARE, time);
-        prov.incrementEncounters(EncounterType.URGENTCARE, year);
-        encounter.provider = prov;
-        encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
-            person.random);
-        encounter.codes.add(ENCOUNTER_URGENTCARE);
         person.attributes.put(ACTIVE_URGENT_CARE_ENCOUNTER, true);
         startedEncounter = true;
-      } 
+      }
     } else if (person.symptomTotal() > PCP_SYMPTOM_THRESHOLD) {
       if (!person.attributes.containsKey(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
-      } 
+      }
       if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
         person.addressLargestSymptom();
-        Encounter encounter = person.encounterStart(time, EncounterType.WELLNESS);
+        encounter = createEncounter(person, time, EncounterType.OUTPATIENT,
+            ClinicianSpecialty.GENERAL_PRACTICE, ENCOUNTER_CHECKUP);
         encounter.name = "Encounter Module Symptom Driven";
-        Provider prov = person.getProvider(EncounterType.AMBULATORY, time);
-        prov.incrementEncounters(EncounterType.WELLNESS, year);
-        encounter.provider = prov;
-        encounter.clinician = prov.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, 
-            person.random);
-        encounter.codes.add(ENCOUNTER_CHECKUP);
         person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
         startedEncounter = true;
-      } 
-    } 
+      }
+    }
 
     if (startedEncounter) {
-      CardiovascularDiseaseModule.performEncounter(person, time);
+      CardiovascularDiseaseModule.performEncounter(person, time, encounter);
       Immunizations.performEncounter(person, time);
     }
 
@@ -135,6 +116,39 @@ public final class EncounterModule extends Module {
     return false;
   }
 
+  /**
+   * Create an Encounter that is coded, with a provider organzation, and a clinician.
+   * @param person The patient.
+   * @param time The time of the encounter.
+   * @param type The type of encounter (e.g. emergency).
+   * @param specialty The clinician specialty (e.g. "General Practice")
+   * @param code The code to assign to the encounter.
+   * @return The encounter.
+   */
+  public static Encounter createEncounter(Person person, long time, EncounterType type,
+      String specialty, Code code) {
+    // what year is it?
+    int year = Utilities.getYear(time);
+    // create the encounter
+    Encounter encounter = person.encounterStart(time, type);
+    if (code != null) {
+      encounter.codes.add(code);
+    }
+    // assign a provider organization
+    Provider prov = person.getProvider(type, time);
+    prov.incrementEncounters(type, year);
+    encounter.provider = prov;
+    // assign a clinician
+    encounter.clinician = prov.chooseClinicianList(specialty, person.random);
+    return encounter;
+  }
+
+  /**
+   * Get the correct Wellness Visit Code by age of patient.
+   * @param person The patient.
+   * @param time The time of the encounter which we translate to age of patient.
+   * @return SNOMED-CT code for Wellness Visit.
+   */
   public static Code getWellnessVisitCode(Person person, long time) {
     int age = person.ageInYears(time);
     if (age < 18) {
@@ -145,96 +159,55 @@ public final class EncounterModule extends Module {
   }
 
   /**
-   * Process all emergency events. Emergency events must be processed immediately rather
-   * than waiting until the next timestep. Patient may die before the next timestep.
-   * @param person The patient having the emergency encounter.
-   * @param time The time of the encounter in milliseconds.
+   * Recommended time between Wellness Visits by age of patient and whether 
+   * they have chronic medications.
+   * @param person The patient.
+   * @param time The time of the encounter which we translate to age of patient.
+   * @return Recommended time between Wellness Visits in milliseconds
    */
-  public static void emergencyVisit(Person person, long time) {
-    for (Event event : person.events.before(time, "emergency_encounter")) {
-      if (event.processed) {
-        continue;
-      }
-      event.processed = true;
-      emergencyEncounter(person, time);
-    }
-
-    for (Event event : person.events.before(time)) {
-      if (event.processed || !(event.type.equals("myocardial_infarction")
-          || event.type.equals("cardiac_arrest") || event.type.equals("stroke"))) {
-        continue;
-      }
-      event.processed = true;
-      CardiovascularDiseaseModule.performEmergency(person, time, event.type);
-    }
-  }
-
-  public static void emergencyEncounter(Person person, long time) {
-    // find closest service provider with emergency service
-    Provider provider = person.getProvider(EncounterType.EMERGENCY, time);
-    provider.incrementEncounters(EncounterType.EMERGENCY, Utilities.getYear(time));
-
-    Encounter encounter = person.encounterStart(time, EncounterType.EMERGENCY);
-    encounter.codes.add(ENCOUNTER_EMERGENCY);
-    encounter.provider = provider;
-    encounter.clinician = provider.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE,
-        person.random);
-    // TODO: emergency encounters need their duration to be defined by the activities performed
-    // based on the emergencies given here (heart attack, stroke)
-    // assume people will be in the hospital for observation for a few days
-    person.record.encounterEnd(time + TimeUnit.DAYS.toMillis(4), EncounterType.EMERGENCY);
-  }
-
-  public static void urgentCareEncounter(Person person, long time) {
-    // find closest service provider with urgent care service
-    Provider provider = person.getProvider(EncounterType.URGENTCARE, time);
-    provider.incrementEncounters(EncounterType.URGENTCARE, Utilities.getYear(time));
-
-    Encounter encounter = person.encounterStart(time, EncounterType.URGENTCARE);
-    encounter.codes.add(ENCOUNTER_URGENTCARE);
-    encounter.provider = provider;
-    encounter.clinician = provider.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE,
-        person.random);
-    // assume people will be in urgent care for one hour
-    person.record.encounterEnd(time + TimeUnit.HOURS.toMillis(1), EncounterType.URGENTCARE);
-  }
-
-
   public long recommendedTimeBetweenWellnessVisits(Person person, long time) {
     int ageInYears = person.ageInYears(time);
+    boolean hasChronicMeds = !person.chronicMedications.isEmpty();
+
+    long interval; // return variable
+
     if (ageInYears <= 3) {
       int ageInMonths = person.ageInMonths(time);
       if (ageInMonths <= 1) {
-        return Utilities.convertTime("months", 1);
+        interval = Utilities.convertTime("months", 1);
       } else if (ageInMonths <= 5) {
-        return Utilities.convertTime("months", 2);
+        interval = Utilities.convertTime("months", 2);
       } else if (ageInMonths <= 17) {
-        return Utilities.convertTime("months", 3);
+        interval = Utilities.convertTime("months", 3);
       } else {
-        return Utilities.convertTime("months", 6);
+        interval = Utilities.convertTime("months", 6);
       }
     } else if (ageInYears <= 19) {
-      return Utilities.convertTime("years", 1);
+      interval = Utilities.convertTime("years", 1);
     } else if (ageInYears <= 39) {
-      return Utilities.convertTime("years", 3);
+      interval = Utilities.convertTime("years", 3);
     } else if (ageInYears <= 49) {
-      return Utilities.convertTime("years", 2);
+      interval = Utilities.convertTime("years", 2);
     } else {
-      return Utilities.convertTime("years", 1);
+      interval = Utilities.convertTime("years", 1);
     }
+
+    // If the patients has chronic medications, they need to see their
+    // provider at least once a year to get their medications renewed.
+    // TODO: In the future, we need even more frequent wellness encounters
+    // by condition: e.g. Diabetes every 3 months or 6 month; but
+    // Contraception every 1 year.
+    if (hasChronicMeds && interval > Utilities.convertTime("years", 1)) {
+      interval = Utilities.convertTime("years", 1);
+    }
+
+    return interval;
   }
 
   public void endWellnessEncounter(Person person, long time) {
     person.record.encounterEnd(time, EncounterType.WELLNESS);
     person.attributes.remove(ACTIVE_WELLNESS_ENCOUNTER);
   }
-
-  @Deprecated
-  public void endUrgentCareEncounter(Person person, long time) {
-    person.record.encounterEnd(time, EncounterType.URGENTCARE);
-    person.attributes.remove(ACTIVE_URGENT_CARE_ENCOUNTER);
-  }
-
 
   /**
    * Get all of the Codes this module uses, for inventory purposes.

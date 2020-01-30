@@ -560,8 +560,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "835900",
-          "display": "cycloSPORINE 50 MG Oral Capsule"
+          "code": "241834",
+          "display": "cycloSPORINE, modified 100 MG Oral Capsule"
         }
       ],
       "prescription": {
@@ -607,8 +607,8 @@
             "codes": [
               {
                 "system": "RxNorm",
-                "code": "835900",
-                "display": "cycloSPORINE 50 MG Oral Capsule"
+                "code": "241834",
+                "display": "cycloSPORINE, modified 100 MG Oral Capsule"
               }
             ]
           },

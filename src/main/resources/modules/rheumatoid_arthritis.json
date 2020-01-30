@@ -119,13 +119,12 @@
     },
     "RA_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "RA_Diagnosis",
       "assign_to_attribute": "ra_careplan",
       "reason": "Rheumatoid_Arthritis",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "872781000000100",
+          "code": "408869004",
           "display": "Musculoskeletal care"
         }
       ],
@@ -150,7 +149,6 @@
     },
     "RA_Nonopioid_Pain_Medication": {
       "type": "MedicationOrder",
-      "target_encounter": "RA_Diagnosis",
       "reason": "Rheumatoid_Arthritis",
       "remarks": [
         "A stronger NSAID pain reliever than the basic Aleve."
@@ -181,7 +179,6 @@
     },
     "DMARD": {
       "type": "MedicationOrder",
-      "target_encounter": "RA_Diagnosis",
       "reason": "Rheumatoid_Arthritis",
       "remarks": [
         "Disease-Modifying Anti-Rheumatic Drugs (DMARDs) inhibit or halt the progression ",
@@ -192,8 +189,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "105586",
-          "display": "Methotrexate 10 MG Oral Tablet"
+          "code": "105585",
+          "display": "Methotrexate 2.5 MG Oral Tablet"
         }
       ],
       "direct_transition": "Encounter_Ends_After_DMARD"
@@ -230,7 +227,6 @@
     },
     "Corticosteroid": {
       "type": "MedicationOrder",
-      "target_encounter": "RA_Diagnosis",
       "reason": "Rheumatoid_Arthritis",
       "remarks": [
         "When introduced in higher levels than those produced by the body, corticosteroids ",
@@ -240,8 +236,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "567645",
-          "display": "predniSONE 2.5 MG [Deltasone]"
+          "code": "312615",
+          "display": "predniSONE 20 MG Oral Tablet"
         }
       ],
       "direct_transition": "Encounter_Ends_After_Corticosteroids"

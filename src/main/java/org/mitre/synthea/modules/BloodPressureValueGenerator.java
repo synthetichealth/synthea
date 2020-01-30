@@ -8,8 +8,9 @@ import org.mitre.synthea.world.concepts.BiometricsConfig;
 /**
  * Generate realistic blood pressure vital signs. 
  * Can reproducibly look a few days into the past and future.
- * 
- * @see "https://raywinstead.com/bp/thrice.htm" for desired result
+ * <p></p>
+ * See <a href="https://raywinstead.com/bp/thrice.htm">https://raywinstead.com/bp/thrice.htm</a>
+ * for desired result
  */
 public class BloodPressureValueGenerator extends ValueGenerator {
   public enum SysDias {
@@ -166,11 +167,12 @@ public class BloodPressureValueGenerator extends ValueGenerator {
   private double calculateMean(Person person, long time) {
     // TODO: Take additional factors into consideration: age + gender
     boolean hypertension = (Boolean) person.attributes.getOrDefault("hypertension", false);
-    boolean blood_pressure_controlled = (Boolean) person.attributes.getOrDefault("blood_pressure_controlled", false);
+    boolean bloodPressureControlled =
+        (Boolean) person.attributes.getOrDefault("blood_pressure_controlled", false);
 
     if (sysDias == SysDias.SYSTOLIC) {
       if (hypertension) {
-        if (!blood_pressure_controlled) {
+        if (!bloodPressureControlled) {
           return person.rand(HYPERTENSIVE_SYS_BP_RANGE);
         } else {
           return person.rand(NORMAL_SYS_BP_RANGE);
@@ -180,7 +182,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
       }
     } else {
       if (hypertension) {
-        if (!blood_pressure_controlled) {
+        if (!bloodPressureControlled) {
           return person.rand(HYPERTENSIVE_DIA_BP_RANGE);
         } else {
           return person.rand(NORMAL_DIA_BP_RANGE);

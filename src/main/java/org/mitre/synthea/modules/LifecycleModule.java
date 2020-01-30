@@ -1,37 +1,43 @@
 package org.mitre.synthea.modules;
 
-import com.google.gson.Gson;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.math3.special.Erf;
-import org.mitre.synthea.engine.Event;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.PhysiologyValueGenerator;
 import org.mitre.synthea.helpers.RandomCollection;
+import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.SimpleYML;
+import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.BloodPressureValueGenerator.SysDias;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
 import org.mitre.synthea.world.concepts.BirthStatistics;
+import org.mitre.synthea.world.concepts.GrowthChart;
+import org.mitre.synthea.world.concepts.GrowthChartEntry;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
 
 public final class LifecycleModule extends Module {
-  @SuppressWarnings("rawtypes")
-  private static final Map growthChart = loadGrowthChart();
+  private static final Map<GrowthChart.ChartType, GrowthChart> growthChart =
+      GrowthChart.loadCharts();
+  private static final List<LinkedHashMap<String, String>> weightForLengthChart =
+      loadWeightForLengthChart();
   private static final String AGE = "AGE";
   private static final String AGE_MONTHS = "AGE_MONTHS";
   public static final String QUIT_SMOKING_PROBABILITY = "quit smoking probability";
@@ -51,15 +57,13 @@ public final class LifecycleModule extends Module {
     this.name = "Lifecycle";
   }
 
-  @SuppressWarnings("rawtypes")
-  private static Map loadGrowthChart() {
-    String filename = "cdc_growth_charts.json";
+  private static List<LinkedHashMap<String, String>> loadWeightForLengthChart() {
+    String filename = "cdc_wtleninf.csv";
     try {
-      String json = Utilities.readResource(filename);
-      Gson g = new Gson();
-      return g.fromJson(json, HashMap.class);
+      String data = Utilities.readResource(filename);
+      return SimpleCSV.parse(data);
     } catch (Exception e) {
-      System.err.println("ERROR: unable to load json: " + filename);
+      System.err.println("ERROR: unable to load csv: " + filename);
       e.printStackTrace();
       throw new ExceptionInInitializerError(e);
     }
@@ -89,6 +93,9 @@ public final class LifecycleModule extends Module {
 
   @Override
   public boolean process(Person person, long time) {
+    if (!person.alive(time)) {
+      return true;
+    }
     // run through all of the rules defined
     // ruby "rules" are converted to static functions here
     // since this is intended to only be temporary
@@ -120,7 +127,6 @@ public final class LifecycleModule extends Module {
 
     attributes.put(Person.ID, UUID.randomUUID().toString());
     attributes.put(Person.BIRTHDATE, time);
-    person.events.create(time, Event.BIRTH, "Generator.run", true);
     String gender = (String) attributes.get(Person.GENDER);
     String language = (String) attributes.get(Person.FIRST_LANGUAGE);
     String firstName = fakeFirstName(gender, language, person.random);
@@ -167,13 +173,13 @@ public final class LifecycleModule extends Module {
     if (location != null) {
       // should never happen in practice, but can happen in unit tests
       location.assignPoint(person, city);
-      person.attributes.put(Person.ZIP, location.getZipCode(city));
+      person.attributes.put(Person.ZIP, location.getZipCode(city, person));
       String[] birthPlace;
       if ("english".equalsIgnoreCase((String) attributes.get(Person.FIRST_LANGUAGE))) {
         birthPlace = location.randomBirthPlace(person.random);
       } else {
-        birthPlace = location.randomBirthplaceByEthnicity(
-            person.random, (String) person.attributes.get(Person.ETHNICITY));
+        birthPlace = location.randomBirthplaceByLanguage(
+            person.random, (String) person.attributes.get(Person.FIRST_LANGUAGE));
       }
       attributes.put(Person.BIRTH_CITY, birthPlace[0]);
       attributes.put(Person.BIRTH_STATE, birthPlace[1]);
@@ -205,6 +211,7 @@ public final class LifecycleModule extends Module {
         (double) mother.attributes.get(BirthStatistics.BIRTH_HEIGHT)); // cm
     person.setVitalSign(VitalSign.WEIGHT,
         (double) mother.attributes.get(BirthStatistics.BIRTH_WEIGHT)); // kg
+    person.setVitalSign(VitalSign.HEAD, childHeadCircumference(person, time)); // cm
 
     attributes.put(AGE, 0);
     attributes.put(AGE_MONTHS, 0);
@@ -231,10 +238,19 @@ public final class LifecycleModule extends Module {
    * @param person The person to generate vital signs for.
    */
   private static void setupVitalSignGenerators(Person person) {
+    
     person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE,
         new BloodPressureValueGenerator(person, SysDias.SYSTOLIC));
     person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE,
         new BloodPressureValueGenerator(person, SysDias.DIASTOLIC));
+
+    if (ENABLE_PHYSIOLOGY_GENERATORS) {
+      List<PhysiologyValueGenerator> physioGenerators = PhysiologyValueGenerator.loadAll(person);
+      
+      for (PhysiologyValueGenerator physioGenerator : physioGenerators) {
+        person.setVitalSign(physioGenerator.getVitalSign(), physioGenerator);
+      }
+    }
   }
 
   /**
@@ -422,23 +438,48 @@ public final class LifecycleModule extends Module {
 
   private static void grow(Person person, long time) {
     int age = person.ageInYears(time);
+    int ageInMonths = 0; // we only need this if they are less than 20 years old.
 
     double height = person.getVitalSign(VitalSign.HEIGHT, time);
 
     if (age < 20) {
       height = childHeightGrowth(person, time);
+      ageInMonths = person.ageInMonths(time);
     }
     double weight = adjustWeight(person, time);
 
     person.setVitalSign(VitalSign.HEIGHT, height);
     person.setVitalSign(VitalSign.WEIGHT, weight);
-    person.setVitalSign(VitalSign.BMI, bmi(height, weight));
+    double bmi = bmi(height, weight);
+    person.setVitalSign(VitalSign.BMI, bmi);
+
+    if (age <= 3) {
+      setCurrentWeightForLengthPercentile(person, time);
+
+      if (ageInMonths <= 36) {
+        double headCircumference = childHeadCircumference(person, time);
+        person.setVitalSign(VitalSign.HEAD, headCircumference);
+      }
+    }
+
+    if (age >= 2 && age < 20) {
+      String gender = (String) person.attributes.get(Person.GENDER);
+      double percentile = percentileForBMI(bmi, gender, ageInMonths);
+      person.attributes.put(Person.BMI_PERCENTILE, percentile * 100.0);
+    }
   }
 
   private static double childHeightGrowth(Person person, long time) {
     String gender = (String) person.attributes.get(Person.GENDER);
     int ageInMonths = person.ageInMonths(time);
     return lookupGrowthChart("height", gender, ageInMonths,
+        person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+  }
+
+  private static double childHeadCircumference(Person person, long time) {
+    String gender = (String) person.attributes.get(Person.GENDER);
+    int ageInMonths = person.ageInMonths(time);
+    return lookupGrowthChart("head", gender, ageInMonths,
         person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
   }
 
@@ -472,61 +513,80 @@ public final class LifecycleModule extends Module {
    * Lookup and calculate values from the CDC growth charts, using the LMS
    * values to calculate the intermediate values.
    * Reference : https://www.cdc.gov/growthcharts/percentile_data_files.htm
-   * @param heightOrWeight "height" | "weight"
+   *
+   * <p>Note: BMI values only available for ageInMonths 24 - 240 as BMI is
+   * not typically useful in patients under 24 months.</p>
+   *
+   * @param chartType "height" | "weight" | "bmi" | "head"
    * @param gender "M" | "F"
    * @param ageInMonths 0 - 240
    * @param percentile 0.0 - 1.0
-   * @return The height (cm) or weight (kg)
+   * @return The height (cm), weight (kg), bmi (%), or head (cm)
    */
-  @SuppressWarnings("rawtypes")
-  public static double lookupGrowthChart(String heightOrWeight, String gender, int ageInMonths,
+  public static double lookupGrowthChart(String chartType, String gender, int ageInMonths,
       double percentile) {
-    Map chart = (Map) growthChart.get(heightOrWeight);
-    Map byGender = (Map) chart.get(gender);
-    Map byAge = (Map) byGender.get(Integer.toString(ageInMonths));
-
-    double l = Double.parseDouble((String) byAge.get("l"));
-    double m = Double.parseDouble((String) byAge.get("m"));
-    double s = Double.parseDouble((String) byAge.get("s"));
-    double z = calculateZScore(percentile);
-
-    if (l == 0) {
-      return m * Math.exp((s * z));
-    } else {
-      return m * Math.pow((1 + (l * s * z)), (1.0 / l));
+    switch (chartType) {
+      case "height":
+        return growthChart.get(GrowthChart.ChartType.HEIGHT).lookUp(ageInMonths,
+            gender, percentile);
+      case "weight":
+        return growthChart.get(GrowthChart.ChartType.WEIGHT).lookUp(ageInMonths,
+            gender, percentile);
+      case "bmi":
+        return growthChart.get(GrowthChart.ChartType.BMI).lookUp(ageInMonths, gender, percentile);
+      case "head":
+        return growthChart.get(GrowthChart.ChartType.HEAD).lookUp(ageInMonths, gender, percentile);
+      default:
+        throw new IllegalArgumentException("Unknown chart type: " + chartType);
     }
   }
 
   /**
-   * Z is the z-score that corresponds to the percentile.
-   * z-scores correspond exactly to percentiles, e.g.,
-   * z-scores of:
-   * -1.881, // 3rd
-   * -1.645, // 5th
-   * -1.282, // 10th
-   * -0.674, // 25th
-   *  0,     // 50th
-   *  0.674, // 75th
-   *  1.036, // 85th
-   *  1.282, // 90th
-   *  1.645, // 95th
-   *  1.881  // 97th
-   * @param percentile 0.0 - 1.0
-   * @return z-score that corresponds to the percentile.
+   * Look up the percentile that a given BMI falls into based on gender and age in months.
+   * @param bmi the BMI to find the percentile for
+   * @param gender "M" | "F"
+   * @param ageInMonths 24 - 240
+   * @return 0 - 1.0
    */
-  protected static double calculateZScore(double percentile) {
-    // Set percentile gt0 and lt1, otherwise the error
-    // function will return Infinity.
-    if (percentile >= 1.0) {
-      percentile = 0.999;
-    } else if (percentile <= 0.0) {
-      percentile = 0.001;
-    }
-    return -1 * Math.sqrt(2) * Erf.erfcInv(2 * percentile);
+  public static double percentileForBMI(double bmi, String gender, int ageInMonths) {
+    return growthChart.get(GrowthChart.ChartType.BMI).percentileFor(ageInMonths, gender, bmi);
   }
 
   public static double bmi(double heightCM, double weightKG) {
     return (weightKG / ((heightCM / 100.0) * (heightCM / 100.0)));
+  }
+
+  /**
+   * If the person is 36 months old or less, then the "weight for length"
+   * percentile attribute is set. Otherwise, it is removed.
+   *
+   * @param person The person.
+   * @param time The time during the simulation.
+   */
+  public static void setCurrentWeightForLengthPercentile(Person person, long time) {
+    if (person.ageInMonths(time) <= 36) {
+      double height = person.getVitalSign(VitalSign.HEIGHT, time);
+      double weight = person.getVitalSign(VitalSign.WEIGHT, time);
+      String gender = (String) person.attributes.get(Person.GENDER);
+      LinkedHashMap<String, String> entry = null;
+      for (LinkedHashMap<String, String> row : weightForLengthChart) {
+        if (row.get("Sex").equals(gender)
+            && height < Double.parseDouble(row.get("Length"))) {
+          entry = row;
+          break;
+        }
+      }
+      if (entry == null) {
+        person.attributes.put(Person.CURRENT_WEIGHT_LENGTH_PERCENTILE, 99.0);
+      } else {
+        double l = Double.parseDouble(entry.get("L"));
+        double m = Double.parseDouble(entry.get("M"));
+        double s = Double.parseDouble(entry.get("S"));
+        double z = new GrowthChartEntry(l, m, s).zscoreForValue(weight);
+        double percentile = GrowthChart.zscoreToPercentile(z) * 100.0;
+        person.attributes.put(Person.CURRENT_WEIGHT_LENGTH_PERCENTILE, percentile);
+      }
+    }
   }
 
   /**
@@ -575,7 +635,6 @@ public final class LifecycleModule extends Module {
   private static final double[] CALCIUM_RANGE =
       BiometricsConfig.doubles("metabolic.basic_panel.normal.calcium");
 
-
   private static final int[] MILD_KIDNEY_DMG_CC_RANGE = 
       BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.mild_kidney_damage");
   private static final int[] MODERATE_KIDNEY_DMG_CC_RANGE = 
@@ -611,7 +670,16 @@ public final class LifecycleModule extends Module {
       BiometricsConfig.doubles("metabolic.basic_panel.normal.carbon_dioxide");
   private static final double[] SODIUM_RANGE = 
       BiometricsConfig.doubles("metabolic.basic_panel.normal.sodium");
-  
+
+  private static final int[] BLOOD_OXYGEN_SATURATION_NORMAL =
+      BiometricsConfig.ints("cardiovascular.oxygen_saturation.normal");
+  private static final int[] BLOOD_OXYGEN_SATURATION_HYPOXEMIA =
+      BiometricsConfig.ints("cardiovascular.oxygen_saturation.hypoxemia");
+  private static final double[] HEART_RATE_NORMAL =
+      BiometricsConfig.doubles("cardiovascular.heart_rate.normal");
+  private static final double[] RESPIRATION_RATE_NORMAL =
+      BiometricsConfig.doubles("respiratory.respiration_rate.normal");
+
   /**
    * Calculate this person's vital signs, 
    * based on their conditions, medications, body composition, etc.
@@ -652,9 +720,16 @@ public final class LifecycleModule extends Module {
         }
       }
     }
-
     person.setVitalSign(VitalSign.BLOOD_GLUCOSE, hbA1c);
-    
+
+    int oxygenSaturation;
+    if (person.attributes.containsKey("chf")) {
+      oxygenSaturation = (int) person.rand(BLOOD_OXYGEN_SATURATION_HYPOXEMIA);
+    } else {
+      oxygenSaturation = (int) person.rand(BLOOD_OXYGEN_SATURATION_NORMAL);
+    }
+    person.setVitalSign(VitalSign.OXYGEN_SATURATION, oxygenSaturation);
+
     // CKD == stage of "Chronic Kidney Disease" or the level of diabetic kidney damage
     int kidneyDamage = (Integer) person.attributes.getOrDefault("ckd", 0);
     int[] ccRange;
@@ -705,6 +780,19 @@ public final class LifecycleModule extends Module {
     person.setVitalSign(VitalSign.POTASSIUM, person.rand(POTASSIUM_RANGE));
     person.setVitalSign(VitalSign.CARBON_DIOXIDE, person.rand(CO2_RANGE));
     person.setVitalSign(VitalSign.SODIUM, person.rand(SODIUM_RANGE));
+
+    long timestep = Long.parseLong(Config.get("generate.timestep"));
+    double heartStart = person.rand(HEART_RATE_NORMAL);
+    double heartEnd = person.rand(HEART_RATE_NORMAL);
+    person.setVitalSign(VitalSign.HEART_RATE,
+        new TrendingValueGenerator(person, 1.0, heartStart, heartEnd,
+            time, time + timestep, HEART_RATE_NORMAL[0], HEART_RATE_NORMAL[1]));
+
+    double respirationStart = person.rand(RESPIRATION_RATE_NORMAL);
+    double respirationEnd = person.rand(RESPIRATION_RATE_NORMAL);
+    person.setVitalSign(VitalSign.RESPIRATION_RATE,
+        new TrendingValueGenerator(person, 1.0, respirationStart, respirationEnd,
+            time, time + timestep, RESPIRATION_RATE_NORMAL[0], RESPIRATION_RATE_NORMAL[1]));
   }
 
   /**
@@ -765,17 +853,30 @@ public final class LifecycleModule extends Module {
 
   protected static boolean ENABLE_DEATH_BY_NATURAL_CAUSES =
       Boolean.parseBoolean(Config.get("lifecycle.death_by_natural_causes"));
-  
+  protected static boolean ENABLE_DEATH_BY_LOSS_OF_CARE =
+      Boolean.parseBoolean(Config.get("lifecycle.death_by_loss_of_care"));
+  protected static boolean ENABLE_PHYSIOLOGY_GENERATORS =
+      Boolean.parseBoolean(Config.get("physiology.generators.enabled", "false"));
+
+  // Death From Natural Causes SNOMED Code
   private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000",
       "Natural death with unknown cause");
+  // Death From Lack of Treatment SNOMED Code (Due to a Payer not covering treatment)
+  // Note: This SNOMED Code (397709008) is just for death - not death from lack of treatment.
+  public static final Code LOSS_OF_CARE = new Code("SNOMED-CT", "397709008",
+      "Death due to Uncovered and Unreceived Treatment");
 
   protected static void death(Person person, long time) {
     if (ENABLE_DEATH_BY_NATURAL_CAUSES) {
       double roll = person.rand();
       double likelihoodOfDeath = likelihoodOfDeath(person.ageInYears(time));
       if (roll < likelihoodOfDeath) {
-        person.recordDeath(time, NATURAL_CAUSES, "death");
+        person.recordDeath(time, NATURAL_CAUSES);
       }
+    }
+
+    if (ENABLE_DEATH_BY_LOSS_OF_CARE && deathFromLossOfCare(person)) {
+      person.recordDeath(time, LOSS_OF_CARE);
     }
   }
 
@@ -812,6 +913,32 @@ public final class LifecycleModule extends Module {
     double adjustedRisk = Utilities.convertRiskToTimestep(yearlyRisk, oneYearInMs);
 
     return adjustedRisk;
+  }
+
+  /**
+   * Determines whether a person dies due to loss-of-care and lack of
+   * necessary treatment.
+   * 
+   * @param person the person to check for loss of care death.
+   */
+  public static boolean deathFromLossOfCare(Person person) {
+    // Search the person's lossOfCareHealthRecord for missed treatments.
+    // Based on missed treatments, increase likelihood of death.
+    if (person.lossOfCareEnabled) {
+      for (Encounter encounter : person.lossOfCareRecord.encounters) {
+        for (Procedure procedure : encounter.procedures) {
+          for (Code code : procedure.codes) {
+            /*
+             * TODO USE A LOOKUP TABLE FOR DEATH PROBABILITIES FOR LACK OF TREATMENTS HERE
+             */
+            if (code.code.equals("33195004")) {
+              return person.rand() < 0.6;
+            }
+          }
+        }
+      }
+    }
+    return false;
   }
 
   private static void startSmoking(Person person, long time) {

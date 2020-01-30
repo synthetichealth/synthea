@@ -166,7 +166,7 @@
       ],
       "direct_transition": "Asthma_Symptom1"
     },
-     "Asthma_Symptom1": {
+    "Asthma_Symptom1": {
       "type": "Symptom",
       "symptom": "Wheezing",
       "range": {
@@ -222,7 +222,6 @@
     },
     "Asthma_Screening": {
       "type": "Procedure",
-      "target_encounter": "Asthma_Diagnosis",
       "reason": "asthma_condition",
       "codes": [
         {
@@ -235,7 +234,6 @@
     },
     "Prescribe_Maintenance_Inhaler": {
       "type": "MedicationOrder",
-      "target_encounter": "Asthma_Diagnosis",
       "reason": "asthma_condition",
       "codes": [
         {
@@ -247,23 +245,24 @@
       "prescription": {
         "as_needed": true
       },
-      "direct_transition": "Prescribe_Emergency_Inhaler"
+      "direct_transition": "Prescribe_Emergency_Inhaler",
+      "chronic": true
     },
     "Prescribe_Emergency_Inhaler": {
       "type": "MedicationOrder",
-      "target_encounter": "Asthma_Diagnosis",
       "reason": "asthma_condition",
       "codes": [
         {
           "system": "RxNorm",
-          "code": "745679",
-          "display": "200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
+          "code": "2123111",
+          "display": "NDA020503 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
         }
       ],
       "prescription": {
         "as_needed": true
       },
-      "direct_transition": "Asthma_CarePlan_Selector"
+      "direct_transition": "Asthma_CarePlan_Selector",
+      "chronic": true
     },
     "Asthma_CarePlan_Selector": {
       "type": "Simple",
@@ -295,7 +294,6 @@
     },
     "Smoker_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Asthma_Diagnosis",
       "assign_to_attribute": "asthma_careplan",
       "reason": "asthma_condition",
       "codes": [
@@ -326,7 +324,6 @@
     },
     "Nonsmoker_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Asthma_Diagnosis",
       "assign_to_attribute": "asthma_careplan",
       "reason": "asthma_condition",
       "codes": [
@@ -555,7 +552,7 @@
       },
       "direct_transition": "Asthma_Symptom2_Ends"
     },
-     "Asthma_Symptom2_Ends": {
+    "Asthma_Symptom2_Ends": {
       "type": "Symptom",
       "symptom": "Shortness of Breath",
       "exact": {
@@ -563,7 +560,7 @@
       },
       "direct_transition": "Asthma_Symptom3_Ends"
     },
-     "Asthma_Symptom3_Ends": {
+    "Asthma_Symptom3_Ends": {
       "type": "Symptom",
       "symptom": "Chest Pressure",
       "exact": {
@@ -571,7 +568,7 @@
       },
       "direct_transition": "Asthma_Symptom4_Ends"
     },
-     "Asthma_Symptom4_Ends": {
+    "Asthma_Symptom4_Ends": {
       "type": "Symptom",
       "symptom": "Cough",
       "exact": {
@@ -579,7 +576,7 @@
       },
       "direct_transition": "Asthma_Symptom5_Ends"
     },
-     "Asthma_Symptom5_Ends": {
+    "Asthma_Symptom5_Ends": {
       "type": "Symptom",
       "symptom": "Nasal Congestion",
       "exact": {
@@ -587,7 +584,7 @@
       },
       "direct_transition": "Asthma_Symptom6_Ends"
     },
-     "Asthma_Symptom6_Ends": {
+    "Asthma_Symptom6_Ends": {
       "type": "Symptom",
       "symptom": "Mucus Secretion",
       "exact": {

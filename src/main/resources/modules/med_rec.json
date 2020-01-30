@@ -28,12 +28,11 @@
     },
     "Med_Rec": {
       "type": "Procedure",
-      "target_encounter": "Wellness_Encounter",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "428191000124101",
-          "display": "Documentation of current medications"
+          "code": "430193006",
+          "display": "Medication Reconciliation (procedure)"
         }
       ],
       "direct_transition": "Initial"

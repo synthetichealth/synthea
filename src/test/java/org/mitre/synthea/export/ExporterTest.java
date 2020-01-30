@@ -8,11 +8,14 @@ import org.junit.Test;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.geography.Location;
 
 public class ExporterTest {
@@ -33,17 +36,25 @@ public class ExporterTest {
     endTime = time = System.currentTimeMillis();
     yearsToKeep = 5;
     patient = new Person(12345L);
+    patient.attributes.put(Person.BIRTHDATE, time - years(30));
+    // Give person an income to prevent null pointer.
+    patient.attributes.put(Person.INCOME, 100000);
     Location location = new Location("Massachusetts", null);
     location.assignPoint(patient, location.randomCityName(patient.random));
     Provider.loadProviders(location, 1L);
     record = patient.record;
+    // Ensure Person's Payer is not null.
+    Payer.loadNoInsurance();
+    for (int i = 0; i < patient.payerHistory.length; i++) {
+      patient.setPayerAtAge(i, Payer.noInsurance);
+    }
   }
 
   @Test public void test_export_filter_simple_cutoff() {
-    record.encounterStart(time - years(8), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(8), EncounterType.WELLNESS);
     record.observation(time - years(8), "height", 64);
     
-    record.encounterStart(time - years(4), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(4), EncounterType.WELLNESS);
     record.observation(time - years(4), "weight", 128);
 
     // observations should be filtered to the cutoff date
@@ -58,11 +69,16 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_old_active_medication() {
+
+    Code code = new Code("SNOMED-CT","705129","Fake Code");
+
     record.encounterStart(time - years(10), EncounterType.AMBULATORY);
-    record.medicationStart(time - years(10), "fakeitol");
+    record.medicationStart(time - years(10), "fakeitol", true);
 
     record.encounterStart(time - years(8), EncounterType.AMBULATORY);
-    record.medicationStart(time - years(8), "placebitol");
+    Medication med = record.medicationStart(time - years(8), "placebitol", true);
+    med.codes.add(code);
+
     record.medicationEnd(time - years(6), "placebitol", DUMMY_CODE);
 
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
@@ -74,12 +90,18 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_medication_that_ended_during_target() {
+
+    Code code = new Code("SNOMED-CT","705129","Fake Code");
+
     record.encounterStart(time - years(10), EncounterType.AMBULATORY);
-    record.medicationStart(time - years(10), "dimoxinil");
+    Medication med = record.medicationStart(time - years(10), "dimoxinil", false);
+    med.codes.add(code);
     record.medicationEnd(time - years(9), "dimoxinil", DUMMY_CODE);
 
     record.encounterStart(time - years(8), EncounterType.AMBULATORY);
-    record.medicationStart(time - years(8), "placebitol");
+    med = record.medicationStart(time - years(8), "placebitol", true);
+    med.codes.add(code);
+
     record.medicationEnd(time - years(4), "placebitol", DUMMY_CODE);
 
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
@@ -92,11 +114,11 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_old_active_careplan() {
-    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.careplanStart(time - years(10), "stop_smoking");
     record.careplanEnd(time - years(8), "stop_smoking", DUMMY_CODE);
 
-    record.encounterStart(time - years(12), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(12), EncounterType.WELLNESS);
     record.careplanStart(time - years(12), "healthy_diet");
 
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
@@ -108,7 +130,7 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_careplan_that_ended_during_target() {
-    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.careplanStart(time - years(10), "stop_smoking");
     record.careplanEnd(time - years(1), "stop_smoking", DUMMY_CODE);
 
@@ -122,11 +144,11 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_old_active_conditions() {
-    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.conditionStart(time - years(10), "fakitis");
     record.conditionEnd(time - years(8), "fakitis");
 
-    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.conditionStart(time - years(10), "fakosis");
 
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
@@ -138,11 +160,11 @@ public class ExporterTest {
   }
 
   @Test public void test_export_filter_should_keep_condition_that_ended_during_target() {
-    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.conditionStart(time - years(10), "boneitis");
     record.conditionEnd(time - years(2), "boneitis");
 
-    record.encounterStart(time - years(10), EncounterType.AMBULATORY);
+    record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.conditionStart(time - years(10), "smallpox");
     record.conditionEnd(time - years(9), "smallpox");
 
@@ -157,7 +179,7 @@ public class ExporterTest {
   @Test public void test_export_filter_should_keep_cause_of_death() {
     HealthRecord.Code causeOfDeath = 
         new HealthRecord.Code("SNOMED-CT", "Todo-lookup-code", "Rabies");
-    patient.recordDeath(time - years(20), causeOfDeath, "death");
+    patient.recordDeath(time - years(20), causeOfDeath);
     
     DeathModule.process(patient, time - years(20));
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);

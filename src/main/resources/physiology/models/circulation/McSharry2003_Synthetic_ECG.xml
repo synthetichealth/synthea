@@ -1,0 +1,1064 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version3" level="2" metaid="_684899" version="3">
+  <model name="McSharry2003_Synthetic_ECG" id="McSharry2003_Synthetic_ECG" metaid="metaid_0000002">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p>This a model from the article:      <br/>
+                <strong>A dynamical model for generating synthetic electrocardiogram signals</strong>
+                <br/>
+          Patrick E. McSharry, Gari Clifford, Lionel Tarassenko, and Leonard A. Smith      <em>IEEE Transactions on Biomedical Engineering</em>
+          2003 Mar;50(3):289-294;
+          <a href="http://www.ncbi.nlm.nih.gov/pubmed/2578676">2578676</a>
+          ,      <br/>
+                <strong>Abstract:</strong>
+                <br/>
+          A dynamical model based on three coupled ordinary differential equations is
+introduced which is capable of generating realistic synthetic
+electrocardiogram (ECG) signals. The operator can specify the mean and
+standard deviation of the heart rate, the morphology of the PQRST cycle and
+the power spectrum of the RR tachogram. In particular, both Respiratory Sinus
+Arrhythmia at the high frequencies (HF) and Mayer waves at the low frequencies
+(LF) together with the LF/HF ratio are incorporated in the model. Much of the
+beat-to-beat variation in morphology and timing of the human ECG, including QT
+dispersion and R-peak amplitude modulation are shown to result. This model may
+be employed to assess biomedical signal processing techniques which are used
+to compute clinical statistics from the ECG.      </p>
+            <p>This model has been manually implemented in SBML based on the open-source ECGSYN C and MATLAB source code from      <a href="https://physionet.org/">PhysioNET</a>
+                <br/>
+          The original model code available from the
+          <a href="https://archive.physionet.org/physiotools/ecgsyn/">ECGSYN Source Repository</a>
+                <br/>
+          Conversion to SBML completed by:      <br/>
+                <strong>Sivek, Ryan T.</strong>
+                <br/>
+          rsivek@mitre.org      <br/>
+          The MITRE Corporation      <br/>
+                <br/>
+          in support of the
+          <a href="https://synthetichealth.github.io/synthea/">Synthea</a>
+          project      <br/>
+                </p>
+            </body>
+      
+    </notes>
+    <annotation>
+      <COPASI xmlns="http://www.copasi.org/static/sbml">
+        <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+          <rdf:Description rdf:about="#COPASI38">
+            <dcterms:created>
+              <rdf:Description>
+                <dcterms:W3CDTF>2019-07-26T15:19:16Z</dcterms:W3CDTF>
+              </rdf:Description>
+            </dcterms:created>
+          </rdf:Description>
+        </rdf:RDF>
+      </COPASI>
+    </annotation>
+    <listOfFunctionDefinitions>
+      <functionDefinition id="atan2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <lambda>
+          <bvar><ci> ya </ci></bvar>
+          <bvar><ci> xa </ci></bvar>
+          <piecewise>
+            <piece>
+              <apply>
+                <arctan/>
+                <apply>
+                  <divide/>
+                  <ci> ya </ci>
+                  <ci> xa </ci>
+                </apply>
+              </apply>
+              <apply>
+                <gt/>
+                <ci> xa </ci>
+                <cn> 0.0 </cn>
+              </apply>
+            </piece>
+            <piece>
+              <apply>
+                <plus/>
+                <apply>
+                  <arctan/>
+                  <apply>
+                    <divide/>
+                    <ci> ya </ci>
+                    <ci> xa </ci>
+                  </apply>
+                </apply>
+                <pi/>
+              </apply>
+              <apply>
+                <and/>
+                <apply>
+                  <lt/>
+                  <ci> xa </ci>
+                  <cn> 0.0 </cn>
+                </apply>
+                <apply>
+                  <geq/>
+                  <ci> ya </ci>
+                  <cn> 0.0 </cn>
+                </apply>
+              </apply>
+            </piece>
+            <piece>
+              <apply>
+                <minus/>
+                <apply>
+                  <arctan/>
+                  <apply>
+                    <divide/>
+                    <ci> ya </ci>
+                    <ci> xa </ci>
+                  </apply>
+                </apply>
+                <pi/>
+              </apply>
+              <apply>
+                <and/>
+                <apply>
+                  <lt/>
+                  <ci> xa </ci>
+                  <cn> 0.0 </cn>
+                </apply>
+                <apply>
+                  <lt/>
+                  <ci> ya </ci>
+                  <cn> 0.0 </cn>
+                </apply>
+              </apply>
+            </piece>
+            <piece>
+              <apply>
+                <divide/>
+                <pi/>
+                <cn> 2.0 </cn>
+              </apply>
+              <apply>
+                <and/>
+                <apply>
+                  <eq/>
+                  <ci> xa </ci>
+                  <cn> 0.0 </cn>
+                </apply>
+                <apply>
+                  <gt/>
+                  <ci> ya </ci>
+                  <cn> 0.0 </cn>
+                </apply>
+              </apply>
+            </piece>
+            <piece>
+              <apply>
+                <minus/>
+                <cn> 0.0 </cn>
+                <apply>
+                  <divide/>
+                  <pi/>
+                  <cn> 2.0 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <and/>
+                <apply>
+                  <eq/>
+                  <ci> xa </ci>
+                  <cn> 0.0 </cn>
+                </apply>
+                <apply>
+                  <lt/>
+                  <ci> ya </ci>
+                  <cn> 0.0 </cn>
+                </apply>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn> 0 </cn>
+            </otherwise>
+          </piecewise>
+        </lambda>
+      </math>
+      </functionDefinition>
+      <functionDefinition id="fmod">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar><ci> num </ci></bvar>
+            <bvar><ci> div </ci></bvar>
+            <piecewise>
+              <piece>
+                <cn> NaN </cn>
+                <apply>
+                  <eq/>
+                  <ci> div </ci>
+                  <cn> 0.0 </cn>
+                </apply>
+              </piece>
+              <piece>
+                <apply>
+                  <minus/>
+                  <cn> 0.0 </cn>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <abs/>
+                      <ci> num </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <apply>
+                        <abs/>
+                        <ci> div </ci>
+                      </apply>
+                      <apply>
+                        <floor/>
+                        <apply>
+                          <divide/>
+                          <apply>
+                            <abs/>
+                            <ci> num </ci>
+                          </apply>
+                          <apply>
+                            <abs/>
+                            <ci> div </ci>
+                          </apply>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <lt/>
+                  <ci> num </ci>
+                  <cn> 0.0 </cn>
+                </apply>
+              </piece>
+              <otherwise>
+                <apply>
+                  <minus/>
+                  <ci> num </ci>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <abs/>
+                      <ci> div </ci>
+                    </apply>
+                    <apply>
+                      <floor/>
+                      <apply>
+                        <divide/>
+                        <ci> num </ci>
+                        <apply>
+                          <abs/>
+                          <ci> div </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </otherwise>
+            </piecewise>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="rng">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar><ci> seed </ci></bvar>
+            <bvar><ci> time </ci></bvar>
+            <apply>
+              <abs/>
+              <apply>
+                <sin/>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <ci> time </ci>
+                      <ci> seed </ci>
+                      <cn> 3 </cn>
+                    </apply>
+                    <cn> 2.5 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+    </listOfFunctionDefinitions>
+    <listOfUnitDefinitions>
+      <unitDefinition id="Hz" name="Hz">
+        <listOfUnits>
+          <unit scale="0" exponent="-1" kind="second"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="bpm" name="bpm">
+        <listOfUnits>
+          <unit scale="0" exponent="-1" multiplier="60" kind="second"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="mV" name="mV">
+        <listOfUnits>
+          <unit scale="-3" kind="volt" />
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="rad_per_sec" name="mV">
+        <listOfUnits>
+          <unit scale="0" kind="radian" />
+          <unit scale="0" exponent="-1" kind="second"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="COMpartment" units="litre" size="1"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="a0" name="a0" value="0.0" constant="false"/>
+      <parameter id="w0" name="w0" value="0.0" constant="false"/>
+      <parameter id="r0" name="r0" value="1.0" constant="false"/>
+      <parameter id="zbase" name="zbase" value="0.0" constant="false"/>
+      
+      <parameter id="x" name="x" value="1.0" constant="false"/>
+      <parameter id="y" name="y" value="0.0" constant="false"/>
+      <parameter id="z" name="z" value="0.04" constant="false"/>
+      <parameter id="zf" name="zf" value="0.04" constant="false"/>
+      <parameter id="ta" name="ta" value="0.0" constant="false"/>
+      
+      <parameter id="fresp" name="fresp" value="0.25" constant="true"/>
+      
+      <parameter id="hrmean" name="hrmean" value="60.0" constant="false"/>
+      <parameter id="hrfact" name="hrfact" value="1.0" constant="false"/>
+      <parameter id="hrfact2" name="hrfact2" value="1.0" constant="false"/>
+      
+      <parameter id="rrpc" name="rrpc" value="1.0" constant="false"/>
+      
+      <parameter id="ti_P" name="ti_P" value="-90.0" constant="true"/>
+      <parameter id="ti_Q" name="ti_Q" value="-15.0" constant="true"/>
+      <parameter id="ti_R" name="ti_R" value="0.0" constant="true"/>
+      <parameter id="ti_S" name="ti_S" value="15.0" constant="true"/>
+      <parameter id="ti_T" name="ti_T" value="100.0" constant="true"/>
+      
+      <parameter id="ai_P" name="ai_P" value="3.0" constant="true"/>
+      <parameter id="ai_Q" name="ai_Q" value="-5.0" constant="true"/>
+      <parameter id="ai_R" name="ai_R" value="30.0" constant="true"/>
+      <parameter id="ai_S" name="ai_S" value="-7.5" constant="true"/>
+      <parameter id="ai_T" name="ai_T" value="3.0" constant="true"/>
+      
+      <parameter id="bi_P" name="bi_P" value="0.15" constant="true"/>
+      <parameter id="bi_Q" name="bi_Q" value="0.1" constant="true"/>
+      <parameter id="bi_R" name="bi_R" value="0.1" constant="true"/>
+      <parameter id="bi_S" name="bi_S" value="0.1" constant="true"/>
+      <parameter id="bi_T" name="bi_T" value="0.2" constant="true"/>
+      
+      <parameter id="ti_f_P" name="ti_f_P" value="0.0" constant="false"/>
+      <parameter id="ti_f_Q" name="ti_f_Q" value="0.0" constant="false"/>
+      <parameter id="ti_f_R" name="ti_f_R" value="0.0" constant="false"/>
+      <parameter id="ti_f_S" name="ti_f_S" value="0.0" constant="false"/>
+      <parameter id="ti_f_T" name="ti_f_T" value="0.0" constant="false"/>
+      
+      <parameter id="bi_f_P" name="bi_f_P" value="0.0" constant="false"/>
+      <parameter id="bi_f_Q" name="bi_f_Q" value="0.0" constant="false"/>
+      <parameter id="bi_f_R" name="bi_f_R" value="0.0" constant="false"/>
+      <parameter id="bi_f_S" name="bi_f_S" value="0.0" constant="false"/>
+      <parameter id="bi_f_T" name="bi_f_T" value="0.0" constant="false"/>
+      
+      <parameter id="dt_P" name="dt_P" value="0.0" constant="false"/>
+      <parameter id="dt_Q" name="dt_Q" value="0.0" constant="false"/>
+      <parameter id="dt_R" name="dt_R" value="0.0" constant="false"/>
+      <parameter id="dt_S" name="dt_S" value="0.0" constant="false"/>
+      <parameter id="dt_T" name="dt_T" value="0.0" constant="false"/>
+      
+      <parameter id="dz_P" name="dz_P" value="0.0" constant="false"/>
+      <parameter id="dz_Q" name="dz_Q" value="0.0" constant="false"/>
+      <parameter id="dz_R" name="dz_R" value="0.0" constant="false"/>
+      <parameter id="dz_S" name="dz_S" value="0.0" constant="false"/>
+      <parameter id="dz_T" name="dz_T" value="0.0" constant="false"/>
+      
+      <parameter id="rng_seed" name="rng_seed" value="0" constant="false"/>
+      <parameter id="hr_adjusted" name="hr_adjusted" value="60" constant="false"/>
+      <parameter id="e_delay_rate" name="e_delay_rate" value="0" constant="false"/>
+      <parameter id="e_delay" name="e_delay" value="0" constant="false"/>
+      <parameter id="e_variance" name="e_variance" value="0.1" constant="false"/>
+      <parameter id="arr_base" name="arr_base" value="1.0" constant="false"/>
+      <parameter id="arr_t0" name="arr_t0" value="0" constant="false"/>
+      <parameter id="arr_t1" name="arr_t1" value="0" constant="false"/>
+      <parameter id="noise_amp" name="noise_amp" value="0.005" constant="false"/>
+      
+      <parameter metaid="_685797" id="vfib_start" name="vfib_start" value="0" constant="false"/>
+      <parameter metaid="_685797" id="vfib_end" name="vfib_end" value="0" constant="false"/>
+      
+  </listOfParameters>
+  <listOfRules>
+    <assignmentRule variable="hr_adjusted">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <piecewise>
+          <piece>
+            <apply>
+              <times/>
+              <ci> hrmean </ci>
+              <ci> arr_base </ci>
+              <apply>
+                <minus/>
+                <cn> 1.0 </cn>
+                <ci> e_delay_rate </ci>
+              </apply>
+            </apply>
+            <apply>
+              <and/>
+              <apply>
+                <geq/>
+                <apply>
+                  <divide/>
+                  <ci> ta </ci>
+                  <pi/>
+                </apply>
+                <ci> arr_t0 </ci>
+              </apply>
+              <apply>
+                <lt/>
+                <apply>
+                  <divide/>
+                  <ci> ta </ci>
+                  <pi/>
+                </apply>
+                <ci> arr_t1 </ci>
+              </apply>
+            </apply>
+          </piece>
+          <otherwise>
+            <ci> hrmean </ci>
+          </otherwise>
+        </piecewise>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="rrpc">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <divide/>
+          <cn> 60 </cn>
+          <ci> hr_adjusted </ci>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="hrfact">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <root/>
+          <apply>
+              <divide/>
+              <ci> hr_adjusted </ci>
+              <cn> 60.0 </cn>
+          </apply>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="hrfact2">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <root/>
+          <ci> hrfact </ci>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="bi_f_P">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> hrfact </ci>
+          <ci> bi_P </ci>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="bi_f_Q">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> hrfact </ci>
+          <ci> bi_Q </ci>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="bi_f_R">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> hrfact </ci>
+          <ci> bi_R </ci>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="bi_f_S">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> hrfact </ci>
+          <ci> bi_S </ci>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="bi_f_T">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> hrfact </ci>
+          <ci> bi_T </ci>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="ti_f_P">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <pi/>
+              <cn> 180.0 </cn>
+            </apply>
+            <ci> ti_P </ci>
+          </apply>
+          <ci> hrfact2 </ci>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="ti_f_Q">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <pi/>
+              <cn> 180.0 </cn>
+            </apply>
+            <ci> ti_Q </ci>
+          </apply>
+          <ci> hrfact </ci>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="ti_f_R">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <apply>
+            <divide/>
+            <pi/>
+            <cn> 180.0 </cn>
+          </apply>
+          <ci> ti_R </ci>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="ti_f_S">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <pi/>
+              <cn> 180 </cn>
+            </apply>
+            <ci> ti_S </ci>
+          </apply>
+          <ci> hrfact </ci>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="ti_f_T">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <pi/>
+              <cn> 180 </cn>
+            </apply>
+            <ci> ti_T </ci>
+          </apply>
+          <ci> hrfact2 </ci>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="w0">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <divide/>
+          <apply>
+            <times/>
+            <cn> 2.0 </cn>
+            <pi/>
+          </apply>
+          <ci> rrpc </ci>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="a0">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <minus/>
+          <cn> 1.0 </cn>
+          <apply>
+            <divide/>
+            <apply>
+              <root/>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> x </ci>
+                  <cn> 2.0 </cn>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> y </ci>
+                  <cn> 2.0 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <ci> r0 </ci>
+          </apply>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="zbase">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <cn> 0.005 </cn>
+          <apply>
+            <sin/>
+            <apply>
+              <times/>
+              <cn> 2.0 </cn>
+              <pi/>
+              <ci> fresp </ci>
+              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            </apply>
+          </apply>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="ta">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <ci> atan2 </ci>
+          <ci> y </ci>
+          <ci> x </ci>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="dt_P">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <ci> fmod </ci>
+          <apply>
+            <minus/>
+            <ci> ta </ci>
+            <ci> ti_f_P </ci>
+          </apply>
+          <apply>
+            <times/>
+            <cn> 2.0 </cn>
+            <pi/>
+          </apply>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="dt_Q">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <ci> fmod </ci>
+          <apply>
+            <minus/>
+            <ci> ta </ci>
+            <ci> ti_f_Q </ci>
+          </apply>
+          <apply>
+            <times/>
+            <cn> 2.0 </cn>
+            <pi/>
+          </apply>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="dt_R">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <ci> fmod </ci>
+          <apply>
+            <minus/>
+            <ci> ta </ci>
+            <ci> ti_f_R </ci>
+          </apply>
+          <apply>
+            <times/>
+            <cn> 2.0 </cn>
+            <pi/>
+          </apply>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="dt_S">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <ci> fmod </ci>
+          <apply>
+            <minus/>
+            <ci> ta </ci>
+            <ci> ti_f_S </ci>
+          </apply>
+          <apply>
+            <times/>
+            <cn> 2.0 </cn>
+            <pi/>
+          </apply>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="dt_T">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <ci> fmod </ci>
+          <apply>
+            <minus/>
+            <ci> ta </ci>
+            <ci> ti_f_T </ci>
+          </apply>
+          <apply>
+            <times/>
+            <cn> 2.0 </cn>
+            <pi/>
+          </apply>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="dz_P">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> ai_P </ci>
+          <ci> dt_P </ci>
+          <apply>
+            <exp/>
+            <apply>
+              <times/>
+              <cn> -0.5 </cn>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> dt_P </ci>
+                  <ci> bi_f_P </ci>
+                </apply>
+                <cn> 2.0 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="dz_Q">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> ai_Q </ci>
+          <ci> dt_Q </ci>
+          <apply>
+            <exp/>
+            <apply>
+              <times/>
+              <cn> -0.5 </cn>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> dt_Q </ci>
+                  <ci> bi_f_Q </ci>
+                </apply>
+                <cn> 2.0 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="dz_R">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> ai_R </ci>
+          <ci> dt_R </ci>
+          <apply>
+            <exp/>
+            <apply>
+              <times/>
+              <cn> -0.5 </cn>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> dt_R </ci>
+                  <ci> bi_f_R </ci>
+                </apply>
+                <cn> 2.0 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="dz_S">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> ai_S </ci>
+          <ci> dt_S </ci>
+          <apply>
+            <exp/>
+            <apply>
+              <times/>
+              <cn> -0.5 </cn>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> dt_S </ci>
+                  <ci> bi_f_S </ci>
+                </apply>
+                <cn> 2.0 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="dz_T">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> ai_T </ci>
+          <ci> dt_T </ci>
+          <apply>
+            <exp/>
+            <apply>
+              <times/>
+              <cn> -0.5 </cn>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> dt_T </ci>
+                  <ci> bi_f_T </ci>
+                </apply>
+                <cn> 2.0 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </apply>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="e_delay_rate">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <piecewise>
+          <piece>
+            <apply>
+              <times/>
+              <apply>
+                <ci> rng </ci>
+                <ci> rng_seed </ci>
+                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              </apply>
+              <ci> e_variance </ci>
+              <cn> 0.9 </cn>
+            </apply>
+            <apply>
+              <or/>
+              <apply>
+                <lt/>
+                <apply>
+                  <divide/>
+                  <ci> ta </ci>
+                  <pi/>
+                </apply>
+                <ci> arr_t0 </ci>
+              </apply>
+              <apply>
+                <geq/>
+                <apply>
+                  <divide/>
+                  <ci> ta </ci>
+                  <pi/>
+                </apply>
+                <ci> arr_t1 </ci>
+              </apply>
+            </apply>
+          </piece>
+          <otherwise>
+            <ci> e_delay_rate </ci>
+          </otherwise>
+        </piecewise>
+      </math>
+    </assignmentRule>
+    <assignmentRule variable="zf">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <ci> z </ci>
+          <apply>
+            <times/>
+            <ci> noise_amp </ci>
+            <apply>
+              <minus/>
+              <cn> 0.5 </cn>
+              <apply>
+                <ci> rng </ci>
+                <ci> rng_seed </ci>
+                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              </apply>
+            </apply>
+          </apply>
+        </apply>
+      </math>
+    </assignmentRule>
+    <rateRule variable="x">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <minus/>
+          <apply>
+            <times/>
+            <ci> a0 </ci>
+            <ci> x </ci>
+          </apply>
+          <apply>
+            <times/>
+            <ci> w0 </ci>
+            <ci> y </ci>
+          </apply>
+        </apply>
+      </math>
+    </rateRule>
+    <rateRule variable="y">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <apply>
+            <times/>
+            <ci> a0 </ci>
+            <ci> y </ci>
+          </apply>
+          <apply>
+            <times/>
+            <ci> w0 </ci>
+            <ci> x </ci>
+          </apply>
+        </apply>
+      </math>
+    </rateRule>
+    <rateRule variable="z">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <piecewise>
+          <piece>
+            <apply>
+              <plus/>
+              <ci> zbase </ci>
+              <apply>
+                <times/>
+                <cn> 0.25 </cn>
+                <apply>
+                  <sin/>
+                  <apply>
+                    <times/>
+                    <cn> 8 </cn>
+                    <apply>
+                      <minus/>
+                      <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                      <ci> e_delay </ci>
+                    </apply>
+                    <pi/>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <and/>
+              <apply>
+                <geq/>
+                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                <ci> vfib_start </ci>
+              </apply>
+              <apply>
+                <lt/>
+                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                <ci> vfib_end </ci>
+              </apply>
+            </apply>
+          </piece>
+          <otherwise>
+            <apply>
+              <minus/>
+              <cn> 0.0 </cn>
+              <apply>
+                <plus/>
+                <ci> dz_P </ci>
+                <ci> dz_Q </ci>
+                <ci> dz_R </ci>
+                <ci> dz_S </ci>
+                <ci> dz_T </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> z </ci>
+                <ci> zbase </ci>
+              </apply>
+            </apply>
+          </otherwise>
+        </piecewise>
+      </math>
+    </rateRule>
+    <rateRule metaid="_685742" variable="e_delay">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <piecewise>
+          <piece>
+            <cn> 0.0 </cn>
+            <apply>
+              <or/>
+              <apply>
+                <lt/>
+                <apply>
+                  <divide/>
+                  <ci> ta </ci>
+                  <pi/>
+                </apply>
+                <ci> arr_t0 </ci>
+              </apply>
+              <apply>
+                <geq/>
+                <apply>
+                  <divide/>
+                  <ci> ta </ci>
+                  <pi/>
+                </apply>
+                <ci> arr_t1 </ci>
+              </apply>
+            </apply>
+          </piece>
+          <otherwise>
+            <ci> e_delay_rate </ci>
+          </otherwise>
+        </piecewise>
+      </math>
+    </rateRule>
+  </listOfRules>
+  </model>
+</sbml>

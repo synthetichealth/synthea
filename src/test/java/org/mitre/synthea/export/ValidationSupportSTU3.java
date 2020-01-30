@@ -20,6 +20,7 @@ import org.hl7.fhir.dstu3.model.CodeSystem;
 import org.hl7.fhir.dstu3.model.CodeSystem.ConceptDefinitionComponent;
 import org.hl7.fhir.dstu3.model.StructureDefinition;
 import org.hl7.fhir.dstu3.model.ValueSet;
+import org.hl7.fhir.dstu3.model.ValueSet.ConceptReferenceComponent;
 import org.hl7.fhir.dstu3.model.ValueSet.ConceptSetComponent;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.utilities.validation.ValidationMessage.IssueSeverity;
@@ -28,8 +29,8 @@ import org.hl7.fhir.utilities.validation.ValidationMessage.IssueSeverity;
  * ValidationSupport provides implementation guide profiles (i.e. StructureDefinitions)
  * to the FHIR validation process. This class does not provide ValueSet expansion.
  */
-public class ValidationSupport implements IValidationSupport {
-  private static String profileDir = "structureDefinitions";
+public class ValidationSupportSTU3 implements IValidationSupport {
+  private static String profileDir = "structureDefinitions/stu3";
 
   private List<IBaseResource> resources;
   private Map<String, IBaseResource> resourcesMap;
@@ -40,7 +41,7 @@ public class ValidationSupport implements IValidationSupport {
   /**
    * Defines the custom validation support for various implementation guides.
    */
-  public ValidationSupport() {
+  public ValidationSupportSTU3() {
     resources = new ArrayList<IBaseResource>();
     resourcesMap = new HashMap<String, IBaseResource>();
     definitions = new ArrayList<StructureDefinition>();
@@ -131,7 +132,7 @@ public class ValidationSupport implements IValidationSupport {
 
   @Override
   public CodeValidationResult validateCode(FhirContext theContext, String theCodeSystem,
-      String theCode, String theDisplay) {
+      String theCode, String theDisplay, String theValueSetUrl) {
     IssueSeverity severity = IssueSeverity.WARNING;
     String message = "Unsupported CodeSystem";
 
@@ -158,6 +159,51 @@ public class ValidationSupport implements IValidationSupport {
       }
     }
 
+    ValueSet vs = fetchValueSet(theContext, theValueSetUrl);
+    if (vs != null && vs.hasCompose() && vs.getCompose().hasExclude()) {
+      for (ConceptSetComponent exclude : vs.getCompose().getExclude()) {
+        if (exclude.getSystem().equals(theCodeSystem) && exclude.hasConcept()) {
+          for (ConceptReferenceComponent concept : exclude.getConcept()) {
+            if (concept.getCode().equals(theCode)) {
+              severity = IssueSeverity.ERROR;
+              message += "; Code Excluded from ValueSet";
+            }
+          }
+        }
+      }
+    }
+
     return new CodeValidationResult(severity, message);
+  }
+
+  @Override
+  public LookupCodeResult lookupCode(FhirContext theContext, String theSystem, String theCode) {
+    if (isCodeSystemSupported(theContext, theSystem)) {
+      LookupCodeResult result = new LookupCodeResult();
+      result.setSearchedForSystem(theSystem);
+      result.setSearchedForCode(theCode);
+      result.setFound(false);
+
+      CodeSystem cs = codeSystemMap.get(theSystem);
+      for (ConceptDefinitionComponent def : cs.getConcept()) {
+        if (def.getCode().equals(theCode)) {
+          result.setCodeDisplay(def.getDisplay());
+          result.setFound(true);
+          return result;
+        }
+      }
+    }
+    return LookupCodeResult.notFound(theSystem, theCode);
+  }
+
+  @Override
+  public ValueSet fetchValueSet(FhirContext theContext, String uri) {
+    return (ValueSet) resourcesMap.get(uri);
+  }
+
+  @Override
+  public StructureDefinition generateSnapshot(
+      StructureDefinition theInput, String theUrl, String theName) {
+    return null;
   }
 }

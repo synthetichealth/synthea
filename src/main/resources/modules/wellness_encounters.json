@@ -15,7 +15,6 @@
     },
     "Record_Height": {
       "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
       "category": "vital-signs",
       "vital_sign": "Height",
       "codes": [
@@ -30,7 +29,6 @@
     },
     "Record_Weight": {
       "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
       "category": "vital-signs",
       "vital_sign": "Weight",
       "codes": [
@@ -43,16 +41,13 @@
       "unit": "kg",
       "conditional_transition": [
         {
+          "transition": "Record_Weight_For_Length_Percentile",
           "condition": {
             "condition_type": "Age",
-            "operator": "<",
-            "quantity": 2,
+            "operator": "<=",
+            "quantity": 3,
             "unit": "years"
-          },
-          "remarks": [
-            "BMI is not particularly meaningful for children under 2"
-          ],
-          "transition": "Record_BP"
+          }
         },
         {
           "transition": "Record_BMI"
@@ -61,7 +56,6 @@
     },
     "Record_BMI": {
       "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
       "category": "vital-signs",
       "vital_sign": "BMI",
       "codes": [
@@ -72,7 +66,31 @@
         }
       ],
       "unit": "kg/m2",
-      "direct_transition": "Record_BP"
+      "conditional_transition": [
+        {
+          "transition": "Record_BMI_Percentile",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 2,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Age",
+                "operator": "<",
+                "quantity": 20,
+                "unit": "years"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Record_BP"
+        }
+      ]
     },
     "Record_BP": {
       "type": "MultiObservation",
@@ -80,7 +98,7 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": "55284-4",
+          "code": "85354-9",
           "display": "Blood Pressure"
         }
       ],
@@ -110,8 +128,7 @@
           "unit": "mm[Hg]"
         }
       ],
-      "target_encounter": "Wellness_Encounter",
-      "direct_transition": "Lab_MetabolicPanel"
+      "direct_transition": "Record_Heart_Rate"
     },
     "Record_MetabolicPanel": {
       "type": "DiagnosticReport",
@@ -221,7 +238,6 @@
           "unit": "mmol/L"
         }
       ],
-      "target_encounter": "Wellness_Encounter",
       "direct_transition": "Lab_LipidPanel"
     },
     "Record_LipidPanel": {
@@ -284,12 +300,10 @@
           "unit": "mg/dL"
         }
       ],
-      "target_encounter": "Wellness_Encounter",
       "direct_transition": "Lab_ACR"
     },
     "Record_ACR": {
       "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
       "vital_sign": "Microalbumin Creatinine Ratio",
       "category": "laboratory",
       "codes": [
@@ -304,7 +318,6 @@
     },
     "Record_EGFR": {
       "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
       "category": "laboratory",
       "vital_sign": "EGFR",
       "codes": [
@@ -733,12 +746,10 @@
           }
         }
       ],
-      "target_encounter": "Wellness_Encounter",
       "direct_transition": "check_eGFR"
     },
     "Record_Pain": {
       "type": "Observation",
-      "target_encounter": "Wellness_Encounter",
       "category": "vital-signs",
       "codes": [
         {
@@ -750,9 +761,93 @@
       "unit": "{score}",
       "direct_transition": "Record_Weight",
       "range": {
+        "decimals": 0,
         "low": 0,
         "high": 4
       }
+    },
+    "Record_BMI_Percentile": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "%",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "59576-9",
+          "display": "Body mass index (BMI) [Percentile] Per age and gender"
+        }
+      ],
+      "direct_transition": "Record_BP",
+      "attribute": "bmi_percentile"
+    },
+    "Record_Weight_For_Length_Percentile": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "%",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "77606-2",
+          "display": "Weight-for-length Per age and sex"
+        }
+      ],
+      "attribute": "current_weight_length_percentile",
+      "direct_transition": "Record Head Circumference"
+    },
+    "Record Head Circumference": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "cm",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "9843-4",
+          "display": "Head Occipital-frontal circumference"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Record_BMI",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 2,
+            "unit": "years"
+          }
+        },
+        {
+          "transition": "Record_BP"
+        }
+      ],
+      "vital_sign": "Head Circumference"
+    },
+    "Record_Heart_Rate": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "/min",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8867-4",
+          "display": "Heart rate"
+        }
+      ],
+      "direct_transition": "Record_Respiratory_Rate",
+      "vital_sign": "Heart Rate"
+    },
+    "Record_Respiratory_Rate": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "/min",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "9279-1",
+          "display": "Respiratory rate"
+        }
+      ],
+      "direct_transition": "Lab_MetabolicPanel",
+      "vital_sign": "Respiration Rate"
     }
   }
 }

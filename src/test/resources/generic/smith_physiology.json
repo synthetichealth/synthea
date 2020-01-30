@@ -1,0 +1,65 @@
+{
+  "name": "Smith 2004 CVS Physiology Simulation",
+  "remarks": [
+    "This module invokes the physiology simulation of cardiovascular dynamics."
+  ],
+  "states": {
+
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Set_Systemic_Resistance"
+    },
+    
+    "Set_Systemic_Resistance": {
+      "type": "SetAttribute",
+      "attribute" : "cvs_systemic_resistance",
+      "value" : 1.814,
+      "direct_transition": "Simulate_CVS"
+    },
+
+    "Simulate_CVS": {
+      "type": "Physiology",
+      "model": "circulation/Smith2004_CVS_human.xml",
+      "solver": "runge_kutta",
+      "step_size": 0.01,
+      "sim_duration": 4.0,
+      "lead_time": 2.0,
+      "inputs": [
+        {"from": "Pulmonary Resistance", "to": "R_pul"},
+        {"from_exp": "#{BMI} * #{BMI Multiplier}", "to": "R_sys"}
+      ],
+      "outputs": [
+        {
+          "from": "V_ao",
+          "to": "Final Aortal Volume",
+          "type": "Attribute"
+        },
+        {
+          "from_list": "P_ao",
+          "to": "Arterial Pressure Values",
+          "type": "Attribute"
+        },
+        {
+          "from_exp": "((Max(#{V_lv}) - Min(#{V_lv})) / Max(#{V_lv}))*100",
+          "to": "LVEF",
+          "type": "Attribute"
+        },
+        {
+          "from_exp": "Max(#{P_ao})",
+          "to": "SBP",
+          "type": "Attribute"
+        },
+        {
+          "from_exp": "Min(#{P_ao})",
+          "to": "DBP",
+          "type": "Attribute"
+        }
+      ],
+      "direct_transition": "Main_Terminal"
+    },
+
+    "Main_Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

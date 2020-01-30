@@ -1,0 +1,92 @@
+
+# Data and charts will be placed in output/physiology/{name}/
+# Data file will always be output/physiology/{name}/{name}.csv
+name: Smith2004_CVS
+
+# Name of the model file
+model: circulation/Smith2004_CVS_human.xml
+
+# Which differential equation solver to use.
+# Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
+solver: runge_kutta
+
+# Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
+stepSize: 0.01
+
+# Simulation duration in seconds
+duration: 4
+
+# Model parameter inputs. Any unspecified parameters will use the model's default value.
+inputs:
+    #R_sys: 1.213
+    #E_es_lvf: 2.212
+    e_variance: 1
+    #R: 0.004
+    period: 0.75
+
+# What charts to draw. Results will be plotted on PNG images.
+# Note that chart support is a convenience feature and many chart options cannot be manipulated here.
+# If you need more control over the chart, import the csv file into another program with that capability.
+charts:
+    - filename: pressures.png
+      # Currently only "line" or "scatter" charts are supported.
+      type: line
+      # Title will be rendered above the chart
+      title: Cardiovascular Pressures
+      # Model parameter for the x axis
+      axisParamX: time
+      # Label for the X axis
+      axisLabelX: time (s)
+      # Label for the Y axis
+      axisLabelY: Pressure (mmhg)
+      # Starting data time point for chart rendering. Defaults to 0.
+      #startTime: 0
+      # Ending data time point for chart rendering. Defaults to sim duration.
+      #endTime: 4
+      series:
+          # Each series configuration item requires the model parameter
+          # Labels are optional. If not provided, the param name will be used in the legend
+        - param: P_lv
+          label: Left Ventricle
+        - param: P_rv
+          label: Right Ventricle
+        - param: P_ao
+          label: Aorta
+          
+    # Any number of output charts can be configured
+    
+    - filename: volumes.png
+      type: line
+      title: Cardiovascular Volumes
+      axisParamX: time
+      axisLabelX: time (s)
+      axisLabelY: utf-8Volume (ml)utf-8
+      series:
+        - param: V_lv
+          label: Left Ventricle
+        - param: V_rv
+          label: Right Ventricle
+        - param: V_ao
+          label: Aorta
+          
+    - filename: left_heart_pv.png
+      type: line
+      title: Left Ventricle Pressure-Volume Relationship
+      axisParamX: V_lv
+      axisLabelX: Volume (ml)
+      axisLabelY: Pressure (mmhg)
+      startTime: 2
+      series:
+        - param: P_lv
+          label: Left Ventricle
+          
+    - filename: right_heart_pv.png
+      type: line
+      title: Right Ventricle Pressure-Volume Relationship
+      axisParamX: V_rv
+      axisLabelX: Volume (ml)
+      axisLabelY: Pressure (mmhg)
+      startTime: 2
+      series:
+        - param: P_rv
+          label: Right Ventricle

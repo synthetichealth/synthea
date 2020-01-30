@@ -3,12 +3,14 @@ package org.mitre.synthea.export;
 import static org.junit.Assert.assertTrue;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.model.dstu2.composite.QuantityDt;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.validation.FhirValidator;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
+import java.math.BigDecimal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,27 @@ public class FHIRDSTU2ExporterTest {
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
   @Test
+  public void testDecimalRounding() {
+    Integer i = 123456;
+    Object v = FhirDstu2.mapValueToFHIRType(i,"fake");
+    assertTrue(v instanceof QuantityDt);
+    QuantityDt q = (QuantityDt)v;
+    assertTrue(q.getValue().compareTo(BigDecimal.valueOf(123460)) == 0);
+
+    Double d = 0.000123456;
+    v = FhirDstu2.mapValueToFHIRType(d, "fake");
+    assertTrue(v instanceof QuantityDt);
+    q = (QuantityDt)v;
+    assertTrue(q.getValue().compareTo(BigDecimal.valueOf(0.00012346)) == 0);
+
+    d = 0.00012345678901234;
+    v = FhirDstu2.mapValueToFHIRType(d, "fake");
+    assertTrue(v instanceof QuantityDt);
+    q = (QuantityDt)v;
+    assertTrue(q.getValue().compareTo(BigDecimal.valueOf(0.00012346)) == 0);
+  }
+
+  @Test
   public void testFHIRDSTU2Export() throws Exception {
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
 
@@ -48,6 +71,7 @@ public class FHIRDSTU2ExporterTest {
 
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);
+    generator.options.overflow = false;
     for (int i = 0; i < numberOfPeople; i++) {
       int x = validationErrors.size();
       TestHelper.exportOff();

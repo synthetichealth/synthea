@@ -1,7 +1,9 @@
 package org.mitre.synthea.world.concepts;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -9,15 +11,29 @@ import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 public class HealthRecordTest {
 
+  Payer noInsurance;
+  long time;
+
+  /**
+   * Setup for HealthRecord Tests.
+   */
+  @Before
+  public void setup() {
+    Payer.loadNoInsurance();
+    noInsurance = Payer.noInsurance;
+    time = 0L;
+  }
+
   @Test
   public void testReportAllObs() {
     Person person = new Person(0L);
+    person.setPayerAtTime(time, noInsurance);
     HealthRecord record = new HealthRecord(person);
-    Encounter encounter = record.encounterStart(0L, EncounterType.WELLNESS);
-    record.observation(0L, "A", "A");
-    record.observation(0L, "B", "B");
-    record.observation(0L, "C", "C");
-    Report report = record.report(0L, "R", 3);
+    Encounter encounter = record.encounterStart(time, EncounterType.WELLNESS);
+    record.observation(time, "A", "A");
+    record.observation(time, "B", "B");
+    record.observation(time, "C", "C");
+    Report report = record.report(time, "R", 3);
     
     Assert.assertEquals(3, encounter.observations.size());
     Assert.assertEquals(3, report.observations.size());
@@ -29,12 +45,13 @@ public class HealthRecordTest {
   @Test
   public void testReportSomeObs() {
     Person person = new Person(0L);
+    person.setPayerAtTime(time, noInsurance);
     HealthRecord record = new HealthRecord(person);
-    Encounter encounter = record.encounterStart(0L, EncounterType.WELLNESS);
-    record.observation(0L, "A", "A");
-    record.observation(0L, "B", "B");
-    record.observation(0L, "C", "C");
-    Report report = record.report(0L, "R", 2);
+    Encounter encounter = record.encounterStart(time, EncounterType.WELLNESS);
+    record.observation(time, "A", "A");
+    record.observation(time, "B", "B");
+    record.observation(time, "C", "C");
+    Report report = record.report(time, "R", 2);
     
     Assert.assertEquals(3, encounter.observations.size());
     Assert.assertEquals(2, report.observations.size());
@@ -45,12 +62,13 @@ public class HealthRecordTest {
   @Test
   public void testReportTooManyObs() {
     Person person = new Person(0L);
+    person.setPayerAtTime(time, noInsurance);
     HealthRecord record = new HealthRecord(person);
-    Encounter encounter = record.encounterStart(0L, EncounterType.WELLNESS);
-    record.observation(0L, "A", "A");
-    record.observation(0L, "B", "B");
-    record.observation(0L, "C", "C");
-    Report report = record.report(0L, "R", 4);
+    Encounter encounter = record.encounterStart(time, EncounterType.WELLNESS);
+    record.observation(time, "A", "A");
+    record.observation(time, "B", "B");
+    record.observation(time, "C", "C");
+    Report report = record.report(time, "R", 4);
     
     Assert.assertEquals(3, encounter.observations.size());
     Assert.assertEquals(3, report.observations.size());

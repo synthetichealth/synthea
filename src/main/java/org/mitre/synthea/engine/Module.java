@@ -3,14 +3,15 @@ package org.mitre.synthea.engine;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 
 import java.io.File;
-import java.io.FileReader;
-import java.net.URL;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.spi.FileSystemProvider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,11 +25,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.regex.Matcher;
 
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
 import org.mitre.synthea.modules.EncounterModule;
-import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.modules.WeightLossModule;
@@ -45,46 +45,95 @@ import org.mitre.synthea.world.agents.Person;
 public class Module {
 
   private static final Map<String, ModuleSupplier> modules = loadModules();
-
+  
   private static Map<String, ModuleSupplier> loadModules() {
     Map<String, ModuleSupplier> retVal = new ConcurrentHashMap<>();
-    AtomicInteger submoduleCount = new AtomicInteger();
+    int submoduleCount = 0;
 
     retVal.put("Lifecycle", new ModuleSupplier(new LifecycleModule()));
+    //retVal.put("Health Insurance", new ModuleSupplier(new HealthInsuranceModule()));
     retVal.put("Cardiovascular Disease", new ModuleSupplier(new CardiovascularDiseaseModule()));
     retVal.put("Quality Of Life", new ModuleSupplier(new QualityOfLifeModule()));
-    retVal.put("Health Insurance", new ModuleSupplier(new HealthInsuranceModule()));
     retVal.put("Weight Loss", new ModuleSupplier(new WeightLossModule()));
 
     try {
-      URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
-      Path path = Paths.get(modulesFolder.toURI());
-      Files.walk(path, Integer.MAX_VALUE).filter(Files::isReadable).filter(Files::isRegularFile)
-          .filter(p -> p.toString().endsWith(".json")).forEach(t -> {
-            String relativePath = relativePath(t, path);
-            boolean submodule = !t.getParent().equals(path);
-            if (submodule) {
-              submoduleCount.getAndIncrement();
-            }
-            retVal.put(relativePath, new ModuleSupplier(submodule, 
-                                                        relativePath,
-                () -> loadFile(t, submodule)));
-          });
+      URI modulesURI = Module.class.getClassLoader().getResource("modules").toURI();
+      fixPathFromJar(modulesURI);
+      Path modulesPath = Paths.get(modulesURI);
+      submoduleCount = walkModuleTree(modulesPath, retVal);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     System.out.format("Scanned %d modules and %d submodules.\n", 
-                      retVal.size() - submoduleCount.get(), 
-                      submoduleCount.get());
+                      retVal.size() - submoduleCount, 
+                      submoduleCount);
 
     return retVal;
   }
 
+  private static int walkModuleTree(Path modulesPath, Map<String, ModuleSupplier> retVal)
+          throws IOException {
+    AtomicInteger submoduleCount = new AtomicInteger();
+    Path basePath = modulesPath.getParent();
+    Files.walk(modulesPath, Integer.MAX_VALUE)
+            .filter(Files::isReadable)
+            .filter(Files::isRegularFile)
+            .filter(p -> p.toString().endsWith(".json")).forEach(t -> {
+              String relativePath = relativePath(t, modulesPath);
+              boolean submodule = !t.getParent().equals(modulesPath);
+              if (submodule) {
+                submoduleCount.getAndIncrement();
+              }
+              retVal.put(relativePath, new ModuleSupplier(submodule,
+                  relativePath,
+                  () -> loadFile(basePath.relativize(t), submodule)));
+            });
+    return submoduleCount.get();
+  }
+
+  /**
+   * Recursively adds a folder or directory of module files to the static list
+   * of modules. This does not need to be executed by the core software. It only
+   * is used when the user wants to add another local module folder or during
+   * unit tests.
+   * @param dir - the folder or directory to add.
+   */
+  public static void addModules(File dir) {
+    int submoduleCount = 0;
+    int originalModuleCount = modules.size();
+    try {
+      walkModuleTree(dir.toPath(), modules);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    System.out.format("Scanned %d local modules and %d local submodules.\n", 
+                      modules.size() - (originalModuleCount + submoduleCount), 
+                      submoduleCount);
+  }
+
+  private static void fixPathFromJar(URI uri) throws IOException {
+    // this function is a hack to enable reading modules from within a JAR file
+    // see https://stackoverflow.com/a/48298758
+    if ("jar".equals(uri.getScheme())) {
+      for (FileSystemProvider provider: FileSystemProvider.installedProviders()) {
+        if (provider.getScheme().equalsIgnoreCase("jar")) {
+          try {
+            provider.getFileSystem(uri);
+          } catch (FileSystemNotFoundException e) {
+            // in this case we need to initialize it first:
+            provider.newFileSystem(uri, Collections.emptyMap());
+          }
+        }
+      }
+    }
+  }
+
   private static String relativePath(Path filePath, Path modulesFolder) {
-    String folderString = Matcher.quoteReplacement(modulesFolder.toString() + File.separator);
-    return filePath.toString().replaceFirst(folderString, "").replaceFirst(".json", "")
-        .replace("\\", "/");
+    String relativeFilePath = modulesFolder.relativize(filePath).toString()
+        .replaceFirst(".json", "").replace("\\", "/");
+    return relativeFilePath;
   }
 
   public static Module loadFile(Path path, Path modulesFolder) throws Exception {
@@ -94,15 +143,9 @@ public class Module {
 
   private static Module loadFile(Path path, boolean submodule) throws Exception {
     System.out.format("Loading %s %s\n", submodule ? "submodule" : "module", path.toString());
-    JsonObject object = null;
-    FileReader fileReader = null;
-    JsonReader reader = null;
-    fileReader = new FileReader(path.toString());
-    reader = new JsonReader(fileReader);
+    String jsonString = Utilities.readResource(path.toString());
     JsonParser parser = new JsonParser();
-    object = parser.parse(reader).getAsJsonObject();
-    fileReader.close();
-    reader.close();
+    JsonObject object = parser.parse(jsonString).getAsJsonObject();
     return new Module(object, submodule);
   }
 
@@ -193,6 +236,9 @@ public class Module {
    */
   @SuppressWarnings("unchecked")
   public boolean process(Person person, long time) {
+    if (!person.alive(time)) {
+      return true;
+    }
     person.history = null;
     // what current state is this person in?
     if (!person.attributes.containsKey(this.name)) {
@@ -218,8 +264,15 @@ public class Module {
       current = states.get(nextStateName).clone(); // clone the state so we don't dirty the original
       person.history.add(0, current);
       if (exited != null && exited < time) {
+        // stop if the patient died in the meantime...
+        if (!person.alive(exited)) {
+          return true;
+        }
         // This must be a delay state that expired between cycles, so temporarily rewind time
-        process(person, exited);
+        if (process(person, exited)) {
+          // if the patient died during the delay, stop
+          return true;
+        }
         current = person.history.get(0);
       }
     }
@@ -231,6 +284,11 @@ public class Module {
     return states.get("Initial"); // all Initial states have name Initial
   }
 
+  /**
+   * Get a state by name.
+   * @param name - case-sensitive state name.
+   * @return State if it exists, otherwise null.
+   */
   public State getState(String name) {
     return states.get(name);
   }

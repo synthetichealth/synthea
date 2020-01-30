@@ -2,18 +2,19 @@ package org.mitre.synthea.datastore;
 
 import com.google.common.collect.Table;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.modules.HealthInsuranceModule;
+import org.mitre.synthea.modules.QualityOfLifeModule;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -52,6 +53,11 @@ public class DataStore {
    */
   private boolean fileBased;
 
+  /**
+   * Create a new DataStore, specifying whether or not the data store
+   * should be written to file (fileBased = true) or kept in-memory (fileBased = false).
+   * @param fileBased Flag for whether the DB uses a file (true) or is in-memory only (false).
+   */
   public DataStore(boolean fileBased) {
     this.fileBased = fileBased;
     try (Connection connection = getConnection()) {
@@ -203,6 +209,11 @@ public class DataStore {
     }
   }
 
+  /**
+   * Get a SQL Connection to this Data Store.
+   * @return Connection - a SQL Connection to this Data Store.
+   * @throws SQLException on errors creating the connection.
+   */
   public Connection getConnection() throws SQLException {
     Connection connection = DriverManager
         .getConnection(this.fileBased ? FILEBASED_JDBC_STRING : IN_MEMORY_JDBC_STRING);
@@ -210,6 +221,11 @@ public class DataStore {
     return connection;
   }
 
+  /**
+   * Store a Person and related information into this Data Store.
+   * @param p - Person to store.
+   * @return Whether or not the person was completely stored (true) or not (false).
+   */
   @SuppressWarnings("unchecked")
   public boolean store(Person p) {
     String personID = (String) p.attributes.get(Person.ID);
@@ -251,17 +267,16 @@ public class DataStore {
       // Add coverage to database
       stmt = connection
           .prepareStatement("INSERT INTO COVERAGE (person_id, year, category) VALUES (?,?,?);");
-      List<String> coverage = (List<String>) p.attributes.get(HealthInsuranceModule.INSURANCE);
+      Payer[] payerHistory = p.getPayerHistory();
       long birthdate = (long) p.attributes.get(Person.BIRTHDATE);
       int birthYear = Utilities.getYear(birthdate);
-      for (int i = 0; i < coverage.size(); i++) {
-        String category = coverage.get(i);
-        if (category == null) {
+      for (int i = 0; i < payerHistory.length; i++) {
+        if (payerHistory[i] == null) {
           break;
         } else {
           stmt.setString(1, personID);
           stmt.setInt(2, (birthYear + i));
-          stmt.setString(3, category);
+          stmt.setString(3, payerHistory[i].getOwnership());
           stmt.addBatch();
         }
       }
@@ -491,7 +506,7 @@ public class DataStore {
           stmt.setString(3, encounterID);
           stmt.setString(4, medicationID);
           stmt.setLong(5, medication.start);
-          stmt.setBigDecimal(6, medication.claim.total());
+          stmt.setBigDecimal(6, new BigDecimal(medication.claim.getTotalClaimCost()));
           stmt.execute();
 
         }
@@ -598,14 +613,17 @@ public class DataStore {
         stmt.setString(3, encounterID);
         stmt.setString(4, null);
         stmt.setLong(5, encounter.start);
-        stmt.setBigDecimal(6, encounter.claim.total());
+        stmt.setBigDecimal(6, new BigDecimal(encounter.claim.getTotalClaimCost()));
         stmt.execute();
 
       }
 
-      Map<Integer, Double> qalys = (Map<Integer, Double>) p.attributes.get("QALY");
-      Map<Integer, Double> dalys = (Map<Integer, Double>) p.attributes.get("DALY");
-      Map<Integer, Double> qols = (Map<Integer, Double>) p.attributes.get("QOL");
+      Map<Integer, Double> qalys =
+          (Map<Integer, Double>) p.attributes.get(QualityOfLifeModule.QALY);
+      Map<Integer, Double> dalys =
+          (Map<Integer, Double>) p.attributes.get(QualityOfLifeModule.DALY);
+      Map<Integer, Double> qols =
+          (Map<Integer, Double>) p.attributes.get(QualityOfLifeModule.QOLS);
       if (qols != null) {
         // TODO - would rather have something more generic
         stmt = connection.prepareStatement(
@@ -630,6 +648,12 @@ public class DataStore {
     }
   }
 
+  /**
+   * Store a collection of Providers and their related information into this data store.
+   * @param providers - collection of Providers to store.
+   * @return Whether or not the entire collection of Providers was
+   *     stored successfully (true) or not (false).
+   */
   public boolean store(Collection<? extends Provider> providers) {
     try (Connection connection = getConnection()) {
       // CREATE TABLE IF NOT EXISTS PROVIDER (id varchar, name varchar)

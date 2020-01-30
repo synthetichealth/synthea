@@ -169,20 +169,19 @@
     },
     "Fibromyalgia_CarePlan": {
       "type": "CarePlanStart",
-      "target_encounter": "Fibromyalgia_Diagnosis",
       "assign_to_attribute": "fibromyalgia_careplan",
       "reason": "Fibromyalgia",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "872781000000100",
+          "code": "408869004",
           "display": "Musculoskeletal care"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "872781000000100",
+          "code": "386294003",
           "display": "Joint mobility exercises"
         },
         {
@@ -195,7 +194,6 @@
     },
     "Strong_NSAID": {
       "type": "MedicationOrder",
-      "target_encounter": "Fibromyalgia_Diagnosis",
       "reason": "Fibromyalgia",
       "remarks": [
         "A stronger NSAID pain reliever than the basic Aleve."
@@ -298,7 +296,6 @@
     },
     "Prescribe_Lyrica": {
       "type": "MedicationOrder",
-      "target_encounter": "Fibromyalgia_Episode",
       "assign_to_attribute": "fibromyalgia_prescription",
       "reason": "Fibromyalgia",
       "codes": [
@@ -312,7 +309,6 @@
     },
     "Prescribe_Cymbalta": {
       "type": "MedicationOrder",
-      "target_encounter": "Fibromyalgia_Episode",
       "assign_to_attribute": "fibromyalgia_prescription",
       "reason": "Fibromyalgia",
       "codes": [
@@ -326,21 +322,19 @@
     },
     "Prescribe_Savella": {
       "type": "MedicationOrder",
-      "target_encounter": "Fibromyalgia_Episode",
       "assign_to_attribute": "fibromyalgia_prescription",
       "reason": "Fibromyalgia",
       "codes": [
         {
           "system": "RxNorm",
-          "code": "833137",
-          "display": "Milnacipran hydrochloride 100 MG [Savella]"
+          "code": "833135",
+          "display": "Milnacipran hydrochloride 100 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Episode_Encounter"
     },
     "Prescribe_Opioid": {
       "type": "MedicationOrder",
-      "target_encounter": "Fibromyalgia_Episode",
       "assign_to_attribute": "opioid_prescription",
       "reason": "Fibromyalgia",
       "remarks": [
@@ -349,8 +343,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1049636",
-          "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 2.5 MG [Percocet]"
+          "code": "1049635",
+          "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 2.5 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Episode_Encounter"
@@ -399,6 +393,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 5,
         "high": 10
       },

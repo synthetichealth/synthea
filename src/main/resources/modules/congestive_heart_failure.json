@@ -292,8 +292,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 315971,
-          "display": "Lasix 40mg"
+          "code": "313988",
+          "display": "Furosemide 40 MG Oral Tablet"
         }
       ],
       "direct_transition": "Assign CHF care plan",
@@ -405,7 +405,8 @@
           "display": "Encounter for Problem"
         }
       ],
-      "direct_transition": "Record_CMP"
+      "direct_transition": "Record_CMP",
+      "reason": "CHF Condition Start"
     },
     "CXR_ED": {
       "type": "ImagingStudy",
@@ -470,7 +471,8 @@
           "display": "Inpatient stay (finding)"
         }
       ],
-      "direct_transition": "Inpatient LOS"
+      "direct_transition": "Inpatient LOS",
+      "reason": "CHF Condition Start"
     },
     "Inpatient CarePlan": {
       "type": "CarePlanStart",
@@ -516,7 +518,7 @@
               {
                 "system": "LOINC",
                 "code": "59408-5",
-                "display": "oxygen saturation in arterial blood by pulse oximetry"
+                "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
               }
             ],
             "operator": ">",
@@ -525,7 +527,7 @@
         }
       ]
     },
-    "Lasix IV": {
+    "Furosemide": {
       "type": "MedicationOrder",
       "codes": [
         {
@@ -586,7 +588,7 @@
       "type": "VitalSign",
       "vital_sign": "Oxygen Saturation",
       "unit": "%",
-      "direct_transition": "CXR_Inpt_daily",
+      "direct_transition": "Record O2",
       "range": {
         "low": 65,
         "high": 85
@@ -783,7 +785,6 @@
           "unit": "mmol/L"
         }
       ],
-      "target_encounter": "Wellness_Encounter",
       "direct_transition": "Inpatient Daily Transition"
     },
     "Record_CMP": {
@@ -899,7 +900,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/​1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
             }
           ],
           "range": {
@@ -914,7 +915,7 @@
             {
               "system": "LOINC",
               "code": "2885-2",
-              "display": "Protein [Mass/​volume] in Serum or Plasma"
+              "display": "Protein [Mass/volume] in Serum or Plasma"
             }
           ],
           "range": {
@@ -929,7 +930,7 @@
             {
               "system": "LOINC",
               "code": "1751-7",
-              "display": "Albumin [Mass/​volume] in Serum or Plasma"
+              "display": "Albumin [Mass/volume] in Serum or Plasma"
             }
           ],
           "range": {
@@ -944,7 +945,7 @@
             {
               "system": "LOINC",
               "code": "10834-0",
-              "display": "Globulin [Mass/​volume] in Serum by calculation"
+              "display": "Globulin [Mass/volume] in Serum by calculation"
             }
           ],
           "range": {
@@ -959,7 +960,7 @@
             {
               "system": "LOINC",
               "code": "1975-2",
-              "display": "Bilirubin.total [Mass/​volume] in Serum or Plasma"
+              "display": "Bilirubin.total [Mass/volume] in Serum or Plasma"
             }
           ],
           "range": {
@@ -974,7 +975,7 @@
             {
               "system": "LOINC",
               "code": "6768-6",
-              "display": "Alkaline phosphatase [Enzymatic activity/​volume] in Serum or Plasma"
+              "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
             }
           ],
           "range": {
@@ -989,7 +990,7 @@
             {
               "system": "LOINC",
               "code": "1742-6",
-              "display": "Alanine aminotransferase [Enzymatic activity/​volume] in Serum or Plasma"
+              "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
             }
           ],
           "range": {
@@ -1004,7 +1005,7 @@
             {
               "system": "LOINC",
               "code": "1920-8",
-              "display": "Aspartate aminotransferase [Enzymatic activity/​volume] in Serum or Plasma"
+              "display": "Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
             }
           ],
           "range": {
@@ -1146,7 +1147,7 @@
       ],
       "observations": [
         {
-          "category": "vital-sign",
+          "category": "laboratory",
           "unit": "%",
           "codes": [
             {
@@ -1164,14 +1165,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": "34552-0",
-        "display": "trans thoracic echocardiogram"
+        "code": "434158009",
+        "display": "Transthoracic three dimensional ultrasonography of heart (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 261179002,
+            "code": "261179002",
             "display": "thoracic"
           },
           "modality": {
@@ -1254,7 +1255,7 @@
     },
     "Inpatient daily routine": {
       "type": "Simple",
-      "direct_transition": "Lasix IV"
+      "direct_transition": "Furosemide"
     },
     "Death": {
       "type": "Death",
@@ -1349,11 +1350,11 @@
     "Daily self-measurement": {
       "type": "MultiObservation",
       "category": "vital-signs",
-      "number_of_observations": 0,
+      "number_of_observations": 2,
       "codes": [
         {
           "system": "LOINC",
-          "code": "55284-4",
+          "code": "85354-9",
           "display": "Blood Pressure"
         }
       ],
@@ -1361,7 +1362,7 @@
       "observations": [
         {
           "category": "vital-signs",
-          "unit": "",
+          "unit": "mm[Hg]",
           "codes": [
             {
               "system": "LOINC",
@@ -1373,7 +1374,7 @@
         },
         {
           "category": "vital-signs",
-          "unit": "",
+          "unit": "mm[Hg]",
           "codes": [
             {
               "system": "LOINC",
@@ -1405,7 +1406,7 @@
     "Set 3D Echo": {
       "type": "SetAttribute",
       "attribute": "3decho",
-      "direct_transition": "CXR_Inpt_daily",
+      "direct_transition": "O2 Vitals",
       "value": true
     },
     "Reset 3D Echo": {
@@ -1433,6 +1434,25 @@
           "transition": "intra_encounter time gate"
         }
       ]
+    },
+    "Record O2": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "%",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2708-6",
+          "display": "Oxygen saturation in Arterial blood"
+        },
+        {
+          "system": "LOINC",
+          "code": "59408-5",
+          "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
+        }
+      ],
+      "direct_transition": "CXR_Inpt_daily",
+      "vital_sign": "Oxygen Saturation"
     }
   }
 }

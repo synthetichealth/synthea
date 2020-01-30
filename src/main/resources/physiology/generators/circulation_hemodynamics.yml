@@ -1,0 +1,98 @@
+
+# Name of the model file
+model: circulation/Smith2004_CVS_human.xml
+
+# Which differential equation solver to use.
+# Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsch_stoer, higham_hall_54, rosenbrock, runge_kutta
+solver: runge_kutta
+
+# Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
+stepSize: 0.01
+
+# Simulation duration in seconds
+simDuration: 4.0
+
+# Simulation lead time in seconds before output data is captured
+leadTime: 2.0
+
+# Whether the simulation should use other generators before any input thresholds
+# are reached.
+# Very useful for preventing simulation execution when the inputs (and results)
+# are within normal ranges. If this is true, preGenerator attributes must be
+# defined for each output
+usePreGenerators: true
+
+# Initializes person attributes. Necessary if input parameters depend on attributes
+# which otherwise may not exist when the generator first executes
+personAttributeDefaults:
+   blood_pressure_controlled: false
+
+# List of input definitions for the model
+# Field descriptions:
+#   "from"              -   attribute or vital sign value to use directly from a Person.
+#                           The "type" field must also be provided to specify which one.
+#   "fromExp"           -   A mathematical expression. Both attributes and vital signs
+#                           can be used within #{} blocks. The result will be assigned to
+#                           the model input parameter indicated by "to".
+#   "to"                -   Target model input parameter to assign
+#   "varianceThreshold" -   Amount of variance to allow in the input parameter
+#                           without performing a re-run of the simulation.
+#                           This can significantly effect overall Synthea runtime.
+#                           Defaults to 0.
+#   "type"              -   Type of the input value "from", if applicable. Must be one of
+#                           "ATTRIBUTE" or "VITAL_SIGN".
+inputs:
+      # Effects of age and BMI loosely estimated from a comprehensive study on adult blood pressure 
+      # percentiles (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4553889/)
+      # More research is needed to determine appropriate age / BMI effects on all model parameters.
+    - fromExp: "1.1889 + 0.025 * (#{BMI} - 21.7) + (if #{blood_pressure_controlled} != 0 then 0 else (0.0112 * #{age}))"
+      to: R_sys
+      variance: 0.25 # Allowable variance in input to avoid running simulation
+    - fromExp: "0.8413 + (if #{age} > 20 then 0.0175 * (#{age} - 20) else 0)"
+      to: E_es_ao
+      variance: 0.2 # Allowable variance in input to avoid running simulation
+      
+# List of output definitions for the model
+# Field descriptions:
+#   "from"              -   Model parameter to pull from directly.
+#   "fromExp"           -   A mathematical expression. Any model parameter can be used
+#                           within #{} blocks and will be a List of values for that
+#                           parameter at each time step. The result will be assigned to
+#                           the model input parameter indicated by "to".
+#   "to"                -   Target Person attribute or vital sign to assign. Note that
+#                           attributes are assigned as a side-effect of simulation
+#                           execution, so the model must provide at least one vital sign
+#                           output for the simulation to actually execute.
+#   "varianceThreshold" -   Amount of variance to allow in the input parameter
+#                           without performing a re-run of the simulation.
+#                           This can significantly effect overall Synthea runtime.
+#                           Defaults to 0.
+#   "type"              -   Type of the output value "to". Must be "ATTRIBUTE" or "VITAL_SIGN".
+outputs:
+    - fromExp: "((Max(#{V_lv}) - Min(#{V_lv})) / Max(#{V_lv}))*100"
+      to: Left ventricular Ejection fraction
+      type: VITAL_SIGN
+      variance: 3.0
+      preGenerator:
+         className: org.mitre.synthea.helpers.RandomValueGenerator
+         args: # Args 2+ for the constructor
+            # From https://my.clevelandclinic.org/health/diseases/17069-heart-failure-understanding-heart-failure
+            - {"value": 55.0, "type": "java.lang.Double", "primitive": true}
+            - {"value": 70.0, "type": "java.lang.Double", "primitive": true}
+    - fromExp: "Max(#{P_ao})"
+      to: Systolic Blood Pressure
+      type: VITAL_SIGN
+      variance: 10.0
+      preGenerator:
+         className: org.mitre.synthea.modules.BloodPressureValueGenerator
+         args: # Args 2+ for the constructor
+            - {"value": SYSTOLIC, "type": "org.mitre.synthea.modules.BloodPressureValueGenerator$SysDias"}
+    - fromExp: "Min(#{P_ao})"
+      to: Diastolic Blood Pressure
+      type: VITAL_SIGN
+      variance: 5.0
+      preGenerator:
+         className: org.mitre.synthea.modules.BloodPressureValueGenerator
+         args: # Args 2+ for the constructor
+            - {"value": DIASTOLIC, type: "org.mitre.synthea.modules.BloodPressureValueGenerator$SysDias"}
+

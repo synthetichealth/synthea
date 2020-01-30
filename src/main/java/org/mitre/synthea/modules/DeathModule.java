@@ -21,14 +21,19 @@ public class DeathModule {
   public static final Code DEATH_CERTIFICATE = new Code("LOINC", "69409-1",
       "U.S. standard certificate of death - 2003 revision");
   // NOTE: if new codes are added, be sure to update getAllCodes below
-  
+
+  /**
+   * Process the death of a person at a given time.
+   * @param person - the person who has died.
+   * @param time - the time of the death exam and certification.
+   */
   public static void process(Person person, long time) {
     if (!person.alive(time) && person.attributes.containsKey(Person.CAUSE_OF_DEATH)) {
       // create an encounter, diagnostic report, and observation
 
       Code causeOfDeath = (Code) person.attributes.get(Person.CAUSE_OF_DEATH);
 
-      Encounter deathCertification = person.encounterStart(time, EncounterType.AMBULATORY);
+      Encounter deathCertification = person.encounterStart(time, EncounterType.WELLNESS);
       deathCertification.codes.add(DEATH_CERTIFICATION);
 
       Observation codObs = person.record.observation(time, CAUSE_OF_DEATH_CODE.code, causeOfDeath);

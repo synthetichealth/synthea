@@ -468,8 +468,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 328670,
-          "display": "Sertraline 100MG"
+          "code": 312938,
+          "display": "Sertraline 100 MG Oral Tablet"
         }
       ],
       "assign_to_attribute": "SSRI",
@@ -1003,6 +1003,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 4,
         "high": 8
       },
@@ -1020,6 +1021,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 4,
         "high": 8
       },
@@ -1037,6 +1039,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 0,
         "high": 3
       },
@@ -1054,6 +1057,7 @@
         }
       ],
       "range": {
+        "decimals": 0,
         "low": 1,
         "high": 4
       },

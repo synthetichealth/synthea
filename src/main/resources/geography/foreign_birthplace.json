@@ -1,11 +1,4 @@
 {
-  "africa": [
-  "Algiers,Algiers Province,DZ",
-    "Oran,Oran Province,DZ",
-    "Constantine,Constantine Province,DZ",
-    "Annaba,Annaba Provice,DZ",
-    "Blida,Blida Province,DZ"
-  ],
   "arabic": [
     "Riyadh,Riyadh,SA",
     "Najran,Najran,SA",
@@ -13,12 +6,37 @@
     "Khamis Mushayt,Asir,SA",
     "Jeddah,Tihamah,SA"
   ],
-  "central_american": [
+  "spanish": [
     "Guatemala City,Guatemala,GT",
     "Panama City,Panama,PA",
     "San Jose,San Jose,CR",
     "Tegucigalpa,Francisco Morazán,HN",
-    "San Salvador,El Salvador,SV"
+    "San Salvador,El Salvador,SV",
+    "Roseau,Saint George,DM",
+    "Portsmouth,Saint John Parish,DM",
+    "Salisbury,Saint Joseph Parish,DM",
+    "Wesley,Saint Andrew Parish,DM",
+    "Marigot,Saint Andrew Parish,DM",
+    "Mexico City,Mexico City,MX",
+    "La Paz,Baja California,MX",
+    "Gaudalajara,Jalisco,MX",
+    "Puebla,Puebla,MX",
+    "Juarez,Chihuahua,MX",
+    "San Juan,Puerto Rico,PR",
+    "Ponce,Puerto Rico,PR",
+    "Carolina,Puerto Rico,PR",
+    "Bayamon,Puerto Rico,PR",
+    "Caguas,Puerto Rico,PR",
+    "Lima,Lima Province,PE",
+    "Bogota,Bogota,CO",
+    "Santiago,Santiago Province,CL",
+    "Caracas,Capital District,VE",
+    "Buenos Aires,Ciudad de Buenos Aires,AR",
+    "Santo Domingo,National District,DO",
+    "Port-au-Prince,Haiti,HT",
+    "Havana,Havana,CU",
+    "Kingston,Kingston,JM",
+    "Santiago de los Caballeros,Santiago,DO"
   ],
   "chinese": [
     "Hong Kong,Hong Kong Special Administrative Region,CN",
@@ -27,26 +45,12 @@
     "Chongqing,Chongqing Municipality,CN",
     "Shanghai,Shanghai Municipality,CN"
   ],
-  "dominican": [
-    "Roseau,Saint George,DM",
-    "Portsmouth,Saint John Parish,DM",
-    "Salisbury,Saint Joseph Parish,DM",
-    "Wesley,Saint Andrew Parish,DM",
-    "Marigot,Saint Andrew Parish,DM"
-  ],
   "french": [
     "Paris,Ile-de-France,FR",
     "Marseille,Provence-Alpes-Cote d'Azur,FR",
     "Lyon,Auvergne-Rhone-Alpes,FR",
     "Toulouse,Occitanie,FR",
     "Nice,Provence-Alpes-Cote d'Azur,FR"
-  ],
-  "french_canadian": [
-    "Quebec City,Quebec,CA",
-    "Montreal,Quebec,CA",
-    "Boucherville,Quebec,CA",
-    "Terrebonne,Quebec,CA",
-    "Longueuil,Quebec,CA"
   ],
   "german": [
     "Berlin,Berlin,DE",
@@ -62,7 +66,7 @@
     "Heraklion,Heraklion Prefecture,GR",
     "Larissa,Larissa Prefecture,GR"
   ],
-  "indian": [
+  "hindi": [
     "Mumbai,Maharashtra,IN",
     "Delhi,Delhi,IN",
     "Bangalore,Karnataka,IN",
@@ -76,26 +80,16 @@
     "Turin,Piedmont,IT",
     "Palermo,Sicily,IT"
   ],
-  "mexican": [
-    "Mexico City,Mexico City,MX",
-    "La Paz,Baja California,MX",
-    "Gaudalajara,Jalisco,MX",
-    "Puebla,Puebla,MX",
-    "Juarez,Chihuahua,MX"
-  ],
   "portuguese": [
     "Lisbon,Estremadura,PT",
     "Funchal,Madeira,PT",
     "Braga,Minho,PT",
     "Faro,Algarve,PT",
-    "Porto,Douro Litoral,PT"
-  ],
-  "puerto_rican": [
-    "San Juan,Puerto Rico,PR",
-    "Ponce,Puerto Rico,PR",
-    "Carolina,Puerto Rico,PR",
-    "Bayamon,Puerto Rico,PR",
-    "Caguas,Puerto Rico,PR"
+    "Porto,Douro Litoral,PT",
+    "Sao Paulo,Sao Paulo,BR",
+    "Rio de Janerio,Rio de Janerio,BR",
+    "Salvador,Bahia,BR",
+    "Brasilia,Federal District,BR"
   ],
   "russian": [
     "Moscow,Moscow,RU",
@@ -104,22 +98,28 @@
     "Yekaterinburg,Sverdlovsk Oblast,RU",
     "Nizhny Novgorod,Nizhny Novgorod Oblast,RU"
   ],
-  "south_american": [
-    "Sao Paulo,Sao Paulo,BR",
-    "Rio de Janerio,Rio de Janerio,BR",
-    "Salvador,Bahia,BR",
-    "Brasilia,Federal District,BR",
-    "Lima,Lima Province,PE",
-    "Bogota,Bogota,CO",
-    "Santiago,Santiago Province,CL",
-    "Caracas,Capital District,VE",
-    "Buenos Aires,Ciudad de Buenos Aires,AR"
+  "polish": [
+    "Warsaw,Masovian,PL",
+    "Kraków,Lesser Poland,PL",
+    "Łódź,Łódź,PL",
+    "Wrocław,Lower Silesian,PL"
   ],
-  "west_indian": [
-    "Santo Domingo,National District,DO",
-    "Port-au-Prince,Haiti,HT",
-    "Havana,Havana,CU",
-    "Kingston,Kingston,JM",
-    "Santiago de los Caballeros,Santiago,DO"
+  "japanese": [
+    "Tokyo,Tokyo,JP",
+    "Yokohama,Kanagawa,JP",
+    "Osaka,Osaka,JP",
+    "Nagoya, Aichi,JP"
+  ],
+  "korean": [
+    "Seoul,Seoul,KR",
+    "Busan,Busan,KR",
+    "Incheon,Incheon,KR",
+    "Daegu,Daegu,KR"
+  ],
+  "vietnamese": [
+    "Ho Chi Minh City,Gia Định,VN",
+    "Hanoi,Hà Đông,VN",
+    "Haiphong,Kiến An,VN",
+    "Cantho,Cần Thơ,VN"
   ]
 }

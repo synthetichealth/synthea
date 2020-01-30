@@ -1,9 +1,9 @@
 package org.mitre.synthea.world.agents.behaviors;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.sis.geometry.DirectPosition2D;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,14 +23,14 @@ public class ProviderFinderTest {
   @BeforeClass
   public static void setup() {
     person = new Person(0L);
-    DirectPosition2D coordinate = new DirectPosition2D(0, 0);
+    Point2D.Double coordinate = new Point2D.Double(0, 0);
     person.attributes.put(Person.COORDINATE, coordinate);
     
     providers = new ArrayList<Provider>();
     for (int i = 1; i <= 3; i += 1) {
       Provider provider = new Provider();
       provider.id = i + "";
-      provider.getCoordinates().setLocation(i, i);
+      provider.getLonLat().setLocation(i, i);
       provider.quality = i;
       provider.servicesProvided.add(EncounterType.WELLNESS);
       providers.add(provider);

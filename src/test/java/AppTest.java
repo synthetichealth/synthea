@@ -153,6 +153,37 @@ public class AppTest {
   }
   
   @Test
+  public void testAppWithLocalConfigFile() throws Exception {
+    TestHelper.exportOff();
+    Config.set("test.bar", "42");
+    String[] args = {"-s", "0", "-p", "0",
+        "-c", "src/test/resources/test2.properties"};
+    App.main(args);
+    
+    Assert.assertEquals("24", Config.get("test.bar"));
+  }
+  
+  @Test
+  public void testAppWithLocalModuleDir() throws Exception {
+    TestHelper.exportOff();
+    String[] args = {"-s", "0", "-p", "0",
+        "-d", "src/test/resources/module", "-m", "copd*"};
+    final PrintStream original = System.out;
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final PrintStream print = new PrintStream(out, true);
+    System.setOut(print);
+    App.main(args);
+    out.flush();
+    String output = out.toString();
+    Assert.assertTrue(output.contains("Running with options:"));
+    Assert.assertTrue(output.contains("Seed:"));
+    Assert.assertTrue(output.contains("Modules:"));
+    Assert.assertTrue(output.contains("COPD Module"));
+    Assert.assertTrue(output.contains("COPD_TEST Module"));
+    System.setOut(original);    
+  }
+  
+  @Test
   public void testInvalidArgs() throws Exception {
     String[] args = {"-s", "foo", "-p", "foo", "Massachusetts", "Bedford"};
     final PrintStream original = System.out;
