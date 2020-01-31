@@ -30,7 +30,7 @@ These instructions are intended for those wishing to examine the Synthea source 
 Synthea<sup>TM</sup> requires Java 1.8 or above.
 
 To clone the Synthea<sup>TM</sup> repo, then build and run the test suite:
-```4
+```
 git clone https://github.com/synthetichealth/synthea.git
 cd synthea
 ./gradlew build check test
