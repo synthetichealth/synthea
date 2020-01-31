@@ -9,8 +9,8 @@ import java.util.Random;
 
 import static org.junit.Assert.*;
 
-public class HealthRecordModulesTest {
-  class Dummy implements HealthRecordModule {
+public class HealthRecordEditorsTest {
+  class Dummy implements HealthRecordEditor {
 
     @Override
     public boolean shouldRun(Person person, HealthRecord record, long time) {
@@ -25,12 +25,12 @@ public class HealthRecordModulesTest {
 
   @Test
   public void getInstance() {
-    assertNotNull(HealthRecordModules.getInstance());
+    assertNotNull(HealthRecordEditors.getInstance());
   }
 
   @Test
   public void executeAll() {
-    HealthRecordModules hrm = HealthRecordModules.getInstance();
+    HealthRecordEditors hrm = HealthRecordEditors.getInstance();
     hrm.registerModule(new Dummy());
     Person p = new Person(1);
     hrm.executeAll(p, new HealthRecord(p), 1, 1, new Random());

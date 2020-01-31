@@ -9,39 +9,39 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
 /**
- * A singleton class for managing all of the implementations of HealthRecordModule.
+ * A singleton class for managing all of the implementations of HealthRecordEditor.
  */
-public class HealthRecordModules {
-  private static HealthRecordModules instance;
-  private List<HealthRecordModule> registeredModules;
+public class HealthRecordEditors {
+  private static HealthRecordEditors instance;
+  private List<HealthRecordEditor> registeredEditors;
 
-  private HealthRecordModules() {
-    this.registeredModules = new ArrayList<>();
+  private HealthRecordEditors() {
+    this.registeredEditors = new ArrayList<>();
   }
 
   /**
-   * Get the singleton instance of HealthRecordModules.
+   * Get the singleton instance of HealthRecordEditors.
    * @return the one
    */
-  public static HealthRecordModules getInstance() {
+  public static HealthRecordEditors getInstance() {
     if (instance == null) {
-      instance = new HealthRecordModules();
+      instance = new HealthRecordEditors();
     }
     return instance;
   }
 
   /**
-   * Add a HealthRecordModule to be run during the simulation.
-   * @param module The module to add
+   * Add a HealthRecordEditor to be run during the simulation.
+   * @param editor The editor to add
    */
-  public void registerModule(HealthRecordModule module) {
-    this.registeredModules.add(module);
+  public void registerModule(HealthRecordEditor editor) {
+    this.registeredEditors.add(editor);
   }
 
   /**
-   * Runs all of the registered implementations of HealthRecordModule. Will first check to see if
-   * the module should be run by invoking... shouldRun. If it should run, will call process on
-   * the module.
+   * Runs all of the registered implementations of HealthRecordEditor. Will first check to see if
+   * the editor should be run by invoking... shouldRun. If it should run, will call process on
+   * the editor.
    * <p>
    * It's unlikely that this method should be called by anything outside of Generator.
    * </p>
@@ -52,12 +52,12 @@ public class HealthRecordModules {
    * @param random The source of randomness that modules should use
    */
   public void executeAll(Person person, HealthRecord record, long time, long step, Random random) {
-    if (this.registeredModules.size() > 0) {
+    if (this.registeredEditors.size() > 0) {
       long start = time - step;
       List<HealthRecord.Encounter> encountersThisStep = record.encounters.stream()
           .filter(e -> e.start >= start)
           .collect(Collectors.toList());
-      this.registeredModules.forEach(m -> {
+      this.registeredEditors.forEach(m -> {
         if (m.shouldRun(person, record, time)) {
           m.process(person, encountersThisStep, time, random);
         }
