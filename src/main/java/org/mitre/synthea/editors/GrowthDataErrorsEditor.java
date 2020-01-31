@@ -1,4 +1,4 @@
-package org.mitre.synthea.modules;
+package org.mitre.synthea.editors;
 
 import com.google.gson.Gson;
 
@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import org.mitre.synthea.engine.HealthRecordModule;
+import org.mitre.synthea.engine.HealthRecordEditor;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
 /**
- * This module simulates errors that occur in growth data as it would be collected in a clinical
- * setting. This module is an implementation of the protocol for simulating growth data errors as
+ * This editor simulates errors that occur in growth data as it would be collected in a clinical
+ * setting. This editor is an implementation of the protocol for simulating growth data errors as
  * specified in Supplemental File 5 in the paper "Automated identification of implausible values
  * in growth data from pediatric electronic health records":
  * https://academic.oup.com/jamia/article/24/6/1080/3767271
@@ -26,13 +26,13 @@ import org.mitre.synthea.world.concepts.HealthRecord;
  * MAX_AGE.
  * </p>
  */
-public class GrowthDataErrorsModule implements HealthRecordModule {
+public class GrowthDataErrorsEditor implements HealthRecordEditor {
 
   public static final String HEIGHT_LOINC_CODE = "8302-2";
   public static final String WEIGHT_LOINC_CODE = "29463-7";
   public static final String BMI_LOINC_CODE = "39156-5";
 
-  public GrowthDataErrorsModule() { }
+  public GrowthDataErrorsEditor() { }
 
   public static int MAX_AGE = 20;
   public static double POUNDS_PER_KG = 2.205;
