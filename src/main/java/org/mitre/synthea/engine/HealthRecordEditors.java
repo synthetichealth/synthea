@@ -34,7 +34,7 @@ public class HealthRecordEditors {
    * Add a HealthRecordEditor to be run during the simulation.
    * @param editor The editor to add
    */
-  public void registerModule(HealthRecordEditor editor) {
+  public void registerEditor(HealthRecordEditor editor) {
     this.registeredEditors.add(editor);
   }
 
@@ -63,5 +63,12 @@ public class HealthRecordEditors {
         }
       });
     }
+  }
+
+  /**
+   * Remove all registered editors
+   */
+  public void resetEditors() {
+    this.registeredEditors = new ArrayList();
   }
 }

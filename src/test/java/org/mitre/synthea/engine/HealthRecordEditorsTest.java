@@ -31,11 +31,12 @@ public class HealthRecordEditorsTest {
   @Test
   public void executeAll() {
     HealthRecordEditors hrm = HealthRecordEditors.getInstance();
-    hrm.registerModule(new Dummy());
+    hrm.registerEditor(new Dummy());
     Person p = new Person(1);
     hrm.executeAll(p, new HealthRecord(p), 1, 1, new Random());
     assertNull(p.attributes.get(Person.ZIP));
     hrm.executeAll(p, new HealthRecord(p), 1100, 1, new Random());
     assertEquals("01730", p.attributes.get(Person.ZIP));
+    hrm.resetEditors();
   }
 }
