@@ -239,7 +239,7 @@ public class Generator {
     if (Boolean.parseBoolean(
         Config.get("growtherrors", "false"))) {
       HealthRecordEditors hrm = HealthRecordEditors.getInstance();
-      hrm.registerModule(new GrowthDataErrorsEditor());
+      hrm.registerEditor(new GrowthDataErrorsEditor());
     }
   }
 
