@@ -100,7 +100,7 @@ public class GrowthDataErrorsEditorTest {
   public void introduceWeightDuplicateError() {
     GrowthDataErrorsEditor.introduceWeightDuplicateError(first, new Random());
     long obsCount = first.observations.stream()
-        .filter(o -> o.containsCode(GrowthDataErrorsEditor.WEIGHT_LOINC_CODE, "LOINC"))
+        .filter(o -> o.type.equals(GrowthDataErrorsEditor.WEIGHT_LOINC_CODE))
         .count();
     assertEquals(2, obsCount);
   }
@@ -109,7 +109,7 @@ public class GrowthDataErrorsEditorTest {
   public void introduceHeightDuplicateError() {
     GrowthDataErrorsEditor.introduceHeightDuplicateError(first, new Random());
     long obsCount = first.observations.stream()
-        .filter(o -> o.containsCode(GrowthDataErrorsEditor.HEIGHT_LOINC_CODE, "LOINC"))
+        .filter(o -> o.type.equals(GrowthDataErrorsEditor.HEIGHT_LOINC_CODE))
         .count();
     assertEquals(2, obsCount);
   }
@@ -130,7 +130,7 @@ public class GrowthDataErrorsEditorTest {
   public void encountersWithObservationsOfCode() {
     GrowthDataErrorsEditor mod = new GrowthDataErrorsEditor();
     List<HealthRecord.Encounter> es = mod.encountersWithObservationsOfCode(record.encounters,
-        GrowthDataErrorsEditor.HEIGHT_LOINC_CODE, "LOINC");
+        GrowthDataErrorsEditor.HEIGHT_LOINC_CODE);
     assertEquals(2, es.size());
 
   }
