@@ -108,4 +108,26 @@ public class ExpressionProcessorTest {
     assertEquals(4.0, result.doubleValue(), 0.0001);
     
   }
+  
+  @Test
+  public void testListInput() {
+    
+    Map<String,Object> params = new HashMap<String,Object>();
+    
+    List<BigDecimal> listVar = new ArrayList<BigDecimal>();
+    listVar.add(new BigDecimal(3.0));
+    listVar.add(new BigDecimal(1.0));
+    listVar.add(new BigDecimal(2.0));
+    listVar.add(new BigDecimal(12.0));
+    
+    params.put("list_var", listVar);
+    
+    ExpressionProcessor expProcessor = new ExpressionProcessor("Sum(#l{list_var})");
+    
+    BigDecimal result = expProcessor.evaluateNumeric(params);
+    
+    assertNotNull(result);
+    assertEquals(18.0, result.doubleValue(), 0.0001);
+    
+  }
 }
