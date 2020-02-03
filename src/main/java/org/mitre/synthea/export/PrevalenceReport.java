@@ -148,8 +148,8 @@ public class PrevalenceReport {
     }
 
     if (!givenConditionDisplay.isEmpty() || !givenConditionCode.isEmpty()) {
-    	stmt.setString(index++, givenConditionCode);
-    	stmt.setString(index++, givenConditionDisplay);
+      stmt.setString(index++, givenConditionCode);
+      stmt.setString(index++, givenConditionDisplay);
     }
 
     ResultSet rs = stmt.executeQuery();
