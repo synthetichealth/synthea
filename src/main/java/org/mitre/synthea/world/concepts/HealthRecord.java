@@ -472,10 +472,11 @@ public class HealthRecord {
      * @param type The LOINC code for the observation
      * @param value The observation value
      */
-    public void addObservation(long time, String type, Object value) {
+    public Observation addObservation(long time, String type, Object value) {
       Observation observation = new Observation(time, type, value);
-      observation.codes.add(new Code("LOINC", type, type));
+      //observation.codes.add(new Code("LOINC", type, type));
       this.observations.add(observation);
+      return observation;
     }
 
     /**
@@ -486,7 +487,7 @@ public class HealthRecord {
     public Observation findObservation(String code) {
       return observations
           .stream()
-          .filter(o -> o.containsCode(code, "LOINC"))
+          .filter(o -> o.type.equals(code))
           .findFirst()
           .orElse(null);
     }
@@ -581,9 +582,7 @@ public class HealthRecord {
   }
 
   public Observation observation(long time, String type, Object value) {
-    Observation observation = new Observation(time, type, value);
-    currentEncounter(time).observations.add(observation);
-    return observation;
+    return currentEncounter(time).addObservation(time, type, value);
   }
 
   public Observation multiObservation(long time, String type, int numberOfObservations) {
@@ -604,10 +603,9 @@ public class HealthRecord {
   public Observation getLatestObservation(String type) {
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
-      for (Observation observation : encounter.observations) {
-        if (observation.type.equals(type)) {
-          return observation;
-        }
+      Observation obs = encounter.findObservation(type);
+      if (obs != null) {
+        return obs;
       }
     }
     return null;

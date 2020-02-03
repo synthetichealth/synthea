@@ -91,7 +91,7 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
   public void process(Person person, List<HealthRecord.Encounter> encounters, long time,
                       Random random) {
     List<HealthRecord.Encounter> encountersWithWeights =
-        encountersWithObservationsOfCode(encounters, WEIGHT_LOINC_CODE, "LOINC");
+        encountersWithObservationsOfCode(encounters, WEIGHT_LOINC_CODE);
     encountersWithWeights.forEach(e -> {
       if (random.nextDouble() <= config.weightUnitErrorRate) {
         introduceWeightUnitError(e);
@@ -120,7 +120,7 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
     });
 
     List<HealthRecord.Encounter> encountersWithHeights =
-        encountersWithObservationsOfCode(encounters, HEIGHT_LOINC_CODE, "LOINC");
+        encountersWithObservationsOfCode(encounters, HEIGHT_LOINC_CODE);
     encountersWithHeights.forEach(e -> {
       if (random.nextDouble() <= config.heightUnitErrorRate) {
         introduceHeightUnitError(e);
@@ -337,24 +337,15 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
   }
 
   private static HealthRecord.Observation weightObservation(HealthRecord.Encounter encounter) {
-    return findObservation(encounter, WEIGHT_LOINC_CODE);
+    return encounter.findObservation(WEIGHT_LOINC_CODE);
   }
 
   private static HealthRecord.Observation heightObservation(HealthRecord.Encounter encounter) {
-    return findObservation(encounter, HEIGHT_LOINC_CODE);
+    return encounter.findObservation(HEIGHT_LOINC_CODE);
   }
 
   private static HealthRecord.Observation bmiObservation(HealthRecord.Encounter encounter) {
-    return findObservation(encounter, BMI_LOINC_CODE);
-  }
-
-  private static HealthRecord.Observation findObservation(HealthRecord.Encounter encounter,
-                                                          String code) {
-    return encounter.observations
-        .stream()
-        .filter(o -> o.containsCode(code, "LOINC"))
-        .findFirst()
-        .orElse(null);
+    return encounter.findObservation(BMI_LOINC_CODE);
   }
 
   /**
@@ -379,16 +370,12 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
    * Filter a list of encounters to find all that have an observation with a particular code.
    * @param encounters The list to filter
    * @param code The code to look for
-   * @param system The code system of the code
    * @return The filtered list. If there are no matching encounters, then an empty list.
    */
   public List<HealthRecord.Encounter> encountersWithObservationsOfCode(
       List<HealthRecord.Encounter> encounters,
-      String code, String system) {
-    return encounters.stream().filter(e ->
-        e.observations.stream().anyMatch(o ->
-            o.codes.stream().anyMatch(c ->
-                c.code.equals(code) && c.system.equals(system))))
+      String code) {
+    return encounters.stream().filter(e -> e.findObservation(code) != null)
         .collect(Collectors.toList());
   }
 
