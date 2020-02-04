@@ -50,7 +50,7 @@ public final class WeightLossModule extends Module {
   public static final double startBMI =
       (double) BiometricsConfig.get("start_bmi", 30d);
   public static final double startPercentile =
-      (double) BiometricsConfig.get("start_percentile", 0.85d);
+      (double) BiometricsConfig.get("start_percentile", 0.95d);
   public static final double minLoss = (double) BiometricsConfig.get("min_loss", 0.07);
   public static final double maxLoss = (double) BiometricsConfig.get("max_loss", 0.1);
   public static final double maintenance = (double) BiometricsConfig.get("maintenance", 0.2);
@@ -242,6 +242,9 @@ public final class WeightLossModule extends Module {
       double originalPercentile = bmiChart.percentileFor(startAgeInMonths, gender, bmiAtStart);
       double percentileChange = (double) person.attributes.get(WEIGHT_LOSS_BMI_PERCENTILE_CHANGE);
       int nextAgeInMonths = pgt.tail().ageInMonths + 12;
+      if (nextAgeInMonths > 240) {
+        nextAgeInMonths = 240;
+      }
       long nextTimeInSimulation = pgt.tail().timeInSimulation + ONE_YEAR;
       int yearsOfRegression = (nextAgeInMonths - startAgeInMonths - TW0_YEARS_IN_MONTHS) / 12;
       double regressionPeriodYears = 5;
@@ -262,7 +265,7 @@ public final class WeightLossModule extends Module {
     PediatricGrowthTrajectory pgt =
         (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
-    int startAgeInMonths = person.ageInYears(start);
+    int startAgeInMonths = person.ageInMonths(start);
     double bmiAtStart = pgt.currentBMI(person, start, person.mathRandom);
     String gender = (String) person.attributes.get(Person.GENDER);
     double originalPercentile = bmiChart.percentileFor(startAgeInMonths, gender, bmiAtStart);
@@ -302,7 +305,7 @@ public final class WeightLossModule extends Module {
     long currentTailTimeInSim = pgt.tail().timeInSimulation;
     int monthsInTheFuture = 12;
     if (currentTailAge + monthsInTheFuture > TWENTY_YEARS_IN_MONTHS) {
-      monthsInTheFuture = currentTailAge + monthsInTheFuture - TWENTY_YEARS_IN_MONTHS;
+      monthsInTheFuture = TWENTY_YEARS_IN_MONTHS - currentTailAge;
       targetPercentile = startPercentile - (percentileChange * ((double) monthsInTheFuture) / 12);
     }
     double targetBMI = bmiChart.lookUp(currentTailAge + monthsInTheFuture,
@@ -380,12 +383,18 @@ public final class WeightLossModule extends Module {
    * Determines whether a person meets the thresholds for starting weight management.
    * With the default settings:
    * Children under 5 do not ever meet the threshold.
-   * Patients from ages 5 to 20 meet the threshold if their BMI is at or over the 85th percentile
+   * Patients from ages 5 to 20 meet the threshold if their BMI is at or over the 95th percentile
    *   for their age in months
    * Patients 20 and older meet the threshold if their BMI is 30 or over.
    */
   public boolean meetsWeightManagementThresholds(Person person, long time) {
     int age = person.ageInYears(time);
+    // TODO: Find a better approach
+    // If someone is 19, don't start weight management as we don't have a good way to transition
+    // weight loss from the growth charts (BMI Percentile) to percentage of body weight.
+    if (age == 19) {
+      return false;
+    }
     double bmi = person.getVitalSign(VitalSign.BMI, time);
     double bmiAtPercentile = 500; // initializing to an impossibly high value
     // if we somehow hit this later

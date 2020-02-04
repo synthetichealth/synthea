@@ -190,8 +190,8 @@ public class WeightLossModuleTest {
     person.attributes.put(Person.BIRTHDATE, birthDay);
     person.attributes.put(Person.GENDER, "M");
     person.setVitalSign(VitalSign.HEIGHT, 139);
-    person.setVitalSign(VitalSign.WEIGHT, 41);
-    person.setVitalSign(VitalSign.BMI, calculate(139, 41));
+    person.setVitalSign(VitalSign.WEIGHT, 50);
+    person.setVitalSign(VitalSign.BMI, calculate(139, 50));
     assertTrue(mod.meetsWeightManagementThresholds(person, start));
     person.setVitalSign(VitalSign.WEIGHT, 35);
     person.setVitalSign(VitalSign.BMI, calculate(139, 35));

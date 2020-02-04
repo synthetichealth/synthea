@@ -239,7 +239,7 @@ public class PediatricGrowthTrajectory {
    */
   public double currentBMI(Person person, long time, JDKRandomGenerator randomGenerator) {
     Point lastPoint = tail();
-    if (lastPoint.timeInSimulation < time) {
+    if (lastPoint.timeInSimulation <= time) {
       if (lastPoint.ageInMonths > NINETEEN_YEARS_IN_MONTHS) {
         return lastPoint.bmi;
       }
