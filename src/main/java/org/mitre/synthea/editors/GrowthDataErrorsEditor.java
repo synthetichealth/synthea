@@ -289,7 +289,7 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
     HealthRecord.Observation wtObs = weightObservation(encounter);
     double weightValue = (Double) wtObs.value;
     double jitter = random.nextDouble() - 0.5;
-    encounter.addObservation(wtObs.start, wtObs.type, weightValue + jitter);
+    encounter.addObservation(wtObs.start, wtObs.type, weightValue + jitter, "Body Weight");
   }
 
   /**
@@ -301,7 +301,7 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
     HealthRecord.Observation htObs = heightObservation(encounter);
     double heightValue = (Double) htObs.value;
     double jitter = random.nextDouble() - 0.5;
-    encounter.addObservation(htObs.start, htObs.type, heightValue + jitter);
+    encounter.addObservation(htObs.start, htObs.type, heightValue + jitter, "Body Height");
   }
 
   /**

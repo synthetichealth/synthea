@@ -467,14 +467,30 @@ public class HealthRecord {
     }
 
     /**
-     * Add an observation to the encounter.
+     * Add an observation to the encounter. In this case, no codes are added to the observation.
+     * It appears that some code in Synthea likes it this way (and does not like good old OO-style
+     * encapsulation).
      * @param time The time of the observation
-     * @param type The LOINC code for the observation
+     * @param type The type of the observation
      * @param value The observation value
+     * @return The newly created observation.
      */
     public Observation addObservation(long time, String type, Object value) {
       Observation observation = new Observation(time, type, value);
-      //observation.codes.add(new Code("LOINC", type, type));
+      this.observations.add(observation);
+      return observation;
+    }
+
+    /**
+     * Add an observation to the encounter and uses the type to set the first code.
+     * @param time The time of the observation
+     * @param type The LOINC code for the observation
+     * @param value The observation value
+     * @param display The display text for the first code
+     * @return The newly created observation.
+     */
+    public Observation addObservation(long time, String type, Object value, String display) {
+      Observation observation = new Observation(time, type, value);
       this.observations.add(observation);
       return observation;
     }

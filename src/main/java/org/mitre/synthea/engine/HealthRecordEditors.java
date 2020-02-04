@@ -66,7 +66,7 @@ public class HealthRecordEditors {
   }
 
   /**
-   * Remove all registered editors
+   * Remove all registered editors.
    */
   public void resetEditors() {
     this.registeredEditors = new ArrayList();
