@@ -2,6 +2,8 @@ package org.mitre.synthea.modules;
 
 import static org.mitre.synthea.world.concepts.BMI.calculate;
 
+import java.util.Map;
+
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -10,8 +12,6 @@ import org.mitre.synthea.world.concepts.BiometricsConfig;
 import org.mitre.synthea.world.concepts.GrowthChart;
 import org.mitre.synthea.world.concepts.PediatricGrowthTrajectory;
 import org.mitre.synthea.world.concepts.VitalSign;
-
-import java.util.Map;
 
 /**
  * This module allows patients in Synthea to lose weight. It will be triggered when patients
@@ -231,7 +231,8 @@ public final class WeightLossModule extends Module {
    * of time in the regression period.
    */
   public void pediatricRegression(Person person, long time) {
-    PediatricGrowthTrajectory pgt = (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
+    PediatricGrowthTrajectory pgt =
+        (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
     int startAgeInMonths = person.ageInMonths(start);
     if (time + ONE_YEAR > pgt.tail().timeInSimulation) {
@@ -244,8 +245,10 @@ public final class WeightLossModule extends Module {
       long nextTimeInSimulation = pgt.tail().timeInSimulation + ONE_YEAR;
       int yearsOfRegression = (nextAgeInMonths - startAgeInMonths - TW0_YEARS_IN_MONTHS) / 12;
       double regressionPeriodYears = 5;
-      double nextPercentile = originalPercentile - percentileChange * (1d - (yearsOfRegression / regressionPeriodYears));
-      pgt.addPoint(nextAgeInMonths, nextTimeInSimulation, bmiChart.lookUp(nextAgeInMonths, gender, nextPercentile));
+      double nextPercentile = originalPercentile - percentileChange
+          * (1d - (yearsOfRegression / regressionPeriodYears));
+      pgt.addPoint(nextAgeInMonths, nextTimeInSimulation,
+          bmiChart.lookUp(nextAgeInMonths, gender, nextPercentile));
     }
   }
 
@@ -256,7 +259,8 @@ public final class WeightLossModule extends Module {
    */
   public double transitionRegression(Person person, long time) {
     GrowthChart bmiChart = growthChart.get(GrowthChart.ChartType.BMI);
-    PediatricGrowthTrajectory pgt = (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
+    PediatricGrowthTrajectory pgt =
+        (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
     int startAgeInMonths = person.ageInYears(start);
     double bmiAtStart = pgt.currentBMI(person, start, person.mathRandom);
@@ -270,16 +274,26 @@ public final class WeightLossModule extends Module {
     int lossAndRegressionTotalYears = 7;
     double weightAtTwenty = BMI.weightForHeightAndBMI(height, pgt.tail().bmi);
     int regressionEndAge = (startAgeInMonths / 12) + lossAndRegressionTotalYears;
-    double percentageElapsed = (person.ageInDecimalYears(time) - ageTwenty) / (regressionEndAge - ageTwenty);
+    double percentageElapsed = (person.ageInDecimalYears(time) - ageTwenty)
+        / (regressionEndAge - ageTwenty);
     return weightAtTwenty + (percentageElapsed * (targetWeight - weightAtTwenty));
   }
 
+  /**
+   * Change the BMI vector to reflect successful management of weight. This will add a new point at
+   * the end of the trajectory that will result in the BMI percentile change selected for the
+   * person. The change will take place 12 months after the current tail of the trajectory. If
+   * that will take the person past 20 years old, the time frame will be cut short to end at 240
+   * months of age.
+   * @param person to adjust the trajectory for
+   */
   public void adjustBMIVectorForSuccessfulManagement(Person person) {
     GrowthChart bmiChart = growthChart.get(GrowthChart.ChartType.BMI);
     String gender = (String) person.attributes.get(Person.GENDER);
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
     int startAgeInMonths = person.ageInMonths(start);
-    PediatricGrowthTrajectory pgt = (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
+    PediatricGrowthTrajectory pgt =
+        (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
     double percentileChange = (double) person.attributes.get(WEIGHT_LOSS_BMI_PERCENTILE_CHANGE);
     double bmiAtStart = pgt.currentBMI(person, start, person.mathRandom);
     double startPercentile = bmiChart.percentileFor(startAgeInMonths, gender, bmiAtStart);
@@ -291,7 +305,8 @@ public final class WeightLossModule extends Module {
       monthsInTheFuture = currentTailAge + monthsInTheFuture - TWENTY_YEARS_IN_MONTHS;
       targetPercentile = startPercentile - (percentileChange * ((double) monthsInTheFuture) / 12);
     }
-    double targetBMI = bmiChart.lookUp(currentTailAge + monthsInTheFuture, gender, targetPercentile);
+    double targetBMI = bmiChart.lookUp(currentTailAge + monthsInTheFuture,
+        gender, targetPercentile);
     pgt.addPoint(currentTailAge + monthsInTheFuture,
         currentTailTimeInSim + Utilities.convertTime("months", monthsInTheFuture), targetBMI);
   }
@@ -303,7 +318,8 @@ public final class WeightLossModule extends Module {
    */
   public void maintainBMIPercentile(Person person, long time) {
     GrowthChart bmiChart = growthChart.get(GrowthChart.ChartType.BMI);
-    PediatricGrowthTrajectory pgt = (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
+    PediatricGrowthTrajectory pgt =
+        (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
     int ageInMonths = person.ageInMonths(time);
     PediatricGrowthTrajectory.Point tail = pgt.tail();
     if (ageInMonths < TWENTY_YEARS_IN_MONTHS && tail.ageInMonths <= ageInMonths) {
@@ -314,7 +330,8 @@ public final class WeightLossModule extends Module {
       }
 
       double percentile = bmiChart.percentileFor(tail.ageInMonths, gender, tail.bmi);
-      double nextYearBMI = bmiChart.lookUp(tail.ageInMonths + monthsInTheFuture, gender, percentile);
+      double nextYearBMI = bmiChart.lookUp(tail.ageInMonths + monthsInTheFuture,
+          gender, percentile);
       pgt.addPoint(tail.ageInMonths + monthsInTheFuture,
           tail.timeInSimulation + Utilities.convertTime("months", monthsInTheFuture), nextYearBMI);
     }

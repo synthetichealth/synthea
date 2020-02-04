@@ -2,16 +2,17 @@ package org.mitre.synthea.world.concepts;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.apache.commons.math3.distribution.EnumeratedDistribution;
-import org.apache.commons.math3.distribution.NormalDistribution;
-import org.apache.commons.math3.random.JDKRandomGenerator;
-import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Person;
 
 import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.math3.distribution.EnumeratedDistribution;
+import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.random.JDKRandomGenerator;
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Person;
 
 /**
  * This class provides growth trajectories for individuals between 2 and 20.
@@ -71,7 +72,7 @@ public class PediatricGrowthTrajectory {
       NHANESSample.loadDistribution();
 
   /**
-   * Container for data on changes between years for BMI information
+   * Container for data on changes between years for BMI information.
    */
   public static class YearInformation {
     // The correlation of extended BMI Z Score between the current year and the next year.
@@ -81,7 +82,7 @@ public class PediatricGrowthTrajectory {
   }
 
   /**
-   * A representation of a point in the growth trajectory
+   * A representation of a point in the growth trajectory.
    */
   public class Point {
     public int ageInMonths;
@@ -117,7 +118,7 @@ public class PediatricGrowthTrajectory {
    * @param sex of the person to get the weight percentile for
    * @param heightPercentile or the person
    * @return the weight percentile the person would have to be in, given their height percentile
-   * and BMI
+   *     and BMI
    */
   public double reverseWeightPercentile(String sex, double heightPercentile) {
     double height = growthChart.get(GrowthChart.ChartType.HEIGHT).lookUp(this.initialSample.agem,
@@ -169,7 +170,7 @@ public class PediatricGrowthTrajectory {
   }
 
   /**
-   * Finds the closest point occurring before the given time
+   * Finds the closest point occurring before the given time.
    * @param time time of interest
    * @return Point just before it or null if it doesn't exist
    */
@@ -186,7 +187,7 @@ public class PediatricGrowthTrajectory {
   }
 
   /**
-   * Finds the closest point occurring after the given time
+   * Finds the closest point occurring after the given time.
    * @param time time of interest
    * @return Point just after it or null if it doesn't exist
    */
@@ -209,6 +210,13 @@ public class PediatricGrowthTrajectory {
     return this.trajectory.get(0).timeInSimulation > time;
   }
 
+  /**
+   * Adds a point to the end of the trajectory. It must be at the end of the trajectory, otherwise,
+   * it will throw an IllegalArgumentException.
+   * @param ageInMonths for the person at the point
+   * @param timeInSimulation at the time of the point
+   * @param bmi what the body mass index should be at that point in time
+   */
   public void addPoint(int ageInMonths, long timeInSimulation, double bmi) {
     Point p = new Point();
     p.ageInMonths = ageInMonths;
@@ -239,8 +247,8 @@ public class PediatricGrowthTrajectory {
     }
     Point previous = justBefore(time);
     Point next = justAfter(time);
-    double percentOfTimeBetweenPointsElapsed = ((double) time - previous.timeInSimulation) /
-        (next.timeInSimulation - previous.timeInSimulation);
+    double percentOfTimeBetweenPointsElapsed = ((double) time - previous.timeInSimulation)
+        / (next.timeInSimulation - previous.timeInSimulation);
     double bmiDifference = next.bmi - previous.bmi;
 
     return previous.bmi + (bmiDifference * percentOfTimeBetweenPointsElapsed);
@@ -258,13 +266,13 @@ public class PediatricGrowthTrajectory {
   public static double percentileToBMI(double percentile, int ageInMonths, String sex,
                                        double sigma) {
     if (percentile < 0.95) {
-     return growthChart.get(GrowthChart.ChartType.BMI)
+      return growthChart.get(GrowthChart.ChartType.BMI)
          .lookUp(ageInMonths, sex, percentile);
     } else {
       double ninetyFifth = growthChart.get(GrowthChart.ChartType.BMI)
           .lookUp(ageInMonths, sex, 0.95);
-      return ninetyFifth +
-          normalDistribution.inverseCumulativeProbability((percentile - 0.9) * 10) * sigma;
+      return ninetyFifth
+          + normalDistribution.inverseCumulativeProbability((percentile - 0.9) * 10) * sigma;
     }
   }
 
@@ -285,15 +293,15 @@ public class PediatricGrowthTrajectory {
     } else {
       double ninetyFifth = growthChart.get(GrowthChart.ChartType.BMI)
           .lookUp(ageInMonths, sex, 0.95);
-      double ebmiPercentile = 90 + 10 *
-          normalDistribution.cumulativeProbability((bmi - ninetyFifth) / sigma);
+      double ebmiPercentile = 90 + 10
+          * normalDistribution.cumulativeProbability((bmi - ninetyFifth) / sigma);
       return normalDistribution.inverseCumulativeProbability(ebmiPercentile / 100);
     }
   }
 
   /**
    * Calculate the parameter needed to model the half normal distribution for BMI values at or above
-   * the 95th percentile
+   * the 95th percentile.
    *
    * @param sex of the person
    * @param age of the person, precision matters! You probably don't want to pass an integer like
