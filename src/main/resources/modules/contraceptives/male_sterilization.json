@@ -77,8 +77,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "787301000000101",
-          "display": "Surgery care management"
+          "code": "737471002",
+          "display": "Minor surgery care management (procedure)"
         }
       ],
       "activities": [

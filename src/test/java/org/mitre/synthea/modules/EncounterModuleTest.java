@@ -26,6 +26,8 @@ public class EncounterModuleTest {
   @Before
   public void setup() throws IOException {
     person = new Person(0L);
+    // Give person an income to prevent null pointer.
+    person.attributes.put(Person.INCOME, 100000);
     person.attributes.put(Person.BIRTHDATE, 0L);
     location = new Location("Massachusetts", null);
     location.assignPoint(person, location.randomCityName(person.random));

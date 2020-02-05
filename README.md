@@ -4,7 +4,7 @@ Synthea<sup>TM</sup> is a Synthetic Patient Population Simulator. The goal is to
 
 Read our [wiki](https://github.com/synthetichealth/synthea/wiki) for more information.
 
-Currently, Synthea<sup>TM</sup> features:
+Currently, Synthea<sup>TM</sup> features include:
 - Birth to Death Lifecycle
 - Configuration-based statistics and demographics (defaults with Massachusetts Census data)
 - Modular Rule System
@@ -13,9 +13,11 @@ Currently, Synthea<sup>TM</sup> features:
 - Primary Care Encounters, Emergency Room Encounters, and Symptom-Driven Encounters
 - Conditions, Allergies, Medications, Vaccinations, Observations/Vitals, Labs, Procedures, CarePlans
 - Formats
-  - FHIR (STU3 v3.0.1, DSTU2 v1.0.2 and R4)
-  - C-CDA
-  - CSV
+  - HL7 FHIR (STU3 v3.0.1, DSTU2 v1.0.2 and R4)
+  - Bulk FHIR in ndjson format (set `exporter.fhir.bulk_data = true` to activate)
+  - C-CDA (set `exporter.ccda.export = true` to activate)
+  - CSV (set `exporter.csv.export = true` to activate)
+  - CPCDS (set `exporter.cpcds.export = true` to activate)
 - Rendering Rules and Disease Modules with Graphviz
 
 ## Developer Quick Start
@@ -33,6 +35,16 @@ git clone https://github.com/synthetichealth/synthea.git
 cd synthea
 ./gradlew build check test
 ```
+
+### Changing the default properties 
+
+
+The default properties file values can be found at `src/main/resources/synthea.properties`.
+By default, synthea does not generate CCDA, CPCDA, CSV, or Bulk FHIR (ndjson). You'll need to
+adjust this file to activate these features.  See the [wiki](https://github.com/synthetichealth/synthea/wiki)
+for more details.
+
+
 
 ### Generate Synthetic Patients
 Generating the population one at a time...

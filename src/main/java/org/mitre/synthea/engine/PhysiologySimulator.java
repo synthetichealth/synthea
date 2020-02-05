@@ -27,6 +27,7 @@ import org.apache.commons.math.ode.DerivativeException;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -170,6 +171,14 @@ public class PhysiologySimulator {
     private double startTime;
     /** Simulation time in seconds to end charting points. **/
     private double endTime;
+    /** X Axis Lower Bound. **/
+    private double lowerBoundX;
+    /** X Axis Upper Bound. **/
+    private double upperBoundX;
+    /** Y Axis Lower Bound. **/
+    private double lowerBoundY;
+    /** Y Axis Upper Bound. **/
+    private double upperBoundY;
     
     public String getFilename() {
       return filename;
@@ -242,6 +251,40 @@ public class PhysiologySimulator {
     public void setEndTime(double endTime) {
       this.endTime = endTime;
     }
+
+    public double getLowerBoundX() {
+      return lowerBoundX;
+    }
+
+    public void setLowerBoundX(double lowerBoundX) {
+      this.lowerBoundX = lowerBoundX;
+    }
+
+    public double getUpperBoundX() {
+      return upperBoundX;
+    }
+
+    public void setUpperBoundX(double upperBoundX) {
+      this.upperBoundX = upperBoundX;
+    }
+
+    public double getLowerBoundY() {
+      return lowerBoundY;
+    }
+
+    public void setLowerBoundY(double lowerBoundY) {
+      this.lowerBoundY = lowerBoundY;
+    }
+
+    public double getUpperBoundY() {
+      return upperBoundY;
+    }
+
+    public void setUpperBoundY(double upperBoundY) {
+      this.upperBoundY = upperBoundY;
+    }
+    
+    
   }
 
   /**
@@ -628,6 +671,16 @@ public class PhysiologySimulator {
     // Instantiate the plot and set some reasonable styles
     // TODO eventually we can make these more configurable if desired
     XYPlot plot = chart.getXYPlot();
+    
+    if (config.getLowerBoundY() < config.getUpperBoundY()) {
+      ValueAxis range = plot.getRangeAxis();
+      range.setRange(config.getLowerBoundY(), config.getUpperBoundY());
+    }
+    
+    if (config.getLowerBoundX() < config.getUpperBoundX()) {
+      ValueAxis domain = plot.getDomainAxis();
+      domain.setRange(config.getLowerBoundX(), config.getUpperBoundX());
+    }
     
     plot.setRenderer(renderer);
     plot.setBackgroundPaint(Color.white);

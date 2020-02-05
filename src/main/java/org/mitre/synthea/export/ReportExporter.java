@@ -28,6 +28,17 @@ import org.mitre.synthea.helpers.Config;
  * by other tools.
  */
 public class ReportExporter {
+
+  /**
+   * Export the outcomes, access, and cost report. Requires a Generator with a
+   * database. If the database is null, this method will return immediately.
+   * In order for a database to be present in the generator, the Synthea
+   * configuration file (synthea.properties) should have the `generate.database_type`
+   * property set to `file` or `in-memory`.
+   * This report will be written to the output folder, in a `statistics` folder, in a file
+   * named `statistics-{timestamp}.json`.
+   * @param generator - Generator with a database.
+   */
   public static void export(Generator generator) {
     if (generator == null || generator.database == null) {
       return;

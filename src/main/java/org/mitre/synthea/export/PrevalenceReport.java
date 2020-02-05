@@ -33,6 +33,16 @@ public class PrevalenceReport {
 
   private static final String ALL = "*";
 
+  /**
+   * Generate a disease prevalence report given a Generator. The Generator
+   * must have a database, otherwise this method will return immediately.
+   * In order for a database to be present in the generator, the Synthea
+   * configuration file (synthea.properties) should have the `generate.database_type`
+   * property set to `file` or `in-memory`.
+   * @param generator - Generator with a database.
+   * @throws Exception - if a prevalence template is unavailable or the database
+   *     has connection issues.
+   */
   public static void export(Generator generator) throws Exception {
     if (generator.database == null) {
       System.err.println(
