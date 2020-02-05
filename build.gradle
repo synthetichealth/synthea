@@ -162,6 +162,22 @@ task attributes(type: JavaExec) {
   main = "org.mitre.synthea.helpers.Attributes"
 }
 
+task overrides(type: JavaExec) {
+  group 'Application'
+  description 'Create a list of modules parameters in module override format'
+  classpath sourceSets.main.runtimeClasspath
+  main = "org.mitre.synthea.helpers.ModuleOverrides"
+  doFirst {
+    // TODO: is there a way to make this cleaner?
+    String includeFields = project.hasProperty('includeFields') ? project.getProperty('includeFields') : ""
+    String includeModules = project.hasProperty('includeModules') ? project.getProperty('includeModules') : ""
+    String excludeFields = project.hasProperty('excludeFields') ? project.getProperty('excludeFields') : ""
+    String excludeModules = project.hasProperty('excludeModules') ? project.getProperty('excludeModules') : ""
+
+    args(includeFields, includeModules, excludeFields, excludeModules)
+  }
+}
+
 task physiology(type: JavaExec) {
     group 'Application'
     description 'Test a physiology simulation'
