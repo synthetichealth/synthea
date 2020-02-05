@@ -5,8 +5,9 @@ import com.google.common.collect.Table;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -37,7 +38,7 @@ public class ReportExporter {
       String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
       Path outFilePath = outDirectory.toPath().resolve("statistics-" + timeStamp + ".json");
 
-      JsonWriter writer = new JsonWriter(new FileWriter(outFilePath.toFile()));
+      JsonWriter writer = new JsonWriter(new OutputStreamWriter(new FileOutputStream(outFilePath.toFile())));
       writer.setIndent("  ");
       writer.beginObject(); // top-level
 

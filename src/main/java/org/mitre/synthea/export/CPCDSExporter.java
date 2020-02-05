@@ -5,9 +5,12 @@ import static org.mitre.synthea.export.ExportHelper.dateFromTimestamp;
 import com.google.gson.JsonObject;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.nio.file.Path;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -43,17 +46,22 @@ public class CPCDSExporter {
   /**
    * Writer for CPCDS_Patients.csv
    */
-  private FileWriter patients;
+  private OutputStreamWriter patients;
 
   /**
    * Writer for CPCDS_Coverages.csv
    */
-  private FileWriter coverages;
+  private OutputStreamWriter coverages;
 
   /**
    * Writer for CPCDS_Claims.csv
    */
-  private FileWriter claims;
+  private OutputStreamWriter claims;
+  
+  /**
+   * CharsetEncoder for specifying the encoding character set of the output files
+   */
+  private CharsetEncoder charset = Charset.forName(Config.get("exporter.encoding")).newEncoder();
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -85,9 +93,9 @@ public class CPCDSExporter {
       File coverageFile = outputDirectory.resolve("CPCDS_Coverages.csv").toFile();
       File claimsFile = outputDirectory.resolve("CPCDS_Claims.csv").toFile();
 
-      coverages = new FileWriter(coverageFile, append);
-      patients = new FileWriter(patientsFile, append);
-      claims = new FileWriter(claimsFile, append);
+      coverages = new OutputStreamWriter(new FileOutputStream(coverageFile, append), charset);
+      patients = new OutputStreamWriter(new FileOutputStream(patientsFile, append), charset);
+      claims = new OutputStreamWriter(new FileOutputStream(claimsFile, append), charset);
 
       if (!append) {
         writeCPCDSHeaders();
@@ -784,7 +792,7 @@ public class CPCDSExporter {
    * @param writer The place to write it
    * @throws IOException if an I/O error occurs
    */
-  private static void write(String line, FileWriter writer) throws IOException {
+  private static void write(String line, OutputStreamWriter writer) throws IOException {
     synchronized (writer) {
       writer.write(line);
     }

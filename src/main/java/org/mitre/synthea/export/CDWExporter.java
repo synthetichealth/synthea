@@ -6,8 +6,9 @@ import com.google.gson.JsonObject;
 
 import java.awt.geom.Point2D;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
@@ -51,7 +52,7 @@ public class CDWExporter {
   /**
    * Table key sequence generators.
    */
-  private Map<FileWriter,AtomicInteger> sids;
+  private Map<OutputStreamWriter,AtomicInteger> sids;
   private int sidStart = 1;
 
   private FactTable sstaff = new FactTable();
@@ -81,66 +82,66 @@ public class CDWExporter {
   /**
    * Writers for patient data.
    */
-  private FileWriter lookuppatient;
-  private FileWriter spatient;
-  private FileWriter spatientaddress;
-  private FileWriter spatientphone;
-  private FileWriter patientrace;
-  private FileWriter patientethnicity;
+  private OutputStreamWriter lookuppatient;
+  private OutputStreamWriter spatient;
+  private OutputStreamWriter spatientaddress;
+  private OutputStreamWriter spatientphone;
+  private OutputStreamWriter patientrace;
+  private OutputStreamWriter patientethnicity;
 
   /**
    * Writers for encounter data.
    */
-  private FileWriter consult;
-  private FileWriter visit;
-  private FileWriter appointment;
-  private FileWriter inpatient;
+  private OutputStreamWriter consult;
+  private OutputStreamWriter visit;
+  private OutputStreamWriter appointment;
+  private OutputStreamWriter inpatient;
 
   /**
    * Writers for immunization data.
    */
-  private FileWriter immunization;
+  private OutputStreamWriter immunization;
 
   /**
    * Writers for allergy data.
    */
-  private FileWriter allergy;
-  private FileWriter allergicreaction;
-  private FileWriter allergycomment;
+  private OutputStreamWriter allergy;
+  private OutputStreamWriter allergicreaction;
+  private OutputStreamWriter allergycomment;
 
   /**
    * Writers for condition data.
    */
-  private FileWriter problemlist;
-  private FileWriter vdiagnosis;
+  private OutputStreamWriter problemlist;
+  private OutputStreamWriter vdiagnosis;
 
   /**
    * Writers for medications data.
    */
-  private FileWriter rxoutpatient;
-  private FileWriter rxoutpatfill;
-  private FileWriter nonvamed;
-  private FileWriter cprsorder; // also required for labs
-  private FileWriter ordereditem; // also required for labs
+  private OutputStreamWriter rxoutpatient;
+  private OutputStreamWriter rxoutpatfill;
+  private OutputStreamWriter nonvamed;
+  private OutputStreamWriter cprsorder; // also required for labs
+  private OutputStreamWriter ordereditem; // also required for labs
 
   /**
    * Writers for diagnostic report data (i.e. labs).
    */
-  private FileWriter labchem;
-  private FileWriter labpanel;
-  private FileWriter patientlabchem;
-  private FileWriter vprocedure;
+  private OutputStreamWriter labchem;
+  private OutputStreamWriter labpanel;
+  private OutputStreamWriter patientlabchem;
+  private OutputStreamWriter vprocedure;
 
   /**
    * Writers for procedure data.
    */
-  private FileWriter surgeryProcedureDiagnosisCode;
-  private FileWriter surgeryPRE;
+  private OutputStreamWriter surgeryProcedureDiagnosisCode;
+  private OutputStreamWriter surgeryPRE;
 
   /**
    * Writers for vital sign Observation data.
    */
-  private FileWriter vitalSign;
+  private OutputStreamWriter vitalSign;
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -152,7 +153,7 @@ public class CDWExporter {
    *  initialize the required files and associated writers.
    */
   private CDWExporter() {
-    sids = new HashMap<FileWriter,AtomicInteger>();
+    sids = new HashMap<OutputStreamWriter,AtomicInteger>();
     
     try {
       File output = Exporter.getOutputFolder("cdw", null);
@@ -160,51 +161,51 @@ public class CDWExporter {
       Path outputDirectory = output.toPath();
 
       // Patient Data
-      lookuppatient = openFileWriter(outputDirectory, "lookuppatient.csv");
-      spatient = openFileWriter(outputDirectory, "spatient.csv");
-      spatientaddress = openFileWriter(outputDirectory, "spatientaddress.csv");
-      spatientphone = openFileWriter(outputDirectory, "spatientphone.csv");
-      patientrace = openFileWriter(outputDirectory, "patientrace.csv");
-      patientethnicity = openFileWriter(outputDirectory, "patientethnicity.csv");
+      lookuppatient = openOutputStreamWriter(outputDirectory, "lookuppatient.csv");
+      spatient = openOutputStreamWriter(outputDirectory, "spatient.csv");
+      spatientaddress = openOutputStreamWriter(outputDirectory, "spatientaddress.csv");
+      spatientphone = openOutputStreamWriter(outputDirectory, "spatientphone.csv");
+      patientrace = openOutputStreamWriter(outputDirectory, "patientrace.csv");
+      patientethnicity = openOutputStreamWriter(outputDirectory, "patientethnicity.csv");
 
       // Encounter Data
-      consult = openFileWriter(outputDirectory, "consult.csv");
-      visit = openFileWriter(outputDirectory, "visit.csv");
-      appointment = openFileWriter(outputDirectory, "appointment.csv");
-      inpatient = openFileWriter(outputDirectory, "inpatient.csv");
+      consult = openOutputStreamWriter(outputDirectory, "consult.csv");
+      visit = openOutputStreamWriter(outputDirectory, "visit.csv");
+      appointment = openOutputStreamWriter(outputDirectory, "appointment.csv");
+      inpatient = openOutputStreamWriter(outputDirectory, "inpatient.csv");
 
       // Immunization Data
-      immunization = openFileWriter(outputDirectory, "immunization.csv");
+      immunization = openOutputStreamWriter(outputDirectory, "immunization.csv");
 
       // Allergy Data
-      allergy = openFileWriter(outputDirectory, "allergy.csv");
-      allergicreaction = openFileWriter(outputDirectory, "allergicreaction.csv");
-      allergycomment = openFileWriter(outputDirectory, "allergycomment.csv");
+      allergy = openOutputStreamWriter(outputDirectory, "allergy.csv");
+      allergicreaction = openOutputStreamWriter(outputDirectory, "allergicreaction.csv");
+      allergycomment = openOutputStreamWriter(outputDirectory, "allergycomment.csv");
 
       // Condition Data
-      problemlist = openFileWriter(outputDirectory, "problemlist.csv");
-      vdiagnosis = openFileWriter(outputDirectory, "vdiagnosis.csv");
+      problemlist = openOutputStreamWriter(outputDirectory, "problemlist.csv");
+      vdiagnosis = openOutputStreamWriter(outputDirectory, "vdiagnosis.csv");
 
       // Medications Data
-      rxoutpatient = openFileWriter(outputDirectory, "rxoutpatient.csv");
-      rxoutpatfill = openFileWriter(outputDirectory, "rxoutpatfill.csv");
-      nonvamed = openFileWriter(outputDirectory, "nonvamed.csv");
-      cprsorder = openFileWriter(outputDirectory, "cprsorder.csv");
-      ordereditem = openFileWriter(outputDirectory, "ordereditem.csv");
+      rxoutpatient = openOutputStreamWriter(outputDirectory, "rxoutpatient.csv");
+      rxoutpatfill = openOutputStreamWriter(outputDirectory, "rxoutpatfill.csv");
+      nonvamed = openOutputStreamWriter(outputDirectory, "nonvamed.csv");
+      cprsorder = openOutputStreamWriter(outputDirectory, "cprsorder.csv");
+      ordereditem = openOutputStreamWriter(outputDirectory, "ordereditem.csv");
 
       // Diagnotic Report (i.e. Labs) Data
-      labchem = openFileWriter(outputDirectory, "labchem.csv");
-      labpanel = openFileWriter(outputDirectory, "labpanel.csv");
-      patientlabchem = openFileWriter(outputDirectory, "patientlabchem.csv");
-      vprocedure = openFileWriter(outputDirectory, "vprocedure.csv");
+      labchem = openOutputStreamWriter(outputDirectory, "labchem.csv");
+      labpanel = openOutputStreamWriter(outputDirectory, "labpanel.csv");
+      patientlabchem = openOutputStreamWriter(outputDirectory, "patientlabchem.csv");
+      vprocedure = openOutputStreamWriter(outputDirectory, "vprocedure.csv");
 
       // Procedure Data
-      surgeryProcedureDiagnosisCode = openFileWriter(outputDirectory,
+      surgeryProcedureDiagnosisCode = openOutputStreamWriter(outputDirectory,
           "surgeryprocedurediagnosiscode.csv");
-      surgeryPRE = openFileWriter(outputDirectory, "surgerypre.csv");
+      surgeryPRE = openOutputStreamWriter(outputDirectory, "surgerypre.csv");
 
       // Vital Sign Observation Data
-      vitalSign = openFileWriter(outputDirectory, "vitalsign.csv");
+      vitalSign = openOutputStreamWriter(outputDirectory, "vitalsign.csv");
 
       writeCSVHeaders();
     } catch (IOException e) {
@@ -215,9 +216,9 @@ public class CDWExporter {
     }
   }
 
-  private FileWriter openFileWriter(Path outputDirectory, String filename) throws IOException {
+  private OutputStreamWriter openOutputStreamWriter(Path outputDirectory, String filename) throws IOException {
     File file = outputDirectory.resolve(filename).toFile();
-    return new FileWriter(file);
+    return new OutputStreamWriter(new FileOutputStream(file));
   }
 
   /**
@@ -554,27 +555,27 @@ public class CDWExporter {
       File output = Exporter.getOutputFolder("cdw", null);
       output.mkdirs();
       Path outputDirectory = output.toPath();
-      sstaff.write(openFileWriter(outputDirectory, "sstaff.csv"));
-      maritalStatus.write(openFileWriter(outputDirectory, "maritalstatus.csv"));
-      sta3n.write(openFileWriter(outputDirectory, "sta3n.csv"));
-      location.write(openFileWriter(outputDirectory, "location.csv"));
-      immunizationName.write(openFileWriter(outputDirectory, "immunizationname.csv"));
-      reaction.write(openFileWriter(outputDirectory, "reaction.csv"));
-      providerNarrative.write(openFileWriter(outputDirectory, "providernarrative.csv"));
-      localDrug.write(openFileWriter(outputDirectory, "localdrug.csv"));
-      nationalDrug.write(openFileWriter(outputDirectory, "nationaldrug.csv"));
-      dosageForm.write(openFileWriter(outputDirectory, "dosageform.csv"));
-      pharmacyOrderableItem.write(openFileWriter(outputDirectory, "pharmacyorderableitem.csv"));
-      orderableItem.write(openFileWriter(outputDirectory, "orderableitem.csv"));
-      orderStatus.write(openFileWriter(outputDirectory, "orderstatus.csv"));
-      vistaPackage.write(openFileWriter(outputDirectory, "vistapackage.csv"));
-      collectionsample.write(openFileWriter(outputDirectory, "collectionsample.csv"));
-      labchemtest.write(openFileWriter(outputDirectory, "labchemtest.csv"));
-      topography.write(openFileWriter(outputDirectory, "topography.csv"));
-      institution.write(openFileWriter(outputDirectory, "institution.csv"));
-      loinc.write(openFileWriter(outputDirectory, "loinc.csv"));
-      cpt.write(openFileWriter(outputDirectory, "cpt.csv"));
-      vitalType.write(openFileWriter(outputDirectory, "vitaltype.csv"));
+      sstaff.write(openOutputStreamWriter(outputDirectory, "sstaff.csv"));
+      maritalStatus.write(openOutputStreamWriter(outputDirectory, "maritalstatus.csv"));
+      sta3n.write(openOutputStreamWriter(outputDirectory, "sta3n.csv"));
+      location.write(openOutputStreamWriter(outputDirectory, "location.csv"));
+      immunizationName.write(openOutputStreamWriter(outputDirectory, "immunizationname.csv"));
+      reaction.write(openOutputStreamWriter(outputDirectory, "reaction.csv"));
+      providerNarrative.write(openOutputStreamWriter(outputDirectory, "providernarrative.csv"));
+      localDrug.write(openOutputStreamWriter(outputDirectory, "localdrug.csv"));
+      nationalDrug.write(openOutputStreamWriter(outputDirectory, "nationaldrug.csv"));
+      dosageForm.write(openOutputStreamWriter(outputDirectory, "dosageform.csv"));
+      pharmacyOrderableItem.write(openOutputStreamWriter(outputDirectory, "pharmacyorderableitem.csv"));
+      orderableItem.write(openOutputStreamWriter(outputDirectory, "orderableitem.csv"));
+      orderStatus.write(openOutputStreamWriter(outputDirectory, "orderstatus.csv"));
+      vistaPackage.write(openOutputStreamWriter(outputDirectory, "vistapackage.csv"));
+      collectionsample.write(openOutputStreamWriter(outputDirectory, "collectionsample.csv"));
+      labchemtest.write(openOutputStreamWriter(outputDirectory, "labchemtest.csv"));
+      topography.write(openOutputStreamWriter(outputDirectory, "topography.csv"));
+      institution.write(openOutputStreamWriter(outputDirectory, "institution.csv"));
+      loinc.write(openOutputStreamWriter(outputDirectory, "loinc.csv"));
+      cpt.write(openOutputStreamWriter(outputDirectory, "cpt.csv"));
+      vitalType.write(openOutputStreamWriter(outputDirectory, "vitaltype.csv"));
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
       // the singleton pattern below doesn't work if the constructor can throw
@@ -1602,7 +1603,7 @@ public class CDWExporter {
     write(s.toString(), immunization);
   }
 
-  private int getNextKey(FileWriter table) {
+  private int getNextKey(OutputStreamWriter table) {
     synchronized (sids) {
       return sids.computeIfAbsent(table, k -> new AtomicInteger(sidStart)).getAndIncrement();
     }
@@ -1628,7 +1629,7 @@ public class CDWExporter {
    * @param writer The place to write it
    * @throws IOException if an I/O error occurs
    */
-  private static void write(String line, FileWriter writer) throws IOException {
+  private static void write(String line, OutputStreamWriter writer) throws IOException {
     synchronized (writer) {
       writer.write(line);
       writer.flush();
