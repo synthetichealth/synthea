@@ -25,3 +25,4 @@ src/main/resources/version.txt
 .vs/slnx.sqlite
 .vs/VSWorkspaceState.json
 .vs/synthea/v16/.suo
+.vscode/settings.json
