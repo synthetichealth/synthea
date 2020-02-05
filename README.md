@@ -87,7 +87,7 @@ Generate a list of concepts (used in the records) or attributes (variables on ea
 
 # License
 
-Copyright 2017-2019 The MITRE Corporation
+Copyright 2017-2020 The MITRE Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
