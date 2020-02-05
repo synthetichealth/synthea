@@ -54,7 +54,7 @@ public class Module {
     //retVal.put("Health Insurance", new ModuleSupplier(new HealthInsuranceModule()));
     retVal.put("Cardiovascular Disease", new ModuleSupplier(new CardiovascularDiseaseModule()));
     retVal.put("Quality Of Life", new ModuleSupplier(new QualityOfLifeModule()));
-    //retVal.put("Weight Loss", new ModuleSupplier(new WeightLossModule()));
+    retVal.put("Weight Loss", new ModuleSupplier(new WeightLossModule()));
 
     try {
       URI modulesURI = Module.class.getClassLoader().getResource("modules").toURI();
