@@ -24,15 +24,19 @@ public class GrowthDataErrorsEditorTest {
     e.addObservation(1000, GrowthDataErrorsEditor.WEIGHT_LOINC_CODE, 50d, "Body Weight");
     // Height Observation
     e.addObservation(1000, GrowthDataErrorsEditor.HEIGHT_LOINC_CODE, 150d, "Body Height");
-    e.addObservation(1000, GrowthDataErrorsEditor.BMI_LOINC_CODE, 22.2d, "Body Mass Index");
+    e.addObservation(1000, GrowthDataErrorsEditor.BMI_LOINC_CODE, 22.2d,
+        "Body Mass Index");
     e.codes.add(new HealthRecord.Code("http://snomed.info/sct", "183452005", ""));
     first = e;
     e = record.encounterStart(100000, HealthRecord.EncounterType.OUTPATIENT);
     // Weight Observation
-    e.addObservation(100000, GrowthDataErrorsEditor.WEIGHT_LOINC_CODE, 60d, "Body Weight");
+    e.addObservation(100000, GrowthDataErrorsEditor.WEIGHT_LOINC_CODE, 60d,
+        "Body Weight");
     // Height Observation
-    e.addObservation(100000, GrowthDataErrorsEditor.HEIGHT_LOINC_CODE, 160d, "Body Height");
-    e.addObservation(100000, GrowthDataErrorsEditor.BMI_LOINC_CODE, 23.4d, "Body Mass Index");
+    e.addObservation(100000, GrowthDataErrorsEditor.HEIGHT_LOINC_CODE, 160d,
+        "Body Height");
+    e.addObservation(100000, GrowthDataErrorsEditor.BMI_LOINC_CODE, 23.4d,
+        "Body Mass Index");
     e.codes.add(new HealthRecord.Code("http://snomed.info/sct", "183452005", ""));
     second = e;
   }
