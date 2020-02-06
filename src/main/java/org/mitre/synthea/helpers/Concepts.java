@@ -63,13 +63,13 @@ public class Concepts {
     Map<Code,Set<String>> concepts = new TreeMap<Code,Set<String>>();
 
     Utilities.walkAllModules((modulesPath, modulePath) -> {
-          try (JsonReader reader = new JsonReader(new FileReader(modulePath.toString()))) {
-            JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
-            inventoryModule(concepts, module);
-          } catch (IOException e) {
-            throw new RuntimeException("Unable to read modules", e);
-          }
-        });
+      try (JsonReader reader = new JsonReader(new FileReader(modulePath.toString()))) {
+        JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
+        inventoryModule(concepts, module);
+      } catch (IOException e) {
+        throw new RuntimeException("Unable to read modules", e);
+      }
+    });
 
     inventoryCodes(concepts, CardiovascularDiseaseModule.getAllCodes(),
         CardiovascularDiseaseModule.class.getSimpleName());

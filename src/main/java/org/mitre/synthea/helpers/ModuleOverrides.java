@@ -1,5 +1,12 @@
 package org.mitre.synthea.helpers;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.stream.JsonReader;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FilenameFilter;
@@ -9,20 +16,33 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.stream.JsonReader;
 
+/**
+ * Task class to generate a properties list of "overridable" fields within the modules,
+ *  which includes the name of the file, the JSONPath to the field, and the original value.
+ * By default this is expected to be the set of all distributions,
+ *  within all transitions, in all modules, but there are 4 configuration options:
+ *  - includeFields: (defaults to ["distribution"] ) 
+ *      -- numeric fields that match one of the given name will be written to the properties file
+ *  - excludeFields: (defaults to null)
+ *      -- if provided, all numeric fields except those that match the given names
+ *         will be written to the properties file
+ *      -- note: if both includeFields and excludeFields are given, includeFields will be ignored
+ *  - includeModules: (defaults to null)    
+ *      -- if provided, only modules that match the given file names will be processed
+ *      -- wildcards are allowed, ex "metabolic*"
+ *  - excludeModules: (defaults to null)    
+ *      -- if provided, all modules except those that match the given file names will be processed
+ *      -- wildcards are allowed, ex "metabolic*"
+ * The format of the properties file is:
+ * (module file name)\:\:(JSONPath to numeric field within module) = original value     
+ * Sample Line:
+ * osteoporosis.json\:\:$['states']['Male']['distributed_transition'][1]['distribution'] = 0.02
+ */
 public class ModuleOverrides {
-
-  // sample line
-  // osteoporosis.json\:\:$['states']['Male']['distributed_transition'][1]['distribution'] = 0.02
-
 
   private List<String> includeFields;
   private List<String> excludeFields;
@@ -30,9 +50,9 @@ public class ModuleOverrides {
   private FilenameFilter excludeModules;
 
   /**
+   * Main method, not to be invoked directly: should always be called via gradle task `overrides`.
    * 
-   * @param args -- format is [includeFields,includeModules,excludeFields,excludeModules]
-   * @throws Exception
+   * @param args -- format is [includeFields, includeModules, excludeFields, excludeModules]
    */
   public static void main(String[] args) throws Exception {
     String includeFieldsArg = args[0];
@@ -85,6 +105,14 @@ public class ModuleOverrides {
     return list;
   }
 
+  /**
+   * Create a ModuleOverrides object which will process the modules according to the given options.
+   * 
+   * @param includeFields - List of field names to include
+   * @param includeModulesList - list of module filename rules to include
+   * @param excludeFields - list of field names to exclude
+   * @param excludeModulesList - list of module filename rules to exclude
+   */
   public ModuleOverrides(List<String> includeFields, List<String> includeModulesList,
       List<String> excludeFields, List<String> excludeModulesList) {
     this.includeFields = includeFields;
@@ -98,6 +126,11 @@ public class ModuleOverrides {
     }
   }
 
+  /**
+   * Perform the actual processing to generate the list of properties, per the given settings.
+   * @return List of strings to be written to file. Strings are of format:
+   *         (module file name)\:\:(JSONPath to numeric field within module) = original value
+   */
   public List<String> generateOverrides() throws Exception {
     List<String> lines = new LinkedList<>();
 
@@ -125,7 +158,8 @@ public class ModuleOverrides {
   }
 
   private List<String> handleElement(String path, String currentElementName, JsonElement element) {
-    // do a depth-first search, add things that are numbers
+    // do a depth-first search through the JSON structure, 
+    // and add things that are numbers and meet our filter criteria to the list
     List<String> parameters = new LinkedList<>();
 
     if (element.isJsonArray()) {

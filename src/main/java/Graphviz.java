@@ -66,14 +66,14 @@ public class Graphviz {
     // adapted from Module.loadModules()
     try {
       Utilities.walkAllModules(inputPath, t -> {
-            try {
-              JsonObject module = loadFile(t, inputPath);
-              String relativePath = relativePath(t, inputPath);
-              generateJsonModuleGraph(module, outputFolder, relativePath);
-            } catch (IOException e) {
-              e.printStackTrace();
-            }
-          });
+        try {
+          JsonObject module = loadFile(t, inputPath);
+          String relativePath = relativePath(t, inputPath);
+          generateJsonModuleGraph(module, outputFolder, relativePath);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      });
     } catch (Exception e) {
       e.printStackTrace();
     }

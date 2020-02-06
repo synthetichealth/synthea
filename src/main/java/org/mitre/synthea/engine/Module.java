@@ -110,15 +110,15 @@ public class Module {
     AtomicInteger submoduleCount = new AtomicInteger();
     Path basePath = modulesPath.getParent();
     Utilities.walkAllModules(modulesPath, t -> {
-              String relativePath = relativePath(t, modulesPath);
-              boolean submodule = !t.getParent().equals(modulesPath);
-              if (submodule) {
-                submoduleCount.getAndIncrement();
-              }
-              retVal.put(relativePath, new ModuleSupplier(submodule,
-                  relativePath,
-                  () -> loadFile(basePath.relativize(t), submodule, overrides)));
-            });
+      String relativePath = relativePath(t, modulesPath);
+      boolean submodule = !t.getParent().equals(modulesPath);
+      if (submodule) {
+        submoduleCount.getAndIncrement();
+      }
+      retVal.put(relativePath, new ModuleSupplier(submodule,
+          relativePath,
+          () -> loadFile(basePath.relativize(t), submodule, overrides)));
+    });
     return submoduleCount.get();
   }
 

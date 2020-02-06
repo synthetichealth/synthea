@@ -134,13 +134,13 @@ public class Attributes {
     Map<String,Inventory> attributes = new TreeMap<String,Inventory>();
 
     Utilities.walkAllModules((basePath, modulePath) -> {
-          try (JsonReader reader = new JsonReader(new FileReader(modulePath.toString()))) {
-            JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
-            inventoryModule(attributes, module);
-          } catch (IOException e) {
-            throw new RuntimeException("Unable to read modules", e);
-          }
-        });
+      try (JsonReader reader = new JsonReader(new FileReader(modulePath.toString()))) {
+        JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
+        inventoryModule(attributes, module);
+      } catch (IOException e) {
+        throw new RuntimeException("Unable to read modules", e);
+      }
+    });
 
     CardiovascularDiseaseModule.inventoryAttributes(attributes);
     DeathModule.inventoryAttributes(attributes);
