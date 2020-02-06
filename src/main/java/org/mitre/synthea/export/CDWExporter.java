@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
@@ -16,6 +18,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.FactTable;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
@@ -142,6 +145,11 @@ public class CDWExporter {
    * Writers for vital sign Observation data.
    */
   private OutputStreamWriter vitalSign;
+  
+  /**
+   * CharsetEncoder for specifying the encoding character set of the output files
+   */
+  private CharsetEncoder charset = Charset.forName(Config.get("exporter.encoding")).newEncoder();
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -218,7 +226,7 @@ public class CDWExporter {
 
   private OutputStreamWriter openOutputStreamWriter(Path outputDirectory, String filename) throws IOException {
     File file = outputDirectory.resolve(filename).toFile();
-    return new OutputStreamWriter(new FileOutputStream(file));
+    return new OutputStreamWriter(new FileOutputStream(file), charset);
   }
 
   /**

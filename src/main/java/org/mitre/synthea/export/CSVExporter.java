@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -105,6 +107,11 @@ public class CSVExporter {
    * Writer for payerTransitions.csv
    */
   private OutputStreamWriter payerTransitions;
+  
+  /**
+   * CharsetEncoder for specifying the encoding character set of the output files
+   */
+  private CharsetEncoder charset = Charset.forName(Config.get("exporter.encoding")).newEncoder();
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -144,25 +151,25 @@ public class CSVExporter {
       File encountersFile = outputDirectory.resolve("encounters.csv").toFile();
       File imagingStudiesFile = outputDirectory.resolve("imaging_studies.csv").toFile();
 
-      patients = new OutputStreamWriter(new FileOutputStream(patientsFile, append));
-      allergies = new OutputStreamWriter(new FileOutputStream(allergiesFile, append));
-      medications = new OutputStreamWriter(new FileOutputStream(medicationsFile, append));
-      conditions = new OutputStreamWriter(new FileOutputStream(conditionsFile, append));
-      careplans = new OutputStreamWriter(new FileOutputStream(careplansFile, append));
-      observations = new OutputStreamWriter(new FileOutputStream(observationsFile, append));
-      procedures = new OutputStreamWriter(new FileOutputStream(proceduresFile, append));
-      immunizations = new OutputStreamWriter(new FileOutputStream(immunizationsFile, append));
-      encounters = new OutputStreamWriter(new FileOutputStream(encountersFile, append));
-      imagingStudies = new OutputStreamWriter(new FileOutputStream(imagingStudiesFile, append));
+      patients = new OutputStreamWriter(new FileOutputStream(patientsFile, append), charset);
+      allergies = new OutputStreamWriter(new FileOutputStream(allergiesFile, append), charset);
+      medications = new OutputStreamWriter(new FileOutputStream(medicationsFile, append), charset);
+      conditions = new OutputStreamWriter(new FileOutputStream(conditionsFile, append), charset);
+      careplans = new OutputStreamWriter(new FileOutputStream(careplansFile, append), charset);
+      observations = new OutputStreamWriter(new FileOutputStream(observationsFile, append), charset);
+      procedures = new OutputStreamWriter(new FileOutputStream(proceduresFile, append), charset);
+      immunizations = new OutputStreamWriter(new FileOutputStream(immunizationsFile, append), charset);
+      encounters = new OutputStreamWriter(new FileOutputStream(encountersFile, append), charset);
+      imagingStudies = new OutputStreamWriter(new FileOutputStream(imagingStudiesFile, append), charset);
 
       File organizationsFile = outputDirectory.resolve("organizations.csv").toFile();
       File providersFile = outputDirectory.resolve("providers.csv").toFile();
-      organizations = new OutputStreamWriter(new FileOutputStream(organizationsFile, append));
-      providers = new OutputStreamWriter(new FileOutputStream(providersFile, append));
+      organizations = new OutputStreamWriter(new FileOutputStream(organizationsFile, append), charset);
+      providers = new OutputStreamWriter(new FileOutputStream(providersFile, append), charset);
       File payersFile = outputDirectory.resolve("payers.csv").toFile();
       File payerTransitionsFile = outputDirectory.resolve("payer_transitions.csv").toFile();
-      payers = new OutputStreamWriter(new FileOutputStream(payersFile, append));
-      payerTransitions = new OutputStreamWriter(new FileOutputStream(payerTransitionsFile, append));
+      payers = new OutputStreamWriter(new FileOutputStream(payersFile, append), charset);
+      payerTransitions = new OutputStreamWriter(new FileOutputStream(payerTransitionsFile, append), charset);
 
       if (!append) {
         writeCSVHeaders();
