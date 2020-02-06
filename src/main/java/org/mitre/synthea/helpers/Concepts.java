@@ -9,10 +9,8 @@ import com.google.gson.stream.JsonReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,10 +62,7 @@ public class Concepts {
   public static List<String> getConceptInventory() throws Exception {
     Map<Code,Set<String>> concepts = new TreeMap<Code,Set<String>>();
 
-    URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
-    Path path = Paths.get(modulesFolder.toURI());
-    Files.walk(path).filter(Files::isReadable).filter(Files::isRegularFile)
-        .filter(f -> f.toString().endsWith(".json")).forEach(modulePath -> {
+    Utilities.walkAllModules((modulesPath, modulePath) -> {
           try (JsonReader reader = new JsonReader(new FileReader(modulePath.toString()))) {
             JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
             inventoryModule(concepts, module);

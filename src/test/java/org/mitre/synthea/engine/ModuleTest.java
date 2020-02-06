@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 import org.junit.Test;
+import org.mitre.synthea.helpers.Utilities;
 import org.powermock.reflect.Whitebox;
 
 public class ModuleTest {
@@ -134,14 +135,7 @@ public class ModuleTest {
    */
   @Test
   public void targetEncounters() throws Exception {
-    URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
-    Path path = Paths.get(modulesFolder.toURI());
-
-    Files.walk(path, Integer.MAX_VALUE)
-        .filter(Files::isReadable)
-        .filter(Files::isRegularFile)
-        .filter(p -> p.toString().endsWith(".json"))
-        .forEach(t -> {
+    Utilities.walkAllModules((modulesFolder, t) -> {
           try {
             FileReader fileReader = new FileReader(t.toString());
             JsonReader reader = new JsonReader(fileReader);

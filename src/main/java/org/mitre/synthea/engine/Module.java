@@ -106,13 +106,10 @@ public class Module {
           Path modulesPath, Map<String, 
           ModuleSupplier> retVal, 
           Properties overrides)
-          throws IOException {
+          throws Exception {
     AtomicInteger submoduleCount = new AtomicInteger();
     Path basePath = modulesPath.getParent();
-    Files.walk(modulesPath, Integer.MAX_VALUE)
-            .filter(Files::isReadable)
-            .filter(Files::isRegularFile)
-            .filter(p -> p.toString().endsWith(".json")).forEach(t -> {
+    Utilities.walkAllModules(modulesPath, t -> {
               String relativePath = relativePath(t, modulesPath);
               boolean submodule = !t.getParent().equals(modulesPath);
               if (submodule) {

@@ -20,7 +20,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -31,6 +30,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.mitre.synthea.export.Exporter;
+import org.mitre.synthea.helpers.Utilities;
 
 
 public class Graphviz {
@@ -65,9 +65,7 @@ public class Graphviz {
   private static void generateJsonModuleGraphs(Path inputPath, File outputFolder) {
     // adapted from Module.loadModules()
     try {
-      Files.walk(inputPath, Integer.MAX_VALUE)
-          .filter(Files::isReadable).filter(Files::isRegularFile)
-          .filter(p -> p.toString().endsWith(".json")).parallel().forEach(t -> {
+      Utilities.walkAllModules(inputPath, t -> {
             try {
               JsonObject module = loadFile(t, inputPath);
               String relativePath = relativePath(t, inputPath);

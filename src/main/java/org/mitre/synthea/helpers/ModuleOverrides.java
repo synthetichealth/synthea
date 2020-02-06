@@ -4,10 +4,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -102,13 +100,7 @@ public class ModuleOverrides {
 	public List<String> generateOverrides() throws Exception {
 		List<String> lines = new LinkedList<>();
 		
-		URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
-	    Path modulesPath = Paths.get(modulesFolder.toURI());
-	    Files.walk(modulesPath)
-	    	.filter(Files::isReadable)
-	    	.filter(Files::isRegularFile)
-	        .filter(f -> f.toString().endsWith(".json"))
-	        .forEach(modulePath -> processModule(modulesPath, modulePath, lines));
+		Utilities.walkAllModules((basePath, modulePath) -> processModule(basePath, modulePath, lines));
 	    
 	    return lines;
 	}

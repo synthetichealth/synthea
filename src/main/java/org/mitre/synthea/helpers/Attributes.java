@@ -24,10 +24,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -137,10 +133,7 @@ public class Attributes {
   public static Map<String,Inventory> getAttributeInventory() throws Exception {
     Map<String,Inventory> attributes = new TreeMap<String,Inventory>();
 
-    URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
-    Path path = Paths.get(modulesFolder.toURI());
-    Files.walk(path).filter(Files::isReadable).filter(Files::isRegularFile)
-        .filter(f -> f.toString().endsWith(".json")).forEach(modulePath -> {
+    Utilities.walkAllModules((basePath, modulePath) -> {
           try (JsonReader reader = new JsonReader(new FileReader(modulePath.toString()))) {
             JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
             inventoryModule(attributes, module);
