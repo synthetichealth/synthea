@@ -19,6 +19,7 @@ import org.mitre.synthea.helpers.PhysiologyValueGenerator;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.SimpleYML;
+import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.BloodPressureValueGenerator.SysDias;
 import org.mitre.synthea.world.agents.Person;
@@ -27,11 +28,12 @@ import org.mitre.synthea.world.concepts.BirthStatistics;
 import org.mitre.synthea.world.concepts.GrowthChart;
 import org.mitre.synthea.world.concepts.GrowthChartEntry;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
 
 public final class LifecycleModule extends Module {
-  @SuppressWarnings("rawtypes")
   private static final Map<GrowthChart.ChartType, GrowthChart> growthChart =
       GrowthChart.loadCharts();
   private static final List<LinkedHashMap<String, String>> weightForLengthChart =
@@ -209,6 +211,7 @@ public final class LifecycleModule extends Module {
         (double) mother.attributes.get(BirthStatistics.BIRTH_HEIGHT)); // cm
     person.setVitalSign(VitalSign.WEIGHT,
         (double) mother.attributes.get(BirthStatistics.BIRTH_WEIGHT)); // kg
+    person.setVitalSign(VitalSign.HEAD, childHeadCircumference(person, time)); // cm
 
     attributes.put(AGE, 0);
     attributes.put(AGE_MONTHS, 0);
@@ -240,7 +243,7 @@ public final class LifecycleModule extends Module {
         new BloodPressureValueGenerator(person, SysDias.SYSTOLIC));
     person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE,
         new BloodPressureValueGenerator(person, SysDias.DIASTOLIC));
-    
+
     if (ENABLE_PHYSIOLOGY_GENERATORS) {
       List<PhysiologyValueGenerator> physioGenerators = PhysiologyValueGenerator.loadAll(person);
       
@@ -435,11 +438,13 @@ public final class LifecycleModule extends Module {
 
   private static void grow(Person person, long time) {
     int age = person.ageInYears(time);
+    int ageInMonths = 0; // we only need this if they are less than 20 years old.
 
     double height = person.getVitalSign(VitalSign.HEIGHT, time);
 
     if (age < 20) {
       height = childHeightGrowth(person, time);
+      ageInMonths = person.ageInMonths(time);
     }
     double weight = adjustWeight(person, time);
 
@@ -450,10 +455,14 @@ public final class LifecycleModule extends Module {
 
     if (age <= 3) {
       setCurrentWeightForLengthPercentile(person, time);
+
+      if (ageInMonths <= 36) {
+        double headCircumference = childHeadCircumference(person, time);
+        person.setVitalSign(VitalSign.HEAD, headCircumference);
+      }
     }
 
     if (age >= 2 && age < 20) {
-      int ageInMonths = person.ageInMonths(time);
       String gender = (String) person.attributes.get(Person.GENDER);
       double percentile = percentileForBMI(bmi, gender, ageInMonths);
       person.attributes.put(Person.BMI_PERCENTILE, percentile * 100.0);
@@ -464,6 +473,13 @@ public final class LifecycleModule extends Module {
     String gender = (String) person.attributes.get(Person.GENDER);
     int ageInMonths = person.ageInMonths(time);
     return lookupGrowthChart("height", gender, ageInMonths,
+        person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+  }
+
+  private static double childHeadCircumference(Person person, long time) {
+    String gender = (String) person.attributes.get(Person.GENDER);
+    int ageInMonths = person.ageInMonths(time);
+    return lookupGrowthChart("head", gender, ageInMonths,
         person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
   }
 
@@ -501,15 +517,15 @@ public final class LifecycleModule extends Module {
    * <p>Note: BMI values only available for ageInMonths 24 - 240 as BMI is
    * not typically useful in patients under 24 months.</p>
    *
-   * @param heightWeightOrBMI "height" | "weight" | "bmi"
+   * @param chartType "height" | "weight" | "bmi" | "head"
    * @param gender "M" | "F"
    * @param ageInMonths 0 - 240
    * @param percentile 0.0 - 1.0
-   * @return The height (cm) or weight (kg)
+   * @return The height (cm), weight (kg), bmi (%), or head (cm)
    */
-  public static double lookupGrowthChart(String heightWeightOrBMI, String gender, int ageInMonths,
+  public static double lookupGrowthChart(String chartType, String gender, int ageInMonths,
       double percentile) {
-    switch (heightWeightOrBMI) {
+    switch (chartType) {
       case "height":
         return growthChart.get(GrowthChart.ChartType.HEIGHT).lookUp(ageInMonths,
             gender, percentile);
@@ -518,8 +534,10 @@ public final class LifecycleModule extends Module {
             gender, percentile);
       case "bmi":
         return growthChart.get(GrowthChart.ChartType.BMI).lookUp(ageInMonths, gender, percentile);
+      case "head":
+        return growthChart.get(GrowthChart.ChartType.HEAD).lookUp(ageInMonths, gender, percentile);
       default:
-        throw new IllegalArgumentException("Unknown chart type: " + heightWeightOrBMI);
+        throw new IllegalArgumentException("Unknown chart type: " + chartType);
     }
   }
 
@@ -657,6 +675,10 @@ public final class LifecycleModule extends Module {
       BiometricsConfig.ints("cardiovascular.oxygen_saturation.normal");
   private static final int[] BLOOD_OXYGEN_SATURATION_HYPOXEMIA =
       BiometricsConfig.ints("cardiovascular.oxygen_saturation.hypoxemia");
+  private static final double[] HEART_RATE_NORMAL =
+      BiometricsConfig.doubles("cardiovascular.heart_rate.normal");
+  private static final double[] RESPIRATION_RATE_NORMAL =
+      BiometricsConfig.doubles("respiratory.respiration_rate.normal");
 
   /**
    * Calculate this person's vital signs, 
@@ -758,6 +780,19 @@ public final class LifecycleModule extends Module {
     person.setVitalSign(VitalSign.POTASSIUM, person.rand(POTASSIUM_RANGE));
     person.setVitalSign(VitalSign.CARBON_DIOXIDE, person.rand(CO2_RANGE));
     person.setVitalSign(VitalSign.SODIUM, person.rand(SODIUM_RANGE));
+
+    long timestep = Long.parseLong(Config.get("generate.timestep"));
+    double heartStart = person.rand(HEART_RATE_NORMAL);
+    double heartEnd = person.rand(HEART_RATE_NORMAL);
+    person.setVitalSign(VitalSign.HEART_RATE,
+        new TrendingValueGenerator(person, 1.0, heartStart, heartEnd,
+            time, time + timestep, HEART_RATE_NORMAL[0], HEART_RATE_NORMAL[1]));
+
+    double respirationStart = person.rand(RESPIRATION_RATE_NORMAL);
+    double respirationEnd = person.rand(RESPIRATION_RATE_NORMAL);
+    person.setVitalSign(VitalSign.RESPIRATION_RATE,
+        new TrendingValueGenerator(person, 1.0, respirationStart, respirationEnd,
+            time, time + timestep, RESPIRATION_RATE_NORMAL[0], RESPIRATION_RATE_NORMAL[1]));
   }
 
   /**
@@ -818,12 +853,18 @@ public final class LifecycleModule extends Module {
 
   protected static boolean ENABLE_DEATH_BY_NATURAL_CAUSES =
       Boolean.parseBoolean(Config.get("lifecycle.death_by_natural_causes"));
-  
+  protected static boolean ENABLE_DEATH_BY_LOSS_OF_CARE =
+      Boolean.parseBoolean(Config.get("lifecycle.death_by_loss_of_care"));
   protected static boolean ENABLE_PHYSIOLOGY_GENERATORS =
       Boolean.parseBoolean(Config.get("physiology.generators.enabled", "false"));
-  
+
+  // Death From Natural Causes SNOMED Code
   private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000",
       "Natural death with unknown cause");
+  // Death From Lack of Treatment SNOMED Code (Due to a Payer not covering treatment)
+  // Note: This SNOMED Code (397709008) is just for death - not death from lack of treatment.
+  public static final Code LOSS_OF_CARE = new Code("SNOMED-CT", "397709008",
+      "Death due to Uncovered and Unreceived Treatment");
 
   protected static void death(Person person, long time) {
     if (ENABLE_DEATH_BY_NATURAL_CAUSES) {
@@ -832,6 +873,10 @@ public final class LifecycleModule extends Module {
       if (roll < likelihoodOfDeath) {
         person.recordDeath(time, NATURAL_CAUSES);
       }
+    }
+
+    if (ENABLE_DEATH_BY_LOSS_OF_CARE && deathFromLossOfCare(person)) {
+      person.recordDeath(time, LOSS_OF_CARE);
     }
   }
 
@@ -868,6 +913,32 @@ public final class LifecycleModule extends Module {
     double adjustedRisk = Utilities.convertRiskToTimestep(yearlyRisk, oneYearInMs);
 
     return adjustedRisk;
+  }
+
+  /**
+   * Determines whether a person dies due to loss-of-care and lack of
+   * necessary treatment.
+   * 
+   * @param person the person to check for loss of care death.
+   */
+  public static boolean deathFromLossOfCare(Person person) {
+    // Search the person's lossOfCareHealthRecord for missed treatments.
+    // Based on missed treatments, increase likelihood of death.
+    if (person.lossOfCareEnabled) {
+      for (Encounter encounter : person.lossOfCareRecord.encounters) {
+        for (Procedure procedure : encounter.procedures) {
+          for (Code code : procedure.codes) {
+            /*
+             * TODO USE A LOOKUP TABLE FOR DEATH PROBABILITIES FOR LACK OF TREATMENTS HERE
+             */
+            if (code.code.equals("33195004")) {
+              return person.rand() < 0.6;
+            }
+          }
+        }
+      }
+    }
+    return false;
   }
 
   private static void startSmoking(Person person, long time) {

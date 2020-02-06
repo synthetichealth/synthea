@@ -37,6 +37,8 @@ public class ExporterTest {
     yearsToKeep = 5;
     patient = new Person(12345L);
     patient.attributes.put(Person.BIRTHDATE, time - years(30));
+    // Give person an income to prevent null pointer.
+    patient.attributes.put(Person.INCOME, 100000);
     Location location = new Location("Massachusetts", null);
     location.assignPoint(patient, location.randomCityName(patient.random));
     Provider.loadProviders(location, 1L);

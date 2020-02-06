@@ -55,21 +55,26 @@ cardiovascular:
   oxygen_saturation:
     normal: [90,99] # https://www.mayoclinic.org/symptoms/hypoxemia/basics/definition/sym-20050930
     hypoxemia: [75,89] # https://en.wikipedia.org/wiki/Oxygen_saturation_(medicine)#Medical_significance
-  stroke:
-    #https://www.heart.org/idc/groups/heart-public/@wcm/@sop/@smd/documents/downloadable/ucm_449858.pdf
-    rate_20_39: [0.002, 0.007] #Prevalence of stroke by age and sex (Male, Female)
-    rate_40_59: [0.019, 0.022]
-    death: 0.15 #Strokes are fatal 10-20 percent of cases https://stroke.nih.gov/materials/strokechallenges.htm
-  chd:
-    #http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1647098/pdf/amjph00262-0029.pdf
-    coronary_attack_risk: [0.042,0.015] #annual probability of coronary attack given history of angina (Male, Female)
-    mi_proportion: 0.8 #Proportion of coronary attacks that are MI ,given history of CHD
-    survive: 0.095 #http://cpr.heart.org/AHAECC/CPRAndECC/General/UCM_477263_Cardiac-Arrest-Statistics.jsp (0.095)
-    bystander: 0.46 #http://cpr.heart.org/AHAECC/CPRAndECC/AboutCPRFirstAid/CPRFactsAndStats/UCM_475748_CPR-Facts-and-Stats.jsp
-  #http://circ.ahajournals.org/content/early/2014/12/18/CIR.0000000000000152.full.pdf
-  sudden_cardiac_arrest: #annual probability of risk of sudden cardiac arrest and death. Used as risk of cardiac event w/o CHD
-    risk: 0.00076
-    death: 0.00069
+  # stroke:
+  #   #https://www.heart.org/idc/groups/heart-public/@wcm/@sop/@smd/documents/downloadable/ucm_449858.pdf
+  #   rate_20_39: [0.002, 0.007] #Prevalence of stroke by age and sex (Male, Female)
+  #   rate_40_59: [0.019, 0.022]
+  #   death: 0.15 #Strokes are fatal 10-20 percent of cases https://stroke.nih.gov/materials/strokechallenges.htm
+  # chd:
+  #   #http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1647098/pdf/amjph00262-0029.pdf
+  #   coronary_attack_risk: [0.042,0.015] #annual probability of coronary attack given history of angina (Male, Female)
+  #   mi_proportion: 0.8 #Proportion of coronary attacks that are MI ,given history of CHD
+  #   survive: 0.095 #http://cpr.heart.org/AHAECC/CPRAndECC/General/UCM_477263_Cardiac-Arrest-Statistics.jsp (0.095)
+  #   bystander: 0.46 #http://cpr.heart.org/AHAECC/CPRAndECC/AboutCPRFirstAid/CPRFactsAndStats/UCM_475748_CPR-Facts-and-Stats.jsp
+  # #http://circ.ahajournals.org/content/early/2014/12/18/CIR.0000000000000152.full.pdf
+  # sudden_cardiac_arrest: #annual probability of risk of sudden cardiac arrest and death. Used as risk of cardiac event w/o CHD
+  #   risk: 0.00076
+  #   death: 0.00069
+  heart_rate: # https://www.columbiadoctors.org/condition/vital-signs-body-temperature-pulse-rate-respiration-rate-blood-pressure
+    normal: [60, 100]
+respiratory:
+  respiration_rate: # https://www.columbiadoctors.org/condition/vital-signs-body-temperature-pulse-rate-respiration-rate-blood-pressure
+    normal: [12, 16]
 weightloss:
   # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4990387/
   adherence: 0.605

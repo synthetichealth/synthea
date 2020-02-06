@@ -30,6 +30,8 @@ public class DeathModuleTest {
   @Before
   public void setup() throws IOException {
     person = new Person(0L);
+    // Give person an income to prevent null pointer.
+    person.attributes.put(Person.INCOME, 100000);
     time = System.currentTimeMillis();
 
     person.history = new LinkedList<>();
