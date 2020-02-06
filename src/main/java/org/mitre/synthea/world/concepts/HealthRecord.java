@@ -492,6 +492,7 @@ public class HealthRecord {
     public Observation addObservation(long time, String type, Object value, String display) {
       Observation observation = new Observation(time, type, value);
       this.observations.add(observation);
+      observation.codes.add(new Code("LOINC", type, display));
       return observation;
     }
 
