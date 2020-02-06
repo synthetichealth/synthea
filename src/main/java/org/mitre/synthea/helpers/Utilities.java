@@ -351,32 +351,34 @@ public class Utilities {
     }
     throw new IllegalArgumentException("Cannot parse value for class " + clazz);
   }
-  
+
   /**
-   * Walk the directory structure of the modules, and apply the given function for every module. 
+   * Walk the directory structure of the modules, and apply the given function for every module.
    * 
-   * @param action Action to apply for every module. Function signature is (topLevelModulesPath, currentModulePath) -> {...}
+   * @param action Action to apply for every module. Function signature is 
+   *        (topLevelModulesFolderPath, currentModulePath) -> {...}
    * @throws Exception
    */
-  public static void walkAllModules(BiConsumer<Path,Path> action) throws Exception {
-		URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
-	    Path modulesPath = Paths.get(modulesFolder.toURI());
-	    
-	    walkAllModules(modulesPath, p -> action.accept(modulesPath, p));
+  public static void walkAllModules(BiConsumer<Path, Path> action) throws Exception {
+    URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
+    Path modulesPath = Paths.get(modulesFolder.toURI());
+
+    walkAllModules(modulesPath, p -> action.accept(modulesPath, p));
   }
-  
+
   /**
-   * Walk the directory structure of the modules starting at the given location, and apply the given function for every module underneath.
+   * Walk the directory structure of the modules starting at the given location, and apply the given
+   * function for every module underneath.
    * 
-   * @param action Action to apply for every module. Function signature is (currentModulePath) -> {...}
+   * @param action Action to apply for every module. Function signature is 
+   *        (currentModulePath) -> {...}
    * @throws Exception
    */
   public static void walkAllModules(Path modulesPath, Consumer<Path> action) throws Exception {
-	    Files.walk(modulesPath, Integer.MAX_VALUE)
-	        .filter(Files::isReadable)
-	        .filter(Files::isRegularFile)
-	        .filter(p -> p.toString().endsWith(".json"))
-	        .forEach(p -> action.accept(p));
-  }
-  
+    Files.walk(modulesPath, Integer.MAX_VALUE)
+        .filter(Files::isReadable)
+        .filter(Files::isRegularFile)
+        .filter(p -> p.toString().endsWith(".json"))
+        .forEach(p -> action.accept(p));
+  } 
 }
