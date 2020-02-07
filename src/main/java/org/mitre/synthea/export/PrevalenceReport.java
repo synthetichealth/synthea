@@ -52,6 +52,8 @@ public class PrevalenceReport {
       return;
     }
 
+    long stopTime = generator.stop;
+
     String csvData = Utilities.readResource("prevalence_template.csv");
     List<LinkedHashMap<String, String>> data = SimpleCSV.parse(csvData);
 
@@ -63,12 +65,12 @@ public class PrevalenceReport {
           continue;
         }
 
-        getPrevalence(connection, line);
+        getPrevalence(connection, line, stopTime);
         completeSyntheaFields(line);
         calculateDifferenceFromActual(line);
       }
 
-      allConditions(connection, data);
+      allConditions(connection, data, stopTime);
     }
 
     String newCsvData = SimpleCSV.unparse(data);
@@ -87,8 +89,9 @@ public class PrevalenceReport {
    * 
    * @param connection Database connection
    * @param line Current line of the prevalence report to look up stats for and populate fields
+   * @param stopTime Time at which the simulation ended
    */
-  private static void getPrevalence(Connection connection, LinkedHashMap<String, String> line)
+  private static void getPrevalence(Connection connection, LinkedHashMap<String, String> line, long stopTime)
       throws SQLException {
 
     StringBuilder sb = new StringBuilder();
@@ -103,7 +106,8 @@ public class PrevalenceReport {
       sb.append("LEFT JOIN ATTRIBUTE a on p.ID = a.PERSON_ID and a.NAME= 'AGE'  \n");
     }
 
-    sb.append("WHERE p.DATE_OF_DEATH is null \n"); 
+    // account for future-dated deaths
+    sb.append("WHERE (p.DATE_OF_DEATH is null or p.DATE_OF_DEATH > ?) \n");
 
     String gender = line.get(GENDER);
     if (!gender.equals(ALL)) {
@@ -138,6 +142,7 @@ public class PrevalenceReport {
     int index = 1; // SQL begins at 1 not 0
     stmt.setString(index++, line.get(CODE));
     stmt.setString(index++, line.get(DISPLAY));
+    stmt.setLong(index++, stopTime);
 
     if (!gender.equals(ALL)) {
       stmt.setString(index++, gender);
@@ -207,7 +212,7 @@ public class PrevalenceReport {
    * into the population column. Calls for completeSyntheaFields to calculate the prevalence rate
    * and percent.
    */
-  private static void allConditions(Connection connection, List<LinkedHashMap<String, String>> data)
+  private static void allConditions(Connection connection, List<LinkedHashMap<String, String>> data, long stopTime)
       throws SQLException {
 
     PreparedStatement stmt = connection
@@ -222,9 +227,11 @@ public class PrevalenceReport {
         + "count(distinct c.person_id) as CountDisplay \n"
         + "from condition c, person p\n" 
         + "where c.person_id = p.id\n"
-        + "and p.date_of_death is null\n" 
+        + "and (p.date_of_death is null or p.date_of_death > ?) \n" 
         + "group by c.display, c.code \n" 
         + "order by c.display ASC");
+    stmt.setLong(1, stopTime);
+    
     rs = stmt.executeQuery();
     while (rs.next()) {
       String disease = rs.getString("DistinctDisplay");
