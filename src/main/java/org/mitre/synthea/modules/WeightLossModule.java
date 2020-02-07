@@ -238,7 +238,7 @@ public final class WeightLossModule extends Module {
     if (time + ONE_YEAR > pgt.tail().timeInSimulation) {
       GrowthChart bmiChart = growthChart.get(GrowthChart.ChartType.BMI);
       String gender = (String) person.attributes.get(Person.GENDER);
-      double bmiAtStart = pgt.currentBMI(person, start, person.mathRandom);
+      double bmiAtStart = pgt.currentBMI(person, start, person.random);
       double originalPercentile = bmiChart.percentileFor(startAgeInMonths, gender, bmiAtStart);
       double percentileChange = (double) person.attributes.get(WEIGHT_LOSS_BMI_PERCENTILE_CHANGE);
       int nextAgeInMonths = pgt.tail().ageInMonths + 12;
@@ -266,7 +266,7 @@ public final class WeightLossModule extends Module {
         (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
     int startAgeInMonths = person.ageInMonths(start);
-    double bmiAtStart = pgt.currentBMI(person, start, person.mathRandom);
+    double bmiAtStart = pgt.currentBMI(person, start, person.random);
     String gender = (String) person.attributes.get(Person.GENDER);
     double originalPercentile = bmiChart.percentileFor(startAgeInMonths, gender, bmiAtStart);
     double bmiForPercentileAtTwenty = bmiChart.lookUp(240, gender, originalPercentile);
@@ -298,7 +298,7 @@ public final class WeightLossModule extends Module {
     PediatricGrowthTrajectory pgt =
         (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
     double percentileChange = (double) person.attributes.get(WEIGHT_LOSS_BMI_PERCENTILE_CHANGE);
-    double bmiAtStart = pgt.currentBMI(person, start, person.mathRandom);
+    double bmiAtStart = pgt.currentBMI(person, start, person.random);
     double startPercentile = bmiChart.percentileFor(startAgeInMonths, gender, bmiAtStart);
     double targetPercentile = startPercentile - percentileChange;
     int currentTailAge = pgt.tail().ageInMonths;

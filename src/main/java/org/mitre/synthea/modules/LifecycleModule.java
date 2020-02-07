@@ -492,7 +492,8 @@ public final class LifecycleModule extends Module {
     double weight = person.getVitalSign(VitalSign.WEIGHT, time);
     String gender = (String) person.attributes.get(Person.GENDER);
     double heightPercentile = person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time);
-    PediatricGrowthTrajectory pgt = (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
+    PediatricGrowthTrajectory pgt =
+        (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
     int age = person.ageInYears(time);
     int ageInMonths = person.ageInMonths(time);
     if (age < 3 && pgt.beforeInitialSample(time)) {
@@ -500,8 +501,9 @@ public final class LifecycleModule extends Module {
       weight = lookupGrowthChart("weight", gender, ageInMonths,
           person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
     } else if (age < 20) {
-      double currentBMI = pgt.currentBMI(person, time, person.mathRandom);
-      double height = growthChart.get(GrowthChart.ChartType.HEIGHT).lookUp(ageInMonths, gender, heightPercentile);
+      double currentBMI = pgt.currentBMI(person, time, person.random);
+      double height = growthChart.get(GrowthChart.ChartType.HEIGHT).lookUp(ageInMonths,
+          gender, heightPercentile);
       weight = BMI.weightForHeightAndBMI(height, currentBMI);
     } else {
       Object weightManagement = person.attributes.get(Person.ACTIVE_WEIGHT_MANAGEMENT);

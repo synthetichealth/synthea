@@ -86,8 +86,7 @@ public class Person implements Serializable, QuadTreeElement {
   private static final String DEDUCTIBLE = "deductible";
   private static final String LAST_MONTH_PAID = "last_month_paid";
 
-  public final Random random;
-  public final JDKRandomGenerator mathRandom;
+  public final JDKRandomGenerator random;
   public final long seed;
   public long populationSeed;
   public Map<String, Object> attributes;
@@ -129,8 +128,7 @@ public class Person implements Serializable, QuadTreeElement {
    */
   public Person(long seed) {
     this.seed = seed; // keep track of seed so it can be exported later
-    random = new Random(seed);
-    mathRandom = new JDKRandomGenerator((int) seed);
+    random = new JDKRandomGenerator((int) seed);
     attributes = new ConcurrentHashMap<String, Object>();
     vitalSigns = new ConcurrentHashMap<VitalSign, ValueGenerator>();
     symptoms = new ConcurrentHashMap<String, Map<String, Integer>>();
