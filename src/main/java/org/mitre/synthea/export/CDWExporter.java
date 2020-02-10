@@ -10,7 +10,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
@@ -147,9 +146,9 @@ public class CDWExporter {
   private OutputStreamWriter vitalSign;
   
   /**
-   * CharsetEncoder for specifying the encoding character set of the output files.
+   * Charset for specifying the encoding character set of the output files.
    */
-  private CharsetEncoder charset = Charset.forName(Config.get("exporter.encoding")).newEncoder();
+  private Charset charset = Charset.forName(Config.get("exporter.encoding"));
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)

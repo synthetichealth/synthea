@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,6 +29,11 @@ import org.mitre.synthea.helpers.Config;
  * by other tools.
  */
 public class ReportExporter {
+	
+	/**
+   * Charset for specifying the encoding character set of the output files.
+   */
+  private static Charset charset = Charset.forName(Config.get("exporter.encoding"));
 
   /**
    * Export the outcomes, access, and cost report. Requires a Generator with a
@@ -49,7 +55,7 @@ public class ReportExporter {
       String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
       Path outFilePath = outDirectory.toPath().resolve("statistics-" + timeStamp + ".json");
 
-      JsonWriter writer = new JsonWriter(new OutputStreamWriter(new FileOutputStream(outFilePath.toFile())));
+      JsonWriter writer = new JsonWriter(new OutputStreamWriter(new FileOutputStream(outFilePath.toFile()), charset));
       writer.setIndent("  ");
       writer.beginObject(); // top-level
 

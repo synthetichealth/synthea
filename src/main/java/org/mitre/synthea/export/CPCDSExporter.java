@@ -61,9 +61,9 @@ public class CPCDSExporter {
   private OutputStreamWriter claims;
   
   /**
-   * CharsetEncoder for specifying the encoding character set of the output files.
+   * Charset for specifying the encoding character set of the output files.
    */
-  private CharsetEncoder charset = Charset.forName(Config.get("exporter.encoding")).newEncoder();
+  private Charset charset = Charset.forName(Config.get("exporter.encoding"));
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)

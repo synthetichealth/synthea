@@ -45,9 +45,9 @@ public class CDWExporterTest {
         "ordereditem", "labchem", "labpanel", "patientlabchem", "vprocedure",
         "surgeryProcedureDiagnosisCode", "surgeryPRE", "vitalSign" };
     for (String variable : variables) {
-      OutputStreamWriter fw =
+      OutputStreamWriter osw =
           Whitebox.<OutputStreamWriter>getInternalState(CDWExporter.getInstance(), variable);
-      fw.close();
+      osw.close();
     }
 
     // if we get here we at least had no exceptions
