@@ -147,7 +147,7 @@ public class CDWExporter {
   private OutputStreamWriter vitalSign;
   
   /**
-   * CharsetEncoder for specifying the encoding character set of the output files
+   * CharsetEncoder for specifying the encoding character set of the output files.
    */
   private CharsetEncoder charset = Charset.forName(Config.get("exporter.encoding")).newEncoder();
 
@@ -224,7 +224,8 @@ public class CDWExporter {
     }
   }
 
-  private OutputStreamWriter openOutputStreamWriter(Path outputDirectory, String filename) throws IOException {
+  private OutputStreamWriter openOutputStreamWriter(Path outputDirectory, String filename)
+  		throws IOException {
     File file = outputDirectory.resolve(filename).toFile();
     return new OutputStreamWriter(new FileOutputStream(file), charset);
   }
@@ -573,7 +574,8 @@ public class CDWExporter {
       localDrug.write(openOutputStreamWriter(outputDirectory, "localdrug.csv"));
       nationalDrug.write(openOutputStreamWriter(outputDirectory, "nationaldrug.csv"));
       dosageForm.write(openOutputStreamWriter(outputDirectory, "dosageform.csv"));
-      pharmacyOrderableItem.write(openOutputStreamWriter(outputDirectory, "pharmacyorderableitem.csv"));
+      pharmacyOrderableItem.write(
+      		openOutputStreamWriter(outputDirectory, "pharmacyorderableitem.csv"));
       orderableItem.write(openOutputStreamWriter(outputDirectory, "orderableitem.csv"));
       orderStatus.write(openOutputStreamWriter(outputDirectory, "orderstatus.csv"));
       vistaPackage.write(openOutputStreamWriter(outputDirectory, "vistapackage.csv"));

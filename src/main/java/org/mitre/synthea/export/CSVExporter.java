@@ -110,7 +110,7 @@ public class CSVExporter {
   private OutputStreamWriter payerTransitions;
   
   /**
-   * CharsetEncoder for specifying the encoding character set of the output files
+   * CharsetEncoder for specifying the encoding character set of the output files.
    */
   private CharsetEncoder charset = Charset.forName(Config.get("exporter.encoding")).newEncoder();
 
@@ -157,20 +157,25 @@ public class CSVExporter {
       medications = new OutputStreamWriter(new FileOutputStream(medicationsFile, append), charset);
       conditions = new OutputStreamWriter(new FileOutputStream(conditionsFile, append), charset);
       careplans = new OutputStreamWriter(new FileOutputStream(careplansFile, append), charset);
-      observations = new OutputStreamWriter(new FileOutputStream(observationsFile, append), charset);
+      observations = new OutputStreamWriter(
+      		new FileOutputStream(observationsFile, append), charset);
       procedures = new OutputStreamWriter(new FileOutputStream(proceduresFile, append), charset);
-      immunizations = new OutputStreamWriter(new FileOutputStream(immunizationsFile, append), charset);
+      immunizations = new OutputStreamWriter(
+      		new FileOutputStream(immunizationsFile, append), charset);
       encounters = new OutputStreamWriter(new FileOutputStream(encountersFile, append), charset);
-      imagingStudies = new OutputStreamWriter(new FileOutputStream(imagingStudiesFile, append), charset);
+      imagingStudies = new OutputStreamWriter(
+      		new FileOutputStream(imagingStudiesFile, append), charset);
 
       File organizationsFile = outputDirectory.resolve("organizations.csv").toFile();
       File providersFile = outputDirectory.resolve("providers.csv").toFile();
-      organizations = new OutputStreamWriter(new FileOutputStream(organizationsFile, append), charset);
+      organizations = new OutputStreamWriter(
+      		new FileOutputStream(organizationsFile, append), charset);
       providers = new OutputStreamWriter(new FileOutputStream(providersFile, append), charset);
       File payersFile = outputDirectory.resolve("payers.csv").toFile();
       File payerTransitionsFile = outputDirectory.resolve("payer_transitions.csv").toFile();
       payers = new OutputStreamWriter(new FileOutputStream(payersFile, append), charset);
-      payerTransitions = new OutputStreamWriter(new FileOutputStream(payerTransitionsFile, append), charset);
+      payerTransitions = new OutputStreamWriter(
+      		new FileOutputStream(payerTransitionsFile, append), charset);
 
       if (!append) {
         writeCSVHeaders();

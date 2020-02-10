@@ -61,7 +61,7 @@ public class CPCDSExporter {
   private OutputStreamWriter claims;
   
   /**
-   * CharsetEncoder for specifying the encoding character set of the output files
+   * CharsetEncoder for specifying the encoding character set of the output files.
    */
   private CharsetEncoder charset = Charset.forName(Config.get("exporter.encoding")).newEncoder();
 
