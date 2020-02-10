@@ -45,7 +45,6 @@ public class CPCDSExporter {
       UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
       UUID.randomUUID(), UUID.randomUUID() };
 
-  private final String[] PLAN_NAMES = {"Bronze", "Silver", "Gold"};
   /**
    * Writer for CPCDS_Patients.csv
    */
@@ -194,26 +193,19 @@ public class CPCDSExporter {
    */
   public void export(Person person, long time) throws IOException {
     String personID = patient(person, time);
-    String payerId = "";
     String type = COVERAGE_TYPES[(int) randomLongWithBounds(0, COVERAGE_TYPES.length - 1)];
     UUID groupId = GROUPIDS[(int) randomLongWithBounds(0, GROUPIDS.length - 1)];
     String groupName = GROUP_NAMES[(int) randomLongWithBounds(0, GROUP_NAMES.length - 1)];
-    String name = PLAN_NAMES[(int) randomLongWithBounds(0, PLAN_NAMES.length -1)];
-    
 
     for (Encounter encounter : person.record.encounters) {
+
       String encounterID = UUID.randomUUID().toString();
+      String payerId = encounter.claim.payer.uuid.toString();
       UUID medRecordNumber = UUID.randomUUID();
       CPCDSAttributes encounterAttributes = new CPCDSAttributes(encounter);
-      if (Boolean.parseBoolean(Config.get("exporter.cpcds.single_payer"))) {
-        payerId = "b1c428d6-4f07-31e0-90f0-68ffa6ff8c76";
-      }
-      else {
-        payerId = encounter.claim.payer.uuid.toString();
-      }
 
       for (CarePlan careplan : encounter.careplans) {
-        coverage(personID, careplan.start, careplan.stop, payerId, type, groupId, groupName, name);
+        coverage(personID, encounterID, careplan, payerId, type, groupId, groupName);
       }
 
       claim(encounter, personID, encounterID, medRecordNumber, encounterAttributes, payerId);
@@ -282,21 +274,21 @@ public class CPCDSExporter {
     s.append(personID).append(',');
     s.append(type).append(',');
 
-    if (stop != 0L) {
+    if (careplan.stop != 0L) {
       s.append("inactive").append(',');
     } else {
       s.append("active").append(',');
     }
 
-    s.append(dateFromTimestamp(start)).append(',');
-    if (stop != 0L) {
-      s.append(dateFromTimestamp(stop));
+    s.append(dateFromTimestamp(careplan.start)).append(',');
+    if (careplan.stop != 0L) {
+      s.append(dateFromTimestamp(careplan.stop));
     }
 
     s.append(',');
     s.append(groupId).append(',');
     s.append(groupName).append(',');
-    s.append(name).append(',');
+    s.append(careplan.name).append(',');
     s.append(payerId);
     s.append(NEWLINE);
     write(s.toString(), coverages);
@@ -466,7 +458,7 @@ public class CPCDSExporter {
         String diagnosisType = "principal";
 
         cond.append(coding.code).append(',');
-        cond.append(clean(coding.display)).append(',');
+        cond.append(coding.display).append(',');
         cond.append(presentOnAdmission).append(',');
         cond.append(diagnosisCode).append(',');
         cond.append(diagnosisType).append(',');
@@ -714,7 +706,7 @@ public class CPCDSExporter {
         if (medication.reasons.size() != 0) {
           Code reasons = medication.reasons.get(0);
           med.append(reasons.code).append(',');
-          med.append(clean(reasons.display)).append(',');
+          med.append(reasons.display).append(',');
           med.append(presentOnAdmission).append(',');
           med.append(diagnosisCode).append(',');
           med.append(diagnosisType).append(',');
