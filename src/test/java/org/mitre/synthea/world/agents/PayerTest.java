@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
+import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -134,7 +135,7 @@ public class PayerTest {
     // QOLS cannot be null for the checked years.
     Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
     qolsByYear.put(Utilities.getYear(olderThanSixtyFiveTime) - 1, 1.0);
-    person.attributes.put("QOL", qolsByYear);
+    person.attributes.put(QualityOfLifeModule.QOLS, qolsByYear);
     // Their previous payer must not be null to prevent nullPointerExceptions.
     person.setPayerAtTime(olderThanSixtyFiveTime
         - Utilities.convertTime("years", 1), testPrivatePayer1);
@@ -211,7 +212,7 @@ public class PayerTest {
     // QOLS cannot be null for the checked years.
     Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
     qolsByYear.put(Utilities.getYear(olderThanSixtyFiveTime) - 1, 1.0);
-    person.attributes.put("QOL", qolsByYear);
+    person.attributes.put(QualityOfLifeModule.QOLS, qolsByYear);
     // Their previous payer must not be null to prevent nullPointerExceptions.
     person.setPayerAtTime(olderThanSixtyFiveTime
         - Utilities.convertTime("years", 1), testPrivatePayer1);
@@ -325,6 +326,8 @@ public class PayerTest {
   public void monthlyPremiumPayment() {
 
     person = new Person(0L);
+    // Give person an income to prevent null pointer.
+    person.attributes.put(Person.INCOME, 100000);
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.ID, UUID.randomUUID().toString());
     // Predetermine person's Payer.
@@ -522,11 +525,12 @@ public class PayerTest {
     person.attributes.put(Person.ID, UUID.randomUUID().toString());
     person.attributes.put(Person.INCOME, (int) HealthInsuranceModule.medicaidLevel * 100);
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
-    person.attributes.put("QOL", new HashMap<Integer, Double>());
+    person.attributes.put(QualityOfLifeModule.QOLS, new HashMap<Integer, Double>());
 
     // Get private insurance for 55 years.
     for (int year = 0; year <= 55; year++) {
-      ((Map<Integer, Double>) person.attributes.get("QOL")).put(2000 + year, 1.0);
+      ((Map<Integer, Double>)
+          person.attributes.get(QualityOfLifeModule.QOLS)).put(2000 + year, 1.0);
       long currentTime = startTime + Utilities.convertTime("years", year);
       healthInsuranceModule.process(person, currentTime);
     }

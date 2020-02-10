@@ -1,23 +1,23 @@
 package org.mitre.synthea.world.geography;
 
+import static org.junit.Assert.assertTrue;
+
+import com.google.common.collect.Table;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
-
-import com.google.common.collect.Table;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 public class DemographicsTest {
   public static Demographics philly;
   public static Random random;
 
-  @BeforeClass
   /**
    * Set up the demographics to use for testing.
    */
+  @BeforeClass
+  @SuppressWarnings("rawtypes")
   public static void setUp() throws IOException {
     Table pa = Demographics.load("Pennsylvania");
     philly = (Demographics) pa.get("Pennsylvania", "27237");
@@ -26,7 +26,7 @@ public class DemographicsTest {
 
   @Test
   public void pickRace() {
-    HashMap<String, Integer> raceMap = new HashMap();
+    HashMap<String, Integer> raceMap = new HashMap<String, Integer>();
     for (int i = 0; i < 10000; i++) {
       String race = philly.pickRace(random);
       if (raceMap.containsKey(race)) {
@@ -54,7 +54,7 @@ public class DemographicsTest {
 
   @Test
   public void languageFromRaceAndEthnicity() {
-    HashMap<String, Integer> languageMap = new HashMap();
+    HashMap<String, Integer> languageMap = new HashMap<String, Integer>();
     for (int i = 0; i < 10000; i++) {
       String language = philly.languageFromRaceAndEthnicity("white", "hispanic", random);
       if (languageMap.containsKey(language)) {
@@ -66,7 +66,7 @@ public class DemographicsTest {
     assertTrue(languageMap.get("english") > 4600 && languageMap.get("english") < 5000);
     assertTrue(languageMap.get("spanish") > 4900 && languageMap.get("spanish") < 5300);
 
-    languageMap = new HashMap();
+    languageMap = new HashMap<String, Integer>();
     for (int i = 0; i < 10000; i++) {
       String language = philly.languageFromRaceAndEthnicity("white", "nonhispanic", random);
       if (languageMap.containsKey(language)) {
@@ -77,7 +77,7 @@ public class DemographicsTest {
     }
     assertTrue(languageMap.get("english") > 9500);
 
-    languageMap = new HashMap();
+    languageMap = new HashMap<String, Integer>();
     for (int i = 0; i < 10000; i++) {
       String language = philly.languageFromRaceAndEthnicity("asian", "nonhispanic", random);
       if (languageMap.containsKey(language)) {

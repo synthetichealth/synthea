@@ -47,6 +47,12 @@ public class Immunizations {
     }
   }
 
+  /**
+   * Administer vaccines to the person at the state time according to the
+   * required immunization schedule.
+   * @param person - the person to vaccinate.
+   * @param time - the current simulation time.
+   */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static void performEncounter(Person person, long time) {
     Map<String, List<Long>> immunizationsGiven;

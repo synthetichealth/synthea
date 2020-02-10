@@ -46,7 +46,7 @@
               ]
             },
             {
-              "distribution": 0.9913,
+              "distribution": 0.99125,
               "transition": "Potential_Infection"
             }
           ]
@@ -276,6 +276,11 @@
       "codes": [
         {
           "system": "LOINC",
+          "code": "8310-5",
+          "display": "Body temperature"
+        },
+        {
+          "system": "LOINC",
           "code": "8331-1",
           "display": "Oral temperature"
         }
@@ -294,6 +299,11 @@
       ],
       "unit": "Cel",
       "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Body temperature"
+        },
         {
           "system": "LOINC",
           "code": "8331-1",
@@ -339,8 +349,8 @@
                 "codes": [
                   {
                     "system": "LOINC",
-                    "code": "8331-1",
-                    "display": "Oral temperature"
+                    "code": "8310-5",
+                    "display": "Body temperature"
                   }
                 ],
                 "operator": ">",
@@ -390,8 +400,8 @@
                 "codes": [
                   {
                     "system": "LOINC",
-                    "code": "8331-1",
-                    "display": "Oral temperature"
+                    "code": "8310-5",
+                    "display": "Body temperature"
                   }
                 ],
                 "operator": ">",
@@ -533,7 +543,6 @@
       },
       "direct_transition": "Symptom_4_Ends"
     },
-
     "Symptom_4_Ends": {
       "type": "Symptom",
       "symptom": "Difficulty Swallowing",

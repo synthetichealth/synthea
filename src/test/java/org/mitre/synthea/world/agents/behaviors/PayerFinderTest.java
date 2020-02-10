@@ -1,6 +1,7 @@
 package org.mitre.synthea.world.agents.behaviors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class PayerFinderTest {
   public void setup() {
     person = new Person(0L);
     person.attributes.put(Person.OCCUPATION_LEVEL, 0.5);
-    person.attributes.put(Person.INCOME, 100);
+    person.attributes.put(Person.INCOME, 100000);
     // Load in the .csv test list of payers.
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
@@ -38,16 +39,19 @@ public class PayerFinderTest {
     PayerFinderRandom finder = new PayerFinderRandom();
     List<Payer> options = new ArrayList<Payer>();
     Payer payer = finder.find(options, person, null, 0L);
+    assertNotNull(payer);
     assertEquals("NO_INSURANCE", payer.getName());
   }
 
   @Test
   public void onePayerRandom() {
+    Config.set("generate.payers.selection_behavior", "random");
+    Payer.clear();
+    Payer.loadPayers(new Location("Massachusetts", null));
     PayerFinderRandom finder = new PayerFinderRandom();
-    List<Payer> options = new ArrayList<Payer>();
-    options.add(Payer.getPrivatePayers().get(0));
-    Payer payer = finder.find(options, person, null, 0L);
+    Payer payer = finder.find(Payer.getPrivatePayers(), person, null, 0L);
     assertNotNull(payer);
+    assertNotEquals("NO_INSURANCE", payer.getName());
   }
 
   @Test
@@ -58,6 +62,7 @@ public class PayerFinderTest {
     PayerFinderBestRates finder = new PayerFinderBestRates();
     List<Payer> options = new ArrayList<Payer>();
     Payer payer = finder.find(options, person, null, 0L);
+    assertNotNull(payer);
     assertEquals("NO_INSURANCE", payer.getName());
   }
 
@@ -67,10 +72,9 @@ public class PayerFinderTest {
     Payer.clear();
     Payer.loadPayers(new Location("Massachusetts", null));
     PayerFinderBestRates finder = new PayerFinderBestRates();
-    List<Payer> options = new ArrayList<Payer>();
-    options.add(Payer.getPrivatePayers().get(0));
-    Payer payer = finder.find(options, person, null, 0L);
+    Payer payer = finder.find(Payer.getPrivatePayers(), person, null, 0L);
     assertNotNull(payer);
+    assertNotEquals("NO_INSURANCE", payer.getName());
   }
 
   @Test(expected = RuntimeException.class)
