@@ -1718,27 +1718,7 @@ public class FhirStu3 {
     
     recordData.setDimensions(value.series.size());
     
-    int numSamples = value.series.get(0).getValues().size();
-    
-    DecimalFormat df;
-    
-    if (value.decimalFormat != null) {
-      df = new DecimalFormat(value.decimalFormat);
-    } else {
-      df = new DecimalFormat();
-    }
-    
-    // Build the data string from all list values
-    StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < numSamples; i++) {
-      for (TimeSeriesData series : value.series) {
-        double num = series.getValues().get(i);
-        sb.append(df.format(num));
-        sb.append(" ");
-      }
-    }
-    
-    recordData.setData(sb.toString());
+    recordData.setData(ExportHelper.sampledDataToValueString(value));
     
     return recordData;
   }
