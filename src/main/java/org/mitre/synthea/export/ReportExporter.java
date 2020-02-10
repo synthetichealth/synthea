@@ -31,7 +31,7 @@ import org.mitre.synthea.helpers.Config;
 public class ReportExporter {
 	
 	/**
-   * Charset for specifying the encoding character set of the output files.
+   * Charset for specifying the character set of the output files.
    */
   private static Charset charset = Charset.forName(Config.get("exporter.encoding"));
 

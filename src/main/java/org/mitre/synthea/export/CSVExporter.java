@@ -13,7 +13,6 @@ import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -110,7 +109,7 @@ public class CSVExporter {
   private OutputStreamWriter payerTransitions;
   
   /**
-   * Charset for specifying the encoding character set of the output files.
+   * Charset for specifying the character set of the output files.
    */
   private Charset charset = Charset.forName(Config.get("exporter.encoding"));
 

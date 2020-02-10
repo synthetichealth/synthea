@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 import java.nio.file.Path;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -61,7 +60,7 @@ public class CPCDSExporter {
   private OutputStreamWriter claims;
   
   /**
-   * Charset for specifying the encoding character set of the output files.
+   * Charset for specifying the character set of the output files.
    */
   private Charset charset = Charset.forName(Config.get("exporter.encoding"));
 
