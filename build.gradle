@@ -58,6 +58,9 @@ dependencies {
   compile group: 'info.cqframework', name: 'model', version: '1.3.17'
   compile group: 'info.cqframework', name: 'cql-to-elm', version: '1.3.17'
 
+  // HTTP Client for reaching out to services, like clinical note generation
+  compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.11'
+
   // Java 9 no longer includes these APIs by default
   compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
   compile 'org.glassfish.jaxb:jaxb-runtime:2.3.0'

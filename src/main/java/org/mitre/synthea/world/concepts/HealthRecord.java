@@ -35,6 +35,16 @@ public class HealthRecord {
   public static final String MEDICATIONS = "medications";
   public static final String IMMUNIZATIONS = "immunizations";
 
+  public static class Note {
+    public String text;
+    public long time;
+
+    public Note(String text, long time) {
+      this.text = text;
+      this.time = time;
+    }
+  }
+
   /**
    * HealthRecord.Code represents a system, code, and display value.
    */
@@ -531,6 +541,7 @@ public class HealthRecord {
   public Provider provider;
   public List<Encounter> encounters;
   public Map<String, Entry> present;
+  public Note note;
   /** recorded death date/time. */
   public Long death;
 
