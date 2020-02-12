@@ -258,12 +258,9 @@ public class Payer {
    * Returns the government payer with the given name.
    * 
    * @param governmentPayerName the government payer to get.
+   * @return returns null if the government payer does not exist.
    */
   public static Payer getGovernmentPayer(String governmentPayerName) {
-    if (!governmentPayers.containsKey(governmentPayerName)) {
-      throw new RuntimeException(
-          "ERROR: Government Payer '" + governmentPayerName + "' does not exist.");
-    }
     return Payer.governmentPayers.get(governmentPayerName);
   }
 

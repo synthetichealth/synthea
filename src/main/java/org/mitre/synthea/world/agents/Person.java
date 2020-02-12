@@ -555,6 +555,9 @@ public class Person implements Serializable, QuadTreeElement {
   }
 
   public void setProvider(EncounterType type, Provider provider) {
+    if (provider == null) {
+      throw new RuntimeException("Unable to find provider: " + type);
+    }
     String key = PREFERREDYPROVIDER + type;
     attributes.put(key, provider);
   }

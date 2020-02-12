@@ -54,6 +54,8 @@ public class FHIRR4ExporterTest {
 
   @Test
   public void testFHIRR4Export() throws Exception {
+    TestHelper.loadTestProperties();
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
 
     FhirContext ctx = FhirContext.forR4();

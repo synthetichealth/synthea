@@ -3,15 +3,18 @@ package org.mitre.synthea.world.agents;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-
+import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
@@ -25,31 +28,27 @@ import org.mitre.synthea.world.geography.Location;
 
 public class PayerTest {
 
+  static String testState;
   // Covers all healthcare.
   Payer testPrivatePayer1;
   // Covers only wellness encounters.
   Payer testPrivatePayer2;
-  HealthInsuranceModule healthInsuranceModule;
+  static HealthInsuranceModule healthInsuranceModule;
   Person person;
-  double medicaidLevel;
-  long mandateTime;
-  String medicareName;
-  String medicaidName;
+  static double medicaidLevel;
+  static long mandateTime;
+  static String medicareName;
+  static String medicaidName;
+  static String dualName;
 
   /**
    * Setup for Payer Tests.
+   * @throws Exception on configuration loading error
    */
-  @Before
-  public void setup() {
-    // Clear any Payers that may have already been statically loaded.
-    Payer.clear();
-    Config.set("generate.payers.insurance_companies.default_file",
-        "generic/payers/test_payers.csv");
-    // Load in the .csv list of Payers for MA.
-    Payer.loadPayers(new Location("Massachusetts", null));
-    // Load the two test payers.
-    testPrivatePayer1 = Payer.getPrivatePayers().get(0);
-    testPrivatePayer2 = Payer.getPrivatePayers().get(1);
+  @BeforeClass
+  public static void setup() throws Exception {
+    TestHelper.loadTestProperties();
+    testState = Config.get("test_state.default", "Massachusetts");
     // Set up Medicaid numbers.
     healthInsuranceModule = new HealthInsuranceModule();
     double povertyLevel = Double
@@ -60,6 +59,43 @@ public class PayerTest {
     mandateTime = Utilities.convertCalendarYearsToTime(mandateYear);
     medicareName = Config.get("generate.payers.insurance_companies.medicare", "Medicare");
     medicaidName = Config.get("generate.payers.insurance_companies.medicaid", "Medicaid");
+    dualName = Config.get("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
+  }
+
+  /**
+   * Setup before each test.
+   */
+  @Before
+  public void before() {
+    // Clear any Payers that may have already been statically loaded.
+    Payer.clear();
+    Config.set("generate.payers.insurance_companies.default_file",
+        "generic/payers/test_payers.csv");
+    // Load in the .csv list of Payers.
+    Payer.loadPayers(new Location(testState, null));
+    // Load the two test payers.
+    testPrivatePayer1 = Payer.getPrivatePayers().get(0);
+    testPrivatePayer2 = Payer.getPrivatePayers().get(1);
+    // Force medicare for test settings
+    Config.set("generate.payers.insurance_companies.medicare", "Medicare");
+    Config.set("generate.payers.insurance_companies.medicaid", "Medicaid");
+    Config.set("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
+    HealthInsuranceModule.MEDICARE = "Medicare";
+    HealthInsuranceModule.MEDICAID = "Medicaid";
+    HealthInsuranceModule.DUAL_ELIGIBLE = "Dual Eligible";
+  }
+
+  /**
+   * Clean up after tests.
+   */
+  @AfterClass
+  public static void cleanup() {
+    Config.set("generate.payers.insurance_companies.medicare", medicareName);
+    Config.set("generate.payers.insurance_companies.medicaid", medicaidName);
+    Config.set("generate.payers.insurance_companies.dual_eligible", dualName);
+    HealthInsuranceModule.MEDICARE = medicareName;
+    HealthInsuranceModule.MEDICAID = medicaidName;
+    HealthInsuranceModule.DUAL_ELIGIBLE = dualName;
   }
 
   @Test
@@ -99,7 +135,6 @@ public class PayerTest {
 
   @Test
   public void incrementEncounters() {
-
     person = new Person(0L);
     person.setPayerAtTime(0L, testPrivatePayer1);
     HealthRecord healthRecord = new HealthRecord(person);
@@ -145,7 +180,7 @@ public class PayerTest {
         - Utilities.convertTime("years", 1), testPrivatePayer1);
     // At time olderThanSixtyFiveTime, the person is 65 and qualifies for Medicare.
     healthInsuranceModule.process(person, olderThanSixtyFiveTime);
-    assertEquals(medicareName, person.getPayerAtTime(olderThanSixtyFiveTime).getName());
+    assertEquals("Medicare", person.getPayerAtTime(olderThanSixtyFiveTime).getName());
     assertTrue(person.getPayerAtTime(olderThanSixtyFiveTime)
         .accepts(person, olderThanSixtyFiveTime));
 
@@ -158,7 +193,7 @@ public class PayerTest {
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
     healthInsuranceModule.process(person, 0L);
-    assertEquals(medicareName, person.getPayerAtTime(0L).getName());
+    assertEquals("Medicare", person.getPayerAtTime(0L).getName());
   }
 
   @Test
@@ -297,17 +332,17 @@ public class PayerTest {
   @Test
   public void loadGovernmentPayers() {
 
-    assertTrue(Payer.getGovernmentPayer(medicareName)
-        != null && Payer.getGovernmentPayer(medicaidName) != null);
+    assertTrue(Payer.getGovernmentPayer("Medicare")
+        != null && Payer.getGovernmentPayer("Medicaid") != null);
 
     for (Payer payer : Payer.getGovernmentPayers()) {
       assertEquals("Government", payer.getOwnership());
     }
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void invalidGovernmentPayer() {
-    Payer.getGovernmentPayer("Hollywood Healthcare");
+    assertNull(Payer.getGovernmentPayer("Hollywood Healthcare"));
   }
 
   @Test

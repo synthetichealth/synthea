@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
@@ -30,8 +32,10 @@ public class ExporterTest {
   
   /**
    * Setup test data.
+   * @throws Exception on configuration loading error.
    */
-  @Before public void setup() {
+  @Before
+  public void setup() throws Exception {
     Config.set("exporter.split_records", "false");
     endTime = time = System.currentTimeMillis();
     yearsToKeep = 5;
@@ -39,7 +43,9 @@ public class ExporterTest {
     patient.attributes.put(Person.BIRTHDATE, time - years(30));
     // Give person an income to prevent null pointer.
     patient.attributes.put(Person.INCOME, 100000);
-    Location location = new Location("Massachusetts", null);
+    TestHelper.loadTestProperties();
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
+    Location location = new Location(Generator.DEFAULT_STATE, null);
     location.assignPoint(patient, location.randomCityName(patient.random));
     Provider.loadProviders(location, 1L);
     record = patient.record;
@@ -68,7 +74,8 @@ public class ExporterTest {
     assertEquals(128, encounter.observations.get(0).value);
   }
 
-  @Test public void test_export_filter_should_keep_old_active_medication() {
+  @Test
+  public void test_export_filter_should_keep_old_active_medication() {
 
     Code code = new Code("SNOMED-CT","705129","Fake Code");
 
@@ -89,7 +96,8 @@ public class ExporterTest {
     assertEquals(time - years(10), encounter.medications.get(0).start);
   }
 
-  @Test public void test_export_filter_should_keep_medication_that_ended_during_target() {
+  @Test
+  public void test_export_filter_should_keep_medication_that_ended_during_target() {
 
     Code code = new Code("SNOMED-CT","705129","Fake Code");
 
@@ -113,7 +121,8 @@ public class ExporterTest {
     assertEquals(time - years(4), encounter.medications.get(0).stop);
   }
 
-  @Test public void test_export_filter_should_keep_old_active_careplan() {
+  @Test
+  public void test_export_filter_should_keep_old_active_careplan() {
     record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.careplanStart(time - years(10), "stop_smoking");
     record.careplanEnd(time - years(8), "stop_smoking", DUMMY_CODE);
@@ -129,7 +138,8 @@ public class ExporterTest {
     assertEquals(time - years(12), encounter.careplans.get(0).start);
   }
 
-  @Test public void test_export_filter_should_keep_careplan_that_ended_during_target() {
+  @Test
+  public void test_export_filter_should_keep_careplan_that_ended_during_target() {
     record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.careplanStart(time - years(10), "stop_smoking");
     record.careplanEnd(time - years(1), "stop_smoking", DUMMY_CODE);
@@ -143,7 +153,8 @@ public class ExporterTest {
     assertEquals(time - years(1), encounter.careplans.get(0).stop);
   }
 
-  @Test public void test_export_filter_should_keep_old_active_conditions() {
+  @Test
+  public void test_export_filter_should_keep_old_active_conditions() {
     record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.conditionStart(time - years(10), "fakitis");
     record.conditionEnd(time - years(8), "fakitis");
@@ -159,7 +170,8 @@ public class ExporterTest {
     assertEquals(time - years(10), encounter.conditions.get(0).start);
   }
 
-  @Test public void test_export_filter_should_keep_condition_that_ended_during_target() {
+  @Test
+  public void test_export_filter_should_keep_condition_that_ended_during_target() {
     record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.conditionStart(time - years(10), "boneitis");
     record.conditionEnd(time - years(2), "boneitis");
@@ -176,7 +188,8 @@ public class ExporterTest {
     assertEquals(time - years(10), encounter.conditions.get(0).start);
   }
 
-  @Test public void test_export_filter_should_keep_cause_of_death() {
+  @Test
+  public void test_export_filter_should_keep_cause_of_death() {
     HealthRecord.Code causeOfDeath = 
         new HealthRecord.Code("SNOMED-CT", "Todo-lookup-code", "Rabies");
     patient.recordDeath(time - years(20), causeOfDeath);
@@ -198,7 +211,8 @@ public class ExporterTest {
     assertEquals(time - years(20), encounter.reports.get(0).start);
   }
 
-  @Test public void test_export_filter_should_not_keep_old_stuff() {
+  @Test
+  public void test_export_filter_should_not_keep_old_stuff() {
     record.encounterStart(time - years(18), EncounterType.EMERGENCY);
     record.procedure(time - years(20), "appendectomy");
     record.immunization(time - years(12), "flu_shot");
@@ -209,7 +223,8 @@ public class ExporterTest {
     assertTrue(filtered.record.encounters.isEmpty());
   }
 
-  @Test public void test_export_filter_should_keep_old_active_stuff() {
+  @Test
+  public void test_export_filter_should_keep_old_active_stuff() {
     // create an old encounter with a diagnosis that isn't ended
     record.encounterStart(time - years(18), EncounterType.EMERGENCY);
     record.conditionStart(time - years(18), "diabetes");
@@ -221,7 +236,8 @@ public class ExporterTest {
     assertEquals("diabetes", filtered.record.encounters.get(0).conditions.get(0).type);
   }
   
-  @Test public void test_export_filter_should_filter_claim_items() {
+  @Test
+  public void test_export_filter_should_filter_claim_items() {
     record.encounterStart(time - years(10), EncounterType.EMERGENCY);
     record.conditionStart(time - years(10), "something_permanent");
     record.procedure(time - years(10), "xray");

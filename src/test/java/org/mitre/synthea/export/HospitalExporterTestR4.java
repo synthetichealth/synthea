@@ -16,6 +16,8 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -38,7 +40,9 @@ public class HospitalExporterTestR4 {
     Config.set("exporter.hospital.fhir.export", "true");
     Config.set("exporter.fhir.transaction_bundle", "true");
     FhirR4.TRANSACTION_BUNDLE = true; // set this manually, in case it has already been loaded.
-    Location location = new Location("Massachusetts", null);
+    TestHelper.loadTestProperties();
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
+    Location location = new Location(Generator.DEFAULT_STATE, null);
     Provider.clear();
     Provider.loadProviders(location, 1L);
     assertNotNull(Provider.getProviderList());
