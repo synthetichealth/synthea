@@ -21,6 +21,7 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.export.CDWExporter;
 import org.mitre.synthea.export.Exporter;
+import org.mitre.synthea.helpers.ClinicalNoteService;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.modules.DeathModule;
@@ -371,6 +372,9 @@ public class Generator {
           hrm.executeAll(person, person.record, time, timestep, person.random);
 
           time += timestep;
+        }
+        if (Boolean.parseBoolean(Config.get("generate.clinical_note", "false"))) {
+          ClinicalNoteService.generateNote(person, time);
         }
 
         DeathModule.process(person, time);
