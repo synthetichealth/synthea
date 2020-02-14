@@ -1,6 +1,7 @@
 package org.mitre.synthea.helpers;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -16,9 +17,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class ClinicalNoteService {
-  public static String NOTE_SERVICE_URL = "";
+  public static String NOTE_SERVICE_URL = "http://127.0.0.1:4567/custom_input_note";
   public static String NOTE_TYPE = "ooGENERALoo";
 
   public static class RequestBody {
@@ -27,6 +27,8 @@ public class ClinicalNoteService {
     public String gender;
     public String ethnicity;
     public String doctorName;
+    @SerializedName("marital_status")
+    public String maritalStatus;
     public List<String> diagnosis;
     public List<String> procedures;
     public List<String> drugs;
@@ -36,6 +38,7 @@ public class ClinicalNoteService {
       this.age = person.ageInYears(time);
       this.gender = (String) person.attributes.get(Person.GENDER);
       this.ethnicity = (String) person.attributes.get(Person.ETHNICITY);
+      this.maritalStatus = (String) person.attributes.get(Person.MARITAL_STATUS);
       this.diagnosis = new LinkedList();
       this.procedures = new LinkedList();
       this.drugs = new LinkedList();
