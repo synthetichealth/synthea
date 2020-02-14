@@ -56,7 +56,8 @@ public class ExporterTest {
     }
   }
 
-  @Test public void test_export_filter_simple_cutoff() {
+  @Test
+  public void testExportFilterSimpleCutoff() {
     record.encounterStart(time - years(8), EncounterType.WELLNESS);
     record.observation(time - years(8), "height", 64);
     
@@ -75,7 +76,7 @@ public class ExporterTest {
   }
 
   @Test
-  public void test_export_filter_should_keep_old_active_medication() {
+  public void testExportFilterShouldKeepOldActiveMedication() {
 
     Code code = new Code("SNOMED-CT","705129","Fake Code");
 
@@ -97,7 +98,7 @@ public class ExporterTest {
   }
 
   @Test
-  public void test_export_filter_should_keep_medication_that_ended_during_target() {
+  public void testExportFilterShouldKeepMedicationThatEndedDuringTarget() {
 
     Code code = new Code("SNOMED-CT","705129","Fake Code");
 
@@ -122,7 +123,7 @@ public class ExporterTest {
   }
 
   @Test
-  public void test_export_filter_should_keep_old_active_careplan() {
+  public void testExportFilterShouldKeepOldActiveCareplan() {
     record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.careplanStart(time - years(10), "stop_smoking");
     record.careplanEnd(time - years(8), "stop_smoking", DUMMY_CODE);
@@ -139,7 +140,7 @@ public class ExporterTest {
   }
 
   @Test
-  public void test_export_filter_should_keep_careplan_that_ended_during_target() {
+  public void testExportFilterShouldKeepCareplanThatEndedDuringTarget() {
     record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.careplanStart(time - years(10), "stop_smoking");
     record.careplanEnd(time - years(1), "stop_smoking", DUMMY_CODE);
@@ -154,7 +155,7 @@ public class ExporterTest {
   }
 
   @Test
-  public void test_export_filter_should_keep_old_active_conditions() {
+  public void testExportFilterShouldKeepOldActiveConditions() {
     record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.conditionStart(time - years(10), "fakitis");
     record.conditionEnd(time - years(8), "fakitis");
@@ -171,7 +172,7 @@ public class ExporterTest {
   }
 
   @Test
-  public void test_export_filter_should_keep_condition_that_ended_during_target() {
+  public void testExportFilterShouldKeepConditionThatEndedDuringTarget() {
     record.encounterStart(time - years(10), EncounterType.WELLNESS);
     record.conditionStart(time - years(10), "boneitis");
     record.conditionEnd(time - years(2), "boneitis");
@@ -189,7 +190,7 @@ public class ExporterTest {
   }
 
   @Test
-  public void test_export_filter_should_keep_cause_of_death() {
+  public void testExportFilterShouldKeepCauseOfDeath() {
     HealthRecord.Code causeOfDeath = 
         new HealthRecord.Code("SNOMED-CT", "Todo-lookup-code", "Rabies");
     patient.recordDeath(time - years(20), causeOfDeath);
@@ -212,7 +213,7 @@ public class ExporterTest {
   }
 
   @Test
-  public void test_export_filter_should_not_keep_old_stuff() {
+  public void testExportFilterShouldNotKeepOldStuff() {
     record.encounterStart(time - years(18), EncounterType.EMERGENCY);
     record.procedure(time - years(20), "appendectomy");
     record.immunization(time - years(12), "flu_shot");
@@ -224,7 +225,7 @@ public class ExporterTest {
   }
 
   @Test
-  public void test_export_filter_should_keep_old_active_stuff() {
+  public void testExportFilterShouldKeepOldActiveStuff() {
     // create an old encounter with a diagnosis that isn't ended
     record.encounterStart(time - years(18), EncounterType.EMERGENCY);
     record.conditionStart(time - years(18), "diabetes");
@@ -237,7 +238,7 @@ public class ExporterTest {
   }
   
   @Test
-  public void test_export_filter_should_filter_claim_items() {
+  public void testExportFilterShouldFilterClaimItems() {
     record.encounterStart(time - years(10), EncounterType.EMERGENCY);
     record.conditionStart(time - years(10), "something_permanent");
     record.procedure(time - years(10), "xray");
