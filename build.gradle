@@ -35,6 +35,7 @@ checkstyle {
 dependencies {
   // This dependency is found on compile classpath of this component and consumers.
   compile 'com.google.code.gson:gson:2.8.0'
+  compile 'com.jayway.jsonpath:json-path:2.4.0'
   compile 'ca.uhn.hapi.fhir:hapi-fhir-base:4.1.0'
   compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:4.1.0'
   compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:4.1.0'
@@ -159,6 +160,22 @@ task attributes(type: JavaExec) {
   description 'Create a list of patient attributes'
   classpath sourceSets.main.runtimeClasspath
   main = "org.mitre.synthea.helpers.Attributes"
+}
+
+task overrides(type: JavaExec) {
+  group 'Application'
+  description 'Create a list of modules parameters in module override format'
+  classpath sourceSets.main.runtimeClasspath
+  main = "org.mitre.synthea.helpers.ModuleOverrides"
+  doFirst {
+    // TODO: is there a way to make this cleaner?
+    String includeFields = project.hasProperty('includeFields') ? project.getProperty('includeFields') : ""
+    String includeModules = project.hasProperty('includeModules') ? project.getProperty('includeModules') : ""
+    String excludeFields = project.hasProperty('excludeFields') ? project.getProperty('excludeFields') : ""
+    String excludeModules = project.hasProperty('excludeModules') ? project.getProperty('excludeModules') : ""
+
+    args(includeFields, includeModules, excludeFields, excludeModules)
+  }
 }
 
 task physiology(type: JavaExec) {

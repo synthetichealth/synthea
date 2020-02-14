@@ -16,10 +16,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -27,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 import org.junit.Test;
+import org.mitre.synthea.helpers.Utilities;
 import org.powermock.reflect.Whitebox;
 
 public class ModuleTest {
@@ -134,33 +131,26 @@ public class ModuleTest {
    */
   @Test
   public void targetEncounters() throws Exception {
-    URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
-    Path path = Paths.get(modulesFolder.toURI());
-
-    Files.walk(path, Integer.MAX_VALUE)
-        .filter(Files::isReadable)
-        .filter(Files::isRegularFile)
-        .filter(p -> p.toString().endsWith(".json"))
-        .forEach(t -> {
-          try {
-            FileReader fileReader = new FileReader(t.toString());
-            JsonReader reader = new JsonReader(fileReader);
-            JsonParser parser = new JsonParser();
-            JsonObject object = parser.parse(reader).getAsJsonObject();
-            JsonObject states = object.getAsJsonObject("states");
-            for (String stateName : states.keySet()) {
-              JsonObject state = states.getAsJsonObject(stateName);
-              if (state.has("target_encounter")) {
-                String type = state.get("type").getAsString();
-                if (!type.endsWith("Onset")) {
-                  System.err.println(t.toString() + " => " + stateName + "(" + type + ")");
-                }
-                assertTrue(type.endsWith("Onset"));
-              }
+    Utilities.walkAllModules((modulesFolder, t) -> {
+      try {
+        FileReader fileReader = new FileReader(t.toString());
+        JsonReader reader = new JsonReader(fileReader);
+        JsonParser parser = new JsonParser();
+        JsonObject object = parser.parse(reader).getAsJsonObject();
+        JsonObject states = object.getAsJsonObject("states");
+        for (String stateName : states.keySet()) {
+          JsonObject state = states.getAsJsonObject(stateName);
+          if (state.has("target_encounter")) {
+            String type = state.get("type").getAsString();
+            if (!type.endsWith("Onset")) {
+              System.err.println(t.toString() + " => " + stateName + "(" + type + ")");
             }
-          } catch (Exception e) {
-            fail(e.getMessage());
+            assertTrue(type.endsWith("Onset"));
           }
-        });
+        }
+      } catch (Exception e) {
+        fail(e.getMessage());
+      }
+    });
   }
 }
