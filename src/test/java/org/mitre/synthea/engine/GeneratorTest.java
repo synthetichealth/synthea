@@ -133,8 +133,8 @@ public class GeneratorTest {
     opts.state = testStateDefault;
     opts.city = testTownDefault;
     generator = new Generator(opts);
-    location = new Location(testStateAlt, testTownAlt);
-    zipCodes = location.getZipCodes(testTownAlt);
+    location = new Location(testStateDefault, testTownDefault);
+    zipCodes = location.getZipCodes(testTownDefault);
     for (int i = 0; i < numberOfPeople; i++) {
       Person p = generator.generatePerson(i);
       assertEquals(testTownDefault, p.attributes.get(Person.CITY));
