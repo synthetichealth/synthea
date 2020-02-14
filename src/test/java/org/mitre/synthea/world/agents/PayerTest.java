@@ -28,18 +28,18 @@ import org.mitre.synthea.world.geography.Location;
 
 public class PayerTest {
 
-  static String testState;
+  private static String testState;
   // Covers all healthcare.
-  Payer testPrivatePayer1;
+  private Payer testPrivatePayer1;
   // Covers only wellness encounters.
-  Payer testPrivatePayer2;
-  static HealthInsuranceModule healthInsuranceModule;
-  Person person;
-  static double medicaidLevel;
-  static long mandateTime;
-  static String medicareName;
-  static String medicaidName;
-  static String dualName;
+  private Payer testPrivatePayer2;
+  private static HealthInsuranceModule healthInsuranceModule;
+  private Person person;
+  private static double medicaidLevel;
+  private static long mandateTime;
+  private static String medicareName;
+  private static String medicaidName;
+  private static String dualName;
 
   /**
    * Setup for Payer Tests.
