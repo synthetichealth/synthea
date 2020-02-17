@@ -356,7 +356,7 @@ public class Utilities {
    * Walk the directory structure of the modules, and apply the given function for every module.
    * 
    * @param action Action to apply for every module. Function signature is 
-   *        (topLevelModulesFolderPath, currentModulePath) -> {...}
+   *        (topLevelModulesFolderPath, currentModulePath) -&gt; {...}
    */
   public static void walkAllModules(BiConsumer<Path, Path> action) throws Exception {
     URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
@@ -370,7 +370,7 @@ public class Utilities {
    * function for every module underneath.
    * 
    * @param action Action to apply for every module. Function signature is 
-   *        (currentModulePath) -> {...}
+   *        (currentModulePath) -&gt; {...}
    */
   public static void walkAllModules(Path modulesPath, Consumer<Path> action) throws Exception {
     Files.walk(modulesPath, Integer.MAX_VALUE)
