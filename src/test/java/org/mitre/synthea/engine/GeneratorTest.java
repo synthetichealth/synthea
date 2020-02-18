@@ -75,6 +75,16 @@ public class GeneratorTest {
     assertEquals(0, generator.stats.get("alive").longValue());
     assertEquals(numberOfPeople, generator.stats.get("dead").longValue());
   }
+
+  @Test
+  public void testGenerateOnlyAlivePatients() throws Exception {
+    Config.set("generate.only_alive_patients", "true");
+    int numberOfPeople = 2;
+    Generator generator = new Generator(numberOfPeople);
+    generator.run();
+    assertEquals(0, generator.stats.get("dead").longValue());
+    assertEquals(numberOfPeople, generator.stats.get("alive").longValue());
+  }
   
   @Test
   public void testGeneratePeopleDefaultLocation() throws Exception {

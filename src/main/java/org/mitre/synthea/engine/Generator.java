@@ -51,6 +51,7 @@ public class Generator {
   public Location location;
   private AtomicInteger totalGeneratedPopulation;
   private String logLevel;
+  private boolean onlyAlivePatients;
   private boolean onlyDeadPatients;
   private boolean onlyVeterans;
   public TransitionMetrics metrics;
@@ -188,7 +189,15 @@ public class Generator {
     this.location = new Location(options.state, options.city);
 
     this.logLevel = Config.get("generate.log_patients.detail", "simple");
+
     this.onlyDeadPatients = Boolean.parseBoolean(Config.get("generate.only_dead_patients"));
+    this.onlyAlivePatients = Boolean.parseBoolean(Config.get("generate.only_alive_patients"));
+    //If both values are set to true, then they are both set back to the default
+    if(this.onlyDeadPatients && this.onlyAlivePatients){
+      this.onlyDeadPatients = false;
+      this.onlyAlivePatients = false;
+    }
+
     this.onlyVeterans = Boolean.parseBoolean(Config.get("generate.veteran_population_override"));
     this.totalGeneratedPopulation = new AtomicInteger(0);
     this.stats = Collections.synchronizedMap(new HashMap<String, AtomicInteger>());
@@ -365,6 +374,14 @@ public class Generator {
           personSeed = new Random(personSeed).nextLong();
           continue;
           // skip the other stuff if the patient is alive and we only want dead patients
+          // note that this skips ahead to the while check and doesn't automatically re-loop
+        }
+
+        if(!isAlive && onlyAlivePatients){
+          // rotate the seed so the next attempt gets a consistent but different one
+          personSeed = new Random(personSeed).nextLong();
+          continue;
+          // skip the other stuff if the patient is dead and we only want alive patients
           // note that this skips ahead to the while check and doesn't automatically re-loop
         }
 
