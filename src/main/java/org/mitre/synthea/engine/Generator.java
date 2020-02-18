@@ -194,6 +194,8 @@ public class Generator {
     this.onlyAlivePatients = Boolean.parseBoolean(Config.get("generate.only_alive_patients"));
     //If both values are set to true, then they are both set back to the default
     if(this.onlyDeadPatients && this.onlyAlivePatients){
+      Config.set("generate.only_dead_patients", "false");
+      Config.set("generate.only_alive_patients", "false");
       this.onlyDeadPatients = false;
       this.onlyAlivePatients = false;
     }
