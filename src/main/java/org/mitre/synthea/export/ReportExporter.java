@@ -29,8 +29,8 @@ import org.mitre.synthea.helpers.Config;
  * by other tools.
  */
 public class ReportExporter {
-	
-	/**
+
+  /**
    * Charset for specifying the character set of the output files.
    */
   private static Charset charset = Charset.forName(Config.get("exporter.encoding"));
@@ -55,7 +55,8 @@ public class ReportExporter {
       String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
       Path outFilePath = outDirectory.toPath().resolve("statistics-" + timeStamp + ".json");
 
-      JsonWriter writer = new JsonWriter(new OutputStreamWriter(new FileOutputStream(outFilePath.toFile()), charset));
+      JsonWriter writer = new JsonWriter(new OutputStreamWriter(
+      		new FileOutputStream(outFilePath.toFile()), charset));
       writer.setIndent("  ");
       writer.beginObject(); // top-level
 
