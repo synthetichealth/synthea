@@ -1,6 +1,7 @@
 package org.mitre.synthea.modules;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 import org.mitre.synthea.world.concepts.GrowthChart;
@@ -58,5 +59,12 @@ public class GrowthChartTest {
   public void testGrowthChartLookupMax() throws Exception {
     double height = LifecycleModule.lookupGrowthChart("height", "M", 20, 1.0);
     assertEquals(94.95447906, height, 0.01);
+  }
+
+  @Test
+  public void testGrowthChartGenderDifferences() throws Exception {
+    double femaleHead = LifecycleModule.lookupGrowthChart("head", "F", 18, 0.8);
+    double maleHead = LifecycleModule.lookupGrowthChart("head", "M", 18, 0.8);
+    assertNotEquals(femaleHead, maleHead);
   }
 }
