@@ -2,7 +2,6 @@ package org.mitre.synthea.world.geography;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -10,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import org.hl7.fhir.r4.model.Patient;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
@@ -42,7 +43,6 @@ public class Demographics implements Comparable<Demographics> {
   private RandomCollection<String> incomeDistribution;
   public Map<String, Double> education;
   private RandomCollection<String> educationDistribution;
-  private static Map<String, List<Map<String,Map<String,String>>>> patientInfo = loadPatients();
 
   /**
    * Pick an age based on the population distribution for the city.
@@ -73,13 +73,12 @@ public class Demographics implements Comparable<Demographics> {
   }
 
   public String pickGender(Random random, int index) {
-    // TODO: Switch back to !=
-    if (patientInfo != null) {
-      List<Map<String,Map<String,String>>> entries = patientInfo.get("entry");
-      // TODO make so it seed file can be < -p or overwrite -p
-      return entries.get(index).get("resource").get("gender");
+    Patient newPatient = Utilities.loadPatient(index);
+    if (newPatient != null) {
+      return newPatient.getGender().getDisplay();
+    }
     // lazy-load in case this randomcollection isn't necessary
-    } else if (genderDistribution == null) {
+    if (genderDistribution == null) {
       genderDistribution = buildRandomCollectionFromMap(gender);
     }
 
@@ -379,26 +378,6 @@ public class Demographics implements Comparable<Demographics> {
     }
 
     return table;
-  }
-
-  /**
-   * Load a patient record with seed demographics in json format:
-   * see src/main/resources/patient_template.json for a working example
-   * @param resource A json file listing demographics info for a group of patient records.
-   * @return Map of patients to Lists of Strings "city,state,country"
-   */
-  public static Map<String, List<Map<String,Map<String,String>>>> loadPatients() {
-    Map<String, List<Map<String,Map<String,String>>>> patientsInfo = new HashMap<>();
-    try {
-      String filename = Config.get("generate.demographics.patient_file");
-      String json = Utilities.readResource(filename);
-      patientsInfo = new Gson().fromJson(json, HashMap.class);
-    } catch (Exception e) {
-      System.err.println("ERROR: unable to load patients");
-      e.printStackTrace();
-    }
-
-    return patientsInfo;
   }
 
   /**

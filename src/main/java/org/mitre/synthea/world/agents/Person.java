@@ -78,6 +78,11 @@ public class Person implements Serializable, QuadTreeElement {
   public static final String IDENTIFIER_SSN = "identifier_ssn";
   public static final String IDENTIFIER_DRIVERS = "identifier_drivers";
   public static final String IDENTIFIER_PASSPORT = "identifier_passport";
+  public static final String IDENTIFIER_SITE = "identifier_site";
+  public static final String IDENTIFIER_RECORD_ID = "identifier_record_id";
+  public static final String CONTACT_FAMILY_NAME = "contact_family_name";
+  public static final String CONTACT_GIVEN_NAME = "contact_given_name";
+  public static final String CONTACT_EMAIL = "contact_email";
   public static final String CAUSE_OF_DEATH = "cause_of_death";
   public static final String SEXUAL_ORIENTATION = "sexual_orientation";
   public static final String LOCATION = "location";

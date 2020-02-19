@@ -5,6 +5,56 @@
     {
       "resource": {
         "resourceType": "Patient",
+        "identifier": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://codi.mitre.org",
+                  "code": "KP",
+                  "display": "Synthetic Denver List ID"
+                }
+              ],
+              "text": "Record ID"
+            },
+            "system": "http://codi.mitre.org",
+            "value": "19436334"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Bustos",
+            "given": [
+              "Joseph"
+            ]
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "3039373705",
+            "use": "home"
+          }
+        ],
+        "contact": [
+          {
+            "name": {
+              "use": "official",
+              "family": "Bustos",
+              "given": [
+                "Chase"
+              ]
+            },
+            "telecom": [
+              {
+                "system": "email",
+                "value": "20Jbezuidt@gmail.com",
+                "use": "home"
+              }
+            ]
+          }
+        ],
         "gender": "male",
         "birthDate": "1954-07-22",
         "address": [
@@ -52,6 +102,56 @@
     {
       "resource": {
         "resourceType": "Patient",
+        "identifier": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://codi.mitre.org",
+                  "code": "KP",
+                  "display": "Synthetic Denver List ID"
+                }
+              ],
+              "text": "Record ID"
+            },
+            "system": "http://codi.mitre.org",
+            "value": "19436337"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Fredrich",
+            "given": [
+              "Alexa Neil"
+            ]
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "3039373705",
+            "use": "home"
+          }
+        ],
+        "contact": [
+          {
+            "name": {
+              "use": "official",
+              "family": "Bustos",
+              "given": [
+                "Chase"
+              ]
+            },
+            "telecom": [
+              {
+                "system": "email",
+                "value": "20Jbezuidt@gmail.com",
+                "use": "home"
+              }
+            ]
+          }
+        ],
         "gender": "female",
         "birthDate": "1954-07-22",
         "address": [

@@ -473,10 +473,11 @@ public class HealthRecord {
   public int providerCount() {
     List<String> uuids = new ArrayList<String>();
     for (Encounter enc : encounters) {
-      uuids.add(enc.provider.uuid);
+      if (enc.provider != null) {
+        uuids.add(enc.provider.uuid);
+      }
     }
     Set<String> uniqueUuids = new HashSet<String>(uuids);
-    System.out.print(uniqueUuids.size());
     return uniqueUuids.size();
   }
 

@@ -3,6 +3,7 @@ package org.mitre.synthea.engine;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,11 +19,13 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.hl7.fhir.r4.model.Patient;
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.export.CDWExporter;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.TransitionMetrics;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.HealthInsuranceModule;
@@ -318,6 +321,11 @@ public class Generator {
       boolean isAlive = true;
       int tryNumber = 0; // number of tries to create these demographics
       Random randomForDemographics = new Random(personSeed);
+
+      Patient newPatient = Utilities.loadPatient(index);
+      if (newPatient != null) {
+        this.location = new Location(newPatient.getAddress().get(0).getState(), newPatient.getAddress().get(0).getCity());
+      }
       Demographics city = location.randomCity(randomForDemographics);
       
       Map<String, Object> demoAttributes = pickDemographics(randomForDemographics, city, index);
@@ -333,8 +341,7 @@ public class Generator {
         person.attributes.putAll(demoAttributes);
         person.attributes.put(Person.LOCATION, location);
 
-        LifecycleModule.birth(person, start);
-        
+        LifecycleModule.birth(person, start, index);
         HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
         EncounterModule encounterModule = new EncounterModule();
         long time = start;
@@ -361,11 +368,21 @@ public class Generator {
 
         isAlive = person.alive(time);
 
+        providerCount = person.providerCount();
+
         if (isAlive && onlyDeadPatients) {
           // rotate the seed so the next attempt gets a consistent but different one
           personSeed = new Random(personSeed).nextLong();
           continue;
           // skip the other stuff if the patient is alive and we only want dead patients
+          // note that this skips ahead to the while check and doesn't automatically re-loop
+        }
+
+        if (providerCount < providerMinimum) {
+          // rotate the seed so the next attempt gets a consistent but different one
+          personSeed = new Random(personSeed).nextLong();
+          continue;
+          // skip the other stuff if the patient has less providers than the minimum
           // note that this skips ahead to the while check and doesn't automatically re-loop
         }
 
@@ -387,8 +404,6 @@ public class Generator {
 
         String key = isAlive ? "alive" : "dead";
 
-        providerCount = person.providerCount();
-
         AtomicInteger count = stats.get(key);
         count.incrementAndGet();
 
@@ -409,7 +424,7 @@ public class Generator {
             // the final age bracket is 85-110, but our patients rarely break 100
             // so reducing a target age to 85-90 shouldn't affect numbers too much
             demoAttributes.put(TARGET_AGE, newTargetAge);
-            long birthdate = birthdateFromTargetAge(newTargetAge, randomForDemographics);
+            long birthdate = birthdateFromTargetAge(newTargetAge, randomForDemographics, index);
             demoAttributes.put(Person.BIRTHDATE, birthdate);
             start = birthdate;
           }
@@ -426,7 +441,7 @@ public class Generator {
       // if the patient is dead and we want live ones => loop & try again
       //  (but do export the record anyway)
       // if the patient is alive and we want live ones => done
-      // if the provider count is less than the target provider minimym => loop & try again
+      // if the provider count is less than the target provider minimum => loop & try again
     } catch (Throwable e) {
       // lots of fhir things throw errors for some reason
       e.printStackTrace();
@@ -518,13 +533,18 @@ public class Generator {
     }
     out.put(TARGET_AGE, targetAge);
 
-    long birthdate = birthdateFromTargetAge(targetAge, random);
+    long birthdate = birthdateFromTargetAge(targetAge, random, index);
     out.put(Person.BIRTHDATE, birthdate);
     
     return out;
   }
-  
-  private long birthdateFromTargetAge(long targetAge, Random random) {
+
+  private long birthdateFromTargetAge(long targetAge, Random random, int index) {
+    Patient newPatient = Utilities.loadPatient(index);
+    if (newPatient != null) {
+      Date ldt = newPatient.getBirthDate();
+      return (long) ldt.getTime();
+    }
     long earliestBirthdate = stop - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
     long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);
     return 

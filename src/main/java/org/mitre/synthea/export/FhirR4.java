@@ -102,6 +102,7 @@ import org.hl7.fhir.r4.model.Observation.ObservationComponentComponent;
 import org.hl7.fhir.r4.model.Observation.ObservationStatus;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Patient.ContactComponent;
 import org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent;
 import org.hl7.fhir.r4.model.Period;
 import org.hl7.fhir.r4.model.PositiveIntType;
@@ -379,6 +380,27 @@ public class FhirR4 {
           .setType(mapCodeToCodeableConcept(passportCode, "http://terminology.hl7.org/CodeSystem/v2-0203"))
           .setSystem(SHR_EXT + "passportNumber")
           .setValue((String) person.attributes.get(Person.IDENTIFIER_PASSPORT));
+    }
+
+    if (person.attributes.get(Person.IDENTIFIER_RECORD_ID) != null) {
+      Code siteCode = new Code("http://codi.mitre.org", (String) person.attributes.get(Person.IDENTIFIER_SITE), "Synthetic Denver List ID");
+      patientResource.addIdentifier()
+          .setType(mapCodeToCodeableConcept(siteCode, "http://codi.mitre.org"))
+          .setSystem("http://codi.mitre.org")
+          .setValue((String) person.attributes.get(Person.IDENTIFIER_RECORD_ID));
+    }
+
+    if (person.attributes.get(Person.CONTACT_EMAIL) != null) {
+      ContactComponent contact = new ContactComponent();
+      HumanName contactName = new HumanName();
+      contactName.setUse(HumanName.NameUse.OFFICIAL);
+      contactName.addGiven((String) person.attributes.get(Person.CONTACT_GIVEN_NAME));
+      contactName.setFamily((String) person.attributes.get(Person.CONTACT_FAMILY_NAME));
+      contact.setName(contactName);
+      contact.addTelecom().setSystem(ContactPointSystem.EMAIL)
+          .setUse(ContactPointUse.HOME)
+          .setValue((String) person.attributes.get(Person.CONTACT_EMAIL));
+      patientResource.addContact(contact);
     }
 
     // We do not yet account for mixed race
