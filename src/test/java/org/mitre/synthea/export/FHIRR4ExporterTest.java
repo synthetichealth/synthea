@@ -285,8 +285,8 @@ public class FHIRR4ExporterTest {
           assertEquals(400, media.getWidth());
           assertEquals(200, media.getHeight());
           assertEquals("Branch of bracial artery", media.getBodySite().getText());
-          assertEquals("Invasive arterial pressure", media.getModality().getText());
-          assertEquals("Aortic structure", media.getReasonCode().get(0).getText());
+          assertEquals("Diagram", media.getModality().getText());
+          assertEquals("Invasive arterial pressure", media.getReasonCode().get(0).getText());
           assertTrue(Base64.isBase64(media.getContent().getDataElement().getValueAsString()));
         }
         else if(media.getType().getText().equals("Video")) {
