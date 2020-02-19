@@ -22,6 +22,13 @@
             "type": "SetAttribute",
             "attribute" : "Maximum Heart Rate",
             "expression": "220 - #{age}",
+            "direct_transition": "Set_Attribute_4"
+        },
+        
+        "Set_Attribute_4": {
+            "type": "SetAttribute",
+            "attribute" : "ECG",
+            "series_data": "2041 2043 2037 2047 2060 2062 2051 2023 2014 2027",
             "direct_transition": "Terminal"
         },
 

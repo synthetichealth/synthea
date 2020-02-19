@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -443,6 +444,31 @@ public class StateTest {
     assertTrue(set2.process(person, time));
 
     assertNull(person.attributes.get("Current Opioid Prescription"));
+  }
+  
+  @Test
+  public void setAttribute_with_expression() throws Exception {
+    Module module = TestHelper.getFixture("set_attribute.json");
+
+    person.attributes.put("Current Opioid Prescription", "Vicodin");
+    State set2 = module.getState("Set_Attribute_3");
+    assertTrue(set2.process(person, time));
+
+    assertEquals(185, ((BigDecimal) person.attributes.get("Maximum Heart Rate")).doubleValue(), 0.1);
+  }
+  
+  @Test
+  public void setAttribute_with_sampledData() throws Exception {
+    Module module = TestHelper.getFixture("set_attribute.json");
+
+    person.attributes.put("Current Opioid Prescription", "Vicodin");
+    State set2 = module.getState("Set_Attribute_4");
+    assertTrue(set2.process(person, time));
+    
+    TimeSeriesData data = (TimeSeriesData) person.attributes.get("ECG");
+
+    assertEquals(10, data.getValues().size());
+    assertEquals(2041, data.getValues().get(0), 0.0001);
   }
 
   @Test

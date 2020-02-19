@@ -38,6 +38,7 @@ import org.mitre.synthea.helpers.ChartRenderer.PersonChartConfig;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.ExpressionProcessor;
 import org.mitre.synthea.helpers.RandomValueGenerator;
+import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.physiology.IoMapper;
 import org.mitre.synthea.modules.EncounterModule;
@@ -491,6 +492,8 @@ public abstract class State implements Cloneable {
     private Object value;
     private String expression;
     private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
+    private String seriesData;
+    private double period;
 
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
@@ -514,6 +517,11 @@ public abstract class State implements Cloneable {
           value = (int) doubleVal;
         }
       }
+      
+      // Series data default period is 1.0s
+      if (period <= 0.0) {
+        period = 1.0;
+      }
     }
 
     @Override
@@ -523,6 +531,8 @@ public abstract class State implements Cloneable {
       clone.value = value;
       clone.expression = expression;
       clone.threadExpProcessor = threadExpProcessor;
+      clone.seriesData = seriesData;
+      clone.period = period;
       return clone;
     }
 
@@ -530,8 +540,23 @@ public abstract class State implements Cloneable {
     public boolean process(Person person, long time) {
       if (threadExpProcessor.get() != null) {
         value = threadExpProcessor.get().evaluate(person, time);
-      }
-
+        
+      } else if (seriesData != null) {
+        String[] items = seriesData.split(" ");
+        TimeSeriesData data = new TimeSeriesData(items.length, period);
+        
+        for (int i=0; i < items.length; i++) {
+          try {
+            data.addValue(Double.parseDouble(items[i]));
+          } catch (NumberFormatException nfe) {
+            throw new RuntimeException("unable to parse \"" + items[i] +
+                "\" in SetAttribute state for \"" + attribute + "\"", nfe);
+          }
+        }
+        
+        value = data;
+      } 
+      
       if (value != null) {
         person.attributes.put(attribute, value);
       } else if (person.attributes.containsKey(attribute)) {
