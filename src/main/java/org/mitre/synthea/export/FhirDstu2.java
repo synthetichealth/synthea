@@ -90,7 +90,6 @@ import java.awt.geom.Point2D;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -100,7 +99,6 @@ import java.util.UUID;
 
 import org.mitre.synthea.engine.Components;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
@@ -133,7 +131,6 @@ public class FhirDstu2 {
   private static final String SYNTHEA_EXT = "http://synthetichealth.github.io/synthea/";
   private static final String UNITSOFMEASURE_URI = "http://unitsofmeasure.org";
   private static final String DICOM_DCM_URI = "http://dicom.nema.org/resources/ontology/DCM";
-  private static final String MEDIA_VIEW_URI = "http://hl7.org/fhir/ValueSet/media-view";
 
   @SuppressWarnings("rawtypes")
   private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
@@ -1451,7 +1448,7 @@ public class FhirDstu2 {
     mediaResource.setHeight(media.height);
 
     if (media.view != null) {
-      mediaResource.setView(mapCodeToCodeableConcept(media.view, MEDIA_VIEW_URI));
+      mediaResource.setView(mapCodeToCodeableConcept(media.view, SNOMED_URI));
     }
 
     Attachment content = media.content;

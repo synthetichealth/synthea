@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -111,7 +110,6 @@ import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 import org.mitre.synthea.engine.Components;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
-import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Payer;
@@ -146,8 +144,6 @@ public class FhirStu3 {
   private static final String SYNTHEA_EXT = "http://synthetichealth.github.io/synthea/";
   private static final String UNITSOFMEASURE_URI = "http://unitsofmeasure.org";
   private static final String DICOM_DCM_URI = "http://dicom.nema.org/resources/ontology/DCM";
-  private static final String MEDIA_VIEW_URI = "http://hl7.org/fhir/ValueSet/media-view";
-  private static final String PROCEDURE_REASON_URI = "http://hl7.org/fhir/ValueSet/procedure-reason";
 
   @SuppressWarnings("rawtypes")
   private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
@@ -2240,12 +2236,12 @@ public class FhirStu3 {
       mediaResource.setBodySite(mapCodeToCodeableConcept(media.bodySite, SNOMED_URI));
     }
     if (media.view != null) {
-      mediaResource.setView(mapCodeToCodeableConcept(media.view, MEDIA_VIEW_URI));
+      mediaResource.setView(mapCodeToCodeableConcept(media.view, SNOMED_URI));
     }
     if (media.reasonCode != null) {
       List<CodeableConcept> reasonResource = new ArrayList<CodeableConcept>();
       for (Code rCode : media.reasonCode) {
-        reasonResource.add(mapCodeToCodeableConcept(rCode, PROCEDURE_REASON_URI));
+        reasonResource.add(mapCodeToCodeableConcept(rCode, SNOMED_URI));
       }
       mediaResource.setReasonCode(reasonResource);
     }

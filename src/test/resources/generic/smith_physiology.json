@@ -73,9 +73,9 @@
       "type": "Media",
       "media_type": "image",
       "reason_code": [{
-      	  "system": "SNOMED-CT",
-      	  "code": "15825003",
-      	  "display": "Aortic structure"
+      	"system": "SNOMED-CT",
+      	"code": "386532001",
+      	"display": "Invasive arterial pressure"
       }],
       "body_site": {
       	"system": "SNOMED-CT",
@@ -83,9 +83,9 @@
       	"display": "Branch of bracial artery"
       },
       "modality": {
-      	"system": "SNOMED-CT",
-      	"code": "386532001",
-      	"display": "Invasive arterial pressure"
+      	"system": "MediaModality",
+      	"code": "diagram",
+      	"display": "Diagram"
       },
       "device_name": "Arterial line",
       "language": "en",
