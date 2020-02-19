@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
@@ -138,6 +139,16 @@ public class HealthRecord {
         this.determineCost();
       }
       return this.cost;
+    }
+
+    /**
+     * Determines if the given entry contains the provided code in its list of codes.
+     * @param code clinical term
+     * @param system system for the code
+     * @return true if the code is there
+     */
+    public boolean containsCode(String code, String system) {
+      return this.codes.stream().anyMatch(c -> code.equals(c.code) && system.equals(c.system));
     }
 
     /**
@@ -455,6 +466,66 @@ public class HealthRecord {
       devices = new ArrayList<Device>();
       this.claim = new Claim(this, person);
     }
+
+    /**
+     * Add an observation to the encounter. In this case, no codes are added to the observation.
+     * It appears that some code in Synthea likes it this way (and does not like good old OO-style
+     * encapsulation).
+     * @param time The time of the observation
+     * @param type The type of the observation
+     * @param value The observation value
+     * @return The newly created observation.
+     */
+    public Observation addObservation(long time, String type, Object value) {
+      Observation observation = new Observation(time, type, value);
+      this.observations.add(observation);
+      return observation;
+    }
+
+    /**
+     * Add an observation to the encounter and uses the type to set the first code.
+     * @param time The time of the observation
+     * @param type The LOINC code for the observation
+     * @param value The observation value
+     * @param display The display text for the first code
+     * @return The newly created observation.
+     */
+    public Observation addObservation(long time, String type, Object value, String display) {
+      Observation observation = new Observation(time, type, value);
+      this.observations.add(observation);
+      observation.codes.add(new Code("LOINC", type, display));
+      return observation;
+    }
+
+    /**
+     * Find the first observation in the encounter with the given LOINC code.
+     * @param code The LOINC code to look for
+     * @return A single observation or null
+     */
+    public Observation findObservation(String code) {
+      return observations
+          .stream()
+          .filter(o -> o.type.equals(code))
+          .findFirst()
+          .orElse(null);
+    }
+
+    /**
+     * Find the encounter that happened before this one.
+     * @return The previous encounter or null if this is the first
+     */
+    public Encounter previousEncounter() {
+      if (record.encounters.size() < 2) {
+        return null;
+      } else {
+        int index = record.encounters.indexOf(this);
+        if (index == 0) {
+          return null;
+        } else {
+          return record.encounters.get(index - 1);
+        }
+      }
+    }
   }
 
   private Person person;
@@ -540,9 +611,7 @@ public class HealthRecord {
   }
 
   public Observation observation(long time, String type, Object value) {
-    Observation observation = new Observation(time, type, value);
-    currentEncounter(time).observations.add(observation);
-    return observation;
+    return currentEncounter(time).addObservation(time, type, value);
   }
 
   public Observation multiObservation(long time, String type, int numberOfObservations) {
@@ -563,10 +632,9 @@ public class HealthRecord {
   public Observation getLatestObservation(String type) {
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
-      for (Observation observation : encounter.observations) {
-        if (observation.type.equals(type)) {
-          return observation;
-        }
+      Observation obs = encounter.findObservation(type);
+      if (obs != null) {
+        return obs;
       }
     }
     return null;
@@ -803,7 +871,7 @@ public class HealthRecord {
   /**
    * Remove Chronic Medication if stopped medication is a Chronic Medication.
    *
-   * @param Primary code (RxNorm) for the medication.
+   * @param type Primary code (RxNorm) for the medication.
    */
   private void chronicMedicationEnd(String type) {
     if (person.chronicMedications.containsKey(type)) {

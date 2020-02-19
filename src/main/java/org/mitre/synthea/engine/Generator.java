@@ -28,6 +28,7 @@ import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
+import org.mitre.synthea.editors.GrowthDataErrorsEditor;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Payer;
@@ -237,6 +238,12 @@ public class Generator {
       System.out.println("Modules: " + String.join("\n       & ", moduleNames));
       System.out.println(String.format("       > [%d loaded]", moduleNames.size()));
     }
+
+    if (Boolean.parseBoolean(
+        Config.get("growtherrors", "false"))) {
+      HealthRecordEditors hrm = HealthRecordEditors.getInstance();
+      hrm.registerEditor(new GrowthDataErrorsEditor());
+    }
   }
 
   /**
@@ -344,6 +351,7 @@ public class Generator {
         LifecycleModule.birth(person, start, index);
         HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
         EncounterModule encounterModule = new EncounterModule();
+        HealthRecordEditors hrm = HealthRecordEditors.getInstance();
         long time = start;
         while (person.alive(time) && time < stop) {
 
@@ -360,6 +368,7 @@ public class Generator {
             }
           }
           encounterModule.endWellnessEncounter(person, time);
+          hrm.executeAll(person, person.record, time, timestep, person.random);
 
           time += timestep;
         }
