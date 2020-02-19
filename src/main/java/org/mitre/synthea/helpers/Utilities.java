@@ -25,6 +25,7 @@ import java.util.function.Consumer;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Patient;
 
+import org.jfree.chart.util.BooleanList;
 import org.mitre.synthea.engine.Logic;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -282,20 +283,23 @@ public class Utilities {
    * @return The patient record.
    */
    public static final Patient loadPatient(int index) {
-     Patient newPatient = new Patient();
-     try {
-       String filename = Config.get("generate.demographics.patient_file");
-       String json = Utilities.readResource(filename);
-       IParser parser = ctx.newJsonParser();
-       Bundle patientBundle = parser.parseResource(Bundle.class, json);
-       if (index < patientBundle.getEntry().size()) {
-         newPatient = (Patient) patientBundle.getEntry().get(index).getResource();
-       } else {
-         newPatient = null;
+     Patient newPatient = null;
+     boolean usePatientFile = Boolean.parseBoolean(Config.get("generate.demographics.use_patient_file"));
+     if (usePatientFile) {
+       try {
+         String filename = Config.get("generate.demographics.patient_file");
+         String json = Utilities.readResource(filename);
+         IParser parser = ctx.newJsonParser();
+         Bundle patientBundle = parser.parseResource(Bundle.class, json);
+         if (index < patientBundle.getEntry().size()) {
+           newPatient = (Patient) patientBundle.getEntry().get(index).getResource();
+         } else {
+           newPatient = null;
+         }
+       } catch (Exception e) {
+         System.err.println("ERROR: unable to load patient");
+         e.printStackTrace();
        }
-     } catch (Exception e) {
-       System.err.println("ERROR: unable to load patient");
-       e.printStackTrace();
      }
 
      return newPatient;
