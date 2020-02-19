@@ -514,13 +514,4 @@ public class Provider implements QuadTreeElement {
     return coordinates;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see org.apache.sis.index.tree.QuadTreeData#getFileName()
-   */
-  @Override
-  public String getFileName() {
-    return null;
-  }
-
 }

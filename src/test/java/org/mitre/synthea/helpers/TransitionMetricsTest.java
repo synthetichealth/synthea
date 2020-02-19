@@ -28,7 +28,7 @@ public class TransitionMetricsTest {
     person.attributes.put(Person.ETHNICITY, "nonhispanic");
     person.attributes.put(Person.GENDER, "F");
     long time = System.currentTimeMillis();
-    LifecycleModule.birth(person, time);
+    LifecycleModule.birth(person, time,0);
     
     Module example = TestHelper.getFixture("example_module.json");
     // some notes about this example module:
