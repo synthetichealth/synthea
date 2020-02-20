@@ -56,7 +56,7 @@ public class ReportExporter {
       Path outFilePath = outDirectory.toPath().resolve("statistics-" + timeStamp + ".json");
 
       JsonWriter writer = new JsonWriter(new OutputStreamWriter(
-      		new FileOutputStream(outFilePath.toFile()), charset));
+          new FileOutputStream(outFilePath.toFile()), charset));
       writer.setIndent("  ");
       writer.beginObject(); // top-level
 

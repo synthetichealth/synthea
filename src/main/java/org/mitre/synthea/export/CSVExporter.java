@@ -157,24 +157,24 @@ public class CSVExporter {
       conditions = new OutputStreamWriter(new FileOutputStream(conditionsFile, append), charset);
       careplans = new OutputStreamWriter(new FileOutputStream(careplansFile, append), charset);
       observations = new OutputStreamWriter(
-      		new FileOutputStream(observationsFile, append), charset);
+          new FileOutputStream(observationsFile, append), charset);
       procedures = new OutputStreamWriter(new FileOutputStream(proceduresFile, append), charset);
       immunizations = new OutputStreamWriter(
-      		new FileOutputStream(immunizationsFile, append), charset);
+          new FileOutputStream(immunizationsFile, append), charset);
       encounters = new OutputStreamWriter(new FileOutputStream(encountersFile, append), charset);
       imagingStudies = new OutputStreamWriter(
-      		new FileOutputStream(imagingStudiesFile, append), charset);
+          new FileOutputStream(imagingStudiesFile, append), charset);
 
       File organizationsFile = outputDirectory.resolve("organizations.csv").toFile();
       File providersFile = outputDirectory.resolve("providers.csv").toFile();
       organizations = new OutputStreamWriter(
-      		new FileOutputStream(organizationsFile, append), charset);
+          new FileOutputStream(organizationsFile, append), charset);
       providers = new OutputStreamWriter(new FileOutputStream(providersFile, append), charset);
       File payersFile = outputDirectory.resolve("payers.csv").toFile();
       File payerTransitionsFile = outputDirectory.resolve("payer_transitions.csv").toFile();
       payers = new OutputStreamWriter(new FileOutputStream(payersFile, append), charset);
       payerTransitions = new OutputStreamWriter(
-      		new FileOutputStream(payerTransitionsFile, append), charset);
+          new FileOutputStream(payerTransitionsFile, append), charset);
 
       if (!append) {
         writeCSVHeaders();
