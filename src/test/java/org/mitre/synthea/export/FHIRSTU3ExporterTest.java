@@ -36,8 +36,8 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
-import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
 
 /**
@@ -331,18 +331,16 @@ public class FHIRSTU3ExporterTest {
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource() instanceof Media) {
         Media media = (Media) entry.getResource();
-        if(media.getType().equals(Media.DigitalMediaType.PHOTO)) {
+        if (media.getType().equals(Media.DigitalMediaType.PHOTO)) {
           assertEquals(400, media.getWidth());
           assertEquals(200, media.getHeight());
           assertTrue(Base64.isBase64(media.getContent().getDataElement().getValueAsString()));
-        }
-        else if(media.getType().equals(Media.DigitalMediaType.VIDEO)) {
+        } else if (media.getType().equals(Media.DigitalMediaType.VIDEO)) {
           assertEquals("https://example.com/video/12498596132", media.getContent().getUrl());
           assertTrue(media.getDuration() > 0);
           assertEquals("en", media.getContent().getLanguage());
           assertTrue(media.getContent().getSize() > 0);
-        }
-        else if(media.getType().equals(Media.DigitalMediaType.AUDIO)) {
+        } else if (media.getType().equals(Media.DigitalMediaType.AUDIO)) {
           assertEquals("https://example.com/audio/12498596132", media.getContent().getUrl());
           assertTrue(media.getDuration() > 0);
           assertEquals("en", media.getContent().getLanguage());

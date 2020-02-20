@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.math.ode.DerivativeException;
-import org.hl7.fhir.r4.model.codesystems.MediaType;
 import org.mitre.synthea.engine.Components.Exact;
 import org.mitre.synthea.engine.Components.ExactWithUnit;
 import org.mitre.synthea.engine.Components.Range;
@@ -33,7 +32,6 @@ import org.mitre.synthea.engine.Transition.DistributedTransitionOption;
 import org.mitre.synthea.engine.Transition.LookupTableTransition;
 import org.mitre.synthea.engine.Transition.LookupTableTransitionOption;
 import org.mitre.synthea.helpers.ChartRenderer;
-import org.mitre.synthea.helpers.ChartRenderer.ChartConfig;
 import org.mitre.synthea.helpers.ChartRenderer.PersonChartConfig;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.ExpressionProcessor;
@@ -545,12 +543,12 @@ public abstract class State implements Cloneable {
         String[] items = seriesData.split(" ");
         TimeSeriesData data = new TimeSeriesData(items.length, period);
         
-        for (int i=0; i < items.length; i++) {
+        for (int i = 0; i < items.length; i++) {
           try {
             data.addValue(Double.parseDouble(items[i]));
           } catch (NumberFormatException nfe) {
-            throw new RuntimeException("unable to parse \"" + items[i] +
-                "\" in SetAttribute state for \"" + attribute + "\"", nfe);
+            throw new RuntimeException("unable to parse \"" + items[i]
+                + "\" in SetAttribute state for \"" + attribute + "\"", nfe);
           }
         }
         
@@ -1556,9 +1554,10 @@ public abstract class State implements Cloneable {
       
       if (content.data != null) {
         // The ratio of output bytes to input bytes is 4:3 (33% overhead).
-        // Specifically, given an input of n bytes, the output will be 4*ceil(n/3) bytes long, including padding characters.
+        // Specifically, given an input of n bytes, the output will be 4*ceil(n/3)
+        // bytes long, including padding characters.
         // See https://en.wikipedia.org/wiki/Base64
-        content.size = (int) (4*Math.ceil(content.data.length()/3.0));
+        content.size = (int) (4 * Math.ceil(content.data.length() / 3.0));
         
         // Generate the SHA-1 hash if it hasn't been provided
         if (content.hash == null) {
@@ -1581,8 +1580,7 @@ public abstract class State implements Cloneable {
       if (mediaType != null) {
         // Will throw an IllegalArgumentException if type is invalid
         mediaTypeCode = HealthRecord.MediaTypeCode.fromString(mediaType);
-      }
-      else {
+      } else {
         throw new IllegalArgumentException("Media state must have 'media_type' defined.");
       }
       

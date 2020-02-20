@@ -2212,7 +2212,7 @@ public class FhirStu3 {
     org.hl7.fhir.dstu3.model.Media mediaResource =
         new org.hl7.fhir.dstu3.model.Media();
 
-    switch(media.mediaType.code) {
+    switch (media.mediaType.code) {
       case "image":
         mediaResource.setType(DigitalMediaType.PHOTO);
         break;
@@ -2240,8 +2240,8 @@ public class FhirStu3 {
     }
     if (media.reasonCode != null) {
       List<CodeableConcept> reasonResource = new ArrayList<CodeableConcept>();
-      for (Code rCode : media.reasonCode) {
-        reasonResource.add(mapCodeToCodeableConcept(rCode, SNOMED_URI));
+      for (Code reason : media.reasonCode) {
+        reasonResource.add(mapCodeToCodeableConcept(reason, SNOMED_URI));
       }
       mediaResource.setReasonCode(reasonResource);
     }

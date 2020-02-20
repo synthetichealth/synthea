@@ -8,7 +8,6 @@ import ca.uhn.fhir.model.dstu2.composite.QuantityDt;
 import ca.uhn.fhir.model.dstu2.composite.SampledDataDt;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
-import ca.uhn.fhir.model.dstu2.valueset.DigitalMediaTypeEnum;
 import ca.uhn.fhir.model.dstu2.resource.Media;
 import ca.uhn.fhir.model.dstu2.resource.Observation;
 import ca.uhn.fhir.parser.IParser;
@@ -36,8 +35,8 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
-import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
 
 /**
@@ -256,18 +255,16 @@ public class FHIRDSTU2ExporterTest {
     for (Entry entry : bundle.getEntry()) {
       if (entry.getResource() instanceof Media) {
         Media media = (Media) entry.getResource();
-        if(media.getType().equalsIgnoreCase("Image")) {
+        if (media.getType().equalsIgnoreCase("Image")) {
           assertEquals(400, (int)media.getWidth());
           assertEquals(200, (int)media.getHeight());
           assertTrue(Base64.isBase64(media.getContent().getDataElement().getValueAsString()));
-        }
-        else if(media.getType().equalsIgnoreCase("Video")) {
+        } else if (media.getType().equalsIgnoreCase("Video")) {
           assertEquals("https://example.com/video/12498596132", media.getContent().getUrl());
           assertTrue(media.getDuration() > 0);
           assertEquals("en", media.getContent().getLanguage());
           assertTrue(media.getContent().getSize() > 0);
-        }
-        else if(media.getType().equalsIgnoreCase("Audio")) {
+        } else if (media.getType().equalsIgnoreCase("Audio")) {
           assertEquals("https://example.com/audio/12498596132", media.getContent().getUrl());
           assertTrue(media.getDuration() > 0);
           assertEquals("en", media.getContent().getLanguage());

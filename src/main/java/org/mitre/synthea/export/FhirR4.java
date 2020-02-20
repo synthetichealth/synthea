@@ -2509,8 +2509,8 @@ public class FhirR4 {
     }
     if (media.reasonCode != null) {
       List<CodeableConcept> reasonResource = new ArrayList<CodeableConcept>();
-      for (Code rCode : media.reasonCode) {
-        reasonResource.add(mapCodeToCodeableConcept(rCode, SNOMED_URI));
+      for (Code reason : media.reasonCode) {
+        reasonResource.add(mapCodeToCodeableConcept(reason, SNOMED_URI));
       }
       mediaResource.setReasonCode(reasonResource);
     }
@@ -2520,7 +2520,7 @@ public class FhirR4 {
     
     contentResource.setContentType(content.contentType);
     contentResource.setLanguage(content.language);
-    if(content.data != null) {
+    if (content.data != null) {
       contentResource.setDataElement(new org.hl7.fhir.r4.model.Base64BinaryType(content.data));
     }
     contentResource.setUrl(content.url);

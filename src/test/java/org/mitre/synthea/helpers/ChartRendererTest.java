@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.simulator.math.odes.MultiTable;
 import org.mitre.synthea.helpers.ChartRenderer.MultiTableChartConfig;
 import org.mitre.synthea.helpers.ChartRenderer.MultiTableSeriesConfig;
 import org.mitre.synthea.helpers.ChartRenderer.PersonChartConfig;
 import org.mitre.synthea.helpers.ChartRenderer.PersonSeriesConfig;
 import org.mitre.synthea.world.agents.Person;
+import org.simulator.math.odes.MultiTable;
 
 public class ChartRendererTest {
   
@@ -135,7 +135,6 @@ public class ChartRendererTest {
   
   @Test
   public void testRenderBase64FromPerson() throws Exception {
-    Person person = new Person(0L);
     ArrayList<Double> data1 = new ArrayList<Double>();
     data1.add(1.0);
     data1.add(2.0);
@@ -153,6 +152,8 @@ public class ChartRendererTest {
     data3.add(2.6);
     data3.add(2.1);
     data3.add(1.7);
+    
+    Person person = new Person(0L);
     
     person.attributes.put("attr1", data1);
     person.attributes.put("attr2", data2);

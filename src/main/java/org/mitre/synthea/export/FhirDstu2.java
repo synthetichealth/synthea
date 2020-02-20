@@ -1428,7 +1428,7 @@ public class FhirDstu2 {
     ca.uhn.fhir.model.dstu2.resource.Media mediaResource =
         new ca.uhn.fhir.model.dstu2.resource.Media();
 
-    switch(media.mediaType.code) {
+    switch (media.mediaType.code) {
       default:
       case "image":
         mediaResource.setType(DigitalMediaTypeEnum.PHOTO);
@@ -1452,13 +1452,15 @@ public class FhirDstu2 {
     }
 
     Attachment content = media.content;
-    ca.uhn.fhir.model.dstu2.composite.AttachmentDt contentResource = new ca.uhn.fhir.model.dstu2.composite.AttachmentDt();
+    ca.uhn.fhir.model.dstu2.composite.AttachmentDt contentResource =
+        new ca.uhn.fhir.model.dstu2.composite.AttachmentDt();
     
     contentResource.setContentType(content.contentType);
     contentResource.setLanguage(content.language);
     
     if (content.data != null) {
-      ca.uhn.fhir.model.primitive.Base64BinaryDt data = new ca.uhn.fhir.model.primitive.Base64BinaryDt();
+      ca.uhn.fhir.model.primitive.Base64BinaryDt data =
+          new ca.uhn.fhir.model.primitive.Base64BinaryDt();
       data.setValueAsString(content.data);
       contentResource.setData(data);
     }
@@ -1467,7 +1469,8 @@ public class FhirDstu2 {
     contentResource.setSize(content.size);
     contentResource.setTitle(content.title);
     if (content.hash != null) {
-      ca.uhn.fhir.model.primitive.Base64BinaryDt hash = new ca.uhn.fhir.model.primitive.Base64BinaryDt();
+      ca.uhn.fhir.model.primitive.Base64BinaryDt hash =
+          new ca.uhn.fhir.model.primitive.Base64BinaryDt();
       hash.setValueAsString(content.hash);
       contentResource.setHash(hash);
     }

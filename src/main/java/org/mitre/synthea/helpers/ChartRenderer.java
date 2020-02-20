@@ -33,8 +33,8 @@ public class ChartRenderer {
   /**
    * POJO configuration for a chart.
    **/
-  public static abstract class ChartConfig {
-    /** Name of the image file to export **/
+  public abstract static class ChartConfig {
+    /** Name of the image file to export. **/
     private String filename;
     /** User input for the type of chart to render. **/
     private String type;
@@ -44,13 +44,13 @@ public class ChartRenderer {
     private String axisLabelX;
     /** Y axis label. **/
     private String axisLabelY;
-    /** Chart width in pixels **/
+    /** Chart width in pixels. **/
     private int width = 600;
-    /** Chart height in pixels **/
+    /** Chart height in pixels. **/
     private int height = 300;
-    /** Whether the X Axis is visible **/
+    /** Whether the X Axis is visible. **/
     private boolean axisHiddenX = false;
-    /** CWhether the Y Axis is visible **/
+    /** CWhether the Y Axis is visible. **/
     private boolean axisHiddenY = false;
     
     public String getFilename() {
@@ -129,7 +129,7 @@ public class ChartRenderer {
   /**
    * POJO configuration for a chart with data from a MultiTable.
    **/
-  public static class MultiTableChartConfig extends ChartConfig{
+  public static class MultiTableChartConfig extends ChartConfig {
     /** Parameter to render on the x axis. **/
     private String axisParamX;
     /** Simulation time in seconds to start charting points. **/
@@ -176,7 +176,7 @@ public class ChartRenderer {
   /**
    * POJO configuration for a chart with data from a Person object.
    **/
-  public static class PersonChartConfig extends ChartConfig{
+  public static class PersonChartConfig extends ChartConfig {
     /** Person attribute to render on the x axis. **/
     private String axisAttributeX;
     /** List of series configurations for this chart. **/
@@ -203,7 +203,7 @@ public class ChartRenderer {
   /**
    * POJO configuration for a chart series.
    */
-  private static abstract class SeriesConfig {
+  private abstract static class SeriesConfig {
     /** Series label in the legend. **/
     private String label;
 
@@ -400,28 +400,29 @@ public class ChartRenderer {
   
   /**
    * Create a JFreeChart object based on values from a Person object.
-   * @param Person Person instance to retrieve values from
+   * @param person Person instance to retrieve values from
    * @param config chart configuration options
    */
   @SuppressWarnings("unchecked")
   public static JFreeChart createChart(Person person, PersonChartConfig config) {
     
     // Get the list of x values.
-    Object xAttrValue = person.attributes.get(config.getAxisAttributeX());
+    Object attrValueX = person.attributes.get(config.getAxisAttributeX());
     
-    boolean xAxisIsTime = false;
+    boolean axisIsTimeX = false;
     List<Double> valuesX = null;
     
     if (config.getAxisAttributeX().equalsIgnoreCase("time")) {
-      xAxisIsTime = true;
-    } else if (xAttrValue instanceof TimeSeriesData) {
-      valuesX = ((TimeSeriesData) xAttrValue).getValues();
-    } else if (xAttrValue instanceof List && ((List<?>) xAttrValue).get(0) instanceof Double) {
-      valuesX = (List<Double>) xAttrValue;
+      axisIsTimeX = true;
+    } else if (attrValueX instanceof TimeSeriesData) {
+      valuesX = ((TimeSeriesData) attrValueX).getValues();
+    } else if (attrValueX instanceof List && ((List<?>) attrValueX).get(0) instanceof Double) {
+      valuesX = (List<Double>) attrValueX;
     } else {
       throw new RuntimeException("Invalid Person attribute \""
           + config.getAxisAttributeX() + "\"provided for chart X Axis: "
-          + xAttrValue + ". Attribute must either be \"time\" or refer to a TimeSeriesData or List<Double> Object.");
+          + attrValueX + ". Attribute must either be \"time\" or refer to a TimeSeriesData or"
+          + "List<Double> Object.");
     }
     
     XYSeriesCollection dataset = new XYSeriesCollection();
@@ -447,14 +448,15 @@ public class ChartRenderer {
         
         // If time is defined for the X axis, and it hasn't yet been created,
         // create the time axis values now
-        if (valuesX == null && xAxisIsTime) {
+        if (valuesX == null && axisIsTimeX) {
           valuesX = new ArrayList<Double>(timeSeries.getValues().size());
 
-          for (int i=0; i < timeSeries.getValues().size(); i++) {
-            valuesX.add(timeSeries.getPeriod()*i);
+          for (int i = 0; i < timeSeries.getValues().size(); i++) {
+            valuesX.add(timeSeries.getPeriod() * i);
           }
         }
-      } else if (seriesObject instanceof List && ((List<?>) seriesObject).get(0) instanceof Double) {
+      } else if (seriesObject instanceof List
+          && ((List<?>) seriesObject).get(0) instanceof Double) {
         seriesValues = (List<Double>) seriesObject;
       } else {
         throw new RuntimeException("Invalid Person attribute \""
@@ -463,19 +465,20 @@ public class ChartRenderer {
       }
       
       if (valuesX == null) {
-        throw new RuntimeException("When the special attribute \"time\" is provided for the X axis, "
-            + "the first series attribute MUST point to a valid TimeSeriesData object.");
+        throw new RuntimeException("When the special attribute \"time\" is provided for the X axis,"
+            + " the first series attribute MUST point to a valid TimeSeriesData object.");
       }
       
-      Iterator<Double> xIter = valuesX.iterator();
+      Iterator<Double> iterX = valuesX.iterator();
       Iterator<Double> seriesIter = seriesValues.iterator();
       
-      while(xIter.hasNext()) {
+      while (iterX.hasNext()) {
         if (!seriesIter.hasNext()) {
           throw new RuntimeException("List for attribute \"" + seriesConfig.getAttribute()
-              + "\" does not have the same length as the x axis values \"" + config.getAxisAttributeX() + "\"");
+              + "\" does not have the same length as the x axis values \""
+              + config.getAxisAttributeX() + "\"");
         }
-        series.add(xIter.next(), seriesIter.next());
+        series.add(iterX.next(), seriesIter.next());
       }
 
       dataset.addSeries(series);
@@ -552,7 +555,8 @@ public class ChartRenderer {
     
     // Save the chart as a PNG image to the file system
     try {
-      ChartUtils.saveChartAsPNG(new File(config.getFilename()), chart, config.getWidth(), config.getHeight());
+      ChartUtils.saveChartAsPNG(new File(config.getFilename()), chart, config.getWidth(),
+          config.getHeight());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -560,7 +564,7 @@ public class ChartRenderer {
   
   /**
    * Draw a JFreeChart to an image based on values from a MultiTable.
-   * @param table MultiTable to retrieve values from
+   * @param person Person to retrieve attributes from
    * @param config chart configuration options
    */
   public static void drawChartAsFile(Person person, PersonChartConfig config) {
@@ -569,7 +573,8 @@ public class ChartRenderer {
     
     // Save the chart as a PNG image to the file system
     try {
-      ChartUtils.saveChartAsPNG(new File(config.getFilename()), chart, config.getWidth(), config.getHeight());
+      ChartUtils.saveChartAsPNG(new File(config.getFilename()), chart, config.getWidth(),
+          config.getHeight());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -579,27 +584,29 @@ public class ChartRenderer {
    * Draw a JFreeChart to a base64 encoded image based on values from a MultiTable.
    * @param table MultiTable to retrieve values from
    * @param config chart configuration options
-   * @throws IOException 
    */
-  public static String drawChartAsBase64(MultiTable table, MultiTableChartConfig config) throws IOException {
+  public static String drawChartAsBase64(MultiTable table, MultiTableChartConfig config)
+      throws IOException {
     
     JFreeChart chart = createChart(table, config);
 
-    byte[] imgBytes = ChartUtils.encodeAsPNG(chart.createBufferedImage(config.getWidth(), config.getHeight()));
+    byte[] imgBytes = ChartUtils.encodeAsPNG(chart.createBufferedImage(config.getWidth(),
+        config.getHeight()));
     return new String(Base64.getEncoder().encode(imgBytes));
   }
   
   /**
    * Draw a JFreeChart to a base64 encoded image based on values from a MultiTable.
-   * @param table MultiTable to retrieve values from
+   * @param person Person to retrieve attribute values from
    * @param config chart configuration options
-   * @throws IOException 
    */
-  public static String drawChartAsBase64(Person person, PersonChartConfig config) throws IOException {
+  public static String drawChartAsBase64(Person person, PersonChartConfig config)
+      throws IOException {
     
     JFreeChart chart = createChart(person, config);
 
-    byte[] imgBytes = ChartUtils.encodeAsPNG(chart.createBufferedImage(config.getWidth(), config.getHeight()));
+    byte[] imgBytes = ChartUtils.encodeAsPNG(chart.createBufferedImage(config.getWidth(),
+        config.getHeight()));
     return new String(Base64.getEncoder().encode(imgBytes));
   }
 }

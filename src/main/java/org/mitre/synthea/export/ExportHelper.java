@@ -48,35 +48,6 @@ public abstract class ExportHelper {
   }
   
   /**
-   * Helper to translate all SampledData values into string form
-   * 
-   * @param sampledData The SampledData object to export
-   * @return stringified sampled data values
-   */
-  public static String sampledDataToValueString(SampledData sampledData) {
-    int numSamples = sampledData.series.get(0).getValues().size();
-    DecimalFormat df;
-    
-    if (sampledData.decimalFormat != null) {
-      df = new DecimalFormat(sampledData.decimalFormat);
-    } else {
-      df = new DecimalFormat();
-    }
-    
-    // Build the data string from all list values
-    StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < numSamples; i++) {
-      for (TimeSeriesData series : sampledData.series) {
-        double num = series.getValues().get(i);
-        sb.append(df.format(num));
-        sb.append(" ");
-      }
-    }
-    
-    return sb.toString();
-  }
-
-  /**
    * Helper to get a readable string representation of an Observation's value.
    * Units are not included.
    * 
@@ -102,6 +73,35 @@ public abstract class ExportHelper {
     }
 
     return null;
+  }
+  
+  /**
+   * Helper to translate all SampledData values into string form.
+   * 
+   * @param sampledData The SampledData object to export
+   * @return stringified sampled data values
+   */
+  public static String sampledDataToValueString(SampledData sampledData) {
+    int numSamples = sampledData.series.get(0).getValues().size();
+    DecimalFormat df;
+    
+    if (sampledData.decimalFormat != null) {
+      df = new DecimalFormat(sampledData.decimalFormat);
+    } else {
+      df = new DecimalFormat();
+    }
+    
+    // Build the data string from all list values
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < numSamples; i++) {
+      for (TimeSeriesData series : sampledData.series) {
+        double num = series.getValues().get(i);
+        sb.append(df.format(num));
+        sb.append(" ");
+      }
+    }
+    
+    return sb.toString();
   }
 
   /**

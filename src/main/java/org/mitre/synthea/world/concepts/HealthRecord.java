@@ -473,15 +473,15 @@ public class HealthRecord {
     public Code modality;
     /** Imaging view, e.g. Lateral or Antero-posterior **/
     public Code view;
-    /** Name of the device/manufacturer **/
+    /** Name of the device/manufacturer. **/
     public String deviceName;
-    /** Height of the image in pixels (image/video) **/
+    /** Height of the image in pixels (image/video). **/
     public int height;
-    /** Width of the image in pixels (image/video) **/
+    /** Width of the image in pixels (image/video). **/
     public int width;
-    /** Length in seconds (audio/video) **/
+    /** Length in seconds (audio/video). **/
     public double duration;
-    /** Reference or inline Data for the image, video, or audio **/
+    /** Reference or inline Data for the image, video, or audio. **/
     public Attachment content;
 
     /**

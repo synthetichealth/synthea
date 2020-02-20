@@ -454,7 +454,8 @@ public class StateTest {
     State set2 = module.getState("Set_Attribute_3");
     assertTrue(set2.process(person, time));
 
-    assertEquals(185, ((BigDecimal) person.attributes.get("Maximum Heart Rate")).doubleValue(), 0.1);
+    assertEquals(185, ((BigDecimal) person.attributes.get("Maximum Heart Rate"))
+        .doubleValue(), 0.1);
   }
   
   @Test
