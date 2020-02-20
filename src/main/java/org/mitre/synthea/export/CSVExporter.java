@@ -7,10 +7,12 @@ import com.google.common.collect.Table;
 import com.google.gson.JsonObject;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -51,60 +53,65 @@ public class CSVExporter {
   /**
    * Writer for patients.csv.
    */
-  private FileWriter patients;
+  private OutputStreamWriter patients;
   /**
    * Writer for allergies.csv.
    */
-  private FileWriter allergies;
+  private OutputStreamWriter allergies;
   /**
    * Writer for medications.csv.
    */
-  private FileWriter medications;
+  private OutputStreamWriter medications;
   /**
    * Writer for conditions.csv.
    */
-  private FileWriter conditions;
+  private OutputStreamWriter conditions;
   /**
    * Writer for careplans.csv.
    */
-  private FileWriter careplans;
+  private OutputStreamWriter careplans;
   /**
    * Writer for observations.csv.
    */
-  private FileWriter observations;
+  private OutputStreamWriter observations;
   /**
    * Writer for procedures.csv.
    */
-  private FileWriter procedures;
+  private OutputStreamWriter procedures;
   /**
    * Writer for immunizations.csv.
    */
-  private FileWriter immunizations;
+  private OutputStreamWriter immunizations;
   /**
    * Writer for encounters.csv.
    */
-  private FileWriter encounters;
+  private OutputStreamWriter encounters;
   /**
    * Writer for imaging_studies.csv
    */
-  private FileWriter imagingStudies;
+  private OutputStreamWriter imagingStudies;
   /**
    * Writer for organizations.csv
    */
-  private FileWriter organizations;
+  private OutputStreamWriter organizations;
   /**
    * Writer for providers.csv
    */
-  private FileWriter providers;
+  private OutputStreamWriter providers;
   
   /**
    * Writer for payers.csv
    */
-  private FileWriter payers;
+  private OutputStreamWriter payers;
   /**
    * Writer for payerTransitions.csv
    */
-  private FileWriter payerTransitions;
+  private OutputStreamWriter payerTransitions;
+  
+  /**
+   * Charset for specifying the character set of the output files.
+   */
+  private Charset charset = Charset.forName(Config.get("exporter.encoding"));
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -144,25 +151,30 @@ public class CSVExporter {
       File encountersFile = outputDirectory.resolve("encounters.csv").toFile();
       File imagingStudiesFile = outputDirectory.resolve("imaging_studies.csv").toFile();
 
-      patients = new FileWriter(patientsFile, append);
-      allergies = new FileWriter(allergiesFile, append);
-      medications = new FileWriter(medicationsFile, append);
-      conditions = new FileWriter(conditionsFile, append);
-      careplans = new FileWriter(careplansFile, append);
-      observations = new FileWriter(observationsFile, append);
-      procedures = new FileWriter(proceduresFile, append);
-      immunizations = new FileWriter(immunizationsFile, append);
-      encounters = new FileWriter(encountersFile, append);
-      imagingStudies = new FileWriter(imagingStudiesFile, append);
+      patients = new OutputStreamWriter(new FileOutputStream(patientsFile, append), charset);
+      allergies = new OutputStreamWriter(new FileOutputStream(allergiesFile, append), charset);
+      medications = new OutputStreamWriter(new FileOutputStream(medicationsFile, append), charset);
+      conditions = new OutputStreamWriter(new FileOutputStream(conditionsFile, append), charset);
+      careplans = new OutputStreamWriter(new FileOutputStream(careplansFile, append), charset);
+      observations = new OutputStreamWriter(
+      		new FileOutputStream(observationsFile, append), charset);
+      procedures = new OutputStreamWriter(new FileOutputStream(proceduresFile, append), charset);
+      immunizations = new OutputStreamWriter(
+      		new FileOutputStream(immunizationsFile, append), charset);
+      encounters = new OutputStreamWriter(new FileOutputStream(encountersFile, append), charset);
+      imagingStudies = new OutputStreamWriter(
+      		new FileOutputStream(imagingStudiesFile, append), charset);
 
       File organizationsFile = outputDirectory.resolve("organizations.csv").toFile();
       File providersFile = outputDirectory.resolve("providers.csv").toFile();
-      organizations = new FileWriter(organizationsFile, append);
-      providers = new FileWriter(providersFile, append);
+      organizations = new OutputStreamWriter(
+      		new FileOutputStream(organizationsFile, append), charset);
+      providers = new OutputStreamWriter(new FileOutputStream(providersFile, append), charset);
       File payersFile = outputDirectory.resolve("payers.csv").toFile();
       File payerTransitionsFile = outputDirectory.resolve("payer_transitions.csv").toFile();
-      payers = new FileWriter(payersFile, append);
-      payerTransitions = new FileWriter(payerTransitionsFile, append);
+      payers = new OutputStreamWriter(new FileOutputStream(payersFile, append), charset);
+      payerTransitions = new OutputStreamWriter(
+      		new FileOutputStream(payerTransitionsFile, append), charset);
 
       if (!append) {
         writeCSVHeaders();
@@ -1048,7 +1060,7 @@ public class CSVExporter {
    * @param writer The place to write it
    * @throws IOException if an I/O error occurs
    */
-  private static void write(String line, FileWriter writer) throws IOException {
+  private static void write(String line, OutputStreamWriter writer) throws IOException {
     synchronized (writer) {
       writer.write(line);
     }

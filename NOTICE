@@ -1,5 +1,5 @@
 Synthea
-Copyright 2017-2019 The MITRE Corporation
+Copyright 2017-2020 The MITRE Corporation
 
 This material contains prescribable drug codes from RxNorm that are released by
 the National Library of Medicine and is in the public domain.
@@ -34,7 +34,7 @@ General Public License v3 (https://www.gnu.org/licenses/lgpl-3.0.txt). Releases 
 the SBSCL library can be found at https://github.com/draeger-lab/SBSCL/releases/.
 
 SBSCL Citation:
-Roland Keller, Alexander Dörr, Akito Tabira, Akira Funahashi, Michael J. Ziller,
-Richard Adams, Nicolas Rodriguez, Nicolas Le Novère, Noriko Hiroi, Hannes
-Planatscher, Andreas Zell, and Andreas Dräger. The systems biology simulation core
+Roland Keller, Alexander DÃ¶rr, Akito Tabira, Akira Funahashi, Michael J. Ziller,
+Richard Adams, Nicolas Rodriguez, Nicolas Le NovÃ¨re, Noriko Hiroi, Hannes
+Planatscher, Andreas Zell, and Andreas DrÃ¤ger. The systems biology simulation core
 algorithm. BMC Systems Biology, 7:55, July 2013.
