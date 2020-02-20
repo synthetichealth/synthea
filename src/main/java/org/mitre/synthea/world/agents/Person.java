@@ -91,6 +91,7 @@ public class Person implements Serializable, QuadTreeElement {
   public static final String BMI_PERCENTILE = "bmi_percentile";
   public static final String GROWTH_TRAJECTORY = "growth_trajectory";
   public static final String CURRENT_WEIGHT_LENGTH_PERCENTILE = "current_weight_length_percentile";
+  public static final String RECORD_GROUP = "record_group";
   private static final String DEDUCTIBLE = "deductible";
   private static final String LAST_MONTH_PAID = "last_month_paid";
 

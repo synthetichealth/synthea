@@ -1,7 +1,10 @@
 package org.mitre.synthea.engine;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FilenameFilter;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,6 +20,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.hl7.fhir.r4.model.Patient;
@@ -26,6 +31,8 @@ import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.input.FixedRecord;
+import org.mitre.synthea.input.RecordGroup;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.editors.GrowthDataErrorsEditor;
@@ -35,6 +42,7 @@ import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
+import org.mitre.synthea.world.concepts.PediatricGrowthTrajectory;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
@@ -58,6 +66,7 @@ public class Generator {
   public TransitionMetrics metrics;
   public static final String DEFAULT_STATE = "Massachusetts";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
+  private List<RecordGroup> recordGroups;
 
   /**
    * Used only for testing and debugging. Populate this field to keep track of all patients
@@ -97,7 +106,8 @@ public class Generator {
     public String state;
     /** When Synthea is used as a standalone library, this directory holds
      * any locally created modules. */
-    public File localModuleDir; 
+    public File localModuleDir;
+    public File fixedRecordPath;
     public List<String> enabledModules;
   }
   
@@ -259,6 +269,16 @@ public class Generator {
    * Generate the population, using the currently set configuration settings.
    */
   public void run() {
+    if (this.options.fixedRecordPath != null) {
+      Gson gson = new Gson();
+      Type listType = new TypeToken<List<RecordGroup>>() {}.getType();
+      try {
+        this.recordGroups = gson.fromJson(new FileReader(this.options.fixedRecordPath), listType);
+      } catch (FileNotFoundException e) {
+        throw new RuntimeException("Couldn't open the fixed records file", e);
+      }
+      this.options.population = this.recordGroups.size();
+    }
     ExecutorService threadPool = Executors.newFixedThreadPool(8);
 
     for (int i = 0; i < this.options.population; i++) {
@@ -326,16 +346,19 @@ public class Generator {
       boolean isAlive = true;
       int tryNumber = 0; // number of tries to create these demographics
       Random randomForDemographics = new Random(personSeed);
-
-      Patient newPatient = Utilities.loadPatient(index);
-      if (newPatient != null) {
-        this.location = new Location(newPatient.getAddress().get(0).getState(), newPatient.getAddress().get(0).getCity());
+      int providerMinimum = Integer.parseInt(Config.get("generate.providers.minimum", "1"));
+      if (this.recordGroups != null) {
+        RecordGroup recordGroup = this.recordGroups.get(index);
+        providerMinimum = recordGroup.count;
+        FixedRecord fr = recordGroup.records.get(0);
+        this.location = new Location(fr.getState(), fr.getSafeCity());
       }
+
       Demographics city = location.randomCity(randomForDemographics);
       
       Map<String, Object> demoAttributes = pickDemographics(randomForDemographics, city, index);
       long start = (long) demoAttributes.get(Person.BIRTHDATE);
-      int providerMinimum = Integer.parseInt(Config.get("generate.providers.minimum", "1"));
+
       int providerCount = 0;
 
       do {
@@ -345,6 +368,11 @@ public class Generator {
         person.populationSeed = this.options.seed;
         person.attributes.putAll(demoAttributes);
         person.attributes.put(Person.LOCATION, location);
+        if (this.recordGroups != null) {
+          RecordGroup recordGroup = this.recordGroups.get(index);
+          person.attributes.put(Person.RECORD_GROUP, recordGroup);
+          recordGroup.records.get(0).overwriteDemoAttributes(person);
+        }
 
         LifecycleModule.birth(person, start, index);
         HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
@@ -547,10 +575,10 @@ public class Generator {
   }
 
   private long birthdateFromTargetAge(long targetAge, Random random, int index) {
-    Patient newPatient = Utilities.loadPatient(index);
-    if (newPatient != null) {
-      Date ldt = newPatient.getBirthDate();
-      return (long) ldt.getTime();
+    if (this.recordGroups != null) {
+      RecordGroup recordGroup = this.recordGroups.get(index);
+      FixedRecord fr = recordGroup.records.get(0);
+      return fr.getBirthDate();
     }
     long earliestBirthdate = stop - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
     long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);

@@ -22,6 +22,8 @@ import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.input.FixedRecord;
+import org.mitre.synthea.input.RecordGroup;
 import org.mitre.synthea.modules.BloodPressureValueGenerator.SysDias;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BMI;
@@ -133,8 +135,8 @@ public final class LifecycleModule extends Module {
     attributes.put(Person.BIRTHDATE, time);
     String gender = (String) attributes.get(Person.GENDER);
     String language = (String) attributes.get(Person.FIRST_LANGUAGE);
-    String firstName = patientFirstName(gender, language, person.random, index);
-    String lastName = patientLastName(language, person.random, index);
+    String firstName = patientFirstName(gender, language, person.random, person);
+    String lastName = patientLastName(language, person.random, person);
     if (appendNumbersToNames) {
       firstName = addHash(firstName);
       lastName = addHash(lastName);
@@ -163,19 +165,17 @@ public final class LifecycleModule extends Module {
     if ((person.rand() < prevalenceOfTwins)) {
       attributes.put(Person.MULTIPLE_BIRTH_STATUS, person.randInt(3) + 1);
     }
+    if (person.attributes.get(Person.RECORD_GROUP) != null) {
+      RecordGroup recordGroup = (RecordGroup) person.attributes.get(Person.RECORD_GROUP);
+      FixedRecord fr = recordGroup.records.get(0);
 
-    Patient newPatient = Utilities.loadPatient(index);
-    if (newPatient != null) {
-      attributes.put(Person.TELECOM, newPatient.getTelecom().get(0).getValue());
-      if (newPatient.getIdentifier().get(0).getValue() != null && newPatient.getIdentifier().get(0).getType().getCoding().get(0).getCode() != null) {
-        attributes.put(Person.IDENTIFIER_RECORD_ID, newPatient.getIdentifier().get(0).getValue());
-        attributes.put(Person.IDENTIFIER_SITE, newPatient.getIdentifier().get(0).getType().getCoding().get(0).getCode());
-      }
-      if (newPatient.getContact().get(0).getName().getFamily() != null && newPatient.getContact().get(0).getTelecom().get(0).getValue() != null && newPatient.getContact().get(0).getName().getGiven().get(0) != null) {
-        attributes.put(Person.CONTACT_GIVEN_NAME, newPatient.getContact().get(0).getName().getGiven().get(0).toString());
-        attributes.put(Person.CONTACT_FAMILY_NAME, newPatient.getContact().get(0).getName().getFamily());
-        attributes.put(Person.CONTACT_EMAIL, newPatient.getContact().get(0).getTelecom().get(0).getValue());
-      }
+      attributes.put(Person.TELECOM, fr.getTelecom());
+      attributes.put(Person.IDENTIFIER_RECORD_ID, fr.recordId);
+      attributes.put(Person.IDENTIFIER_SITE, fr.site);
+      attributes.put(Person.CONTACT_GIVEN_NAME, fr.parentFirstName);
+      attributes.put(Person.CONTACT_FAMILY_NAME, fr.parentLastName);
+      attributes.put(Person.CONTACT_EMAIL, fr.parentEmail);
+
     } else {
       String phoneNumber = "555-" + ((person.randInt(999 - 100 + 1) + 100)) + "-"
           + ((person.randInt(9999 - 1000 + 1) + 1000));
@@ -207,7 +207,7 @@ public final class LifecycleModule extends Module {
     }
 
     boolean hasStreetAddress2 = person.rand() < 0.5;
-    attributes.put(Person.ADDRESS, patientAddress(hasStreetAddress2, person.random, index));
+    attributes.put(Person.ADDRESS, patientAddress(hasStreetAddress2, person.random, person));
 
     attributes.put(Person.ACTIVE_WEIGHT_MANAGEMENT, false);
     // TODO: Why are the percentiles a vital sign? Sounds more like an attribute?
@@ -310,26 +310,29 @@ public final class LifecycleModule extends Module {
     return choices.get(random.nextInt(choices.size()));
   }
 
-  public static String patientFirstName(String gender, String language, Random random, int index) {
-    Patient newPatient = Utilities.loadPatient(index);
-    if (newPatient != null) {
-      return newPatient.getName().get(0).getGiven().get(0).toString();
+  public static String patientFirstName(String gender, String language, Random random, Person person) {
+    if (person.attributes.get(Person.RECORD_GROUP) != null) {
+      RecordGroup recordGroup = (RecordGroup) person.attributes.get(Person.RECORD_GROUP);
+      FixedRecord fr = recordGroup.records.get(0);
+      return fr.firstName;
     }
     return fakeFirstName(gender, language, random);
   }
 
-  public static String patientLastName(String language, Random random, int index) {
-    Patient newPatient = Utilities.loadPatient(index);
-    if (newPatient != null) {
-      return newPatient.getName().get(0).getFamily();
+  public static String patientLastName(String language, Random random, Person person) {
+    if (person.attributes.get(Person.RECORD_GROUP) != null) {
+      RecordGroup recordGroup = (RecordGroup) person.attributes.get(Person.RECORD_GROUP);
+      FixedRecord fr = recordGroup.records.get(0);
+      return fr.lastName;
     }
     return fakeLastName(language, random);
   }
 
-  public static String patientAddress(boolean includeLine2, Random random, int index) {
-    Patient newPatient = Utilities.loadPatient(index);
-    if (newPatient != null) {
-      return newPatient.getAddress().get(0).getLine().get(0).toString();
+  public static String patientAddress(boolean includeLine2, Random random, Person person) {
+    if (person.attributes.get(Person.RECORD_GROUP) != null) {
+      RecordGroup recordGroup = (RecordGroup) person.attributes.get(Person.RECORD_GROUP);
+      FixedRecord fr = recordGroup.records.get(0);
+      return fr.addressLineOne;
     }
     return fakeAddress(includeLine2, random);
   }

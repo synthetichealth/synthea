@@ -23,6 +23,7 @@ public class App {
     System.out.println("         [-m moduleFileWildcardList]");
     System.out.println("         [-c localConfigFilePath]");
     System.out.println("         [-d localModulesDirPath]");
+    System.out.println("         [-f fixedRecordPath]");
     System.out.println("         [--config* value]");
     System.out.println("          * any setting from src/main/resources/synthea.properties");
     System.out.println("Examples:");
@@ -109,6 +110,15 @@ public class App {
               throw new FileNotFoundException(String.format(
                       "Specified local module directory (%s) is not a directory",
                       localModuleDir.getAbsolutePath()));
+            }
+          } else if (currArg.equalsIgnoreCase("-f")) {
+            String value = argsQ.poll();
+            File fixedRecordPath = new File(value);
+            if (fixedRecordPath.exists()) {
+              options.fixedRecordPath = fixedRecordPath;
+            } else {
+              throw new FileNotFoundException(String.format(
+                  "Specified fixed record file (%s) does not exist", value));
             }
           } else if (currArg.startsWith("--")) {
             String configSetting;
