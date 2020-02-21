@@ -300,8 +300,14 @@ public final class WeightLossModule extends Module {
     double percentileChange = (double) person.attributes.get(WEIGHT_LOSS_BMI_PERCENTILE_CHANGE);
     double bmiAtStart = pgt.currentBMI(person, start, person.random);
     double startPercentile = bmiChart.percentileFor(startAgeInMonths, gender, bmiAtStart);
-    double targetPercentile = startPercentile - percentileChange;
     int currentTailAge = pgt.tail().ageInMonths;
+    double currentTailBMI = pgt.tail().ageInMonths;
+    double currentTailPercentile = bmiChart.percentileFor(currentTailAge, gender, currentTailBMI);
+    if (currentTailPercentile <= startPercentile) {
+      // Vector has been adjusted, exit early to not run again.
+      return;
+    }
+    double targetPercentile = startPercentile - percentileChange;
     long currentTailTimeInSim = pgt.tail().timeInSimulation;
     int monthsInTheFuture = 12;
     if (currentTailAge + monthsInTheFuture > TWENTY_YEARS_IN_MONTHS) {
@@ -329,7 +335,7 @@ public final class WeightLossModule extends Module {
       String gender = (String) person.attributes.get(Person.GENDER);
       int monthsInTheFuture = 12;
       if (tail.ageInMonths + monthsInTheFuture > TWENTY_YEARS_IN_MONTHS) {
-        monthsInTheFuture = tail.ageInMonths + monthsInTheFuture - TWENTY_YEARS_IN_MONTHS;
+        monthsInTheFuture = TWENTY_YEARS_IN_MONTHS - tail.ageInMonths;
       }
 
       double percentile = bmiChart.percentileFor(tail.ageInMonths, gender, tail.bmi);
