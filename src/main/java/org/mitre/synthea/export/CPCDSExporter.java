@@ -118,27 +118,38 @@ public class CPCDSExporter {
         + "End date,Group id,Group name,Plan,Payer");
     coverages.write(NEWLINE);
 
-    String cpcdsClaimColumnHeaders = "Claim service start date,Claim service end date,Claim paid date,Claim recieved date,"
-        + "Member admission date,Member discharge date,Patient account number,Medical record number,Claim unique identifier,"
-        + "Claim adjusted from identifier,Claim adjusted to identifier,Claim inpatient source admission code,"
-        + "Claim inpatient admission type code,Claim bill facility type code,Claim service classification type code,Claim frequency code,"
-        + "Claim processing status code,Claim type code,Patient discharge status code,Claim payment denial code,"
-        + "Claim primary payer identifier,Claim payee type code,Claim payee,Claim payment status code,Claim payer identifier,"
-        + "Days supply,RX service reference number,DAW product selection code,Refill number,Prescription origin code,"
-        + "Plan reported brand-generic code,Pharmacy service type code,Patient residence code,Claim billing provider NPI,"
-        + "Claim billing provider network status,Claim attending provider NPI,Claim attending provider network status,"
-        + "Claim site of service NPI,Claim site of service network status,Claim referring provider NPI,Claim referring provider network status,"
-        + "Claim performing provider NPI,Claim performing provider network status,Claim prescribing provider NPI,"
-        + "Claim prescribing provider network status,Claim PCP NPI,Claim total submitted amount,Claim total allowed amount,"
-        + "Amount paid by patient,Claim amount paid to provider,Member reimbursement,Claim payment amount,Claim disallowed amount,"
-        + "Member paid deductible,Co-insurance liability amount,Copay amount,Member liability,Claim primary payer paid amount,"
-        + "Claim discount amount,Service (from) date,Line number,Service to date,Type of service,Place of service code,Revenue center code,"
-        + "Allowed number of units,National drug code,Compound code,Quantity dispensed,Quantity qualifier code,Line benefit payment status,"
-        + "Line payment denial code,Line disallowed amount,Line member reimbursement,Line amount paid by patient,Drug cost,Line payment amount,"
-        + "Line amount paid to provider,Line patient deductible,Line primary payer paid amount,Line coinsurance amount,Line submitted amount,"
-        + "Line allowed amount,Line member liability,Line copay amount,Line discount,Diagnosis code,Diagnosis description,Present on admission,"
-        + "Diagnosis code type,Diagnosis type,Is E code,Procedure code,Procedure description,Procedure date,Procedure code type,"
-        + "Procedure type,Modifier Code-1,Modifier Code-2,Modifier Code-3,Modifier Code-4";
+    String cpcdsClaimColumnHeaders = "Claim service start date,Claim service end date,"
+        + "Claim paid date,Claim recieved date,Member admission date,Member discharge date,"
+        + "Patient account number,Medical record number,Claim unique identifier,"
+        + "Claim adjusted from identifier,Claim adjusted to identifier,"
+        + "Claim inpatient source admission code,Claim inpatient admission type code,"
+        + "Claim bill facility type code,Claim service classification type code,"
+        + "Claim frequency code,Claim processing status code,Claim type code,"
+        + "Patient discharge status code,Claim payment denial code,Claim primary payer identifier,"
+        + "Claim payee type code,Claim payee,Claim payment status code,Claim payer identifier,"
+        + "Days supply,RX service reference number,DAW product selection code,Refill number,"
+        + "Prescription origin code,Plan reported brand-generic code,Pharmacy service type code,"
+        + "Patient residence code,Claim billing provider NPI,Claim billing provider network status,"
+        + "Claim attending provider NPI,Claim attending provider network status,"
+        + "Claim site of service NPI,Claim site of service network status,"
+        + "Claim referring provider NPI,Claim referring provider network status,"
+        + "Claim performing provider NPI,Claim performing provider network status,"
+        + "Claim prescribing provider NPI,Claim prescribing provider network status,Claim PCP NPI,"
+        + "Claim total submitted amount,Claim total allowed amount,Amount paid by patient,"
+        + "Claim amount paid to provider,Member reimbursement,Claim payment amount,"
+        + "Claim disallowed amount,Member paid deductible,Co-insurance liability amount,"
+        + "Copay amount,Member liability,Claim primary payer paid amount,Claim discount amount,"
+        + "Service (from) date,Line number,Service to date,Type of service,Place of service code,"
+        + "Revenue center code,Allowed number of units,National drug code,Compound code,"
+        + "Quantity dispensed,Quantity qualifier code,Line benefit payment status,"
+        + "Line payment denial code,Line disallowed amount,Line member reimbursement,"
+        + "Line amount paid by patient,Drug cost,Line payment amount,Line amount paid to provider,"
+        + "Line patient deductible,Line primary payer paid amount,Line coinsurance amount,"
+        + "Line submitted amount,Line allowed amount,Line member liability,Line copay amount,"
+        + "Line discount,Diagnosis code,Diagnosis description,Present on admission,"
+        + "Diagnosis code type,Diagnosis type,Is E code,Procedure code,Procedure description,"
+        + "Procedure date,Procedure code type,Procedure type,Modifier Code-1,Modifier Code-2,"
+        + "Modifier Code-3,Modifier Code-4";
 
     claims.write(cpcdsClaimColumnHeaders);
     claims.write(NEWLINE);
@@ -177,7 +188,7 @@ public class CPCDSExporter {
     String type = COVERAGE_TYPES[(int) randomLongWithBounds(0, COVERAGE_TYPES.length - 1)];
     UUID groupId = GROUPIDS[(int) randomLongWithBounds(0, GROUPIDS.length - 1)];
     String groupName = GROUP_NAMES[(int) randomLongWithBounds(0, GROUP_NAMES.length - 1)];
-    String name = PLAN_NAMES[(int) randomLongWithBounds(0, PLAN_NAMES.length -1)];
+    String name = PLAN_NAMES[(int) randomLongWithBounds(0, PLAN_NAMES.length - 1)];
     
 
     for (Encounter encounter : person.record.encounters) {
@@ -185,9 +196,8 @@ public class CPCDSExporter {
       UUID medRecordNumber = UUID.randomUUID();
       CPCDSAttributes encounterAttributes = new CPCDSAttributes(encounter);
       if (Boolean.parseBoolean(Config.get("exporter.cpcds.single_payer"))) {
-        payerId = "b1c428d6-4f07-31e0-90f0-68ffa6ff8c76";
-      }
-      else {
+        payerId = UUID.randomUUID().toString();
+      } else {
         payerId = encounter.claim.payer.uuid.toString();
       }
 
@@ -254,7 +264,7 @@ public class CPCDSExporter {
    * @param careplan    The careplan itself
    * @throws IOException if any IO error occurs
    */
-  private void coverage(String personID, Long start, Long stop, String payerId, String type,
+  private void coverage(String personID, long start, long stop, String payerId, String type,
       UUID groupId, String groupName, String name) throws IOException {
     
     StringBuilder s = new StringBuilder();
@@ -840,7 +850,6 @@ public class CPCDSExporter {
    * reusing the same code in multiple areas.
    */
   private class CPCDSAttributes {
-
     private String sourceAdminCode;
     private String billTypeCode;
     private String procStatus;
