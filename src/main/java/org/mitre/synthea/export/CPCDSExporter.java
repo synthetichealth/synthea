@@ -42,7 +42,7 @@ public class CPCDSExporter {
       UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
       UUID.randomUUID(), UUID.randomUUID() };
 
-  private final String[] PLAN_NAMES = {"Bronze", "Silver", "Gold"};
+  private static final String[] PLAN_NAMES = {"Bronze", "Silver", "Gold"};
   /**
    * Writer for CPCDS_Patients.csv
    */
