@@ -22,6 +22,7 @@ public class Location {
   private static LinkedHashMap<String, String> stateAbbreviations = loadAbbreviations();
   private static Map<String, String> timezones = loadTimezones();
   private static Map<String, List<String>> foreignPlacesOfBirth = loadCitiesByLanguage();
+  private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
   private long totalPopulation;
 
@@ -118,19 +119,37 @@ public class Location {
    * @return a zip code for the given city
    */
   public String getZipCode(String cityName, Person person) {
+    List<String> zipsForCity = getZipCodes(cityName);
+    if (zipsForCity.size() > 1) {
+      int randomChoice = person.randInt(zipsForCity.size());
+      return zipsForCity.get(randomChoice);
+    } else {
+      return zipsForCity.get(0);
+    }
+  }
+
+  /**
+   * Get the list of zip codes (or postal codes) by city name.
+   * @param cityName Name of the city.
+   * @return List of legal zip codes or postal codes.
+   */
+  public List<String> getZipCodes(String cityName) {
+    List<String> results = new ArrayList<String>();
     List<Place> zipsForCity = zipCodes.get(cityName);
-    
+
     if (zipsForCity == null) {
       zipsForCity = zipCodes.get(cityName + " Town");
     }
-    
+
     if (zipsForCity == null || zipsForCity.isEmpty()) {
-      return "00000"; // if we don't have the city, just use a dummy
+      results.add("00000"); // if we don't have the city, just use a dummy
     } else if (zipsForCity.size() >= 1) {
-      int randomChoice = person.randInt(zipsForCity.size());
-      return zipsForCity.get(randomChoice).postalCode;
+      for (Place place : zipsForCity) {
+        results.add(place.postalCode);
+      }
     }
-    return "00000";
+
+    return results;
   }
 
   public long getPopulation(String cityName) {
@@ -196,7 +215,7 @@ public class Location {
     String[] birthPlace = new String[4];
     birthPlace[0] = randomCityName(random);
     birthPlace[1] = this.state;
-    birthPlace[2] = "US";
+    birthPlace[2] = COUNTRY_CODE;
     birthPlace[3] = birthPlace[0] + ", " + birthPlace[1] + ", " + birthPlace[2];
     return birthPlace;
   }

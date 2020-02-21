@@ -25,6 +25,8 @@ public class CDWExporterTest {
   @Test
   public void testCDWExport() throws Exception {
     TestHelper.exportOff();
+    TestHelper.loadTestProperties();
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.cdw.export", "true");
     File tempOutputFolder = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());

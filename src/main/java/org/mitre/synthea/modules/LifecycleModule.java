@@ -48,7 +48,8 @@ public final class LifecycleModule extends Module {
 
   public static final boolean appendNumbersToNames =
       Boolean.parseBoolean(Config.get("generate.append_numbers_to_person_names", "false"));
-  
+  private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
+
   private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
 
   private static SimpleYML names = loadNames();
@@ -1161,7 +1162,7 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, Person.ADDRESS, false, true, null);
     Attributes.inventory(attributes, m, Person.ALCOHOLIC, false, true, "Boolean");
     Attributes.inventory(attributes, m, Person.BIRTH_CITY, false, true, "Bedford");
-    Attributes.inventory(attributes, m, Person.BIRTH_COUNTRY, false, true, "USA");
+    Attributes.inventory(attributes, m, Person.BIRTH_COUNTRY, false, true, COUNTRY_CODE);
     Attributes.inventory(attributes, m, Person.BIRTH_STATE, false, true, "Massachusetts");
     Attributes.inventory(attributes, m, Person.BIRTHDATE, false, true, null);
     Attributes.inventory(attributes, m, Person.BIRTHPLACE, false, true, "Boston");
