@@ -235,7 +235,8 @@ public final class WeightLossModule extends Module {
         (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
     long start = (long) person.attributes.get(WEIGHT_MANAGEMENT_START);
     int startAgeInMonths = person.ageInMonths(start);
-    if (time + ONE_YEAR > pgt.tail().timeInSimulation) {
+    if ((time + ONE_YEAR) > pgt.tail().timeInSimulation
+        && pgt.tail().ageInMonths < TWENTY_YEARS_IN_MONTHS) {
       GrowthChart bmiChart = growthChart.get(GrowthChart.ChartType.BMI);
       String gender = (String) person.attributes.get(Person.GENDER);
       double bmiAtStart = pgt.currentBMI(person, start, person.random);
@@ -297,21 +298,23 @@ public final class WeightLossModule extends Module {
     int startAgeInMonths = person.ageInMonths(start);
     PediatricGrowthTrajectory pgt =
         (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
-    double percentileChange = (double) person.attributes.get(WEIGHT_LOSS_BMI_PERCENTILE_CHANGE);
-    double bmiAtStart = pgt.currentBMI(person, start, person.random);
-    double startPercentile = bmiChart.percentileFor(startAgeInMonths, gender, bmiAtStart);
-    double targetPercentile = startPercentile - percentileChange;
     int currentTailAge = pgt.tail().ageInMonths;
-    long currentTailTimeInSim = pgt.tail().timeInSimulation;
-    int monthsInTheFuture = 12;
-    if (currentTailAge + monthsInTheFuture > TWENTY_YEARS_IN_MONTHS) {
-      monthsInTheFuture = TWENTY_YEARS_IN_MONTHS - currentTailAge;
-      targetPercentile = startPercentile - (percentileChange * ((double) monthsInTheFuture) / 12);
+    if (currentTailAge < TWENTY_YEARS_IN_MONTHS) {
+      double percentileChange = (double) person.attributes.get(WEIGHT_LOSS_BMI_PERCENTILE_CHANGE);
+      double bmiAtStart = pgt.currentBMI(person, start, person.random);
+      double startPercentile = bmiChart.percentileFor(startAgeInMonths, gender, bmiAtStart);
+      double targetPercentile = startPercentile - percentileChange;
+      long currentTailTimeInSim = pgt.tail().timeInSimulation;
+      int monthsInTheFuture = 12;
+      if (currentTailAge + monthsInTheFuture > TWENTY_YEARS_IN_MONTHS) {
+        monthsInTheFuture = TWENTY_YEARS_IN_MONTHS - currentTailAge;
+        targetPercentile = startPercentile - (percentileChange * ((double) monthsInTheFuture) / 12);
+      }
+      double targetBMI = bmiChart.lookUp(currentTailAge + monthsInTheFuture,
+          gender, targetPercentile);
+      pgt.addPoint(currentTailAge + monthsInTheFuture,
+          currentTailTimeInSim + Utilities.convertTime("months", monthsInTheFuture), targetBMI);
     }
-    double targetBMI = bmiChart.lookUp(currentTailAge + monthsInTheFuture,
-        gender, targetPercentile);
-    pgt.addPoint(currentTailAge + monthsInTheFuture,
-        currentTailTimeInSim + Utilities.convertTime("months", monthsInTheFuture), targetBMI);
   }
 
   /**
