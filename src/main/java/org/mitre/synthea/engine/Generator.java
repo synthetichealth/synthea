@@ -351,7 +351,7 @@ public class Generator {
         RecordGroup recordGroup = this.recordGroups.get(index);
         providerMinimum = recordGroup.count;
         FixedRecord fr = recordGroup.records.get(0);
-        this.location = new Location(fr.getState(), fr.getSafeCity());
+        this.location = new Location(fr.getState(), recordGroup.getSafeCity(0));
       }
 
       Demographics city = location.randomCity(randomForDemographics);
@@ -577,8 +577,7 @@ public class Generator {
   private long birthdateFromTargetAge(long targetAge, Random random, int index) {
     if (this.recordGroups != null) {
       RecordGroup recordGroup = this.recordGroups.get(index);
-      FixedRecord fr = recordGroup.records.get(0);
-      return fr.getBirthDate();
+      return recordGroup.getValidBirthdate(0);
     }
     long earliestBirthdate = stop - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
     long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);
