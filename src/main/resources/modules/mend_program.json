@@ -1,0 +1,151 @@
+{
+  "name": "MEND Program",
+  "remarks": [
+    "This module simulates the MEND (Mind, Exercise, Nutrition, Do It!) program, described here - http://www.mendfoundation.org.",
+    "MEND is one of the world's largest evidence-based healthy lifestyle programs that empowers children, with the support of their families, to reach and maintain a healthy weight",
+    "While the program is targeted at 7 - 13 year olds, it is applied more widely in practice.",
+    "This module allows children between 5 - 17 to participate in the program.",
+    "This module depends on attributes set by the java WeightLossModule."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wellness_Encounter"
+    },
+    "Wellness_Encounter": {
+      "remarks": [
+        "Reasons"
+      ],
+      "type": "Encounter",
+      "wellness": true,
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 5,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Age",
+                "operator": "<=",
+                "quantity": 17,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Attribute",
+                "operator": ">=",
+                "attribute": "bmi_percentile",
+                "value": 0.85
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Comprehensive_Multidisciplinary_Intervention_Care_Plan",
+              "distribution": 0.041
+            },
+            {
+              "transition": "Not_Referred",
+              "distribution": 0.959
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Initial"
+        }
+      ]
+    },
+    "Comprehensive_Multidisciplinary_Intervention_Care_Plan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "obesity_care_plan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "718361005",
+          "display": "Weight management program"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "77806000",
+          "display": "Low calorie diet"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "1171000175109",
+          "display": "Increased physical activity"
+        }
+      ],
+      "direct_transition": "End_Wellness_Encounter"
+    },
+    "End_Wellness_Encounter": {
+      "type": "EncounterEnd",
+      "distributed_transition": [
+        {
+          "transition": "Wait_For_Initial_MEND_Week",
+          "distribution": 0.416
+        },
+        {
+          "transition": "End_MEND_Program",
+          "distribution": 0.584
+        }
+      ]
+    },
+    "Set_MEND_Weeks": {
+      "type": "SetAttribute",
+      "attribute": "mend_weeks",
+      "direct_transition": "Increment_MEND_Week",
+      "value": 0
+    },
+    "Increment_MEND_Week": {
+      "type": "Counter",
+      "attribute": "mend_weeks",
+      "action": "increment",
+      "direct_transition": "MEND_Visits"
+    },
+    "MEND_Visits": {
+      "type": "CallSubmodule",
+      "submodule": "weight_loss/mend_week",
+      "direct_transition": "Check_MEND_Weeks"
+    },
+    "Wait_For_Initial_MEND_Week": {
+      "type": "Delay",
+      "range": {
+        "low": 14,
+        "high": 21,
+        "unit": "days"
+      },
+      "direct_transition": "Set_MEND_Weeks"
+    },
+    "Not_Referred": {
+      "type": "Simple",
+      "direct_transition": "Initial"
+    },
+    "Check_MEND_Weeks": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "End_MEND_Program",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "mend_weeks",
+            "operator": ">",
+            "value": 10
+          }
+        },
+        {
+          "transition": "Increment_MEND_Week"
+        }
+      ]
+    },
+    "End_MEND_Program": {
+      "type": "Terminal"
+    }
+  }
+}
