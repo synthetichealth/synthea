@@ -21,11 +21,13 @@ public abstract class StatefulHealthRecordEditor implements HealthRecordEditor {
   
   protected StatefulHealthRecordEditor() {
     contextHolder = new ThreadLocal<>();
-    contextHolder.set(new HashMap<>());
     currentPersonHolder = new ThreadLocal<>();
   }
   
   protected Map<String, Object> getContext() {
+    if (contextHolder.get() == null) {
+      contextHolder.set(new HashMap<>());
+    }
     return contextHolder.get();
   }
   
@@ -55,6 +57,6 @@ public abstract class StatefulHealthRecordEditor implements HealthRecordEditor {
   }
   
   protected void clearContext() {
-    contextHolder.get().clear();
+    getContext().clear();
   }
 }
