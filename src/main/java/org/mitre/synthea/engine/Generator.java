@@ -274,6 +274,10 @@ public class Generator {
       Type listType = new TypeToken<List<RecordGroup>>() {}.getType();
       try {
         this.recordGroups = gson.fromJson(new FileReader(this.options.fixedRecordPath), listType);
+        int linkIdStart = 100000;
+        for (int i = 0; i < this.recordGroups.size(); i++) {
+          this.recordGroups.get(i).linkId = linkIdStart + i;
+        }
       } catch (FileNotFoundException e) {
         throw new RuntimeException("Couldn't open the fixed records file", e);
       }
@@ -372,6 +376,7 @@ public class Generator {
           RecordGroup recordGroup = this.recordGroups.get(index);
           person.attributes.put(Person.RECORD_GROUP, recordGroup);
           recordGroup.records.get(0).overwriteDemoAttributes(person);
+          person.attributes.put(Person.LINK_ID, recordGroup.linkId);
         }
 
         LifecycleModule.birth(person, start, index);

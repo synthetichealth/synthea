@@ -10,6 +10,7 @@ import java.util.List;
 public class RecordGroup {
   public List<FixedRecord> records;
   public int count;
+  public int linkId;
 
   public long getValidBirthdate(int index) {
     FixedRecord fr = this.records.get(index);

@@ -345,6 +345,12 @@ public class FhirR4 {
           .setValue((String) person.attributes.get(Person.IDENTIFIER_RECORD_ID));
     }
 
+    if (person.attributes.get(Person.LINK_ID) != null) {
+      patientResource.addIdentifier()
+          .setSystem("http://codi.mitre.org/link_id")
+          .setValue(person.attributes.get(Person.LINK_ID).toString());
+    }
+
     if (person.attributes.get(Person.CONTACT_EMAIL) != null) {
       ContactComponent contact = new ContactComponent();
       HumanName contactName = new HumanName();
