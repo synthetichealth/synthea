@@ -39,7 +39,7 @@
                 "condition_type": "Attribute",
                 "operator": ">=",
                 "attribute": "bmi_percentile",
-                "value": 0.85
+                "value": 0.95
               }
             ]
           },
