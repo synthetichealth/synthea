@@ -1,0 +1,59 @@
+{
+  "name": "Navigation Assistance",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "name": "Initial",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "income",
+            "operator": "<=",
+            "value": 35000
+          },
+          "distributions": [
+            {
+              "transition": "Assistance_Terminal",
+              "distribution": 0.25
+            },
+            {
+              "transition": "Set_Navigation_Assistance",
+              "distribution": 0.75
+            }
+          ]
+        },
+        {
+          "transition": "Assistance_Terminal"
+        }
+      ]
+    },
+    "Assistance_Terminal": {
+      "type": "Terminal",
+      "name": "Assistance_Terminal"
+    },
+    "Set_Navigation_Assistance": {
+      "type": "SetAttribute",
+      "attribute": "navigation_assistance",
+      "name": "Set_Navigation_Assistance",
+      "value": true,
+      "distributed_transition": [
+        {
+          "transition": "WIC",
+          "distribution": 0.7
+        },
+        {
+          "transition": "Assistance_Terminal",
+          "distribution": 0.3
+        }
+      ]
+    },
+    "WIC": {
+      "type": "SetAttribute",
+      "attribute": "wic",
+      "direct_transition": "Assistance_Terminal",
+      "name": "WIC",
+      "value": true
+    }
+  }
+}
