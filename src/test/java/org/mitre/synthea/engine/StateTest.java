@@ -135,12 +135,12 @@ public class StateTest {
     assertTrue(counter.process(person, time));
     assertEquals(3, person.attributes.get("loop_index"));
 
-    State decrement = module.getState("Counter_Decrement");
-    assertTrue(decrement.process(person, time));
-    assertEquals(2, person.attributes.get("loop_index"));
-
+    State decrement = module.getState("Counter_Decrement_by_2");
     assertTrue(decrement.process(person, time));
     assertEquals(1, person.attributes.get("loop_index"));
+
+    assertTrue(decrement.process(person, time));
+    assertEquals(-1, person.attributes.get("loop_index"));
   }
 
   @Test
