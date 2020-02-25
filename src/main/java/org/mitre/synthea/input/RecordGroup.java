@@ -15,11 +15,11 @@ public class RecordGroup {
   public long getValidBirthdate(int index) {
     FixedRecord fr = this.records.get(index);
     try {
-      return fr.getBirthDate();
+      return fr.getBirthDate(true);
     } catch (java.time.DateTimeException|java.lang.NullPointerException|java.lang.IllegalArgumentException e) {
       for (int i = 0; i < this.records.size(); i++) {
         try {
-          return this.records.get(i).getBirthDate();
+          return this.records.get(i).getBirthDate(true);
         } catch (java.time.DateTimeException|java.lang.NullPointerException|java.lang.IllegalArgumentException dontcare) {
           // do nothing
         }

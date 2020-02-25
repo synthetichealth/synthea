@@ -421,6 +421,11 @@ public class Generator {
         if (providerCount < providerMinimum) {
           // rotate the seed so the next attempt gets a consistent but different one
           personSeed = new Random(personSeed).nextLong();
+          tryNumber++;
+          if (tryNumber > 10) {
+            System.out.println("Couldn't get enough providers for " + person.attributes.get(Person.FIRST_NAME) + " " +
+                person.attributes.get(Person.LAST_NAME));
+          }
           continue;
           // skip the other stuff if the patient has less providers than the minimum
           // note that this skips ahead to the while check and doesn't automatically re-loop

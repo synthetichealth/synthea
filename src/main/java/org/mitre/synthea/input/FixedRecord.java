@@ -126,7 +126,7 @@ public class FixedRecord {
     }
   }
 
-  public long getBirthDate() {
+  public long getBirthDate(boolean checkAge) {
     String birthYear = this.birthYear;
     switch (birthYear.length()) {
       case 1:
@@ -142,7 +142,7 @@ public class FixedRecord {
         .toEpochMilli();
     long twentyFiveYears = Utilities.convertTime("years", 25);
     long now = System.currentTimeMillis();
-    if (bd + twentyFiveYears < now) {
+    if (checkAge && bd + twentyFiveYears < now) {
       throw new IllegalArgumentException("Too old");
     }
     return bd;
@@ -165,7 +165,7 @@ public class FixedRecord {
     person.attributes.put(Person.FIRST_NAME, this.firstName);
     person.attributes.put(Person.LAST_NAME, this.lastName);
     try {
-      person.attributes.put(Person.BIRTHDATE, this.getBirthDate());
+      person.attributes.put(Person.BIRTHDATE, this.getBirthDate(false));
     } catch (java.time.DateTimeException|java.lang.NumberFormatException|java.lang.NullPointerException dontcare) {
       long bd = LocalDateTime.of(2010, 7,
           2, 0, 0).toInstant(ZoneOffset.UTC)
