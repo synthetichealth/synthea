@@ -138,7 +138,7 @@ public class FixedRecord {
     }
 
     long bd = LocalDateTime.of(Integer.parseInt(birthYear), Integer.parseInt(this.birthMonth),
-        Integer.parseInt(this.birthDayOfMonth), 0, 0).toInstant(ZoneOffset.UTC)
+        Integer.parseInt(this.birthDayOfMonth), 12, 0).toInstant(ZoneOffset.UTC)
         .toEpochMilli();
     long twentyFiveYears = Utilities.convertTime("years", 25);
     long now = System.currentTimeMillis();
@@ -161,7 +161,12 @@ public class FixedRecord {
   }
 
   public void totalOverwrite(Person person) {
-    overwriteDemoAttributes(person);
+    String g = this.gender;
+    if (g.equalsIgnoreCase("None") || g.isBlank()) {
+      g = "UNK";
+    }
+    person.attributes.put(Person.GENDER, g);
+
     person.attributes.put(Person.FIRST_NAME, this.firstName);
     person.attributes.put(Person.LAST_NAME, this.lastName);
     try {

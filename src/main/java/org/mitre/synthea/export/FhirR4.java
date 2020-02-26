@@ -491,6 +491,8 @@ public class FhirR4 {
     } else if (person.attributes.get(Person.GENDER).equals("F")) {
       patientResource.setGender(AdministrativeGender.FEMALE);
       birthSexExtension.setValue(new CodeType("F"));
+    } else if (person.attributes.get(Person.GENDER).equals("UNK")) {
+      patientResource.setGender(AdministrativeGender.UNKNOWN);
     }
     patientResource.addExtension(birthSexExtension);
 

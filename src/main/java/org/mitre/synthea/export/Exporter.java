@@ -110,7 +110,7 @@ public abstract class Exporter {
       int i = 0;
       for (String key : person.records.keySet()) {
         person.record = person.records.get(key);
-        if (i != 0 && person.attributes.get(Person.RECORD_GROUP) != null) {
+        if (person.attributes.get(Person.RECORD_GROUP) != null) {
           RecordGroup rg = (RecordGroup) person.attributes.get(Person.RECORD_GROUP);
           int recordToPull = i;
           if (recordToPull >= rg.count) {
