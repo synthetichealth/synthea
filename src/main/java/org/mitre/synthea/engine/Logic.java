@@ -274,10 +274,12 @@ public abstract class Logic {
 
     @Override
     public boolean test(Person person, long time) {
-      if (value instanceof String) {
-        return value.equals(person.attributes.get(attribute));
-      } else {
+      try {
         return Utilities.compare(person.attributes.get(attribute), value, operator);
+      } catch (Exception e) {
+        String message = "Attribute Logic error: " + attribute + " " + operator + " " + value;
+        message += ": " + e.getMessage();
+        throw new RuntimeException(message, e);
       }
     }
   }

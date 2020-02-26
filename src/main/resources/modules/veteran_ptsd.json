@@ -452,10 +452,19 @@
         {
           "transition": "Evaluation Gate delay",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "ptsd_careplan",
-            "operator": "==",
-            "value": "PTSD_Careplan_Rx_ONLY"
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "PTSD_Careplan_Rx_ONLY",
+                "since": "PTSD_Re_evaluation Encounter"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "SSRI",
+                "operator": "is not nil"
+              }
+            ]
           }
         },
         {
@@ -817,19 +826,17 @@
         {
           "transition": "Therapy_Visit_Telehealth",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "ptsd_careplan",
-            "operator": "==",
-            "value": "PTSD_Careplan_Telehealth_Psych"
+            "condition_type": "PriorState",
+            "name": "PTSD_Careplan_Telehealth_Psych",
+            "since": "PTSD_Re_evaluation Encounter"
           }
         },
         {
           "transition": "Therapy_Visit_Telehealth",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "ptsd_careplan",
-            "operator": "==",
-            "value": "PTSD_Careplan_Telehealth_Psych_and_Rx"
+            "condition_type": "PriorState",
+            "name": "PTSD_Careplan_Telehealth_Psych_and_Rx",
+            "since": "PTSD_Re_evaluation Encounter"
           }
         },
         {
