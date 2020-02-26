@@ -4,6 +4,7 @@
     "Sources:",
     "[1] https://factfinder.census.gov/bkmk/table/1.0/en/ACS/16_1YR/B21002",
     "[2] https://www.benefits.va.gov/pension/wartimeperiod.asp",
+    "[3] https://www.va.gov/VETDATA/docs/SurveysAndStudies/MILITARY.pdf",
     "",
     "Relevant conflicts",
     "    World War II (December 7, 1941 -> December 31, 1946)",
@@ -57,7 +58,8 @@
     "Estimate; Total: - Female: - 75 years and over:    11684416    ",
     "Estimate; Total: - Female: - 75 years and over: - Veteran    145682    1.25%",
     "Estimate; Total: - Female: - 75 years and over: - Nonveteran    11538734    98.75%",
-    ""
+    "",
+    "Statistics for high combat exposure are drawn from table 4-9 in [3]."
   ],
   "states": {
     "Initial": {
@@ -198,7 +200,7 @@
       "type": "SetAttribute",
       "attribute": "veteran",
       "value": "Pre_WW2",
-      "direct_transition": "Terminal"
+      "direct_transition": "Set_High_Combat_Exposure_Pre_WW2"
     },
     "WW2": {
       "type": "Simple",
@@ -249,7 +251,7 @@
       "type": "SetAttribute",
       "attribute": "veteran",
       "value": "WW2",
-      "direct_transition": "Terminal"
+      "direct_transition": "Set_High_Combat_Exposure_WW2"
     },
     "Between_WW2_and_KW": {
       "type": "Simple",
@@ -303,7 +305,7 @@
       "type": "SetAttribute",
       "attribute": "veteran",
       "value": "Between_WW2_and_KW",
-      "direct_transition": "Terminal"
+      "direct_transition": "Set_High_Combat_Exposure_Between WW2_and_KW"
     },
     "Korean_War": {
       "type": "Simple",
@@ -357,7 +359,7 @@
       "type": "SetAttribute",
       "attribute": "veteran",
       "value": "Korean_War",
-      "direct_transition": "Terminal"
+      "direct_transition": "Set_High_Combat_Exposure_Korean_War"
     },
     "Between_KW_and_VW": {
       "type": "Simple",
@@ -411,7 +413,7 @@
       "type": "SetAttribute",
       "attribute": "veteran",
       "value": "Between_KW_and_VW",
-      "direct_transition": "Terminal"
+      "direct_transition": "Set_High_Combat_Exposure_Between_KW_and_VW"
     },
     "Vietnam_War": {
       "type": "Simple",
@@ -465,7 +467,7 @@
       "type": "SetAttribute",
       "attribute": "veteran",
       "value": "Vietnam_War",
-      "direct_transition": "Terminal"
+      "direct_transition": "Set_High_Combat_Exposure_Vietnam_War"
     },
     "Between_VW_and_GW": {
       "type": "Simple",
@@ -519,7 +521,7 @@
       "type": "SetAttribute",
       "attribute": "veteran",
       "value": "Between_VW_and_GW",
-      "direct_transition": "Terminal"
+      "direct_transition": "Set_High_Combat_Exposure_Between_VW_and_GW"
     },
     "Early_Gulf_War": {
       "type": "Simple",
@@ -573,7 +575,7 @@
       "type": "SetAttribute",
       "attribute": "veteran",
       "value": "Early_Gulf_War",
-      "direct_transition": "Terminal"
+      "direct_transition": "Set_High_Combat_Exposure_Early_Gulf_War"
     },
     "Late_Gulf_War": {
       "type": "Simple",
@@ -627,7 +629,86 @@
       "type": "SetAttribute",
       "attribute": "veteran",
       "value": "Late_Gulf_War",
+      "direct_transition": "Set_High_Combat_Exposure_Late_Gulf_War"
+    },
+    "Apply_Probabilities": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Set_High_Combat_Exposure",
+          "distribution": {
+            "attribute": "probability_of_high_combat_exposure",
+            "default": 0.364
+          }
+        },
+        {
+          "transition": "Terminal",
+          "distribution": {
+            "attribute": "probability_of_no_high_combat_exposure",
+            "default": 0.6360000000000001
+          }
+        }
+      ]
+    },
+    "Set_High_Combat_Exposure": {
+      "type": "SetAttribute",
+      "attribute": "high_combat_exposure",
+      "value": true,
       "direct_transition": "Terminal"
+    },
+    "Set_High_Combat_Exposure_Pre_WW2": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_high_combat_exposure",
+      "direct_transition": "Apply_Probabilities",
+      "value": 0.497
+    },
+    "Set_High_Combat_Exposure_WW2": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_high_combat_exposure",
+      "value": 0.497,
+      "direct_transition": "Apply_Probabilities"
+    },
+    "Set_High_Combat_Exposure_Between WW2_and_KW": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_high_combat_exposure",
+      "value": 0.429,
+      "direct_transition": "Apply_Probabilities"
+    },
+    "Set_High_Combat_Exposure_Vietnam_War": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_high_combat_exposure",
+      "value": 0.459,
+      "direct_transition": "Apply_Probabilities"
+    },
+    "Set_High_Combat_Exposure_Between_KW_and_VW": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_high_combat_exposure",
+      "value": 0.3,
+      "direct_transition": "Apply_Probabilities"
+    },
+    "Set_High_Combat_Exposure_Late_Gulf_War": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_high_combat_exposure",
+      "value": 0.317,
+      "direct_transition": "Apply_Probabilities"
+    },
+    "Set_High_Combat_Exposure_Early_Gulf_War": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_high_combat_exposure",
+      "value": 0.317,
+      "direct_transition": "Apply_Probabilities"
+    },
+    "Set_High_Combat_Exposure_Between_VW_and_GW": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_high_combat_exposure",
+      "value": 0.323,
+      "direct_transition": "Apply_Probabilities"
+    },
+    "Set_High_Combat_Exposure_Korean_War": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_high_combat_exposure",
+      "value": 0.348,
+      "direct_transition": "Apply_Probabilities"
     }
   }
 }
