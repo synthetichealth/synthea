@@ -191,7 +191,7 @@ public class Generator {
     this.onlyDeadPatients = Boolean.parseBoolean(Config.get("generate.only_dead_patients"));
     this.onlyAlivePatients = Boolean.parseBoolean(Config.get("generate.only_alive_patients"));
     //If both values are set to true, then they are both set back to the default
-    if(this.onlyDeadPatients && this.onlyAlivePatients){
+    if (this.onlyDeadPatients && this.onlyAlivePatients) {
       Config.set("generate.only_dead_patients", "false");
       Config.set("generate.only_alive_patients", "false");
       this.onlyDeadPatients = false;
@@ -377,7 +377,7 @@ public class Generator {
           // note that this skips ahead to the while check and doesn't automatically re-loop
         }
 
-        if(!isAlive && onlyAlivePatients){
+        if (!isAlive && onlyAlivePatients) {
           // rotate the seed so the next attempt gets a consistent but different one
           personSeed = new Random(personSeed).nextLong();
           continue;
