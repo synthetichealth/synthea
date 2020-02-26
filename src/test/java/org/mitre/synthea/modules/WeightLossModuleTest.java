@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mitre.synthea.world.concepts.BMI.calculate;
 
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
@@ -13,8 +15,6 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.GrowthChart;
 import org.mitre.synthea.world.concepts.PediatricGrowthTrajectory;
 import org.mitre.synthea.world.concepts.VitalSign;
-
-import java.util.Map;
 
 public class WeightLossModuleTest {
   private WeightLossModule mod;
@@ -89,13 +89,16 @@ public class WeightLossModuleTest {
     PediatricGrowthTrajectory pgt = new PediatricGrowthTrajectory(0L, birthDay);
     double startPercentile = 0.9;
     pgt.addPoint(person.ageInMonths(sixMonthsPrior), sixMonthsPrior,
-        growthChart.get(GrowthChart.ChartType.BMI).lookUp(person.ageInMonths(sixMonthsPrior), gender, startPercentile));
+        growthChart.get(GrowthChart.ChartType.BMI)
+          .lookUp(person.ageInMonths(sixMonthsPrior), gender, startPercentile));
     pgt.addPoint(person.ageInMonths(oneMonthAfter), oneMonthAfter,
-        growthChart.get(GrowthChart.ChartType.BMI).lookUp(person.ageInMonths(oneMonthAfter), gender, startPercentile));
+        growthChart.get(GrowthChart.ChartType.BMI)
+          .lookUp(person.ageInMonths(oneMonthAfter), gender, startPercentile));
     int lowPoint = pgt.tail().ageInMonths + 12;
     double lowestBMI = growthChart.get(GrowthChart.ChartType.BMI).lookUp(lowPoint, gender,
         startPercentile - bmiPercentileChange);
-    pgt.addPoint(lowPoint, pgt.tail().timeInSimulation + Utilities.convertTime("years", 1), lowestBMI);
+    pgt.addPoint(lowPoint,
+        pgt.tail().timeInSimulation + Utilities.convertTime("years", 1), lowestBMI);
     person.attributes.put(Person.GROWTH_TRAJECTORY, pgt);
 
     mod.pediatricRegression(person, oneYearAndTwoMonthsAfter);
@@ -118,12 +121,14 @@ public class WeightLossModuleTest {
     PediatricGrowthTrajectory pgt = new PediatricGrowthTrajectory(0L, birthDay);
     double startPercentile = 0.9;
     pgt.addPoint(person.ageInMonths(start), start,
-        growthChart.get(GrowthChart.ChartType.BMI).lookUp(person.ageInMonths(start), gender, startPercentile));
+        growthChart.get(GrowthChart.ChartType.BMI)
+          .lookUp(person.ageInMonths(start), gender, startPercentile));
     person.attributes.put(Person.GROWTH_TRAJECTORY, pgt);
     int expectedTailAge = pgt.tail().ageInMonths + 12;
     mod.maintainBMIPercentile(person, oneMonthAfter);
     assertEquals(expectedTailAge, pgt.tail().ageInMonths);
-    double expectedBMI = growthChart.get(GrowthChart.ChartType.BMI).lookUp(expectedTailAge, gender, startPercentile);
+    double expectedBMI = growthChart.get(GrowthChart.ChartType.BMI)
+        .lookUp(expectedTailAge, gender, startPercentile);
     assertEquals(expectedBMI, pgt.tail().bmi, 0.1);
   }
 
@@ -154,9 +159,6 @@ public class WeightLossModuleTest {
 
     long birthDay = TestHelper.timestamp(1990, 1, 1, 0, 0, 0);
     long start = TestHelper.timestamp(2000, 1, 1, 0, 0, 0);
-    long oneMonthAfter = TestHelper.timestamp(2000, 2, 1, 0, 0, 0);
-    long twoMonthsAfter = TestHelper.timestamp(2000, 3, 1, 0, 0, 0);
-    long sixMonthsPrior = TestHelper.timestamp(1999, 7, 2, 0, 0, 0);
     person = new Person(0L);
     String gender = "M";
     double bmiPercentileChange = 0.01;
@@ -169,10 +171,15 @@ public class WeightLossModuleTest {
     person.attributes.put(WeightLossModule.LONG_TERM_WEIGHT_LOSS, true);
     PediatricGrowthTrajectory pgt = new PediatricGrowthTrajectory(0L, birthDay);
     double startPercentile = 0.9;
+    long oneMonthAfter = TestHelper.timestamp(2000, 2, 1, 0, 0, 0);
+    long twoMonthsAfter = TestHelper.timestamp(2000, 3, 1, 0, 0, 0);
+    long sixMonthsPrior = TestHelper.timestamp(1999, 7, 2, 0, 0, 0);
     pgt.addPoint(person.ageInMonths(sixMonthsPrior), sixMonthsPrior,
-        growthChart.get(GrowthChart.ChartType.BMI).lookUp(person.ageInMonths(sixMonthsPrior), gender, startPercentile));
+        growthChart.get(GrowthChart.ChartType.BMI)
+          .lookUp(person.ageInMonths(sixMonthsPrior), gender, startPercentile));
     pgt.addPoint(person.ageInMonths(oneMonthAfter), oneMonthAfter,
-        growthChart.get(GrowthChart.ChartType.BMI).lookUp(person.ageInMonths(oneMonthAfter), gender, startPercentile));
+        growthChart.get(GrowthChart.ChartType.BMI)
+          .lookUp(person.ageInMonths(oneMonthAfter), gender, startPercentile));
     person.attributes.put(Person.GROWTH_TRAJECTORY, pgt);
     int expectedTailAge = pgt.tail().ageInMonths + 12;
     double expectedBMI = growthChart.get(GrowthChart.ChartType.BMI).lookUp(expectedTailAge, gender,
@@ -238,9 +245,11 @@ public class WeightLossModuleTest {
     PediatricGrowthTrajectory pgt = new PediatricGrowthTrajectory(0L, birthDay);
     double startPercentile = 0.9;
     pgt.addPoint(person.ageInMonths(sixMonthsPrior), sixMonthsPrior,
-        growthChart.get(GrowthChart.ChartType.BMI).lookUp(person.ageInMonths(sixMonthsPrior), gender, startPercentile));
+        growthChart.get(GrowthChart.ChartType.BMI)
+          .lookUp(person.ageInMonths(sixMonthsPrior), gender, startPercentile));
     pgt.addPoint(person.ageInMonths(oneMonthAfter), oneMonthAfter,
-        growthChart.get(GrowthChart.ChartType.BMI).lookUp(person.ageInMonths(oneMonthAfter), gender, startPercentile));
+        growthChart.get(GrowthChart.ChartType.BMI)
+          .lookUp(person.ageInMonths(oneMonthAfter), gender, startPercentile));
     person.attributes.put(Person.GROWTH_TRAJECTORY, pgt);
     int expectedTailAge = pgt.tail().ageInMonths + 12;
     mod.adjustBMIVectorForSuccessfulManagement(person);

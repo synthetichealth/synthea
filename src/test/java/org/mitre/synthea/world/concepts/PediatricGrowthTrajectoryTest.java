@@ -1,15 +1,13 @@
 package org.mitre.synthea.world.concepts;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Map;
 import org.apache.commons.math3.random.JDKRandomGenerator;
-import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
-
-import java.util.Map;
-
-import static org.junit.Assert.*;
 
 public class PediatricGrowthTrajectoryTest {
 
