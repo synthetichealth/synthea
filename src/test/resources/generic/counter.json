@@ -30,9 +30,10 @@
       ]
     },
 
-    "Counter_Decrement" : {
+    "Counter_Decrement_by_2" : {
       "type" : "Counter",
       "action" : "decrement",
+      "amount" : 2,
       "attribute" : "loop_index",
       "direct_transition" : "Terminal"
     },
