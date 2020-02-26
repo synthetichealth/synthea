@@ -499,16 +499,16 @@ public class FhirR4 {
     long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
     patientResource.setBirthDate(new Date(birthdate));
 
+    Extension birthSexExtension = new Extension(
+        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex");
+    if (person.attributes.get(Person.GENDER).equals("M")) {
+      patientResource.setGender(AdministrativeGender.MALE);
+      birthSexExtension.setValue(new CodeType("M"));
+    } else if (person.attributes.get(Person.GENDER).equals("F")) {
+      patientResource.setGender(AdministrativeGender.FEMALE);
+      birthSexExtension.setValue(new CodeType("F"));
+    }
     if (USE_US_CORE_IG) {
-      Extension birthSexExtension = new Extension(
-          "http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex");
-      if (person.attributes.get(Person.GENDER).equals("M")) {
-        patientResource.setGender(AdministrativeGender.MALE);
-        birthSexExtension.setValue(new CodeType("M"));
-      } else if (person.attributes.get(Person.GENDER).equals("F")) {
-        patientResource.setGender(AdministrativeGender.FEMALE);
-        birthSexExtension.setValue(new CodeType("F"));
-      }
       patientResource.addExtension(birthSexExtension);
     }
 
