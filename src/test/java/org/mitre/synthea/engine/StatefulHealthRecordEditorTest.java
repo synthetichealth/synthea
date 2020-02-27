@@ -15,10 +15,6 @@ import org.junit.Test;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
-/**
- *
- * @author mhadley
- */
 public class StatefulHealthRecordEditorTest {
 
   public static class Dummy extends StatefulHealthRecordEditor {
@@ -28,7 +24,8 @@ public class StatefulHealthRecordEditorTest {
     }
 
     @Override
-    public void process(Person person, List<HealthRecord.Encounter> encounters, long time, Random random) {
+    public void process(Person person, List<HealthRecord.Encounter> encounters,
+        long time, Random random) {
     }
   }
   
@@ -89,7 +86,7 @@ public class StatefulHealthRecordEditorTest {
     public void run() {
       Person p1 = new Person(1);
       Map<String, Object> context = dummy.getOrInitContextFor(p1);
-      for (int i=0; i < keys; i++) {
+      for (int i = 0; i < keys; i++) {
         context.put(Integer.toString(i), i);
       }
       try {

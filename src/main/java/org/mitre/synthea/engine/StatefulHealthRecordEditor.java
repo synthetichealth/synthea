@@ -34,7 +34,7 @@ public abstract class StatefulHealthRecordEditor implements HealthRecordEditor {
   /**
    * Return an empty context if the Person is different from the last time this
    * method was invoked, otherwise return the current context.
-   * @param p
+   * @param p the person for which the context is desired
    * @return the context
    */
   protected Map<String, Object> getOrInitContextFor(Person p) {
