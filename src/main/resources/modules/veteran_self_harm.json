@@ -32,7 +32,7 @@
             },
             {
               "distribution": 0.9454,
-              "transition": "VA Hotline Call"
+              "transition": "Non_Fatal_Attempt"
             }
           ]
         },
@@ -48,7 +48,7 @@
             },
             {
               "distribution": 0.9844,
-              "transition": "VA Hotline Call"
+              "transition": "Non_Fatal_Attempt"
             }
           ]
         }
@@ -377,124 +377,6 @@
     "Terminal": {
       "type": "Terminal"
     },
-    "Delay 55 to 74 years old": {
-      "type": "Delay",
-      "range": {
-        "low": 37,
-        "high": 56,
-        "unit": "years"
-      },
-      "direct_transition": "Attempts_Suicide"
-    },
-    "Delay 35 to 54 years old": {
-      "type": "Delay",
-      "range": {
-        "low": 17,
-        "high": 36,
-        "unit": "years"
-      },
-      "direct_transition": "Attempts_Suicide"
-    },
-    "Delay 75 to 110 years old": {
-      "type": "Delay",
-      "range": {
-        "low": 57,
-        "high": 92,
-        "unit": "years"
-      },
-      "direct_transition": "Attempts_Suicide"
-    },
-    "Delay 18 to 34 years old": {
-      "type": "Delay",
-      "range": {
-        "low": 0,
-        "high": 16,
-        "unit": "years"
-      },
-      "direct_transition": "Attempts_Suicide"
-    },
-    "MH & SUD Comorbidty Check": {
-      "type": "CallSubmodule",
-      "submodule": "veterans/veteran_suicide_probabilities",
-      "distributed_transition": [
-        {
-          "transition": "Comorbidity Check",
-          "distribution": {
-            "attribute": "probability_of_suicide",
-            "default": 0.0045
-          }
-        },
-        {
-          "transition": "Terminal",
-          "distribution": {
-            "attribute": "probability_of_no_suicide",
-            "default": 0.9955
-          }
-        }
-      ]
-    },
-    "Comorbidity Check": {
-      "type": "Simple",
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "M"
-          },
-          "distributions": [
-            {
-              "transition": "Delay 18 to 34 years old",
-              "distribution": 0.3122
-            },
-            {
-              "transition": "Delay 35 to 54 years old",
-              "distribution": 0.25343
-            },
-            {
-              "transition": "Delay 55 to 74 years old",
-              "distribution": 0.17982
-            },
-            {
-              "transition": "Delay 75 to 110 years old",
-              "distribution": 0.25455
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          },
-          "distributions": [
-            {
-              "transition": "Delay 18 to 34 years old",
-              "distribution": 0.280155642
-            },
-            {
-              "transition": "Delay 35 to 54 years old",
-              "distribution": 0.449416342
-            },
-            {
-              "transition": "Delay 55 to 74 years old",
-              "distribution": 0.270428016
-            }
-          ]
-        }
-      ]
-    },
-    "VA Hotline Call": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "VA Hotline Encounter",
-          "distribution": 0.1
-        },
-        {
-          "transition": "Non_Fatal_Attempt",
-          "distribution": 0.9
-        }
-      ]
-    },
     "Non_Fatal_Attempt": {
       "type": "Simple",
       "distributed_transition": [
@@ -522,47 +404,6 @@
         ""
       ]
     },
-    "VA Hotline Encounter": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 185317003,
-          "display": "Telephone encounter (procedure)"
-        }
-      ],
-      "direct_transition": "Hotline Mental Health Note"
-    },
-    "end telehealth": {
-      "type": "EncounterEnd",
-      "distributed_transition": [
-        {
-          "transition": "Terminal",
-          "distribution": 0.8
-        },
-        {
-          "transition": "Non_Fatal_Attempt",
-          "distribution": 0.2
-        }
-      ]
-    },
-    "Hotline Mental Health Note": {
-      "type": "Observation",
-      "category": "therapy",
-      "unit": "{nominal}",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "87626-8",
-          "display": "Suicide prevention note"
-        }
-      ],
-      "exact": {
-        "quantity": 1
-      },
-      "direct_transition": "end telehealth"
-    },
     "Veteran Guard": {
       "type": "Guard",
       "allow": {
@@ -570,7 +411,62 @@
         "attribute": "veteran",
         "operator": "is not nil"
       },
-      "direct_transition": "MH & SUD Comorbidty Check"
+      "direct_transition": "New_State"
+    },
+    "No_Ideation": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Suicidal_Ideation",
+          "distribution": {
+            "attribute": "suicidal_ideation_risk",
+            "default": 1
+          }
+        },
+        {
+          "transition": "New_State_2",
+          "distribution": 0
+        }
+      ]
+    },
+    "Suicidal_Ideation": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Attempts_Suicide",
+          "distribution": {
+            "attribute": "probability_of_suicide",
+            "default": 1
+          }
+        },
+        {
+          "transition": "New_State_3",
+          "distribution": 1
+        }
+      ]
+    },
+    "New_State": {
+      "type": "CallSubmodule",
+      "submodule": "veterans/veteran_suicide_probabilities",
+      "direct_transition": "No_Ideation"
+    },
+    "New_State_2": {
+      "type": "CallSubmodule",
+      "submodule": "veterans/veteran_suicide_probabilities",
+      "direct_transition": "No_Ideation"
+    },
+    "New_State_3": {
+      "type": "CallSubmodule",
+      "submodule": "veterans/veteran_suicide_probabilities",
+      "direct_transition": "Suicidal_Ideation"
     }
   }
 }
