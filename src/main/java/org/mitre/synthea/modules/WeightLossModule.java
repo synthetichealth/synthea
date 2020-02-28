@@ -250,8 +250,7 @@ public final class WeightLossModule extends Module {
       double regressionPeriodYears = 5;
       double nextPercentile = originalPercentile - percentileChange
           * (1d - (yearsOfRegression / regressionPeriodYears));
-      pgt.addPoint(nextAgeInMonths, nextTimeInSimulation,
-          bmiChart.lookUp(nextAgeInMonths, gender, nextPercentile));
+      pgt.addPointFromPercentile(nextAgeInMonths, nextTimeInSimulation, nextPercentile, gender);
     }
   }
 
@@ -301,18 +300,19 @@ public final class WeightLossModule extends Module {
     double bmiAtStart = pgt.currentBMI(person, start, person.random);
     double startPercentile = bmiChart.percentileFor(startAgeInMonths, gender, bmiAtStart);
     int currentTailAge = pgt.tail().ageInMonths;
-    double currentTailBMI = pgt.tail().ageInMonths;
+    double currentTailBMI = pgt.tail().bmi;
     double currentTailPercentile = bmiChart.percentileFor(currentTailAge, gender, currentTailBMI);
     if (currentTailPercentile <= startPercentile) {
       // Vector has been adjusted, exit early to not run again.
       return;
     }
-    double targetPercentile = startPercentile - percentileChange;
+    double targetPercentile = currentTailPercentile - percentileChange;
     long currentTailTimeInSim = pgt.tail().timeInSimulation;
     int monthsInTheFuture = 12;
     if (currentTailAge + monthsInTheFuture > TWENTY_YEARS_IN_MONTHS) {
       monthsInTheFuture = TWENTY_YEARS_IN_MONTHS - currentTailAge;
-      targetPercentile = startPercentile - (percentileChange * ((double) monthsInTheFuture) / 12);
+      targetPercentile = currentTailPercentile
+          - (percentileChange * ((double) monthsInTheFuture) / 12);
     }
     double targetBMI = bmiChart.lookUp(currentTailAge + monthsInTheFuture,
         gender, targetPercentile);

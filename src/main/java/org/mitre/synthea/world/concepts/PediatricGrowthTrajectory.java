@@ -229,6 +229,25 @@ public class PediatricGrowthTrajectory {
   }
 
   /**
+   * Adds a point to the end of the trajectory. It must be at the end of the trajectory, otherwise,
+   * it will throw an IllegalArgumentException.
+   * <p>
+   * Instead of providing a BMI, provide a percentile, which will get converted to a BMI
+   * </p>
+   * @param ageInMonths for the person at the point
+   * @param timeInSimulation at the time of the point
+   * @param percentile the percentile
+   * @param sex the sex of the individual
+   */
+  public void addPointFromPercentile(int ageInMonths, long timeInSimulation, double percentile,
+                                     String sex) {
+    double decimalAge = ageInMonths / 12d;
+    double sig = sigma(sex, decimalAge);
+    double bmi = percentileToBMI(percentile, ageInMonths, sex, sig);
+    this.addPoint(ageInMonths, timeInSimulation, bmi);
+  }
+
+  /**
    * Provides the BMI for the individual at the supplied time. If the time provided is beyond the
    * current length of the trajectory, it will generate a new point in the trajectory, if that point
    * will happen before the person is 20 years old.
