@@ -74,4 +74,17 @@ public class PediatricGrowthTrajectoryTest {
     assertEquals(0.773, yi.correlation, 0.001);
     assertEquals(0.211, yi.diff, 0.001);
   }
+
+  @Test
+  public void addPointFromPercentile() {
+    long birthDay = TestHelper.timestamp(2017, 1, 1, 0, 0, 0);
+    long timeInSim = TestHelper.timestamp(2020, 1, 1, 0, 0, 0);
+    double ninetySeventh = 0.97;
+    int threeYearsInMonths = 36;
+    double age = 3;
+    String sex = "M";
+    PediatricGrowthTrajectory pgt = new PediatricGrowthTrajectory(0L, birthDay);
+    pgt.addPointFromPercentile(threeYearsInMonths, timeInSim, ninetySeventh, sex);
+    assertEquals(19.2084002, pgt.tail().bmi, 0.01);
+  }
 }
