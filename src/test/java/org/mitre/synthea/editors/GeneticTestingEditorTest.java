@@ -4,11 +4,29 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import static org.mitre.synthea.editors.GeneticTestingEditor.DnaSynthesisConfig.MedicalCategory.HDL;
+import static org.mitre.synthea.editors.GeneticTestingEditor.DnaSynthesisConfig.MedicalCategory.LDL;
+import static org.mitre.synthea.editors.GeneticTestingEditor.DnaSynthesisConfig.MedicalCategory.OBESITY;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import org.mitre.synthea.editors.GeneticTestingEditor.DnaSynthesisConfig;
+import org.mitre.synthea.editors.GeneticTestingEditor.DnaSynthesisConfig.MedicalCategory;
+import org.mitre.synthea.editors.GeneticTestingEditor.DnaSynthesisConfig.Population;
+import org.mitre.synthea.editors.GeneticTestingEditor.DnaSynthesisWrapper;
+import org.mitre.synthea.editors.GeneticTestingEditor.GeneticMarker;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
@@ -73,5 +91,80 @@ public class GeneticTestingEditorTest {
     assertEquals(1, e.reports.get(0).codes.size());
     assertEquals(GeneticTestingEditor.GENETIC_TESTING_REPORT_TYPE,
         e.reports.get(0).codes.get(0).display);
+  }
+  
+  @Test
+  public void loadResultFile() throws FileNotFoundException {
+    URL testUrl = getClass().getClassLoader().getResource(
+            "editors/genetic.testing/test_result.tsv");
+    File testFile = new File(testUrl.getFile());
+    List<GeneticMarker> output = 
+            GeneticTestingEditor.DnaSynthesisWrapper.loadOutputFile(testFile);
+    int numVariants = 0;
+    Map<String, Integer> variantTypeCount = new HashMap<>();
+    Map<String, Set<MedicalCategory>> variantMedicalCategories = new HashMap<>();
+    for (GeneticMarker m: output) {
+      if (m.isVariant()) {
+        numVariants++;
+        if (!variantTypeCount.containsKey(m.clinicalSignificance)) {
+          variantTypeCount.put(m.clinicalSignificance, 0);
+        }
+        variantTypeCount.put(m.clinicalSignificance, variantTypeCount
+                .get(m.clinicalSignificance) + 1);
+        if (!variantMedicalCategories.containsKey(m.clinicalSignificance)) {
+          variantMedicalCategories.put(m.clinicalSignificance, new HashSet<>());
+        }
+        variantMedicalCategories.get(m.clinicalSignificance)
+                .addAll(m.getAssociatedMedicalCategories());
+      }
+    }
+    assertEquals(12, numVariants);
+    assertEquals(5, variantTypeCount.get(
+            GeneticMarker.UNCERTAIN_CLINICAL_SIGNIFICANCE).intValue());
+    assertEquals(4, variantTypeCount.get(
+            GeneticMarker.ASSOCIATION_CLINICAL_SIGNIFICANCE).intValue());
+    assertEquals(2, variantTypeCount.get(
+            GeneticMarker.DRUG_RESPONSE_CLINICAL_SIGNIFICANCE).intValue());
+    assertEquals(1, variantTypeCount.get(
+            GeneticMarker.RISK_FACTOR_CLINICAL_SIGNIFICANCE).intValue());
+  }
+  
+  @Test
+  public void invokeScript() throws IOException, InterruptedException {
+    URL scriptURL = getClass().getClassLoader().getResource("editors/genetic.testing/dummy.sh");
+    File scriptFile = new File(scriptURL.getFile());
+    DnaSynthesisConfig cfg = new DnaSynthesisConfig(Population.AFR,
+            new MedicalCategory[] {LDL, HDL, OBESITY});
+    DnaSynthesisWrapper invoker = new DnaSynthesisWrapper(cfg, scriptFile);
+    File outputFile = invoker.invoke();
+    List<GeneticMarker> output = 
+            GeneticTestingEditor.DnaSynthesisWrapper.loadOutputFile(outputFile);
+    int numVariants = 0;
+    Map<String, Integer> variantTypeCount = new HashMap<>();
+    Map<String, Set<MedicalCategory>> variantMedicalCategories = new HashMap<>();
+    for (GeneticMarker m: output) {
+      if (m.isVariant()) {
+        numVariants++;
+        if (!variantTypeCount.containsKey(m.clinicalSignificance)) {
+          variantTypeCount.put(m.clinicalSignificance, 0);
+        }
+        variantTypeCount.put(m.clinicalSignificance,
+                variantTypeCount.get(m.clinicalSignificance) + 1);
+        if (!variantMedicalCategories.containsKey(m.clinicalSignificance)) {
+          variantMedicalCategories.put(m.clinicalSignificance, new HashSet<>());
+        }
+        variantMedicalCategories.get(
+                m.clinicalSignificance).addAll(m.getAssociatedMedicalCategories());
+      }
+    }
+    assertEquals(12, numVariants);
+    assertEquals(5, variantTypeCount.get(
+            GeneticMarker.UNCERTAIN_CLINICAL_SIGNIFICANCE).intValue());
+    assertEquals(4, variantTypeCount.get(
+            GeneticMarker.ASSOCIATION_CLINICAL_SIGNIFICANCE).intValue());
+    assertEquals(2, variantTypeCount.get(
+            GeneticMarker.DRUG_RESPONSE_CLINICAL_SIGNIFICANCE).intValue());
+    assertEquals(1, variantTypeCount.get(
+            GeneticMarker.RISK_FACTOR_CLINICAL_SIGNIFICANCE).intValue());
   }
 }
