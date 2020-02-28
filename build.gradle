@@ -59,7 +59,7 @@ dependencies {
   compile group: 'info.cqframework', name: 'cql-to-elm', version: '1.3.17'
 
   // HTTP Client for reaching out to services, like clinical note generation
-  compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.11'
+  compile "com.squareup.okhttp3:okhttp:4.4.0"
 
   // Java 9 no longer includes these APIs by default
   compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
@@ -92,6 +92,7 @@ dependencies {
   testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:4.1.0'
   testCompile 'com.helger:ph-schematron:5.0.4'
   testCompile 'com.helger:ph-commons:9.1.1'
+  testCompile "com.squareup.okhttp3:mockwebserver:4.4.0"
 }
 
 // Provide more descriptive test failure output
