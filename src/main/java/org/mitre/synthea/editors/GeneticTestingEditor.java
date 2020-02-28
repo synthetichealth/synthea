@@ -295,16 +295,16 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
     public GeneticMarker(String index, String chromosome, String location, String strand, 
             String ancestralAllele, String variantAlleleList, String gene, 
             String clinicalSignificance, String allele) {
-      this.index = index.strip();
+      this.index = index.trim();
       this.indexPrefix = index.split("_")[0];
-      this.chromosome = chromosome.strip();
-      this.location = location.strip();
-      this.strand = strand.strip();
-      this.ancestralAllele = ancestralAllele.strip();
-      this.variantAlleleList = variantAlleleList.strip();
-      this.gene = gene.strip();
-      this.clinicalSignificance = clinicalSignificance.strip();
-      this.allele = allele.strip();
+      this.chromosome = chromosome.trim();
+      this.location = location.trim();
+      this.strand = strand.trim();
+      this.ancestralAllele = ancestralAllele.trim();
+      this.variantAlleleList = variantAlleleList.trim();
+      this.gene = gene.trim();
+      this.clinicalSignificance = clinicalSignificance.trim();
+      this.allele = allele.trim();
       this.variant = this.allele.contains(">");
     }
 
