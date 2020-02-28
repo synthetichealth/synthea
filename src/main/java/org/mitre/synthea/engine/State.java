@@ -31,6 +31,9 @@ import org.mitre.synthea.engine.Transition.DistributedTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransitionOption;
 import org.mitre.synthea.engine.Transition.LookupTableTransition;
 import org.mitre.synthea.engine.Transition.LookupTableTransitionOption;
+import org.mitre.synthea.helpers.ChartRenderer;
+import org.mitre.synthea.helpers.ChartRenderer.PersonChartConfig;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.ExpressionProcessor;
 import org.mitre.synthea.helpers.RandomValueGenerator;
@@ -65,6 +68,9 @@ public abstract class State implements Cloneable, Serializable {
   private List<ComplexTransitionOption> complexTransition;
   private List<LookupTableTransitionOption> lookupTableTransition;
   public List<String> remarks;
+  
+  protected static boolean ENABLE_PHYSIOLOGY_STATE =
+      Boolean.parseBoolean(Config.get("physiology.state.enabled", "false"));
 
   protected void initialize(Module module, String name, JsonObject definition) {
     this.module = module;
@@ -282,8 +288,10 @@ public abstract class State implements Cloneable, Serializable {
     private double stepSize;
     private double simDuration;
     private double leadTime;
+    private String altDirectTransition;
     private List<IoMapper> inputs;
     private List<IoMapper> outputs;
+    private Transition altTransition;
     private transient PhysiologySimulator simulator;
     private transient Map<String,String> paramTypes;
     
@@ -291,12 +299,21 @@ public abstract class State implements Cloneable, Serializable {
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
       
+      if (altDirectTransition == null || altDirectTransition == "") {
+        throw new RuntimeException("All Physiology States MUST have an alt_direct_transition"
+            + " defined in the event that Physiology States are disabled.");
+      }
+      
+      this.altTransition = new DirectTransition(altDirectTransition);
+      
       if (leadTime > simDuration) {
         throw new IllegalArgumentException(
             "Simulation lead time cannot be greater than sim duration!");
       }
 
-      setup();
+      if (ENABLE_PHYSIOLOGY_STATE) {
+        setup();
+      }
     }
     
     private void setup() {
@@ -328,6 +345,7 @@ public abstract class State implements Cloneable, Serializable {
       clone.stepSize = stepSize;
       clone.simDuration = simDuration;
       clone.leadTime = leadTime;
+      clone.altDirectTransition = altDirectTransition;
       
       List<IoMapper> inputList = new ArrayList<IoMapper>(inputs.size());
       for (IoMapper mapper : inputs) {
@@ -348,6 +366,9 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
+      if (!ENABLE_PHYSIOLOGY_STATE) {
+        return true;
+      }
       Map<String,Double> modelInputs = new HashMap<String,Double>();
       for (IoMapper mapper : inputs) {
         mapper.toModelInputs(person, time, modelInputs);
@@ -373,6 +394,24 @@ public abstract class State implements Cloneable, Serializable {
             + person.attributes.get(Person.ID), ex);
       }
       return true;
+    }
+    
+    /**
+     * Directs to the normal transition if Physiology states are enabled. Otherwise
+     * directs to the alternative direct transition.
+     * 
+     * @param person
+     *          the person being simulated
+     * @param time
+     *          the date within the simulated world
+     * @return next state
+     */
+    public String transition(Person person, long time) {
+      if (ENABLE_PHYSIOLOGY_STATE) {
+        return super.transition(person, time);
+      }
+      
+      return altTransition.follow(person, time);
     }
     
   }
