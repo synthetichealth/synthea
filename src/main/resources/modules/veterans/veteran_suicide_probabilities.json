@@ -1,6 +1,26 @@
 {
   "name": "Veteran Suicide Probabilities",
   "remarks": [
+    "High Influence:",
+    "",
+    "- Age",
+    "- Homelessness",
+    "- mTBI",
+    "- PTSD",
+    "- Prior Suicide Attempt",
+    "- Major Depressive Disorder (MDD)",
+    "",
+    "Moderate Influence:",
+    "",
+    "- Alcoholism",
+    "- High Combat Exposure",
+    "- Gender",
+    "- Marital Status",
+    "",
+    "Low Influence:",
+    "",
+    "- Hypertension",
+    "- Race",
     ""
   ],
   "states": {
@@ -37,7 +57,7 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "New_State",
+          "transition": "Increment_Counter_Homelessness",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "homeless",
@@ -46,7 +66,7 @@
           }
         },
         {
-          "transition": "New_State_2"
+          "transition": "Hypertension_Check"
         }
       ]
     },
@@ -88,18 +108,8 @@
     "Init_Counter": {
       "type": "SetAttribute",
       "attribute": "sucide_risk_factor_count",
-      "direct_transition": "Homelessness_Check",
+      "direct_transition": "Gender_Check",
       "value": 0
-    },
-    "New_State": {
-      "type": "Counter",
-      "attribute": "sucide_risk_factor_count",
-      "action": "increment",
-      "direct_transition": "New_State_2"
-    },
-    "New_State_2": {
-      "type": "Simple",
-      "direct_transition": "End_Counter"
     },
     "High Risk": {
       "type": "SetAttribute",
@@ -118,6 +128,258 @@
       "attribute": "probability_of_suicide",
       "direct_transition": "Terminal",
       "value": 0.0144
+    },
+    "High_Combat_Exposure_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Increment_Counter_High_Combat_Exposure",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "high_combat_exposure",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "mTBI_Check"
+        }
+      ]
+    },
+    "Increment_Counter_Homelessness": {
+      "type": "Counter",
+      "attribute": "sucide_risk_factor_count",
+      "action": "increment",
+      "direct_transition": "Hypertension_Check"
+    },
+    "Increment_Counter_High_Combat_Exposure": {
+      "type": "Counter",
+      "attribute": "sucide_risk_factor_count",
+      "action": "increment",
+      "direct_transition": "mTBI_Check"
+    },
+    "PTSD_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Increment_Counter_PTSD",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ptsd",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Prior_Attempt_Check"
+        }
+      ]
+    },
+    "Increment_Counter_PTSD": {
+      "type": "Counter",
+      "attribute": "sucide_risk_factor_count",
+      "action": "increment",
+      "direct_transition": "Prior_Attempt_Check"
+    },
+    "Gender_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Increment_Counter_Gender",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Race_Check"
+        }
+      ]
+    },
+    "Increment_Counter_Gender": {
+      "type": "Counter",
+      "attribute": "sucide_risk_factor_count",
+      "action": "increment",
+      "direct_transition": "Race_Check"
+    },
+    "Race_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Increment_Counter_Race",
+          "condition": {
+            "condition_type": "Race",
+            "race": "White"
+          }
+        },
+        {
+          "transition": "Marital_Status_Check"
+        }
+      ]
+    },
+    "Increment_Counter_Race": {
+      "type": "Counter",
+      "attribute": "sucide_risk_factor_count",
+      "action": "increment",
+      "direct_transition": "Marital_Status_Check"
+    },
+    "Marital_Status_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Increment_Counter_Marital_Status",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "marital_status",
+            "operator": "!=",
+            "value": "'M'"
+          }
+        },
+        {
+          "transition": "Age_Check"
+        }
+      ]
+    },
+    "Increment_Counter_Marital_Status": {
+      "type": "Counter",
+      "attribute": "sucide_risk_factor_count",
+      "action": "increment",
+      "direct_transition": "Age_Check"
+    },
+    "Age_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Increment_Counter_Age",
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 35,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Major_Depressive_Disorder_Check"
+        }
+      ]
+    },
+    "Increment_Counter_Age": {
+      "type": "Counter",
+      "attribute": "sucide_risk_factor_count",
+      "action": "increment",
+      "direct_transition": "Major_Depressive_Disorder_Check"
+    },
+    "Major_Depressive_Disorder_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Increment_Counter_MDD",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "mdd",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "PTSD_Check"
+        }
+      ]
+    },
+    "Increment_Counter_MDD": {
+      "type": "Counter",
+      "attribute": "sucide_risk_factor_count",
+      "action": "increment",
+      "direct_transition": "PTSD_Check"
+    },
+    "Prior_Attempt_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Increment_Counter_Prior_Attempt",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "suicide_attempt",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Homelessness_Check"
+        }
+      ]
+    },
+    "Increment_Counter_Prior_Attempt": {
+      "type": "Counter",
+      "attribute": "sucide_risk_factor_count",
+      "action": "increment",
+      "direct_transition": "Homelessness_Check"
+    },
+    "Hypertension_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Increment_Counter_Hypertension",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Alcoholism_Check"
+        }
+      ]
+    },
+    "Increment_Counter_Hypertension": {
+      "type": "Counter",
+      "attribute": "sucide_risk_factor_count",
+      "action": "increment",
+      "direct_transition": "Alcoholism_Check"
+    },
+    "mTBI_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Increment_Counter_mTBI",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "mTBI",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "End_Counter"
+        }
+      ]
+    },
+    "Increment_Counter_mTBI": {
+      "type": "Counter",
+      "attribute": "sucide_risk_factor_count",
+      "action": "increment",
+      "direct_transition": "End_Counter"
+    },
+    "Alcoholism_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Increment_Counter_Alcoholsim",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "alcoholic",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "High_Combat_Exposure_Check"
+        }
+      ]
+    },
+    "Increment_Counter_Alcoholsim": {
+      "type": "Counter",
+      "attribute": "sucide_risk_factor_count",
+      "action": "increment",
+      "direct_transition": "High_Combat_Exposure_Check"
     }
   }
 }
