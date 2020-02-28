@@ -11,56 +11,6 @@
     "Terminal": {
       "type": "Terminal"
     },
-    "Veteran": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "PTSD",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "ptsd",
-            "operator": "is not nil"
-          }
-        },
-        {
-          "transition": "SUD",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "opioid_addiction",
-            "operator": "is not nil"
-          }
-        },
-        {
-          "transition": "MDD",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "mdd",
-            "operator": "is not nil"
-          }
-        },
-        {
-          "transition": "Baseline"
-        }
-      ]
-    },
-    "PTSD": {
-      "type": "SetAttribute",
-      "attribute": "probability_of_suicide",
-      "direct_transition": "Terminal",
-      "value": 0.006,
-      "remarks": [
-        "50 deaths / 100k * 12 attempts / completion == 600 attempts / 100k == .006 == .6 % lifetime probability"
-      ]
-    },
-    "SUD": {
-      "type": "SetAttribute",
-      "attribute": "probability_of_suicide",
-      "direct_transition": "Terminal",
-      "value": 0.0144,
-      "remarks": [
-        "120 deaths / 100k * 12 attempts / completion == 1440 attempts / 100k == .0144 == 1.44 % lifetime probability"
-      ]
-    },
     "Veteran check": {
       "type": "Simple",
       "conditional_transition": [
@@ -70,30 +20,104 @@
             "attribute": "veteran",
             "operator": "is not nil"
           },
-          "transition": "Veteran"
+          "transition": "Init_Counter"
         },
         {
           "transition": "Terminal"
         }
       ]
     },
-    "MDD": {
-      "type": "SetAttribute",
-      "attribute": "probability_of_suicide",
-      "direct_transition": "Terminal",
-      "value": 0.0072,
-      "remarks": [
-        "60 deaths / 100k * 12 attempts / completion == 720 attempts / 100k == .0072 == .72 % lifetime probability"
-      ]
-    },
     "Baseline": {
       "type": "SetAttribute",
       "attribute": "probability_of_suicide",
       "direct_transition": "Terminal",
-      "value": 0.003072,
-      "remarks": [
-        "25.6 deaths / 100k * 12 attempts / completion == 307.2 attempts / 100k == .003072 == .3 % lifetime probability"
+      "value": 0.003072
+    },
+    "Homelessness_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "New_State",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "homeless",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "New_State_2"
+        }
       ]
+    },
+    "End_Counter": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "High Risk",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "sucide_risk_factor_count",
+            "operator": ">",
+            "value": 5
+          }
+        },
+        {
+          "transition": "Medium Risk",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "sucide_risk_factor_count",
+            "operator": ">",
+            "value": 3
+          }
+        },
+        {
+          "transition": "Low Risk",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "sucide_risk_factor_count",
+            "operator": ">",
+            "value": 1
+          }
+        },
+        {
+          "transition": "Baseline"
+        }
+      ]
+    },
+    "Init_Counter": {
+      "type": "SetAttribute",
+      "attribute": "sucide_risk_factor_count",
+      "direct_transition": "Homelessness_Check",
+      "value": 0
+    },
+    "New_State": {
+      "type": "Counter",
+      "attribute": "sucide_risk_factor_count",
+      "action": "increment",
+      "direct_transition": "New_State_2"
+    },
+    "New_State_2": {
+      "type": "Simple",
+      "direct_transition": "End_Counter"
+    },
+    "High Risk": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_suicide",
+      "direct_transition": "Terminal",
+      "value": 0.006
+    },
+    "Low Risk": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_suicide",
+      "direct_transition": "Terminal",
+      "value": 0.0072
+    },
+    "Medium Risk": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_suicide",
+      "direct_transition": "Terminal",
+      "value": 0.0144
     }
   }
 }
