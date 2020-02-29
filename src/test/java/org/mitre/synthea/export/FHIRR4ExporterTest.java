@@ -214,6 +214,7 @@ public class FHIRR4ExporterTest {
         Observation obs = (Observation) entry.getResource();
         assertTrue(obs.getValue() instanceof SampledData);
         SampledData data = (SampledData) obs.getValue();
+        assertEquals(10, data.getPeriod().doubleValue(), 0.001); // 0.01s == 10ms
         assertEquals(3, (int) data.getDimensions());
       }
     }

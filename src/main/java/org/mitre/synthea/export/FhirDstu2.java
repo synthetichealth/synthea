@@ -937,7 +937,8 @@ public class FhirDstu2 {
     recordData.setOrigin(origin);
     
     // Use the period from the first series. They should all be the same.
-    recordData.setPeriod(value.series.get(0).getPeriod());
+    // FHIR output is milliseconds so we need to convert from TimeSeriesData seconds.
+    recordData.setPeriod(value.series.get(0).getPeriod() * 1000);
     
     // Set optional fields if they were provided
     if (value.factor != null) {
