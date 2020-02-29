@@ -26,6 +26,7 @@ public class CDWExporterTest {
   public void testCDWExport() throws Exception {
     TestHelper.exportOff();
     Config.set("exporter.cdw.export", "true");
+    Config.set("generate.veteran_population_override", "true");
     File tempOutputFolder = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
 
@@ -35,6 +36,7 @@ public class CDWExporterTest {
     for (int i = 0; i < numberOfPeople; i++) {
       generator.generatePerson(i);
     }
+    Config.set("generate.veteran_population_override", "false");
     CDWExporter.getInstance().writeFactTables();
 
     // Ensure the files are synchronized with the tempFolder...

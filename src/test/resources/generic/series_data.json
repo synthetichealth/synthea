@@ -1,0 +1,59 @@
+{
+  "name": "Series Data",
+  "remarks": [
+    "Simple module to test series data"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Test Encounter"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Test Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "Test Encounter"
+        }
+      ],
+      "direct_transition": "Series Data"
+    },
+    "End Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Series Data": {
+      "type": "SetAttribute",
+      "attribute": "series_data",
+      "direct_transition": "Record Series Data",
+      "series_data": "1 2 3 4 4 3 2 1 1 2 3 4"
+    },
+    "Record Series Data": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "1234",
+          "display": "Series Data"
+        }
+      ],
+      "direct_transition": "End Encounter",
+      "sampled_data": {
+        "factor": 1.0,
+        "lower_limit": 0.0,
+        "upper_limit": 10.0,
+        "attributes": [
+          "series_data"
+        ]
+      }
+    }
+  }
+}

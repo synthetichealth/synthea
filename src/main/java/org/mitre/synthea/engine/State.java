@@ -1528,7 +1528,6 @@ public abstract class State implements Cloneable {
       entry = media;
       media.mediaType = mediaTypeCode;
       media.bodySite = bodySite;
-      media.codes = new ArrayList<Code>();
       media.deviceName = deviceName;
       media.reasonCode = reasonCode;
       media.modality = modality;

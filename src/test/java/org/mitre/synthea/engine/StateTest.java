@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Components.SampledData;
+import org.mitre.synthea.export.ExportHelper;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.helpers.Utilities;
@@ -470,7 +471,25 @@ public class StateTest {
     assertEquals(10, data.getValues().size());
     assertEquals(2041, data.getValues().get(0), 0.0001);
   }
-  
+
+  @Test
+  public void setAttribute_with_seriesData_Module() throws Exception {
+    Module module = TestHelper.getFixture("series_data.json");
+    assertTrue(module.process(person, time));
+
+    TimeSeriesData data = (TimeSeriesData) person.attributes.get("series_data");
+    assertEquals(12, data.getValues().size());
+    assertEquals(1, data.getValues().get(0), 0.0001);
+
+    HealthRecord.Observation obs = person.record.getLatestObservation("1234");
+    assertNotNull(obs);
+    assertTrue(obs.value instanceof Components.SampledData);
+
+    Components.SampledData sampledData = (Components.SampledData) obs.value;
+    String value = ExportHelper.sampledDataToValueString(sampledData);
+    assertEquals("1 2 3 4 4 3 2 1 1 2 3 4", value);
+  }
+
   @Test
   public void setAttribute_with_bad_seriesData() throws Exception {
     Module module = TestHelper.getFixture("set_attribute.json");
@@ -1796,13 +1815,13 @@ public class StateTest {
     State simulateCvs = module.getState("Simulate_CVS");
     assertTrue(simulateCvs.process(person, time));
     
-    State mediaState = module.getState("Media");
+    State mediaState = module.getState("Media").clone();
     assertTrue(mediaState.process(person, time));
     
-    State mediaState2 = module.getState("Media2");
+    State mediaState2 = module.getState("Media2").clone();
     assertTrue(mediaState2.process(person, time));
     
-    State mediaState3 = module.getState("Media3");
+    State mediaState3 = module.getState("Media3").clone();
     assertTrue(mediaState3.process(person, time));
     
     Media media = person.record.encounters.get(0).mediaItems.get(0);
