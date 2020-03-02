@@ -23,6 +23,7 @@ import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.BloodPressureValueGenerator.SysDias;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.BMI;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
 import org.mitre.synthea.world.concepts.BirthStatistics;
 import org.mitre.synthea.world.concepts.GrowthChart;
@@ -30,6 +31,8 @@ import org.mitre.synthea.world.concepts.GrowthChartEntry;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.NHANESSample;
+import org.mitre.synthea.world.concepts.PediatricGrowthTrajectory;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
 
@@ -48,7 +51,8 @@ public final class LifecycleModule extends Module {
 
   public static final boolean appendNumbersToNames =
       Boolean.parseBoolean(Config.get("generate.append_numbers_to_person_names", "false"));
-  
+  private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
+
   private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
 
   private static SimpleYML names = loadNames();
@@ -194,9 +198,11 @@ public final class LifecycleModule extends Module {
     attributes.put(Person.ACTIVE_WEIGHT_MANAGEMENT, false);
     // TODO: Why are the percentiles a vital sign? Sounds more like an attribute?
     double heightPercentile = person.rand();
-    double weightPercentile = person.rand();
+    PediatricGrowthTrajectory pgt = new PediatricGrowthTrajectory(person.seed, time);
+    double weightPercentile = pgt.reverseWeightPercentile(gender, heightPercentile);
     person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, heightPercentile);
     person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, weightPercentile);
+    person.attributes.put(Person.GROWTH_TRAJECTORY, pgt);
 
     // Temporarily generate a mother
     Person mother = new Person(person.random.nextLong());
@@ -450,7 +456,7 @@ public final class LifecycleModule extends Module {
 
     person.setVitalSign(VitalSign.HEIGHT, height);
     person.setVitalSign(VitalSign.WEIGHT, weight);
-    double bmi = bmi(height, weight);
+    double bmi = BMI.calculate(height, weight);
     person.setVitalSign(VitalSign.BMI, bmi);
 
     if (age <= 3) {
@@ -485,25 +491,35 @@ public final class LifecycleModule extends Module {
 
   private static double adjustWeight(Person person, long time) {
     double weight = person.getVitalSign(VitalSign.WEIGHT, time);
-    Object weightManagement = person.attributes.get(Person.ACTIVE_WEIGHT_MANAGEMENT);
-    // If there is active weight management,
-    // changing of weight will be handled by the WeightLossModule
-    if (weightManagement != null && ! (boolean) weightManagement) {
-      int age = person.ageInYears(time);
-      if (age < 20) {
-        // follow growth charts
-        String gender = (String) person.attributes.get(Person.GENDER);
-        int ageInMonths = person.ageInMonths(time);
-        weight = lookupGrowthChart("weight", gender, ageInMonths,
-            person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
-      } else if (age <= ADULT_MAX_WEIGHT_AGE) {
-        // getting older and fatter
-        double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
-        weight += adultWeightGain;
-      } else if (age >= GERIATRIC_WEIGHT_LOSS_AGE) {
-        // getting older and wasting away
-        double geriatricWeightLoss = person.rand(GERIATRIC_WEIGHT_LOSS_RANGE);
-        weight -= geriatricWeightLoss;
+    String gender = (String) person.attributes.get(Person.GENDER);
+    double heightPercentile = person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time);
+    PediatricGrowthTrajectory pgt =
+        (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
+    int age = person.ageInYears(time);
+    int ageInMonths = person.ageInMonths(time);
+    if (age < 3 && pgt.beforeInitialSample(time)) {
+      // follow growth charts
+      weight = lookupGrowthChart("weight", gender, ageInMonths,
+          person.getVitalSign(VitalSign.WEIGHT_PERCENTILE, time));
+    } else if (age < 20) {
+      double currentBMI = pgt.currentBMI(person, time, person.random);
+      double height = growthChart.get(GrowthChart.ChartType.HEIGHT).lookUp(ageInMonths,
+          gender, heightPercentile);
+      weight = BMI.weightForHeightAndBMI(height, currentBMI);
+    } else {
+      Object weightManagement = person.attributes.get(Person.ACTIVE_WEIGHT_MANAGEMENT);
+      // If there is active weight management,
+      // changing of weight will be handled by the WeightLossModule
+      if (weightManagement != null && ! (boolean) weightManagement) {
+        if (age <= ADULT_MAX_WEIGHT_AGE) {
+          // getting older and fatter
+          double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
+          weight += adultWeightGain;
+        } else if (age >= GERIATRIC_WEIGHT_LOSS_AGE) {
+          // getting older and wasting away
+          double geriatricWeightLoss = person.rand(GERIATRIC_WEIGHT_LOSS_RANGE);
+          weight -= geriatricWeightLoss;
+        }
       }
     }
     return weight;
@@ -550,10 +566,6 @@ public final class LifecycleModule extends Module {
    */
   public static double percentileForBMI(double bmi, String gender, int ageInMonths) {
     return growthChart.get(GrowthChart.ChartType.BMI).percentileFor(ageInMonths, gender, bmi);
-  }
-
-  public static double bmi(double heightCM, double weightKG) {
-    return (weightKG / ((heightCM / 100.0) * (heightCM / 100.0)));
   }
 
   /**
@@ -1161,7 +1173,7 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, Person.ADDRESS, false, true, null);
     Attributes.inventory(attributes, m, Person.ALCOHOLIC, false, true, "Boolean");
     Attributes.inventory(attributes, m, Person.BIRTH_CITY, false, true, "Bedford");
-    Attributes.inventory(attributes, m, Person.BIRTH_COUNTRY, false, true, "USA");
+    Attributes.inventory(attributes, m, Person.BIRTH_COUNTRY, false, true, COUNTRY_CODE);
     Attributes.inventory(attributes, m, Person.BIRTH_STATE, false, true, "Massachusetts");
     Attributes.inventory(attributes, m, Person.BIRTHDATE, false, true, null);
     Attributes.inventory(attributes, m, Person.BIRTHPLACE, false, true, "Boston");

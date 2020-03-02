@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.mitre.synthea.datastore.DataStore;
+import org.mitre.synthea.editors.GrowthDataErrorsEditor;
 import org.mitre.synthea.export.CDWExporter;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
@@ -40,8 +41,6 @@ import org.mitre.synthea.world.geography.Location;
  */
 public class Generator {
 
-  public static final long ONE_HUNDRED_YEARS = 100L * TimeUnit.DAYS.toMillis(365);
-  public static final int MAX_TRIES = 10;
   public DataStore database;
   public GeneratorOptions options;
   private Random random;
@@ -51,10 +50,11 @@ public class Generator {
   public Location location;
   private AtomicInteger totalGeneratedPopulation;
   private String logLevel;
+  private boolean onlyAlivePatients;
   private boolean onlyDeadPatients;
   private boolean onlyVeterans;
   public TransitionMetrics metrics;
-  public static final String DEFAULT_STATE = "Massachusetts";
+  public static String DEFAULT_STATE = "Massachusetts";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
 
   /**
@@ -188,7 +188,17 @@ public class Generator {
     this.location = new Location(options.state, options.city);
 
     this.logLevel = Config.get("generate.log_patients.detail", "simple");
+
     this.onlyDeadPatients = Boolean.parseBoolean(Config.get("generate.only_dead_patients"));
+    this.onlyAlivePatients = Boolean.parseBoolean(Config.get("generate.only_alive_patients"));
+    //If both values are set to true, then they are both set back to the default
+    if (this.onlyDeadPatients && this.onlyAlivePatients) {
+      Config.set("generate.only_dead_patients", "false");
+      Config.set("generate.only_alive_patients", "false");
+      this.onlyDeadPatients = false;
+      this.onlyAlivePatients = false;
+    }
+
     this.onlyVeterans = Boolean.parseBoolean(Config.get("generate.veteran_population_override"));
     this.totalGeneratedPopulation = new AtomicInteger(0);
     this.stats = Collections.synchronizedMap(new HashMap<String, AtomicInteger>());
@@ -233,6 +243,12 @@ public class Generator {
       moduleNames.sort(String::compareToIgnoreCase);
       System.out.println("Modules: " + String.join("\n       & ", moduleNames));
       System.out.println(String.format("       > [%d loaded]", moduleNames.size()));
+    }
+
+    if (Boolean.parseBoolean(
+        Config.get("growtherrors", "false"))) {
+      HealthRecordEditors hrm = HealthRecordEditors.getInstance();
+      hrm.registerEditor(new GrowthDataErrorsEditor());
     }
   }
 
@@ -335,7 +351,7 @@ public class Generator {
         
         HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
         EncounterModule encounterModule = new EncounterModule();
-
+        HealthRecordEditors hrm = HealthRecordEditors.getInstance();
         long time = start;
         while (person.alive(time) && time < stop) {
 
@@ -352,6 +368,7 @@ public class Generator {
             }
           }
           encounterModule.endWellnessEncounter(person, time);
+          hrm.executeAll(person, person.record, time, timestep, person.random);
 
           time += timestep;
         }
@@ -365,6 +382,14 @@ public class Generator {
           personSeed = new Random(personSeed).nextLong();
           continue;
           // skip the other stuff if the patient is alive and we only want dead patients
+          // note that this skips ahead to the while check and doesn't automatically re-loop
+        }
+
+        if (!isAlive && onlyAlivePatients) {
+          // rotate the seed so the next attempt gets a consistent but different one
+          personSeed = new Random(personSeed).nextLong();
+          continue;
+          // skip the other stuff if the patient is dead and we only want alive patients
           // note that this skips ahead to the while check and doesn't automatically re-loop
         }
 

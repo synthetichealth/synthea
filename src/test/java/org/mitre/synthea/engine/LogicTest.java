@@ -199,24 +199,40 @@ public class LogicTest {
 
     person.attributes.remove(attribute);
     assertFalse(doTest("attributeEqualTo_TestValue_Test"));
+    assertFalse(doTest("attributeLt_String_Test"));
     assertTrue(doTest("attributeNilTest"));
     assertFalse(doTest("attributeNotNilTest"));
 
     person.attributes.put(attribute, "Wrong Value");
     assertFalse(doTest("attributeEqualTo_TestValue_Test"));
+    assertFalse(doTest("attributeLt_String_Test"));
     assertFalse(doTest("attributeNilTest"));
     assertTrue(doTest("attributeNotNilTest"));
 
     person.attributes.put(attribute, "TestValue");
     assertTrue(doTest("attributeEqualTo_TestValue_Test"));
+    assertTrue(doTest("attributeLt_String_Test"));
     assertFalse(doTest("attributeNilTest"));
     assertTrue(doTest("attributeNotNilTest"));
 
     person.attributes.put(attribute, 120);
-    assertFalse(doTest("attributeEqualTo_TestValue_Test"));
     assertTrue(doTest("attributeGt100Test"));
     assertFalse(doTest("attributeNilTest"));
     assertTrue(doTest("attributeNotNilTest"));
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void test_attribute_expected_numeric_exception() {
+    String attribute = "Test_Attribute_Key";
+    person.attributes.put(attribute, "TestValue");
+    doTest("attributeGt100Test");
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void test_attribute_expected_string_exception() {
+    String attribute = "Test_Attribute_Key";
+    person.attributes.put(attribute, 120);
+    doTest("attributeEqualTo_TestValue_Test");
   }
 
   @Test

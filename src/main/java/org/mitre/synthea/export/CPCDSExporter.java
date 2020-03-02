@@ -5,11 +5,9 @@ import static org.mitre.synthea.export.ExportHelper.dateFromTimestamp;
 import com.google.gson.JsonObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
-import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -44,25 +42,21 @@ public class CPCDSExporter {
       UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
       UUID.randomUUID(), UUID.randomUUID() };
 
+  private static final String[] PLAN_NAMES = {"Bronze", "Silver", "Gold"};
   /**
    * Writer for CPCDS_Patients.csv
    */
-  private OutputStreamWriter patients;
+  private FileWriter patients;
 
   /**
    * Writer for CPCDS_Coverages.csv
    */
-  private OutputStreamWriter coverages;
+  private FileWriter coverages;
 
   /**
    * Writer for CPCDS_Claims.csv
    */
-  private OutputStreamWriter claims;
-  
-  /**
-   * Charset for specifying the character set of the output files.
-   */
-  private Charset charset = Charset.forName(Config.get("exporter.encoding"));
+  private FileWriter claims;
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -95,9 +89,9 @@ public class CPCDSExporter {
       File coverageFile = outputDirectory.resolve("CPCDS_Coverages.csv").toFile();
       File claimsFile = outputDirectory.resolve("CPCDS_Claims.csv").toFile();
 
-      coverages = new OutputStreamWriter(new FileOutputStream(coverageFile, append), charset);
-      patients = new OutputStreamWriter(new FileOutputStream(patientsFile, append), charset);
-      claims = new OutputStreamWriter(new FileOutputStream(claimsFile, append), charset);
+      coverages = new FileWriter(coverageFile, append);
+      patients = new FileWriter(patientsFile, append);
+      claims = new FileWriter(claimsFile, append);
 
       if (!append) {
         writeCPCDSHeaders();
@@ -125,24 +119,22 @@ public class CPCDSExporter {
     coverages.write(NEWLINE);
 
     String cpcdsClaimColumnHeaders = "Claim service start date,Claim service end date,"
-        + "Claim paid date,Claim recieved date,"
-        + "Member admission date,Member discharge date,Patient account number,"
-        + "Medical record number,Claim unique identifier,Claim adjusted from identifier,"
-        + "Claim adjusted to identifier,Claim inpatient source admission code,"
-        + "Claim inpatient admission type code,Claim bill facility type code,"
-        + "Claim service classification type code,Claim frequency code,"
-        + "Claim processing status code,Claim type code,Patient discharge status code,"
-        + "Claim payment denial code,Claim primary payer identifier,Claim payee type code,"
-        + "Claim payee,Claim payment status code,Claim payer identifier,Days supply,"
-        + "RX service reference number,DAW product selection code,Refill number,"
+        + "Claim paid date,Claim recieved date,Member admission date,Member discharge date,"
+        + "Patient account number,Medical record number,Claim unique identifier,"
+        + "Claim adjusted from identifier,Claim adjusted to identifier,"
+        + "Claim inpatient source admission code,Claim inpatient admission type code,"
+        + "Claim bill facility type code,Claim service classification type code,"
+        + "Claim frequency code,Claim processing status code,Claim type code,"
+        + "Patient discharge status code,Claim payment denial code,Claim primary payer identifier,"
+        + "Claim payee type code,Claim payee,Claim payment status code,Claim payer identifier,"
+        + "Days supply,RX service reference number,DAW product selection code,Refill number,"
         + "Prescription origin code,Plan reported brand-generic code,Pharmacy service type code,"
-        + "Patient residence code,Claim billing provider NPI,"
-        + "Claim billing provider network status,Claim attending provider NPI,"
-        + "Claim attending provider network status,Claim site of service NPI,"
-        + "Claim site of service network status,Claim referring provider NPI,"
-        + "Claim referring provider network status,Claim performing provider NPI,"
-        + "Claim performing provider network status,Claim prescribing provider NPI,"
-        + "Claim prescribing provider network status,Claim PCP NPI,"
+        + "Patient residence code,Claim billing provider NPI,Claim billing provider network status,"
+        + "Claim attending provider NPI,Claim attending provider network status,"
+        + "Claim site of service NPI,Claim site of service network status,"
+        + "Claim referring provider NPI,Claim referring provider network status,"
+        + "Claim performing provider NPI,Claim performing provider network status,"
+        + "Claim prescribing provider NPI,Claim prescribing provider network status,Claim PCP NPI,"
         + "Claim total submitted amount,Claim total allowed amount,Amount paid by patient,"
         + "Claim amount paid to provider,Member reimbursement,Claim payment amount,"
         + "Claim disallowed amount,Member paid deductible,Co-insurance liability amount,"
@@ -151,13 +143,13 @@ public class CPCDSExporter {
         + "Revenue center code,Allowed number of units,National drug code,Compound code,"
         + "Quantity dispensed,Quantity qualifier code,Line benefit payment status,"
         + "Line payment denial code,Line disallowed amount,Line member reimbursement,"
-        + "Line amount paid by patient,Drug cost,Line payment amount,"
-        + "Line amount paid to provider,Line patient deductible,Line primary payer paid amount,"
-        + "Line coinsurance amount,Line submitted amount,Line allowed amount,"
-        + "Line member liability,Line copay amount,Line discount,Diagnosis code,"
-        + "Diagnosis description,Present on admission,Diagnosis code type,Diagnosis type,"
-        + "Is E code,Procedure code,Procedure description,Procedure date,Procedure code type,"
-        + "Procedure type,Modifier Code-1,Modifier Code-2,Modifier Code-3,Modifier Code-4";
+        + "Line amount paid by patient,Drug cost,Line payment amount,Line amount paid to provider,"
+        + "Line patient deductible,Line primary payer paid amount,Line coinsurance amount,"
+        + "Line submitted amount,Line allowed amount,Line member liability,Line copay amount,"
+        + "Line discount,Diagnosis code,Diagnosis description,Present on admission,"
+        + "Diagnosis code type,Diagnosis type,Is E code,Procedure code,Procedure description,"
+        + "Procedure date,Procedure code type,Procedure type,Modifier Code-1,Modifier Code-2,"
+        + "Modifier Code-3,Modifier Code-4";
 
     claims.write(cpcdsClaimColumnHeaders);
     claims.write(NEWLINE);
@@ -192,19 +184,25 @@ public class CPCDSExporter {
    */
   public void export(Person person, long time) throws IOException {
     String personID = patient(person, time);
+    String payerId = "";
     String type = COVERAGE_TYPES[(int) randomLongWithBounds(0, COVERAGE_TYPES.length - 1)];
     UUID groupId = GROUPIDS[(int) randomLongWithBounds(0, GROUPIDS.length - 1)];
     String groupName = GROUP_NAMES[(int) randomLongWithBounds(0, GROUP_NAMES.length - 1)];
+    String name = PLAN_NAMES[(int) randomLongWithBounds(0, PLAN_NAMES.length - 1)];
+    
 
     for (Encounter encounter : person.record.encounters) {
-
       String encounterID = UUID.randomUUID().toString();
-      String payerId = encounter.claim.payer.uuid.toString();
       UUID medRecordNumber = UUID.randomUUID();
       CPCDSAttributes encounterAttributes = new CPCDSAttributes(encounter);
+      if (Boolean.parseBoolean(Config.get("exporter.cpcds.single_payer"))) {
+        payerId = UUID.randomUUID().toString();
+      } else {
+        payerId = encounter.claim.payer.uuid.toString();
+      }
 
       for (CarePlan careplan : encounter.careplans) {
-        coverage(personID, encounterID, careplan, payerId, type, groupId, groupName);
+        coverage(personID, careplan.start, careplan.stop, payerId, type, groupId, groupName, name);
       }
 
       claim(encounter, personID, encounterID, medRecordNumber, encounterAttributes, payerId);
@@ -266,28 +264,28 @@ public class CPCDSExporter {
    * @param careplan    The careplan itself
    * @throws IOException if any IO error occurs
    */
-  private void coverage(String personID, String encounterID, CarePlan careplan,
-      String payerId, String type, UUID groupId, String groupName) throws IOException {
-  
+  private void coverage(String personID, long start, long stop, String payerId, String type,
+      UUID groupId, String groupName, String name) throws IOException {
+    
     StringBuilder s = new StringBuilder();
     s.append(personID).append(',');
     s.append(type).append(',');
 
-    if (careplan.stop != 0L) {
+    if (stop != 0L) {
       s.append("inactive").append(',');
     } else {
       s.append("active").append(',');
     }
 
-    s.append(dateFromTimestamp(careplan.start)).append(',');
-    if (careplan.stop != 0L) {
-      s.append(dateFromTimestamp(careplan.stop));
+    s.append(dateFromTimestamp(start)).append(',');
+    if (stop != 0L) {
+      s.append(dateFromTimestamp(stop));
     }
 
     s.append(',');
     s.append(groupId).append(',');
     s.append(groupName).append(',');
-    s.append(careplan.name).append(',');
+    s.append(name).append(',');
     s.append(payerId);
     s.append(NEWLINE);
     write(s.toString(), coverages);
@@ -457,7 +455,7 @@ public class CPCDSExporter {
         String diagnosisType = "principal";
 
         cond.append(coding.code).append(',');
-        cond.append(coding.display).append(',');
+        cond.append(clean(coding.display)).append(',');
         cond.append(presentOnAdmission).append(',');
         cond.append(diagnosisCode).append(',');
         cond.append(diagnosisType).append(',');
@@ -705,7 +703,7 @@ public class CPCDSExporter {
         if (medication.reasons.size() != 0) {
           Code reasons = medication.reasons.get(0);
           med.append(reasons.code).append(',');
-          med.append(reasons.display).append(',');
+          med.append(clean(reasons.display)).append(',');
           med.append(presentOnAdmission).append(',');
           med.append(diagnosisCode).append(',');
           med.append(diagnosisType).append(',');
@@ -822,7 +820,7 @@ public class CPCDSExporter {
    * @param writer The place to write it
    * @throws IOException if an I/O error occurs
    */
-  private static void write(String line, OutputStreamWriter writer) throws IOException {
+  private static void write(String line, FileWriter writer) throws IOException {
     synchronized (writer) {
       writer.write(line);
     }
@@ -852,7 +850,6 @@ public class CPCDSExporter {
    * reusing the same code in multiple areas.
    */
   private class CPCDSAttributes {
-
     private String sourceAdminCode;
     private String billTypeCode;
     private String procStatus;

@@ -1,5 +1,7 @@
 package org.mitre.synthea;
 
+import java.io.File;
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -20,6 +22,16 @@ public abstract class TestHelper {
     Path modulesFolder = Paths.get("generic");
     Path module = modulesFolder.resolve(filename);
     return Module.loadFile(module, modulesFolder, null);
+  }
+
+  /**
+   * Load the test.properties file.
+   * @throws Exception on configuration loading errors.
+   */
+  public static void loadTestProperties() throws Exception {
+    URI uri = Config.class.getResource("/test.properties").toURI();
+    File file = new File(uri);
+    Config.load(file);
   }
 
   /**

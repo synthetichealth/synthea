@@ -94,7 +94,7 @@ weightloss:
   # BMI at which someone will start to consider losing weight for patients over 20
   start_bmi: 30
   # BMI percentile at which someone will start to consider losing weight for patients under 20
-  start_percentile: 0.85
+  start_percentile: 0.95
 
   #https://www.cdc.gov/mmwr/volumes/67/wr/mm6741a10.htm?s_cid=mm6741a10_w
   start_prob: 0.493

@@ -576,11 +576,16 @@ public abstract class State implements Cloneable {
     private String attribute;
     private String action;
     private boolean increment;
+    private int amount;
 
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
       increment = action.equals("increment");
+      if (amount == 0) {
+        // default to 1 for legacy compatibility
+        amount = 1;
+      }
     }
 
     @Override
@@ -588,6 +593,7 @@ public abstract class State implements Cloneable {
       Counter clone = (Counter) super.clone();
       clone.attribute = attribute;
       clone.increment = increment;
+      clone.amount = amount;
       return clone;
     }
 
@@ -599,9 +605,9 @@ public abstract class State implements Cloneable {
       }
 
       if (increment) {
-        counter++;
+        counter = counter + amount;
       } else {
-        counter--;
+        counter = counter - amount;
       }
       person.attributes.put(attribute, counter);
       return true;

@@ -72,6 +72,8 @@ public class FHIRDSTU2ExporterTest {
 
   @Test
   public void testFHIRDSTU2Export() throws Exception {
+    TestHelper.loadTestProperties();
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
 
     FhirContext ctx = FhirContext.forDstu2();

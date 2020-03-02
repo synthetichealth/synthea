@@ -224,7 +224,7 @@ public class CDWExporter {
   }
 
   private OutputStreamWriter openOutputStreamWriter(Path outputDirectory, String filename)
-  		throws IOException {
+      throws IOException {
     File file = outputDirectory.resolve(filename).toFile();
     return new OutputStreamWriter(new FileOutputStream(file), charset);
   }
@@ -554,7 +554,7 @@ public class CDWExporter {
     // Vital Sign Observation Data
     vitalSign.flush();
   }
-  
+
   /**
    * Fact Tables should only be written after all patients have completed export.
    */
@@ -574,7 +574,7 @@ public class CDWExporter {
       nationalDrug.write(openOutputStreamWriter(outputDirectory, "nationaldrug.csv"));
       dosageForm.write(openOutputStreamWriter(outputDirectory, "dosageform.csv"));
       pharmacyOrderableItem.write(
-      		openOutputStreamWriter(outputDirectory, "pharmacyorderableitem.csv"));
+          openOutputStreamWriter(outputDirectory, "pharmacyorderableitem.csv"));
       orderableItem.write(openOutputStreamWriter(outputDirectory, "orderableitem.csv"));
       orderStatus.write(openOutputStreamWriter(outputDirectory, "orderstatus.csv"));
       vistaPackage.write(openOutputStreamWriter(outputDirectory, "vistapackage.csv"));

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
@@ -30,15 +31,17 @@ public class LossOfCareHealthRecordTest {
    * Setup for HealthRecord Tests.
    */
   @Before
-  public void setup() {
+  public void setup() throws Exception {
     // Clear any Payers that may have already been statically loaded.
     Payer.clear();
+    TestHelper.loadTestProperties();
+    String testState = Config.get("test_state.default", "Massachusetts");
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
     Config.set("generate.payers.loss_of_care", "true");
     Config.set("lifecycle.death_by_loss_of_care", "true");
     // Load in the .csv list of Payers for MA.
-    Payer.loadPayers(new Location("Massachusetts", null));
+    Payer.loadPayers(new Location(testState, null));
     // Load test payers.
     testPrivatePayer = Payer.getPrivatePayers().get(0);
 

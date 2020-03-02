@@ -178,13 +178,13 @@ public class Utilities {
       case "<=":
         return lhs.compareTo(rhs) <= 0;
       case "==":
-        return lhs == rhs;
+        return lhs.equals(rhs);
       case ">=":
         return lhs.compareTo(rhs) >= 0;
       case ">":
         return lhs.compareTo(rhs) > 0;
       case "!=":
-        return lhs != rhs;
+        return !lhs.equals(rhs);
       case "is nil":
         return lhs == null;
       case "is not nil":
