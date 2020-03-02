@@ -27,6 +27,7 @@ import org.mitre.synthea.editors.GeneticTestingEditor.DnaSynthesisConfig.Medical
 import org.mitre.synthea.editors.GeneticTestingEditor.DnaSynthesisConfig.Population;
 import org.mitre.synthea.editors.GeneticTestingEditor.DnaSynthesisWrapper;
 import org.mitre.synthea.editors.GeneticTestingEditor.GeneticMarker;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
@@ -67,7 +68,8 @@ public class GeneticTestingEditorTest {
 
   @Test
   public void shouldNotRunWhenPriorGeneticTest() {
-    record.conditionStart(100, GeneticTestingEditor.TRIGGER_CONDITIONS[0]);
+    record.conditionStart(100, (String) GeneticTestingEditor.TRIGGER_CONDITIONS
+        .keySet().toArray()[0]);
     GeneticTestingEditorSub editor = new GeneticTestingEditorSub();
     editor.setPriorGeneticTest(person, true);
     boolean shouldRun = editor.shouldRun(person, record);
@@ -76,7 +78,8 @@ public class GeneticTestingEditorTest {
 
   @Test
   public void shouldRunWhenCardiovascularConditions() {
-    record.conditionStart(100, GeneticTestingEditor.TRIGGER_CONDITIONS[0]);
+    record.conditionStart(100, (String) GeneticTestingEditor.TRIGGER_CONDITIONS
+        .keySet().toArray()[0]);
     GeneticTestingEditor editor = new GeneticTestingEditor();
     boolean shouldRun = editor.shouldRun(person, record);
     assertTrue(shouldRun);
@@ -84,7 +87,8 @@ public class GeneticTestingEditorTest {
   
   @Test
   public void shouldAddGeneticTestingPanel() {
-    HealthRecord.Encounter e = record.encounterStart(1000, HealthRecord.EncounterType.OUTPATIENT);
+    HealthRecord.Encounter e = record.encounterStart(1000, 
+        HealthRecord.EncounterType.OUTPATIENT);
     GeneticTestingEditor editor = new GeneticTestingEditor();
     editor.process(person, Arrays.asList(e), 0, person.random);
     assertEquals(1, e.reports.size());
@@ -131,11 +135,14 @@ public class GeneticTestingEditorTest {
   
   @Test
   public void invokeScript() throws IOException, InterruptedException {
-    URL scriptURL = getClass().getClassLoader().getResource("editors/genetic.testing/dummy.sh");
+    URL scriptURL = getClass().getClassLoader().getResource(
+        "editors/genetic.testing/dummy.sh");
     File scriptFile = new File(scriptURL.getFile());
     DnaSynthesisConfig cfg = new DnaSynthesisConfig(Population.AFR,
             new MedicalCategory[] {LDL, HDL, OBESITY});
-    DnaSynthesisWrapper invoker = new DnaSynthesisWrapper(cfg, scriptFile);
+    Config.set(DnaSynthesisWrapper.DNA_SYNTHESIS_SCRIPT,
+        scriptFile.getAbsolutePath());
+    DnaSynthesisWrapper invoker = new DnaSynthesisWrapper(cfg);
     File outputFile = invoker.invoke();
     List<GeneticMarker> output = 
             GeneticTestingEditor.DnaSynthesisWrapper.loadOutputFile(outputFile);

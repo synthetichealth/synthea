@@ -19,12 +19,15 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.mitre.synthea.editors.GeneticTestingEditor.DnaSynthesisConfig.MedicalCategory;
 import org.mitre.synthea.engine.StatefulHealthRecordEditor;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -39,13 +42,27 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
   protected static final String PRIOR_GENETIC_TESTING = "PRIOR_GENETIC_TESTING";
   static final String GENETIC_TESTING_REPORT_TYPE = "Genetic analysis summary panel";
   private static final double GENETIC_TESTING_THRESHOLD = 0.80;
-  static final String[] TRIGGER_CONDITIONS = {
-    "stroke",
-    "coronary_heart_disease",
-    "myocardial_infarction",
-    "cardiac_arrest",
-    "atrial_fibrillation",
-    "cardiovascular_disease"
+  static final Map<String, List<MedicalCategory>> TRIGGER_CONDITIONS = init();
+  
+  static Map<String, List<MedicalCategory>> init() {
+    Map<String, List<MedicalCategory>> triggerConditions = new HashMap<>();
+    triggerConditions.put("stroke", Arrays.asList(STROKE, HEMORRHAGIC_STROKE,
+        ISCHEMIC_STROKE, ANEURYSM, THROMBOSIS));
+    triggerConditions.put("coronary_heart_disease", Arrays.asList(
+        ARTERIAL_OCCLUSIVE_DISEASE, CARDIOMYOPATHY, CARDIOVASCULAR, 
+        DILATED_CARDIOMYOPATHY, FAMILIAL_DILATED_CARDIOMYOPATHY, HEART_DISEASE,
+        HEART_VALVE_DISEASE, NONCOMPACTION_CARDIOMYOPATHY,
+        RESTRICTIVE_CARDIOMYOPATHY));
+    triggerConditions.put("myocardial_infarction", Arrays.asList(CARDIAC_ARREST));
+    triggerConditions.put("cardiac_arrest", Arrays.asList(CARDIAC_ARREST));
+    triggerConditions.put("atrial_fibrillation", Arrays.asList(ARRHYTHMIA,
+        LONG_QT_SYNDROME, SHORT_QT_SYNDROME));
+    triggerConditions.put("cardiovascular_disease", Arrays.asList(
+        ARTERIAL_OCCLUSIVE_DISEASE, CARDIOMYOPATHY, CARDIOVASCULAR, 
+        DILATED_CARDIOMYOPATHY, FAMILIAL_DILATED_CARDIOMYOPATHY, HEART_DISEASE,
+        HEART_VALVE_DISEASE, NONCOMPACTION_CARDIOMYOPATHY,
+        RESTRICTIVE_CARDIOMYOPATHY));
+    return triggerConditions;
   };
 
   @Override
@@ -64,16 +81,37 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
 
     // Check for trigger conditions
     boolean hasActiveTriggerCondition = false;
-    for (String triggerCondition: TRIGGER_CONDITIONS) {
+    for (String triggerCondition: TRIGGER_CONDITIONS.keySet()) {
       if (record.conditionActive(triggerCondition)) {
         hasActiveTriggerCondition = true;
         break;
       }
     }
-    if (!hasActiveTriggerCondition) {
-      return false;
+    return hasActiveTriggerCondition;
+  }
+  
+  static Set<MedicalCategory> getGeneticCategories(HealthRecord record) {
+    Set<MedicalCategory> categories = new HashSet<>();
+    for (String triggerCondition: TRIGGER_CONDITIONS.keySet()) {
+      if (record.conditionActive(triggerCondition)) {
+        categories.addAll(TRIGGER_CONDITIONS.get(triggerCondition));
+      }
     }
-    return true;
+    return categories;
+  }
+  
+  static MedicalCategory[] getGeneticCategories(Person person) {
+    HashSet<MedicalCategory> categories = new HashSet<>();
+    categories.addAll(getGeneticCategories(person.defaultRecord));
+    if (person.hasMultipleRecords) {
+      for (HealthRecord record: person.records.values()) {
+        categories.addAll(getGeneticCategories(record));
+      }
+    }
+    
+    MedicalCategory[] array = categories.stream()
+        .toArray(n -> new MedicalCategory[n]);
+    return array;
   }
 
   @Override
@@ -82,7 +120,11 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
     if (encounters.isEmpty()) {
       return;
     }
-    HealthRecord.Encounter encounter = encounters.get(0);
+    
+    MedicalCategory[] categories = getGeneticCategories(person);
+    DnaSynthesisConfig cfg = new DnaSynthesisConfig(
+        DnaSynthesisConfig.Population.AFR, categories);
+                      
     List<HealthRecord.Observation> observations = new ArrayList<>(10);
     // TODO create list of observations by invoking dna_synthesis application
     //    HealthRecord.Observation observation = person.record.new Observation(time, 
@@ -94,6 +136,7 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
         GENETIC_TESTING_REPORT_TYPE, observations);
     geneticTestingReport.codes.add(new Code("LOINC", "55232-3", 
         GENETIC_TESTING_REPORT_TYPE));
+    HealthRecord.Encounter encounter = encounters.get(0);
     encounter.reports.add(geneticTestingReport);
     Map<String, Object> context = this.getOrInitContextFor(person);
     context.put(PRIOR_GENETIC_TESTING, time);
@@ -105,12 +148,13 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
    * @author mhadley
    */
   static class DnaSynthesisWrapper {
-    private DnaSynthesisConfig config;
-    private File script;
+    private final DnaSynthesisConfig config;
+    private final File script;
+    public static String DNA_SYNTHESIS_SCRIPT = "genetictesting.script";
 
-    public DnaSynthesisWrapper(DnaSynthesisConfig config, File script) {
+    public DnaSynthesisWrapper(DnaSynthesisConfig config) {
       this.config = config;
-      this.script = script;
+      this.script = new File(Config.get(DNA_SYNTHESIS_SCRIPT));
     }
 
     public List<GeneticMarker> execute() throws IOException, InterruptedException {
