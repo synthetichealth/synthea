@@ -115,19 +115,19 @@
       "type": "SetAttribute",
       "attribute": "probability_of_suicide",
       "direct_transition": "Terminal",
-      "value": 0.006
+      "value": 0.0144
     },
     "Low Risk": {
       "type": "SetAttribute",
       "attribute": "probability_of_suicide",
       "direct_transition": "Terminal",
-      "value": 0.0072
+      "value": 0.006
     },
     "Medium Risk": {
       "type": "SetAttribute",
       "attribute": "probability_of_suicide",
       "direct_transition": "Terminal",
-      "value": 0.0144
+      "value": 0.0072
     },
     "High_Combat_Exposure_Check": {
       "type": "Simple",

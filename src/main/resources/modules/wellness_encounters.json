@@ -11,7 +11,7 @@
     "Wellness_Encounter": {
       "type": "Encounter",
       "wellness": true,
-      "direct_transition": "Record_Height"
+      "direct_transition": "Veteran_Check"
     },
     "Record_Height": {
       "type": "Observation",
@@ -852,6 +852,27 @@
     "End_Of_Wellness_Encounter": {
       "type": "EncounterEnd",
       "direct_transition": "Wellness_Encounter"
+    },
+    "Veteran_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Veteran_Mental_Health_Screen",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Record_Height"
+        }
+      ]
+    },
+    "Veteran_Mental_Health_Screen": {
+      "type": "CallSubmodule",
+      "submodule": "veterans/veteran_mental_health_screening",
+      "direct_transition": "Record_Height"
     }
   }
 }

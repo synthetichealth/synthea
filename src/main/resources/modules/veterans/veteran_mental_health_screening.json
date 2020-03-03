@@ -1,0 +1,95 @@
+{
+  "name": "Veteran Mental Health Screening",
+  "remarks": [
+    ""
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "name": "Initial",
+      "direct_transition": "Suicide_Probability_Check"
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "Positive_PHQ9": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 112001000119100,
+          "display": "positive screening for PHQ-9"
+        }
+      ],
+      "name": "Positive_PHQ9",
+      "direct_transition": "Terminal"
+    },
+    "Negative_PHQ9": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 112011000119102,
+          "display": "negative screening for PHQ-9"
+        }
+      ],
+      "name": "Negative_PHQ9",
+      "direct_transition": "Terminal"
+    },
+    "Apply_Probability": {
+      "type": "Simple",
+      "name": "Apply_Probability",
+      "distributed_transition": [
+        {
+          "transition": "Positive_PHQ9",
+          "distribution": {
+            "attribute": "probability_of_positive_phq",
+            "default": 1
+          }
+        },
+        {
+          "transition": "Negative_PHQ9",
+          "distribution": {
+            "attribute": "probability_of_negative_phq",
+            "default": 0
+          }
+        }
+      ]
+    },
+    "Suicide_Probability_Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "probability_of_suicide",
+            "operator": ">=",
+            "value": 0.0072
+          },
+          "distributions": [],
+          "transition": "Set_High_PHQ9_Probability"
+        },
+        {
+          "distributions": [],
+          "transition": "Set_Low_PHQ9_Probability"
+        }
+      ],
+      "name": "Suicide_Probability_Check"
+    },
+    "Set_High_PHQ9_Probability": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_positive_phq",
+      "direct_transition": "Apply_Probability",
+      "name": "Set_High_PHQ9_Probability",
+      "value": 0.9
+    },
+    "Set_Low_PHQ9_Probability": {
+      "type": "SetAttribute",
+      "attribute": "probability_of_positive_phq",
+      "name": "Set_Low_PHQ9_Probability",
+      "value": 0.4,
+      "direct_transition": "Apply_Probability"
+    }
+  }
+}
