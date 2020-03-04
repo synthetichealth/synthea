@@ -27,6 +27,7 @@ import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.editors.GrowthDataErrorsEditor;
 import org.mitre.synthea.export.CDWExporter;
 import org.mitre.synthea.export.Exporter;
+import org.mitre.synthea.export.VaSDoHReport;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
@@ -237,6 +238,7 @@ public class Generator {
     if (options.localModuleDir != null) {
       Module.addModules(options.localModuleDir);
     }
+    VaSDoHReport.init();
     List<String> coreModuleNames = getModuleNames(Module.getModules(path -> false));
     List<String> moduleNames = getModuleNames(Module.getModules(modulePredicate)); 
     Costs.loadCostData(); // ensure cost data loads early
@@ -346,6 +348,7 @@ public class Generator {
         System.out.printf("Unable to save population snapshot, error: %s", ex.getMessage());
       }
     }
+    VaSDoHReport.generateReport();
     Exporter.runPostCompletionExports(this, exporterRuntimeOptions);
 
     System.out.printf("Records: total=%d, alive=%d, dead=%d\n", totalGeneratedPopulation.get(),
@@ -417,7 +420,8 @@ public class Generator {
         recordPerson(person, index);
 
         tryNumber++;
-        if (!isAlive) {
+        // TEMPORARY CHANGE for va_sdoh -- only rotate the seed if the person is dead of causes other than suicide
+        if (!isAlive && person.attributes.get("suicide") == null) {
           // rotate the seed so the next attempt gets a consistent but different one
           personSeed = new Random(personSeed).nextLong();
 
@@ -434,6 +438,8 @@ public class Generator {
             long birthdate = birthdateFromTargetAge(newTargetAge, randomForDemographics);
             demoAttributes.put(Person.BIRTHDATE, birthdate);
           }
+        } else {
+          VaSDoHReport.addPerson(person);
         }
 
         // TODO - export is DESTRUCTIVE when it filters out data
