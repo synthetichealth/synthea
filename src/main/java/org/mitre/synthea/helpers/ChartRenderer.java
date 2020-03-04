@@ -420,7 +420,7 @@ public class ChartRenderer {
       valuesX = (List<Double>) attrValueX;
     } else {
       throw new RuntimeException("Invalid Person attribute \""
-          + config.getAxisAttributeX() + "\"provided for chart X Axis: "
+          + config.getAxisAttributeX() + "\" provided for chart X Axis: "
           + attrValueX + ". Attribute must either be \"time\" or refer to a TimeSeriesData or"
           + "List<Double> Object.");
     }
@@ -460,7 +460,7 @@ public class ChartRenderer {
         seriesValues = (List<Double>) seriesObject;
       } else {
         throw new RuntimeException("Invalid Person attribute \""
-            + seriesConfig.getAttribute() + "\"provided for chart series: "
+            + seriesConfig.getAttribute() + "\" provided for chart series: "
             + seriesObject + ". Attribute value must be a TimeSeriesData or List<Double> Object.");
       }
       
