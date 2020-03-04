@@ -9,6 +9,7 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -22,6 +23,8 @@ import org.hl7.fhir.r4.model.Media;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.SampledData;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -42,11 +45,31 @@ import org.mockito.Mockito;
  * Uses HAPI FHIR project to validate FHIR export. http://hapifhir.io/doc_validation.html
  */
 public class FHIRR4ExporterTest {
+  private boolean physStateEnabled;
+  
   /**
    * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
    */
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
+  
+  /**
+   * Setup state for exporter test.
+   */
+  @Before
+  public void setup() {
+    // Ensure Physiology state is enabled
+    physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
+    State.ENABLE_PHYSIOLOGY_STATE = true;
+  }
+  
+  /**
+   * Reset state after exporter test.
+   */
+  @After
+  public void tearDown() {
+    State.ENABLE_PHYSIOLOGY_STATE = physStateEnabled;
+  }
   
   @Test
   public void testDecimalRounding() {

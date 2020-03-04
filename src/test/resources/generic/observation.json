@@ -15,32 +15,55 @@
         },
         
         "Simulate_CVS": {
-	      "type": "Physiology",
-	      "model": "circulation/Smith2004_CVS_human.xml",
-	      "solver": "runge_kutta",
-	      "step_size": 0.01,
-	      "sim_duration": 4.0,
-	      "lead_time": 2.0,
-	      "inputs": [],
-	      "outputs": [
-	        {
-	          "from_list": "P_ao",
-	          "to": "P_ao",
-	          "type": "Attribute"
-	        },
-	        {
-	          "from_list": "P_lv",
-	          "to": "P_lv",
-	          "type": "Attribute"
-	        },
-	        {
-	          "from_list": "P_rv",
-	          "to": "P_rv",
-	          "type": "Attribute"
-	        }
-	      ],
-	      "direct_transition": "SomeEncounter"
+  			"type": "Physiology",
+		  	"model": "circulation/Smith2004_CVS_human.xml",
+		  	"solver": "runge_kutta",
+		  	"step_size": 0.01,
+		  	"sim_duration": 4.0,
+		  	"lead_time": 2.0,
+		  	"inputs": [],
+		  	"outputs": [
+		    	{
+		      		"from_list": "P_ao",
+		      		"to": "P_ao",
+		      		"type": "Attribute"
+		    	},
+		    	{
+		      		"from_list": "P_lv",
+		      		"to": "P_lv",
+		      		"type": "Attribute"
+		    	},
+		    	{
+		      		"from_list": "P_rv",
+		      		"to": "P_rv",
+		      		"type": "Attribute"
+		    	}
+		  	],
+		  	"direct_transition": "SomeEncounter",
+		  	"alt_direct_transition": "ContrivedPAO"
 	    },
+	    
+	    "ContrivedPAO" : {
+            "type" : "SetAttribute",
+            "attribute": "P_ao",
+            "seriesData": "128 116 103 91 78 126 113 101",
+            "period": 0.25,
+            "direct_transition" : "ContrivedPLV"
+        },
+        "ContrivedPLV" : {
+            "type" : "SetAttribute",
+            "attribute": "P_lv",
+            "seriesData": "130 30 2 4 26 129 21 1",
+            "period": 0.25,
+            "direct_transition" : "ContrivedPRV"
+        },
+        "ContrivedPRV" : {
+            "type" : "SetAttribute",
+            "attribute": "P_rv",
+            "seriesData": "25 5 -1 2 3 27 5 -2",
+            "period": 0.25,
+            "direct_transition" : "SomeEncounter"
+        },
 
         "SomeEncounter" : {
             "type" : "Encounter",
