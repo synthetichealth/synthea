@@ -1,0 +1,3 @@
+﻿Code,Type,Value,Expected Prevalence,Expected Prevalence of Suicidal Ideation,Expected Prevalence of Suicide Attempt,Population,Count,Actual Prevalence,Actual Ideation Prevalence,Actual Attempt Prevalence,Prevalence Delta,Ideation Delta,Attempt Delta
+homeless,Attribute,TRUE,35,19,6,,,,,,,,
+44054006,Condition,(diabetes),8,,,,,,,,,,
