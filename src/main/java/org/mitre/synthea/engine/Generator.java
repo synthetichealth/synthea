@@ -107,11 +107,11 @@ public class Generator {
      * any locally created modules. */
     public File localModuleDir; 
     public List<String> enabledModules;
-    /** File used to initialize a population */
+    /** File used to initialize a population. */
     public File initialPopulationSnapshotPath;
-    /** File used to store a population snapshot */
+    /** File used to store a population snapshot. */
     public File updatedPopulationSnapshotPath;
-    /** Time period in days to evolve the population loaded from initialPopulationSnapshotPath */
+    /** Time period in days to evolve the population loaded from initialPopulationSnapshotPath. */
     public int daysToTravelForward = 365;
   }
   
@@ -299,11 +299,10 @@ public class Generator {
         System.out.printf("Unable to load population snapshot, error: %s", ex.getMessage());
       }
       if (initialPopulation != null && initialPopulation.size() > 0) {
-        stop = initialPopulation.get(0).lastUpdated + 
-                Utilities.convertTime("days", options.daysToTravelForward);
+        stop = initialPopulation.get(0).lastUpdated 
+                + Utilities.convertTime("days", options.daysToTravelForward);
         for (int i = 0; i < initialPopulation.size(); i++) {
           final Person p = initialPopulation.get(i);
-//          threadPool.submit(() -> updateRecordExportPerson(p, i));
           updateRecordExportPerson(p, i);
         }
       }
@@ -403,6 +402,14 @@ public class Generator {
           // note that this skips ahead to the while check and doesn't automatically re-loop
         }
 
+        if (!isAlive && onlyAlivePatients) {
+          // rotate the seed so the next attempt gets a consistent but different one
+          personSeed = new Random(personSeed).nextLong();
+          continue;
+          // skip the other stuff if the patient is alive and we only want dead patients
+          // note that this skips ahead to the while check and doesn't automatically re-loop
+        }
+
         recordPerson(person, index);
         
         tryNumber++;
@@ -478,7 +485,8 @@ public class Generator {
       }
       encounterModule.endWellnessEncounter(person, time);
       person.lastUpdated = time;
-      HealthRecordEditors.getInstance().executeAll(person, person.record, time, timestep, person.random);
+      HealthRecordEditors.getInstance().executeAll(
+              person, person.record, time, timestep, person.random);
       time += timestep;
     }
 

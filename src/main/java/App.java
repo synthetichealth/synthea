@@ -124,7 +124,7 @@ public class App {
               } else {
                 throw new IOException("File exists");
               }
-            } catch(IOException ex) {
+            } catch (IOException ex) {
               throw new IOException(String.format("Unable to create snapshot file (%s): %s", 
                       file.getAbsolutePath(), ex.getMessage()));
             }
@@ -137,7 +137,7 @@ public class App {
               } else {
                 throw new IOException("File does not exist or is not readable");
               }
-            } catch(IOException ex) {
+            } catch (IOException ex) {
               throw new IOException(String.format("Unable to load snapshot file (%s): %s", 
                       file.getAbsolutePath(), ex.getMessage()));
             }
@@ -149,7 +149,11 @@ public class App {
                 throw new NumberFormatException("Must be a positive, non-zero integer");
               }
             } catch (NumberFormatException ex) {
-              throw new IllegalArgumentException(String.format("Error in specified updateTimePeriodInDays (%s): %s", value, ex.getMessage()));
+              throw new IllegalArgumentException(
+                      String.format(
+                              "Error in specified updateTimePeriodInDays (%s): %s",
+                              value,
+                              ex.getMessage()));
             }
           } else if (currArg.startsWith("--")) {
             String configSetting;

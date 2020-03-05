@@ -2,6 +2,7 @@ package org.mitre.synthea.world.concepts;
 
 import com.google.gson.Gson;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ import org.mitre.synthea.helpers.Utilities;
 /**
  * Represents a growth chart for a particular measure.
  */
-public class GrowthChart {
+public class GrowthChart implements Serializable {
   public enum ChartType {
     HEIGHT, WEIGHT, BMI, HEAD
   }

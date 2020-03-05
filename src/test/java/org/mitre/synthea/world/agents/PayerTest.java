@@ -577,8 +577,6 @@ public class PayerTest {
           person.attributes.get(QualityOfLifeModule.QOLS)).put(2000 + year, 1.0);
       long currentTime = startTime + Utilities.convertTime("years", year);
       healthInsuranceModule.process(person, currentTime);
-      calendar.add(Calendar.YEAR, 1);
-      currentTime = calendar.getTimeInMillis();
     }
     int totalYearsCovered = testPrivatePayer1.getNumYearsCovered()
         + testPrivatePayer2.getNumYearsCovered();
