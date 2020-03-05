@@ -14,6 +14,7 @@ import org.h2.util.StringUtils;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 
 public class VaSDoHReport {
@@ -101,6 +102,20 @@ public class VaSDoHReport {
       case "Observation":
         return (person) -> {
           Observation o = person.record.getLatestObservation(code);
+          if (o == null) return false;
+          
+          if (value.equals(o.value)) return true;
+          
+          if (o.value instanceof Number) {
+            Number n = (Number) o.value;
+            return n.toString().equals(value); // potentially flaky, but hopefully we aren't actually testing any Doubles 
+          }
+          
+          if (o.value instanceof Code) {
+            Code c = (Code) o.value;
+            return c.code.equals(value);
+          }
+          
           return o != null && value.equals(o.value);
         };
         

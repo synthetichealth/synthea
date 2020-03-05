@@ -445,7 +445,7 @@ public class Generator {
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
         Exporter.export(person, finishTime, exporterRuntimeOptions);
-      } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
+      } while ((!isAlive && !onlyDeadPatients && this.options.overflow && person.attributes.get("suicide") == null)
           || (isAlive && onlyDeadPatients));
       // if the patient is alive and we want only dead ones => loop & try again
       //  (and dont even export, see above)
