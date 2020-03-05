@@ -250,7 +250,7 @@
             "condition_type": "Attribute",
             "attribute": "marital_status",
             "operator": "!=",
-            "value": "'M'"
+            "value": "M"
           }
         },
         {
