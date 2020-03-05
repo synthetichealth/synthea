@@ -26,10 +26,12 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Veteran check"
+      "direct_transition": "Veteran check",
+      "name": "Initial"
     },
     "Terminal": {
-      "type": "Terminal"
+      "type": "Terminal",
+      "name": "Terminal"
     },
     "Veteran check": {
       "type": "Simple",
@@ -45,13 +47,15 @@
         {
           "transition": "Terminal"
         }
-      ]
+      ],
+      "name": "Veteran check"
     },
     "Baseline": {
       "type": "SetAttribute",
       "attribute": "probability_of_suicide",
       "direct_transition": "Terminal",
-      "value": 0.003072
+      "value": 0.003072,
+      "name": "Baseline"
     },
     "Homelessness_Check": {
       "type": "Simple",
@@ -68,7 +72,8 @@
         {
           "transition": "Hypertension_Check"
         }
-      ]
+      ],
+      "name": "Homelessness_Check"
     },
     "End_Counter": {
       "type": "Simple",
@@ -103,31 +108,36 @@
         {
           "transition": "Baseline"
         }
-      ]
+      ],
+      "name": "End_Counter"
     },
     "Init_Counter": {
       "type": "SetAttribute",
       "attribute": "sucide_risk_factor_count",
       "direct_transition": "Gender_Check",
-      "value": 0
+      "value": 0,
+      "name": "Init_Counter"
     },
     "High Risk": {
       "type": "SetAttribute",
       "attribute": "probability_of_suicide",
       "direct_transition": "Terminal",
-      "value": 0.0144
+      "value": 0.0144,
+      "name": "High Risk"
     },
     "Low Risk": {
       "type": "SetAttribute",
       "attribute": "probability_of_suicide",
       "direct_transition": "Terminal",
-      "value": 0.006
+      "value": 0.006,
+      "name": "Low Risk"
     },
     "Medium Risk": {
       "type": "SetAttribute",
       "attribute": "probability_of_suicide",
       "direct_transition": "Terminal",
-      "value": 0.0072
+      "value": 0.0072,
+      "name": "Medium Risk"
     },
     "High_Combat_Exposure_Check": {
       "type": "Simple",
@@ -144,19 +154,22 @@
         {
           "transition": "mTBI_Check"
         }
-      ]
+      ],
+      "name": "High_Combat_Exposure_Check"
     },
     "Increment_Counter_Homelessness": {
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Hypertension_Check"
+      "direct_transition": "Hypertension_Check",
+      "name": "Increment_Counter_Homelessness"
     },
     "Increment_Counter_High_Combat_Exposure": {
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "mTBI_Check"
+      "direct_transition": "mTBI_Check",
+      "name": "Increment_Counter_High_Combat_Exposure"
     },
     "PTSD_Check": {
       "type": "Simple",
@@ -172,13 +185,15 @@
         {
           "transition": "Prior_Attempt_Check"
         }
-      ]
+      ],
+      "name": "PTSD_Check"
     },
     "Increment_Counter_PTSD": {
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Prior_Attempt_Check"
+      "direct_transition": "Prior_Attempt_Check",
+      "name": "Increment_Counter_PTSD"
     },
     "Gender_Check": {
       "type": "Simple",
@@ -193,13 +208,15 @@
         {
           "transition": "Race_Check"
         }
-      ]
+      ],
+      "name": "Gender_Check"
     },
     "Increment_Counter_Gender": {
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Race_Check"
+      "direct_transition": "Race_Check",
+      "name": "Increment_Counter_Gender"
     },
     "Race_Check": {
       "type": "Simple",
@@ -214,13 +231,15 @@
         {
           "transition": "Marital_Status_Check"
         }
-      ]
+      ],
+      "name": "Race_Check"
     },
     "Increment_Counter_Race": {
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Marital_Status_Check"
+      "direct_transition": "Marital_Status_Check",
+      "name": "Increment_Counter_Race"
     },
     "Marital_Status_Check": {
       "type": "Simple",
@@ -237,13 +256,15 @@
         {
           "transition": "Age_Check"
         }
-      ]
+      ],
+      "name": "Marital_Status_Check"
     },
     "Increment_Counter_Marital_Status": {
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Age_Check"
+      "direct_transition": "Age_Check",
+      "name": "Increment_Counter_Marital_Status"
     },
     "Age_Check": {
       "type": "Simple",
@@ -261,13 +282,15 @@
         {
           "transition": "Major_Depressive_Disorder_Check"
         }
-      ]
+      ],
+      "name": "Age_Check"
     },
     "Increment_Counter_Age": {
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Major_Depressive_Disorder_Check"
+      "direct_transition": "Major_Depressive_Disorder_Check",
+      "name": "Increment_Counter_Age"
     },
     "Major_Depressive_Disorder_Check": {
       "type": "Simple",
@@ -283,13 +306,15 @@
         {
           "transition": "PTSD_Check"
         }
-      ]
+      ],
+      "name": "Major_Depressive_Disorder_Check"
     },
     "Increment_Counter_MDD": {
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "PTSD_Check"
+      "direct_transition": "PTSD_Check",
+      "name": "Increment_Counter_MDD"
     },
     "Prior_Attempt_Check": {
       "type": "Simple",
@@ -305,13 +330,15 @@
         {
           "transition": "Homelessness_Check"
         }
-      ]
+      ],
+      "name": "Prior_Attempt_Check"
     },
     "Increment_Counter_Prior_Attempt": {
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Homelessness_Check"
+      "direct_transition": "Homelessness_Check",
+      "name": "Increment_Counter_Prior_Attempt"
     },
     "Hypertension_Check": {
       "type": "Simple",
@@ -328,13 +355,15 @@
         {
           "transition": "Alcoholism_Check"
         }
-      ]
+      ],
+      "name": "Hypertension_Check"
     },
     "Increment_Counter_Hypertension": {
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Alcoholism_Check"
+      "direct_transition": "Alcoholism_Check",
+      "name": "Increment_Counter_Hypertension"
     },
     "mTBI_Check": {
       "type": "Simple",
@@ -348,15 +377,17 @@
           }
         },
         {
-          "transition": "End_Counter"
+          "transition": "Deceased_Loved_One"
         }
-      ]
+      ],
+      "name": "mTBI_Check"
     },
     "Increment_Counter_mTBI": {
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "End_Counter"
+      "direct_transition": "Deceased_Loved_One",
+      "name": "Increment_Counter_mTBI"
     },
     "Alcoholism_Check": {
       "type": "Simple",
@@ -373,13 +404,76 @@
         {
           "transition": "High_Combat_Exposure_Check"
         }
-      ]
+      ],
+      "name": "Alcoholism_Check"
     },
     "Increment_Counter_Alcoholsim": {
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "High_Combat_Exposure_Check"
+      "direct_transition": "High_Combat_Exposure_Check",
+      "name": "Increment_Counter_Alcoholsim"
+    },
+    "Deceased_Loved_One": {
+      "type": "Simple",
+      "name": "Deceased_Loved_One",
+      "distributed_transition": [
+        {
+          "transition": "Increment_Counter_Deceased_Loved_One",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Anxiety",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Increment_Counter_Deceased_Loved_One": {
+      "type": "Counter",
+      "attribute": "sucide_risk_factor_count",
+      "action": "increment",
+      "name": "Increment_Counter_Deceased_Loved_One",
+      "direct_transition": "Set_Deceased_Loved_One"
+    },
+    "Set_Deceased_Loved_One": {
+      "type": "SetAttribute",
+      "attribute": "deceased_loved_one",
+      "direct_transition": "Anxiety",
+      "name": "Set_Deceased_Loved_One",
+      "value": true
+    },
+    "Anxiety": {
+      "type": "Simple",
+      "name": "Anxiety",
+      "distributed_transition": [
+        {
+          "transition": "Increment_Counter_Anxiety",
+          "distribution": 0.5
+        },
+        {
+          "transition": "New_State",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "New_State": {
+      "type": "Simple",
+      "direct_transition": "End_Counter",
+      "name": "New_State"
+    },
+    "Increment_Counter_Anxiety": {
+      "type": "Counter",
+      "attribute": "sucide_risk_factor_count",
+      "action": "increment",
+      "name": "Increment_Counter_Anxiety",
+      "direct_transition": "Set_Anxiety"
+    },
+    "Set_Anxiety": {
+      "type": "SetAttribute",
+      "attribute": "anxiety",
+      "direct_transition": "New_State",
+      "name": "Set_Anxiety",
+      "value": true
     }
   }
 }
