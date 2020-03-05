@@ -7,7 +7,7 @@
     "Initial": {
       "type": "Initial",
       "name": "Initial",
-      "direct_transition": "Suicide_Probability_Check"
+      "direct_transition": "Deceased_Loved_One_Check"
     },
     "Terminal": {
       "type": "Terminal",
@@ -90,6 +90,73 @@
       "name": "Set_Low_PHQ9_Probability",
       "value": 0.4,
       "direct_transition": "Apply_Probability"
+    },
+    "Deceased_Loved_One_Check": {
+      "type": "Simple",
+      "name": "Deceased_Loved_One_Check",
+      "conditional_transition": [
+        {
+          "transition": "Deceased_Loved_One",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "deceased_loved_one",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Anxiety_Check"
+        }
+      ]
+    },
+    "Deceased_Loved_One": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "45581-6",
+          "display": "Recent loss of close family member/friend"
+        }
+      ],
+      "direct_transition": "Anxiety_Check",
+      "name": "Deceased_Loved_One",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 373066001,
+        "display": "Yes"
+      }
+    },
+    "Anxiety_Check": {
+      "type": "Simple",
+      "name": "Anxiety_Check",
+      "conditional_transition": [
+        {
+          "transition": "Anxiety",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anxiety",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Suicide_Probability_Check"
+        }
+      ]
+    },
+    "Anxiety": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 48694002,
+          "display": "Anxiety (finding)"
+        }
+      ],
+      "direct_transition": "Suicide_Probability_Check",
+      "name": "Anxiety"
     }
   }
 }
