@@ -415,6 +415,12 @@ public final class LifecycleModule extends Module {
               suffixList.get(person.randInt(suffixList.size())));
         }
         break;
+      case 50:
+        // get divorced
+        if (person.attributes.get(Person.MARITAL_STATUS).equals("M") && person.rand() < 0.5) {
+          person.attributes.put(Person.MARITAL_STATUS, "D");
+        }
+        break;
       default:
         break;
     }
