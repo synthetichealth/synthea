@@ -30,7 +30,7 @@ public class CSVExporterTest {
   private static File exportDir;
 
   @BeforeClass
-  public static void setUpExportDir() throws IOException {
+  public static void setUpExportDir() throws Exception {
     TestHelper.exportOff();
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
