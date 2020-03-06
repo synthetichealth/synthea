@@ -50,7 +50,7 @@
     "Baseline": {
       "type": "SetAttribute",
       "attribute": "probability_of_suicide",
-      "direct_transition": "Terminal",
+      "direct_transition": "Ideation_Baseline",
       "value": 0.003072
     },
     "Homelessness_Check": {
@@ -114,19 +114,19 @@
     "High Risk": {
       "type": "SetAttribute",
       "attribute": "probability_of_suicide",
-      "direct_transition": "Terminal",
+      "direct_transition": "Ideation_High_Risk",
       "value": 0.0144
     },
     "Low Risk": {
       "type": "SetAttribute",
       "attribute": "probability_of_suicide",
-      "direct_transition": "Terminal",
+      "direct_transition": "Ideation_Low_Risk",
       "value": 0.006
     },
     "Medium Risk": {
       "type": "SetAttribute",
       "attribute": "probability_of_suicide",
-      "direct_transition": "Terminal",
+      "direct_transition": "Ideation_Medium_Risk",
       "value": 0.0072
     },
     "High_Combat_Exposure_Check": {
@@ -457,6 +457,30 @@
           "transition": "New_State_2"
         }
       ]
+    },
+    "Ideation_Baseline": {
+      "type": "SetAttribute",
+      "attribute": "suicidal_ideation_risk",
+      "direct_transition": "Terminal",
+      "value": 0.1
+    },
+    "Ideation_High_Risk": {
+      "type": "SetAttribute",
+      "attribute": "suicidal_ideation_risk",
+      "value": 0.5,
+      "direct_transition": "Terminal"
+    },
+    "Ideation_Low_Risk": {
+      "type": "SetAttribute",
+      "attribute": "suicidal_ideation_risk",
+      "value": 0.2,
+      "direct_transition": "Terminal"
+    },
+    "Ideation_Medium_Risk": {
+      "type": "SetAttribute",
+      "attribute": "suicidal_ideation_risk",
+      "value": 0.35,
+      "direct_transition": "Terminal"
     }
   }
 }
