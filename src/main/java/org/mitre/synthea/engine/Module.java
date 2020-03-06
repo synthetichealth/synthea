@@ -333,7 +333,7 @@ public class Module {
   }
 
   private State initialState() {
-    return states.get("Initial"); // all Initial states have name Initial
+    return states.get("Initial").clone(); // all Initial states have name Initial
   }
 
   /**
