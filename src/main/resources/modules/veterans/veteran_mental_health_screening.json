@@ -6,12 +6,10 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "name": "Initial",
       "direct_transition": "Deceased_Loved_One_Check"
     },
     "Terminal": {
-      "type": "Terminal",
-      "name": "Terminal"
+      "type": "Terminal"
     },
     "Positive_PHQ9": {
       "type": "Procedure",
@@ -22,7 +20,6 @@
           "display": "positive screening for PHQ-9"
         }
       ],
-      "name": "Positive_PHQ9",
       "direct_transition": "Terminal"
     },
     "Negative_PHQ9": {
@@ -34,12 +31,10 @@
           "display": "negative screening for PHQ-9"
         }
       ],
-      "name": "Negative_PHQ9",
       "direct_transition": "Terminal"
     },
     "Apply_Probability": {
       "type": "Simple",
-      "name": "Apply_Probability",
       "distributed_transition": [
         {
           "transition": "Positive_PHQ9",
@@ -74,26 +69,22 @@
           "distributions": [],
           "transition": "Set_Low_PHQ9_Probability"
         }
-      ],
-      "name": "Suicide_Probability_Check"
+      ]
     },
     "Set_High_PHQ9_Probability": {
       "type": "SetAttribute",
       "attribute": "probability_of_positive_phq",
       "direct_transition": "Apply_Probability",
-      "name": "Set_High_PHQ9_Probability",
       "value": 0.9
     },
     "Set_Low_PHQ9_Probability": {
       "type": "SetAttribute",
       "attribute": "probability_of_positive_phq",
-      "name": "Set_Low_PHQ9_Probability",
       "value": 0.4,
       "direct_transition": "Apply_Probability"
     },
     "Deceased_Loved_One_Check": {
       "type": "Simple",
-      "name": "Deceased_Loved_One_Check",
       "conditional_transition": [
         {
           "transition": "Deceased_Loved_One",
@@ -121,7 +112,6 @@
         }
       ],
       "direct_transition": "Anxiety_Check",
-      "name": "Deceased_Loved_One",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 373066001,
@@ -130,7 +120,6 @@
     },
     "Anxiety_Check": {
       "type": "Simple",
-      "name": "Anxiety_Check",
       "conditional_transition": [
         {
           "transition": "Anxiety",
@@ -142,7 +131,7 @@
           }
         },
         {
-          "transition": "Suicide_Probability_Check"
+          "transition": "Suicidal_Ideation_Check"
         }
       ]
     },
@@ -155,8 +144,89 @@
           "display": "Anxiety (finding)"
         }
       ],
+      "direct_transition": "Suicidal_Ideation_Check"
+    },
+    "Suicidal_Ideation_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Diagnose_Ideation",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "suicide_ideation",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": 6471006,
+                      "display": "Suicidal ideation"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "transition": "End_Suicide_Ideation",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "suicide_ideation",
+                "operator": "==",
+                "value": false
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 6471006,
+                    "display": "Suicidal ideation"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Suicide_Probability_Check"
+        }
+      ]
+    },
+    "Diagnose_Ideation": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 6471006,
+          "display": "Suicidal ideation"
+        }
+      ],
+      "direct_transition": "Suicide_Probability_Check"
+    },
+    "End_Suicide_Ideation": {
+      "type": "ConditionEnd",
       "direct_transition": "Suicide_Probability_Check",
-      "name": "Anxiety"
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 6471006,
+          "display": "Suicidal ideation"
+        }
+      ]
     }
   }
 }

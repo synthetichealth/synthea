@@ -421,7 +421,7 @@
       },
       "distributed_transition": [
         {
-          "transition": "Suicidal_Ideation",
+          "transition": "Set_Suicide_Ideation",
           "distribution": {
             "attribute": "suicidal_ideation_risk",
             "default": 1
@@ -456,7 +456,7 @@
     "New_State": {
       "type": "CallSubmodule",
       "submodule": "veterans/veteran_suicide_probabilities",
-      "direct_transition": "No_Ideation"
+      "direct_transition": "Set_No_Suicide_Ideation"
     },
     "New_State_2": {
       "type": "CallSubmodule",
@@ -467,6 +467,18 @@
       "type": "CallSubmodule",
       "submodule": "veterans/veteran_suicide_probabilities",
       "direct_transition": "Suicidal_Ideation"
+    },
+    "Set_Suicide_Ideation": {
+      "type": "SetAttribute",
+      "attribute": "suicide_ideation",
+      "direct_transition": "Suicidal_Ideation",
+      "value": true
+    },
+    "Set_No_Suicide_Ideation": {
+      "type": "SetAttribute",
+      "attribute": "suicide_ideation",
+      "direct_transition": "No_Ideation",
+      "value": false
     }
   }
 }
