@@ -1533,8 +1533,7 @@ public class FhirR4 {
       return new StringType((String) value);
     } else if (value instanceof Number) {
       double dblVal = ((Number) value).doubleValue();
-      MathContext mctx = new MathContext(5, RoundingMode.HALF_UP);
-      BigDecimal bigVal = new BigDecimal(dblVal, mctx).stripTrailingZeros();
+      PlainBigDecimal bigVal = new PlainBigDecimal(dblVal);
       return new Quantity().setValue(bigVal)
           .setCode(unit).setSystem(UNITSOFMEASURE_URI)
           .setUnit(unit);
