@@ -178,7 +178,8 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Prior_Attempt_Check"
+      "direct_transition": "Prior_Attempt_Check",
+      "amount": 1
     },
     "Gender_Check": {
       "type": "Simple",
@@ -410,11 +411,11 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Increment_Counter_Anxiety",
+          "transition": "Set_No_Anxiety",
           "distribution": 0.5
         },
         {
-          "transition": "Divorce_Check",
+          "transition": "Increment_Counter_Anxiety",
           "distribution": 0.5
         }
       ]
@@ -481,6 +482,12 @@
       "attribute": "suicidal_ideation_risk",
       "value": 0.35,
       "direct_transition": "Terminal"
+    },
+    "Set_No_Anxiety": {
+      "type": "SetAttribute",
+      "attribute": "anxiety",
+      "direct_transition": "Divorce_Check",
+      "value": false
     }
   }
 }
