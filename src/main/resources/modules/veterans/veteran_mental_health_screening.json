@@ -6,7 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Deceased_Loved_One_Check"
+      "direct_transition": "High_Combat_Exposure_Check"
     },
     "Terminal": {
       "type": "Terminal"
@@ -122,29 +122,60 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Anxiety",
+          "transition": "Diagnose_Anxiety",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "anxiety",
-            "operator": "==",
-            "value": true
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "anxiety",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": 48694002,
+                      "display": "Anxiety (finding)"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "transition": "End_Anxiety",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "anxiety",
+                "operator": "==",
+                "value": false
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 48694002,
+                    "display": "Anxiety (finding)"
+                  }
+                ]
+              }
+            ]
           }
         },
         {
           "transition": "Suicidal_Ideation_Check"
         }
       ]
-    },
-    "Anxiety": {
-      "type": "ConditionOnset",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 48694002,
-          "display": "Anxiety (finding)"
-        }
-      ],
-      "direct_transition": "Suicidal_Ideation_Check"
     },
     "Suicidal_Ideation_Check": {
       "type": "Simple",
@@ -227,6 +258,75 @@
           "display": "Suicidal ideation"
         }
       ]
+    },
+    "High_Combat_Exposure_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "High_Combat_Exposure",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "PriorState",
+                  "name": "High_Combat_Exposure"
+                }
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "high_combat_exposure",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Deceased_Loved_One_Check"
+        }
+      ]
+    },
+    "High_Combat_Exposure": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "66892-1",
+          "display": "Have you ever been involved in direct combat experience in a war"
+        }
+      ],
+      "direct_transition": "Deceased_Loved_One_Check",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 373066001,
+        "display": "Yes"
+      }
+    },
+    "End_Anxiety": {
+      "type": "ConditionEnd",
+      "direct_transition": "Suicidal_Ideation_Check",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 48694002,
+          "display": "Anxiety (finding)"
+        }
+      ]
+    },
+    "Diagnose_Anxiety": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 48694002,
+          "display": "Anxiety (finding)"
+        }
+      ],
+      "direct_transition": "Suicidal_Ideation_Check"
     }
   }
 }
