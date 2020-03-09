@@ -178,8 +178,7 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Prior_Attempt_Check",
-      "amount": 1
+      "direct_transition": "Prior_Attempt_Check"
     },
     "Gender_Check": {
       "type": "Simple",
@@ -411,11 +410,11 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Set_No_Anxiety",
+          "transition": "Increment_Counter_Anxiety",
           "distribution": 0.5
         },
         {
-          "transition": "Increment_Counter_Anxiety",
+          "transition": "Divorce_Check",
           "distribution": 0.5
         }
       ]
@@ -432,15 +431,11 @@
       "direct_transition": "Divorce_Check",
       "value": true
     },
-    "New_State_2": {
-      "type": "Simple",
-      "direct_transition": "End_Counter"
-    },
     "Increment_Counter_Divorce": {
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "New_State_2"
+      "direct_transition": "Arrest"
     },
     "Divorce_Check": {
       "type": "Simple",
@@ -455,7 +450,7 @@
           }
         },
         {
-          "transition": "New_State_2"
+          "transition": "Arrest"
         }
       ]
     },
@@ -483,11 +478,56 @@
       "value": 0.35,
       "direct_transition": "Terminal"
     },
-    "Set_No_Anxiety": {
+    "Arrest": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Increment_Counter_Arrest",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Sexual Trauma",
+          "distribution": 0.8
+        }
+      ]
+    },
+    "Increment_Counter_Arrest": {
+      "type": "Counter",
+      "attribute": "suicide_risk_factor_count",
+      "action": "increment",
+      "direct_transition": "Set_Arrest",
+      "amount": 1
+    },
+    "Set_Arrest": {
       "type": "SetAttribute",
-      "attribute": "anxiety",
-      "direct_transition": "Divorce_Check",
-      "value": false
+      "attribute": "arrest",
+      "direct_transition": "Sexual Trauma",
+      "value": true
+    },
+    "Sexual Trauma": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Increment_Counter_Sexual_Trauma",
+          "distribution": 0.2
+        },
+        {
+          "transition": "End_Counter",
+          "distribution": 0.8
+        }
+      ]
+    },
+    "Increment_Counter_Sexual_Trauma": {
+      "type": "Counter",
+      "attribute": "suicide_risk_factor_count",
+      "action": "increment",
+      "direct_transition": "Set_Sexual_Trauma"
+    },
+    "Set_Sexual_Trauma": {
+      "type": "SetAttribute",
+      "attribute": "sexual_trauma",
+      "direct_transition": "End_Counter",
+      "value": true
     }
   }
 }
