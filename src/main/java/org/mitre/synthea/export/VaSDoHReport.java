@@ -35,8 +35,9 @@ public class VaSDoHReport {
   private static final String DELTA_ATTEMPT = "Attempt Delta";
   
   private static final boolean isSuicidalIdeation(Person p) {
-    // TODO
-    return false;
+    Object ideationAttr = p.attributes.get("suicide_ideation");
+    
+    return ideationAttr != null && Boolean.TRUE.equals(ideationAttr);
   }
   
   private static final boolean isSuicideAttempt(Person p) {
