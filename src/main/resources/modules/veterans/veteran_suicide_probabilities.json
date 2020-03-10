@@ -150,13 +150,15 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Hypertension_Check"
+      "direct_transition": "Hypertension_Check",
+      "amount": 1
     },
     "Increment_Counter_High_Combat_Exposure": {
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "mTBI_Check"
+      "direct_transition": "mTBI_Check",
+      "amount": 1
     },
     "PTSD_Check": {
       "type": "Simple",
@@ -178,7 +180,8 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Prior_Attempt_Check"
+      "direct_transition": "Prior_Attempt_Check",
+      "amount": 1
     },
     "Gender_Check": {
       "type": "Simple",
@@ -199,7 +202,8 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Race_Check"
+      "direct_transition": "Race_Check",
+      "amount": 1
     },
     "Race_Check": {
       "type": "Simple",
@@ -220,7 +224,8 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Marital_Status_Check"
+      "direct_transition": "Marital_Status_Check",
+      "amount": 1
     },
     "Marital_Status_Check": {
       "type": "Simple",
@@ -243,7 +248,8 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Age_Check"
+      "direct_transition": "Age_Check",
+      "amount": 1
     },
     "Age_Check": {
       "type": "Simple",
@@ -267,7 +273,8 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Major_Depressive_Disorder_Check"
+      "direct_transition": "Major_Depressive_Disorder_Check",
+      "amount": 1
     },
     "Major_Depressive_Disorder_Check": {
       "type": "Simple",
@@ -289,7 +296,8 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "PTSD_Check"
+      "direct_transition": "PTSD_Check",
+      "amount": 1
     },
     "Prior_Attempt_Check": {
       "type": "Simple",
@@ -311,7 +319,8 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Homelessness_Check"
+      "direct_transition": "Homelessness_Check",
+      "amount": 1
     },
     "Hypertension_Check": {
       "type": "Simple",
@@ -334,7 +343,8 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Alcoholism_Check"
+      "direct_transition": "Alcoholism_Check",
+      "amount": 1
     },
     "mTBI_Check": {
       "type": "Simple",
@@ -356,7 +366,8 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Deceased_Loved_One"
+      "direct_transition": "Deceased_Loved_One",
+      "amount": 1
     },
     "Alcoholism_Check": {
       "type": "Simple",
@@ -379,7 +390,8 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "High_Combat_Exposure_Check"
+      "direct_transition": "High_Combat_Exposure_Check",
+      "amount": 1
     },
     "Deceased_Loved_One": {
       "type": "Simple",
@@ -398,7 +410,8 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Set_Deceased_Loved_One"
+      "direct_transition": "Set_Deceased_Loved_One",
+      "amount": 1
     },
     "Set_Deceased_Loved_One": {
       "type": "SetAttribute",
@@ -423,7 +436,8 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Set_Anxiety"
+      "direct_transition": "Set_Anxiety",
+      "amount": 1
     },
     "Set_Anxiety": {
       "type": "SetAttribute",
@@ -435,7 +449,8 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Arrest"
+      "direct_transition": "Arrest",
+      "amount": 1
     },
     "Divorce_Check": {
       "type": "Simple",
@@ -521,7 +536,8 @@
       "type": "Counter",
       "attribute": "suicide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Set_Sexual_Trauma"
+      "direct_transition": "Set_Sexual_Trauma",
+      "amount": 1
     },
     "Set_Sexual_Trauma": {
       "type": "SetAttribute",
