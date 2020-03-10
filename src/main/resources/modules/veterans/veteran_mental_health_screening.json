@@ -6,7 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "High_Combat_Exposure_Check"
+      "direct_transition": "Sexual_Trauma_Check"
     },
     "Terminal": {
       "type": "Terminal"
@@ -327,6 +327,35 @@
         }
       ],
       "direct_transition": "Suicidal_Ideation_Check"
+    },
+    "Sexual_Trauma_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Diagnose_Sexual_Trauma",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "sexual_trauma",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "High_Combat_Exposure_Check"
+        }
+      ]
+    },
+    "Diagnose_Sexual_Trauma": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 313216003,
+          "display": "History of sexual abuse"
+        }
+      ],
+      "direct_transition": "High_Combat_Exposure_Check"
     }
   }
 }
