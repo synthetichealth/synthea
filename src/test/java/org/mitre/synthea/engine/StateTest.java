@@ -23,6 +23,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.engine.Components.SampledData;
 import org.mitre.synthea.export.ExportHelper;
 import org.mitre.synthea.helpers.Config;
@@ -41,8 +42,6 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
-import org.mitre.synthea.world.concepts.HealthRecord.Media;
-import org.mitre.synthea.world.concepts.HealthRecord.MediaTypeCode;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
@@ -575,6 +574,12 @@ public class StateTest {
     
     State sampleObs = module.getState("SampledDataObservation");
     assertTrue(sampleObs.process(person, time));
+    
+    State chartObs = module.getState("ChartObservation");
+    assertTrue(chartObs.process(person, time));
+    
+    State urlObs = module.getState("UrlObservation");
+    assertTrue(urlObs.process(person, time));
 
     HealthRecord.Observation vitalObservation = person.record.encounters.get(0).observations.get(0);
     assertEquals(120.0, vitalObservation.value);
@@ -608,8 +613,25 @@ public class StateTest {
     assertEquals("P_lv", sampledData.attributes.get(1));
     assertEquals("P_rv", sampledData.attributes.get(2));
     assertEquals(3, sampledData.series.size());
-  }
+    
+    HealthRecord.Observation chartObservation = person.record.encounters.get(0).observations.get(3);
+    assertTrue(chartObservation.value instanceof Attachment);
+    Attachment obsAttachment = (Attachment) chartObservation.value;
+    assertEquals("Media Test", obsAttachment.title);
+    assertEquals(400, obsAttachment.width);
+    assertEquals(200, obsAttachment.height);
+    assertEquals("image/png", obsAttachment.contentType);
+    assertTrue(Base64.isBase64(obsAttachment.data));
 
+    HealthRecord.Observation urlObservation = person.record.encounters.get(0).observations.get(4);
+    assertTrue(urlObservation.value instanceof Attachment);
+    Attachment urlAttachment = (Attachment) urlObservation.value;
+    assertEquals("Test Image URL", urlAttachment.title);
+    assertEquals("66bb1cb31c9b502daa7081ae36631f9df9c6d16a", urlAttachment.hash);
+    assertEquals("en-US", urlAttachment.language);
+    assertEquals("https://example.com/image/12498596132", urlAttachment.url);
+  }
+  
   @Test
   public void imaging_study_during_encounter() throws Exception {
     Module module = TestHelper.getFixture("imaging_study.json");
@@ -1797,56 +1819,4 @@ public class StateTest {
     
   }
   
-  @Test
-  public void testMedia() throws Exception {
-    
-    // BMI is an input parameter so we need to set it
-    person.setVitalSign(VitalSign.BMI, 32.98);
-    
-    // Pulmonary resistance and BMI multiplier are also input parameters
-    person.attributes.put("Pulmonary Resistance", 0.1552);
-    person.attributes.put("BMI Multiplier", 0.055);
-
-    Module module = TestHelper.getFixture("smith_physiology.json");
-    
-    State encounter = module.getState("SomeEncounter");
-    assertTrue(encounter.process(person, time));
-    
-    State simulateCvs = module.getState("Simulate_CVS");
-    assertTrue(simulateCvs.process(person, time));
-    
-    State mediaState = module.getState("Media").clone();
-    assertTrue(mediaState.process(person, time));
-    
-    State mediaState2 = module.getState("Media2").clone();
-    assertTrue(mediaState2.process(person, time));
-    
-    State mediaState3 = module.getState("Media3").clone();
-    assertTrue(mediaState3.process(person, time));
-    
-    Media media = person.record.encounters.get(0).mediaItems.get(0);
-    
-    assertNotNull(media);
-    assertEquals(MediaTypeCode.IMAGE, media.mediaType);
-    assertEquals(400, media.width);
-    assertEquals(200, media.height);
-    assertTrue(Base64.isBase64(media.content.data));
-    
-    Media media2 = person.record.encounters.get(0).mediaItems.get(1);
-    
-    assertNotNull(media2);
-    assertEquals(MediaTypeCode.VIDEO, media2.mediaType);
-    assertEquals("https://example.com/video/12498596132", media2.fullUrl);
-    assertEquals("en", media2.content.language);
-    assertTrue(media2.duration > 0.0);
-    
-    Media media3 = person.record.encounters.get(0).mediaItems.get(2);
-    
-    assertNotNull(media3);
-    assertEquals(MediaTypeCode.AUDIO, media3.mediaType);
-    assertEquals("https://example.com/audio/12498596132", media3.fullUrl);
-    assertEquals("en", media3.content.language);
-    assertTrue(media3.duration > 0.0);
-    
-  }
 }

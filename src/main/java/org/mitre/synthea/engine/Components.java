@@ -1,9 +1,15 @@
 package org.mitre.synthea.engine;
 
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.mitre.synthea.helpers.ChartRenderer;
+import org.mitre.synthea.helpers.ChartRenderer.PersonChartConfig;
 import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.world.agents.Person;
 
@@ -99,6 +105,21 @@ public abstract class Components {
     // Format for the output decimal numbers
     // See https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html
     public String decimalFormat;
+
+    public SampledData() {}
+  
+    /**
+     * Copy constructor for SampledData.
+     * @param other data to copy
+     */
+    public SampledData(SampledData other) {
+      originValue = other.originValue;
+      factor = other.factor;
+      lowerLimit = other.lowerLimit;
+      upperLimit = other.upperLimit;
+      attributes = other.attributes;
+      series = other.series;
+    }
     
     /**
      * Retrieves the actual data lists from the given Person according to
@@ -131,6 +152,126 @@ public abstract class Components {
           }
         }
         series.add(data);
+      }
+    }
+  }
+
+  /**
+   * Attachment class to support inline image file generation,
+   * raw base64 data, or URLs of image attachments for Observations.
+   */
+  public static class Attachment {
+    public String contentType; // Code for the MIME type of the content, with charset etc.
+    public String language; // Human language of the content (BCP-47)
+    public String data; // Data inline, base64ed
+    public String url; // URI where the data can be found
+    public int size; // Number of bytes of content (if url provided)
+    public String hash; // Hash of the data (sha1, base64ed)
+    public String title; // Label to display in place of the data
+    public String creation; // Date attachment was first created
+    public int height; // Height of the image in pixels (photo/video)
+    public int width; // Width of the image in pixesl (photo/video)
+    public int frames; // Number of frames if > 1 (photo)
+    public double duration; // Length in seconds (audio / video)
+    public int pages; // Number of printed pages
+    public PersonChartConfig chart; // Configuration to generate a chart image
+    public Boolean validated; // Whether this Attachment has been validated
+  
+    public Attachment() {
+      validated = false;
+    }
+    
+    /**
+     * Copy constructor for Attachments.
+     * @param other Attachment to copy.
+     */
+    public Attachment(Attachment other) {
+      contentType = other.contentType;
+      language = other.language;
+      data = other.data;
+      url = other.url;
+      size = other.size;
+      hash = other.hash;
+      title = other.title;
+      creation = other.creation;
+      height = other.height;
+      width = other.width;
+      frames = other.frames;
+      duration = other.duration;
+      pages = other.pages;
+      chart = other.chart;
+      validated = other.validated;
+    }
+
+  
+    /**
+     * Processes the attachment for the given person. Generates a chart image if
+     * the chart configuration is provided. Populates the hash field based on
+     * inline data if provided/generated.
+     * @param person Person to generate the chart for.
+     */
+    public void process(Person person) {
+      // Check if chart configuration is provided to generate an image based on data
+      // stored in the patient's attributes
+      if (chart != null) {
+        try {
+          data = ChartRenderer.drawChartAsBase64(person, chart);
+        } catch (IOException ex) {
+          throw new RuntimeException(ex);
+        }
+
+        height = chart.getHeight();
+        width = chart.getWidth();
+        title = chart.getTitle();
+        contentType = "image/png";
+      }
+      
+      if (data != null) {
+        // The ratio of output bytes to input bytes is 4:3 (33% overhead).
+        // Specifically, given an input of n bytes, the output will be 4*ceil(n/3)
+        // bytes long, including padding characters.
+        // See https://en.wikipedia.org/wiki/Base64
+        size = (int) (4 * Math.ceil(data.length() / 3.0));
+        
+        // Generate the SHA-1 hash if it hasn't been provided
+        if (hash == null) {
+          MessageDigest md;
+          try {
+            md = MessageDigest.getInstance("SHA-1");
+          } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+          }
+          byte[] tmpdata = Base64.decodeBase64(data);
+          hash = Base64.encodeBase64String(md.digest(tmpdata));
+        }
+      }
+    }
+  
+    /**
+     * Validates that attachment parameters are valid.
+     */
+    public void validate() {
+      if (validated) {
+        // Nothing to do if it has already been validated
+        return;
+      }
+      // Module should define one, and only one, of "chart", "url", or "data"
+      if (chart == null && url == null && data == null) {
+        throw new RuntimeException("Attachments must provide one of:\n"
+            + "1. \"chart\": a chart rendering configuration\n"
+            + "2. \"url\": media location URL\n"
+            + "3. \"data\": base64 encoded binary data");
+      }
+      
+      if (chart != null && (url != null || data != null)) {
+        throw new RuntimeException("Only 1 of \"chart\", \"url\", or \"data\" must be defined.");
+      } else if (url != null && data != null) {
+        throw new RuntimeException("Only 1 of \"chart\", \"url\", or \"data\" must be defined.");
+      }
+      
+      if (data != null && !Base64.isBase64(data)) {
+        throw new RuntimeException("Invalid Attachment data \"" + data
+            + "\". If provided, this must be a Base64 encoded string.");
       }
     }
   }

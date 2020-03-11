@@ -66,60 +66,9 @@
           "type": "Attribute"
         }
       ],
-      "direct_transition": "Media"
+      "direct_transition": "Chart"
     },
     
-    "Media": {
-      "type": "Media",
-      "media_type": "image",
-      "reason_code": [{
-      	"system": "SNOMED-CT",
-      	"code": "386532001",
-      	"display": "Invasive arterial pressure"
-      }],
-      "body_site": {
-      	"system": "SNOMED-CT",
-      	"code": "360543005",
-      	"display": "Branch of bracial artery"
-      },
-      "modality": {
-      	"system": "MediaModality",
-      	"code": "diagram",
-      	"display": "Diagram"
-      },
-      "device_name": "Arterial line",
-      "language": "en",
-      "chart": {
-      	"type": "line",
-      	"title": "Media Test",
-      	"axis_attribute_x": "time",
-      	"width": 400,
-      	"height": 200,
-      	"series": [
-      		{"attribute": "Arterial Pressure Values"}
-      	]
-      },
-      "direct_transition": "Media2"
-    },
-    "Media2": {
-      "type": "Media",
-      "media_type": "video",
-      "url": "https://example.com/video/12498596132",
-      "size": 242323456,
-      "duration": 14.56234423,
-      "language": "en",
-      "direct_transition": "Media3"
-    },
-    "Media3": {
-      "type": "Media",
-      "media_type": "audio",
-      "url": "https://example.com/audio/12498596132",
-      "size": 1947648,
-      "duration": 16.13,
-      "language": "en",
-      "direct_transition": "Main_Terminal"
-    },
-
     "Main_Terminal": {
       "type": "Terminal"
     }

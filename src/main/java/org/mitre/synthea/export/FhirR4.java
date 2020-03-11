@@ -20,6 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.AllergyIntolerance;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCategory;
@@ -125,6 +127,7 @@ import org.hl7.fhir.r4.model.codesystems.DoseRateType;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 import org.mitre.synthea.engine.Components;
+import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -135,13 +138,11 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
-import org.mitre.synthea.world.concepts.HealthRecord.Attachment;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
-import org.mitre.synthea.world.concepts.HealthRecord.Media;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
@@ -163,7 +164,6 @@ public class FhirR4 {
   private static final String UNITSOFMEASURE_URI = "http://unitsofmeasure.org";
   private static final String DICOM_DCM_URI = "http://dicom.nema.org/resources/ontology/DCM";
   private static final String MEDIA_TYPE_URI = "http://terminology.hl7.org/CodeSystem/media-type";
-  private static final String MEDIA_MODALITY_URI = "http://terminology.hl7.org/CodeSystem/media-modality";
 
   @SuppressWarnings("rawtypes")
   private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
@@ -265,7 +265,13 @@ public class FhirR4 {
       }
 
       for (Observation observation : encounter.observations) {
-        observation(personEntry, bundle, encounterEntry, observation);
+        // If the Observation contains an attachment, use a Media resource, since
+        // Observation resources in v4 don't support Attachments
+        if (observation.value instanceof Attachment) {
+          media(personEntry, bundle, encounterEntry, observation);
+        } else {
+          observation(personEntry, bundle, encounterEntry, observation);
+        }
       }
 
       for (Procedure procedure : encounter.procedures) {
@@ -298,10 +304,6 @@ public class FhirR4 {
         imagingStudy(personEntry, bundle, encounterEntry, imagingStudy);
       }
       
-      for (Media media : encounter.mediaItems) {
-        media(personEntry, bundle, encounterEntry, media);
-      }
-
       if (USE_US_CORE_IG) {
         String clinicalNoteText = ClinicalNoteExporter.export(person, encounter);
         boolean lastNote =
@@ -2517,46 +2519,34 @@ public class FhirR4 {
   }
   
   /**
-   * Map the given Media element to a FHIR Media resource, and add it to the given Bundle.
+   * Map the given Observation with attachment element to a FHIR Media resource, and add it to the
+   * given Bundle.
    *
    * @param personEntry    The Entry for the Person
    * @param bundle         Bundle to add the Media to
    * @param encounterEntry Current Encounter entry
-   * @param media   The Media to map to FHIR and add to the bundle
+   * @param obs   The Observation to map to FHIR and add to the bundle
    * @return The added Entry
    */
   private static BundleEntryComponent media(BundleEntryComponent personEntry, Bundle bundle,
-      BundleEntryComponent encounterEntry, Media media) {
+      BundleEntryComponent encounterEntry, Observation obs) {
     org.hl7.fhir.r4.model.Media mediaResource =
         new org.hl7.fhir.r4.model.Media();
 
-    mediaResource.setType(mapCodeToCodeableConcept(media.mediaType, MEDIA_TYPE_URI));
+    // Hard code as Image since we don't anticipate using video or audio any time soon
+    Code mediaType = new Code("http://terminology.hl7.org/CodeSystem/media-type", "image", "Image");
+
+    if (obs.codes != null && obs.codes.size() > 0) {
+      List<CodeableConcept> reasonList = obs.codes.stream()
+          .map(code -> mapCodeToCodeableConcept(code, SNOMED_URI)).collect(Collectors.toList());
+      mediaResource.setReasonCode(reasonList);
+    }
+    mediaResource.setType(mapCodeToCodeableConcept(mediaType, MEDIA_TYPE_URI));
     mediaResource.setStatus(MediaStatus.COMPLETED);
     mediaResource.setSubject(new Reference(personEntry.getFullUrl()));
     mediaResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
-    mediaResource.setDeviceName(media.deviceName);
-    mediaResource.setWidth(media.width);
-    mediaResource.setHeight(media.height);
-    mediaResource.setDuration(media.duration);
 
-    if (media.bodySite != null) {
-      mediaResource.setBodySite(mapCodeToCodeableConcept(media.bodySite, SNOMED_URI));
-    }
-    if (media.modality != null) {
-      mediaResource.setModality(mapCodeToCodeableConcept(media.modality, MEDIA_MODALITY_URI));
-    }
-    if (media.view != null) {
-      mediaResource.setView(mapCodeToCodeableConcept(media.view, SNOMED_URI));
-    }
-    if (media.reasonCode != null) {
-      List<CodeableConcept> reasonResource = new ArrayList<CodeableConcept>();
-      for (Code reason : media.reasonCode) {
-        reasonResource.add(mapCodeToCodeableConcept(reason, SNOMED_URI));
-      }
-      mediaResource.setReasonCode(reasonResource);
-    }
-
-    Attachment content = media.content;
+    Attachment content = (Attachment) obs.value;
     org.hl7.fhir.r4.model.Attachment contentResource = new org.hl7.fhir.r4.model.Attachment();
     
     contentResource.setContentType(content.contentType);
@@ -2571,6 +2561,9 @@ public class FhirR4 {
       contentResource.setHashElement(new org.hl7.fhir.r4.model.Base64BinaryType(content.hash));
     }
     
+    mediaResource.setWidth(content.width);
+    mediaResource.setHeight(content.height);
+
     mediaResource.setContent(contentResource);
 
     return newEntry(bundle, mediaResource);

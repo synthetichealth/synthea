@@ -98,6 +98,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.mitre.synthea.engine.Components;
+import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
@@ -106,13 +107,11 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
-import org.mitre.synthea.world.concepts.HealthRecord.Attachment;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
-import org.mitre.synthea.world.concepts.HealthRecord.Media;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
@@ -200,7 +199,13 @@ public class FhirDstu2 {
       }
 
       for (Observation observation : encounter.observations) {
-        observation(personEntry, bundle, encounterEntry, observation);
+        // If the Observation contains an attachment, use a Media resource, since
+        // Observation resources in stu3 don't support Attachments
+        if (observation.value instanceof Attachment) {
+          media(personEntry, bundle, encounterEntry, observation);
+        } else {
+          observation(personEntry, bundle, encounterEntry, observation);
+        }
       }
 
       for (Procedure procedure : encounter.procedures) {
@@ -227,10 +232,6 @@ public class FhirDstu2 {
         imagingStudy(personEntry, bundle, encounterEntry, imagingStudy);
       }
       
-      for (Media media : encounter.mediaItems) {
-        media(personEntry, bundle, encounterEntry, media);
-      }
-
       // one claim per encounter
       encounterClaim(personEntry, bundle, encounterEntry, encounter.claim);
     }
@@ -1422,37 +1423,19 @@ public class FhirDstu2 {
    * @param personEntry    The Entry for the Person
    * @param bundle         Bundle to add the Media to
    * @param encounterEntry Current Encounter entry
-   * @param media   The Media to map to FHIR and add to the bundle
+   * @param obs   The Observation to map to FHIR and add to the bundle
    * @return The added Entry
    */
-  private static Entry media(Entry personEntry, Bundle bundle, Entry encounterEntry, Media media) {
+  private static Entry media(Entry personEntry, Bundle bundle, Entry encounterEntry,
+      Observation obs) {
     ca.uhn.fhir.model.dstu2.resource.Media mediaResource =
         new ca.uhn.fhir.model.dstu2.resource.Media();
 
-    switch (media.mediaType.code) {
-      default:
-      case "image":
-        mediaResource.setType(DigitalMediaTypeEnum.PHOTO);
-        break;
-      case "video":
-        mediaResource.setType(DigitalMediaTypeEnum.VIDEO);
-        mediaResource.setDuration((int) media.duration);
-        break;
-      case "audio":
-        mediaResource.setType(DigitalMediaTypeEnum.AUDIO);
-        mediaResource.setDuration((int) media.duration);
-        break;
-    }
-    
+    // Hard code as a photo
+    mediaResource.setType(DigitalMediaTypeEnum.PHOTO);
     mediaResource.setSubject(new ResourceReferenceDt(personEntry.getFullUrl()));
-    mediaResource.setWidth(media.width);
-    mediaResource.setHeight(media.height);
 
-    if (media.view != null) {
-      mediaResource.setView(mapCodeToCodeableConcept(media.view, SNOMED_URI));
-    }
-
-    Attachment content = media.content;
+    Attachment content = (Attachment) obs.value;
     ca.uhn.fhir.model.dstu2.composite.AttachmentDt contentResource =
         new ca.uhn.fhir.model.dstu2.composite.AttachmentDt();
     
@@ -1475,6 +1458,9 @@ public class FhirDstu2 {
       hash.setValueAsString(content.hash);
       contentResource.setHash(hash);
     }
+    
+    mediaResource.setWidth(content.width);
+    mediaResource.setHeight(content.height);
     
     mediaResource.setContent(contentResource);
 

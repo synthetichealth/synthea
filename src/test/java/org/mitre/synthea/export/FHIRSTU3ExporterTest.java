@@ -2,6 +2,7 @@ package org.mitre.synthea.export;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
@@ -273,7 +274,7 @@ public class FHIRSTU3ExporterTest {
   }
   
   @Test
-  public void testMediaExport() throws Exception {
+  public void testObservationAttachment() throws Exception {
 
     Person person = new Person(0L);
     person.attributes.put(Person.GENDER, "F");
@@ -304,27 +305,23 @@ public class FHIRSTU3ExporterTest {
       person.setPayerAtAge(i, Payer.noInsurance);
     }
     
-    Module module = TestHelper.getFixture("smith_physiology.json");
-    
-    State encounter = module.getState("SomeEncounter");
-    assertTrue(encounter.process(person, time));
-    person.history.add(encounter);
+    Module module = TestHelper.getFixture("observation.json");
     
     State physiology = module.getState("Simulate_CVS");
     assertTrue(physiology.process(person, time));
     person.history.add(physiology);
     
-    State mediaState = module.getState("Media");
-    assertTrue(mediaState.process(person, time));
-    person.history.add(mediaState);
+    State encounter = module.getState("SomeEncounter");
+    assertTrue(encounter.process(person, time));
+    person.history.add(encounter);
     
-    State mediaState2 = module.getState("Media2");
-    assertTrue(mediaState2.process(person, time));
-    person.history.add(mediaState2);
+    State chartState = module.getState("ChartObservation");
+    assertTrue(chartState.process(person, time));
+    person.history.add(chartState);
     
-    State mediaState3 = module.getState("Media3");
-    assertTrue(mediaState3.process(person, time));
-    person.history.add(mediaState3);
+    State urlState = module.getState("UrlObservation");
+    assertTrue(urlState.process(person, time));
+    person.history.add(urlState);
     
     FhirContext ctx = FhirContext.forDstu3();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
@@ -334,20 +331,17 @@ public class FHIRSTU3ExporterTest {
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource() instanceof Media) {
         Media media = (Media) entry.getResource();
-        if (media.getType().equals(Media.DigitalMediaType.PHOTO)) {
+        if (media.getContent().getData() != null) {
           assertEquals(400, media.getWidth());
           assertEquals(200, media.getHeight());
+          assertEquals("Invasive arterial pressure", media.getReasonCode().get(0).getText());
           assertTrue(Base64.isBase64(media.getContent().getDataElement().getValueAsString()));
-        } else if (media.getType().equals(Media.DigitalMediaType.VIDEO)) {
-          assertEquals("https://example.com/video/12498596132", media.getContent().getUrl());
-          assertTrue(media.getDuration() > 0);
-          assertEquals("en", media.getContent().getLanguage());
+        } else if (media.getContent().getUrl() != null) {
+          assertEquals("https://example.com/image/12498596132", media.getContent().getUrl());
+          assertEquals("en-US", media.getContent().getLanguage());
           assertTrue(media.getContent().getSize() > 0);
-        } else if (media.getType().equals(Media.DigitalMediaType.AUDIO)) {
-          assertEquals("https://example.com/audio/12498596132", media.getContent().getUrl());
-          assertTrue(media.getDuration() > 0);
-          assertEquals("en", media.getContent().getLanguage());
-          assertTrue(media.getContent().getSize() > 0);
+        } else {
+          fail("Invalid Media element in output JSON");
         }
       }
     }

@@ -3,9 +3,6 @@ package org.mitre.synthea.engine;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -15,8 +12,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.math.ode.DerivativeException;
+import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.engine.Components.Exact;
 import org.mitre.synthea.engine.Components.ExactWithUnit;
 import org.mitre.synthea.engine.Components.Range;
@@ -31,8 +28,6 @@ import org.mitre.synthea.engine.Transition.DistributedTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransitionOption;
 import org.mitre.synthea.engine.Transition.LookupTableTransition;
 import org.mitre.synthea.engine.Transition.LookupTableTransitionOption;
-import org.mitre.synthea.helpers.ChartRenderer;
-import org.mitre.synthea.helpers.ChartRenderer.PersonChartConfig;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.ExpressionProcessor;
 import org.mitre.synthea.helpers.RandomValueGenerator;
@@ -44,7 +39,6 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord;
-import org.mitre.synthea.world.concepts.HealthRecord.Attachment;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -1390,6 +1384,7 @@ public abstract class State implements Cloneable {
     private String attribute;
     private org.mitre.synthea.world.concepts.VitalSign vitalSign;
     private SampledData sampledData;
+    private Attachment attachment;
     private String category;
     private String unit;
     private String expression;
@@ -1405,8 +1400,13 @@ public abstract class State implements Cloneable {
       }
       
       // If there's an expression, create the processor for it
-      if (this.expression != null) { 
-        threadExpProcessor.set(new ExpressionProcessor(this.expression));
+      if (expression != null) { 
+        threadExpProcessor.set(new ExpressionProcessor(expression));
+      }
+
+      // If there's an attachment, validate it before we process
+      if (attachment != null) {
+        attachment.validate();
       }
     }
 
@@ -1424,6 +1424,7 @@ public abstract class State implements Cloneable {
       clone.unit = unit;
       clone.expression = expression;
       clone.threadExpProcessor = threadExpProcessor;
+      clone.attachment = attachment;
       return clone;
     }
 
@@ -1446,8 +1447,12 @@ public abstract class State implements Cloneable {
       } else if (sampledData != null) {
         // Capture the data lists from person attributes
         sampledData.setSeriesData(person);
-        value = sampledData;
+        value = new SampledData(sampledData);
+      } else if (attachment != null) {
+        attachment.process(person);
+        value = new Attachment(attachment);
       }
+      
       HealthRecord.Observation observation = person.record.observation(time, primaryCode, value);
       entry = observation;
       observation.name = this.name;
@@ -1459,157 +1464,6 @@ public abstract class State implements Cloneable {
     }
   }
   
-  /**
-   * The Media state type indicates a point in the module where an image, video, or audio recording
-   * is captured and preserved in the patient's health record. Like Observation states, Media states
-   * may only be processed during an Encounter, and so must occur after the target Encounter state
-   * and before the EncounterEnd. See the Encounter section above for more details.
-   *
-   * <p>In general, ImagingStudy is the preferred state for diagnostic images. The Media state,
-   * however, contains functionality for generating inline PNG images of charts generated from data
-   * captured in Patient attributes. This data, for instance, may be results from a prior Physiology
-   * state which simulated physiological data over time. That data could then be captured by a
-   * measurement device and plotted on a chart (such as an ECG signal).
-   */
-  public static class Media extends State {
-    
-    private String mediaType;
-    private Code mediaTypeCode;
-    private List<Code> reasonCode;
-    private Code bodySite;
-    private Code modality;
-    private Code view;
-    private String deviceName;
-    private int height;
-    private int width;
-    private double duration;
-    private String language;
-    private PersonChartConfig chart;
-    private String url;
-    private String data;
-    private int size;
-    private String title;
-    private long timestamp;
-
-    @Override
-    protected void initialize(Module module, String name, JsonObject definition) {
-      super.initialize(module, name, definition);
-      
-      this.validate();
-    }
-
-    @Override
-    public Media clone() {
-      Media clone = (Media) super.clone();
-      clone.mediaType = mediaType;
-      clone.reasonCode = reasonCode;
-      clone.bodySite = bodySite;
-      clone.modality = modality;
-      clone.view = view;
-      clone.deviceName = deviceName;
-      clone.height = height;
-      clone.width = width;
-      clone.duration = duration;
-      clone.language = language;
-      clone.chart = chart;
-      clone.url = url;
-      clone.data = data;
-      clone.size = size;
-      clone.title = title;
-      clone.timestamp = timestamp;
-      clone.mediaTypeCode = mediaTypeCode;
-      return clone;
-    }
-    
-    @Override
-    public boolean process(Person person, long time) {
-      Attachment content = person.record.new Attachment();
-      content.data = data;
-      content.url = url;
-      content.language = language;
-      content.size = size;
-      content.title = title;
-      
-      HealthRecord.Media media = person.record.media(time, mediaTypeCode.code, content);
-      entry = media;
-      media.mediaType = mediaTypeCode;
-      media.bodySite = bodySite;
-      media.deviceName = deviceName;
-      media.reasonCode = reasonCode;
-      media.modality = modality;
-      media.height = height;
-      media.width = width;
-      media.duration = duration;
-      media.view = view;
-      media.fullUrl = url;
-      
-      // Check if chart configuration is provided to generate an image based on data
-      // stored in the patient's attributes
-      if (chart != null) {
-        try {
-          content.data = ChartRenderer.drawChartAsBase64(person, chart);
-        } catch (IOException ex) {
-          throw new RuntimeException(ex);
-        }
-        
-        // Override height and width with the chart parameters
-        media.height = chart.getHeight();
-        media.width = chart.getWidth();
-      }
-      
-      if (content.data != null) {
-        // The ratio of output bytes to input bytes is 4:3 (33% overhead).
-        // Specifically, given an input of n bytes, the output will be 4*ceil(n/3)
-        // bytes long, including padding characters.
-        // See https://en.wikipedia.org/wiki/Base64
-        content.size = (int) (4 * Math.ceil(content.data.length() / 3.0));
-        
-        // Generate the SHA-1 hash if it hasn't been provided
-        if (content.hash == null) {
-          MessageDigest md;
-          try {
-            md = MessageDigest.getInstance("SHA-1");
-          } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-          }
-          byte[] data = Base64.decodeBase64(content.data);
-          content.hash = Base64.encodeBase64String(md.digest(data));
-        }
-      }
-
-      return true;
-    }
-    
-    protected void validate() {
-      
-      if (mediaType != null) {
-        // Will throw an IllegalArgumentException if type is invalid
-        mediaTypeCode = HealthRecord.MediaTypeCode.fromString(mediaType);
-      } else {
-        throw new IllegalArgumentException("Media state must have 'media_type' defined.");
-      }
-      
-      // Module should define one, and only one, of "chart", "url", or "data"
-      if (chart == null && url == null && data == null) {
-        throw new RuntimeException("Media state definition must provide one of:\n"
-            + "1. \"chart\": a chart rendering configuration\n"
-            + "2. \"url\": media location URL\n"
-            + "3. \"data\": base64 encoded binary data");
-      }
-      
-      if (chart != null && (url != null || data != null)) {
-        throw new RuntimeException("Only 1 of \"chart\", \"url\", or \"data\" must be defined.");
-      } else if (url != null && data != null) {
-        throw new RuntimeException("Only 1 of \"chart\", \"url\", or \"data\" must be defined.");
-      }
-      
-      if (data != null && !Base64.isBase64(data)) {
-        throw new RuntimeException("Invalid Media data \"" + data
-            + "\". If provided, this must be a Base64 encoded string.");
-      }
-    }
-  }
-
   /**
    * ObservationGroup is an internal parent class to provide common logic to state types that
    * package multiple observations into a single entity. It is an implementation detail and should

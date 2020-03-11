@@ -108,7 +108,48 @@
 		      		"P_rv"
 		      	]
 		    },
-            "direct_transition" : "Terminal"
+            "direct_transition" : "Chart"
+        },
+        "ChartObservation": {
+          "type": "Observation",
+          "codes": [{
+          	"system": "SNOMED-CT",
+          	"code": "386532001",
+          	"display": "Invasive arterial pressure"
+          }],
+          "attachment": {
+            "chart": {
+            	"type": "line",
+            	"title": "Media Test",
+            	"axis_attribute_x": "time",
+            	"width": 400,
+            	"height": 200,
+            	"series": [
+            		{"attribute": "P_ao"}
+            	]
+            }
+          },
+          "direct_transition": "UrlObservation"
+        },
+        "UrlObservation": {
+          "type": "Observation",
+          "codes": [{
+          	"system": "SNOMED-CT",
+          	"code": "164847006",
+          	"display": "Standard electrocardiogram"
+          }],
+          "attachment": {
+            "url": "https://example.com/image/12498596132",
+            "size": 242323456,
+            "hash": "66bb1cb31c9b502daa7081ae36631f9df9c6d16a",
+            "language": "en-US",
+            "content_type": "image/png",
+            "title": "Test Image URL",
+            "creation": "2020-01-09",
+            "width": 800,
+            "height": 600
+          },
+          "direct_transition": "Terminal"
         },
 
         "Terminal": {
