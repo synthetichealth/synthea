@@ -6,7 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Sexual_Trauma_Check"
+      "direct_transition": "Arrest_Check"
     },
     "Terminal": {
       "type": "Terminal"
@@ -356,6 +356,41 @@
         }
       ],
       "direct_transition": "High_Combat_Exposure_Check"
+    },
+    "Arrest_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Arrest",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "arrest",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Sexual_Trauma_Check"
+        }
+      ]
+    },
+    "Arrest": {
+      "type": "Observation",
+      "category": "social-history",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29762-2",
+          "display": "Social history narrative"
+        }
+      ],
+      "direct_transition": "Sexual_Trauma_Check",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 6155003,
+        "display": "Arrested"
+      }
     }
   }
 }
