@@ -441,7 +441,7 @@
       },
       "distributed_transition": [
         {
-          "transition": "Attempts_Suicide",
+          "transition": "Hotline_Call",
           "distribution": {
             "attribute": "probability_of_suicide",
             "default": 1
@@ -479,6 +479,64 @@
       "attribute": "suicide_ideation",
       "direct_transition": "No_Ideation",
       "value": false
+    },
+    "Hotline_Call": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "VA_Hotline_Encounter",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Suicidal_Ideation",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Attempts_Suicide",
+          "distribution": 0.7
+        }
+      ]
+    },
+    "VA_Hotline_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185317003,
+          "display": "Telephone encounter (procedure)"
+        }
+      ],
+      "direct_transition": "Hotline_Mental_Health_Note"
+    },
+    "Hotline_Mental_Health_Note": {
+      "type": "Observation",
+      "category": "therapy",
+      "unit": "{nominal}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "87626-8",
+          "display": "Suicide prevention note"
+        }
+      ],
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "End_Hotline_Encounter"
+    },
+    "End_Hotline_Encounter": {
+      "type": "EncounterEnd",
+      "distributed_transition": [
+        {
+          "transition": "Attempts_Suicide",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Suicidal_Ideation",
+          "distribution": 0.8
+        }
+      ]
     }
   }
 }
