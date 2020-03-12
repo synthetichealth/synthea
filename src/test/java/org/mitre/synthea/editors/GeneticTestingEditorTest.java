@@ -174,4 +174,35 @@ public class GeneticTestingEditorTest {
     assertEquals(1, variantTypeCount.get(
             GeneticMarker.RISK_FACTOR_CLINICAL_SIGNIFICANCE).intValue());
   }
+  
+  @Test
+  public void testMarkerToString() {
+    GeneticMarker marker = new GeneticMarker("rs7025486", "chromosome", "location", "strand", 
+            "ancestralAllele", "variantAlleleList", "XYZZY1", 
+            GeneticMarker.UNCERTAIN_CLINICAL_SIGNIFICANCE, "C>T");
+    String expected = "The XYZZY1 gene exhibits a variation of " +
+            "'Uncertain' clinical significance. " +
+            "The variation at index rs7025486 is associated with an increased risk of: " +
+            "Aortic Aneurysm, Aneurysm, Pulmonary Hypertension and Ischemic Stroke.";
+    assertEquals(expected, marker.toString());
+    marker = new GeneticMarker("rs111671429", "chromosome", "location", "strand", 
+            "ancestralAllele", "variantAlleleList", "XYZZY1", 
+            GeneticMarker.RISK_FACTOR_CLINICAL_SIGNIFICANCE, "C>T");
+    expected = "The XYZZY1 gene exhibits a variation of 'Risk Factor' clinical " +
+            "significance. The variation at index rs111671429 is associated with an " +
+            "increased risk of: Aortic Aneurysm and Marfan Syndrome.";
+    assertEquals(expected, marker.toString());
+    marker = new GeneticMarker("rs10757272", "chromosome", "location", "strand", 
+            "ancestralAllele", "variantAlleleList", "XYZZY1", 
+            GeneticMarker.DRUG_RESPONSE_CLINICAL_SIGNIFICANCE, "C>T");
+    expected = "The XYZZY1 gene exhibits a variation of 'Drug Response' clinical " +
+            "significance. The variation at index rs10757272 is associated with an " +
+            "increased risk of: Aneurysm.";
+    assertEquals(expected, marker.toString());
+    marker = new GeneticMarker("rs10757272", "chromosome", "location", "strand", 
+            "ancestralAllele", "variantAlleleList", "XYZZY1", 
+            GeneticMarker.DRUG_RESPONSE_CLINICAL_SIGNIFICANCE, "C");
+    expected = "The XYZZY1 gene does not exhibit any variation.";
+    assertEquals(expected, marker.toString());
+  }
 }

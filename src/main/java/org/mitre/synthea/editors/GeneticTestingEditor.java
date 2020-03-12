@@ -361,6 +361,37 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
     static final String LIKELY_BENIGN_CLINICAL_SIGNIFICANCE = "Likely Benign";
     static final String DRUG_RESPONSE_CLINICAL_SIGNIFICANCE = "Drug Response";
 
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("The ");
+      sb.append(gene);
+      sb.append(" gene ");
+      if (isVariant()) {
+        sb.append("exhibits a variation of '");
+        sb.append(clinicalSignificance);
+        sb.append("' clinical significance. The variation at index ");
+        sb.append(index);
+        sb.append(" is associated with an increased risk of: ");
+        List<DnaSynthesisConfig.MedicalCategory> associatedConditions = 
+                GeneticMarker.INDEX_MAP.get(index);
+        for (int i = 0; i < associatedConditions.size(); i++) {
+          if (i > 0) {
+            if (i < associatedConditions.size() - 1) {
+              sb.append(", ");
+            } else {
+              sb.append(" and ");
+            }
+          }
+          sb.append(associatedConditions.get(i));
+        }
+        sb.append(".");
+      } else {
+        sb.append("does not exhibit any variation.");
+      }
+      return sb.toString();
+    }
+    
     boolean isVariant() {
       return variant;
     }
