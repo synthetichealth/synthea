@@ -50,6 +50,9 @@ public class ClinicalNoteService {
       this.gender = (String) person.attributes.get(Person.GENDER);
       this.ethnicity = (String) person.attributes.get(Person.ETHNICITY);
       this.maritalStatus = (String) person.attributes.get(Person.MARITAL_STATUS);
+      if (this.maritalStatus == null) {
+        this.maritalStatus = "S";
+      }
       this.diagnosis = new LinkedList();
       this.procedures = new LinkedList();
       this.drugs = new LinkedList();
