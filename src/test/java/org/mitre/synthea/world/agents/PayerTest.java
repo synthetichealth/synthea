@@ -561,8 +561,6 @@ public class PayerTest {
   @SuppressWarnings("unchecked")
   public void payerMemberYears() {
     long startTime = Utilities.convertCalendarYearsToTime(2000);
-    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-    calendar.setTimeInMillis(startTime);
     person = new Person(0L);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.BIRTHDATE, startTime);

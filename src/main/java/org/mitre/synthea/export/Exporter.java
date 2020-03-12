@@ -141,7 +141,7 @@ public abstract class Exporter {
    * @param person   Patient to export
    * @param stopTime Time at which the simulation stopped
    */
-  public static void export(Person person, long stopTime) {
+  protected static void export(Person person, long stopTime) {
     export(person, stopTime, new ExporterRuntimeOptions());
   }
 

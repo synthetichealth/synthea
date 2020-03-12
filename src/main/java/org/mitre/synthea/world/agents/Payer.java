@@ -558,12 +558,10 @@ public class Payer implements Serializable {
    * @param key the key (the encounter type and whether it was covered/uncovered)
    */
   private synchronized void incrementEntries(Integer year, String key) {
-    if (entryUtilization != null) { // TODO remove once entryUtilization is serializable
-      if (!entryUtilization.contains(year, key)) {
-        entryUtilization.put(year, key, new AtomicInteger(0));
-      }
-      entryUtilization.get(year, key).incrementAndGet();
+    if (!entryUtilization.contains(year, key)) {
+      entryUtilization.put(year, key, new AtomicInteger(0));
     }
+    entryUtilization.get(year, key).incrementAndGet();
   }
 
   /**

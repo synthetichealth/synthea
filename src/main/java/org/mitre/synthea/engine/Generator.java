@@ -111,8 +111,10 @@ public class Generator {
     public File initialPopulationSnapshotPath;
     /** File used to store a population snapshot. */
     public File updatedPopulationSnapshotPath;
-    /** Time period in days to evolve the population loaded from initialPopulationSnapshotPath. */
-    public int daysToTravelForward = 365;
+    /** Time period in days to evolve the population loaded from initialPopulationSnapshotPath. A
+     *  value of -1 will evolve the population to the current system time.
+     */
+    public int daysToTravelForward = -1;
   }
   
   /**
@@ -299,11 +301,15 @@ public class Generator {
         System.out.printf("Unable to load population snapshot, error: %s", ex.getMessage());
       }
       if (initialPopulation != null && initialPopulation.size() > 0) {
-        stop = initialPopulation.get(0).lastUpdated 
-                + Utilities.convertTime("days", options.daysToTravelForward);
+        // default is to run until current system time.
+        if (options.daysToTravelForward > 0) {
+          stop = initialPopulation.get(0).lastUpdated 
+                  + Utilities.convertTime("days", options.daysToTravelForward);
+        }
         for (int i = 0; i < initialPopulation.size(); i++) {
-          final Person p = initialPopulation.get(i);
-          updateRecordExportPerson(p, i);
+          final int index = i;
+          final Person p = initialPopulation.get(i);        
+          threadPool.submit(() -> updateRecordExportPerson(p, index));
         }
       }
     } else {
@@ -406,7 +412,7 @@ public class Generator {
           // rotate the seed so the next attempt gets a consistent but different one
           personSeed = new Random(personSeed).nextLong();
           continue;
-          // skip the other stuff if the patient is alive and we only want dead patients
+          // skip the other stuff if the patient is dead and we only want alive patients
           // note that this skips ahead to the while check and doesn't automatically re-loop
         }
 
