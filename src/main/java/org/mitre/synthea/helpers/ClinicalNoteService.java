@@ -12,6 +12,8 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +28,19 @@ public class ClinicalNoteService {
   public static final String NOTE_TYPE = "ooGENERALoo";
   public static final MediaType JSON
       = MediaType.get("application/json; charset=utf-8");
+
+  /* Tokens returned from the note service that need to be replaced */
+  public static final String DATE_TOKEN = "ooDATEoo";
+  public static final String NAME_TOKEN = "ooNAMEoo";
+  public static final String ID_NUMBER_TOKEN = "oIDoNUMBERo"; // don't know why that this is a
+                                                              // single "o" case, but it's what
+                                                              // the service gives us.
+  public static final String LOCATION_TOKEN = "ooLOCATIONoo";
+  public static final String HOSPITAL_WARD_TOKEN = "ooHOSPITALoWARDoo";
+  public static final String CONTACT_INFO_TOKEN = "ooCONTACToINFOoo";
+  public static final String ADDRESS_COMPONENT_TOKEN = "ooADDRESSoCOMPONENToo";
+
+  public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM d, YYYY");
 
   private static OkHttpClient client;
 
@@ -104,9 +119,45 @@ public class ClinicalNoteService {
         .build();
     try {
       Response response = client.newCall(request).execute();
-      person.record.note = new HealthRecord.Note(response.body().string(), time);
+      String templatedNote = response.body().string();
+      String populatedNote = replaceNoteTokens(templatedNote, person, time);
+      person.record.note = new HealthRecord.Note(populatedNote, time);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public static String replaceNoteTokens(String note, Person person, long time) {
+    String populatedNote = note;
+    if (populatedNote.contains(DATE_TOKEN)) {
+      populatedNote = populatedNote.replace(DATE_TOKEN, DATE_FORMAT.format(new Date(time)));
+    }
+    if (populatedNote.contains(NAME_TOKEN)) {
+      String name = person.attributes.get(Person.FIRST_NAME) + " "
+          + person.attributes.get(Person.LAST_NAME);
+      populatedNote = populatedNote.replace(NAME_TOKEN, name);
+    }
+    if (populatedNote.contains(ID_NUMBER_TOKEN)) {
+      populatedNote = populatedNote.replace(ID_NUMBER_TOKEN,
+          (String) person.attributes.get(Person.ID));
+    }
+    if (populatedNote.contains(LOCATION_TOKEN)) {
+      populatedNote = populatedNote.replace(LOCATION_TOKEN,
+          (String) person.attributes.get(Person.CITY));
+    }
+    if (populatedNote.contains(HOSPITAL_WARD_TOKEN)) {
+      populatedNote = populatedNote.replace(HOSPITAL_WARD_TOKEN,
+          person.record.provider.name);
+    }
+    if (populatedNote.contains(CONTACT_INFO_TOKEN)) {
+      populatedNote = populatedNote.replace(CONTACT_INFO_TOKEN,
+          (String) person.attributes.get(Person.TELECOM));
+    }
+    if (populatedNote.contains(ADDRESS_COMPONENT_TOKEN)) {
+      populatedNote = populatedNote.replace(ADDRESS_COMPONENT_TOKEN,
+          (String) person.attributes.get(Person.ADDRESS));
+    }
+
+    return populatedNote;
   }
 }
