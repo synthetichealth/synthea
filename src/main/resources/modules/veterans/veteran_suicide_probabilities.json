@@ -395,14 +395,32 @@
     },
     "Deceased_Loved_One": {
       "type": "Simple",
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Increment_Counter_Deceased_Loved_One",
-          "distribution": 0.5
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "deceased_loved_one",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Increment_Counter_Deceased_Loved_One",
+              "distribution": 1
+            }
+          ]
         },
         {
-          "transition": "Anxiety",
-          "distribution": 0.5
+          "distributions": [
+            {
+              "transition": "Set_Deceased_Loved_One",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Set_No_Deceased_Loved_One",
+              "distribution": 0.8
+            }
+          ]
         }
       ]
     },
@@ -410,25 +428,43 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Set_Deceased_Loved_One",
+      "direct_transition": "Anxiety",
       "amount": 1
     },
     "Set_Deceased_Loved_One": {
       "type": "SetAttribute",
       "attribute": "deceased_loved_one",
-      "direct_transition": "Anxiety",
+      "direct_transition": "Increment_Counter_Deceased_Loved_One",
       "value": true
     },
     "Anxiety": {
       "type": "Simple",
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Increment_Counter_Anxiety",
-          "distribution": 0.5
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anxiety",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Increment_Counter_Anxiety",
+              "distribution": 1
+            }
+          ]
         },
         {
-          "transition": "Divorce_Check",
-          "distribution": 0.5
+          "distributions": [
+            {
+              "transition": "Set_No_Anxiety",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Set_Anxiety",
+              "distribution": 0.2
+            }
+          ]
         }
       ]
     },
@@ -436,13 +472,13 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Set_Anxiety",
+      "direct_transition": "Divorce_Check",
       "amount": 1
     },
     "Set_Anxiety": {
       "type": "SetAttribute",
       "attribute": "anxiety",
-      "direct_transition": "Divorce_Check",
+      "direct_transition": "Increment_Counter_Anxiety",
       "value": true
     },
     "Increment_Counter_Divorce": {
@@ -495,14 +531,32 @@
     },
     "Arrest": {
       "type": "Simple",
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Increment_Counter_Arrest",
-          "distribution": 0.2
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "arrest",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Increment_Counter_Arrest",
+              "distribution": 1
+            }
+          ]
         },
         {
-          "transition": "Sexual Trauma",
-          "distribution": 0.8
+          "distributions": [
+            {
+              "transition": "Set_No_Arrest",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Set_Arrest",
+              "distribution": 0.2
+            }
+          ]
         }
       ]
     },
@@ -510,25 +564,43 @@
       "type": "Counter",
       "attribute": "suicide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Set_Arrest",
+      "direct_transition": "Sexual Trauma",
       "amount": 1
     },
     "Set_Arrest": {
       "type": "SetAttribute",
       "attribute": "arrest",
-      "direct_transition": "Sexual Trauma",
+      "direct_transition": "Increment_Counter_Arrest",
       "value": true
     },
     "Sexual Trauma": {
       "type": "Simple",
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Increment_Counter_Sexual_Trauma",
-          "distribution": 0.2
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "sexual_trauma",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Increment_Counter_Sexual_Trauma",
+              "distribution": 1
+            }
+          ]
         },
         {
-          "transition": "End_Counter",
-          "distribution": 0.8
+          "distributions": [
+            {
+              "transition": "Set_No_Sexual_Trauma",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Set_Sexual_Trauma",
+              "distribution": 0.2
+            }
+          ]
         }
       ]
     },
@@ -536,14 +608,38 @@
       "type": "Counter",
       "attribute": "suicide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Set_Sexual_Trauma",
+      "direct_transition": "End_Counter",
       "amount": 1
     },
     "Set_Sexual_Trauma": {
       "type": "SetAttribute",
       "attribute": "sexual_trauma",
-      "direct_transition": "End_Counter",
+      "direct_transition": "Increment_Counter_Sexual_Trauma",
       "value": true
+    },
+    "Set_No_Deceased_Loved_One": {
+      "type": "SetAttribute",
+      "attribute": "deceased_loved_one",
+      "direct_transition": "Anxiety",
+      "value": false
+    },
+    "Set_No_Anxiety": {
+      "type": "SetAttribute",
+      "attribute": "anxiety",
+      "direct_transition": "Divorce_Check",
+      "value": false
+    },
+    "Set_No_Arrest": {
+      "type": "SetAttribute",
+      "attribute": "arrest",
+      "direct_transition": "Sexual Trauma",
+      "value": false
+    },
+    "Set_No_Sexual_Trauma": {
+      "type": "SetAttribute",
+      "attribute": "sexual_trauma",
+      "direct_transition": "End_Counter",
+      "value": false
     }
   }
 }
