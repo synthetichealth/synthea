@@ -42,6 +42,9 @@ public class AppTest {
     App.main(args);
     out.flush();
     String output = out.toString();
+    if (!output.contains("alive=3")) {
+      System.out.println("oops");
+    }
     Assert.assertTrue(output.contains("Running with options:"));
     Assert.assertTrue(output.contains("Population:"));
     Assert.assertTrue(output.contains("Seed:"));
@@ -129,7 +132,7 @@ public class AppTest {
     String output = out.toString();
     Assert.assertTrue(output.contains("Running with options:"));
     Assert.assertTrue(output.contains("Seed:"));
-    String regex = "\\{alive=(\\d+), dead=(\\d+)\\}";
+    String regex = "alive=(\\d+), dead=(\\d+)";
     Matcher matches = Pattern.compile(regex).matcher(output);
     Assert.assertTrue(matches.find());
     int alive = Integer.parseInt(matches.group(1));

@@ -322,7 +322,7 @@ public class Generator {
 
     try {
       threadPool.shutdown();
-      while (!threadPool.awaitTermination(30, TimeUnit.SECONDS)) {
+      while (!threadPool.awaitTermination(60, TimeUnit.SECONDS)) {
         System.out.println("Waiting for threads to finish... " + threadPool);
       }
     } catch (InterruptedException e) {
@@ -351,7 +351,8 @@ public class Generator {
     }
     Exporter.runPostCompletionExports(this, exporterRuntimeOptions);
 
-    System.out.println(stats);
+    System.out.printf("Records: total=%d, alive=%d, dead=%d\n", totalGeneratedPopulation.get(),
+            stats.get("alive").get(), stats.get("dead").get());
 
     if (this.metrics != null) {
       metrics.printStats(totalGeneratedPopulation.get(), Module.getModules(getModulePredicate()));

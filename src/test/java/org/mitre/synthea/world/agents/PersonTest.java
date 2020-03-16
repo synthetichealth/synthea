@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.world.concepts.VitalSign;
 
 public class PersonTest {
   private Person person;
@@ -132,5 +133,20 @@ public class PersonTest {
   private void testAgeMonths(long birthdate, long now, long expectedAge) {
     person.attributes.put(Person.BIRTHDATE, birthdate);
     assertEquals(expectedAge, person.ageInMonths(now));
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testVitalSignNaN() {
+    person.setVitalSign(VitalSign.HEIGHT, Double.NaN);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testVitalSignInfinity() {
+    person.setVitalSign(VitalSign.HEIGHT, Double.POSITIVE_INFINITY);
+  }
+
+  @Test()
+  public void testVitalSign() {
+    person.setVitalSign(VitalSign.HEIGHT, 6.02);
   }
 }

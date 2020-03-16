@@ -426,6 +426,11 @@ public class Person implements Serializable, QuadTreeElement {
    * Convenience function to set a vital sign to a constant value.
    */
   public void setVitalSign(VitalSign vitalSign, double value) {
+    if (!Double.isFinite(value)) {
+      throw new IllegalArgumentException(String.format(
+              "Vital signs must have finite values - %s is invalid", 
+              Double.valueOf(value).toString()));
+    }
     setVitalSign(vitalSign, new ConstantValueGenerator(this, value));
   }
 
