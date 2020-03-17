@@ -398,15 +398,21 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "deceased_loved_one",
-            "operator": "==",
-            "value": true
+            "condition_type": "PriorState",
+            "name": "Set_Deceased_Loved_One",
+            "within": {
+              "quantity": 1,
+              "unit": "years"
+            }
           },
           "distributions": [
             {
               "transition": "Increment_Counter_Deceased_Loved_One",
-              "distribution": 1
+              "distribution": 0.05
+            },
+            {
+              "transition": "Set_No_Deceased_Loved_One",
+              "distribution": 0.95
             }
           ]
         },
@@ -414,11 +420,11 @@
           "distributions": [
             {
               "transition": "Set_Deceased_Loved_One",
-              "distribution": 0.2
+              "distribution": 0.05
             },
             {
               "transition": "Set_No_Deceased_Loved_One",
-              "distribution": 0.8
+              "distribution": 0.95
             }
           ]
         }
@@ -442,15 +448,21 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "anxiety",
-            "operator": "==",
-            "value": true
+            "condition_type": "PriorState",
+            "name": "Set_Anxiety",
+            "within": {
+              "quantity": 6,
+              "unit": "months"
+            }
           },
           "distributions": [
             {
               "transition": "Increment_Counter_Anxiety",
-              "distribution": 1
+              "distribution": 0.05
+            },
+            {
+              "transition": "Set_No_Anxiety",
+              "distribution": 0.95
             }
           ]
         },
@@ -458,11 +470,11 @@
           "distributions": [
             {
               "transition": "Set_No_Anxiety",
-              "distribution": 0.8
+              "distribution": 0.9
             },
             {
               "transition": "Set_Anxiety",
-              "distribution": 0.2
+              "distribution": 0.1
             }
           ]
         }
@@ -534,15 +546,21 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "arrest",
-            "operator": "==",
-            "value": true
+            "condition_type": "PriorState",
+            "name": "Set_Arrest",
+            "within": {
+              "quantity": 3,
+              "unit": "months"
+            }
           },
           "distributions": [
             {
               "transition": "Increment_Counter_Arrest",
-              "distribution": 1
+              "distribution": 0.05
+            },
+            {
+              "transition": "Set_No_Arrest",
+              "distribution": 0.95
             }
           ]
         },
@@ -594,11 +612,11 @@
           "distributions": [
             {
               "transition": "Set_No_Sexual_Trauma",
-              "distribution": 0.8
+              "distribution": 0.95
             },
             {
               "transition": "Set_Sexual_Trauma",
-              "distribution": 0.2
+              "distribution": 0.05
             }
           ]
         }
