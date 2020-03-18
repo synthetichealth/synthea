@@ -388,8 +388,8 @@ to compute clinical statistics from the ECG.      </p>
       <parameter id="arr_t1" name="arr_t1" value="0" constant="false"/>
       <parameter id="noise_amp" name="noise_amp" value="0.005" constant="false"/>
       
-      <parameter metaid="_685797" id="vfib_start" name="vfib_start" value="0" constant="false"/>
-      <parameter metaid="_685797" id="vfib_end" name="vfib_end" value="0" constant="false"/>
+      <parameter id="vfib_start" name="vfib_start" value="0" constant="false"/>
+      <parameter id="vfib_end" name="vfib_end" value="0" constant="false"/>
       
   </listOfParameters>
   <listOfRules>
