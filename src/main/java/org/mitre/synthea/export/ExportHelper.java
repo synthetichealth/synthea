@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import org.hl7.fhir.dstu3.model.Condition;
+import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.engine.Components.SampledData;
 import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -39,7 +40,9 @@ public abstract class ExportHelper {
       // round to 1 decimal place for display
       value = String.format(Locale.US, "%.1f", observation.value);
     } else if (observation.value instanceof SampledData) {
-      return sampledDataToValueString((SampledData) observation.value);
+      value = sampledDataToValueString((SampledData) observation.value);
+    } else if (observation.value instanceof Attachment) {
+      value = attachmentToValueString((Attachment) observation.value);
     } else if (observation.value != null) {
       value = observation.value.toString();
     }
@@ -102,6 +105,22 @@ public abstract class ExportHelper {
     }
 
     return sb.toString().trim();
+  }
+  
+  /**
+   * Helper to translate all Attachment values into string form.
+   * 
+   * @param attachment The Attachment object to export
+   * @return stringified Attachment data
+   */
+  public static String attachmentToValueString(Attachment attachment) {
+    if (attachment.data != null) {
+      return attachment.data;
+    }
+    if (attachment.url != null) {
+      return attachment.url;
+    }
+    return "";
   }
 
   /**
