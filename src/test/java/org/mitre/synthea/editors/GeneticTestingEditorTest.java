@@ -48,6 +48,8 @@ public class GeneticTestingEditorTest {
   @Before
   public void setup() {
     person = new Person(1);
+    person.attributes.put(Person.RACE, "white");
+    person.attributes.put(Person.NAME, "YYZ FOO");
     record = new HealthRecord(person);
   }
   

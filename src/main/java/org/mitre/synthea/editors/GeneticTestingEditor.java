@@ -5,6 +5,7 @@ import static org.mitre.synthea.editors.GeneticTestingEditor.DnaSynthesisConfig.
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
 import com.univocity.parsers.tsv.TsvParser;
 import com.univocity.parsers.tsv.TsvParserSettings;
 
@@ -41,7 +42,7 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
   
   protected static final String PRIOR_GENETIC_TESTING = "PRIOR_GENETIC_TESTING";
   static final String GENETIC_TESTING_REPORT_TYPE = "Genetic analysis summary panel";
-  private static final double GENETIC_TESTING_THRESHOLD = 0.80;
+  private static final double GENETIC_TESTING_THRESHOLD = 0.50;
   static final Map<String, List<MedicalCategory>> TRIGGER_CONDITIONS = init();
   
   static Map<String, List<MedicalCategory>> init() {
@@ -71,7 +72,7 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
     return shouldRun(person, record) && person.rand() >= GENETIC_TESTING_THRESHOLD;
   }
   
-  boolean shouldRun(Person person, HealthRecord record) {
+  protected boolean shouldRun(Person person, HealthRecord record) {
     Map<String, Object> context = this.getOrInitContextFor(person);
 
     // Don't do genetic testing if it has already been done
@@ -100,7 +101,7 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
     return categories;
   }
   
-  static MedicalCategory[] getGeneticCategories(Person person) {
+  private static MedicalCategory[] getGeneticCategories(Person person) {
     HashSet<MedicalCategory> categories = new HashSet<>();
     categories.addAll(getGeneticCategories(person.defaultRecord));
     if (person.hasMultipleRecords) {
@@ -109,9 +110,41 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
       }
     }
     
+    System.out.printf("%s: performing DNA synthesis for: %s\n",
+            person.attributes.get(Person.NAME), categories.toString());
+
     MedicalCategory[] array = categories.stream()
         .toArray(n -> new MedicalCategory[n]);
     return array;
+  }
+  
+  private static DnaSynthesisConfig.Population getPopulation(Person person) {
+    DnaSynthesisConfig.Population population;
+    String race = (String) person.attributes.get(Person.RACE);
+    switch(race) {
+      case "white":
+        population = DnaSynthesisConfig.Population.EUR;
+        break;
+      case "black":
+        population = DnaSynthesisConfig.Population.AFR;
+        break;
+      case "asian":
+        population = DnaSynthesisConfig.Population.EAS;
+        break;
+      case "native":
+        population = DnaSynthesisConfig.Population.AMR;
+        break;
+      default:
+        population = null; // randomly selected
+    }
+    return population;
+  }
+  
+  private static void addLOINC(HealthRecord.Observation observation, GeneticMarker marker) {
+    // TBD add mapping to actual codes
+    // TBD figure out why only "display" is included in diagnostic study result list
+    observation.codes.add(new Code("LOINC", "55232-3", 
+        "XYZZY"));
   }
 
   @Override
@@ -122,24 +155,43 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
     }
     
     MedicalCategory[] categories = getGeneticCategories(person);
+    DnaSynthesisConfig.Population population = getPopulation(person);
     DnaSynthesisConfig cfg = new DnaSynthesisConfig(
-        DnaSynthesisConfig.Population.AFR, categories);
+        population, categories);
                       
-    List<HealthRecord.Observation> observations = new ArrayList<>(10);
-    // TODO create list of observations by invoking dna_synthesis application
-    //    HealthRecord.Observation observation = person.record.new Observation(time, 
-    //        GENETIC_TESTING_REPORT_TYPE, null);
-    //    observation.codes.add(new Code("LOINC", "55232-3", 
-    //        GENETIC_TESTING_REPORT_TYPE));
-    //    observations.add(observation);
-    HealthRecord.Report geneticTestingReport = person.record.new Report(time, 
-        GENETIC_TESTING_REPORT_TYPE, observations);
-    geneticTestingReport.codes.add(new Code("LOINC", "55232-3", 
-        GENETIC_TESTING_REPORT_TYPE));
-    HealthRecord.Encounter encounter = encounters.get(0);
-    encounter.reports.add(geneticTestingReport);
-    Map<String, Object> context = this.getOrInitContextFor(person);
-    context.put(PRIOR_GENETIC_TESTING, time);
+    DnaSynthesisWrapper invoker = new DnaSynthesisWrapper(cfg);
+    File outputFile;
+    try {
+      outputFile = invoker.invoke();
+      List<GeneticMarker> markers = 
+              GeneticTestingEditor.DnaSynthesisWrapper.loadOutputFile(outputFile);
+      List<HealthRecord.Observation> observations = new ArrayList<>(10);
+
+      int variants = 0;
+      for (GeneticMarker marker: markers) {
+        if (marker.isVariant()) {
+          variants++;
+          HealthRecord.Observation observation = person.record.new Observation(time, 
+              marker.toString(), null);
+          addLOINC(observation, marker);
+          observations.add(observation);
+        }
+      }
+      System.out.printf("%s: %d genetic variants\n", person.attributes.get(Person.NAME),
+              variants);
+
+      HealthRecord.Report geneticTestingReport = person.record.new Report(time, 
+          GENETIC_TESTING_REPORT_TYPE, observations);
+      geneticTestingReport.codes.add(new Code("LOINC", "55232-3", 
+          GENETIC_TESTING_REPORT_TYPE));
+      HealthRecord.Encounter encounter = encounters.get(0);
+      encounter.reports.add(geneticTestingReport);
+      Map<String, Object> context = this.getOrInitContextFor(person);
+      context.put(PRIOR_GENETIC_TESTING, time);
+    } catch (IOException | InterruptedException ex) {
+      System.out.println("Unable to invoke DNA synthesis script");
+      ex.printStackTrace();
+    }
   }
   
   /**
@@ -256,42 +308,79 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
     public enum Population { AFR, AMR, EAS, EUR, SAS }
 
     public enum MedicalCategory {
+      @SerializedName("Aneurysm")
       ANEURYSM("Aneurysm"),
+      @SerializedName("Aortic Aneurysm")
       AORTIC_ANEURYSM("Aortic Aneurysm"),
+      @SerializedName("Arrhythmia")
       ARRHYTHMIA("Arrhythmia"),
+      @SerializedName("Arrhythmogenic Right Ventricular Dysplasia")
       ARRHYTHMOGENIC_RIGHT_VENTRICULAR_DYSPLASIA("Arrhythmogenic Right Ventricular Dysplasia"),
+      @SerializedName("Arterial Occlusive Disease")
       ARTERIAL_OCCLUSIVE_DISEASE("Arterial Occlusive Disease"),
+      @SerializedName("Brugada Syndrome")
       BRUGADA_SYNDROME("Brugada Syndrome"),
+      @SerializedName("Cardiac Amyloidosis")
       CARDIAC_AMYLOIDOSIS("Cardiac Amyloidosis"),
+      @SerializedName("Cardiac Arrest")
       CARDIAC_ARREST("Cardiac Arrest"),
+      @SerializedName("Cardiomyopathy")
       CARDIOMYOPATHY("Cardiomyopathy"),
+      @SerializedName("Cardiovascular")
       CARDIOVASCULAR("Cardiovascular"),
+      @SerializedName("Dilated Cardiomyopathy")
       DILATED_CARDIOMYOPATHY("Dilated Cardiomyopathy"),
+      @SerializedName("Dsyslipidemia")
       DSYSLIPIDEMIA("Dsyslipidemia"),
+      @SerializedName("Elevated Triglycerides")
       ELEVATED_TRIGLYCERIDES("Elevated Triglycerides"),
+      @SerializedName("Familial Dilated Cardiomyopathy")
       FAMILIAL_DILATED_CARDIOMYOPATHY("Familial Dilated Cardiomyopathy"),
+      @SerializedName("Familial Hypercholesterolemia")
       FAMILIAL_HYPERCHOLESTEROLEMIA("Familial Hypercholesterolemia"),
+      @SerializedName("HDL")
       HDL("HDL"),
+      @SerializedName("Heart Disease")
       HEART_DISEASE("Heart Disease"),
+      @SerializedName("Heart Valve Disease")
       HEART_VALVE_DISEASE("Heart Valve Disease"),
+      @SerializedName("Hemorrhagic Stroke")
       HEMORRHAGIC_STROKE("Hemorrhagic Stroke"),
+      @SerializedName("High Blood Pressure")
       HIGH_BLOOD_PRESSURE("High Blood Pressure"),
+      @SerializedName("Hypercholesterolemia")
       HYPERCHOLESTEROLEMIA("Hypercholesterolemia"),
+      @SerializedName("Hypertension")
       HYPERTENSION("Hypertension"),
+      @SerializedName("Insulin Resistance")
       INSULIN_RESISTANCE("Insulin Resistance"),
+      @SerializedName("Ischemic Stroke")
       ISCHEMIC_STROKE("Ischemic Stroke"),
+      @SerializedName("LDL")
       LDL("LDL"),
+      @SerializedName("Long QT Syndrome")
       LONG_QT_SYNDROME("Long QT Syndrome"),
+      @SerializedName("Marfan Syndrome")
       MARFAN_SYNDROME("Marfan Syndrome"),
+      @SerializedName("Mitral")
       MITRAL("Mitral"),
+      @SerializedName("Mitral Valve prolapse")
       MITRAL_VALVE_PROLAPSE("Mitral Valve prolapse"),
+      @SerializedName("Noncompaction Cardiomyopathy")
       NONCOMPACTION_CARDIOMYOPATHY("Noncompaction Cardiomyopathy"),
+      @SerializedName("Obesity")
       OBESITY("Obesity"),
+      @SerializedName("Prolapse")
       PROLAPSE("Prolapse"),
+      @SerializedName("Pulmonary Hypertension")
       PULMONARY_HYPERTENSION("Pulmonary Hypertension"),
+      @SerializedName("Restrictive Cardiomyopathy")
       RESTRICTIVE_CARDIOMYOPATHY("Restrictive Cardiomyopathy"),
+      @SerializedName("Short QT Syndrome")
       SHORT_QT_SYNDROME("Short QT Syndrome"),
+      @SerializedName("Stroke")
       STROKE("Stroke"),
+      @SerializedName("Thrombosis")
       THROMBOSIS("Thrombosis");
 
       private String description;
@@ -375,15 +464,19 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
         sb.append(" is associated with an increased risk of: ");
         List<DnaSynthesisConfig.MedicalCategory> associatedConditions = 
                 GeneticMarker.INDEX_MAP.get(index);
-        for (int i = 0; i < associatedConditions.size(); i++) {
-          if (i > 0) {
-            if (i < associatedConditions.size() - 1) {
-              sb.append(", ");
-            } else {
-              sb.append(" and ");
+        if (associatedConditions != null) {
+          for (int i = 0; i < associatedConditions.size(); i++) {
+            if (i > 0) {
+              if (i < associatedConditions.size() - 1) {
+                sb.append(", ");
+              } else {
+                sb.append(" and ");
+              }
             }
+            sb.append(associatedConditions.get(i));
           }
-          sb.append(associatedConditions.get(i));
+        } else {
+          sb.append("unknown conditions");
         }
         sb.append(".");
       } else {
