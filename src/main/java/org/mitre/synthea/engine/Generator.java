@@ -2,10 +2,8 @@ package org.mitre.synthea.engine;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collections;
@@ -21,8 +19,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOCase;
@@ -322,7 +318,7 @@ public class Generator {
 
     try {
       threadPool.shutdown();
-      while (!threadPool.awaitTermination(60, TimeUnit.SECONDS)) {
+      while (!threadPool.awaitTermination(30, TimeUnit.SECONDS)) {
         System.out.println("Waiting for threads to finish... " + threadPool);
       }
     } catch (InterruptedException e) {

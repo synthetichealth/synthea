@@ -1,6 +1,7 @@
 package org.mitre.synthea.helpers;
 
 import java.io.Serializable;
+import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
@@ -38,6 +39,10 @@ public class RandomCollection<E> implements Serializable {
    */
   public E next(Random random) {
     double value = random.nextDouble() * total;
-    return map.higherEntry(value).getValue();
+    Entry<Double, E> entry = map.higherEntry(value);
+    if (entry == null) {
+      entry = map.lastEntry();
+    }
+    return entry.getValue();
   }
 }

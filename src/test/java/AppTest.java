@@ -42,9 +42,6 @@ public class AppTest {
     App.main(args);
     out.flush();
     String output = out.toString();
-    if (!output.contains("alive=3")) {
-      System.out.println("oops");
-    }
     Assert.assertTrue(output.contains("Running with options:"));
     Assert.assertTrue(output.contains("Population:"));
     Assert.assertTrue(output.contains("Seed:"));
