@@ -334,10 +334,28 @@
         {
           "transition": "Diagnose_Sexual_Trauma",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "sexual_trauma",
-            "operator": "==",
-            "value": true
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": 313216003,
+                      "display": "History of sexual abuse"
+                    }
+                  ]
+                }
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "sexual_trauma",
+                "operator": "==",
+                "value": true
+              }
+            ]
           }
         },
         {

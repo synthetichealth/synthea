@@ -568,11 +568,11 @@
           "distributions": [
             {
               "transition": "Set_No_Arrest",
-              "distribution": 0.8
+              "distribution": 0.99
             },
             {
               "transition": "Set_Arrest",
-              "distribution": 0.2
+              "distribution": 0.01
             }
           ]
         }

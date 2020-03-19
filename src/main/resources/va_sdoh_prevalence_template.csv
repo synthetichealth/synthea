@@ -1,4 +1,8 @@
 ﻿Code,Type,Value,Expected Prevalence,Expected Prevalence of Suicidal Ideation,Expected Prevalence of Suicide Attempt,Population,Count,Actual Prevalence,Actual Ideation Prevalence,Actual Attempt Prevalence,Prevalence Delta,Ideation Delta,Attempt Delta
 suicide_ideation,Attribute,TRUE,3.8,100,,,,,,,,,
 marital_status,Attribute,D,50,,,,,,,,,,
+arrest,Attribute,TRUE,50,,,,,,,,,,
+deceased_loved_one,Attribute,TRUE,50,,,,,,,,,,
+anxiety,Attribute,TRUE,50,,,,,,,,,,
+sexual_trauma,Attribute,TRUE,50,,,,,,,,,,
 44054006,Condition,(diabetes),,,,,,,,,,,
