@@ -89,10 +89,18 @@ public class Person implements Serializable, QuadTreeElement {
   public final JDKRandomGenerator random;
   public final long seed;
   public long populationSeed;
+  /** 
+   * Tracks the last time that the person was updated over a serialize/deserialize.
+   */
+  public long lastUpdated;
+  /**
+   * Tracks the remaining modules for a person over a serialize/deserialize.
+   */
+  public List<Module> currentModules;
   public Map<String, Object> attributes;
   public Map<VitalSign, ValueGenerator> vitalSigns;
-  private Map<String, Map<String, Integer>> symptoms;
-  private Map<String, Map<String, Boolean>> symptomStatuses;
+  Map<String, Map<String, Integer>> symptoms;
+  Map<String, Map<String, Boolean>> symptomStatuses;
   public Map<String, HealthRecord.Medication> chronicMedications;
   /** The active health record. */
   public HealthRecord record;
@@ -153,7 +161,7 @@ public class Person implements Serializable, QuadTreeElement {
     annualHealthExpenses = new HashMap<Integer, Double>();
     annualHealthCoverage = new HashMap<Integer, Double>();
   }
-
+  
   /**
    * Retuns a random double.
    */
@@ -399,7 +407,15 @@ public class Person implements Serializable, QuadTreeElement {
       default:
         decimalPlaces = 2;
     }
-    return BigDecimal.valueOf(value).setScale(decimalPlaces, RoundingMode.HALF_UP).doubleValue();
+    Double retVal = value;
+    try {
+      retVal = BigDecimal.valueOf(value)
+              .setScale(decimalPlaces, RoundingMode.HALF_UP)
+              .doubleValue();
+    } catch (NumberFormatException e) {
+      // Ignore, value was NaN or infinity.
+    }
+    return retVal;
   }
 
   public void setVitalSign(VitalSign vitalSign, ValueGenerator valueGenerator) {
@@ -410,6 +426,11 @@ public class Person implements Serializable, QuadTreeElement {
    * Convenience function to set a vital sign to a constant value.
    */
   public void setVitalSign(VitalSign vitalSign, double value) {
+    if (!Double.isFinite(value)) {
+      throw new IllegalArgumentException(String.format(
+              "Vital signs must have finite values - %s is invalid", 
+              Double.valueOf(value).toString()));
+    }
     setVitalSign(vitalSign, new ConstantValueGenerator(this, value));
   }
 
@@ -658,14 +679,23 @@ public class Person implements Serializable, QuadTreeElement {
    * Returns the person's Payer at the given time.
    */
   public Payer getPayerAtTime(long time) {
-    return this.payerHistory[this.ageInYears(time)];
+    int ageInYears = this.ageInYears(time);
+    if (this.payerHistory.length > ageInYears) {
+      return this.payerHistory[ageInYears];
+    } else {
+      return null;
+    }
   }
 
   /**
    * Returns the person's Payer at the given age.
    */
   public Payer getPayerAtAge(int personAge) {
-    return this.payerHistory[personAge];
+    if (this.payerHistory.length > personAge) {
+      return this.payerHistory[personAge];
+    } else {
+      return null;
+    }
   }
 
   /**

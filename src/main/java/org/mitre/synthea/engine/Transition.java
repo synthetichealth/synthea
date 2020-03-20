@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,7 @@ import org.mitre.synthea.world.agents.Person;
  * not modify state as instances of Transition within States and Modules are
  * shared across the population.
  */
-public abstract class Transition {
+public abstract class Transition implements Serializable {
 
   protected List<String> remarks;
 
@@ -56,7 +57,7 @@ public abstract class Transition {
    * A TransitionOption represents a single destination state that may be
    * transitioned to.
    */
-  private abstract static class TransitionOption {
+  private abstract static class TransitionOption implements Serializable {
     protected String transition;
   }
 
@@ -512,7 +513,7 @@ public abstract class Transition {
       option.numericDistribution = (Double) option.distribution;
     } else {
       @SuppressWarnings("unchecked")
-      LinkedTreeMap<String, Object> map = (LinkedTreeMap<String, Object>) option.distribution;
+      Map<String, Object> map = (Map<String, Object>) option.distribution;
       option.namedDistribution = new NamedDistribution(map);
     }
   }
@@ -522,7 +523,7 @@ public abstract class Transition {
    * NamedDistribution with an attribute to fetch the desired probability from and
    * a default.
    */
-  public static class NamedDistribution {
+  public static class NamedDistribution implements Serializable {
     public String attribute;
     public double defaultDistribution;
 
@@ -531,7 +532,7 @@ public abstract class Transition {
       this.defaultDistribution = definition.get("default").getAsDouble();
     }
 
-    public NamedDistribution(LinkedTreeMap<String, ?> definition) {
+    public NamedDistribution(Map<String, ?> definition) {
       this.attribute = (String) definition.get("attribute");
       this.defaultDistribution = (Double) definition.get("default");
     }

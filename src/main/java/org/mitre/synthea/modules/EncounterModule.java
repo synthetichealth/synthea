@@ -205,8 +205,10 @@ public final class EncounterModule extends Module {
   }
 
   public void endWellnessEncounter(Person person, long time) {
-    person.record.encounterEnd(time, EncounterType.WELLNESS);
-    person.attributes.remove(ACTIVE_WELLNESS_ENCOUNTER);
+    if (person.attributes.get(ACTIVE_WELLNESS_ENCOUNTER) != null) {
+      person.record.encounterEnd(time, EncounterType.WELLNESS);
+      person.attributes.remove(ACTIVE_WELLNESS_ENCOUNTER);
+    }
   }
 
   /**

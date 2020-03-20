@@ -1,6 +1,7 @@
 package org.mitre.synthea.world.geography;
 
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 import java.util.Map;
 
 import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
@@ -8,7 +9,7 @@ import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 /**
  * Place represents a named place with a postal code and coordinate.
  */
-public class Place implements QuadTreeElement {
+public class Place implements QuadTreeElement, Serializable {
   /** The name of the state. For example, Ohio */
   public String state;
   /** The state abbreviation. For example, OH */

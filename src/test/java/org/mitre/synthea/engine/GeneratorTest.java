@@ -4,18 +4,32 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.export.Exporter.SupportedFhirVersion;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.geography.Location;
+import org.mitre.synthea.world.agents.Provider;
 
 public class GeneratorTest {
 
@@ -38,8 +52,10 @@ public class GeneratorTest {
   @Before
   public void before() throws Exception {
     Config.set("generate.only_dead_patients", "false");
+    Provider.clear();
+    Payer.clear();
   }
-
+  
   @Test
   public void testGeneratorCreatesPeople() throws Exception {
     int numberOfPeople = 1;
@@ -250,5 +266,84 @@ public class GeneratorTest {
     assertEquals(numberOfPeople, count);
 
     generateThread.interrupt();
+  }
+  
+  @Test
+  public void testUpdateAfterCreation() throws Exception {
+    // Get 100 people
+    Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
+    opts.population = 1;
+    opts.minAge = 50;
+    opts.maxAge = 100;
+    Generator generator = new Generator(opts);
+    final int NUM_RECS = 10;
+    Person[] people = new Person[NUM_RECS];
+    for (int i = 0; i < NUM_RECS; i++) {
+      long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+      Random randomForDemographics = new Random(personSeed);
+      Map<String, Object> demoAttributes = generator.randomDemographics(randomForDemographics);
+      people[i] = generator.createPerson(personSeed, demoAttributes);
+      generator.recordPerson(people[i], i);
+    }
+    
+    // Update them for 10 years in the future
+    generator.stop = generator.stop + Utilities.convertTime("years", 10);
+    for (Person p: people) {
+      generator.updatePerson(p);
+    }
+  }
+  
+  /**
+   * Serialize an array of people, then deserialize and return them. Note that when serializing
+   * more than one person it is much more efficient to serialize them within a collection since
+   * shared objects will only be serialized once and deserialization will not create duplicate
+   * objects in memory.
+   * @param original array of people to serialize
+   * @return new array of people following serialization and deserialization process
+   */
+  public static Person[] serializeAndDeserialize(Person[] original)
+          throws IOException, ClassNotFoundException {
+    // Serialize
+    File tf = File.createTempFile("patient", "synthea");
+    FileOutputStream fos = new FileOutputStream(tf);
+    ObjectOutputStream oos = new ObjectOutputStream(fos);
+    oos.writeObject(original);
+    oos.close();
+    fos.close();
+    
+    // Deserialize
+    FileInputStream fis = new FileInputStream(tf);
+    ObjectInputStream ois = new ObjectInputStream(fis);
+    Person[] rehydrated = (Person[])ois.readObject();
+    
+    return rehydrated;
+  }
+
+
+  @Test
+  public void testUpdateAfterCreationAndSerialization() throws Exception {
+    // Get 100 people
+    Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
+    opts.population = 1;
+    opts.minAge = 50;
+    opts.maxAge = 100;
+    Generator generator = new Generator(opts);
+    final int NUM_RECS = 100;
+    Person[] people = new Person[NUM_RECS];
+    for (int i = 0; i < NUM_RECS; i++) {
+      long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+      Random randomForDemographics = new Random(personSeed);
+      Map<String, Object> demoAttributes = generator.randomDemographics(randomForDemographics);
+      people[i] = generator.createPerson(personSeed, demoAttributes);
+      //generator.recordPerson(people[i], i);
+    }
+    
+    people = serializeAndDeserialize(people);
+    
+    // Update them for 10 years in the future
+    generator.stop = generator.stop + Utilities.convertTime("years", 10);
+    for (Person p: people) {
+      generator.updatePerson(p);
+    }
   }
 }

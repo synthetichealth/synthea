@@ -1,7 +1,12 @@
 package org.mitre.synthea.world.concepts;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -28,7 +33,7 @@ import org.mitre.synthea.world.agents.Provider;
  * class represents a logical health record. Exporters will convert this health
  * record into various standardized formats.
  */
-public class HealthRecord {
+public class HealthRecord implements Serializable {
 
   public static final String ENCOUNTERS = "encounters";
   public static final String PROCEDURES = "procedures";
@@ -38,7 +43,7 @@ public class HealthRecord {
   /**
    * HealthRecord.Code represents a system, code, and display value.
    */
-  public static class Code implements Comparable<Code> {
+  public static class Code implements Comparable<Code>, Serializable {
     /** Code System (e.g. LOINC, RxNorm, SNOMED) identifier (typically a URI) */
     public String system;
     /** The code itself. */
@@ -102,7 +107,7 @@ public class HealthRecord {
    * Observations, Reports, Medications, etc. All Entries have a name, start and
    * stop times, a type, and a list of associated codes.
    */
-  public class Entry {
+  public class Entry implements Serializable {
     /** reference to the HealthRecord this entry belongs to. */
     HealthRecord record = HealthRecord.this;
     public String fullUrl;
@@ -191,7 +196,7 @@ public class HealthRecord {
   public class Medication extends Entry {
     public List<Code> reasons;
     public Code stopReason;
-    public JsonObject prescriptionDetails;
+    public transient JsonObject prescriptionDetails;
     public Claim claim;
     public boolean administration;
     public boolean chronic;
@@ -204,6 +209,32 @@ public class HealthRecord {
       this.reasons = new ArrayList<Code>();
       // Create a medication claim.
       this.claim = new Claim(this, person);
+    }
+    
+    /**
+     * Java Serialization support for the prescriptionDetails field.
+     * @param oos stream to write to
+     */
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+      oos.defaultWriteObject();
+      if (prescriptionDetails != null) {
+        oos.writeObject(prescriptionDetails.toString());
+      } else {
+        oos.writeObject(null);
+      }
+    }
+    
+    /**
+     * Java Serialization support for the prescriptionDetails field.
+     * @param ois stream to read from
+     */
+    private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+      ois.defaultReadObject();
+      String prescriptionJson = (String) ois.readObject();
+      if (prescriptionJson != null) {
+        Gson gson = Utilities.getGson();
+        this.prescriptionDetails = gson.fromJson(prescriptionJson, JsonObject.class);
+      }
     }
   }
 
@@ -236,7 +267,7 @@ public class HealthRecord {
   public class CarePlan extends Entry {
     public Set<Code> activities;
     public List<Code> reasons;
-    public Set<JsonObject> goals;
+    public transient Set<JsonObject> goals;
     public Code stopReason;
 
     /**
@@ -247,6 +278,25 @@ public class HealthRecord {
       this.activities = new LinkedHashSet<Code>();
       this.reasons = new ArrayList<Code>();
       this.goals = new LinkedHashSet<JsonObject>();
+    }
+
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+      oos.defaultWriteObject();
+      ArrayList<String> stringifiedGoals = new ArrayList<>(this.goals.size());
+      for (JsonObject o: goals) {
+        stringifiedGoals.add(o.toString());
+      }
+      oos.writeObject(stringifiedGoals);
+    }
+    
+    private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+      ois.defaultReadObject();
+      ArrayList<String> stringifiedGoals = (ArrayList<String>)ois.readObject();
+      Gson gson = Utilities.getGson();
+      this.goals = new LinkedHashSet<JsonObject>();
+      for (String stringifiedGoal: stringifiedGoals) {
+        goals.add(gson.fromJson(stringifiedGoal, JsonObject.class));
+      }
     }
   }
 
@@ -267,9 +317,9 @@ public class HealthRecord {
      * ImagingStudy.Series represents a series of images that were taken of a
      * specific part of the body.
      */
-    public class Series implements Cloneable {
+    public class Series implements Cloneable, Serializable {
       /** A randomly assigned DICOM UID. */
-      public transient String dicomUid;
+      public String dicomUid;
       /** A SNOMED-CT body structures code. */
       public Code bodySite;
       /**
@@ -304,9 +354,9 @@ public class HealthRecord {
      * ImagingStudy.Instance represents a single imaging Instance taken as part of a
      * Series of images.
      */
-    public class Instance implements Cloneable {
+    public class Instance implements Cloneable, Serializable {
       /** A randomly assigned DICOM UID. */
-      public transient String dicomUid;
+      public String dicomUid;
       /** A title for this image. */
       public String title;
       /**
