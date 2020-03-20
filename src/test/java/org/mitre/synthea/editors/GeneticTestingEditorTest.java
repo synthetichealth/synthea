@@ -89,6 +89,12 @@ public class GeneticTestingEditorTest {
   
   @Test
   public void shouldAddGeneticTestingPanel() {
+    URL scriptURL = getClass().getClassLoader().getResource(
+        "editors/genetic.testing/dummy.sh");
+    File scriptFile = new File(scriptURL.getFile());
+    Config.set(DnaSynthesisWrapper.DNA_SYNTHESIS_SCRIPT,
+        scriptFile.getAbsolutePath());
+
     HealthRecord.Encounter e = record.encounterStart(1000, 
         HealthRecord.EncounterType.OUTPATIENT);
     GeneticTestingEditor editor = new GeneticTestingEditor();
