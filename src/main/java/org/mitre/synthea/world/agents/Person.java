@@ -11,12 +11,15 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
@@ -101,6 +104,11 @@ public class Person implements Serializable, QuadTreeElement {
   public Map<VitalSign, ValueGenerator> vitalSigns;
   Map<String, Map<String, Integer>> symptoms;
   Map<String, Map<String, Boolean>> symptomStatuses;
+  /** Data structure for storing onset conditions (init_time, end_time)*/
+  private Map<String, Map<String, List<Pair<Long, Long>>>> onsetConditions;
+  /** Data structure for storing mapping from state to condition names
+   * This is useful when facing ConditionEnd.conditionOnSet attribute*/
+  private Map<String, Map<String, String>> state2conditionMapping;
   public Map<String, HealthRecord.Medication> chronicMedications;
   /** The active health record. */
   public HealthRecord record;
@@ -141,6 +149,10 @@ public class Person implements Serializable, QuadTreeElement {
     vitalSigns = new ConcurrentHashMap<VitalSign, ValueGenerator>();
     symptoms = new ConcurrentHashMap<String, Map<String, Integer>>();
     symptomStatuses = new ConcurrentHashMap<String, Map<String, Boolean>>();
+    /* initialized the onsetConditions field */
+    onsetConditions = new ConcurrentHashMap<String, Map<String, List<Pair<Long, Long>>>>();
+    state2conditionMapping = new ConcurrentHashMap<String, Map<String, String>>();
+    
     /* Chronic Medications which will be renewed at each Wellness Encounter */
     chronicMedications = new ConcurrentHashMap<String, HealthRecord.Medication>();
     hasMultipleRecords =
@@ -161,7 +173,7 @@ public class Person implements Serializable, QuadTreeElement {
     annualHealthExpenses = new HashMap<Integer, Double>();
     annualHealthCoverage = new HashMap<Integer, Double>();
   }
-  
+
   /**
    * Retuns a random double.
    */
@@ -326,6 +338,48 @@ public class Person implements Serializable, QuadTreeElement {
     Long died = (Long) attributes.get(Person.DEATHDATE);
     return (born && (died == null || died > time));
   }
+  
+  /**
+   * Method that is used to update the onsetConditions field when
+   * a ConditionOnset state is processed.
+   */
+  public void onConditionOnset(String module, String state, String condition, long time) {
+	if (!onsetConditions.containsKey(module)) {
+      onsetConditions.put(module, new ConcurrentHashMap<String, List<Pair<Long, Long>>>());
+      state2conditionMapping.put(module, new ConcurrentHashMap<String, String>());
+	}
+	if (!onsetConditions.get(module).containsKey(condition)) {
+      onsetConditions.get(module).put(condition, new LinkedList<Pair<Long, Long>>());
+	}
+	
+	Pair<Long, Long> entry = new MutablePair(Long.valueOf(time), null);
+	onsetConditions.get(module).get(condition).add(entry);
+	state2conditionMapping.get(module).put(state, condition);
+  }
+  
+  /**
+   * Method for retrieving the condition name from a state name.
+   * Useful when dealing with ConditionEnd.conditionOnSet attribute.
+   */
+  public String getConditionFromState(String module, String state) {
+	String result = null;
+	if (state2conditionMapping.containsKey(module) && state2conditionMapping.get(module).containsKey(state)) {
+	 result = state2conditionMapping.get(module).get(state);
+	}
+	return result;
+  }
+  
+  /**
+   * Method that is used to update the onsetConditions field when
+   * a ConditionEnd state is processed.
+   */
+  public void onConditionEnd(String module, String condition, long time) {
+	if (onsetConditions.containsKey(module) && onsetConditions.get(module).containsKey(condition)) {
+	  int size = onsetConditions.get(module).get(condition).size();
+	  onsetConditions.get(module).get(condition).get(size-1).setValue(Long.valueOf(time));
+	}
+  }
+  
 
   public void setSymptom(String cause, String type, int value, Boolean addressed) {
     if (!symptoms.containsKey(type)) {
