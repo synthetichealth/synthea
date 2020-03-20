@@ -140,13 +140,6 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
     return population;
   }
   
-  private static void addLOINC(HealthRecord.Observation observation, GeneticMarker marker) {
-    // TBD add mapping to actual codes
-    // TBD figure out why only "display" is included in diagnostic study result list
-    observation.codes.add(new Code("LOINC", "55232-3", 
-        "XYZZY"));
-  }
-
   @Override
   public void process(Person person, List<HealthRecord.Encounter> encounters, 
       long time, Random random) {
@@ -166,6 +159,7 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
       List<GeneticMarker> markers = 
               GeneticTestingEditor.DnaSynthesisWrapper.loadOutputFile(outputFile);
       List<HealthRecord.Observation> observations = new ArrayList<>(10);
+      HealthRecord.Encounter encounter = encounters.get(0);
 
       int variants = 0;
       for (GeneticMarker marker: markers) {
@@ -173,7 +167,8 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
           variants++;
           HealthRecord.Observation observation = person.record.new Observation(time, 
               marker.toString(), null);
-          addLOINC(observation, marker);
+          observation.codes.add(marker.getVariantCode());
+          encounter.observations.add(observation);
           observations.add(observation);
         }
       }
@@ -184,7 +179,6 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
           GENETIC_TESTING_REPORT_TYPE, observations);
       geneticTestingReport.codes.add(new Code("LOINC", "55232-3", 
           GENETIC_TESTING_REPORT_TYPE));
-      HealthRecord.Encounter encounter = encounters.get(0);
       encounter.reports.add(geneticTestingReport);
       Map<String, Object> context = this.getOrInitContextFor(person);
       context.put(PRIOR_GENETIC_TESTING, time);
@@ -327,7 +321,7 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
       @SerializedName("Cardiomyopathy")
       CARDIOMYOPATHY("Cardiomyopathy"),
       @SerializedName("Cardiovascular")
-      CARDIOVASCULAR("Cardiovascular"),
+      CARDIOVASCULAR("Cardiovascular Issues"),
       @SerializedName("Dilated Cardiomyopathy")
       DILATED_CARDIOMYOPATHY("Dilated Cardiomyopathy"),
       @SerializedName("Dsyslipidemia")
@@ -339,7 +333,7 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
       @SerializedName("Familial Hypercholesterolemia")
       FAMILIAL_HYPERCHOLESTEROLEMIA("Familial Hypercholesterolemia"),
       @SerializedName("HDL")
-      HDL("HDL"),
+      HDL("Low HDL"),
       @SerializedName("Heart Disease")
       HEART_DISEASE("Heart Disease"),
       @SerializedName("Heart Valve Disease")
@@ -357,13 +351,13 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
       @SerializedName("Ischemic Stroke")
       ISCHEMIC_STROKE("Ischemic Stroke"),
       @SerializedName("LDL")
-      LDL("LDL"),
+      LDL("High LDL"),
       @SerializedName("Long QT Syndrome")
       LONG_QT_SYNDROME("Long QT Syndrome"),
       @SerializedName("Marfan Syndrome")
       MARFAN_SYNDROME("Marfan Syndrome"),
       @SerializedName("Mitral")
-      MITRAL("Mitral"),
+      MITRAL("Mitral valve issues"),
       @SerializedName("Mitral Valve prolapse")
       MITRAL_VALVE_PROLAPSE("Mitral Valve prolapse"),
       @SerializedName("Noncompaction Cardiomyopathy")
@@ -463,7 +457,7 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
         sb.append(index);
         sb.append(" is associated with an increased risk of: ");
         List<DnaSynthesisConfig.MedicalCategory> associatedConditions = 
-                GeneticMarker.INDEX_MAP.get(index);
+                getAssociatedMedicalCategories();
         if (associatedConditions != null) {
           for (int i = 0; i < associatedConditions.size(); i++) {
             if (i > 0) {
@@ -747,6 +741,11 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
       indexMap.put("rs4244285", Arrays.asList(THROMBOSIS, CARDIOVASCULAR));
       indexMap.put("rs7080536", Arrays.asList(THROMBOSIS));
       return indexMap;
+    }
+
+    private Code getVariantCode() {
+      // TBD add mapping to actual codes
+      return new Code("LOINC", "55232-3", toString());
     }
   }
 
