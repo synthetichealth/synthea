@@ -845,8 +845,8 @@ public abstract class State implements Cloneable, Serializable {
       return true;
     }
     
-    protected void updateOnsetInfo(Person person, long time ) {
-    	return;
+    protected void updateOnsetInfo(Person person, long time) {
+      return;
     }
 
     public abstract void diagnose(Person person, long time);
@@ -861,10 +861,12 @@ public abstract class State implements Cloneable, Serializable {
    * then the condition will only be diagnosed when that future encounter occurs.
    */
   public static class ConditionOnset extends OnsetState {
-	@Override
-    protected void updateOnsetInfo(Person person, long time ) {
-    	person.onConditionOnset(module.name, this.name, codes.get(0).display, time);
+      
+    @Override
+    protected void updateOnsetInfo(Person person, long time) {
+      person.onConditionOnset(module.name, this.name, codes.get(0).display, time);
     }
+    
     @Override
     public void diagnose(Person person, long time) {
       String primaryCode = codes.get(0).code;
@@ -908,18 +910,18 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public boolean process(Person person, long time) {
       if (conditionOnset != null) {
-    	String condition = person.getConditionFromState(module.name, conditionOnset);
-    	if(condition!=null) {
-          person.onConditionEnd(module.name, condition, time);    		
-    	}
+        String condition = person.getConditionFromState(module.name, conditionOnset);
+        if (condition != null) {
+          person.onConditionEnd(module.name, condition, time);
+        }
         person.record.conditionEndByState(time, conditionOnset);
       } else if (referencedByAttribute != null) {
         Entry condition = (Entry) person.attributes.get(referencedByAttribute);
-    	person.onConditionEnd(module.name, condition.codes.get(0).display, time);
+        person.onConditionEnd(module.name, condition.codes.get(0).display, time);
         condition.stop = time;
         person.record.conditionEnd(time, condition.type);
       } else if (codes != null) {
-    	person.onConditionEnd(module.name, codes.get(0).display, time);
+        person.onConditionEnd(module.name, codes.get(0).display, time);
         codes.forEach(code -> person.record.conditionEnd(time, code.code));
       }
       return true;

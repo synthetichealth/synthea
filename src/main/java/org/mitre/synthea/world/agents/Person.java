@@ -344,17 +344,17 @@ public class Person implements Serializable, QuadTreeElement {
    * a ConditionOnset state is processed.
    */
   public void onConditionOnset(String module, String state, String condition, long time) {
-	if (!onsetConditions.containsKey(module)) {
+    if (!onsetConditions.containsKey(module)) {
       onsetConditions.put(module, new ConcurrentHashMap<String, List<Pair<Long, Long>>>());
       state2conditionMapping.put(module, new ConcurrentHashMap<String, String>());
-	}
-	if (!onsetConditions.get(module).containsKey(condition)) {
+    }
+    if (!onsetConditions.get(module).containsKey(condition)) {
       onsetConditions.get(module).put(condition, new LinkedList<Pair<Long, Long>>());
-	}
-	
-	Pair<Long, Long> entry = new MutablePair(Long.valueOf(time), null);
-	onsetConditions.get(module).get(condition).add(entry);
-	state2conditionMapping.get(module).put(state, condition);
+    }
+    
+    Pair<Long, Long> entry = new MutablePair(Long.valueOf(time), null);
+    onsetConditions.get(module).get(condition).add(entry);
+    state2conditionMapping.get(module).put(state, condition);
   }
   
   /**
@@ -362,11 +362,12 @@ public class Person implements Serializable, QuadTreeElement {
    * Useful when dealing with ConditionEnd.conditionOnSet attribute.
    */
   public String getConditionFromState(String module, String state) {
-	String result = null;
-	if (state2conditionMapping.containsKey(module) && state2conditionMapping.get(module).containsKey(state)) {
-	 result = state2conditionMapping.get(module).get(state);
-	}
-	return result;
+    String result = null;
+    boolean isModulePresent = state2conditionMapping.containsKey(module);
+    if (isModulePresent && state2conditionMapping.get(module).containsKey(state)) {
+      result = state2conditionMapping.get(module).get(state);
+    }
+    return result;
   }
   
   /**
@@ -374,10 +375,10 @@ public class Person implements Serializable, QuadTreeElement {
    * a ConditionEnd state is processed.
    */
   public void onConditionEnd(String module, String condition, long time) {
-	if (onsetConditions.containsKey(module) && onsetConditions.get(module).containsKey(condition)) {
-	  int size = onsetConditions.get(module).get(condition).size();
-	  onsetConditions.get(module).get(condition).get(size-1).setValue(Long.valueOf(time));
-	}
+    if (onsetConditions.containsKey(module) && onsetConditions.get(module).containsKey(condition)) {
+      int size = onsetConditions.get(module).get(condition).size();
+      onsetConditions.get(module).get(condition).get(size - 1).setValue(Long.valueOf(time));
+    }
   }
   
 
