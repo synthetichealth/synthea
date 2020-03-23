@@ -544,10 +544,6 @@ public class Person implements Serializable, QuadTreeElement {
     return total;
   }
 
-  public void resetSymptoms() {
-    symptoms.clear();
-  }
-
   public boolean hadPriorState(String name) {
     return hadPriorState(name, null, null);
   }
