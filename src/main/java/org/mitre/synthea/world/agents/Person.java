@@ -387,6 +387,52 @@ public class Person implements Serializable, QuadTreeElement {
     }
   }
   
+  /**
+  * Get the symptoms that were expressed as parts of 
+  * the conditions the person suffers from.
+  */
+  public Map<Long, Map<String, Map<String, Integer>>> getConditionSymptoms() {
+    Map<Long, Map<String, Map<String, Integer>>> conditionSymtoms;
+    // conditionSymtoms.get(age).get(condition).put(type, value);
+    conditionSymtoms = new ConcurrentHashMap<Long, Map<String, Map<String, Integer>>>();
+    
+    for (String module : onsetConditions.keySet()) {
+      for (String condition : onsetConditions.get(module).keySet()) {
+        for (Pair<Long, Long> entry : onsetConditions.get(module).get(condition)) {
+          Long begin = entry.getKey();
+          Long end = entry.getValue();
+          if (!conditionSymtoms.containsKey(begin)) {
+            conditionSymtoms.put(begin, new ConcurrentHashMap<String, Map<String, Integer>>());
+          }
+          if (!conditionSymtoms.get(begin).containsKey(condition)) {
+            conditionSymtoms.get(begin).put(condition, new ConcurrentHashMap<String, Integer>());
+          }
+          for (String type : symptoms.keySet()) {
+            if (symptoms.get(type).containsKey(module)) {
+              Map<Long, Integer> timedTypedSymptoms = symptoms.get(type).get(module);
+              // get the value that correspond to the earliest time belonging
+              // to the interval [begin, end] if any.
+              Long minKey = null;
+              for (Long time : timedTypedSymptoms.keySet()) {
+                boolean greatThanBegin = time >= begin;
+                boolean lowThanEnd = (end != null  && time <= end) || (end == null);
+                boolean isEarliest = (minKey == null) || (minKey != null && time <= minKey);
+                if (greatThanBegin && lowThanEnd && isEarliest) {
+                  minKey = time;
+                }
+              }
+              if (minKey != null) {
+                Integer value = timedTypedSymptoms.get(minKey);
+                conditionSymtoms.get(begin).get(condition).put(type, value);
+              }              
+            }
+          }
+        }
+      }
+    }
+    return conditionSymtoms;
+  }
+  
   /** Updating the method for accounting of the time on which
    * the symptom is set. 
    */

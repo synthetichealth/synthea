@@ -243,6 +243,20 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
+    if (Boolean.parseBoolean(Config.get("exporter.symptoms.csv.export"))) {
+      try {
+        SymptomCSVExporter.getInstance().export(person, stopTime);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    if (Boolean.parseBoolean(Config.get("exporter.symptoms.text.export"))) {
+      try {
+        SymptomTextExporter.exportAll(person, fileTag, stopTime);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
     if (Boolean.parseBoolean(Config.get("exporter.cdw.export"))) {
       try {
         CDWExporter.getInstance().export(person, stopTime);
