@@ -200,6 +200,7 @@ public abstract class Transition implements Serializable {
         rowAttributes = rowAttributes.subList(0, this.attributes.size());
         // Create age range for lookup table key if age is an attribute.
         Range<Integer> ageRange = null;
+        Range<Long> timeRange = null;
         if (this.attributes.contains("age")) {
           Integer ageIndex = this.attributes.indexOf("age");
           // Remove and parse the age range.
@@ -216,9 +217,25 @@ public abstract class Transition implements Serializable {
               Integer.parseInt(value.substring(0, value.indexOf("-"))),
               Integer.parseInt(value.substring(value.indexOf("-") + 1)));
         }
+        if (this.attributes.contains("time")) {
+          Integer timeIndex = this.attributes.indexOf("time");
+          // Remove and parse the age range.
+          String value = rowAttributes.remove(timeIndex.intValue());
+          if (!value.contains("-")
+              || value.substring(0, value.indexOf("-")).length() < 1
+              || value.substring(value.indexOf("-") + 1).length() < 1) {
+            throw new RuntimeException(
+                "LOOKUP TABLE '" + fileName
+                    + "' ERROR: Time Range must be in the form: 'timeLow-timeHigh'. Found '"
+                    + value + "'");
+          }
+          timeRange = Range.between(
+              Long.parseLong(value.substring(0, value.indexOf("-"))),
+              Long.parseLong(value.substring(value.indexOf("-") + 1)));
+        }
         // Attributes key to inert into lookup table.
         LookupTableKey attributesLookupKey =
-            new LookupTableKey(rowAttributes, ageRange);
+            new LookupTableKey(rowAttributes, ageRange, timeRange);
         // Transition probabilities to insert into lookup table.
         List<DistributedTransitionOption> transitionProbabilities
             = createDistributedTransitionOptions(currentRow, transitionStates);
@@ -275,7 +292,7 @@ public abstract class Transition implements Serializable {
         }
       }
       // Create key from person's attributes to get distributions
-      LookupTableKey personsAttributesLookupKey = new LookupTableKey(personsAttributes, age);
+      LookupTableKey personsAttributesLookupKey = new LookupTableKey(personsAttributes, age, time);
       if (lookupTables.get(lookupTableName).containsKey(personsAttributesLookupKey)) {
         // Person matches, use their attribute's list of distributedtransitionoptions
         return pickDistributedTransition(
@@ -294,15 +311,20 @@ public abstract class Transition implements Serializable {
     /** Age range for this row. Null if this is a person. */
     private final Range<Integer> ageRange;
 
+    private final Long time;
+    private final Range<Long> timeRange;
+
     /**
      * Create a symbolic lookup key for a given row that contains actual patient values.
      * @param attributes Patient attribute values.
      * @param age Patient age.
      */
-    public LookupTableKey(List<String> attributes, Integer age) {
+    public LookupTableKey(List<String> attributes, Integer age, Long time) {
       this.attributes = attributes;
       this.age = age;
       this.ageRange = null;
+      this.time = time;
+      this.timeRange = null;
     }
 
     /**
@@ -311,10 +333,12 @@ public abstract class Transition implements Serializable {
      * @param range If the table contains an age column, range contains the age range
      *     information for this key.
      */
-    public LookupTableKey(List<String> attributes, Range<Integer> range) {
+    public LookupTableKey(List<String> attributes, Range<Integer> range, Range<Long> timeRange) {
       this.attributes = attributes;
       this.age = null;
       this.ageRange = range;
+      this.time = null;
+      this.timeRange = timeRange;
     }
 
     /**
@@ -341,6 +365,7 @@ public abstract class Transition implements Serializable {
       LookupTableKey that = (LookupTableKey) obj;
 
       boolean agesMatch = true;
+      boolean timesMatch = true;
 
       if (this.age != null) {
         if (that.age != null) {
@@ -369,7 +394,25 @@ public abstract class Transition implements Serializable {
         agesMatch = false;
       }
 
-      return agesMatch && this.attributes.equals(that.attributes);
+      if (that.time != null) {
+        if (this.timeRange != null) {
+          timesMatch = (this.timeRange.contains(that.time));
+        } else {
+          // this.time == null && this.timeRange == null
+          timesMatch = false;
+        }
+      } else if (this.timeRange != null) {
+        // this.time == null && that.time == null
+        if (that.timeRange != null) {
+          timesMatch = this.timeRange.containsRange(that.timeRange);
+        } else {
+          timesMatch = false;
+        }
+      } else if (that.timeRange != null) {
+        timesMatch = false;
+      }
+
+      return agesMatch && timesMatch && this.attributes.equals(that.attributes);
     }
 
     /**
