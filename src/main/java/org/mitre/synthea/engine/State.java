@@ -1693,13 +1693,16 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
+      //using the module name instead of the cause
       if (person.rand() <= probability) {
         if (exact != null) {
-          person.setSymptom(cause, symptom, exact.quantity, addressed);
+          person.setSymptom(this.module.name, symptom, time, exact.quantity, addressed);
         } else if (range != null) {
-          person.setSymptom(cause, symptom, (int) person.rand(range.low, range.high), addressed);
+          person.setSymptom(
+              this.module.name, symptom, time, (int) person.rand(range.low, range.high), addressed
+          );
         } else {
-          person.setSymptom(cause, symptom, 0, addressed);
+          person.setSymptom(this.module.name, symptom, time, 0, addressed);
         }
       }
       return true;

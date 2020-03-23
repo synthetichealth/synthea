@@ -102,9 +102,14 @@ public class Person implements Serializable, QuadTreeElement {
   public List<Module> currentModules;
   public Map<String, Object> attributes;
   public Map<VitalSign, ValueGenerator> vitalSigns;
-  Map<String, Map<String, Integer>> symptoms;
+  /** Data structure for storing symptoms faced by a person.
+   * Adding the Long keyset to keep track of the time a symptom is set. */
+  Map<String, Map<String, Map<Long, Integer>>> symptoms;
   Map<String, Map<String, Boolean>> symptomStatuses;
-  /** Data structure for storing onset conditions (init_time, end_time)*/
+  /** Data structure for keeping track of the last time a symptom
+   *  from a given module has been set. **/
+  private Map<String, Map<String, Long>> symptomLastUpdatedTimes;
+  /** Data structure for storing onset conditions (init_time, end_time).*/
   private Map<String, Map<String, List<Pair<Long, Long>>>> onsetConditions;
   /** Data structure for storing mapping from state to condition names
    * This is useful when facing ConditionEnd.conditionOnSet attribute*/
@@ -147,8 +152,9 @@ public class Person implements Serializable, QuadTreeElement {
     random = new JDKRandomGenerator((int) seed);
     attributes = new ConcurrentHashMap<String, Object>();
     vitalSigns = new ConcurrentHashMap<VitalSign, ValueGenerator>();
-    symptoms = new ConcurrentHashMap<String, Map<String, Integer>>();
+    symptoms = new ConcurrentHashMap<String, Map<String, Map<Long, Integer>>>();
     symptomStatuses = new ConcurrentHashMap<String, Map<String, Boolean>>();
+    symptomLastUpdatedTimes = new ConcurrentHashMap<String, Map<String, Long>>();
     /* initialized the onsetConditions field */
     onsetConditions = new ConcurrentHashMap<String, Map<String, List<Pair<Long, Long>>>>();
     state2conditionMapping = new ConcurrentHashMap<String, Map<String, String>>();
@@ -381,23 +387,37 @@ public class Person implements Serializable, QuadTreeElement {
     }
   }
   
-
-  public void setSymptom(String cause, String type, int value, Boolean addressed) {
+  /** Updating the method for accounting of the time on which
+   * the symptom is set. 
+   */
+  public void setSymptom(String cause, String type, long time, int value, Boolean addressed) {
     if (!symptoms.containsKey(type)) {
-      symptoms.put(type, new ConcurrentHashMap<String, Integer>());
+      symptoms.put(type, new ConcurrentHashMap<String, Map<Long, Integer>>());
       symptomStatuses.put(type, new ConcurrentHashMap<String, Boolean>());
+      symptomLastUpdatedTimes.put(type, new ConcurrentHashMap<String, Long>());
     }
-    symptoms.get(type).put(cause, value);
+    if (!symptoms.get(type).containsKey(cause)) {
+      symptoms.get(type).put(cause, new ConcurrentHashMap<Long, Integer>());
+    }
+    symptoms.get(type).get(cause).put(Long.valueOf(time), value);
     symptomStatuses.get(type).put(cause, addressed);
+    symptomLastUpdatedTimes.get(type).put(cause, Long.valueOf(time));
   }
-
+  
+  /**
+   * Method for retrieving the value associated to a given symptom. 
+   * This correspond to the maximum value across all potential causes.
+   */
   public int getSymptom(String type) {
     int max = 0;
-    if (symptoms.containsKey(type) && symptomStatuses.containsKey(type)) {
-      Map<String, Integer> typedSymptoms = symptoms.get(type);
+    if (symptoms.containsKey(type) && symptomStatuses.containsKey(type)
+          && symptomLastUpdatedTimes.containsKey(type)) {
+      Map<String, Map<Long, Integer>> typedSymptoms = symptoms.get(type);
       for (String cause : typedSymptoms.keySet()) {
-        if (typedSymptoms.get(cause) > max && !symptomStatuses.get(type).get(cause)) {
-          max = typedSymptoms.get(cause);
+        Long lastUpdateTime = symptomLastUpdatedTimes.get(type).get(cause);
+        if (typedSymptoms.get(cause).get(lastUpdateTime) > max 
+              && !symptomStatuses.get(type).get(cause)) {
+          max = typedSymptoms.get(cause).get(lastUpdateTime);
         }
       }
     }
@@ -426,11 +446,14 @@ public class Person implements Serializable, QuadTreeElement {
     String highestCause = "";
     int maxValue = 0;
     for (String type : symptoms.keySet()) {
-      if (symptoms.containsKey(type) && symptomStatuses.containsKey(type)) {
-        Map<String, Integer> typedSymptoms = symptoms.get(type);
+      if (symptoms.containsKey(type) && symptomStatuses.containsKey(type) 
+            && symptomLastUpdatedTimes.containsKey(type)) {
+        Map<String, Map<Long, Integer>> typedSymptoms = symptoms.get(type);
         for (String cause : typedSymptoms.keySet()) {
-          if (typedSymptoms.get(cause) > maxValue && !symptomStatuses.get(type).get(cause)) {
-            maxValue = typedSymptoms.get(cause);
+          Long lastUpdateTime = symptomLastUpdatedTimes.get(type).get(cause);
+          if (typedSymptoms.get(cause).get(lastUpdateTime) > maxValue 
+                && !symptomStatuses.get(type).get(cause)) {
+            maxValue = typedSymptoms.get(cause).get(lastUpdateTime);
             highestCause = cause;
             highestType = type;
           }

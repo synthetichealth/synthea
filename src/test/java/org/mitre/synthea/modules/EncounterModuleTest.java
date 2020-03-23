@@ -53,7 +53,7 @@ public class EncounterModuleTest {
   
   @Test
   public void testEmergencySymptomEncounterHasClinician() {
-    person.setSymptom("Test", "Test", EncounterModule.EMERGENCY_SYMPTOM_THRESHOLD + 1, false);
+    person.setSymptom("Test", "Test", System.currentTimeMillis(), EncounterModule.EMERGENCY_SYMPTOM_THRESHOLD + 1, false);
     module.process(person, System.currentTimeMillis());
     assertNotNull(person.record);
     assertFalse(person.record.encounters.isEmpty());
@@ -65,7 +65,7 @@ public class EncounterModuleTest {
 
   @Test
   public void testUrgentcareSymptomEncounterHasClinician() {
-    person.setSymptom("Test", "Test", EncounterModule.URGENT_CARE_SYMPTOM_THRESHOLD + 1, false);
+    person.setSymptom("Test", "Test", System.currentTimeMillis(), EncounterModule.URGENT_CARE_SYMPTOM_THRESHOLD + 1, false);
     module.process(person, System.currentTimeMillis());
     assertNotNull(person.record);
     assertFalse(person.record.encounters.isEmpty());
@@ -77,7 +77,7 @@ public class EncounterModuleTest {
 
   @Test
   public void testPrimarySymptomEncounterHasClinician() {
-    person.setSymptom("Test", "Test", EncounterModule.PCP_SYMPTOM_THRESHOLD + 1, false);
+    person.setSymptom("Test", "Test", System.currentTimeMillis(), EncounterModule.PCP_SYMPTOM_THRESHOLD + 1, false);
     module.process(person, System.currentTimeMillis());
     assertNotNull(person.record);
     assertFalse(person.record.encounters.isEmpty());
