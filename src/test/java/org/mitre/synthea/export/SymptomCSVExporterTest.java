@@ -21,10 +21,13 @@ public class SymptomCSVExporterTest {
    * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
    */
   @ClassRule
-  public TemporaryFolder tempFolder = new TemporaryFolder();
+  public static TemporaryFolder tempFolder = new TemporaryFolder();
   
   private static File exportDir;
 
+  /**
+   * Setup function for running the test.
+   */
   @BeforeClass
   public static void setUpExportDir() throws Exception {
     TestHelper.exportOff();
@@ -36,6 +39,10 @@ public class SymptomCSVExporterTest {
     Config.set("exporter.baseDirectory", exportDir.toString());    
   }
 
+
+  /**
+   * Function for testing if the symptom export is done perfectly.
+   */
   @Test
   public void testSymptomCSVExport() throws Exception {
 
