@@ -325,11 +325,6 @@
     },
     "End Isolation In Room": {
       "type": "CarePlanEnd",
-      "direct_transition": "End Testing Encounter",
-      "referenced_by_attribute": "covid19_careplan"
-    },
-    "End Testing Encounter": {
-      "type": "EncounterEnd",
       "complex_transition": [
         {
           "condition": {
@@ -391,13 +386,14 @@
             ]
           },
           "distributions": [],
-          "transition": "Admission"
+          "transition": "End Encounter and Admit Immediately"
         },
         {
           "distributions": [],
           "transition": "Self Isolation At Home"
         }
-      ]
+      ],
+      "referenced_by_attribute": "covid19_careplan"
     },
     "Self Isolation At Home": {
       "type": "CarePlanStart",
@@ -430,70 +426,7 @@
         }
       ],
       "assign_to_attribute": "covid19_careplan",
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Age",
-            "operator": ">=",
-            "quantity": 65,
-            "unit": "years",
-            "value": 0
-          },
-          "distributions": [
-            {
-              "transition": "Wait for Admission",
-              "distribution": 0.9
-            },
-            {
-              "transition": "Wait for Death",
-              "distribution": 0.05
-            },
-            {
-              "transition": "Self Isolation Delay",
-              "distribution": 0.05
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Age",
-            "operator": ">=",
-            "quantity": 30,
-            "unit": "years",
-            "value": 0
-          },
-          "distributions": [
-            {
-              "transition": "Wait for Admission",
-              "distribution": 0.5
-            },
-            {
-              "transition": "Wait for Death",
-              "distribution": 0.05
-            },
-            {
-              "transition": "Self Isolation Delay",
-              "distribution": 0.45
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "transition": "Wait for Admission",
-              "distribution": 0.25
-            },
-            {
-              "transition": "Wait for Death",
-              "distribution": 0.01
-            },
-            {
-              "transition": "Self Isolation Delay",
-              "distribution": 0.74
-            }
-          ]
-        }
-      ]
+      "direct_transition": "End Encounter and Discharge Home"
     },
     "End Self Isolation At Home": {
       "type": "CarePlanEnd",
@@ -878,6 +811,77 @@
         }
       ],
       "direct_transition": "Daily PPE for Clinician"
+    },
+    "End Encounter and Admit Immediately": {
+      "type": "EncounterEnd",
+      "direct_transition": "Admission"
+    },
+    "End Encounter and Discharge Home": {
+      "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 65,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Wait for Admission",
+              "distribution": 0.9
+            },
+            {
+              "transition": "Wait for Death",
+              "distribution": 0.05
+            },
+            {
+              "transition": "Self Isolation Delay",
+              "distribution": 0.05
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 30,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Wait for Admission",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Wait for Death",
+              "distribution": 0.05
+            },
+            {
+              "transition": "Self Isolation Delay",
+              "distribution": 0.45
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Wait for Admission",
+              "distribution": 0.25
+            },
+            {
+              "transition": "Wait for Death",
+              "distribution": 0.01
+            },
+            {
+              "transition": "Self Isolation Delay",
+              "distribution": 0.74
+            }
+          ]
+        }
+      ]
     }
   }
 }
