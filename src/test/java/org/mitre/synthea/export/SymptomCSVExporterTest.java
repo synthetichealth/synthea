@@ -4,11 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
-
-import org.junit.Rule;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
@@ -18,18 +20,24 @@ public class SymptomCSVExporterTest {
   /**
    * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
    */
-  @Rule
+  @ClassRule
   public TemporaryFolder tempFolder = new TemporaryFolder();
+  
+  private static File exportDir;
 
-  @Test
-  public void testSymptomCSVExport() throws Exception {
+  @BeforeClass
+  public static void setUpExportDir() throws Exception {
     TestHelper.exportOff();
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.symptoms.csv.export", "true");
     Config.set("exporter.symptoms.csv.folder_per_run", "false");
-    File tempOutputFolder = tempFolder.newFolder();
-    Config.set("exporter.baseDirectory", tempOutputFolder.toString());
+    exportDir = tempFolder.newFolder();
+    Config.set("exporter.baseDirectory", exportDir.toString());    
+  }
+
+  @Test
+  public void testSymptomCSVExport() throws Exception {
 
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);
@@ -40,7 +48,7 @@ public class SymptomCSVExporterTest {
 
     // if we get here we at least had no exceptions
 
-    File expectedExportFolder = tempOutputFolder.toPath().resolve("symptoms/csv").toFile();
+    File expectedExportFolder = exportDir.toPath().resolve("symptoms/csv").toFile();
 
     assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
 
