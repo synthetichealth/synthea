@@ -1688,7 +1688,50 @@ public abstract class State implements Cloneable, Serializable {
       return true;
     }
   }
-
+  
+  public static class Device extends State {
+    public Code code;
+    public String manufacturer;
+    public String model;
+    
+    @Override
+    public Device clone() {
+      Device clone = (Device) super.clone();
+      clone.code = code;
+      clone.manufacturer = manufacturer;
+      clone.model = model;
+      return clone;
+    }
+    
+	@Override
+	public boolean process(Person person, long time) {
+		HealthRecord.Device device = person.record.deviceImplant(time, code.code);
+		device.codes.add(code);
+		device.manufacturer = manufacturer;
+		device.model = model;
+		
+		return true;
+	}
+  }
+  
+  public static class SupplyList extends State {
+	  public List<JsonObject> supplies; // TODO: make a class for these, when needed
+	  
+	  @Override
+	  public SupplyList clone() {
+		  SupplyList clone = (SupplyList) super.clone();
+		  clone.supplies = supplies;
+		  return clone;
+	  }
+	  
+	  @Override
+		public boolean process(Person person, long time) {
+		  HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
+		  encounter.supplies.addAll(supplies);
+		  return false;
+		}
+  }
+  
   /**
    * The Death state type indicates a point in the module at which the patient dies or the patient
    * is given a terminal diagnosis (e.g. "you have 3 months to live"). When the Death state is
