@@ -111,7 +111,7 @@ public class SymptomTextExporter {
         StringBuilder s = new StringBuilder();
         s.append(ageYear.toString()).append(" | ");
         s.append(clean(condition)).append(" | ");
-        s.append(clean(String.valueOf(infos.get(endTime).get(condition).size())));
+        s.append(clean(String.valueOf(infos.get(time).get(condition).size())));
         
         StringBuilder symptomStr = new StringBuilder();
         for (String symptom: infos.get(time).get(condition).keySet()) {
