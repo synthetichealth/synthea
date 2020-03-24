@@ -364,6 +364,40 @@ public class Person implements Serializable, QuadTreeElement {
   }
   
   /**
+   * Method that is used to retrieve the last time a condition
+   * has been onset from a given module.
+   */
+  public Long getConditionLastOnsetTimeFromModule(String module, String condition) {
+    Long result = null;
+    if (onsetConditions.containsKey(module)) {
+      if (onsetConditions.get(module).containsKey(condition)) {
+        int size = onsetConditions.get(module).get(condition).size();
+        if (size > 0) {
+          result = onsetConditions.get(module).get(condition).get(size - 1).getKey();
+        }
+      }
+    }
+    return result;
+  }
+  
+  /**
+   * Method that is used to retrieve the last time a ConditionEnd state
+   * has been processed for a given condition from a given module.
+   */
+  public Long getConditionLastEndTimeFromModule(String module, String condition) {
+    Long result = null;
+    if (onsetConditions.containsKey(module)) {
+      if (onsetConditions.get(module).containsKey(condition)) {
+        int size = onsetConditions.get(module).get(condition).size();
+        if (size > 0) {
+          result = onsetConditions.get(module).get(condition).get(size - 1).getValue();
+        }
+      }
+    }
+    return result;
+  }
+  
+  /**
    * Method for retrieving the condition name from a state name.
    * Useful when dealing with ConditionEnd.conditionOnSet attribute.
    */
@@ -448,6 +482,18 @@ public class Person implements Serializable, QuadTreeElement {
     symptoms.get(type).get(cause).put(Long.valueOf(time), value);
     symptomStatuses.get(type).put(cause, addressed);
     symptomLastUpdatedTimes.get(type).put(cause, Long.valueOf(time));
+  }
+  
+  /**
+   * Method for retrieving the last time a given symptom has been updated from a given module.
+   */
+  public Long getSymptomLastUpdatedTime(String module, String symptom) {
+    Long result = null;
+    if (symptomLastUpdatedTimes.containsKey(symptom)
+          && symptomLastUpdatedTimes.get(symptom).containsKey(module)) {
+      result = symptomLastUpdatedTimes.get(symptom).get(module);
+    }
+    return result;
   }
   
   /**
