@@ -108,12 +108,12 @@ public class Person implements Serializable, QuadTreeElement {
   Map<String, Map<String, Boolean>> symptomStatuses;
   /** Data structure for keeping track of the last time a symptom
    *  from a given module has been set. **/
-  private Map<String, Map<String, Long>> symptomLastUpdatedTimes;
+  Map<String, Map<String, Long>> symptomLastUpdatedTimes;
   /** Data structure for storing onset conditions (init_time, end_time).*/
-  private Map<String, Map<String, List<Pair<Long, Long>>>> onsetConditions;
+  Map<String, Map<String, List<Pair<Long, Long>>>> onsetConditions;
   /** Data structure for storing mapping from state to condition names
    * This is useful when facing ConditionEnd.conditionOnSet attribute*/
-  private Map<String, Map<String, String>> state2conditionMapping;
+  Map<String, Map<String, String>> state2conditionMapping;
   public Map<String, HealthRecord.Medication> chronicMedications;
   /** The active health record. */
   public HealthRecord record;
