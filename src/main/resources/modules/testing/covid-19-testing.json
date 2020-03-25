@@ -1,0 +1,141 @@
+{
+  "name": "Covid-19 Testing",
+  "remarks": [
+    "Copyright 2014-2020 Michigan Health Information Network Shared Services. ",
+    "Licensed under the Apache License, Version 2.0 (the \u0027License\u0027); you may not use this file ",
+    "except in compliance with the License. You may obtain a copy of the License at  ",
+    "http://www.apache.org/licenses/LICENSE-2.0.  ",
+    "Unless required by applicable law or agreed to in writing, software ",
+    "distributed under the License is distributed on an \u0027AS IS\u0027 BASIS, ",
+    "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. ",
+    "See the License for the specific language governing permissions and ",
+    "limitations under the License."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Suspected COVID"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Suspected COVID": {
+      "assign_to_attribute": "Suspected COVID",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "840544004",
+          "display": "Suspected COVID-19"
+        }
+      ],
+      "type": "ConditionOnset",
+      "direct_transition": "Apply Face Mask to Patient"
+    },
+    "Apply Face Mask to Patient": {
+      "used": true,
+      "reason": "Suspected COVID",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "261352009",
+          "display": "Face mask (physical object)"
+        }
+      ],
+      "type": "DeviceOrder",
+      "direct_transition": "Isolation in Negative Pressure",
+      "remarks": [
+        "This should really be a \u0027Device\u0027 state."
+      ]
+    },
+    "Isolation in Negative Pressure": {
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "444908001",
+          "display": "Isolation nursing in negative pressure isolation environment (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "409524006",
+          "display": "Airborne precautions (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "409526008",
+          "display": "Personal protective equipment (physical object)"
+        }
+      ],
+      "assign_to_attribute": "covid19_careplan",
+      "reason": "Suspected COVID",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "736376001",
+          "display": "Infectious disease care plan (record artifact)"
+        }
+      ],
+      "type": "CarePlanStart",
+      "direct_transition": "Wait for Test in Negative Pressure Room"
+    },
+    "Wait for Test in Negative Pressure Room": {
+      "range": {
+        "low": 30.0,
+        "high": 90.0,
+        "unit": "minutes"
+      },
+      "type": "Delay",
+      "direct_transition": "Administer COVID-19 Test"
+    },
+    "Administer COVID-19 Test": {
+      "observations": [
+        {
+          "category": "laboratory",
+          "range": {
+            "low": 1000.0,
+            "high": 2000.0
+          },
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94531-1",
+              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+            }
+          ],
+          "type": "Observation"
+        }
+      ],
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "94531-1",
+          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+        }
+      ],
+      "type": "DiagnosticReport",
+      "direct_transition": "End_Suspected_Covid-19"
+    },
+    "End_Suspected_Covid-19": {
+      "referenced_by_attribute": "Suspected COVID",
+      "type": "ConditionEnd",
+      "direct_transition": "Diagnosed COVID"
+    },
+    "Diagnosed COVID": {
+      "assign_to_attribute": "Covid-19 Condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "840539006",
+          "display": "COVID-19"
+        }
+      ],
+      "type": "ConditionOnset",
+      "direct_transition": "End Isolation In Room"
+    },
+    "End Isolation In Room": {
+      "referenced_by_attribute": "covid19_careplan",
+      "type": "CarePlanEnd",
+      "direct_transition": "Terminal"
+    }
+  }
+}

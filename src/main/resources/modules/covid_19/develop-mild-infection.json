@@ -1,0 +1,108 @@
+{
+  "name": "Mild Covid-19 Infection",
+  "remarks": [
+    "Copyright 2014-2020 Michigan Health Information Network Shared Services. ",
+    "Licensed under the Apache License, Version 2.0 (the \u0027License\u0027); you may not use this file ",
+    "except in compliance with the License. You may obtain a copy of the License at  ",
+    "http://www.apache.org/licenses/LICENSE-2.0.  ",
+    "Unless required by applicable law or agreed to in writing, software ",
+    "distributed under the License is distributed on an \u0027AS IS\u0027 BASIS, ",
+    "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. ",
+    "See the License for the specific language governing permissions and ",
+    "limitations under the License."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Mild_Covid-19_Fever_Symptom"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Mild_Covid-19_Fever_Symptom": {
+      "symptom": "Fever",
+      "cause": "Covid-19 Condition",
+      "range": {
+        "low": 0.0,
+        "high": 30.0,
+        "unit": "{ordinal}"
+      },
+      "probability": 0.83,
+      "codes": [
+        {
+          "system": "ICD-10-CM",
+          "code": "R50.9",
+          "display": "Fever, unspecified"
+        }
+      ],
+      "type": "Symptom",
+      "direct_transition": "Mild_Covid-19_Cough_Symptom"
+    },
+    "Mild_Covid-19_Cough_Symptom": {
+      "symptom": "Cough",
+      "cause": "Covid-19 Condition",
+      "range": {
+        "low": 0.0,
+        "high": 30.0,
+        "unit": "{ordinal}"
+      },
+      "probability": 0.46,
+      "codes": [
+        {
+          "system": "ICD-10-CM",
+          "code": "R05",
+          "display": "Cough"
+        }
+      ],
+      "type": "Symptom",
+      "direct_transition": "Mild_Covid-19_Shortness_of_Breath_Symptom"
+    },
+    "Mild_Covid-19_Shortness_of_Breath_Symptom": {
+      "symptom": "Shortness of Breath",
+      "cause": "Covid-19 Condition",
+      "range": {
+        "low": 0.0,
+        "high": 30.0,
+        "unit": "{ordinal}"
+      },
+      "probability": 0.31,
+      "codes": [
+        {
+          "system": "ICD-10-CM",
+          "code": "R06.02",
+          "display": "Shortness of breath"
+        }
+      ],
+      "type": "Symptom",
+      "direct_transition": "Mild_Covid-19_Fatigue_Symptom"
+    },
+    "Mild_Covid-19_Fatigue_Symptom": {
+      "symptom": "Fatigue",
+      "cause": "Covid-19 Condition",
+      "range": {
+        "low": 0.0,
+        "high": 30.0,
+        "unit": "{ordinal}"
+      },
+      "probability": 0.11,
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "84229001",
+          "display": "Fatigue (finding)"
+        }
+      ],
+      "type": "Symptom",
+      "direct_transition": "Mild_Covid-19_Recovery_Delay"
+    },
+    "Mild_Covid-19_Recovery_Delay": {
+      "range": {
+        "low": 3.0,
+        "high": 10.0,
+        "unit": "days"
+      },
+      "type": "Delay",
+      "direct_transition": "Terminal"
+    }
+  }
+}

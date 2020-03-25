@@ -1,0 +1,381 @@
+{
+  "name": "Covid-19 Outpatient Encounter",
+  "remarks": [
+    "Copyright 2014-2020 Michigan Health Information Network Shared Services. ",
+    "Licensed under the Apache License, Version 2.0 (the \u0027License\u0027); you may not use this file ",
+    "except in compliance with the License. You may obtain a copy of the License at  ",
+    "http://www.apache.org/licenses/LICENSE-2.0.  ",
+    "Unless required by applicable law or agreed to in writing, software ",
+    "distributed under the License is distributed on an \u0027AS IS\u0027 BASIS, ",
+    "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. ",
+    "See the License for the specific language governing permissions and ",
+    "limitations under the License."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Set_Temperature"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Set_Temperature": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.1020671834625323,
+          "transition": "Low_Non-severe_Fever"
+        },
+        {
+          "distribution": 0.3242894056847545,
+          "transition": "Medium_Non-severe_Fever"
+        },
+        {
+          "distribution": 0.4599483204134367,
+          "transition": "High_Non-severe_Fever"
+        },
+        {
+          "distribution": 0.11369509043927649,
+          "transition": "Extreme_Non-severe_Fever"
+        }
+      ]
+    },
+    "Low_Non-severe_Fever": {
+      "vital_sign": "Temperature",
+      "range": {
+        "low": 98.6,
+        "high": 99.5,
+        "unit": "F"
+      },
+      "unit": "F",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Temperature"
+        }
+      ],
+      "type": "VitalSign",
+      "direct_transition": "Non-severe_Covid-19_Fever_Symptom"
+    },
+    "Medium_Non-severe_Fever": {
+      "vital_sign": "Temperature",
+      "range": {
+        "low": 99.5,
+        "high": 100.4,
+        "unit": "F"
+      },
+      "unit": "F",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Temperature"
+        }
+      ],
+      "type": "VitalSign",
+      "direct_transition": "Non-severe_Covid-19_Fever_Symptom"
+    },
+    "High_Non-severe_Fever": {
+      "vital_sign": "Temperature",
+      "range": {
+        "low": 100.4,
+        "high": 102.0,
+        "unit": "F"
+      },
+      "unit": "F",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Temperature"
+        }
+      ],
+      "type": "VitalSign",
+      "direct_transition": "Non-severe_Covid-19_Fever_Symptom"
+    },
+    "Extreme_Non-severe_Fever": {
+      "vital_sign": "Temperature",
+      "range": {
+        "low": 102.0,
+        "high": 103.0,
+        "unit": "F"
+      },
+      "unit": "F",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Temperature"
+        }
+      ],
+      "type": "VitalSign",
+      "direct_transition": "Non-severe_Covid-19_Fever_Symptom"
+    },
+    "Non-severe_Covid-19_Fever_Symptom": {
+      "symptom": "Fever",
+      "cause": "Covid-19 Condition",
+      "range": {
+        "low": 30.0,
+        "high": 60.0,
+        "unit": "{ordinal}"
+      },
+      "probability": 0.98,
+      "codes": [
+        {
+          "system": "ICD-10-CM",
+          "code": "R50.9",
+          "display": "Fever, unspecified"
+        }
+      ],
+      "type": "Symptom",
+      "direct_transition": "Non-severe_Covid-19_Cough_Symptom"
+    },
+    "Non-severe_Covid-19_Cough_Symptom": {
+      "symptom": "Cough",
+      "cause": "Covid-19 Condition",
+      "range": {
+        "low": 30.0,
+        "high": 60.0,
+        "unit": "{ordinal}"
+      },
+      "probability": 0.68,
+      "codes": [
+        {
+          "system": "ICD-10-CM",
+          "code": "R05",
+          "display": "Cough"
+        }
+      ],
+      "type": "Symptom",
+      "direct_transition": "Non-severe_Covid-19_Shortness_of_Breath_Symptom"
+    },
+    "Non-severe_Covid-19_Shortness_of_Breath_Symptom": {
+      "symptom": "Shortness of Breath",
+      "cause": "Covid-19 Condition",
+      "range": {
+        "low": 30.0,
+        "high": 60.0,
+        "unit": "{ordinal}"
+      },
+      "probability": 0.15,
+      "codes": [
+        {
+          "system": "ICD-10-CM",
+          "code": "R06.02",
+          "display": "Shortness of breath"
+        }
+      ],
+      "type": "Symptom",
+      "direct_transition": "Non-severe_Covid-19_Fatigue_Symptom"
+    },
+    "Non-severe_Covid-19_Fatigue_Symptom": {
+      "symptom": "Fatigue",
+      "cause": "Covid-19 Condition",
+      "range": {
+        "low": 30.0,
+        "high": 60.0,
+        "unit": "{ordinal}"
+      },
+      "probability": 0.38,
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "84229001",
+          "display": "Fatigue (finding)"
+        }
+      ],
+      "type": "Symptom",
+      "direct_transition": "Non-severe_Covid-19_Sore_Throat_Symptom"
+    },
+    "Non-severe_Covid-19_Sore_Throat_Symptom": {
+      "symptom": "Sore Throat",
+      "cause": "Covid-19 Condition",
+      "range": {
+        "low": 30.0,
+        "high": 60.0,
+        "unit": "{ordinal}"
+      },
+      "probability": 0.14,
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "267102003",
+          "display": "Sore Throat"
+        }
+      ],
+      "type": "Symptom",
+      "direct_transition": "Non-severe_Covid-19_Sputum_Production_Symptom"
+    },
+    "Non-severe_Covid-19_Sputum_Production_Symptom": {
+      "symptom": "Sputum Production",
+      "cause": "Covid-19 Condition",
+      "range": {
+        "low": 30.0,
+        "high": 60.0,
+        "unit": "{ordinal}"
+      },
+      "probability": 0.33,
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "248595008",
+          "display": "Sputum (finding)"
+        }
+      ],
+      "type": "Symptom",
+      "direct_transition": "Non-severe_Covid-19_Outpatient_Encounter"
+    },
+    "Non-severe_Covid-19_Outpatient_Encounter": {
+      "encounter_class": "outpatient",
+      "wellness": false,
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185345009",
+          "display": "Encounter for symptom"
+        }
+      ],
+      "type": "Encounter",
+      "direct_transition": "Suspected COVID"
+    },
+    "Suspected COVID": {
+      "submodule": "testing/covid-19-testing",
+      "type": "CallSubmodule",
+      "direct_transition": "Prescribe_Acetaminophen"
+    },
+    "Prescribe_Acetaminophen": {
+      "reason": "Diagnosed COVID",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "198440",
+          "display": "Acetaminophen 500 MG Oral Tablet"
+        }
+      ],
+      "type": "MedicationOrder",
+      "direct_transition": "Self Isolation At Home",
+      "remarks": [
+        "For fever response, we want to use acetaminophen.",
+        "WHO Now Officially Recommends to Avoid Taking Ibuprofen For COVID-19 Symptoms"
+      ]
+    },
+    "Self Isolation At Home": {
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "409524006",
+          "display": "Airborne precautions (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "361235007",
+          "display": "Isolation of infected patient (procedure)"
+        }
+      ],
+      "assign_to_attribute": "covid19_careplan",
+      "reason": "Diagnosed COVID",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "736376001",
+          "display": "Infectious disease care plan (record artifact)"
+        }
+      ],
+      "type": "CarePlanStart",
+      "direct_transition": "End_Outpatient_PCP_Encounter"
+    },
+    "End_Outpatient_PCP_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Outpatient_Covid-19_Recovery"
+    },
+    "Outpatient_Covid-19_Recovery": {
+      "range": {
+        "low": 3.0,
+        "high": 10.0,
+        "unit": "days"
+      },
+      "type": "Delay",
+      "direct_transition": "End_Outpatient_Covid-19_CarePlan"
+    },
+    "End_Outpatient_Covid-19_CarePlan": {
+      "referenced_by_attribute": "covid19_careplan",
+      "type": "CarePlanEnd",
+      "direct_transition": "Covid-19_Recovery"
+    },
+    "Covid-19_Recovery": {
+      "vital_sign": "Temperature",
+      "range": {
+        "low": 98.5,
+        "high": 98.7,
+        "unit": "F"
+      },
+      "unit": "F",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Temperature"
+        }
+      ],
+      "type": "VitalSign",
+      "direct_transition": "End_Non-severe_Covid-19_Fever_Symptom"
+    },
+    "End_Non-severe_Covid-19_Fever_Symptom": {
+      "symptom": "Fever",
+      "cause": "Covid-19 Condition",
+      "type": "Symptom",
+      "direct_transition": "End_Non-severe_Covid-19_Cough_Symptom"
+    },
+    "End_Non-severe_Covid-19_Cough_Symptom": {
+      "symptom": "Cough",
+      "cause": "Covid-19 Condition",
+      "type": "Symptom",
+      "direct_transition": "End_Non-severe_Covid-19_Shortness_of_Breath_Symptom"
+    },
+    "End_Non-severe_Covid-19_Shortness_of_Breath_Symptom": {
+      "symptom": "Shortness of Breath",
+      "cause": "Covid-19 Condition",
+      "type": "Symptom",
+      "direct_transition": "End_Non-severe_Covid-19_Fatigue_Symptom"
+    },
+    "End_Non-severe_Covid-19_Fatigue_Symptom": {
+      "symptom": "Fatigue",
+      "cause": "Covid-19 Condition",
+      "type": "Symptom",
+      "direct_transition": "End_Non-severe_Covid-19_Sore_Throat_Symptom"
+    },
+    "End_Non-severe_Covid-19_Sore_Throat_Symptom": {
+      "symptom": "Sore Throat",
+      "cause": "Covid-19 Condition",
+      "type": "Symptom",
+      "direct_transition": "End_Non-severe_Covid-19_Sputum_Production_Symptom"
+    },
+    "End_Non-severe_Covid-19_Sputum_Production_Symptom": {
+      "symptom": "Sputum Production",
+      "cause": "Covid-19 Condition",
+      "type": "Symptom",
+      "direct_transition": "End_Condition"
+    },
+    "End_Condition": {
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "840539006",
+          "display": "COVID-19"
+        }
+      ],
+      "type": "ConditionEnd",
+      "direct_transition": "Outpatient_Discharge"
+    },
+    "Outpatient_Discharge": {
+      "type": "EncounterEnd",
+      "direct_transition": "Reset_Comorbidity_Attribute"
+    },
+    "Reset_Comorbidity_Attribute": {
+      "attribute": "Covid-19 Comorbidity",
+      "type": "SetAttribute",
+      "direct_transition": "Terminal"
+    }
+  }
+}

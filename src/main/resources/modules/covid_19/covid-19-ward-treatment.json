@@ -1,0 +1,165 @@
+{
+  "name": "Covid-19 Ward Treatment",
+  "remarks": [
+    "Copyright 2014-2020 Michigan Health Information Network Shared Services. ",
+    "Licensed under the Apache License, Version 2.0 (the \u0027License\u0027); you may not use this file ",
+    "except in compliance with the License. You may obtain a copy of the License at  ",
+    "http://www.apache.org/licenses/LICENSE-2.0.  ",
+    "Unless required by applicable law or agreed to in writing, software ",
+    "distributed under the License is distributed on an \u0027AS IS\u0027 BASIS, ",
+    "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. ",
+    "See the License for the specific language governing permissions and ",
+    "limitations under the License."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Dx_Respiratory_Distress"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Dx_Respiratory_Distress": {
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "271825005",
+          "display": "Respiratory distress (finding)"
+        }
+      ],
+      "type": "ConditionOnset",
+      "direct_transition": "Rx_Albuterol"
+    },
+    "Rx_Albuterol": {
+      "administered": true,
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "2123111",
+          "display": "NDA020503 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
+        }
+      ],
+      "type": "MedicationOrder",
+      "direct_transition": "Isolation in Negative Pressure"
+    },
+    "Isolation in Negative Pressure": {
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "444908001",
+          "display": "Isolation nursing in negative pressure isolation environment (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "409524006",
+          "display": "Airborne precautions (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "409526008",
+          "display": "Personal protective equipment (physical object)"
+        }
+      ],
+      "reason": "Covid-19 Condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "736376001",
+          "display": "Infectious disease care plan (record artifact)"
+        }
+      ],
+      "type": "CarePlanStart",
+      "direct_transition": "Ward_Medications"
+    },
+    "Ward_Medications": {
+      "administered": true,
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "251854",
+          "display": "Clarithromycin 50 MG/ML Injectable Suspension"
+        }
+      ],
+      "type": "MedicationOrder",
+      "direct_transition": "Ward_Covid-19_Recovery"
+    },
+    "Ward_Covid-19_Recovery": {
+      "range": {
+        "low": 7.0,
+        "high": 21.0,
+        "unit": "days"
+      },
+      "type": "Delay",
+      "direct_transition": "Determine_Ward_Outcome"
+    },
+    "Determine_Ward_Outcome": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Ward_Death",
+          "lookup_table_name": "covid-19-Ward-outcomes.csv",
+          "default_probability": 0.2
+        },
+        {
+          "transition": "Ward_Discharge",
+          "lookup_table_name": "covid-19-Ward-outcomes.csv",
+          "default_probability": 0.8
+        }
+      ]
+    },
+    "Ward_Death": {
+      "attribute": "Covid-19 Comorbidity",
+      "type": "SetAttribute",
+      "direct_transition": "Ward_Decease"
+    },
+    "Ward_Decease": {
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "840539006",
+          "display": "COVID-19"
+        }
+      ],
+      "type": "Death",
+      "direct_transition": "Terminal"
+    },
+    "Ward_Discharge": {
+      "careplan": "Isolation in Negative Pressure",
+      "type": "CarePlanEnd",
+      "direct_transition": "End_Respiratory_Distress"
+    },
+    "End_Respiratory_Distress": {
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "271825005",
+          "display": "Respiratory distress (finding)"
+        }
+      ],
+      "type": "ConditionEnd",
+      "direct_transition": "End_Albuterol"
+    },
+    "End_Albuterol": {
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "2123111",
+          "display": "NDA020503 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
+        }
+      ],
+      "type": "MedicationEnd",
+      "direct_transition": "End_Clarithromycin"
+    },
+    "End_Clarithromycin": {
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "251854",
+          "display": "Clarithromycin 50 MG/ML Injectable Suspension"
+        }
+      ],
+      "type": "MedicationEnd",
+      "direct_transition": "Terminal"
+    }
+  }
+}
