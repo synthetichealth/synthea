@@ -3,10 +3,13 @@ package org.mitre.synthea.engine;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.withSettings;
+
+import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -1712,5 +1715,56 @@ public class StateTest {
     // Verify that the Person now has an LVEF value of 60
     assertEquals(person.getVitalSign(VitalSign.LVEF, time), 60.0, 0.00001);
     
+  }
+  
+  @Test
+  public void testDevice() throws Exception {
+    Module module = TestHelper.getFixture("artificial_heart_device.json");
+    
+    State encounterState = module.getState("Encounter");
+    assertTrue(encounterState.process(person, time));
+    
+    State deviceState = module.getState("Artificial_Heart");
+    assertTrue(deviceState.process(person, time));
+
+    Encounter encounter = person.getCurrentEncounter(module);
+    List<HealthRecord.Device> devices = encounter.devices;
+    assertNotNull(devices);
+    assertEquals(1, devices.size());
+    
+    HealthRecord.Device device = devices.get(0);
+    assertEquals("13459008", device.type);
+    assertEquals("SynCardia", device.manufacturer);
+    assertEquals("Total Artificial Heart", device.model);
+  }
+  
+  @Test
+  public void testSupplyList() throws Exception {
+    Module module = TestHelper.getFixture("artificial_heart_device.json");
+    
+    State encounterState = module.getState("Encounter");
+    assertTrue(encounterState.process(person, time));
+    
+    State supplyListState = module.getState("Necessary_Supplies");
+    assertTrue(supplyListState.process(person, time));
+    
+    Encounter encounter = person.getCurrentEncounter(module);
+    List<JsonObject> supplies = encounter.supplies;
+    assertNotNull(supplies);
+    assertEquals(4, supplies.size());
+    
+    String[] expectedCodes = { "52291003", "468159004", "39802000", "788177008" };
+    String[] expectedDisplays = { "Glove, device (physical object)", 
+        "Cotton ball (physical object)", "Tongue blade, device (physical object)", 
+        "Examination gown, single-use (physical object)" };
+    int[] expectedQuantities = { 10_000, 3_000, 98765, 1 };
+    
+    for (int i = 0; i < 4; i++) {
+      JsonObject supply = supplies.get(i);
+      JsonObject supplyCode = supply.get("code").getAsJsonObject();
+      assertEquals(expectedCodes[i], supplyCode.get("code").getAsString());
+      assertEquals(expectedDisplays[i], supplyCode.get("display").getAsString());
+      assertEquals(expectedQuantities[i], supply.get("quantity").getAsInt());
+    }
   }
 }

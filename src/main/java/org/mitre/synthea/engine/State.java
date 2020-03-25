@@ -1688,7 +1688,63 @@ public abstract class State implements Cloneable, Serializable {
       return true;
     }
   }
+  
+  /**
+   * The Device state indicates the point that a permanent or semi-permanent device
+   * (for example, a prosthetic, or pacemaker) is associated to a person.
+   * The actual procedure in which the device is implanted is not automatically generated
+   * and should be added separately. A Device may have a manufacturer or model listed
+   * for cases where there is generally only one choice.
+   */
+  public static class Device extends State {
+    public Code code;
+    public String manufacturer;
+    public String model;
 
+    @Override
+    public Device clone() {
+      Device clone = (Device) super.clone();
+      clone.code = code;
+      clone.manufacturer = manufacturer;
+      clone.model = model;
+      return clone;
+    }
+
+    @Override
+    public boolean process(Person person, long time) {
+      HealthRecord.Device device = person.record.deviceImplant(time, code.code);
+      device.codes.add(code);
+      device.manufacturer = manufacturer;
+      device.model = model;
+
+      return true;
+    }
+  }
+  
+  /**
+   * The SupplyList state includes a list of supplies that are needed for the current encounter.
+   * Supplies may include things like PPE for the physician, or other resources and machines.
+   *
+   */
+  public static class SupplyList extends State {
+    // TODO: make a class for these, when needed beyond just exporting
+    public List<JsonObject> supplies;
+
+    @Override
+    public SupplyList clone() {
+      SupplyList clone = (SupplyList) super.clone();
+      clone.supplies = supplies;
+      return clone;
+    }
+
+    @Override
+    public boolean process(Person person, long time) {
+      HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
+      encounter.supplies.addAll(supplies);
+      return true;
+    }
+  }
+  
   /**
    * The Death state type indicates a point in the module at which the patient dies or the patient
    * is given a terminal diagnosis (e.g. "you have 3 months to live"). When the Death state is
