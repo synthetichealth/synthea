@@ -47,7 +47,7 @@
       ]
     },
     "Call_Infection_Submodule": {
-      "submodule": "covid_19_pub/covid19",
+      "submodule": "covid_19/covid19",
       "type": "CallSubmodule",
       "direct_transition": "Terminal"
     }
