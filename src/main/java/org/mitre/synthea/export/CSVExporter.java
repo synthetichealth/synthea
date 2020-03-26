@@ -32,6 +32,7 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Device;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
@@ -90,6 +91,11 @@ public class CSVExporter {
    * Writer for imaging_studies.csv
    */
   private OutputStreamWriter imagingStudies;
+  /**
+   * Writer for devices.csv
+   */
+  private OutputStreamWriter devices;
+  
   /**
    * Writer for organizations.csv
    */
@@ -150,6 +156,7 @@ public class CSVExporter {
       File immunizationsFile = outputDirectory.resolve("immunizations.csv").toFile();
       File encountersFile = outputDirectory.resolve("encounters.csv").toFile();
       File imagingStudiesFile = outputDirectory.resolve("imaging_studies.csv").toFile();
+      File devicesFile = outputDirectory.resolve("devices.csv").toFile();
 
       patients = new OutputStreamWriter(new FileOutputStream(patientsFile, append), charset);
       allergies = new OutputStreamWriter(new FileOutputStream(allergiesFile, append), charset);
@@ -164,6 +171,8 @@ public class CSVExporter {
       encounters = new OutputStreamWriter(new FileOutputStream(encountersFile, append), charset);
       imagingStudies = new OutputStreamWriter(
           new FileOutputStream(imagingStudiesFile, append), charset);
+      devices = new OutputStreamWriter(new FileOutputStream(devicesFile, append), charset);
+
 
       File organizationsFile = outputDirectory.resolve("organizations.csv").toFile();
       File providersFile = outputDirectory.resolve("providers.csv").toFile();
@@ -221,6 +230,9 @@ public class CSVExporter {
     imagingStudies.write("Id,DATE,PATIENT,ENCOUNTER,BODYSITE_CODE,BODYSITE_DESCRIPTION,"
         + "MODALITY_CODE,MODALITY_DESCRIPTION,SOP_CODE,SOP_DESCRIPTION");
     imagingStudies.write(NEWLINE);
+    devices.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,UDI");
+    devices.write(NEWLINE);
+    
     organizations.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,LAT,LON,PHONE,REVENUE,UTILIZATION");
     organizations.write(NEWLINE);
     providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,LAT,LON,"
@@ -382,6 +394,10 @@ public class CSVExporter {
 
       for (ImagingStudy imagingStudy : encounter.imagingStudies) {
         imagingStudy(personID, encounterID, imagingStudy);
+      }
+      
+      for (Device device : encounter.devices) {
+        device(personID, encounterID, device);
       }
     }
     CSVExporter.getInstance().exportPayerTransitions(person, time);
@@ -915,6 +931,39 @@ public class CSVExporter {
     return studyID;
   }
 
+  /**
+   * Write a single Device to devices.csv.
+   *
+   * @param personID     ID of the person the Device is affixed to.
+   * @param encounterID  ID of the encounter where the Device was associated
+   * @param device       The Device itself
+   * @throws IOException if any IO error occurs
+   */
+  private void device(String personID, String encounterID, Device device) 
+      throws IOException {
+    // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,UDI
+    StringBuilder s = new StringBuilder();
+    
+    s.append(dateFromTimestamp(device.start)).append(',');
+    if (device.stop != 0L) {
+      s.append(dateFromTimestamp(device.stop));
+    }
+    s.append(',');
+    
+    s.append(personID).append(',');
+    s.append(encounterID).append(',');
+    
+    Code code = device.codes.get(0);
+    s.append(code.code).append(',');
+    s.append(code.display).append(',');
+    
+    s.append(device.udi);
+    
+    s.append(NEWLINE);
+
+    write(s.toString(), devices);
+  }
+  
   /**
    * Write a single organization to organizations.csv
    * 

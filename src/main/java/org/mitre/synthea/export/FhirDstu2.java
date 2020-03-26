@@ -24,6 +24,7 @@ import ca.uhn.fhir.model.dstu2.resource.Bundle.EntryRequest;
 import ca.uhn.fhir.model.dstu2.resource.CarePlan.Activity;
 import ca.uhn.fhir.model.dstu2.resource.CarePlan.ActivityDetail;
 import ca.uhn.fhir.model.dstu2.resource.Condition;
+import ca.uhn.fhir.model.dstu2.resource.Device;
 import ca.uhn.fhir.model.dstu2.resource.DiagnosticReport;
 import ca.uhn.fhir.model.dstu2.resource.Encounter.Hospitalization;
 import ca.uhn.fhir.model.dstu2.resource.ImagingStudy.Series;
@@ -51,6 +52,7 @@ import ca.uhn.fhir.model.dstu2.valueset.ConditionClinicalStatusCodesEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ConditionVerificationStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointSystemEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointUseEnum;
+import ca.uhn.fhir.model.dstu2.valueset.DeviceStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.DiagnosticReportStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.EncounterClassEnum;
 import ca.uhn.fhir.model.dstu2.valueset.EncounterStateEnum;
@@ -85,9 +87,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.awt.geom.Point2D;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -220,6 +219,10 @@ public class FhirDstu2 {
 
       for (ImagingStudy imagingStudy : encounter.imagingStudies) {
         imagingStudy(personEntry, bundle, encounterEntry, imagingStudy);
+      }
+      
+      for (HealthRecord.Device device : encounter.devices) {
+        device(personEntry, bundle, device);
       }
 
       // one claim per encounter
@@ -1362,6 +1365,35 @@ public class FhirDstu2 {
     return newEntry(bundle, imagingStudyResource);
   }
 
+  /**
+   * Map the HealthRecord.Device into a FHIR Device and add it to the Bundle.
+   *
+   * @param personEntry    The Person entry.
+   * @param bundle         Bundle to add to.
+   * @param device         The device to add.
+   * @return The added Entry.
+   */
+  private static Entry device(Entry personEntry, Bundle bundle,
+      HealthRecord.Device device) {
+    Device deviceResource = new Device();
+
+    deviceResource.setUdi(device.udi);
+    deviceResource.setStatus(DeviceStatusEnum.AVAILABLE);
+    if (device.manufacturer != null) {
+      deviceResource.setManufacturer(device.manufacturer);
+    }
+    if (device.model != null) {
+      deviceResource.setModel(device.model);
+    }
+    deviceResource.setManufactureDate((DateTimeDt)convertFhirDateTime(device.manufactureTime, true));
+    deviceResource.setExpiry((DateTimeDt)convertFhirDateTime(device.expirationTime, true));
+    deviceResource.setLotNumber(device.lotNumber);
+    deviceResource.setType(mapCodeToCodeableConcept(device.codes.get(0), SNOMED_URI));
+    deviceResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
+
+    return newEntry(bundle, deviceResource);
+  }
+  
   /**
    * Map the Provider into a FHIR Organization resource, and add it to the given Bundle.
    *
