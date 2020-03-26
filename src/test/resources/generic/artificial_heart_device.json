@@ -34,7 +34,6 @@
       "type": "SupplyList",
       "supplies": [
         {
-          "category": "device",
           "quantity": 10000,
           "code": {
             "system": "SNOMED-CT",
@@ -43,7 +42,6 @@
           }
         },
         {
-          "category": "device",
           "quantity": 3000,
           "code": {
             "system": "SNOMED-CT",
@@ -52,7 +50,6 @@
           }
         },
         {
-          "category": "device",
           "quantity": 98765,
           "code": {
             "system": "SNOMED-CT",
@@ -61,7 +58,6 @@
           }
         },
         {
-          "category": "device",
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",

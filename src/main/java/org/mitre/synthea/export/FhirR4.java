@@ -9,9 +9,6 @@ import com.google.gson.JsonObject;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -1638,6 +1635,12 @@ public class FhirR4 {
         .setCarrierHRF(device.udi);
     deviceResource.setStatus(FHIRDeviceStatus.ACTIVE);
     deviceResource.setDistinctIdentifier(device.deviceIdentifier);
+    if (device.manufacturer != null) {
+      deviceResource.setManufacturer(device.manufacturer);
+    }
+    if (device.model != null) {
+      deviceResource.setModelNumber(device.model);
+    }
     deviceResource.setManufactureDate(new Date(device.manufactureTime));
     deviceResource.setExpirationDate(new Date(device.expirationTime));
     deviceResource.setLotNumber(device.lotNumber);
