@@ -10,9 +10,6 @@ import com.google.gson.JsonObject;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -57,6 +54,8 @@ import org.hl7.fhir.dstu3.model.Coverage;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.DateType;
 import org.hl7.fhir.dstu3.model.DecimalType;
+import org.hl7.fhir.dstu3.model.Device;
+import org.hl7.fhir.dstu3.model.Device.FHIRDeviceStatus;
 import org.hl7.fhir.dstu3.model.DiagnosticReport;
 import org.hl7.fhir.dstu3.model.DiagnosticReport.DiagnosticReportStatus;
 import org.hl7.fhir.dstu3.model.Dosage;
@@ -267,6 +266,10 @@ public class FhirStu3 {
         imagingStudy(personEntry, bundle, encounterEntry, imagingStudy);
       }
 
+      for (HealthRecord.Device device : encounter.devices) {
+        device(personEntry, bundle, device);
+      }
+      
       // one claim per encounter
       BundleEntryComponent encounterClaim = encounterClaim(personEntry, bundle,
           encounterEntry, encounter.claim);
@@ -2146,6 +2149,36 @@ public class FhirStu3 {
     return newEntry(bundle, imagingStudyResource);
   }
 
+  /**
+   * Map the HealthRecord.Device into a FHIR Device and add it to the Bundle.
+   *
+   * @param personEntry    The Person entry.
+   * @param bundle         Bundle to add to.
+   * @param device         The device to add.
+   * @return The added Entry.
+   */
+  private static BundleEntryComponent device(BundleEntryComponent personEntry, Bundle bundle,
+      HealthRecord.Device device) {
+    Device deviceResource = new Device();
+    Device.DeviceUdiComponent udi = new Device.DeviceUdiComponent()
+        .setDeviceIdentifier(device.deviceIdentifier)
+        .setCarrierHRF(device.udi);
+    deviceResource.setUdi(udi);
+    deviceResource.setStatus(FHIRDeviceStatus.ACTIVE);
+    if (device.manufacturer != null) {
+      deviceResource.setManufacturer(device.manufacturer);
+    }
+    if (device.model != null) {
+      deviceResource.setModel(device.model);
+    }
+    deviceResource.setManufactureDate(new Date(device.manufactureTime));
+    deviceResource.setExpirationDate(new Date(device.expirationTime));
+    deviceResource.setLotNumber(device.lotNumber);
+    deviceResource.setType(mapCodeToCodeableConcept(device.codes.get(0), SNOMED_URI));
+    deviceResource.setPatient(new Reference(personEntry.getFullUrl()));
+    return newEntry(bundle, deviceResource);
+  }
+  
   /**
    * Map the Provider into a FHIR Organization resource, and add it to the given Bundle.
    * @param bundle The Bundle to add to
