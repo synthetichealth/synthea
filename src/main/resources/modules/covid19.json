@@ -12,36 +12,32 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Wait Until Outbreak"
+      "direct_transition": "Wait Until Exposure"
     },
     "Terminal": {
       "type": "Terminal"
     },
-    "Wait Until Outbreak": {
-      "type": "Guard",
-      "allow": {
-        "condition_type": "Date",
-        "operator": "==",
-        "year": 2020,
-        "value": 0
-      },
-      "direct_transition": "Wait Until Exposure"
-    },
     "Wait Until Exposure": {
       "type": "Delay",
-      "range": {
-        "low": 1,
-        "high": 90,
+      "exact": {
+        "quantity": 7,
         "unit": "days"
       },
-      "distributed_transition": [
+      "lookup_table_transition": [
         {
-          "distribution": 0.2,
-          "transition": "Encounter for Test"
+          "transition": "Wait Until Exposure",
+          "default_probability": "1",
+          "lookup_table_name": "covid19_prob.csv"
+        },
+        {
+          "transition": "Encounter for Test",
+          "default_probability": "0",
+          "lookup_table_name": "covid19_prob.csv"
         },
         {
           "transition": "Terminal",
-          "distribution": 0.8
+          "default_probability": "0",
+          "lookup_table_name": "covid19_prob.csv"
         }
       ]
     },

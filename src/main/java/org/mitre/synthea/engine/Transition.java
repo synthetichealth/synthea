@@ -188,7 +188,7 @@ public abstract class Transition implements Serializable {
       // Retrieve CSV column headers.
       List<String> columnHeaders = new ArrayList<String>(lookupTable.get(0).keySet());
       // Parse the list of attributes.
-      this.attributes = columnHeaders.subList(0, columnHeaders.size() - this.transitions.size());
+      this.attributes = new ArrayList(columnHeaders.subList(0, columnHeaders.size() - this.transitions.size()));
       // Parse the list of states to transition to.
       List<String> transitionStates = columnHeaders.subList((columnHeaders.size()
           - this.transitions.size()), columnHeaders.size());
@@ -280,6 +280,8 @@ public abstract class Transition implements Serializable {
       for (String currentAttribute : this.attributes) {
         if (currentAttribute.equalsIgnoreCase("age")) {
           age = person.ageInYears(time);
+        } else if (currentAttribute.equalsIgnoreCase("time")) {
+          // do nothing, we already have it
         } else {
           String personsAttribute
               = (String) person.attributes.get(currentAttribute.toLowerCase());
@@ -304,7 +306,7 @@ public abstract class Transition implements Serializable {
     }
   }
 
-  public final class LookupTableKey {
+  public final class LookupTableKey implements Serializable {
     private final List<String> attributes;
     /** Age for this patient. May be null if lookup table does not use age. */
     private final Integer age;
@@ -394,15 +396,24 @@ public abstract class Transition implements Serializable {
         agesMatch = false;
       }
 
-      if (that.time != null) {
+      if (this.time != null) {
+        if (that.time != null) {
+          timesMatch = (this.time == that.time);
+        } else if (that.timeRange != null) {
+          timesMatch = (that.timeRange.contains(this.time));
+        } else {
+          // that.age == null && that.ageRange == null
+          // do nothing. Time will always be populated in one of them
+        }
+      } else if (that.time != null) {
         if (this.timeRange != null) {
           timesMatch = (this.timeRange.contains(that.time));
         } else {
-          // this.time == null && this.timeRange == null
+          // this.age == null && this.ageRange == null
           timesMatch = false;
         }
       } else if (this.timeRange != null) {
-        // this.time == null && that.time == null
+        // this.age == null && that.age == null
         if (that.timeRange != null) {
           timesMatch = this.timeRange.containsRange(that.timeRange);
         } else {
@@ -420,8 +431,14 @@ public abstract class Transition implements Serializable {
      */
     @Override
     public String toString() {
-      String age = (this.age == null ? ageRange.toString() : this.age.toString());
-      return attributes.toString() + " : " + age;
+      String ending = "";
+      if (this.age != null || this.ageRange != null) {
+        ending = (this.age == null ? ageRange.toString() : this.age.toString());
+      }
+      if (this.time != null || this.timeRange != null) {
+        ending = (this.time == null ? timeRange.toString() : this.time.toString());
+      }
+      return attributes.toString() + " : " + ending;
     }
   }
 
