@@ -112,39 +112,23 @@
         "high": 42.2
       }
     },
-    "Administer COVID-19 Test": {
-      "type": "DiagnosticReport",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "94531-1",
-          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
-        }
-      ],
-      "observations": [
-        {
-          "category": "laboratory",
-          "unit": "",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "94531-1",
-              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
-            }
-          ],
-          "value_code": {
-            "system": "SNOMED-CT",
-            "code": 10828004,
-            "display": "Positive (qualifier value)"
-          }
-        }
-      ],
-      "direct_transition": "End Exposure"
-    },
     "End Exposure": {
       "type": "ConditionEnd",
-      "direct_transition": "Diagnosed COVID",
-      "condition_onset": "Suspected COVID"
+      "condition_onset": "Suspected COVID",
+      "conditional_transition": [
+        {
+          "transition": "Administer COVID-19 Test Negative",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_severity",
+            "operator": "==",
+            "value": "negative"
+          }
+        },
+        {
+          "transition": "Administer COVID-19 Test Positive"
+        }
+      ]
     },
     "Diagnosed COVID": {
       "type": "ConditionOnset",
@@ -156,7 +140,20 @@
           "display": "COVID-19"
         }
       ],
-      "direct_transition": "End Isolation In Room"
+      "conditional_transition": [
+        {
+          "transition": "End Encounter and Admit Immediately",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_severity",
+            "operator": "==",
+            "value": "severe"
+          }
+        },
+        {
+          "transition": "Self Isolation At Home"
+        }
+      ]
     },
     "Suspected COVID": {
       "type": "ConditionOnset",
@@ -196,11 +193,11 @@
       "distributed_transition": [
         {
           "transition": "Respiratory Distress",
-          "distribution": 0.5
+          "distribution": 0.6
         },
         {
           "transition": "Respiratory Failure",
-          "distribution": 0.5
+          "distribution": 0.4
         }
       ]
     },
@@ -214,7 +211,7 @@
             "condition_type": "Attribute",
             "attribute": "covid19_admission_days",
             "operator": "<=",
-            "value": 14
+            "value": 20
           },
           "distributions": [],
           "transition": "Antiviral Medication"
@@ -223,6 +220,10 @@
           "distributions": [],
           "transition": "Cytokine Suppression"
         }
+      ],
+      "remarks": [
+        "Median duration of viral shedding was 20 days, and longest observed duration of viral shedding was 37 days.",
+        "https://doi.org/10.1016/S0140-6736(20)30566-3"
       ]
     },
     "Death": {
@@ -257,20 +258,11 @@
         "high": 15,
         "unit": "minutes"
       },
-      "direct_transition": "Isolation in Negative Pressure",
+      "direct_transition": "Rapid Influenza A+B",
       "remarks": [
         "This should really be a \"Device\" state."
       ],
       "reason": "Suspected COVID"
-    },
-    "Wait for Test in Negative Pressure Room": {
-      "type": "Delay",
-      "direct_transition": "Administer COVID-19 Test",
-      "range": {
-        "low": 30,
-        "high": 90,
-        "unit": "minutes"
-      }
     },
     "Isolation in Negative Pressure": {
       "type": "CarePlanStart",
@@ -281,7 +273,7 @@
           "display": "Infectious disease care plan (record artifact)"
         }
       ],
-      "direct_transition": "Wait for Test in Negative Pressure Room",
+      "direct_transition": "Wait for Test",
       "reason": "Suspected COVID",
       "activities": [
         {
@@ -319,82 +311,6 @@
       "reason": "Fever",
       "administration": true
     },
-    "End Isolation In Room": {
-      "type": "CarePlanEnd",
-      "direct_transition": "End Testing Encounter",
-      "referenced_by_attribute": "covid19_careplan"
-    },
-    "End Testing Encounter": {
-      "type": "EncounterEnd",
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Or",
-                "conditions": [
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "diabetes",
-                    "operator": "==",
-                    "value": true
-                  },
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "hypertension",
-                    "operator": "==",
-                    "value": true
-                  }
-                ]
-              },
-              {
-                "condition_type": "Or",
-                "conditions": [
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "copd_variant",
-                    "operator": "is not nil"
-                  },
-                  {
-                    "condition_type": "Or",
-                    "conditions": [
-                      {
-                        "condition_type": "Attribute",
-                        "attribute": "Cystic_Fibrosis",
-                        "operator": "is not nil"
-                      },
-                      {
-                        "condition_type": "Or",
-                        "conditions": [
-                          {
-                            "condition_type": "Attribute",
-                            "attribute": "asthma_condition",
-                            "operator": "is not nil"
-                          },
-                          {
-                            "condition_type": "Attribute",
-                            "attribute": "smoker",
-                            "operator": "==",
-                            "value": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          "distributions": [],
-          "transition": "Admission"
-        },
-        {
-          "distributions": [],
-          "transition": "Self Isolation At Home"
-        }
-      ]
-    },
     "Self Isolation At Home": {
       "type": "CarePlanStart",
       "codes": [
@@ -426,70 +342,7 @@
         }
       ],
       "assign_to_attribute": "covid19_careplan",
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Age",
-            "operator": ">=",
-            "quantity": 65,
-            "unit": "years",
-            "value": 0
-          },
-          "distributions": [
-            {
-              "transition": "Wait for Admission",
-              "distribution": 0.9
-            },
-            {
-              "transition": "Wait for Death",
-              "distribution": 0.05
-            },
-            {
-              "transition": "Self Isolation Delay",
-              "distribution": 0.05
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Age",
-            "operator": ">=",
-            "quantity": 30,
-            "unit": "years",
-            "value": 0
-          },
-          "distributions": [
-            {
-              "transition": "Wait for Admission",
-              "distribution": 0.5
-            },
-            {
-              "transition": "Wait for Death",
-              "distribution": 0.05
-            },
-            {
-              "transition": "Self Isolation Delay",
-              "distribution": 0.45
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "transition": "Wait for Admission",
-              "distribution": 0.25
-            },
-            {
-              "transition": "Wait for Death",
-              "distribution": 0.01
-            },
-            {
-              "transition": "Self Isolation Delay",
-              "distribution": 0.74
-            }
-          ]
-        }
-      ]
+      "direct_transition": "End Encounter and Discharge Home"
     },
     "End Self Isolation At Home": {
       "type": "CarePlanEnd",
@@ -498,11 +351,16 @@
     },
     "Self Isolation Delay": {
       "type": "Delay",
-      "exact": {
-        "quantity": 14,
+      "direct_transition": "End Self Isolation At Home",
+      "range": {
+        "low": 14,
+        "high": 37,
         "unit": "days"
       },
-      "direct_transition": "End Self Isolation At Home"
+      "remarks": [
+        "Median duration of viral shedding was 20 days, and longest observed duration of viral shedding was 37 days.",
+        "https://doi.org/10.1016/S0140-6736(20)30566-3"
+      ]
     },
     "Wait for Death": {
       "type": "Delay",
@@ -542,69 +400,6 @@
         }
       ]
     },
-    "Recovery": {
-      "type": "Delay",
-      "range": {
-        "low": 1,
-        "high": 3,
-        "unit": "days"
-      },
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Age",
-                "operator": ">=",
-                "quantity": 65,
-                "unit": "years",
-                "value": 0
-              },
-              {
-                "condition_type": "Or",
-                "conditions": [
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "hypertension",
-                    "operator": "==",
-                    "value": true
-                  },
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "diabetes",
-                    "operator": "==",
-                    "value": true
-                  }
-                ]
-              }
-            ]
-          },
-          "distributions": [
-            {
-              "transition": "Death",
-              "distribution": 0.8
-            },
-            {
-              "transition": "Discharge",
-              "distribution": 0.2
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "transition": "Death",
-              "distribution": 0.2
-            },
-            {
-              "transition": "Discharge",
-              "distribution": 0.8
-            }
-          ]
-        }
-      ]
-    },
     "Ventilation": {
       "type": "Procedure",
       "codes": [
@@ -626,7 +421,7 @@
           "display": "20 ML tocilizumab 20 MG/ML Injection"
         }
       ],
-      "direct_transition": "Recovery",
+      "direct_transition": "Recovery?",
       "remarks": [
         "Tocilizumab injection to prevent cytokine storms."
       ],
@@ -691,7 +486,10 @@
           "display": "Acute respiratory failure (disorder)"
         }
       ],
-      "direct_transition": "Antibacterial Injection"
+      "direct_transition": "Antibacterial Injection",
+      "remarks": [
+        "67 of 173 (38.7% round up to 40%) severe patients required mechanical ventilation."
+      ]
     },
     "Metered Dose Inhaler": {
       "type": "MedicationOrder",
@@ -739,7 +537,7 @@
           "display": "Hydroxychloroquine Sulfate 200 MG Oral Tablet"
         }
       ],
-      "direct_transition": "Daily Acetaminophen for Fever",
+      "direct_transition": "Take Temperature Each Day",
       "administration": true,
       "reason": "Diagnosed COVID"
     },
@@ -769,7 +567,7 @@
           "display": "Vomiting co-occurrent and due to infectious disease (disorder)"
         }
       ],
-      "direct_transition": "Chest X-Ray"
+      "direct_transition": "CBC"
     },
     "End Cough": {
       "type": "ConditionEnd",
@@ -874,6 +672,1024 @@
         }
       ],
       "direct_transition": "Daily PPE for Clinician"
+    },
+    "End Encounter and Admit Immediately": {
+      "type": "EncounterEnd",
+      "direct_transition": "Admission"
+    },
+    "End Encounter and Discharge Home": {
+      "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 65,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Wait for Admission",
+              "distribution": 0.9
+            },
+            {
+              "transition": "Wait for Death",
+              "distribution": 0.05
+            },
+            {
+              "transition": "Self Isolation Delay",
+              "distribution": 0.05
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 30,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Wait for Admission",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Wait for Death",
+              "distribution": 0.05
+            },
+            {
+              "transition": "Self Isolation Delay",
+              "distribution": 0.45
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Wait for Admission",
+              "distribution": 0.25
+            },
+            {
+              "transition": "Wait for Death",
+              "distribution": 0.01
+            },
+            {
+              "transition": "Self Isolation Delay",
+              "distribution": 0.74
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "Transition probabilities need adjustment."
+      ]
+    },
+    "Retest Positive": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "94531-1",
+          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94531-1",
+              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260373001,
+            "display": "Detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Decline"
+    },
+    "Decline": {
+      "type": "Delay",
+      "direct_transition": "Death",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "days"
+      }
+    },
+    "Recovery?": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "Respiratory Failure"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "coronary_heart_disease",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.4,
+              "transition": "Retest Positive"
+            },
+            {
+              "distribution": 0.4,
+              "transition": "Decline"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Take Normal Temperature"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.2,
+              "transition": "Retest Positive"
+            },
+            {
+              "distribution": 0.8,
+              "transition": "Take Normal Temperature"
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "Very rough estimates. Of critical patients, 42 of 53 died (~86%). Of those with coronorary heart disease (N=15),13 died and 2 survived. Other comorbidities approximately equal."
+      ]
+    },
+    "Retest Negative": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "94531-1",
+          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94531-1",
+              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Wait for retest"
+    },
+    "Second Negative Test": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "94531-1",
+          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94531-1",
+              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Discharge"
+    },
+    "Wait for retest": {
+      "type": "Delay",
+      "direct_transition": "Second Normal Temperature",
+      "range": {
+        "low": 18,
+        "high": 30,
+        "unit": "hours"
+      }
+    },
+    "Take Temperature Each Day": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "Cel",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Body temperature"
+        },
+        {
+          "system": "LOINC",
+          "code": "8331-1",
+          "display": "Oral temperature"
+        }
+      ],
+      "range": {
+        "low": 37.7,
+        "high": 42.2
+      },
+      "direct_transition": "Daily Acetaminophen for Fever"
+    },
+    "Take Normal Temperature": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "Cel",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Body temperature"
+        },
+        {
+          "system": "LOINC",
+          "code": "8331-1",
+          "display": "Oral temperature"
+        }
+      ],
+      "direct_transition": "End Inpatient Fever",
+      "range": {
+        "low": 36.1,
+        "high": 37.2
+      }
+    },
+    "Second Normal Temperature": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "Cel",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Body temperature"
+        },
+        {
+          "system": "LOINC",
+          "code": "8331-1",
+          "display": "Oral temperature"
+        }
+      ],
+      "range": {
+        "low": 36.1,
+        "high": 37.2
+      },
+      "direct_transition": "Second Negative Test"
+    },
+    "End Inpatient Fever": {
+      "type": "ConditionEnd",
+      "direct_transition": "Retest Negative",
+      "condition_onset": "Fever"
+    },
+    "Determine Severity": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_risk",
+                "operator": "==",
+                "value": "high"
+              },
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 50,
+                "unit": "years"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Severe Severity",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Mild Severity",
+              "distribution": 0.45
+            },
+            {
+              "transition": "Negative Severity",
+              "distribution": 0.05
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Severe Severity",
+              "distribution": 0.25
+            },
+            {
+              "transition": "Mild Severity",
+              "distribution": 0.7
+            },
+            {
+              "transition": "Negative Severity",
+              "distribution": 0.05
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_risk",
+            "operator": "==",
+            "value": "high"
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Severe Severity",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Mild Severity",
+              "distribution": 0.65
+            },
+            {
+              "transition": "Negative Severity",
+              "distribution": 0.05
+            }
+          ],
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_risk",
+                "operator": "==",
+                "value": "low"
+              },
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 50,
+                "unit": "years"
+              }
+            ]
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_risk",
+            "operator": "==",
+            "value": "low"
+          },
+          "distributions": [
+            {
+              "transition": "Severe Severity",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Mild Severity",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Negative Severity",
+              "distribution": 0.05
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Severe Severity"
+        }
+      ]
+    },
+    "Negative Severity": {
+      "type": "SetAttribute",
+      "attribute": "covid19_severity",
+      "direct_transition": "Encounter for Test",
+      "value": "negative"
+    },
+    "Mild Severity": {
+      "type": "SetAttribute",
+      "attribute": "covid19_severity",
+      "direct_transition": "Encounter for Test",
+      "value": "mild"
+    },
+    "Severe Severity": {
+      "type": "SetAttribute",
+      "attribute": "covid19_severity",
+      "direct_transition": "Encounter for Test",
+      "value": "severe"
+    },
+    "Determine Risk": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "High Risk",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "hypertension",
+                    "operator": "==",
+                    "value": true
+                  },
+                  {
+                    "condition_type": "Or",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "copd_variant",
+                        "operator": "is not nil"
+                      },
+                      {
+                        "condition_type": "Or",
+                        "conditions": [
+                          {
+                            "condition_type": "Attribute",
+                            "attribute": "Cystic_Fibrosis",
+                            "operator": "is not nil"
+                          },
+                          {
+                            "condition_type": "Or",
+                            "conditions": [
+                              {
+                                "condition_type": "Attribute",
+                                "attribute": "asthma_condition",
+                                "operator": "is not nil"
+                              },
+                              {
+                                "condition_type": "Or",
+                                "conditions": [
+                                  {
+                                    "condition_type": "Attribute",
+                                    "attribute": "smoker",
+                                    "operator": "==",
+                                    "value": true
+                                  },
+                                  {
+                                    "condition_type": "Attribute",
+                                    "attribute": "coronary_heart_disease",
+                                    "operator": "==",
+                                    "value": true
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Low Risk"
+        }
+      ]
+    },
+    "Low Risk": {
+      "type": "SetAttribute",
+      "attribute": "covid19_risk",
+      "direct_transition": "Determine Severity",
+      "value": "low"
+    },
+    "High Risk": {
+      "type": "SetAttribute",
+      "attribute": "covid19_risk",
+      "direct_transition": "Determine Severity",
+      "value": "high"
+    },
+    "Severity Assessment": {
+      "type": "Simple",
+      "remarks": [
+        "Does patient need negative pressure room?",
+        "Stable patients go into regular room with mask, contact and droplet precautions.",
+        "Risky patients with tracheostomy or will require procedures with aerosolation (high flow nasal canula, immediate intubation, or non-invasive positive pressure ventilation, or immediate nebulizer).",
+        "Risky patients: if no negative pressure rooms available, then staff need to wear PPE (N95 or PAPR)"
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Isolation in Negative Pressure",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_severity",
+            "operator": "==",
+            "value": "severe"
+          }
+        },
+        {
+          "transition": "Isolation"
+        }
+      ]
+    },
+    "Isolation": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 736376001,
+          "display": "Infectious disease care plan (record artifact)"
+        }
+      ],
+      "reason": "Suspected COVID",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 409524006,
+          "display": "Airborne precautions (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 409526008,
+          "display": "Personal protective equipment (physical object)"
+        }
+      ],
+      "assign_to_attribute": "covid19_careplan",
+      "direct_transition": "Wait for Test"
+    },
+    "Wait for Test": {
+      "type": "Delay",
+      "range": {
+        "low": 30,
+        "high": 90,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Plan"
+    },
+    "Administer COVID-19 Test Negative": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "94531-1",
+          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94531-1",
+              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "End Encounter Testing Negative"
+    },
+    "Administer COVID-19 Test Positive": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "94531-1",
+          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94531-1",
+              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260373001,
+            "display": "Detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Diagnosed COVID"
+    },
+    "End Plan": {
+      "type": "CarePlanEnd",
+      "direct_transition": "End Exposure",
+      "referenced_by_attribute": "covid19_careplan"
+    },
+    "End Encounter Testing Negative": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Rapid Influenza A+B": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "80381-7",
+          "display": "Influenza virus A and B Ag panel - Nasopharynx by Rapid immunoassay"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "80382-5",
+              "display": "Influenza virus A Ag [Presence] in Nasopharynx by Rapid immunoassay"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "80383-3",
+              "display": "Influenza virus B Ag [Presence] in Nasopharynx by Rapid immunoassay"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Severity Assessment"
+    },
+    "CBC Differential": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "57023-4",
+          "display": "Auto Differential panel - Blood"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "770-8",
+              "display": "Neutrophils/100 leukocytes in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 10,
+            "high": 45
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "736-9",
+              "display": "Lymphocytes/100 leukocytes in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 5,
+            "high": 25
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5905-5",
+              "display": "Monocytes/100 leukocytes in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 5,
+            "high": 15
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "713-8",
+              "display": "Eosinophils/100 leukocytes in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 3,
+            "high": 6
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "706-2",
+              "display": "Basophils/100 leukocytes in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 2,
+            "high": 4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "751-8",
+              "display": "Neutrophils [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 1.4,
+            "high": 4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "731-0",
+              "display": "Lymphocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 0.6,
+            "high": 1
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "742-7",
+              "display": "Monocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 0.5,
+            "high": 1.4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "711-2",
+              "display": "Eosinophils [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 0.2,
+            "high": 0.6
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "704-7",
+              "display": "Basophils [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 0.2,
+            "high": 0.4
+          }
+        }
+      ],
+      "direct_transition": "Chest X-Ray",
+      "remarks": [
+        "Viral infection should show DECREASES in neutro and lymph, and INCREASES in mono, eosino, and baso."
+      ]
+    },
+    "CBC": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6690-2",
+              "display": "Leukocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 3,
+            "high": 4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*6/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "789-8",
+              "display": "Erythrocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 3.77,
+            "high": 5.8
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 11.1,
+            "high": 14.1
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "4544-3",
+              "display": "Hematocrit [Volume Fraction] of Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 37.5,
+            "high": 46.6
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "787-2",
+              "display": "MCV [Entitic volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 79,
+            "high": 97
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "pg",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "785-6",
+              "display": "MCH [Entitic mass] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 26.6,
+            "high": 33
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "786-4",
+              "display": "MCHC [Mass/volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 31.5,
+            "high": 35.7
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "788-0",
+              "display": "Erythrocyte distribution width [Ratio] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 12.3,
+            "high": 15.4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "777-3",
+              "display": "Platelets [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 99,
+            "high": 150
+          }
+        }
+      ],
+      "direct_transition": "CBC Differential",
+      "remarks": [
+        "In the most severe patients, white-cell counts should be less than 4000 per mm3",
+        "In the most severe patients, platelet counts should also trend towards being less than 150K per mm3",
+        "In the most severe patients, median hemoglobin should be around 12.8 g/dL"
+      ]
     }
   }
 }
