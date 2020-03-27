@@ -15,6 +15,8 @@ import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 
 public class VaSDoHReport {
@@ -98,7 +100,14 @@ public class VaSDoHReport {
         
       case "Condition":
         // note: value ignored here
-        return (person) -> person.record.present.containsKey(code);
+        return (person) -> {
+          for (Encounter e : person.record.encounters) {
+            for (Entry c : e.conditions) {
+              if (c.containsCode(code, "SNOMED-CT")) return true;
+            }
+          }
+          return false;
+        };
         
       case "Observation":
         return (person) -> {
