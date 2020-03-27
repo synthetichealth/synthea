@@ -51,7 +51,7 @@
       "type": "SetAttribute",
       "attribute": "probability_of_suicide",
       "direct_transition": "Ideation_Baseline",
-      "value": 0.003072
+      "value": 0.0003072
     },
     "Homelessness_Check": {
       "type": "Simple",
@@ -115,19 +115,19 @@
       "type": "SetAttribute",
       "attribute": "probability_of_suicide",
       "direct_transition": "Ideation_High_Risk",
-      "value": 0.0144
+      "value": 0.00144
     },
     "Low Risk": {
       "type": "SetAttribute",
       "attribute": "probability_of_suicide",
       "direct_transition": "Ideation_Low_Risk",
-      "value": 0.006
+      "value": 0.0006
     },
     "Medium Risk": {
       "type": "SetAttribute",
       "attribute": "probability_of_suicide",
       "direct_transition": "Ideation_Medium_Risk",
-      "value": 0.0072
+      "value": 0.00072
     },
     "High_Combat_Exposure_Check": {
       "type": "Simple",
@@ -521,24 +521,24 @@
       "type": "SetAttribute",
       "attribute": "suicidal_ideation_risk",
       "direct_transition": "Terminal",
-      "value": 0.1
+      "value": 0.0005
     },
     "Ideation_High_Risk": {
       "type": "SetAttribute",
       "attribute": "suicidal_ideation_risk",
-      "value": 0.5,
+      "value": 0.01,
       "direct_transition": "Terminal"
     },
     "Ideation_Low_Risk": {
       "type": "SetAttribute",
       "attribute": "suicidal_ideation_risk",
-      "value": 0.2,
+      "value": 0.0006,
       "direct_transition": "Terminal"
     },
     "Ideation_Medium_Risk": {
       "type": "SetAttribute",
       "attribute": "suicidal_ideation_risk",
-      "value": 0.35,
+      "value": 0.0008,
       "direct_transition": "Terminal"
     },
     "Arrest": {
