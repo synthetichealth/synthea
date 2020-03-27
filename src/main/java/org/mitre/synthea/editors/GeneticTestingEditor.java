@@ -405,7 +405,8 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
    */
   static class GeneticMarker {
     private static final Map<String, List<DnaSynthesisConfig.MedicalCategory>> INDEX_MAP = 
-        initialize();
+        initializeCategoryMap();
+    private static final Map<String, String> LOINC_MAP = initializeLoincMap();
 
     public String index;
     public String indexPrefix;
@@ -536,7 +537,7 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
       return INDEX_MAP.get(indexPrefix);
     }
 
-    private static Map<String, List<MedicalCategory>> initialize() {
+    private static Map<String, List<MedicalCategory>> initializeCategoryMap() {
       // extracted from Python dna_synthesis config at
       // dna-synthesis/populations_and_individuals/Data/cvd_families_byVar.tsv
       Map<String, List<DnaSynthesisConfig.MedicalCategory>> indexMap = new HashMap<>();
@@ -742,10 +743,33 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
       indexMap.put("rs7080536", Arrays.asList(THROMBOSIS));
       return indexMap;
     }
+    
+    private static Map<String, String> initializeLoincMap() {
+      Map<String, String> loincCodes = new HashMap<>();
+      loincCodes.put("PCSK9", "56158-9");
+      loincCodes.put("F5", "21667-1");
+      loincCodes.put("PSEN2", "77628-6");
+      loincCodes.put("APOB", "89323-0");
+      loincCodes.put("F12, SLC34A1", "58937-4");
+      loincCodes.put("HFE", "21694-5");
+      loincCodes.put("TNF", "41049-8");
+      loincCodes.put("CYP2C19", "57132-3");
+      loincCodes.put("F2", "24476-4");
+      loincCodes.put("PSEN1", "35299-7");
+      loincCodes.put("FBN1", "40471-5");
+      loincCodes.put("VKORC1", "50722-8");
+      loincCodes.put("ITGB3", "58987-9");
+      loincCodes.put("TTR", "48033-5");
+      loincCodes.put("APOE", "21619-2");
+      return loincCodes;
+    }
 
     private Code getVariantCode() {
-      // TBD add mapping to actual codes
-      return new Code("LOINC", "55232-3", toString());
+      String loincCode = LOINC_MAP.getOrDefault(this.gene, "69548-6");
+      if (loincCode == null) {
+        loincCode = "";
+      }
+      return new Code("LOINC", loincCode, toString());
     }
   }
 
