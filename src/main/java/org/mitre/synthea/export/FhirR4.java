@@ -107,12 +107,15 @@ import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.Procedure.ProcedureStatus;
 import org.hl7.fhir.r4.model.Provenance;
 import org.hl7.fhir.r4.model.Provenance.ProvenanceAgentComponent;
+import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliveryStatus;
+import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliverySuppliedItemComponent;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ServiceRequest;
 import org.hl7.fhir.r4.model.SimpleQuantity;
 import org.hl7.fhir.r4.model.StringType;
+import org.hl7.fhir.r4.model.SupplyDelivery;
 import org.hl7.fhir.r4.model.Timing;
 import org.hl7.fhir.r4.model.Timing.TimingRepeatComponent;
 import org.hl7.fhir.r4.model.Timing.UnitsOfTime;
@@ -265,6 +268,10 @@ public class FhirR4 {
 
       for (HealthRecord.Device device : encounter.devices) {
         device(personEntry, bundle, device);
+      }
+      
+      for (JsonObject supply : encounter.supplies) {
+        supplyDelivery(personEntry, bundle, supply, encounter);
       }
 
       for (Medication medication : encounter.medications) {
@@ -1651,6 +1658,46 @@ public class FhirR4 {
     deviceResource.setType(mapCodeToCodeableConcept(device.codes.get(0), SNOMED_URI));
     deviceResource.setPatient(new Reference(personEntry.getFullUrl()));
     return newEntry(bundle, deviceResource);
+  }
+  
+  /**
+   * Map the JsonObject for a Supply into a FHIR SupplyDelivery and add it to the Bundle.
+   *
+   * @param personEntry    The Person entry.
+   * @param bundle         Bundle to add to.
+   * @param supply         The supplied object to add.
+   * @param encounter      The encounter during which the supplies were delivered
+   * @return The added Entry.
+   */
+  private static BundleEntryComponent supplyDelivery(BundleEntryComponent personEntry, Bundle bundle,
+      JsonObject supply, Encounter encounter) {
+   
+    SupplyDelivery supplyResource = new SupplyDelivery();
+    supplyResource.setStatus(SupplyDeliveryStatus.COMPLETED);
+    supplyResource.setPatient(new Reference(personEntry.getFullUrl()));
+    
+    CodeableConcept type = new CodeableConcept();
+    type.addCoding()
+      .setCode("device")
+      .setDisplay("Device")
+      .setSystem(SNOMED_URI);
+    supplyResource.setType(type);
+    
+    SupplyDeliverySuppliedItemComponent suppliedItem = new SupplyDeliverySuppliedItemComponent();
+    CodeableConcept itemCC = new CodeableConcept();
+    JsonObject jsonCode = supply.get("code").getAsJsonObject();
+    itemCC.addCoding()
+      .setCode(jsonCode.get("code").getAsString())
+      .setDisplay(jsonCode.get("display").getAsString())
+      .setSystem(SNOMED_URI);
+    suppliedItem.setItem(itemCC);
+    suppliedItem.setQuantity(new Quantity(supply.get("quantity").getAsLong()));
+    
+    supplyResource.setSuppliedItem(suppliedItem);
+    
+    supplyResource.setOccurrence(convertFhirDateTime(encounter.start, true));
+    
+    return newEntry(bundle, supplyResource);
   }
 
   /**

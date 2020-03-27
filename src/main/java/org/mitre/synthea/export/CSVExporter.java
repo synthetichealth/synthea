@@ -95,6 +95,10 @@ public class CSVExporter {
    * Writer for devices.csv
    */
   private OutputStreamWriter devices;
+  /**
+   * Writer for supplies.csv
+   */
+  private OutputStreamWriter supplies;
   
   /**
    * Writer for organizations.csv
@@ -157,6 +161,7 @@ public class CSVExporter {
       File encountersFile = outputDirectory.resolve("encounters.csv").toFile();
       File imagingStudiesFile = outputDirectory.resolve("imaging_studies.csv").toFile();
       File devicesFile = outputDirectory.resolve("devices.csv").toFile();
+      File suppliesFile = outputDirectory.resolve("supplies.csv").toFile();
 
       patients = new OutputStreamWriter(new FileOutputStream(patientsFile, append), charset);
       allergies = new OutputStreamWriter(new FileOutputStream(allergiesFile, append), charset);
@@ -172,6 +177,7 @@ public class CSVExporter {
       imagingStudies = new OutputStreamWriter(
           new FileOutputStream(imagingStudiesFile, append), charset);
       devices = new OutputStreamWriter(new FileOutputStream(devicesFile, append), charset);
+      supplies = new OutputStreamWriter(new FileOutputStream(suppliesFile, append), charset);
 
 
       File organizationsFile = outputDirectory.resolve("organizations.csv").toFile();
@@ -232,6 +238,8 @@ public class CSVExporter {
     imagingStudies.write(NEWLINE);
     devices.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,UDI");
     devices.write(NEWLINE);
+    supplies.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,QUANTITY");
+    supplies.write(NEWLINE);
     
     organizations.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,LAT,LON,PHONE,REVENUE,UTILIZATION");
     organizations.write(NEWLINE);
@@ -399,6 +407,10 @@ public class CSVExporter {
       for (Device device : encounter.devices) {
         device(personID, encounterID, device);
       }
+      
+      for (JsonObject supply : encounter.supplies) {
+        supply(personID, encounterID, encounter, supply);
+      }
     }
     CSVExporter.getInstance().exportPayerTransitions(person, time);
 
@@ -446,6 +458,8 @@ public class CSVExporter {
     procedures.flush();
     immunizations.flush();
     imagingStudies.flush();
+    devices.flush();
+    supplies.flush();
   }
 
   /**
@@ -955,13 +969,41 @@ public class CSVExporter {
     
     Code code = device.codes.get(0);
     s.append(code.code).append(',');
-    s.append(code.display).append(',');
+    s.append(clean(code.display)).append(',');
     
     s.append(device.udi);
     
     s.append(NEWLINE);
 
     write(s.toString(), devices);
+  }
+  
+  /**
+   * Write a single Supply to supplies.csv.
+   *
+   * @param personID     ID of the person the supply was used for.
+   * @param encounterID  ID of the encounter where the supply was used
+   * @param supply       The supply itself
+   * @throws IOException if any IO error occurs
+   */
+  private void supply(String personID, String encounterID, Encounter encounter, JsonObject supply)
+    throws IOException {
+    // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,QUANTITY
+    StringBuilder s = new StringBuilder();
+
+    s.append(dateFromTimestamp(encounter.start)).append(',');
+    s.append(personID).append(',');
+    s.append(encounterID).append(',');
+    
+    JsonObject code = supply.get("code").getAsJsonObject();
+    s.append(code.get("code").getAsString()).append(',');
+    s.append(clean(code.get("display").getAsString())).append(',');
+    
+    s.append(supply.get("quantity").getAsLong());
+    
+    s.append(NEWLINE);
+    
+    write(s.toString(), supplies);
   }
   
   /**
