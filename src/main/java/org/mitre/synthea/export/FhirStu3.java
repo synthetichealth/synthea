@@ -99,6 +99,9 @@ import org.hl7.fhir.dstu3.model.ReferralRequest;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.dstu3.model.SimpleQuantity;
 import org.hl7.fhir.dstu3.model.StringType;
+import org.hl7.fhir.dstu3.model.SupplyDelivery;
+import org.hl7.fhir.dstu3.model.SupplyDelivery.SupplyDeliveryStatus;
+import org.hl7.fhir.dstu3.model.SupplyDelivery.SupplyDeliverySuppliedItemComponent;
 import org.hl7.fhir.dstu3.model.Timing;
 import org.hl7.fhir.dstu3.model.Timing.TimingRepeatComponent;
 import org.hl7.fhir.dstu3.model.Timing.UnitsOfTime;
@@ -268,6 +271,10 @@ public class FhirStu3 {
 
       for (HealthRecord.Device device : encounter.devices) {
         device(personEntry, bundle, device);
+      }
+      
+      for (JsonObject supply : encounter.supplies) {
+        supplyDelivery(personEntry, bundle, supply, encounter);
       }
       
       // one claim per encounter
@@ -2177,6 +2184,49 @@ public class FhirStu3 {
     deviceResource.setType(mapCodeToCodeableConcept(device.codes.get(0), SNOMED_URI));
     deviceResource.setPatient(new Reference(personEntry.getFullUrl()));
     return newEntry(bundle, deviceResource);
+  }
+  
+  /**
+   * Map the JsonObject for a Supply into a FHIR SupplyDelivery and add it to the Bundle.
+   *
+   * @param personEntry    The Person entry.
+   * @param bundle         Bundle to add to.
+   * @param supply         The supplied object to add.
+   * @param encounter      The encounter during which the supplies were delivered
+   * @return The added Entry.
+   */
+  private static BundleEntryComponent supplyDelivery(BundleEntryComponent personEntry, Bundle bundle,
+      JsonObject supply, Encounter encounter) {
+   
+    SupplyDelivery supplyResource = new SupplyDelivery();
+    supplyResource.setStatus(SupplyDeliveryStatus.COMPLETED);
+    supplyResource.setPatient(new Reference(personEntry.getFullUrl()));
+    
+    CodeableConcept type = new CodeableConcept();
+    type.addCoding()
+      .setCode("device")
+      .setDisplay("Device")
+      .setSystem(SNOMED_URI);
+    supplyResource.setType(type);
+    
+    SupplyDeliverySuppliedItemComponent suppliedItem = new SupplyDeliverySuppliedItemComponent();
+    CodeableConcept itemCC = new CodeableConcept();
+    JsonObject jsonCode = supply.get("code").getAsJsonObject();
+    itemCC.addCoding()
+      .setCode(jsonCode.get("code").getAsString())
+      .setDisplay(jsonCode.get("display").getAsString())
+      .setSystem(SNOMED_URI);
+    suppliedItem.setItem(itemCC);
+    
+    SimpleQuantity quantity = new SimpleQuantity();
+    quantity.setValue(supply.get("quantity").getAsLong());
+    suppliedItem.setQuantity(quantity);
+    
+    supplyResource.setSuppliedItem(suppliedItem);
+    
+    supplyResource.setOccurrence(convertFhirDateTime(encounter.start, true));
+    
+    return newEntry(bundle, supplyResource);
   }
   
   /**
