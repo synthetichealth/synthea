@@ -1,15 +1,7 @@
 {
   "name": "covid19",
   "remarks": [
-    "Copyright 2014-2017 Michigan Health Information Network Shared Services",
-    "MiHIN Confidential – Proprietary - Restricted",
-    "Coronavirus (COVID-19) module.",
-    "",
-    "This is module for the treatment of COVID-19 has estimates for rates of infection, rates of admission, and probabilities.",
-    "",
-    "Treatments are based on many sources, many of which are updating. Many pathways are missing.",
-    "",
-    "Daily lab values and measurements are missing."
+    "This is module models the infection of COVID-19 patients during an epidemic"
   ],
   "states": {
     "Initial": {
@@ -47,7 +39,7 @@
       ]
     },
     "Call_Infection_Submodule": {
-      "submodule": "covid_19/covid19",
+      "submodule": "covid_19/covid-19-infection",
       "type": "CallSubmodule",
       "direct_transition": "Terminal"
     }
