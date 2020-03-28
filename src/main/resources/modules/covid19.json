@@ -30,7 +30,7 @@
       "distributed_transition": [
         {
           "distribution": 0.2,
-          "transition": "Call_Infection_Submodule"
+          "transition": "Call Infection Submodule"
         },
         {
           "distribution": 0.8,
@@ -38,7 +38,7 @@
         }
       ]
     },
-    "Call_Infection_Submodule": {
+    "Call Infection Submodule": {
       "submodule": "covid19/infection",
       "type": "CallSubmodule",
       "direct_transition": "Terminal"

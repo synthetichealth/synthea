@@ -179,14 +179,198 @@
     "High Risk of Severe Disease": {
       "type": "SetAttribute",
       "attribute": "covid19_risk",
-      "direct_transition": "Terminal",
+      "direct_transition": "Determine Severity",
       "value": "high"
     },
     "Low Risk of Severe Disease": {
       "type": "SetAttribute",
       "attribute": "covid19_risk",
-      "direct_transition": "Terminal",
+      "direct_transition": "Determine Severity",
       "value": "low"
+    },
+    "Determine Severity": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_risk",
+                "operator": "==",
+                "value": "high"
+              },
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 50,
+                "unit": "years"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Severe Severity",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Mild Severity",
+              "distribution": 0.45
+            },
+            {
+              "transition": "Negative Severity",
+              "distribution": 0.05
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Severe Severity",
+              "distribution": 0.25
+            },
+            {
+              "transition": "Mild Severity",
+              "distribution": 0.7
+            },
+            {
+              "transition": "Negative Severity",
+              "distribution": 0.05
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_risk",
+            "operator": "==",
+            "value": "high"
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Severe Severity",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Mild Severity",
+              "distribution": 0.65
+            },
+            {
+              "transition": "Negative Severity",
+              "distribution": 0.05
+            }
+          ],
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_risk",
+                "operator": "==",
+                "value": "low"
+              },
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 50,
+                "unit": "years"
+              }
+            ]
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_risk",
+            "operator": "==",
+            "value": "low"
+          },
+          "distributions": [
+            {
+              "transition": "Severe Severity",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Mild Severity",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Negative Severity",
+              "distribution": 0.05
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Severe Severity"
+        }
+      ]
+    },
+    "Negative Severity": {
+      "type": "SetAttribute",
+      "attribute": "covid19_severity",
+      "direct_transition": "Survival: Survivor",
+      "value": "negative"
+    },
+    "Mild Severity": {
+      "type": "SetAttribute",
+      "attribute": "covid19_severity",
+      "direct_transition": "Determine Survival",
+      "value": "mild"
+    },
+    "Severe Severity": {
+      "type": "SetAttribute",
+      "attribute": "covid19_severity",
+      "direct_transition": "Determine Survival",
+      "value": "severe"
+    },
+    "Determine Survival": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_severity",
+            "operator": "==",
+            "value": "severe"
+          },
+          "distributions": [
+            {
+              "transition": "Survival: Survivor",
+              "distribution": 0.207
+            },
+            {
+              "transition": "Survival: Non-Survivor",
+              "distribution": 0.793
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Survival: Survivor",
+              "distribution": 0.818
+            },
+            {
+              "transition": "Survival: Non-Survivor",
+              "distribution": 0.182
+            }
+          ]
+        }
+      ]
+    },
+    "Survival: Survivor": {
+      "type": "SetAttribute",
+      "attribute": "covid19_death",
+      "direct_transition": "Terminal",
+      "value": false
+    },
+    "Survival: Non-Survivor": {
+      "type": "SetAttribute",
+      "attribute": "covid19_death",
+      "direct_transition": "Terminal",
+      "value": true
     }
   },
   "remarks": [
