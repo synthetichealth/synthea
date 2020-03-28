@@ -3,7 +3,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Encounter for Test"
+      "direct_transition": "Determine Risk"
     },
     "Terminal": {
       "type": "Terminal"
@@ -1035,8 +1035,8 @@
       "direct_transition": "Determine Severity",
       "remarks": [
         "Assess patient comorbidities and set attribute (covid19_risk):",
-        "  - (High) if patient has comorbidity impacting risks",
-        "  - (Low) if patient has no comorbidity impacting risks"
+        "  - (high) if patient has comorbidity impacting risks",
+        "  - (low) if patient has no comorbidity impacting risks"
       ]
     },
     "Severity Assessment": {

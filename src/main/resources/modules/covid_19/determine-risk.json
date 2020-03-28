@@ -3,7 +3,12 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Determine Risk"
+      "direct_transition": "Determine Risk",
+      "remarks": [
+        "Assess patient comorbidities and set attribute (covid19_risk):",
+        "  - (high) if patient has comorbidity impacting risks",
+        "  - (low) if patient has no comorbidity impacting risks"
+      ]
     },
     "Terminal": {
       "type": "Terminal"
