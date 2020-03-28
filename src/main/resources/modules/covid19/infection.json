@@ -1,5 +1,5 @@
 {
-  "name": "covid-19-infection",
+  "name": "infection",
   "states": {
     "Initial": {
       "type": "Initial",
@@ -1030,7 +1030,7 @@
       "value": "severe"
     },
     "Determine Risk": {
-      "submodule": "covid_19/determine-risk",
+      "submodule": "covid19/determine_risk",
       "type": "CallSubmodule",
       "direct_transition": "Determine Severity",
       "remarks": [
@@ -1481,18 +1481,6 @@
         "In the most severe patients, platelet counts should also trend towards being less than 150K per mm3",
         "In the most severe patients, median hemoglobin should be around 12.8 g/dL"
       ]
-    },
-    "High Risk of Severe Disease": {
-      "type": "SetAttribute",
-      "attribute": "covid19_risk",
-      "direct_transition": "Determine Severity",
-      "value": "high"
-    },
-    "Low Risk of Severe Disease": {
-      "type": "SetAttribute",
-      "attribute": "covid19_risk",
-      "direct_transition": "Determine Severity",
-      "value": "low"
     },
     "Antimalarial Medication": {
       "type": "MedicationOrder",

@@ -1,5 +1,5 @@
 {
-  "name": "Determine Covid-19 Risk",
+  "name": "determine_risk",
   "states": {
     "Initial": {
       "type": "Initial",
@@ -188,5 +188,8 @@
       "direct_transition": "Terminal",
       "value": "low"
     }
-  }
+  },
+  "remarks": [
+    "This submodule determines covid19 risk, severity, and death."
+  ]
 }
