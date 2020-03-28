@@ -483,6 +483,7 @@ public abstract class State implements Cloneable, Serializable {
   public static class SetAttribute extends State {
     private String attribute;
     private Object value;
+    private Range<Double> range;
     private String expression;
     private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
     
@@ -519,6 +520,7 @@ public abstract class State implements Cloneable, Serializable {
       SetAttribute clone = (SetAttribute) super.clone();
       clone.attribute = attribute;
       clone.value = value;
+      clone.range = range;
       clone.expression = expression;
       clone.threadExpProcessor = threadExpProcessor;
       return clone;
@@ -529,6 +531,8 @@ public abstract class State implements Cloneable, Serializable {
       ThreadLocal<ExpressionProcessor> expProcessor = getExpProcessor();
       if (expProcessor.get() != null) {
         value = expProcessor.get().evaluate(person, time);
+      } else if (range != null) {
+        value = person.rand(range.low, range.high, range.decimals);
       }
 
       if (value != null) {
