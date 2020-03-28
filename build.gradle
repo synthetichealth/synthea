@@ -70,7 +70,9 @@ dependencies {
   
   // Physiology simulation dependencies
   compile files('lib/sbscl/SimulationCoreLibrary_v1.5_slim.jar')
-  compile group: 'org.sbml.jsbml', name: 'jsbml', version: '1.4'
+  compile group: 'org.sbml.jsbml', name: 'jsbml', version: '1.4', {
+      exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+  }
   compile group: 'org.apache.commons', name: 'commons-math', version: '2.2'
   
   // JfreeChart for drawing physiology charts
