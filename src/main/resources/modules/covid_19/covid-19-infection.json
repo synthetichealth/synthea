@@ -1,0 +1,2201 @@
+{
+  "name": "covid-19-infection",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Determine Risk"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Encounter for Test": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185345009,
+          "display": "Encounter for symptom (procedure)"
+        }
+      ],
+      "direct_transition": "Cough"
+    },
+    "Cough": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 49727002,
+          "display": "Cough (finding)"
+        }
+      ],
+      "direct_transition": "Take Temperature"
+    },
+    "Fever": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 386661006,
+          "display": "Fever (finding)"
+        }
+      ],
+      "direct_transition": "Acetaminophen"
+    },
+    "Shortness of Breath": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 267036007,
+          "display": "Dyspnea (finding)"
+        }
+      ],
+      "direct_transition": "Suspected COVID"
+    },
+    "Take Temperature": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "Cel",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Body temperature"
+        },
+        {
+          "system": "LOINC",
+          "code": "8331-1",
+          "display": "Oral temperature"
+        }
+      ],
+      "direct_transition": "Fever",
+      "range": {
+        "low": 37.7,
+        "high": 42.2
+      }
+    },
+    "End Exposure": {
+      "type": "ConditionEnd",
+      "condition_onset": "Suspected COVID",
+      "conditional_transition": [
+        {
+          "transition": "Administer COVID-19 Test Negative",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_severity",
+            "operator": "==",
+            "value": "negative"
+          }
+        },
+        {
+          "transition": "Administer COVID-19 Test Positive"
+        }
+      ]
+    },
+    "Diagnosed COVID": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "covid19",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 840539006,
+          "display": "COVID-19"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "End Encounter and Admit Immediately",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_severity",
+            "operator": "==",
+            "value": "severe"
+          }
+        },
+        {
+          "transition": "Self Isolation At Home"
+        }
+      ]
+    },
+    "Suspected COVID": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 840544004,
+          "display": "Suspected COVID-19"
+        }
+      ],
+      "direct_transition": "Apply Face Mask to Patient"
+    },
+    "Admission": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "Diagnosed COVID",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 737481003,
+          "display": "Inpatient care management (procedure)"
+        }
+      ],
+      "direct_transition": "Count Days"
+    },
+    "Pneumonia": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 233604007,
+          "display": "Pneumonia (disorder)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Respiratory Distress",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Respiratory Failure",
+          "distribution": 0.4
+        }
+      ]
+    },
+    "Stay": {
+      "type": "Counter",
+      "attribute": "covid19_admission_days",
+      "action": "increment",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_admission_days",
+            "operator": "<=",
+            "value": 20
+          },
+          "distributions": [],
+          "transition": "Antimalarial Medication"
+        },
+        {
+          "distributions": [],
+          "transition": "Cytokine Suppression"
+        }
+      ],
+      "remarks": [
+        "Median duration of viral shedding was 20 days, and longest observed duration of viral shedding was 37 days.",
+        "https://doi.org/10.1016/S0140-6736(20)30566-3"
+      ]
+    },
+    "Death": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "condition_onset": "Diagnosed COVID"
+    },
+    "Wait for Admission": {
+      "type": "Delay",
+      "direct_transition": "Admission",
+      "range": {
+        "low": 5,
+        "high": 8,
+        "unit": "days"
+      }
+    },
+    "Discharge": {
+      "type": "EncounterEnd",
+      "direct_transition": "End Self Isolation At Home"
+    },
+    "Apply Face Mask to Patient": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 261352009,
+          "display": "Face mask (physical object)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 15,
+        "unit": "minutes"
+      },
+      "remarks": [
+        "This should really be a \"Device\" state."
+      ],
+      "reason": "Suspected COVID",
+      "conditional_transition": [
+        {
+          "transition": "Child or Immunocompromised",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_risk",
+                "operator": "==",
+                "value": "high"
+              },
+              {
+                "condition_type": "Age",
+                "operator": "<=",
+                "quantity": 18,
+                "unit": "years",
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Co-Infection Rate"
+        }
+      ]
+    },
+    "Isolation in Negative Pressure": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 736376001,
+          "display": "Infectious disease care plan (record artifact)"
+        }
+      ],
+      "direct_transition": "Wait for Test",
+      "reason": "Suspected COVID",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 444908001,
+          "display": "Isolation nursing in negative pressure isolation environment (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 409524006,
+          "display": "Airborne precautions (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 409526008,
+          "display": "Personal protective equipment (physical object)"
+        }
+      ],
+      "assign_to_attribute": "covid19_careplan"
+    },
+    "Acetaminophen": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 198440,
+          "display": "Acetaminophen 500 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Shortness of Breath",
+      "remarks": [
+        "For fever response, we want to use acetaminophen.",
+        "WHO Now Officially Recommends to Avoid Taking Ibuprofen For COVID-19 Symptoms"
+      ],
+      "reason": "Fever",
+      "administration": true
+    },
+    "Self Isolation At Home": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 736376001,
+          "display": "Infectious disease care plan (record artifact)"
+        }
+      ],
+      "reason": "Diagnosed COVID",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 409524006,
+          "display": "Airborne precautions (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 361235007,
+          "display": "Isolation of infected patient (procedure)"
+        }
+      ],
+      "goals": [
+        {
+          "addresses": [
+            "covid19"
+          ],
+          "text": "Self isolation and social distancing for 14 days."
+        }
+      ],
+      "assign_to_attribute": "covid19_careplan",
+      "direct_transition": "End Encounter and Discharge Home"
+    },
+    "End Self Isolation At Home": {
+      "type": "CarePlanEnd",
+      "direct_transition": "End Cough",
+      "referenced_by_attribute": "covid19_careplan"
+    },
+    "Self Isolation Delay": {
+      "type": "Delay",
+      "direct_transition": "End Self Isolation At Home",
+      "range": {
+        "low": 14,
+        "high": 37,
+        "unit": "days"
+      },
+      "remarks": [
+        "Median duration of viral shedding was 20 days, and longest observed duration of viral shedding was 37 days.",
+        "https://doi.org/10.1016/S0140-6736(20)30566-3"
+      ]
+    },
+    "Wait for Death": {
+      "type": "Delay",
+      "direct_transition": "Death",
+      "range": {
+        "low": 5,
+        "high": 8,
+        "unit": "days"
+      }
+    },
+    "Count Days": {
+      "type": "SetAttribute",
+      "attribute": "covid19_admission_days",
+      "value": 0,
+      "direct_transition": "Dehydration"
+    },
+    "Stay Another Day": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Antibacterial Injection",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Respiratory Failure"
+          }
+        },
+        {
+          "transition": "Metered Dose Inhaler",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Respiratory Distress"
+          }
+        }
+      ]
+    },
+    "Ventilation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 82433009,
+          "display": "Continuous negative pressure ventilation treatment (procedure)"
+        }
+      ],
+      "direct_transition": "Stay",
+      "reason": "Respiratory Failure"
+    },
+    "Cytokine Suppression": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1657981,
+          "display": "20 ML tocilizumab 20 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Recovery?",
+      "remarks": [
+        "Tocilizumab injection to prevent cytokine storms."
+      ],
+      "administration": true,
+      "reason": "Diagnosed COVID",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 8,
+          "unit": "hours"
+        },
+        "duration": {
+          "quantity": 24,
+          "unit": "hours"
+        }
+      }
+    },
+    "Gastrointestinal Issues": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 95516005,
+          "display": "Gastrointestinal irritation (disorder)"
+        }
+      ],
+      "direct_transition": "Vomiting"
+    },
+    "Dehydration": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 34095006,
+          "display": "Dehydration (disorder)"
+        }
+      ],
+      "direct_transition": "Gastrointestinal Issues"
+    },
+    "Respiratory Distress": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 271825005,
+          "display": "Respiratory distress (finding)"
+        }
+      ],
+      "direct_transition": "Metered Dose Inhaler"
+    },
+    "Respiratory Failure": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 65710008,
+          "display": "Acute respiratory failure (disorder)"
+        }
+      ],
+      "direct_transition": "Antibacterial Injection",
+      "remarks": [
+        "67 of 173 (38.7% round up to 40%) severe patients required mechanical ventilation."
+      ]
+    },
+    "Metered Dose Inhaler": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 2123111,
+          "display": "NDA020503 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
+        }
+      ],
+      "administration": true,
+      "direct_transition": "Oxygen",
+      "reason": "Respiratory Distress"
+    },
+    "Oxygen": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 371908008,
+          "display": "Oxygen administration by mask (procedure)"
+        }
+      ],
+      "reason": "Respiratory Distress",
+      "direct_transition": "Stay"
+    },
+    "Pulmonary Edema": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 40541001,
+          "display": "Acute pulmonary edema (disorder)"
+        }
+      ],
+      "direct_transition": "Pneumonia"
+    },
+    "Antibacterial Injection": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1668238,
+          "display": "Azithromycin 500 MG Injection"
+        }
+      ],
+      "direct_transition": "Ventilation",
+      "administration": true,
+      "reason": "Pulmonary Edema",
+      "remarks": [
+        "Really this is only administered if there is an additional bacterial infection in the lungs."
+      ]
+    },
+    "Vomiting": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 765480005,
+          "display": "Vomiting co-occurrent and due to infectious disease (disorder)"
+        }
+      ],
+      "direct_transition": "CBC"
+    },
+    "End Cough": {
+      "type": "ConditionEnd",
+      "direct_transition": "End Dehydration",
+      "condition_onset": "Cough"
+    },
+    "End Dehydration": {
+      "type": "ConditionEnd",
+      "direct_transition": "End COVID19",
+      "condition_onset": "Dehydration"
+    },
+    "End COVID19": {
+      "type": "ConditionEnd",
+      "direct_transition": "End Fever",
+      "condition_onset": "Diagnosed COVID"
+    },
+    "End Fever": {
+      "type": "ConditionEnd",
+      "direct_transition": "End Gastrointestinal Issues",
+      "condition_onset": "Fever"
+    },
+    "End Gastrointestinal Issues": {
+      "type": "ConditionEnd",
+      "direct_transition": "End Pneumonia",
+      "condition_onset": "Gastrointestinal Issues"
+    },
+    "End Pneumonia": {
+      "type": "ConditionEnd",
+      "direct_transition": "End Pulmonary Edema",
+      "condition_onset": "Pneumonia"
+    },
+    "End Pulmonary Edema": {
+      "type": "ConditionEnd",
+      "direct_transition": "End Respiratory Distress",
+      "condition_onset": "Pulmonary Edema"
+    },
+    "End Respiratory Distress": {
+      "type": "ConditionEnd",
+      "direct_transition": "End Respiratory Failure",
+      "condition_onset": "Respiratory Distress"
+    },
+    "End Respiratory Failure": {
+      "type": "ConditionEnd",
+      "direct_transition": "End Shortness of Breath",
+      "condition_onset": "Respiratory Failure"
+    },
+    "End Shortness of Breath": {
+      "type": "ConditionEnd",
+      "direct_transition": "End Vomiting",
+      "condition_onset": "Shortness of Breath"
+    },
+    "End Vomiting": {
+      "type": "ConditionEnd",
+      "direct_transition": "Terminal",
+      "condition_onset": "Vomiting"
+    },
+    "Daily Acetaminophen for Fever": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 198440,
+          "display": "Acetaminophen 500 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Daily HEPA Filter for Room",
+      "reason": "Fever",
+      "administration": true
+    },
+    "Chest X-Ray": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 399208008,
+          "display": "Plain chest X-ray (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "Pulmonary Edema",
+      "reason": "Shortness of Breath"
+    },
+    "Daily PPE for Clinician": {
+      "type": "Simple",
+      "direct_transition": "Stay Another Day",
+      "remarks": [
+        "SCTID: 409526008, Personal protective equipment (physical object)",
+        "How many?"
+      ]
+    },
+    "Daily HEPA Filter for Room": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 972002,
+          "display": "Air filter, device (physical object)"
+        }
+      ],
+      "direct_transition": "Daily PPE for Clinician"
+    },
+    "End Encounter and Admit Immediately": {
+      "type": "EncounterEnd",
+      "direct_transition": "Admission"
+    },
+    "End Encounter and Discharge Home": {
+      "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Wait for Admission",
+              "distribution": 0.9
+            },
+            {
+              "transition": "Wait for Death",
+              "distribution": 0.1
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Self Isolation Delay"
+        }
+      ],
+      "remarks": [
+        "Transition probabilities need adjustment."
+      ]
+    },
+    "Retest Positive": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "94531-1",
+          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94531-1",
+              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260373001,
+            "display": "Detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Decline"
+    },
+    "Decline": {
+      "type": "Delay",
+      "direct_transition": "Death",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "days"
+      }
+    },
+    "Recovery?": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "distribution": 0.5,
+              "transition": "Retest Positive"
+            },
+            {
+              "distribution": 0.5,
+              "transition": "Decline"
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Take Normal Temperature"
+        }
+      ],
+      "remarks": [
+        "Very rough estimates. Of critical patients, 42 of 53 died (~86%). Of those with coronorary heart disease (N=15),13 died and 2 survived. Other comorbidities approximately equal."
+      ]
+    },
+    "Retest Negative": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "94531-1",
+          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94531-1",
+              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Wait for retest"
+    },
+    "Second Negative Test": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "94531-1",
+          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94531-1",
+              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Discharge"
+    },
+    "Wait for retest": {
+      "type": "Delay",
+      "direct_transition": "Second Normal Temperature",
+      "range": {
+        "low": 18,
+        "high": 30,
+        "unit": "hours"
+      }
+    },
+    "Take Temperature Each Day": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "Cel",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Body temperature"
+        },
+        {
+          "system": "LOINC",
+          "code": "8331-1",
+          "display": "Oral temperature"
+        }
+      ],
+      "range": {
+        "low": 37.7,
+        "high": 42.2
+      },
+      "direct_transition": "Daily Acetaminophen for Fever"
+    },
+    "Take Normal Temperature": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "Cel",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Body temperature"
+        },
+        {
+          "system": "LOINC",
+          "code": "8331-1",
+          "display": "Oral temperature"
+        }
+      ],
+      "direct_transition": "End Inpatient Fever",
+      "range": {
+        "low": 36.1,
+        "high": 37.2
+      }
+    },
+    "Second Normal Temperature": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "Cel",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Body temperature"
+        },
+        {
+          "system": "LOINC",
+          "code": "8331-1",
+          "display": "Oral temperature"
+        }
+      ],
+      "range": {
+        "low": 36.1,
+        "high": 37.2
+      },
+      "direct_transition": "Second Negative Test"
+    },
+    "End Inpatient Fever": {
+      "type": "ConditionEnd",
+      "direct_transition": "Retest Negative",
+      "condition_onset": "Fever"
+    },
+    "Determine Severity": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_risk",
+                "operator": "==",
+                "value": "high"
+              },
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 50,
+                "unit": "years"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Severe Severity",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Mild Severity",
+              "distribution": 0.45
+            },
+            {
+              "transition": "Negative Severity",
+              "distribution": 0.05
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Severe Severity",
+              "distribution": 0.25
+            },
+            {
+              "transition": "Mild Severity",
+              "distribution": 0.7
+            },
+            {
+              "transition": "Negative Severity",
+              "distribution": 0.05
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_risk",
+            "operator": "==",
+            "value": "high"
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Severe Severity",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Mild Severity",
+              "distribution": 0.65
+            },
+            {
+              "transition": "Negative Severity",
+              "distribution": 0.05
+            }
+          ],
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_risk",
+                "operator": "==",
+                "value": "low"
+              },
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 50,
+                "unit": "years"
+              }
+            ]
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_risk",
+            "operator": "==",
+            "value": "low"
+          },
+          "distributions": [
+            {
+              "transition": "Severe Severity",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Mild Severity",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Negative Severity",
+              "distribution": 0.05
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Severe Severity"
+        }
+      ]
+    },
+    "Negative Severity": {
+      "type": "SetAttribute",
+      "attribute": "covid19_severity",
+      "direct_transition": "Encounter for Test",
+      "value": "negative"
+    },
+    "Mild Severity": {
+      "type": "SetAttribute",
+      "attribute": "covid19_severity",
+      "direct_transition": "Encounter for Test",
+      "value": "mild"
+    },
+    "Severe Severity": {
+      "type": "SetAttribute",
+      "attribute": "covid19_severity",
+      "direct_transition": "Encounter for Test",
+      "value": "severe"
+    },
+    "Determine Risk": {
+      "submodule": "covid_19/determine-risk",
+      "type": "CallSubmodule",
+      "direct_transition": "Determine Severity",
+      "remarks": [
+        "Assess patient comorbidities and set attribute (covid19_risk):",
+        "  - (high) if patient has comorbidity impacting risks",
+        "  - (low) if patient has no comorbidity impacting risks"
+      ]
+    },
+    "Severity Assessment": {
+      "type": "Simple",
+      "remarks": [
+        "Does patient need negative pressure room?",
+        "Stable patients go into regular room with mask, contact and droplet precautions.",
+        "Risky patients with tracheostomy or will require procedures with aerosolation (high flow nasal canula, immediate intubation, or non-invasive positive pressure ventilation, or immediate nebulizer).",
+        "Risky patients: if no negative pressure rooms available, then staff need to wear PPE (N95 or PAPR)"
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Isolation in Negative Pressure",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_severity",
+            "operator": "==",
+            "value": "severe"
+          }
+        },
+        {
+          "transition": "Isolation"
+        }
+      ]
+    },
+    "Isolation": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 736376001,
+          "display": "Infectious disease care plan (record artifact)"
+        }
+      ],
+      "reason": "Suspected COVID",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 409524006,
+          "display": "Airborne precautions (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 409526008,
+          "display": "Personal protective equipment (physical object)"
+        }
+      ],
+      "assign_to_attribute": "covid19_careplan",
+      "direct_transition": "Wait for Test"
+    },
+    "Wait for Test": {
+      "type": "Delay",
+      "range": {
+        "low": 30,
+        "high": 90,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Plan"
+    },
+    "Administer COVID-19 Test Negative": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "94531-1",
+          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94531-1",
+              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "End Encounter Testing Negative"
+    },
+    "Administer COVID-19 Test Positive": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "94531-1",
+          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94531-1",
+              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260373001,
+            "display": "Detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Survival Determination"
+    },
+    "End Plan": {
+      "type": "CarePlanEnd",
+      "direct_transition": "End Exposure",
+      "referenced_by_attribute": "covid19_careplan"
+    },
+    "End Encounter Testing Negative": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "CBC Differential": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "57023-4",
+          "display": "Auto Differential panel - Blood"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "770-8",
+              "display": "Neutrophils/100 leukocytes in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 10,
+            "high": 45
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "736-9",
+              "display": "Lymphocytes/100 leukocytes in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 5,
+            "high": 25
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5905-5",
+              "display": "Monocytes/100 leukocytes in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 5,
+            "high": 15
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "713-8",
+              "display": "Eosinophils/100 leukocytes in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 3,
+            "high": 6
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "706-2",
+              "display": "Basophils/100 leukocytes in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 2,
+            "high": 4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "751-8",
+              "display": "Neutrophils [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 1.4,
+            "high": 4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "731-0",
+              "display": "Lymphocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 0.6,
+            "high": 1
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "742-7",
+              "display": "Monocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 0.5,
+            "high": 1.4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "711-2",
+              "display": "Eosinophils [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 0.2,
+            "high": 0.6
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "704-7",
+              "display": "Basophils [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 0.2,
+            "high": 0.4
+          }
+        }
+      ],
+      "direct_transition": "Chest X-Ray",
+      "remarks": [
+        "Viral infection should show DECREASES in neutro and lymph, and INCREASES in mono, eosino, and baso."
+      ]
+    },
+    "CBC": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6690-2",
+              "display": "Leukocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 3,
+            "high": 4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*6/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "789-8",
+              "display": "Erythrocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 3.77,
+            "high": 5.8
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 11.1,
+            "high": 14.1
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "4544-3",
+              "display": "Hematocrit [Volume Fraction] of Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 37.5,
+            "high": 46.6
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "787-2",
+              "display": "MCV [Entitic volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 79,
+            "high": 97
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "pg",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "785-6",
+              "display": "MCH [Entitic mass] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 26.6,
+            "high": 33
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "786-4",
+              "display": "MCHC [Mass/volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 31.5,
+            "high": 35.7
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "788-0",
+              "display": "Erythrocyte distribution width [Ratio] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 12.3,
+            "high": 15.4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "777-3",
+              "display": "Platelets [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 99,
+            "high": 150
+          }
+        }
+      ],
+      "direct_transition": "CBC Differential",
+      "remarks": [
+        "In the most severe patients, white-cell counts should be less than 4000 per mm3",
+        "In the most severe patients, platelet counts should also trend towards being less than 150K per mm3",
+        "In the most severe patients, median hemoglobin should be around 12.8 g/dL"
+      ]
+    },
+    "High Risk of Severe Disease": {
+      "type": "SetAttribute",
+      "attribute": "covid19_risk",
+      "direct_transition": "Determine Severity",
+      "value": "high"
+    },
+    "Low Risk of Severe Disease": {
+      "type": "SetAttribute",
+      "attribute": "covid19_risk",
+      "direct_transition": "Determine Severity",
+      "value": "low"
+    },
+    "Antimalarial Medication": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 979092,
+          "display": "Hydroxychloroquine Sulfate 200 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Take Temperature Each Day",
+      "administration": true,
+      "reason": "Diagnosed COVID"
+    },
+    "Influenza B Detected": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "80381-7",
+          "display": "Influenza virus A and B Ag panel - Nasopharynx by Rapid immunoassay"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "80382-5",
+              "display": "Influenza virus A Ag [Presence] in Nasopharynx by Rapid immunoassay"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "80383-3",
+              "display": "Influenza virus B Ag [Presence] in Nasopharynx by Rapid immunoassay"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260373001,
+            "display": "Detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Severity Assessment"
+    },
+    "Influenza A Detected": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "80381-7",
+          "display": "Influenza virus A and B Ag panel - Nasopharynx by Rapid immunoassay"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "80382-5",
+              "display": "Influenza virus A Ag [Presence] in Nasopharynx by Rapid immunoassay"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260373001,
+            "display": "Detected (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "80383-3",
+              "display": "Influenza virus B Ag [Presence] in Nasopharynx by Rapid immunoassay"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Severity Assessment"
+    },
+    "Influenza Not Detected": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "80381-7",
+          "display": "Influenza virus A and B Ag panel - Nasopharynx by Rapid immunoassay"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "80382-5",
+              "display": "Influenza virus A Ag [Presence] in Nasopharynx by Rapid immunoassay"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "80383-3",
+              "display": "Influenza virus B Ag [Presence] in Nasopharynx by Rapid immunoassay"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Severity Assessment"
+    },
+    "Child or Immunocompromised": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Respiratory Virus Panel Not Detected",
+          "distribution": 0.92
+        },
+        {
+          "transition": "Respiratory Virus Panel Influenza A Detected",
+          "distribution": 0.04
+        },
+        {
+          "transition": "Respiratory Virus Panel Influenza B Detected",
+          "distribution": 0.04
+        }
+      ]
+    },
+    "Co-Infection Rate": {
+      "type": "Simple",
+      "remarks": [
+        "Approximately 8% co-infection rate with influenza."
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Influenza Not Detected",
+          "distribution": 0.92
+        },
+        {
+          "transition": "Influenza A Detected",
+          "distribution": 0.04
+        },
+        {
+          "transition": "Influenza B Detected",
+          "distribution": 0.04
+        }
+      ]
+    },
+    "Respiratory Virus Panel Not Detected": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "92143-7",
+          "display": "Respiratory pathogens DNA and RNA panel - Respiratory specimen by NAA with probe detection"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92142-9",
+              "display": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92141-1",
+              "display": "Influenza virus B RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92131-2",
+              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92140-3",
+              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92139-5",
+              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92138-7",
+              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92130-4",
+              "display": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92134-6",
+              "display": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94040-3",
+              "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Severity Assessment"
+    },
+    "Respiratory Virus Panel Influenza A Detected": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "92143-7",
+          "display": "Respiratory pathogens DNA and RNA panel - Respiratory specimen by NAA with probe detection"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92142-9",
+              "display": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 10828004,
+            "display": "Positive (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92141-1",
+              "display": "Influenza virus B RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92131-2",
+              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92140-3",
+              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92139-5",
+              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92138-7",
+              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92130-4",
+              "display": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92134-6",
+              "display": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94040-3",
+              "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Severity Assessment"
+    },
+    "Respiratory Virus Panel Influenza B Detected": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "92143-7",
+          "display": "Respiratory pathogens DNA and RNA panel - Respiratory specimen by NAA with probe detection"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92142-9",
+              "display": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92141-1",
+              "display": "Influenza virus B RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 10828004,
+            "display": "Positive (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92131-2",
+              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92140-3",
+              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92139-5",
+              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92138-7",
+              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92130-4",
+              "display": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92134-6",
+              "display": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94040-3",
+              "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Severity Assessment"
+    },
+    "Survival Determination": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_severity",
+            "operator": "==",
+            "value": "severe"
+          },
+          "distributions": [
+            {
+              "transition": "Survival: Survivor",
+              "distribution": 0.207
+            },
+            {
+              "transition": "Survival: Non-Survivor",
+              "distribution": 0.793
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Survival: Survivor",
+              "distribution": 0.818
+            },
+            {
+              "transition": "Survival: Non-Survivor",
+              "distribution": 0.182
+            }
+          ]
+        }
+      ]
+    },
+    "Survival: Survivor": {
+      "type": "SetAttribute",
+      "attribute": "covid19_death",
+      "direct_transition": "Diagnosed COVID",
+      "value": false
+    },
+    "Survival: Non-Survivor": {
+      "type": "SetAttribute",
+      "attribute": "covid19_death",
+      "direct_transition": "Diagnosed COVID",
+      "value": true
+    }
+  }
+}
