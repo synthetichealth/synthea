@@ -1,7 +1,7 @@
 {
   "name": "covid19",
   "remarks": [
-    "This is module models the infection of COVID-19 patients during an epidemic"
+    "This is module models the infection of COVID-19 patients during the 2020 global pandemic."
   ],
   "states": {
     "Initial": {
@@ -22,8 +22,8 @@
     },
     "Wait Until Exposure": {
       "range": {
-        "low": 1.0,
-        "high": 90.0,
+        "low": 1,
+        "high": 90,
         "unit": "days"
       },
       "type": "Delay",
@@ -39,7 +39,7 @@
       ]
     },
     "Call_Infection_Submodule": {
-      "submodule": "covid_19/covid-19-infection",
+      "submodule": "covid19/infection",
       "type": "CallSubmodule",
       "direct_transition": "Terminal"
     }
