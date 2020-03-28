@@ -1,7 +1,0 @@
-age,Covid-19 Comorbidity,Mild_Infection,Seeks_Medical_Care
-0-110,Yes,0.3,0.7
-80-110,No,0.3,0.7
-70-79,No,0.4,0.6
-60-69,No,0.65,0.35
-20-59,No,0.95,0.05
-0-19,No,0.97,0.03

@@ -1,8 +1,0 @@
-age,Covid-19 Comorbidity,Transfer_To_ICU,Transfer_To_Ward
-0-110,Yes,0.3,0.7
-85-110,No,0.3,0.7
-75-84,No,0.25,0.75
-65-74,No,0.22,0.78
-45-64,No,0.2,0.8
-20-44,No,0.1,0.9
-0-19,No,0.05,0.95

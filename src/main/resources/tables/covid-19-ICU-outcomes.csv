@@ -1,6 +1,0 @@
-age,Covid-19 Comorbidity,ICU_Death,End_Ventilator
-0-110,Yes,0.2,0.8
-75-110,No,0.2,0.8
-60-74,No,0.1,0.9
-20-59,No,0.02,0.98
-0-19,No,0.01,0.99
