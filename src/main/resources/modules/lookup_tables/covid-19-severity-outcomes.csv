@@ -1,0 +1,6 @@
+age,covid19_risk,Negative Severity,Mild Severity,Severe Severity
+50-110,high,0.05,0.45,0.5
+0-49,high,0.05,0.7,0.25
+50-110,low,0.05,0.65,0.3
+20-49,low,0.05,0.8,0.15
+0-19,low,0.05,0.8,0.15
