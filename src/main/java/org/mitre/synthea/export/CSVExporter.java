@@ -39,6 +39,8 @@ import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.HealthRecord.Supply;
+
 
 /**
  * Researchers have requested a simple table-based format that could easily be
@@ -408,7 +410,7 @@ public class CSVExporter {
         device(personID, encounterID, device);
       }
       
-      for (JsonObject supply : encounter.supplies) {
+      for (Supply supply : encounter.supplies) {
         supply(personID, encounterID, encounter, supply);
       }
     }
@@ -986,7 +988,7 @@ public class CSVExporter {
    * @param supply       The supply itself
    * @throws IOException if any IO error occurs
    */
-  private void supply(String personID, String encounterID, Encounter encounter, JsonObject supply)
+  private void supply(String personID, String encounterID, Encounter encounter, Supply supply)
     throws IOException {
     // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,QUANTITY
     StringBuilder s = new StringBuilder();
@@ -994,13 +996,12 @@ public class CSVExporter {
     s.append(dateFromTimestamp(encounter.start)).append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
-    
-    JsonObject code = supply.get("code").getAsJsonObject();
-    s.append(code.get("code").getAsString()).append(',');
-    s.append(clean(code.get("display").getAsString())).append(',');
-    
-    s.append(supply.get("quantity").getAsLong());
-    
+
+    s.append(supply.code.code).append(',');
+    s.append(clean(supply.code.display)).append(',');
+
+    s.append(supply.quantity);
+
     s.append(NEWLINE);
     
     write(s.toString(), supplies);
