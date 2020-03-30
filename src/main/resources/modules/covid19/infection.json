@@ -19,43 +19,7 @@
           "display": "Encounter for symptom (procedure)"
         }
       ],
-      "direct_transition": "Cough"
-    },
-    "Cough": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 49727002,
-          "display": "Cough (finding)"
-        }
-      ],
-      "direct_transition": "Take Temperature"
-    },
-    "Fever": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 386661006,
-          "display": "Fever (finding)"
-        }
-      ],
-      "direct_transition": "Acetaminophen"
-    },
-    "Shortness of Breath": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 267036007,
-          "display": "Dyspnea (finding)"
-        }
-      ],
-      "direct_transition": "Suspected COVID"
+      "direct_transition": "Catalog Symptoms"
     },
     "Take Temperature": {
       "type": "Observation",
@@ -73,11 +37,11 @@
           "display": "Oral temperature"
         }
       ],
-      "direct_transition": "Fever",
       "range": {
         "low": 37.7,
         "high": 42.2
-      }
+      },
+      "direct_transition": "Acetaminophen"
     },
     "End Exposure": {
       "type": "ConditionEnd",
@@ -174,7 +138,7 @@
       "action": "increment",
       "conditional_transition": [
         {
-          "transition": "Cytokine Suppression",
+          "transition": "Compassionate Care",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "covid19_admission_days",
@@ -302,13 +266,12 @@
           "display": "Acetaminophen 500 MG Oral Tablet"
         }
       ],
-      "direct_transition": "Shortness of Breath",
       "remarks": [
         "For fever response, we want to use acetaminophen.",
         "WHO Now Officially Recommends to Avoid Taking Ibuprofen For COVID-19 Symptoms"
       ],
-      "reason": "Fever",
-      "administration": true
+      "administration": true,
+      "direct_transition": "Suspected COVID"
     },
     "Self Isolation At Home": {
       "type": "CarePlanStart",
@@ -345,7 +308,7 @@
     },
     "End Self Isolation At Home": {
       "type": "CarePlanEnd",
-      "direct_transition": "End Cough",
+      "direct_transition": "End Symptoms",
       "referenced_by_attribute": "covid19_careplan"
     },
     "Self Isolation Delay": {
@@ -374,7 +337,7 @@
       "type": "SetAttribute",
       "attribute": "covid19_admission_days",
       "value": 0,
-      "direct_transition": "Dehydration"
+      "direct_transition": "CBC"
     },
     "Stay Another Day": {
       "type": "Delay",
@@ -410,58 +373,6 @@
       ],
       "direct_transition": "Stay",
       "reason": "Respiratory Failure"
-    },
-    "Cytokine Suppression": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1657981,
-          "display": "20 ML tocilizumab 20 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Recovery?",
-      "remarks": [
-        "Tocilizumab injection to prevent cytokine storms."
-      ],
-      "administration": true,
-      "reason": "Diagnosed COVID",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 8,
-          "unit": "hours"
-        },
-        "duration": {
-          "quantity": 24,
-          "unit": "hours"
-        }
-      }
-    },
-    "Gastrointestinal Issues": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 95516005,
-          "display": "Gastrointestinal irritation (disorder)"
-        }
-      ],
-      "direct_transition": "Vomiting"
-    },
-    "Dehydration": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 34095006,
-          "display": "Dehydration (disorder)"
-        }
-      ],
-      "direct_transition": "Gastrointestinal Issues"
     },
     "Respiratory Distress": {
       "type": "ConditionOnset",
@@ -543,42 +454,10 @@
         "Really this is only administered if there is an additional bacterial infection in the lungs."
       ]
     },
-    "Vomiting": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 765480005,
-          "display": "Vomiting co-occurrent and due to infectious disease (disorder)"
-        }
-      ],
-      "direct_transition": "CBC"
-    },
-    "End Cough": {
-      "type": "ConditionEnd",
-      "direct_transition": "End Dehydration",
-      "condition_onset": "Cough"
-    },
-    "End Dehydration": {
-      "type": "ConditionEnd",
-      "direct_transition": "End COVID19",
-      "condition_onset": "Dehydration"
-    },
     "End COVID19": {
       "type": "ConditionEnd",
-      "direct_transition": "End Fever",
-      "condition_onset": "Diagnosed COVID"
-    },
-    "End Fever": {
-      "type": "ConditionEnd",
-      "direct_transition": "End Gastrointestinal Issues",
-      "condition_onset": "Fever"
-    },
-    "End Gastrointestinal Issues": {
-      "type": "ConditionEnd",
       "direct_transition": "End Pneumonia",
-      "condition_onset": "Gastrointestinal Issues"
+      "condition_onset": "Diagnosed COVID"
     },
     "End Pneumonia": {
       "type": "ConditionEnd",
@@ -597,18 +476,8 @@
     },
     "End Respiratory Failure": {
       "type": "ConditionEnd",
-      "direct_transition": "End Shortness of Breath",
-      "condition_onset": "Respiratory Failure"
-    },
-    "End Shortness of Breath": {
-      "type": "ConditionEnd",
-      "direct_transition": "End Vomiting",
-      "condition_onset": "Shortness of Breath"
-    },
-    "End Vomiting": {
-      "type": "ConditionEnd",
-      "direct_transition": "Terminal",
-      "condition_onset": "Vomiting"
+      "condition_onset": "Respiratory Failure",
+      "direct_transition": "Terminal"
     },
     "Daily Acetaminophen for Fever": {
       "type": "MedicationOrder",
@@ -620,7 +489,6 @@
         }
       ],
       "direct_transition": "Daily HEPA Filter for Room",
-      "reason": "Fever",
       "administration": true
     },
     "Chest X-Ray": {
@@ -637,8 +505,7 @@
         "high": 45,
         "unit": "minutes"
       },
-      "direct_transition": "Pulmonary Edema",
-      "reason": "Shortness of Breath"
+      "direct_transition": "Pulmonary Edema"
     },
     "Daily PPE for Clinician": {
       "type": "Simple",
@@ -896,8 +763,7 @@
     },
     "End Inpatient Fever": {
       "type": "ConditionEnd",
-      "direct_transition": "Retest Negative",
-      "condition_onset": "Fever"
+      "direct_transition": "Retest Negative"
     },
     "Determine Risk": {
       "submodule": "covid19/determine_risk",
@@ -2145,6 +2011,44 @@
         }
       ],
       "direct_transition": "Lactate Dehydrogenase"
+    },
+    "Catalog Symptoms": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/symptoms",
+      "direct_transition": "Take Temperature"
+    },
+    "Compassionate Care": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1657981,
+          "display": "20 ML tocilizumab 20 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Recovery?",
+      "remarks": [
+        "Tocilizumab injection to prevent cytokine storms."
+      ],
+      "administration": true,
+      "reason": "Diagnosed COVID",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 8,
+          "unit": "hours"
+        },
+        "duration": {
+          "quantity": 24,
+          "unit": "hours"
+        }
+      }
+    },
+    "End Symptoms": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/end_symptoms",
+      "direct_transition": "End COVID19"
     }
   }
 }
