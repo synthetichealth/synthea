@@ -1,11 +1,11 @@
 package org.mitre.synthea.editors;
 
-import static org.mitre.synthea.editors.GeneticTestingEditor.DnaSynthesisConfig.MedicalCategory.*;
-
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 import com.univocity.parsers.tsv.TsvParser;
 import com.univocity.parsers.tsv.TsvParserSettings;
 
@@ -17,8 +17,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,25 +47,21 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
   static final Map<String, List<MedicalCategory>> TRIGGER_CONDITIONS = init();
   
   static Map<String, List<MedicalCategory>> init() {
-    Map<String, List<MedicalCategory>> triggerConditions = new HashMap<>();
-    triggerConditions.put("stroke", Arrays.asList(STROKE, HEMORRHAGIC_STROKE,
-        ISCHEMIC_STROKE, ANEURYSM, THROMBOSIS));
-    triggerConditions.put("coronary_heart_disease", Arrays.asList(
-        ARTERIAL_OCCLUSIVE_DISEASE, CARDIOMYOPATHY, CARDIOVASCULAR, 
-        DILATED_CARDIOMYOPATHY, FAMILIAL_DILATED_CARDIOMYOPATHY, HEART_DISEASE,
-        HEART_VALVE_DISEASE, NONCOMPACTION_CARDIOMYOPATHY,
-        RESTRICTIVE_CARDIOMYOPATHY));
-    triggerConditions.put("myocardial_infarction", Arrays.asList(CARDIAC_ARREST));
-    triggerConditions.put("cardiac_arrest", Arrays.asList(CARDIAC_ARREST));
-    triggerConditions.put("atrial_fibrillation", Arrays.asList(ARRHYTHMIA,
-        LONG_QT_SYNDROME, SHORT_QT_SYNDROME));
-    triggerConditions.put("cardiovascular_disease", Arrays.asList(
-        ARTERIAL_OCCLUSIVE_DISEASE, CARDIOMYOPATHY, CARDIOVASCULAR, 
-        DILATED_CARDIOMYOPATHY, FAMILIAL_DILATED_CARDIOMYOPATHY, HEART_DISEASE,
-        HEART_VALVE_DISEASE, NONCOMPACTION_CARDIOMYOPATHY,
-        RESTRICTIVE_CARDIOMYOPATHY));
+    URL configURL = GeneticTestingEditor.class.getClassLoader().getResource(
+            "editors/genetics/TriggerToCategory.json");
+    File configFile = new File(configURL.getFile());
+    Type mapType = new TypeToken<Map<String, List<MedicalCategory>>>() {}.getType();
+    Gson gson = new Gson();
+    Map<String, List<MedicalCategory>> triggerConditions;
+    try {
+      triggerConditions = gson.fromJson(new JsonReader(new FileReader(configFile)),
+              mapType);
+    } catch (FileNotFoundException ex) {
+      System.out.println("Unable to load configuration file " + configURL.toString());
+      triggerConditions = new HashMap<>();
+    }
     return triggerConditions;
-  };
+  }
 
   @Override
   public boolean shouldRun(Person person, HealthRecord record, long time) {
@@ -121,7 +118,7 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
   private static DnaSynthesisConfig.Population getPopulation(Person person) {
     DnaSynthesisConfig.Population population;
     String race = (String) person.attributes.get(Person.RACE);
-    switch(race) {
+    switch (race) {
       case "white":
         population = DnaSynthesisConfig.Population.EUR;
         break;
@@ -540,235 +537,41 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
     private static Map<String, List<MedicalCategory>> initializeCategoryMap() {
       // extracted from Python dna_synthesis config at
       // dna-synthesis/populations_and_individuals/Data/cvd_families_byVar.tsv
-      Map<String, List<DnaSynthesisConfig.MedicalCategory>> indexMap = new HashMap<>();
-      indexMap.put("rs10757272", Arrays.asList(ANEURYSM));
-      indexMap.put("rs10958409", Arrays.asList(ANEURYSM));
-      indexMap.put("rs700651", Arrays.asList(ANEURYSM));
-      indexMap.put("rs9298506", Arrays.asList(ANEURYSM));
-      indexMap.put("rs9315204", Arrays.asList(ANEURYSM));
-      indexMap.put("rs111671429", Arrays.asList(AORTIC_ANEURYSM, MARFAN_SYNDROME));
-      indexMap.put("rs1421085", Arrays.asList(AORTIC_ANEURYSM, INSULIN_RESISTANCE));
-      indexMap.put("rs2118181", Arrays.asList(AORTIC_ANEURYSM));
-      indexMap.put("rs7025486", Arrays.asList(AORTIC_ANEURYSM, ANEURYSM, PULMONARY_HYPERTENSION,
-              ISCHEMIC_STROKE));
-      indexMap.put("rs16847548", Arrays.asList(ARRHYTHMIA));
-      indexMap.put("rs2076295", Arrays.asList(ARRHYTHMOGENIC_RIGHT_VENTRICULAR_DYSPLASIA));
-      indexMap.put("rs172149856", Arrays.asList(BRUGADA_SYNDROME));
-      indexMap.put("rs201907325", Arrays.asList(BRUGADA_SYNDROME));
-      indexMap.put("rs104894368", Arrays.asList(CARDIOMYOPATHY));
-      indexMap.put("rs190228518", Arrays.asList(CARDIOMYOPATHY));
-      indexMap.put("rs376923877", Arrays.asList(CARDIOMYOPATHY));
-      indexMap.put("rs10306114", Arrays.asList(CARDIOVASCULAR, ISCHEMIC_STROKE));
-      indexMap.put("rs1041740", Arrays.asList(CARDIOVASCULAR));
-      indexMap.put("rs10507391", Arrays.asList(CARDIOVASCULAR, ISCHEMIC_STROKE));
-      indexMap.put("rs10757274", Arrays.asList(CARDIOVASCULAR, ISCHEMIC_STROKE, HEART_DISEASE,
-              ANEURYSM, AORTIC_ANEURYSM));
-      indexMap.put("rs10757278", Arrays.asList(CARDIOVASCULAR, HEART_DISEASE, AORTIC_ANEURYSM,
-              ISCHEMIC_STROKE));
-      indexMap.put("rs1137617", Arrays.asList(CARDIOVASCULAR, LONG_QT_SYNDROME, ARRHYTHMIA));
-      indexMap.put("rs11570112", Arrays.asList(CARDIOVASCULAR, FAMILIAL_DILATED_CARDIOMYOPATHY,
-              NONCOMPACTION_CARDIOMYOPATHY, CARDIOMYOPATHY, DILATED_CARDIOMYOPATHY));
-      indexMap.put("rs11591147", Arrays.asList(CARDIOVASCULAR, LDL, FAMILIAL_HYPERCHOLESTEROLEMIA,
-              HDL));
-      indexMap.put("rs1333048", Arrays.asList(CARDIOVASCULAR, AORTIC_ANEURYSM, ISCHEMIC_STROKE,
-              HEART_DISEASE));
-      indexMap.put("rs1333049", Arrays.asList(CARDIOVASCULAR));
-      indexMap.put("rs13333226", Arrays.asList(CARDIOVASCULAR));
-      indexMap.put("rs137853964", Arrays.asList(CARDIOVASCULAR, FAMILIAL_HYPERCHOLESTEROLEMIA,
-              LDL));
-      indexMap.put("rs139794067", Arrays.asList(CARDIOVASCULAR, CARDIOMYOPATHY));
-      indexMap.put("rs17228212", Arrays.asList(CARDIOVASCULAR, HEART_DISEASE, HDL));
-      indexMap.put("rs1746048", Arrays.asList(CARDIOVASCULAR, ISCHEMIC_STROKE));
-      indexMap.put("rs17465637", Arrays.asList(CARDIOVASCULAR, HEART_DISEASE));
-      indexMap.put("rs17482753", Arrays.asList(CARDIOVASCULAR, DSYSLIPIDEMIA, HDL,
-              ELEVATED_TRIGLYCERIDES));
-      indexMap.put("rs1799945", Arrays.asList(CARDIOVASCULAR, THROMBOSIS, INSULIN_RESISTANCE,
-              ISCHEMIC_STROKE, PULMONARY_HYPERTENSION, HEMORRHAGIC_STROKE));
-      indexMap.put("rs1800437", Arrays.asList(CARDIOVASCULAR));
-      indexMap.put("rs1800497", Arrays.asList(CARDIOVASCULAR));
-      indexMap.put("rs1800629", Arrays.asList(CARDIOVASCULAR, FAMILIAL_DILATED_CARDIOMYOPATHY,
-              DILATED_CARDIOMYOPATHY));
-      indexMap.put("rs1800796", Arrays.asList(CARDIOVASCULAR, AORTIC_ANEURYSM, THROMBOSIS,
-              ISCHEMIC_STROKE));
-      indexMap.put("rs1801020", Arrays.asList(CARDIOVASCULAR, INSULIN_RESISTANCE,
-              DILATED_CARDIOMYOPATHY, CARDIOMYOPATHY, SHORT_QT_SYNDROME));
-      indexMap.put("rs1801282", Arrays.asList(CARDIOVASCULAR, LDL));
-      indexMap.put("rs1805127", Arrays.asList(CARDIOVASCULAR, ARRHYTHMIA,
-              LONG_QT_SYNDROME));
-      indexMap.put("rs2229169", Arrays.asList(CARDIOVASCULAR, ISCHEMIC_STROKE));
-      indexMap.put("rs2231137", Arrays.asList(CARDIOVASCULAR, ISCHEMIC_STROKE));
-      indexMap.put("rs2383206", Arrays.asList(CARDIOVASCULAR, HEART_DISEASE, ISCHEMIC_STROKE));
-      indexMap.put("rs2383207", Arrays.asList(CARDIOVASCULAR, ANEURYSM, AORTIC_ANEURYSM,
-              ISCHEMIC_STROKE));
-      indexMap.put("rs2943634", Arrays.asList(CARDIOVASCULAR, HEART_DISEASE, HDL,
-              INSULIN_RESISTANCE, ISCHEMIC_STROKE));
-      indexMap.put("rs3093059", Arrays.asList(CARDIOVASCULAR, HEMORRHAGIC_STROKE, ISCHEMIC_STROKE));
-      indexMap.put("rs3798220", Arrays.asList(CARDIOVASCULAR, DSYSLIPIDEMIA, LDL, HDL,
-              HEART_VALVE_DISEASE));
-      indexMap.put("rs383830", Arrays.asList(CARDIOVASCULAR, HEART_DISEASE, THROMBOSIS));
-      indexMap.put("rs3842787", Arrays.asList(CARDIOVASCULAR, ISCHEMIC_STROKE));
-      indexMap.put("rs3900940", Arrays.asList(CARDIOVASCULAR, ISCHEMIC_STROKE));
-      indexMap.put("rs41261344", Arrays.asList(CARDIOVASCULAR, BRUGADA_SYNDROME, CARDIOMYOPATHY));
-      indexMap.put("rs429358", Arrays.asList(CARDIOVASCULAR, ARTERIAL_OCCLUSIVE_DISEASE,
-              DSYSLIPIDEMIA, LDL, AORTIC_ANEURYSM));
-      indexMap.put("rs4420638", Arrays.asList(CARDIOVASCULAR, AORTIC_ANEURYSM, DSYSLIPIDEMIA,
-              LDL, HDL));
-      indexMap.put("rs45620037", Arrays.asList(CARDIOVASCULAR, FAMILIAL_DILATED_CARDIOMYOPATHY,
-              BRUGADA_SYNDROME, DILATED_CARDIOMYOPATHY, CARDIOMYOPATHY));
-      indexMap.put("rs4961", Arrays.asList(CARDIOVASCULAR, LDL, HEMORRHAGIC_STROKE, HYPERTENSION,
-              HIGH_BLOOD_PRESSURE));
-      indexMap.put("rs4977574", Arrays.asList(CARDIOVASCULAR));
-      indexMap.put("rs4986790", Arrays.asList(CARDIOVASCULAR, INSULIN_RESISTANCE, HDL,
-              ISCHEMIC_STROKE, DILATED_CARDIOMYOPATHY, PULMONARY_HYPERTENSION, ISCHEMIC_STROKE));
-      indexMap.put("rs4994", Arrays.asList(CARDIOVASCULAR, ISCHEMIC_STROKE));
-      indexMap.put("rs501120", Arrays.asList(CARDIOVASCULAR, ISCHEMIC_STROKE, HEART_DISEASE));
-      indexMap.put("rs599839", Arrays.asList(CARDIOVASCULAR, DSYSLIPIDEMIA, HEART_DISEASE, LDL,
-              AORTIC_ANEURYSM));
-      indexMap.put("rs6025", Arrays.asList(CARDIOVASCULAR, ARTERIAL_OCCLUSIVE_DISEASE, THROMBOSIS,
-              PULMONARY_HYPERTENSION, ISCHEMIC_STROKE, STROKE));
-      indexMap.put("rs646776", Arrays.asList(CARDIOVASCULAR, DSYSLIPIDEMIA, LDL));
-      indexMap.put("rs662", Arrays.asList(CARDIOVASCULAR, MITRAL, DSYSLIPIDEMIA,
-              INSULIN_RESISTANCE, HDL, ISCHEMIC_STROKE));
-      indexMap.put("rs662799", Arrays.asList(CARDIOVASCULAR, DSYSLIPIDEMIA, HDL,
-              ISCHEMIC_STROKE, OBESITY, HEART_DISEASE));
-      indexMap.put("rs6749447", Arrays.asList(CARDIOVASCULAR, HIGH_BLOOD_PRESSURE,
-              HYPERTENSION));
-      indexMap.put("rs6922269", Arrays.asList(CARDIOVASCULAR, HEART_DISEASE));
-      indexMap.put("rs7439293", Arrays.asList(CARDIOVASCULAR, ISCHEMIC_STROKE));
-      indexMap.put("rs76992529", Arrays.asList(CARDIOVASCULAR, CARDIOMYOPATHY,
-              CARDIAC_AMYLOIDOSIS));
-      indexMap.put("rs77615401", Arrays.asList(CARDIOVASCULAR, FAMILIAL_DILATED_CARDIOMYOPATHY,
-              RESTRICTIVE_CARDIOMYOPATHY));
-      indexMap.put("rs8192678", Arrays.asList(CARDIOVASCULAR, INSULIN_RESISTANCE, CARDIOMYOPATHY));
-      indexMap.put("rs854560", Arrays.asList(CARDIOVASCULAR, INSULIN_RESISTANCE, HDL,
-              ISCHEMIC_STROKE, HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs9934438", Arrays.asList(CARDIOVASCULAR));
-      indexMap.put("rs121917809", Arrays.asList(DILATED_CARDIOMYOPATHY, CARDIOMYOPATHY));
-      indexMap.put("rs45487699", Arrays.asList(DILATED_CARDIOMYOPATHY,
-              FAMILIAL_DILATED_CARDIOMYOPATHY, CARDIOMYOPATHY, NONCOMPACTION_CARDIOMYOPATHY));
-      indexMap.put("rs63750197", Arrays.asList(DILATED_CARDIOMYOPATHY, CARDIOMYOPATHY));
-      indexMap.put("rs74315379", Arrays.asList(DILATED_CARDIOMYOPATHY,
-              FAMILIAL_DILATED_CARDIOMYOPATHY, CARDIOMYOPATHY, NONCOMPACTION_CARDIOMYOPATHY));
-      indexMap.put("rs12713559", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs13306512", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs13306515", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs139361635", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs144467873", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs146651743", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs146675823", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs150673992", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs185098634", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs200533979", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs201016593", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs201102461", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs201102492", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs2228671", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA, LDL,
-              DSYSLIPIDEMIA, HDL));
-      indexMap.put("rs369943481", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs376207800", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs540073140", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs544453230", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA, CARDIOMYOPATHY));
-      indexMap.put("rs551747280", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs552422789", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs563382937", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs563390335", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs570942190", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs577934998", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs5933", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA, CARDIOMYOPATHY));
-      indexMap.put("rs72658860", Arrays.asList(FAMILIAL_HYPERCHOLESTEROLEMIA));
-      indexMap.put("rs10413089", Arrays.asList(HDL));
-      indexMap.put("rs183130", Arrays.asList(HDL));
-      indexMap.put("rs326", Arrays.asList(HDL, DSYSLIPIDEMIA));
-      indexMap.put("rs3843763", Arrays.asList(HDL));
-      indexMap.put("rs5370", Arrays.asList(HDL));
-      indexMap.put("rs17672135", Arrays.asList(HEART_DISEASE));
-      indexMap.put("rs4665058", Arrays.asList(HEART_DISEASE));
-      indexMap.put("rs688034", Arrays.asList(HEART_DISEASE));
-      indexMap.put("rs7250581", Arrays.asList(HEART_DISEASE));
-      indexMap.put("rs8055236", Arrays.asList(HEART_DISEASE));
-      indexMap.put("rs1126742", Arrays.asList(HYPERTENSION, HIGH_BLOOD_PRESSURE));
-      indexMap.put("rs2820037", Arrays.asList(HYPERTENSION, HIGH_BLOOD_PRESSURE));
-      indexMap.put("rs3754777", Arrays.asList(HYPERTENSION, HIGH_BLOOD_PRESSURE, CARDIOVASCULAR));
-      indexMap.put("rs3755351", Arrays.asList(HYPERTENSION, HIGH_BLOOD_PRESSURE));
-      indexMap.put("rs3781719", Arrays.asList(HYPERTENSION, HIGH_BLOOD_PRESSURE));
-      indexMap.put("rs3794260", Arrays.asList(HYPERTENSION, HIGH_BLOOD_PRESSURE));
-      indexMap.put("rs6997709", Arrays.asList(HYPERTENSION, HIGH_BLOOD_PRESSURE));
-      indexMap.put("rs7961152", Arrays.asList(HYPERTENSION, HIGH_BLOOD_PRESSURE));
-      indexMap.put("rs9739493", Arrays.asList(HYPERTENSION, HIGH_BLOOD_PRESSURE));
-      indexMap.put("rs17300539", Arrays.asList(INSULIN_RESISTANCE));
-      indexMap.put("rs17817449", Arrays.asList(INSULIN_RESISTANCE));
-      indexMap.put("rs1799999", Arrays.asList(INSULIN_RESISTANCE));
-      indexMap.put("rs4969168", Arrays.asList(INSULIN_RESISTANCE));
-      indexMap.put("rs10033464", Arrays.asList(ISCHEMIC_STROKE));
-      indexMap.put("rs1024611", Arrays.asList(ISCHEMIC_STROKE, PULMONARY_HYPERTENSION));
-      indexMap.put("rs1041981", Arrays.asList(ISCHEMIC_STROKE));
-      indexMap.put("rs10455872", Arrays.asList(ISCHEMIC_STROKE, CARDIOVASCULAR,
-              HEART_VALVE_DISEASE, MITRAL, LDL));
-      indexMap.put("rs1048990", Arrays.asList(ISCHEMIC_STROKE));
-      indexMap.put("rs1333040", Arrays.asList(ISCHEMIC_STROKE, ANEURYSM));
-      indexMap.put("rs1800888", Arrays.asList(ISCHEMIC_STROKE));
-      indexMap.put("rs187238", Arrays.asList(ISCHEMIC_STROKE));
-      indexMap.put("rs2200733", Arrays.asList(ISCHEMIC_STROKE, STROKE));
-      indexMap.put("rs268", Arrays.asList(ISCHEMIC_STROKE, HDL));
-      indexMap.put("rs3217992", Arrays.asList(ISCHEMIC_STROKE));
-      indexMap.put("rs34210653", Arrays.asList(ISCHEMIC_STROKE));
-      indexMap.put("rs5186", Arrays.asList(ISCHEMIC_STROKE, CARDIOMYOPATHY, HYPERTENSION,
-              HIGH_BLOOD_PRESSURE, CARDIAC_ARREST));
-      indexMap.put("rs5361", Arrays.asList(ISCHEMIC_STROKE, ARTERIAL_OCCLUSIVE_DISEASE,
-              THROMBOSIS));
-      indexMap.put("rs5918", Arrays.asList(ISCHEMIC_STROKE, ARTERIAL_OCCLUSIVE_DISEASE,
-              THROMBOSIS));
-      indexMap.put("rs6797312", Arrays.asList(ISCHEMIC_STROKE, STROKE, HDL));
-      indexMap.put("rs699", Arrays.asList(ISCHEMIC_STROKE, PULMONARY_HYPERTENSION,
-              CARDIOMYOPATHY));
-      indexMap.put("rs841", Arrays.asList(ISCHEMIC_STROKE));
-      indexMap.put("rs964184", Arrays.asList(ISCHEMIC_STROKE, HEMORRHAGIC_STROKE,
-              DSYSLIPIDEMIA, HDL));
-      indexMap.put("rs966221", Arrays.asList(ISCHEMIC_STROKE));
-      indexMap.put("rs5174", Arrays.asList(LDL));
-      indexMap.put("rs1010", Arrays.asList(LDL, PULMONARY_HYPERTENSION, HDL));
-      indexMap.put("rs55883237", Arrays.asList(NONCOMPACTION_CARDIOMYOPATHY, CARDIOMYOPATHY));
-      indexMap.put("rs6971091", Arrays.asList(OBESITY));
-      indexMap.put("rs201457110", Arrays.asList(PROLAPSE, MITRAL_VALVE_PROLAPSE, MITRAL));
-      indexMap.put("rs137852752", Arrays.asList(PULMONARY_HYPERTENSION));
-      indexMap.put("rs1799895", Arrays.asList(PULMONARY_HYPERTENSION));
-      indexMap.put("rs1799963", Arrays.asList(PULMONARY_HYPERTENSION, CARDIOVASCULAR,
-              ISCHEMIC_STROKE, THROMBOSIS, ARTERIAL_OCCLUSIVE_DISEASE));
-      indexMap.put("rs200948870", Arrays.asList(PULMONARY_HYPERTENSION));
-      indexMap.put("rs3903239", Arrays.asList(PULMONARY_HYPERTENSION));
-      indexMap.put("rs5335", Arrays.asList(PULMONARY_HYPERTENSION));
-      indexMap.put("rs557172581", Arrays.asList(PULMONARY_HYPERTENSION));
-      indexMap.put("rs3783799", Arrays.asList(STROKE));
-      indexMap.put("rs4244285", Arrays.asList(THROMBOSIS, CARDIOVASCULAR));
-      indexMap.put("rs7080536", Arrays.asList(THROMBOSIS));
+      URL configURL = GeneticTestingEditor.class.getClassLoader().getResource(
+              "editors/genetics/GeneIndexToCategory.json");
+      File configFile = new File(configURL.getFile());
+      Type mapType = new TypeToken<Map<String, List<MedicalCategory>>>() {}.getType();
+      Gson gson = new Gson();
+      Map<String, List<MedicalCategory>> indexMap;
+      try {
+        indexMap = gson.fromJson(new JsonReader(new FileReader(configFile)),
+                mapType);
+      } catch (FileNotFoundException ex) {
+        System.out.println("Unable to load configuration file " + configURL.toString());
+        indexMap = new HashMap<>();
+      }
       return indexMap;
     }
     
     private static Map<String, String> initializeLoincMap() {
-      Map<String, String> loincCodes = new HashMap<>();
-      loincCodes.put("PCSK9", "56158-9");
-      loincCodes.put("F5", "21667-1");
-      loincCodes.put("PSEN2", "77628-6");
-      loincCodes.put("APOB", "89323-0");
-      loincCodes.put("F12, SLC34A1", "58937-4");
-      loincCodes.put("HFE", "21694-5");
-      loincCodes.put("TNF", "41049-8");
-      loincCodes.put("CYP2C19", "57132-3");
-      loincCodes.put("F2", "24476-4");
-      loincCodes.put("PSEN1", "35299-7");
-      loincCodes.put("FBN1", "40471-5");
-      loincCodes.put("VKORC1", "50722-8");
-      loincCodes.put("ITGB3", "58987-9");
-      loincCodes.put("TTR", "48033-5");
-      loincCodes.put("APOE", "21619-2");
+      URL configURL = GeneticTestingEditor.class.getClassLoader().getResource(
+              "editors/genetics/GeneticVariationLOINC.json");
+      File configFile = new File(configURL.getFile());
+      Type mapType = new TypeToken<Map<String, String>>() {}.getType();
+      Gson gson = new Gson();
+      Map<String, String> loincCodes;
+      try {
+        loincCodes = gson.fromJson(new JsonReader(new FileReader(configFile)),
+                mapType);
+      } catch (FileNotFoundException ex) {
+        System.out.println("Unable to load configuration file " + configURL.toString());
+        loincCodes = new HashMap<>();
+      }
       return loincCodes;
     }
 
-    private Code getVariantCode() {
+    Code getVariantCode() {
       String loincCode = LOINC_MAP.getOrDefault(this.gene, "69548-6");
-      if (loincCode == null) {
-        loincCode = "";
-      }
       return new Code("LOINC", loincCode, toString());
     }
   }

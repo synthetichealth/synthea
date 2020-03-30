@@ -88,6 +88,38 @@ public class GeneticTestingEditorTest {
   }
   
   @Test
+  public void shouldLoadConfigForTriggers() {
+    assertTrue(GeneticTestingEditor.TRIGGER_CONDITIONS.containsKey("stroke"));
+    assertTrue(GeneticTestingEditor.TRIGGER_CONDITIONS.get("stroke").contains(
+            MedicalCategory.ANEURYSM));
+  }
+  
+  @Test
+  public void shouldLoadConfigForLOINC() {
+    GeneticMarker marker = new GeneticMarker("index", "chromosome", "location", "strand", 
+            "ancestralAllele", "variantAlleleList", "F5", 
+            "clinicalSignificance", "allele");
+    assertEquals("21667-1", marker.getVariantCode().code);
+  }
+  
+  @Test
+  public void shouldLoadConfigForCategoryMap() {
+    GeneticMarker marker = new GeneticMarker("rs10757272", "chromosome", "location", "strand", 
+            "ancestralAllele", "variantAlleleList", "gene", 
+            "clinicalSignificance", "allele");
+    assertEquals(1, marker.getAssociatedMedicalCategories().size());
+    assertEquals(MedicalCategory.ANEURYSM, marker.getAssociatedMedicalCategories().get(0));
+  }
+  
+  @Test
+  public void shouldDefaultLOINC() {
+    GeneticMarker marker = new GeneticMarker("index", "chromosome", "location", "strand", 
+            "ancestralAllele", "variantAlleleList", "gene", 
+            "clinicalSignificance", "allele");
+    assertEquals("69548-6", marker.getVariantCode().code);
+  }
+  
+  @Test
   public void shouldAddGeneticTestingPanel() {
     URL scriptURL = getClass().getClassLoader().getResource(
         "editors/genetic.testing/dummy.sh");
@@ -188,24 +220,24 @@ public class GeneticTestingEditorTest {
     GeneticMarker marker = new GeneticMarker("rs7025486", "chromosome", "location", "strand", 
             "ancestralAllele", "variantAlleleList", "XYZZY1", 
             GeneticMarker.UNCERTAIN_CLINICAL_SIGNIFICANCE, "C>T");
-    String expected = "The XYZZY1 gene exhibits a variation of " +
-            "'Uncertain' clinical significance. " +
-            "The variation at index rs7025486 is associated with an increased risk of: " +
-            "Aortic Aneurysm, Aneurysm, Pulmonary Hypertension and Ischemic Stroke.";
+    String expected = "The XYZZY1 gene exhibits a variation of "
+            + "'Uncertain' clinical significance. "
+            + "The variation at index rs7025486 is associated with an increased risk of: "
+            + "Aortic Aneurysm, Aneurysm, Pulmonary Hypertension and Ischemic Stroke.";
     assertEquals(expected, marker.toString());
     marker = new GeneticMarker("rs111671429", "chromosome", "location", "strand", 
             "ancestralAllele", "variantAlleleList", "XYZZY1", 
             GeneticMarker.RISK_FACTOR_CLINICAL_SIGNIFICANCE, "C>T");
-    expected = "The XYZZY1 gene exhibits a variation of 'Risk Factor' clinical " +
-            "significance. The variation at index rs111671429 is associated with an " +
-            "increased risk of: Aortic Aneurysm and Marfan Syndrome.";
+    expected = "The XYZZY1 gene exhibits a variation of 'Risk Factor' clinical "
+            + "significance. The variation at index rs111671429 is associated with an "
+            + "increased risk of: Aortic Aneurysm and Marfan Syndrome.";
     assertEquals(expected, marker.toString());
     marker = new GeneticMarker("rs10757272", "chromosome", "location", "strand", 
             "ancestralAllele", "variantAlleleList", "XYZZY1", 
             GeneticMarker.DRUG_RESPONSE_CLINICAL_SIGNIFICANCE, "C>T");
-    expected = "The XYZZY1 gene exhibits a variation of 'Drug Response' clinical " +
-            "significance. The variation at index rs10757272 is associated with an " +
-            "increased risk of: Aneurysm.";
+    expected = "The XYZZY1 gene exhibits a variation of 'Drug Response' clinical "
+            + "significance. The variation at index rs10757272 is associated with an "
+            + "increased risk of: Aneurysm.";
     assertEquals(expected, marker.toString());
     marker = new GeneticMarker("rs10757272", "chromosome", "location", "strand", 
             "ancestralAllele", "variantAlleleList", "XYZZY1", 

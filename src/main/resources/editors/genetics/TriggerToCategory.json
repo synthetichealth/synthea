@@ -1,0 +1,8 @@
+{
+  "stroke": ["Stroke", "Hemorrhagic Stroke", "Ischemic Stroke", "Aneurysm", "Thrombosis"],
+  "coronary_heart_disease": ["Arterial Occlusive Disease", "Cardiomyopathy", "Cardiovascular", "Dilated Cardiomyopathy", "Familial Dilated Cardiomyopathy", "Heart Disease", "Heart Valve Disease", "Noncompaction Cardiomyopathy", "Restrictive Cardiomyopathy"],
+  "myocardial_infarction": ["Cardiac Arrest"],
+  "cardiac_arrest": ["Cardiac Arrest"],
+  "atrial_fibrillation": ["Arrhythmia", "Long QT Syndrome", "Short QT Syndrome"],
+  "cardiovascular_disease": ["Arterial Occlusive Disease", "Cardiomyopathy", "Cardiovascular", "Dilated Cardiomyopathy", "Familial Dilated Cardiomyopathy", "Heart Disease", "Heart Valve Disease", "Noncompaction Cardiomyopathy", "Restrictive Cardiomyopathy"]
+}
