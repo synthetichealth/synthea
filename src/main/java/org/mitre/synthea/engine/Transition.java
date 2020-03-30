@@ -188,7 +188,8 @@ public abstract class Transition implements Serializable {
       // Retrieve CSV column headers.
       List<String> columnHeaders = new ArrayList<String>(lookupTable.get(0).keySet());
       // Parse the list of attributes.
-      this.attributes = new ArrayList(columnHeaders.subList(0, columnHeaders.size() - this.transitions.size()));
+      this.attributes = new ArrayList(columnHeaders.subList(0,
+          columnHeaders.size() - this.transitions.size()));
       // Parse the list of states to transition to.
       List<String> transitionStates = columnHeaders.subList((columnHeaders.size()
           - this.transitions.size()), columnHeaders.size());
