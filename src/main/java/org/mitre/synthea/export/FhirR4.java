@@ -270,7 +270,7 @@ public class FhirR4 {
         device(personEntry, bundle, device);
       }
       
-      for (JsonObject supply : encounter.supplies) {
+      for (HealthRecord.Supply supply : encounter.supplies) {
         supplyDelivery(personEntry, bundle, supply, encounter);
       }
 
@@ -1670,7 +1670,7 @@ public class FhirR4 {
    * @return The added Entry.
    */
   private static BundleEntryComponent supplyDelivery(BundleEntryComponent personEntry, Bundle bundle,
-      JsonObject supply, Encounter encounter) {
+      HealthRecord.Supply supply, Encounter encounter) {
    
     SupplyDelivery supplyResource = new SupplyDelivery();
     supplyResource.setStatus(SupplyDeliveryStatus.COMPLETED);
@@ -1684,14 +1684,8 @@ public class FhirR4 {
     supplyResource.setType(type);
     
     SupplyDeliverySuppliedItemComponent suppliedItem = new SupplyDeliverySuppliedItemComponent();
-    CodeableConcept itemCC = new CodeableConcept();
-    JsonObject jsonCode = supply.get("code").getAsJsonObject();
-    itemCC.addCoding()
-      .setCode(jsonCode.get("code").getAsString())
-      .setDisplay(jsonCode.get("display").getAsString())
-      .setSystem(SNOMED_URI);
-    suppliedItem.setItem(itemCC);
-    suppliedItem.setQuantity(new Quantity(supply.get("quantity").getAsLong()));
+    suppliedItem.setItem(mapCodeToCodeableConcept(supply.code, SNOMED_URI));
+    suppliedItem.setQuantity(new Quantity(supply.quantity));
     
     supplyResource.setSuppliedItem(suppliedItem);
     
