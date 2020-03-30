@@ -1680,7 +1680,7 @@ public class FhirR4 {
     type.addCoding()
       .setCode("device")
       .setDisplay("Device")
-      .setSystem(SNOMED_URI);
+      .setSystem("http://terminology.hl7.org/CodeSystem/supply-item-type");
     supplyResource.setType(type);
     
     SupplyDeliverySuppliedItemComponent suppliedItem = new SupplyDeliverySuppliedItemComponent();
