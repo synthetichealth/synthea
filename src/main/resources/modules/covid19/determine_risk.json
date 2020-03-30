@@ -193,17 +193,17 @@
       "lookup_table_transition": [
         {
           "transition": "Negative Severity",
-          "lookup_table_name": "lookup_tables/covid-19-severity-outcomes.csv",
+          "lookup_table_name": "covid-19-severity-outcomes.csv",
           "default_probability": 0.05
         },
         {
           "transition": "Mild Severity",
-          "lookup_table_name": "lookup_tables/covid-19-severity-outcomes.csv",
+          "lookup_table_name": "covid-19-severity-outcomes.csv",
           "default_probability": 0.4
         },
         {
           "transition": "Severe Severity",
-          "lookup_table_name": "lookup_tables/covid-19-severity-outcomes.csv",
+          "lookup_table_name": "covid-19-severity-outcomes.csv",
           "default_probability": 0.55
         }
       ]
@@ -231,12 +231,12 @@
       "lookup_table_transition": [
         {
           "transition": "Survival: Survivor",
-          "lookup_table_name": "lookup_tables/covid-19-survival-outcomes.csv",
+          "lookup_table_name": "covid-19-survival-outcomes.csv",
           "default_probability": 0.8
         },
         {
           "transition": "Survival: Non-Survivor",
-          "lookup_table_name": "lookup_tables/covid-19-survival-outcomes.csv",
+          "lookup_table_name": "covid-19-survival-outcomes.csv",
           "default_probability": 0.2
         }
       ]
