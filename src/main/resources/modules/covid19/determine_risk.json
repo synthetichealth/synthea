@@ -194,17 +194,17 @@
         {
           "transition": "Negative Severity",
           "lookup_table_name": "covid-19-severity-outcomes.csv",
-          "default_probability": 0.05
+          "default_probability": 0.85
         },
         {
           "transition": "Mild Severity",
           "lookup_table_name": "covid-19-severity-outcomes.csv",
-          "default_probability": 0.4
+          "default_probability": 0.1
         },
         {
           "transition": "Severe Severity",
           "lookup_table_name": "covid-19-severity-outcomes.csv",
-          "default_probability": 0.55
+          "default_probability": 0.05
         }
       ]
     },
