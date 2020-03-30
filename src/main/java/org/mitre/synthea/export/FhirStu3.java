@@ -2206,7 +2206,7 @@ public class FhirStu3 {
     type.addCoding()
       .setCode("device")
       .setDisplay("Device")
-      .setSystem(SNOMED_URI);
+      .setSystem("http://hl7.org/fhir/supply-item-type");
     supplyResource.setType(type);
     
     SupplyDeliverySuppliedItemComponent suppliedItem = new SupplyDeliverySuppliedItemComponent();

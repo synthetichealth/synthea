@@ -1420,7 +1420,7 @@ public class FhirDstu2 {
     type.addCoding()
       .setCode("device")
       .setDisplay("Device")
-      .setSystem(SNOMED_URI);
+      .setSystem("http://hl7.org/fhir/supply-item-type");
     supplyResource.setType(type);
 
     // super hackish -- there's no "code" field available here, just a reference to a Device
