@@ -227,7 +227,7 @@ public class FhirDstu2 {
         device(personEntry, bundle, device);
       }
       
-      for (JsonObject supply : encounter.supplies) {
+      for (HealthRecord.Supply supply : encounter.supplies) {
         supplyDelivery(personEntry, bundle, supply, encounter);
       }
 
@@ -1410,7 +1410,7 @@ public class FhirDstu2 {
    * @return The added Entry.
    */
   private static Entry supplyDelivery(Entry personEntry, Bundle bundle,
-      JsonObject supply, Encounter encounter) {
+      HealthRecord.Supply supply, Encounter encounter) {
    
     SupplyDelivery supplyResource = new SupplyDelivery();
     supplyResource.setStatus(SupplyDeliveryStatusEnum.DELIVERED);
@@ -1423,17 +1423,14 @@ public class FhirDstu2 {
       .setSystem(SNOMED_URI);
     supplyResource.setType(type);
 
-    JsonObject jsonCode = supply.get("code").getAsJsonObject();
-    String code = jsonCode.get("code").getAsString();
-    String display = jsonCode.get("display").getAsString();
     // super hackish -- there's no "code" field available here, just a reference to a Device
     // so for now just put some text in the reference
     ResourceReferenceDt suppliedItem = new ResourceReferenceDt();
-    suppliedItem.setDisplay("SNOMED[" + code + "]: " + display);
+    suppliedItem.setDisplay("SNOMED[" + supply.code.code + "]: " + supply.code.display);
 
     supplyResource.setSuppliedItem(suppliedItem);
 
-    supplyResource.setQuantity(new SimpleQuantityDt(supply.get("quantity").getAsLong()));
+    supplyResource.setQuantity(new SimpleQuantityDt(supply.quantity));
 
     supplyResource.setTime((DateTimeDt) convertFhirDateTime(encounter.start, true));
     
