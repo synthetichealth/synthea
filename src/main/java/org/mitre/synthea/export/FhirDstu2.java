@@ -38,6 +38,7 @@ import ca.uhn.fhir.model.dstu2.resource.Organization;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.model.dstu2.resource.Patient.Communication;
 import ca.uhn.fhir.model.dstu2.resource.Practitioner;
+import ca.uhn.fhir.model.dstu2.resource.SupplyDelivery;
 import ca.uhn.fhir.model.dstu2.valueset.AdministrativeGenderEnum;
 import ca.uhn.fhir.model.dstu2.valueset.AllergyIntoleranceCategoryEnum;
 import ca.uhn.fhir.model.dstu2.valueset.AllergyIntoleranceCriticalityEnum;
@@ -67,6 +68,7 @@ import ca.uhn.fhir.model.dstu2.valueset.NameUseEnum;
 import ca.uhn.fhir.model.dstu2.valueset.NarrativeStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ObservationStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ProcedureStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.SupplyDeliveryStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.UnitsOfTimeEnum;
 import ca.uhn.fhir.model.dstu2.valueset.UseEnum;
 import ca.uhn.fhir.model.primitive.BooleanDt;
@@ -223,6 +225,10 @@ public class FhirDstu2 {
       
       for (HealthRecord.Device device : encounter.devices) {
         device(personEntry, bundle, device);
+      }
+      
+      for (JsonObject supply : encounter.supplies) {
+        supplyDelivery(personEntry, bundle, supply, encounter);
       }
 
       // one claim per encounter
@@ -1392,6 +1398,46 @@ public class FhirDstu2 {
     deviceResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
 
     return newEntry(bundle, deviceResource);
+  }
+  
+  /**
+   * Map the JsonObject for a Supply into a FHIR SupplyDelivery and add it to the Bundle.
+   *
+   * @param personEntry    The Person entry.
+   * @param bundle         Bundle to add to.
+   * @param supply         The supplied object to add.
+   * @param encounter      The encounter during which the supplies were delivered
+   * @return The added Entry.
+   */
+  private static Entry supplyDelivery(Entry personEntry, Bundle bundle,
+      JsonObject supply, Encounter encounter) {
+   
+    SupplyDelivery supplyResource = new SupplyDelivery();
+    supplyResource.setStatus(SupplyDeliveryStatusEnum.DELIVERED);
+    supplyResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
+
+    CodeableConceptDt type = new CodeableConceptDt();
+    type.addCoding()
+      .setCode("device")
+      .setDisplay("Device")
+      .setSystem(SNOMED_URI);
+    supplyResource.setType(type);
+
+    JsonObject jsonCode = supply.get("code").getAsJsonObject();
+    String code = jsonCode.get("code").getAsString();
+    String display = jsonCode.get("display").getAsString();
+    // super hackish -- there's no "code" field available here, just a reference to a Device
+    // so for now just put some text in the reference
+    ResourceReferenceDt suppliedItem = new ResourceReferenceDt();
+    suppliedItem.setDisplay("SNOMED-CT[" + code + "]: " + display);
+
+    supplyResource.setSuppliedItem(suppliedItem);
+
+    supplyResource.setQuantity(new SimpleQuantityDt(supply.get("quantity").getAsLong()));
+
+    supplyResource.setTime((DateTimeDt) convertFhirDateTime(encounter.start, true));
+    
+    return newEntry(bundle, supplyResource);
   }
   
   /**
