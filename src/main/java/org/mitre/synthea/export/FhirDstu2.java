@@ -1429,7 +1429,7 @@ public class FhirDstu2 {
     // super hackish -- there's no "code" field available here, just a reference to a Device
     // so for now just put some text in the reference
     ResourceReferenceDt suppliedItem = new ResourceReferenceDt();
-    suppliedItem.setDisplay("SNOMED-CT[" + code + "]: " + display);
+    suppliedItem.setDisplay("SNOMED[" + code + "]: " + display);
 
     supplyResource.setSuppliedItem(suppliedItem);
 
