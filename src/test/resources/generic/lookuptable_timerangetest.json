@@ -1,0 +1,74 @@
+{
+  "name": "lookuptable_agerangetest",
+  "remarks": [
+    "A test for Lookup Table Transitions where ageLow >  ageHigh."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Determine_Condition",
+      "name": "Initial"
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "Determine_Condition": {
+      "type": "Simple",
+      "name": "Determine_Condition",
+      "lookup_table_transition": [
+        {
+          "transition": "Mild_Lookuptablitis",
+          "default_probability": "0",
+          "lookup_table_name": "lookuptable_timerangetest.csv"
+        },
+        {
+          "transition": "Extreme_Lookuptablitis",
+          "default_probability": "1",
+          "lookup_table_name": "lookuptable_timerangetest.csv"
+        },
+        {
+          "transition": "Moderate_Lookuptablitis",
+          "default_probability": "0",
+          "lookup_table_name": "lookuptable_timerangetest.csv"
+        }
+      ]
+    },
+    "Mild_Lookuptablitis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 23502007,
+          "display": "Mild_Lookuptablitis"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "name": "Mild_Lookuptablitis"
+    },
+    "Moderate_Lookuptablitis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 23502008,
+          "display": "Moderate_Lookuptablitis"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "name": "Moderate_Lookuptablitis"
+    },
+    "Extreme_Lookuptablitis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 23502009,
+          "display": "Extreme_Lookuptablitis"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "name": "Extreme_Lookuptablitis"
+    }
+  }
+}
