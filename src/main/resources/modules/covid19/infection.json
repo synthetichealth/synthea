@@ -138,13 +138,13 @@
       "action": "increment",
       "conditional_transition": [
         {
-          "transition": "Compassionate Care",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "covid19_admission_days",
             "operator": ">",
             "value": 20
-          }
+          },
+          "transition": "Extubation Check"
         },
         {
           "transition": "Set Non Survivor Lab Values",
@@ -367,8 +367,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 82433009,
-          "display": "Continuous negative pressure ventilation treatment (procedure)"
+          "code": 26763009,
+          "display": "Controlled ventilation procedure and therapy, initiation and management (procedure)"
         }
       ],
       "direct_transition": "Stay",
@@ -396,7 +396,7 @@
           "display": "Acute respiratory failure (disorder)"
         }
       ],
-      "direct_transition": "Antibacterial Injection",
+      "direct_transition": "Intubation",
       "remarks": [
         "67 of 173 (38.7% round up to 40%) severe patients required mechanical ventilation."
       ]
@@ -424,7 +424,7 @@
         }
       ],
       "reason": "Respiratory Distress",
-      "direct_transition": "Stay"
+      "direct_transition": "IL6 Check"
     },
     "Pulmonary Edema": {
       "type": "ConditionOnset",
@@ -1910,35 +1910,22 @@
         }
       ],
       "attribute": "covid19_lymphocytes",
-      "direct_transition": "Interleukin 6",
       "remarks": [
         "TODO: This should be part of a panel"
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Interleukin 6 Rarely Used Clinical Trial Patients Only",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_il6",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Serum Ferritin"
+        }
       ]
-    },
-    "Interleukin 6": {
-      "type": "DiagnosticReport",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "82335-1",
-          "display": "Cytokines panel - Serum or Plasma"
-        }
-      ],
-      "observations": [
-        {
-          "category": "laboratory",
-          "unit": "pg/mL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "26881-3",
-              "display": "Interleukin 6 [Mass/volume] in Serum or Plasma"
-            }
-          ],
-          "attribute": "covid19_interleukin6"
-        }
-      ],
-      "direct_transition": "Serum Ferritin"
     },
     "Serum Ferritin": {
       "type": "DiagnosticReport",
@@ -2049,6 +2036,104 @@
       "type": "CallSubmodule",
       "submodule": "covid19/end_symptoms",
       "direct_transition": "End COVID19"
+    },
+    "Interleukin 6 Rarely Used Clinical Trial Patients Only": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "82335-1",
+          "display": "Cytokines panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "pg/mL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "26881-3",
+              "display": "Interleukin 6 [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "attribute": "covid19_interleukin6"
+        }
+      ],
+      "direct_transition": "Serum Ferritin",
+      "remarks": [
+        "Small percentage of patients will have this. 3%"
+      ]
+    },
+    "Intubation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 112798008,
+          "display": "Insertion of endotracheal tube (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Antibacterial Injection",
+      "reason": "Respiratory Failure"
+    },
+    "Extubation Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Extubation",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Intubation"
+          }
+        },
+        {
+          "transition": "Compassionate Care"
+        }
+      ]
+    },
+    "Extubation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 271280005,
+          "display": "Removal of endotracheal tube (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "direct_transition": "Compassionate Care"
+    },
+    "IL6 Check": {
+      "type": "Simple",
+      "remarks": [
+        "Only patients on clinical trials would get IL6 tests."
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Set IL6",
+          "distribution": 0.03
+        },
+        {
+          "transition": "Stay",
+          "distribution": 0.97
+        }
+      ]
+    },
+    "Set IL6": {
+      "type": "SetAttribute",
+      "attribute": "covid19_il6",
+      "direct_transition": "Stay",
+      "value": true
     }
   }
 }
