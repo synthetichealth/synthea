@@ -1,9 +1,5 @@
 {
   "name": "infection",
-  "remarks": [
-    "Copyright 2014-2017 Michigan Health Information Network Shared Services",
-    "MiHIN Confidential – Proprietary - Restricted"
-  ],
   "states": {
     "Initial": {
       "type": "Initial",
