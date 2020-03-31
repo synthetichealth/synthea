@@ -1,0 +1,4 @@
+age,covid19_severity,Survival: Survivor,Survival: Non-Survivor
+0-110,severe,0.207,0.793
+0-110,mild,0.818,0.182
+0-110,negative,0.818,0.182
