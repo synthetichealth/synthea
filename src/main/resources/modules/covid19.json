@@ -26,15 +26,15 @@
     },
     "Wait Until Exposure": {
       "range": {
-        "low": 1.0,
-        "high": 90.0,
+        "low": 1,
+        "high": 90,
         "unit": "days"
       },
       "type": "Delay",
       "distributed_transition": [
         {
           "distribution": 0.2,
-          "transition": "Call_Infection_Submodule"
+          "transition": "Call Infection Submodule"
         },
         {
           "distribution": 0.8,
@@ -42,8 +42,8 @@
         }
       ]
     },
-    "Call_Infection_Submodule": {
-      "submodule": "covid_19/covid-19-infection",
+    "Call Infection Submodule": {
+      "submodule": "covid19/infection",
       "type": "CallSubmodule",
       "direct_transition": "Terminal"
     }
