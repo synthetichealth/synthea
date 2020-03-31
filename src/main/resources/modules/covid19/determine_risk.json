@@ -190,21 +190,120 @@
     },
     "Determine Severity": {
       "type": "Simple",
-      "lookup_table_transition": [
+      "complex_transition": [
         {
-          "transition": "Negative Severity",
-          "lookup_table_name": "covid-19-severity-outcomes.csv",
-          "default_probability": 0.85
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_risk",
+                "operator": "==",
+                "value": "high"
+              },
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 50,
+                "unit": "years"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Severe Severity",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Mild Severity",
+              "distribution": 0.45
+            },
+            {
+              "transition": "Negative Severity",
+              "distribution": 0.05
+            }
+          ]
         },
         {
-          "transition": "Mild Severity",
-          "lookup_table_name": "covid-19-severity-outcomes.csv",
-          "default_probability": 0.1
+          "distributions": [
+            {
+              "transition": "Severe Severity",
+              "distribution": 0.25
+            },
+            {
+              "transition": "Mild Severity",
+              "distribution": 0.7
+            },
+            {
+              "transition": "Negative Severity",
+              "distribution": 0.05
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_risk",
+            "operator": "==",
+            "value": "high"
+          }
         },
         {
-          "transition": "Severe Severity",
-          "lookup_table_name": "covid-19-severity-outcomes.csv",
-          "default_probability": 0.05
+          "distributions": [
+            {
+              "transition": "Severe Severity",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Mild Severity",
+              "distribution": 0.65
+            },
+            {
+              "transition": "Negative Severity",
+              "distribution": 0.05
+            }
+          ],
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_risk",
+                "operator": "==",
+                "value": "low"
+              },
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 50,
+                "unit": "years"
+              }
+            ]
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_risk",
+            "operator": "==",
+            "value": "low"
+          },
+          "distributions": [
+            {
+              "transition": "Severe Severity",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Mild Severity",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Negative Severity",
+              "distribution": 0.05
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Severe Severity"
         }
       ]
     },
@@ -228,16 +327,36 @@
     },
     "Determine Survival": {
       "type": "Simple",
-      "lookup_table_transition": [
+      "complex_transition": [
         {
-          "transition": "Survival: Survivor",
-          "lookup_table_name": "covid-19-survival-outcomes.csv",
-          "default_probability": 0.8
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_severity",
+            "operator": "==",
+            "value": "severe"
+          },
+          "distributions": [
+            {
+              "transition": "Survival: Survivor",
+              "distribution": 0.207
+            },
+            {
+              "transition": "Survival: Non-Survivor",
+              "distribution": 0.793
+            }
+          ]
         },
         {
-          "transition": "Survival: Non-Survivor",
-          "lookup_table_name": "covid-19-survival-outcomes.csv",
-          "default_probability": 0.2
+          "distributions": [
+            {
+              "transition": "Survival: Survivor",
+              "distribution": 0.818
+            },
+            {
+              "transition": "Survival: Non-Survivor",
+              "distribution": 0.182
+            }
+          ]
         }
       ]
     },

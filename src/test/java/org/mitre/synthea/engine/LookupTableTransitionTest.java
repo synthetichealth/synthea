@@ -85,13 +85,13 @@ public class LookupTableTransitionTest {
     attributes.add("foo");
     attributes.add("bar");
     Integer age = 20;
-    LookupTableKey silver = test.new LookupTableKey(attributes, age, null);
+    LookupTableKey silver = test.new LookupTableKey(attributes, age);
 
     List<String> others = new ArrayList<String>();
     others.add("foo");
     others.add("bar");
     Range<Integer> range = Range.between(0, 30);
-    LookupTableKey gold = test.new LookupTableKey(others, range, null);
+    LookupTableKey gold = test.new LookupTableKey(others, range);
 
     Assert.assertEquals(silver, gold);
     Assert.assertEquals(gold, silver);
@@ -109,13 +109,13 @@ public class LookupTableTransitionTest {
     attributes.add("foo");
     attributes.add("bar");
     Integer age = 30;
-    LookupTableKey silver = test.new LookupTableKey(attributes, age, null);
+    LookupTableKey silver = test.new LookupTableKey(attributes, age);
 
     List<String> others = new ArrayList<String>();
     others.add("foo");
     others.add("bar");
     Range<Integer> range = Range.between(0, 30);
-    LookupTableKey gold = test.new LookupTableKey(others, range, null);
+    LookupTableKey gold = test.new LookupTableKey(others, range);
 
     Assert.assertEquals(silver, gold);
     Assert.assertEquals(gold, silver);
@@ -133,13 +133,13 @@ public class LookupTableTransitionTest {
     attributes.add("foo");
     attributes.add("bar");
     Integer age = 0;
-    LookupTableKey silver = test.new LookupTableKey(attributes, age, null);
+    LookupTableKey silver = test.new LookupTableKey(attributes, age);
 
     List<String> others = new ArrayList<String>();
     others.add("foo");
     others.add("bar");
     Range<Integer> range = Range.between(0, 30);
-    LookupTableKey gold = test.new LookupTableKey(others, range, null);
+    LookupTableKey gold = test.new LookupTableKey(others, range);
 
     Assert.assertEquals(silver, gold);
     Assert.assertEquals(gold, silver);
@@ -157,18 +157,18 @@ public class LookupTableTransitionTest {
     attributes.add("foo");
     attributes.add("bar");
     Integer age = 20;
-    LookupTableKey yellow = test.new LookupTableKey(attributes, age, null);
+    LookupTableKey yellow = test.new LookupTableKey(attributes, age);
     age = 50;
-    LookupTableKey grey = test.new LookupTableKey(attributes, age, null);
+    LookupTableKey grey = test.new LookupTableKey(attributes, age);
 
     List<String> others = new ArrayList<String>();
     others.add("foo");
     others.add("bar");
     Range<Integer> range = Range.between(0, 30);
-    LookupTableKey gold = test.new LookupTableKey(others, range, null);
+    LookupTableKey gold = test.new LookupTableKey(others, range);
 
     Range<Integer> anotherRange = Range.between(31, 60);
-    LookupTableKey platinum = test.new LookupTableKey(others, anotherRange, null);
+    LookupTableKey platinum = test.new LookupTableKey(others, anotherRange);
 
     Assert.assertEquals(yellow, gold);
     Assert.assertEquals(gold, yellow);
@@ -197,13 +197,13 @@ public class LookupTableTransitionTest {
     attributes.add("foo");
     attributes.add("bar");
     Integer age = 40;
-    LookupTableKey silver = test.new LookupTableKey(attributes, age, null);
+    LookupTableKey silver = test.new LookupTableKey(attributes, age);
 
     List<String> others = new ArrayList<String>();
     others.add("foo");
     others.add("bar");
     Range<Integer> range = Range.between(0, 30);
-    LookupTableKey gold = test.new LookupTableKey(others, range, null);
+    LookupTableKey gold = test.new LookupTableKey(others, range);
 
     Assert.assertNotEquals(silver, gold);
     Assert.assertNotEquals(gold, silver);
@@ -221,13 +221,13 @@ public class LookupTableTransitionTest {
     attributes.add("foo");
     attributes.add("bar");
     Integer age = 20;
-    LookupTableKey silver = test.new LookupTableKey(attributes, age, null);
+    LookupTableKey silver = test.new LookupTableKey(attributes, age);
 
     List<String> others = new ArrayList<String>();
     others.add("foo");
     others.add("baz");
     Range<Integer> range = Range.between(0, 30);
-    LookupTableKey gold = test.new LookupTableKey(others, range, null);
+    LookupTableKey gold = test.new LookupTableKey(others, range);
 
     Assert.assertNotEquals(silver, gold);
     Assert.assertNotEquals(gold, silver);
@@ -245,13 +245,13 @@ public class LookupTableTransitionTest {
     attributes.add("foo");
     attributes.add("bar");
     Integer age = null;
-    LookupTableKey silver = test.new LookupTableKey(attributes, age, null);
+    LookupTableKey silver = test.new LookupTableKey(attributes, age);
 
     List<String> others = new ArrayList<String>();
     others.add("foo");
     others.add("bar");
     Range<Integer> range = null;
-    LookupTableKey gold = test.new LookupTableKey(others, range, null);
+    LookupTableKey gold = test.new LookupTableKey(others, range);
 
     Assert.assertEquals(silver, gold);
     Assert.assertEquals(gold, silver);
@@ -269,13 +269,13 @@ public class LookupTableTransitionTest {
     attributes.add("foo");
     attributes.add("bar");
     Integer age = null;
-    LookupTableKey silver = test.new LookupTableKey(attributes, age, null);
+    LookupTableKey silver = test.new LookupTableKey(attributes, age);
 
     List<String> others = new ArrayList<String>();
     others.add("foo");
     others.add("baz");
     Range<Integer> range = null;
-    LookupTableKey gold = test.new LookupTableKey(others, range, null);
+    LookupTableKey gold = test.new LookupTableKey(others, range);
 
     Assert.assertNotEquals(silver, gold);
     Assert.assertNotEquals(gold, silver);

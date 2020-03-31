@@ -1,11 +1,7 @@
 {
   "name": "covid19",
   "remarks": [
-    "This is module for the treatment of COVID-19 has estimates for rates of infection, rates of admission, and probabilities.",
-    "",
-    "Treatments are based on many sources, many of which are updating. Many pathways are missing.",
-    "",
-    "Daily lab values and measurements are missing."
+    "This is module models the infection of COVID-19 patients during the 2020 global pandemic."
   ],
   "states": {
     "Initial": {
@@ -26,15 +22,15 @@
     },
     "Wait Until Exposure": {
       "range": {
-        "low": 1.0,
-        "high": 90.0,
+        "low": 1,
+        "high": 90,
         "unit": "days"
       },
       "type": "Delay",
       "distributed_transition": [
         {
           "distribution": 0.2,
-          "transition": "Call_Infection_Submodule"
+          "transition": "Call Infection Submodule"
         },
         {
           "distribution": 0.8,
@@ -42,8 +38,8 @@
         }
       ]
     },
-    "Call_Infection_Submodule": {
-      "submodule": "covid_19/covid-19-infection",
+    "Call Infection Submodule": {
+      "submodule": "covid19/infection",
       "type": "CallSubmodule",
       "direct_transition": "Terminal"
     }
