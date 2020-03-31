@@ -16,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.URL;
@@ -26,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.mitre.synthea.editors.GeneticTestingEditor.DnaSynthesisConfig.MedicalCategory;
 import org.mitre.synthea.engine.StatefulHealthRecordEditor;
@@ -47,22 +50,17 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
   static final Map<String, List<MedicalCategory>> TRIGGER_CONDITIONS = init();
   
   static Map<String, List<MedicalCategory>> init() {
-    URL configURL = GeneticTestingEditor.class.getClassLoader().getResource(
-            "editors/genetics/TriggerToCategory.json");
-    File configFile = new File(configURL.getFile());
-    Type mapType = new TypeToken<Map<String, List<MedicalCategory>>>() {}.getType();
-    Gson gson = new Gson();
-    Map<String, List<MedicalCategory>> triggerConditions;
-    try {
-      triggerConditions = gson.fromJson(new JsonReader(new FileReader(configFile)),
-              mapType);
-    } catch (FileNotFoundException ex) {
-      System.out.println("Unable to load configuration file " + configURL.toString());
-      triggerConditions = new HashMap<>();
-    }
-    return triggerConditions;
+    return loadConfig("editors/genetics/TriggerToCategory.json",
+            new TypeToken<Map<String, List<MedicalCategory>>>() {}.getType());
   }
-
+  
+  static <T> T loadConfig(String resourcePath, Type typeOfT) {
+    InputStream in = GeneticTestingEditor.class.getClassLoader().getResourceAsStream(
+            resourcePath);
+    Gson gson = new Gson();
+    return gson.fromJson(new InputStreamReader(in), typeOfT);
+  }
+  
   @Override
   public boolean shouldRun(Person person, HealthRecord record, long time) {
     // Not all patients will get genetic testing
@@ -535,39 +533,15 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
     }
 
     private static Map<String, List<MedicalCategory>> initializeCategoryMap() {
-      // extracted from Python dna_synthesis config at
+      // mapping extracted from Python dna_synthesis config at
       // dna-synthesis/populations_and_individuals/Data/cvd_families_byVar.tsv
-      URL configURL = GeneticTestingEditor.class.getClassLoader().getResource(
-              "editors/genetics/GeneIndexToCategory.json");
-      File configFile = new File(configURL.getFile());
-      Type mapType = new TypeToken<Map<String, List<MedicalCategory>>>() {}.getType();
-      Gson gson = new Gson();
-      Map<String, List<MedicalCategory>> indexMap;
-      try {
-        indexMap = gson.fromJson(new JsonReader(new FileReader(configFile)),
-                mapType);
-      } catch (FileNotFoundException ex) {
-        System.out.println("Unable to load configuration file " + configURL.toString());
-        indexMap = new HashMap<>();
-      }
-      return indexMap;
+      return GeneticTestingEditor.loadConfig("editors/genetics/GeneIndexToCategory.json",
+              new TypeToken<Map<String, List<MedicalCategory>>>() {}.getType());
     }
     
     private static Map<String, String> initializeLoincMap() {
-      URL configURL = GeneticTestingEditor.class.getClassLoader().getResource(
-              "editors/genetics/GeneticVariationLOINC.json");
-      File configFile = new File(configURL.getFile());
-      Type mapType = new TypeToken<Map<String, String>>() {}.getType();
-      Gson gson = new Gson();
-      Map<String, String> loincCodes;
-      try {
-        loincCodes = gson.fromJson(new JsonReader(new FileReader(configFile)),
-                mapType);
-      } catch (FileNotFoundException ex) {
-        System.out.println("Unable to load configuration file " + configURL.toString());
-        loincCodes = new HashMap<>();
-      }
-      return loincCodes;
+      return GeneticTestingEditor.loadConfig("editors/genetics/GeneticVariationLOINC.json",
+              new TypeToken<Map<String, String>>() {}.getType());
     }
 
     Code getVariantCode() {
