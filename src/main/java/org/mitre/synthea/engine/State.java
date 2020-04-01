@@ -864,7 +864,9 @@ public abstract class State implements Cloneable, Serializable {
       
     @Override
     protected void updateOnsetInfo(Person person, long time) {
-      person.onConditionOnset(module.name, this.name, codes.get(0).display, time);
+      person.onsetConditionRecord.onConditionOnset(
+          module.name, this.name, codes.get(0).display, time
+      );
     }
     
     @Override
@@ -910,18 +912,22 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public boolean process(Person person, long time) {
       if (conditionOnset != null) {
-        String condition = person.getConditionFromState(module.name, conditionOnset);
+        String condition = person.onsetConditionRecord.getConditionFromState(
+            module.name, conditionOnset
+        );
         if (condition != null) {
-          person.onConditionEnd(module.name, condition, time);
+          person.onsetConditionRecord.onConditionEnd(module.name, condition, time);
         }
         person.record.conditionEndByState(time, conditionOnset);
       } else if (referencedByAttribute != null) {
         Entry condition = (Entry) person.attributes.get(referencedByAttribute);
-        person.onConditionEnd(module.name, condition.codes.get(0).display, time);
+        person.onsetConditionRecord.onConditionEnd(
+            module.name, condition.codes.get(0).display, time
+        );
         condition.stop = time;
         person.record.conditionEnd(time, condition.type);
       } else if (codes != null) {
-        person.onConditionEnd(module.name, codes.get(0).display, time);
+        person.onsetConditionRecord.onConditionEnd(module.name, codes.get(0).display, time);
         codes.forEach(code -> person.record.conditionEnd(time, code.code));
       }
       return true;
@@ -1696,13 +1702,14 @@ public abstract class State implements Cloneable, Serializable {
       //using the module name instead of the cause
       if (person.rand() <= probability) {
         if (exact != null) {
-          person.setSymptom(this.module.name, symptom, time, exact.quantity, addressed);
+          person.setSymptom(this.module.name, cause, symptom, time, exact.quantity, addressed);
         } else if (range != null) {
           person.setSymptom(
-              this.module.name, symptom, time, (int) person.rand(range.low, range.high), addressed
+              this.module.name, cause, symptom, time, (int) person.rand(range.low, range.high),
+              addressed
           );
         } else {
-          person.setSymptom(this.module.name, symptom, time, 0, addressed);
+          person.setSymptom(this.module.name, cause, symptom, time, 0, addressed);
         }
       }
       return true;
