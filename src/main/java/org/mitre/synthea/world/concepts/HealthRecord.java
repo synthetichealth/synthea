@@ -633,7 +633,6 @@ public class HealthRecord implements Serializable {
       encounter = new Encounter(time, EncounterType.WELLNESS.toString());
       encounter.name = "First Wellness";
       encounters.add(encounter);
-      System.out.println("First encounter at " + person.ageInYears(time));
     }
     return encounter;
   }
