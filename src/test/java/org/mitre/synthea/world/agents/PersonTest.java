@@ -79,8 +79,8 @@ public class PersonTest {
     assertEquals(original.populationSeed, rehydrated.populationSeed);
     assertEquals(original.symptoms.keySet(), rehydrated.symptoms.keySet());
     assertEquals(
-        original.onsetConditionRecord.sources.keySet(),
-        rehydrated.onsetConditionRecord.sources.keySet()
+        original.onsetConditionRecord.getSources().keySet(),
+        rehydrated.onsetConditionRecord.getSources().keySet()
     );
     assertEquals(original.hasMultipleRecords, rehydrated.hasMultipleRecords);
     assertEquals(original.attributes.keySet(), rehydrated.attributes.keySet());

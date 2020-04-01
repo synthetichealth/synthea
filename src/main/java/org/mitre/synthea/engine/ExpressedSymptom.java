@@ -13,17 +13,20 @@ public class ExpressedSymptom implements Cloneable, Serializable {
   public class SymptomInfo implements Cloneable, Serializable {    
     private static final long serialVersionUID = 4322116644425686801L;
     // what is the cause of the symptom
-    public String cause; 
+    private String cause; 
     // what is the value associated to that symptom
-    public Integer value;
+    private Integer value;
+    // At which time the symptom was set
+    private Long time;
     
-    public SymptomInfo(String cause, Integer value) {
+    public SymptomInfo(String cause, Integer value, Long time) {
       this.cause = cause;
       this.value = value;
+      this.time = time;
     }
     
     public SymptomInfo clone() {
-      return new SymptomInfo(this.cause, this.value);
+      return new SymptomInfo(this.cause, this.value, this.time);
     }
     
     public String getCause() {
@@ -32,6 +35,10 @@ public class ExpressedSymptom implements Cloneable, Serializable {
 
     public Integer getValue() {
       return value;
+    }
+
+    public Long getTime() {
+      return time;
     }    
   }
 
@@ -47,7 +54,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     // when the expressed was last updated from the a given module
     private Long lastUpdateTime;
     // the time on which the expressed symtom was updated and the associated info.
-    public Map<Long, SymptomInfo> timeInfos;  
+    private Map<Long, SymptomInfo> timeInfos;  
     
     public SymptomSource(String source) {
       this.source = source;
@@ -60,7 +67,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
       SymptomSource data = new SymptomSource(this.source);
       data.status = this.status;
       data.lastUpdateTime = this.lastUpdateTime;
-      data.timeInfos.putAll(new ConcurrentHashMap<Long, SymptomInfo>(this.timeInfos));
+      data.timeInfos.putAll(this.timeInfos);
       return data;
     }
 
@@ -76,17 +83,31 @@ public class ExpressedSymptom implements Cloneable, Serializable {
       return lastUpdateTime;
     }
 
-    public void setLastUpdateTime(Long lastUpdateTime) {
-      this.lastUpdateTime = lastUpdateTime;
-    }
-
     public String getSource() {
       return source;
     }
+
+    public void addInfo(String cause, long time, int value, Boolean addressed) {
+      SymptomInfo info = new SymptomInfo(cause, value, time);
+      timeInfos.put(Long.valueOf(time), info);
+      lastUpdateTime = time;
+      status = addressed;
+    }
+
+    public Integer getCurrentValue() {
+      if (timeInfos.containsKey(lastUpdateTime)) {
+        return timeInfos.get(lastUpdateTime).getValue();
+      }
+      return null;
+    }
+
+    public Map<Long, SymptomInfo> getTimeInfos() {
+      return timeInfos;
+    }    
   }
 
   //keep track of the different sources of the expressed conditions
-  public Map<String, SymptomSource> sources;
+  private Map<String, SymptomSource> sources;
   private String name;
   
   public ExpressedSymptom(String name) {
@@ -96,8 +117,12 @@ public class ExpressedSymptom implements Cloneable, Serializable {
   
   public ExpressedSymptom clone() {
     ExpressedSymptom data = new ExpressedSymptom(this.name);
-    data.sources.putAll(new ConcurrentHashMap<String, SymptomSource>(this.sources));
+    data.sources.putAll(this.sources);
     return data;
+  }
+  
+  public Map<String, SymptomSource> getSources() {
+    return sources;
   }
   
   /** this method updates the data structure wit a symptom being onset from a module.
@@ -106,10 +131,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     if (!sources.containsKey(module)) {
       sources.put(module, new SymptomSource(module));
     }
-    SymptomInfo info = new SymptomInfo(cause, value);
-    sources.get(module).timeInfos.put(Long.valueOf(time), info);
-    sources.get(module).setLastUpdateTime(Long.valueOf(time));
-    sources.get(module).setStatus(addressed);
+    sources.get(module).addInfo(cause, time, value, addressed);
   }
   
   /**
@@ -119,10 +141,10 @@ public class ExpressedSymptom implements Cloneable, Serializable {
   public int getSymptom() {
     int max = 0;
     for (String module : sources.keySet()) {
-      Long lastUpdateTime = sources.get(module).getLastUpdateTime();
+      Integer value = sources.get(module).getCurrentValue();
       Boolean status = sources.get(module).isStatus();
-      if (sources.get(module).timeInfos.get(lastUpdateTime).getValue() > max && !status) {
-        max = sources.get(module).timeInfos.get(lastUpdateTime).getValue();
+      if (value != null && value.intValue() > max && !status) {
+        max = value.intValue();
       }
     }
     return max;
@@ -135,14 +157,14 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     String result = null;
     int max = 0;
     for (String module : sources.keySet()) {
-      Long lastUpdateTime = sources.get(module).getLastUpdateTime();
       Boolean status = sources.get(module).isStatus();
-      if (result == null && !status) {
+      Integer value = sources.get(module).getCurrentValue();
+      if (result == null && value != null && !status) {
         result = module;
-        max = sources.get(module).timeInfos.get(lastUpdateTime).getValue();
-      } else if (sources.get(module).timeInfos.get(lastUpdateTime).getValue() > max && !status) {
+        max = value.intValue();
+      } else if (value != null && value.intValue() > max && !status) {
         result = module;
-        max = sources.get(module).timeInfos.get(lastUpdateTime).getValue();
+        max = value.intValue();
       }
     }
     return result;
@@ -155,8 +177,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     if (!sources.containsKey(source)) {
       return null;
     }
-    Long lastUpdateTime = sources.get(source).getLastUpdateTime();
-    return sources.get(source).timeInfos.get(lastUpdateTime).getValue();    
+    return sources.get(source).getCurrentValue();    
   }
   
   /**
