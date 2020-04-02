@@ -81,6 +81,6 @@ public class CSVExporterTest {
       count++;
     }
 
-    assertEquals("Expected 14 CSV files in the output directory, found " + count, 14, count);
+    assertEquals("Expected 16 CSV files in the output directory, found " + count, 16, count);
   }
 }

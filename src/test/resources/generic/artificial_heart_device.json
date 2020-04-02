@@ -1,0 +1,83 @@
+{
+  "name": "artificial_heart_device",
+  "remarks": [
+    "1. give a baby an artificial heart",
+    "2. ???",
+    "3. profit"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Encounter"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 440068009,
+          "display": "Home visit for newborn care and assessment (procedure)"
+        }
+      ],
+      "direct_transition": "Necessary_Supplies"
+    },
+    "End_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Necessary_Supplies": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 10000,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 52291003,
+            "display": "Glove, device (physical object)"
+          }
+        },
+        {
+          "quantity": 3000,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 468159004,
+            "display": "Cotton ball (physical object)"
+          }
+        },
+        {
+          "quantity": 98765,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 39802000,
+            "display": "Tongue blade, device (physical object)"
+          }
+        },
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 788177008,
+            "display": "Examination gown, single-use (physical object)"
+          }
+        }
+      ],
+      "direct_transition": "Artificial_Heart"
+    },
+    "Artificial_Heart": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 13459008,
+        "display": "Temporary artificial heart prosthesis, device (physical object)"
+      },
+      "direct_transition": "End_Encounter",
+      "manufacturer": "SynCardia",
+      "model": "Total Artificial Heart"
+    }
+  }
+}
