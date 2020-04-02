@@ -1,7 +1,7 @@
 {
-  "name": "measurements_daily",
+  "name": "measurements_frequent",
   "remarks": [
-    "Daily observations and labs during hospitalization and ICU."
+    "Frequent observations and labs during hospitalization and ICU."
   ],
   "states": {
     "Initial": {
