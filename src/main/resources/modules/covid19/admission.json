@@ -876,7 +876,7 @@
       },
       "direct_transition": "Compassionate Care Check"
     },
-    "Compassionate_Care": {
+    "Compassionate Care": {
       "type": "MedicationOrder",
       "codes": [
         {
@@ -908,7 +908,7 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Compassionate_Care",
+          "transition": "Compassionate Care",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "covid19_death",

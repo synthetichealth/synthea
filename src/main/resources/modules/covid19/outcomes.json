@@ -6,22 +6,10 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Pulmonary_Edema"
+      "direct_transition": "Pulmonary Edema"
     },
     "Terminal": {
       "type": "Terminal"
-    },
-    "Pulmonary_Edema": {
-      "type": "ConditionOnset",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "40541001",
-          "display": "Acute pulmonary edema (disorder)"
-        }
-      ],
-      "direct_transition": "Pneumonia",
-      "target_encounter": "Hospital Inpatient Admission"
     },
     "Pneumonia": {
       "type": "ConditionOnset",
@@ -32,97 +20,8 @@
           "display": "Pneumonia (disorder)"
         }
       ],
-      "direct_transition": "Respiratory_Distress",
+      "direct_transition": "Respiratory Distress",
       "target_encounter": "Hospital Inpatient Admission"
-    },
-    "Respiratory_Distress": {
-      "type": "ConditionOnset",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "271825005",
-          "display": "Respiratory distress (finding)"
-        }
-      ],
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_death",
-            "operator": "==",
-            "value": true
-          },
-          "distributions": [
-            {
-              "transition": "Respiratory_Failure",
-              "distribution": 0.98
-            },
-            {
-              "transition": "Check Heart Failure",
-              "distribution": 0.02
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "transition": "Respiratory_Failure",
-              "distribution": 0.36
-            },
-            {
-              "transition": "Check Heart Failure",
-              "distribution": 0.64
-            }
-          ]
-        }
-      ],
-      "target_encounter": "Hospital Inpatient Admission"
-    },
-    "Respiratory_Failure": {
-      "type": "ConditionOnset",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "65710008",
-          "display": "Acute respiratory failure (disorder)"
-        }
-      ],
-      "remarks": [
-        "67 of 173 (38.7% round up to 40%) severe patients required mechanical ventilation."
-      ],
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_death",
-            "operator": "==",
-            "value": true
-          },
-          "distributions": [
-            {
-              "transition": "ARDS",
-              "distribution": 0.94
-            },
-            {
-              "transition": "Check Heart Failure",
-              "distribution": 0.06
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "transition": "ARDS",
-              "distribution": 0.18
-            },
-            {
-              "transition": "Check Heart Failure",
-              "distribution": 0.8200000000000001
-            }
-          ]
-        }
-      ],
-      "target_encounter": "ICU Admission"
     },
     "ARDS": {
       "type": "ConditionOnset",
@@ -414,6 +313,107 @@
           "transition": "Terminal"
         }
       ]
+    },
+    "Respiratory Failure": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "65710008",
+          "display": "Acute respiratory failure (disorder)"
+        }
+      ],
+      "remarks": [
+        "67 of 173 (38.7% round up to 40%) severe patients required mechanical ventilation."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "ARDS",
+              "distribution": 0.94
+            },
+            {
+              "transition": "Check Heart Failure",
+              "distribution": 0.06
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "ARDS",
+              "distribution": 0.18
+            },
+            {
+              "transition": "Check Heart Failure",
+              "distribution": 0.8200000000000001
+            }
+          ]
+        }
+      ],
+      "target_encounter": "ICU Admission"
+    },
+    "Respiratory Distress": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "271825005",
+          "display": "Respiratory distress (finding)"
+        }
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Respiratory Failure",
+              "distribution": 0.98
+            },
+            {
+              "transition": "Check Heart Failure",
+              "distribution": 0.02
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Respiratory Failure",
+              "distribution": 0.36
+            },
+            {
+              "transition": "Check Heart Failure",
+              "distribution": 0.64
+            }
+          ]
+        }
+      ],
+      "target_encounter": "Hospital Inpatient Admission"
+    },
+    "Pulmonary Edema": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "40541001",
+          "display": "Acute pulmonary edema (disorder)"
+        }
+      ],
+      "direct_transition": "Pneumonia",
+      "target_encounter": "Hospital Inpatient Admission"
     }
   }
 }

@@ -11,17 +11,6 @@
     "Terminal": {
       "type": "Terminal"
     },
-    "End Pulmonary_Edema": {
-      "type": "ConditionEnd",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "40541001",
-          "display": "Acute pulmonary edema (disorder)"
-        }
-      ],
-      "direct_transition": "End Respiratory_Distress"
-    },
     "End Pneumonia": {
       "type": "ConditionEnd",
       "codes": [
@@ -31,32 +20,7 @@
           "display": "Pneumonia (disorder)"
         }
       ],
-      "direct_transition": "End Pulmonary_Edema"
-    },
-    "End Respiratory_Distress": {
-      "type": "ConditionEnd",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "271825005",
-          "display": "Respiratory distress (finding)"
-        }
-      ],
-      "direct_transition": "End Respiratory_Failure"
-    },
-    "End Respiratory_Failure": {
-      "type": "ConditionEnd",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "65710008",
-          "display": "Acute respiratory failure (disorder)"
-        }
-      ],
-      "remarks": [
-        "67 of 173 (38.7% round up to 40%) severe patients required mechanical ventilation."
-      ],
-      "direct_transition": "End Sepsis"
+      "direct_transition": "End Pulmonary Edema"
     },
     "End ARDS": {
       "type": "ConditionEnd",
@@ -134,6 +98,42 @@
         }
       ],
       "direct_transition": "End Heart Failure"
+    },
+    "End Pulmonary Edema": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "40541001",
+          "display": "Acute pulmonary edema (disorder)"
+        }
+      ],
+      "direct_transition": "End Respiratory Distress"
+    },
+    "End Respiratory Distress": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "271825005",
+          "display": "Respiratory distress (finding)"
+        }
+      ],
+      "direct_transition": "End Respiratory Failure"
+    },
+    "End Respiratory Failure": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "65710008",
+          "display": "Acute respiratory failure (disorder)"
+        }
+      ],
+      "remarks": [
+        "67 of 173 (38.7% round up to 40%) severe patients required mechanical ventilation."
+      ],
+      "direct_transition": "End Sepsis"
     }
   }
 }
