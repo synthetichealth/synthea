@@ -20,7 +20,7 @@
           "display": "Pneumonia (disorder)"
         }
       ],
-      "direct_transition": "End Pulmonary Edema"
+      "direct_transition": "End Mild Respiratory Distress"
     },
     "End ARDS": {
       "type": "ConditionEnd",
@@ -98,17 +98,6 @@
         }
       ],
       "direct_transition": "End Heart Failure"
-    },
-    "End Pulmonary Edema": {
-      "type": "ConditionEnd",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "40541001",
-          "display": "Acute pulmonary edema (disorder)"
-        }
-      ],
-      "direct_transition": "End Mild Respiratory Distress"
     },
     "End Mild Respiratory Distress": {
       "type": "ConditionEnd",

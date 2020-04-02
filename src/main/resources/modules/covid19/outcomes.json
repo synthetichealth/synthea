@@ -6,7 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Pulmonary Edema"
+      "direct_transition": "Pneumonia"
     },
     "Terminal": {
       "type": "Terminal"
@@ -401,18 +401,6 @@
           ]
         }
       ],
-      "target_encounter": "Hospital Inpatient Admission"
-    },
-    "Pulmonary Edema": {
-      "type": "ConditionOnset",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "40541001",
-          "display": "Acute pulmonary edema (disorder)"
-        }
-      ],
-      "direct_transition": "Pneumonia",
       "target_encounter": "Hospital Inpatient Admission"
     }
   }
