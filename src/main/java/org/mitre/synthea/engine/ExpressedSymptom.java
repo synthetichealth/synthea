@@ -53,7 +53,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     private boolean status;
     // when the expressed was last updated from the a given module
     private Long lastUpdateTime;
-    // the time on which the expressed symtom was updated and the associated info.
+    // the time on which the expressed symptom was updated and the associated info.
     private Map<Long, SymptomInfo> timeInfos;  
     
     public SymptomSource(String source) {

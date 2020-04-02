@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.text.WordUtils;
+import org.mitre.synthea.engine.ExpressedConditionRecord.ConditionWithSymptoms;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
@@ -41,8 +42,8 @@ import org.mitre.synthea.world.concepts.HealthRecord.Report;
  * Birth Date:          1966-10-26
  * --------------------------------------------------------------------------------
  * CONDITIONS WITH SYMPTOMS:
- * 10 | Ottitis | 2 | Symptom1:val1, Symptom2:val2
- * 23 | Appendicitis | 3 | Symptom3:val3, Symptom4:val4, Symptom5:val5
+ * 10 | 10 | Ottitis | 2 | Symptom1:val1, Symptom2:val2
+ * 23 | 25 | Appendicitis | 3 | Symptom3:val3, Symptom4:val4, Symptom5:val5
  * --------------------------------------------------------------------------------
  *
  * </pre>
@@ -90,7 +91,8 @@ public class SymptomTextExporter {
     breakline(textRecord);
 
     textRecord.add("CONDITIONS WITH SYMPTOMS:");
-    Map<Long, Map<String, Map<String, Integer>>> infos = person.getConditionSymptoms();
+    Map<Long, List<ConditionWithSymptoms>> infos = person.getOnsetConditionRecord(
+        ).getConditionSymptoms();
     List<Long> list = new LinkedList<Long>(infos.keySet());
     Collections.sort(list);
     
@@ -107,15 +109,30 @@ public class SymptomTextExporter {
         continue;
       }
       Integer ageYear = person.ageInYears(time);
-      for (String condition: infos.get(time).keySet()) {
+      for (ConditionWithSymptoms conditionWithSymptoms: infos.get(time)) {
+        String condition = conditionWithSymptoms.getConditionName();
+        Map<String, List<Integer>> symptomInfo = conditionWithSymptoms.getSymptoms();
+        Long ageEnd = conditionWithSymptoms.getEndTime(); 
+        String ageEndStr = "";
+        if (ageEnd != null) {
+          ageEndStr = String.valueOf(person.ageInYears(ageEnd));
+        }
         StringBuilder s = new StringBuilder();
         s.append(ageYear.toString()).append(" | ");
+        s.append(ageEndStr).append(" | ");
         s.append(clean(condition)).append(" | ");
-        s.append(clean(String.valueOf(infos.get(time).get(condition).size())));
+        s.append(clean(String.valueOf(symptomInfo.size())));
         
         StringBuilder symptomStr = new StringBuilder();
-        for (String symptom: infos.get(time).get(condition).keySet()) {
-          String value = String.valueOf(infos.get(time).get(condition).get(symptom));
+        for (String symptom: symptomInfo.keySet()) {
+          List<Integer> values = symptomInfo.get(symptom);
+          StringBuilder value = new StringBuilder();
+          for (int idx = 0; idx < values.size(); idx++) {
+            value.append(String.valueOf(values.get(idx)));
+            if (idx < values.size() - 1) {
+              value.append(':');
+            }
+          }
           symptomStr.append(", ").append(clean(symptom)).append(':').append(value);
         }
         String symptomData = symptomStr.toString();

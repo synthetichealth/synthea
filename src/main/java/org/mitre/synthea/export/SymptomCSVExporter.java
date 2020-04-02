@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.mitre.synthea.engine.ExpressedConditionRecord.ConditionWithSymptoms;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.QualityOfLifeModule;
@@ -107,7 +108,9 @@ public class SymptomCSVExporter {
    * @throws IOException if any IO error occurs
    */
   private void writeCSVHeaders() throws IOException {
-    symptoms.write("PATIENT,GENDER,RACE,ETHNICITY,AGE,PATHOLOGY,NUM_SYMPTOMS,SYMPTOMS");
+    symptoms.write(
+        "PATIENT,GENDER,RACE,ETHNICITY,AGE_BEGIN,AGE_END,PATHOLOGY,NUM_SYMPTOMS,SYMPTOMS"
+    );
     symptoms.write(NEWLINE);
   }
 
@@ -154,7 +157,7 @@ public class SymptomCSVExporter {
    * @throws IOException if any IO error occurs
    */
   private String recordSymptom(Person person, long endTime) throws IOException {
-    // PATIENT,GENDER,RACE,ETHNICITY,AGE,PATHOLOGY,NUM_SYMPTOMS,SYMPTOMS,
+    // PATIENT,GENDER,RACE,ETHNICITY,AGE_BEGIN,AGE_END,PATHOLOGY,NUM_SYMPTOMS,SYMPTOMS,
     String personID = (String) person.attributes.get(Person.ID);
 
     // check if we've already exported this patient demographic data yet,
@@ -174,7 +177,8 @@ public class SymptomCSVExporter {
     demoData.append(race).append(',');
     demoData.append(ethnic);
     
-    Map<Long, Map<String, Map<String, Integer>>> infos = person.getConditionSymptoms();
+    Map<Long, List<ConditionWithSymptoms>> infos = person.getOnsetConditionRecord(
+        ).getConditionSymptoms();
     List<Long> list = new LinkedList<Long>(infos.keySet());
     Collections.sort(list);
     
@@ -191,17 +195,32 @@ public class SymptomCSVExporter {
         continue;
       }
       Integer ageYear = person.ageInYears(time); 
-      for (String condition: infos.get(time).keySet()) {
+      for (ConditionWithSymptoms conditionWithSymptoms: infos.get(time)) {
+        String condition = conditionWithSymptoms.getConditionName();
+        Map<String, List<Integer>> symptomInfo = conditionWithSymptoms.getSymptoms();
+        Long ageEnd = conditionWithSymptoms.getEndTime(); 
+        String ageEndStr = "";
+        if (ageEnd != null) {
+          ageEndStr = String.valueOf(person.ageInYears(ageEnd));
+        }
         StringBuilder s = new StringBuilder();
         s.append(demoData.toString()).append(',');
         s.append(ageYear.toString()).append(',');
+        s.append(ageEndStr).append(',');
         s.append(clean(condition)).append(',');
-        s.append(clean(String.valueOf(infos.get(time).get(condition).size())));
+        s.append(clean(String.valueOf(symptomInfo.size())));
         
         StringBuilder symptomStr = new StringBuilder();
-        for (String symptom: infos.get(time).get(condition).keySet()) {
-          String value = String.valueOf(infos.get(time).get(condition).get(symptom));
-          symptomStr.append(';').append(clean(symptom)).append(':').append(value);
+        for (String symptom: symptomInfo.keySet()) {
+          List<Integer> values = symptomInfo.get(symptom);
+          StringBuilder value = new StringBuilder();
+          for (int idx = 0; idx < values.size(); idx++) {
+            value.append(String.valueOf(values.get(idx)));
+            if (idx < values.size() - 1) {
+              value.append(':');
+            }
+          }
+          symptomStr.append(';').append(clean(symptom)).append(':').append(value.toString());
         }
         String symptomData = symptomStr.toString();
         if (symptomData.length() > 0) {

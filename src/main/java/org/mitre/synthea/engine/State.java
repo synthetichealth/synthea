@@ -864,7 +864,7 @@ public abstract class State implements Cloneable, Serializable {
       
     @Override
     protected void updateOnsetInfo(Person person, long time) {
-      person.onsetConditionRecord.onConditionOnset(
+      person.getOnsetConditionRecord().onConditionOnset(
           module.name, this.name, codes.get(0).display, time
       );
     }
@@ -912,22 +912,22 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public boolean process(Person person, long time) {
       if (conditionOnset != null) {
-        String condition = person.onsetConditionRecord.getConditionFromState(
+        String condition = person.getOnsetConditionRecord().getConditionFromState(
             module.name, conditionOnset
         );
         if (condition != null) {
-          person.onsetConditionRecord.onConditionEnd(module.name, condition, time);
+          person.getOnsetConditionRecord().onConditionEnd(module.name, condition, time);
         }
         person.record.conditionEndByState(time, conditionOnset);
       } else if (referencedByAttribute != null) {
         Entry condition = (Entry) person.attributes.get(referencedByAttribute);
-        person.onsetConditionRecord.onConditionEnd(
+        person.getOnsetConditionRecord().onConditionEnd(
             module.name, condition.codes.get(0).display, time
         );
         condition.stop = time;
         person.record.conditionEnd(time, condition.type);
       } else if (codes != null) {
-        person.onsetConditionRecord.onConditionEnd(module.name, codes.get(0).display, time);
+        person.getOnsetConditionRecord().onConditionEnd(module.name, codes.get(0).display, time);
         codes.forEach(code -> person.record.conditionEnd(time, code.code));
       }
       return true;

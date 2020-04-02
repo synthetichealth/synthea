@@ -168,7 +168,7 @@ public class StateTest {
     // Should pass through this state immediately without calling the record
     assertTrue(condition.process(person, time));
     String conditionDisplay = "Diabetes mellitus";
-    Long onsetTime = person.onsetConditionRecord.getConditionLastOnsetTimeFromModule(
+    Long onsetTime = person.getOnsetConditionRecord().getConditionLastOnsetTimeFromModule(
         module.name, conditionDisplay
     );
     assertTrue(onsetTime != null);
@@ -198,7 +198,7 @@ public class StateTest {
     code = enc.conditions.get(0).codes.get(0);
     assertEquals("73211009", code.code);
     assertEquals("Diabetes mellitus", code.display);
-    Long onsetTime = person.onsetConditionRecord.getConditionLastOnsetTimeFromModule(
+    Long onsetTime = person.getOnsetConditionRecord().getConditionLastOnsetTimeFromModule(
         module.name, code.display
     );
     assertTrue(onsetTime != null);
@@ -227,7 +227,7 @@ public class StateTest {
     code = enc.conditions.get(0).codes.get(0);
     assertEquals("47693006", code.code);
     assertEquals("Rupture of appendix", code.display);
-    Long onsetTime = person.onsetConditionRecord.getConditionLastOnsetTimeFromModule(
+    Long onsetTime = person.getOnsetConditionRecord().getConditionLastOnsetTimeFromModule(
         module.name, code.display
     );
     assertTrue(onsetTime != null);
@@ -778,7 +778,7 @@ public class StateTest {
     State conEnd = module.getState("Condition2_End");
     assertTrue(conEnd.process(person, time));
     
-    Long endTime = person.onsetConditionRecord.getConditionLastEndTimeFromModule(
+    Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
         module.name, "Influenza"
     );
     assertTrue(endTime != null);
@@ -818,7 +818,7 @@ public class StateTest {
     assertEquals("228380004", code.code);
     assertEquals("Chases the dragon (finding)", code.display);
     
-    Long endTime = person.onsetConditionRecord.getConditionLastEndTimeFromModule(
+    Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
         module.name, code.display
     );
     assertTrue(endTime != null);
@@ -856,7 +856,7 @@ public class StateTest {
     assertEquals("6142004", code.code);
     assertEquals("Influenza", code.display);
     
-    Long endTime = person.onsetConditionRecord.getConditionLastEndTimeFromModule(
+    Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
         module.name, code.display
     );
     assertTrue(endTime != null);
@@ -893,7 +893,7 @@ public class StateTest {
     assertEquals("73211009", code.code);
     assertEquals("Diabetes mellitus", code.display);
     
-    Long endTime = person.onsetConditionRecord.getConditionLastEndTimeFromModule(
+    Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
         module.name, code.display
     );
     assertTrue(endTime != null);

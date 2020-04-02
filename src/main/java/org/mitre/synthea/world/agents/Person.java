@@ -149,7 +149,7 @@ public class Person implements Serializable, QuadTreeElement {
     vitalSigns = new ConcurrentHashMap<VitalSign, ValueGenerator>();
     symptoms = new ConcurrentHashMap<String, ExpressedSymptom>();   
     /* initialized the onsetConditions field */
-    onsetConditionRecord = new ExpressedConditionRecord();    
+    onsetConditionRecord = new ExpressedConditionRecord(this);    
     /* Chronic Medications which will be renewed at each Wellness Encounter */
     chronicMedications = new ConcurrentHashMap<String, HealthRecord.Medication>();
     hasMultipleRecords =
@@ -337,11 +337,17 @@ public class Person implements Serializable, QuadTreeElement {
   }
   
   /**
-  * Get the symptoms that were expressed as parts of 
-  * the conditions the person suffers from.
+  * Get the expressed symptoms.
   */
-  public Map<Long, Map<String, Map<String, Integer>>> getConditionSymptoms() {
-    return onsetConditionRecord.getConditionSymptoms(symptoms);
+  public Map<String, ExpressedSymptom> getExpressedSymptoms() {
+    return symptoms;
+  }
+  
+  /**
+  * Get the onsetonditionRecord.
+  */
+  public ExpressedConditionRecord getOnsetConditionRecord() {
+    return onsetConditionRecord;
   }
   
   /** Updating the method for accounting of the time on which
