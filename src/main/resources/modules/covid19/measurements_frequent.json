@@ -6,32 +6,10 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Take_Temperature_Each_Day"
+      "direct_transition": "D_Dimer"
     },
     "Terminal": {
       "type": "Terminal"
-    },
-    "Take_Temperature_Each_Day": {
-      "type": "Observation",
-      "category": "vital-signs",
-      "unit": "Cel",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "8310-5",
-          "display": "Body temperature"
-        },
-        {
-          "system": "LOINC",
-          "code": "8331-1",
-          "display": "Oral temperature"
-        }
-      ],
-      "range": {
-        "low": 37.7,
-        "high": 42.2
-      },
-      "direct_transition": "D_Dimer"
     },
     "D_Dimer": {
       "type": "Observation",
@@ -45,23 +23,6 @@
         }
       ],
       "attribute": "covid19_ddimer",
-      "direct_transition": "Lymphocyte_Count"
-    },
-    "Lymphocyte_Count": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "10*3/uL",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "731-0",
-          "display": "Lymphocytes [#/volume] in Blood by Automated count"
-        }
-      ],
-      "attribute": "covid19_lymphocytes",
-      "remarks": [
-        "TODO: This should be part of a panel"
-      ],
       "conditional_transition": [
         {
           "transition": "Interleukin_6_Rarely_Used_Clinical_Trial_Patients_Only",
@@ -174,7 +135,86 @@
       "remarks": [
         "TODO: Should be part of the Panel 42929-0 Lactate dehydrogenase panel - Serum or Plasma, but there are too many other required values that we do not know the ranges for."
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "Creatine Kinase"
+    },
+    "C-Reactive Protein": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "mg/L",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "1988-5",
+          "display": "C reactive protein [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "direct_transition": "Prothrombin_Time",
+      "attribute": "covid19_c_reactive_protein"
+    },
+    "Creatine Kinase": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "U/L",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2157-6",
+          "display": "Creatine kinase [Enzymatic activity/volume] in Serum or Plasma"
+        }
+      ],
+      "direct_transition": "C-Reactive Protein",
+      "attribute": "covid19_creatine_kinase"
+    },
+    "Prothrombin_Time": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "34528-0",
+          "display": "PT panel - Platelet poor plasma by Coagulation assay"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "s",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5902-2",
+              "display": "Prothrombin time (PT)"
+            }
+          ],
+          "attribute": "covid19_pt"
+        },
+        {
+          "category": "laboratory",
+          "unit": "{INR}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6301-6",
+              "display": "INR in Platelet poor plasma by Coagulation assay"
+            }
+          ],
+          "attribute": "covid19_inr"
+        }
+      ],
+      "direct_transition": "Procalcitonin"
+    },
+    "Procalcitonin": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "ng/mL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "33959-8",
+          "display": "Procalcitonin [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "attribute": "covid19_procalcitonin"
     }
   }
 }

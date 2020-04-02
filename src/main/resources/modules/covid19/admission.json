@@ -161,17 +161,30 @@
     "Hospitalization Daily Lab Values Non-Survivor": {
       "type": "CallSubmodule",
       "submodule": "covid19/nonsurvivor_lab_values",
-      "direct_transition": "Hospitalization Labs"
+      "direct_transition": "Hospitalization Daily Labs"
     },
     "Hospitalization Daily Lab Values Survivor": {
       "type": "CallSubmodule",
       "submodule": "covid19/survivor_lab_values",
-      "direct_transition": "Hospitalization Labs"
+      "direct_transition": "Hospitalization Daily Labs"
     },
     "ICU Labs": {
       "type": "CallSubmodule",
-      "submodule": "covid19/daily_measurements",
-      "direct_transition": "ICU Procedures"
+      "submodule": "covid19/measurements_daily",
+      "conditional_transition": [
+        {
+          "transition": "ICU Frequent Labs",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_all_labs",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Next_Time"
+        }
+      ]
     },
     "Hospitalization Set Daily Labs": {
       "type": "Simple",
@@ -217,333 +230,11 @@
       "submodule": "covid19/survivor_lab_values",
       "direct_transition": "ICU Labs"
     },
-    "Hospitalization Labs": {
-      "type": "CallSubmodule",
-      "submodule": "covid19/daily_measurements",
-      "direct_transition": "Hospitalization Procedures"
-    },
     "Hospitalization First Day": {
-      "type": "Simple",
-      "direct_transition": "CBC"
-    },
-    "CBC": {
-      "type": "DiagnosticReport",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "58410-2",
-          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
-        }
-      ],
-      "observations": [
-        {
-          "category": "laboratory",
-          "unit": "10*3/uL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "6690-2",
-              "display": "Leukocytes [#/volume] in Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 3,
-            "high": 4
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "10*6/uL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "789-8",
-              "display": "Erythrocytes [#/volume] in Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 3.77,
-            "high": 5.8
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "g/dL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "718-7",
-              "display": "Hemoglobin [Mass/volume] in Blood"
-            }
-          ],
-          "range": {
-            "low": 11.1,
-            "high": 14.1
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "%",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "4544-3",
-              "display": "Hematocrit [Volume Fraction] of Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 37.5,
-            "high": 46.6
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "fL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "787-2",
-              "display": "MCV [Entitic volume] by Automated count"
-            }
-          ],
-          "range": {
-            "low": 79,
-            "high": 97
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "pg",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "785-6",
-              "display": "MCH [Entitic mass] by Automated count"
-            }
-          ],
-          "range": {
-            "low": 26.6,
-            "high": 33
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "g/dL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "786-4",
-              "display": "MCHC [Mass/volume] by Automated count"
-            }
-          ],
-          "range": {
-            "low": 31.5,
-            "high": 35.7
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "%",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "788-0",
-              "display": "Erythrocyte distribution width [Ratio] by Automated count"
-            }
-          ],
-          "range": {
-            "low": 12.3,
-            "high": 15.4
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "10*3/uL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "777-3",
-              "display": "Platelets [#/volume] in Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 99,
-            "high": 150
-          }
-        }
-      ],
-      "remarks": [
-        "In the most severe patients, white-cell counts should be less than 4000 per mm3",
-        "In the most severe patients, platelet counts should also trend towards being less than 150K per mm3",
-        "In the most severe patients, median hemoglobin should be around 12.8 g/dL"
-      ],
-      "direct_transition": "CBC_Differential"
-    },
-    "CBC_Differential": {
-      "type": "DiagnosticReport",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "57023-4",
-          "display": "Auto Differential panel - Blood"
-        }
-      ],
-      "observations": [
-        {
-          "category": "laboratory",
-          "unit": "%",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "770-8",
-              "display": "Neutrophils/100 leukocytes in Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 10,
-            "high": 45
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "%",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "736-9",
-              "display": "Lymphocytes/100 leukocytes in Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 5,
-            "high": 25
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "%",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "5905-5",
-              "display": "Monocytes/100 leukocytes in Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 5,
-            "high": 15
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "%",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "713-8",
-              "display": "Eosinophils/100 leukocytes in Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 3,
-            "high": 6
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "%",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "706-2",
-              "display": "Basophils/100 leukocytes in Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 2,
-            "high": 4
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "10*3/uL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "751-8",
-              "display": "Neutrophils [#/volume] in Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 1.4,
-            "high": 4
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "10*3/uL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "731-0",
-              "display": "Lymphocytes [#/volume] in Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 0.6,
-            "high": 1
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "10*3/uL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "742-7",
-              "display": "Monocytes [#/volume] in Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 0.5,
-            "high": 1.4
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "10*3/uL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "711-2",
-              "display": "Eosinophils [#/volume] in Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 0.2,
-            "high": 0.6
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "10*3/uL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "704-7",
-              "display": "Basophils [#/volume] in Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 0.2,
-            "high": 0.4
-          }
-        }
-      ],
-      "remarks": [
-        "Viral infection should show DECREASES in neutro and lymph, and INCREASES in mono, eosino, and baso."
-      ],
-      "direct_transition": "Chest_X_Ray"
+      "type": "SetAttribute",
+      "attribute": "covid19_all_labs",
+      "direct_transition": "Chest_X_Ray",
+      "value": true
     },
     "Chest_X_Ray": {
       "type": "Procedure",
@@ -600,12 +291,27 @@
         {
           "transition": "Ventilation",
           "condition": {
-            "condition_type": "Active Condition",
-            "codes": [
+            "condition_type": "Or",
+            "conditions": [
               {
-                "system": "SNOMED-CT",
-                "code": "65710008",
-                "display": "Acute respiratory failure (disorder)"
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "65710008",
+                    "display": "Acute respiratory failure (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "76571007",
+                    "display": "Septic shock (disorder)"
+                  }
+                ]
               }
             ]
           }
@@ -817,7 +523,24 @@
       ],
       "administration": true,
       "reason": "Diagnosed COVID",
-      "direct_transition": "Daily_Acetaminophen_for_Fever_ICU"
+      "conditional_transition": [
+        {
+          "transition": "Vasopressor A",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "76571007",
+                "display": "Septic shock (disorder)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Daily_Acetaminophen_for_Fever_ICU"
+        }
+      ]
     },
     "Metered_Dose_Inhaler_ICU": {
       "type": "MedicationOrder",
@@ -979,6 +702,84 @@
       "attribute": "covid19_admission_days",
       "direct_transition": "Hospitalization First Day",
       "value": 0
+    },
+    "Vasopressor A": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "242969",
+          "display": "4 ML Norepinephrine 1 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Vasopressor B",
+      "administration": true,
+      "reason": "Septic Shock"
+    },
+    "Vasopressor B": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "2103182",
+          "display": "1 ML Vasopressin (USP) 20 UNT/ML Injection"
+        }
+      ],
+      "administration": true,
+      "direct_transition": "Daily_Acetaminophen_for_Fever_ICU",
+      "reason": "Septic Shock"
+    },
+    "Hospitalization Daily Labs": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/measurements_daily",
+      "conditional_transition": [
+        {
+          "transition": "Hospitalization Frequent Labs",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_all_labs",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Next Time"
+        }
+      ]
+    },
+    "Hospitalization Frequent Labs": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/measurements_frequent",
+      "direct_transition": "Skip Next Time"
+    },
+    "Next Time": {
+      "type": "SetAttribute",
+      "attribute": "covid19_all_labs",
+      "direct_transition": "Hospitalization Procedures",
+      "value": true
+    },
+    "Skip Next Time": {
+      "type": "SetAttribute",
+      "attribute": "covid19_all_labs",
+      "direct_transition": "Hospitalization Procedures",
+      "value": false
+    },
+    "ICU Frequent Labs": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/measurements_frequent",
+      "direct_transition": "Skip_Next_Time"
+    },
+    "Next_Time": {
+      "type": "SetAttribute",
+      "attribute": "covid19_all_labs",
+      "value": true,
+      "direct_transition": "ICU Procedures"
+    },
+    "Skip_Next_Time": {
+      "type": "SetAttribute",
+      "attribute": "covid19_all_labs",
+      "value": true,
+      "direct_transition": "ICU Procedures"
     }
   }
 }
