@@ -1,0 +1,139 @@
+{
+  "name": "end_outcomes",
+  "remarks": [
+    "This module ends patient outcomes from covid19 according to Table 2 from https://doi.org/10.1016/S0140-6736(20)30566-3"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "End ARDS"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "End Pulmonary_Edema": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "40541001",
+          "display": "Acute pulmonary edema (disorder)"
+        }
+      ],
+      "direct_transition": "End Respiratory_Distress"
+    },
+    "End Pneumonia": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "233604007",
+          "display": "Pneumonia (disorder)"
+        }
+      ],
+      "direct_transition": "End Pulmonary_Edema"
+    },
+    "End Respiratory_Distress": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "271825005",
+          "display": "Respiratory distress (finding)"
+        }
+      ],
+      "direct_transition": "End Respiratory_Failure"
+    },
+    "End Respiratory_Failure": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "65710008",
+          "display": "Acute respiratory failure (disorder)"
+        }
+      ],
+      "remarks": [
+        "67 of 173 (38.7% round up to 40%) severe patients required mechanical ventilation."
+      ],
+      "direct_transition": "End Sepsis"
+    },
+    "End ARDS": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "67782005",
+          "display": "Acute respiratory distress syndrome (disorder)"
+        }
+      ],
+      "direct_transition": "End Acute Cardiac Injury"
+    },
+    "End Sepsis": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "770349000",
+          "display": "Sepsis caused by virus (disorder)"
+        }
+      ],
+      "direct_transition": "End Septic Shock"
+    },
+    "End Septic Shock": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "76571007",
+          "display": "Septic shock (disorder)"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "End Heart Failure": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "84114007",
+          "display": "Heart failure (disorder)"
+        }
+      ],
+      "direct_transition": "End Pneumonia"
+    },
+    "End Acute Cardiac Injury": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "86175003",
+          "display": "Injury of heart (disorder)"
+        }
+      ],
+      "direct_transition": "End Acute Kidney Injury"
+    },
+    "End Acute Kidney Injury": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "40095003",
+          "display": "Injury of kidney (disorder)"
+        }
+      ],
+      "direct_transition": "End Coagulopathy"
+    },
+    "End Coagulopathy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "234466008",
+          "display": "Acquired coagulation disorder (disorder)"
+        }
+      ],
+      "direct_transition": "End Heart Failure"
+    }
+  }
+}

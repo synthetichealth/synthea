@@ -1,0 +1,180 @@
+{
+  "name": "daily_measurements",
+  "remarks": [
+    "Daily observations and labs during hospitalization and ICU."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Take_Temperature_Each_Day"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Take_Temperature_Each_Day": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "Cel",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Body temperature"
+        },
+        {
+          "system": "LOINC",
+          "code": "8331-1",
+          "display": "Oral temperature"
+        }
+      ],
+      "range": {
+        "low": 37.7,
+        "high": 42.2
+      },
+      "direct_transition": "D_Dimer"
+    },
+    "D_Dimer": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "ug/mL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "48065-7",
+          "display": "Fibrin D-dimer FEU [Mass/volume] in Platelet poor plasma"
+        }
+      ],
+      "attribute": "covid19_ddimer",
+      "direct_transition": "Lymphocyte_Count"
+    },
+    "Lymphocyte_Count": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "10*3/uL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "731-0",
+          "display": "Lymphocytes [#/volume] in Blood by Automated count"
+        }
+      ],
+      "attribute": "covid19_lymphocytes",
+      "remarks": [
+        "TODO: This should be part of a panel"
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Interleukin_6_Rarely_Used_Clinical_Trial_Patients_Only",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_il6",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Serum_Ferritin"
+        }
+      ]
+    },
+    "Interleukin_6_Rarely_Used_Clinical_Trial_Patients_Only": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "82335-1",
+          "display": "Cytokines panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "pg/mL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "26881-3",
+              "display": "Interleukin 6 [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "attribute": "covid19_interleukin6"
+        }
+      ],
+      "remarks": [
+        "Small percentage of patients will have this. 3%"
+      ],
+      "direct_transition": "Serum_Ferritin"
+    },
+    "Serum_Ferritin": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "75689-0",
+          "display": "Iron panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "ug/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2276-4",
+              "display": "Ferritin [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "attribute": "covid19_ferritin"
+        }
+      ],
+      "direct_transition": "High_Sensitivity_Cardiac_Troponin_I"
+    },
+    "High_Sensitivity_Cardiac_Troponin_I": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "89577-1",
+          "display": "Troponin I.cardiac panel - Serum or Plasma by High sensitivity method"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "pg/mL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "89579-7",
+              "display": "Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method"
+            }
+          ],
+          "attribute": "covid19_cardiac_troponin"
+        }
+      ],
+      "direct_transition": "Lactate_Dehydrogenase"
+    },
+    "Lactate_Dehydrogenase": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "U/L",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "14804-9",
+          "display": "Lactate dehydrogenase [Enzymatic activity/volume] in Serum or Plasma by Lactate to pyruvate reaction"
+        },
+        {
+          "system": "LOINC",
+          "code": "2532-0",
+          "display": "Lactate dehydrogenase [Enzymatic activity/volume] in Serum or Plasma"
+        }
+      ],
+      "attribute": "covid19_lactate_dehydrogenase",
+      "remarks": [
+        "TODO: Should be part of the Panel 42929-0 Lactate dehydrogenase panel - Serum or Plasma, but there are too many other required values that we do not know the ranges for."
+      ],
+      "direct_transition": "Terminal"
+    }
+  }
+}

@@ -581,7 +581,9 @@ public abstract class State implements Cloneable, Serializable {
     public boolean process(Person person, long time) {
       int counter = 0;
       if (person.attributes.containsKey(attribute)) {
-        counter = (int) person.attributes.get(attribute);
+        // this cast as int from double is to handle cases where the attribute
+        // is either a java.lang.Double or java.lang.Integer
+        counter = (int) Double.parseDouble(person.attributes.get(attribute).toString());
       }
 
       if (increment) {
