@@ -108,9 +108,9 @@
           "display": "Acute pulmonary edema (disorder)"
         }
       ],
-      "direct_transition": "End Respiratory Distress"
+      "direct_transition": "End Mild Respiratory Distress"
     },
-    "End Respiratory Distress": {
+    "End Mild Respiratory Distress": {
       "type": "ConditionEnd",
       "codes": [
         {

@@ -20,7 +20,7 @@
           "display": "Pneumonia (disorder)"
         }
       ],
-      "direct_transition": "Respiratory Distress",
+      "direct_transition": "Mild Respiratory Distress",
       "target_encounter": "Hospital Inpatient Admission"
     },
     "ARDS": {
@@ -360,7 +360,7 @@
       ],
       "target_encounter": "ICU Admission"
     },
-    "Respiratory Distress": {
+    "Mild Respiratory Distress": {
       "type": "ConditionOnset",
       "codes": [
         {

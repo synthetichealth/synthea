@@ -650,7 +650,7 @@
         }
       ],
       "administration": true,
-      "reason": "Respiratory Distress",
+      "reason": "Mild Respiratory Distress",
       "direct_transition": "Antimalarial_Medication"
     },
     "Oxygen": {
@@ -662,7 +662,7 @@
           "display": "Oxygen administration by mask (procedure)"
         }
       ],
-      "reason": "Respiratory Distress",
+      "reason": "Mild Respiratory Distress",
       "direct_transition": "Hospitalization Medications"
     },
     "Set_IL6": {
@@ -803,7 +803,7 @@
           "display": "Oxygen administration by mask (procedure)"
         }
       ],
-      "reason": "Respiratory Distress",
+      "reason": "Mild Respiratory Distress",
       "direct_transition": "ICU Medications"
     },
     "Antimalarial_Medication_ICU": {
@@ -829,7 +829,7 @@
         }
       ],
       "administration": true,
-      "reason": "Respiratory Distress",
+      "reason": "Mild Respiratory Distress",
       "direct_transition": "Antimalarial_Medication_ICU"
     },
     "Daily_Acetaminophen_for_Fever_ICU": {
