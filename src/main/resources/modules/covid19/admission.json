@@ -266,7 +266,8 @@
       "direct_transition": "Metered_Dose_Inhaler"
     },
     "Hospitalization Supplies": {
-      "type": "Simple",
+      "type": "CallSubmodule",
+      "submodule": "covid19/supplies_hospitalization",
       "direct_transition": "Hospitalization Day End"
     },
     "Hospitalization Next Day": {
@@ -343,7 +344,8 @@
       ]
     },
     "ICU Supplies": {
-      "type": "Simple",
+      "type": "CallSubmodule",
+      "submodule": "covid19/supplies_icu",
       "direct_transition": "ICU Day End"
     },
     "Metered_Dose_Inhaler": {
@@ -466,7 +468,7 @@
       },
       "conditional_transition": [
         {
-          "transition": "Intubation",
+          "transition": "Intubation Supplies",
           "condition": {
             "condition_type": "Active Condition",
             "codes": [
@@ -482,6 +484,11 @@
           "transition": "ICU Day Begin"
         }
       ]
+    },
+    "Intubation Supplies": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/supplies_intubation",
+      "direct_transition": "Intubation"
     },
     "Intubation": {
       "type": "Procedure",
