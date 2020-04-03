@@ -50,7 +50,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     // From which module the expressed symptom was set    
     private String source;
     // what is the status from a given expressed symptom from a given module
-    private boolean status;
+    private boolean resolved;
     // when the expressed was last updated from the a given module
     private Long lastUpdateTime;
     // the time on which the expressed symptom was updated and the associated info.
@@ -59,24 +59,24 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     public SymptomSource(String source) {
       this.source = source;
       timeInfos = new ConcurrentHashMap<Long, ExpressedSymptom.SymptomInfo>();
-      status = false;
+      resolved = false;
       lastUpdateTime = null;
     }
     
     public SymptomSource clone() {
       SymptomSource data = new SymptomSource(this.source);
-      data.status = this.status;
+      data.resolved = this.resolved;
       data.lastUpdateTime = this.lastUpdateTime;
       data.timeInfos.putAll(this.timeInfos);
       return data;
     }
 
-    public boolean isStatus() {
-      return status;
+    public boolean isResolved() {
+      return resolved;
     }
 
-    public void setStatus(boolean status) {
-      this.status = status;
+    public void resolve() {
+      this.resolved = true;
     }
 
     public Long getLastUpdateTime() {
@@ -91,7 +91,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
       SymptomInfo info = new SymptomInfo(cause, value, time);
       timeInfos.put(Long.valueOf(time), info);
       lastUpdateTime = time;
-      status = addressed;
+      resolved = addressed;
     }
 
     public Integer getCurrentValue() {
@@ -142,8 +142,8 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     int max = 0;
     for (String module : sources.keySet()) {
       Integer value = sources.get(module).getCurrentValue();
-      Boolean status = sources.get(module).isStatus();
-      if (value != null && value.intValue() > max && !status) {
+      Boolean isResolved = sources.get(module).isResolved();
+      if (value != null && value.intValue() > max && !isResolved) {
         max = value.intValue();
       }
     }
@@ -157,12 +157,12 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     String result = null;
     int max = 0;
     for (String module : sources.keySet()) {
-      Boolean status = sources.get(module).isStatus();
+      Boolean isResolved = sources.get(module).isResolved();
       Integer value = sources.get(module).getCurrentValue();
-      if (result == null && value != null && !status) {
+      if (result == null && value != null && !isResolved) {
         result = module;
         max = value.intValue();
-      } else if (value != null && value.intValue() > max && !status) {
+      } else if (value != null && value.intValue() > max && !isResolved) {
         result = module;
         max = value.intValue();
       }
@@ -185,7 +185,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
    */  
   public void addressSource(String source) {
     if (sources.containsKey(source)) {
-      sources.get(source).setStatus(true);
+      sources.get(source).resolve();
     }     
   }
   
