@@ -79,6 +79,10 @@ public class ExpressedSymptom implements Cloneable, Serializable {
       this.resolved = true;
     }
 
+    public void activate() {
+      this.resolved = false;
+    }
+
     public Long getLastUpdateTime() {
       return lastUpdateTime;
     }
