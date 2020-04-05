@@ -81,6 +81,29 @@
       "type": "ConditionOnset",
       "direct_transition": "Apply Face Mask to Patient"
     },
+    "Admission": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/admission",
+      "direct_transition": "Take Normal Temperature"
+    },
+    "Death": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "condition_onset": "Diagnosed COVID"
+    },
+    "Wait for Admission": {
+      "type": "Delay",
+      "direct_transition": "Admission",
+      "range": {
+        "low": 5,
+        "high": 8,
+        "unit": "days"
+      }
+    },
+    "Discharge": {
+      "type": "EncounterEnd",
+      "direct_transition": "End Self Isolation At Home"
+    },
     "Apply Face Mask to Patient": {
       "duration": {
         "low": 10.0,
@@ -879,8 +902,20 @@
       "type": "CarePlanStart",
       "direct_transition": "Wait for Test"
     },
+<<<<<<< HEAD
     "Wait for Test": {
+=======
+    "End Self Isolation At Home": {
+      "type": "CarePlanEnd",
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "covid19_careplan"
+    },
+    "Self Isolation Delay": {
+      "type": "Delay",
+      "direct_transition": "End Symptoms",
+>>>>>>> refs/remotes/origin/covid19
       "range": {
+<<<<<<< HEAD
         "low": 30.0,
         "high": 90.0,
         "unit": "minutes"
@@ -1002,6 +1037,25 @@
     },
     "Terminal": {
       "type": "Terminal"
+=======
+        "low": 14,
+        "high": 37,
+        "unit": "days"
+      },
+      "remarks": [
+        "Median duration of viral shedding was 20 days, and longest observed duration of viral shedding was 37 days.",
+        "https://doi.org/10.1016/S0140-6736(20)30566-3"
+      ]
+    },
+    "Wait for Death": {
+      "type": "Delay",
+      "direct_transition": "Death",
+      "range": {
+        "low": 5,
+        "high": 8,
+        "unit": "days"
+      }
+>>>>>>> refs/remotes/origin/covid19
     },
     "End Encounter and Admit Immediately": {
       "type": "EncounterEnd",
@@ -1066,14 +1120,134 @@
         "Transition probabilities need adjustment."
       ]
     },
+<<<<<<< HEAD
     "Self Isolation Delay": {
       "range": {
         "low": 14.0,
         "high": 37.0,
         "unit": "days"
       },
+=======
+    "Retest Negative": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "94531-1",
+          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94531-1",
+              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Wait for retest"
+    },
+    "Second Negative Test": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "94531-1",
+          "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94531-1",
+              "display": "SARS-CoV-2 RNA Pnl Resp NAA+probe"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Discharge"
+    },
+    "Wait for retest": {
+>>>>>>> refs/remotes/origin/covid19
       "type": "Delay",
+<<<<<<< HEAD
       "direct_transition": "End Self Isolation At Home",
+=======
+      "direct_transition": "Second Normal Temperature",
+      "range": {
+        "low": 18,
+        "high": 30,
+        "unit": "hours"
+      }
+    },
+    "Take Normal Temperature": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "Cel",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Body temperature"
+        },
+        {
+          "system": "LOINC",
+          "code": "8331-1",
+          "display": "Oral temperature"
+        }
+      ],
+      "direct_transition": "Retest Negative",
+      "range": {
+        "low": 36.1,
+        "high": 37.2
+      }
+    },
+    "Second Normal Temperature": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "Cel",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Body temperature"
+        },
+        {
+          "system": "LOINC",
+          "code": "8331-1",
+          "display": "Oral temperature"
+        }
+      ],
+      "range": {
+        "low": 36.1,
+        "high": 37.2
+      },
+      "direct_transition": "Second Negative Test"
+    },
+    "Determine Risk": {
+      "submodule": "covid19/determine_risk",
+      "type": "CallSubmodule",
+      "direct_transition": "Encounter for Test",
+>>>>>>> refs/remotes/origin/covid19
       "remarks": [
         "Median duration of viral shedding was 20 days, and longest observed duration of viral shedding was 37 days.",
         "https://doi.org/10.1016/S0140-6736(20)30566-3"
@@ -1082,10 +1256,668 @@
     "End Self Isolation At Home": {
       "referenced_by_attribute": "covid19_careplan",
       "type": "CarePlanEnd",
+<<<<<<< HEAD
       "direct_transition": "End Symptoms"
+=======
+      "direct_transition": "End Exposure",
+      "referenced_by_attribute": "covid19_careplan"
+    },
+    "End Encounter Testing Negative": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Influenza B Detected": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "80381-7",
+          "display": "Influenza virus A and B Ag panel - Nasopharynx by Rapid immunoassay"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "80382-5",
+              "display": "Influenza virus A Ag [Presence] in Nasopharynx by Rapid immunoassay"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "80383-3",
+              "display": "Influenza virus B Ag [Presence] in Nasopharynx by Rapid immunoassay"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260373001,
+            "display": "Detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Severity Assessment"
+    },
+    "Influenza A Detected": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "80381-7",
+          "display": "Influenza virus A and B Ag panel - Nasopharynx by Rapid immunoassay"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "80382-5",
+              "display": "Influenza virus A Ag [Presence] in Nasopharynx by Rapid immunoassay"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260373001,
+            "display": "Detected (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "80383-3",
+              "display": "Influenza virus B Ag [Presence] in Nasopharynx by Rapid immunoassay"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Severity Assessment"
+    },
+    "Influenza Not Detected": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "80381-7",
+          "display": "Influenza virus A and B Ag panel - Nasopharynx by Rapid immunoassay"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "80382-5",
+              "display": "Influenza virus A Ag [Presence] in Nasopharynx by Rapid immunoassay"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "80383-3",
+              "display": "Influenza virus B Ag [Presence] in Nasopharynx by Rapid immunoassay"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260415000,
+            "display": "Not detected (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Severity Assessment"
+    },
+    "Child or Immunocompromised": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Respiratory Virus Panel Not Detected",
+          "distribution": 0.92
+        },
+        {
+          "transition": "Respiratory Virus Panel Influenza A Detected",
+          "distribution": 0.04
+        },
+        {
+          "transition": "Respiratory Virus Panel Influenza B Detected",
+          "distribution": 0.04
+        }
+      ]
+    },
+    "Co-Infection Rate": {
+      "type": "Simple",
+      "remarks": [
+        "Approximately 8% co-infection rate with influenza."
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Influenza Not Detected",
+          "distribution": 0.92
+        },
+        {
+          "transition": "Influenza A Detected",
+          "distribution": 0.04
+        },
+        {
+          "transition": "Influenza B Detected",
+          "distribution": 0.04
+        }
+      ]
+    },
+    "Respiratory Virus Panel Not Detected": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "92143-7",
+          "display": "Respiratory pathogens DNA and RNA panel - Respiratory specimen by NAA with probe detection"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92142-9",
+              "display": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92141-1",
+              "display": "Influenza virus B RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92131-2",
+              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92140-3",
+              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92139-5",
+              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92138-7",
+              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92130-4",
+              "display": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92134-6",
+              "display": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94040-3",
+              "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Severity Assessment"
+    },
+    "Respiratory Virus Panel Influenza A Detected": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "92143-7",
+          "display": "Respiratory pathogens DNA and RNA panel - Respiratory specimen by NAA with probe detection"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92142-9",
+              "display": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 10828004,
+            "display": "Positive (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92141-1",
+              "display": "Influenza virus B RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92131-2",
+              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92140-3",
+              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92139-5",
+              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92138-7",
+              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92130-4",
+              "display": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92134-6",
+              "display": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94040-3",
+              "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Severity Assessment"
+    },
+    "Respiratory Virus Panel Influenza B Detected": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "92143-7",
+          "display": "Respiratory pathogens DNA and RNA panel - Respiratory specimen by NAA with probe detection"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92142-9",
+              "display": "Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92141-1",
+              "display": "Influenza virus B RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 10828004,
+            "display": "Positive (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92131-2",
+              "display": "Respiratory syncytial virus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92140-3",
+              "display": "Parainfluenza virus 1 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92139-5",
+              "display": "Parainfluenza virus 2 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92138-7",
+              "display": "Parainfluenza virus 3 RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92130-4",
+              "display": "Rhinovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "92134-6",
+              "display": "Human metapneumovirus RNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "94040-3",
+              "display": "Adenovirus A+B+C+D+E DNA [Presence] in Respiratory specimen by NAA with probe detection"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 260385009,
+            "display": "Negative (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Severity Assessment"
+    },
+    "Catalog Symptoms": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/symptoms",
+      "direct_transition": "Take Temperature"
+>>>>>>> refs/remotes/origin/covid19
     },
     "End Symptoms": {
       "submodule": "covid19/end_symptoms",
+<<<<<<< HEAD
       "type": "CallSubmodule",
       "direct_transition": "End COVID19"
     },
@@ -1116,6 +1948,14 @@
       "condition_onset": "Diagnosed COVID",
       "type": "Death",
       "direct_transition": "Terminal"
+=======
+      "direct_transition": "End Outcomes"
+    },
+    "End Outcomes": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/end_outcomes",
+      "direct_transition": "End Self Isolation At Home"
+>>>>>>> refs/remotes/origin/covid19
     }
   }
 }

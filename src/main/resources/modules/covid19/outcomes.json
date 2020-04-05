@@ -1,0 +1,407 @@
+{
+  "name": "outcomes",
+  "remarks": [
+    "This module determines patient outcomes from covid19 according to Table 2 from https://doi.org/10.1016/S0140-6736(20)30566-3"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Pneumonia"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Pneumonia": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "233604007",
+          "display": "Pneumonia (disorder)"
+        }
+      ],
+      "direct_transition": "Mild Respiratory Distress",
+      "target_encounter": "Hospital Inpatient Admission"
+    },
+    "ARDS": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "67782005",
+          "display": "Acute respiratory distress syndrome (disorder)"
+        }
+      ],
+      "direct_transition": "Check Heart Failure",
+      "target_encounter": "ICU Admission"
+    },
+    "Sepsis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "770349000",
+          "display": "Sepsis caused by virus (disorder)"
+        }
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Septic Shock",
+              "distribution": 0.7
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.3
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Terminal"
+        }
+      ],
+      "target_encounter": "Hospital Inpatient Admission"
+    },
+    "Septic Shock": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "76571007",
+          "display": "Septic shock (disorder)"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "target_encounter": "ICU Admission"
+    },
+    "Check Heart Failure": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Heart Failure",
+              "distribution": 0.52
+            },
+            {
+              "transition": "Check Acute Cardiac Injury",
+              "distribution": 0.48
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Heart Failure",
+              "distribution": 0.12
+            },
+            {
+              "transition": "Check Acute Cardiac Injury",
+              "distribution": 0.88
+            }
+          ]
+        }
+      ]
+    },
+    "Heart Failure": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "84114007",
+          "display": "Heart failure (disorder)"
+        }
+      ],
+      "direct_transition": "Check Acute Cardiac Injury",
+      "target_encounter": "ICU Admission"
+    },
+    "Acute Cardiac Injury": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "86175003",
+          "display": "Injury of heart (disorder)"
+        }
+      ],
+      "direct_transition": "Check Acute Kidney Injury",
+      "target_encounter": "ICU Admission"
+    },
+    "Check Acute Cardiac Injury": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Acute Cardiac Injury",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Check Acute Kidney Injury",
+              "distribution": 0.5
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Acute Cardiac Injury",
+              "distribution": 0.01
+            },
+            {
+              "transition": "Check Acute Kidney Injury",
+              "distribution": 1
+            }
+          ]
+        }
+      ]
+    },
+    "Check Acute Kidney Injury": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Acute Kidney Injury",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Check Coagulopathy",
+              "distribution": 0.5
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Acute Kidney Injury",
+              "distribution": 0.01
+            },
+            {
+              "transition": "Check Coagulopathy",
+              "distribution": 0.99
+            }
+          ]
+        }
+      ]
+    },
+    "Check Coagulopathy": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Coagulopathy",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Determine Sepsis",
+              "distribution": 0.5
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Coagulopathy",
+              "distribution": 0.07
+            },
+            {
+              "transition": "Determine Sepsis",
+              "distribution": 0.9299999999999999
+            }
+          ]
+        }
+      ]
+    },
+    "Acute Kidney Injury": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "40095003",
+          "display": "Injury of kidney (disorder)"
+        }
+      ],
+      "direct_transition": "Check Coagulopathy",
+      "target_encounter": "ICU Admission"
+    },
+    "Coagulopathy": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "234466008",
+          "display": "Acquired coagulation disorder (disorder)"
+        }
+      ],
+      "direct_transition": "Determine Sepsis",
+      "target_encounter": "ICU Admission"
+    },
+    "Determine Sepsis": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Sepsis",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_death",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "PriorState",
+                    "name": "ARDS"
+                  },
+                  {
+                    "condition_type": "Or",
+                    "conditions": [
+                      {
+                        "condition_type": "PriorState",
+                        "name": "Heart Failure"
+                      },
+                      {
+                        "condition_type": "PriorState",
+                        "name": "Coagulopathy"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Respiratory Failure": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "65710008",
+          "display": "Acute respiratory failure (disorder)"
+        }
+      ],
+      "remarks": [
+        "67 of 173 (38.7% round up to 40%) severe patients required mechanical ventilation."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "ARDS",
+              "distribution": 0.94
+            },
+            {
+              "transition": "Check Heart Failure",
+              "distribution": 0.06
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "ARDS",
+              "distribution": 0.18
+            },
+            {
+              "transition": "Check Heart Failure",
+              "distribution": 0.8200000000000001
+            }
+          ]
+        }
+      ],
+      "target_encounter": "ICU Admission"
+    },
+    "Mild Respiratory Distress": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "271825005",
+          "display": "Respiratory distress (finding)"
+        }
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Respiratory Failure",
+              "distribution": 0.98
+            },
+            {
+              "transition": "Check Heart Failure",
+              "distribution": 0.02
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Respiratory Failure",
+              "distribution": 0.36
+            },
+            {
+              "transition": "Check Heart Failure",
+              "distribution": 0.64
+            }
+          ]
+        }
+      ],
+      "target_encounter": "Hospital Inpatient Admission"
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "name": "Supplies - ICU",
+  "remarks": [
+    "This module includes the supplies needed during daily treatment of COVID-19 in an intensive care setting.  These supplies offer a higher level of protection to the health care provider than the general inpatient setting. This includes the PPE needed for 1 patient, 1 doctor, 1 nurse for 1 day.",
+    "",
+    "Patient",
+    "- no additional supplies",
+    "",
+    "Doctor/Nurse",
+    "- 2 gloves each",
+    "- isolation gown each",
+    "- N95 respirator mask each",
+    "- glasses/goggles/face shield",
+    "- hand sanitizer"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Precautions_Aerosol"
+    },
+    "Precautions_Aerosol": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 4,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": "713779008",
+            "display": "Nitrile examination/treatment glove, non-powdered, sterile (physical object)"
+          }
+        },
+        {
+          "quantity": 2,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": "469673003",
+            "display": "Isolation gown, single-use (physical object)"
+          }
+        },
+        {
+          "quantity": 2,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": "409534002",
+            "display": "Disposable air-purifying respirator (physical object)"
+          }
+        },
+        {
+          "quantity": 2,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": "38126007",
+            "display": "Protective glasses, device (physical object)"
+          }
+        },
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": "419343004",
+            "display": "Alcohol disinfectant (substance)"
+          }
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

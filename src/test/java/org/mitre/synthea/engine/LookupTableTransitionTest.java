@@ -48,6 +48,8 @@ public class LookupTableTransitionTest {
     // hack to load these test modules so they can be called by the CallSubmodule state
     Module lookuptabletestModule = TestHelper.getFixture("lookuptable_test.json");
     modules.put("lookuptable_test", new Module.ModuleSupplier(lookuptabletestModule));
+    Module lookuptabletesttimerangeModule = TestHelper.getFixture("lookuptable_timerangetest.json");
+    modules.put("lookuptable_timerangetest", new Module.ModuleSupplier(lookuptabletesttimerangeModule));
 
     /* Create Mild Lookuptablitis Condition */
     mildLookuptablitis = new ActiveCondition();
@@ -75,6 +77,7 @@ public class LookupTableTransitionTest {
     Config.set("generic.lookuptables", "modules/lookup_tables");
     // Remove the lookuptable_test.json module
     modules.remove("lookuptable_test");
+    modules.remove("lookuptable_timerangetest");
   }
 
   @Test
@@ -505,6 +508,116 @@ public class LookupTableTransitionTest {
     assertFalse(mildLookuptablitis.test(person, conditionTime + 100));
     assertFalse(moderateLookuptablitis.test(person, conditionTime + 100));
     assertTrue(extremeLookuptablitis.test(person, conditionTime + 100));
+  }
+
+  @Test
+  public void firstTimeRangeMaleMA() {
+    long birthTime = 0L;
+    // Under Fifty
+    long conditionTime = 500L;
+
+    // Create the person with the preset attributes.
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.GENDER, "M");
+    person.attributes.put(Person.STATE, "Massachusetts");
+
+    // Process the lookuptable_test Module.
+    Module lookuptableTestModule = modules.get("lookuptable_timerangetest").get();
+    lookuptableTestModule.process(person, conditionTime);
+
+    // Make sure this person has the correct lookuptablitis.
+    assertFalse(mildLookuptablitis.test(person, conditionTime + 100));
+    assertTrue(moderateLookuptablitis.test(person, conditionTime + 100));
+    assertFalse(extremeLookuptablitis.test(person, conditionTime + 100));
+  }
+
+  @Test
+  public void firstTimeRangeFemaleMA() {
+    long birthTime = 0L;
+    // Under Fifty
+    long conditionTime = 500L;
+
+    // Create the person with the preset attributes.
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.GENDER, "F");
+    person.attributes.put(Person.STATE, "Massachusetts");
+
+    // Process the lookuptable_test Module.
+    Module lookuptableTestModule = modules.get("lookuptable_timerangetest").get();
+    lookuptableTestModule.process(person, conditionTime);
+
+    // Make sure this person has the correct lookuptablitis.
+    assertTrue(mildLookuptablitis.test(person, conditionTime + 100));
+    assertFalse(moderateLookuptablitis.test(person, conditionTime + 100));
+    assertFalse(extremeLookuptablitis.test(person, conditionTime + 100));
+  }
+
+  @Test
+  public void firstTimeRangeMaleOutOfState() {
+    long birthTime = 0L;
+    // Under Fifty
+    long conditionTime = 500L;
+
+    // Create the person with the preset attributes.
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.GENDER, "M");
+    person.attributes.put(Person.STATE, "New Hampshire");
+
+    // Process the lookuptable_test Module.
+    Module lookuptableTestModule = modules.get("lookuptable_timerangetest").get();
+    lookuptableTestModule.process(person, conditionTime);
+
+    // Make sure this person has the correct lookuptablitis.
+    assertFalse(mildLookuptablitis.test(person, conditionTime + 100));
+    assertFalse(moderateLookuptablitis.test(person, conditionTime + 100));
+    assertTrue(extremeLookuptablitis.test(person, conditionTime + 100));
+  }
+
+  @Test
+  public void secondTimeRangeMaleMA() {
+    long birthTime = 0L;
+    // Under Fifty
+    long conditionTime = 1500L;
+
+    // Create the person with the preset attributes.
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.GENDER, "M");
+    person.attributes.put(Person.STATE, "Massachusetts");
+
+    // Process the lookuptable_test Module.
+    Module lookuptableTestModule = modules.get("lookuptable_timerangetest").get();
+    lookuptableTestModule.process(person, conditionTime);
+
+    // Make sure this person has the correct lookuptablitis.
+    assertFalse(mildLookuptablitis.test(person, conditionTime + 100));
+    assertFalse(moderateLookuptablitis.test(person, conditionTime + 100));
+    assertTrue(extremeLookuptablitis.test(person, conditionTime + 100));
+  }
+
+  @Test
+  public void secondTimeRangeFemaleMA() {
+    long birthTime = 0L;
+    // Under Fifty
+    long conditionTime = 1500L;
+
+    // Create the person with the preset attributes.
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.GENDER, "F");
+    person.attributes.put(Person.STATE, "Massachusetts");
+
+    // Process the lookuptable_test Module.
+    Module lookuptableTestModule = modules.get("lookuptable_timerangetest").get();
+    lookuptableTestModule.process(person, conditionTime);
+
+    // Make sure this person has the correct lookuptablitis.
+    assertFalse(mildLookuptablitis.test(person, conditionTime + 100));
+    assertTrue(moderateLookuptablitis.test(person, conditionTime + 100));
+    assertFalse(extremeLookuptablitis.test(person, conditionTime + 100));
   }
 
   @Test

@@ -1,0 +1,792 @@
+{
+  "name": "admission",
+  "remarks": [
+    "Hospitalization and ICU admission for survivors and non-survivors. Timelines from Table 1 and Table 2, and outcomes and complications according to Table 2, from https://doi.org/10.1016/S0140-6736(20)30566-3"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "IL6 Check"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Hospital Inpatient Admission": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1505002",
+          "display": "Hospital admission for isolation (procedure)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Non Survivor Stay",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Survivor Stay"
+        }
+      ],
+      "reason": "covid19"
+    },
+    "Survivor Stay": {
+      "type": "SetAttribute",
+      "attribute": "covid19_hospitalization_days",
+      "direct_transition": "Admission Days",
+      "range": {
+        "low": 9,
+        "high": 15
+      }
+    },
+    "Non Survivor Stay": {
+      "type": "SetAttribute",
+      "attribute": "covid19_hospitalization_days",
+      "direct_transition": "Admission Days",
+      "range": {
+        "low": 5,
+        "high": 11
+      }
+    },
+    "ICU Admission": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "covid19",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "305351004",
+          "display": "Admission to intensive care unit (procedure)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Non Survivor ICU Stay",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Survivor ICU Stay"
+        }
+      ]
+    },
+    "End Symptoms": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/end_symptoms",
+      "direct_transition": "End_Outcomes"
+    },
+    "Survivor ICU Stay": {
+      "type": "SetAttribute",
+      "attribute": "covid19_icu_days",
+      "direct_transition": "ICU First Day",
+      "range": {
+        "low": 2,
+        "high": 9
+      }
+    },
+    "Non Survivor ICU Stay": {
+      "type": "SetAttribute",
+      "attribute": "covid19_icu_days",
+      "range": {
+        "low": 4,
+        "high": 12
+      },
+      "direct_transition": "ICU First Day"
+    },
+    "Death": {
+      "type": "Death",
+      "direct_transition": "Terminal"
+    },
+    "Hospitalization Day End": {
+      "type": "Counter",
+      "attribute": "covid19_hospitalization_days",
+      "action": "decrement",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_hospitalization_days",
+            "operator": ">",
+            "value": 0
+          },
+          "transition": "Hospitalization Next Day"
+        },
+        {
+          "transition": "Determine Discharge"
+        }
+      ]
+    },
+    "Hospitalization Day Begin": {
+      "type": "Counter",
+      "attribute": "covid19_admission_days",
+      "action": "increment",
+      "direct_transition": "Hospitalization Set Daily Labs"
+    },
+    "ICU Day Begin": {
+      "type": "Counter",
+      "attribute": "covid19_admission_days",
+      "action": "increment",
+      "direct_transition": "ICU Set Daily Labs"
+    },
+    "ICU Day End": {
+      "type": "Counter",
+      "attribute": "covid19_icu_days",
+      "action": "decrement",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_icu_days",
+            "operator": ">",
+            "value": 0
+          },
+          "transition": "ICU Next Day"
+        },
+        {
+          "transition": "Extubation_Check"
+        }
+      ]
+    },
+    "Hospitalization Daily Lab Values Non-Survivor": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/nonsurvivor_lab_values",
+      "direct_transition": "Hospitalization Daily Labs"
+    },
+    "Hospitalization Daily Lab Values Survivor": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/survivor_lab_values",
+      "direct_transition": "Hospitalization Daily Labs"
+    },
+    "ICU Labs": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/measurements_daily",
+      "conditional_transition": [
+        {
+          "transition": "ICU Frequent Labs",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_all_labs",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Next_Time"
+        }
+      ]
+    },
+    "Hospitalization Set Daily Labs": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Hospitalization Daily Lab Values Non-Survivor",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Hospitalization Daily Lab Values Survivor"
+        }
+      ]
+    },
+    "ICU Set Daily Labs": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "ICU Daily Lab Values Non Survivor",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "ICU Daily Lab Values Survivor"
+        }
+      ]
+    },
+    "ICU Daily Lab Values Non Survivor": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/nonsurvivor_lab_values",
+      "direct_transition": "ICU Labs"
+    },
+    "ICU Daily Lab Values Survivor": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/survivor_lab_values",
+      "direct_transition": "ICU Labs"
+    },
+    "Hospitalization First Day": {
+      "type": "SetAttribute",
+      "attribute": "covid19_all_labs",
+      "direct_transition": "Chest_X_Ray",
+      "value": true
+    },
+    "Chest_X_Ray": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "399208008",
+          "display": "Plain chest X-ray (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "Determine Outcomes"
+    },
+    "Determine Outcomes": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/outcomes",
+      "direct_transition": "Hospitalization Day Begin"
+    },
+    "Hospitalization Procedures": {
+      "type": "Simple",
+      "direct_transition": "Oxygen"
+    },
+    "Hospitalization Medications": {
+      "type": "Simple",
+      "direct_transition": "Metered_Dose_Inhaler"
+    },
+    "Hospitalization Supplies": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/supplies_hospitalization",
+      "direct_transition": "Hospitalization Day End"
+    },
+    "Hospitalization Next Day": {
+      "type": "Delay",
+      "direct_transition": "Hospitalization Day Begin",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      }
+    },
+    "ICU Next Day": {
+      "type": "Delay",
+      "direct_transition": "ICU Day Begin",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      }
+    },
+    "ICU Procedures": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Ventilation",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "65710008",
+                    "display": "Acute respiratory failure (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "76571007",
+                    "display": "Septic shock (disorder)"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "ICU Oxygen"
+        }
+      ]
+    },
+    "ICU Medications": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Antibacterial_Injection",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "65710008",
+                "display": "Acute respiratory failure (disorder)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Metered_Dose_Inhaler_ICU"
+        }
+      ]
+    },
+    "ICU Supplies": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/supplies_icu",
+      "direct_transition": "ICU Day End"
+    },
+    "Metered_Dose_Inhaler": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "2123111",
+          "display": "NDA020503 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
+        }
+      ],
+      "administration": true,
+      "reason": "Mild Respiratory Distress",
+      "direct_transition": "Antimalarial_Medication"
+    },
+    "Oxygen": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "371908008",
+          "display": "Oxygen administration by mask (procedure)"
+        }
+      ],
+      "reason": "Mild Respiratory Distress",
+      "direct_transition": "Hospitalization Medications"
+    },
+    "Set_IL6": {
+      "type": "SetAttribute",
+      "attribute": "covid19_il6",
+      "value": true,
+      "direct_transition": "Hospital Inpatient Admission"
+    },
+    "IL6 Check": {
+      "type": "Simple",
+      "remarks": [
+        "Only patients on clinical trials would get IL6 tests."
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Set_IL6",
+          "distribution": 0.03
+        },
+        {
+          "transition": "Hospital Inpatient Admission",
+          "distribution": 0.97
+        }
+      ]
+    },
+    "Antimalarial_Medication": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "979092",
+          "display": "Hydroxychloroquine Sulfate 200 MG Oral Tablet"
+        }
+      ],
+      "administration": true,
+      "reason": "Diagnosed COVID",
+      "direct_transition": "Daily_Acetaminophen_for_Fever"
+    },
+    "Daily_Acetaminophen_for_Fever": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "198440",
+          "display": "Acetaminophen 500 MG Oral Tablet"
+        }
+      ],
+      "administration": true,
+      "direct_transition": "Hospitalization Supplies"
+    },
+    "Antibacterial_Injection": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1668238",
+          "display": "Azithromycin 500 MG Injection"
+        }
+      ],
+      "administration": true,
+      "reason": "Pneumonia",
+      "remarks": [
+        "Really this is only administered if there is an additional bacterial infection in the lungs."
+      ],
+      "direct_transition": "Antimalarial_Medication_ICU"
+    },
+    "Ventilation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "26763009",
+          "display": "Controlled ventilation procedure and therapy, initiation and management (procedure)"
+        }
+      ],
+      "reason": "Respiratory Failure",
+      "direct_transition": "ICU Medications"
+    },
+    "ICU First Day": {
+      "type": "Simple",
+      "direct_transition": "Chest_X_Ray_2"
+    },
+    "Chest_X_Ray_2": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "399208008",
+          "display": "Plain chest X-ray (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Intubation Supplies",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "65710008",
+                "display": "Acute respiratory failure (disorder)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "ICU Day Begin"
+        }
+      ]
+    },
+    "Intubation Supplies": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/supplies_intubation",
+      "direct_transition": "Intubation"
+    },
+    "Intubation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "112798008",
+          "display": "Insertion of endotracheal tube (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "reason": "Respiratory Failure",
+      "direct_transition": "ICU Day Begin"
+    },
+    "ICU Oxygen": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "371908008",
+          "display": "Oxygen administration by mask (procedure)"
+        }
+      ],
+      "reason": "Mild Respiratory Distress",
+      "direct_transition": "ICU Medications"
+    },
+    "Antimalarial_Medication_ICU": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "979092",
+          "display": "Hydroxychloroquine Sulfate 200 MG Oral Tablet"
+        }
+      ],
+      "administration": true,
+      "reason": "Diagnosed COVID",
+      "conditional_transition": [
+        {
+          "transition": "Vasopressor A",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "76571007",
+                "display": "Septic shock (disorder)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Daily_Acetaminophen_for_Fever_ICU"
+        }
+      ]
+    },
+    "Metered_Dose_Inhaler_ICU": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "2123111",
+          "display": "NDA020503 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
+        }
+      ],
+      "administration": true,
+      "reason": "Mild Respiratory Distress",
+      "direct_transition": "Antimalarial_Medication_ICU"
+    },
+    "Daily_Acetaminophen_for_Fever_ICU": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "198440",
+          "display": "Acetaminophen 500 MG Oral Tablet"
+        }
+      ],
+      "administration": true,
+      "direct_transition": "ICU Supplies"
+    },
+    "Extubation_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Extubation",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Intubation"
+          }
+        },
+        {
+          "transition": "Compassionate Care"
+        }
+      ],
+      "direct_transition": "Extubation"
+    },
+    "Extubation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "271280005",
+          "display": "Removal of endotracheal tube (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "direct_transition": "Compassionate Care Check"
+    },
+    "Compassionate Care": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1657981",
+          "display": "20 ML tocilizumab 20 MG/ML Injection"
+        }
+      ],
+      "remarks": [
+        "Tocilizumab injection to prevent cytokine storms."
+      ],
+      "administration": true,
+      "reason": "Diagnosed COVID",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 8,
+          "unit": "hours"
+        },
+        "duration": {
+          "quantity": 24,
+          "unit": "hours"
+        }
+      },
+      "direct_transition": "Wait For End"
+    },
+    "Compassionate Care Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Compassionate Care",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "End Symptoms"
+        }
+      ]
+    },
+    "Wait For End": {
+      "type": "Delay",
+      "direct_transition": "Death",
+      "range": {
+        "low": 1,
+        "high": 8,
+        "unit": "hours"
+      }
+    },
+    "End_Outcomes": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/end_outcomes",
+      "direct_transition": "Terminal"
+    },
+    "Transfer": {
+      "type": "EncounterEnd",
+      "direct_transition": "ICU Admission"
+    },
+    "Determine Discharge": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Transfer",
+              "distribution": 0.72
+            },
+            {
+              "transition": "Wait For End",
+              "distribution": 0.28
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Transfer",
+              "distribution": 0.08
+            },
+            {
+              "transition": "End Symptoms",
+              "distribution": 0.9199999999999999
+            }
+          ]
+        }
+      ]
+    },
+    "Admission Days": {
+      "type": "SetAttribute",
+      "attribute": "covid19_admission_days",
+      "direct_transition": "Hospitalization First Day",
+      "value": 0
+    },
+    "Vasopressor A": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "242969",
+          "display": "4 ML Norepinephrine 1 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Vasopressor B",
+      "administration": true,
+      "reason": "Septic Shock"
+    },
+    "Vasopressor B": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "2103182",
+          "display": "1 ML Vasopressin (USP) 20 UNT/ML Injection"
+        }
+      ],
+      "administration": true,
+      "direct_transition": "Daily_Acetaminophen_for_Fever_ICU",
+      "reason": "Septic Shock"
+    },
+    "Hospitalization Daily Labs": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/measurements_daily",
+      "conditional_transition": [
+        {
+          "transition": "Hospitalization Frequent Labs",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_all_labs",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Next Time"
+        }
+      ]
+    },
+    "Hospitalization Frequent Labs": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/measurements_frequent",
+      "direct_transition": "Skip Next Time"
+    },
+    "Next Time": {
+      "type": "SetAttribute",
+      "attribute": "covid19_all_labs",
+      "direct_transition": "Hospitalization Procedures",
+      "value": true
+    },
+    "Skip Next Time": {
+      "type": "SetAttribute",
+      "attribute": "covid19_all_labs",
+      "direct_transition": "Hospitalization Procedures",
+      "value": false
+    },
+    "ICU Frequent Labs": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/measurements_frequent",
+      "direct_transition": "Skip_Next_Time"
+    },
+    "Next_Time": {
+      "type": "SetAttribute",
+      "attribute": "covid19_all_labs",
+      "value": true,
+      "direct_transition": "ICU Procedures"
+    },
+    "Skip_Next_Time": {
+      "type": "SetAttribute",
+      "attribute": "covid19_all_labs",
+      "value": true,
+      "direct_transition": "ICU Procedures"
+    }
+  }
+}

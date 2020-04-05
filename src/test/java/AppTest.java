@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
@@ -116,7 +117,7 @@ public class AppTest {
     System.setOut(original);
   }
 
-  @Test
+  @Ignore @Test
   public void testAppWithOverflow() throws Exception {
     TestHelper.exportOff();
     String[] args = {"-s", "1", "-p", "3", "-o", "false"};
