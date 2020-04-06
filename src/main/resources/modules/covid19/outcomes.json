@@ -15,9 +15,9 @@
       "type": "ConditionOnset",
       "codes": [
         {
-          "system": "SNOMED-CT",
-          "code": "233604007",
-          "display": "Pneumonia (disorder)"
+          "system": "ICD-10-CM",
+          "code": "J12.89",
+          "display": "Pneumonia due to coronavirus"
         }
       ],
       "direct_transition": "Mild Respiratory Distress",
