@@ -445,7 +445,7 @@
           "display": "Controlled ventilation procedure and therapy, initiation and management (procedure)"
         }
       ],
-      "reason": "Respiratory Failure",
+      "reason": "Ventilator Reason",
       "direct_transition": "ICU Medications"
     },
     "ICU First Day": {
