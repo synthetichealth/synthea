@@ -470,12 +470,27 @@
         {
           "transition": "Intubation Supplies",
           "condition": {
-            "condition_type": "Active Condition",
-            "codes": [
+            "condition_type": "Or",
+            "conditions": [
               {
-                "system": "SNOMED-CT",
-                "code": "65710008",
-                "display": "Acute respiratory failure (disorder)"
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 65710008,
+                    "display": "Acute respiratory failure (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 76571007,
+                    "display": "Septic shock (disorder)"
+                  }
+                ]
               }
             ]
           }
@@ -585,10 +600,9 @@
           }
         },
         {
-          "transition": "Compassionate Care"
+          "transition": "Compassionate Care Check"
         }
-      ],
-      "direct_transition": "Extubation"
+      ]
     },
     "Extubation": {
       "type": "Procedure",
@@ -604,7 +618,7 @@
         "high": 40,
         "unit": "minutes"
       },
-      "direct_transition": "Compassionate Care Check"
+      "direct_transition": "Recovery Days"
     },
     "Compassionate Care": {
       "type": "MedicationOrder",
@@ -787,6 +801,51 @@
       "attribute": "covid19_all_labs",
       "value": true,
       "direct_transition": "ICU Procedures"
+    },
+    "ICU_Oxygen": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "371908008",
+          "display": "Oxygen administration by mask (procedure)"
+        }
+      ],
+      "direct_transition": "Recovery",
+      "reason": "Select Condition/Enter Attribute"
+    },
+    "Recovery": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Recovery Next Day"
+    },
+    "Recovery Days": {
+      "type": "SetAttribute",
+      "attribute": "covid19_extubation_recovery_days",
+      "direct_transition": "ICU_Oxygen",
+      "value": 3
+    },
+    "Recovery Next Day": {
+      "type": "Counter",
+      "attribute": "covid19_extubation_recovery_days",
+      "action": "decrement",
+      "conditional_transition": [
+        {
+          "transition": "ICU_Oxygen",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_extubation_recovery_days",
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Compassionate Care Check"
+        }
+      ]
     }
   }
 }

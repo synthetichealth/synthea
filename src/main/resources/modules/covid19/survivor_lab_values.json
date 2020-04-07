@@ -494,6 +494,67 @@
         "low": 0,
         "high": 0.2
       },
+      "conditional_transition": [
+        {
+          "transition": "Recovered Oxygen Saturation",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_icu_days",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_icu_days",
+                "operator": "<",
+                "value": 2
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Poor Oxygen Saturation"
+        }
+      ]
+    },
+    "Poor Oxygen Saturation": {
+      "type": "VitalSign",
+      "vital_sign": "Oxygen Saturation",
+      "unit": "%",
+      "direct_transition": "Set Poor PaO2",
+      "range": {
+        "low": 75,
+        "high": 89
+      }
+    },
+    "Recovered Oxygen Saturation": {
+      "type": "VitalSign",
+      "vital_sign": "Oxygen Saturation",
+      "unit": "%",
+      "direct_transition": "Set Recovered PaO2",
+      "range": {
+        "low": 90,
+        "high": 100
+      }
+    },
+    "Set Poor PaO2": {
+      "type": "SetAttribute",
+      "attribute": "covid19_pao2",
+      "range": {
+        "low": 37,
+        "high": 60
+      },
+      "direct_transition": "Day"
+    },
+    "Set Recovered PaO2": {
+      "type": "SetAttribute",
+      "attribute": "covid19_pao2",
+      "range": {
+        "low": 60,
+        "high": 98
+      },
       "direct_transition": "Day"
     }
   }

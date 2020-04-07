@@ -53,7 +53,7 @@
           "display": "Septic shock (disorder)"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "End Covid19"
     },
     "End Heart Failure": {
       "type": "ConditionEnd",
@@ -123,6 +123,11 @@
         "67 of 173 (38.7% round up to 40%) severe patients required mechanical ventilation."
       ],
       "direct_transition": "End Sepsis"
+    },
+    "End Covid19": {
+      "type": "ConditionEnd",
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "covid19"
     }
   }
 }

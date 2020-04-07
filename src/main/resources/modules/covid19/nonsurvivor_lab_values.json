@@ -484,10 +484,29 @@
     "Set Procalitonin": {
       "type": "SetAttribute",
       "attribute": "covid19_procalcitonin",
-      "direct_transition": "Day",
+      "direct_transition": "Poor Oxygen Saturation",
       "range": {
         "low": 0,
         "high": 0.5
+      }
+    },
+    "Poor Oxygen Saturation": {
+      "type": "VitalSign",
+      "vital_sign": "Oxygen Saturation",
+      "unit": "%",
+      "range": {
+        "low": 75,
+        "high": 89
+      },
+      "direct_transition": "Set PaO2"
+    },
+    "Set PaO2": {
+      "type": "SetAttribute",
+      "attribute": "covid19_pao2",
+      "direct_transition": "Day",
+      "range": {
+        "low": 37,
+        "high": 60
       }
     }
   }
