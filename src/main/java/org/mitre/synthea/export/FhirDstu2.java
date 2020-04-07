@@ -516,7 +516,11 @@ public class FhirDstu2 {
       encounterResource.addType(mapCodeToCodeableConcept(code, SNOMED_URI));
     }
 
-    encounterResource.setClassElement(EncounterClassEnum.forCode(encounter.type));
+    EncounterClassEnum encounterClass = EncounterClassEnum.forCode(encounter.type);
+    if (encounterClass == null) {
+      encounterClass = EncounterClassEnum.AMBULATORY;
+    }
+    encounterResource.setClassElement(encounterClass);
     encounterResource.setPeriod(new PeriodDt()
         .setStart(new DateTimeDt(new Date(encounter.start)))
         .setEnd(new DateTimeDt(new Date(encounter.stop))));
