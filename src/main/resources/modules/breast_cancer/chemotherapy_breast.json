@@ -14,7 +14,7 @@
         {
           "system": "RxNorm",
           "code": 1734919,
-          "display": "Cyclophosphamide 1000 MG Injection"
+          "display": "cyclophosphamide 1 GM Injection"
         }
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",
@@ -70,7 +70,7 @@
         {
           "system": "RxNorm",
           "code": 1790099,
-          "display": "10 ML Doxorubicin Hydrochloride 2 MG/ML Injection"
+          "display": "DOXOrubicin hydrochloride 20 MG per 10 ML Injection"
         }
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",
@@ -88,7 +88,7 @@
         {
           "system": "RxNorm",
           "code": 1732186,
-          "display": "100 ML Epirubicin Hydrochloride 2 MG/ML Injection"
+          "display": "epirubicin HCl 200 MG in 100 ML Injection"
         }
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",

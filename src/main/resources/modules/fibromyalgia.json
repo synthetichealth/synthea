@@ -328,7 +328,7 @@
         {
           "system": "RxNorm",
           "code": "833135",
-          "display": "Milnacipran hydrochloride 100 MG Oral Tablet"
+          "display": "milnacipran HCl 100 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Episode_Encounter"

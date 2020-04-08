@@ -100,7 +100,7 @@
         {
           "system": "LOINC",
           "code": "57698-3",
-          "display": "Lipid Panel"
+          "display": "Lipid panel with direct LDL - Serum or Plasma"
         }
       ],
       "observations": [
@@ -111,7 +111,7 @@
             {
               "system": "LOINC",
               "code": "2093-3",
-              "display": "Total Cholesterol"
+              "display": "Cholesterol Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
@@ -126,7 +126,7 @@
             {
               "system": "LOINC",
               "code": "2571-8",
-              "display": "Triglycerides"
+              "display": "Triglyceride Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
@@ -141,7 +141,7 @@
             {
               "system": "LOINC",
               "code": "18262-6",
-              "display": "Low Density Lipoprotein Cholesterol"
+              "display": "Cholesterol in LDL Mass/volume in Serum or Plasma by Direct assay"
             }
           ],
           "unit": "mg/dL",
@@ -156,7 +156,7 @@
             {
               "system": "LOINC",
               "code": "2085-9",
-              "display": "High Density Lipoprotein Cholesterol"
+              "display": "Cholesterol in HDL Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
@@ -201,7 +201,7 @@
         {
           "system": "SNOMED-CT",
           "code": 183301007,
-          "display": "physical exercise"
+          "display": "Physical exercises (regime/therapy)"
         }
       ]
     },
@@ -248,7 +248,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose Mass/volume in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -260,7 +260,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea nitrogen Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -271,7 +271,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine"
+              "display": "Creatinine Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
@@ -287,7 +287,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium"
+              "display": "Calcium Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -299,7 +299,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium"
+              "display": "Sodium Moles/volume in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -311,7 +311,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium"
+              "display": "Potassium Moles/volume in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -323,7 +323,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride"
+              "display": "Chloride Moles/volume in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -335,7 +335,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total Moles/volume in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -347,7 +347,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted Volume Rate/Area in Serum or Plasma by Creatinine-based formula (MDRD)"
             }
           ],
           "range": {
@@ -501,7 +501,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose Mass/volume in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -513,7 +513,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea nitrogen Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -524,7 +524,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine"
+              "display": "Creatinine Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
@@ -540,7 +540,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium"
+              "display": "Calcium Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -552,7 +552,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium"
+              "display": "Sodium Moles/volume in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -564,7 +564,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium"
+              "display": "Potassium Moles/volume in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -576,7 +576,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride"
+              "display": "Chloride Moles/volume in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -588,7 +588,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total Moles/volume in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -600,7 +600,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted Volume Rate/Area in Serum or Plasma by Creatinine-based formula (MDRD)"
             }
           ],
           "range": {
@@ -722,7 +722,7 @@
         {
           "system": "LOINC",
           "code": "57698-3",
-          "display": "Lipid Panel"
+          "display": "Lipid panel with direct LDL - Serum or Plasma"
         }
       ],
       "observations": [
@@ -732,7 +732,7 @@
             {
               "system": "LOINC",
               "code": "2093-3",
-              "display": "Total Cholesterol"
+              "display": "Cholesterol Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
@@ -747,7 +747,7 @@
             {
               "system": "LOINC",
               "code": "2571-8",
-              "display": "Triglycerides"
+              "display": "Triglyceride Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
@@ -762,7 +762,7 @@
             {
               "system": "LOINC",
               "code": "18262-6",
-              "display": "Low Density Lipoprotein Cholesterol"
+              "display": "Cholesterol in LDL Mass/volume in Serum or Plasma by Direct assay"
             }
           ],
           "unit": "mg/dL",
@@ -777,7 +777,7 @@
             {
               "system": "LOINC",
               "code": "2085-9",
-              "display": "High Density Lipoprotein Cholesterol"
+              "display": "Cholesterol in HDL Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",

@@ -203,7 +203,7 @@
         {
           "system": "SNOMED-CT",
           "code": "54550000",
-          "display": "Seizure Count Cerebral Cortex Electroencephalogram (EEG)"
+          "display": "Electroencephalogram (procedure)"
         }
       ],
       "complex_transition": [

@@ -27,7 +27,7 @@
         {
           "system": "RxNorm",
           "code": 1808217,
-          "display": "100 ML Propofol 10 MG/ML Injection"
+          "display": "propofol 1000 MG in 100 ML Injection"
         }
       ],
       "direct_transition": "Induction_Medication_End",
@@ -117,7 +117,7 @@
         {
           "system": "RxNorm",
           "code": 1740467,
-          "display": "2 ML Ondansetron 2 MG/ML Injection"
+          "display": "ondansetron 4 MG in 2 ML Injection"
         }
       ],
       "direct_transition": "Antiemetic_End",
@@ -214,7 +214,7 @@
         {
           "system": "RxNorm",
           "code": "1809104",
-          "display": "5 ML SUFentanil 0.05 MG/ML Injection"
+          "display": "SUFentanil 250 MCG per 5 ML Injection"
         }
       ],
       "direct_transition": "Sufentanil_End",
@@ -226,7 +226,7 @@
         {
           "system": "RxNorm",
           "code": 542347,
-          "display": "Isoflurane 999 MG/ML Inhalant Solution"
+          "display": "isoflurane 99.9 % Inhalant Solution"
         }
       ],
       "direct_transition": "Isoflurane_End",
@@ -261,7 +261,7 @@
         {
           "system": "RxNorm",
           "code": "562366",
-          "display": "desflurane 1000 MG/ML Inhalation Solution"
+          "display": "desflurane 100 % Inhalant Solution"
         }
       ],
       "direct_transition": "Desflurane_End",
@@ -273,7 +273,7 @@
         {
           "system": "RxNorm",
           "code": 200243,
-          "display": "sevoflurane 1000 MG/ML Inhalant Solution"
+          "display": "sevoflurane 100 % Inhalant Solution"
         }
       ],
       "direct_transition": "Sevoflurane_End",

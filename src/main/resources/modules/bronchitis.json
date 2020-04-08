@@ -392,7 +392,7 @@
         {
           "system": "RxNorm",
           "code": "1043400",
-          "display": "Acetaminophen 21.7 MG/ML / Dextromethorphan Hydrobromide 1 MG/ML / doxylamine succinate 0.417 MG/ML Oral Solution"
+          "display": "acetaminophen 650 MG / dextromethorphan HBr 30 MG / doxylamine succinate 12.5 MG in 30 mL Oral Solution"
         }
       ],
       "direct_transition": "End_Doctor_Visit"

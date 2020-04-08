@@ -366,7 +366,7 @@
         {
           "system": "SNOMED-CT",
           "code": 79094001,
-          "display": "Initial Psychiatric Interview with mental status evaluation"
+          "display": "Initial psychiatric interview with mental status and evaluation (procedure)"
         }
       ],
       "reason": "mdd",
@@ -389,7 +389,7 @@
         {
           "system": "SNOMED-CT",
           "code": 370143000,
-          "display": "Major depression disorder"
+          "display": "Major depressive disorder (disorder)"
         }
       ],
       "distributed_transition": [
@@ -472,7 +472,7 @@
         {
           "system": "SNOMED-CT",
           "code": 304822001,
-          "display": "Psychodynamic Interpersonal Therapy"
+          "display": "Psychodynamic-interpersonal psychotherapy (regime/therapy)"
         }
       ]
     },
@@ -533,7 +533,7 @@
         {
           "system": "RxNorm",
           "code": 310385,
-          "display": "FLUoxetine 20 MG Oral Capsule"
+          "display": "FLUoxetine 20 MG (as FLUoxetine HCl 22.4 MG) Oral Capsule"
         }
       ],
       "assign_to_attribute": "ssri",
@@ -598,7 +598,7 @@
         {
           "system": "SNOMED-CT",
           "code": 112001000119100,
-          "display": "positive screening for PHQ-9"
+          "display": "Positive screening for depression on Patient Health Questionnaire 9"
         }
       ],
       "direct_transition": "MDD Diagnosis",
@@ -646,7 +646,7 @@
         {
           "system": "SNOMED-CT",
           "code": 112011000119102,
-          "display": "negative screening for depression on phq9"
+          "display": "Negative screening for depression on Patient Health Questionnaire 9"
         }
       ],
       "direct_transition": "Change_Dx_Not_MDD"

@@ -73,7 +73,7 @@
                   {
                     "system": "LOINC",
                     "code": "20570-8",
-                    "display": "Hematocrit"
+                    "display": "Hematocrit Volume Fraction of Blood"
                   }
                 ],
                 "operator": "<=",
@@ -101,7 +101,7 @@
                   {
                     "system": "LOINC",
                     "code": "20570-8",
-                    "display": "Hematocrit"
+                    "display": "Hematocrit Volume Fraction of Blood"
                   }
                 ],
                 "operator": "<=",

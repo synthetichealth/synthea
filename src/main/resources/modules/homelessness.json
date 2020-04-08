@@ -418,7 +418,7 @@
         {
           "system": "LOINC",
           "code": "46240-8",
-          "display": "History of Hospitalizations+Outpatient visits"
+          "display": "History of Hospitalizations+Outpatient visits Narrative"
         }
       ],
       "range": {

@@ -97,7 +97,7 @@
         {
           "system": "LOINC",
           "code": "51990-0",
-          "display": "Basic Metabolic Panel"
+          "display": "Basic metabolic panel - Blood"
         }
       ],
       "observations": [
@@ -108,7 +108,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose Mass/volume in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -120,7 +120,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea nitrogen Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -132,7 +132,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine"
+              "display": "Creatinine Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -144,7 +144,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium"
+              "display": "Calcium Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -156,7 +156,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium"
+              "display": "Sodium Moles/volume in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -168,7 +168,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium"
+              "display": "Potassium Moles/volume in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -180,7 +180,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride"
+              "display": "Chloride Moles/volume in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -192,7 +192,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total Moles/volume in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -233,7 +233,7 @@
         {
           "system": "SNOMED-CT",
           "code": 183301007,
-          "display": "physical exercise"
+          "display": "Physical exercises (regime/therapy)"
         }
       ]
     },
@@ -533,7 +533,7 @@
         {
           "system": "RxNorm",
           "code": 1719286,
-          "display": "10 ML Furosemide 10 MG/ML Injection"
+          "display": "furosemide 100 MG in 10 ML Injection"
         }
       ],
       "reason": "chf",
@@ -684,7 +684,7 @@
         {
           "system": "LOINC",
           "code": "51990-0",
-          "display": "Basic Metabolic Panel"
+          "display": "Basic metabolic panel - Blood"
         }
       ],
       "observations": [
@@ -695,7 +695,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose Mass/volume in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -707,7 +707,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea nitrogen Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -719,7 +719,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine"
+              "display": "Creatinine Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -731,7 +731,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium"
+              "display": "Calcium Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -743,7 +743,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium"
+              "display": "Sodium Moles/volume in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -755,7 +755,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium"
+              "display": "Potassium Moles/volume in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -767,7 +767,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride"
+              "display": "Chloride Moles/volume in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -779,7 +779,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total Moles/volume in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -804,7 +804,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose Mass/volume in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -816,7 +816,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea nitrogen Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -827,7 +827,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine"
+              "display": "Creatinine Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
@@ -840,7 +840,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium"
+              "display": "Calcium Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -852,7 +852,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium"
+              "display": "Sodium Moles/volume in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -864,7 +864,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium"
+              "display": "Potassium Moles/volume in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -876,7 +876,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride"
+              "display": "Chloride Moles/volume in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -888,7 +888,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total Moles/volume in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -900,7 +900,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted Volume Rate/Area in Serum or Plasma by Creatinine-based formula (MDRD)"
             }
           ],
           "range": {
@@ -1101,7 +1101,7 @@
         {
           "system": "SNOMED-CT",
           "code": 183301007,
-          "display": "physical exercise"
+          "display": "Physical exercises (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
@@ -1142,7 +1142,7 @@
         {
           "system": "LOINC",
           "code": "55405-5",
-          "display": "Heartfailure Tracking Panel"
+          "display": "Heart failure tracking panel"
         }
       ],
       "observations": [
@@ -1226,7 +1226,7 @@
         {
           "system": "LOINC",
           "code": "33762-6",
-          "display": "NT-proBNP"
+          "display": "Natriuretic peptide.B prohormone N-Terminal Mass/volume in Serum or Plasma"
         }
       ],
       "direct_transition": "Record_MetabolicPanel",
@@ -1355,7 +1355,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood pressure panel with all children optional"
         }
       ],
       "direct_transition": "End self-measurement",

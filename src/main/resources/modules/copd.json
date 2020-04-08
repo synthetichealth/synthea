@@ -781,7 +781,7 @@
               {
                 "system": "RxNorm",
                 "code": "896209",
-                "display": "60 ACTUAT Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT Dry Powder Inhaler"
+                "display": "fluticasone propionate/salmeterol 250/50 MCG/INHAL Dry Powder Inhaler, 60 Blisters"
               }
             ]
           },
@@ -799,7 +799,7 @@
         {
           "system": "RxNorm",
           "code": "896209",
-          "display": "60 ACTUAT Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT Dry Powder Inhaler"
+          "display": "fluticasone propionate/salmeterol 250/50 MCG/INHAL Dry Powder Inhaler, 60 Blisters"
         }
       ],
       "direct_transition": "Consider_Surgery",

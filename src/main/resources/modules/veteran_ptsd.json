@@ -192,7 +192,7 @@
         {
           "system": "SNOMED-CT",
           "code": 79094001,
-          "display": "Initial Psychiatric Interview with mental status evaluation"
+          "display": "Initial psychiatric interview with mental status and evaluation (procedure)"
         }
       ],
       "reason": "ptsd",
@@ -478,7 +478,7 @@
         {
           "system": "RxNorm",
           "code": 312938,
-          "display": "Sertraline 100 MG Oral Tablet"
+          "display": "sertraline HCl 100 MG Oral Tablet"
         }
       ],
       "assign_to_attribute": "SSRI",
@@ -1103,12 +1103,12 @@
         {
           "system": "SNOMED-CT",
           "code": 385724002,
-          "display": "Coping Support Management (Telehealth)"
+          "display": "Coping support management (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": 406185000,
-          "display": "Trauma Therapy (Telehealth)"
+          "display": "Trauma therapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
@@ -1123,7 +1123,7 @@
         {
           "system": "SNOMED-CT",
           "code": 76168009,
-          "display": "Group psychotherapy (regime/therapy) (Telehealth)"
+          "display": "Group psychotherapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
@@ -1171,7 +1171,7 @@
         {
           "system": "SNOMED-CT",
           "code": 406185000,
-          "display": "Trauma Therapy (Telehealth)"
+          "display": "Trauma therapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
@@ -1181,7 +1181,7 @@
         {
           "system": "SNOMED-CT",
           "code": 385724002,
-          "display": "Coping Support Management (Telehealth)"
+          "display": "Coping support management (procedure)"
         },
         {
           "system": "SNOMED-CT",
@@ -1191,7 +1191,7 @@
         {
           "system": "SNOMED-CT",
           "code": 76168009,
-          "display": "Group psychotherapy (regime/therapy) (Telehealth)"
+          "display": "Group psychotherapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",

@@ -195,7 +195,7 @@
         {
           "system": "RxNorm",
           "code": "856987",
-          "display": "Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG Oral Tablet"
+          "display": "HYDROcodone bitartrate 5 MG / acetaminophen 300 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Directed_Use_Encounter"
@@ -232,7 +232,7 @@
         {
           "system": "RxNorm",
           "code": "1860154",
-          "display": "Abuse-Deterrent 12 HR Oxycodone Hydrochloride 15 MG Extended Release Oral Tablet"
+          "display": "oxyCODONE HCl 15 MG 12 HR Extended Release Oral Tablet, Abuse-Deterrent"
         }
       ],
       "direct_transition": "End_Directed_Use_Encounter"
@@ -269,7 +269,7 @@
         {
           "system": "RxNorm",
           "code": "1049221",
-          "display": "Acetaminophen 325 MG / Oxycodone Hydrochloride 5 MG Oral Tablet"
+          "display": "oxyCODONE 5 MG / acetaminophen 325 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Directed_Use_Encounter"

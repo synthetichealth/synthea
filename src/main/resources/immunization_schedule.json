@@ -304,7 +304,7 @@
     "code": {
       "system": "http://hl7.org/fhir/sid/cvx",
       "code": "113",
-      "display": "Td (adult) preservative free"
+      "display": "Td (adult), 5 Lf tetanus toxoid, preservative free, adsorbed"
     },
     "remark": "21 years and every 10 years after. This particular combination of tetanus and diphtheria first available 1992.",
     "at_months": [
@@ -323,7 +323,7 @@
     "code": {
       "system": "http://hl7.org/fhir/sid/cvx",
       "code": "121",
-      "display": "zoster"
+      "display": "zoster live"
     },
     "at_months": [
       600,
@@ -335,7 +335,7 @@
     "code": {
       "system": "http://hl7.org/fhir/sid/cvx",
       "code": "33",
-      "display": "pneumococcal polysaccharide vaccine, 23 valent"
+      "display": "pneumococcal polysaccharide PPV23"
     },
     "at_months": [
       792

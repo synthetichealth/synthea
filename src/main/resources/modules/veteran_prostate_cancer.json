@@ -210,7 +210,7 @@
       "value_code": {
         "system": "SNOMED-CT",
         "code": 300531004,
-        "display": "Normal size prostate"
+        "display": "Normal sized prostate (finding)"
       }
     },
     "wellness_visit_time_delay": {
@@ -371,7 +371,7 @@
         {
           "system": "RxNorm",
           "code": 1860480,
-          "display": "1 ML DOCEtaxel 20 MG/ML Injection"
+          "display": "DOCEtaxel 20 MG per 1 ML Injection"
         }
       ],
       "direct_transition": "Chemotherapy_Hormone Order2"
@@ -498,7 +498,7 @@
         {
           "system": "RxNorm",
           "code": 752899,
-          "display": "0.25 ML Leuprolide Acetate 30 MG/ML Prefilled Syringe"
+          "display": "leuprolide acetate 7.5 MG in 0.25 ML (1 month) Prefilled Syringe"
         }
       ],
       "conditional_transition": [
@@ -577,7 +577,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose Mass/volume in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -589,7 +589,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea nitrogen Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -600,7 +600,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine"
+              "display": "Creatinine Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
@@ -616,7 +616,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium"
+              "display": "Calcium Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -628,7 +628,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium"
+              "display": "Sodium Moles/volume in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -640,7 +640,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium"
+              "display": "Potassium Moles/volume in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -652,7 +652,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride"
+              "display": "Chloride Moles/volume in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -664,7 +664,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total Moles/volume in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -676,7 +676,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted Volume Rate/Area in Serum or Plasma by Creatinine-based formula (MDRD)"
             }
           ],
           "range": {

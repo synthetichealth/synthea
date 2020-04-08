@@ -257,7 +257,7 @@
         {
           "system": "RxNorm",
           "code": "311989",
-          "display": "Nitrofurantoin 5 MG/ML Oral Suspension"
+          "display": "nitrofurantoin 25 MG in 5 mL Oral Suspension"
         }
       ],
       "direct_transition": "Prescribe_OTC_Painkiller_For_UTIs"
@@ -272,7 +272,7 @@
         {
           "system": "RxNorm",
           "code": "1094107",
-          "display": "Phenazopyridine hydrochloride 100 MG Oral Tablet"
+          "display": "phenazopyridine HCl 100 MG Oral Tablet"
         }
       ],
       "direct_transition": "UTI_CarePlan"

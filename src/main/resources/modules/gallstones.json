@@ -352,7 +352,7 @@
         {
           "system": "SNOMED-CT",
           "code": 235919008,
-          "display": "Cholelithiasis"
+          "display": "Gallbladder calculus (disorder)"
         }
       ],
       "remarks": [
@@ -487,7 +487,7 @@
         {
           "system": "SNOMED-CT",
           "code": 45595009,
-          "display": "Laparoscopic Removal of Gall Bladder"
+          "display": "Laparoscopic cholecystectomy (procedure)"
         }
       ],
       "duration": {
@@ -611,7 +611,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185349003,
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "End_Postoperative_Follow-up",
@@ -624,7 +624,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185349003,
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "reason": "Open_Cholecystectomy",
@@ -669,7 +669,7 @@
         {
           "system": "RxNorm",
           "code": 1740467,
-          "display": "2 ML Ondansetron 2 MG/ML Injection"
+          "display": "ondansetron 4 MG in 2 ML Injection"
         }
       ],
       "direct_transition": "Antiemetic_End",
@@ -684,7 +684,7 @@
         {
           "system": "RxNorm",
           "code": 1732136,
-          "display": "1 ML Morphine Sulfate 5 MG/ML Injection"
+          "display": "morphine sulfate 5 MG in 1 ML Injection"
         }
       ],
       "direct_transition": "Delay_for_Surgical_Appointment"
@@ -790,7 +790,7 @@
             {
               "system": "LOINC",
               "code": "42719-5",
-              "display": "Total Bilirubin (Elevated)"
+              "display": "Bilirubin.total Mass/volume in Blood"
             }
           ],
           "range": {
@@ -805,7 +805,7 @@
             {
               "system": "LOINC",
               "code": "1742-6",
-              "display": "ALT (Elevated)"
+              "display": "Alanine aminotransferase Enzymatic activity/volume in Serum or Plasma"
             }
           ],
           "range": {
@@ -820,7 +820,7 @@
             {
               "system": "LOINC",
               "code": "1920-8",
-              "display": "AST (Elevated)"
+              "display": "Aspartate aminotransferase Enzymatic activity/volume in Serum or Plasma"
             }
           ],
           "range": {
@@ -835,7 +835,7 @@
             {
               "system": "LOINC",
               "code": "2345-7",
-              "display": "Glucose"
+              "display": "Glucose Mass/volume in Blood"
             }
           ],
           "vital_sign": "Glucose"
@@ -847,7 +847,7 @@
             {
               "system": "LOINC",
               "code": "3094-0",
-              "display": "Urea Nitrogen"
+              "display": "Urea nitrogen Mass/volume in Serum or Plasma"
             }
           ],
           "vital_sign": "Urea Nitrogen"
@@ -859,7 +859,7 @@
             {
               "system": "LOINC",
               "code": "2160-0",
-              "display": "Creatinine"
+              "display": "Creatinine Mass/volume in Serum or Plasma"
             }
           ],
           "vital_sign": "Creatinine"
@@ -871,7 +871,7 @@
             {
               "system": "LOINC",
               "code": "17861-6",
-              "display": "Calcium"
+              "display": "Calcium Mass/volume in Serum or Plasma"
             }
           ],
           "vital_sign": "Calcium"
@@ -883,7 +883,7 @@
             {
               "system": "LOINC",
               "code": "2951-2",
-              "display": "Sodium"
+              "display": "Sodium Moles/volume in Blood"
             }
           ],
           "vital_sign": "Sodium"
@@ -895,7 +895,7 @@
             {
               "system": "LOINC",
               "code": "2823-3",
-              "display": "Potassium"
+              "display": "Potassium Moles/volume in Serum or Plasma"
             }
           ],
           "vital_sign": "Potassium"
@@ -907,7 +907,7 @@
             {
               "system": "LOINC",
               "code": "2075-0",
-              "display": "Chloride"
+              "display": "Chloride Moles/volume in Blood"
             }
           ],
           "vital_sign": "Chloride"
@@ -919,7 +919,7 @@
             {
               "system": "LOINC",
               "code": "2028-9",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total Moles/volume in Serum or Plasma"
             }
           ],
           "vital_sign": "Carbon Dioxide"
@@ -931,7 +931,7 @@
             {
               "system": "LOINC",
               "code": "33037-3",
-              "display": "Anion Gap"
+              "display": "Anion gap in Serum or Plasma"
             }
           ],
           "range": {
@@ -946,7 +946,7 @@
             {
               "system": "LOINC",
               "code": "2885-2",
-              "display": "Protein"
+              "display": "Protein Mass/volume in Serum or Plasma"
             }
           ],
           "range": {
@@ -961,7 +961,7 @@
             {
               "system": "LOINC",
               "code": "1751-7",
-              "display": "Albumin"
+              "display": "Albumin Mass/volume in Serum or Plasma"
             }
           ],
           "range": {
@@ -976,7 +976,7 @@
             {
               "system": "LOINC",
               "code": "10834-0",
-              "display": "Globulin"
+              "display": "Globulin Mass/volume in Serum by calculation"
             }
           ],
           "range": {
@@ -991,7 +991,7 @@
             {
               "system": "LOINC",
               "code": "6768-6",
-              "display": "Alkaline Phosphatase"
+              "display": "Alkaline phosphatase Enzymatic activity/volume in Serum or Plasma"
             }
           ],
           "range": {
@@ -1025,7 +1025,7 @@
             {
               "system": "LOINC",
               "code": "26464-8",
-              "display": "White Blood Cell (Elevated)"
+              "display": "Leukocytes #/volume in Blood"
             }
           ],
           "range": {
@@ -1040,7 +1040,7 @@
             {
               "system": "LOINC",
               "code": "26453-1",
-              "display": "Red Blood Cell"
+              "display": "Erythrocytes #/volume in Blood"
             }
           ],
           "range": {
@@ -1055,7 +1055,7 @@
             {
               "system": "LOINC",
               "code": "718-7",
-              "display": "Hemoglobin"
+              "display": "Hemoglobin Mass/volume in Blood"
             }
           ],
           "range": {
@@ -1070,7 +1070,7 @@
             {
               "system": "LOINC",
               "code": "20570-8",
-              "display": "Hematocrit"
+              "display": "Hematocrit Volume Fraction of Blood"
             }
           ],
           "range": {
@@ -1085,7 +1085,7 @@
             {
               "system": "LOINC",
               "code": "30428-7",
-              "display": "MCV"
+              "display": "MCV Entitic volume"
             }
           ],
           "range": {
@@ -1100,7 +1100,7 @@
             {
               "system": "LOINC",
               "code": "30385-9",
-              "display": "RBC Distribution Width"
+              "display": "Erythrocyte distribution width Ratio"
             }
           ],
           "range": {
@@ -1115,7 +1115,7 @@
             {
               "system": "LOINC",
               "code": "26515-7",
-              "display": "Platelet Count"
+              "display": "Platelets #/volume in Blood"
             }
           ],
           "range": {
@@ -1145,7 +1145,7 @@
       "value_code": {
         "system": "SNOMED-CT",
         "code": 53566005,
-        "display": "Positive Murphy's Sign"
+        "display": "Murphy's sign (finding)"
       }
     },
     "Chole_Symptom4_Ends": {
@@ -1183,7 +1183,7 @@
         {
           "system": "RxNorm",
           "code": 1659149,
-          "display": "Piperacillin 4000 MG / tazobactam 500 MG Injection"
+          "display": "piperacillin / tazobactam 4.5 GM Injection"
         }
       ],
       "direct_transition": "Penicillin_End",
@@ -1234,7 +1234,7 @@
         {
           "system": "RxNorm",
           "code": "1659263",
-          "display": "1 ML heparin sodium, porcine 5000 UNT/ML Injection"
+          "display": "heparin sodium, porcine 5000 UNT in 1 ML Injection"
         }
       ],
       "direct_transition": "Heparin_End"

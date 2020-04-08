@@ -390,7 +390,7 @@
         {
           "system": "SNOMED-CT",
           "code": "714035009",
-          "display": "Allergy to soya"
+          "display": "Allergy to soy (disorder)"
         }
       ],
       "direct_transition": "Chance_of_Dairy_Allergy"
@@ -607,7 +607,7 @@
         {
           "system": "SNOMED-CT",
           "code": "232347008",
-          "display": "Dander (animal) allergy"
+          "display": "Allergy to animal dander (finding)"
         }
       ],
       "direct_transition": "Chance_of_Dust_Mite_Allergy"
@@ -712,7 +712,7 @@
         {
           "system": "SNOMED-CT",
           "code": "419474003",
-          "display": "Allergy to mould"
+          "display": "Allergy to mold (finding)"
         }
       ],
       "direct_transition": "Chance_of_Bee_Allergy"

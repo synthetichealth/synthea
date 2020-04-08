@@ -178,7 +178,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": "714035009",
-                "display": "Allergy to soya"
+                "display": "Allergy to soy (disorder)"
               }
             ]
           },
@@ -209,7 +209,7 @@
         {
           "system": "SNOMED-CT",
           "code": "714035009",
-          "display": "Allergy to soya"
+          "display": "Allergy to soy (disorder)"
         }
       ],
       "direct_transition": "Latex_Allergy"

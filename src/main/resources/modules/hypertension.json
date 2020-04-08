@@ -21,7 +21,7 @@
         {
           "system": "SNOMED-CT",
           "code": 59621000,
-          "display": "Hypertension"
+          "display": "Essential hypertension (disorder)"
         }
       ],
       "assign_to_attribute": "hypertension_dx",
@@ -33,7 +33,7 @@
         {
           "system": "RxNorm",
           "code": 429503,
-          "display": "Hydrochlorothiazide 12.5 MG"
+          "display": "hydrochlorothiazide 12.5 MG Oral Tablet"
         }
       ],
       "prescription": {
@@ -79,7 +79,7 @@
         {
           "system": "SNOMED-CT",
           "code": 390906007,
-          "display": "Hypertension follow-up encounter"
+          "display": "Follow-up encounter (procedure)"
         }
       ],
       "direct_transition": "Record_BP"
@@ -117,7 +117,7 @@
         {
           "system": "RxNorm",
           "code": 746030,
-          "display": "Atenolol 50 MG / Chlorthalidone 25 MG Oral Tablet"
+          "display": "Tenoretic-50 50 MG / 25 MG Oral Tablet"
         }
       ],
       "prescription": {
@@ -144,7 +144,7 @@
         {
           "system": "RxNorm",
           "code": 999967,
-          "display": "amLODIPine 5 MG / Hydrochlorothiazide 12.5 MG / Olmesartan medoxomil 20 MG Oral Tablet"
+          "display": "olmesartan medoxomil 20 MG / amLODIPine 5 MG / hydrochlorothiazide 12.5 MG Oral Tablet"
         }
       ],
       "prescription": {
@@ -173,7 +173,7 @@
         {
           "system": "SNOMED-CT",
           "code": 390906007,
-          "display": "Hypertension follow-up encounter"
+          "display": "Follow-up encounter (procedure)"
         }
       ],
       "direct_transition": "Record_BP_2"
@@ -186,7 +186,7 @@
         {
           "system": "SNOMED-CT",
           "code": 390906007,
-          "display": "Hypertension follow-up encounter"
+          "display": "Follow-up encounter (procedure)"
         }
       ],
       "direct_transition": "Record_BP_3"
@@ -350,7 +350,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood pressure panel with all children optional"
         }
       ],
       "observations": [
@@ -401,7 +401,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood pressure panel with all children optional"
         }
       ],
       "observations": [
@@ -452,7 +452,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood pressure panel with all children optional"
         }
       ],
       "observations": [

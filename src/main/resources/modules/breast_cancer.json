@@ -1010,7 +1010,7 @@
                   {
                     "system": "RxNorm",
                     "code": "198240",
-                    "display": "Tamoxifen 10 MG Oral Tablet"
+                    "display": "tamoxifen citrate 10 MG Oral Tablet"
                   }
                 ]
               },
@@ -1544,7 +1544,7 @@
         {
           "system": "RxNorm",
           "code": 1790099,
-          "display": "10 ML Doxorubicin Hydrochloride 2 MG/ML Injection"
+          "display": "DOXOrubicin hydrochloride 20 MG per 10 ML Injection"
         }
       ],
       "remarks": [
@@ -1562,7 +1562,7 @@
         {
           "system": "RxNorm",
           "code": 1732186,
-          "display": "100 ML Epirubicin Hydrochloride 2 MG/ML Injection"
+          "display": "epirubicin HCl 200 MG in 100 ML Injection"
         }
       ],
       "direct_transition": "Neoadjuvant chemotherapy procedure",
@@ -1937,8 +1937,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 385633008,
-        "display": "Improving (qualifier value)"
+        "code": 268910001,
+        "display": "Patient's condition improved (finding)"
       }
     },
     "Improvement After Surgery/Therapy": {
@@ -1957,8 +1957,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 385633008,
-        "display": "Improving (qualifier value)"
+        "code": 268910001,
+        "display": "Patient's condition improved (finding)"
       },
       "direct_transition": "Post-Treatment Surveillance"
     },
@@ -1978,8 +1978,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 230993007,
-        "display": "Worsening (qualifier value)"
+        "code": 271299001,
+        "display": "Patient's condition worsened (finding)"
       },
       "direct_transition": "Post-Treatment Surveillance"
     },
@@ -2018,8 +2018,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 230993007,
-        "display": "Worsening (qualifier value)"
+        "code": 271299001,
+        "display": "Patient's condition worsened (finding)"
       },
       "direct_transition": "4 Months between Initial Follow-Ups"
     },
@@ -2039,8 +2039,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 385633008,
-        "display": "Improving (qualifier value)"
+        "code": 268910001,
+        "display": "Patient's condition improved (finding)"
       },
       "direct_transition": "4 Months between Initial Follow-Ups"
     },

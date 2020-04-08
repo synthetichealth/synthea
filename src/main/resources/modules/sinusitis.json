@@ -212,7 +212,7 @@
         {
           "system": "RxNorm",
           "code": "562251",
-          "display": "Amoxicillin 250 MG / Clavulanate 125 MG Oral Tablet"
+          "display": "amoxicillin 250 MG / clavulanate potassium 125 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_Encounter"
@@ -239,7 +239,7 @@
                   {
                     "system": "RxNorm",
                     "code": "562251",
-                    "display": "Amoxicillin 250 MG / Clavulanate 125 MG Oral Tablet"
+                    "display": "amoxicillin 250 MG / clavulanate potassium 125 MG Oral Tablet"
                   }
                 ]
               },
@@ -286,7 +286,7 @@
               {
                 "system": "RxNorm",
                 "code": "562251",
-                "display": "Amoxicillin 250 MG / Clavulanate 125 MG Oral Tablet"
+                "display": "amoxicillin 250 MG / clavulanate potassium 125 MG Oral Tablet"
               }
             ]
           },

@@ -51,7 +51,7 @@
         {
           "system": "LOINC",
           "code": "6206-7",
-          "display": "Peanut IgE Ab in Serum"
+          "display": "Peanut IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -68,7 +68,7 @@
         {
           "system": "LOINC",
           "code": "6206-7",
-          "display": "Peanut IgE Ab in Serum"
+          "display": "Peanut IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -111,7 +111,7 @@
         {
           "system": "LOINC",
           "code": "6273-7",
-          "display": "Walnut IgE Ab in Serum"
+          "display": "Walnut IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -128,7 +128,7 @@
         {
           "system": "LOINC",
           "code": "6273-7",
-          "display": "Walnut IgE Ab in Serum"
+          "display": "Walnut IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -171,7 +171,7 @@
         {
           "system": "LOINC",
           "code": "6082-2",
-          "display": "Codfish IgE Ab in Serum"
+          "display": "Codfish IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -188,7 +188,7 @@
         {
           "system": "LOINC",
           "code": "6082-2",
-          "display": "Codfish IgE Ab in Serum"
+          "display": "Codfish IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -233,7 +233,7 @@
         {
           "system": "LOINC",
           "code": "6246-3",
-          "display": "Shrimp IgE Ab in Serum"
+          "display": "Shrimp IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -250,7 +250,7 @@
         {
           "system": "LOINC",
           "code": "6246-3",
-          "display": "Shrimp IgE Ab in Serum"
+          "display": "Shrimp IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -293,7 +293,7 @@
         {
           "system": "LOINC",
           "code": "6276-0",
-          "display": "Wheat IgE Ab in Serum"
+          "display": "Wheat IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -310,7 +310,7 @@
         {
           "system": "LOINC",
           "code": "6276-0",
-          "display": "Wheat IgE Ab in Serum"
+          "display": "Wheat IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -353,7 +353,7 @@
         {
           "system": "LOINC",
           "code": "6106-9",
-          "display": "Egg white IgE Ab in Serum"
+          "display": "Egg white IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -370,7 +370,7 @@
         {
           "system": "LOINC",
           "code": "6106-9",
-          "display": "Egg white IgE Ab in Serum"
+          "display": "Egg white IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -395,7 +395,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": "714035009",
-                "display": "Allergy to soya"
+                "display": "Allergy to soy (disorder)"
               }
             ]
           },
@@ -413,7 +413,7 @@
         {
           "system": "LOINC",
           "code": "6248-9",
-          "display": "Soybean IgE Ab in Serum"
+          "display": "Soybean IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -430,7 +430,7 @@
         {
           "system": "LOINC",
           "code": "6248-9",
-          "display": "Soybean IgE Ab in Serum"
+          "display": "Soybean IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -473,7 +473,7 @@
         {
           "system": "LOINC",
           "code": "7258-7",
-          "display": "Cow milk IgE Ab in Serum"
+          "display": "Cow milk IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -490,7 +490,7 @@
         {
           "system": "LOINC",
           "code": "7258-7",
-          "display": "Cow milk IgE Ab in Serum"
+          "display": "Cow milk IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -533,7 +533,7 @@
         {
           "system": "LOINC",
           "code": "6189-5",
-          "display": "White oak IgE Ab in Serum"
+          "display": "White Oak IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -550,7 +550,7 @@
         {
           "system": "LOINC",
           "code": "6189-5",
-          "display": "White oak IgE Ab in Serum"
+          "display": "White Oak IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -593,7 +593,7 @@
         {
           "system": "LOINC",
           "code": "6085-5",
-          "display": "Common Ragweed IgE Ab in Serum"
+          "display": "Common Ragweed IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -610,7 +610,7 @@
         {
           "system": "LOINC",
           "code": "6085-5",
-          "display": "Common Ragweed IgE Ab in Serum"
+          "display": "Common Ragweed IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -635,7 +635,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": "232347008",
-                "display": "Dander (animal) allergy"
+                "display": "Allergy to animal dander (finding)"
               }
             ]
           },
@@ -653,7 +653,7 @@
         {
           "system": "LOINC",
           "code": "6833-8",
-          "display": "Cat dander IgE Ab in Serum"
+          "display": "Cat dander IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -670,7 +670,7 @@
         {
           "system": "LOINC",
           "code": "6833-8",
-          "display": "Cat dander IgE Ab in Serum"
+          "display": "Cat dander IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -713,7 +713,7 @@
         {
           "system": "LOINC",
           "code": "6095-4",
-          "display": "American house dust mite IgE Ab in Serum"
+          "display": "American house dust mite IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -730,7 +730,7 @@
         {
           "system": "LOINC",
           "code": "6095-4",
-          "display": "American house dust mite IgE Ab in Serum"
+          "display": "American house dust mite IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -755,7 +755,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": "419474003",
-                "display": "Allergy to mould"
+                "display": "Allergy to mold (finding)"
               }
             ]
           },
@@ -773,7 +773,7 @@
         {
           "system": "LOINC",
           "code": "6075-6",
-          "display": "Cladosporium herbarum IgE Ab in Serum"
+          "display": "Cladosporium herbarum IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -790,7 +790,7 @@
         {
           "system": "LOINC",
           "code": "6075-6",
-          "display": "Cladosporium herbarum IgE Ab in Serum"
+          "display": "Cladosporium herbarum IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -833,7 +833,7 @@
         {
           "system": "LOINC",
           "code": "6844-5",
-          "display": "Honey bee IgE Ab in Serum"
+          "display": "Honey bee IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -850,7 +850,7 @@
         {
           "system": "LOINC",
           "code": "6844-5",
-          "display": "Honey bee IgE Ab in Serum"
+          "display": "Honey bee IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -893,7 +893,7 @@
         {
           "system": "LOINC",
           "code": "6158-0",
-          "display": "Latex IgE Ab in Serum"
+          "display": "Latex IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",
@@ -910,7 +910,7 @@
         {
           "system": "LOINC",
           "code": "6158-0",
-          "display": "Latex IgE Ab in Serum"
+          "display": "Latex IgE Ab Units/volume in Serum"
         }
       ],
       "unit": "kU/L",

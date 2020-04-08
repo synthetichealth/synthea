@@ -111,7 +111,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "Routine_Colonoscopy_Procedure"
@@ -265,7 +265,7 @@
         {
           "system": "LOINC",
           "code": "33756-8",
-          "display": "Polyp size greatest dimension by CAP cancer protocols"
+          "display": "Polyp size greatest dimension"
         }
       ],
       "direct_transition": "Fecal_Test"
@@ -282,7 +282,7 @@
         {
           "system": "LOINC",
           "code": "33756-8",
-          "display": "Polyp size greatest dimension by CAP cancer protocols"
+          "display": "Polyp size greatest dimension"
         }
       ],
       "direct_transition": "Fecal_Test"
@@ -471,7 +471,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "Followup_Colonoscopy_Procedure"
@@ -716,7 +716,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "Diagnostic_Colonoscopy_Procedure"
@@ -1446,7 +1446,7 @@
         {
           "system": "RxNorm",
           "code": "1736776",
-          "display": "10 ML oxaliplatin 5 MG/ML Injection"
+          "display": "oxaliplatin 50 MG in 10 ML Injection"
         }
       ],
       "direct_transition": "Chemotherapy_Procedure"
@@ -1515,7 +1515,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "End_Colorectal_Cancer_CarePlan"
@@ -1594,7 +1594,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose Mass/volume in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1606,7 +1606,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea nitrogen Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -1617,7 +1617,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine"
+              "display": "Creatinine Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
@@ -1633,7 +1633,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium"
+              "display": "Calcium Mass/volume in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -1645,7 +1645,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium"
+              "display": "Sodium Moles/volume in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1657,7 +1657,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium"
+              "display": "Potassium Moles/volume in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -1669,7 +1669,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride"
+              "display": "Chloride Moles/volume in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1681,7 +1681,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total Moles/volume in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -1693,7 +1693,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted Volume Rate/Area in Serum or Plasma by Creatinine-based formula (MDRD)"
             }
           ],
           "range": {

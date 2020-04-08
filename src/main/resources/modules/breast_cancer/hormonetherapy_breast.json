@@ -459,7 +459,7 @@
         {
           "system": "RxNorm",
           "code": 198240,
-          "display": "Tamoxifen 10 MG Oral Tablet"
+          "display": "tamoxifen citrate 10 MG Oral Tablet"
         }
       ],
       "direct_transition": "ER_medication_end",

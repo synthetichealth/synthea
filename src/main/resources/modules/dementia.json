@@ -266,7 +266,7 @@
         {
           "system": "SNOMED-CT",
           "code": "386257007",
-          "display": "Demential management"
+          "display": "Dementia management (regime/therapy)"
         }
       ],
       "activities": [
@@ -340,7 +340,7 @@
         {
           "system": "RxNorm",
           "code": "310436",
-          "display": "Galantamine 4 MG Oral Tablet"
+          "display": "galantamine HBr 4 MG Oral Tablet"
         }
       ],
       "direct_transition": "ModerateDecline"
@@ -353,7 +353,7 @@
         {
           "system": "RxNorm",
           "code": "997223",
-          "display": "Donepezil hydrochloride 10 MG Oral Tablet"
+          "display": "donepezil HCl 10 MG Oral Tablet"
         }
       ],
       "direct_transition": "ModerateDecline"
@@ -427,8 +427,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "316744009",
-          "display": "Office Visit"
+          "code": "473203000",
+          "display": "Assessment of dementia (procedure)"
         }
       ],
       "direct_transition": "ModeratelySevere_MMSE_Score"
@@ -520,7 +520,7 @@
         {
           "system": "RxNorm",
           "code": "1599803",
-          "display": "24 HR Donepezil hydrochloride 10 MG / Memantine hydrochloride 28 MG Extended Release Oral Capsule"
+          "display": "donepezil HCl 10 MG / memantine HCl 28 MG 24HR Extended Release Oral Capsule"
         }
       ],
       "direct_transition": "End_ModeratelySevere_Encounter"
@@ -532,7 +532,7 @@
         {
           "system": "RxNorm",
           "code": "996740",
-          "display": "Memantine hydrochloride 2 MG/ML Oral Solution"
+          "display": "memantine HCl 2 MG in 1 mL Oral Solution"
         }
       ],
       "direct_transition": "End_ModeratelySevere_Encounter"
@@ -544,7 +544,7 @@
         {
           "system": "RxNorm",
           "code": "1100184",
-          "display": "Donepezil hydrochloride 23 MG Oral Tablet"
+          "display": "donepezil HCl 23 MG Oral Tablet"
         }
       ],
       "direct_transition": "End_ModeratelySevere_Encounter"
@@ -573,8 +573,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "316744009",
-          "display": "Office Visit"
+          "code": "473203000",
+          "display": "Assessment of dementia (procedure)"
         }
       ],
       "direct_transition": "Severe_MMSE_Score"
@@ -624,8 +624,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "316744009",
-          "display": "Office Visit"
+          "code": "473203000",
+          "display": "Assessment of dementia (procedure)"
         }
       ],
       "direct_transition": "VerySevere_MMSE_Score"

@@ -43,7 +43,7 @@
         {
           "system": "SNOMED-CT",
           "code": "313191000",
-          "display": "Injection of adrenaline"
+          "display": "Injection of epinephrine (procedure)"
         }
       ],
       "direct_transition": "Observation_Period"

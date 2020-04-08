@@ -440,7 +440,7 @@
         {
           "system": "SNOMED-CT",
           "code": "1734006",
-          "display": "Fracture of the vertebral column with spinal cord injury"
+          "display": "Fracture of vertebral column with spinal cord injury (disorder)"
         }
       ],
       "distributed_transition": [
@@ -543,7 +543,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "End_Spinal_Injury"
@@ -713,7 +713,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "Gunshot_Wound_Ends"
@@ -882,7 +882,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "End_Concussion_Injury"
@@ -1167,7 +1167,7 @@
           "body_site": {
             "system": "SNOMED-CT",
             "code": "40983000",
-            "display": "Arm"
+            "display": "Upper arm"
           },
           "modality": {
             "system": "DICOM-DCM",
@@ -1206,7 +1206,7 @@
       "procedure_code": {
         "system": "SNOMED-CT",
         "code": "60027007",
-        "display": "X-ray or wrist"
+        "display": "Radiography of wrist (procedure)"
       },
       "series": [
         {
@@ -1634,7 +1634,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "End_Broken_Bone_Injury"
@@ -1733,7 +1733,7 @@
         {
           "system": "SNOMED-CT",
           "code": "403190006",
-          "display": "First degree burn"
+          "display": "Epidermal burn of skin (disorder)"
         }
       ],
       "direct_transition": "Burn_CarePlan"
@@ -1800,7 +1800,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": "403190006",
-                "display": "First degree burn"
+                "display": "Epidermal burn of skin (disorder)"
               }
             ]
           },
@@ -1903,7 +1903,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "End_Burn_Injury"
@@ -2201,7 +2201,7 @@
         {
           "system": "SNOMED-CT",
           "code": "229586001",
-          "display": "Rest, ice, compression and elevation treatment programme"
+          "display": "Rest, ice, compression and elevation treatment program"
         },
         {
           "system": "SNOMED-CT",
@@ -2330,7 +2330,7 @@
         {
           "system": "SNOMED-CT",
           "code": "229586001",
-          "display": "Rest, ice, compression and elevation treatment programme"
+          "display": "Rest, ice, compression and elevation treatment program"
         },
         {
           "system": "SNOMED-CT",
@@ -2530,7 +2530,7 @@
         {
           "system": "SNOMED-CT",
           "code": "229586001",
-          "display": "Rest, ice, compression and elevation treatment programme"
+          "display": "Rest, ice, compression and elevation treatment program"
         },
         {
           "system": "SNOMED-CT",
@@ -2622,7 +2622,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "End_Shoulder_Injury"

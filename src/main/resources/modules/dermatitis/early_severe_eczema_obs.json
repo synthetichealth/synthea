@@ -19,7 +19,7 @@
         {
           "system": "LOINC",
           "code": "66519-0",
-          "display": "Percentage area affected by eczema Head and Neck"
+          "display": "Percentage area affected by eczema Head and Neck PhenX"
         }
       ],
       "range": {
@@ -36,7 +36,7 @@
         {
           "system": "LOINC",
           "code": "66529-9",
-          "display": "Percentage area affected by eczema Trunk"
+          "display": "Percentage area affected by eczema Trunk PhenX"
         }
       ],
       "range": {
@@ -53,7 +53,7 @@
         {
           "system": "LOINC",
           "code": "66524-0",
-          "display": "Percentage area affected by eczema Upper extremitiy - bilateral"
+          "display": "Percentage area affected by eczema Upper extremity - bilateral PhenX"
         }
       ],
       "range": {
@@ -70,7 +70,7 @@
         {
           "system": "LOINC",
           "code": "66534-9",
-          "display": "Percentage area affected by eczema Lower extremitiy - bilateral"
+          "display": "Percentage area affected by eczema Lower extremity - bilateral PhenX"
         }
       ],
       "range": {

@@ -101,7 +101,7 @@
         {
           "system": "RxNorm",
           "code": "861467",
-          "display": "Meperidine Hydrochloride 50 MG Oral Tablet"
+          "display": "meperidine HCl 50 MG Oral Tablet"
         }
       ],
       "prescription": {
@@ -125,7 +125,7 @@
         {
           "system": "RxNorm",
           "code": "1049221",
-          "display": "Acetaminophen 325 MG / oxyCODONE Hydrochloride 5 MG Oral Tablet"
+          "display": "oxyCODONE 5 MG / acetaminophen 325 MG Oral Tablet"
         }
       ],
       "prescription": {
@@ -149,7 +149,7 @@
         {
           "system": "RxNorm",
           "code": "857005",
-          "display": "Acetaminophen 325 MG / HYDROcodone Bitartrate 7.5 MG Oral Tablet"
+          "display": "HYDROcodone bitartrate 7.5 MG / acetaminophen 325 MG Oral Tablet"
         }
       ],
       "prescription": {

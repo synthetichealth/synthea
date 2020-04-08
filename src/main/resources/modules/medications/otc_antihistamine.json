@@ -206,7 +206,7 @@
         {
           "system": "RxNorm",
           "code": "1049630",
-          "display": "diphenhydrAMINE Hydrochloride 25 MG Oral Tablet"
+          "display": "diphenhydrAMINE HCl 25 MG Oral Tablet"
         }
       ],
       "prescription": {
@@ -238,7 +238,7 @@
         {
           "system": "RxNorm",
           "code": "477045",
-          "display": "Chlorpheniramine Maleate 2 MG/ML Oral Solution"
+          "display": "chlorpheniramine maleate 2 MG in 1 mL Oral Solution"
         }
       ],
       "prescription": {
@@ -325,7 +325,7 @@
         {
           "system": "RxNorm",
           "code": "665078",
-          "display": "Loratadine 5 MG Chewable Tablet"
+          "display": "loratadine 5 MG 24HR Chewable Tablet"
         }
       ],
       "prescription": {
@@ -372,7 +372,7 @@
         {
           "system": "RxNorm",
           "code": "997488",
-          "display": "Fexofenadine hydrochloride 30 MG Oral Tablet"
+          "display": "fexofenadine HCl 30 MG Oral Tablet"
         }
       ],
       "prescription": {
@@ -419,7 +419,7 @@
         {
           "system": "RxNorm",
           "code": "1014676",
-          "display": "cetirizine hydrochloride 5 MG Oral Tablet"
+          "display": "cetirizine HCl 5 MG Oral Tablet"
         }
       ],
       "prescription": {

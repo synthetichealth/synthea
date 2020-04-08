@@ -283,7 +283,7 @@
                 {
                   "system": "SNOMED-CT",
                   "code": "232347008",
-                  "display": "Dander (animal) allergy"
+                  "display": "Allergy to animal dander (finding)"
                 }
               ]
             },
@@ -303,7 +303,7 @@
                 {
                   "system": "SNOMED-CT",
                   "code": "419474003",
-                  "display": "Allergy to mould"
+                  "display": "Allergy to mold (finding)"
                 }
               ]
             }

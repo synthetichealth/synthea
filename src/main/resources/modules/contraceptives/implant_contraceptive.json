@@ -144,7 +144,7 @@
         {
           "system": "RxNorm",
           "code": "1366343",
-          "display": "Levonorgestrel 0.00354 MG/HR Drug Implant"
+          "display": "levonorgestrel 36 MG Drug Implant"
         }
       ],
       "direct_transition": "Initial_Implant"
@@ -156,7 +156,7 @@
         {
           "system": "RxNorm",
           "code": "389221",
-          "display": "Etonogestrel 68 MG Drug Implant"
+          "display": "etonogestrel 68 MG Subdermal Drug Implant"
         }
       ],
       "direct_transition": "Initial_Implant"
@@ -168,7 +168,7 @@
         {
           "system": "RxNorm",
           "code": "389221",
-          "display": "Etonogestrel 68 MG Drug Implant"
+          "display": "etonogestrel 68 MG Subdermal Drug Implant"
         }
       ],
       "direct_transition": "Initial_Implant"
