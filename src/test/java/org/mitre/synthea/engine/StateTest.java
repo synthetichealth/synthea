@@ -1736,7 +1736,71 @@ public class StateTest {
     assertEquals("13459008", device.type);
     assertEquals("SynCardia", device.manufacturer);
     assertEquals("Total Artificial Heart", device.model);
+    assertEquals(0L, device.stop);
+    
+    HealthRecord.Device attribute = (HealthRecord.Device)person.attributes.get("artificial_heart");
+    assertNotNull(attribute);
+    assertTrue(attribute == device); // we want reference equality, it should be the same object
   }
+  
+  @Test
+  public void testDeviceEndByAttribute() throws Exception {
+    Module module = TestHelper.getFixture("artificial_heart_device.json");
+    
+    State encounterState = module.getState("Encounter");
+    assertTrue(encounterState.process(person, time));
+    
+    State deviceState = module.getState("Artificial_Heart");
+    assertTrue(deviceState.process(person, time));
+
+    State deviceEndState = module.getState("Remove_Device_By_Attribute");
+    assertTrue(deviceEndState.process(person, time));
+    
+    Encounter encounter = person.getCurrentEncounter(module);
+    List<HealthRecord.Device> devices = encounter.devices;    
+    HealthRecord.Device device = devices.get(0);
+    assertEquals(time, device.stop);
+  }
+  
+  @Test
+  public void testDeviceEndByCode() throws Exception {
+    Module module = TestHelper.getFixture("artificial_heart_device.json");
+    
+    State encounterState = module.getState("Encounter");
+    assertTrue(encounterState.process(person, time));
+    
+    State deviceState = module.getState("Artificial_Heart");
+    assertTrue(deviceState.process(person, time));
+
+    State deviceEndState = module.getState("Remove_Device_By_Code");
+    assertTrue(deviceEndState.process(person, time));
+    
+    Encounter encounter = person.getCurrentEncounter(module);
+    List<HealthRecord.Device> devices = encounter.devices;    
+    HealthRecord.Device device = devices.get(0);
+    assertEquals(time, device.stop);
+  }
+  
+  
+  @Test
+  public void testDeviceEndByState() throws Exception {
+    Module module = TestHelper.getFixture("artificial_heart_device.json");
+    
+    State encounterState = module.getState("Encounter");
+    assertTrue(encounterState.process(person, time));
+    
+    State deviceState = module.getState("Artificial_Heart");
+    assertTrue(deviceState.process(person, time));
+
+    State deviceEndState = module.getState("Remove_Device_By_State");
+    assertTrue(deviceEndState.process(person, time));
+    
+    Encounter encounter = person.getCurrentEncounter(module);
+    List<HealthRecord.Device> devices = encounter.devices;    
+    HealthRecord.Device device = devices.get(0);
+    assertEquals(time, device.stop);
+  }
+  
   
   @Test
   public void testSupplyList() throws Exception {

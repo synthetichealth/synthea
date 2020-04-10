@@ -1700,6 +1700,7 @@ public abstract class State implements Cloneable, Serializable {
     public Code code;
     public String manufacturer;
     public String model;
+    public String assignToAttribute;
 
     @Override
     public Device clone() {
@@ -1707,16 +1708,59 @@ public abstract class State implements Cloneable, Serializable {
       clone.code = code;
       clone.manufacturer = manufacturer;
       clone.model = model;
+      clone.assignToAttribute = assignToAttribute;
       return clone;
     }
 
     @Override
     public boolean process(Person person, long time) {
       HealthRecord.Device device = person.record.deviceImplant(time, code.code);
+      device.name = this.name;
       device.codes.add(code);
       device.manufacturer = manufacturer;
       device.model = model;
 
+      if (assignToAttribute != null) {
+        person.attributes.put(assignToAttribute, device);
+      }
+      
+      return true;
+    }
+  }
+  
+  /**
+   * The DeviceEnd state indicates the point that a permanent or semi-permanent device
+   * (for example, a prosthetic, or pacemaker) is removed from a person.
+   * The actual procedure in which the device is removed is not automatically generated
+   * and should be added separately.
+   * The device being ended may be referenced by the name of the Device state,
+   * by an attribute containing a Device, or by the code.
+   */
+  public static class DeviceEnd extends State {
+    private List<Code> codes;
+    private String device;
+    private String referencedByAttribute;
+
+    @Override
+    public DeviceEnd clone() {
+      DeviceEnd clone = (DeviceEnd) super.clone();
+      clone.codes = codes;
+      clone.device = device;
+      clone.referencedByAttribute = referencedByAttribute;
+      return clone;
+    }
+
+    @Override
+    public boolean process(Person person, long time) {
+      if (device != null) {
+        person.record.deviceRemoveByState(time, device);
+      } else if (referencedByAttribute != null) {
+        HealthRecord.Device deviceEntry = (HealthRecord.Device) person.attributes.get(referencedByAttribute);
+        deviceEntry.stop = time;
+        person.record.deviceRemove(time, deviceEntry.type);
+      } else if (codes != null) {
+        codes.forEach(code -> person.record.deviceRemove(time, code.code));
+      }
       return true;
     }
   }
