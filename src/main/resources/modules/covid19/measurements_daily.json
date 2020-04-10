@@ -987,7 +987,7 @@
       "direct_transition": "ICU Check",
       "range": {
         "low": 30,
-        "high": 50
+        "high": 100
       }
     }
   }

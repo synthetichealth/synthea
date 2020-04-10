@@ -106,7 +106,8 @@
     },
     "Death": {
       "type": "Death",
-      "direct_transition": "Terminal"
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "covid19"
     },
     "Hospitalization Day End": {
       "type": "Counter",
@@ -154,7 +155,16 @@
           "transition": "ICU Next Day"
         },
         {
-          "transition": "Extubation_Check"
+          "transition": "Extubation_Check",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": false
+          }
+        },
+        {
+          "transition": "Wait For End"
         }
       ]
     },
@@ -446,7 +456,20 @@
         }
       ],
       "reason": "Ventilator Reason",
-      "direct_transition": "ICU Medications"
+      "conditional_transition": [
+        {
+          "transition": "Only for Vented Patients with High IL6",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_il6",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "ICU Medications"
+        }
+      ]
     },
     "ICU First Day": {
       "type": "Simple",
@@ -519,7 +542,7 @@
         "high": 30,
         "unit": "minutes"
       },
-      "reason": "Respiratory Failure",
+      "reason": "Ventilator Reason",
       "direct_transition": "ICU Day Begin"
     },
     "ICU Oxygen": {
@@ -600,7 +623,7 @@
           }
         },
         {
-          "transition": "Compassionate Care Check"
+          "transition": "End Symptoms"
         }
       ]
     },
@@ -619,51 +642,6 @@
         "unit": "minutes"
       },
       "direct_transition": "Recovery Days"
-    },
-    "Compassionate Care": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "1657981",
-          "display": "20 ML tocilizumab 20 MG/ML Injection"
-        }
-      ],
-      "remarks": [
-        "Tocilizumab injection to prevent cytokine storms."
-      ],
-      "administration": true,
-      "reason": "Diagnosed COVID",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 8,
-          "unit": "hours"
-        },
-        "duration": {
-          "quantity": 24,
-          "unit": "hours"
-        }
-      },
-      "direct_transition": "Wait For End"
-    },
-    "Compassionate Care Check": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Compassionate Care",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_death",
-            "operator": "==",
-            "value": true
-          }
-        },
-        {
-          "transition": "End Symptoms"
-        }
-      ]
     },
     "Wait For End": {
       "type": "Delay",
@@ -812,7 +790,7 @@
         }
       ],
       "direct_transition": "Recovery",
-      "reason": "Select Condition/Enter Attribute"
+      "reason": "Mild Respiratory Distress"
     },
     "Recovery": {
       "type": "Delay",
@@ -843,9 +821,37 @@
           }
         },
         {
-          "transition": "Compassionate Care Check"
+          "transition": "End Symptoms"
         }
       ]
+    },
+    "Only for Vented Patients with High IL6": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1657981",
+          "display": "20 ML tocilizumab 20 MG/ML Injection"
+        }
+      ],
+      "remarks": [
+        "Tocilizumab injection to prevent cytokine storms."
+      ],
+      "administration": true,
+      "reason": "Diagnosed COVID",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 8,
+          "unit": "hours"
+        },
+        "duration": {
+          "quantity": 24,
+          "unit": "hours"
+        }
+      },
+      "direct_transition": "ICU Medications"
     }
   }
 }
