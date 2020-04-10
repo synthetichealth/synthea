@@ -641,11 +641,11 @@
         "high": 40,
         "unit": "minutes"
       },
-      "direct_transition": "Recovery Days"
+      "direct_transition": "Reclaim Ventilator"
     },
     "Wait For End": {
       "type": "Delay",
-      "direct_transition": "Death",
+      "direct_transition": "Reclaim Ventilator at Death",
       "range": {
         "low": 1,
         "high": 8,
@@ -852,6 +852,16 @@
         }
       },
       "direct_transition": "ICU Medications"
+    },
+    "Reclaim Ventilator": {
+      "type": "DeviceEnd",
+      "direct_transition": "Recovery Days",
+      "referenced_by_attribute": "covid19_ventilator"
+    },
+    "Reclaim Ventilator at Death": {
+      "type": "DeviceEnd",
+      "direct_transition": "Death",
+      "referenced_by_attribute": "covid19_ventilator"
     }
   }
 }

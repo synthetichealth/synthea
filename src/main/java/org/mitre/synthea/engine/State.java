@@ -1762,8 +1762,10 @@ public abstract class State implements Cloneable, Serializable {
         person.record.deviceRemoveByState(time, device);
       } else if (referencedByAttribute != null) {
         HealthRecord.Device deviceEntry = (HealthRecord.Device) person.attributes.get(referencedByAttribute);
-        deviceEntry.stop = time;
-        person.record.deviceRemove(time, deviceEntry.type);
+        if (deviceEntry != null) {
+          deviceEntry.stop = time;
+          person.record.deviceRemove(time, deviceEntry.type);
+        }
       } else if (codes != null) {
         codes.forEach(code -> person.record.deviceRemove(time, code.code));
       }

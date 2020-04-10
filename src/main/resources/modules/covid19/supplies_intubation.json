@@ -183,7 +183,8 @@
         "code": 449071006,
         "display": "Mechanical ventilator (physical object)"
       },
-      "direct_transition": "Supplies_Intubation"
+      "direct_transition": "Supplies_Intubation",
+      "assign_to_attribute": "covid19_ventilator"
     }
   }
 }
