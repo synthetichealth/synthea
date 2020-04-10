@@ -88,7 +88,6 @@
     },
     "Suspected COVID": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -106,7 +105,7 @@
     "Death": {
       "type": "Death",
       "direct_transition": "Terminal",
-      "condition_onset": "Diagnosed COVID"
+      "referenced_by_attribute": "covid19"
     },
     "Wait for Admission": {
       "type": "Delay",
@@ -136,7 +135,7 @@
         "unit": "minutes"
       },
       "remarks": [
-        "This should really be a \"Device\" state."
+        "This should really be a \"Device\" or \"Supply\" state."
       ],
       "reason": "Suspected COVID",
       "conditional_transition": [

@@ -584,13 +584,15 @@ public abstract class Exporter {
    * @param person The dead person.
    */
   private static void filterAfterDeath(Person person) {
+    Predicate<Report> isDeathCertificate = r -> DeathModule.DEATH_CERTIFICATE.code.equals(r.type);
     long deathTime = (long) person.attributes.get(Person.DEATHDATE);
     if (person.hasMultipleRecords) {
       for (HealthRecord record : person.records.values()) {
         Iterator<Encounter> iter = record.encounters.iterator();
         while (iter.hasNext()) {
           Encounter encounter = iter.next();
-          if (encounter.start > deathTime) {
+          if (encounter.start > deathTime
+              && !encounter.codes.contains(DeathModule.DEATH_CERTIFICATION)) {
             iter.remove();
           }
         }
@@ -599,7 +601,8 @@ public abstract class Exporter {
       Iterator<Encounter> iter = person.record.encounters.iterator();
       while (iter.hasNext()) {
         Encounter encounter = iter.next();
-        if (encounter.start > deathTime) {
+        if (encounter.start > deathTime
+            && !encounter.codes.contains(DeathModule.DEATH_CERTIFICATION)) {
           iter.remove();
         }
       }
