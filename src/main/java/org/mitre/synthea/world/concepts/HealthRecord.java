@@ -791,6 +791,27 @@ public class HealthRecord implements Serializable {
       present.remove(type);
     }
   }
+  
+  /**
+   * Remove a device from the patient based on the state where it was assigned.
+   * @param time The time the device is removed.
+   * @param stateName The state where the device was implanted or assigned.
+   */
+  public void deviceRemoveByState(long time, String stateName) {
+    Device device = null;
+    Iterator<Entry> iter = present.values().iterator();
+    while (iter.hasNext()) {
+      Entry e = iter.next();
+      if (e.name != null && e.name.equals(stateName)) {
+        device = (Device)e;
+        break;
+      }
+    }
+    if (device != null) {
+      device.stop = time;
+      present.remove(device.type);
+    }
+  }
 
   public Report report(long time, String type, int numberOfObservations) {
     Encounter encounter = currentEncounter(time);
