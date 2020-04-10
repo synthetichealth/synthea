@@ -28,7 +28,7 @@
     },
     "End_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Terminal"
+      "direct_transition": "Delay"
     },
     "Necessary_Supplies": {
       "type": "SupplyList",
@@ -76,8 +76,51 @@
         "display": "Temporary artificial heart prosthesis, device (physical object)"
       },
       "direct_transition": "End_Encounter",
+      "assign_to_attribute": "artificial_heart",
       "manufacturer": "SynCardia",
       "model": "Total Artificial Heart"
+    },
+    "Delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 50,
+        "unit": "years"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Remove_Device_By_State",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Remove_Device_By_Code",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Remove_Device_By_Attribute",
+          "distribution": 0.3
+        }
+      ]
+    },
+    "Remove_Device_By_State": {
+      "type": "DeviceEnd",
+      "direct_transition": "Terminal",
+      "device": "Artificial_Heart"
+    },
+    "Remove_Device_By_Code": {
+      "type": "DeviceEnd",
+      "direct_transition": "Terminal",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 13459008,
+          "display": "Temporary artificial heart prosthesis, device (physical object)"
+        }
+      ]
+    },
+    "Remove_Device_By_Attribute": {
+      "type": "DeviceEnd",
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "artificial_heart"
     }
   }
 }
