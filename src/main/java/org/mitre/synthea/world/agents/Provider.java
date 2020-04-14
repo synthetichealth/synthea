@@ -308,6 +308,7 @@ public class Provider implements QuadTreeElement, Serializable {
         String hospitalFile = Config.get("generate.providers.hospitals.default_file");
         loadProviders(location, hospitalFile, servicesProvided, clinicianSeed);
 
+        servicesProvided.add(EncounterType.WELLNESS);
         String vaFile = Config.get("generate.providers.veterans.default_file");
         loadProviders(location, vaFile, servicesProvided, clinicianSeed);
 
