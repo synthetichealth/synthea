@@ -162,6 +162,20 @@ public class StateTest {
   }
 
   @Test
+  public void condition_onset_last_onset_time() throws Exception {
+    Module module = TestHelper.getFixture("condition_onset.json");
+    State condition = module.getState("Diabetes");
+    // Should pass through this state immediately without calling the record
+    assertTrue(condition.process(person, time));
+    String conditionDisplay = "Diabetes mellitus";
+    Long onsetTime = person.getOnsetConditionRecord().getConditionLastOnsetTimeFromModule(
+        module.name, conditionDisplay
+    );
+    assertTrue(onsetTime != null);
+    assertEquals(time, onsetTime.longValue());
+  }
+
+  @Test
   public void condition_onset_diagnosed_by_target_encounter() throws Exception {
     Module module = TestHelper.getFixture("condition_onset.json");
 
@@ -184,6 +198,11 @@ public class StateTest {
     code = enc.conditions.get(0).codes.get(0);
     assertEquals("73211009", code.code);
     assertEquals("Diabetes mellitus", code.display);
+    Long onsetTime = person.getOnsetConditionRecord().getConditionLastOnsetTimeFromModule(
+        module.name, code.display
+    );
+    assertTrue(onsetTime != null);
+    assertEquals(time, onsetTime.longValue());
   }
 
   @Test
@@ -208,7 +227,11 @@ public class StateTest {
     code = enc.conditions.get(0).codes.get(0);
     assertEquals("47693006", code.code);
     assertEquals("Rupture of appendix", code.display);
-
+    Long onsetTime = person.getOnsetConditionRecord().getConditionLastOnsetTimeFromModule(
+        module.name, code.display
+    );
+    assertTrue(onsetTime != null);
+    assertEquals(time, onsetTime.longValue());
   }
 
   @Test
@@ -397,6 +420,17 @@ public class StateTest {
     assertEquals(120.0, person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time), 0.0);
 
     verifyZeroInteractions(person.record);
+  }
+
+  @Test
+  public void symptoms_last_updated_time() throws Exception {
+    Module module = TestHelper.getFixture("symptom.json");
+
+    State symptom1 = module.getState("SymptomOnset");
+    assertTrue(symptom1.process(person, time));
+    Long updatedTime = person.getSymptomLastUpdatedTime(module.name, "Chest Pain");
+    assertTrue(updatedTime != null);
+    assertEquals(time, updatedTime.longValue());
   }
 
   @Test
@@ -722,6 +756,36 @@ public class StateTest {
   }
 
   @Test
+  public void condition_end_last_end_time() throws Exception {
+    Module module = TestHelper.getFixture("condition_end.json");
+
+    // First, onset the condition
+    State condition2 = module.getState("Condition2_Start");
+    assertTrue(condition2.process(person, time));
+    person.history.add(condition2);
+
+    // Process the wellness encounter state, which will wait for a wellness encounter
+    State encounter = module.getState("DiagnosisEncounter");
+    assertFalse(encounter.process(person, time));
+    time = time + Utilities.convertTime("months", 6);
+    // Simulate the wellness encounter by calling perform_encounter
+
+    simulateWellnessEncounter(module);
+    assertTrue(encounter.process(person, time));
+    person.history.add(encounter);
+
+    // Now process the end of the condition
+    State conEnd = module.getState("Condition2_End");
+    assertTrue(conEnd.process(person, time));
+    
+    Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
+        module.name, "Influenza"
+    );
+    assertTrue(endTime != null);
+    assertEquals(time, endTime.longValue());
+  }
+
+  @Test
   public void condition_end_by_entity_attribute() throws Exception {
     Module module = TestHelper.getFixture("condition_end.json");
 
@@ -753,6 +817,12 @@ public class StateTest {
     Code code = condition.codes.get(0);
     assertEquals("228380004", code.code);
     assertEquals("Chases the dragon (finding)", code.display);
+    
+    Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
+        module.name, code.display
+    );
+    assertTrue(endTime != null);
+    assertEquals(time, endTime.longValue());
   }
 
   @Test
@@ -785,6 +855,12 @@ public class StateTest {
     Code code = condition.codes.get(0);
     assertEquals("6142004", code.code);
     assertEquals("Influenza", code.display);
+    
+    Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
+        module.name, code.display
+    );
+    assertTrue(endTime != null);
+    assertEquals(time, endTime.longValue());
   }
 
   @Test
@@ -816,6 +892,12 @@ public class StateTest {
     Code code = condition.codes.get(0);
     assertEquals("73211009", code.code);
     assertEquals("Diabetes mellitus", code.display);
+    
+    Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
+        module.name, code.display
+    );
+    assertTrue(endTime != null);
+    assertEquals(time, endTime.longValue());
   }
 
   @Test

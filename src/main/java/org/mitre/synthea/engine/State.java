@@ -828,6 +828,7 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
+      updateOnsetInfo(person, time);
       HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
 
       if (targetEncounter == null || targetEncounter.trim().length() == 0
@@ -843,6 +844,10 @@ public abstract class State implements Cloneable, Serializable {
       }
       return true;
     }
+    
+    protected void updateOnsetInfo(Person person, long time) {
+      return;
+    }
 
     public abstract void diagnose(Person person, long time);
   }
@@ -856,6 +861,14 @@ public abstract class State implements Cloneable, Serializable {
    * then the condition will only be diagnosed when that future encounter occurs.
    */
   public static class ConditionOnset extends OnsetState {
+      
+    @Override
+    protected void updateOnsetInfo(Person person, long time) {
+      person.getOnsetConditionRecord().onConditionOnset(
+          module.name, this.name, codes.get(0).display, time
+      );
+    }
+    
     @Override
     public void diagnose(Person person, long time) {
       String primaryCode = codes.get(0).code;
@@ -899,12 +912,22 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public boolean process(Person person, long time) {
       if (conditionOnset != null) {
+        String condition = person.getOnsetConditionRecord().getConditionFromState(
+            module.name, conditionOnset
+        );
+        if (condition != null) {
+          person.getOnsetConditionRecord().onConditionEnd(module.name, condition, time);
+        }
         person.record.conditionEndByState(time, conditionOnset);
       } else if (referencedByAttribute != null) {
         Entry condition = (Entry) person.attributes.get(referencedByAttribute);
+        person.getOnsetConditionRecord().onConditionEnd(
+            module.name, condition.codes.get(0).display, time
+        );
         condition.stop = time;
         person.record.conditionEnd(time, condition.type);
       } else if (codes != null) {
+        person.getOnsetConditionRecord().onConditionEnd(module.name, codes.get(0).display, time);
         codes.forEach(code -> person.record.conditionEnd(time, code.code));
       }
       return true;
@@ -1676,13 +1699,17 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
+      //using the module name instead of the cause
       if (person.rand() <= probability) {
         if (exact != null) {
-          person.setSymptom(cause, symptom, exact.quantity, addressed);
+          person.setSymptom(this.module.name, cause, symptom, time, exact.quantity, addressed);
         } else if (range != null) {
-          person.setSymptom(cause, symptom, (int) person.rand(range.low, range.high), addressed);
+          person.setSymptom(
+              this.module.name, cause, symptom, time, (int) person.rand(range.low, range.high),
+              addressed
+          );
         } else {
-          person.setSymptom(cause, symptom, 0, addressed);
+          person.setSymptom(this.module.name, cause, symptom, time, 0, addressed);
         }
       }
       return true;

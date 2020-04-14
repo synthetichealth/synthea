@@ -11,13 +11,18 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.random.JDKRandomGenerator;
+import org.mitre.synthea.engine.ExpressedConditionRecord;
+import org.mitre.synthea.engine.ExpressedSymptom;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
@@ -99,8 +104,11 @@ public class Person implements Serializable, QuadTreeElement {
   public List<Module> currentModules;
   public Map<String, Object> attributes;
   public Map<VitalSign, ValueGenerator> vitalSigns;
-  Map<String, Map<String, Integer>> symptoms;
-  Map<String, Map<String, Boolean>> symptomStatuses;
+  /** Data structure for storing symptoms faced by a person.
+   * Adding the Long keyset to keep track of the time a symptom is set. */
+  Map<String, ExpressedSymptom> symptoms;
+  /** Data structure for storing onset conditions (init_time, end_time).*/
+  public ExpressedConditionRecord onsetConditionRecord;
   public Map<String, HealthRecord.Medication> chronicMedications;
   /** The active health record. */
   public HealthRecord record;
@@ -139,8 +147,9 @@ public class Person implements Serializable, QuadTreeElement {
     random = new JDKRandomGenerator((int) seed);
     attributes = new ConcurrentHashMap<String, Object>();
     vitalSigns = new ConcurrentHashMap<VitalSign, ValueGenerator>();
-    symptoms = new ConcurrentHashMap<String, Map<String, Integer>>();
-    symptomStatuses = new ConcurrentHashMap<String, Map<String, Boolean>>();
+    symptoms = new ConcurrentHashMap<String, ExpressedSymptom>();   
+    /* initialized the onsetConditions field */
+    onsetConditionRecord = new ExpressedConditionRecord(this);    
     /* Chronic Medications which will be renewed at each Wellness Encounter */
     chronicMedications = new ConcurrentHashMap<String, HealthRecord.Medication>();
     hasMultipleRecords =
@@ -161,7 +170,7 @@ public class Person implements Serializable, QuadTreeElement {
     annualHealthExpenses = new HashMap<Integer, Double>();
     annualHealthCoverage = new HashMap<Integer, Double>();
   }
-  
+
   /**
    * Retuns a random double.
    */
@@ -326,25 +335,54 @@ public class Person implements Serializable, QuadTreeElement {
     Long died = (Long) attributes.get(Person.DEATHDATE);
     return (born && (died == null || died > time));
   }
-
-  public void setSymptom(String cause, String type, int value, Boolean addressed) {
-    if (!symptoms.containsKey(type)) {
-      symptoms.put(type, new ConcurrentHashMap<String, Integer>());
-      symptomStatuses.put(type, new ConcurrentHashMap<String, Boolean>());
-    }
-    symptoms.get(type).put(cause, value);
-    symptomStatuses.get(type).put(cause, addressed);
+  
+  /**
+  * Get the expressed symptoms.
+  */
+  public Map<String, ExpressedSymptom> getExpressedSymptoms() {
+    return symptoms;
   }
-
+  
+  /**
+  * Get the onsetonditionRecord.
+  */
+  public ExpressedConditionRecord getOnsetConditionRecord() {
+    return onsetConditionRecord;
+  }
+  
+  /** Updating the method for accounting of the time on which
+   * the symptom is set. 
+   */
+  public void setSymptom(String module, String cause, String type, 
+      long time, int value, Boolean addressed) {
+    if (!symptoms.containsKey(type)) {
+      symptoms.put(type, new ExpressedSymptom(type));
+    }
+    ExpressedSymptom expressedSymptom = symptoms.get(type);
+    expressedSymptom.onSet(module, cause, time, value, addressed);
+  }
+  
+  /**
+   * Method for retrieving the last time a given symptom has been updated from a given module.
+   */
+  public Long getSymptomLastUpdatedTime(String module, String symptom) {
+    Long result = null;
+    if (symptoms.containsKey(symptom)) {
+      ExpressedSymptom expressedSymptom = symptoms.get(symptom);
+      result = expressedSymptom.getSymptomLastUpdatedTime(module);
+    }
+    return result;
+  }
+  
+  /**
+   * Method for retrieving the value associated to a given symptom. 
+   * This correspond to the maximum value across all potential causes.
+   */
   public int getSymptom(String type) {
     int max = 0;
-    if (symptoms.containsKey(type) && symptomStatuses.containsKey(type)) {
-      Map<String, Integer> typedSymptoms = symptoms.get(type);
-      for (String cause : typedSymptoms.keySet()) {
-        if (typedSymptoms.get(cause) > max && !symptomStatuses.get(type).get(cause)) {
-          max = typedSymptoms.get(cause);
-        }
-      }
+    if (symptoms.containsKey(type)) {
+      ExpressedSymptom expressedSymptom = symptoms.get(type);
+      max = expressedSymptom.getSymptom();
     }
     return max;
   }
@@ -356,7 +394,7 @@ public class Person implements Serializable, QuadTreeElement {
    */
   public Set<String> getSymptoms() {
     Set<String> active = new HashSet<String>(symptoms.keySet());
-    for (String symptom : symptomStatuses.keySet()) {
+    for (String symptom : symptoms.keySet()) {
       int severity = getSymptom(symptom);
       if (severity < 20) {
         active.remove(symptom);
@@ -371,18 +409,18 @@ public class Person implements Serializable, QuadTreeElement {
     String highestCause = "";
     int maxValue = 0;
     for (String type : symptoms.keySet()) {
-      if (symptoms.containsKey(type) && symptomStatuses.containsKey(type)) {
-        Map<String, Integer> typedSymptoms = symptoms.get(type);
-        for (String cause : typedSymptoms.keySet()) {
-          if (typedSymptoms.get(cause) > maxValue && !symptomStatuses.get(type).get(cause)) {
-            maxValue = typedSymptoms.get(cause);
-            highestCause = cause;
-            highestType = type;
-          }
+      ExpressedSymptom expressedSymptom = symptoms.get(type);
+      String cause = expressedSymptom.getSourceWithHighValue();
+      if (cause != null) {
+        int value = expressedSymptom.getValueFromSource(cause);
+        if (value > maxValue) {
+          maxValue = value;
+          highestCause = cause;
+          highestType = type;                
         }
       }
     }
-    symptomStatuses.get(highestType).put(highestCause, true);
+    symptoms.get(highestType).addressSource(highestCause);
   }
 
   public Double getVitalSign(VitalSign vitalSign, long time) {
@@ -464,10 +502,6 @@ public class Person implements Serializable, QuadTreeElement {
       total += getSymptom(type);
     }
     return total;
-  }
-
-  public void resetSymptoms() {
-    symptoms.clear();
   }
 
   public boolean hadPriorState(String name) {
