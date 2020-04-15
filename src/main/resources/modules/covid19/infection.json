@@ -75,10 +75,21 @@
         {
           "transition": "End Encounter and Admit Immediately",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_severity",
-            "operator": "==",
-            "value": "severe"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "critical"
+              }
+            ]
           }
         },
         {
@@ -438,10 +449,21 @@
         {
           "transition": "Isolation in Negative Pressure",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_severity",
-            "operator": "==",
-            "value": "severe"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "critical"
+              }
+            ]
           }
         },
         {

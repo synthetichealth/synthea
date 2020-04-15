@@ -16,10 +16,21 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_severity",
-            "operator": "==",
-            "value": "severe"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "critical"
+              }
+            ]
           },
           "distributions": [
             {
@@ -51,10 +62,21 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_severity",
-            "operator": "==",
-            "value": "severe"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "critical"
+              }
+            ]
           },
           "distributions": [
             {
@@ -86,10 +108,21 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_severity",
-            "operator": "==",
-            "value": "severe"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "critical"
+              }
+            ]
           },
           "distributions": [
             {
@@ -121,10 +154,21 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_severity",
-            "operator": "==",
-            "value": "severe"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "critical"
+              }
+            ]
           },
           "distributions": [
             {
@@ -156,10 +200,21 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_severity",
-            "operator": "==",
-            "value": "severe"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "critical"
+              }
+            ]
           },
           "distributions": [
             {
@@ -191,10 +246,21 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_severity",
-            "operator": "==",
-            "value": "severe"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "critical"
+              }
+            ]
           },
           "distributions": [
             {
@@ -226,10 +292,21 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_severity",
-            "operator": "==",
-            "value": "severe"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "critical"
+              }
+            ]
           },
           "distributions": [
             {
@@ -261,10 +338,21 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_severity",
-            "operator": "==",
-            "value": "severe"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "critical"
+              }
+            ]
           },
           "distributions": [
             {
@@ -296,10 +384,21 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_severity",
-            "operator": "==",
-            "value": "severe"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "critical"
+              }
+            ]
           },
           "distributions": [
             {
@@ -331,10 +430,21 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_severity",
-            "operator": "==",
-            "value": "severe"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "critical"
+              }
+            ]
           },
           "distributions": [
             {
@@ -366,10 +476,21 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_severity",
-            "operator": "==",
-            "value": "severe"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "critical"
+              }
+            ]
           },
           "distributions": [
             {
@@ -401,10 +522,21 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_severity",
-            "operator": "==",
-            "value": "severe"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "critical"
+              }
+            ]
           },
           "distributions": [
             {
@@ -457,10 +589,21 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_severity",
-            "operator": "==",
-            "value": "severe"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "critical"
+              }
+            ]
           },
           "distributions": [
             {
@@ -786,10 +929,21 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_severity",
-            "operator": "==",
-            "value": "severe"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "critical"
+              }
+            ]
           },
           "distributions": [
             {

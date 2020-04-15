@@ -197,14 +197,19 @@
           "default_probability": 0.85
         },
         {
-          "transition": "Mild Severity",
+          "transition": "General Severity",
           "lookup_table_name": "covid-19-severity-outcomes.csv",
-          "default_probability": 0.1
+          "default_probability": 0.05
         },
         {
           "transition": "Severe Severity",
           "lookup_table_name": "covid-19-severity-outcomes.csv",
           "default_probability": 0.05
+        },
+        {
+          "transition": "Critical Severity",
+          "default_probability": 0.05,
+          "lookup_table_name": "covid-19-severity-outcomes.csv"
         }
       ]
     },
@@ -213,12 +218,6 @@
       "attribute": "covid19_severity",
       "direct_transition": "Survival: Survivor",
       "value": "negative"
-    },
-    "Mild Severity": {
-      "type": "SetAttribute",
-      "attribute": "covid19_severity",
-      "direct_transition": "Determine Survival",
-      "value": "mild"
     },
     "Severe Severity": {
       "type": "SetAttribute",
@@ -252,6 +251,18 @@
       "attribute": "covid19_death",
       "direct_transition": "Terminal",
       "value": true
+    },
+    "General Severity": {
+      "type": "SetAttribute",
+      "attribute": "covid19_severity",
+      "direct_transition": "Determine Survival",
+      "value": "general"
+    },
+    "Critical Severity": {
+      "type": "SetAttribute",
+      "attribute": "covid19_severity",
+      "direct_transition": "Determine Survival",
+      "value": "critical"
     }
   },
   "remarks": [
