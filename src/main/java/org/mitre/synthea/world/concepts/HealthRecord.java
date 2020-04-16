@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
@@ -50,6 +51,11 @@ public class HealthRecord implements Serializable {
     public String code;
     /** The human-readable description of the code. */
     public String display;
+    /**
+     * A ValueSet URI that defines a set of possible codes, one of which should be selected at
+     * random.
+     */
+    public String valueSet;
 
     /**
      * Create a new code.
@@ -90,6 +96,27 @@ public class HealthRecord implements Serializable {
         codes.add(new Code((JsonObject) item));
       });
       return codes;
+    }
+
+    /**
+     * If this Code is defined using a ValueSet URI, resolve it into a randomly selected code from
+     * the expansion of that ValueSet.
+     * <p>
+     * If the Code is defined as (system, code, display), do nothing and return the Code untouched.
+     *
+     * @param seed a random seed value used to ensure reproducibility of the code selection
+     * @return the updated Code
+     */
+    public Code materialize(long seed) {
+      if (isAlreadyMaterialized()) {
+        return this;
+      } else {
+        return RandomCodeGenerator.getCode(this.valueSet, seed);
+      }
+    }
+
+    private boolean isAlreadyMaterialized() {
+      return valueSet == null || system != null || code != null || display != null;
     }
 
     @Override

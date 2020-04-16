@@ -1,0 +1,17 @@
+package org.mitre.synthea.helpers;
+
+import ca.uhn.fhir.rest.annotation.Operation;
+import ca.uhn.fhir.rest.annotation.OperationParam;
+import ca.uhn.fhir.rest.client.api.IRestfulClient;
+import ca.uhn.fhir.rest.param.UriParam;
+import org.hl7.fhir.r4.model.ValueSet;
+
+/**
+ * HAPI annotation client for invoking operations on a FHIR terminology service.
+ */
+public interface TerminologyClient extends IRestfulClient {
+
+  @Operation(type = ValueSet.class, name = "$expand")
+  ValueSet expand(@OperationParam(name = "url") UriParam url);
+
+}
