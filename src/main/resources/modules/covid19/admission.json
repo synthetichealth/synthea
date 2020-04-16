@@ -860,8 +860,12 @@
     },
     "Reclaim Ventilator at Death": {
       "type": "DeviceEnd",
-      "direct_transition": "Death",
+      "direct_transition": "End Encounter at Death",
       "referenced_by_attribute": "covid19_ventilator"
+    },
+    "End Encounter at Death": {
+      "type": "EncounterEnd",
+      "direct_transition": "Death"
     }
   }
 }

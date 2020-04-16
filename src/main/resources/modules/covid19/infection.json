@@ -111,7 +111,20 @@
     "Admission": {
       "type": "CallSubmodule",
       "submodule": "covid19/admission",
-      "direct_transition": "Take Normal Temperature"
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_death",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Take Normal Temperature"
+        }
+      ]
     },
     "Death": {
       "type": "Death",
