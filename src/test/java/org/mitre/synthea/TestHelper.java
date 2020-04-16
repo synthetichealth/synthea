@@ -1,14 +1,20 @@
 package org.mitre.synthea;
 
+import static org.junit.Assert.assertNotNull;
+
+import ca.uhn.fhir.context.FhirContext;
 import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+import org.junit.Assert;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
+import org.mockito.Mockito;
 
 public abstract class TestHelper {
 
@@ -32,6 +38,19 @@ public abstract class TestHelper {
     URI uri = Config.class.getResource("/test.properties").toURI();
     File file = new File(uri);
     Config.load(file);
+  }
+
+  /**
+   * Load a file from test resources as an InputStream.
+   * 
+   * @param name the path of the file, relative to the test resources directory
+   * @return an InputStream containing the contents of the file
+   */
+  public static InputStream getResourceAsStream(String name) {
+    InputStream expectedStream = Thread.currentThread().getContextClassLoader()
+        .getResourceAsStream(name);
+    assertNotNull(expectedStream);
+    return expectedStream;
   }
 
   /**

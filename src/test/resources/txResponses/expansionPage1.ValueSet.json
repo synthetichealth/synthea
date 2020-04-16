@@ -1,0 +1,5037 @@
+{
+  "resourceType": "ValueSet",
+  "language": "en",
+  "url": "http://snomed.info/sct/32506021000036107/version/20200229?fhir_vs=ecl%2F%3C%3C131148009",
+  "name": "SNOMED CT ECL expression",
+  "status": "active",
+  "experimental": false,
+  "copyright": "This value set includes content from SNOMED CT, which is copyright © 2002+ International Health Terminology Standards Development Organisation (IHTSDO), and distributed by agreement between IHTSDO and HL7. Implementer use of SNOMED CT is not covered by this agreement",
+  "expansion": {
+    "extension": [
+      {
+        "url": "http://hl7.org/fhir/StructureDefinition/valueset-unclosed",
+        "valueBoolean": true
+      }
+    ],
+    "identifier": "aea49ca3-d627-4983-8dfb-3b3ba6215084",
+    "timestamp": "2020-04-16T14:14:38+10:00",
+    "total": 1263,
+    "offset": 0,
+    "parameter": [
+      {
+        "name": "version",
+        "valueUri": "http://snomed.info/sct|http://snomed.info/sct/32506021000036107/version/20200229"
+      },
+      {
+        "name": "count",
+        "valueInteger": 1000
+      },
+      {
+        "name": "offset",
+        "valueInteger": 0
+      }
+    ],
+    "contains": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "413218001",
+        "display": "Haemorrhagic gastropathy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "785870008",
+        "display": "Secondary haemorrhage due to and following legally induced termination of pregnancy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "403614002",
+        "display": "Purpura due to drug-induced coagulation abnormality"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1086481000119105",
+        "display": "Perforation of small intestine co-occurrent with haemorrhage due to diverticulitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "59633005",
+        "display": "Subarachnoid haemorrhage following injury with open intracranial wound AND brief loss of consciousness (less than one hour)"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206242003",
+        "display": "Liver subcapsular haematoma due to birth trauma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276281008",
+        "display": "Subarachnoid haemorrhage from posterior cerebral artery aneurysm"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "63323000",
+        "display": "Subdural haemorrhage following injury without open intracranial wound AND with moderate loss of consciousness (1-24 hours)"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "716585008",
+        "display": "Lujo haemorrhagic fever"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262969000",
+        "display": "Intramuscular haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "445929002",
+        "display": "Haematoma of extraperitoneal space"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "16755041000119107",
+        "display": "Abnormal uterine bleeding due to endometrial hyperplasia"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "47064007",
+        "display": "Acute peptic ulcer with haemorrhage AND with perforation but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "234507003",
+        "display": "Subcapsular haematoma of spleen"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "90165008",
+        "display": "Subdural haemorrhage following injury with open intracranial wound AND moderate loss of consciousness (1-24 hours)"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "720435007",
+        "display": "Postoperative dental wound haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276280009",
+        "display": "Subarachnoid haemorrhage from middle cerebral artery aneurysm"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "289539007",
+        "display": "Moderate vaginal bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276465001",
+        "display": "Anal margin haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "40135004",
+        "display": "Subdural haemorrhage following injury without open intracranial wound AND with no loss of consciousness"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "49898008",
+        "display": "Secondary AND/OR recurrent haemorrhage as early complication of trauma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "83294006",
+        "display": "Haematoma of broad ligament"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1082631000119106",
+        "display": "Gastric haemorrhage due to allergic gastritis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "16754791000119101",
+        "display": "Abnormal uterine bleeding due to intramural uterine fibroid"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "240493004",
+        "display": "Hazara haemorrhagic fever"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "95560005",
+        "display": "Haemocholecyst"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "283929003",
+        "display": "Haematoma of prostate"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "313304007",
+        "display": "Non-traumatic spinal subdural haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "87253004",
+        "display": "Subarachnoid haemorrhage following injury with open intracranial wound AND moderate loss of consciousness (1-24 hours)"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276637009",
+        "display": "Haemorrhagic pulmonary oedema"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262653009",
+        "display": "Haematoma of buccal mucosa"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "291511000119103",
+        "display": "Nontraumatic haemorrhage of deep cerebral hemisphere"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "58868000",
+        "display": "Argentinian haemorrhagic fever"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262838003",
+        "display": "Stomach haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "307297004",
+        "display": "Massive gastrointestinal bleed"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "286001000119104",
+        "display": "Minor laceration of heart with haemopericardium"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "210078001",
+        "display": "Injury of heart with haemopericardium"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "20343006",
+        "display": "Pigmented purpuric lichenoid dermatitis of Gougerot and Blum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "283974005",
+        "display": "Haematoma of male perineum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "232033003",
+        "display": "Sickle cell-haemoglobin C retinopathy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "44599007",
+        "display": "Traumatic haemothorax without open wound into thorax"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "42458003",
+        "display": "Traumatic haemothorax"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "31892009",
+        "display": "Haemothorax"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "283907002",
+        "display": "Haematoma of ureter"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206194008",
+        "display": "Cerebral haematoma in fetus or newborn"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "431266005",
+        "display": "Intraparenchymal haematoma of brain"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "301764006",
+        "display": "Haematoma of brain"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "190810006",
+        "display": "Benign primary hypergammaglobulinaemic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "717882009",
+        "display": "Intramural haemorrhage of duodenum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "405559000",
+        "display": "Spontaneous subcapsular liver haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262797004",
+        "display": "Subcapsular liver haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "111199007",
+        "display": "Purpura pigmentosa chronica"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "269219004",
+        "display": "Subungual haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "238722001",
+        "display": "Subungual haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "199995008",
+        "display": "Obstetric pelvic haematoma - delivered"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "447096000",
+        "display": "Haematoma of abdominal wall"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "22625005",
+        "display": "Haematomediastinum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262779007",
+        "display": "Haematoma of thymus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "93477005",
+        "display": "Haemorrhage of thymus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "41986000",
+        "display": "Acute duodenal ulcer with haemorrhage, with perforation AND with obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "86895006",
+        "display": "Acute duodenal ulcer with haemorrhage AND perforation"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "87756006",
+        "display": "Acute duodenal ulcer with haemorrhage AND obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "12847006",
+        "display": "Acute duodenal ulcer with haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "12355008",
+        "display": "Duodenal ulcer with haemorrhage, with perforation AND with obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "199577000",
+        "display": "Fetal-maternal haemorrhage - delivered"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "71028008",
+        "display": "Fetal-maternal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "717936002",
+        "display": "Classic onset haemorrhagic disease of newborn due to vitamin K deficiency"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "45640006",
+        "display": "Chronic gastrojejunal ulcer with haemorrhage AND perforation"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "237270006",
+        "display": "Antepartum haemorrhage with hypofibrinogenaemia"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "50544004",
+        "display": "Fetal blood loss from vasa praevia"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206390008",
+        "display": "Fetal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206406008",
+        "display": "Perinatal haematemesis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "194862000",
+        "display": "Haemopericardium due to and following acute myocardial infarction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "233889001",
+        "display": "Post-infarction haemopericardium"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "723857007",
+        "display": "Silent micro-haemorrhage of brain"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206249007",
+        "display": "Subconjunctival haemorrhage due to birth trauma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "78768009",
+        "display": "Subconjunctival haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "21117005",
+        "display": "Conjunctival haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "713727007",
+        "display": "Haemoperitoneum as complication of peritoneal dialysis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "45626005",
+        "display": "Nontraumatic haemoperitoneum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "240485004",
+        "display": "Haemorrhagic rubella"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "111593004",
+        "display": "Intracranial haemorrhage co-occurrent and due to closed fracture of vault of skull"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "111611005",
+        "display": "Intracranial haemorrhage co-occurrent and due to closed skull fracture"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "723011009",
+        "display": "Acute purpuric eruption of skin"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "284078000",
+        "display": "Purpuric rash"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "282074002",
+        "display": "Haematoma of anus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "784410003",
+        "display": "Vocal cord haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "249467000",
+        "display": "Bleeding from larynx"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "247161000",
+        "display": "Macular subretinal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "13937002",
+        "display": "Subretinal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "238787009",
+        "display": "Secondary cutaneous vasculitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "81518000",
+        "display": "Chronic peptic ulcer with haemorrhage but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "48658001",
+        "display": "Peptic ulcer with haemorrhage but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1082701000119105",
+        "display": "Duodenal haemorrhage due to angiodysplasia of duodenum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "83628005",
+        "display": "Chronic gastrointestinal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "717935003",
+        "display": "Early onset diffuse bleeding diathesis secondary to vitamin K deficient haemorrhagic disease of fetus and newborn"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "12546009",
+        "display": "Haemorrhagic disease of the newborn due to vitamin K deficiency"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "48413001",
+        "display": "Acute haemorrhagic cholecystitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "713081000",
+        "display": "Dissection of cerebral artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262814002",
+        "display": "Peri-bile duct haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "721720000",
+        "display": "Haemorrhage of bile duct"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "409648008",
+        "display": "Haemorrhagic thoracic lymphadenitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "198123000",
+        "display": "Breast haematoma due to non-traumatic cause"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "415149004",
+        "display": "Postmenopausal postcoital bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "76742009",
+        "display": "Postmenopausal bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "48880000",
+        "display": "Postcoital bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "238824006",
+        "display": "Paroxysmal haematoma of the finger"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "279420009",
+        "display": "Haematoma of skin"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "234155009",
+        "display": "Congenital arteriovenous fistula haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "233783005",
+        "display": "Tracheal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "403393000",
+        "display": "Stellate pseudoscar in senile purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "53751009",
+        "display": "Senile purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "698573001",
+        "display": "Infected haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "402654005",
+        "display": "Thrombocytopenic purpura due to platelet consumption"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "236096007",
+        "display": "Small intestine anastomotic haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "199993001",
+        "display": "Obstetric trauma causing pelvic haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "181007",
+        "display": "Haemorrhagic bronchopneumonia"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "78144005",
+        "display": "Pulmonary haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "81500003",
+        "display": "Steroid purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "74341002",
+        "display": "Chronic gastric ulcer with haemorrhage AND with perforation but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "76078009",
+        "display": "Chronic gastric ulcer with haemorrhage but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "76181002",
+        "display": "Chronic gastric ulcer with haemorrhage AND with perforation"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "61300005",
+        "display": "Chronic peptic ulcer with haemorrhage AND perforation"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "2066005",
+        "display": "Gastric ulcer with haemorrhage AND perforation but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "16694003",
+        "display": "Gastric ulcer with haemorrhage but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "267199000",
+        "display": "Antepartum haemorrhage with coagulation defect"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "140881000119109",
+        "display": "Spontaneous cerebral haemorrhage with compression of brain"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "291571000119106",
+        "display": "Spontaneous cerebral haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "199996009",
+        "display": "Obstetric pelvic haematoma - delivered with postnatal problem"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "428561000",
+        "display": "Occipital subdural haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "45549002",
+        "display": "Slipped umbilical ligature with haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "82986004",
+        "display": "Umbilical haemorrhage after birth"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "2602008",
+        "display": "Haemarthrosis of shoulder region"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "7713009",
+        "display": "Intrapontine haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "91216000",
+        "display": "Intracranial haemorrhage following injury with open intracranial wound AND prolonged loss of consciousness (more than 24 hours) AND return to pre-existing conscious level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206409001",
+        "display": "Neonatal vaginal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "231954005",
+        "display": "Traumatic hyphaema"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722631004",
+        "display": "Traumatic haemorrhage of cerebellum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "785868004",
+        "display": "Secondary haemorrhage due to and following induced termination of pregnancy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "308896002",
+        "display": "Secondary haemorrhage postprocedure"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262938004",
+        "display": "Secondary haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "7266006",
+        "display": "Total placenta praevia with intrapartum haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "198903000",
+        "display": "Placenta praevia with haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "17866004",
+        "display": "Acute allergic sanguinous otitis media"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "77478005",
+        "display": "Acute sanguinous otitis media"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "111597003",
+        "display": "Intracranial haemorrhage co-occurrent and due to open fracture of vault of skull"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "62341002",
+        "display": "Chronic duodenal ulcer with haemorrhage but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "35560008",
+        "display": "Duodenal ulcer with haemorrhage but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262649007",
+        "display": "Haematoma of palate"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "402488006",
+        "display": "Calcinosis within haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276278003",
+        "display": "Subarachnoid haemorrhage from anterior cerebral artery aneurysm"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "237272003",
+        "display": "Antepartum haemorrhage with afibrinogenaemia"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "69178005",
+        "display": "Subarachnoid haemorrhage following injury with open intracranial wound AND prolonged loss of consciousness (more than 24 hours) without return to pre-existing conscious level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "75507000",
+        "display": "Subarachnoid haemorrhage following injury with open intracranial wound AND loss of consciousness"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "111671004",
+        "display": "Intracranial haemorrhage following injury with open intracranial wound and prolonged loss of consciousness (more than 24 hours) without return to pre-existing level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "127312001",
+        "display": "Intracranial haemorrhage following injury with prolonged loss of consciousness without return to pre-existing conscious level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "218541000119109",
+        "display": "Gastric haemorrhage due to idiopathic erosive gastritis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "7071000119102",
+        "display": "Gastric haemorrhage due to erosive gastritis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "307390004",
+        "display": "Haematoma of groin"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "281864001",
+        "display": "Non-traumatic intracranial subdural haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "191306005",
+        "display": "Henoch-Schönlein purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "707504005",
+        "display": "Bleeding from male urethra"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "209940000",
+        "display": "Subarachnoid haemorrhage following injury with open intracranial wound, with no loss of consciousness"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "5251007",
+        "display": "Subarachnoid haemorrhage following injury with open intracranial wound"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262955000",
+        "display": "Subarachnoid haemorrhage due to traumatic injury"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "29731000119103",
+        "display": "Intestinal haemorrhage due to angiodysplasia of intestine"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "202421004",
+        "display": "Haemarthrosis of interphalangeal joint of toe"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "249421000",
+        "display": "Bleeding from fauces"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "24001002",
+        "display": "Chronic gastrojejunal ulcer with haemorrhage, with perforation AND with obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "85787009",
+        "display": "Chronic gastric ulcer with haemorrhage, with perforation AND with obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "77661009",
+        "display": "Chronic peptic ulcer with haemorrhage, with perforation AND with obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "90257004",
+        "display": "Chronic gastrojejunal ulcer with haemorrhage AND obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1085271000119102",
+        "display": "Rectal haemorrhage due to chronic ulcerative rectosigmoiditis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1085221000119103",
+        "display": "Rectal haemorrhage due to chronic ulcerative proctitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "34327003",
+        "display": "Parturient haemorrhage associated with hyperfibrinolysis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "8465005",
+        "display": "Haemorrhage of seminal vesicle"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "409506009",
+        "display": "Haemorrhagic gastroenteritis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "35644004",
+        "display": "Nontraumatic haematoma of testis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "69452005",
+        "display": "Haemorrhage of corpus cavernosum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "50573001",
+        "display": "Haemorrhage of penis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1091521000119102",
+        "display": "Haematympanum of right tympanic cavity"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "111536009",
+        "display": "Haematotympanum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1091991000119109",
+        "display": "Otorrhagia of right ear"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "26322001",
+        "display": "Bleeding from ear"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "202420003",
+        "display": "Haemarthrosis of lesser metatarsophalangeal joint"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1086551000119102",
+        "display": "Haemorrhage of caecum due to diverticulosis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276722003",
+        "display": "Intracerebellar and posterior fossa haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "15954141000119100",
+        "display": "Haematoma of right breast"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "33072005",
+        "display": "Traumatic haemothorax with open wound into thorax"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "95422003",
+        "display": "Haemorrhage of muscle"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "291521000119105",
+        "display": "Nontraumatic hemispheric cortical intracerebral haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "291531000119108",
+        "display": "Nontraumatic haemorrhage of cerebral hemisphere"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "49422009",
+        "display": "Cortical haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "237271005",
+        "display": "Antepartum haemorrhage with hyperfibrinolysis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "473172002",
+        "display": "Haematoma of pacemaker pulse generator site"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "473167006",
+        "display": "Haemorrhage associated with implant"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "7014009",
+        "display": "Mechanical purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "717937006",
+        "display": "Late onset diffuse bleeding diathesis secondary to vitamin K deficient haemorrhagic disease of fetus and newborn"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "419596007",
+        "display": "Suprachoroidal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "122003",
+        "display": "Choroidal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "784401006",
+        "display": "Epicranial subaponeurotic haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "274202000",
+        "display": "Subungual haematoma, hand"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262819007",
+        "display": "Intraparenchymal haematoma of spleen"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "50088001",
+        "display": "Haematoma of spleen without rupture of capsule AND without open wound into abdominal cavity"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "312910009",
+        "display": "Vitreous haemorrhage due to diabetes mellitus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "234000009",
+        "display": "Femoral dissection"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "713032002",
+        "display": "Dissection of artery of lower limb"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206408009",
+        "display": "Perinatal rectal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "309684002",
+        "display": "On examination - blood - external ear"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "164217001",
+        "display": "O/E - blood from ear"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722630003",
+        "display": "Traumatic haemorrhage of cerebral white matter"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "705066004",
+        "display": "Dissection of internal carotid artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "315224006",
+        "display": "Heavy episode of vaginal bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "199997000",
+        "display": "Obstetric pelvic haematoma with postnatal problem"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "249420004",
+        "display": "Bleeding on probing of gingivae"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "282065004",
+        "display": "Haematoma of ileum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "95535005",
+        "display": "Ileal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262852001",
+        "display": "Small intestinal haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "85859006",
+        "display": "Chronic gastric ulcer with haemorrhage AND with obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "307296008",
+        "display": "Recurrent gastrointestinal bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "698502005",
+        "display": "Recurrent haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "236097003",
+        "display": "Large intestine anastomotic haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "232031001",
+        "display": "Valsalva retinopathy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "34021006",
+        "display": "Chronic duodenal ulcer with haemorrhage AND obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "89469000",
+        "display": "Chronic duodenal ulcer with haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "18367003",
+        "display": "Duodenal ulcer with haemorrhage AND obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "27281001",
+        "display": "Duodenal ulcer with haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "56461008",
+        "display": "Chronic peptic ulcer with haemorrhage AND obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262949005",
+        "display": "Traumatic extradural haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "428268007",
+        "display": "Extradural intracranial haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "784573006",
+        "display": "Traumatic intracranial extradural haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "40549004",
+        "display": "Extradural haemorrhage following injury without open intracranial wound AND with brief loss of consciousness (less than one hour)"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "17667005",
+        "display": "Intracranial haemorrhage following injury without open intracranial wound AND with brief loss of consciousness (less than one hour)"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "90178008",
+        "display": "Extradural haemorrhage following injury without open intracranial wound AND with loss of consciousness"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276286003",
+        "display": "Subarachnoid haemorrhage from carotid artery aneurysm"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206419007",
+        "display": "Cerebellar (nontraumatic) and posterior fossa haemorrhage of fetus and newborn"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "142851000119103",
+        "display": "Spontaneous cerebellar haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "143521000119103",
+        "display": "Nontraumatic intraparenchymal cerebral haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "75038005",
+        "display": "Cerebellar haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "89489004",
+        "display": "Haemorrhagic stomatitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "77498000",
+        "display": "Extradural haemorrhage following injury without open intracranial wound AND with concussion"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "43216008",
+        "display": "Extradural haemorrhage following injury without open intracranial wound"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "27507004",
+        "display": "Haemarthrosis of hand"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "248838002",
+        "display": "Bleeding from nipple"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "290103001",
+        "display": "Nipple bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262776000",
+        "display": "Parathyroid gland haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "190460008",
+        "display": "Haemorrhage of parathyroid"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1085171000119108",
+        "display": "Rectal haemorrhage due to chronic ulcerative pancolitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1092881000119105",
+        "display": "Rectal haemorrhage due to ulcerative colitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "741767008",
+        "display": "Non-traumatic haematoma of skin and subcutaneous tissue"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "95737000",
+        "display": "Stromal corneal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "231916005",
+        "display": "Corneal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "240524001",
+        "display": "Brazilian haemorrhagic fever"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206195009",
+        "display": "Extradural haemorrhage in fetus or newborn"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "703308008",
+        "display": "Acquired dissection of pulmonary artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "36975000",
+        "display": "Chronic duodenal ulcer with haemorrhage AND perforation"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "23812009",
+        "display": "Duodenal ulcer with haemorrhage AND perforation"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "56906005",
+        "display": "Haematoma of kidney without rupture of capsule AND with open wound into abdominal cavity"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "735729001",
+        "display": "Diverticulum of large intestine co-occurrent with haemorrhage of large intestine"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "62182006",
+        "display": "Haemorrhage of scrotum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206196005",
+        "display": "Cerebral haemorrhage due to birth injury"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276647007",
+        "display": "Perinatal intracranial haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "274203005",
+        "display": "Subungual haematoma of foot"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "735677007",
+        "display": "Neonatal haemorrhage of liver"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "15710841000119104",
+        "display": "Bilateral dissection of iliac arteries"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "233999007",
+        "display": "Dissection of iliac artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "87814002",
+        "display": "Marginal placenta praevia with intrapartum haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "237274002",
+        "display": "Concealed accidental haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276277008",
+        "display": "Subarachnoid haemorrhage from multiple aneurysms"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "199578005",
+        "display": "Fetal-maternal haemorrhage with antenatal problem"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "234001008",
+        "display": "Dissection of transplant artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276619008",
+        "display": "Neonatal facial petechiae"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "431268006",
+        "display": "Haemorrhage of skin in neonate"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "60822000",
+        "display": "Petechiae in fetus OR newborn"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "423716004",
+        "display": "Petechiae of skin"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "271813007",
+        "display": "Petechiae"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "95385002",
+        "display": "Injection site haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262870003",
+        "display": "Colonic haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "45659008",
+        "display": "Subdural haemorrhage following injury with open intracranial wound AND loss of consciousness"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "446596003",
+        "display": "Haematoma of prepuce"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "283948004",
+        "display": "Haematoma of penis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "209956005",
+        "display": "Subdural haemorrhage following open wound of head"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "311831009",
+        "display": "Open heart injury with haemopericardium"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "291591000119107",
+        "display": "Subacute non-traumatic intracranial subdural haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "176401009",
+        "display": "Acute bloody pericarditis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "409497009",
+        "display": "Haemorrhagic mediastinitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722921008",
+        "display": "Neonatal haemorrhage of spleen"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722633001",
+        "display": "Multiple traumatic haemorrhages of brain tissue"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722922001",
+        "display": "Neonatal epistaxis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "249366005",
+        "display": "Bleeding from nose"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "95621004",
+        "display": "Respiratory tract haemorrhage of the newborn"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "415650003",
+        "display": "Subepithelial haemorrhage of digestive tract"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722632006",
+        "display": "Traumatic haemorrhage of brainstem"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "95454007",
+        "display": "Brain stem haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "48113006",
+        "display": "Omsk haemorrhagic fever"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "423145008",
+        "display": "Ecchymosis of eyelid"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "95688008",
+        "display": "Roth spots"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "733133003",
+        "display": "Haemorrhage due to egg retrieval"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "24251002",
+        "display": "Haemorrhage into ovary"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262766003",
+        "display": "Salivary gland haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1491000119102",
+        "display": "Vitreous haemorrhage due to type 2 diabetes mellitus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "210205007",
+        "display": "Kidney haematoma without rupture of capsule, with open wound into cavity"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "735495004",
+        "display": "Perinatal haemorrhage of lung due to traumatic injury"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "472857006",
+        "display": "Perinatal pulmonary haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "237273008",
+        "display": "Revealed accidental haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "405736009",
+        "display": "Accidental antepartum haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "449815008",
+        "display": "Haematoma of perianal region"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "190814002",
+        "display": "Cryoglobulinaemic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "281865000",
+        "display": "Non-traumatic extradural intracranial haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "397809001",
+        "display": "Nontraumatic extradural haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1087161000119105",
+        "display": "Gastric haemorrhage due to hypertrophic gastritis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "311830005",
+        "display": "Closed heart injury with haemopericardium"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "724863009",
+        "display": "Haematoma of surgical wound of skin due to and following surgical procedure"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "213262007",
+        "display": "Postoperative haematoma formation"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "762958007",
+        "display": "Perioperative haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "15966461000119108",
+        "display": "Dissection of left renal artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "713036004",
+        "display": "Dissection of renal artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "197812000",
+        "display": "Renal artery haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "200025008",
+        "display": "Secondary postpartum haemorrhage - delivered with postnatal problem"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "23171006",
+        "display": "Postpartum haemorrhage specified as delayed or secondary"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "723139008",
+        "display": "Secondary traumatic haemorrhage of brainstem"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "10742003",
+        "display": "Superficial haematoma in fetus OR newborn"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "209958006",
+        "display": "Subdural haemorrhage following injury with open intracranial wound, with no loss of consciousness"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "308895003",
+        "display": "Reactionary haemorrhage postprocedure"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "307391000",
+        "display": "Haematoma of thigh"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "25349007",
+        "display": "Chronic upper gastrointestinal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "231955006",
+        "display": "Haemorrhage in iris stroma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "420183005",
+        "display": "Iris bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722581000",
+        "display": "Fetal or neonatal non-traumatic intraventricular haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722582007",
+        "display": "Fetal or neonatal intracerebral non-traumatic haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "425957003",
+        "display": "Non-traumatic intracerebral ventricular haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "23276006",
+        "display": "Ventricular haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "52201006",
+        "display": "Internal capsule haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "163462007",
+        "display": "On examination - nipple discharge-blood-dark"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "242996005",
+        "display": "Accidental haemorrhage during medical care"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "371610007",
+        "display": "Haematoma of perineal wound"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "249423002",
+        "display": "Bleeding from tonsillar bed"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "232425007",
+        "display": "Tonsillar haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "308882008",
+        "display": "Bleeding stress ulcer of stomach"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "283965008",
+        "display": "Haematoma of cervix"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "724442004",
+        "display": "Dissection of ascending aorta and aortic arch"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "233802008",
+        "display": "Bronchial anastomotic haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "429059007",
+        "display": "Haematoma of occipital scalp"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "237275001",
+        "display": "Mixed accidental haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722620007",
+        "display": "Focal traumatic haematoma of cerebellum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "301765007",
+        "display": "Cerebellar haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722619001",
+        "display": "Focal traumatic haemorrhage of cerebellum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "195160000",
+        "display": "Subarachnoid haemorrhage from vertebral artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1085431000119101",
+        "display": "Rectal haemorrhage due to inflammatory polyps of colon"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "236129005",
+        "display": "Stomal bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206188000",
+        "display": "Subdural and cerebral haemorrhage due to birth trauma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "42429001",
+        "display": "Cerebromeningeal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722906002",
+        "display": "Intracranial haemorrhage due to birth trauma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "698710008",
+        "display": "Antepartum haemorrhage due to placenta praevia type III"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "27631000146108",
+        "display": "Dissection of aortic arch"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "73439007",
+        "display": "Subarachnoid haemorrhage following injury with open intracranial wound AND prolonged loss of consciousness (more than 24 hours) AND return to pre-existing conscious level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "307392007",
+        "display": "Haematoma of axilla"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "202410008",
+        "display": "Haemarthrosis of distal interphalangeal joint of finger"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1086591000119107",
+        "display": "Haemorrhage of sigmoid colon co-occurrent and due to diverticulosis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "190191000119107",
+        "display": "Haemorrhage of colon due to diverticulosis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "234004000",
+        "display": "Haemorrhage of transplant artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "282054009",
+        "display": "Haematoma of jejunum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "24149006",
+        "display": "Haemorrhagic disease of the newborn due to factor II deficiency"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "232446003",
+        "display": "Vocal cord haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "733308009",
+        "display": "Traumatic orbital haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1086811000119101",
+        "display": "Oesophagostomy haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1092941000119109",
+        "display": "Gastric haemorrhage due to viral gastritis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "698713005",
+        "display": "Antepartum haemorrhage due to cervical erosion"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "709424004",
+        "display": "Postoperative haemorrhage of anus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "359628008",
+        "display": "Conjunctivitis caused by enterovirus type 70"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "398264003",
+        "display": "Acute haemorrhagic conjunctivitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1086041000119105",
+        "display": "Gastric haemorrhage due to Dieulafoy lesion of stomach"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "444109008",
+        "display": "Infection of wound haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206200000",
+        "display": "Cephalhaematoma due to birth trauma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "308897006",
+        "display": "Intra-abdominal haemorrhage postprocedure"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "66976009",
+        "display": "Intracranial haemorrhage following injury without intracranial wound AND with moderate loss of consciousness (1-24 hours)"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "732923001",
+        "display": "Haemorrhage of medulla oblongata"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "74166005",
+        "display": "Urban yellow fever"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "73308006",
+        "display": "Extradural haemorrhage following injury with open intracranial wound AND brief loss of consciousness (less than one hour)"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "18605003",
+        "display": "Intracranial haemorrhage following injury with open intracranial wound AND brief loss of consciousness (less than one hour)"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "277165004",
+        "display": "Fresh blood in external ear canal"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "308898001",
+        "display": "Extraperitoneal haemorrhage postprocedure"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "81142005",
+        "display": "Chronic duodenal ulcer with haemorrhage AND with perforation but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "15115006",
+        "display": "Duodenal ulcer with haemorrhage AND with perforation but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "202412000",
+        "display": "Haemarthrosis of sacroiliac joint"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "237278004",
+        "display": "Heavy show"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "302906000",
+        "display": "Acute haematoma of pinna"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "88050005",
+        "display": "Haematoma of pinna"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "286041000119102",
+        "display": "Moderate laceration of heart with haemopericardium"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "737160009",
+        "display": "Dissection of basilar artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "33183004",
+        "display": "Post infectious thrombocytopenic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "7226007",
+        "display": "Infection-associated purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "784408000",
+        "display": "Retrobulbar haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722886001",
+        "display": "Obscure gastrointestinal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "16320551000119109",
+        "display": "Bleeding from female genital tract during pregnancy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "429743002",
+        "display": "Occipital extradural haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262876009",
+        "display": "Rectal haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "83095000",
+        "display": "Fetal cephalhaematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "395183000",
+        "display": "Subperiosteal haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "22780006",
+        "display": "Subperiosteal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722583002",
+        "display": "Fetal or neonatal non-traumatic haemorrhage of subarachnoid space of brain"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "270907008",
+        "display": "Spontaneous subarachnoid haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "20927009",
+        "display": "Dengue haemorrhagic fever"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "698556003",
+        "display": "Traumatic haematoma of abdominal wall"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "70418001",
+        "display": "Acute gastric ulcer with haemorrhage but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "723665008",
+        "display": "Vaginal bleeding complicating early pregnancy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "373420004",
+        "display": "Upshaw-Schulman syndrome"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "240636002",
+        "display": "Haemorrhagic leishmaniasis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "16055151000119105",
+        "display": "Neonatal gastrointestinal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "71603004",
+        "display": "Haemorrhagic ascites"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "198925006",
+        "display": "Antepartum haemorrhage with uterine leiomyoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "234077006",
+        "display": "Haemorrhage of transplanted vein"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "70861009",
+        "display": "Subdural haemorrhage following injury without open intracranial wound AND with prolonged loss of consciousness (more than 24 hours) without return to pre-existing conscious level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1087081000119102",
+        "display": "Gastric haemorrhage caused by Helicobacter pylori"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "141091000119105",
+        "display": "Nontraumatic subarachnoid haemorrhage with brain compression"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "10950002",
+        "display": "Vulval haematoma during delivery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "86074002",
+        "display": "Purpura rheumatica"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "402856005",
+        "display": "Acute haemorrhagic oedema of childhood"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "109859000",
+        "display": "Ascorbic acid deficiency with haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "409679007",
+        "display": "Dengue haemorrhagic fever, grade IV"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "281523003",
+        "display": "Traumatic haemarthrosis of the knee joint"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "678171000119102",
+        "display": "Hyphaema of left eye"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206303001",
+        "display": "Perinatal lung intra-alveolar haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "198917009",
+        "display": "Antepartum haemorrhage with coagulation defect - delivered"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262832002",
+        "display": "Adrenal gland haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "46502006",
+        "display": "Haematoma of vagina during delivery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "425453009",
+        "display": "Chronic nontraumatic dissection of thoracic aorta"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "405577005",
+        "display": "Nontraumatic dissection of thoracic aorta"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "726409002",
+        "display": "Haematoma of eyelid"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "284075002",
+        "display": "Spotting per vagina in pregnancy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "403690007",
+        "display": "Extensive postoperative bruising"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "230718007",
+        "display": "Subarachnoid haemorrhage due to ruptured arteriovenous malformation"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "197824007",
+        "display": "Perinephric haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206422009",
+        "display": "Perinatal transient vaginal bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "17067009",
+        "display": "Acute gastric ulcer with haemorrhage AND with perforation but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "57965003",
+        "display": "Acute benign haemorrhagic glomerulonephritic syndrome"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "719182002",
+        "display": "Perifollicular petechiae of skin"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262559001",
+        "display": "Deep haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "713034001",
+        "display": "Dissection of mesenteric artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206397006",
+        "display": "Intraventricular (nontraumatic) haemorrhage, grade 3, of fetus and newborn"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "240674005",
+        "display": "Leptospiral haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "198906008",
+        "display": "Placenta praevia with haemorrhage - not delivered"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "7927006",
+        "display": "Periorbital haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206425006",
+        "display": "Neonatal rectal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "232354002",
+        "display": "Anterior epistaxis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "210190001",
+        "display": "Spleen injury with haematoma without rupture of capsule, with open wound into cavity"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "68162000",
+        "display": "Chronic lower gastrointestinal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "289533008",
+        "display": "Passing small clots vaginally"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "289532003",
+        "display": "Passing clots vaginally"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206396002",
+        "display": "Intraventricular (nontraumatic) haemorrhage, grade 2, of fetus and newborn"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "197813005",
+        "display": "Intrarenal haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "402848007",
+        "display": "Clothing purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "42100005",
+        "display": "Jungle yellow fever"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "403691006",
+        "display": "Haemorrhage following skin surgery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206413008",
+        "display": "Perinatal superficial haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722703002",
+        "display": "Traumatic intraventricular haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "43262000",
+        "display": "Subdural haemorrhage following injury with open intracranial wound AND concussion"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "785869007",
+        "display": "Secondary haemorrhage due to and following illegally induced termination of pregnancy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "202411007",
+        "display": "Haemarthrosis of hip"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "333431000119106",
+        "display": "Haemorrhage of right orbit"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262808009",
+        "display": "Gallbladder haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "237277009",
+        "display": "Marginal placental haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "18503002",
+        "display": "Perinatal cutaneous haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "95848000",
+        "display": "Injury of head with otorrhagia"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "111452009",
+        "display": "Postpartum afibrinogenaemia with haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "723138000",
+        "display": "Primary traumatic haemorrhage of brainstem"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "698711007",
+        "display": "Antepartum haemorrhage due to placenta praevia type IV"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "15954181000119105",
+        "display": "Haematoma of left breast"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "304831001",
+        "display": "Chronic intracranial subdural haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "698712000",
+        "display": "Antepartum haemorrhage due to cervical polyp"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722623009",
+        "display": "Focal traumatic haemorrhage of brainstem"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "441322009",
+        "display": "Drug induced thrombotic thrombocytopenic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "439007008",
+        "display": "Acquired thrombotic thrombocytopenic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "78129009",
+        "display": "Thrombotic thrombocytopenic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "361209006",
+        "display": "Dermite ocre of Favre"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "22157005",
+        "display": "Acute peptic ulcer with haemorrhage but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "268471004",
+        "display": "Vaginal show"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "39134007",
+        "display": "Haematomyelia"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "30921002",
+        "display": "Perinatal massive pulmonary haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "339041000119109",
+        "display": "Haemorrhage of left orbit"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "85521005",
+        "display": "Acute lower gastrointestinal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "43484003",
+        "display": "Cellulocutaneous plague"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "25756004",
+        "display": "Haematoma of tunica vaginalis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "55898008",
+        "display": "Haemorrhage of tunica vaginalis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "95531001",
+        "display": "Haemorrhagic duodenitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "13172003",
+        "display": "Chronic idiopathic thrombocytopenic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "32273002",
+        "display": "Idiopathic thrombocytopenic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "95545007",
+        "display": "Haemorrhagic diarrhoea"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "83094001",
+        "display": "Perineal haematoma during delivery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "237276000",
+        "display": "Indeterminate antepartum haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "66857006",
+        "display": "Haemoptysis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "89993004",
+        "display": "Haematoma of vas deferens"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "53839004",
+        "display": "Haemorrhage of vas deferens"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "5223003",
+        "display": "Haematoma of spermatic cord"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "33878005",
+        "display": "Haemorrhage of spermatic cord"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "77503002",
+        "display": "Marburg virus disease"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "297188009",
+        "display": "Clotted haemothorax"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722580004",
+        "display": "Fetal or neonatal intraventricular non-traumatic haemorrhage grade 4"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "778061001",
+        "display": "Familial cervical artery dissection"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206421002",
+        "display": "Perinatal epistaxis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "66673003",
+        "display": "Acute gastrojejunal ulcer with haemorrhage AND with perforation but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "59515005",
+        "display": "Acute gastrojejunal ulcer with haemorrhage but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1086461000119101",
+        "display": "Haemorrhage of small intestine due to diverticulitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "784407005",
+        "display": "Massive epicranial subaponeurotic haematoma due to birth trauma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "714278008",
+        "display": "Jejunal anastomotic haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "163990004",
+        "display": "O/E - vitreous haemorrhages"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "16477701000119105",
+        "display": "Dissection of coeliac artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "28505005",
+        "display": "Acute idiopathic thrombocytopenic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "234494000",
+        "display": "Primary non-thrombocytopenic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "371614003",
+        "display": "Haematoma of obstetric wound"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "111601003",
+        "display": "Intracranial haemorrhage co-occurrent and due to closed fracture of base of skull"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "720512007",
+        "display": "Arterial dissection and lentiginosis syndrome"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "56125009",
+        "display": "Haemorrhage of iris AND/OR ciliary body"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "285821000119105",
+        "display": "Major laceration of heart with haemopericardium"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "15970005",
+        "display": "Intramural oesophageal haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262790002",
+        "display": "Oesophageal haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "315047001",
+        "display": "Traumatic subdural haematoma with open intracranial wound"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "72189003",
+        "display": "Haemorrhagic nasal discharge"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "56268004",
+        "display": "Fetal haemorrhage into co-twin"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "307579008",
+        "display": "Traumatic scrotal haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "89966002",
+        "display": "Haematoma of scrotum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "64443004",
+        "display": "Nontraumatic haematoma of seminal vesicle"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "283938001",
+        "display": "Haematoma of seminal vesicle"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "36102002",
+        "display": "Waterhouse-Friderichsen syndrome"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "237766002",
+        "display": "Adrenocortical haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "49111001",
+        "display": "Adrenal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "15663841000119103",
+        "display": "Bilateral haemarthrosis of knee joints"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "299161000119109",
+        "display": "Haemarthrosis of right knee"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "111615001",
+        "display": "Open skull fracture with intracranial haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "33934002",
+        "display": "Haemorrhagic otitis externa"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "698557007",
+        "display": "Traumatic haematoma of prepuce"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "66556007",
+        "display": "Haemobilia"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "15707961000119109",
+        "display": "Bilateral carotid artery dissection"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "15708001000119106",
+        "display": "Dissection of left carotid artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "51847008",
+        "display": "Acute duodenal ulcer with haemorrhage AND with perforation but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "66767006",
+        "display": "Acute duodenal ulcer with haemorrhage but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "212373009",
+        "display": "Secondary and recurrent haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "247132001",
+        "display": "Retinal flame haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "202414004",
+        "display": "Haemarthrosis of tibiofibular joint"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "981008",
+        "display": "Haemorrhagic proctitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "16288421000119101",
+        "display": "Dissection of right femoral artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "343341000119108",
+        "display": "Bilateral subconjunctival haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "428241007",
+        "display": "Intraventricular haemorrhage of fetus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "197092000",
+        "display": "Haemorrhage of large intestine co-occurrent and due to diverticular disease of large intestine"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "52902005",
+        "display": "Subdural haemorrhage following injury with open intracranial wound AND prolonged loss of consciousness (more than 24 hours) AND return to pre-existing conscious level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "290104007",
+        "display": "Bleeding of surface of nipple"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "277166003",
+        "display": "Dried blood in external ear canal"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "198922009",
+        "display": "Antepartum haemorrhage with trauma - delivered"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722624003",
+        "display": "Focal traumatic haematoma of brainstem"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206202008",
+        "display": "Massive subgaleal haemorrhage due to birth trauma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276622005",
+        "display": "Subgaleal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "428782008",
+        "display": "Postoperative haemothorax"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "75933004",
+        "display": "Threatened miscarriage in second trimester"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "414390000",
+        "display": "Haemorrhagic mucosa of duodenum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722902000",
+        "display": "Cephalhaematoma deformans of Schuller"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "432211007",
+        "display": "Calcified haematoma of head"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "234496003",
+        "display": "Metabolic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "123411000119106",
+        "display": "Gastric haemorrhage due to eosinophilic gastritis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "202416002",
+        "display": "Haemarthrosis of subtalar joint"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "202415003",
+        "display": "Haemarthrosis of the ankle"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "44843000",
+        "display": "Haemorrhage of prostate"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "15720001",
+        "display": "Haemorrhagic enteropathy of terminal ileum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "315046005",
+        "display": "Traumatic subdural haematoma without open intracranial wound"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262902006",
+        "display": "Haematoma of urinary conduit"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "421328004",
+        "display": "Subfoveal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722584008",
+        "display": "Fetal or neonatal non-traumatic haemorrhage of subdural space of brain"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "111864006",
+        "display": "Chikungunya fever"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "163164001",
+        "display": "O/E - bleeding gums"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "87345009",
+        "display": "Subdural haemorrhage following injury without open intracranial wound AND with prolonged loss of consciousness (more than 24 hours) AND return to pre-existing conscious level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "737320000",
+        "display": "Delayed haemorrhage due to and following molar pregnancy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "34135005",
+        "display": "Subdural haemorrhage following injury without open intracranial wound AND with loss of consciousness"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "198920001",
+        "display": "Antepartum haemorrhage with trauma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "38501006",
+        "display": "Nontraumatic haematoma of corpus cavernosum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "198031007",
+        "display": "Corpus cavernosum haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "54816003",
+        "display": "Nontraumatic haematoma of penis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "724854007",
+        "display": "Purpura of skin and or skin-associated mucous membrane co-occurrent and due to coagulation disorder"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1082711000119108",
+        "display": "Gastric haemorrhage due to angiodysplasia of stomach"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "713891007",
+        "display": "Intraoperative haemorrhage requiring transfusion"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "213261000",
+        "display": "Intraoperative haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1089381000119105",
+        "display": "Otorrhagia of left ear"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "737321001",
+        "display": "Excessive haemorrhage due to and following molar pregnancy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1086561000119100",
+        "display": "Haemorrhage of duodenum co-occurrent and due to diverticulosis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "784409008",
+        "display": "Haematoma of ovary"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "44671008",
+        "display": "Perinatal adrenal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "237702003",
+        "display": "Pituitary haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "239775007",
+        "display": "Traumatic joint haemarthrosis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "16766000",
+        "display": "Arbovirus haemorrhagic fever"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "202404008",
+        "display": "Haemarthrosis of acromioclavicular joint"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "38938002",
+        "display": "Acute upper gastrointestinal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "202417006",
+        "display": "Haemarthrosis of talonavicular joint"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276651009",
+        "display": "Perinatal subependymal haemorrhage with intraventricular extension"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276650005",
+        "display": "Perinatal subependymal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "70611002",
+        "display": "Perinatal intraventricular haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "315049003",
+        "display": "Traumatic extradural haematoma with open intracranial wound"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "450427002",
+        "display": "Perinatal cutaneous ecchymoses"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "59491002",
+        "display": "Ecchymoses in fetus OR newborn"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "198923004",
+        "display": "Antepartum haemorrhage with trauma - not delivered"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "414391001",
+        "display": "Haemorrhagic mucosa of stomach"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "16632002",
+        "display": "Haemopneumothorax"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "737322008",
+        "display": "Delayed haemorrhage due to and following ectopic pregnancy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "281370001",
+        "display": "Spontaneous haemarthrosis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "724855008",
+        "display": "Purpura of skin caused by mechanical force"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "16289261000119103",
+        "display": "Dissection of left subclavian artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "43489008",
+        "display": "Congo-Crimean haemorrhagic fever"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "291371000119100",
+        "display": "Nontraumatic haemorrhage of subarachnoid space from intracranial artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "451035002",
+        "display": "Subpial intracranial haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "451034003",
+        "display": "Haemorrhage into subpial space of neuraxis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "369061000119104",
+        "display": "Genitourinary tract haemorrhage following transurethral procedure"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "247134000",
+        "display": "Confluent retinal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "198462004",
+        "display": "Haemorrhagic septicaemia caused by Pasteurella multocida"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "57748001",
+        "display": "Bleeding ulcer of oesophagus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "56231002",
+        "display": "Purpura annularis telangiectodes of Majocchi"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1087811000119103",
+        "display": "Gastric haemorrhage due to irritant gastritis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "195284000",
+        "display": "Haemorrhagic septicaemia barbone"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "449742000",
+        "display": "Haemorrhage of periwound skin"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262720008",
+        "display": "Traumatic spinal extradural haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "703861005",
+        "display": "Spinal extradural haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "450379002",
+        "display": "Haemorrhage into extradural space of spine"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "81448000",
+        "display": "Haemorrhage in early pregnancy, delivered"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "413245000",
+        "display": "Bleeding of unknown origin"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "315048006",
+        "display": "Traumatic extradural haematoma without open intracranial wound"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "202403002",
+        "display": "Haemarthrosis of sternoclavicular joint"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "119891000119105",
+        "display": "Postpartum haemorrhage due to total placenta praevia"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "417626001",
+        "display": "Thrombocytopenic purpura associated with metabolic disorder"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "737318003",
+        "display": "Delayed haemorrhage due to and following miscarriage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "15966501000119108",
+        "display": "Dissection of right renal artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "86256001",
+        "display": "Haematoma of cord"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "371607000",
+        "display": "Haematoma of caesarean section"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "312858004",
+        "display": "Neonatal tracheobronchial haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "300392005",
+        "display": "Faeces flecked with blood"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "42434002",
+        "display": "Traumatic pneumohaemothorax"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "5309003",
+        "display": "Subcutaneous haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "249419005",
+        "display": "Gums bleed to touch"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "451036001",
+        "display": "Haemorrhage into subpial space of spinal cord"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "75884004",
+        "display": "Bleeding internal haemorrhoids"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "195167002",
+        "display": "External capsule haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "402589000",
+        "display": "Contact purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "230603000",
+        "display": "Haemorrhage into nerve trunk"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "8554002",
+        "display": "Brazilian purpuric fever"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "234497007",
+        "display": "Embolic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "384993003",
+        "display": "Periventricular haemorrhagic venous infarct"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722575008",
+        "display": "Traumatic haemorrhage of cerebellum due to birth trauma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "281309004",
+        "display": "Vaginal vault bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "283958000",
+        "display": "Haematoma of fallopian tube"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "93476001",
+        "display": "Haemorrhage of fallopian tube"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "451037005",
+        "display": "Haemorrhage in globus pallidus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722629008",
+        "display": "Traumatic subarachnoid haemorrhage without coma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "202405009",
+        "display": "Haemarthrosis of elbow"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "82872004",
+        "display": "Tracheostomy haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "202419009",
+        "display": "Haemarthrosis-1st metatarsophalangeal joint"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "717868009",
+        "display": "Intramural haemorrhage of stomach"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "37134004",
+        "display": "Intracranial haemorrhage following injury without open intracranial wound AND with no loss of consciousness"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722615007",
+        "display": "Focal haemorrhagic contusion of cerebrum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "703174002",
+        "display": "Subarachnoid haemorrhage from vertebral artery aneurysm"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "770361008",
+        "display": "Vitreous haemorrhage of right eye due to diabetes mellitus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "48518008",
+        "display": "Subarachnoid haemorrhage following injury with open intracranial wound AND concussion"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276652002",
+        "display": "Perinatal subependymal haemorrhage with intraventricular and intracerebral extension"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "402850004",
+        "display": "Purpura due to prolonged vomiting and/or coughing"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "402849004",
+        "display": "Purpura due to increased intravascular pressure"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "289540009",
+        "display": "Profuse vaginal bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "674481000119100",
+        "display": "Nontraumatic haematoma of spinal cord"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "202406005",
+        "display": "Haemarthrosis of distal radioulnar joint"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "239182004",
+        "display": "Skin graft haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "19065005",
+        "display": "Lassa fever"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "15985031000119102",
+        "display": "Neonatal non-traumatic intraventricular haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "261808007",
+        "display": "Neonatal cerebral haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "282456003",
+        "display": "Haematoma of trachea"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "38453000",
+        "display": "Cerebral haemorrhage due to intrapartum anoxia or hypoxia"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "450428007",
+        "display": "Perinatal cutaneous petechiae"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722628000",
+        "display": "Traumatic haemorrhage of subdural space of infratentorial region"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "770362001",
+        "display": "Vitreous haemorrhage of left eye due to diabetes mellitus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "66259004",
+        "display": "Male haematocele"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "76427005",
+        "display": "Haemarthrosis of multiple sites"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "308154003",
+        "display": "Haematoma of rectus sheath"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "451039008",
+        "display": "Haemorrhage in putamen"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "202407001",
+        "display": "Haemarthrosis of wrist"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "198927003",
+        "display": "Antepartum haemorrhage with uterine leiomyoma - delivered"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "10421000132103",
+        "display": "Haemorrhage requiring transfusion"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "402851000",
+        "display": "Neonatal purpura fulminans (homozygous protein C deficiency)"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "87020000",
+        "display": "Subarachnoid haemorrhage following injury without open intracranial wound AND with brief loss of consciousness (less than one hour)"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "2367005",
+        "display": "Acute haemorrhagic gastritis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "31920006",
+        "display": "Haemorrhagic varicella pneumonitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "409676000",
+        "display": "Dengue haemorrhagic fever, grade I"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "703215002",
+        "display": "Non-aneurysmal subarachnoid intracranial haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "285335006",
+        "display": "Bleeding tooth socket"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "232256002",
+        "display": "Otitis media with effusion - sanguinous"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "418106004",
+        "display": "Total hyphaema"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "402919000",
+        "display": "Congo haemorrhagic fever"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "48742005",
+        "display": "Deep retinal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "91304009",
+        "display": "Capillary fragility abnormality"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "43696002",
+        "display": "Capillary haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "233995001",
+        "display": "Type I dissection of thoracic aorta"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "301899003",
+        "display": "Dissection of proximal aorta"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "230710000",
+        "display": "Lobar cerebral haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722578005",
+        "display": "Haemorrhage of adrenal gland due to birth trauma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "289543006",
+        "display": "Vaginal bleeding problem"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "20276007",
+        "display": "Subarachnoid haemorrhage following injury without open intracranial wound AND with prolonged loss of consciousness (more than 24 hours) AND without return to pre-existing conscious level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1430001",
+        "display": "Intracranial haemorrhage following injury without open intracranial wound AND with prolonged loss of consciousness (more than 24 hours) without return to pre-existing level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "703216001",
+        "display": "Perimesencephalic subarachnoid haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "735768008",
+        "display": "Contusion of heart co-occurrent with haemopericardium"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "27388005",
+        "display": "Partial placenta praevia with intrapartum haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "119901000119109",
+        "display": "Haemorrhage co-occurrent and due to partial placenta praevia"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "195169004",
+        "display": "Intracerebral haemorrhage, multiple localised"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "10278007",
+        "display": "Factitious purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "30982007",
+        "display": "South American haemorrhagic fever"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "195155004",
+        "display": "Subarachnoid haemorrhage from carotid siphon and bifurcation"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "50165004",
+        "display": "Haemorrhagic detachment of retinal pigment epithelium"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "678101000119107",
+        "display": "Subretinal haemorrhage of right eye"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "699013006",
+        "display": "Traumatic haemorrhage into peritoneal cavity"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "720809000",
+        "display": "Dissection of external carotid artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "59190009",
+        "display": "Traumatic pneumohaemothorax without open wound into thorax"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "20908003",
+        "display": "Subcortical haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722579002",
+        "display": "Neonatal traumatic haemorrhage of trachea following procedure on lower respiratory tract"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "26623000",
+        "display": "Failed attempted termination of pregnancy complicated by delayed and/or excessive haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "450418003",
+        "display": "Cerebral haemorrhage following injury"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "111673001",
+        "display": "Subarachnoid haemorrhage following injury without open intracranial wound AND with moderate loss of consciousness (1-24 hours)"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "230712008",
+        "display": "Lacunar haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "698352000",
+        "display": "Chronic antral gastritis with haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "9298006",
+        "display": "Haematoma of kidney without rupture of capsule AND without open wound into abdominal cavity"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "90053006",
+        "display": "Haematocolpometra"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "233997009",
+        "display": "Dissection of distal aorta"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "274309006",
+        "display": "O/E - petechiae on skin"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "164331003",
+        "display": "O/E - petechiae present"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "247098001",
+        "display": "Subhyaloid haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "111371005",
+        "display": "Subcapsular haemorrhage of liver"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "698708006",
+        "display": "Antepartum haemorrhage due to placenta praevia type I"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "703217005",
+        "display": "Convexal subarachnoid haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "698709003",
+        "display": "Antepartum haemorrhage due to placenta praevia type II"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "699263006",
+        "display": "Postoperative haematoma of breast"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "722909009",
+        "display": "Traumatic haemorrhage of intracranial extradural space due to birth injury"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "236506009",
+        "display": "Goodpasture's disease"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "55746001",
+        "display": "Chronic peptic ulcer with haemorrhage AND with perforation but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "90489006",
+        "display": "Peptic ulcer with haemorrhage AND with perforation but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1086761000119107",
+        "display": "Enterostomy haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "41486008",
+        "display": "Eczematid-like purpura of Doucas and Kapetanakis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "409678004",
+        "display": "Dengue haemorrhagic fever, grade III"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "202409003",
+        "display": "Haemarthrosis of proximal interphalangeal joint of finger"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262858002",
+        "display": "Appendix haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "283921000",
+        "display": "Haematoma of urethra"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "314483007",
+        "display": "Primary post tonsillectomy haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "35101000119106",
+        "display": "Bleeding following tonsillectomy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "713030005",
+        "display": "Chronic dissection of thoracic aorta"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "4332009",
+        "display": "Subarachnoid haemorrhage following injury without open intracranial wound AND with concussion"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "450363003",
+        "display": "Haemorrhage into subarachnoid space of spine"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "21580006",
+        "display": "Haematoma AND contusion of liver with open wound into abdominal cavity"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "104951000119106",
+        "display": "Vitreous haemorrhage due to type 1 diabetes mellitus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "359673001",
+        "display": "Venezuelan haemorrhagic fever"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "10835571000119102",
+        "display": "Antepartum haemorrhage due to disseminated intravascular coagulation"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "248980004",
+        "display": "Contact bleeding from cervix"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "724490006",
+        "display": "Intrapartum haemorrhage co-occurrent and due to obstructed labour with uterine rupture"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "198928008",
+        "display": "Antepartum haemorrhage with uterine leiomyoma - not delivered"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "233996000",
+        "display": "Type II dissection of thoracic aorta"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "51496009",
+        "display": "Fetal blood loss from ruptured cord"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "451038000",
+        "display": "Haemorrhage in caudate nucleus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "202408006",
+        "display": "Haemarthrosis of MCP joint"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "32728005",
+        "display": "Haemorrhage due to ruptured congenital cerebral aneurysm"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "402852007",
+        "display": "Hyperglobulinemic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "308904008",
+        "display": "Haematemesis - cause unknown"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "232377002",
+        "display": "Nasal septal haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "277303004",
+        "display": "Angiogram-negative subarachnoid haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "14460007",
+        "display": "Haemorrhage in optic nerve sheaths"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "409677009",
+        "display": "Dengue haemorrhagic fever, grade II"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "609201007",
+        "display": "Haemorrhage of pancreatic duct"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "62131008",
+        "display": "Couvelaire uterus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "62973004",
+        "display": "Extradural haemorrhage following injury without open intracranial wound AND with moderate loss of consciousness (1-24 hours)"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "247233000",
+        "display": "Optic disc haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "281522008",
+        "display": "Traumatic haemarthrosis of the elbow joint"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "609204004",
+        "display": "Subchorionic haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "233617005",
+        "display": "Haemorrhagic pneumonia"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "430881000",
+        "display": "Second trimester bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "232088004",
+        "display": "Ghost cell glaucoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "76771005",
+        "display": "Parturient haemorrhage associated with hypofibrinogenaemia"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "402854008",
+        "display": "Dysproteinemic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1086571000119106",
+        "display": "Haemorrhage of ileum co-occurrent and due to diverticulosis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "307233002",
+        "display": "Bleeding gastric erosion"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "47977000",
+        "display": "Mesenteric haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "438510004",
+        "display": "Bleeding varices of prostate"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "141151000119101",
+        "display": "Nontraumatic subdural haematoma with brain compression"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "198918004",
+        "display": "Antepartum haemorrhage with coagulation defect - not delivered"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "25004000",
+        "display": "Subdural haemorrhage due to intrapartum anoxia AND/OR hypoxia"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "343871000119105",
+        "display": "Bilateral haemorrhage of retinas"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "332491000119104",
+        "display": "Haemorrhage of right retina"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "11623000",
+        "display": "Expulsive choroidal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "314484001",
+        "display": "Secondary post tonsillectomy haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "164229005",
+        "display": "O/E - blood in auditory canal"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "698776006",
+        "display": "Hyphaema of iris and ciliary body"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "291665000",
+        "display": "Postpartum intrapituitary haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "713033007",
+        "display": "Dissection of artery of upper limb"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "237102006",
+        "display": "Vaginal vault haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "53162000",
+        "display": "Vaginal haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "413212000",
+        "display": "Haemorrhagic duodenopathy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "16754591000119108",
+        "display": "Abnormal uterine bleeding due to endocervical polyp"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "308550003",
+        "display": "Normal menstrual blood loss"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "26205001",
+        "display": "Subdural haemorrhage following injury without open intracranial wound AND with brief loss of consciousness (less than one hour)"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206395003",
+        "display": "Intraventricular (nontraumatic) haemorrhage, grade 1, of fetus and newborn"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "35265002",
+        "display": "Mallory-Weiss syndrome"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "9442009",
+        "display": "Parturient haemorrhage associated with afibrinogenaemia"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "81125004",
+        "display": "Acute haemorrhagic cystitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "87696004",
+        "display": "Haemorrhagic cystitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1088911000119108",
+        "display": "Haematympanum of left tympanic cavity"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "239160006",
+        "display": "Wound haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262865005",
+        "display": "Caecal haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "439862003",
+        "display": "Haematoma due to cardiac pacemaker"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "13507004",
+        "display": "Purpura fulminans"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "233888009",
+        "display": "Traumatic haemopericardium"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "111605007",
+        "display": "Intracranial haemorrhage co-occurrent and due to open fracture of base of skull"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "198058000",
+        "display": "Scrotal haematoma due to non-traumatic cause"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "233993008",
+        "display": "Dissection of anterior spinal artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1086951000119108",
+        "display": "Gastric haemorrhage due to vascular ectasia of gastric antrum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "762290007",
+        "display": "Neonatal haemorrhage of uterus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "239946005",
+        "display": "Postinfective Henoch-Schönlein purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262721007",
+        "display": "Traumatic spinal subdural haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "703862003",
+        "display": "Spinal subdural haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "449795002",
+        "display": "Haemorrhage into subdural space of spine"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "46523000",
+        "display": "Chronic gastrojejunal ulcer with haemorrhage AND with perforation but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "195168007",
+        "display": "Intracerebral haemorrhage, intraventricular"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "237124006",
+        "display": "Haematopyometra"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "38280009",
+        "display": "Haematometra"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "409671005",
+        "display": "Dengue shock syndrome"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "446563000",
+        "display": "Subchondral haematoma of pinna"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "247133006",
+        "display": "Retinal dot haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "16755191000119103",
+        "display": "Abnormal uterine bleeding due to endometrial polyp"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "439442003",
+        "display": "Oesophageal bleeding due to ulcerative oesophagitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "190809001",
+        "display": "Waldenstrom's hypergammaglobulinaemic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "50581000",
+        "display": "Goodpasture's syndrome"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "232371001",
+        "display": "Haemorrhage from adenoid bed"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "249367001",
+        "display": "Bleeding from nasopharynx"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "84693004",
+        "display": "Intervillous haemorrhage of placenta"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "737323003",
+        "display": "Excessive haemorrhage due to and following ectopic pregnancy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "163147004",
+        "display": "O/E - mouth - purpuric spots"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "16288341000119100",
+        "display": "Dissection of left femoral artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1085121000119107",
+        "display": "Gastric haemorrhage due to chronic superficial gastritis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "164187003",
+        "display": "On examination - epistaxis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262843005",
+        "display": "Duodenal haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "28155008",
+        "display": "Extradural haemorrhage following injury with open intracranial wound AND concussion"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "405576001",
+        "display": "Nontraumatic haemothorax"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "267269004",
+        "display": "Vulval and perineal haematoma during delivery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "21202004",
+        "display": "Perinatal subarachnoid haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "17709002",
+        "display": "Oesophageal varices with haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "35672006",
+        "display": "Subarachnoid haemorrhage following injury without open intracranial wound AND with no loss of consciousness"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "16754941000119107",
+        "display": "Abnormal uterine bleeding due to adenomyosis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "402853002",
+        "display": "Cryofibrinogenemic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "232087009",
+        "display": "Glaucoma with intraocular haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "86258000",
+        "display": "Chronic duodenal ulcer with haemorrhage, with perforation AND with obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "291481000119105",
+        "display": "Spontaneous haemorrhage of subarachnoid space from right posterior communicating artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "762286005",
+        "display": "Subgaleal epicranial subaponeurotic haemorrhage due to birth injury"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "24807004",
+        "display": "Bleeding gastric varices"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "93475002",
+        "display": "Haemorrhage into epididymis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "111677000",
+        "display": "Subdural haemorrhage following injury with open intracranial wound and prolonged loss of consciousness (more than 24 hours) and without return to pre-existing conscious level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "724496000",
+        "display": "Postpartum haemorrhage co-occurrent and due to uterine rupture following obstructed labour"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276594006",
+        "display": "Perinatal rupture of superficial cerebral vein"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "399131003",
+        "display": "Non-menstrual vaginal bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276648002",
+        "display": "Intraventricular haemorrhage of prematurity"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "34409000",
+        "display": "Haemorrhage into bladder lumen"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206423004",
+        "display": "Neonatal haematemesis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "29635000",
+        "display": "Subdural haemorrhage following injury with open intracranial wound AND brief loss of consciousness (less than one hour)"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "267535004",
+        "display": "Congenital thrombocytopenic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "275421004",
+        "display": "Miscarriage with heavy bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "703156006",
+        "display": "Deep hemispheric cerebral haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "414822009",
+        "display": "Neonatal pulmonary haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "291541000119104",
+        "display": "Nontraumatic haemorrhage of brain stem"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "52977000",
+        "display": "Fetal exsanguination"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206304007",
+        "display": "Perinatal haemoptysis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "282724009",
+        "display": "Haematoma of bronchus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "232249008",
+        "display": "Traumatic haemotympanum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "198905007",
+        "display": "Placenta praevia with haemorrhage - delivered"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "704079000",
+        "display": "Non-aneurysmal perimesencephalic subarachnoid haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "84792001",
+        "display": "Extradural haemorrhage following injury without open intracranial wound AND with prolonged loss of consciousness (more than 24 hours) AND return to pre-existing conscious level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "19031009",
+        "display": "Haemorrhagic choroidal detachment"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "81520002",
+        "display": "Extradural haemorrhage following injury with open intracranial wound AND prolonged loss of consciousness (more than 24 hours) AND return to pre-existing conscious level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "69810009",
+        "display": "Acute haemorrhagic colitis caused by E. coli"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "73477001",
+        "display": "Traumatic pneumohaemothorax with open wound into thorax"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "16754691000119107",
+        "display": "Abnormal uterine bleeding due to submucous uterine fibroid"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "785341006",
+        "display": "Intrapartum haemorrhage due to leiomyoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "275446004",
+        "display": "Gardner-Diamond syndrome"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "289534002",
+        "display": "Passing large clots vaginally"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "72986009",
+        "display": "Acute haemorrhagic leucoencephalitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206305008",
+        "display": "Tracheobronchial haemorrhage originating in the perinatal period"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "289535001",
+        "display": "Passing no clots vaginally"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "186612006",
+        "display": "Pixuna fever"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "725157006",
+        "display": "Acquired purpura fulminans"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262530001",
+        "display": "Traumatic petechiae"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "246994006",
+        "display": "Anterior chamber total hyphaema"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "430333000",
+        "display": "Haematoma of dialysis access site"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206398001",
+        "display": "Intraventricular haemorrhage due to birth injury"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "291411000119104",
+        "display": "Nontraumatic haemorrhage of subarachnoid space from left posterior communicating artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "162815002",
+        "display": "O/E - subconjunctival haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "28318001",
+        "display": "Pars basalis haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "289537009",
+        "display": "Passing altered blood from vagina"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "289536000",
+        "display": "Fresh bleeding from vagina"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "73162004",
+        "display": "Posttransfusion purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "111679002",
+        "display": "Extradural haemorrhage following injury without open intracranial wound AND with no loss of consciousness"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262651006",
+        "display": "Haematoma of tongue"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "762288006",
+        "display": "Neonatal haemorrhage of kidney"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "700018009",
+        "display": "Haemarthrosis of glenohumeral joint"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "238781005",
+        "display": "Itching purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262798009",
+        "display": "Intrahepatic haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "232356000",
+        "display": "Traumatic epistaxis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262652004",
+        "display": "Haematoma of floor of mouth"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "249624003",
+        "display": "Blood in faeces symptom"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "785871007",
+        "display": "Excessive haemorrhage due to and following legally induced termination of pregnancy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "232357009",
+        "display": "Postoperative epistaxis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "15196006",
+        "display": "Intraplacental haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206414002",
+        "display": "Perinatal purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "762289003",
+        "display": "Neonatal haemorrhage of bladder"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "678081000119100",
+        "display": "Subretinal haemorrhage of left eye"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "86182004",
+        "display": "Extradural haemorrhage following injury with open intracranial wound AND prolonged loss of consciousness (more than 24 hours) without return to pre-existing conscious level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "430349003",
+        "display": "Upper gastrointestinal haemorrhage associated with hypercoagulability state"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276229008",
+        "display": "Sepsis-associated gastrointestinal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "289538004",
+        "display": "Scanty vaginal bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1086961000119105",
+        "display": "Gastrostomy haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "699530000",
+        "display": "Lipohemarthrosis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "445162006",
+        "display": "Bleeding Meckel's diverticulitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "445163001",
+        "display": "Bleeding Meckel's diverticulum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "351814001",
+        "display": "Intermenstrual heavy bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "190305000",
+        "display": "Thyroid haemorrhage and infarction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "438476003",
+        "display": "Autoimmune thrombotic thrombocytopenic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "240124007",
+        "display": "Intermuscular haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "716584007",
+        "display": "Haemorrhagic fever caused by Chapare virus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "71119005",
+        "display": "Fetal blood loss from cut end of co-twin's cord"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "62410004",
+        "display": "Postpartum fibrinolysis with haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262718005",
+        "display": "Traumatic spinal cord haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1085451000119107",
+        "display": "Colostomy haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "249217005",
+        "display": "Vulval haematoma in labour"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "84087006",
+        "display": "Fetal blood loss from placenta"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262719002",
+        "display": "Traumatic spinal subarachnoid haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "16907002",
+        "display": "Extradural haemorrhage following injury without open intracranial wound AND with prolonged loss of consciousness (more than 24 hours) without return to pre-existing conscious level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "409641002",
+        "display": "Haemorrhagic smallpox"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "291351000119109",
+        "display": "Nontraumatic haemorrhage of subarachnoid space from basilar artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "50263004",
+        "display": "Haematoma of vulva of fetus or newborn as birth trauma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "59356009",
+        "display": "Chronic gastrojejunal ulcer with haemorrhage but without perforation"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "232355001",
+        "display": "Posterior epistaxis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "60698006",
+        "display": "Haemorrhagic oesophagitis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206399009",
+        "display": "Subarachnoid haemorrhage due to birth injury"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "271741001",
+        "display": "Blood in ear canal"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "300129004",
+        "display": "Bleeding of ear canal"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "449797005",
+        "display": "Non-traumatic haematoma of subdural space of neuraxis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "95562002",
+        "display": "Haemorrhage of pancreas"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "236001005",
+        "display": "Omental haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "6666006",
+        "display": "Subdural haemorrhage following injury without open intracranial wound AND with concussion"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "78757009",
+        "display": "Intracranial haemorrhage following injury without open intracranial wound AND with concussion"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "111668007",
+        "display": "Intracranial haemorrhage following injury without open intracranial wound"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "209947002",
+        "display": "Closed traumatic subdural haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "732230001",
+        "display": "Dissection of coronary artery"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "97801000119102",
+        "display": "Upper gastrointestinal haemorrhage co-occurrent and due to gastritis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "300101002",
+        "display": "Bleeding pinna"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "721179009",
+        "display": "Intramural haemorrhage of oesophagus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "737231005",
+        "display": "Traumatic haemorrhage of thalamus"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "230711001",
+        "display": "Thalamic haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262773008",
+        "display": "Thyroid gland haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "447220009",
+        "display": "Haematoma of neck"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "3002002",
+        "display": "Haemorrhage of thyroid"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "723141009",
+        "display": "Intracranial haemorrhage co-occurrent and due to complex wound of head"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206243008",
+        "display": "Testicular haematoma due to birth trauma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "450429004",
+        "display": "Perinatal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262922005",
+        "display": "Traumatic haematoma of testis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "283944002",
+        "display": "Haematoma of testis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "77708008",
+        "display": "Haemorrhage of testis"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262655002",
+        "display": "Haematoma of oral alveolar mucosa"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262650007",
+        "display": "Haematoma of gingivae"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "86276007",
+        "display": "Bleeding gums"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "24179004",
+        "display": "Haematoma AND contusion of liver without open wound into abdominal cavity"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "431674004",
+        "display": "Haematoma and contusion of liver"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262796008",
+        "display": "Liver haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "78171005",
+        "display": "Traumatic haemorrhage of liver"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "16763008",
+        "display": "Haemorrhage of liver"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "73020009",
+        "display": "Cerebral hemisphere haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "23097003",
+        "display": "Kyasanur forest disease"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "276282001",
+        "display": "Subarachnoid haemorrhage from anterior communicating artery aneurysm"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "30400005",
+        "display": "Middle meningeal haemorrhage following injury"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "267197003",
+        "display": "Antepartum haemorrhage, abruptio placentae and placenta praevia"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "34842007",
+        "display": "Antepartum haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "106004004",
+        "display": "Haemorrhagic complication of pregnancy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "232030000",
+        "display": "Purtscher's retinopathy"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "63297008",
+        "display": "Superficial retinal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "735661006",
+        "display": "Traumatic retinal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "206403000",
+        "display": "Massive umbilical haemorrhage of newborn"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "85539001",
+        "display": "Neonatal haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "275359008",
+        "display": "Umbilical haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "78349008",
+        "display": "Umbilical bleeding"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "402653004",
+        "display": "Thrombocytopenic purpura due to defective platelet production"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "302873008",
+        "display": "Thrombocytopenic purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "209978003",
+        "display": "Extradural haemorrhage following injury with open intracranial wound, with no loss of consciousness"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "7819003",
+        "display": "Intracranial haemorrhage following injury with open intracranial wound AND no loss of consciousness"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "88747000",
+        "display": "Subarachnoid haemorrhage following injury without open intracranial wound AND with prolonged loss of consciousness (more than 24 hours) AND return to pre-existing conscious level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "78477003",
+        "display": "Intracranial haemorrhage following injury without open intracranial wound AND with prolonged loss of consciousness (more than 24 hours) AND return to pre-existing conscious level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "127311008",
+        "display": "Intracranial haemorrhage following injury with prolonged loss of consciousness AND return to pre-existing conscious level"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "69458009",
+        "display": "Subarachnoid haemorrhage following injury without open intracranial wound AND with loss of consciousness"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "18485009",
+        "display": "Intracranial haemorrhage following injury without open intracranial wound AND with loss of consciousness"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "28048009",
+        "display": "Subarachnoid haemorrhage following injury without open intracranial wound"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "77940004",
+        "display": "Haematoma of spleen without rupture of capsule AND with open wound into abdominal cavity"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "262818004",
+        "display": "Splenic haematoma"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "56517003",
+        "display": "Splenic haemorrhage"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "87796008",
+        "display": "Gastrojejunal ulcer with haemorrhage AND with perforation but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "50663005",
+        "display": "Gastrojejunal ulcer with haemorrhage but without obstruction"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1086031000119101",
+        "display": "Duodenal haemorrhage due to Dieulafoy lesion of duodenum"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "735727004",
+        "display": "Diverticulum of small intestine co-occurrent with haemorrhage of small intestine"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "48149007",
+        "display": "Exsanguination"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "423902002",
+        "display": "Purpura"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "58711008",
+        "display": "Acute gastrojejunal ulcer with haemorrhage, with perforation AND with obstruction"
+      }
+    ]
+  }
+}

@@ -89,6 +89,7 @@ dependencies {
   testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:4.1.0'
   testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:4.1.0'
   testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:4.1.0'
+  testCompile 'ca.uhn.hapi.fhir:hapi-fhir-client:4.1.0'
   testCompile 'com.helger:ph-schematron:5.0.4'
   testCompile 'com.helger:ph-commons:9.1.1'
 }
