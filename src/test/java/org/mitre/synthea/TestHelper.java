@@ -46,32 +46,6 @@ public abstract class TestHelper {
     File file = new File(uri);
     Config.load(file);
   }
-
-  /**
-   * Load a file from test resources as an InputStream.
-   * 
-   * @param name the path of the file, relative to the test resources directory
-   * @return an InputStream containing the contents of the file
-   */
-  public static InputStream getResourceAsStream(String name) {
-    InputStream expectedStream = Thread.currentThread().getContextClassLoader()
-        .getResourceAsStream(name);
-    assertNotNull(expectedStream);
-    return expectedStream;
-  }
-
-  /**
-   * Load a file from test resources as a String.
-   *
-   * @param name the path of the file, relative to the test resources directory
-   * @return a String containing the contents of the file
-   */
-  public static String getResourceAsString(String name) throws IOException {
-    InputStream expectedStream = getResourceAsStream(name);
-    StringWriter writer = new StringWriter();
-    IOUtils.copy(expectedStream, writer, UTF_8);
-    return writer.toString();
-  }
   
   public static WireMockConfiguration wiremockOptions() {
     return WireMockConfiguration.options().port(5566);
