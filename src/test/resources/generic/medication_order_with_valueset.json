@@ -1,0 +1,93 @@
+{
+    "name": "MedicationOrder",
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "direct_transition": "Diabetes"
+        },
+        "Diabetes": {
+            "type": "ConditionOnset",
+            "target_encounter": "Wellness_Encounter",
+            "codes": [{
+                "system": "SNOMED-CT",
+                "code": "73211009",
+                "display": "Diabetes mellitus"
+            }],
+            "direct_transition": "Wellness_Encounter"
+        },
+        "Wellness_Encounter": {
+            "type": "Encounter",
+            "wellness": true,
+            "direct_transition": "Metformin"
+        },
+        "Metformin": {
+            "type": "MedicationOrder",
+            "target_encounter": "Wellness_Encounter",
+            "codes": [{ "value_set": "http://snomed.info/sct?fhir_vs=ecl/<23358011000036102" }],
+            "assign_to_attribute" : "Diabetes Medication",
+            "reason": "Diabetes",
+            "direct_transition": "Metformin_With_Dosage"
+        },
+        "Metformin_With_Administration": {
+          "type": "MedicationOrder",
+          "target_encounter": "Wellness_Encounter",
+          "codes": [
+            {
+              "system": "RxNorm",
+              "code": "860975",
+              "display": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
+            }
+          ],
+          "assign_to_attribute": "Diabetes Medication",
+          "reason": "Diabetes",
+          "direct_transition": "Metformin_With_Dosage",
+          "administration": true
+        },
+        "Metformin_With_Dosage": {
+            "type": "MedicationOrder",
+            "target_encounter": "Wellness_Encounter",
+            "reason": "Diabetes",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "860975",
+                "display": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
+              }
+            ],
+            "prescription": {
+              "refills": 1,
+              "dosage": {
+                "amount": 1,
+                "frequency": 1,
+                "period": 1,
+                "unit": "days"
+              },
+              "duration": {
+                "quantity": 1,
+                "unit": "months"
+              },
+              "instructions": [{ "value_set": "http://snomed.info/sct?fhir_vs=ecl/<419492006" }]
+            },
+            "direct_transition": "Tylenol_As_Needed"
+        },
+        "Tylenol_As_Needed": {
+          "type": "MedicationOrder",
+          "target_encounter": "Wellness_Encounter",
+          "reason": "Diabetes",
+          "codes": [
+            {
+              "system": "RxNorm",
+              "code": "123456",
+              "display": "Acetaminophen 325mg [Tylenol]"
+            }
+          ],
+          "prescription": {
+            "as_needed": true
+          },
+          "direct_transition": "Terminal"
+        },
+        "Terminal": {
+            "type": "Terminal"
+        }
+    }
+}

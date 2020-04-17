@@ -46,6 +46,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
+import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy.Instance;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.simulator.math.odes.MultiTable;
@@ -187,13 +188,17 @@ public abstract class State implements Cloneable, Serializable {
   }
 
   protected void materializeCodeField(String fieldName, long seed) {
+    materializeCodeField(this, fieldName, seed);
+  }
+  
+  protected static void materializeCodeField(Object object, String fieldName, long seed) {
     try {
-      Field field = getField(this.getClass(), fieldName);
-      Code code = (Code) field.get(this);
+      Field field = getField(object.getClass(), fieldName);
+      Code code = (Code) field.get(object);
       if (code == null) {
         return;
       }
-      field.set(this, code.materialize(seed));
+      field.set(object, code.materialize(seed));
     } catch (Exception e) {
       throw new RuntimeException("Error materializing code", e);
     }
@@ -205,9 +210,13 @@ public abstract class State implements Cloneable, Serializable {
       @SuppressWarnings("unchecked") List<Code> codes = (List<Code>) field.get(this);
       if (codes == null)
         return;
-      List<Code> materializedCodes = codes.stream()
-          .map(code -> code.materialize(seed))
-          .collect(Collectors.toList());
+      List<Code> materializedCodes = new ArrayList<>();
+      for (int i = 0; i < codes.size(); i++) {
+        Code code = codes.get(i);
+        // We add the index within the array to the seed here, so that it is possible to generate 
+        // multiple codes from the same ValueSet within a code list.
+        materializedCodes.add(code.materialize(seed + i));
+      }
       field.set(this, materializedCodes);
     } catch (Exception e) {
       throw new RuntimeException("Error materializing code list", e);
@@ -681,8 +690,6 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
-      materializeCodeList("codes", person.seed);
-
       if (wellness) {
         HealthRecord.Encounter encounter = person.record.currentEncounter(time);
         entry = encounter;
@@ -706,6 +713,7 @@ public abstract class State implements Cloneable, Serializable {
             ClinicianSpecialty.GENERAL_PRACTICE, null);
         entry = encounter;
         if (codes != null) {
+          materializeCodeList("codes", person.seed);
           encounter.codes.addAll(codes);
         }
         person.setCurrentEncounter(module, encounter);
@@ -836,13 +844,12 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
-      materializeCodeField("dischargeDisposition", person.seed);
-      
       HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
       EncounterType type = EncounterType.fromString(encounter.type);
       if (type != EncounterType.WELLNESS) {
         person.record.encounterEnd(time, type);
       }
+      materializeCodeField("dischargeDisposition", person.seed);
       encounter.discharge = dischargeDisposition;
 
       // reset current provider hash
@@ -919,6 +926,7 @@ public abstract class State implements Cloneable, Serializable {
     
     @Override
     public void diagnose(Person person, long time) {
+      materializeCodeList("codes", person.seed);
       String primaryCode = codes.get(0).code;
       entry = person.record.conditionStart(time, primaryCode);
       entry.name = this.name;
@@ -959,8 +967,6 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
-      materializeCodeList("codes", person.seed);
-      
       if (conditionOnset != null) {
         String condition = person.getOnsetConditionRecord().getConditionFromState(
             module.name, conditionOnset
@@ -977,6 +983,7 @@ public abstract class State implements Cloneable, Serializable {
         condition.stop = time;
         person.record.conditionEnd(time, condition.type);
       } else if (codes != null) {
+        materializeCodeList("codes", person.seed);
         person.getOnsetConditionRecord().onConditionEnd(module.name, codes.get(0).display, time);
         codes.forEach(code -> person.record.conditionEnd(time, code.code));
       }
@@ -996,7 +1003,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public void diagnose(Person person, long time) {
       materializeCodeList("codes", person.seed);
-      
       String primaryCode = codes.get(0).code;
       entry = person.record.allergyStart(time, primaryCode);
       entry.name = this.name;
@@ -1038,8 +1044,6 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
-      materializeCodeList("codes", person.seed);
-      
       if (allergyOnset != null) {
         person.record.allergyEndByState(time, allergyOnset);
       } else if (referencedByAttribute != null) {
@@ -1047,6 +1051,7 @@ public abstract class State implements Cloneable, Serializable {
         allergy.stop = time;
         person.record.allergyEnd(time, allergy.type);
       } else if (codes != null) {
+        materializeCodeList("codes", person.seed);
         codes.forEach(code -> person.record.conditionEnd(time, code.code));
       }
       return true;
@@ -1186,8 +1191,6 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
-      materializeCodeList("codes", person.seed);
-      
       if (medicationOrder != null) {
         person.record.medicationEndByState(time, medicationOrder, EXPIRED);
       } else if (referencedByAttribute != null) {
@@ -1195,6 +1198,7 @@ public abstract class State implements Cloneable, Serializable {
         medication.stop = time;
         person.record.medicationEnd(time, medication.type, EXPIRED);
       } else if (codes != null) {
+        materializeCodeList("codes", person.seed);
         codes.forEach(code -> person.record.medicationEnd(time, code.code, EXPIRED));
       }
       return true;
@@ -1237,6 +1241,7 @@ public abstract class State implements Cloneable, Serializable {
       careplan.codes.addAll(codes);
 
       if (activities != null) {
+        materializeCodeList("activities", person.seed);
         careplan.activities.addAll(activities);
       }
       if (goals != null) {
@@ -1290,8 +1295,6 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
-      materializeCodeList("codes", person.seed);
-      
       if (careplan != null) {
         person.record.careplanEndByState(time, careplan, FINISHED);
       } else if (referencedByAttribute != null) {
@@ -1299,6 +1302,7 @@ public abstract class State implements Cloneable, Serializable {
         careplan.stop = time;
         person.record.careplanEnd(time, careplan.type, FINISHED);
       } else if (codes != null) {
+        materializeCodeList("codes", person.seed);
         codes.forEach(code -> person.record.careplanEnd(time, code.code, FINISHED));
       }
       return true;
@@ -1609,11 +1613,10 @@ public abstract class State implements Cloneable, Serializable {
   public static class DiagnosticReport extends ObservationGroup {
     @Override
     public boolean process(Person person, long time) {
-      materializeCodeList("codes", person.seed);
-      
       for (Observation o : observations) {
         o.process(person, time);
       }
+      materializeCodeList("codes", person.seed);
       String primaryCode = codes.get(0).code;
       Report report = person.record.report(time, primaryCode, observations.size());
       entry = report;
@@ -1669,6 +1672,14 @@ public abstract class State implements Cloneable, Serializable {
       // Randomly pick number of series and instances if bounds were provided
       duplicateSeries(person);
       duplicateInstances(person);
+
+      for (HealthRecord.ImagingStudy.Series series : series) {
+        materializeCodeField(series, "bodySite", person.seed);
+        materializeCodeField(series, "modality", person.seed);
+        for (Instance instance : series.instances) {
+          materializeCodeField(instance, "sopClass", person.seed);
+        }
+      }
 
       // The modality code of the first series is a good approximation
       // of the type of ImagingStudy this is
@@ -1854,8 +1865,6 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
-      materializeCodeList("codes", person.seed);
-      
       if (device != null) {
         person.record.deviceRemoveByState(time, device);
       } else if (referencedByAttribute != null) {
@@ -1863,6 +1872,7 @@ public abstract class State implements Cloneable, Serializable {
         deviceEntry.stop = time;
         person.record.deviceRemove(time, deviceEntry.type);
       } else if (codes != null) {
+        materializeCodeList("codes", person.seed);
         codes.forEach(code -> person.record.deviceRemove(time, code.code));
       }
       return true;

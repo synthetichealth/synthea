@@ -1,99 +1,106 @@
 package org.mitre.synthea.helpers;
 
-import static org.mitre.synthea.TestHelper.getResourceAsStream;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static org.mitre.synthea.TestHelper.*;
 
-import ca.uhn.fhir.context.FhirContext;
-import junit.framework.TestCase;
-import org.hl7.fhir.r4.model.IntegerType;
-import org.hl7.fhir.r4.model.ValueSet;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.mitre.synthea.TestHelper;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import java.io.IOException;
+import java.util.UUID;
+import org.junit.*;
+import org.junit.rules.ExpectedException;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 public class RandomCodeGeneratorTest {
 
-  private static final FhirContext FHIR_CONTEXT = FhirContext.forR4();
-  private static final String SNOMED_URI = "http://snomed.info/sct";
   private static final int SEED = 1234;
-  private TerminologyClient terminologyClient;
-  private static final String VALUE_SET_URI = "http://snomed.info/sct?fhir_vs=ecl/<<131148009";
+  private static final String EXPAND_STUB_ID = "1b134e58-aabf-4b5c-baf7-cce2c4f593c7";
+  private static final String VALUE_SET_URI = SNOMED_URI + "?fhir_vs=ecl/<<131148009";
+
+  @Rule
+  public WireMockRule mockTerminologyService = new WireMockRule(options()
+      .usingFilesUnderDirectory("src/test/resources/wiremock/RandomCodeGeneratorTest"));
+
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
 
   @Before
   public void setUp() {
-    terminologyClient = mock(TerminologyClient.class);
+    TerminologyClient terminologyClient = getR4FhirContext()
+        .newRestfulClient(TerminologyClient.class, "http://localhost:8080/fhir");
     RandomCodeGenerator.initialize(terminologyClient);
+    if (isHttpRecordingEnabled()) {
+      WireMock.startRecording(getTxRecordingSource());
+    }
   }
 
   @Test
   public void getCode() {
-    ValueSet expansionPage1 = (ValueSet) FHIR_CONTEXT.newJsonParser().parseResource(
-        getResourceAsStream("txResponses/expansionPage1.ValueSet.json"));
-    ValueSet expansionPage2 = (ValueSet) FHIR_CONTEXT.newJsonParser().parseResource(
-        getResourceAsStream("txResponses/expansionPage2.ValueSet.json"));
-    
-    when(terminologyClient.expand(argThat(uriType -> uriType.equals(VALUE_SET_URI)),
-        any(IntegerType.class), any(IntegerType.class))).thenReturn(expansionPage1, expansionPage2);
-    
     Code code = RandomCodeGenerator.getCode(VALUE_SET_URI, SEED);
     
-    Assert.assertEquals(code.system, SNOMED_URI);
-    Assert.assertEquals(code.code, "403393000");
-    Assert.assertEquals(code.display, "Stellate pseudoscar in senile purpura");
+    Assert.assertEquals(SNOMED_URI, code.system);
+    Assert.assertEquals("403393000", code.code);
+    Assert.assertEquals("Stellate pseudoscar in senile purpura", code.display);
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void throwsWhenNotConfigured() {
+    thrown.expect(RuntimeException.class);
+    thrown.expectMessage("Unable to generate code from ValueSet URI: terminology service not configured");
+    
     RandomCodeGenerator.reset();
     RandomCodeGenerator.getCode(VALUE_SET_URI, SEED);
   }
 
-  @Test(expected = RuntimeException.class)
-  public void throwsWhenNoExpansion() {
-    ValueSet noExpansion = (ValueSet) FHIR_CONTEXT.newJsonParser()
-        .parseResource(getResourceAsStream("txResponses/noExpansion.ValueSet.json"));
-
-    when(terminologyClient.expand(argThat(uriType -> uriType.equals(VALUE_SET_URI)),
-        any(IntegerType.class), any(IntegerType.class))).thenReturn(noExpansion);
+  @Test
+  public void throwsWhenNoExpansion() throws IOException {
+    thrown.expect(RuntimeException.class);
+    thrown.expectMessage("No expansion present in ValueSet expand result");
+    editStubBody("noExpansion.ValueSet.json");
 
     RandomCodeGenerator.getCode(VALUE_SET_URI, SEED);
   }
 
-  @Test(expected = RuntimeException.class)
-  public void throwsWhenNoTotal() {
-    ValueSet noTotal = (ValueSet) FHIR_CONTEXT.newJsonParser()
-        .parseResource(getResourceAsStream("txResponses/noTotal.ValueSet.json"));
-
-    when(terminologyClient.expand(argThat(uriType -> uriType.equals(VALUE_SET_URI)),
-        any(IntegerType.class), any(IntegerType.class))).thenReturn(noTotal);
+  @Test
+  public void throwsWhenNoTotal() throws IOException {
+    thrown.expect(RuntimeException.class);
+    thrown.expectMessage("No total element in ValueSet expand result");
+    editStubBody("noTotal.ValueSet.json");
 
     RandomCodeGenerator.getCode(VALUE_SET_URI, SEED);
   }
 
-  @Test(expected = RuntimeException.class)
-  public void throwsWhenNoContains() {
-    ValueSet noContains = (ValueSet) FHIR_CONTEXT.newJsonParser()
-        .parseResource(getResourceAsStream("txResponses/noContains.ValueSet.json"));
-
-    when(terminologyClient.expand(argThat(uriType -> uriType.equals(VALUE_SET_URI)),
-        any(IntegerType.class), any(IntegerType.class))).thenReturn(noContains);
+  @Test
+  public void throwsWhenNoContains() throws IOException {
+    thrown.expect(RuntimeException.class);
+    thrown.expectMessage("ValueSet expansion does not contain any codes");
+    editStubBody("noContains.ValueSet.json");
 
     RandomCodeGenerator.getCode(VALUE_SET_URI, SEED);
   }
 
-  @Test(expected = RuntimeException.class)
-  public void throwsWhenMissingCodeElements() {
-    ValueSet missingCodeElements = (ValueSet) FHIR_CONTEXT.newJsonParser()
-        .parseResource(getResourceAsStream("txResponses/missingCodeElements.ValueSet.json"));
-
-    when(terminologyClient.expand(argThat(uriType -> uriType.equals(VALUE_SET_URI)),
-        any(IntegerType.class), any(IntegerType.class))).thenReturn(missingCodeElements);
+  @Test
+  public void throwsWhenMissingCodeElements() throws IOException {
+    thrown.expect(RuntimeException.class);
+    thrown.expectMessage("ValueSet contains element does not contain system, code and display");
+    editStubBody("missingCodeElements.ValueSet.json");
 
     RandomCodeGenerator.getCode(VALUE_SET_URI, SEED);
   }
+
+  @After
+  public void tearDown() {
+    if (isHttpRecordingEnabled()) {
+      WireMock.stopRecording();
+    }
+  }
+
+  private void editStubBody(String body) {
+    StubMapping stub = mockTerminologyService.getSingleStubMapping(UUID.fromString(EXPAND_STUB_ID));
+    stub.setResponse(fhirResponse().withBodyFile(body).build());
+    stub.setPersistent(false);
+    mockTerminologyService.editStubMapping(stub);
+  }
+  
 }

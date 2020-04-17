@@ -1,0 +1,32 @@
+{
+  "id" : "26122cd0-d05a-4a44-8d1a-cfe1c068da46",
+  "name" : "fhir_valueset_expand",
+  "request" : {
+    "url" : "/fhir/ValueSet/$expand",
+    "method" : "POST",
+    "bodyPatterns" : [ {
+      "equalToJson" : "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"url\",\"valueUri\":\"http://snomed.info/sct?fhir_vs=ecl/<<254632001\"},{\"name\":\"count\",\"valueInteger\":1000},{\"name\":\"offset\",\"valueInteger\":0}]}",
+      "ignoreArrayOrder" : true,
+      "ignoreExtraElements" : true
+    } ]
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"resourceType\":\"ValueSet\",\"language\":\"en\",\"url\":\"http://snomed.info/sct/32506021000036107/version/20200229?fhir_vs=ecl%2F%3C%3C254632001\",\"name\":\"SNOMED CT ECL expression\",\"status\":\"active\",\"experimental\":false,\"copyright\":\"This value set includes content from SNOMED CT, which is copyright © 2002+ International Health Terminology Standards Development Organisation (IHTSDO), and distributed by agreement between IHTSDO and HL7. Implementer use of SNOMED CT is not covered by this agreement\",\"expansion\":{\"extension\":[{\"url\":\"http://hl7.org/fhir/StructureDefinition/valueset-unclosed\",\"valueBoolean\":true}],\"identifier\":\"fa564be1-c6cc-4ecd-8302-5734bc73e2ab\",\"timestamp\":\"2020-04-17T19:52:34+10:00\",\"total\":7,\"offset\":0,\"parameter\":[{\"name\":\"version\",\"valueUri\":\"http://snomed.info/sct|http://snomed.info/sct/32506021000036107/version/20200229\"},{\"name\":\"count\",\"valueInteger\":1000},{\"name\":\"offset\",\"valueInteger\":0}],\"contains\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"67831000119107\",\"display\":\"Primary small cell malignant neoplasm of lung, TNM stage 3\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"254633006\",\"display\":\"Oat cell carcinoma of lung\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"67841000119103\",\"display\":\"Primary small cell malignant neoplasm of lung, TNM stage 4\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"67811000119102\",\"display\":\"Primary small cell malignant neoplasm of lung, TNM stage 1\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"67821000119109\",\"display\":\"Primary small cell malignant neoplasm of lung, TNM stage 2\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"683991000119103\",\"display\":\"Extensive stage primary small cell carcinoma of lung\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"254632001\",\"display\":\"Small cell carcinoma of lung\"}]}}",
+    "headers" : {
+      "Server" : "nginx/1.15.9",
+      "Date" : "Fri, 17 Apr 2020 09:52:34 GMT",
+      "Content-Type" : "application/fhir+json;charset=UTF-8",
+      "X-Request-Id" : "efDl25oXHRaIZLmN",
+      "Cache-Control" : "must-revalidate, max-age=1",
+      "Vary" : "Accept,Origin,Accept-Encoding,Accept-Language",
+      "X-Powered-By" : "HAPI FHIR 4.1.0 REST Server (FHIR Server; FHIR 4.0.0/R4)",
+      "X-Content-Type-Options" : "nosniff",
+      "X-XSS-Protection" : "1; mode=block",
+      "X-Frame-Options" : "DENY"
+    }
+  },
+  "uuid" : "26122cd0-d05a-4a44-8d1a-cfe1c068da46",
+  "persistent" : true,
+  "insertionIndex" : 2
+}

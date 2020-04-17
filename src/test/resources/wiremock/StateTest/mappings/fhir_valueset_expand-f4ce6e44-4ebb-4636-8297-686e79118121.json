@@ -1,0 +1,34 @@
+{
+  "id" : "f4ce6e44-4ebb-4636-8297-686e79118121",
+  "name" : "fhir_valueset_expand",
+  "request" : {
+    "url" : "/fhir/ValueSet/$expand",
+    "method" : "POST",
+    "bodyPatterns" : [ {
+      "equalToJson" : "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"url\",\"valueUri\":\"http://snomed.info/sct?fhir_vs=ecl/<788006\"},{\"name\":\"count\",\"valueInteger\":1000},{\"name\":\"offset\",\"valueInteger\":0}]}",
+      "ignoreArrayOrder" : true,
+      "ignoreExtraElements" : true
+    } ]
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"resourceType\":\"ValueSet\",\"language\":\"en\",\"url\":\"http://snomed.info/sct/32506021000036107/version/20200229?fhir_vs=ecl%2F%3C788006\",\"name\":\"SNOMED CT ECL expression\",\"status\":\"active\",\"experimental\":false,\"copyright\":\"This value set includes content from SNOMED CT, which is copyright © 2002+ International Health Terminology Standards Development Organisation (IHTSDO), and distributed by agreement between IHTSDO and HL7. Implementer use of SNOMED CT is not covered by this agreement\",\"expansion\":{\"extension\":[{\"url\":\"http://hl7.org/fhir/StructureDefinition/valueset-unclosed\",\"valueBoolean\":true}],\"identifier\":\"4199f856-d5bd-4111-a9ab-e9bb40805ff8\",\"timestamp\":\"2020-04-17T19:40:30+10:00\",\"total\":10,\"offset\":0,\"parameter\":[{\"name\":\"version\",\"valueUri\":\"http://snomed.info/sct|http://snomed.info/sct/32506021000036107/version/20200229\"},{\"name\":\"count\",\"valueInteger\":1000},{\"name\":\"offset\",\"valueInteger\":0}],\"contains\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"79367009\",\"display\":\"Child diabetes diet\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"52659007\",\"display\":\"Vitamin K restricted diet during anticoagulation therapy\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"9799002\",\"display\":\"Burn patient diet, high calorie, high protein\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"54970002\",\"display\":\"Monoamine restricted diet\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"64300006\",\"display\":\"Oxalate restricted diet\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"315207000\",\"display\":\"Diabetic lipid lowering diet\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"160670007\",\"display\":\"Diabetic diet\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"315208005\",\"display\":\"Diabetic weight reducing diet\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"34170007\",\"display\":\"Adult diabetes diet\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"83573009\",\"display\":\"Phenylalanine restricted diet\"}]}}",
+    "headers" : {
+      "Server" : "nginx/1.15.9",
+      "Date" : "Fri, 17 Apr 2020 09:40:30 GMT",
+      "Content-Type" : "application/fhir+json;charset=UTF-8",
+      "X-Request-Id" : "Po1qWfYeEPSIDsUt",
+      "Cache-Control" : "must-revalidate, max-age=1",
+      "Vary" : "Accept,Origin,Accept-Encoding,Accept-Language",
+      "X-Powered-By" : "HAPI FHIR 4.1.0 REST Server (FHIR Server; FHIR 4.0.0/R4)",
+      "X-Content-Type-Options" : "nosniff",
+      "X-XSS-Protection" : "1; mode=block",
+      "X-Frame-Options" : "DENY"
+    }
+  },
+  "uuid" : "f4ce6e44-4ebb-4636-8297-686e79118121",
+  "persistent" : true,
+  "scenarioName" : "scenario-2-fhir-ValueSet-$expand",
+  "requiredScenarioState" : "scenario-2-fhir-ValueSet-$expand-2",
+  "insertionIndex" : 9
+}

@@ -85,6 +85,7 @@ dependencies {
   testCompile 'org.mockito:mockito-core:2.19.0'
   testCompile 'org.powermock:powermock-module-junit4:1.7.1'
   testCompile 'org.powermock:powermock-api-mockito2:1.7.1'
+  testCompile 'com.github.tomakehurst:wiremock-jre8:2.26.3'
   testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation:4.1.0'
   testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:4.1.0'
   testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:4.1.0'

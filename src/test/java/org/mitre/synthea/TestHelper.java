@@ -1,22 +1,28 @@
 package org.mitre.synthea;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertNotNull;
 
 import ca.uhn.fhir.context.FhirContext;
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-
-import org.junit.Assert;
+import org.apache.commons.io.IOUtils;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
-import org.mockito.Mockito;
 
 public abstract class TestHelper {
+
+  public static final String SNOMED_URI = "http://snomed.info/sct";
+  private static FhirContext r4FhirContext;
 
   /**
    * Returns a test fixture Module by filename.
@@ -51,6 +57,64 @@ public abstract class TestHelper {
         .getResourceAsStream(name);
     assertNotNull(expectedStream);
     return expectedStream;
+  }
+
+  /**
+   * Load a file from test resources as a String.
+   *
+   * @param name the path of the file, relative to the test resources directory
+   * @return a String containing the contents of the file
+   */
+  public static String getResourceAsString(String name) throws IOException {
+    InputStream expectedStream = getResourceAsStream(name);
+    StringWriter writer = new StringWriter();
+    IOUtils.copy(expectedStream, writer, UTF_8);
+    return writer.toString();
+  }
+  
+  /**
+   * Check whether the <code>synthea.test.httpRecording</code> property is set to enable HTTP 
+   * recording, for tests with HTTP mocking.
+   * 
+   * @return true if HTTP recording is enabled
+   */
+  public static boolean isHttpRecordingEnabled() {
+    String recordingProperty = System.getProperty("synthea.test.httpRecordingEnabled");
+    return recordingProperty != null && recordingProperty.equals("true");
+  }
+
+  /**
+   * Return the configured URL for recording terminology HTTP responses.
+   * 
+   * @return the configured terminology service URL
+   */
+  public static String getTxRecordingSource() {
+    String recordingSource = System.getProperty("synthea.test.txRecordingSource");
+    if (recordingSource == null) {
+      throw new RuntimeException("No terminology service recording source configured");
+    }
+    return recordingSource;
+  }
+
+  /**
+   * Get an R4 FHIR Context for testing, but only initialize it once.
+   * 
+   * @return an R4 FhirContext
+   */
+  public static FhirContext getR4FhirContext() {
+    if (r4FhirContext == null) {
+      r4FhirContext = FhirContext.forR4();
+    }
+    return r4FhirContext;
+  }
+
+  /**
+   * Returns a WireMock response builder representing a response from a FHIR server.
+   * 
+   * @return a ResponseDefinitionBuilder object
+   */
+  public static ResponseDefinitionBuilder fhirResponse() {
+    return WireMock.aResponse().withHeader("Content-Type", "application/fhir+json");
   }
 
   /**

@@ -87,7 +87,9 @@ public class HealthRecord implements Serializable {
     }
 
     public String toString() {
-      return String.format("%s %s %s", system, code, display);
+      return isAlreadyMaterialized() 
+             ? String.format("%s %s %s", system, code, display)
+             : valueSet;
     }
 
     public static List<Code> fromJson(JsonArray jsonCodes) {
