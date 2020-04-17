@@ -10,6 +10,7 @@ import static org.mitre.synthea.TestHelper.SNOMED_URI;
 import static org.mitre.synthea.TestHelper.getR4FhirContext;
 import static org.mitre.synthea.TestHelper.getTxRecordingSource;
 import static org.mitre.synthea.TestHelper.isHttpRecordingEnabled;
+import static org.mitre.synthea.TestHelper.wiremockOptions;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -28,13 +29,13 @@ public class CodeTest {
   private static final String VALUE_SET_URI = SNOMED_URI + "?fhir_vs=ecl/<<254632001";
 
   @Rule
-  public WireMockRule mockTerminologyService = new WireMockRule(options()
+  public WireMockRule mockTerminologyService = new WireMockRule(wiremockOptions()
       .usingFilesUnderDirectory("src/test/resources/wiremock/CodeTest"));
 
   @Before
   public void setUp() {
     TerminologyClient terminologyClient = getR4FhirContext()
-        .newRestfulClient(TerminologyClient.class, "http://localhost:8080/fhir");
+        .newRestfulClient(TerminologyClient.class, mockTerminologyService.baseUrl() + "/fhir");
     RandomCodeGenerator.initialize(terminologyClient);
     if (isHttpRecordingEnabled()) {
       WireMock.startRecording(getTxRecordingSource());

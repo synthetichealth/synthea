@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import ca.uhn.fhir.context.FhirContext;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,6 +71,10 @@ public abstract class TestHelper {
     StringWriter writer = new StringWriter();
     IOUtils.copy(expectedStream, writer, UTF_8);
     return writer.toString();
+  }
+  
+  public static WireMockConfiguration wiremockOptions() {
+    return WireMockConfiguration.options().port(5566);
   }
   
   /**

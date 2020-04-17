@@ -6,11 +6,11 @@ import static org.mitre.synthea.TestHelper.fhirResponse;
 import static org.mitre.synthea.TestHelper.getR4FhirContext;
 import static org.mitre.synthea.TestHelper.getTxRecordingSource;
 import static org.mitre.synthea.TestHelper.isHttpRecordingEnabled;
+import static org.mitre.synthea.TestHelper.wiremockOptions;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
-import java.io.IOException;
 import java.util.UUID;
 import org.junit.After;
 import org.junit.Assert;
@@ -27,7 +27,7 @@ public class RandomCodeGeneratorTest {
   private static final String VALUE_SET_URI = SNOMED_URI + "?fhir_vs=ecl/<<131148009";
 
   @Rule
-  public WireMockRule mockTerminologyService = new WireMockRule(options()
+  public WireMockRule mockTerminologyService = new WireMockRule(wiremockOptions()
       .usingFilesUnderDirectory("src/test/resources/wiremock/RandomCodeGeneratorTest"));
 
   @Rule
@@ -36,7 +36,7 @@ public class RandomCodeGeneratorTest {
   @Before
   public void setUp() {
     TerminologyClient terminologyClient = getR4FhirContext()
-        .newRestfulClient(TerminologyClient.class, "http://localhost:8080/fhir");
+        .newRestfulClient(TerminologyClient.class, mockTerminologyService.baseUrl() + "/fhir");
     RandomCodeGenerator.initialize(terminologyClient);
     if (isHttpRecordingEnabled()) {
       WireMock.startRecording(getTxRecordingSource());
@@ -63,7 +63,7 @@ public class RandomCodeGeneratorTest {
   }
 
   @Test
-  public void throwsWhenNoExpansion() throws IOException {
+  public void throwsWhenNoExpansion() {
     thrown.expect(RuntimeException.class);
     thrown.expectMessage("No expansion present in ValueSet expand result");
     editStubBody("noExpansion.ValueSet.json");
@@ -72,7 +72,7 @@ public class RandomCodeGeneratorTest {
   }
 
   @Test
-  public void throwsWhenNoTotal() throws IOException {
+  public void throwsWhenNoTotal() {
     thrown.expect(RuntimeException.class);
     thrown.expectMessage("No total element in ValueSet expand result");
     editStubBody("noTotal.ValueSet.json");
@@ -81,7 +81,7 @@ public class RandomCodeGeneratorTest {
   }
 
   @Test
-  public void throwsWhenNoContains() throws IOException {
+  public void throwsWhenNoContains() {
     thrown.expect(RuntimeException.class);
     thrown.expectMessage("ValueSet expansion does not contain any codes");
     editStubBody("noContains.ValueSet.json");
@@ -90,7 +90,7 @@ public class RandomCodeGeneratorTest {
   }
 
   @Test
-  public void throwsWhenMissingCodeElements() throws IOException {
+  public void throwsWhenMissingCodeElements() {
     thrown.expect(RuntimeException.class);
     thrown.expectMessage("ValueSet contains element does not contain system, code and display");
     editStubBody("missingCodeElements.ValueSet.json");

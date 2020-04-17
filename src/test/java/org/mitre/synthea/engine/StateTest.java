@@ -13,6 +13,7 @@ import static org.mitre.synthea.TestHelper.SNOMED_URI;
 import static org.mitre.synthea.TestHelper.getR4FhirContext;
 import static org.mitre.synthea.TestHelper.getTxRecordingSource;
 import static org.mitre.synthea.TestHelper.isHttpRecordingEnabled;
+import static org.mitre.synthea.TestHelper.wiremockOptions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.withSettings;
 
@@ -61,7 +62,7 @@ public class StateTest {
   private long time;
 
   @Rule
-  public WireMockRule mockTerminologyService = new WireMockRule(options()
+  public WireMockRule mockTerminologyService = new WireMockRule(wiremockOptions()
       .usingFilesUnderDirectory("src/test/resources/wiremock/StateTest"));
 
   /**
@@ -71,7 +72,7 @@ public class StateTest {
   @Before
   public void setup() throws IOException {
     TerminologyClient terminologyClient = getR4FhirContext()
-        .newRestfulClient(TerminologyClient.class, "http://localhost:8080/fhir");
+        .newRestfulClient(TerminologyClient.class, mockTerminologyService.baseUrl() + "/fhir");
     RandomCodeGenerator.initialize(terminologyClient);
     if (isHttpRecordingEnabled()) {
       startRecording(getTxRecordingSource());
