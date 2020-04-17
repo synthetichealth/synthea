@@ -693,7 +693,7 @@ public class CSVExporter {
     // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,VALUE,UNITS
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(observation.start)).append(',');
+    s.append(iso8601Timestamp(observation.start)).append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
 
@@ -726,7 +726,7 @@ public class CSVExporter {
     // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(procedure.start)).append(',');
+    s.append(iso8601Timestamp(procedure.start)).append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
     // CODE
@@ -766,9 +766,9 @@ public class CSVExporter {
     // BASE_COST,PAYER_COVERAGE,DISPENSES,TOTALCOST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(medication.start)).append(',');
+    s.append(iso8601Timestamp(medication.start)).append(',');
     if (medication.stop != 0L) {
-      s.append(dateFromTimestamp(medication.stop));
+      s.append(iso8601Timestamp(medication.stop));
     }
     s.append(',');
     s.append(personID).append(',');
@@ -847,7 +847,7 @@ public class CSVExporter {
     // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,BASE_COST
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(immunization.start)).append(',');
+    s.append(iso8601Timestamp(immunization.start)).append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
     // CODE
@@ -920,7 +920,7 @@ public class CSVExporter {
 
     String studyID = UUID.randomUUID().toString();
     s.append(studyID).append(',');
-    s.append(dateFromTimestamp(imagingStudy.start)).append(',');
+    s.append(iso8601Timestamp(imagingStudy.start)).append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
 
@@ -960,9 +960,9 @@ public class CSVExporter {
     // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,UDI
     StringBuilder s = new StringBuilder();
     
-    s.append(dateFromTimestamp(device.start)).append(',');
+    s.append(iso8601Timestamp(device.start)).append(',');
     if (device.stop != 0L) {
-      s.append(dateFromTimestamp(device.stop));
+      s.append(iso8601Timestamp(device.stop));
     }
     s.append(',');
     
