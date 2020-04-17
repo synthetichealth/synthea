@@ -334,24 +334,7 @@
     },
     "ICU Medications": {
       "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Antibacterial_Injection",
-          "condition": {
-            "condition_type": "Active Condition",
-            "codes": [
-              {
-                "system": "SNOMED-CT",
-                "code": "65710008",
-                "display": "Acute respiratory failure (disorder)"
-              }
-            ]
-          }
-        },
-        {
-          "transition": "Metered_Dose_Inhaler_ICU"
-        }
-      ]
+      "direct_transition": "Clinical_Trial_Medications"
     },
     "ICU Supplies": {
       "type": "CallSubmodule",
@@ -369,7 +352,7 @@
       ],
       "administration": true,
       "reason": "Mild Respiratory Distress",
-      "direct_transition": "Antimalarial_Medication"
+      "direct_transition": "Daily_Acetaminophen_for_Fever"
     },
     "Oxygen": {
       "type": "Procedure",
@@ -405,19 +388,6 @@
         }
       ]
     },
-    "Antimalarial_Medication": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "979092",
-          "display": "Hydroxychloroquine Sulfate 200 MG Oral Tablet"
-        }
-      ],
-      "administration": true,
-      "reason": "Diagnosed COVID",
-      "direct_transition": "Daily_Acetaminophen_for_Fever"
-    },
     "Daily_Acetaminophen_for_Fever": {
       "type": "MedicationOrder",
       "codes": [
@@ -428,23 +398,7 @@
         }
       ],
       "administration": true,
-      "direct_transition": "Hospitalization Supplies"
-    },
-    "Antibacterial_Injection": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "1668238",
-          "display": "Azithromycin 500 MG Injection"
-        }
-      ],
-      "administration": true,
-      "reason": "Pneumonia",
-      "remarks": [
-        "Really this is only administered if there is an additional bacterial infection in the lungs."
-      ],
-      "direct_transition": "Antimalarial_Medication_ICU"
+      "direct_transition": "Clinical Trial Medications"
     },
     "Ventilation": {
       "type": "Procedure",
@@ -557,36 +511,6 @@
       "reason": "Mild Respiratory Distress",
       "direct_transition": "ICU Medications"
     },
-    "Antimalarial_Medication_ICU": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "979092",
-          "display": "Hydroxychloroquine Sulfate 200 MG Oral Tablet"
-        }
-      ],
-      "administration": true,
-      "reason": "Diagnosed COVID",
-      "conditional_transition": [
-        {
-          "transition": "Vasopressor A",
-          "condition": {
-            "condition_type": "Active Condition",
-            "codes": [
-              {
-                "system": "SNOMED-CT",
-                "code": "76571007",
-                "display": "Septic shock (disorder)"
-              }
-            ]
-          }
-        },
-        {
-          "transition": "Daily_Acetaminophen_for_Fever_ICU"
-        }
-      ]
-    },
     "Metered_Dose_Inhaler_ICU": {
       "type": "MedicationOrder",
       "codes": [
@@ -598,7 +522,24 @@
       ],
       "administration": true,
       "reason": "Mild Respiratory Distress",
-      "direct_transition": "Antimalarial_Medication_ICU"
+      "conditional_transition": [
+        {
+          "transition": "Vasopressor A",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 76571007,
+                "display": "Septic shock (disorder)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Daily_Acetaminophen_for_Fever_ICU"
+        }
+      ]
     },
     "Daily_Acetaminophen_for_Fever_ICU": {
       "type": "MedicationOrder",
@@ -866,6 +807,16 @@
     "End Encounter at Death": {
       "type": "EncounterEnd",
       "direct_transition": "Death"
+    },
+    "Clinical Trial Medications": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/medications",
+      "direct_transition": "Hospitalization Supplies"
+    },
+    "Clinical_Trial_Medications": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/medications",
+      "direct_transition": "Metered_Dose_Inhaler_ICU"
     }
   }
 }
