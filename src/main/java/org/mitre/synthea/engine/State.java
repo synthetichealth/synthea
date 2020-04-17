@@ -226,7 +226,9 @@ public abstract class State implements Cloneable, Serializable {
   
   private static Field getField(Class clazz, String fieldName) throws NoSuchFieldException {
     try {
-      return clazz.getDeclaredField(fieldName);
+      Field field = clazz.getDeclaredField(fieldName);
+      field.setAccessible(true);
+      return field;
     } catch (NoSuchFieldException e) {
       Class superclass = clazz.getSuperclass();
       if (superclass == null) {
