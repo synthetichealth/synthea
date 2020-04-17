@@ -11,14 +11,11 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.mitre.synthea.engine.ExpressedConditionRecord;
 import org.mitre.synthea.engine.ExpressedSymptom;
@@ -402,7 +399,9 @@ public class Person implements Serializable, QuadTreeElement {
     return active;
   }
 
-  // Mark the largest valued symptom as addressed.
+  /**
+   * Mark the largest valued symptom as addressed.
+   */
   public void addressLargestSymptom() {
     String highestType = "";
     String highestCause = "";
@@ -422,6 +421,9 @@ public class Person implements Serializable, QuadTreeElement {
     symptoms.get(highestType).addressSource(highestCause);
   }
 
+  /**
+   * Get a vital sign value.
+   */
   public Double getVitalSign(VitalSign vitalSign, long time) {
     ValueGenerator valueGenerator = vitalSigns.get(vitalSign);
     if (valueGenerator == null) {
@@ -507,6 +509,9 @@ public class Person implements Serializable, QuadTreeElement {
     return hadPriorState(name, null, null);
   }
 
+  /**
+   * Check for prior existence of specified state. 
+   */
   public boolean hadPriorState(String name, String since, Long within) {
     if (history == null) {
       return false;
@@ -525,6 +530,9 @@ public class Person implements Serializable, QuadTreeElement {
     return false;
   }
 
+  /**
+   * Start an encounter for the current provider.
+   */
   public Encounter encounterStart(long time, EncounterType type) {
     // Set the record for the current provider as active
     Provider provider = getProvider(type, time);
@@ -569,6 +577,9 @@ public class Person implements Serializable, QuadTreeElement {
 
   public static final String CURRENT_ENCOUNTERS = "current-encounters";
 
+  /**
+   * Get the current encounter for the specified module or null if none exists.
+   */
   @SuppressWarnings("unchecked")
   public Encounter getCurrentEncounter(Module module) {
     Map<String, Encounter> moduleToCurrentEncounter
@@ -582,6 +593,9 @@ public class Person implements Serializable, QuadTreeElement {
     return moduleToCurrentEncounter.get(module.name);
   }
 
+  /**
+   * Set the current encounter for the specified module.
+   */
   @SuppressWarnings("unchecked")
   public void setCurrentEncounter(Module module, Encounter encounter) {
     Map<String, Encounter> moduleToCurrentEncounter
@@ -602,6 +616,10 @@ public class Person implements Serializable, QuadTreeElement {
   public static final String CURRENTPROVIDER = "currentProvider";
   public static final String PREFERREDYPROVIDER = "preferredProvider";
 
+  /**
+   * Get the preferred provider for the specified encounter type. If none is set the
+   * provider at the specified time as the preferred provider for this encounter type.
+   */
   public Provider getProvider(EncounterType type, long time) {
     String key = PREFERREDYPROVIDER + type;
     if (!attributes.containsKey(key)) {
@@ -610,6 +628,9 @@ public class Person implements Serializable, QuadTreeElement {
     return (Provider) attributes.get(key);
   }
 
+  /**
+   * Set the preferred provider for the specified encounter type.
+   */
   public void setProvider(EncounterType type, Provider provider) {
     if (provider == null) {
       throw new RuntimeException("Unable to find provider: " + type);
@@ -618,11 +639,18 @@ public class Person implements Serializable, QuadTreeElement {
     attributes.put(key, provider);
   }
 
+  /**
+   * Set the preferred provider for the specified encounter type to be the provider
+   * at the specified time.
+   */
   public void setProvider(EncounterType type, long time) {
     Provider provider = Provider.findService(this, type, time);
     setProvider(type, provider);
   }
 
+  /**
+   * Set the current provider to be the supplied provider.
+   */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void addCurrentProvider(String context, Provider provider) {
     Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
@@ -633,6 +661,9 @@ public class Person implements Serializable, QuadTreeElement {
     attributes.put(CURRENTPROVIDER, currentProviders);
   }
 
+  /**
+   * Remove the current provider for the specified module.
+   */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void removeCurrentProvider(String module) {
     Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);
@@ -641,6 +672,9 @@ public class Person implements Serializable, QuadTreeElement {
     }
   }
 
+  /**
+   * Get the current provider for the specified module.
+   */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public Provider getCurrentProvider(String module) {
     Map<String, Provider> currentProviders = (Map) attributes.get(CURRENTPROVIDER);

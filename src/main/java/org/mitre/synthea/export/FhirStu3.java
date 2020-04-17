@@ -2195,8 +2195,8 @@ public class FhirStu3 {
    * @param encounter      The encounter during which the supplies were delivered
    * @return The added Entry.
    */
-  private static BundleEntryComponent supplyDelivery(BundleEntryComponent personEntry, Bundle bundle,
-      HealthRecord.Supply supply, Encounter encounter) {
+  private static BundleEntryComponent supplyDelivery(BundleEntryComponent personEntry,
+          Bundle bundle, HealthRecord.Supply supply, Encounter encounter) {
    
     SupplyDelivery supplyResource = new SupplyDelivery();
     supplyResource.setStatus(SupplyDeliveryStatus.COMPLETED);
@@ -2210,7 +2210,7 @@ public class FhirStu3 {
     supplyResource.setType(type);
     
     SupplyDeliverySuppliedItemComponent suppliedItem = new SupplyDeliverySuppliedItemComponent();
-    suppliedItem.setItem( mapCodeToCodeableConcept(supply.code, SNOMED_URI));
+    suppliedItem.setItem(mapCodeToCodeableConcept(supply.code, SNOMED_URI));
     
     SimpleQuantity quantity = new SimpleQuantity();
     quantity.setValue(supply.quantity);

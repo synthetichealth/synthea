@@ -54,16 +54,25 @@ public class Utilities {
     }
   }
 
+  /**
+   * Convert a calendar year (e.g. 2020) to a Unix timestamp
+   */
   public static long convertCalendarYearsToTime(int years) {
     return convertTime("years", (long) (years - 1970));
   }
 
+  /**
+   * Get the year of a Unix timestamp.
+   */
   public static int getYear(long time) {
     Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
     calendar.setTimeInMillis(time);
     return calendar.get(Calendar.YEAR);
   }
 
+  /**
+   * Get the month of a Unix timestamp.
+   */
   public static int getMonth(long time) {
     Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
     calendar.setTimeInMillis(time);
@@ -95,12 +104,21 @@ public class Utilities {
     return retVal;
   }
 
+  /**
+   * Calculates 1 - (1-risk)^(currTimeStepInMS/originalPeriodInMS).
+   */
   public static double convertRiskToTimestep(double risk, double originalPeriodInMS) {
     double currTimeStepInMS = Double.parseDouble(Config.get("generate.timestep"));
 
     return 1 - Math.pow(1 - risk, currTimeStepInMS / originalPeriodInMS);
   }
 
+  /**
+   * Compare two objects. lhs and rhs must be of the same type (Number, Boolean, String or Code)
+   * Numbers are converted to double prior to comparison.
+   * Supported operators are: <, <=, ==, >=, >, !=, is nil, is not nil. Only lhs is checked for
+   * is nil and is not nil.
+   */
   public static boolean compare(Object lhs, Object rhs, String operator) {
     if (operator.equals("is nil")) {
       return lhs == null;
@@ -123,6 +141,11 @@ public class Utilities {
     }
   }
 
+  /**
+   * Compare two Doubles.
+   * Supported operators are: <, <=, ==, >=, >, !=, is nil, is not nil. Only lhs is checked for
+   * is nil and is not nil.
+   */
   public static boolean compare(Double lhs, Double rhs, String operator) {
     switch (operator) {
       case "<":
@@ -147,6 +170,11 @@ public class Utilities {
     }
   }
 
+  /**
+   * Compare two Booleans.
+   * Supported operators are: <, <=, ==, >=, >, !=, is nil, is not nil. Only lhs is checked for
+   * is nil and is not nil.
+   */
   public static boolean compare(Boolean lhs, Boolean rhs, String operator) {
     switch (operator) {
       case "<":
@@ -171,6 +199,11 @@ public class Utilities {
     }
   }
 
+  /**
+   * Compare two Strings.
+   * Supported operators are: <, <=, ==, >=, >, !=, is nil, is not nil. Only lhs is checked for
+   * is nil and is not nil.
+   */
   public static boolean compare(String lhs, String rhs, String operator) {
     switch (operator) {
       case "<":
@@ -195,6 +228,11 @@ public class Utilities {
     }
   }
 
+  /**
+   * Compare two Integers.
+   * Supported operators are: <, <=, ==, >=, >, !=, is nil, is not nil. Only lhs is checked for
+   * is nil and is not nil.
+   */
   public static boolean compare(Integer lhs, Integer rhs, String operator) {
     switch (operator) {
       case "<":
@@ -219,6 +257,11 @@ public class Utilities {
     }
   }
 
+  /**
+   * Compare two Codes.
+   * Supported operators are: !=, is nil, is not nil. Only lhs is checked for
+   * is nil and is not nil.
+   */
   public static boolean compare(Code lhs, Code rhs, String operator) {
     switch (operator) {
       case "==":

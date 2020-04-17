@@ -454,6 +454,9 @@ public class Generator {
     return person;
   }
   
+  /**
+   * Update person record to stop time, record the entry and export record.
+   */
   public Person updateRecordExportPerson(Person person, int index) {
     updatePerson(person);
     recordPerson(person, index);
