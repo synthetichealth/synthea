@@ -208,8 +208,9 @@ public abstract class State implements Cloneable, Serializable {
     try {
       Field field = getField(this.getClass(), fieldName);
       @SuppressWarnings("unchecked") List<Code> codes = (List<Code>) field.get(this);
-      if (codes == null)
+      if (codes == null) {
         return;
+      }
       List<Code> materializedCodes = new ArrayList<>();
       for (int i = 0; i < codes.size(); i++) {
         Code code = codes.get(i);

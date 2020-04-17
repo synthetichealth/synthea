@@ -103,8 +103,8 @@ public class HealthRecord implements Serializable {
     /**
      * If this Code is defined using a ValueSet URI, resolve it into a randomly selected code from
      * the expansion of that ValueSet.
-     * <p>
-     * If the Code is defined as (system, code, display), do nothing and return the Code untouched.
+     * 
+     * <p>If the Code is defined as (system, code, display), do nothing and return the Code untouched.
      *
      * @param seed a random seed value used to ensure reproducibility of the code selection
      * @return the updated Code

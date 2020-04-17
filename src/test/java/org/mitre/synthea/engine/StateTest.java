@@ -1,6 +1,7 @@
 package org.mitre.synthea.engine;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.startRecording;
+import static com.github.tomakehurst.wiremock.client.WireMock.stopRecording;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -279,7 +280,8 @@ public class StateTest {
     code = enc.conditions.get(0).codes.get(0);
     assertEquals(SNOMED_URI, code.system);
     assertEquals("399870006", code.code);
-    assertEquals("Non-high-risk proliferative diabetic retinopathy with no macular oedema", code.display);
+    assertEquals("Non-high-risk proliferative diabetic retinopathy with no macular oedema",
+        code.display);
     Long onsetTime = person.getOnsetConditionRecord().getConditionLastOnsetTimeFromModule(
         module.name, code.display
     );
@@ -841,7 +843,8 @@ public class StateTest {
     Code code = condition.codes.get(0);
     assertEquals(SNOMED_URI, code.system);
     assertEquals("399870006", code.code);
-    assertEquals("Non-high-risk proliferative diabetic retinopathy with no macular oedema", code.display);
+    assertEquals("Non-high-risk proliferative diabetic retinopathy with no macular oedema", 
+        code.display);
   }
 
   @Test
@@ -1150,7 +1153,8 @@ public class StateTest {
     Code code = condition.codes.get(0);
     assertEquals(SNOMED_URI, code.system);
     assertEquals("399870006", code.code);
-    assertEquals("Non-high-risk proliferative diabetic retinopathy with no macular oedema", code.display);
+    assertEquals("Non-high-risk proliferative diabetic retinopathy with no macular oedema", 
+        code.display);
 
     Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
         module.name, code.display
@@ -2363,7 +2367,7 @@ public class StateTest {
   @After
   public void tearDown() {
     if (isHttpRecordingEnabled()) {
-      WireMock.stopRecording();
+      stopRecording();
     }
   }
 }

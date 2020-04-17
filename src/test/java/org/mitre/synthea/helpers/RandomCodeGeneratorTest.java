@@ -1,14 +1,22 @@
 package org.mitre.synthea.helpers;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import static org.mitre.synthea.TestHelper.*;
+import static org.mitre.synthea.TestHelper.SNOMED_URI;
+import static org.mitre.synthea.TestHelper.fhirResponse;
+import static org.mitre.synthea.TestHelper.getR4FhirContext;
+import static org.mitre.synthea.TestHelper.getTxRecordingSource;
+import static org.mitre.synthea.TestHelper.isHttpRecordingEnabled;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import java.io.IOException;
 import java.util.UUID;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
@@ -47,7 +55,8 @@ public class RandomCodeGeneratorTest {
   @Test
   public void throwsWhenNotConfigured() {
     thrown.expect(RuntimeException.class);
-    thrown.expectMessage("Unable to generate code from ValueSet URI: terminology service not configured");
+    thrown.expectMessage(
+        "Unable to generate code from ValueSet URI: terminology service not configured");
     
     RandomCodeGenerator.reset();
     RandomCodeGenerator.getCode(VALUE_SET_URI, SEED);

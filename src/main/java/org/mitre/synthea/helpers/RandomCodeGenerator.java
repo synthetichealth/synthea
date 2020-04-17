@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Generates random codes based upon ValueSet URIs, with the help of a FHIR terminology service
  * API.
- * <p>
- * The URL for the terminology service is configured using the <code>generate.terminology_service_url</code>
- * property.
+ * 
+ * <p>The URL for the terminology service is configured using the 
+ * <code>generate.terminology_service_url</code> property.
  */
 public abstract class RandomCodeGenerator {
 
@@ -84,7 +84,9 @@ public abstract class RandomCodeGenerator {
   private static ValueSetExpansionComponent expandValueSet(String valueSetUri) {
     ValueSet response;
     ValueSetExpansionComponent result = new ValueSetExpansionComponent();
-    int total, offset = 0, count = 0;
+    int total;
+    int offset = 0;
+    int count = 0;
 
     do {
       offset += count;
