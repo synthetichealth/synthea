@@ -49,7 +49,8 @@ public class LookupTableTransitionTest {
     Module lookuptabletestModule = TestHelper.getFixture("lookuptable_test.json");
     modules.put("lookuptable_test", new Module.ModuleSupplier(lookuptabletestModule));
     Module lookuptabletesttimerangeModule = TestHelper.getFixture("lookuptable_timerangetest.json");
-    modules.put("lookuptable_timerangetest", new Module.ModuleSupplier(lookuptabletesttimerangeModule));
+    modules.put("lookuptable_timerangetest", new Module.ModuleSupplier(
+            lookuptabletesttimerangeModule));
 
     /* Create Mild Lookuptablitis Condition */
     mildLookuptablitis = new ActiveCondition();

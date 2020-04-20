@@ -25,6 +25,10 @@ import org.mitre.synthea.world.concepts.VitalSign;
 public class PersonTest {
   private Person person;
 
+  /**
+   * Create a person for use in each test.
+   * @throws IOException if something goes wrong.
+   */
   @Before
   public void setup() throws IOException {
     TestHelper.exportOff();
