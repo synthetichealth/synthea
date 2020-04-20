@@ -1,21 +1,24 @@
 package org.mitre.synthea.editors;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mitre.synthea.editors.GrowthDataErrorsEditor;
-import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.HealthRecord;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
 
 public class GrowthDataErrorsEditorTest {
   private HealthRecord record;
   private HealthRecord.Encounter first;
   private HealthRecord.Encounter second;
 
+  /**
+   * Create a couple of encounters for use in later tests.
+   */
   @Before
   public void setup() {
     record = new HealthRecord(new Person(1));
@@ -51,53 +54,63 @@ public class GrowthDataErrorsEditorTest {
   @Test
   public void introduceWeightUnitError() {
     GrowthDataErrorsEditor.introduceWeightUnitError(first);
-    assertEquals(110.25, (Double) first.findObservation(GrowthDataErrorsEditor.WEIGHT_LOINC_CODE).value, 0.1);
+    assertEquals(110.25, (Double) first.findObservation(
+            GrowthDataErrorsEditor.WEIGHT_LOINC_CODE).value, 0.1);
   }
 
   @Test
   public void introduceHeightUnitError() {
     GrowthDataErrorsEditor.introduceHeightUnitError(first);
-    assertEquals(59.1, (Double) first.findObservation(GrowthDataErrorsEditor.HEIGHT_LOINC_CODE).value, 0.1);
+    assertEquals(59.1, (Double) first.findObservation(
+            GrowthDataErrorsEditor.HEIGHT_LOINC_CODE).value, 0.1);
   }
 
   @Test
   public void introduceTransposeError() {
     GrowthDataErrorsEditor.introduceTransposeError(first, "weight");
-    assertEquals(5, (Double) first.findObservation(GrowthDataErrorsEditor.WEIGHT_LOINC_CODE).value, 0.1);
+    assertEquals(5, (Double) first.findObservation(
+            GrowthDataErrorsEditor.WEIGHT_LOINC_CODE).value, 0.1);
 
     GrowthDataErrorsEditor.introduceTransposeError(second, "height");
-    assertEquals(106, (Double) second.findObservation(GrowthDataErrorsEditor.HEIGHT_LOINC_CODE).value, 0.1);
+    assertEquals(106, (Double) second.findObservation(
+            GrowthDataErrorsEditor.HEIGHT_LOINC_CODE).value, 0.1);
   }
 
   @Test
   public void introduceWeightSwitchError() {
     GrowthDataErrorsEditor.introduceWeightSwitchError(first);
-    assertEquals(150, (Double) first.findObservation(GrowthDataErrorsEditor.WEIGHT_LOINC_CODE).value, 0.1);
+    assertEquals(150, (Double) first.findObservation(
+            GrowthDataErrorsEditor.WEIGHT_LOINC_CODE).value, 0.1);
   }
 
   @Test
   public void introduceHeightSwitchError() {
     GrowthDataErrorsEditor.introduceHeightSwitchError(second);
-    assertEquals(160, (Double) second.findObservation(GrowthDataErrorsEditor.WEIGHT_LOINC_CODE).value, 0.1);
+    assertEquals(160, (Double) second.findObservation(
+            GrowthDataErrorsEditor.WEIGHT_LOINC_CODE).value, 0.1);
   }
 
   @Test
   public void introduceWeightExtremeError() {
     GrowthDataErrorsEditor.introduceWeightExtremeError(first);
-    assertEquals(500, (Double) first.findObservation(GrowthDataErrorsEditor.WEIGHT_LOINC_CODE).value, 0.1);
+    assertEquals(500, (Double) first.findObservation(
+            GrowthDataErrorsEditor.WEIGHT_LOINC_CODE).value, 0.1);
   }
 
   @Test
   public void introduceHeightExtremeError() {
     GrowthDataErrorsEditor.introduceHeightExtremeError(second);
-    assertEquals(1600, (Double) second.findObservation(GrowthDataErrorsEditor.HEIGHT_LOINC_CODE).value, 0.1);
+    assertEquals(1600, (Double) second.findObservation(
+            GrowthDataErrorsEditor.HEIGHT_LOINC_CODE).value, 0.1);
   }
 
   @Test
   public void introduceHeightAbsoluteError() {
     GrowthDataErrorsEditor.introduceHeightAbsoluteError(first, new Random());
-    assertTrue((Double) first.findObservation(GrowthDataErrorsEditor.HEIGHT_LOINC_CODE).value <= 147d);
-    assertTrue((Double) first.findObservation(GrowthDataErrorsEditor.HEIGHT_LOINC_CODE).value >= 144d);
+    assertTrue((Double) first.findObservation(
+            GrowthDataErrorsEditor.HEIGHT_LOINC_CODE).value <= 147d);
+    assertTrue((Double) first.findObservation(
+            GrowthDataErrorsEditor.HEIGHT_LOINC_CODE).value >= 144d);
   }
 
   @Test
@@ -121,13 +134,15 @@ public class GrowthDataErrorsEditorTest {
   @Test
   public void introduceWeightCarriedForwardError() {
     GrowthDataErrorsEditor.introduceWeightCarriedForwardError(second);
-    assertEquals(50, (Double) second.findObservation(GrowthDataErrorsEditor.WEIGHT_LOINC_CODE).value, 0.1);
+    assertEquals(50, (Double) second.findObservation(
+            GrowthDataErrorsEditor.WEIGHT_LOINC_CODE).value, 0.1);
   }
 
   @Test
   public void introduceHeightCarriedForwardError() {
     GrowthDataErrorsEditor.introduceHeightCarriedForwardError(second);
-    assertEquals(150, (Double) second.findObservation(GrowthDataErrorsEditor.HEIGHT_LOINC_CODE).value, 0.1);
+    assertEquals(150, (Double) second.findObservation(
+            GrowthDataErrorsEditor.HEIGHT_LOINC_CODE).value, 0.1);
   }
 
   @Test

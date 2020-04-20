@@ -107,8 +107,6 @@ import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.Procedure.ProcedureStatus;
 import org.hl7.fhir.r4.model.Provenance;
 import org.hl7.fhir.r4.model.Provenance.ProvenanceAgentComponent;
-import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliveryStatus;
-import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliverySuppliedItemComponent;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
@@ -116,6 +114,8 @@ import org.hl7.fhir.r4.model.ServiceRequest;
 import org.hl7.fhir.r4.model.SimpleQuantity;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.SupplyDelivery;
+import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliveryStatus;
+import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliverySuppliedItemComponent;
 import org.hl7.fhir.r4.model.Timing;
 import org.hl7.fhir.r4.model.Timing.TimingRepeatComponent;
 import org.hl7.fhir.r4.model.Timing.UnitsOfTime;
@@ -1669,8 +1669,8 @@ public class FhirR4 {
    * @param encounter      The encounter during which the supplies were delivered
    * @return The added Entry.
    */
-  private static BundleEntryComponent supplyDelivery(BundleEntryComponent personEntry, Bundle bundle,
-      HealthRecord.Supply supply, Encounter encounter) {
+  private static BundleEntryComponent supplyDelivery(BundleEntryComponent personEntry,
+          Bundle bundle, HealthRecord.Supply supply, Encounter encounter) {
    
     SupplyDelivery supplyResource = new SupplyDelivery();
     supplyResource.setStatus(SupplyDeliveryStatus.COMPLETED);

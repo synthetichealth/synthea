@@ -1395,7 +1395,8 @@ public class FhirDstu2 {
     if (device.model != null) {
       deviceResource.setModel(device.model);
     }
-    deviceResource.setManufactureDate((DateTimeDt)convertFhirDateTime(device.manufactureTime, true));
+    deviceResource.setManufactureDate((DateTimeDt)convertFhirDateTime(
+            device.manufactureTime, true));
     deviceResource.setExpiry((DateTimeDt)convertFhirDateTime(device.expirationTime, true));
     deviceResource.setLotNumber(device.lotNumber);
     deviceResource.setType(mapCodeToCodeableConcept(device.codes.get(0), SNOMED_URI));

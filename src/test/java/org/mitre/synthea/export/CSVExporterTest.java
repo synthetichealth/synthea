@@ -29,6 +29,10 @@ public class CSVExporterTest {
   
   private static File exportDir;
 
+  /**
+   * Global setup for export tests.
+   * @throws Exception if something goes wrong
+   */
   @BeforeClass
   public static void setUpExportDir() throws Exception {
     TestHelper.exportOff();
@@ -48,17 +52,17 @@ public class CSVExporterTest {
     Payer.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     int numberOfPeople = 10;
-    ExporterRuntimeOptions eOpts = new ExporterRuntimeOptions();
-    eOpts.deferExports = true;
-    GeneratorOptions gOpts = new GeneratorOptions();
-    gOpts.population = numberOfPeople;
-    Generator generator = new Generator(gOpts, eOpts);
+    ExporterRuntimeOptions exportOpts = new ExporterRuntimeOptions();
+    exportOpts.deferExports = true;
+    GeneratorOptions generatorOpts = new GeneratorOptions();
+    generatorOpts.population = numberOfPeople;
+    Generator generator = new Generator(generatorOpts, exportOpts);
     generator.options.overflow = false;
     for (int i = 0; i < numberOfPeople; i++) {
       generator.generatePerson(i);
     }
     // Adding post completion exports to generate organizations and providers CSV files
-    Exporter.runPostCompletionExports(generator, eOpts);
+    Exporter.runPostCompletionExports(generator, exportOpts);
 
     // if we get here we at least had no exceptions
 

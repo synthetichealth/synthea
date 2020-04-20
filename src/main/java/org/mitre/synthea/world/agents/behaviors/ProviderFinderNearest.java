@@ -18,9 +18,10 @@ public class ProviderFinderNearest implements IProviderFinder {
     for (Provider provider : providers) {
       if (provider.accepts(person, time)
           && (provider.hasService(service) || service == null)) {
-        if (person.attributes.containsKey("veteran") &&
-            !("VA Facility".equals(provider.type)) &&
-            !(service.equals(EncounterType.URGENTCARE) || service.equals(EncounterType.EMERGENCY))) {
+        if (person.attributes.containsKey("veteran")
+                && !("VA Facility".equals(provider.type))
+                && !(service.equals(
+                        EncounterType.URGENTCARE) || service.equals(EncounterType.EMERGENCY))) {
           continue;
         }
         distance = provider.getLonLat().distance(person.getLonLat());
