@@ -116,8 +116,8 @@ public class Utilities {
   /**
    * Compare two objects. lhs and rhs must be of the same type (Number, Boolean, String or Code)
    * Numbers are converted to double prior to comparison.
-   * Supported operators are: <, <=, ==, >=, >, !=, is nil, is not nil. Only lhs is checked for
-   * is nil and is not nil.
+   * Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil. 
+   * Only lhs is checked for is nil and is not nil.
    */
   public static boolean compare(Object lhs, Object rhs, String operator) {
     if (operator.equals("is nil")) {
@@ -143,8 +143,8 @@ public class Utilities {
 
   /**
    * Compare two Doubles.
-   * Supported operators are: <, <=, ==, >=, >, !=, is nil, is not nil. Only lhs is checked for
-   * is nil and is not nil.
+   * Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
+   * Only lhs is checked for is nil and is not nil.
    */
   public static boolean compare(Double lhs, Double rhs, String operator) {
     switch (operator) {
@@ -172,8 +172,8 @@ public class Utilities {
 
   /**
    * Compare two Booleans.
-   * Supported operators are: <, <=, ==, >=, >, !=, is nil, is not nil. Only lhs is checked for
-   * is nil and is not nil.
+   * Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
+   * Only lhs is checked for is nil and is not nil.
    */
   public static boolean compare(Boolean lhs, Boolean rhs, String operator) {
     switch (operator) {
@@ -201,8 +201,8 @@ public class Utilities {
 
   /**
    * Compare two Strings.
-   * Supported operators are: <, <=, ==, >=, >, !=, is nil, is not nil. Only lhs is checked for
-   * is nil and is not nil.
+   * Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
+   * Only lhs is checked for is nil and is not nil.
    */
   public static boolean compare(String lhs, String rhs, String operator) {
     switch (operator) {
@@ -230,8 +230,8 @@ public class Utilities {
 
   /**
    * Compare two Integers.
-   * Supported operators are: <, <=, ==, >=, >, !=, is nil, is not nil. Only lhs is checked for
-   * is nil and is not nil.
+   * Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
+   * Only lhs is checked for is nil and is not nil.
    */
   public static boolean compare(Integer lhs, Integer rhs, String operator) {
     switch (operator) {
