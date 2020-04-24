@@ -6,7 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "IL6 Check"
+      "direct_transition": "Hospital Inpatient Admission"
     },
     "Terminal": {
       "type": "Terminal"
@@ -366,28 +366,6 @@
       "reason": "Mild Respiratory Distress",
       "direct_transition": "Hospitalization Medications"
     },
-    "Set_IL6": {
-      "type": "SetAttribute",
-      "attribute": "covid19_il6",
-      "value": true,
-      "direct_transition": "Hospital Inpatient Admission"
-    },
-    "IL6 Check": {
-      "type": "Simple",
-      "remarks": [
-        "Only patients on clinical trials would get IL6 tests."
-      ],
-      "distributed_transition": [
-        {
-          "transition": "Set_IL6",
-          "distribution": 0.03
-        },
-        {
-          "transition": "Hospital Inpatient Admission",
-          "distribution": 0.97
-        }
-      ]
-    },
     "Daily_Acetaminophen_for_Fever": {
       "type": "MedicationOrder",
       "codes": [
@@ -410,20 +388,7 @@
         }
       ],
       "reason": "Ventilator Reason",
-      "conditional_transition": [
-        {
-          "transition": "Only for Vented Patients with High IL6",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_il6",
-            "operator": "==",
-            "value": true
-          }
-        },
-        {
-          "transition": "ICU Medications"
-        }
-      ]
+      "direct_transition": "ICU Medications"
     },
     "ICU First Day": {
       "type": "Simple",
@@ -765,34 +730,6 @@
           "transition": "End Symptoms"
         }
       ]
-    },
-    "Only for Vented Patients with High IL6": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "1657981",
-          "display": "20 ML tocilizumab 20 MG/ML Injection"
-        }
-      ],
-      "remarks": [
-        "Tocilizumab injection to prevent cytokine storms."
-      ],
-      "administration": true,
-      "reason": "Diagnosed COVID",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 8,
-          "unit": "hours"
-        },
-        "duration": {
-          "quantity": 24,
-          "unit": "hours"
-        }
-      },
-      "direct_transition": "ICU Medications"
     },
     "Reclaim Ventilator": {
       "type": "DeviceEnd",

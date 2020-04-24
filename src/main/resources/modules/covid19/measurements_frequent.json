@@ -28,8 +28,9 @@
           "transition": "Interleukin_6_Rarely_Used_Clinical_Trial_Patients_Only",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "covid19_il6",
-            "operator": "is not nil"
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "toclizumab"
           }
         },
         {

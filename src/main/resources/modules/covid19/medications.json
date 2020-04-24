@@ -461,13 +461,13 @@
           }
         },
         {
-          "transition": "Azithromycin",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "covid19_clinical_trial",
             "operator": "==",
             "value": "hydroxychloroquine+azithromycin"
-          }
+          },
+          "transition": "First Five Days"
         },
         {
           "transition": "Favipiravir",
@@ -717,6 +717,23 @@
       "administration": true,
       "reason": "covid19",
       "direct_transition": "Subtract Dose"
+    },
+    "First Five Days": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Azithromycin",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial_duration",
+            "operator": ">=",
+            "value": 9
+          }
+        },
+        {
+          "transition": "Hydroxychloroquine"
+        }
+      ]
     }
   }
 }
