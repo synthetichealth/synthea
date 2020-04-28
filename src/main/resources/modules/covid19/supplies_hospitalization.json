@@ -61,6 +61,14 @@
             "code": "419343004",
             "display": "Alcohol disinfectant (substance)"
           }
+        },
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 470618009,
+            "display": "Antiseptic towelette (physical object)"
+          }
         }
       ],
       "direct_transition": "Terminal"

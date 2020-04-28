@@ -462,7 +462,7 @@
         "unit": "minutes"
       },
       "reason": "Ventilator Reason",
-      "direct_transition": "ICU Day Begin"
+      "direct_transition": "Remove_Laryngoscope"
     },
     "ICU Oxygen": {
       "type": "Procedure",
@@ -754,6 +754,11 @@
       "type": "CallSubmodule",
       "submodule": "covid19/medications",
       "direct_transition": "Metered_Dose_Inhaler_ICU"
+    },
+    "Remove_Laryngoscope": {
+      "type": "DeviceEnd",
+      "direct_transition": "ICU Day Begin",
+      "referenced_by_attribute": "covid19_laryngoscope"
     }
   }
 }
