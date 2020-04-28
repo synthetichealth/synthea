@@ -1889,7 +1889,7 @@ public class FhirR4 {
         dosage.setText("Take as needed.");
       }
 
-      // as_needed is true if present
+      // as_needed is false
       if ((rxInfo.has("dosage")) && (!rxInfo.has("as_needed"))) {
         Timing timing = new Timing();
         TimingRepeatComponent timingRepeatComponent = new TimingRepeatComponent();
@@ -1982,7 +1982,7 @@ public class FhirR4 {
       MedicationAdministrationDosageComponent dosage =
           new MedicationAdministrationDosageComponent();
 
-      // as_needed is true if present
+      // as_needed is false
       if ((rxInfo.has("dosage")) && (!rxInfo.has("as_needed"))) {
         Quantity dose = new SimpleQuantity()
             .setValue(rxInfo.get("dosage").getAsJsonObject().get("amount").getAsDouble());
@@ -1995,6 +1995,11 @@ public class FhirR4 {
             dosage.setText(instruction.get("display").getAsString());
           }
         }
+      }
+      if (rxInfo.has("refills")) {
+        SimpleQuantity rate = new SimpleQuantity();
+        rate.setValue(rxInfo.get("refills").getAsLong());
+        dosage.setRate(rate);
       }
       medicationResource.setDosage(dosage);
     }
