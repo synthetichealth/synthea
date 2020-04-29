@@ -384,7 +384,7 @@
         }
       ],
       "reason": "Ventilator Reason",
-      "direct_transition": "ICU Medications"
+      "direct_transition": "Dialysis Check"
     },
     "ICU First Day": {
       "type": "Simple",
@@ -470,7 +470,7 @@
         }
       ],
       "reason": "Mild Respiratory Distress",
-      "direct_transition": "ICU Medications"
+      "direct_transition": "Dialysis Check"
     },
     "Metered_Dose_Inhaler_ICU": {
       "type": "MedicationOrder",
@@ -779,6 +779,78 @@
       "type": "CallSubmodule",
       "submodule": "covid19/treat_blood_clot",
       "direct_transition": "ICU Procedures"
+    },
+    "Dialysis Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "ckd",
+                    "operator": "is not nil"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "ckd",
+                    "operator": ">=",
+                    "value": 4
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 40095003,
+                    "display": "Injury of kidney (disorder)"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Dialysis Machine"
+        },
+        {
+          "transition": "ICU Medications"
+        }
+      ]
+    },
+    "Hemodialysis": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 302497006,
+          "display": "Hemodialysis (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 4,
+        "unit": "hours"
+      },
+      "direct_transition": "Dialysis Machine Stop"
+    },
+    "Dialysis Machine": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 36965003,
+        "display": "Hemodialysis machine, device (physical object)"
+      },
+      "direct_transition": "Hemodialysis"
+    },
+    "Dialysis Machine Stop": {
+      "type": "DeviceEnd",
+      "direct_transition": "ICU Medications",
+      "device": "Dialysis Machine"
     }
   }
 }
