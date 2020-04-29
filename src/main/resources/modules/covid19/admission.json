@@ -269,7 +269,44 @@
     },
     "Hospitalization Medications": {
       "type": "Simple",
-      "direct_transition": "Metered_Dose_Inhaler"
+      "conditional_transition": [
+        {
+          "transition": "Metered_Dose_Inhaler",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "asthma_condition",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "copd_variant",
+                    "operator": "is not nil"
+                  },
+                  {
+                    "condition_type": "Active Condition",
+                    "codes": [
+                      {
+                        "system": "SNOMED-CT",
+                        "code": 267036007,
+                        "display": "Dyspnea (finding)"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Daily_Acetaminophen_for_Fever"
+        }
+      ]
     },
     "Hospitalization Supplies": {
       "type": "CallSubmodule",
@@ -348,7 +385,19 @@
       ],
       "administration": true,
       "reason": "Mild Respiratory Distress",
-      "direct_transition": "Daily_Acetaminophen_for_Fever"
+      "direct_transition": "Daily_Acetaminophen_for_Fever",
+      "prescription": {
+        "dosage": {
+          "amount": 4,
+          "frequency": 1,
+          "period": 4,
+          "unit": "hours"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        }
+      }
     },
     "Oxygen": {
       "type": "Procedure",
@@ -471,36 +520,6 @@
       ],
       "reason": "Mild Respiratory Distress",
       "direct_transition": "Dialysis Check"
-    },
-    "Metered_Dose_Inhaler_ICU": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "2123111",
-          "display": "NDA020503 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
-        }
-      ],
-      "administration": true,
-      "reason": "Mild Respiratory Distress",
-      "conditional_transition": [
-        {
-          "transition": "Vasopressor A",
-          "condition": {
-            "condition_type": "Active Condition",
-            "codes": [
-              {
-                "system": "SNOMED-CT",
-                "code": 76571007,
-                "display": "Septic shock (disorder)"
-              }
-            ]
-          }
-        },
-        {
-          "transition": "Daily_Acetaminophen_for_Fever_ICU"
-        }
-      ]
     },
     "Daily_Acetaminophen_for_Fever_ICU": {
       "type": "MedicationOrder",
@@ -749,7 +768,44 @@
     "Clinical_Trial_Medications": {
       "type": "CallSubmodule",
       "submodule": "covid19/medications",
-      "direct_transition": "Metered_Dose_Inhaler_ICU"
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "asthma_condition",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "copd_variant",
+                    "operator": "is not nil"
+                  },
+                  {
+                    "condition_type": "Active Condition",
+                    "codes": [
+                      {
+                        "system": "SNOMED-CT",
+                        "code": 267036007,
+                        "display": "Dyspnea (finding)"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Albuterol Administration"
+        },
+        {
+          "transition": "Check for Septic Shock"
+        }
+      ]
     },
     "Remove_Laryngoscope": {
       "type": "DeviceEnd",
@@ -868,6 +924,113 @@
       ],
       "reason": "covid19",
       "direct_transition": "Recovery Days"
+    },
+    "Check for Septic Shock": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Vasopressor A",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 76571007,
+                "display": "Septic shock (disorder)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Daily_Acetaminophen_for_Fever_ICU"
+        }
+      ]
+    },
+    "Albuterol Administration": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Albuterol Nebulizer on Ventilation",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 65710008,
+                    "display": "Acute respiratory failure (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 76571007,
+                    "display": "Septic shock (disorder)"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Metered_Dose_Inhaler_ICU"
+        }
+      ]
+    },
+    "Metered_Dose_Inhaler_ICU": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "2123111",
+          "display": "NDA020503 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
+        }
+      ],
+      "administration": true,
+      "reason": "Mild Respiratory Distress",
+      "prescription": {
+        "dosage": {
+          "amount": 4,
+          "frequency": 1,
+          "period": 4,
+          "unit": "hours"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "Check for Septic Shock"
+    },
+    "Albuterol Nebulizer on Ventilation": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 245314,
+          "display": "Albuterol 5 MG/ML Inhalation Solution"
+        }
+      ],
+      "administration": true,
+      "reason": "Mild Respiratory Distress",
+      "direct_transition": "Check for Septic Shock",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 4,
+          "unit": "hours"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        }
+      }
     }
   }
 }
