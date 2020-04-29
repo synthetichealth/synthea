@@ -729,7 +729,7 @@
     },
     "Reclaim Ventilator": {
       "type": "DeviceEnd",
-      "direct_transition": "Recovery Days",
+      "direct_transition": "Discharge from ICU",
       "referenced_by_attribute": "covid19_ventilator"
     },
     "Reclaim Ventilator at Death": {
@@ -851,6 +851,23 @@
       "type": "DeviceEnd",
       "direct_transition": "ICU Medications",
       "device": "Dialysis Machine"
+    },
+    "Discharge from ICU": {
+      "type": "EncounterEnd",
+      "direct_transition": "Back into Inpatient"
+    },
+    "Back into Inpatient": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 76464004,
+          "display": "Hospital admission, for observation (procedure)"
+        }
+      ],
+      "reason": "covid19",
+      "direct_transition": "Recovery Days"
     }
   }
 }
