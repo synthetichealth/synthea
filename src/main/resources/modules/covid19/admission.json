@@ -267,10 +267,6 @@
       "submodule": "covid19/outcomes",
       "direct_transition": "Hospitalization Day Begin"
     },
-    "Hospitalization Procedures": {
-      "type": "Simple",
-      "direct_transition": "Oxygen"
-    },
     "Hospitalization Medications": {
       "type": "Simple",
       "direct_transition": "Metered_Dose_Inhaler"
@@ -660,13 +656,13 @@
     "Next Time": {
       "type": "SetAttribute",
       "attribute": "covid19_all_labs",
-      "direct_transition": "Hospitalization Procedures",
+      "direct_transition": "Check for Clots",
       "value": true
     },
     "Skip Next Time": {
       "type": "SetAttribute",
       "attribute": "covid19_all_labs",
-      "direct_transition": "Hospitalization Procedures",
+      "direct_transition": "Check for Clots",
       "value": false
     },
     "ICU Frequent Labs": {
@@ -678,13 +674,13 @@
       "type": "SetAttribute",
       "attribute": "covid19_all_labs",
       "value": true,
-      "direct_transition": "ICU Procedures"
+      "direct_transition": "Check for Clots ICU"
     },
     "Skip_Next_Time": {
       "type": "SetAttribute",
       "attribute": "covid19_all_labs",
       "value": true,
-      "direct_transition": "ICU Procedures"
+      "direct_transition": "Check for Clots ICU"
     },
     "ICU_Oxygen": {
       "type": "Procedure",
@@ -759,6 +755,30 @@
       "type": "DeviceEnd",
       "direct_transition": "ICU Day Begin",
       "referenced_by_attribute": "covid19_laryngoscope"
+    },
+    "Hospitalization Procedures": {
+      "type": "Simple",
+      "direct_transition": "Oxygen"
+    },
+    "Check for Clots": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/diagnose_blood_clot",
+      "direct_transition": "Treat Clots"
+    },
+    "Check for Clots ICU": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/diagnose_blood_clot",
+      "direct_transition": "Treat Clots ICU"
+    },
+    "Treat Clots": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/treat_blood_clot",
+      "direct_transition": "Hospitalization Procedures"
+    },
+    "Treat Clots ICU": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/treat_blood_clot",
+      "direct_transition": "ICU Procedures"
     }
   }
 }

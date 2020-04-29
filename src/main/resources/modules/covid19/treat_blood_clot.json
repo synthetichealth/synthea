@@ -1,0 +1,258 @@
+{
+  "name": "treat_blood_clot",
+  "remarks": [
+    "All patients admitted to the hospital should be placed on prophylaxis for venous thromboembolism (blood clots).",
+    "",
+    "At some point, both patients on the floor and ICU should develop a clot (see the diagnose_blood_clot submodule), at which point they should be treated differently."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_diagnosed_clot",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Prophylaxis",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_diagnosed_clot",
+            "operator": "==",
+            "value": false
+          }
+        },
+        {
+          "transition": "Treatment",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_diagnosed_clot",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Prophylaxis": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Heparin",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": ">=",
+                "value": 4
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Enoxaparin 30",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 40095003,
+                "display": "Injury of kidney (disorder)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Enoxaparin 40"
+        }
+      ]
+    },
+    "Treatment": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Heparin Single Dose",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": ">=",
+                "value": 4
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Enoxaparin",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 40095003,
+                "display": "Injury of kidney (disorder)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Enoxaparin Double"
+        }
+      ]
+    },
+    "Heparin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1659263,
+          "display": "1 ML heparin sodium, porcine 5000 UNT/ML Injection"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "administration": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        },
+        "refills": 2
+      }
+    },
+    "Enoxaparin 30": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 854228,
+          "display": "0.3 ML Enoxaparin sodium 100 MG/ML Prefilled Syringe"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "administration": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        },
+        "refills": 2
+      }
+    },
+    "Enoxaparin 40": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 854235,
+          "display": "0.4 ML Enoxaparin sodium 100 MG/ML Prefilled Syringe"
+        }
+      ],
+      "administration": true,
+      "direct_transition": "Terminal"
+    },
+    "Heparin Infusion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 103746007,
+          "display": "Heparin therapy (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 36576007,
+          "display": "Infusion (procedure)"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "covid19_clot"
+    },
+    "Heparin Single Dose": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1659263,
+          "display": "1 ML heparin sodium, porcine 5000 UNT/ML Injection"
+        }
+      ],
+      "direct_transition": "Heparin Infusion",
+      "administration": true,
+      "reason": "covid19_clot"
+    },
+    "Enoxaparin Double": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 854252,
+          "display": "1 ML Enoxaparin sodium 150 MG/ML Prefilled Syringe"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "administration": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        },
+        "refills": 2
+      },
+      "reason": "covid19_clot"
+    },
+    "Enoxaparin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 854252,
+          "display": "1 ML Enoxaparin sodium 150 MG/ML Prefilled Syringe"
+        }
+      ],
+      "administration": true,
+      "reason": "covid19_clot",
+      "direct_transition": "Terminal"
+    }
+  }
+}

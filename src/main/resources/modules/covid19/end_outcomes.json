@@ -97,7 +97,7 @@
           "display": "Acquired coagulation disorder (disorder)"
         }
       ],
-      "direct_transition": "End Heart Failure"
+      "direct_transition": "End Pulmonary Embolism"
     },
     "End Mild Respiratory Distress": {
       "type": "ConditionEnd",
@@ -128,6 +128,28 @@
       "type": "ConditionEnd",
       "direct_transition": "Terminal",
       "referenced_by_attribute": "covid19"
+    },
+    "End Pulmonary Embolism": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 706870000,
+          "display": "Acute pulmonary embolism (disorder)"
+        }
+      ],
+      "direct_transition": "End Venous Thrombosis"
+    },
+    "End Venous Thrombosis": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 132281000119108,
+          "display": "Acute deep venous thrombosis (disorder)"
+        }
+      ],
+      "direct_transition": "End Heart Failure"
     }
   }
 }
