@@ -544,7 +544,7 @@
           }
         },
         {
-          "transition": "End Symptoms"
+          "transition": "Discharge from ICU"
         }
       ]
     },
@@ -724,8 +724,11 @@
     "Recovery Days": {
       "type": "SetAttribute",
       "attribute": "covid19_extubation_recovery_days",
-      "direct_transition": "ICU_Oxygen",
-      "value": 3
+      "direct_transition": "Recovery Oxygen Check",
+      "range": {
+        "low": 1,
+        "high": 3
+      }
     },
     "Recovery Next Day": {
       "type": "Counter",
@@ -733,7 +736,7 @@
       "action": "decrement",
       "conditional_transition": [
         {
-          "transition": "ICU_Oxygen",
+          "transition": "Recovery Oxygen Check",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "covid19_extubation_recovery_days",
@@ -1031,6 +1034,21 @@
           "unit": "days"
         }
       }
+    },
+    "Recovery Oxygen Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "ICU_Oxygen",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Intubation"
+          }
+        },
+        {
+          "transition": "Recovery"
+        }
+      ]
     }
   }
 }
