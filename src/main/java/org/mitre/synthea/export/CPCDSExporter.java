@@ -130,12 +130,14 @@ public class CPCDSExporter {
    */
   private void writeCPCDSHeaders() throws IOException {
     patients
-        .write("Member id,Date of birth,Date of death,County,State,Country," +
-                "Race,Ethnicity,Gender,Name,Zip code");
+        .write("Member id,Date of birth,Date of death,Home_County,Home_State,Home_Country,Home_Zip code," +
+                "Bill_County,Bill_State,Bill_Country,Bill_Zip code," +
+                "Work_County,Work_State,Work_Country,Work_Zip code," +
+                "Race,Ethnicity,Gender,Name");
     patients.write(NEWLINE);
 
     coverages
-        .write("Subscriber id,Coverage type,Coverage status,Start date," + 
+        .write("Coverage id,Member id,Subscriber id,Coverage type,Coverage status,Start date," + 
                 "End date,Group id,Group name,Plan,Payer,Relationship to subscriber");
     coverages.write(NEWLINE);
 
@@ -178,7 +180,7 @@ public class CPCDSExporter {
     hospitals.write("Id,Name,Address,City,State,ZIP,Phone,Type,Ownership");
     hospitals.write(NEWLINE);
 
-    practitioners.write("Id,Specialty");
+    practitioners.write("Practitioner NPI,Organization NPI,Code,Specialty");
     practitioners.write(NEWLINE);
   }
 
@@ -217,11 +219,15 @@ public class CPCDSExporter {
     UUID groupId = GROUPIDS[(int) randomLongWithBounds(0, GROUPIDS.length - 1)];
     String groupName = GROUP_NAMES[(int) randomLongWithBounds(0, GROUP_NAMES.length - 1)];
     String planName = PLAN_NAMES[(int) randomLongWithBounds(0, PLAN_NAMES.length - 1)];
+    long start = 999999999999999999L;
+    long end = 0;
 
     for (Encounter encounter : person.record.encounters) {
       String encounterID = UUID.randomUUID().toString();
       UUID medRecordNumber = UUID.randomUUID();
       CPCDSAttributes encounterAttributes = new CPCDSAttributes(encounter);
+
+
       if (Boolean.parseBoolean(Config.get("exporter.cpcds.single_payer"))) {
         payerId = "b1c428d6-4f07-31e0-90f0-68ffa6ff8c76";
         payerName = clean(Config.get("single_payer.name"));
@@ -231,14 +237,19 @@ public class CPCDSExporter {
       }
 
       for (CarePlan careplan : encounter.careplans) {
-        coverage(personID, careplan.start, careplan.stop, payerId, type, groupId, groupName, planName);
+        if (careplan.start < start) {
+          start = careplan.start;
+        }
+        if (careplan.stop > end) {
+          end = careplan.stop;
+        }
       }
 
       claim(encounter, personID, encounterID, medRecordNumber, encounterAttributes, payerId);
       hospital(encounter, encounterAttributes, payerName);
-      practitioner(encounter, encounterAttributes);
     }
 
+    coverage(personID, start, end, payerId, type, groupId, groupName, planName);
     patients.flush();
     coverages.flush();
     claims.flush();
@@ -275,9 +286,17 @@ public class CPCDSExporter {
     }
     s.append(person.attributes.getOrDefault("county", "")).append(',');
     s.append(person.attributes.getOrDefault(Person.STATE, "")).append(',');
-    s.append(person.attributes.getOrDefault("country", "United States"));
+    s.append(person.attributes.getOrDefault("country", "United States")).append(',');
+    s.append(person.attributes.getOrDefault(Person.ZIP, "")).append(',');
 
-    for (String attribute : new String[] { Person.RACE, Person.ETHNICITY, Person.GENDER, Person.NAME, Person.ZIP, }) {
+    s.append(person.attributes.getOrDefault("county", "")).append(',');
+    s.append(person.attributes.getOrDefault(Person.STATE, "")).append(',');
+    s.append(person.attributes.getOrDefault("country", "United States")).append(',');
+    s.append(person.attributes.getOrDefault(Person.ZIP, ""));
+
+    s.append(",,,,");
+
+    for (String attribute : new String[] { Person.RACE, Person.ETHNICITY, Person.GENDER, Person.NAME, }) {
       String value = (String) person.attributes.getOrDefault(attribute, "");
       s.append(',').append(clean(value));
     }
@@ -300,6 +319,9 @@ public class CPCDSExporter {
       String groupName, String name) throws IOException {
 
     StringBuilder s = new StringBuilder();
+    String coverageID = UUID.randomUUID().toString();
+    s.append(coverageID).append(',');
+    s.append(personID).append(',');
     s.append(personID).append(',');
     s.append(type).append(',');
 
@@ -363,7 +385,7 @@ public class CPCDSExporter {
       String adminString = admin.toString();
 
       // provider
-      
+      practitioner(encounter.clinician.attributes.get("specialty").toString(), attributes.getNpiProvider(), attributes.getServiceSiteNPI());
 
       String[] providerSection = { attributes.getNpiProvider(), attributes.getNetworkStatus(),
           attributes.getNpiProvider(), attributes.getNetworkStatus(), attributes.getServiceSiteNPI(),
@@ -809,19 +831,20 @@ public class CPCDSExporter {
    * @return
    * @throws IOException
    */
-  private void practitioner(Encounter encounter, CPCDSAttributes attributes) throws IOException {
+  private void practitioner(String specialty, String providerNPI, String organizationNPI) throws IOException {
     StringBuilder s = new StringBuilder();
-    // Id,Name,Address,City,State,ZIP,Gender,Race,Ethnicity,Specialty,Education
-    Map<String, Object> clinicianAttributes = encounter.clinician.attributes;
+    // Practitioner NPI,Organization NPI,Specialty
 
     Boolean continueFlag = true;
-    if (exportedPractitioners.contains(attributes.getNpiProvider())) {
+    if (exportedPractitioners.contains(providerNPI + organizationNPI)) {
       continueFlag = false;
     }
     if (continueFlag == true) {
-      exportedPractitioners.add(attributes.getNpiProvider());
-      s.append(clean(attributes.getNpiProvider())).append(',');
-      s.append(clean(clinicianAttributes.get("specialty").toString())).append(NEWLINE);
+      exportedPractitioners.add(providerNPI+organizationNPI);
+      s.append(clean(providerNPI)).append(',');
+      s.append(clean(organizationNPI)).append(',');
+      s.append("provider").append(',');
+      s.append(clean(specialty)).append(NEWLINE);
       
       write(s.toString(), practitioners);
     }
