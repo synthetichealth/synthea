@@ -490,7 +490,7 @@ public abstract class Transition {
         NamedDistribution nd = option.namedDistribution;
         double dist = nd.defaultDistribution;
         if (person.attributes.containsKey(nd.attribute)) {
-          dist = (Double) person.attributes.get(nd.attribute);
+          dist = ((Number) person.attributes.get(nd.attribute)).doubleValue();
         }
         high += dist;
       }

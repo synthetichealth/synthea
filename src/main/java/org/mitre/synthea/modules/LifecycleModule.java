@@ -54,6 +54,11 @@ public final class LifecycleModule extends Module {
       Boolean.parseBoolean(Config.get("generate.append_numbers_to_person_names", "false"));
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
+  private static final double PREVALENCE_OF_MARRIAGE =
+      Double.parseDouble(Config.get("lifecycle.prevalence_of_marriage", "0.8"));
+  private static final double PREVALENCE_OF_DIVORCE =
+      Double.parseDouble(Config.get("lifecycle.prevalence_of_divorce", "0.5"));
+
   private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
 
   private static SimpleYML names = loadNames();
@@ -397,7 +402,7 @@ public final class LifecycleModule extends Module {
       case 27:
         // get married
         if (person.attributes.get(Person.MARITAL_STATUS) == null) {
-          Boolean getsMarried = (person.rand() < 0.8);
+          boolean getsMarried = (person.rand() < PREVALENCE_OF_MARRIAGE);
           if (getsMarried) {
             person.attributes.put(Person.MARITAL_STATUS, "M");
             if ("F".equals(person.attributes.get(Person.GENDER))) {
@@ -428,7 +433,8 @@ public final class LifecycleModule extends Module {
         break;
       case 50:
         // get divorced
-        if (person.attributes.get(Person.MARITAL_STATUS).equals("M") && person.rand() < 0.5) {
+        if (person.attributes.get(Person.MARITAL_STATUS).equals("M")
+            && person.rand() < PREVALENCE_OF_DIVORCE) {
           person.attributes.put(Person.MARITAL_STATUS, "D");
         }
         break;
