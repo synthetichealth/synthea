@@ -951,7 +951,7 @@
               "distribution": 0.919
             },
             {
-              "transition": "Terminal",
+              "transition": "Determine Loss of Taste",
               "distribution": 0.08099999999999996
             }
           ]
@@ -963,7 +963,7 @@
               "distribution": 0.881
             },
             {
-              "transition": "Terminal",
+              "transition": "Determine Loss of Taste",
               "distribution": 0.119
             }
           ]
@@ -989,7 +989,51 @@
           "display": "Fever (finding)"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "Determine Loss of Taste"
+    },
+    "Determine Loss of Taste": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Loss of Taste",
+          "distribution": 0.506
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.494
+        }
+      ],
+      "remarks": [
+        "In a survey, 50.6% of patients reported loss of taste as moderate, severe, or As bad as it can be, from Table 2 in Spinato G, Fabbris C, Polesel J, et al. Alterations in Smell or Taste in Mildly Symptomatic Outpatients With SARS-CoV-2 Infection. JAMA. Published online April 22, 2020. doi:10.1001/jama.2020.6771"
+      ]
+    },
+    "Loss of Taste": {
+      "type": "Symptom",
+      "symptom": "loss_of_taste",
+      "cause": "",
+      "probability": 1,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "Loss of Taste Onset",
+      "remarks": [
+        "In a survey, 50.6% of patients reported loss of taste as moderate, severe, or As bad as it can be, from Table 2 in Spinato G, Fabbris C, Polesel J, et al. Alterations in Smell or Taste in Mildly Symptomatic Outpatients With SARS-CoV-2 Infection. JAMA. Published online April 22, 2020. doi:10.1001/jama.2020.6771"
+      ]
+    },
+    "Loss of Taste Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 36955009,
+          "display": "Loss of taste (finding)"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "remarks": [
+        "In a survey, 50.6% of patients reported loss of taste as moderate, severe, or As bad as it can be, from Table 2 in Spinato G, Fabbris C, Polesel J, et al. Alterations in Smell or Taste in Mildly Symptomatic Outpatients With SARS-CoV-2 Infection. JAMA. Published online April 22, 2020. doi:10.1001/jama.2020.6771"
+      ]
     }
   }
 }

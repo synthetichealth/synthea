@@ -1,7 +1,10 @@
 {
   "name": "end_symptoms",
   "remarks": [
-    "This submodule ends symptoms of COVID19 according to the rates documented in Table 1 of https://www.nejm.org/doi/full/10.1056/NEJMoa2002032"
+    "This submodule ends symptoms of COVID19 according to the rates documented in Table 1 of https://www.nejm.org/doi/full/10.1056/NEJMoa2002032",
+    "",
+    "Loss of taste from Table 2 of ",
+    "https://jamanetwork.com/journals/jama/fullarticle/2765183"
   ],
   "states": {
     "Initial": {
@@ -130,7 +133,7 @@
           "display": "Vomiting symptom (finding)"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "Loss of Taste End"
     },
     "Diarrhea End": {
       "type": "ConditionEnd",
@@ -186,6 +189,17 @@
         }
       ],
       "direct_transition": "Headache End"
+    },
+    "Loss of Taste End": {
+      "type": "ConditionEnd",
+      "direct_transition": "Terminal",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 36955009,
+          "display": "Loss of taste (finding)"
+        }
+      ]
     }
   }
 }
