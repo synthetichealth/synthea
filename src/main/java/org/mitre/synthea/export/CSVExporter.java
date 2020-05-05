@@ -152,33 +152,42 @@ public class CSVExporter {
       File patientsFile = outputDirectory.resolve("patients.csv").toFile();
       boolean append =
           patientsFile.exists() && Boolean.parseBoolean(Config.get("exporter.csv.append_mode"));
+      patients = new OutputStreamWriter(new FileOutputStream(patientsFile, append), charset);
 
       File allergiesFile = outputDirectory.resolve("allergies.csv").toFile();
-      File medicationsFile = outputDirectory.resolve("medications.csv").toFile();
-      File conditionsFile = outputDirectory.resolve("conditions.csv").toFile();
-      File careplansFile = outputDirectory.resolve("careplans.csv").toFile();
-      File observationsFile = outputDirectory.resolve("observations.csv").toFile();
-      File proceduresFile = outputDirectory.resolve("procedures.csv").toFile();
-      File immunizationsFile = outputDirectory.resolve("immunizations.csv").toFile();
-      File encountersFile = outputDirectory.resolve("encounters.csv").toFile();
-      File imagingStudiesFile = outputDirectory.resolve("imaging_studies.csv").toFile();
-      File devicesFile = outputDirectory.resolve("devices.csv").toFile();
-      File suppliesFile = outputDirectory.resolve("supplies.csv").toFile();
-
-      patients = new OutputStreamWriter(new FileOutputStream(patientsFile, append), charset);
       allergies = new OutputStreamWriter(new FileOutputStream(allergiesFile, append), charset);
+
+      File medicationsFile = outputDirectory.resolve("medications.csv").toFile();
       medications = new OutputStreamWriter(new FileOutputStream(medicationsFile, append), charset);
+
+      File conditionsFile = outputDirectory.resolve("conditions.csv").toFile();
       conditions = new OutputStreamWriter(new FileOutputStream(conditionsFile, append), charset);
+
+      File careplansFile = outputDirectory.resolve("careplans.csv").toFile();
       careplans = new OutputStreamWriter(new FileOutputStream(careplansFile, append), charset);
+
+      File observationsFile = outputDirectory.resolve("observations.csv").toFile();
       observations = new OutputStreamWriter(
           new FileOutputStream(observationsFile, append), charset);
+
+      File proceduresFile = outputDirectory.resolve("procedures.csv").toFile();
       procedures = new OutputStreamWriter(new FileOutputStream(proceduresFile, append), charset);
+
+      File immunizationsFile = outputDirectory.resolve("immunizations.csv").toFile();
       immunizations = new OutputStreamWriter(
           new FileOutputStream(immunizationsFile, append), charset);
+
+      File encountersFile = outputDirectory.resolve("encounters.csv").toFile();
       encounters = new OutputStreamWriter(new FileOutputStream(encountersFile, append), charset);
+
+      File imagingStudiesFile = outputDirectory.resolve("imaging_studies.csv").toFile();
       imagingStudies = new OutputStreamWriter(
           new FileOutputStream(imagingStudiesFile, append), charset);
+
+      File devicesFile = outputDirectory.resolve("devices.csv").toFile();
       devices = new OutputStreamWriter(new FileOutputStream(devicesFile, append), charset);
+
+      File suppliesFile = outputDirectory.resolve("supplies.csv").toFile();
       supplies = new OutputStreamWriter(new FileOutputStream(suppliesFile, append), charset);
 
 
@@ -693,7 +702,7 @@ public class CSVExporter {
     // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,VALUE,UNITS
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(observation.start)).append(',');
+    s.append(iso8601Timestamp(observation.start)).append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
 
@@ -726,7 +735,7 @@ public class CSVExporter {
     // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(procedure.start)).append(',');
+    s.append(iso8601Timestamp(procedure.start)).append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
     // CODE
@@ -766,9 +775,9 @@ public class CSVExporter {
     // BASE_COST,PAYER_COVERAGE,DISPENSES,TOTALCOST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(medication.start)).append(',');
+    s.append(iso8601Timestamp(medication.start)).append(',');
     if (medication.stop != 0L) {
-      s.append(dateFromTimestamp(medication.stop));
+      s.append(iso8601Timestamp(medication.stop));
     }
     s.append(',');
     s.append(personID).append(',');
@@ -847,7 +856,7 @@ public class CSVExporter {
     // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,BASE_COST
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(immunization.start)).append(',');
+    s.append(iso8601Timestamp(immunization.start)).append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
     // CODE
@@ -920,7 +929,7 @@ public class CSVExporter {
 
     String studyID = UUID.randomUUID().toString();
     s.append(studyID).append(',');
-    s.append(dateFromTimestamp(imagingStudy.start)).append(',');
+    s.append(iso8601Timestamp(imagingStudy.start)).append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
 
@@ -960,9 +969,9 @@ public class CSVExporter {
     // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,UDI
     StringBuilder s = new StringBuilder();
     
-    s.append(dateFromTimestamp(device.start)).append(',');
+    s.append(iso8601Timestamp(device.start)).append(',');
     if (device.stop != 0L) {
-      s.append(dateFromTimestamp(device.stop));
+      s.append(iso8601Timestamp(device.stop));
     }
     s.append(',');
     
@@ -989,7 +998,7 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private void supply(String personID, String encounterID, Encounter encounter, Supply supply)
-    throws IOException {
+          throws IOException {
     // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,QUANTITY
     StringBuilder s = new StringBuilder();
 

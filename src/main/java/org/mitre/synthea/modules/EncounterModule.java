@@ -204,6 +204,9 @@ public final class EncounterModule extends Module {
     return interval;
   }
 
+  /**
+   * End a wellness encounter if currently active.
+   */
   public void endWellnessEncounter(Person person, long time) {
     if (person.attributes.get(ACTIVE_WELLNESS_ENCOUNTER) != null) {
       person.record.encounterEnd(time, EncounterType.WELLNESS);

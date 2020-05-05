@@ -256,11 +256,13 @@ public class Demographics implements Comparable<Demographics>, Serializable {
     return random.nextInt((high - low) + 1) + low;
   }
 
+  /**
+   * Simple linear formula just maps federal poverty level to 0.0 and 75,000 to 1.0.
+   * The 75,000 figure was chosen based on
+   * https://www.princeton.edu/~deaton/downloads/
+   * deaton_kahneman_high_income_improves_evaluation_August2010.pdf.
+   */
   public double incomeLevel(int income) {
-    // simple linear formula just maps federal poverty level to 0.0 and 75,000 to 1.0
-    // 75,000 chosen based on
-    // https://www.princeton.edu/~deaton/downloads/
-    //   deaton_kahneman_high_income_improves_evaluation_August2010.pdf
     double poverty = Double
         .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
     double high = Double
@@ -275,6 +277,9 @@ public class Demographics implements Comparable<Demographics>, Serializable {
     }
   }
 
+  /**
+   * Return a random education level based on statistics.
+   */
   public String pickEducation(Random random) {
     // lazy-load in case this randomcollection isn't necessary
     if (educationDistribution == null) {
@@ -284,6 +289,9 @@ public class Demographics implements Comparable<Demographics>, Serializable {
     return educationDistribution.next(random);
   }
 
+  /**
+   * Return a random number between the configured bounds for a specified education level.
+   */
   public double educationLevel(String level, Random random) {
     double lessThanHsMin = Double.parseDouble(
         Config.get("generate.demographics.socioeconomic.education.less_than_hs.min", "0.0"));
@@ -320,6 +328,9 @@ public class Demographics implements Comparable<Demographics>, Serializable {
     return (low + ((high - low) * r.nextDouble()));
   }
 
+  /**
+   * Calculate the socio-economic score for the supplied parameters.
+   */
   public double socioeconomicScore(double income, double education, double occupation) {
     double incomeWeight = Double
         .parseDouble(Config.get("generate.demographics.socioeconomic.weights.income"));
@@ -332,6 +343,10 @@ public class Demographics implements Comparable<Demographics>, Serializable {
         + (occupation * occupationWeight);
   }
 
+  /**
+   * Return a high/middle/low socio economic category based on the supplied score and the
+   * configured stratifier values.
+   */
   public String socioeconomicCategory(double score) {
     double highScore = Double
         .parseDouble(Config.get("generate.demographics.socioeconomic.score.high"));

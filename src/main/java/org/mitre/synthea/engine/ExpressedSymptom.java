@@ -19,6 +19,9 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     // At which time the symptom was set
     private Long time;
     
+    /**
+     * Create a new instance for the supplied cause, value and time.
+     */
     public SymptomInfo(String cause, Integer value, Long time) {
       this.cause = cause;
       this.value = value;
@@ -56,6 +59,9 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     // the time on which the expressed symptom was updated and the associated info.
     private Map<Long, SymptomInfo> timeInfos;  
     
+    /**
+     * Create a new instance for the supplied module source.
+     */
     public SymptomSource(String source) {
       this.source = source;
       timeInfos = new ConcurrentHashMap<Long, ExpressedSymptom.SymptomInfo>();
@@ -63,6 +69,9 @@ public class ExpressedSymptom implements Cloneable, Serializable {
       lastUpdateTime = null;
     }
     
+    /**
+     * Create shallow copy of this instance.
+     */
     public SymptomSource clone() {
       SymptomSource data = new SymptomSource(this.source);
       data.resolved = this.resolved;
@@ -91,6 +100,9 @@ public class ExpressedSymptom implements Cloneable, Serializable {
       return source;
     }
 
+    /**
+     * Record a new symptom.
+     */
     public void addInfo(String cause, long time, int value, Boolean addressed) {
       SymptomInfo info = new SymptomInfo(cause, value, time);
       timeInfos.put(Long.valueOf(time), info);
@@ -98,6 +110,9 @@ public class ExpressedSymptom implements Cloneable, Serializable {
       resolved = addressed;
     }
 
+    /**
+     * Get the current value of the symptom.
+     */
     public Integer getCurrentValue() {
       if (timeInfos.containsKey(lastUpdateTime)) {
         return timeInfos.get(lastUpdateTime).getValue();
@@ -105,6 +120,9 @@ public class ExpressedSymptom implements Cloneable, Serializable {
       return null;
     }
 
+    /**
+     * Get the times for this symptom.
+     */
     public Map<Long, SymptomInfo> getTimeInfos() {
       return timeInfos;
     }    
@@ -119,6 +137,9 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     sources = new ConcurrentHashMap<String, SymptomSource>();
   }
   
+  /**
+   * Create a shallow copy of this instance.
+   */
   public ExpressedSymptom clone() {
     ExpressedSymptom data = new ExpressedSymptom(this.name);
     data.sources.putAll(this.sources);

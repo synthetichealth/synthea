@@ -29,6 +29,9 @@ public abstract class HospitalExporterStu3 {
 
   private static final String SYNTHEA_URI = "http://synthetichealth.github.io/synthea/";
 
+  /**
+   * Export the hospital in FHIR STU3 format.
+   */
   public static void export(long stop) {
     if (Boolean.parseBoolean(Config.get("exporter.hospital.fhir_stu3.export"))) {
 
@@ -68,6 +71,9 @@ public abstract class HospitalExporterStu3 {
     }
   }
 
+  /**
+   * Add FHIR extensions to capture additional information.
+   */
   public static void addHospitalExtensions(Provider h, Organization organizationResource) {
     Table<Integer, String, AtomicInteger> utilization = h.getUtilization();
     // calculate totals for utilization

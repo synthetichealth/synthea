@@ -58,6 +58,9 @@ public abstract class Exporter {
       yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
     }
     
+    /**
+     * Copy constructor.
+     */
     public ExporterRuntimeOptions(ExporterRuntimeOptions init) {
       yearsOfHistory = init.yearsOfHistory;
       deferExports = init.deferExports;
