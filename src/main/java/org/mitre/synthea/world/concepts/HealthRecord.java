@@ -86,9 +86,8 @@ public class HealthRecord implements Serializable {
     }
 
     public String toString() {
-      return isAlreadyMaterialized() 
-             ? String.format("%s %s %s", system, code, display)
-             : valueSet;
+      return String
+          .format("system=%s, code=%s, display=%s, valueSet=%s", system, code, display, valueSet);
     }
 
     /**
@@ -102,27 +101,6 @@ public class HealthRecord implements Serializable {
         codes.add(new Code((JsonObject) item));
       });
       return codes;
-    }
-
-    /**
-     * If this Code is defined using a ValueSet URI, resolve it into a randomly selected code from
-     * the expansion of that ValueSet.
-     * 
-     * <p>If the Code is defined as (system, code, display), do nothing and return the Code untouched.
-     *
-     * @param seed a random seed value used to ensure reproducibility of the code selection
-     * @return the updated Code
-     */
-    public Code materialize(long seed) {
-      if (isAlreadyMaterialized()) {
-        return this;
-      } else {
-        return RandomCodeGenerator.getCode(this.valueSet, seed);
-      }
-    }
-
-    private boolean isAlreadyMaterialized() {
-      return valueSet == null || system != null || code != null || display != null;
     }
 
     @Override

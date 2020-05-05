@@ -9,7 +9,6 @@ import ca.uhn.fhir.validation.ValidationResult;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Quantity;
@@ -34,19 +33,19 @@ public class FHIRR4ExporterTest {
   @Test
   public void testDecimalRounding() {
     Integer i = 123456;
-    Object v = FhirR4.mapValueToFHIRType(i,"fake");
+    Object v = FhirR4.mapValueToFHIRType(i,"fake", null);
     assertTrue(v instanceof Quantity);
     Quantity q = (Quantity)v;
     assertTrue(q.getValue().compareTo(BigDecimal.valueOf(123460)) == 0);
 
     Double d = 0.000123456;
-    v = FhirR4.mapValueToFHIRType(d, "fake");
+    v = FhirR4.mapValueToFHIRType(d, "fake", null);
     assertTrue(v instanceof Quantity);
     q = (Quantity)v;
     assertTrue(q.getValue().compareTo(BigDecimal.valueOf(0.00012346)) == 0);
 
     d = 0.00012345678901234;
-    v = FhirR4.mapValueToFHIRType(d, "fake");
+    v = FhirR4.mapValueToFHIRType(d, "fake", null);
     assertTrue(v instanceof Quantity);
     q = (Quantity)v;
     assertTrue(q.getValue().compareTo(BigDecimal.valueOf(0.00012346)) == 0);

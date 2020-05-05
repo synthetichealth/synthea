@@ -1,24 +1,15 @@
 package org.mitre.synthea.engine;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.startRecording;
-import static com.github.tomakehurst.wiremock.client.WireMock.stopRecording;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mitre.synthea.TestHelper.SNOMED_URI;
-import static org.mitre.synthea.TestHelper.getR4FhirContext;
-import static org.mitre.synthea.TestHelper.getTxRecordingSource;
-import static org.mitre.synthea.TestHelper.isHttpRecordingEnabled;
-import static org.mitre.synthea.TestHelper.wiremockOptions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.withSettings;
 
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,14 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.helpers.RandomCodeGenerator;
-import org.mitre.synthea.helpers.TerminologyClient;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
 import org.mitre.synthea.modules.DeathModule;
@@ -61,23 +48,12 @@ public class StateTest {
   private Person person;
   private long time;
 
-  @Rule
-  public WireMockRule mockTerminologyService = new WireMockRule(wiremockOptions()
-      .usingFilesUnderDirectory("src/test/resources/wiremock/StateTest"));
-
   /**
    * Setup State tests.
    * @throws IOException On File IO errors.
    */
   @Before
   public void setup() throws IOException {
-    TerminologyClient terminologyClient = getR4FhirContext()
-        .newRestfulClient(TerminologyClient.class, mockTerminologyService.baseUrl() + "/fhir");
-    RandomCodeGenerator.initialize(terminologyClient);
-    if (isHttpRecordingEnabled()) {
-      startRecording(getTxRecordingSource());
-    }
-    
     time = System.currentTimeMillis();
 
     person = new Person(0L);
@@ -255,38 +231,6 @@ public class StateTest {
         module.name, code.display
     );
     assertTrue(onsetTime != null);
-    assertEquals(time, onsetTime.longValue());
-  }
-
-  @Test
-  public void condition_onset_with_valueset() throws Exception {
-    Module module = TestHelper.getFixture("condition_onset_with_valueset.json");
-
-    State condition = module.getState("Diabetes");
-    // Should pass through this state immediately without calling the record
-    person.history.add(0, condition);
-    assertTrue(condition.process(person, time));
-
-    // The encounter comes next (and add it to history);
-    State encounter = module.getState("ED_Visit");
-    person.history.add(0, encounter); // states are added to history before being processed
-    assertTrue(encounter.process(person, time));
-
-    assertEquals(1, person.record.encounters.size());
-    Encounter enc = person.record.encounters.get(0);
-    Code code = enc.codes.get(0);
-    assertEquals("50849002", code.code);
-    assertEquals("Emergency Room Admission", code.display);
-    assertEquals(1, enc.conditions.size());
-    code = enc.conditions.get(0).codes.get(0);
-    assertEquals(SNOMED_URI, code.system);
-    assertEquals("399870006", code.code);
-    assertEquals("Non-high-risk proliferative diabetic retinopathy with no macular oedema",
-        code.display);
-    Long onsetTime = person.getOnsetConditionRecord().getConditionLastOnsetTimeFromModule(
-        module.name, code.display
-    );
-    assertNotNull(onsetTime);
     assertEquals(time, onsetTime.longValue());
   }
 
@@ -580,29 +524,6 @@ public class StateTest {
   }
 
   @Test
-  public void procedure_with_valueset() throws Exception {
-    Module module = TestHelper.getFixture("procedure_with_valueset.json");
-
-    // The encounter comes first (and add it to history);
-    State encounter = module.getState("Inpatient_Encounter");
-
-    assertTrue(encounter.process(person, time));
-    person.history.add(encounter);
-
-    // Then have the appendectomy
-    State appendectomy = module.getState("Appendectomy");
-    appendectomy.entered = time;
-    assertTrue(appendectomy.process(person, time));
-
-    HealthRecord.Procedure proc = person.record.encounters.get(0).procedures.get(0);
-    Code code = proc.codes.get(0);
-
-    assertEquals(SNOMED_URI, code.system);
-    assertEquals("307581005", code.code);
-    assertEquals("Laparoscopic interval appendicectomy", code.display);
-  }
-
-  @Test
   public void observation() throws Exception {
     Module module = TestHelper.getFixture("observation.json");
 
@@ -636,44 +557,6 @@ public class StateTest {
     //assertEquals("Glucose [Presence] in Urine by Test strip", codeObservation.value.system);
 
     Code testCode = new Code("LOINC", "25428-4", "Glucose [Presence] in Urine by Test strip");
-    assertEquals(testCode.toString(), codeObservation.value.toString());
-
-    Code codeObsCode = codeObservation.codes.get(0);
-    assertEquals("24356-8", codeObsCode.code);
-    assertEquals("Urinalysis complete panel - Urine", codeObsCode.display);
-  }
-
-  @Test
-  public void observation_with_valueset() throws Exception {
-    Module module = TestHelper.getFixture("observation_with_valueset.json");
-
-    State vitalsign = module.getState("VitalSign");
-    assertTrue(vitalsign.process(person, time));
-    person.history.add(vitalsign);
-
-    State encounter = module.getState("SomeEncounter");
-    assertTrue(encounter.process(person, time));
-    person.history.add(encounter);
-
-    State vitalObs = module.getState("VitalSignObservation");
-    assertTrue(vitalObs.process(person, time));
-
-    State codeObs = module.getState("CodeObservation");
-    assertTrue(codeObs.process(person, time));
-
-    HealthRecord.Observation vitalObservation = person.record.encounters.get(0).observations.get(0);
-    assertEquals(120.0, vitalObservation.value);
-    assertEquals("vital-signs", vitalObservation.category);
-    assertEquals("mm[Hg]", vitalObservation.unit);
-
-    Code vitalObsCode = vitalObservation.codes.get(0);
-    assertEquals("8480-6", vitalObsCode.code);
-    assertEquals("Systolic Blood Pressure", vitalObsCode.display);
-
-    HealthRecord.Observation codeObservation = person.record.encounters.get(0).observations.get(1);
-    assertEquals("procedure", codeObservation.category);
-
-    Code testCode = new Code("http://loinc.org", "22705-8", "Glucose [Moles/volume] in Urine by Test strip");
     assertEquals(testCode.toString(), codeObservation.value.toString());
 
     Code codeObsCode = codeObservation.codes.get(0);
@@ -738,47 +621,6 @@ public class StateTest {
   }
 
   @Test
-  public void imaging_study_with_valueset() throws Exception {
-    Module module = TestHelper.getFixture("imaging_study_with_valueset.json");
-
-    // First, onset the injury
-    State kneeInjury = module.getState("Knee_Injury");
-    assertTrue(kneeInjury.process(person, time));
-    person.history.add(kneeInjury);
-
-    // An ImagingStudy must occur during an Encounter
-    State encounterState = module.getState("ED_Visit");
-    assertTrue(encounterState.process(person, time));
-    person.history.add(encounterState);
-
-    // Run the imaging study
-    State mri = module.getState("Knee_MRI");
-    assertTrue(mri.process(person, time));
-
-    // Verify that the ImagingStudy was added to the record
-    HealthRecord.Encounter encounter = person.record.encounters.get(0);
-
-    HealthRecord.ImagingStudy study = encounter.imagingStudies.get(0);
-    HealthRecord.ImagingStudy.Series series = study.series.get(0);
-
-    Code bodySite = series.bodySite;
-    assertEquals(SNOMED_URI, bodySite.system);
-    assertEquals("762879008", bodySite.code);
-    assertEquals("Structure of right common peroneal nerve in popliteal region", bodySite.display);
-
-    // TODO: Come up with a test case for ValueSet usage within the `modality` element.
-
-    // TODO: Come up with a test case for ValueSet usage within the `sop_class` element.
-
-    HealthRecord.Procedure procedure = encounter.procedures.get(0);
-
-    Code procCode = procedure.codes.get(0);
-    assertEquals(SNOMED_URI, procCode.system);
-    assertEquals("2491000087104", procCode.code);
-    assertEquals("MRI of right knee", procCode.display);
-  }
-
-  @Test
   public void wellness_encounter() throws Exception {
     Module module = TestHelper.getFixture("encounter.json");
     State encounter = module.getState("Annual_Physical");
@@ -823,32 +665,6 @@ public class StateTest {
   }
 
   @Test
-  public void wellness_encounter_with_valueset() throws Exception {
-    Module module = TestHelper.getFixture("encounter_with_valueset.json");
-    // First, onset the Diabetes!
-    State diabetes = module.getState("Diabetes");
-    assertTrue(diabetes.process(person, time));
-    person.history.add(diabetes);
-
-    // Now process the encounter, waiting until it actually happens
-    State encounter = module.getState("Annual_Physical_2");
-    assertFalse(encounter.process(person, time));
-    time = time + Utilities.convertTime("months", 6);
-
-    simulateWellnessEncounter(module);
-
-    assertTrue(encounter.process(person, time));
-
-    HealthRecord.Entry condition = person.record.encounters.get(0).conditions.get(0);
-
-    Code code = condition.codes.get(0);
-    assertEquals(SNOMED_URI, code.system);
-    assertEquals("399870006", code.code);
-    assertEquals("Non-high-risk proliferative diabetic retinopathy with no macular oedema", 
-        code.display);
-  }
-
-  @Test
   public void ed_visit_encounter() throws Exception {
     Module module = TestHelper.getFixture("encounter.json");
     // Non-wellness encounters happen immediately
@@ -868,28 +684,6 @@ public class StateTest {
     Code code = enc.codes.get(0);
     assertEquals("50849002", code.code);
     assertEquals("Emergency Room Admission", code.display);
-
-  }
-
-  @Test
-  public void ed_visit_with_valueset() throws Exception {
-    Module module = TestHelper.getFixture("encounter_with_valueset.json");
-    // Non-wellness encounters happen immediately
-
-    // First, onset the Diabetes!
-    State diabetes = module.getState("Diabetes");
-    assertTrue(diabetes.process(person, time));
-    person.history.add(diabetes);
-
-    State encounter = module.getState("ED_Visit");
-    assertTrue(encounter.process(person, time));
-    // Verify that the Encounter was added to the record
-    HealthRecord.Encounter enc = person.record.encounters.get(0);
-
-    Code code = enc.codes.get(0);
-    assertEquals(SNOMED_URI, code.system);
-    assertEquals("11545006", code.code);
-    assertEquals("Emergency room admission, dead on arrival (DOA)", code.display);
 
   }
 
@@ -935,25 +729,6 @@ public class StateTest {
     Code code = allergy.codes.get(0);
     assertEquals("91930004", code.code);
     assertEquals("Allergy to eggs", code.display);
-  }
-
-  @Test
-  public void allergy_encounter_with_valueset() throws Exception {
-    Module module = TestHelper.getFixture("allergies_with_valueset.json");
-    State allergyState = module.getState("Allergy_to_Eggs");
-    // Should pass through this state immediately without calling the record
-    assertTrue(allergyState.process(person, time));
-    person.history.add(allergyState);
-
-    State encounter = module.getState("Dr_Visit");
-    assertTrue(encounter.process(person, time));
-
-    HealthRecord.Entry allergy = person.record.encounters.get(0).allergies.get(0);
-
-    Code code = allergy.codes.get(0);
-    assertEquals(SNOMED_URI, code.system);
-    assertEquals("714332003", code.code);
-    assertEquals("Allergy to banana", code.display);
   }
 
   @Test
@@ -1126,45 +901,6 @@ public class StateTest {
   }
 
   @Test
-  public void condition_end_with_valueset() throws Exception {
-    Module module = TestHelper.getFixture("condition_end_with_valueset.json");
-
-    // First, onset the Diabetes!
-    State condition3 = module.getState("Condition3_Start");
-    assertTrue(condition3.process(person, time));
-    person.history.add(condition3);
-
-    // Process the wellness encounter state, which will wait for a wellness encounter
-    State encounter = module.getState("DiagnosisEncounter");
-    assertFalse(encounter.process(person, time));
-    time = time + Utilities.convertTime("months", 6);
-    // Simulate the wellness encounter by calling perform_encounter
-    simulateWellnessEncounter(module);
-    assertTrue(encounter.process(person, time));
-    person.history.add(encounter);
-
-    // Now process the end of the condition
-    State conEnd = module.getState("Condition3_End");
-    assertTrue(conEnd.process(person, time));
-
-    HealthRecord.Entry condition = person.record.encounters.get(0).conditions.get(0);
-    assertEquals(time, condition.start);
-    assertEquals(time, condition.stop);
-
-    Code code = condition.codes.get(0);
-    assertEquals(SNOMED_URI, code.system);
-    assertEquals("399870006", code.code);
-    assertEquals("Non-high-risk proliferative diabetic retinopathy with no macular oedema", 
-        code.display);
-
-    Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
-        module.name, code.display
-    );
-    assertTrue(endTime != null);
-    assertEquals(time, endTime.longValue());
-  }
-
-  @Test
   public void medication_order_during_wellness_encounter() throws Exception {
     Module module = TestHelper.getFixture("medication_order.json");
 
@@ -1198,43 +934,6 @@ public class StateTest {
     Code code = medication.codes.get(0);
     assertEquals("860975", code.code);
     assertEquals("24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet", code.display);
-  }
-
-  @Test
-  public void medication_order_encounter_with_valueset() throws Exception {
-    Module module = TestHelper.getFixture("medication_order_with_valueset.json");
-
-    // First, onset the Diabetes!
-    State diabetes = module.getState("Diabetes");
-    assertTrue(diabetes.process(person, time));
-    person.history.add(diabetes);
-
-    // Process the wellness encounter state, which will wait for a wellness encounter
-    State encounter = module.getState("Wellness_Encounter");
-    assertFalse(encounter.process(person, time));
-    time = time + Utilities.convertTime("months", 6);
-    simulateWellnessEncounter(module);
-    assertTrue(encounter.process(person, time));
-    person.history.add(encounter);
-
-    // Prevent Null Pointer by giving the person their QOLS
-    Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
-    qolsByYear.put(Utilities.getYear(time) - 1, 1.0);
-    person.attributes.put(QualityOfLifeModule.QOLS, qolsByYear);
-
-    // Now process the prescription
-    State med = module.getState("Metformin");
-    assertTrue(med.process(person, time));
-
-    // Verify that Metformin was added to the record
-    HealthRecord.Medication medication = person.record.encounters.get(0).medications.get(0);
-    assertEquals(time, medication.start);
-    assertEquals(0L, medication.stop);
-
-    Code code = medication.codes.get(0);
-    assertEquals(SNOMED_URI, code.system);
-    assertEquals("1094611000168108", code.code);
-    assertEquals("Metformin XR (Chemmart) 500 mg modified release tablet", code.display);
   }
 
   @Test
@@ -1476,48 +1175,6 @@ public class StateTest {
   }
 
   @Test
-  public void medication_end_with_valueset() throws Exception {
-    Module module = TestHelper.getFixture("medication_end_with_valueset.json");
-
-    // First, onset the Diabetes!
-    State diabetes = module.getState("Diabetes");
-    assertTrue(diabetes.process(person, time));
-    person.history.add(diabetes);
-
-    // Process the wellness encounter state, which will wait for a wellness encounter
-    State encounter = module.getState("Wellness_Encounter");
-    assertFalse(encounter.process(person, time));
-    time = time + Utilities.convertTime("months", 6);
-    simulateWellnessEncounter(module);
-    assertTrue(encounter.process(person, time));
-    person.history.add(encounter);
-
-    // Prevent Null Pointer by giving the person their QOLS
-    Map<Integer, Double> qolsByYear = new HashMap<Integer, Double>();
-    qolsByYear.put(Utilities.getYear(time) - 1, 1.0);
-    person.attributes.put(QualityOfLifeModule.QOLS, qolsByYear);
-
-    // Now process the prescription
-    State med = module.getState("Metformin_Start");
-    assertTrue(med.process(person, time));
-
-    person.history.add(med);
-
-    // Now process the end of the prescription
-    State medEnd = module.getState("Metformin_End");
-    assertTrue(medEnd.process(person, time));
-
-    HealthRecord.Medication medication = person.record.encounters.get(0).medications.get(0);
-    assertEquals(time, medication.start);
-    assertEquals(time, medication.stop);
-
-    Code code = medication.codes.get(0);
-    assertEquals(SNOMED_URI, code.system);
-    assertEquals("1094611000168108", code.code);
-    assertEquals("Metformin XR (Chemmart) 500 mg modified release tablet", code.display);
-  }
-
-  @Test
   public void careplan_start() throws Exception {
     Module module = TestHelper.getFixture("careplan_start.json");
 
@@ -1552,45 +1209,6 @@ public class StateTest {
     Code activity = cp.activities.iterator().next();
     assertEquals("160670007", activity.code);
     assertEquals("Diabetic diet", activity.display);
-  }
-
-  @Test
-  public void careplan_start_with_valueset() throws Exception {
-    Module module = TestHelper.getFixture("careplan_start_with_valueset.json");
-
-    // First onset diabetes
-    State diabetes = module.getState("Diabetes");
-    assertTrue(diabetes.process(person, time));
-    person.history.add(diabetes);
-
-    // Process the wellness encounter state, which will wait for a wellness encounter
-    State encounter = module.getState("Wellness_Encounter");
-    assertFalse(encounter.process(person, time));
-    time = time + Utilities.convertTime("months", 6);
-    simulateWellnessEncounter(module);
-    assertTrue(encounter.process(person, time));
-    person.history.add(encounter);
-
-    // Now process the careplan
-    State plan = module.getState("Diabetes_Self_Management");
-    assertTrue(plan.process(person, time));
-    person.history.add(plan);
-
-    // Verify that the careplan was added to the record
-    HealthRecord.CarePlan cp = person.record.encounters.get(0).careplans.get(0);
-    assertEquals(time, cp.start);
-    assertEquals(0L, cp.stop);
-
-    Code code = cp.codes.get(0);
-    assertEquals(SNOMED_URI, code.system);
-    assertEquals("773596008", code.code);
-    assertEquals("Care of elderly care plan", code.display);
-
-    assertEquals(1, cp.activities.size());
-    Code activity = cp.activities.iterator().next();
-    assertEquals(SNOMED_URI, activity.system);
-    assertEquals("79367009", activity.code);
-    assertEquals("Child diabetes diet", activity.display);
   }
 
   @Test
@@ -1705,55 +1323,6 @@ public class StateTest {
     activity = itr.next();
     assertEquals("226234005", activity.code);
     assertEquals("Healthy diet", activity.display);
-  }
-
-  @Test
-  public void careplan_end_with_valueset() throws Exception {
-    Module module = TestHelper.getFixture("careplan_end_with_valueset.json");
-
-    // First, onset the condition
-    State condition = module.getState("The_Condition");
-    assertTrue(condition.process(person, time));
-    person.history.add(condition);
-
-    // Process the wellness encounter state, which will wait for a wellness encounter
-    State encounter = module.getState("Wellness_Encounter");
-    assertFalse(encounter.process(person, time));
-    time = time + Utilities.convertTime("months", 6);
-    simulateWellnessEncounter(module);
-    person.history.add(encounter);
-
-    // Now process the careplan
-    State plan = module.getState("CarePlan2_Start");
-    assertTrue(plan.process(person, time));
-    person.history.add(plan);
-
-    // Now process the end of the careplan
-    State planEnd = module.getState("CarePlan2_End");
-    assertTrue(planEnd.process(person, time));
-    person.history.add(planEnd);
-
-    HealthRecord.CarePlan cp = person.record.encounters.get(0).careplans.get(0);
-    assertEquals(time, cp.start);
-    assertEquals(time, cp.stop);
-
-    Code code = cp.codes.get(0);
-    assertEquals(SNOMED_URI, code.system);
-    assertEquals("773596008", code.code);
-    assertEquals("Care of elderly care plan", code.display);
-
-    assertEquals(2, cp.activities.size());
-    Iterator<Code> itr = cp.activities.iterator();
-    // note that activities is a LinkedHashSet so should preserve insertion order
-    Code activity = itr.next();
-    assertEquals(SNOMED_URI, activity.system);
-    assertEquals("79367009", activity.code);
-    assertEquals("Child diabetes diet", activity.display);
-
-    activity = itr.next();
-    assertEquals(SNOMED_URI, activity.system);
-    assertEquals("315207000", activity.code);
-    assertEquals("Diabetic lipid lowering diet", activity.display);
   }
 
   @Test
@@ -1911,27 +1480,6 @@ public class StateTest {
     assertTrue(death.process(person, time));
 
     assertFalse(person.alive(time));
-  }
-
-  @Test
-  public void cause_of_death_with_valueset() throws Exception {
-    Module module = TestHelper.getFixture("death_reason_with_valueset.json");
-
-    // First, onset the Diabetes!
-    State condition = module.getState("OnsetDiabetes");
-    assertTrue(condition.process(person, time));
-    person.history.add(condition);
-
-    // Now process the end of the condition
-    State death = module.getState("Death_by_Code");
-    assertTrue(death.process(person, time));
-
-    assertFalse(person.alive(time));
-
-    Code code = (Code) person.attributes.get(Person.CAUSE_OF_DEATH);
-    assertEquals(SNOMED_URI, code.system);
-    assertEquals("204311009", code.code);
-    assertEquals("Eisenmenger's complex", code.display);
   }
 
   @Test
@@ -2362,13 +1910,6 @@ public class StateTest {
       assertEquals(expectedCodes[i], supply.code.code);
       assertEquals(expectedDisplays[i], supply.code.display);
       assertEquals(expectedQuantities[i], supply.quantity);
-    }
-  }
-
-  @After
-  public void tearDown() {
-    if (isHttpRecordingEnabled()) {
-      stopRecording();
     }
   }
 }

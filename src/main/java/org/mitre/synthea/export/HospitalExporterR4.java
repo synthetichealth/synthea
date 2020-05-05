@@ -48,7 +48,7 @@ public abstract class HospitalExporterR4 {
         int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream()
             .mapToInt(ai -> ai.get()).sum();
         if (totalEncounters > 0) {
-          BundleEntryComponent entry = FhirR4.provider(bundle, h);
+          BundleEntryComponent entry = FhirR4.provider(bundle, h, null);
           addHospitalExtensions(h, (Organization) entry.getResource());
         }
       }
