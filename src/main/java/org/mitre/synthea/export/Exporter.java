@@ -159,6 +159,9 @@ public abstract class Exporter {
    */
   private static void exportRecord(Person person, String fileTag, long stopTime,
           ExporterRuntimeOptions options) {
+    // Resolve any coded values within the record that are specified using a ValueSet URI.
+    ValueSetCodeResolver valueSetCodeResolver = new ValueSetCodeResolver(person);
+    valueSetCodeResolver.resolve();
 
     if (Boolean.parseBoolean(Config.get("exporter.fhir_stu3.export"))) {
       File outDirectory = getOutputFolder("fhir_stu3", person);

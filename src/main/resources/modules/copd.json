@@ -198,8 +198,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185086009",
-          "display": "Chronic obstructive bronchitis (disorder)",
-          "value_set": "http://snomed.info/sct?fhir_vs=ecl/<185086009"
+          "display": "Chronic obstructive bronchitis (disorder)"
         }
       ],
       "direct_transition": "Bronchitis_Symptom1"
