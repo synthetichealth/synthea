@@ -431,9 +431,12 @@ public class HealthRecord implements Serializable {
     }
   }
   
-  public class Supply implements Serializable {
+  public class Supply extends Entry {
+    public Supply(long start, String type) {
+      super(start, type);
+    }
+
     public int quantity;
-    public Code code;
   }
 
   public enum EncounterType {
@@ -811,6 +814,22 @@ public class HealthRecord implements Serializable {
       device.stop = time;
       present.remove(device.type);
     }
+  }
+  
+  /**
+   * Track the use of a supply in the provision of care for this patient.
+   * @param time Time the supply was used
+   * @param code SNOMED Code to identify the supply
+   * @param quantity Number of this supply used
+   * @return the new Supply entry
+   */
+  public Supply useSupply(long time, Code code, int quantity) {
+    Encounter encounter = currentEncounter(time);
+    Supply supply = new Supply(time, code.display);
+    supply.codes.add(code);
+    supply.quantity = quantity;
+    encounter.supplies.add(supply);
+    return supply;
   }
 
   public Report report(long time, String type, int numberOfObservations) {

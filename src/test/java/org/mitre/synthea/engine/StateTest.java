@@ -1825,8 +1825,9 @@ public class StateTest {
     
     for (int i = 0; i < 4; i++) {
       HealthRecord.Supply supply = supplies.get(i);
-      assertEquals(expectedCodes[i], supply.code.code);
-      assertEquals(expectedDisplays[i], supply.code.display);
+      Code code = supply.codes.get(0);
+      assertEquals(expectedCodes[i], code.code);
+      assertEquals(expectedDisplays[i], code.display);
       assertEquals(expectedQuantities[i], supply.quantity);
     }
   }

@@ -107,8 +107,6 @@ import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.Procedure.ProcedureStatus;
 import org.hl7.fhir.r4.model.Provenance;
 import org.hl7.fhir.r4.model.Provenance.ProvenanceAgentComponent;
-import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliveryStatus;
-import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliverySuppliedItemComponent;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
@@ -116,6 +114,8 @@ import org.hl7.fhir.r4.model.ServiceRequest;
 import org.hl7.fhir.r4.model.SimpleQuantity;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.SupplyDelivery;
+import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliveryStatus;
+import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliverySuppliedItemComponent;
 import org.hl7.fhir.r4.model.Timing;
 import org.hl7.fhir.r4.model.Timing.TimingRepeatComponent;
 import org.hl7.fhir.r4.model.Timing.UnitsOfTime;
@@ -1684,12 +1684,12 @@ public class FhirR4 {
     supplyResource.setType(type);
     
     SupplyDeliverySuppliedItemComponent suppliedItem = new SupplyDeliverySuppliedItemComponent();
-    suppliedItem.setItem(mapCodeToCodeableConcept(supply.code, SNOMED_URI));
+    suppliedItem.setItem(mapCodeToCodeableConcept(supply.codes.get(0), SNOMED_URI));
     suppliedItem.setQuantity(new Quantity(supply.quantity));
     
     supplyResource.setSuppliedItem(suppliedItem);
     
-    supplyResource.setOccurrence(convertFhirDateTime(encounter.start, true));
+    supplyResource.setOccurrence(convertFhirDateTime(supply.start, true));
     
     return newEntry(bundle, supplyResource);
   }

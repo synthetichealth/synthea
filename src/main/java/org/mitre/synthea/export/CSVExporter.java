@@ -993,12 +993,13 @@ public class CSVExporter {
     // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,QUANTITY
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(encounter.start)).append(',');
+    s.append(dateFromTimestamp(supply.start)).append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
 
-    s.append(supply.code.code).append(',');
-    s.append(clean(supply.code.display)).append(',');
+    Code code = supply.codes.get(0);
+    s.append(code.code).append(',');
+    s.append(clean(code.display)).append(',');
 
     s.append(supply.quantity);
 

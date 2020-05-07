@@ -1426,13 +1426,14 @@ public class FhirDstu2 {
     // super hackish -- there's no "code" field available here, just a reference to a Device
     // so for now just put some text in the reference
     ResourceReferenceDt suppliedItem = new ResourceReferenceDt();
-    suppliedItem.setDisplay("SNOMED[" + supply.code.code + "]: " + supply.code.display);
+    Code code = supply.codes.get(0);
+    suppliedItem.setDisplay("SNOMED[" + code.code + "]: " + code.display);
 
     supplyResource.setSuppliedItem(suppliedItem);
 
     supplyResource.setQuantity(new SimpleQuantityDt(supply.quantity));
 
-    supplyResource.setTime((DateTimeDt) convertFhirDateTime(encounter.start, true));
+    supplyResource.setTime((DateTimeDt) convertFhirDateTime(supply.start, true));
     
     return newEntry(bundle, supplyResource);
   }

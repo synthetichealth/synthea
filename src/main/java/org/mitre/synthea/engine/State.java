@@ -1779,8 +1779,7 @@ public abstract class State implements Cloneable, Serializable {
    *
    */
   public static class SupplyList extends State {
-    // TODO: make a class for these, when needed beyond just exporting
-    public List<HealthRecord.Supply> supplies;
+    public List<SupplyComponent> supplies;
 
     @Override
     public SupplyList clone() {
@@ -1791,9 +1790,15 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
-      HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
-      encounter.supplies.addAll(supplies);
+      for (SupplyComponent s : supplies) {
+        person.record.useSupply(time, s.code, s.quantity);
+      }
       return true;
+    }
+
+    private static class SupplyComponent implements Serializable {
+      HealthRecord.Code code;
+      int quantity;
     }
   }
   
