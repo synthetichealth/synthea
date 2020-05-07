@@ -1,17 +1,28 @@
 {
   "name": "Supplies - ICU",
   "remarks": [
-    "This module includes the supplies needed during daily treatment of COVID-19 in an intensive care setting.  These supplies offer a higher level of protection to the health care provider than the general inpatient setting. This includes the PPE needed for 1 patient, 1 doctor, 1 nurse for 1 day.",
+    "This module includes the supplies needed during daily treatment of COVID-19 in an intensive care setting.  These supplies offer a higher level of protection to the health care provider than the general inpatient setting. ",
     "",
-    "Patient",
-    "- no additional supplies",
+    "Daily ICU Assumptions:",
+    "•\tBasic strategy = Same as hospitalization",
+    "•\tPPE strategy = Same as hospitalization, with the exception of gowns. ",
+    "o\tReusable isolation gowns are approved for extended wear with a max of 2 per patient per 24 hours (i.e. one for day shift nurse and one for night shift nurse) ",
+    "•\tRoom entry assumptions:",
+    "o\tICU physician maximum room entry per 24 hours is 4",
+    "o\tICU nurse maximum room entry per 24 hours is 12",
+    "o\tRespiratory therapist maximum room entry per 24 hours is 4",
+    "o\tAllied health/support maximum room entry per 24 hours is 2",
     "",
-    "Doctor/Nurse",
-    "- 2 gloves each",
-    "- isolation gown each",
-    "- N95 respirator mask each",
-    "- glasses/goggles/face shield",
-    "- hand sanitizer"
+    "| Staff Type                      | Assumed Ratios  | N95 Mask** | Face shield** | Gowns Reusable*** | Gowns single use*** | Wipes*** | Gloves***  | Alcohol*** |",
+    "|---------------------------------|-----------------|------------|---------------|-------------------|---------------------|----------|------------|------------|",
+    "| ICU physician                   | 1:10            | 2          | 2             | 0                 | 4                   | 4        | 8          |            |",
+    "| ICU Nurse                       | 2:1             | 2          | 2             | 2                 | 0                   | 5        | 24         |            |",
+    "| Respiratory Therapist           | 5:1             | 2          | 2             | 0                 | 4                   | 5        | 8          |            |",
+    "| Allied Health/care team support | 24:1            | 2          | 2             | 0                 | 2                   | 2        | 4          |            |",
+    "| Quantity for supply list        |                 | 2          | 2             | 2                 | 10                  | 16       | 44         | 2          |",
+    "",
+    "** When calculating total PPE use, these items are not 1:1 with patients, but are determined based on the number of each staff present caring for COVID/PUI patients each 24 hours. (i.e. # staff type X 2)",
+    "*** When calculating total PPE use, these items are 1:1 for patients for every 24 hours (i.e. every COVID patient uses 8 gowns, 4 wipes, etc. every 24 hours)"
   ],
   "states": {
     "Initial": {
@@ -22,7 +33,7 @@
       "type": "SupplyList",
       "supplies": [
         {
-          "quantity": 4,
+          "quantity": 44,
           "code": {
             "system": "SNOMED-CT",
             "code": "713779008",
@@ -31,6 +42,14 @@
         },
         {
           "quantity": 2,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 469212006,
+            "display": "Isolation gown, reusable (physical object)"
+          }
+        },
+        {
+          "quantity": 10,
           "code": {
             "system": "SNOMED-CT",
             "code": "469673003",
@@ -49,12 +68,12 @@
           "quantity": 2,
           "code": {
             "system": "SNOMED-CT",
-            "code": "38126007",
-            "display": "Protective glasses, device (physical object)"
+            "code": 706724001,
+            "display": "Face shield (physical object)"
           }
         },
         {
-          "quantity": 1,
+          "quantity": 2,
           "code": {
             "system": "SNOMED-CT",
             "code": "419343004",
@@ -62,7 +81,7 @@
           }
         },
         {
-          "quantity": 1,
+          "quantity": 16,
           "code": {
             "system": "SNOMED-CT",
             "code": 470618009,

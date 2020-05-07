@@ -1,18 +1,37 @@
 {
   "name": "Supplies - Hospitalization",
   "remarks": [
-    "This module includes the supplies needed during daily treatment of COVID-19 in a basic hospital inpatient setting, not the ICU. This includes the PPE needed for 1 patient, 1 doctor, 1 nurse for 1 day.",
+    "This module includes the supplies needed during daily treatment of COVID-19 in a basic hospital inpatient setting, not the ICU.",
     "",
-    "Patient",
-    "- 1 surgical mask",
-    "- patient gown not tracked as these are completely washable",
+    "Daily Hospitalization Assumptions: For continency capacity for the daily hospitalization, the following assumptions apply per patient per 24-hour period:  ",
+    "•\tBasic strategy:",
+    "o\tAdministrative and engineering measures have already been implemented (e.g. reducing visitors, excluding non-essential personnel, and cohorting patients, etc.)",
+    "o\tNursing staff uses a bundling care model (e.g. vitals/assessments, etc. done at once) and assists with meal tray delivery and basic environmental services to reduce room entry. ",
+    "o\tConsulting physicians/APPs rely on the physical examination of the primary physician/APP to reduce room entry.",
+    "•\tPPE Strategy for encounters with all COVID/PUI patients:",
+    "o\tSingle-use isolation gowns: changed with each room entry",
+    "o\tGloves: changed with each room entry",
+    "o\tFace shields: approved for extended wear with a max of 1 per physician/APP and nurse per 24 hours. ",
+    "o\tN95s: approved for extended wear with a max of 1 per physician/APP and nurse per 24 hours. ",
+    "•\tRoom entry assumptions: ",
+    "o\tPhysician/APP staff maximum room entry per 24 hours is 3.",
+    "o\tPrimary nurse maximum room entry per 24 hours is 6.",
+    "o\tAdditional nursing staff maximum room entry per 24 hours is 2.",
+    "o\tAllied staff maximum room entry per 24 hours is 1",
     "",
-    "Doctor/Nurse",
-    "- 2 gloves each",
-    "- surgical gown each",
-    "- surgical mask each",
-    "- glasses/goggles/face shield",
-    "- hand sanitizer"
+    "",
+    "| Staff Type                              | Assumed Ratios* | N95Mask**  | Face shield**  | Gowns*** | Wipes***  | Gloves*** | Alcohol*** |",
+    "|-----------------------------------------|-----------------|------------|----------------|----------|-----------|-----------|------------|",
+    "| Primary Physician or APP                | 16:1            | 2          | 2              | 3        | 2         | 6         |            |",
+    "| Primary Nurse                           | 4:1             | 2          | 2              | 6        | 2         | 12        |            |",
+    "| Additional Nursing Staff                | 6:1             | 2          | 2              | 2        | 2         | 4         |            |",
+    "| Other allied health and ancillary staff | 25:1            | 2          | 2              | 1        | 2         | 2         |            |",
+    "| Quantity for supply list                | N/A             | 2          | 2              | 12       | 8         | 24        | 1          |",
+    "",
+    "*Ratios crowdsourced with colleagues across the country (MD, RNs, CNA, Nurse Techs)",
+    "** When calculating total PPE use, these items are not 1:1 with patients, but are determined based on the number of each staff present caring for COVID/PUI patients each 24 hours. (i.e. # staff type X 2)",
+    "*** When calculating total PPE use, these items are 1:1 for patients for every 24 hours (i.e. every COVID patient uses 8 gowns, 4 wipes, etc. every 24 hours)",
+    ""
   ],
   "states": {
     "Initial": {
@@ -23,15 +42,15 @@
       "type": "SupplyList",
       "supplies": [
         {
-          "quantity": 3,
+          "quantity": 2,
           "code": {
             "system": "SNOMED-CT",
-            "code": "465635009",
-            "display": "Surgical face mask, single-use (physical object)"
+            "code": 409534002,
+            "display": "Disposable air-purifying respirator (physical object)"
           }
         },
         {
-          "quantity": 4,
+          "quantity": 24,
           "code": {
             "system": "SNOMED-CT",
             "code": "713779008",
@@ -39,7 +58,7 @@
           }
         },
         {
-          "quantity": 2,
+          "quantity": 12,
           "code": {
             "system": "SNOMED-CT",
             "code": "469673003",
@@ -50,8 +69,8 @@
           "quantity": 2,
           "code": {
             "system": "SNOMED-CT",
-            "code": "38126007",
-            "display": "Protective glasses, device (physical object)"
+            "code": 706724001,
+            "display": "Face shield (physical object)"
           }
         },
         {
@@ -63,7 +82,7 @@
           }
         },
         {
-          "quantity": 1,
+          "quantity": 8,
           "code": {
             "system": "SNOMED-CT",
             "code": 470618009,
