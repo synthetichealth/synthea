@@ -360,7 +360,7 @@
           ]
         }
       ],
-      "target_encounter": "ICU Admission"
+      "target_encounter": "Hospital Inpatient Admission"
     },
     "Mild Respiratory Distress": {
       "type": "ConditionOnset",
