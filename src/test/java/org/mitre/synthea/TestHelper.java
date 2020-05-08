@@ -1,28 +1,27 @@
 package org.mitre.synthea;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.Assert.assertNotNull;
-
 import ca.uhn.fhir.context.FhirContext;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import org.apache.commons.io.IOUtils;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.Utilities;
 
 public abstract class TestHelper {
 
   public static final String SNOMED_URI = "http://snomed.info/sct";
+  public static final String LOINC_URI = "http://loinc.org";
+  public static final String SNOMED_OID = "2.16.840.1.113883.6.96";
+  public static final String LOINC_OID = "2.16.840.1.113883.6.1";
+  private static FhirContext dstu2FhirContext;
+  private static FhirContext stu3FhirContext;
   private static FhirContext r4FhirContext;
 
   /**
@@ -73,6 +72,20 @@ public abstract class TestHelper {
       throw new RuntimeException("No terminology service recording source configured");
     }
     return recordingSource;
+  }
+
+  public static FhirContext getDstu2FhirContext() {
+    if (dstu2FhirContext == null) {
+      dstu2FhirContext = FhirContext.forDstu2();
+    }
+    return dstu2FhirContext;
+  }
+
+  public static FhirContext getStu3FhirContext() {
+    if (stu3FhirContext == null) {
+      stu3FhirContext = FhirContext.forDstu3();
+    }
+    return stu3FhirContext;
   }
 
   /**
@@ -129,5 +142,9 @@ public abstract class TestHelper {
   public static long timestamp(int year, int month, int day, int hr, int min, int sec) {
     return LocalDateTime.of(year, month, day, hr, min, sec).toInstant(ZoneOffset.UTC)
         .toEpochMilli();
+  }
+
+  public static long years(long numYears) {
+    return Utilities.convertTime("years", numYears);
   }
 }

@@ -48,7 +48,7 @@ public class ValueSetCodeResolver {
     if (healthRecord == null) {
       return;
     }
-    healthRecord.encounters.forEach(this::resolveCodesInEncounter);
+    healthRecord.encounters.forEach(this::resolveCodesInEntry);
     healthRecord.present.values().forEach(this::resolveCodesInEntry);
   }
 
