@@ -796,7 +796,7 @@
           "display": "Dyspnea (finding)"
         }
       ],
-      "direct_transition": "Determine Nausea or Vomiting"
+      "direct_transition": "Wheezing"
     },
     "Nausea": {
       "type": "Symptom",
@@ -1034,6 +1034,17 @@
       "remarks": [
         "In a survey, 50.6% of patients reported loss of taste as moderate, severe, or As bad as it can be, from Table 2 in Spinato G, Fabbris C, Polesel J, et al. Alterations in Smell or Taste in Mildly Symptomatic Outpatients With SARS-CoV-2 Infection. JAMA. Published online April 22, 2020. doi:10.1001/jama.2020.6771"
       ]
+    },
+    "Wheezing": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 56018004,
+          "display": "Wheezing (finding)"
+        }
+      ],
+      "direct_transition": "Determine Nausea or Vomiting"
     }
   }
 }

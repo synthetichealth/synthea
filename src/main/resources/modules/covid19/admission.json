@@ -293,8 +293,8 @@
                     "codes": [
                       {
                         "system": "SNOMED-CT",
-                        "code": 267036007,
-                        "display": "Dyspnea (finding)"
+                        "code": 56018004,
+                        "display": "Wheezing (finding)"
                       }
                     ]
                   }
@@ -384,7 +384,7 @@
         }
       ],
       "administration": true,
-      "reason": "Mild Respiratory Distress",
+      "reason": "Hypoxemia",
       "direct_transition": "Daily_Acetaminophen_for_Fever",
       "prescription": {
         "dosage": {
@@ -408,8 +408,11 @@
           "display": "Oxygen administration by mask (procedure)"
         }
       ],
-      "reason": "Mild Respiratory Distress",
-      "direct_transition": "Hospitalization Medications"
+      "reason": "Hypoxemia",
+      "direct_transition": "Move to Prone Position",
+      "remarks": [
+        "Oxygen administration by mask refers to supplemental O2 via nasal cannula or mask, continuous positive airway pressure (CPAP), high flow nasal cannula (HFNC), or non-invasive ventilation (NIV)."
+      ]
     },
     "Daily_Acetaminophen_for_Fever": {
       "type": "MedicationOrder",
@@ -437,55 +440,7 @@
     },
     "ICU First Day": {
       "type": "Simple",
-      "direct_transition": "Chest_X_Ray_2"
-    },
-    "Chest_X_Ray_2": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "399208008",
-          "display": "Plain chest X-ray (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 15,
-        "high": 45,
-        "unit": "minutes"
-      },
-      "conditional_transition": [
-        {
-          "transition": "Intubation Supplies",
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": 65710008,
-                    "display": "Acute respiratory failure (disorder)"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": 76571007,
-                    "display": "Septic shock (disorder)"
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "transition": "ICU Day Begin"
-        }
-      ]
+      "direct_transition": "Intubation Check"
     },
     "Intubation Supplies": {
       "type": "CallSubmodule",
@@ -518,7 +473,7 @@
           "display": "Oxygen administration by mask (procedure)"
         }
       ],
-      "reason": "Mild Respiratory Distress",
+      "reason": "Hypoxemia",
       "direct_transition": "Dialysis Check"
     },
     "Daily_Acetaminophen_for_Fever_ICU": {
@@ -711,7 +666,7 @@
         }
       ],
       "direct_transition": "Recovery",
-      "reason": "Mild Respiratory Distress"
+      "reason": "Hypoxemia"
     },
     "Recovery": {
       "type": "Delay",
@@ -806,13 +761,13 @@
           "transition": "Albuterol Administration"
         },
         {
-          "transition": "Check for Septic Shock"
+          "transition": "Treat Bacterial Infection"
         }
       ]
     },
     "Remove_Laryngoscope": {
       "type": "DeviceEnd",
-      "direct_transition": "ICU Day Begin",
+      "direct_transition": "Chest X Ray to confirm intubation",
       "referenced_by_attribute": "covid19_laryngoscope"
     },
     "Hospitalization Procedures": {
@@ -837,7 +792,7 @@
     "Treat Clots ICU": {
       "type": "CallSubmodule",
       "submodule": "covid19/treat_blood_clot",
-      "direct_transition": "ICU Procedures"
+      "direct_transition": "Check for Bacterial Infection"
     },
     "Dialysis Check": {
       "type": "Simple",
@@ -928,27 +883,6 @@
       "reason": "covid19",
       "direct_transition": "Recovery Days"
     },
-    "Check for Septic Shock": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Vasopressor A",
-          "condition": {
-            "condition_type": "Active Condition",
-            "codes": [
-              {
-                "system": "SNOMED-CT",
-                "code": 76571007,
-                "display": "Septic shock (disorder)"
-              }
-            ]
-          }
-        },
-        {
-          "transition": "Daily_Acetaminophen_for_Fever_ICU"
-        }
-      ]
-    },
     "Albuterol Administration": {
       "type": "Simple",
       "conditional_transition": [
@@ -995,7 +929,7 @@
         }
       ],
       "administration": true,
-      "reason": "Mild Respiratory Distress",
+      "reason": "Hypoxemia",
       "prescription": {
         "dosage": {
           "amount": 4,
@@ -1008,7 +942,7 @@
           "unit": "days"
         }
       },
-      "direct_transition": "Check for Septic Shock"
+      "direct_transition": "Treat Bacterial Infection"
     },
     "Albuterol Nebulizer on Ventilation": {
       "type": "MedicationOrder",
@@ -1020,8 +954,8 @@
         }
       ],
       "administration": true,
-      "reason": "Mild Respiratory Distress",
-      "direct_transition": "Check for Septic Shock",
+      "reason": "Hypoxemia",
+      "direct_transition": "Treat Bacterial Infection",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -1048,6 +982,187 @@
         {
           "transition": "Recovery"
         }
+      ]
+    },
+    "Move to Prone Position": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 431182000,
+          "display": "Placing subject in prone position (procedure)"
+        }
+      ],
+      "direct_transition": "Hospitalization Medications",
+      "reason": "Hypoxemia"
+    },
+    "Intubation Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Intubation Supplies",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 65710008,
+                    "display": "Acute respiratory failure (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 76571007,
+                    "display": "Septic shock (disorder)"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "ICU Day Begin"
+        }
+      ]
+    },
+    "Chest X Ray to confirm intubation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "399208008",
+          "display": "Plain chest X-ray (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Intubation Supplies",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 65710008,
+                    "display": "Acute respiratory failure (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 76571007,
+                    "display": "Septic shock (disorder)"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "ICU Day Begin"
+        }
+      ],
+      "direct_transition": "ICU Day Begin"
+    },
+    "Check for Bacterial Infection": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/diagnose_bacterial_infection",
+      "direct_transition": "ICU Procedures"
+    },
+    "Treat Bacterial Infection": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Vancomycin",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_bacterial_infection",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Check for Septic Shock"
+        }
+      ]
+    },
+    "Check for Septic Shock": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Vasopressor A",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 76571007,
+                "display": "Septic shock (disorder)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Daily_Acetaminophen_for_Fever_ICU"
+        }
+      ]
+    },
+    "Vancomycin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1807513,
+          "display": "vancomycin 1000 MG Injection"
+        }
+      ],
+      "direct_transition": "piperacillin-tazobactam",
+      "reason": "covid19_bacterial_infection",
+      "administration": true
+    },
+    "piperacillin-tazobactam": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1659149,
+          "display": "piperacillin 4000 MG / tazobactam 500 MG Injection"
+        }
+      ],
+      "reason": "covid19_bacterial_infection",
+      "direct_transition": "Check for Septic Shock",
+      "administration": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        },
+        "refills": 4
+      },
+      "remarks": [
+        "Every 6 hours."
       ]
     }
   }

@@ -6,32 +6,10 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Take_Temperature_Each_Day"
+      "direct_transition": "Record Vitals"
     },
     "Terminal": {
       "type": "Terminal"
-    },
-    "Take_Temperature_Each_Day": {
-      "type": "Observation",
-      "category": "vital-signs",
-      "unit": "Cel",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "8310-5",
-          "display": "Body temperature"
-        },
-        {
-          "system": "LOINC",
-          "code": "8331-1",
-          "display": "Oral temperature"
-        }
-      ],
-      "range": {
-        "low": 37.7,
-        "high": 42.2
-      },
-      "direct_transition": "CBC"
     },
     "CBC": {
       "type": "DiagnosticReport",
@@ -408,7 +386,7 @@
           }
         },
         {
-          "transition": "ICU Check"
+          "transition": "Terminal"
         }
       ]
     },
@@ -498,52 +476,6 @@
         }
       ],
       "direct_transition": "Record FiO2"
-    },
-    "ICU Check": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Record O2",
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "covid19_icu_days",
-                "operator": "is not nil"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "covid19_icu_days",
-                "operator": ">=",
-                "value": 0
-              }
-            ]
-          }
-        },
-        {
-          "transition": "Terminal"
-        }
-      ]
-    },
-    "Record O2": {
-      "type": "Observation",
-      "category": "vital-signs",
-      "unit": "%",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "2708-6",
-          "display": "Oxygen saturation in Arterial blood"
-        },
-        {
-          "system": "LOINC",
-          "code": "59408-5",
-          "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
-        }
-      ],
-      "direct_transition": "Terminal",
-      "vital_sign": "Oxygen Saturation"
     },
     "Comprehensive Metabolic Panel with Normal Kidney": {
       "type": "DiagnosticReport",
@@ -984,11 +916,16 @@
           "display": "Oxygen/Inspired gas setting [Volume Fraction] Ventilator"
         }
       ],
-      "direct_transition": "ICU Check",
+      "direct_transition": "Terminal",
       "range": {
         "low": 30,
         "high": 100
       }
+    },
+    "Record Vitals": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/measurements_vitals",
+      "direct_transition": "CBC"
     }
   }
 }

@@ -21,28 +21,6 @@
       ],
       "direct_transition": "Catalog Symptoms"
     },
-    "Take Temperature": {
-      "type": "Observation",
-      "category": "vital-signs",
-      "unit": "Cel",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "8310-5",
-          "display": "Body temperature"
-        },
-        {
-          "system": "LOINC",
-          "code": "8331-1",
-          "display": "Oral temperature"
-        }
-      ],
-      "range": {
-        "low": 37.7,
-        "high": 42.2
-      },
-      "direct_transition": "Acetaminophen"
-    },
     "End Exposure": {
       "type": "ConditionEnd",
       "condition_onset": "Suspected COVID",
@@ -218,22 +196,6 @@
         }
       ],
       "assign_to_attribute": "covid19_careplan"
-    },
-    "Acetaminophen": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 198440,
-          "display": "Acetaminophen 500 MG Oral Tablet"
-        }
-      ],
-      "remarks": [
-        "For fever response, we want to use acetaminophen.",
-        "WHO Now Officially Recommends to Avoid Taking Ibuprofen For COVID-19 Symptoms"
-      ],
-      "administration": true,
-      "direct_transition": "Suspected COVID"
     },
     "Self Isolation At Home": {
       "type": "CarePlanStart",
@@ -1231,7 +1193,7 @@
     "Catalog Symptoms": {
       "type": "CallSubmodule",
       "submodule": "covid19/symptoms",
-      "direct_transition": "Take Temperature"
+      "direct_transition": "Poor Oxygen Saturation"
     },
     "End Symptoms": {
       "type": "CallSubmodule",
@@ -1242,6 +1204,21 @@
       "type": "CallSubmodule",
       "submodule": "covid19/end_outcomes",
       "direct_transition": "End Self Isolation At Home"
+    },
+    "Poor Oxygen Saturation": {
+      "type": "VitalSign",
+      "vital_sign": "Oxygen Saturation",
+      "unit": "%",
+      "range": {
+        "low": 75,
+        "high": 89
+      },
+      "direct_transition": "Record Vitals"
+    },
+    "Record Vitals": {
+      "type": "CallSubmodule",
+      "submodule": "covid19/measurements_vitals",
+      "direct_transition": "Suspected COVID"
     }
   }
 }

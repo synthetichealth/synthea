@@ -111,7 +111,7 @@
           "display": "Dyspnea (finding)"
         }
       ],
-      "direct_transition": "Sore Throat End"
+      "direct_transition": "Wheezing End"
     },
     "Nausea End": {
       "type": "ConditionEnd",
@@ -200,6 +200,17 @@
           "display": "Loss of taste (finding)"
         }
       ]
+    },
+    "Wheezing End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 56018004,
+          "display": "Wheezing (finding)"
+        }
+      ],
+      "direct_transition": "Sore Throat End"
     }
   }
 }
