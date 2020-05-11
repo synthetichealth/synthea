@@ -100,6 +100,11 @@ test {
   testLogging {
     exceptionFormat = 'full'
   }
+  
+  jacoco {
+    excludes = ["org.openhealthtools.mdht.uml.cda.consol.util.ConsolValidator"]
+  }
+  
   maxHeapSize = "2048m"
 }
 
