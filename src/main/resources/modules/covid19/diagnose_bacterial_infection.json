@@ -27,8 +27,8 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Bacterial Infection",
-          "distribution": 0.025
+          "distribution": 0.025,
+          "transition": "Take Culture"
         },
         {
           "transition": "Terminal",
@@ -42,11 +42,27 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 312117008,
-          "display": "Bacterial respiratory infection (disorder)"
+          "code": 87628006,
+          "display": "Bacterial infectious disease (disorder)"
         }
       ],
       "direct_transition": "Terminal"
+    },
+    "Take Culture": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 61594008,
+          "display": "Microbial culture (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "Bacterial Infection"
     }
   }
 }

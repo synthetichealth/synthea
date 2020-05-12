@@ -1092,9 +1092,24 @@
         {
           "transition": "Vancomycin",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_bacterial_infection",
-            "operator": "is not nil"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_bacterial_infection",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 76571007,
+                    "display": "Septic shock (disorder)"
+                  }
+                ]
+              }
+            ]
           }
         },
         {
