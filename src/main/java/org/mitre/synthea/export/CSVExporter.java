@@ -7,10 +7,12 @@ import com.google.common.collect.Table;
 import com.google.gson.JsonObject;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,12 +32,15 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Device;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.HealthRecord.Supply;
+
 
 /**
  * Researchers have requested a simple table-based format that could easily be
@@ -51,60 +56,74 @@ public class CSVExporter {
   /**
    * Writer for patients.csv.
    */
-  private FileWriter patients;
+  private OutputStreamWriter patients;
   /**
    * Writer for allergies.csv.
    */
-  private FileWriter allergies;
+  private OutputStreamWriter allergies;
   /**
    * Writer for medications.csv.
    */
-  private FileWriter medications;
+  private OutputStreamWriter medications;
   /**
    * Writer for conditions.csv.
    */
-  private FileWriter conditions;
+  private OutputStreamWriter conditions;
   /**
    * Writer for careplans.csv.
    */
-  private FileWriter careplans;
+  private OutputStreamWriter careplans;
   /**
    * Writer for observations.csv.
    */
-  private FileWriter observations;
+  private OutputStreamWriter observations;
   /**
    * Writer for procedures.csv.
    */
-  private FileWriter procedures;
+  private OutputStreamWriter procedures;
   /**
    * Writer for immunizations.csv.
    */
-  private FileWriter immunizations;
+  private OutputStreamWriter immunizations;
   /**
    * Writer for encounters.csv.
    */
-  private FileWriter encounters;
+  private OutputStreamWriter encounters;
   /**
    * Writer for imaging_studies.csv
    */
-  private FileWriter imagingStudies;
+  private OutputStreamWriter imagingStudies;
+  /**
+   * Writer for devices.csv
+   */
+  private OutputStreamWriter devices;
+  /**
+   * Writer for supplies.csv
+   */
+  private OutputStreamWriter supplies;
+  
   /**
    * Writer for organizations.csv
    */
-  private FileWriter organizations;
+  private OutputStreamWriter organizations;
   /**
    * Writer for providers.csv
    */
-  private FileWriter providers;
+  private OutputStreamWriter providers;
   
   /**
    * Writer for payers.csv
    */
-  private FileWriter payers;
+  private OutputStreamWriter payers;
   /**
    * Writer for payerTransitions.csv
    */
-  private FileWriter payerTransitions;
+  private OutputStreamWriter payerTransitions;
+  
+  /**
+   * Charset for specifying the character set of the output files.
+   */
+  private Charset charset = Charset.forName(Config.get("exporter.encoding"));
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -133,36 +152,55 @@ public class CSVExporter {
       File patientsFile = outputDirectory.resolve("patients.csv").toFile();
       boolean append =
           patientsFile.exists() && Boolean.parseBoolean(Config.get("exporter.csv.append_mode"));
+      patients = new OutputStreamWriter(new FileOutputStream(patientsFile, append), charset);
 
       File allergiesFile = outputDirectory.resolve("allergies.csv").toFile();
-      File medicationsFile = outputDirectory.resolve("medications.csv").toFile();
-      File conditionsFile = outputDirectory.resolve("conditions.csv").toFile();
-      File careplansFile = outputDirectory.resolve("careplans.csv").toFile();
-      File observationsFile = outputDirectory.resolve("observations.csv").toFile();
-      File proceduresFile = outputDirectory.resolve("procedures.csv").toFile();
-      File immunizationsFile = outputDirectory.resolve("immunizations.csv").toFile();
-      File encountersFile = outputDirectory.resolve("encounters.csv").toFile();
-      File imagingStudiesFile = outputDirectory.resolve("imaging_studies.csv").toFile();
+      allergies = new OutputStreamWriter(new FileOutputStream(allergiesFile, append), charset);
 
-      patients = new FileWriter(patientsFile, append);
-      allergies = new FileWriter(allergiesFile, append);
-      medications = new FileWriter(medicationsFile, append);
-      conditions = new FileWriter(conditionsFile, append);
-      careplans = new FileWriter(careplansFile, append);
-      observations = new FileWriter(observationsFile, append);
-      procedures = new FileWriter(proceduresFile, append);
-      immunizations = new FileWriter(immunizationsFile, append);
-      encounters = new FileWriter(encountersFile, append);
-      imagingStudies = new FileWriter(imagingStudiesFile, append);
+      File medicationsFile = outputDirectory.resolve("medications.csv").toFile();
+      medications = new OutputStreamWriter(new FileOutputStream(medicationsFile, append), charset);
+
+      File conditionsFile = outputDirectory.resolve("conditions.csv").toFile();
+      conditions = new OutputStreamWriter(new FileOutputStream(conditionsFile, append), charset);
+
+      File careplansFile = outputDirectory.resolve("careplans.csv").toFile();
+      careplans = new OutputStreamWriter(new FileOutputStream(careplansFile, append), charset);
+
+      File observationsFile = outputDirectory.resolve("observations.csv").toFile();
+      observations = new OutputStreamWriter(
+          new FileOutputStream(observationsFile, append), charset);
+
+      File proceduresFile = outputDirectory.resolve("procedures.csv").toFile();
+      procedures = new OutputStreamWriter(new FileOutputStream(proceduresFile, append), charset);
+
+      File immunizationsFile = outputDirectory.resolve("immunizations.csv").toFile();
+      immunizations = new OutputStreamWriter(
+          new FileOutputStream(immunizationsFile, append), charset);
+
+      File encountersFile = outputDirectory.resolve("encounters.csv").toFile();
+      encounters = new OutputStreamWriter(new FileOutputStream(encountersFile, append), charset);
+
+      File imagingStudiesFile = outputDirectory.resolve("imaging_studies.csv").toFile();
+      imagingStudies = new OutputStreamWriter(
+          new FileOutputStream(imagingStudiesFile, append), charset);
+
+      File devicesFile = outputDirectory.resolve("devices.csv").toFile();
+      devices = new OutputStreamWriter(new FileOutputStream(devicesFile, append), charset);
+
+      File suppliesFile = outputDirectory.resolve("supplies.csv").toFile();
+      supplies = new OutputStreamWriter(new FileOutputStream(suppliesFile, append), charset);
+
 
       File organizationsFile = outputDirectory.resolve("organizations.csv").toFile();
       File providersFile = outputDirectory.resolve("providers.csv").toFile();
-      organizations = new FileWriter(organizationsFile, append);
-      providers = new FileWriter(providersFile, append);
+      organizations = new OutputStreamWriter(
+          new FileOutputStream(organizationsFile, append), charset);
+      providers = new OutputStreamWriter(new FileOutputStream(providersFile, append), charset);
       File payersFile = outputDirectory.resolve("payers.csv").toFile();
       File payerTransitionsFile = outputDirectory.resolve("payer_transitions.csv").toFile();
-      payers = new FileWriter(payersFile, append);
-      payerTransitions = new FileWriter(payerTransitionsFile, append);
+      payers = new OutputStreamWriter(new FileOutputStream(payersFile, append), charset);
+      payerTransitions = new OutputStreamWriter(
+          new FileOutputStream(payerTransitionsFile, append), charset);
 
       if (!append) {
         writeCSVHeaders();
@@ -203,12 +241,17 @@ public class CSVExporter {
     immunizations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,BASE_COST");
     immunizations.write(NEWLINE);
     encounters.write(
-        "Id,START,STOP,PATIENT,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,BASE_ENCOUNTER_COST,"
-        + "TOTAL_CLAIM_COST,PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION");
+        "Id,START,STOP,PATIENT,ORGANIZATION,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,"
+        + "BASE_ENCOUNTER_COST,TOTAL_CLAIM_COST,PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION");
     encounters.write(NEWLINE);
     imagingStudies.write("Id,DATE,PATIENT,ENCOUNTER,BODYSITE_CODE,BODYSITE_DESCRIPTION,"
         + "MODALITY_CODE,MODALITY_DESCRIPTION,SOP_CODE,SOP_DESCRIPTION");
     imagingStudies.write(NEWLINE);
+    devices.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,UDI");
+    devices.write(NEWLINE);
+    supplies.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,QUANTITY");
+    supplies.write(NEWLINE);
+    
     organizations.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,LAT,LON,PHONE,REVENUE,UTILIZATION");
     organizations.write(NEWLINE);
     providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,LAT,LON,"
@@ -371,6 +414,14 @@ public class CSVExporter {
       for (ImagingStudy imagingStudy : encounter.imagingStudies) {
         imagingStudy(personID, encounterID, imagingStudy);
       }
+      
+      for (Device device : encounter.devices) {
+        device(personID, encounterID, device);
+      }
+      
+      for (Supply supply : encounter.supplies) {
+        supply(personID, encounterID, encounter, supply);
+      }
     }
     CSVExporter.getInstance().exportPayerTransitions(person, time);
 
@@ -418,6 +469,8 @@ public class CSVExporter {
     procedures.flush();
     immunizations.flush();
     imagingStudies.flush();
+    devices.flush();
+    supplies.flush();
   }
 
   /**
@@ -498,7 +551,7 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private String encounter(String personID, Encounter encounter) throws IOException {
-    // Id,START,STOP,PATIENT,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,
+    // Id,START,STOP,PATIENT,ORGANIZATION,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,
     // BASE_ENCOUNTER_COST,TOTAL_CLAIM_COST,PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
@@ -515,9 +568,15 @@ public class CSVExporter {
     }
     // PATIENT
     s.append(personID).append(',');
-    // PROVIDER
+    // ORGANIZATION
     if (encounter.provider != null) {
       s.append(encounter.provider.getResourceID()).append(',');
+    } else {
+      s.append(',');
+    }
+    // PROVIDER
+    if (encounter.clinician != null) {
+      s.append(encounter.clinician.getResourceID()).append(',');
     } else {
       s.append(',');
     }
@@ -643,7 +702,7 @@ public class CSVExporter {
     // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,VALUE,UNITS
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(observation.start)).append(',');
+    s.append(iso8601Timestamp(observation.start)).append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
 
@@ -676,7 +735,7 @@ public class CSVExporter {
     // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(procedure.start)).append(',');
+    s.append(iso8601Timestamp(procedure.start)).append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
     // CODE
@@ -716,9 +775,9 @@ public class CSVExporter {
     // BASE_COST,PAYER_COVERAGE,DISPENSES,TOTALCOST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(medication.start)).append(',');
+    s.append(iso8601Timestamp(medication.start)).append(',');
     if (medication.stop != 0L) {
-      s.append(dateFromTimestamp(medication.stop));
+      s.append(iso8601Timestamp(medication.stop));
     }
     s.append(',');
     s.append(personID).append(',');
@@ -797,7 +856,7 @@ public class CSVExporter {
     // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,BASE_COST
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(immunization.start)).append(',');
+    s.append(iso8601Timestamp(immunization.start)).append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
     // CODE
@@ -870,7 +929,7 @@ public class CSVExporter {
 
     String studyID = UUID.randomUUID().toString();
     s.append(studyID).append(',');
-    s.append(dateFromTimestamp(imagingStudy.start)).append(',');
+    s.append(iso8601Timestamp(imagingStudy.start)).append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
 
@@ -897,6 +956,66 @@ public class CSVExporter {
     return studyID;
   }
 
+  /**
+   * Write a single Device to devices.csv.
+   *
+   * @param personID     ID of the person the Device is affixed to.
+   * @param encounterID  ID of the encounter where the Device was associated
+   * @param device       The Device itself
+   * @throws IOException if any IO error occurs
+   */
+  private void device(String personID, String encounterID, Device device) 
+      throws IOException {
+    // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,UDI
+    StringBuilder s = new StringBuilder();
+    
+    s.append(iso8601Timestamp(device.start)).append(',');
+    if (device.stop != 0L) {
+      s.append(iso8601Timestamp(device.stop));
+    }
+    s.append(',');
+    
+    s.append(personID).append(',');
+    s.append(encounterID).append(',');
+    
+    Code code = device.codes.get(0);
+    s.append(code.code).append(',');
+    s.append(clean(code.display)).append(',');
+    
+    s.append(device.udi);
+    
+    s.append(NEWLINE);
+
+    write(s.toString(), devices);
+  }
+  
+  /**
+   * Write a single Supply to supplies.csv.
+   *
+   * @param personID     ID of the person the supply was used for.
+   * @param encounterID  ID of the encounter where the supply was used
+   * @param supply       The supply itself
+   * @throws IOException if any IO error occurs
+   */
+  private void supply(String personID, String encounterID, Encounter encounter, Supply supply)
+          throws IOException {
+    // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,QUANTITY
+    StringBuilder s = new StringBuilder();
+
+    s.append(dateFromTimestamp(encounter.start)).append(',');
+    s.append(personID).append(',');
+    s.append(encounterID).append(',');
+
+    s.append(supply.code.code).append(',');
+    s.append(clean(supply.code.display)).append(',');
+
+    s.append(supply.quantity);
+
+    s.append(NEWLINE);
+    
+    write(s.toString(), supplies);
+  }
+  
   /**
    * Write a single organization to organizations.csv
    * 
@@ -1048,7 +1167,7 @@ public class CSVExporter {
    * @param writer The place to write it
    * @throws IOException if an I/O error occurs
    */
-  private static void write(String line, FileWriter writer) throws IOException {
+  private static void write(String line, OutputStreamWriter writer) throws IOException {
     synchronized (writer) {
       writer.write(line);
     }

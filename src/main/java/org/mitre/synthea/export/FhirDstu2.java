@@ -24,6 +24,7 @@ import ca.uhn.fhir.model.dstu2.resource.Bundle.EntryRequest;
 import ca.uhn.fhir.model.dstu2.resource.CarePlan.Activity;
 import ca.uhn.fhir.model.dstu2.resource.CarePlan.ActivityDetail;
 import ca.uhn.fhir.model.dstu2.resource.Condition;
+import ca.uhn.fhir.model.dstu2.resource.Device;
 import ca.uhn.fhir.model.dstu2.resource.DiagnosticReport;
 import ca.uhn.fhir.model.dstu2.resource.Encounter.Hospitalization;
 import ca.uhn.fhir.model.dstu2.resource.ImagingStudy.Series;
@@ -37,6 +38,7 @@ import ca.uhn.fhir.model.dstu2.resource.Organization;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.model.dstu2.resource.Patient.Communication;
 import ca.uhn.fhir.model.dstu2.resource.Practitioner;
+import ca.uhn.fhir.model.dstu2.resource.SupplyDelivery;
 import ca.uhn.fhir.model.dstu2.valueset.AdministrativeGenderEnum;
 import ca.uhn.fhir.model.dstu2.valueset.AllergyIntoleranceCategoryEnum;
 import ca.uhn.fhir.model.dstu2.valueset.AllergyIntoleranceCriticalityEnum;
@@ -51,6 +53,7 @@ import ca.uhn.fhir.model.dstu2.valueset.ConditionClinicalStatusCodesEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ConditionVerificationStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointSystemEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointUseEnum;
+import ca.uhn.fhir.model.dstu2.valueset.DeviceStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.DiagnosticReportStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.EncounterClassEnum;
 import ca.uhn.fhir.model.dstu2.valueset.EncounterStateEnum;
@@ -65,6 +68,7 @@ import ca.uhn.fhir.model.dstu2.valueset.NameUseEnum;
 import ca.uhn.fhir.model.dstu2.valueset.NarrativeStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ObservationStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ProcedureStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.SupplyDeliveryStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.UnitsOfTimeEnum;
 import ca.uhn.fhir.model.dstu2.valueset.UseEnum;
 import ca.uhn.fhir.model.primitive.BooleanDt;
@@ -85,9 +89,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.awt.geom.Point2D;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -220,6 +221,14 @@ public class FhirDstu2 {
 
       for (ImagingStudy imagingStudy : encounter.imagingStudies) {
         imagingStudy(personEntry, bundle, encounterEntry, imagingStudy);
+      }
+      
+      for (HealthRecord.Device device : encounter.devices) {
+        device(personEntry, bundle, device);
+      }
+      
+      for (HealthRecord.Supply supply : encounter.supplies) {
+        supplyDelivery(personEntry, bundle, supply, encounter);
       }
 
       // one claim per encounter
@@ -507,7 +516,11 @@ public class FhirDstu2 {
       encounterResource.addType(mapCodeToCodeableConcept(code, SNOMED_URI));
     }
 
-    encounterResource.setClassElement(EncounterClassEnum.forCode(encounter.type));
+    EncounterClassEnum encounterClass = EncounterClassEnum.forCode(encounter.type);
+    if (encounterClass == null) {
+      encounterClass = EncounterClassEnum.AMBULATORY;
+    }
+    encounterResource.setClassElement(encounterClass);
     encounterResource.setPeriod(new PeriodDt()
         .setStart(new DateTimeDt(new Date(encounter.start)))
         .setEnd(new DateTimeDt(new Date(encounter.stop))));
@@ -894,8 +907,7 @@ public class FhirDstu2 {
 
     } else if (value instanceof Number) {
       double dblVal = ((Number) value).doubleValue();
-      MathContext mctx = new MathContext(5, RoundingMode.HALF_UP);
-      BigDecimal bigVal = new BigDecimal(dblVal, mctx).stripTrailingZeros();
+      PlainBigDecimal bigVal = new PlainBigDecimal(dblVal);
       return new QuantityDt().setValue(bigVal)
           .setCode(unit).setSystem(UNITSOFMEASURE_URI)
           .setUnit(unit);
@@ -1363,6 +1375,73 @@ public class FhirDstu2 {
     return newEntry(bundle, imagingStudyResource);
   }
 
+  /**
+   * Map the HealthRecord.Device into a FHIR Device and add it to the Bundle.
+   *
+   * @param personEntry    The Person entry.
+   * @param bundle         Bundle to add to.
+   * @param device         The device to add.
+   * @return The added Entry.
+   */
+  private static Entry device(Entry personEntry, Bundle bundle,
+      HealthRecord.Device device) {
+    Device deviceResource = new Device();
+
+    deviceResource.setUdi(device.udi);
+    deviceResource.setStatus(DeviceStatusEnum.AVAILABLE);
+    if (device.manufacturer != null) {
+      deviceResource.setManufacturer(device.manufacturer);
+    }
+    if (device.model != null) {
+      deviceResource.setModel(device.model);
+    }
+    deviceResource.setManufactureDate((DateTimeDt)convertFhirDateTime(
+            device.manufactureTime, true));
+    deviceResource.setExpiry((DateTimeDt)convertFhirDateTime(device.expirationTime, true));
+    deviceResource.setLotNumber(device.lotNumber);
+    deviceResource.setType(mapCodeToCodeableConcept(device.codes.get(0), SNOMED_URI));
+    deviceResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
+
+    return newEntry(bundle, deviceResource);
+  }
+  
+  /**
+   * Map the JsonObject for a Supply into a FHIR SupplyDelivery and add it to the Bundle.
+   *
+   * @param personEntry    The Person entry.
+   * @param bundle         Bundle to add to.
+   * @param supply         The supplied object to add.
+   * @param encounter      The encounter during which the supplies were delivered
+   * @return The added Entry.
+   */
+  private static Entry supplyDelivery(Entry personEntry, Bundle bundle,
+      HealthRecord.Supply supply, Encounter encounter) {
+   
+    SupplyDelivery supplyResource = new SupplyDelivery();
+    supplyResource.setStatus(SupplyDeliveryStatusEnum.DELIVERED);
+    supplyResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
+
+    CodeableConceptDt type = new CodeableConceptDt();
+    type.addCoding()
+      .setCode("device")
+      .setDisplay("Device")
+      .setSystem("http://hl7.org/fhir/supply-item-type");
+    supplyResource.setType(type);
+
+    // super hackish -- there's no "code" field available here, just a reference to a Device
+    // so for now just put some text in the reference
+    ResourceReferenceDt suppliedItem = new ResourceReferenceDt();
+    suppliedItem.setDisplay("SNOMED[" + supply.code.code + "]: " + supply.code.display);
+
+    supplyResource.setSuppliedItem(suppliedItem);
+
+    supplyResource.setQuantity(new SimpleQuantityDt(supply.quantity));
+
+    supplyResource.setTime((DateTimeDt) convertFhirDateTime(encounter.start, true));
+    
+    return newEntry(bundle, supplyResource);
+  }
+  
   /**
    * Map the Provider into a FHIR Organization resource, and add it to the given Bundle.
    *

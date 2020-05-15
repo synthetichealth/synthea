@@ -5,9 +5,11 @@ import com.google.common.collect.Table;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,6 +31,11 @@ import org.mitre.synthea.helpers.Config;
 public class ReportExporter {
 
   /**
+   * Charset for specifying the character set of the output files.
+   */
+  private static Charset charset = Charset.forName(Config.get("exporter.encoding"));
+
+  /**
    * Export the outcomes, access, and cost report. Requires a Generator with a
    * database. If the database is null, this method will return immediately.
    * In order for a database to be present in the generator, the Synthea
@@ -48,7 +55,8 @@ public class ReportExporter {
       String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
       Path outFilePath = outDirectory.toPath().resolve("statistics-" + timeStamp + ".json");
 
-      JsonWriter writer = new JsonWriter(new FileWriter(outFilePath.toFile()));
+      JsonWriter writer = new JsonWriter(new OutputStreamWriter(
+          new FileOutputStream(outFilePath.toFile()), charset));
       writer.setIndent("  ");
       writer.beginObject(); // top-level
 

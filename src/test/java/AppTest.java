@@ -5,18 +5,36 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 
-
 public class AppTest {
+  private static String testStateDefault;
+  private static String testTownDefault;
+  private static String testStateAlternative;
+  private static String testTownAlternative;
+
+  /**
+   * Configure settings across these tests.
+   * @throws Exception on test configuration loading errors.
+   */
+  @BeforeClass
+  public static void testSetup() throws Exception {
+    TestHelper.loadTestProperties();
+    testStateDefault = Config.get("test_state.default", "Massachusetts");
+    testTownDefault = Config.get("test_town.default", "Bedford");
+    testStateAlternative = Config.get("test_state.alternative", "Utah");
+    testTownAlternative = Config.get("test_town.alternative", "Salt Lake City");
+    Generator.DEFAULT_STATE = testStateDefault;
+  }
 
   @Test
   public void testApp() throws Exception {
     TestHelper.exportOff();
-    String[] args = {"-s", "0", "-p", "3", "Massachusetts", "Bedford"};
+    String[] args = {"-s", "0", "-p", "3", testStateDefault, testTownDefault};
     final PrintStream original = System.out;
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
     final PrintStream print = new PrintStream(out, true);
@@ -30,7 +48,8 @@ public class AppTest {
     Assert.assertTrue(output.contains("Location:"));
     Assert.assertTrue(output.contains("alive=3"));
     Assert.assertTrue(output.contains("dead="));
-    Assert.assertTrue(output.contains("Location: Bedford, Massachusetts"));
+    String locationString = "Location: " + testTownDefault + ", " + testStateDefault;
+    Assert.assertTrue(output.contains(locationString));
     System.setOut(original);
   }
 
@@ -81,7 +100,7 @@ public class AppTest {
   @Test
   public void testAppWithDifferentLocation() throws Exception {
     TestHelper.exportOff();
-    String[] args = {"-s", "0", "-p", "3", "Utah", "Salt Lake City"};
+    String[] args = {"-s", "0", "-p", "3", testStateAlternative, testTownAlternative};
     final PrintStream original = System.out;
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
     final PrintStream print = new PrintStream(out, true);
@@ -92,7 +111,8 @@ public class AppTest {
     Assert.assertTrue(output.contains("Running with options:"));
     Assert.assertTrue(output.contains("Seed:"));
     Assert.assertTrue(output.contains("alive=3"));
-    Assert.assertTrue(output.contains("Location: Salt Lake City, Utah"));
+    String locationString = "Location: " + testTownAlternative + ", " + testStateAlternative;
+    Assert.assertTrue(output.contains(locationString));
     System.setOut(original);
   }
 
@@ -109,11 +129,11 @@ public class AppTest {
     String output = out.toString();
     Assert.assertTrue(output.contains("Running with options:"));
     Assert.assertTrue(output.contains("Seed:"));
-    String regex = "\\{alive=(\\d+), dead=(\\d+)\\}";
+    String regex = "alive=(\\d+), dead=(\\d+)";
     Matcher matches = Pattern.compile(regex).matcher(output);
     Assert.assertTrue(matches.find());
     int alive = Integer.parseInt(matches.group(1));
-    int dead = Integer.parseInt(matches.group(2));
+    int dead = Integer.parseInt(matches.group(2));    
     Assert.assertEquals(alive + dead, 3);
     System.setOut(original);
   }
@@ -185,7 +205,7 @@ public class AppTest {
   
   @Test
   public void testInvalidArgs() throws Exception {
-    String[] args = {"-s", "foo", "-p", "foo", "Massachusetts", "Bedford"};
+    String[] args = {"-s", "foo", "-p", "foo", testStateDefault, testTownDefault};
     final PrintStream original = System.out;
     final PrintStream originalErr = System.err;
     final ByteArrayOutputStream out = new ByteArrayOutputStream();

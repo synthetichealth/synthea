@@ -5,6 +5,9 @@ import com.google.common.collect.Table;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,6 +15,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -33,7 +37,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.geography.Location;
 
-public class Payer {
+public class Payer implements Serializable {
 
   /* ArrayList of all Private Payers imported. */
   private static List<Payer> privatePayers = new ArrayList<Payer>();
@@ -73,7 +77,57 @@ public class Payer {
   // Unique utilizers of Payer, by Person ID, with number of utilizations per Person.
   private final Map<String, AtomicInteger> customerUtilization;
   // row: year, column: type, value: count.
-  private final Table<Integer, String, AtomicInteger> entryUtilization;
+  private transient Table<Integer, String, AtomicInteger> entryUtilization;
+  
+  /**
+   * Simple bean used to add Java Serialization support to 
+   * com.google.common.collect.Table&lt;Integer, String, AtomicInteger&gt; which doesn't natively
+   * support Serialization.
+   */
+  static class UtilizationBean implements Serializable {
+    public Integer year;
+    public String type;
+    public AtomicInteger count;
+    
+    public UtilizationBean(Integer year, String type, AtomicInteger count) {
+      this.year = year;
+      this.type = type;
+      this.count = count;
+    }
+  }
+  
+  /**
+   * Java Serialization support for the entryUtilization field.
+   * @param oos stream to write to
+   */
+  private void writeObject(ObjectOutputStream oos) throws IOException {
+    oos.defaultWriteObject();
+    ArrayList<UtilizationBean> entryUtilizationElements = null;
+    if (entryUtilization != null) {
+      entryUtilizationElements = new ArrayList<>(entryUtilization.size());
+      for (Table.Cell<Integer, String, AtomicInteger> cell: entryUtilization.cellSet()) {
+        entryUtilizationElements.add(
+                new UtilizationBean(cell.getRowKey(), cell.getColumnKey(), cell.getValue()));
+      }
+    }
+    oos.writeObject(entryUtilizationElements);
+  }
+
+  /**
+   * Java Serialization support for the entryUtilization field.
+   * @param ois stream to read from
+   */
+  private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+    ois.defaultReadObject();
+    ArrayList<UtilizationBean> entryUtilizationElements = 
+            (ArrayList<UtilizationBean>)ois.readObject();
+    if (entryUtilizationElements != null) {
+      this.entryUtilization = HashBasedTable.create();
+      for (UtilizationBean u: entryUtilizationElements) {
+        this.entryUtilization.put(u.year, u.type, u.count);
+      }
+    }
+  }
 
   /**
    * Payer Constructor.
@@ -258,12 +312,9 @@ public class Payer {
    * Returns the government payer with the given name.
    * 
    * @param governmentPayerName the government payer to get.
+   * @return returns null if the government payer does not exist.
    */
   public static Payer getGovernmentPayer(String governmentPayerName) {
-    if (!governmentPayers.containsKey(governmentPayerName)) {
-      throw new RuntimeException(
-          "ERROR: Government Payer '" + governmentPayerName + "' does not exist.");
-    }
     return Payer.governmentPayers.get(governmentPayerName);
   }
 
@@ -656,4 +707,99 @@ public class Payer {
     int numYears = this.getNumYearsCovered();
     return this.totalQOLS / numYears;
   }
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 53 * hash + Objects.hashCode(this.attributes);
+    hash = 53 * hash + Objects.hashCode(this.name);
+    hash = 53 * hash + Objects.hashCode(this.uuid);
+    hash = 53 * hash + (int) (Double.doubleToLongBits(this.deductible)
+            ^ (Double.doubleToLongBits(this.deductible) >>> 32));
+    hash = 53 * hash + (int) (Double.doubleToLongBits(this.defaultCopay)
+            ^ (Double.doubleToLongBits(this.defaultCopay) >>> 32));
+    hash = 53 * hash + (int) (Double.doubleToLongBits(this.defaultCoinsurance)
+            ^ (Double.doubleToLongBits(this.defaultCoinsurance) >>> 32));
+    hash = 53 * hash + (int) (Double.doubleToLongBits(this.monthlyPremium)
+            ^ (Double.doubleToLongBits(this.monthlyPremium) >>> 32));
+    hash = 53 * hash + Objects.hashCode(this.ownership);
+    hash = 53 * hash + Objects.hashCode(this.statesCovered);
+    hash = 53 * hash + Objects.hashCode(this.servicesCovered);
+    hash = 53 * hash + (int) (Double.doubleToLongBits(this.revenue)
+            ^ (Double.doubleToLongBits(this.revenue) >>> 32));
+    hash = 53 * hash + (int) (Double.doubleToLongBits(this.costsCovered)
+            ^ (Double.doubleToLongBits(this.costsCovered) >>> 32));
+    hash = 53 * hash + (int) (Double.doubleToLongBits(this.costsUncovered)
+            ^ (Double.doubleToLongBits(this.costsUncovered) >>> 32));
+    hash = 53 * hash + (int) (Double.doubleToLongBits(this.totalQOLS)
+            ^ (Double.doubleToLongBits(this.totalQOLS) >>> 32));
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final Payer other = (Payer) obj;
+    if (Double.doubleToLongBits(this.deductible)
+            != Double.doubleToLongBits(other.deductible)) {
+      return false;
+    }
+    if (Double.doubleToLongBits(this.defaultCopay)
+            != Double.doubleToLongBits(other.defaultCopay)) {
+      return false;
+    }
+    if (Double.doubleToLongBits(this.defaultCoinsurance)
+            != Double.doubleToLongBits(other.defaultCoinsurance)) {
+      return false;
+    }
+    if (Double.doubleToLongBits(this.monthlyPremium)
+            != Double.doubleToLongBits(other.monthlyPremium)) {
+      return false;
+    }
+    if (Double.doubleToLongBits(this.revenue)
+            != Double.doubleToLongBits(other.revenue)) {
+      return false;
+    }
+    if (Double.doubleToLongBits(this.costsCovered)
+            != Double.doubleToLongBits(other.costsCovered)) {
+      return false;
+    }
+    if (Double.doubleToLongBits(this.costsUncovered)
+            != Double.doubleToLongBits(other.costsUncovered)) {
+      return false;
+    }
+    if (Double.doubleToLongBits(this.totalQOLS)
+            != Double.doubleToLongBits(other.totalQOLS)) {
+      return false;
+    }
+    if (!Objects.equals(this.name, other.name)) {
+      return false;
+    }
+    if (!Objects.equals(this.uuid, other.uuid)) {
+      return false;
+    }
+    if (!Objects.equals(this.ownership, other.ownership)) {
+      return false;
+    }
+    if (!Objects.equals(this.attributes, other.attributes)) {
+      return false;
+    }
+    if (!Objects.equals(this.statesCovered, other.statesCovered)) {
+      return false;
+    }
+    if (!Objects.equals(this.servicesCovered, other.servicesCovered)) {
+      return false;
+    }
+    return true;
+  }
+  
+  
 }

@@ -199,42 +199,64 @@ public class LogicTest {
 
     person.attributes.remove(attribute);
     assertFalse(doTest("attributeEqualTo_TestValue_Test"));
+    assertFalse(doTest("attributeLt_String_Test"));
     assertTrue(doTest("attributeNilTest"));
     assertFalse(doTest("attributeNotNilTest"));
 
     person.attributes.put(attribute, "Wrong Value");
     assertFalse(doTest("attributeEqualTo_TestValue_Test"));
+    assertFalse(doTest("attributeLt_String_Test"));
     assertFalse(doTest("attributeNilTest"));
     assertTrue(doTest("attributeNotNilTest"));
 
     person.attributes.put(attribute, "TestValue");
     assertTrue(doTest("attributeEqualTo_TestValue_Test"));
+    assertTrue(doTest("attributeLt_String_Test"));
     assertFalse(doTest("attributeNilTest"));
     assertTrue(doTest("attributeNotNilTest"));
 
     person.attributes.put(attribute, 120);
-    assertFalse(doTest("attributeEqualTo_TestValue_Test"));
     assertTrue(doTest("attributeGt100Test"));
     assertFalse(doTest("attributeNilTest"));
     assertTrue(doTest("attributeNotNilTest"));
   }
 
+  @Test(expected = RuntimeException.class)
+  public void test_attribute_expected_numeric_exception() {
+    String attribute = "Test_Attribute_Key";
+    person.attributes.put(attribute, "TestValue");
+    doTest("attributeGt100Test");
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void test_attribute_expected_string_exception() {
+    String attribute = "Test_Attribute_Key";
+    person.attributes.put(attribute, 120);
+    doTest("attributeEqualTo_TestValue_Test");
+  }
+
   @Test
   public void test_symptoms() {
-    person.setSymptom("Appendicitis", "PainLevel", 60, false);
+    person.setSymptom(
+        "Module1", "Appendicitis", "PainLevel", System.currentTimeMillis(), 60, false
+    );
     assertTrue(doTest("symptomPainLevelGt50"));
     assertTrue(doTest("symptomPainLevelLte80"));
 
     // painlevel still 60 here
-    person.setSymptom("Appendicitis", "LackOfAppetite", 100, false);
+    person.setSymptom(
+        "Module2", "Appendicitis", "LackOfAppetite", System.currentTimeMillis(), 100, false
+    );
     assertTrue(doTest("symptomPainLevelGt50"));
     assertTrue(doTest("symptomPainLevelLte80"));
 
-    person.setSymptom("Appendicitis", "PainLevel", 10, false);
+    person.setSymptom(
+        "Module1", "Appendicitis", "PainLevel", System.currentTimeMillis(), 10, false);
     assertFalse(doTest("symptomPainLevelGt50"));
     assertTrue(doTest("symptomPainLevelLte80"));
 
-    person.setSymptom("Appicitis", "PainLevel", 100, false);
+    person.setSymptom(
+        "Module3", "Appicitis", "PainLevel", System.currentTimeMillis(), 100, false);
     assertTrue(doTest("symptomPainLevelGt50"));
     assertFalse(doTest("symptomPainLevelLte80"));
   }

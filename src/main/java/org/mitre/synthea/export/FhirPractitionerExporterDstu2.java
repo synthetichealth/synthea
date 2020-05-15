@@ -33,6 +33,9 @@ public abstract class FhirPractitionerExporterDstu2 {
   private static final String EXTENSION_URI = 
       "http://synthetichealth.github.io/synthea/utilization-encounters-extension";
 
+  /**
+   * Export the practitioner in FHIR DSTU2 format.
+   */
   public static void export(long stop) {
     if (Boolean.parseBoolean(Config.get("exporter.practitioner.fhir_dstu2.export"))) {
 

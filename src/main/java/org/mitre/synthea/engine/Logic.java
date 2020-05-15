@@ -1,5 +1,6 @@
 package org.mitre.synthea.engine;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -22,7 +23,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
  * must not modify state as instances of Logic within Modules are shared
  * across the population.
  */
-public abstract class Logic {
+public abstract class Logic implements Serializable {
   public List<String> remarks;
 
   /**
@@ -274,10 +275,12 @@ public abstract class Logic {
 
     @Override
     public boolean test(Person person, long time) {
-      if (value instanceof String) {
-        return value.equals(person.attributes.get(attribute));
-      } else {
+      try {
         return Utilities.compare(person.attributes.get(attribute), value, operator);
+      } catch (Exception e) {
+        String message = "Attribute Logic error: " + attribute + " " + operator + " " + value;
+        message += ": " + e.getMessage();
+        throw new RuntimeException(message, e);
       }
     }
   }

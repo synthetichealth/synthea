@@ -3,13 +3,18 @@ package org.mitre.synthea.world.geography;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.Table;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
+
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mitre.synthea.helpers.Config;
 
 public class DemographicsTest {
+  public static String demographicsFile;
   public static Demographics philly;
   public static Random random;
 
@@ -19,9 +24,16 @@ public class DemographicsTest {
   @BeforeClass
   @SuppressWarnings("rawtypes")
   public static void setUp() throws IOException {
+    demographicsFile = Config.get("generate.demographics.default_file");
+    Config.set("generate.demographics.default_file", "geography/test_demographics.csv");
     Table pa = Demographics.load("Pennsylvania");
     philly = (Demographics) pa.get("Pennsylvania", "27237");
     random = new Random();
+  }
+
+  @AfterClass
+  public static void cleanUp() {
+    Config.set("generate.demographics.default_file", demographicsFile);
   }
 
   @Test

@@ -1,5 +1,7 @@
 package org.mitre.synthea;
 
+import java.io.File;
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -19,7 +21,17 @@ public abstract class TestHelper {
   public static Module getFixture(String filename) throws Exception {
     Path modulesFolder = Paths.get("generic");
     Path module = modulesFolder.resolve(filename);
-    return Module.loadFile(module, modulesFolder);
+    return Module.loadFile(module, modulesFolder, null);
+  }
+
+  /**
+   * Load the test.properties file.
+   * @throws Exception on configuration loading errors.
+   */
+  public static void loadTestProperties() throws Exception {
+    URI uri = Config.class.getResource("/test.properties").toURI();
+    File file = new File(uri);
+    Config.load(file);
   }
 
   /**
@@ -39,6 +51,8 @@ public abstract class TestHelper {
     Config.set("exporter.text.export", "false");
     Config.set("exporter.text.per_encounter_export", "false");
     Config.set("exporter.csv.export", "false");
+    Config.set("exporter.symptoms.csv.export", "false");
+    Config.set("exporter.symptoms.text.export", "false");
     Config.set("exporter.cpcds.export", "false");
     Config.set("exporter.cdw.export", "false");
     Config.set("exporter.hospital.fhir_stu3.export", "false");
