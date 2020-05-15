@@ -66,6 +66,6 @@ public class CPCDSExporterTest {
       count++;
     }
 
-    assertEquals("Expected 3 CSV files in the output directory, found " + count, 3, count);
+    assertEquals("Expected 5 CSV files in the output directory, found " + count, 5, count);
   }
 }
