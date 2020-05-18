@@ -54,6 +54,10 @@ public final class EncounterModule extends Module {
     if (!person.alive(time)) {
       return true;
     }
+    if (person.hasCurrentEncounter()) {
+      // Don't start a new encounter here if there is already an active encounter
+      return false;
+    }
     boolean startedEncounter = false;
     Encounter encounter = null;
 
@@ -108,6 +112,7 @@ public final class EncounterModule extends Module {
     }
 
     if (startedEncounter) {
+      person.setCurrentEncounter(this, encounter);
       CardiovascularDiseaseModule.performEncounter(person, time, encounter);
       Immunizations.performEncounter(person, time);
     }
@@ -207,11 +212,21 @@ public final class EncounterModule extends Module {
   /**
    * End a wellness encounter if currently active.
    */
-  public void endWellnessEncounter(Person person, long time) {
+  public void endEncounterModuleEncounters(Person person, long time) {
     if (person.attributes.get(ACTIVE_WELLNESS_ENCOUNTER) != null) {
       person.record.encounterEnd(time, EncounterType.WELLNESS);
+      person.record.encounterEnd(time, EncounterType.OUTPATIENT);
       person.attributes.remove(ACTIVE_WELLNESS_ENCOUNTER);
     }
+    if (person.attributes.get(ACTIVE_EMERGENCY_ENCOUNTER) != null) {
+      person.record.encounterEnd(time, EncounterType.EMERGENCY);
+      person.attributes.remove(ACTIVE_EMERGENCY_ENCOUNTER);
+    }
+    if (person.attributes.get(ACTIVE_URGENT_CARE_ENCOUNTER) != null) {
+      person.record.encounterEnd(time, EncounterType.URGENTCARE);
+      person.attributes.remove(ACTIVE_URGENT_CARE_ENCOUNTER);
+    }
+    person.setCurrentEncounter(this, null);
   }
 
   /**

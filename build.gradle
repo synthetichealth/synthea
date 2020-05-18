@@ -97,6 +97,10 @@ dependencies {
 test {
   testLogging {
     exceptionFormat = 'full'
+    showExceptions = true
+    showCauses = true
+    showStackTraces = true
+    showStandardStreams = true
   }
   maxHeapSize = "2048m"
 }
