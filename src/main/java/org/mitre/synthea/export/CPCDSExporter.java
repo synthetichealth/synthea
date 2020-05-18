@@ -265,7 +265,7 @@ public class CPCDSExporter {
   }
 
   /**
-   * Write a single Patient line, to CPCDS_Patients.csv.
+   * Write a single Patient line, to CPCDS_Members.csv.
    *
    * @param person Person to write data for
    * @param time   Time the simulation ended, to calculate age/deceased status
@@ -401,7 +401,7 @@ public class CPCDSExporter {
       String[] providerSection = { attributes.getNpiProvider(), attributes.getNetworkStatus(),
           attributes.getNpiProvider(), attributes.getNetworkStatus(), attributes.getServiceSiteNPI(),
           attributes.getNetworkStatus(), attributes.getNpiProvider(), attributes.getNetworkStatus(), attributes.getNpiProvider(),
-          attributes.getNetworkStatus(), attributes.getNpiPrescribingProvider(), attributes.getNpiProvider(), attributes.getNpiProvider() };
+          attributes.getNetworkStatus(), attributes.getNpiPrescribingProvider(), attributes.getNetworkStatus(), attributes.getNpiProvider() };
 
       StringBuilder provider = new StringBuilder();
       for (String item : providerSection) {
@@ -410,7 +410,7 @@ public class CPCDSExporter {
       String providerString = provider.toString();
 
       // totals
-      double totalCost = encounter.claim.getTotalClaimCost();
+      double totalCost =  attributes.getTotalClaimCost(); //encounter.claim.getTotalClaimCost();
       double coveredCost = encounter.claim.getCoveredCost();
       double disallowed = totalCost - coveredCost;
       double patientPaid;
@@ -425,7 +425,7 @@ public class CPCDSExporter {
         memberReimbursement = 0.00;
         patientPaid = disallowed;
       } else {
-        memberReimbursement = disallowed;
+        memberReimbursement = disallowed - 2*disallowed;
         disallowed = 0.00;
         patientPaid = 0.00;
       }
@@ -966,6 +966,7 @@ public class CPCDSExporter {
     private String revenueCenterCode;
     private String npiProvider;
     private String npiPrescribingProvider;
+    private double totalClaimCost = 0.00;
 
     /**
      * Constructor. Takes the encounter and processes relevant encounters based on
@@ -1037,6 +1038,23 @@ public class CPCDSExporter {
       }
 
       setNpiProvider(doctorNPI);
+
+      for (Entry condition : encounter.conditions){
+        totalClaimCost = totalClaimCost + condition.getCost().doubleValue();
+      }
+      for (Procedure procedure : encounter.procedures){
+        totalClaimCost = totalClaimCost + procedure.getCost().doubleValue();
+      }
+      for (Medication medication : encounter.medications){
+        totalClaimCost = totalClaimCost + medication.getCost().doubleValue();
+      }
+      for (Device device : encounter.devices) {
+        totalClaimCost = totalClaimCost + device.getCost().doubleValue();
+      }
+    }
+
+    public double getTotalClaimCost() {
+      return totalClaimCost;
     }
 
     public String getNpiPrescribingProvider() {
