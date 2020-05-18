@@ -135,6 +135,12 @@
     "operator" : "==",
     "value" : "TestValue"
   },
+  "attributeLt_String_Test" : {
+    "condition_type" : "Attribute",
+    "attribute" : "Test_Attribute_Key",
+    "operator" : "<=",
+    "value" : "UComesAfterTandBeforeW"
+  },
   "attributeGt100Test" : {
     "condition_type" : "Attribute",
     "attribute" : "Test_Attribute_Key",

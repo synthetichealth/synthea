@@ -10,9 +10,6 @@ import com.google.gson.JsonObject;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -57,6 +54,8 @@ import org.hl7.fhir.dstu3.model.Coverage;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.DateType;
 import org.hl7.fhir.dstu3.model.DecimalType;
+import org.hl7.fhir.dstu3.model.Device;
+import org.hl7.fhir.dstu3.model.Device.FHIRDeviceStatus;
 import org.hl7.fhir.dstu3.model.DiagnosticReport;
 import org.hl7.fhir.dstu3.model.DiagnosticReport.DiagnosticReportStatus;
 import org.hl7.fhir.dstu3.model.Dosage;
@@ -100,6 +99,9 @@ import org.hl7.fhir.dstu3.model.ReferralRequest;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.dstu3.model.SimpleQuantity;
 import org.hl7.fhir.dstu3.model.StringType;
+import org.hl7.fhir.dstu3.model.SupplyDelivery;
+import org.hl7.fhir.dstu3.model.SupplyDelivery.SupplyDeliveryStatus;
+import org.hl7.fhir.dstu3.model.SupplyDelivery.SupplyDeliverySuppliedItemComponent;
 import org.hl7.fhir.dstu3.model.Timing;
 import org.hl7.fhir.dstu3.model.Timing.TimingRepeatComponent;
 import org.hl7.fhir.dstu3.model.Timing.UnitsOfTime;
@@ -267,6 +269,14 @@ public class FhirStu3 {
         imagingStudy(personEntry, bundle, encounterEntry, imagingStudy);
       }
 
+      for (HealthRecord.Device device : encounter.devices) {
+        device(personEntry, bundle, device);
+      }
+      
+      for (HealthRecord.Supply supply : encounter.supplies) {
+        supplyDelivery(personEntry, bundle, supply, encounter);
+      }
+      
       // one claim per encounter
       BundleEntryComponent encounterClaim = encounterClaim(personEntry, bundle,
           encounterEntry, encounter.claim);
@@ -1657,8 +1667,7 @@ public class FhirStu3 {
 
     } else if (value instanceof Number) {
       double dblVal = ((Number) value).doubleValue();
-      MathContext mctx = new MathContext(5, RoundingMode.HALF_UP);
-      BigDecimal bigVal = new BigDecimal(dblVal, mctx).stripTrailingZeros();
+      PlainBigDecimal bigVal = new PlainBigDecimal(dblVal);
       return new Quantity().setValue(bigVal)
           .setCode(unit).setSystem(UNITSOFMEASURE_URI)
           .setUnit(unit);
@@ -2147,6 +2156,73 @@ public class FhirStu3 {
     return newEntry(bundle, imagingStudyResource);
   }
 
+  /**
+   * Map the HealthRecord.Device into a FHIR Device and add it to the Bundle.
+   *
+   * @param personEntry    The Person entry.
+   * @param bundle         Bundle to add to.
+   * @param device         The device to add.
+   * @return The added Entry.
+   */
+  private static BundleEntryComponent device(BundleEntryComponent personEntry, Bundle bundle,
+      HealthRecord.Device device) {
+    Device deviceResource = new Device();
+    Device.DeviceUdiComponent udi = new Device.DeviceUdiComponent()
+        .setDeviceIdentifier(device.deviceIdentifier)
+        .setCarrierHRF(device.udi);
+    deviceResource.setUdi(udi);
+    deviceResource.setStatus(FHIRDeviceStatus.ACTIVE);
+    if (device.manufacturer != null) {
+      deviceResource.setManufacturer(device.manufacturer);
+    }
+    if (device.model != null) {
+      deviceResource.setModel(device.model);
+    }
+    deviceResource.setManufactureDate(new Date(device.manufactureTime));
+    deviceResource.setExpirationDate(new Date(device.expirationTime));
+    deviceResource.setLotNumber(device.lotNumber);
+    deviceResource.setType(mapCodeToCodeableConcept(device.codes.get(0), SNOMED_URI));
+    deviceResource.setPatient(new Reference(personEntry.getFullUrl()));
+    return newEntry(bundle, deviceResource);
+  }
+  
+  /**
+   * Map the JsonObject for a Supply into a FHIR SupplyDelivery and add it to the Bundle.
+   *
+   * @param personEntry    The Person entry.
+   * @param bundle         Bundle to add to.
+   * @param supply         The supplied object to add.
+   * @param encounter      The encounter during which the supplies were delivered
+   * @return The added Entry.
+   */
+  private static BundleEntryComponent supplyDelivery(BundleEntryComponent personEntry,
+          Bundle bundle, HealthRecord.Supply supply, Encounter encounter) {
+   
+    SupplyDelivery supplyResource = new SupplyDelivery();
+    supplyResource.setStatus(SupplyDeliveryStatus.COMPLETED);
+    supplyResource.setPatient(new Reference(personEntry.getFullUrl()));
+    
+    CodeableConcept type = new CodeableConcept();
+    type.addCoding()
+      .setCode("device")
+      .setDisplay("Device")
+      .setSystem("http://hl7.org/fhir/supply-item-type");
+    supplyResource.setType(type);
+    
+    SupplyDeliverySuppliedItemComponent suppliedItem = new SupplyDeliverySuppliedItemComponent();
+    suppliedItem.setItem(mapCodeToCodeableConcept(supply.code, SNOMED_URI));
+    
+    SimpleQuantity quantity = new SimpleQuantity();
+    quantity.setValue(supply.quantity);
+    suppliedItem.setQuantity(quantity);
+    
+    supplyResource.setSuppliedItem(suppliedItem);
+    
+    supplyResource.setOccurrence(convertFhirDateTime(encounter.start, true));
+    
+    return newEntry(bundle, supplyResource);
+  }
+  
   /**
    * Map the Provider into a FHIR Organization resource, and add it to the given Bundle.
    * @param bundle The Bundle to add to

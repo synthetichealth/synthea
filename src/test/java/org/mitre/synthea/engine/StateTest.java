@@ -3,9 +3,13 @@ package org.mitre.synthea.engine;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.withSettings;
+
+import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,7 +66,7 @@ public class StateTest {
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
 
     person.history = new LinkedList<>();
-    Provider mock = Mockito.mock(Provider.class);
+    Provider mock = Mockito.mock(Provider.class, withSettings().serializable());
     mock.uuid = "Mock-UUID";
     person.setProvider(EncounterType.AMBULATORY, mock);
     person.setProvider(EncounterType.WELLNESS, mock);
@@ -135,12 +139,12 @@ public class StateTest {
     assertTrue(counter.process(person, time));
     assertEquals(3, person.attributes.get("loop_index"));
 
-    State decrement = module.getState("Counter_Decrement");
-    assertTrue(decrement.process(person, time));
-    assertEquals(2, person.attributes.get("loop_index"));
-
+    State decrement = module.getState("Counter_Decrement_by_2");
     assertTrue(decrement.process(person, time));
     assertEquals(1, person.attributes.get("loop_index"));
+
+    assertTrue(decrement.process(person, time));
+    assertEquals(-1, person.attributes.get("loop_index"));
   }
 
   @Test
@@ -155,6 +159,20 @@ public class StateTest {
     assertTrue(condition.process(person, time));
 
     verifyZeroInteractions(person.record);
+  }
+
+  @Test
+  public void condition_onset_last_onset_time() throws Exception {
+    Module module = TestHelper.getFixture("condition_onset.json");
+    State condition = module.getState("Diabetes");
+    // Should pass through this state immediately without calling the record
+    assertTrue(condition.process(person, time));
+    String conditionDisplay = "Diabetes mellitus";
+    Long onsetTime = person.getOnsetConditionRecord().getConditionLastOnsetTimeFromModule(
+        module.name, conditionDisplay
+    );
+    assertTrue(onsetTime != null);
+    assertEquals(time, onsetTime.longValue());
   }
 
   @Test
@@ -180,6 +198,11 @@ public class StateTest {
     code = enc.conditions.get(0).codes.get(0);
     assertEquals("73211009", code.code);
     assertEquals("Diabetes mellitus", code.display);
+    Long onsetTime = person.getOnsetConditionRecord().getConditionLastOnsetTimeFromModule(
+        module.name, code.display
+    );
+    assertTrue(onsetTime != null);
+    assertEquals(time, onsetTime.longValue());
   }
 
   @Test
@@ -204,7 +227,11 @@ public class StateTest {
     code = enc.conditions.get(0).codes.get(0);
     assertEquals("47693006", code.code);
     assertEquals("Rupture of appendix", code.display);
-
+    Long onsetTime = person.getOnsetConditionRecord().getConditionLastOnsetTimeFromModule(
+        module.name, code.display
+    );
+    assertTrue(onsetTime != null);
+    assertEquals(time, onsetTime.longValue());
   }
 
   @Test
@@ -393,6 +420,17 @@ public class StateTest {
     assertEquals(120.0, person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time), 0.0);
 
     verifyZeroInteractions(person.record);
+  }
+
+  @Test
+  public void symptoms_last_updated_time() throws Exception {
+    Module module = TestHelper.getFixture("symptom.json");
+
+    State symptom1 = module.getState("SymptomOnset");
+    assertTrue(symptom1.process(person, time));
+    Long updatedTime = person.getSymptomLastUpdatedTime(module.name, "Chest Pain");
+    assertTrue(updatedTime != null);
+    assertEquals(time, updatedTime.longValue());
   }
 
   @Test
@@ -718,6 +756,36 @@ public class StateTest {
   }
 
   @Test
+  public void condition_end_last_end_time() throws Exception {
+    Module module = TestHelper.getFixture("condition_end.json");
+
+    // First, onset the condition
+    State condition2 = module.getState("Condition2_Start");
+    assertTrue(condition2.process(person, time));
+    person.history.add(condition2);
+
+    // Process the wellness encounter state, which will wait for a wellness encounter
+    State encounter = module.getState("DiagnosisEncounter");
+    assertFalse(encounter.process(person, time));
+    time = time + Utilities.convertTime("months", 6);
+    // Simulate the wellness encounter by calling perform_encounter
+
+    simulateWellnessEncounter(module);
+    assertTrue(encounter.process(person, time));
+    person.history.add(encounter);
+
+    // Now process the end of the condition
+    State conEnd = module.getState("Condition2_End");
+    assertTrue(conEnd.process(person, time));
+    
+    Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
+        module.name, "Influenza"
+    );
+    assertTrue(endTime != null);
+    assertEquals(time, endTime.longValue());
+  }
+
+  @Test
   public void condition_end_by_entity_attribute() throws Exception {
     Module module = TestHelper.getFixture("condition_end.json");
 
@@ -749,6 +817,12 @@ public class StateTest {
     Code code = condition.codes.get(0);
     assertEquals("228380004", code.code);
     assertEquals("Chases the dragon (finding)", code.display);
+    
+    Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
+        module.name, code.display
+    );
+    assertTrue(endTime != null);
+    assertEquals(time, endTime.longValue());
   }
 
   @Test
@@ -781,6 +855,12 @@ public class StateTest {
     Code code = condition.codes.get(0);
     assertEquals("6142004", code.code);
     assertEquals("Influenza", code.display);
+    
+    Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
+        module.name, code.display
+    );
+    assertTrue(endTime != null);
+    assertEquals(time, endTime.longValue());
   }
 
   @Test
@@ -812,6 +892,12 @@ public class StateTest {
     Code code = condition.codes.get(0);
     assertEquals("73211009", code.code);
     assertEquals("Diabetes mellitus", code.display);
+    
+    Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
+        module.name, code.display
+    );
+    assertTrue(endTime != null);
+    assertEquals(time, endTime.longValue());
   }
 
   @Test
@@ -1711,5 +1797,119 @@ public class StateTest {
     // Verify that the Person now has an LVEF value of 60
     assertEquals(person.getVitalSign(VitalSign.LVEF, time), 60.0, 0.00001);
     
+  }
+  
+  @Test
+  public void testDevice() throws Exception {
+    Module module = TestHelper.getFixture("artificial_heart_device.json");
+    
+    State encounterState = module.getState("Encounter");
+    assertTrue(encounterState.process(person, time));
+    
+    State deviceState = module.getState("Artificial_Heart");
+    assertTrue(deviceState.process(person, time));
+
+    Encounter encounter = person.getCurrentEncounter(module);
+    List<HealthRecord.Device> devices = encounter.devices;
+    assertNotNull(devices);
+    assertEquals(1, devices.size());
+    
+    HealthRecord.Device device = devices.get(0);
+    assertEquals("13459008", device.type);
+    assertEquals("SynCardia", device.manufacturer);
+    assertEquals("Total Artificial Heart", device.model);
+    assertEquals(0L, device.stop);
+    
+    HealthRecord.Device attribute = (HealthRecord.Device)person.attributes.get("artificial_heart");
+    assertNotNull(attribute);
+    assertTrue(attribute == device); // we want reference equality, it should be the same object
+  }
+  
+  @Test
+  public void testDeviceEndByAttribute() throws Exception {
+    Module module = TestHelper.getFixture("artificial_heart_device.json");
+    
+    State encounterState = module.getState("Encounter");
+    assertTrue(encounterState.process(person, time));
+    
+    State deviceState = module.getState("Artificial_Heart");
+    assertTrue(deviceState.process(person, time));
+
+    State deviceEndState = module.getState("Remove_Device_By_Attribute");
+    assertTrue(deviceEndState.process(person, time));
+    
+    Encounter encounter = person.getCurrentEncounter(module);
+    List<HealthRecord.Device> devices = encounter.devices;    
+    HealthRecord.Device device = devices.get(0);
+    assertEquals(time, device.stop);
+  }
+  
+  @Test
+  public void testDeviceEndByCode() throws Exception {
+    Module module = TestHelper.getFixture("artificial_heart_device.json");
+    
+    State encounterState = module.getState("Encounter");
+    assertTrue(encounterState.process(person, time));
+    
+    State deviceState = module.getState("Artificial_Heart");
+    assertTrue(deviceState.process(person, time));
+
+    State deviceEndState = module.getState("Remove_Device_By_Code");
+    assertTrue(deviceEndState.process(person, time));
+    
+    Encounter encounter = person.getCurrentEncounter(module);
+    List<HealthRecord.Device> devices = encounter.devices;    
+    HealthRecord.Device device = devices.get(0);
+    assertEquals(time, device.stop);
+  }
+  
+  
+  @Test
+  public void testDeviceEndByState() throws Exception {
+    Module module = TestHelper.getFixture("artificial_heart_device.json");
+    
+    State encounterState = module.getState("Encounter");
+    assertTrue(encounterState.process(person, time));
+    
+    State deviceState = module.getState("Artificial_Heart");
+    assertTrue(deviceState.process(person, time));
+
+    State deviceEndState = module.getState("Remove_Device_By_State");
+    assertTrue(deviceEndState.process(person, time));
+    
+    Encounter encounter = person.getCurrentEncounter(module);
+    List<HealthRecord.Device> devices = encounter.devices;    
+    HealthRecord.Device device = devices.get(0);
+    assertEquals(time, device.stop);
+  }
+  
+  
+  @Test
+  public void testSupplyList() throws Exception {
+    Module module = TestHelper.getFixture("artificial_heart_device.json");
+    
+    State encounterState = module.getState("Encounter");
+    assertTrue(encounterState.process(person, time));
+    
+    State supplyListState = module.getState("Necessary_Supplies");
+    assertTrue(supplyListState.process(person, time));
+    
+    Encounter encounter = person.getCurrentEncounter(module);
+    List<HealthRecord.Supply> supplies = encounter.supplies;
+    assertNotNull(supplies);
+    assertEquals(4, supplies.size());
+    
+    String[] expectedCodes = { "52291003", "468159004", "39802000", "788177008" };
+    String[] expectedDisplays = { "Glove, device (physical object)", 
+        "Cotton ball (physical object)", "Tongue blade, device (physical object)", 
+        "Examination gown, single-use (physical object)" };
+    int[] expectedQuantities = { 10_000, 3_000, 98765, 1 };
+    
+    for (int i = 0; i < 4; i++) {
+      HealthRecord.Supply supply = supplies.get(i);
+      assertEquals(expectedCodes[i], supply.code.code);
+      assertEquals(expectedDisplays[i], supply.code.display);
+      assertEquals(expectedQuantities[i], supply.quantity);
+    }
   }
 }

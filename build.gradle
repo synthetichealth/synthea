@@ -35,6 +35,7 @@ checkstyle {
 dependencies {
   // This dependency is found on compile classpath of this component and consumers.
   compile 'com.google.code.gson:gson:2.8.0'
+  compile 'com.jayway.jsonpath:json-path:2.4.0'
   compile 'ca.uhn.hapi.fhir:hapi-fhir-base:4.1.0'
   compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:4.1.0'
   compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:4.1.0'
@@ -52,7 +53,7 @@ dependencies {
   compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
   compile group: 'org.apache.commons', name: 'commons-text', version: '1.2'
 
-  compile group: 'org.opencds.cqf', name: 'cql-engine', version: '1.3.10-SNAPSHOT'
+  compile group: 'org.opencds.cqf', name: 'cql-engine', version: '1.3.12'
   compile group: 'info.cqframework', name: 'cql', version: '1.3.17'
   compile group: 'info.cqframework', name: 'model', version: '1.3.17'
   compile group: 'info.cqframework', name: 'cql-to-elm', version: '1.3.17'
@@ -69,7 +70,9 @@ dependencies {
   
   // Physiology simulation dependencies
   compile files('lib/sbscl/SimulationCoreLibrary_v1.5_slim.jar')
-  compile group: 'org.sbml.jsbml', name: 'jsbml', version: '1.4'
+  compile group: 'org.sbml.jsbml', name: 'jsbml', version: '1.4', {
+      exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+  }
   compile group: 'org.apache.commons', name: 'commons-math', version: '2.2'
   
   // JfreeChart for drawing physiology charts
@@ -159,6 +162,22 @@ task attributes(type: JavaExec) {
   description 'Create a list of patient attributes'
   classpath sourceSets.main.runtimeClasspath
   main = "org.mitre.synthea.helpers.Attributes"
+}
+
+task overrides(type: JavaExec) {
+  group 'Application'
+  description 'Create a list of modules parameters in module override format'
+  classpath sourceSets.main.runtimeClasspath
+  main = "org.mitre.synthea.helpers.ModuleOverrides"
+  doFirst {
+    // TODO: is there a way to make this cleaner?
+    String includeFields = project.hasProperty('includeFields') ? project.getProperty('includeFields') : ""
+    String includeModules = project.hasProperty('includeModules') ? project.getProperty('includeModules') : ""
+    String excludeFields = project.hasProperty('excludeFields') ? project.getProperty('excludeFields') : ""
+    String excludeModules = project.hasProperty('excludeModules') ? project.getProperty('excludeModules') : ""
+
+    args(includeFields, includeModules, excludeFields, excludeModules)
+  }
 }
 
 task physiology(type: JavaExec) {

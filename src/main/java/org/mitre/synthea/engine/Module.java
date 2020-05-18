@@ -3,9 +3,16 @@ package org.mitre.synthea.engine;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.spi.json.GsonJsonProvider;
+import com.jayway.jsonpath.spi.mapper.GsonMappingProvider;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Files;
@@ -20,12 +27,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
 import org.mitre.synthea.modules.EncounterModule;
@@ -42,7 +51,12 @@ import org.mitre.synthea.world.agents.Person;
  * across the population, it is important that States are cloned before they are executed. 
  * This keeps the "master" copy of the module clean.
  */
-public class Module {
+public class Module implements Serializable {
+
+  private static final Configuration JSON_PATH_CONFIG = Configuration.builder()
+      .jsonProvider(new GsonJsonProvider())
+      .mappingProvider(new GsonMappingProvider())
+      .build();
 
   private static final Map<String, ModuleSupplier> modules = loadModules();
   
@@ -56,11 +70,13 @@ public class Module {
     retVal.put("Quality Of Life", new ModuleSupplier(new QualityOfLifeModule()));
     retVal.put("Weight Loss", new ModuleSupplier(new WeightLossModule()));
 
+    Properties moduleOverrides = getModuleOverrides();
+
     try {
       URI modulesURI = Module.class.getClassLoader().getResource("modules").toURI();
       fixPathFromJar(modulesURI);
       Path modulesPath = Paths.get(modulesURI);
-      submoduleCount = walkModuleTree(modulesPath, retVal);
+      submoduleCount = walkModuleTree(modulesPath, retVal, moduleOverrides);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -72,23 +88,38 @@ public class Module {
     return retVal;
   }
 
-  private static int walkModuleTree(Path modulesPath, Map<String, ModuleSupplier> retVal)
-          throws IOException {
+  private static Properties getModuleOverrides() {
+    String moduleOverrideFile = Config.get("module_override");
+    Properties overrides = null;
+    if (moduleOverrideFile != null && !moduleOverrideFile.trim().equals("")) {
+      try {
+        overrides = new Properties();
+        overrides.load(new FileReader(moduleOverrideFile));
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+    return overrides;
+  }
+
+  private static int walkModuleTree(
+          Path modulesPath, Map<String, 
+          ModuleSupplier> retVal, 
+          Properties overrides)
+          throws Exception {
     AtomicInteger submoduleCount = new AtomicInteger();
     Path basePath = modulesPath.getParent();
-    Files.walk(modulesPath, Integer.MAX_VALUE)
-            .filter(Files::isReadable)
-            .filter(Files::isRegularFile)
-            .filter(p -> p.toString().endsWith(".json")).forEach(t -> {
-              String relativePath = relativePath(t, modulesPath);
-              boolean submodule = !t.getParent().equals(modulesPath);
-              if (submodule) {
-                submoduleCount.getAndIncrement();
-              }
-              retVal.put(relativePath, new ModuleSupplier(submodule,
-                  relativePath,
-                  () -> loadFile(basePath.relativize(t), submodule)));
-            });
+    Utilities.walkAllModules(modulesPath, t -> {
+      String relativePath = relativePath(t, modulesPath);
+      boolean submodule = !t.getParent().equals(modulesPath);
+      if (submodule) {
+        submoduleCount.getAndIncrement();
+      }
+      retVal.put(relativePath, new ModuleSupplier(submodule,
+          relativePath,
+          () -> loadFile(basePath.relativize(t), submodule, overrides)));
+    });
     return submoduleCount.get();
   }
 
@@ -102,8 +133,9 @@ public class Module {
   public static void addModules(File dir) {
     int submoduleCount = 0;
     int originalModuleCount = modules.size();
+    Properties moduleOverrides = getModuleOverrides();
     try {
-      walkModuleTree(dir.toPath(), modules);
+      walkModuleTree(dir.toPath(), modules, moduleOverrides);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -136,17 +168,38 @@ public class Module {
     return relativeFilePath;
   }
 
-  public static Module loadFile(Path path, Path modulesFolder) throws Exception {
+  public static Module loadFile(Path path, Path modulesFolder, Properties overrides)
+         throws Exception {
     boolean submodule = !path.getParent().equals(modulesFolder);
-    return loadFile(path, submodule);
+    return loadFile(path, submodule, overrides);
   }
 
-  private static Module loadFile(Path path, boolean submodule) throws Exception {
+  private static Module loadFile(Path path, boolean submodule, Properties overrides)
+          throws Exception {
     System.out.format("Loading %s %s\n", submodule ? "submodule" : "module", path.toString());
     String jsonString = Utilities.readResource(path.toString());
+    if (overrides != null) {
+      jsonString = applyOverrides(jsonString, overrides, path.getFileName().toString());
+    }
     JsonParser parser = new JsonParser();
     JsonObject object = parser.parse(jsonString).getAsJsonObject();
     return new Module(object, submodule);
+  }
+
+  private static String applyOverrides(String jsonString, Properties overrides,
+          String moduleFileName) {
+    DocumentContext ctx = JsonPath.using(JSON_PATH_CONFIG).parse(jsonString);
+    overrides.forEach((key, value) -> {
+      // use :: for the separator because filenames cannot contain :
+      String[] parts = ((String)key).split("::");
+      String module = parts[0];
+      if (module.equals(moduleFileName)) {
+        String jsonPath = parts[1];
+        Double numberValue = Double.parseDouble((String)value);
+        ctx.set(jsonPath, numberValue);
+      }
+    });
+    return ctx.jsonString();
   }
 
   public static String[] getModuleNames() {
@@ -281,7 +334,7 @@ public class Module {
   }
 
   private State initialState() {
-    return states.get("Initial"); // all Initial states have name Initial
+    return states.get("Initial").clone(); // all Initial states have name Initial
   }
 
   /**

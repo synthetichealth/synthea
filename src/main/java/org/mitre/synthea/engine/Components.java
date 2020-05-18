@@ -1,5 +1,7 @@
 package org.mitre.synthea.engine;
 
+import java.io.Serializable;
+
 /**
  * Various components used in the generic module framework.
  * All components should be defined within this class.
@@ -12,7 +14,7 @@ public abstract class Components {
    * 
    * @param <R> Type of range
    */
-  public static class Range<R extends Number> {
+  public static class Range<R extends Number> implements Serializable {
     /**
      * Minimum value of the range.
      */
@@ -36,7 +38,7 @@ public abstract class Components {
    *
    * @param <R> Type of range
    */
-  public static class RangeWithUnit<R extends Number> extends Range<R> {
+  public static class RangeWithUnit<R extends Number> extends Range<R> implements Serializable {
     /**
      * Unit for the range. Ex, "years" if the range represents an amount of time.
      */
@@ -50,7 +52,7 @@ public abstract class Components {
    * @param <T>
    *          Type of quantity
    */
-  public static class Exact<T> {
+  public static class Exact<T> implements Serializable {
     /**
      * The fixed value.
      */
@@ -64,14 +66,14 @@ public abstract class Components {
    * 
    * @param <T> Type of quantity
    */
-  public static class ExactWithUnit<T> extends Exact<T> {
+  public static class ExactWithUnit<T> extends Exact<T> implements Serializable {
     /**
      * Unit for the quantity. Ex, "days" if the quantity represents an amount of time.
      */
     public String unit;
   }
   
-  public static class DateInput {
+  public static class DateInput implements Serializable {
     public int year;
     public int month;
     public int day;

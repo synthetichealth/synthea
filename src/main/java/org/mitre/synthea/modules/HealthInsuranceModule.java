@@ -21,6 +21,12 @@ public class HealthInsuranceModule extends Module {
       .parseDouble(Config.get("generate.insurance.mandate.occupation", "0.2"));
   public static double medicaidLevel = 1.33 * Double
       .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
+  public static String MEDICARE =
+      Config.get("generate.payers.insurance_companies.medicare", "Medicare");
+  public static String MEDICAID =
+      Config.get("generate.payers.insurance_companies.medicaid", "Medicaid");
+  public static String DUAL_ELIGIBLE =
+      Config.get("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
 
   /**
    * HealthInsuranceModule constructor.
@@ -75,15 +81,20 @@ public class HealthInsuranceModule extends Module {
    * @return the insurance that this person gets
    */
   private Payer determineInsurance(Person person, long time) {
+    // Government payers
+    Payer medicare = Payer.getGovernmentPayer(MEDICARE);
+    Payer medicaid = Payer.getGovernmentPayer(MEDICAID);
+    Payer dualPayer = Payer.getGovernmentPayer(DUAL_ELIGIBLE);
 
     // If Medicare/Medicaid will accept this person, then it takes priority.
-    if (Payer.getGovernmentPayer("Medicare").accepts(person, time)
-        && Payer.getGovernmentPayer("Medicaid").accepts(person, time)) {
-      return Payer.getGovernmentPayer("Dual Eligible");
-    } else if (Payer.getGovernmentPayer("Medicare").accepts(person, time)) {
-      return Payer.getGovernmentPayer("Medicare");
-    } else if (Payer.getGovernmentPayer("Medicaid").accepts(person, time)) {
-      return Payer.getGovernmentPayer("Medicaid");
+    if (medicare != null && medicaid != null
+        && medicare.accepts(person, time)
+        && medicaid.accepts(person, time)) {
+      return dualPayer;
+    } else if (medicare != null && medicare.accepts(person, time)) {
+      return medicare;
+    } else if (medicaid != null && medicaid.accepts(person, time)) {
+      return medicaid;
     } else if (person.getPreviousPayerAtTime(time) != null
         && IPayerFinder.meetsBasicRequirements(
         person.getPreviousPayerAtTime(time), person, null, time)) {

@@ -1,9 +1,11 @@
 package org.mitre.synthea.world.concepts;
 
+import java.io.Serializable;
+
 /**
  * Represents the LMS parameters on the CDC growth chart for a particular sex and age in months.
  */
-public class GrowthChartEntry {
+public class GrowthChartEntry implements Serializable {
   private double lboxCox;
   private double median;
   private double scov;

@@ -3,6 +3,7 @@
 .project
 .settings
 .gradle
+/nbproject/**
 /build/**
 bin/**
 
@@ -21,8 +22,4 @@ src/main/resources/version.txt
 # VS Code launch settings
 .vscode/launch.test.json
 .vscode/launch.json
-.vs/ProjectSettings.json
-.vs/slnx.sqlite
-.vs/VSWorkspaceState.json
-.vs/synthea/v16/.suo
 .vscode/settings.json

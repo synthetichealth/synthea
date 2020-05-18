@@ -1,0 +1,15 @@
+{
+  "weightUnitErrorRate": 0.0014,
+  "weightTransposeErrorRate": 0.001,
+  "weightSwitchErrorRate": 0.0004,
+  "weightExtremeErrorRate": 0.0014,
+  "weightDuplicateErrorRate": 0.1385,
+  "weightCarriedForwardErrorRate": 0.1324,
+  "heightUnitErrorRate": 0.0007,
+  "heightTransposeErrorRate": 0.001,
+  "heightSwitchErrorRate": 0.0005,
+  "heightExtremeErrorRate": 0.0034,
+  "heightAbsoluteErrorRate": 0.0233,
+  "heightDuplicateErrorRate": 0.1248,
+  "heightCarriedForwardErrorRate": 0.1616
+}

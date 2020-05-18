@@ -9,10 +9,15 @@ import com.google.gson.JsonPrimitive;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import org.mitre.synthea.engine.Logic;
 import org.mitre.synthea.engine.State;
@@ -39,7 +44,7 @@ public class Utilities {
       case "days":
         return TimeUnit.DAYS.toMillis(value);
       case "years":
-        return TimeUnit.DAYS.toMillis((long) 365.25 * value);
+        return TimeUnit.DAYS.toMillis(365 * value);
       case "months":
         return TimeUnit.DAYS.toMillis(30 * value);
       case "weeks":
@@ -49,16 +54,25 @@ public class Utilities {
     }
   }
 
+  /**
+   * Convert a calendar year (e.g. 2020) to a Unix timestamp
+   */
   public static long convertCalendarYearsToTime(int years) {
     return convertTime("years", (long) (years - 1970));
   }
 
+  /**
+   * Get the year of a Unix timestamp.
+   */
   public static int getYear(long time) {
     Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
     calendar.setTimeInMillis(time);
     return calendar.get(Calendar.YEAR);
   }
 
+  /**
+   * Get the month of a Unix timestamp.
+   */
   public static int getMonth(long time) {
     Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
     calendar.setTimeInMillis(time);
@@ -90,12 +104,21 @@ public class Utilities {
     return retVal;
   }
 
+  /**
+   * Calculates 1 - (1-risk)^(currTimeStepInMS/originalPeriodInMS).
+   */
   public static double convertRiskToTimestep(double risk, double originalPeriodInMS) {
     double currTimeStepInMS = Double.parseDouble(Config.get("generate.timestep"));
 
     return 1 - Math.pow(1 - risk, currTimeStepInMS / originalPeriodInMS);
   }
 
+  /**
+   * Compare two objects. lhs and rhs must be of the same type (Number, Boolean, String or Code)
+   * Numbers are converted to double prior to comparison.
+   * Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil. 
+   * Only lhs is checked for is nil and is not nil.
+   */
   public static boolean compare(Object lhs, Object rhs, String operator) {
     if (operator.equals("is nil")) {
       return lhs == null;
@@ -118,6 +141,11 @@ public class Utilities {
     }
   }
 
+  /**
+   * Compare two Doubles.
+   * Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
+   * Only lhs is checked for is nil and is not nil.
+   */
   public static boolean compare(Double lhs, Double rhs, String operator) {
     switch (operator) {
       case "<":
@@ -142,6 +170,11 @@ public class Utilities {
     }
   }
 
+  /**
+   * Compare two Booleans.
+   * Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
+   * Only lhs is checked for is nil and is not nil.
+   */
   public static boolean compare(Boolean lhs, Boolean rhs, String operator) {
     switch (operator) {
       case "<":
@@ -166,6 +199,11 @@ public class Utilities {
     }
   }
 
+  /**
+   * Compare two Strings.
+   * Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
+   * Only lhs is checked for is nil and is not nil.
+   */
   public static boolean compare(String lhs, String rhs, String operator) {
     switch (operator) {
       case "<":
@@ -173,13 +211,13 @@ public class Utilities {
       case "<=":
         return lhs.compareTo(rhs) <= 0;
       case "==":
-        return lhs == rhs;
+        return lhs.equals(rhs);
       case ">=":
         return lhs.compareTo(rhs) >= 0;
       case ">":
         return lhs.compareTo(rhs) > 0;
       case "!=":
-        return lhs != rhs;
+        return !lhs.equals(rhs);
       case "is nil":
         return lhs == null;
       case "is not nil":
@@ -190,6 +228,11 @@ public class Utilities {
     }
   }
 
+  /**
+   * Compare two Integers.
+   * Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
+   * Only lhs is checked for is nil and is not nil.
+   */
   public static boolean compare(Integer lhs, Integer rhs, String operator) {
     switch (operator) {
       case "<":
@@ -214,6 +257,11 @@ public class Utilities {
     }
   }
 
+  /**
+   * Compare two Codes.
+   * Supported operators are: !=, is nil, is not nil. Only lhs is checked for
+   * is nil and is not nil.
+   */
   public static boolean compare(Code lhs, Code rhs, String operator) {
     switch (operator) {
       case "==":
@@ -346,4 +394,32 @@ public class Utilities {
     }
     throw new IllegalArgumentException("Cannot parse value for class " + clazz);
   }
+
+  /**
+   * Walk the directory structure of the modules, and apply the given function for every module.
+   * 
+   * @param action Action to apply for every module. Function signature is 
+   *        (topLevelModulesFolderPath, currentModulePath) -&gt; {...}
+   */
+  public static void walkAllModules(BiConsumer<Path, Path> action) throws Exception {
+    URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
+    Path modulesPath = Paths.get(modulesFolder.toURI());
+
+    walkAllModules(modulesPath, p -> action.accept(modulesPath, p));
+  }
+
+  /**
+   * Walk the directory structure of the modules starting at the given location, and apply the given
+   * function for every module underneath.
+   * 
+   * @param action Action to apply for every module. Function signature is 
+   *        (currentModulePath) -&gt; {...}
+   */
+  public static void walkAllModules(Path modulesPath, Consumer<Path> action) throws Exception {
+    Files.walk(modulesPath, Integer.MAX_VALUE)
+        .filter(Files::isReadable)
+        .filter(Files::isRegularFile)
+        .filter(p -> p.toString().endsWith(".json"))
+        .forEach(p -> action.accept(p));
+  } 
 }

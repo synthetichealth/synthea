@@ -1,0 +1,5 @@
+time,gender,state,Mild_Lookuptablitis,Moderate_Lookuptablitis,Extreme_Lookuptablitis
+0-999,M,Massachusetts,0,1,0
+0-999,F,Massachusetts,1,0,0
+1000-1999,M,Massachusetts,0,0,1
+1000-1999,F,Massachusetts,0,1,0

@@ -3,7 +3,7 @@ package org.mitre.synthea.export;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 
 import org.junit.Rule;
@@ -25,6 +25,8 @@ public class CDWExporterTest {
   @Test
   public void testCDWExport() throws Exception {
     TestHelper.exportOff();
+    TestHelper.loadTestProperties();
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.cdw.export", "true");
     File tempOutputFolder = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
@@ -45,9 +47,9 @@ public class CDWExporterTest {
         "ordereditem", "labchem", "labpanel", "patientlabchem", "vprocedure",
         "surgeryProcedureDiagnosisCode", "surgeryPRE", "vitalSign" };
     for (String variable : variables) {
-      FileWriter fw =
-          Whitebox.<FileWriter>getInternalState(CDWExporter.getInstance(), variable);
-      fw.close();
+      OutputStreamWriter ow =
+          Whitebox.<OutputStreamWriter>getInternalState(CDWExporter.getInstance(), variable);
+      ow.close();
     }
 
     // if we get here we at least had no exceptions

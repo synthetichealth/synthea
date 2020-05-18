@@ -6,6 +6,9 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,7 +35,7 @@ import org.mitre.synthea.world.geography.Location;
 import org.mitre.synthea.world.geography.quadtree.QuadTree;
 import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
-public class Provider implements QuadTreeElement {
+public class Provider implements QuadTreeElement, Serializable {
 
   public static final String ENCOUNTERS = "encounters";
   public static final String PROCEDURES = "procedures";
@@ -75,8 +78,41 @@ public class Provider implements QuadTreeElement {
   public ArrayList<EncounterType> servicesProvided;
   public Map<String, ArrayList<Clinician>> clinicianMap;
   // row: year, column: type, value: count
-  private Table<Integer, String, AtomicInteger> utilization;
+  private transient Table<Integer, String, AtomicInteger> utilization;
 
+  /**
+   * Java Serialization support for the utilization field.
+   * @param oos stream to write to
+   */
+  private void writeObject(ObjectOutputStream oos) throws IOException {
+    oos.defaultWriteObject();
+    ArrayList<Payer.UtilizationBean> entryUtilizationElements = null;
+    if (utilization != null) {
+      entryUtilizationElements = new ArrayList<>(utilization.size());
+      for (Table.Cell<Integer, String, AtomicInteger> cell: utilization.cellSet()) {
+        entryUtilizationElements.add(
+                new Payer.UtilizationBean(cell.getRowKey(), cell.getColumnKey(), cell.getValue()));
+      }
+    }
+    oos.writeObject(entryUtilizationElements);
+  }
+
+  /**
+   * Java Serialization support for the utilization field.
+   * @param ois stream to read from
+   */
+  private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+    ois.defaultReadObject();
+    ArrayList<Payer.UtilizationBean> entryUtilizationElements = 
+            (ArrayList<Payer.UtilizationBean>)ois.readObject();
+    if (entryUtilizationElements != null) {
+      this.utilization = HashBasedTable.create();
+      for (Payer.UtilizationBean u: entryUtilizationElements) {
+        this.utilization.put(u.year, u.type, u.count);
+      }
+    }
+  }
+  
   /**
    * Create a new Provider with no information.
    */
@@ -140,11 +176,13 @@ public class Provider implements QuadTreeElement {
   }
 
   private synchronized void increment(Integer year, String key) {
-    if (!utilization.contains(year, key)) {
-      utilization.put(year, key, new AtomicInteger(0));
-    }
+    if (utilization != null) { // TODO remove once utilization stats are made serializable
+      if (!utilization.contains(year, key)) {
+        utilization.put(year, key, new AtomicInteger(0));
+      }
 
-    utilization.get(year, key).incrementAndGet();
+      utilization.get(year, key).incrementAndGet();
+    }
   }
 
   public Table<Integer, String, AtomicInteger> getUtilization() {
@@ -240,6 +278,7 @@ public class Provider implements QuadTreeElement {
     providerList.clear();
     statesLoaded.clear();
     providerMap = generateQuadTree();
+    providerFinder = buildProviderFinder();
     loaded = 0;
   }
 
@@ -269,6 +308,7 @@ public class Provider implements QuadTreeElement {
         String hospitalFile = Config.get("generate.providers.hospitals.default_file");
         loadProviders(location, hospitalFile, servicesProvided, clinicianSeed);
 
+        servicesProvided.add(EncounterType.WELLNESS);
         String vaFile = Config.get("generate.providers.veterans.default_file");
         loadProviders(location, vaFile, servicesProvided, clinicianSeed);
 

@@ -26,6 +26,8 @@ public class CPCDSExporterTest {
   @Test
   public void testCPCDSExport() throws Exception {
     TestHelper.exportOff();
+    TestHelper.loadTestProperties();
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.cpcds.export", "true");
     Config.set("exporter.csv.folder_per_run", "false");
     File tempOutputFolder = tempFolder.newFolder();
@@ -34,7 +36,7 @@ public class CPCDSExporterTest {
     Payer.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
-    Payer.loadPayers(new Location("Massachusetts", null));
+    Payer.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);

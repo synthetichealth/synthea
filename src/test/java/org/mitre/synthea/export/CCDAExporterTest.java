@@ -29,6 +29,8 @@ public class CCDAExporterTest {
   
   @Test
   public void testCCDAExport() throws Exception {
+    TestHelper.loadTestProperties();
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
     CDAUtil.loadPackages();
     List<String> validationErrors = new ArrayList<String>();
