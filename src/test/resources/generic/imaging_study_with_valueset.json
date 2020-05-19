@@ -7,31 +7,45 @@
     },
     "Knee_Injury": {
       "type": "ConditionOnset",
-      "codes": [{
-        "system": "SNOMED-CT",
-        "code": "239725005",
-        "display": "Rupture of anterior cruciate ligament"
-      }],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "239725005",
+          "display": "Rupture of anterior cruciate ligament"
+        }
+      ],
       "target_encounter": "ED_Visit",
       "direct_transition": "ED_Visit"
     },
     "ED_Visit": {
       "type": "Encounter",
       "encounter_class": "emergency",
-      "codes": [{
+      "codes": [
+        {
           "system": "SNOMED-CT",
           "code": "50849002",
           "display": "Emergency room admission (procedure)"
-      }],
-      "reason" : "Knee_Injury",
+        }
+      ],
+      "reason": "Knee_Injury",
       "direct_transition": "Knee_MRI"
     },
     "Knee_MRI": {
       "type": "ImagingStudy",
-      "procedure_code": { "value_set": "http://snomed.info/sct?fhir_vs=ecl/<<2491000087104" },
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "2501000087107",
+        "display": "MRI of right knee with contrast",
+        "value_set": "http://snomed.info/sct?fhir_vs=ecl/<<2491000087104"
+      },
       "series": [
         {
-          "body_site": { "value_set": "http://snomed.info/sct?fhir_vs=ecl/<<6757004" },
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "719489001",
+            "display": "Structure of right patella",
+            "value_set": "http://snomed.info/sct?fhir_vs=ecl/<<6757004"
+          },
           "modality": {
             "system": "DICOM-DCM",
             "code": "MR",

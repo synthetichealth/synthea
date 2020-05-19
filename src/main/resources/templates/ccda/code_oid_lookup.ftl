@@ -5,7 +5,7 @@
 2.16.840.1.113883.6.96<#t>
 <#elseif system == "CPT">
 2.16.840.1.113883.6.12<#t>
-<#elseif system == "RxNorm">
+<#elseif system == "RxNorm" || system == "http://www.nlm.nih.gov/research/umls/rxnorm">
 2.16.840.1.113883.6.88<#t>
 <#elseif system == "ICD-9-CM">
 2.16.840.1.113883.6.103<#t>

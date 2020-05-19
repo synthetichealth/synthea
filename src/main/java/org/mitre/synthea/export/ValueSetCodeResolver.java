@@ -52,10 +52,7 @@ public class ValueSetCodeResolver {
     healthRecord.present.values().forEach(this::resolveCodesInEntry);
   }
 
-  private void resolveCodesInEncounter(@Nullable Encounter encounter) {
-    if (encounter == null) {
-      return;
-    }
+  private void resolveCodesInEncounter(@Nonnull Encounter encounter) {
     encounter.observations.forEach(this::resolveCodesInEntry);
     encounter.reports.forEach(this::resolveCodesInEntry);
     encounter.conditions.forEach(this::resolveCodesInEntry);
@@ -97,48 +94,30 @@ public class ValueSetCodeResolver {
     }
   }
 
-  private void resolveCodesInObservation(@Nullable Observation observation) {
-    if (observation == null) {
-      return;
-    }
+  private void resolveCodesInObservation(@Nonnull Observation observation) {
     observation.value = resolveMaybeCode(observation.value);
   }
 
-  private void resolveCodesInReport(@Nullable Report report) {
-    if (report == null) {
-      return;
-    }
+  private void resolveCodesInReport(@Nonnull Report report) {
     report.observations.forEach(this::resolveCodesInObservation);
   }
 
-  private void resolveCodesInProcedure(@Nullable Procedure procedure) {
-    if (procedure == null) {
-      return;
-    }
-    procedure.codes = resolveCodes(procedure.codes);
+  private void resolveCodesInProcedure(@Nonnull Procedure procedure) {
+    procedure.reasons = resolveCodes(procedure.reasons);
   }
 
-  private void resolveCodesInMedication(@Nullable Medication medication) {
-    if (medication == null) {
-      return;
-    }
+  private void resolveCodesInMedication(@Nonnull Medication medication) {
     medication.reasons = resolveCodes(medication.reasons);
     medication.stopReason = resolveCode(medication.stopReason);
   }
 
-  private void resolveCodesInCarePlan(@Nullable CarePlan carePlan) {
-    if (carePlan == null) {
-      return;
-    }
+  private void resolveCodesInCarePlan(@Nonnull CarePlan carePlan) {
     carePlan.activities = resolveCodes(carePlan.activities);
     carePlan.reasons = resolveCodes(carePlan.reasons);
     carePlan.stopReason = resolveCode(carePlan.stopReason);
   }
 
-  private void resolveCodesInImagingStudy(@Nullable ImagingStudy imagingStudy) {
-    if (imagingStudy == null) {
-      return;
-    }
+  private void resolveCodesInImagingStudy(@Nonnull ImagingStudy imagingStudy) {
     imagingStudy.series.forEach(this::resolveCodesInSeries);
   }
 
