@@ -25,7 +25,7 @@
           "transition": "Terminal",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "covid19_diagnosed_clots",
+            "attribute": "covid19_diagnosed_clot",
             "operator": "==",
             "value": true
           }
@@ -102,7 +102,7 @@
     },
     "Diagnosed Clots": {
       "type": "SetAttribute",
-      "attribute": "covid19_diagnosed_clots",
+      "attribute": "covid19_diagnosed_clot",
       "direct_transition": "Terminal",
       "value": true
     },

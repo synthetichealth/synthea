@@ -18,21 +18,21 @@
           }
         },
         {
-          "transition": "Prophylaxis",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "covid19_diagnosed_clot",
-            "operator": "==",
-            "value": false
-          }
-        },
-        {
-          "transition": "Treatment",
+          "transition": "Blood Clot Treatment",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "covid19_diagnosed_clot",
             "operator": "==",
             "value": true
+          }
+        },
+        {
+          "transition": "Blood Clot Prophylaxis",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_diagnosed_clot",
+            "operator": "==",
+            "value": false
           }
         },
         {
@@ -43,7 +43,7 @@
     "Terminal": {
       "type": "Terminal"
     },
-    "Prophylaxis": {
+    "Blood Clot Prophylaxis": {
       "type": "Simple",
       "conditional_transition": [
         {
@@ -83,7 +83,7 @@
         }
       ]
     },
-    "Treatment": {
+    "Blood Clot Treatment": {
       "type": "Simple",
       "conditional_transition": [
         {
