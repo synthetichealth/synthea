@@ -100,9 +100,7 @@ public class ExpressionProcessor {
     
     String cleanExpression = replaceParameters(expression);
     String wrappedExpression = convertParameterizedExpressionToCql(cleanExpression);
-    
-    System.out.println(wrappedExpression);
-    
+
     // Compile our constructed CQL expression into elm once for execution
     this.elm = cqlToElm(wrappedExpression);
     try {
@@ -228,35 +226,6 @@ public class ExpressionProcessor {
             + param + "\": Unsupported type: " + value.getClass().getTypeName() + ".");
       }
     }
-      
-//    } else if (person.attributes.containsKey(param)) {
-//
-//      Object value = person.attributes.get(param);
-//      
-//      if (value instanceof Number) {
-//        return ((Number) value).doubleValue();
-//      } else if (value instanceof Boolean) {
-//        return (Boolean) value ? 1.0 : 0.0;
-//      } else {
-//        if (expression != null) {
-//          throw new IllegalArgumentException("Unable to map person attribute \""
-//              + param + "\" in expression \"" + expression
-//              + "\": Attribute value is not a number.");
-//        } else {
-//          throw new IllegalArgumentException("Unable to map person attribute \""
-//              + param + "\": Attribute value is not a number.");
-//        }
-//      }
-//    } else {
-//      if (expression != null) {
-//        throw new IllegalArgumentException("Unable to map \"" + param
-//            + "\" in expression \"" + expression
-//            + "\": Invalid person attribute or vital sign.");
-//      } else {
-//        throw new IllegalArgumentException("Unable to map \""
-//            + param + "\": Invalid person attribute or vital sign.");
-//      }
-//    }
   }
   
   /**
@@ -321,10 +290,6 @@ public class ExpressionProcessor {
       // Set the CQL compatible parameter name in the context
       context.setParameter(null, cqlParamMap.get(entry.getKey()), entry.getValue());
       setParams.add(entry.getKey());
-    }
-    
-    for (Entry<String, Object> e : params.entrySet()) {
-      System.out.println(e.getKey() + ": " + e.getValue().getClass().getName());
     }
     
     Set<String> missing = Sets.difference(cqlParamMap.keySet(), setParams);
