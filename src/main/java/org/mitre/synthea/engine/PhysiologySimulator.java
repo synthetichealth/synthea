@@ -1,6 +1,5 @@
 package org.mitre.synthea.engine;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,7 +12,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,16 +22,9 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math.ode.DerivativeException;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtils;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.block.BlockBorder;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
+import org.mitre.synthea.helpers.ChartRenderer;
+import org.mitre.synthea.helpers.ChartRenderer.MultiTableChartConfig;
+import org.mitre.synthea.helpers.ChartRenderer.MultiTableSeriesConfig;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.SBMLException;
@@ -48,7 +39,6 @@ import org.simulator.math.odes.EulerMethod;
 import org.simulator.math.odes.GraggBulirschStoerSolver;
 import org.simulator.math.odes.HighamHall54Solver;
 import org.simulator.math.odes.MultiTable;
-import org.simulator.math.odes.MultiTable.Block.Column;
 import org.simulator.math.odes.RosenbrockSolver;
 import org.simulator.math.odes.RungeKutta_EventSolver;
 import org.simulator.sbml.SBMLinterpreter;
@@ -75,12 +65,6 @@ public class PhysiologySimulator {
   private final double[] modelDefaults;
   private final double simDuration;
 
-  /** Enumeration of supported chart types. **/
-  public enum ChartType {
-    SCATTER,
-    LINE
-  }
-
   /** POJO configuration for the simulation. **/
   public static class SimConfig {
     private String name;
@@ -88,7 +72,7 @@ public class PhysiologySimulator {
     private String solver;
     private double stepSize;
     private double duration;
-    private List<ChartConfig> charts;
+    private List<MultiTableChartConfig> charts;
     private Map<String, Double> inputs;
 
     public final Map<String, Double> getInputs() {
@@ -139,179 +123,14 @@ public class PhysiologySimulator {
       this.duration = duration;
     }
 
-    public List<ChartConfig> getCharts() {
+    public List<MultiTableChartConfig> getCharts() {
       return charts;
     }
 
-    public void setCharts(List<ChartConfig> charts) {
+    public void setCharts(List<MultiTableChartConfig> charts) {
       this.charts = charts;
     }
     
-  }
-
-  /**
-   * POJO configuration for a chart.
-   **/
-  public static class ChartConfig {
-    /** Name of the image file to export. **/
-    private String filename;
-    /** User input for the type of chart to render. **/
-    private String type;
-    /** Chart title. **/
-    private String title;
-    /** Parameter to render on the x axis. **/
-    private String axisParamX;
-    /** X axis label. **/
-    private String axisLabelX;
-    /** Y axis label. **/
-    private String axisLabelY;
-    /** List of series configurations for this chart. **/
-    private List<SeriesConfig> series;
-    /** Simulation time in seconds to start charting points. **/
-    private double startTime;
-    /** Simulation time in seconds to end charting points. **/
-    private double endTime;
-    /** X Axis Lower Bound. **/
-    private double lowerBoundX;
-    /** X Axis Upper Bound. **/
-    private double upperBoundX;
-    /** Y Axis Lower Bound. **/
-    private double lowerBoundY;
-    /** Y Axis Upper Bound. **/
-    private double upperBoundY;
-    
-    public String getFilename() {
-      return filename;
-    }
-    
-    public void setFilename(String filename) {
-      this.filename = filename;
-    }
-    
-    public String getType() {
-      return type;
-    }
-    
-    public void setType(String type) {
-      this.type = type;
-    }
-    
-    public String getTitle() {
-      return title;
-    }
-    
-    public void setTitle(String title) {
-      this.title = title;
-    }
-    
-    public String getAxisParamX() {
-      return axisParamX;
-    }
-    
-    public void setAxisParamX(String axisParamX) {
-      this.axisParamX = axisParamX;
-    }
-    
-    public String getAxisLabelX() {
-      return axisLabelX;
-    }
-    
-    public void setAxisLabelX(String axisLabelX) {
-      this.axisLabelX = axisLabelX;
-    }
-    
-    public String getAxisLabelY() {
-      return axisLabelY;
-    }
-    
-    public void setAxisLabelY(String axisLabelY) {
-      this.axisLabelY = axisLabelY;
-    }
-    
-    public List<SeriesConfig> getSeries() {
-      return series;
-    }
-    
-    public void setSeries(List<SeriesConfig> series) {
-      this.series = series;
-    }
-    
-    public double getStartTime() {
-      return startTime;
-    }
-    
-    public void setStartTime(double startTime) {
-      this.startTime = startTime;
-    }
-    
-    public double getEndTime() {
-      return endTime;
-    }
-    
-    public void setEndTime(double endTime) {
-      this.endTime = endTime;
-    }
-
-    public double getLowerBoundX() {
-      return lowerBoundX;
-    }
-
-    public void setLowerBoundX(double lowerBoundX) {
-      this.lowerBoundX = lowerBoundX;
-    }
-
-    public double getUpperBoundX() {
-      return upperBoundX;
-    }
-
-    public void setUpperBoundX(double upperBoundX) {
-      this.upperBoundX = upperBoundX;
-    }
-
-    public double getLowerBoundY() {
-      return lowerBoundY;
-    }
-
-    public void setLowerBoundY(double lowerBoundY) {
-      this.lowerBoundY = lowerBoundY;
-    }
-
-    public double getUpperBoundY() {
-      return upperBoundY;
-    }
-
-    public void setUpperBoundY(double upperBoundY) {
-      this.upperBoundY = upperBoundY;
-    }
-    
-    
-  }
-
-  /**
-   * POJO configuration for a chart series.
-   */
-  public static class SeriesConfig {
-    /** Which parameter to plot on this series. **/
-    private String param;
-    /** Series label in the legend. **/
-    private String label;
-
-    public String getParam() {
-      return param;
-    }
-
-    public void setParam(String param) {
-      this.param = param;
-    }
-
-    public String getLabel() {
-      return label;
-    }
-
-    public void setLabel(String label) {
-      this.label = label;
-    }
-
   }
 
   static {
@@ -545,157 +364,6 @@ public class PhysiologySimulator {
   }
   
   /**
-   * Draw a JFreeChart to an image based on values from a MultiTable.
-   * @param table MultiTable to retrieve values from
-   * @param config chart configuration options
-   */
-  public static void drawChart(MultiTable table, ChartConfig config) {
-    
-    // If there's only one series, and there's a title, hide the legend
-    
-    double lastTimePoint = table.getTimePoint(table.getRowCount() - 1);
-    
-    // Set the chart end time if not specified
-    if (config.getEndTime() == 0) {
-      config.setEndTime(lastTimePoint);
-    }
-    
-    // Check that the start time is valid
-    if (config.getStartTime() < 0) {
-      throw new IllegalArgumentException("Chart start time must not be negative");
-    }
-    
-    // Check the chart end time is valid
-    if (config.getEndTime() > lastTimePoint) {
-      throw new IllegalArgumentException("Invalid chart end time: " + config.getEndTime()
-          + " is greater than final time point " + lastTimePoint);
-    }
-    
-    // Check the time range is valid
-    if (config.getStartTime() > config.getEndTime()) {
-      throw new IllegalArgumentException("Invalid chart range: " + config.getStartTime()
-          + " to " + config.getEndTime());
-    }
-    
-    // Get the list of x values. Time is treated specially since it doesn't have a param identifier
-    boolean axisXIsTime = "time".equalsIgnoreCase(config.getAxisParamX());
-    List<Double> valuesX = new ArrayList<Double>(table.getRowCount());
-    double[] timePoints = table.getTimePoints();
-    Column colX = table.getColumn(config.getAxisParamX());
-    
-    // Check that the x axis identifier is valid
-    if (!axisXIsTime && colX == null) {
-      throw new IllegalArgumentException("Invalid X axis identifier: " + config.getAxisParamX());
-    }
-    
-    int startIndex = Arrays.binarySearch(timePoints, config.getStartTime());
-    int endIndex = Arrays.binarySearch(timePoints, config.getEndTime());
-    
-    // Add the table values to the list of x axis values within the provided time range
-    for (int i = startIndex; i < endIndex; i++) {
-      if (axisXIsTime) {
-        valuesX.add(timePoints[i]);
-      } else {
-        valuesX.add(colX.getValue(i));
-      }
-    }
-    
-    XYSeriesCollection dataset = new XYSeriesCollection();
-
-    // Add each series to the dataset
-    for (SeriesConfig seriesConfig : config.getSeries()) {
-      // If a label is not provided, use the parameter as the label
-      String seriesLabel = seriesConfig.getLabel();
-      if (seriesLabel == null) {
-        seriesLabel = seriesConfig.getParam();
-      }
-      
-      // don't auto-sort the series
-      XYSeries series = new XYSeries(seriesLabel, false);
-
-      Column col = table.getColumn(seriesConfig.getParam());
-      
-      // Check that the series identifier is valid
-      if (col == null) {
-        throw new IllegalArgumentException("Invalid series identifier: " + seriesConfig.getParam());
-      }
-
-      int indexX = 0;
-      for (int i = startIndex; i < endIndex; i++) {
-        series.add((double) valuesX.get(indexX++), col.getValue(i));
-      }
-
-      dataset.addSeries(series);
-    }
-    
-    // Instantiate our renderer to draw the chart
-    XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-    JFreeChart chart;
-    
-    // Determine the appropriate Chart from the configuration options
-    switch (ChartType.valueOf(config.getType().toUpperCase())) {
-      default:
-      case LINE:
-        chart = ChartFactory.createXYLineChart(
-            config.getTitle(), 
-            config.getAxisLabelX(), 
-            config.getAxisLabelY(), 
-            dataset, 
-            PlotOrientation.VERTICAL,
-            true, 
-            true, 
-            false 
-        );
-        for (int i = 0; i < dataset.getSeriesCount(); i++) {
-          renderer.setSeriesShapesVisible(i, false);
-        }
-        break;
-      case SCATTER:
-        chart = ChartFactory.createScatterPlot(
-            config.getTitle(), 
-            config.getAxisLabelX(),
-            config.getAxisLabelY(),
-            dataset
-        );
-        break;
-    }
-    
-    // If there's only one series, and there's a chart title, the legend is unnecessary
-    if (config.getTitle() != null && !config.getTitle().isEmpty()
-        && config.getSeries().size() == 1) {
-      chart.removeLegend();
-    } else {
-      chart.getLegend().setFrame(BlockBorder.NONE);
-    }
-    
-    // Instantiate the plot and set some reasonable styles
-    // TODO eventually we can make these more configurable if desired
-    XYPlot plot = chart.getXYPlot();
-    
-    if (config.getLowerBoundY() < config.getUpperBoundY()) {
-      ValueAxis range = plot.getRangeAxis();
-      range.setRange(config.getLowerBoundY(), config.getUpperBoundY());
-    }
-    
-    if (config.getLowerBoundX() < config.getUpperBoundX()) {
-      ValueAxis domain = plot.getDomainAxis();
-      domain.setRange(config.getLowerBoundX(), config.getUpperBoundX());
-    }
-    
-    plot.setRenderer(renderer);
-    plot.setBackgroundPaint(Color.white);
-    plot.setRangeGridlinesVisible(true);
-    plot.setDomainGridlinesVisible(true);
-    
-    // Save the chart as a PNG image to the file system
-    try {
-      ChartUtils.saveChartAsPNG(new File(config.getFilename()), chart, 600, 300);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-  
-  /**
    * Retrieves the default value for a model parameter.
    * @param param parameter to search for
    * @return initial value
@@ -732,10 +400,10 @@ public class PhysiologySimulator {
     // Add type descriptions so Yaml knows how to instantiate our Lists
     Constructor constructor = new Constructor(SimConfig.class);
     TypeDescription simConfigDescription = new TypeDescription(SimConfig.class);
-    simConfigDescription.addPropertyParameters("charts", ChartConfig.class);
+    simConfigDescription.addPropertyParameters("charts", MultiTableChartConfig.class);
     constructor.addTypeDescription(simConfigDescription);
-    TypeDescription chartConfigDescription = new TypeDescription(ChartConfig.class);
-    chartConfigDescription.addPropertyParameters("series", SeriesConfig.class);
+    TypeDescription chartConfigDescription = new TypeDescription(MultiTableSeriesConfig.class);
+    chartConfigDescription.addPropertyParameters("series", MultiTableSeriesConfig.class);
     constructor.addTypeDescription(chartConfigDescription);
     
     // Parse the SimConfig from the yaml file
@@ -776,13 +444,13 @@ public class PhysiologySimulator {
       // Draw all of the configured charts
       if (config.getCharts() != null) {
         int chartId = 1;
-        for (ChartConfig chartConfig : config.getCharts()) {
+        for (MultiTableChartConfig chartConfig : config.getCharts()) {
           if (chartConfig.getFilename() == null || chartConfig.getFilename().isEmpty()) {
             chartConfig.setFilename("chart" + chartId + ".png");
           }
           chartConfig.setFilename(Paths.get(outputDir.toString(),
               chartConfig.getFilename()).toString());
-          PhysiologySimulator.drawChart(results, chartConfig);
+          ChartRenderer.drawChartAsFile(results, chartConfig);
         }
       }
 

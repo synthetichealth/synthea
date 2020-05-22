@@ -594,7 +594,7 @@ public class HealthRecord implements Serializable {
       }
     }
   }
-
+  
   private Person person;
   public Provider provider;
   public List<Encounter> encounters;

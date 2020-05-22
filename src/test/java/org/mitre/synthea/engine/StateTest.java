@@ -6,12 +6,12 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.withSettings;
 
-import com.google.gson.JsonObject;
-
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,10 +20,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.engine.Components.Attachment;
+import org.mitre.synthea.engine.Components.SampledData;
+import org.mitre.synthea.export.ExportHelper;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
 import org.mitre.synthea.modules.DeathModule;
@@ -476,6 +481,63 @@ public class StateTest {
 
     assertNull(person.attributes.get("Current Opioid Prescription"));
   }
+  
+  @Test
+  public void setAttribute_with_expression() throws Exception {
+    Module module = TestHelper.getFixture("set_attribute.json");
+
+    State set3 = module.getState("Set_Attribute_3");
+    assertTrue(set3.process(person, time));
+
+    assertEquals(185, ((BigDecimal) person.attributes.get("Maximum Heart Rate"))
+        .doubleValue(), 0.1);
+  }
+  
+  @Test
+  public void setAttribute_with_seriesData() throws Exception {
+    Module module = TestHelper.getFixture("set_attribute.json");
+
+    State set4 = module.getState("Set_Attribute_4");
+    assertTrue(set4.process(person, time));
+    
+    TimeSeriesData data = (TimeSeriesData) person.attributes.get("ECG");
+
+    assertEquals(10, data.getValues().size());
+    assertEquals(2041, data.getValues().get(0), 0.0001);
+  }
+
+  @Test
+  public void setAttribute_with_seriesData_Module() throws Exception {
+    Module module = TestHelper.getFixture("series_data.json");
+    assertTrue(module.process(person, time));
+
+    TimeSeriesData data = (TimeSeriesData) person.attributes.get("series_data");
+    assertEquals(12, data.getValues().size());
+    assertEquals(1, data.getValues().get(0), 0.0001);
+
+    HealthRecord.Observation obs = person.record.getLatestObservation("1234");
+    assertNotNull(obs);
+    assertTrue(obs.value instanceof Components.SampledData);
+
+    Components.SampledData sampledData = (Components.SampledData) obs.value;
+    String value = ExportHelper.sampledDataToValueString(sampledData);
+    assertEquals("1 2 3 4 4 3 2 1 1 2 3 4", value);
+  }
+
+  @Test
+  public void setAttribute_with_bad_seriesData() throws Exception {
+    Module module = TestHelper.getFixture("set_attribute.json");
+
+    State set5 = module.getState("Set_Attribute_5");
+    
+    try {
+      set5.process(person, time);
+      fail("Expected RuntimeException to be thrown");
+    } catch (RuntimeException ex) {
+      assertEquals("unable to parse \"invalid\" in SetAttribute state for \"ECG\"",
+          ex.getMessage());
+    }
+  }
 
   @Test
   public void procedure_assigns_entity_attribute() throws Exception {
@@ -534,12 +596,25 @@ public class StateTest {
     State encounter = module.getState("SomeEncounter");
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
+    
+    State physiology = module.getState("Simulate_CVS");
+    assertTrue(physiology.process(person, time));
+    person.history.add(physiology);
 
     State vitalObs = module.getState("VitalSignObservation");
     assertTrue(vitalObs.process(person, time));
 
     State codeObs = module.getState("CodeObservation");
     assertTrue(codeObs.process(person, time));
+    
+    State sampleObs = module.getState("SampledDataObservation");
+    assertTrue(sampleObs.process(person, time));
+    
+    State chartObs = module.getState("ChartObservation");
+    assertTrue(chartObs.process(person, time));
+    
+    State urlObs = module.getState("UrlObservation");
+    assertTrue(urlObs.process(person, time));
 
     HealthRecord.Observation vitalObservation = person.record.encounters.get(0).observations.get(0);
     assertEquals(120.0, vitalObservation.value);
@@ -562,8 +637,36 @@ public class StateTest {
     Code codeObsCode = codeObservation.codes.get(0);
     assertEquals("24356-8", codeObsCode.code);
     assertEquals("Urinalysis complete panel - Urine", codeObsCode.display);
-  }
+    
+    HealthRecord.Observation sampleObservation = person.record.encounters.get(0)
+        .observations.get(2);
+    assertEquals("procedure", sampleObservation.category);
+    assertEquals("mmHg", sampleObservation.unit);
+    assertTrue(sampleObservation.value instanceof SampledData);
+    SampledData sampledData = (SampledData) sampleObservation.value;
+    assertEquals("P_ao", sampledData.attributes.get(0));
+    assertEquals("P_lv", sampledData.attributes.get(1));
+    assertEquals("P_rv", sampledData.attributes.get(2));
+    assertEquals(3, sampledData.series.size());
+    
+    HealthRecord.Observation chartObservation = person.record.encounters.get(0).observations.get(3);
+    assertTrue(chartObservation.value instanceof Attachment);
+    Attachment obsAttachment = (Attachment) chartObservation.value;
+    assertEquals("Media Test", obsAttachment.title);
+    assertEquals(400, obsAttachment.width);
+    assertEquals(200, obsAttachment.height);
+    assertEquals("image/png", obsAttachment.contentType);
+    assertTrue(Base64.isBase64(obsAttachment.data));
 
+    HealthRecord.Observation urlObservation = person.record.encounters.get(0).observations.get(4);
+    assertTrue(urlObservation.value instanceof Attachment);
+    Attachment urlAttachment = (Attachment) urlObservation.value;
+    assertEquals("Test Image URL", urlAttachment.title);
+    assertEquals("66bb1cb31c9b502daa7081ae36631f9df9c6d16a", urlAttachment.hash);
+    assertEquals("en-US", urlAttachment.language);
+    assertEquals("https://example.com/image/12498596132", urlAttachment.url);
+  }
+  
   @Test
   public void imaging_study_during_encounter() throws Exception {
     Module module = TestHelper.getFixture("imaging_study.json");
@@ -1756,7 +1859,7 @@ public class StateTest {
     assertTrue(person.attributes.containsKey("Final Aortal Volume"));
     
     // The "Arterial Pressure Values" attribute should have been set to a list
-    assertTrue(person.attributes.get("Arterial Pressure Values") instanceof List);
+    assertTrue(person.attributes.get("Arterial Pressure Values") instanceof TimeSeriesData);
     
     // LVEF should be diminished and BP should be elevated
     assertTrue("LVEF < 59%", (double) person.attributes.get("LVEF") < 60.0);

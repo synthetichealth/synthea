@@ -16,6 +16,17 @@
       "value" : 1.814,
       "direct_transition": "Simulate_CVS"
     },
+    
+    "SomeEncounter" : {
+        "type" : "Encounter",
+        "encounter_class": "inpatient",
+        "codes": [{
+            "system": "SNOMED-CT",
+            "code": "32485007",
+            "display": "Hospital admission"
+        }],
+        "direct_transition" : "Simulate_CVS"
+    },
 
     "Simulate_CVS": {
       "type": "Physiology",
@@ -55,9 +66,9 @@
           "type": "Attribute"
         }
       ],
-      "direct_transition": "Main_Terminal"
+      "direct_transition": "Chart"
     },
-
+    
     "Main_Terminal": {
       "type": "Terminal"
     }

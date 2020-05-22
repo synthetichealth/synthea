@@ -1,11 +1,15 @@
 package org.mitre.synthea.export;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import org.hl7.fhir.dstu3.model.Condition;
+import org.mitre.synthea.engine.Components.Attachment;
+import org.mitre.synthea.engine.Components.SampledData;
+import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
@@ -35,10 +39,14 @@ public abstract class ExportHelper {
     } else if (observation.value instanceof Double) {
       // round to 1 decimal place for display
       value = String.format(Locale.US, "%.1f", observation.value);
+    } else if (observation.value instanceof SampledData) {
+      value = sampledDataToValueString((SampledData) observation.value);
+    } else if (observation.value instanceof Attachment) {
+      value = attachmentToValueString((Attachment) observation.value);
     } else if (observation.value != null) {
       value = observation.value.toString();
     }
-    
+
     return value;
   }
 
@@ -68,6 +76,51 @@ public abstract class ExportHelper {
     }
 
     return null;
+  }
+
+  /**
+   * Helper to translate all SampledData values into string form.
+   * 
+   * @param sampledData The SampledData object to export
+   * @return stringified sampled data values
+   */
+  public static String sampledDataToValueString(SampledData sampledData) {
+    int numSamples = sampledData.series.get(0).getValues().size();
+    DecimalFormat df;
+
+    if (sampledData.decimalFormat != null) {
+      df = new DecimalFormat(sampledData.decimalFormat);
+    } else {
+      df = new DecimalFormat();
+    }
+
+    // Build the data string from all list values
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < numSamples; i++) {
+      for (TimeSeriesData series : sampledData.series) {
+        double num = series.getValues().get(i);
+        sb.append(df.format(num));
+        sb.append(" ");
+      }
+    }
+
+    return sb.toString().trim();
+  }
+  
+  /**
+   * Helper to translate all Attachment values into string form.
+   * 
+   * @param attachment The Attachment object to export
+   * @return stringified Attachment data
+   */
+  public static String attachmentToValueString(Attachment attachment) {
+    if (attachment.data != null) {
+      return attachment.data;
+    }
+    if (attachment.url != null) {
+      return attachment.url;
+    }
+    return "";
   }
 
   /**
