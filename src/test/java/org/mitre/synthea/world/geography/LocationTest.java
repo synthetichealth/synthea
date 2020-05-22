@@ -139,7 +139,7 @@ public class LocationTest {
   @Test
   public void testMalformedForeignPlaceOfBirthFileLoad() {
     Map<String, List<String>> map =
-        Location.loadCitiesByLanguage("geography/malformed_foreign_birthplace.json");
+        Location.loadCitiesByLanguage("geography/malformed_foreign_birthplace.json.txt");
     Assert.assertNotNull(map);
     Assert.assertEquals("Expected map to be empty", 0, map.size());
   }

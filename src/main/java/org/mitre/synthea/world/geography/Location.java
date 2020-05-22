@@ -4,7 +4,9 @@ import com.google.common.collect.Table;
 import com.google.gson.Gson;
 
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,7 +20,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 
-public class Location {
+public class Location implements Serializable {
   private static LinkedHashMap<String, String> stateAbbreviations = loadAbbreviations();
   private static Map<String, String> timezones = loadTimezones();
   private static Map<String, List<String>> foreignPlacesOfBirth = loadCitiesByLanguage();
@@ -53,7 +55,9 @@ public class Location {
       
       // this still works even if only 1 city given,
       // because allDemographics will only contain that 1 city
-      this.demographics = allDemographics.row(state);
+      // we copy the Map returned by the Google Table.row since the implementing
+      // class is not serializable
+      this.demographics = new HashMap(allDemographics.row(state));
 
       if (city != null 
           && demographics.values().stream().noneMatch(d -> d.city.equalsIgnoreCase(city))) {
@@ -63,8 +67,12 @@ public class Location {
       long runningPopulation = 0;
       // linked to ensure consistent iteration order
       populationByCity = new LinkedHashMap<>();
-      populationByCityId = new LinkedHashMap<>();      
-      for (Demographics d : this.demographics.values()) {
+      populationByCityId = new LinkedHashMap<>();
+      // sort the demographics to ensure tests pass regardless of implementing class
+      // for this.demographics, see comment above on non-serializability of Google Table.row
+      ArrayList<Demographics> sortedDemographics = new ArrayList(this.demographics.values());
+      Collections.sort(sortedDemographics);
+      for (Demographics d : sortedDemographics) {
         long pop = d.population;
         runningPopulation += pop;
         if (populationByCity.containsKey(d.city)) {

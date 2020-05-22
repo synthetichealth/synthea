@@ -1,13 +1,15 @@
 package org.mitre.synthea.engine;
 
-import org.junit.Test;
-import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.HealthRecord;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
 
 public class HealthRecordEditorsTest {
   class Dummy implements HealthRecordEditor {
@@ -18,7 +20,8 @@ public class HealthRecordEditorsTest {
     }
 
     @Override
-    public void process(Person person, List<HealthRecord.Encounter> encounters, long time, Random random) {
+    public void process(Person person, List<HealthRecord.Encounter> encounters, long time, 
+            Random random) {
       person.attributes.put(Person.ZIP, "01730");
     }
   }

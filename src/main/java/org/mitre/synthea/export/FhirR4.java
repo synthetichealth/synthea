@@ -9,9 +9,6 @@ import com.google.gson.JsonObject;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -119,6 +116,9 @@ import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ServiceRequest;
 import org.hl7.fhir.r4.model.SimpleQuantity;
 import org.hl7.fhir.r4.model.StringType;
+import org.hl7.fhir.r4.model.SupplyDelivery;
+import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliveryStatus;
+import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliverySuppliedItemComponent;
 import org.hl7.fhir.r4.model.Timing;
 import org.hl7.fhir.r4.model.Timing.TimingRepeatComponent;
 import org.hl7.fhir.r4.model.Timing.UnitsOfTime;
@@ -280,6 +280,10 @@ public class FhirR4 {
 
       for (HealthRecord.Device device : encounter.devices) {
         device(personEntry, bundle, device);
+      }
+      
+      for (HealthRecord.Supply supply : encounter.supplies) {
+        supplyDelivery(personEntry, bundle, supply, encounter);
       }
 
       for (Medication medication : encounter.medications) {
@@ -1546,8 +1550,7 @@ public class FhirR4 {
       return new StringType((String) value);
     } else if (value instanceof Number) {
       double dblVal = ((Number) value).doubleValue();
-      MathContext mctx = new MathContext(5, RoundingMode.HALF_UP);
-      BigDecimal bigVal = new BigDecimal(dblVal, mctx).stripTrailingZeros();
+      PlainBigDecimal bigVal = new PlainBigDecimal(dblVal);
       return new Quantity().setValue(bigVal)
           .setCode(unit).setSystem(UNITSOFMEASURE_URI)
           .setUnit(unit);
@@ -1692,6 +1695,12 @@ public class FhirR4 {
         .setCarrierHRF(device.udi);
     deviceResource.setStatus(FHIRDeviceStatus.ACTIVE);
     deviceResource.setDistinctIdentifier(device.deviceIdentifier);
+    if (device.manufacturer != null) {
+      deviceResource.setManufacturer(device.manufacturer);
+    }
+    if (device.model != null) {
+      deviceResource.setModelNumber(device.model);
+    }
     deviceResource.setManufactureDate(new Date(device.manufactureTime));
     deviceResource.setExpirationDate(new Date(device.expirationTime));
     deviceResource.setLotNumber(device.lotNumber);
@@ -1702,6 +1711,40 @@ public class FhirR4 {
     deviceResource.setType(mapCodeToCodeableConcept(device.codes.get(0), SNOMED_URI));
     deviceResource.setPatient(new Reference(personEntry.getFullUrl()));
     return newEntry(bundle, deviceResource);
+  }
+  
+  /**
+   * Map the JsonObject for a Supply into a FHIR SupplyDelivery and add it to the Bundle.
+   *
+   * @param personEntry    The Person entry.
+   * @param bundle         Bundle to add to.
+   * @param supply         The supplied object to add.
+   * @param encounter      The encounter during which the supplies were delivered
+   * @return The added Entry.
+   */
+  private static BundleEntryComponent supplyDelivery(BundleEntryComponent personEntry,
+          Bundle bundle, HealthRecord.Supply supply, Encounter encounter) {
+   
+    SupplyDelivery supplyResource = new SupplyDelivery();
+    supplyResource.setStatus(SupplyDeliveryStatus.COMPLETED);
+    supplyResource.setPatient(new Reference(personEntry.getFullUrl()));
+    
+    CodeableConcept type = new CodeableConcept();
+    type.addCoding()
+      .setCode("device")
+      .setDisplay("Device")
+      .setSystem("http://terminology.hl7.org/CodeSystem/supply-item-type");
+    supplyResource.setType(type);
+    
+    SupplyDeliverySuppliedItemComponent suppliedItem = new SupplyDeliverySuppliedItemComponent();
+    suppliedItem.setItem(mapCodeToCodeableConcept(supply.code, SNOMED_URI));
+    suppliedItem.setQuantity(new Quantity(supply.quantity));
+    
+    supplyResource.setSuppliedItem(suppliedItem);
+    
+    supplyResource.setOccurrence(convertFhirDateTime(encounter.start, true));
+    
+    return newEntry(bundle, supplyResource);
   }
 
   /**

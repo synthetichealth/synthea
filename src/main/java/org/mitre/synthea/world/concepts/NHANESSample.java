@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import org.mitre.synthea.helpers.Utilities;
  * Synthea contains a file that is a sample of NHANES information from 1999 - 2015 where heights
  * and weights were recorded for individuals between 24 and 36 months old.
  */
-public class NHANESSample {
+public class NHANESSample implements Serializable {
   // NHANES ID
   public int id;
   // Sex

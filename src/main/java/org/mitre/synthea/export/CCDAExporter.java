@@ -4,6 +4,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.UUID;
 
@@ -17,15 +18,19 @@ import org.mitre.synthea.world.concepts.RaceAndEthnicity;
 public class CCDAExporter {
 
   private static final Configuration TEMPLATES = templateConfiguration();
+  
   /**
-   * This is a dummy object for FreeMarker, because the library cannot access static class methods
-   * such as UUID.randomUUID()
+   * This is a dummy class and object for FreeMarker, because the library cannot access static
+   * class methods such as UUID.randomUUID()
    */
-  private static final Object UUID_GEN = new Object() {
+  private static class UUIDGenerator implements Serializable {
+    @Override
     public String toString() {
       return UUID.randomUUID().toString();
     }
-  };
+  }
+  
+  private static final Object UUID_GEN = new UUIDGenerator();
 
   private static Configuration templateConfiguration() {
     Configuration configuration = new Configuration(Configuration.VERSION_2_3_26);

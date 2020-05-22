@@ -129,11 +129,11 @@ public class AppTest {
     String output = out.toString();
     Assert.assertTrue(output.contains("Running with options:"));
     Assert.assertTrue(output.contains("Seed:"));
-    String regex = "\\{alive=(\\d+), dead=(\\d+)\\}";
+    String regex = "alive=(\\d+), dead=(\\d+)";
     Matcher matches = Pattern.compile(regex).matcher(output);
     Assert.assertTrue(matches.find());
     int alive = Integer.parseInt(matches.group(1));
-    int dead = Integer.parseInt(matches.group(2));
+    int dead = Integer.parseInt(matches.group(2));    
     Assert.assertEquals(alive + dead, 3);
     System.setOut(original);
   }

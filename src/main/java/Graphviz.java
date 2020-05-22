@@ -404,6 +404,47 @@ public class Graphviz {
         details.append("SNOMED-CT[").append(bodySiteCode).append("] Body Site: ")
             .append(bodySiteDisplay).append(NEWLINE);
         break;
+      case "Device":
+        JsonObject c = state.get("code").getAsJsonObject();
+        details.append(toCodeString(c, true));
+        
+        if (state.has("manufacturer")) {
+          details.append("Manufacturer: ")
+            .append(state.get("manufacturer").getAsString())
+            .append(NEWLINE);
+        }
+        if (state.has("model")) {
+          details.append("Model: ")
+            .append(state.get("model").getAsString())
+            .append(NEWLINE);
+        }
+        break;
+      case "DeviceEnd":
+        if (state.has("device")) {
+          details.append("Added at: ")
+            .append(state.get("device").getAsString())
+            .append(NEWLINE);
+        }
+        break;
+      case "SupplyList":
+        List<String> supplyQuantity = new ArrayList<String>();
+        supplyQuantity.add("Quantity");
+        List<String> supplyCode = new ArrayList<String>();
+        supplyCode.add("Code");
+
+        state.get("supplies").getAsJsonArray().forEach((supplyElement) -> {
+          JsonObject supply = supplyElement.getAsJsonObject();
+          supplyQuantity.add(supply.get("quantity").getAsString());
+
+          JsonObject coding = supply.get("code").getAsJsonObject();
+          String codeString = toCodeString(coding, false);
+          supplyCode.add(codeString);
+        });
+
+        details.append("{").append(String.join("|", supplyCode)).append("}|");
+        details.append("{").append(String.join("|", supplyQuantity)).append("}|");
+        break;
+
       default:
         // no special description
     }
@@ -413,11 +454,7 @@ public class Graphviz {
       JsonArray codes = state.get("codes").getAsJsonArray();
       codes.forEach(c -> {
         JsonObject coding = c.getAsJsonObject();
-        String system = coding.get("system").getAsString();
-        String code = coding.get("code").getAsString();
-        String display = coding.get("display").getAsString();
-        details.append(system).append("[").append(code).append("]: ").append(display)
-            .append(NEWLINE);
+        details.append(toCodeString(coding, true));
 
       });
     }
@@ -466,11 +503,7 @@ public class Graphviz {
       details.append(NEWLINE).append("Activities:").append(NEWLINE);
       state.get("activities").getAsJsonArray().forEach(a -> {
         JsonObject coding = a.getAsJsonObject();
-        String system = coding.get("system").getAsString();
-        String code = coding.get("code").getAsString();
-        String display = coding.get("display").getAsString();
-        details.append(system).append("[").append(code).append("]: ").append(display)
-            .append(NEWLINE);
+        details.append(toCodeString(coding, true));
       });
     }
     if (state.has("goals")) {
@@ -481,11 +514,7 @@ public class Graphviz {
           details.append(goal.get("text").getAsString()).append(NEWLINE);
         } else if (goal.has("codes")) {
           JsonObject coding = goal.get("codes").getAsJsonArray().get(0).getAsJsonObject();
-          String system = coding.get("system").getAsString();
-          String code = coding.get("code").getAsString();
-          String display = coding.get("display").getAsString();
-          details.append(system).append("[").append(code).append("]: ").append(display)
-              .append(NEWLINE);
+          details.append(toCodeString(coding, true));
         } else if (goal.has("observation")) {
           JsonObject logic = goal.get("observation").getAsJsonObject();
           String obs = findReferencedType(logic);
@@ -510,6 +539,33 @@ public class Graphviz {
     return details.toString();
   }
 
+  /**
+   * Helper function to turn a a Json "code" type object into a consistent string.
+   * Format: "SYSTEM[CODE]: DISPLAY"
+   * Example: "SNOMED-CT[44054006]: Diabetes"
+   * 
+   * @param coding JSON coding object
+   * @param includeNewLine whether or not to include a newline at the end
+   * @return String to display the code
+   */
+  private static String toCodeString(JsonObject coding, boolean includeNewLine) {
+    StringBuilder sb = new StringBuilder();
+
+    String system = coding.get("system").getAsString();
+    String code = coding.get("code").getAsString();
+    String display = coding.get("display").getAsString();
+    sb.append(system)
+      .append("[").append(code).append("]: ")
+      .append(display)
+      .append(NEWLINE);
+
+    if (includeNewLine) {
+      sb.append(NEWLINE);
+    }
+
+    return sb.toString();
+  }
+  
   private static String logicDetails(JsonObject logic) {
     String conditionType = logic.get("condition_type").getAsString();
 
@@ -593,9 +649,7 @@ public class Graphviz {
           valueString = logic.get("value").getAsString();
         } else if (logic.has("value_code")) {
           JsonObject valueCode = logic.get("value_code").getAsJsonObject();
-          valueString = "'" + valueCode.get("system").getAsString() + " ["
-            + valueCode.get("code").getAsString() + "]: "
-            + valueCode.get("display").getAsString() + "'";
+          valueString = "'" + toCodeString(valueCode, false) + "'";
         }
         return "Observation " + obs + " \\" + logic.get("operator").getAsString() + " "
             + valueString + NEWLINE;
@@ -627,11 +681,7 @@ public class Graphviz {
   private static String findReferencedType(JsonObject logic) {
     if (logic.has("codes")) {
       JsonObject coding = logic.get("codes").getAsJsonArray().get(0).getAsJsonObject();
-      String system = coding.get("system").getAsString();
-      String code = coding.get("code").getAsString();
-      String display = coding.get("display").getAsString();
-
-      return "'" + system + " [" + code + "]: " + display + "'";
+      return toCodeString(coding, false);
     } else if (logic.has("referenced_by_attribute")) {
       return "Referenced By Attribute: '" + logic.get("referenced_by_attribute").getAsString()
           + "'";

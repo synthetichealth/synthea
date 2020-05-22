@@ -3,6 +3,7 @@ package org.mitre.synthea.world.concepts;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,7 +48,7 @@ import org.mitre.synthea.world.agents.Person;
  * ADD CITATION ONCE PUBLISHED BY CDC
  * </p>
  */
-public class PediatricGrowthTrajectory {
+public class PediatricGrowthTrajectory implements Serializable {
 
   // Sigma is approximated using a quadratic formula, with different weights based on sex
   // The following constants are for those weights assuming a quadratic formula of:
@@ -84,7 +85,7 @@ public class PediatricGrowthTrajectory {
   /**
    * A representation of a point in the growth trajectory.
    */
-  public class Point {
+  public class Point implements Serializable {
     public int ageInMonths;
     public long timeInSimulation;
     public double bmi;

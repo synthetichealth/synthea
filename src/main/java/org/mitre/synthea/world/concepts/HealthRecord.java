@@ -1,7 +1,12 @@
 package org.mitre.synthea.world.concepts;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,7 +32,7 @@ import org.mitre.synthea.world.agents.Provider;
  * class represents a logical health record. Exporters will convert this health
  * record into various standardized formats.
  */
-public class HealthRecord {
+public class HealthRecord implements Serializable {
 
   public static final String ENCOUNTERS = "encounters";
   public static final String PROCEDURES = "procedures";
@@ -37,7 +42,7 @@ public class HealthRecord {
   /**
    * HealthRecord.Code represents a system, code, and display value.
    */
-  public static class Code implements Comparable<Code> {
+  public static class Code implements Comparable<Code>, Serializable {
     /** Code System (e.g. LOINC, RxNorm, SNOMED) identifier (typically a URI) */
     public String system;
     /** The code itself. */
@@ -78,6 +83,11 @@ public class HealthRecord {
       return String.format("%s %s %s", system, code, display);
     }
 
+    /**
+     * Parse a JSON array of codes.
+     * @param jsonCodes the codes.
+     * @return a list of Code objects.
+     */
     public static List<Code> fromJson(JsonArray jsonCodes) {
       List<Code> codes = new ArrayList<>();
       jsonCodes.forEach(item -> {
@@ -101,7 +111,7 @@ public class HealthRecord {
    * Observations, Reports, Medications, etc. All Entries have a name, start and
    * stop times, a type, and a list of associated codes.
    */
-  public class Entry {
+  public class Entry implements Serializable {
     /** reference to the HealthRecord this entry belongs to. */
     HealthRecord record = HealthRecord.this;
     public String fullUrl;
@@ -190,7 +200,7 @@ public class HealthRecord {
   public class Medication extends Entry {
     public List<Code> reasons;
     public Code stopReason;
-    public JsonObject prescriptionDetails;
+    public transient JsonObject prescriptionDetails;
     public Claim claim;
     public boolean administration;
     public boolean chronic;
@@ -203,6 +213,32 @@ public class HealthRecord {
       this.reasons = new ArrayList<Code>();
       // Create a medication claim.
       this.claim = new Claim(this, person);
+    }
+    
+    /**
+     * Java Serialization support for the prescriptionDetails field.
+     * @param oos stream to write to
+     */
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+      oos.defaultWriteObject();
+      if (prescriptionDetails != null) {
+        oos.writeObject(prescriptionDetails.toString());
+      } else {
+        oos.writeObject(null);
+      }
+    }
+    
+    /**
+     * Java Serialization support for the prescriptionDetails field.
+     * @param ois stream to read from
+     */
+    private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+      ois.defaultReadObject();
+      String prescriptionJson = (String) ois.readObject();
+      if (prescriptionJson != null) {
+        Gson gson = Utilities.getGson();
+        this.prescriptionDetails = gson.fromJson(prescriptionJson, JsonObject.class);
+      }
     }
   }
 
@@ -235,7 +271,7 @@ public class HealthRecord {
   public class CarePlan extends Entry {
     public Set<Code> activities;
     public List<Code> reasons;
-    public Set<JsonObject> goals;
+    public transient Set<JsonObject> goals;
     public Code stopReason;
 
     /**
@@ -246,6 +282,25 @@ public class HealthRecord {
       this.activities = new LinkedHashSet<Code>();
       this.reasons = new ArrayList<Code>();
       this.goals = new LinkedHashSet<JsonObject>();
+    }
+
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+      oos.defaultWriteObject();
+      ArrayList<String> stringifiedGoals = new ArrayList<>(this.goals.size());
+      for (JsonObject o: goals) {
+        stringifiedGoals.add(o.toString());
+      }
+      oos.writeObject(stringifiedGoals);
+    }
+    
+    private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+      ois.defaultReadObject();
+      ArrayList<String> stringifiedGoals = (ArrayList<String>)ois.readObject();
+      Gson gson = Utilities.getGson();
+      this.goals = new LinkedHashSet<JsonObject>();
+      for (String stringifiedGoal: stringifiedGoals) {
+        goals.add(gson.fromJson(stringifiedGoal, JsonObject.class));
+      }
     }
   }
 
@@ -266,9 +321,9 @@ public class HealthRecord {
      * ImagingStudy.Series represents a series of images that were taken of a
      * specific part of the body.
      */
-    public class Series implements Cloneable {
+    public class Series implements Cloneable, Serializable {
       /** A randomly assigned DICOM UID. */
-      public transient String dicomUid;
+      public String dicomUid;
       /** A SNOMED-CT body structures code. */
       public Code bodySite;
       /**
@@ -303,9 +358,9 @@ public class HealthRecord {
      * ImagingStudy.Instance represents a single imaging Instance taken as part of a
      * Series of images.
      */
-    public class Instance implements Cloneable {
+    public class Instance implements Cloneable, Serializable {
       /** A randomly assigned DICOM UID. */
-      public transient String dicomUid;
+      public String dicomUid;
       /** A title for this image. */
       public String title;
       /**
@@ -331,6 +386,8 @@ public class HealthRecord {
    * or hip, heart pacemaker, or implantable defibrillator.
    */
   public class Device extends Entry {
+    public String manufacturer;
+    public String model;
     /** UDI == Unique Device Identifier. */
     public String udi;
     public long manufactureTime;
@@ -376,6 +433,11 @@ public class HealthRecord {
       }
       return retVal;
     }
+  }
+  
+  public class Supply implements Serializable {
+    public int quantity;
+    public Code code;
   }
 
   public enum EncounterType {
@@ -428,6 +490,7 @@ public class HealthRecord {
     public List<CarePlan> careplans;
     public List<ImagingStudy> imagingStudies;
     public List<Device> devices;
+    public List<Supply> supplies;
     public Claim claim; // for now assume 1 claim per encounter
     public Code reason;
     public Code discharge;
@@ -438,6 +501,11 @@ public class HealthRecord {
     public boolean chronicMedsRenewed;
     public String clinicalNote;
 
+    /**
+     * Construct an encounter.
+     * @param time the time of the encounter.
+     * @param type the type of the encounter.
+     */
     public Encounter(long time, String type) {
       super(time, type);
       if (type.equalsIgnoreCase(EncounterType.EMERGENCY.toString())) {
@@ -462,6 +530,7 @@ public class HealthRecord {
       careplans = new ArrayList<CarePlan>();
       imagingStudies = new ArrayList<ImagingStudy>();
       devices = new ArrayList<Device>();
+      supplies = new ArrayList<Supply>();
       this.claim = new Claim(this, person);
     }
 
@@ -533,12 +602,20 @@ public class HealthRecord {
   /** recorded death date/time. */
   public Long death;
 
+  /**
+   * Construct a health record for the supplied person.
+   * @param person the person.
+   */
   public HealthRecord(Person person) {
     this.person = person;
     encounters = new ArrayList<Encounter>();
     present = new HashMap<String, Entry>();
   }
 
+  /**
+   * Create a text summary of the health record containing counts of each time of entry.
+   * @return text summary.
+   */
   public String textSummary() {
     int observations = 0;
     int reports = 0;
@@ -574,6 +651,11 @@ public class HealthRecord {
     return sb.toString();
   }
 
+  /**
+   * Get the latest encounter or, if none exists, create a new wellness encounter.
+   * @param time the time of the encounter if a new one is created.
+   * @return the latest encounter (possibly newly created).
+   */
   public Encounter currentEncounter(long time) {
     Encounter encounter = null;
     if (encounters.size() >= 1) {
@@ -587,6 +669,12 @@ public class HealthRecord {
     return encounter;
   }
 
+  /**
+   * Return the time between the supplied time and the time of the last wellness encounter.
+   * If there are no wellness encounter return Long.MAX_VALUE.
+   * @param time the time to measure from
+   * @return the time difference, negative if time is before the first wellness encounter).
+   */
   public long timeSinceLastWellnessEncounter(long time) {
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
@@ -597,10 +685,28 @@ public class HealthRecord {
     return Long.MAX_VALUE;
   }
 
+  /**
+   * Add an observation with the supplied properties to the current encounter.
+   * @param time time of the observation.
+   * @param type type of the observation.
+   * @param value value of the observation.
+   * @return the new observation.
+   */
   public Observation observation(long time, String type, Object value) {
     return currentEncounter(time).addObservation(time, type, value);
   }
-  
+
+  /**
+   * Add a new observation for the specified time and type, move the specified number of
+   * observations (in reverse order) from the encounter to sub observations of the new
+   * observation. If the encounter does not have the specified number of observations then
+   * none are moved and a new empty observation results.
+   * @param time time of the new observation.
+   * @param type type of the new observation.
+   * @param numberOfObservations the number of observations to move from the encounter to the
+   *     new observation.
+   * @return the new observation.
+   */
   public Observation multiObservation(long time, String type, int numberOfObservations) {
     Observation observation = new Observation(time, type, null);
     Encounter encounter = currentEncounter(time);
@@ -616,6 +722,11 @@ public class HealthRecord {
     return observation;
   }
 
+  /**
+   * Get the latest observation of the specified type or null if none exists.
+   * @param type the type of observation.
+   * @return the latest observation or null if none exists.
+   */
   public Observation getLatestObservation(String type) {
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
@@ -627,6 +738,12 @@ public class HealthRecord {
     return null;
   }
 
+  /**
+   * Return an existing Entry for the specified code or create a new Entry if none exists.
+   * @param time the time of the new entry if one is created.
+   * @param primaryCode the type of the entry.
+   * @return the entry (existing or new).
+   */
   public Entry conditionStart(long time, String primaryCode) {
     if (!present.containsKey(primaryCode)) {
       Entry condition = new Entry(time, primaryCode);
@@ -638,6 +755,11 @@ public class HealthRecord {
     return present.get(primaryCode);
   }
 
+  /**
+   * End an existing condition if one exists.
+   * @param time the end time of the condition.
+   * @param primaryCode the type of the condition to search for.
+   */
   public void conditionEnd(long time, String primaryCode) {
     if (present.containsKey(primaryCode)) {
       present.get(primaryCode).stop = time;
@@ -645,6 +767,11 @@ public class HealthRecord {
     }
   }
 
+  /**
+   * End an existing condition with the supplied state if one exists.
+   * @param time the end time of the condition.
+   * @param stateName the state to search for.
+   */
   public void conditionEndByState(long time, String stateName) {
     Entry condition = null;
     Iterator<Entry> iter = present.values().iterator();
@@ -661,10 +788,22 @@ public class HealthRecord {
     }
   }
 
+  /**
+   * Check whether the specified condition type is currently active (end is not specified).
+   * @param type the type of the condition.
+   * @return true of the condition exists and does not have a specified stop time, false
+   *     otherwise.
+   */
   public boolean conditionActive(String type) {
     return present.containsKey(type) && present.get(type).stop == 0L;
   }
 
+  /**
+   * Return the current allergy of the specified type or create a new one if none exists.
+   * @param time the start time of the new allergy if one is created.
+   * @param primaryCode the type of allergy.
+   * @return the existing or new allergy entry.
+   */
   public Entry allergyStart(long time, String primaryCode) {
     if (!present.containsKey(primaryCode)) {
       Entry allergy = new Entry(time, primaryCode);
@@ -674,6 +813,11 @@ public class HealthRecord {
     return present.get(primaryCode);
   }
 
+  /**
+   * End the current allergy of the specified type if one exists.
+   * @param time end time of the allergy.
+   * @param primaryCode type of the allergy.
+   */
   public void allergyEnd(long time, String primaryCode) {
     if (present.containsKey(primaryCode)) {
       present.get(primaryCode).stop = time;
@@ -681,6 +825,11 @@ public class HealthRecord {
     }
   }
 
+  /**
+   * End an existing allergy with the supplied state if one exists.
+   * @param time the end time of the allergy.
+   * @param stateName the state to search for.
+   */
   public void allergyEndByState(long time, String stateName) {
     Entry allergy = null;
     Iterator<Entry> iter = present.values().iterator();
@@ -697,6 +846,12 @@ public class HealthRecord {
     }
   }
 
+  /**
+   * Create a new procedure of the specified type.
+   * @param time the time of the procedure.
+   * @param type the type of the procedure.
+   * @return the new procedure.
+   */
   public Procedure procedure(long time, String type) {
     Procedure procedure = new Procedure(time, type);
     Encounter encounter = currentEncounter(time);
@@ -732,7 +887,39 @@ public class HealthRecord {
       present.remove(type);
     }
   }
+  
+  /**
+   * Remove a device from the patient based on the state where it was assigned.
+   * @param time The time the device is removed.
+   * @param stateName The state where the device was implanted or assigned.
+   */
+  public void deviceRemoveByState(long time, String stateName) {
+    Device device = null;
+    Iterator<Entry> iter = present.values().iterator();
+    while (iter.hasNext()) {
+      Entry e = iter.next();
+      if (e.name != null && e.name.equals(stateName)) {
+        device = (Device)e;
+        break;
+      }
+    }
+    if (device != null) {
+      device.stop = time;
+      present.remove(device.type);
+    }
+  }
 
+  /**
+   * Add a new report for the specified time and type, copy the specified number of
+   * observations (in reverse order) from the encounter to the new
+   * report. If the encounter does not have the specified number of observations then
+   * all of the encounter observations are copied to the report.
+   * @param time time of the new report.
+   * @param type type of the new report.
+   * @param numberOfObservations the number of observations to copy from the encounter to the
+   *     new report.
+   * @return the new report.
+   */
   public Report report(long time, String type, int numberOfObservations) {
     Encounter encounter = currentEncounter(time);
     List<Observation> observations = new ArrayList<Observation>();
@@ -795,6 +982,12 @@ public class HealthRecord {
     }
   }
 
+  /**
+   * Create a new immunization and add it to the current encounter.
+   * @param time the time of the immunization.
+   * @param type the type of the immunization.
+   * @return the new immunization.
+   */
   public Immunization immunization(long time, String type) {
     Immunization immunization = new Immunization(time, type);
     Encounter encounter = currentEncounter(time);
@@ -803,6 +996,15 @@ public class HealthRecord {
     return immunization;
   }
 
+  /**
+   * Get an existing medication of the specified type or create one if none exists. If chronic
+   * is true the medication will be added to the list of chronic medications whether it already
+   * exists or is created.
+   * @param time the time of the medication if a new one is created.
+   * @param type the type of the medication to find or create.
+   * @param chronic whether the medication is chronic.
+   * @return existing or new medication of the specified type.
+   */
   public Medication medicationStart(long time, String type, boolean chronic) {
     Medication medication;
     if (!present.containsKey(type)) {
@@ -822,6 +1024,12 @@ public class HealthRecord {
     return medication;
   }
 
+  /**
+   * End a current medication of the specified type if one exists.
+   * @param time the end time of the medication.
+   * @param type the type of the medication.
+   * @param reason the reason for ending the medication.
+   */
   public void medicationEnd(long time, String type, Code reason) {
     if (present.containsKey(type)) {
       Medication medication = (Medication) present.get(type);
@@ -837,6 +1045,12 @@ public class HealthRecord {
     }
   }
 
+  /**
+   * End an existing medication with the supplied state if one exists.
+   * @param time the end time of the medication.
+   * @param stateName the state to search for.
+   * @param reason the reason for ending the medication.
+   */
   public void medicationEndByState(long time, String stateName, Code reason) {
     Medication medication = null;
     Iterator<Entry> iter = present.values().iterator();
@@ -870,6 +1084,12 @@ public class HealthRecord {
     return present.containsKey(type) && ((Medication) present.get(type)).stop == 0L;
   }
 
+  /**
+   * Get the current care plan of the specified type or create a new one if none found.
+   * @param time the start time of the care plan if one is created.
+   * @param type the type of the care plan.
+   * @return existing or new care plan.
+   */
   public CarePlan careplanStart(long time, String type) {
     CarePlan careplan;
     if (!present.containsKey(type)) {
@@ -882,6 +1102,12 @@ public class HealthRecord {
     return careplan;
   }
 
+  /**
+   * End the current care plan of the specified type if one exists.
+   * @param time the end time of the care plan.
+   * @param type the type of the care plan.
+   * @param reason the reason for ending the care plan.
+   */
   public void careplanEnd(long time, String type, Code reason) {
     if (present.containsKey(type)) {
       CarePlan careplan = (CarePlan) present.get(type);
@@ -891,6 +1117,12 @@ public class HealthRecord {
     }
   }
 
+  /**
+   * End an existing care plan with the supplied state if one exists.
+   * @param time the end time of the care plan.
+   * @param stateName the state to search for.
+   * @param reason the reason for ending the care plan.
+   */
   public void careplanEndByState(long time, String stateName, Code reason) {
     CarePlan careplan = null;
     Iterator<Entry> iter = present.values().iterator();
@@ -912,6 +1144,13 @@ public class HealthRecord {
     return present.containsKey(type) && ((CarePlan) present.get(type)).stop == 0L;
   }
 
+  /**
+   * Create a new imaging study.
+   * @param time the time of the study.
+   * @param type the type of the study.
+   * @param series the series associated with the study.
+   * @return 
+   */
   public ImagingStudy imagingStudy(long time, String type, List<ImagingStudy.Series> series) {
     ImagingStudy study = new ImagingStudy(time, type);
     study.series = series;
