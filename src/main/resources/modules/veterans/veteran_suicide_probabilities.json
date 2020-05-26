@@ -330,7 +330,7 @@
           }
         },
         {
-          "transition": "Alcoholism_Check"
+          "transition": "Opioid_Addiction_Check"
         }
       ]
     },
@@ -338,7 +338,7 @@
       "type": "Counter",
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
-      "direct_transition": "Alcoholism_Check",
+      "direct_transition": "Opioid_Addiction_Check",
       "amount": 1
     },
     "mTBI_Check": {
@@ -666,6 +666,29 @@
       "attribute": "sucide_risk_factor_count",
       "action": "increment",
       "direct_transition": "Race_Check",
+      "amount": 2
+    },
+    "Opioid_Addiction_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Increment_Counter_Opioid_Addiction",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "opioid_addiction",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Alcoholism_Check"
+        }
+      ]
+    },
+    "Increment_Counter_Opioid_Addiction": {
+      "type": "Counter",
+      "attribute": "suicide_risk_factor_count",
+      "action": "increment",
+      "direct_transition": "Alcoholism_Check",
       "amount": 2
     }
   }
