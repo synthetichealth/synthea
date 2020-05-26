@@ -407,17 +407,6 @@ public class Generator {
         if (this.metrics != null) {
           metrics.recordStats(person, time, Module.getModules(modulePredicate));
         }
-
-        if (!this.logLevel.equals("none")) {
-          writeToConsole(person, index, time, isAlive);
-        }
-
-        String key = isAlive ? "alive" : "dead";
-
-        AtomicInteger count = stats.get(key);
-        count.incrementAndGet();
-
-        totalGeneratedPopulation.incrementAndGet();
         
         tryNumber++;
         // TEMPORARY CHANGE for va_sdoh -- only rotate the seed if the person is dead of causes other than suicide
@@ -439,10 +428,22 @@ public class Generator {
             demoAttributes.put(Person.BIRTHDATE, birthdate);
             start = birthdate;
           }
+          continue;
         } else {
           VaSDoHReport.addPerson(person);
         }
 
+        if (!this.logLevel.equals("none")) {
+          writeToConsole(person, index, time, isAlive);
+        }
+        
+        String key = isAlive ? "alive" : "dead";
+
+        AtomicInteger count = stats.get(key);
+        count.incrementAndGet();
+
+        totalGeneratedPopulation.incrementAndGet();
+        
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
         Exporter.export(person, time, exporterRuntimeOptions);
