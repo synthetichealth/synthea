@@ -49,9 +49,8 @@
           "display": "COVID-19"
         }
       ],
-      "conditional_transition": [
+      "complex_transition": [
         {
-          "transition": "End Encounter and Admit Immediately",
           "condition": {
             "condition_type": "Or",
             "conditions": [
@@ -68,9 +67,20 @@
                 "value": "critical"
               }
             ]
-          }
+          },
+          "distributions": [
+            {
+              "transition": "End Encounter and Admit Immediately",
+              "distribution": 0.97
+            },
+            {
+              "transition": "Self Isolation At Home",
+              "distribution": 0.03
+            }
+          ]
         },
         {
+          "distributions": [],
           "transition": "Self Isolation At Home"
         }
       ]
@@ -274,13 +284,34 @@
           "distributions": [
             {
               "transition": "Wait for Admission",
-              "distribution": 0.9
+              "distribution": 0.95
             },
             {
               "transition": "Wait for Death",
-              "distribution": 0.1
+              "distribution": 0.05
             }
           ]
+        },
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_severity",
+                "operator": "==",
+                "value": "critical"
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "Wait for Admission"
         },
         {
           "distributions": [],
