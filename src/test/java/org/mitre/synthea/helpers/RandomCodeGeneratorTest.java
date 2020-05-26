@@ -65,7 +65,7 @@ public class RandomCodeGeneratorTest {
   @Test
   public void throwsWhenNoExpansion() {
     thrown.expect(RuntimeException.class);
-    thrown.expectMessage("No expansion present in ValueSet expand result");
+    thrown.expectMessage("ValueSet expansion does not contain any codes");
     editStubBody("noExpansion.ValueSet.json");
 
     RandomCodeGenerator.getCode(VALUE_SET_URI, SEED);
