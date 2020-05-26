@@ -1,0 +1,134 @@
+{
+  "name": "Suicide Attempt Fatal",
+  "remarks": [],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "remarks": [
+        ""
+      ],
+      "direct_transition": "Fatal_Attempt"
+    },
+    "Fatal_Attempt": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " FATAL                                                                ",
+        "======================================================================",
+        "The most common methods of fatal suicide are: ",
+        "49.9% by firearms ",
+        "26.7% by suffocation or hanging (includes CO from motor vehicles)",
+        "15.9% by poisoning ",
+        " 7.5% by other means (vehicular, drowning, falls, etc.)"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.499,
+          "transition": "Suicide_By_Firearm"
+        },
+        {
+          "distribution": 0.267,
+          "transition": "Suicide_By_Suffocation"
+        },
+        {
+          "distribution": 0.159,
+          "transition": "Suicide_By_Poisoning"
+        },
+        {
+          "distribution": 0.075,
+          "transition": "Suicide_By_Other_Means"
+        }
+      ]
+    },
+    "Suicide_By_Firearm": {
+      "type": "ConditionOnset",
+      "target_encounter": "Autopsy_Encounter",
+      "assign_to_attribute": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "287193009",
+          "display": "Suicide - firearms"
+        }
+      ],
+      "direct_transition": "Death"
+    },
+    "Suicide_By_Suffocation": {
+      "type": "ConditionOnset",
+      "target_encounter": "Autopsy_Encounter",
+      "assign_to_attribute": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "287191006",
+          "display": "Suicide - suffocation"
+        }
+      ],
+      "direct_transition": "Death"
+    },
+    "Suicide_By_Poisoning": {
+      "type": "ConditionOnset",
+      "target_encounter": "Autopsy_Encounter",
+      "assign_to_attribute": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "86849004",
+          "display": "Suicidal deliberate poisoning"
+        }
+      ],
+      "direct_transition": "Death"
+    },
+    "Suicide_By_Other_Means": {
+      "type": "ConditionOnset",
+      "target_encounter": "Autopsy_Encounter",
+      "assign_to_attribute": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "44301001",
+          "display": "Suicide"
+        }
+      ],
+      "direct_transition": "Death"
+    },
+    "Death": {
+      "type": "Death",
+      "referenced_by_attribute": "suicide",
+      "direct_transition": "Autopsy_Encounter"
+    },
+    "Autopsy_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Autopsy_Examination"
+    },
+    "Autopsy_Examination": {
+      "type": "Procedure",
+      "reason": "suicide",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "29240004",
+          "display": "Autopsy examination"
+        }
+      ],
+      "direct_transition": "End_Suicide"
+    },
+    "End_Suicide": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "suicide",
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

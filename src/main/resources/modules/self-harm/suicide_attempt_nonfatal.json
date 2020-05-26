@@ -1,0 +1,217 @@
+{
+  "name": "Suicide Attempt Nonfatal",
+  "remarks": [],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "remarks": [
+        ""
+      ],
+      "direct_transition": "Non_Fatal_Attempt"
+    },
+    "Non_Fatal_Attempt": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.64,
+          "transition": "Attempt_By_Poisoning"
+        },
+        {
+          "distribution": 0.19,
+          "transition": "Attempt_By_Cutting"
+        },
+        {
+          "distribution": 0.17,
+          "transition": "Attempt_By_Suffocation"
+        }
+      ],
+      "remarks": [
+        "======================================================================",
+        " NON-FATAL                                                            ",
+        "======================================================================",
+        "Most commonly this is from poisoning (overdose), suffocation, or cutting. Less than 1% of all ",
+        "non-fatal attempts involve firearms, so omitting that option altogether. The distributions here ",
+        "are based on the Harvard University study, see: ",
+        "https://www.hsph.harvard.edu/means-matter/basic-suicide-facts/how/",
+        ""
+      ]
+    },
+        "Attempt_By_Poisoning": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Attempted_Suicide",
+      "assign_to_attribute": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "86849004",
+          "display": "Suicidal deliberate poisoning"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Attempted_Suicide"
+    },
+    "Attempt_By_Cutting": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Attempted_Suicide",
+      "assign_to_attribute": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "287185009",
+          "display": "Attempted suicide - cut/stab"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Attempted_Suicide"
+    },
+    "Attempt_By_Suffocation": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Attempted_Suicide",
+      "assign_to_attribute": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "287182007",
+          "display": "Attempted suicide - suffocation"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Attempted_Suicide"
+    },
+    "ED_Visit_For_Attempted_Suicide": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission (procedure)"
+        }
+      ],
+      "direct_transition": "Psychiatric_Evaluation"
+    },
+    "Psychiatric_Evaluation": {
+      "type": "Procedure",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "90407005",
+          "display": "Evaluation of psychiatric state of patient"
+        }
+      ],
+      "direct_transition": "Short_Hospital_Stay"
+    },
+    "Short_Hospital_Stay": {
+      "type": "Procedure",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "74857009",
+          "display": "Hospital admission, short-term, 24 hours"
+        }
+      ],
+      "duration": {
+        "low": 24,
+        "high": 72,
+        "unit": "hours"
+      },
+      "direct_transition": "End_Attempted_Suicide_Observation_Period"
+    },
+    "End_Attempted_Suicide_Observation_Period": {
+      "type": "EncounterEnd",
+      "direct_transition": "End_Suicide_Attempt"
+    },
+    "End_Suicide_Attempt": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "suicide_attempt",
+      "direct_transition": "Delay_Until_Outpatient_Followup"
+    },
+    "Delay_Until_Outpatient_Followup": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 7,
+        "unit": "days"
+      },
+      "direct_transition": "Attempted_Suicide_Followup"
+    },
+    "Attempted_Suicide_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Suicide_CarePlan_Selector"
+    },
+    "Suicide_CarePlan_Selector": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "suicide_careplan",
+            "operator": "is nil"
+          },
+          "transition": "Suicide_CarePlan"
+        },
+        {
+          "transition": "Followup_Psychiatric_Evaluation"
+        }
+      ]
+    },
+    "Suicide_CarePlan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "suicide_careplan",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183401008",
+          "display": "Anti-suicide psychotherapy"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "784051000000106",
+          "display": "Depression care management"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "415665002",
+          "display": "Suicide prevention"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "10029008",
+          "display": "Suicide precautions"
+        }
+      ],
+      "direct_transition": "Followup_Psychiatric_Evaluation"
+    },
+    "Followup_Psychiatric_Evaluation": {
+      "type": "Procedure",
+      "reason": "suicide_attempt",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "88848003",
+          "display": "Psychiatric follow-up"
+        }
+      ],
+      "direct_transition": "End_Followup_Encounter"
+    },
+    "End_Followup_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
