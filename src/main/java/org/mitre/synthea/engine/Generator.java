@@ -417,8 +417,6 @@ public class Generator {
           // note that this skips ahead to the while check and doesn't automatically re-loop
         }
 
-        recordPerson(person, index);
-
         tryNumber++;
         // TEMPORARY CHANGE for va_sdoh -- only rotate the seed if the person is dead of causes other than suicide
         if (!isAlive && person.attributes.get("suicide") == null) {
@@ -438,10 +436,13 @@ public class Generator {
             long birthdate = birthdateFromTargetAge(newTargetAge, randomForDemographics);
             demoAttributes.put(Person.BIRTHDATE, birthdate);
           }
+          continue;
         } else {
           VaSDoHReport.addPerson(person);
         }
 
+        recordPerson(person, index);
+        
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
         Exporter.export(person, finishTime, exporterRuntimeOptions);
