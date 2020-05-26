@@ -613,6 +613,26 @@
               "transition": "Set_Sexual_Trauma",
               "distribution": 0.05
             }
+          ],
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Set_No_Sexual_Trauma",
+              "distribution": 0.95
+            },
+            {
+              "transition": "Set_Sexual_Trauma",
+              "distribution": 0.05
+            }
           ]
         }
       ]
