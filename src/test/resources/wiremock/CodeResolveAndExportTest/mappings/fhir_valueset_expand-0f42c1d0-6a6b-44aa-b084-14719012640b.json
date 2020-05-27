@@ -1,0 +1,32 @@
+{
+  "id" : "0f42c1d0-6a6b-44aa-b084-14719012640b",
+  "name" : "fhir_valueset_expand",
+  "request" : {
+    "url" : "/fhir/ValueSet/$expand",
+    "method" : "POST",
+    "bodyPatterns" : [ {
+      "equalToJson" : "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"url\",\"valueUri\":\"http://loinc.org/vs/LL1051-3\"},{\"name\":\"count\",\"valueInteger\":1000},{\"name\":\"offset\",\"valueInteger\":0}]}",
+      "ignoreArrayOrder" : true,
+      "ignoreExtraElements" : true
+    } ]
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"resourceType\":\"ValueSet\",\"language\":\"en\",\"url\":\"http://loinc.org/2.67/vs/LL1051-3\",\"status\":\"active\",\"copyright\":\"The LOINC® content is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use\",\"expansion\":{\"identifier\":\"287c1bdd-8831-4df1-b13f-c0f0725ee696\",\"timestamp\":\"2020-05-16T12:13:03+10:00\",\"total\":10,\"offset\":0,\"parameter\":[{\"name\":\"version\",\"valueUri\":\"http://loinc.org|2.67\"},{\"name\":\"count\",\"valueInteger\":1000},{\"name\":\"offset\",\"valueInteger\":0}],\"contains\":[{\"system\":\"http://loinc.org\",\"code\":\"LA14091-5\",\"display\":\"Industrial or construction area\"},{\"system\":\"http://loinc.org\",\"code\":\"LA14090-7\",\"display\":\"Trade or service area\"},{\"system\":\"http://loinc.org\",\"code\":\"LA14093-1\",\"display\":\"Unspecified\"},{\"system\":\"http://loinc.org\",\"code\":\"LA14092-3\",\"display\":\"Farm\"},{\"system\":\"http://loinc.org\",\"code\":\"LA14086-5\",\"display\":\"School\"},{\"system\":\"http://loinc.org\",\"code\":\"LA14085-7\",\"display\":\"Residential institution\"},{\"system\":\"http://loinc.org\",\"code\":\"LA14089-9\",\"display\":\"Street or highway\"},{\"system\":\"http://loinc.org\",\"code\":\"LA14087-3\",\"display\":\"Public institution\"},{\"system\":\"http://loinc.org\",\"code\":\"LA14088-1\",\"display\":\"Sports or recreational area\"},{\"system\":\"http://loinc.org\",\"code\":\"LA14084-0\",\"display\":\"Home\"}]}}",
+    "headers" : {
+      "Server" : "nginx/1.15.9",
+      "Date" : "Sat, 16 May 2020 02:13:03 GMT",
+      "Content-Type" : "application/fhir+json;charset=UTF-8",
+      "X-Request-Id" : "btW1RUphyr4mlKDJ",
+      "Cache-Control" : "must-revalidate, max-age=1",
+      "Vary" : "Accept,Origin,Accept-Encoding,Accept-Language",
+      "X-Powered-By" : "HAPI FHIR 4.1.0 REST Server (FHIR Server; FHIR 4.0.0/R4)",
+      "X-Content-Type-Options" : "nosniff",
+      "X-XSS-Protection" : "1; mode=block",
+      "X-Frame-Options" : "DENY"
+    }
+  },
+  "uuid" : "0f42c1d0-6a6b-44aa-b084-14719012640b",
+  "persistent" : true,
+  "insertionIndex" : 3
+}

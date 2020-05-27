@@ -1,0 +1,32 @@
+{
+  "id" : "354d925f-2b48-4184-994e-51676cf8332a",
+  "name" : "fhir_valueset_expand",
+  "request" : {
+    "url" : "/fhir/ValueSet/$expand",
+    "method" : "POST",
+    "bodyPatterns" : [ {
+      "equalToJson" : "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"url\",\"valueUri\":\"http://loinc.org/vs/LL734-5\"},{\"name\":\"count\",\"valueInteger\":1000},{\"name\":\"offset\",\"valueInteger\":0}]}",
+      "ignoreArrayOrder" : true,
+      "ignoreExtraElements" : true
+    } ]
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"resourceType\":\"ValueSet\",\"language\":\"en\",\"url\":\"http://loinc.org/2.67/vs/LL734-5\",\"status\":\"active\",\"copyright\":\"The LOINC® content is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use\",\"expansion\":{\"identifier\":\"a47a7d38-e6cd-4350-98ca-8ea02d654d07\",\"timestamp\":\"2020-05-16T12:13:22+10:00\",\"total\":7,\"offset\":0,\"parameter\":[{\"name\":\"version\",\"valueUri\":\"http://loinc.org|2.67\"},{\"name\":\"count\",\"valueInteger\":1000},{\"name\":\"offset\",\"valueInteger\":0}],\"contains\":[{\"system\":\"http://loinc.org\",\"code\":\"LA11840-8\",\"display\":\"Mixed\"},{\"system\":\"http://loinc.org\",\"code\":\"LA11839-0\",\"display\":\"Weights\"},{\"system\":\"http://loinc.org\",\"code\":\"LA11838-2\",\"display\":\"Swimming\"},{\"system\":\"http://loinc.org\",\"code\":\"LA11836-6\",\"display\":\"Running\"},{\"system\":\"http://loinc.org\",\"code\":\"LA11837-4\",\"display\":\"Bicycling\"},{\"system\":\"http://loinc.org\",\"code\":\"LA11834-1\",\"display\":\"Walking\"},{\"system\":\"http://loinc.org\",\"code\":\"LA11835-8\",\"display\":\"Jogging\"}]}}",
+    "headers" : {
+      "Server" : "nginx/1.15.9",
+      "Date" : "Sat, 16 May 2020 02:13:22 GMT",
+      "Content-Type" : "application/fhir+json;charset=UTF-8",
+      "X-Request-Id" : "8hXL5bOnodaZ79HN",
+      "Cache-Control" : "must-revalidate, max-age=1",
+      "Vary" : "Accept,Origin,Accept-Encoding,Accept-Language",
+      "X-Powered-By" : "HAPI FHIR 4.1.0 REST Server (FHIR Server; FHIR 4.0.0/R4)",
+      "X-Content-Type-Options" : "nosniff",
+      "X-XSS-Protection" : "1; mode=block",
+      "X-Frame-Options" : "DENY"
+    }
+  },
+  "uuid" : "354d925f-2b48-4184-994e-51676cf8332a",
+  "persistent" : true,
+  "insertionIndex" : 70
+}

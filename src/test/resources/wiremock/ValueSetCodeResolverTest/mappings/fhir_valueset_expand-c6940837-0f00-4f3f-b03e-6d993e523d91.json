@@ -1,0 +1,32 @@
+{
+  "id" : "c6940837-0f00-4f3f-b03e-6d993e523d91",
+  "name" : "fhir_valueset_expand",
+  "request" : {
+    "url" : "/fhir/ValueSet/$expand",
+    "method" : "POST",
+    "bodyPatterns" : [ {
+      "equalToJson" : "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"url\",\"valueUri\":\"http://snomed.info/sct?fhir_vs=ecl/<<2491000087104\"},{\"name\":\"count\",\"valueInteger\":1000},{\"name\":\"offset\",\"valueInteger\":0}]}",
+      "ignoreArrayOrder" : true,
+      "ignoreExtraElements" : true
+    } ]
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"resourceType\":\"ValueSet\",\"language\":\"en\",\"url\":\"http://snomed.info/sct/32506021000036107/version/20200430?fhir_vs=ecl%2F%3C%3C2491000087104\",\"name\":\"SNOMED CT ECL expression\",\"status\":\"active\",\"experimental\":false,\"copyright\":\"This value set includes content from SNOMED CT, which is copyright © 2002+ International Health Terminology Standards Development Organisation (IHTSDO), and distributed by agreement between IHTSDO and HL7. Implementer use of SNOMED CT is not covered by this agreement\",\"expansion\":{\"extension\":[{\"url\":\"http://hl7.org/fhir/StructureDefinition/valueset-unclosed\",\"valueBoolean\":true}],\"identifier\":\"6eaca300-62df-4bff-ae30-9faf2eff0026\",\"timestamp\":\"2020-05-16T12:13:11+10:00\",\"total\":5,\"offset\":0,\"parameter\":[{\"name\":\"version\",\"valueUri\":\"http://snomed.info/sct|http://snomed.info/sct/32506021000036107/version/20200430\"},{\"name\":\"count\",\"valueInteger\":1000},{\"name\":\"offset\",\"valueInteger\":0}],\"contains\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"19741000087109\",\"display\":\"MR arthrography of right knee\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"3001000087108\",\"display\":\"MRI of bilateral knees with contrast\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"2501000087107\",\"display\":\"MRI of right knee with contrast\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"2991000087109\",\"display\":\"MRI of bilateral knees\"},{\"system\":\"http://snomed.info/sct\",\"code\":\"2491000087104\",\"display\":\"MRI of right knee\"}]}}",
+    "headers" : {
+      "Server" : "nginx/1.15.9",
+      "Date" : "Sat, 16 May 2020 02:13:11 GMT",
+      "Content-Type" : "application/fhir+json;charset=UTF-8",
+      "X-Request-Id" : "P17v7VtITR5bHbXV",
+      "Cache-Control" : "must-revalidate, max-age=1",
+      "Vary" : "Accept,Origin,Accept-Encoding,Accept-Language",
+      "X-Powered-By" : "HAPI FHIR 4.1.0 REST Server (FHIR Server; FHIR 4.0.0/R4)",
+      "X-Content-Type-Options" : "nosniff",
+      "X-XSS-Protection" : "1; mode=block",
+      "X-Frame-Options" : "DENY"
+    }
+  },
+  "uuid" : "c6940837-0f00-4f3f-b03e-6d993e523d91",
+  "persistent" : true,
+  "insertionIndex" : 4
+}

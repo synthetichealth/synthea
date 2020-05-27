@@ -19,6 +19,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Observation;
  */
 public abstract class ExportHelper {
 
+
   /**
    * Helper to get a readable string representation of an Observation's value.
    * Units are not included.
@@ -191,6 +192,7 @@ public abstract class ExportHelper {
   private static final String LOINC_URI = "http://loinc.org";
   private static final String RXNORM_URI = "http://www.nlm.nih.gov/research/umls/rxnorm";
   private static final String CVX_URI = "http://hl7.org/fhir/sid/cvx";
+  private static final String DICOM_DCM_URI = "http://dicom.nema.org/medical/dicom/current/output/chtml/part16/sect_CID_29.html";
 
   /**
    * Translate the system name (e.g. SNOMED-CT) into the official
@@ -207,6 +209,8 @@ public abstract class ExportHelper {
       system = RXNORM_URI;
     } else if (system.equals("CVX")) {
       system = CVX_URI;
+    } else if (system.equals("DICOM-DCM")) {
+      system = DICOM_DCM_URI;
     }
     return system;
   }

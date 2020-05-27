@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
@@ -49,6 +50,11 @@ public class HealthRecord implements Serializable {
     public String code;
     /** The human-readable description of the code. */
     public String display;
+    /**
+     * A ValueSet URI that defines a set of possible codes, one of which should be selected at
+     * random.
+     */
+    public String valueSet;
 
     /**
      * Create a new code.
@@ -80,7 +86,8 @@ public class HealthRecord implements Serializable {
     }
 
     public String toString() {
-      return String.format("%s %s %s", system, code, display);
+      return String
+          .format("system=%s, code=%s, display=%s, valueSet=%s", system, code, display, valueSet);
     }
 
     /**
