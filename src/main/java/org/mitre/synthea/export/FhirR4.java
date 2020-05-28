@@ -1770,8 +1770,16 @@ public class FhirR4 {
     provenance.setRecorded(new Date(stopTime));
 
     // Provenance sources...
-    int last = person.record.encounters.size() - 1;
-    Clinician clinician = person.record.encounters.get(last).clinician;
+    int index = person.record.encounters.size() - 1;
+    Clinician clinician = null;
+    while (index >= 0 && clinician == null) {
+      clinician = person.record.encounters.get(index).clinician;
+      index--;
+    }
+    String clinicianDisplay = null;
+    if (clinician != null) {
+      clinicianDisplay = clinician.getFullname();
+    }
     String practitionerFullUrl = findPractitioner(clinician, bundle);
     Provider providerOrganization = person.record.provider;
     if (providerOrganization == null) {
@@ -1786,7 +1794,7 @@ public class FhirR4 {
             "author", "Author"), null));
     agent.setWho(new Reference()
         .setReference(practitionerFullUrl)
-        .setDisplay(clinician.getFullname()));
+        .setDisplay(clinicianDisplay));
     agent.setOnBehalfOf(new Reference()
         .setReference(organizationFullUrl)
         .setDisplay(providerOrganization.name));
@@ -1798,7 +1806,7 @@ public class FhirR4 {
             "transmitter", "Transmitter"), null));
     agent.setWho(new Reference()
         .setReference(practitionerFullUrl)
-        .setDisplay(clinician.getFullname()));
+        .setDisplay(clinicianDisplay));
     agent.setOnBehalfOf(new Reference()
         .setReference(organizationFullUrl)
         .setDisplay(providerOrganization.name));
