@@ -1154,7 +1154,7 @@ public class CDWExporter {
       s.append(personID).append(',');
       s.append(providerSID).append(","); // StaffSID
       s.append(iso8601Timestamp(observation.start)).append(',');
-      s.append(observation.value).append(',');
+      s.append(ExportHelper.getObservationValue(observation)).append(',');
       int loincSID = loinc.addFact(obscode.code, obscode.code + "," + clean(obscode.display));
       s.append(loincSID).append(',');
       s.append(observation.unit).append(',');
