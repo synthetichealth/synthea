@@ -137,6 +137,7 @@ public abstract class TestHelper {
     Config.set("exporter.practitioner.fhir_dstu2.export", "false");
     Config.set("exporter.practitioner.fhir.export", "false");
     Config.set("exporter.cost_access_outcomes_report", "false");
+    Config.set("generate.terminology_service_url", "");
   }
 
   public static long timestamp(int year, int month, int day, int hr, int min, int sec) {

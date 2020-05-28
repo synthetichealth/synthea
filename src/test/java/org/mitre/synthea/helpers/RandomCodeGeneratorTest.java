@@ -1,6 +1,5 @@
 package org.mitre.synthea.helpers;
 
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.mitre.synthea.TestHelper.SNOMED_URI;
 import static org.mitre.synthea.TestHelper.fhirResponse;
 import static org.mitre.synthea.TestHelper.getR4FhirContext;

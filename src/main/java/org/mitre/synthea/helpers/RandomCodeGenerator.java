@@ -178,8 +178,8 @@ public abstract class RandomCodeGenerator {
         return false;
       }
       ExpandInput that = (ExpandInput) o;
-      return offset == that.offset &&
-          valueSetUri.equals(that.valueSetUri);
+      return offset == that.offset
+          && valueSetUri.equals(that.valueSetUri);
     }
 
     @Override

@@ -66,7 +66,8 @@ import org.xml.sax.SAXException;
 public class CodeResolveAndExportTest {
 
   private static final String EXPECTED_REASON_CODE = "242332002";
-  private static final String EXPECTED_REASON_DISPLAY = "Accidental ingestion of matrimony vine berries";
+  private static final String EXPECTED_REASON_DISPLAY =
+      "Accidental ingestion of matrimony vine berries";
   private static final String OBSERVATION_CODE = "11376-1";
   private static final String OBSERVATION_DISPLAY = "Injury location";
   private static final String EXPECTED_VALUE_CODE = "LA14090-7";
@@ -90,11 +91,13 @@ public class CodeResolveAndExportTest {
     if (isHttpRecordingEnabled()) {
       WireMock.startRecording(getTxRecordingSource());
     }
-    
+
+    TestHelper.exportOff();
     Config.set("exporter.ccda.export", "true");
     Config.set("exporter.fhir.export", "true");
     Config.set("exporter.fhir_stu3.export", "true");
     Config.set("exporter.fhir_dstu2.export", "true");
+    Config.set("generate.terminology_service_url", mockTerminologyService.baseUrl() + "/fhir");
 
     person = new Person(12345L);
     time = new SimpleDateFormat("yyyy-MM-dd").parse("2013-06-10").getTime();
@@ -335,8 +338,8 @@ public class CodeResolveAndExportTest {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder = factory.newDocumentBuilder();
     Document doc = builder.parse(inputStream);
-    XPathFactory xPathFactory = XPathFactory.newInstance();
-    XPath xpath = xPathFactory.newXPath();
+    XPathFactory xpathFactory = XPathFactory.newInstance();
+    XPath xpath = xpathFactory.newXPath();
     XPathExpression expr = xpath.compile("/ClinicalDocument/component/structuredBody"
         + "/component/section/entry/encounter/code");
 
@@ -372,14 +375,14 @@ public class CodeResolveAndExportTest {
     expr = xpath.compile("/ClinicalDocument/component/structuredBody/component/section"
         + "/entry/organizer/component/observation/code/translation");
     nodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-    assertEquals(0, nodeList.getLength() );
+    assertEquals(0, nodeList.getLength());
 
     // Find the observation value code.
     expr = xpath.compile("/ClinicalDocument/component/structuredBody/component/section"
         + "/entry/organizer/component/observation/value");
 
     nodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-    assertEquals(1, nodeList.getLength() );
+    assertEquals(1, nodeList.getLength());
     coding = nodeList.item(0);
     String type = coding.getAttributes().getNamedItem("xsi:type").getNodeValue();
     system = coding.getAttributes().getNamedItem("codeSystem").getNodeValue();
