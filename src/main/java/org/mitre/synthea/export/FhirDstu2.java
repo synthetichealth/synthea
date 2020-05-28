@@ -1740,6 +1740,8 @@ public class FhirDstu2 {
    */
   private static CodeableConceptDt mapCodeToCodeableConcept(Code from, String system) {
     CodeableConceptDt to = new CodeableConceptDt();
+    system = system == null ? null : ExportHelper.getSystemURI(system);
+    from.system = ExportHelper.getSystemURI(from.system);
 
     if (from.display != null) {
       to.setText(from.display);
@@ -1748,10 +1750,10 @@ public class FhirDstu2 {
     CodingDt coding = new CodingDt();
     coding.setCode(from.code);
     coding.setDisplay(from.display);
-    if (system == null) {
-      coding.setSystem(from.system);
-    } else {
+    if (from.system == null) {
       coding.setSystem(system);
+    } else {
+      coding.setSystem(from.system);
     }
 
     to.addCoding(coding);

@@ -2560,6 +2560,8 @@ public class FhirStu3 {
    */
   private static CodeableConcept mapCodeToCodeableConcept(Code from, String system) {
     CodeableConcept to = new CodeableConcept();
+    system = system == null ? null : ExportHelper.getSystemURI(system);
+    from.system = ExportHelper.getSystemURI(from.system);
 
     if (from.display != null) {
       to.setText(from.display);
@@ -2568,10 +2570,10 @@ public class FhirStu3 {
     Coding coding = new Coding();
     coding.setCode(from.code);
     coding.setDisplay(from.display);
-    if (system == null) {
-      coding.setSystem(from.system);
-    } else {
+    if (from.system == null) {
       coding.setSystem(system);
+    } else {
+      coding.setSystem(from.system);
     }
 
     to.addCoding(coding);
