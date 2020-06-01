@@ -1500,7 +1500,7 @@ public abstract class State implements Cloneable, Serializable {
       } else if (valueCode != null) {
         value = valueCode;
       } else if (threadExpProcessor != null
-    		  && threadExpProcessor.get() != null) {
+          && threadExpProcessor.get() != null) {
         value = threadExpProcessor.get().evaluate(person, time);
       } else if (sampledData != null) {
         // Capture the data lists from person attributes

@@ -335,20 +335,22 @@ public class ExpressionProcessor {
       // Add the bi-directional mapping from params to CQL compatible params
       cqlParamMap.put(param, cqlParam);
       
-      if(!typeKey.isEmpty()) {
+      if (!typeKey.isEmpty()) {
         switch (typeKey) {
-        case "d":
-          paramTypeMap.put(cqlParam, "Decimal");
-          break;
-        case "l":
-          paramTypeMap.put(cqlParam, "List<Decimal>");
-          break;
-        case "b":
-          paramTypeMap.put(cqlParam, "Boolean");
-          break;
-        case "s":
-          paramTypeMap.put(cqlParam, "String");
-          break;
+          case "d":
+            paramTypeMap.put(cqlParam, "Decimal");
+            break;
+          case "l":
+            paramTypeMap.put(cqlParam, "List<Decimal>");
+            break;
+          case "b":
+            paramTypeMap.put(cqlParam, "Boolean");
+            break;
+          case "s":
+            paramTypeMap.put(cqlParam, "String");
+            break;
+          default:
+            break;
         }
       }
 
@@ -376,11 +378,10 @@ public class ExpressionProcessor {
     
     String[] statements = expression.split("\n");
     
-    for (int i=0; i < statements.length; i++) {
-      if (i == statements.length -1) {
+    for (int i = 0; i < statements.length; i++) {
+      if (i == statements.length - 1) {
         wrappedExpression.append("define result: " + statements[i]);
-      }
-      else {
+      } else {
         wrappedExpression.append(statements[i] + "\n");
       }
     }

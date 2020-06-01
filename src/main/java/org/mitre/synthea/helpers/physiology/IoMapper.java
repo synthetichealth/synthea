@@ -3,9 +3,7 @@ package org.mitre.synthea.helpers.physiology;
 import com.google.gson.annotations.SerializedName;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.cqframework.cql.cql2elm.CqlSemanticException;
@@ -174,8 +172,7 @@ public class IoMapper {
       Object personValue = ExpressionProcessor.getPersonValue(from, person, time, null);
       if (personValue instanceof Number) {
         resultValue = ((Number) personValue).doubleValue();
-      }
-      else {
+      } else {
         throw new IllegalArgumentException("Non-numeric attribute: \"" + from + "\"");
       }
     }
