@@ -31,8 +31,6 @@ import org.mitre.synthea.engine.Transition.DistributedTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransitionOption;
 import org.mitre.synthea.engine.Transition.LookupTableTransition;
 import org.mitre.synthea.engine.Transition.LookupTableTransitionOption;
-import org.mitre.synthea.helpers.ChartRenderer;
-import org.mitre.synthea.helpers.ChartRenderer.PersonChartConfig;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.ExpressionProcessor;
@@ -1539,7 +1537,7 @@ public abstract class State implements Cloneable, Serializable {
       } else if (valueCode != null) {
         value = valueCode;
       } else if (threadExpProcessor != null
-    		  && threadExpProcessor.get() != null) {
+          && threadExpProcessor.get() != null) {
         value = threadExpProcessor.get().evaluate(person, time);
       } else if (sampledData != null) {
         // Capture the data lists from person attributes
