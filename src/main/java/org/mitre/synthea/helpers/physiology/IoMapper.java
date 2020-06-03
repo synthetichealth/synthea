@@ -3,9 +3,7 @@ package org.mitre.synthea.helpers.physiology;
 import com.google.gson.annotations.SerializedName;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.cqframework.cql.cql2elm.CqlSemanticException;
@@ -160,8 +158,8 @@ public class IoMapper {
       
       // Add all patient parameters to the expression parameter map
       for (String param : expProcessor.getParamNames()) {
-        expParams.put(param, new BigDecimal(ExpressionProcessor
-            .getPersonValue(param, person, time, expProcessor.getExpression())));
+        expParams.put(param, ExpressionProcessor
+            .getPersonValue(param, person, time, expProcessor.getExpression()));
       }
       
       // All physiology inputs should evaluate to numeric parameters
@@ -171,7 +169,12 @@ public class IoMapper {
       throw new IllegalArgumentException(
           "Cannot map lists from person attributes / vital signs to model parameters");
     } else {
-      resultValue = ExpressionProcessor.getPersonValue(from, person, time, null);
+      Object personValue = ExpressionProcessor.getPersonValue(from, person, time, null);
+      if (personValue instanceof Number) {
+        resultValue = ((Number) personValue).doubleValue();
+      } else {
+        throw new IllegalArgumentException("Non-numeric attribute: \"" + from + "\"");
+      }
     }
     
     modelInputs.put(to, resultValue);
