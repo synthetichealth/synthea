@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.Base64;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
@@ -52,6 +53,7 @@ public class StateTest {
 
   private Person person;
   private long time;
+  private boolean physStateEnabled;
 
   /**
    * Setup State tests.
@@ -86,6 +88,18 @@ public class StateTest {
     for (int i = 0; i < person.payerHistory.length; i++) {
       person.setPayerAtAge(i, Payer.noInsurance);
     }
+    
+    // Ensure Physiology state is enabled by default
+    physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
+    State.ENABLE_PHYSIOLOGY_STATE = true;
+  }
+  
+  /**
+   * Reset state after State tests.
+   */
+  @After
+  public void tearDown() {
+    State.ENABLE_PHYSIOLOGY_STATE = physStateEnabled;
   }
 
   private void simulateWellnessEncounter(Module module) {
@@ -1862,8 +1876,8 @@ public class StateTest {
     assertTrue(person.attributes.get("Arterial Pressure Values") instanceof TimeSeriesData);
     
     // LVEF should be diminished and BP should be elevated
-    assertTrue("LVEF < 59%", (double) person.attributes.get("LVEF") < 60.0);
-    assertTrue("LVEF > 57%", (double) person.attributes.get("LVEF") > 50.0);
+    assertTrue("LVEF < 60%", (double) person.attributes.get("LVEF") < 60.0);
+    assertTrue("LVEF > 50%", (double) person.attributes.get("LVEF") > 50.0);
     assertTrue("SYS BP < 150 mmhg",
         (double) person.attributes.get("SBP") < 150.0);
     assertTrue("SYS BP > 130 mmhg",
@@ -1878,6 +1892,36 @@ public class StateTest {
     
     assertNotEquals(cvsClone, simulateCvs);
     assertTrue(cvsClone.process(person, time));
+    
+  }
+  
+  @Test
+  public void testPhysiologyDisabled() throws Exception {
+    
+    // Ensure state is disabled
+    State.ENABLE_PHYSIOLOGY_STATE = false;
+
+    Module module = TestHelper.getFixture("smith_physiology.json");
+    
+    // Run the whole module against the Person
+    try {
+      module.process(person, 0L);
+      fail("Expected a RuntimeException to be thrown");
+    } catch (RuntimeException ex) {
+      // The module doesn't set "Arterial Pressure Values" when Physiology states
+      // are disabled so we should get an exception
+      assertEquals("Invalid Person attribute \"Arterial Pressure Values\" "
+          + "provided for chart series: null. Attribute value must be a "
+          + "TimeSeriesData or List<Double> Object.", ex.getMessage());
+    }
+    
+    // Values should have been set directly instead of through the simulation
+    assertEquals(55.5, (double) person.attributes.get("LVEF"), 0.0001);
+    assertEquals(140.5, (double) person.attributes.get("SBP"), 0.0001);
+    assertEquals(90.5, (double) person.attributes.get("DBP"), 0.0001);
+    
+    // Re-enable physiology states
+    State.ENABLE_PHYSIOLOGY_STATE = true;
   }
   
   @Test

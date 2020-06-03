@@ -3,6 +3,7 @@ package org.mitre.synthea.helpers;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -33,7 +34,7 @@ public class ChartRenderer {
   /**
    * POJO configuration for a chart.
    **/
-  public abstract static class ChartConfig {
+  public abstract static class ChartConfig implements Serializable {
     /** Name of the image file to export. **/
     private String filename;
     /** User input for the type of chart to render. **/
@@ -129,7 +130,7 @@ public class ChartRenderer {
   /**
    * POJO configuration for a chart with data from a MultiTable.
    **/
-  public static class MultiTableChartConfig extends ChartConfig {
+  public static class MultiTableChartConfig extends ChartConfig implements Serializable {
     /** Parameter to render on the x axis. **/
     private String axisParamX;
     /** Simulation time in seconds to start charting points. **/
@@ -176,7 +177,7 @@ public class ChartRenderer {
   /**
    * POJO configuration for a chart with data from a Person object.
    **/
-  public static class PersonChartConfig extends ChartConfig {
+  public static class PersonChartConfig extends ChartConfig implements Serializable {
     /** Person attribute to render on the x axis. **/
     private String axisAttributeX;
     /** List of series configurations for this chart. **/
@@ -203,7 +204,7 @@ public class ChartRenderer {
   /**
    * POJO configuration for a chart series.
    */
-  private abstract static class SeriesConfig {
+  private abstract static class SeriesConfig implements Serializable {
     /** Series label in the legend. **/
     private String label;
 
@@ -220,7 +221,7 @@ public class ChartRenderer {
   /**
    * POJO configuration for a chart series with data from a MultiTable.
    */
-  public static class MultiTableSeriesConfig extends SeriesConfig {
+  public static class MultiTableSeriesConfig extends SeriesConfig implements Serializable {
     /** Which parameter to plot on this series. (if providing a MultiTable) **/
     private String param;
 
@@ -237,7 +238,7 @@ public class ChartRenderer {
   /**
    * POJO configuration for a chart series with data from a Person object.
    */
-  public static class PersonSeriesConfig extends SeriesConfig {
+  public static class PersonSeriesConfig extends SeriesConfig implements Serializable {
     /** Which attribute to plot on this series. (if providing a Person) **/
     private String attribute;
 
@@ -420,7 +421,7 @@ public class ChartRenderer {
       valuesX = (List<Double>) attrValueX;
     } else {
       throw new RuntimeException("Invalid Person attribute \""
-          + config.getAxisAttributeX() + "\"provided for chart X Axis: "
+          + config.getAxisAttributeX() + "\" provided for chart X Axis: "
           + attrValueX + ". Attribute must either be \"time\" or refer to a TimeSeriesData or"
           + "List<Double> Object.");
     }
@@ -460,7 +461,7 @@ public class ChartRenderer {
         seriesValues = (List<Double>) seriesObject;
       } else {
         throw new RuntimeException("Invalid Person attribute \""
-            + seriesConfig.getAttribute() + "\"provided for chart series: "
+            + seriesConfig.getAttribute() + "\" provided for chart series: "
             + seriesObject + ". Attribute value must be a TimeSeriesData or List<Double> Object.");
       }
       

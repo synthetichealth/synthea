@@ -95,7 +95,7 @@ public abstract class Components {
     public int millisecond;
   }
   
-  public static class SampledData {
+  public static class SampledData implements Serializable {
     public double originValue; // Zero value
     public Double factor; // Multiply data by this before adding to origin
     public Double lowerLimit; // Lower limit of detection
@@ -161,7 +161,7 @@ public abstract class Components {
    * Attachment class to support inline image file generation,
    * raw base64 data, or URLs of image attachments for Observations.
    */
-  public static class Attachment {
+  public static class Attachment implements Serializable {
     public String contentType; // Code for the MIME type of the content, with charset etc.
     public String language; // Human language of the content (BCP-47)
     public String data; // Data inline, base64ed

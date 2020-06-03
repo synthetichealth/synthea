@@ -2,6 +2,7 @@ package org.mitre.synthea.helpers.physiology;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +16,7 @@ import org.simulator.math.odes.MultiTable;
 import org.simulator.math.odes.MultiTable.Block.Column;
 
 /** Class for handling simulation inputs and outputs. **/
-public class IoMapper {
+public class IoMapper implements Serializable {
   private IoType type;
   private String from;
   private String to;
@@ -26,10 +27,23 @@ public class IoMapper {
   
   // ExpressionProcessor instances are not thread safe, so we need
   // to have a separate processor for each thread
-  private ThreadLocal<ExpressionProcessor> threadExpProcessor
-      = new ThreadLocal<ExpressionProcessor>();
+  private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
   private PreGenerator preGenerator;
   
+  private ExpressionProcessor getThreadExpProcessor() {
+    if (threadExpProcessor == null) {
+      threadExpProcessor = new ThreadLocal<ExpressionProcessor>();
+    }
+    return threadExpProcessor.get();
+  }
+  
+  private void setThreadExpProcessor(ExpressionProcessor exp) {
+    if (threadExpProcessor == null) {
+      threadExpProcessor = new ThreadLocal<ExpressionProcessor>();
+    }
+    threadExpProcessor.set(exp);
+  }
+
   public IoMapper() {}
   
   /**
@@ -42,7 +56,7 @@ public class IoMapper {
     fromList = other.fromList;
     to = other.to;
     fromExp = other.fromExp;
-    threadExpProcessor = other.threadExpProcessor;
+    setThreadExpProcessor(other.getThreadExpProcessor());
   }
   
   public enum IoType {
@@ -132,8 +146,8 @@ public class IoMapper {
    */
   public void initialize(Map<String, String> paramTypes) {
     try {
-      if (threadExpProcessor.get() == null && fromExp != null && !"".equals(fromExp)) {
-        threadExpProcessor.set(new ExpressionProcessor(fromExp, paramTypes));
+      if (getThreadExpProcessor() == null && fromExp != null && !"".equals(fromExp)) {
+        setThreadExpProcessor(new ExpressionProcessor(fromExp, paramTypes));
       }
     } catch (CqlSemanticException e) {
       throw new RuntimeException(e);
@@ -150,7 +164,7 @@ public class IoMapper {
   public double toModelInputs(Person person, long time, Map<String,Double> modelInputs) {
     double resultValue;
     
-    ExpressionProcessor expProcessor = threadExpProcessor.get();
+    ExpressionProcessor expProcessor = getThreadExpProcessor();
     
     // Evaluate the expression if one is provided
     if (expProcessor != null) {
@@ -188,7 +202,7 @@ public class IoMapper {
    * @return double value or List of Double values
    */
   public Object getOutputResult(MultiTable results, double leadTime) {
-    ExpressionProcessor expProcessor = threadExpProcessor.get();
+    ExpressionProcessor expProcessor = getThreadExpProcessor();
     
     if (expProcessor != null) {
       // Evaluate the expression and return the result
