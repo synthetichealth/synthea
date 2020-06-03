@@ -1,6 +1,7 @@
 package org.mitre.synthea.helpers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class ExpressionProcessorTest {
     String exp = "#{age_attr} / 2 + 7";
     ExpressionProcessor expProcessor = new ExpressionProcessor(exp);
     Number result = (Number) expProcessor.evaluate(p, 0L);
+    assertNotNull(result);
     assertEquals(20L, result.longValue());
   }
   
@@ -80,5 +82,52 @@ public class ExpressionProcessorTest {
     double result = expProcessor.evaluateNumeric(params).doubleValue();
     
     assertEquals(12.0, result, 0.0001);
+  }
+  
+  @Test
+  public void testStringInput() {
+    
+    Map<String,Object> params = new HashMap<String,Object>();
+    
+    params.put("var_one", new BigDecimal(2.0));
+    params.put("var_two", "male");
+    
+    ExpressionProcessor expProcessor = new ExpressionProcessor(
+        "if #s{var_two} = 'male' then 1.0 else #d{var_one}*2.0");
+    
+    BigDecimal result = expProcessor.evaluateNumeric(params);
+    
+    assertNotNull(result);
+    assertEquals(1.0, result.doubleValue(), 0.0001);
+    
+    params.put("var_two", "female");
+    
+    result = expProcessor.evaluateNumeric(params);
+    
+    assertNotNull(result);
+    assertEquals(4.0, result.doubleValue(), 0.0001);
+    
+  }
+  
+  @Test
+  public void testListInput() {
+    
+    Map<String,Object> params = new HashMap<String,Object>();
+    
+    List<BigDecimal> listVar = new ArrayList<BigDecimal>();
+    listVar.add(new BigDecimal(3.0));
+    listVar.add(new BigDecimal(1.0));
+    listVar.add(new BigDecimal(2.0));
+    listVar.add(new BigDecimal(12.0));
+    
+    params.put("list_var", listVar);
+    
+    ExpressionProcessor expProcessor = new ExpressionProcessor("Sum(#l{list_var})");
+    
+    BigDecimal result = expProcessor.evaluateNumeric(params);
+    
+    assertNotNull(result);
+    assertEquals(18.0, result.doubleValue(), 0.0001);
+    
   }
 }

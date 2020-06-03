@@ -292,7 +292,8 @@ public class Generator {
       try {
         fis = new FileInputStream(options.initialPopulationSnapshotPath);
         ObjectInputStream ois = new ObjectInputStream(fis);
-        initialPopulation = (List<Person>)ois.readObject();
+        initialPopulation = (List<Person>) ois.readObject();
+        ois.close();
       } catch (Exception ex) {
         System.out.printf("Unable to load population snapshot, error: %s", ex.getMessage());
       }
@@ -414,12 +415,12 @@ public class Generator {
         }
 
         recordPerson(person, index);
-        
+
         tryNumber++;
         if (!isAlive) {
           // rotate the seed so the next attempt gets a consistent but different one
           personSeed = new Random(personSeed).nextLong();
-          
+
           // if we've tried and failed > 10 times to generate someone over age 90
           // and the options allow for ages as low as 85
           // reduce the age to increase the likelihood of success
@@ -454,6 +455,9 @@ public class Generator {
     return person;
   }
   
+  /**
+   * Update person record to stop time, record the entry and export record.
+   */
   public Person updateRecordExportPerson(Person person, int index) {
     updatePerson(person);
     recordPerson(person, index);
@@ -486,7 +490,7 @@ public class Generator {
           iter.remove(); // this module has completed/terminated.
         }
       }
-      encounterModule.endWellnessEncounter(person, time);
+      encounterModule.endEncounterModuleEncounters(person, time);
       person.lastUpdated = time;
       HealthRecordEditors.getInstance().executeAll(
               person, person.record, time, timestep, person.random);

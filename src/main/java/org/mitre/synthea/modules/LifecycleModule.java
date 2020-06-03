@@ -30,8 +30,8 @@ import org.mitre.synthea.world.concepts.GrowthChart;
 import org.mitre.synthea.world.concepts.GrowthChartEntry;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
-import org.mitre.synthea.world.concepts.NHANESSample;
 import org.mitre.synthea.world.concepts.PediatricGrowthTrajectory;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
@@ -380,6 +380,16 @@ public final class LifecycleModule extends Module {
           if (getsPassport) {
             String identifierPassport = "X" + (person.randInt(99999999 - 10000000 + 1) + "X");
             person.attributes.put(Person.IDENTIFIER_PASSPORT, identifierPassport);
+          }
+        }
+        if (person.attributes.get("veteran") != null) {
+          if (person.attributes.get("veteran_provider_reset") == null) {
+            // reset providers for veterans, they'll switch to VA facilities
+            person.attributes.remove(Person.CURRENTPROVIDER);
+            for (EncounterType type : EncounterType.values()) {
+              person.attributes.remove(Person.PREFERREDYPROVIDER + type);
+            }
+            person.attributes.put("veteran_provider_reset", true);
           }
         }
         break;

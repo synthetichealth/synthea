@@ -13,6 +13,7 @@ import ca.uhn.fhir.model.dstu2.composite.NarrativeDt;
 import ca.uhn.fhir.model.dstu2.composite.PeriodDt;
 import ca.uhn.fhir.model.dstu2.composite.QuantityDt;
 import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
+import ca.uhn.fhir.model.dstu2.composite.SampledDataDt;
 import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.composite.TimingDt;
 import ca.uhn.fhir.model.dstu2.composite.TimingDt.Repeat;
@@ -55,6 +56,7 @@ import ca.uhn.fhir.model.dstu2.valueset.ContactPointSystemEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointUseEnum;
 import ca.uhn.fhir.model.dstu2.valueset.DeviceStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.DiagnosticReportStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.DigitalMediaTypeEnum;
 import ca.uhn.fhir.model.dstu2.valueset.EncounterClassEnum;
 import ca.uhn.fhir.model.dstu2.valueset.EncounterStateEnum;
 import ca.uhn.fhir.model.dstu2.valueset.GoalStatusEnum;
@@ -89,6 +91,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.awt.geom.Point2D;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -96,6 +99,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.mitre.synthea.engine.Components;
+import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
@@ -196,7 +201,13 @@ public class FhirDstu2 {
       }
 
       for (Observation observation : encounter.observations) {
-        observation(personEntry, bundle, encounterEntry, observation);
+        // If the Observation contains an attachment, use a Media resource, since
+        // Observation resources in stu3 don't support Attachments
+        if (observation.value instanceof Attachment) {
+          media(personEntry, bundle, encounterEntry, observation);
+        } else {
+          observation(personEntry, bundle, encounterEntry, observation);
+        }
       }
 
       for (Procedure procedure : encounter.procedures) {
@@ -516,7 +527,11 @@ public class FhirDstu2 {
       encounterResource.addType(mapCodeToCodeableConcept(code, SNOMED_URI));
     }
 
-    encounterResource.setClassElement(EncounterClassEnum.forCode(encounter.type));
+    EncounterClassEnum encounterClass = EncounterClassEnum.forCode(encounter.type);
+    if (encounterClass == null) {
+      encounterClass = EncounterClassEnum.AMBULATORY;
+    }
+    encounterResource.setClassElement(encounterClass);
     encounterResource.setPeriod(new PeriodDt()
         .setStart(new DateTimeDt(new Date(encounter.start)))
         .setEnd(new DateTimeDt(new Date(encounter.stop))));
@@ -907,10 +922,54 @@ public class FhirDstu2 {
       return new QuantityDt().setValue(bigVal)
           .setCode(unit).setSystem(UNITSOFMEASURE_URI)
           .setUnit(unit);
+    } else if (value instanceof Components.SampledData) {
+      return mapValueToSampledData((Components.SampledData) value, unit);
     } else {
       throw new IllegalArgumentException("unexpected observation value class: "
           + value.getClass().toString() + "; " + value);
     }
+  }
+  
+  /**
+   * Maps a Synthea internal SampledData object to the FHIR standard SampledData
+   * representation.
+   * 
+   * @param value Synthea internal SampledData instance
+   * @param unit Observation unit value
+   * @return
+   */
+  static SampledDataDt mapValueToSampledData(
+      Components.SampledData value, String unit) {
+    
+    SampledDataDt recordData = new SampledDataDt();
+    
+    SimpleQuantityDt origin = new SimpleQuantityDt();
+    origin.setValue(new BigDecimal(value.originValue))
+      .setCode(unit).setSystem(UNITSOFMEASURE_URI)
+      .setUnit(unit);
+    
+    recordData.setOrigin(origin);
+    
+    // Use the period from the first series. They should all be the same.
+    // FHIR output is milliseconds so we need to convert from TimeSeriesData seconds.
+    recordData.setPeriod(value.series.get(0).getPeriod() * 1000);
+    
+    // Set optional fields if they were provided
+    if (value.factor != null) {
+      recordData.setFactor(value.factor);
+    }
+    if (value.lowerLimit != null) {
+      recordData.setLowerLimit(value.lowerLimit);
+    }
+    if (value.upperLimit != null) {
+      recordData.setUpperLimit(value.upperLimit);
+    }
+    
+    recordData.setDimensions(value.series.size());
+    
+    recordData.setData(ExportHelper.sampledDataToValueString(value));
+    
+    return recordData;
   }
 
   /**
@@ -1370,6 +1429,56 @@ public class FhirDstu2 {
 
     return newEntry(bundle, imagingStudyResource);
   }
+  
+  /**
+   * Map the given Media element to a FHIR Media resource, and add it to the given Bundle.
+   *
+   * @param personEntry    The Entry for the Person
+   * @param bundle         Bundle to add the Media to
+   * @param encounterEntry Current Encounter entry
+   * @param obs   The Observation to map to FHIR and add to the bundle
+   * @return The added Entry
+   */
+  private static Entry media(Entry personEntry, Bundle bundle, Entry encounterEntry,
+      Observation obs) {
+    ca.uhn.fhir.model.dstu2.resource.Media mediaResource =
+        new ca.uhn.fhir.model.dstu2.resource.Media();
+
+    // Hard code as a photo
+    mediaResource.setType(DigitalMediaTypeEnum.PHOTO);
+    mediaResource.setSubject(new ResourceReferenceDt(personEntry.getFullUrl()));
+
+    Attachment content = (Attachment) obs.value;
+    ca.uhn.fhir.model.dstu2.composite.AttachmentDt contentResource =
+        new ca.uhn.fhir.model.dstu2.composite.AttachmentDt();
+    
+    contentResource.setContentType(content.contentType);
+    contentResource.setLanguage(content.language);
+    
+    if (content.data != null) {
+      ca.uhn.fhir.model.primitive.Base64BinaryDt data =
+          new ca.uhn.fhir.model.primitive.Base64BinaryDt();
+      data.setValueAsString(content.data);
+      contentResource.setData(data);
+    }
+    
+    contentResource.setUrl(content.url);
+    contentResource.setSize(content.size);
+    contentResource.setTitle(content.title);
+    if (content.hash != null) {
+      ca.uhn.fhir.model.primitive.Base64BinaryDt hash =
+          new ca.uhn.fhir.model.primitive.Base64BinaryDt();
+      hash.setValueAsString(content.hash);
+      contentResource.setHash(hash);
+    }
+    
+    mediaResource.setWidth(content.width);
+    mediaResource.setHeight(content.height);
+    
+    mediaResource.setContent(contentResource);
+
+    return newEntry(bundle, mediaResource);
+  }
 
   /**
    * Map the HealthRecord.Device into a FHIR Device and add it to the Bundle.
@@ -1391,7 +1500,8 @@ public class FhirDstu2 {
     if (device.model != null) {
       deviceResource.setModel(device.model);
     }
-    deviceResource.setManufactureDate((DateTimeDt)convertFhirDateTime(device.manufactureTime, true));
+    deviceResource.setManufactureDate((DateTimeDt)convertFhirDateTime(
+            device.manufactureTime, true));
     deviceResource.setExpiry((DateTimeDt)convertFhirDateTime(device.expirationTime, true));
     deviceResource.setLotNumber(device.lotNumber);
     deviceResource.setType(mapCodeToCodeableConcept(device.codes.get(0), SNOMED_URI));
@@ -1399,7 +1509,7 @@ public class FhirDstu2 {
 
     return newEntry(bundle, deviceResource);
   }
-  
+
   /**
    * Map the JsonObject for a Supply into a FHIR SupplyDelivery and add it to the Bundle.
    *
@@ -1631,6 +1741,8 @@ public class FhirDstu2 {
    */
   private static CodeableConceptDt mapCodeToCodeableConcept(Code from, String system) {
     CodeableConceptDt to = new CodeableConceptDt();
+    system = system == null ? null : ExportHelper.getSystemURI(system);
+    from.system = ExportHelper.getSystemURI(from.system);
 
     if (from.display != null) {
       to.setText(from.display);
@@ -1639,10 +1751,10 @@ public class FhirDstu2 {
     CodingDt coding = new CodingDt();
     coding.setCode(from.code);
     coding.setDisplay(from.display);
-    if (system == null) {
-      coding.setSystem(from.system);
-    } else {
+    if (from.system == null) {
       coding.setSystem(system);
+    } else {
+      coding.setSystem(from.system);
     }
 
     to.addCoding(coding);

@@ -415,8 +415,8 @@ public class Graphviz {
         }
         if (state.has("model")) {
           details.append("Model: ")
-          .append(state.get("model").getAsString())
-          .append(NEWLINE);
+            .append(state.get("model").getAsString())
+            .append(NEWLINE);
         }
         break;
       case "DeviceEnd":
@@ -432,7 +432,7 @@ public class Graphviz {
         List<String> supplyCode = new ArrayList<String>();
         supplyCode.add("Code");
 
-        state.get("supplies").getAsJsonArray().forEach( (supplyElement) -> {
+        state.get("supplies").getAsJsonArray().forEach((supplyElement) -> {
           JsonObject supply = supplyElement.getAsJsonObject();
           supplyQuantity.add(supply.get("quantity").getAsString());
 

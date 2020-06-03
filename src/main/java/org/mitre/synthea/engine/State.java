@@ -2,10 +2,10 @@ package org.mitre.synthea.engine;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,11 +16,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.math.ode.DerivativeException;
-
+import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.engine.Components.Exact;
 import org.mitre.synthea.engine.Components.ExactWithUnit;
 import org.mitre.synthea.engine.Components.Range;
 import org.mitre.synthea.engine.Components.RangeWithUnit;
+import org.mitre.synthea.engine.Components.SampledData;
 import org.mitre.synthea.engine.Transition.ComplexTransition;
 import org.mitre.synthea.engine.Transition.ComplexTransitionOption;
 import org.mitre.synthea.engine.Transition.ConditionalTransition;
@@ -30,9 +31,11 @@ import org.mitre.synthea.engine.Transition.DistributedTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransitionOption;
 import org.mitre.synthea.engine.Transition.LookupTableTransition;
 import org.mitre.synthea.engine.Transition.LookupTableTransitionOption;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.ExpressionProcessor;
 import org.mitre.synthea.helpers.RandomValueGenerator;
+import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.physiology.IoMapper;
 import org.mitre.synthea.modules.EncounterModule;
@@ -63,6 +66,9 @@ public abstract class State implements Cloneable, Serializable {
   private List<ComplexTransitionOption> complexTransition;
   private List<LookupTableTransitionOption> lookupTableTransition;
   public List<String> remarks;
+  
+  public static boolean ENABLE_PHYSIOLOGY_STATE =
+      Boolean.parseBoolean(Config.get("physiology.state.enabled", "false"));
 
   protected void initialize(Module module, String name, JsonObject definition) {
     this.module = module;
@@ -280,8 +286,10 @@ public abstract class State implements Cloneable, Serializable {
     private double stepSize;
     private double simDuration;
     private double leadTime;
+    private String altDirectTransition;
     private List<IoMapper> inputs;
     private List<IoMapper> outputs;
+    private Transition altTransition;
     private transient PhysiologySimulator simulator;
     private transient Map<String,String> paramTypes;
     
@@ -289,12 +297,21 @@ public abstract class State implements Cloneable, Serializable {
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
       
+      if (altDirectTransition == null || altDirectTransition == "") {
+        throw new RuntimeException("All Physiology States MUST have an alt_direct_transition"
+            + " defined in the event that Physiology States are disabled.");
+      }
+      
+      this.altTransition = new DirectTransition(altDirectTransition);
+      
       if (leadTime > simDuration) {
         throw new IllegalArgumentException(
             "Simulation lead time cannot be greater than sim duration!");
       }
 
-      setup();
+      if (ENABLE_PHYSIOLOGY_STATE) {
+        setup();
+      }
     }
     
     private void setup() {
@@ -326,6 +343,7 @@ public abstract class State implements Cloneable, Serializable {
       clone.stepSize = stepSize;
       clone.simDuration = simDuration;
       clone.leadTime = leadTime;
+      clone.altDirectTransition = altDirectTransition;
       
       List<IoMapper> inputList = new ArrayList<IoMapper>(inputs.size());
       for (IoMapper mapper : inputs) {
@@ -346,6 +364,9 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
+      if (!ENABLE_PHYSIOLOGY_STATE) {
+        return true;
+      }
       Map<String,Double> modelInputs = new HashMap<String,Double>();
       for (IoMapper mapper : inputs) {
         mapper.toModelInputs(person, time, modelInputs);
@@ -371,6 +392,24 @@ public abstract class State implements Cloneable, Serializable {
             + person.attributes.get(Person.ID), ex);
       }
       return true;
+    }
+    
+    /**
+     * Directs to the normal transition if Physiology states are enabled. Otherwise
+     * directs to the alternative direct transition.
+     * 
+     * @param person
+     *          the person being simulated
+     * @param time
+     *          the date within the simulated world
+     * @return next state
+     */
+    public String transition(Person person, long time) {
+      if (ENABLE_PHYSIOLOGY_STATE) {
+        return super.transition(person, time);
+      }
+      
+      return altTransition.follow(person, time);
     }
     
   }
@@ -486,6 +525,9 @@ public abstract class State implements Cloneable, Serializable {
     private Range<Double> range;
     private String expression;
     private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
+    private String seriesData;
+    private double period;
+
     
     private ThreadLocal<ExpressionProcessor> getExpProcessor() {
       // If the ThreadLocal instance hasn't been created yet, create it now
@@ -513,6 +555,11 @@ public abstract class State implements Cloneable, Serializable {
           value = (int) doubleVal;
         }
       }
+      
+      // Series data default period is 1.0s
+      if (period <= 0.0) {
+        period = 1.0;
+      }
     }
 
     @Override
@@ -523,6 +570,8 @@ public abstract class State implements Cloneable, Serializable {
       clone.range = range;
       clone.expression = expression;
       clone.threadExpProcessor = threadExpProcessor;
+      clone.seriesData = seriesData;
+      clone.period = period;
       return clone;
     }
 
@@ -533,6 +582,20 @@ public abstract class State implements Cloneable, Serializable {
         value = expProcessor.get().evaluate(person, time);
       } else if (range != null) {
         value = person.rand(range.low, range.high, range.decimals);
+      } else if (seriesData != null) {
+        String[] items = seriesData.split(" ");
+        TimeSeriesData data = new TimeSeriesData(items.length, period);
+        
+        for (int i = 0; i < items.length; i++) {
+          try {
+            data.addValue(Double.parseDouble(items[i]));
+          } catch (NumberFormatException nfe) {
+            throw new RuntimeException("unable to parse \"" + items[i]
+                + "\" in SetAttribute state for \"" + attribute + "\"", nfe);
+          }
+        }
+        
+        value = data;
       }
 
       if (value != null) {
@@ -834,6 +897,7 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
+      updateOnsetInfo(person, time);
       HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
 
       if (targetEncounter == null || targetEncounter.trim().length() == 0
@@ -849,6 +913,10 @@ public abstract class State implements Cloneable, Serializable {
       }
       return true;
     }
+    
+    protected void updateOnsetInfo(Person person, long time) {
+      return;
+    }
 
     public abstract void diagnose(Person person, long time);
   }
@@ -862,6 +930,14 @@ public abstract class State implements Cloneable, Serializable {
    * then the condition will only be diagnosed when that future encounter occurs.
    */
   public static class ConditionOnset extends OnsetState {
+      
+    @Override
+    protected void updateOnsetInfo(Person person, long time) {
+      person.getOnsetConditionRecord().onConditionOnset(
+          module.name, this.name, codes.get(0).display, time
+      );
+    }
+    
     @Override
     public void diagnose(Person person, long time) {
       String primaryCode = codes.get(0).code;
@@ -905,12 +981,22 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public boolean process(Person person, long time) {
       if (conditionOnset != null) {
+        String condition = person.getOnsetConditionRecord().getConditionFromState(
+            module.name, conditionOnset
+        );
+        if (condition != null) {
+          person.getOnsetConditionRecord().onConditionEnd(module.name, condition, time);
+        }
         person.record.conditionEndByState(time, conditionOnset);
       } else if (referencedByAttribute != null) {
         Entry condition = (Entry) person.attributes.get(referencedByAttribute);
+        person.getOnsetConditionRecord().onConditionEnd(
+            module.name, condition.codes.get(0).display, time
+        );
         condition.stop = time;
         person.record.conditionEnd(time, condition.type);
       } else if (codes != null) {
+        person.getOnsetConditionRecord().onConditionEnd(module.name, codes.get(0).display, time);
         codes.forEach(code -> person.record.conditionEnd(time, code.code));
       }
       return true;
@@ -1398,6 +1484,8 @@ public abstract class State implements Cloneable, Serializable {
     private Code valueCode;
     private String attribute;
     private org.mitre.synthea.world.concepts.VitalSign vitalSign;
+    private SampledData sampledData;
+    private Attachment attachment;
     private String category;
     private String unit;
     private String expression;
@@ -1410,8 +1498,13 @@ public abstract class State implements Cloneable, Serializable {
       }
       
       // If there's an expression, create the processor for it
-      if (this.expression != null && threadExpProcessor.get() == null) { 
-        threadExpProcessor.set(new ExpressionProcessor(this.expression));
+      if (expression != null && threadExpProcessor.get() == null) { 
+        threadExpProcessor.set(new ExpressionProcessor(expression));
+      }
+
+      // If there's an attachment, validate it before we process
+      if (attachment != null) {
+        attachment.validate();
       }
 
       return threadExpProcessor;
@@ -1426,10 +1519,12 @@ public abstract class State implements Cloneable, Serializable {
       clone.valueCode = valueCode;
       clone.attribute = attribute;
       clone.vitalSign = vitalSign;
+      clone.sampledData = sampledData;
       clone.category = category;
       clone.unit = unit;
       clone.expression = expression;
       clone.threadExpProcessor = threadExpProcessor;
+      clone.attachment = attachment;
       return clone;
     }
 
@@ -1447,9 +1542,18 @@ public abstract class State implements Cloneable, Serializable {
         value = person.getVitalSign(vitalSign, time);
       } else if (valueCode != null) {
         value = valueCode;
-      } else if (getExpProcessor().get() != null) {
-        value = getExpProcessor().get().evaluate(person, time);
-      } 
+      } else if (threadExpProcessor != null
+          && threadExpProcessor.get() != null) {
+        value = threadExpProcessor.get().evaluate(person, time);
+      } else if (sampledData != null) {
+        // Capture the data lists from person attributes
+        sampledData.setSeriesData(person);
+        value = new SampledData(sampledData);
+      } else if (attachment != null) {
+        attachment.process(person);
+        value = new Attachment(attachment);
+      }
+      
       HealthRecord.Observation observation = person.record.observation(time, primaryCode, value);
       entry = observation;
       observation.name = this.name;
@@ -1460,7 +1564,7 @@ public abstract class State implements Cloneable, Serializable {
       return true;
     }
   }
-
+  
   /**
    * ObservationGroup is an internal parent class to provide common logic to state types that
    * package multiple observations into a single entity. It is an implementation detail and should
@@ -1682,13 +1786,17 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
+      //using the module name instead of the cause
       if (person.rand() <= probability) {
         if (exact != null) {
-          person.setSymptom(cause, symptom, exact.quantity, addressed);
+          person.setSymptom(this.module.name, cause, symptom, time, exact.quantity, addressed);
         } else if (range != null) {
-          person.setSymptom(cause, symptom, (int) person.rand(range.low, range.high), addressed);
+          person.setSymptom(
+              this.module.name, cause, symptom, time, (int) person.rand(range.low, range.high),
+              addressed
+          );
         } else {
-          person.setSymptom(cause, symptom, 0, addressed);
+          person.setSymptom(this.module.name, cause, symptom, time, 0, addressed);
         }
       }
       return true;
@@ -1729,7 +1837,7 @@ public abstract class State implements Cloneable, Serializable {
       if (assignToAttribute != null) {
         person.attributes.put(assignToAttribute, device);
       }
-      
+
       return true;
     }
   }
@@ -1761,7 +1869,8 @@ public abstract class State implements Cloneable, Serializable {
       if (device != null) {
         person.record.deviceRemoveByState(time, device);
       } else if (referencedByAttribute != null) {
-        HealthRecord.Device deviceEntry = (HealthRecord.Device) person.attributes.get(referencedByAttribute);
+        HealthRecord.Device deviceEntry = (HealthRecord.Device) person.attributes
+                .get(referencedByAttribute);
         if (deviceEntry != null) {
           deviceEntry.stop = time;
           person.record.deviceRemove(time, deviceEntry.type);
@@ -1772,7 +1881,7 @@ public abstract class State implements Cloneable, Serializable {
       return true;
     }
   }
-  
+
   /**
    * The SupplyList state includes a list of supplies that are needed for the current encounter.
    * Supplies may include things like PPE for the physician, or other resources and machines.
@@ -1801,7 +1910,7 @@ public abstract class State implements Cloneable, Serializable {
       int quantity;
     }
   }
-  
+
   /**
    * The Death state type indicates a point in the module at which the patient dies or the patient
    * is given a terminal diagnosis (e.g. "you have 3 months to live"). When the Death state is

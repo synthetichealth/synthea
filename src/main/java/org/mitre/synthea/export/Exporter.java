@@ -43,7 +43,7 @@ public abstract class Exporter {
   
   private static final List<Pair<Person, Long>> deferredExports = 
           Collections.synchronizedList(new LinkedList<>());
-   
+
   /**
    * Runtime configuration of the record exporter.
    */
@@ -51,6 +51,8 @@ public abstract class Exporter {
     
     public int yearsOfHistory;
     public boolean deferExports = false;
+    public boolean terminologyService =
+        !Config.get("generate.terminology_service_url", "").isEmpty();
     private BlockingQueue<String> recordQueue;
     private SupportedFhirVersion fhirVersion;
     
@@ -58,9 +60,13 @@ public abstract class Exporter {
       yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
     }
     
+    /**
+     * Copy constructor.
+     */
     public ExporterRuntimeOptions(ExporterRuntimeOptions init) {
       yearsOfHistory = init.yearsOfHistory;
       deferExports = init.deferExports;
+      terminologyService = init.terminologyService;
       recordQueue = init.recordQueue;
       fhirVersion = init.fhirVersion;
     }
@@ -156,6 +162,11 @@ public abstract class Exporter {
    */
   private static void exportRecord(Person person, String fileTag, long stopTime,
           ExporterRuntimeOptions options) {
+    if (options.terminologyService) {
+      // Resolve any coded values within the record that are specified using a ValueSet URI.
+      ValueSetCodeResolver valueSetCodeResolver = new ValueSetCodeResolver(person);
+      valueSetCodeResolver.resolve();
+    }
 
     if (Boolean.parseBoolean(Config.get("exporter.fhir_stu3.export"))) {
       File outDirectory = getOutputFolder("fhir_stu3", person);
@@ -239,6 +250,20 @@ public abstract class Exporter {
     if (Boolean.parseBoolean(Config.get("exporter.text.per_encounter_export"))) {
       try {
         TextExporter.exportEncounter(person, stopTime);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    if (Boolean.parseBoolean(Config.get("exporter.symptoms.csv.export"))) {
+      try {
+        SymptomCSVExporter.getInstance().export(person, stopTime);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    if (Boolean.parseBoolean(Config.get("exporter.symptoms.text.export"))) {
+      try {
+        SymptomTextExporter.exportAll(person, fileTag, stopTime);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -584,7 +609,6 @@ public abstract class Exporter {
    * @param person The dead person.
    */
   private static void filterAfterDeath(Person person) {
-    Predicate<Report> isDeathCertificate = r -> DeathModule.DEATH_CERTIFICATE.code.equals(r.type);
     long deathTime = (long) person.attributes.get(Person.DEATHDATE);
     if (person.hasMultipleRecords) {
       for (HealthRecord record : person.records.values()) {

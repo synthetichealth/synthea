@@ -25,6 +25,10 @@ import org.mitre.synthea.world.concepts.VitalSign;
 public class PersonTest {
   private Person person;
 
+  /**
+   * Create a person for use in each test.
+   * @throws IOException if something goes wrong.
+   */
   @Before
   public void setup() throws IOException {
     TestHelper.exportOff();
@@ -53,7 +57,8 @@ public class PersonTest {
     // Deserialize
     FileInputStream fis = new FileInputStream(tf);
     ObjectInputStream ois = new ObjectInputStream(fis);
-    Person rehydrated = (Person)ois.readObject();
+    Person rehydrated = (Person) ois.readObject();
+    ois.close();
     
     return rehydrated;
   }
@@ -77,8 +82,11 @@ public class PersonTest {
     assertEquals(original.random.nextInt(), rehydrated.random.nextInt());
     assertEquals(original.seed, rehydrated.seed);
     assertEquals(original.populationSeed, rehydrated.populationSeed);
-    assertEquals(original.symptoms, rehydrated.symptoms);
-    assertEquals(original.symptomStatuses, rehydrated.symptomStatuses);
+    assertEquals(original.symptoms.keySet(), rehydrated.symptoms.keySet());
+    assertEquals(
+        original.getOnsetConditionRecord().getSources().keySet(),
+        rehydrated.getOnsetConditionRecord().getSources().keySet()
+    );
     assertEquals(original.hasMultipleRecords, rehydrated.hasMultipleRecords);
     assertEquals(original.attributes.keySet(), rehydrated.attributes.keySet());
     assertEquals(original.vitalSigns.keySet(), rehydrated.vitalSigns.keySet());

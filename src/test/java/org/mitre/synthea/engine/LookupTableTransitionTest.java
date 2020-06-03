@@ -49,7 +49,8 @@ public class LookupTableTransitionTest {
     Module lookuptabletestModule = TestHelper.getFixture("lookuptable_test.json");
     modules.put("lookuptable_test", new Module.ModuleSupplier(lookuptabletestModule));
     Module lookuptabletesttimerangeModule = TestHelper.getFixture("lookuptable_timerangetest.json");
-    modules.put("lookuptable_timerangetest", new Module.ModuleSupplier(lookuptabletesttimerangeModule));
+    modules.put("lookuptable_timerangetest", new Module.ModuleSupplier(
+            lookuptabletesttimerangeModule));
 
     /* Create Mild Lookuptablitis Condition */
     mildLookuptablitis = new ActiveCondition();
@@ -512,7 +513,6 @@ public class LookupTableTransitionTest {
 
   @Test
   public void firstTimeRangeMaleMA() {
-    long birthTime = 0L;
     // Under Fifty
     long conditionTime = 500L;
 
@@ -534,7 +534,6 @@ public class LookupTableTransitionTest {
 
   @Test
   public void firstTimeRangeFemaleMA() {
-    long birthTime = 0L;
     // Under Fifty
     long conditionTime = 500L;
 
@@ -556,7 +555,6 @@ public class LookupTableTransitionTest {
 
   @Test
   public void firstTimeRangeMaleOutOfState() {
-    long birthTime = 0L;
     // Under Fifty
     long conditionTime = 500L;
 
@@ -578,7 +576,6 @@ public class LookupTableTransitionTest {
 
   @Test
   public void secondTimeRangeMaleMA() {
-    long birthTime = 0L;
     // Under Fifty
     long conditionTime = 1500L;
 
@@ -600,7 +597,6 @@ public class LookupTableTransitionTest {
 
   @Test
   public void secondTimeRangeFemaleMA() {
-    long birthTime = 0L;
     // Under Fifty
     long conditionTime = 1500L;
 

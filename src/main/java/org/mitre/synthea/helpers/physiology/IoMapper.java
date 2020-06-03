@@ -2,21 +2,21 @@ package org.mitre.synthea.helpers.physiology;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.cqframework.cql.cql2elm.CqlSemanticException;
 import org.mitre.synthea.helpers.ExpressionProcessor;
+import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.simulator.math.odes.MultiTable;
 import org.simulator.math.odes.MultiTable.Block.Column;
 
 /** Class for handling simulation inputs and outputs. **/
-public class IoMapper {
+public class IoMapper implements Serializable {
   private IoType type;
   private String from;
   private String to;
@@ -27,10 +27,23 @@ public class IoMapper {
   
   // ExpressionProcessor instances are not thread safe, so we need
   // to have a separate processor for each thread
-  private ThreadLocal<ExpressionProcessor> threadExpProcessor
-      = new ThreadLocal<ExpressionProcessor>();
+  private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
   private PreGenerator preGenerator;
   
+  private ExpressionProcessor getThreadExpProcessor() {
+    if (threadExpProcessor == null) {
+      threadExpProcessor = new ThreadLocal<ExpressionProcessor>();
+    }
+    return threadExpProcessor.get();
+  }
+  
+  private void setThreadExpProcessor(ExpressionProcessor exp) {
+    if (threadExpProcessor == null) {
+      threadExpProcessor = new ThreadLocal<ExpressionProcessor>();
+    }
+    threadExpProcessor.set(exp);
+  }
+
   public IoMapper() {}
   
   /**
@@ -43,7 +56,7 @@ public class IoMapper {
     fromList = other.fromList;
     to = other.to;
     fromExp = other.fromExp;
-    threadExpProcessor = other.threadExpProcessor;
+    setThreadExpProcessor(other.getThreadExpProcessor());
   }
   
   public enum IoType {
@@ -133,8 +146,8 @@ public class IoMapper {
    */
   public void initialize(Map<String, String> paramTypes) {
     try {
-      if (threadExpProcessor.get() == null && fromExp != null && !"".equals(fromExp)) {
-        threadExpProcessor.set(new ExpressionProcessor(fromExp, paramTypes));
+      if (getThreadExpProcessor() == null && fromExp != null && !"".equals(fromExp)) {
+        setThreadExpProcessor(new ExpressionProcessor(fromExp, paramTypes));
       }
     } catch (CqlSemanticException e) {
       throw new RuntimeException(e);
@@ -151,7 +164,7 @@ public class IoMapper {
   public double toModelInputs(Person person, long time, Map<String,Double> modelInputs) {
     double resultValue;
     
-    ExpressionProcessor expProcessor = threadExpProcessor.get();
+    ExpressionProcessor expProcessor = getThreadExpProcessor();
     
     // Evaluate the expression if one is provided
     if (expProcessor != null) {
@@ -159,8 +172,8 @@ public class IoMapper {
       
       // Add all patient parameters to the expression parameter map
       for (String param : expProcessor.getParamNames()) {
-        expParams.put(param, new BigDecimal(ExpressionProcessor
-            .getPersonValue(param, person, time, expProcessor.getExpression())));
+        expParams.put(param, ExpressionProcessor
+            .getPersonValue(param, person, time, expProcessor.getExpression()));
       }
       
       // All physiology inputs should evaluate to numeric parameters
@@ -170,7 +183,12 @@ public class IoMapper {
       throw new IllegalArgumentException(
           "Cannot map lists from person attributes / vital signs to model parameters");
     } else {
-      resultValue = ExpressionProcessor.getPersonValue(from, person, time, null);
+      Object personValue = ExpressionProcessor.getPersonValue(from, person, time, null);
+      if (personValue instanceof Number) {
+        resultValue = ((Number) personValue).doubleValue();
+      } else {
+        throw new IllegalArgumentException("Non-numeric attribute: \"" + from + "\"");
+      }
     }
     
     modelInputs.put(to, resultValue);
@@ -184,7 +202,7 @@ public class IoMapper {
    * @return double value or List of Double values
    */
   public Object getOutputResult(MultiTable results, double leadTime) {
-    ExpressionProcessor expProcessor = threadExpProcessor.get();
+    ExpressionProcessor expProcessor = getThreadExpProcessor();
     
     if (expProcessor != null) {
       // Evaluate the expression and return the result
@@ -198,12 +216,14 @@ public class IoMapper {
             + "\" cannot be mapped to patient value \"" + to + "\"");
       }
       
-      // Make it an ArrayList for more natural usage throughout the rest of the application
-      List<Double> valueList = new ArrayList<Double>();
-      col.iterator().forEachRemaining(valueList::add);
+      // Make it a TimeSeriesData object, which is just an ArrayList with sample
+      // frequency information
+      TimeSeriesData seriesData = new TimeSeriesData(results.getRowCount(),
+          results.getTimePoint(1) - results.getTimePoint(0));
+      col.iterator().forEachRemaining(seriesData::addValue);
       
-      // Return the list
-      return valueList;
+      // Return the sampled values
+      return seriesData;
     } else {
       // Result is the last value of the requested parameter
       int lastRow = results.getRowCount() - 1;

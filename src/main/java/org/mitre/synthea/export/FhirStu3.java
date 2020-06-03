@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.hl7.fhir.dstu3.model.Address;
 import org.hl7.fhir.dstu3.model.AllergyIntolerance;
@@ -73,6 +75,7 @@ import org.hl7.fhir.dstu3.model.ImagingStudy.InstanceAvailability;
 import org.hl7.fhir.dstu3.model.Immunization;
 import org.hl7.fhir.dstu3.model.Immunization.ImmunizationStatus;
 import org.hl7.fhir.dstu3.model.IntegerType;
+import org.hl7.fhir.dstu3.model.Media.DigitalMediaType;
 import org.hl7.fhir.dstu3.model.MedicationAdministration;
 import org.hl7.fhir.dstu3.model.MedicationAdministration.MedicationAdministrationDosageComponent;
 import org.hl7.fhir.dstu3.model.MedicationAdministration.MedicationAdministrationStatus;
@@ -108,6 +111,8 @@ import org.hl7.fhir.dstu3.model.Timing.UnitsOfTime;
 import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
+import org.mitre.synthea.engine.Components;
+import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -242,7 +247,13 @@ public class FhirStu3 {
       }
 
       for (Observation observation : encounter.observations) {
-        observation(personEntry, bundle, encounterEntry, observation);
+        // If the Observation contains an attachment, use a Media resource, since
+        // Observation resources in stu3 don't support Attachments
+        if (observation.value instanceof Attachment) {
+          media(personEntry, bundle, encounterEntry, observation);
+        } else {
+          observation(personEntry, bundle, encounterEntry, observation);
+        }
       }
 
       for (Procedure procedure : encounter.procedures) {
@@ -1671,10 +1682,54 @@ public class FhirStu3 {
       return new Quantity().setValue(bigVal)
           .setCode(unit).setSystem(UNITSOFMEASURE_URI)
           .setUnit(unit);
+    } else if (value instanceof Components.SampledData) {
+      return mapValueToSampledData((Components.SampledData) value, unit);
     } else {
       throw new IllegalArgumentException("unexpected observation value class: "
           + value.getClass().toString() + "; " + value);
     }
+  }
+  
+  /**
+   * Maps a Synthea internal SampledData object to the FHIR standard SampledData
+   * representation.
+   * 
+   * @param value Synthea internal SampledData instance
+   * @param unit Observation unit value
+   * @return
+   */
+  static org.hl7.fhir.dstu3.model.SampledData mapValueToSampledData(
+      Components.SampledData value, String unit) {
+    
+    org.hl7.fhir.dstu3.model.SampledData recordData = new org.hl7.fhir.dstu3.model.SampledData();
+    
+    SimpleQuantity origin = new SimpleQuantity();
+    origin.setValue(new BigDecimal(value.originValue))
+      .setCode(unit).setSystem(UNITSOFMEASURE_URI)
+      .setUnit(unit);
+    
+    recordData.setOrigin(origin);
+    
+    // Use the period from the first series. They should all be the same.
+    // FHIR output is milliseconds so we need to convert from TimeSeriesData seconds.
+    recordData.setPeriod(value.series.get(0).getPeriod() * 1000);
+    
+    // Set optional fields if they were provided
+    if (value.factor != null) {
+      recordData.setFactor(value.factor);
+    }
+    if (value.lowerLimit != null) {
+      recordData.setLowerLimit(value.lowerLimit);
+    }
+    if (value.upperLimit != null) {
+      recordData.setUpperLimit(value.upperLimit);
+    }
+    
+    recordData.setDimensions(value.series.size());
+    
+    recordData.setData(ExportHelper.sampledDataToValueString(value));
+    
+    return recordData;
   }
 
   /**
@@ -2155,6 +2210,53 @@ public class FhirStu3 {
     imagingStudyResource.setNumberOfInstances(totalNumberOfInstances);
     return newEntry(bundle, imagingStudyResource);
   }
+  
+  /**
+   * Map the given Media element to a FHIR Media resource, and add it to the given Bundle.
+   *
+   * @param personEntry    The Entry for the Person
+   * @param bundle         Bundle to add the Media to
+   * @param encounterEntry Current Encounter entry
+   * @param obs   The Observation to map to FHIR and add to the bundle
+   * @return The added Entry
+   */
+  private static BundleEntryComponent media(BundleEntryComponent personEntry, Bundle bundle,
+      BundleEntryComponent encounterEntry, Observation obs) {
+    org.hl7.fhir.dstu3.model.Media mediaResource =
+        new org.hl7.fhir.dstu3.model.Media();
+
+    if (obs.codes != null && obs.codes.size() > 0) {
+      List<CodeableConcept> reasonList = obs.codes.stream()
+          .map(code -> mapCodeToCodeableConcept(code, SNOMED_URI)).collect(Collectors.toList());
+      mediaResource.setReasonCode(reasonList);
+    }
+    
+    // Hard code as an image
+    mediaResource.setType(DigitalMediaType.PHOTO);
+    mediaResource.setSubject(new Reference(personEntry.getFullUrl()));
+
+    Attachment content = (Attachment) obs.value;
+    org.hl7.fhir.dstu3.model.Attachment contentResource = new org.hl7.fhir.dstu3.model.Attachment();
+    
+    contentResource.setContentType(content.contentType);
+    contentResource.setLanguage(content.language);
+    if (content.data != null) {
+      contentResource.setDataElement(new org.hl7.fhir.dstu3.model.Base64BinaryType(content.data));
+    }
+    contentResource.setUrl(content.url);
+    contentResource.setSize(content.size);
+    contentResource.setTitle(content.title);
+    if (content.hash != null) {
+      contentResource.setHashElement(new org.hl7.fhir.dstu3.model.Base64BinaryType(content.hash));
+    }
+    
+    mediaResource.setWidth(content.width);
+    mediaResource.setHeight(content.height);
+    
+    mediaResource.setContent(contentResource);
+
+    return newEntry(bundle, mediaResource);
+  }
 
   /**
    * Map the HealthRecord.Device into a FHIR Device and add it to the Bundle.
@@ -2195,8 +2297,8 @@ public class FhirStu3 {
    * @param encounter      The encounter during which the supplies were delivered
    * @return The added Entry.
    */
-  private static BundleEntryComponent supplyDelivery(BundleEntryComponent personEntry, Bundle bundle,
-      HealthRecord.Supply supply, Encounter encounter) {
+  private static BundleEntryComponent supplyDelivery(BundleEntryComponent personEntry, 
+          Bundle bundle, HealthRecord.Supply supply, Encounter encounter) {
    
     SupplyDelivery supplyResource = new SupplyDelivery();
     supplyResource.setStatus(SupplyDeliveryStatus.COMPLETED);
@@ -2210,7 +2312,7 @@ public class FhirStu3 {
     supplyResource.setType(type);
     
     SupplyDeliverySuppliedItemComponent suppliedItem = new SupplyDeliverySuppliedItemComponent();
-    suppliedItem.setItem( mapCodeToCodeableConcept(supply.codes.get(0), SNOMED_URI));
+    suppliedItem.setItem(mapCodeToCodeableConcept(supply.codes.get(0), SNOMED_URI));
     
     SimpleQuantity quantity = new SimpleQuantity();
     quantity.setValue(supply.quantity);
@@ -2458,6 +2560,8 @@ public class FhirStu3 {
    */
   private static CodeableConcept mapCodeToCodeableConcept(Code from, String system) {
     CodeableConcept to = new CodeableConcept();
+    system = system == null ? null : ExportHelper.getSystemURI(system);
+    from.system = ExportHelper.getSystemURI(from.system);
 
     if (from.display != null) {
       to.setText(from.display);
@@ -2466,10 +2570,10 @@ public class FhirStu3 {
     Coding coding = new Coding();
     coding.setCode(from.code);
     coding.setDisplay(from.display);
-    if (system == null) {
-      coding.setSystem(from.system);
-    } else {
+    if (from.system == null) {
       coding.setSystem(system);
+    } else {
+      coding.setSystem(from.system);
     }
 
     to.addCoding(coding);

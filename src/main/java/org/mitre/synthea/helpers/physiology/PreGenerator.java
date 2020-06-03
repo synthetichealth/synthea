@@ -1,5 +1,6 @@
 package org.mitre.synthea.helpers.physiology;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.world.agents.Person;
 
 /** Class for handling pre-simulation outputs. **/
-public class PreGenerator {
+public class PreGenerator implements Serializable {
   private String className;
   private List<PreGeneratorArg> args;
   

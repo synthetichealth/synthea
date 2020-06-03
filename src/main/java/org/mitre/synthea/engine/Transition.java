@@ -1,7 +1,6 @@
 package org.mitre.synthea.engine;
 
 import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -188,7 +187,7 @@ public abstract class Transition implements Serializable {
       // Retrieve CSV column headers.
       List<String> columnHeaders = new ArrayList<String>(lookupTable.get(0).keySet());
       // Parse the list of attributes.
-      this.attributes = new ArrayList(columnHeaders.subList(0,
+      this.attributes = new ArrayList<String>(columnHeaders.subList(0,
           columnHeaders.size() - this.transitions.size()));
       // Parse the list of states to transition to.
       List<String> transitionStates = columnHeaders.subList((columnHeaders.size()

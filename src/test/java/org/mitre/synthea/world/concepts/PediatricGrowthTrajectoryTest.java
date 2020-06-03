@@ -81,7 +81,6 @@ public class PediatricGrowthTrajectoryTest {
     long timeInSim = TestHelper.timestamp(2020, 1, 1, 0, 0, 0);
     double ninetySeventh = 0.97;
     int threeYearsInMonths = 36;
-    double age = 3;
     String sex = "M";
     PediatricGrowthTrajectory pgt = new PediatricGrowthTrajectory(0L, birthDay);
     pgt.addPointFromPercentile(threeYearsInMonths, timeInSim, ninetySeventh, sex);

@@ -1,11 +1,11 @@
 <#macro oid_for_code_system system>
-<#if system == "LOINC">
+<#if system == "LOINC" || system == "http://loinc.org">
 2.16.840.1.113883.6.1<#t>
-<#elseif system == "SNOMED-CT">
+<#elseif system == "SNOMED-CT" || system == "http://snomed.info/sct">
 2.16.840.1.113883.6.96<#t>
 <#elseif system == "CPT">
 2.16.840.1.113883.6.12<#t>
-<#elseif system == "RxNorm">
+<#elseif system == "RxNorm" || system == "http://www.nlm.nih.gov/research/umls/rxnorm">
 2.16.840.1.113883.6.88<#t>
 <#elseif system == "ICD-9-CM">
 2.16.840.1.113883.6.103<#t>

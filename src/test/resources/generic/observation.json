@@ -11,6 +11,57 @@
             "vital_sign" : "Systolic Blood Pressure",
             "exact" : { "quantity" : 120 },
             "unit" : "mm[Hg]",
+            "direct_transition" : "Simulate_CVS"
+        },
+        
+        "Simulate_CVS": {
+  			"type": "Physiology",
+		  	"model": "circulation/Smith2004_CVS_human.xml",
+		  	"solver": "runge_kutta",
+		  	"step_size": 0.01,
+		  	"sim_duration": 4.0,
+		  	"lead_time": 2.0,
+		  	"inputs": [],
+		  	"outputs": [
+		    	{
+		      		"from_list": "P_ao",
+		      		"to": "P_ao",
+		      		"type": "Attribute"
+		    	},
+		    	{
+		      		"from_list": "P_lv",
+		      		"to": "P_lv",
+		      		"type": "Attribute"
+		    	},
+		    	{
+		      		"from_list": "P_rv",
+		      		"to": "P_rv",
+		      		"type": "Attribute"
+		    	}
+		  	],
+		  	"direct_transition": "SomeEncounter",
+		  	"alt_direct_transition": "ContrivedPAO"
+	    },
+	    
+	    "ContrivedPAO" : {
+            "type" : "SetAttribute",
+            "attribute": "P_ao",
+            "seriesData": "128 116 103 91 78 126 113 101",
+            "period": 0.25,
+            "direct_transition" : "ContrivedPLV"
+        },
+        "ContrivedPLV" : {
+            "type" : "SetAttribute",
+            "attribute": "P_lv",
+            "seriesData": "130 30 2 4 26 129 21 1",
+            "period": 0.25,
+            "direct_transition" : "ContrivedPRV"
+        },
+        "ContrivedPRV" : {
+            "type" : "SetAttribute",
+            "attribute": "P_rv",
+            "seriesData": "25 5 -1 2 3 27 5 -2",
+            "period": 0.25,
             "direct_transition" : "SomeEncounter"
         },
 
@@ -57,6 +108,71 @@
                 "display": "Glucose [Presence] in Urine by Test strip"
             },
             "direct_transition" : "Terminal"
+        },
+        
+        "SampledDataObservation" : {
+            "type" : "Observation",
+            "category" : "procedure",
+            "unit": "mmHg",
+            "codes" : [
+                {
+		          "system": "SNOMED-CT",
+		          "code": 29303009,
+		          "display": "Electrocardiographic procedure"
+		        }
+            ],
+            "sampled_data": {
+            	"factor": 1.0,
+            	"lower_limit": -100.0,
+            	"upper_limit": 200.0,
+		      	"attributes": [
+		      		"P_ao",
+		      		"P_lv",
+		      		"P_rv"
+		      	]
+		    },
+            "direct_transition" : "Chart"
+        },
+        "ChartObservation": {
+          "type": "Observation",
+          "codes": [{
+          	"system": "SNOMED-CT",
+          	"code": "386532001",
+          	"display": "Invasive arterial pressure"
+          }],
+          "attachment": {
+            "chart": {
+            	"type": "line",
+            	"title": "Media Test",
+            	"axis_attribute_x": "time",
+            	"width": 400,
+            	"height": 200,
+            	"series": [
+            		{"attribute": "P_ao"}
+            	]
+            }
+          },
+          "direct_transition": "UrlObservation"
+        },
+        "UrlObservation": {
+          "type": "Observation",
+          "codes": [{
+          	"system": "SNOMED-CT",
+          	"code": "164847006",
+          	"display": "Standard electrocardiogram"
+          }],
+          "attachment": {
+            "url": "https://example.com/image/12498596132",
+            "size": 242323456,
+            "hash": "66bb1cb31c9b502daa7081ae36631f9df9c6d16a",
+            "language": "en-US",
+            "content_type": "image/png",
+            "title": "Test Image URL",
+            "creation": "2020-01-09",
+            "width": 800,
+            "height": 600
+          },
+          "direct_transition": "Terminal"
         },
 
         "Terminal": {

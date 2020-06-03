@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.simulator.math.odes.MultiTable;
@@ -61,8 +62,7 @@ public class IoMapperTest {
     try {
       testMapper.toModelInputs(person, 0, modelInputs);
     } catch (IllegalArgumentException e) {
-      assertEquals("Unable to map person attribute \"test attribute\":"
-          + " Attribute value is not a number.", e.getMessage());
+      assertEquals("Non-numeric attribute: \"test attribute\"", e.getMessage());
     }
     
     // Now use an expression with attributes and VitalSigns instead of a direct mapping
@@ -83,14 +83,14 @@ public class IoMapperTest {
           + "+ #{attr2}\": Invalid person attribute or vital sign.", e.getMessage());
     }
     
-    // Again, if it's a non numeric value, it should also throw an exception
-    person.attributes.put("attr2", "not a number again");
+    // Again, if it's an unsupported value, it should also throw an exception
+    person.attributes.put("attr2", (byte) 0);
     try {
       testMapper.toModelInputs(person, 0, modelInputs);
     } catch (IllegalArgumentException e) {
       assertEquals("Unable to map person attribute \"attr2\" in expression "
           + "\"#{test attribute} * #{BMI} + #{attr2}\": "
-          + "Attribute value is not a number.", e.getMessage());
+          + "Unsupported type: byte.", e.getMessage());
     }
     
     // now set 'attr2' and try again
@@ -152,12 +152,18 @@ public class IoMapperTest {
     
     // Mapper should provide a list of all values
     List<Double> expectedValues = Arrays.asList(0.0, 1.0, 2.0, 3.0);
-    assertEquals(expectedValues, testMapper.getOutputResult(mockResults, 0));
+    TimeSeriesData seriesData =
+        (TimeSeriesData) testMapper.getOutputResult(mockResults, 0);
+    assertEquals(expectedValues, seriesData.getValues());
+    assertEquals(1.0, seriesData.getPeriod(), 0.00001);
     
     // Test an expression
     testMapper.setFromList(null);
     testMapper.setFromExp("Sum(#{model_output})");
-    testMapper.initialize();
+    
+    Map<String, String> paramTypes = new HashMap<String, String>();
+    paramTypes.put("model_output", "List<Decimal>");
+    testMapper.initialize(paramTypes);
     
     // Should result in the sum of all values for 'model_output'
     assertEquals(6.0, (double) testMapper.getOutputResult(mockResults, 0), 0.0001);
