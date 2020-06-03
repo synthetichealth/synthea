@@ -1,0 +1,68 @@
+{
+  "name": "diagnose_bacterial_infection",
+  "remarks": [
+    "Zhou shows that only 15% (survivors + non-survivors) of patients had a secondary bacterial infection (positive culture). Given a daily probability of 2.5%, this should result around 13% for survivors and 18% for non-survivors, based on length of stay."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Check for Bacterial Infection",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_bacterial_infection",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Check for Bacterial Infection": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.025,
+          "transition": "Take Culture"
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.9750000000000001
+        }
+      ]
+    },
+    "Bacterial Infection": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "covid19_bacterial_infection",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 87628006,
+          "display": "Bacterial infectious disease (disorder)"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Take Culture": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 61594008,
+          "display": "Microbial culture (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "Bacterial Infection"
+    }
+  }
+}

@@ -522,6 +522,7 @@ public abstract class State implements Cloneable, Serializable {
   public static class SetAttribute extends State {
     private String attribute;
     private Object value;
+    private Range<Double> range;
     private String expression;
     private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
     private String seriesData;
@@ -566,6 +567,7 @@ public abstract class State implements Cloneable, Serializable {
       SetAttribute clone = (SetAttribute) super.clone();
       clone.attribute = attribute;
       clone.value = value;
+      clone.range = range;
       clone.expression = expression;
       clone.threadExpProcessor = threadExpProcessor;
       clone.seriesData = seriesData;
@@ -578,6 +580,8 @@ public abstract class State implements Cloneable, Serializable {
       ThreadLocal<ExpressionProcessor> expProcessor = getExpProcessor();
       if (expProcessor.get() != null) {
         value = expProcessor.get().evaluate(person, time);
+      } else if (range != null) {
+        value = person.rand(range.low, range.high, range.decimals);
       } else if (seriesData != null) {
         String[] items = seriesData.split(" ");
         TimeSeriesData data = new TimeSeriesData(items.length, period);
@@ -592,8 +596,8 @@ public abstract class State implements Cloneable, Serializable {
         }
         
         value = data;
-      } 
-      
+      }
+
       if (value != null) {
         person.attributes.put(attribute, value);
       } else if (person.attributes.containsKey(attribute)) {
@@ -640,7 +644,9 @@ public abstract class State implements Cloneable, Serializable {
     public boolean process(Person person, long time) {
       int counter = 0;
       if (person.attributes.containsKey(attribute)) {
-        counter = (int) person.attributes.get(attribute);
+        // this cast as int from double is to handle cases where the attribute
+        // is either a java.lang.Double or java.lang.Integer
+        counter = (int) Double.parseDouble(person.attributes.get(attribute).toString());
       }
 
       if (increment) {
@@ -1831,7 +1837,7 @@ public abstract class State implements Cloneable, Serializable {
       if (assignToAttribute != null) {
         person.attributes.put(assignToAttribute, device);
       }
-      
+
       return true;
     }
   }
@@ -1865,23 +1871,24 @@ public abstract class State implements Cloneable, Serializable {
       } else if (referencedByAttribute != null) {
         HealthRecord.Device deviceEntry = (HealthRecord.Device) person.attributes
                 .get(referencedByAttribute);
-        deviceEntry.stop = time;
-        person.record.deviceRemove(time, deviceEntry.type);
+        if (deviceEntry != null) {
+          deviceEntry.stop = time;
+          person.record.deviceRemove(time, deviceEntry.type);
+        }
       } else if (codes != null) {
         codes.forEach(code -> person.record.deviceRemove(time, code.code));
       }
       return true;
     }
   }
-  
+
   /**
    * The SupplyList state includes a list of supplies that are needed for the current encounter.
    * Supplies may include things like PPE for the physician, or other resources and machines.
    *
    */
   public static class SupplyList extends State {
-    // TODO: make a class for these, when needed beyond just exporting
-    public List<HealthRecord.Supply> supplies;
+    public List<SupplyComponent> supplies;
 
     @Override
     public SupplyList clone() {
@@ -1892,12 +1899,18 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
-      HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
-      encounter.supplies.addAll(supplies);
+      for (SupplyComponent s : supplies) {
+        person.record.useSupply(time, s.code, s.quantity);
+      }
       return true;
     }
+
+    private static class SupplyComponent implements Serializable {
+      HealthRecord.Code code;
+      int quantity;
+    }
   }
-  
+
   /**
    * The Death state type indicates a point in the module at which the patient dies or the patient
    * is given a terminal diagnosis (e.g. "you have 3 months to live"). When the Death state is

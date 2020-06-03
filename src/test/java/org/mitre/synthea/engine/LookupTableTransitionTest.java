@@ -513,7 +513,6 @@ public class LookupTableTransitionTest {
 
   @Test
   public void firstTimeRangeMaleMA() {
-    long birthTime = 0L;
     // Under Fifty
     long conditionTime = 500L;
 
@@ -535,7 +534,6 @@ public class LookupTableTransitionTest {
 
   @Test
   public void firstTimeRangeFemaleMA() {
-    long birthTime = 0L;
     // Under Fifty
     long conditionTime = 500L;
 
@@ -557,7 +555,6 @@ public class LookupTableTransitionTest {
 
   @Test
   public void firstTimeRangeMaleOutOfState() {
-    long birthTime = 0L;
     // Under Fifty
     long conditionTime = 500L;
 
@@ -579,7 +576,6 @@ public class LookupTableTransitionTest {
 
   @Test
   public void secondTimeRangeMaleMA() {
-    long birthTime = 0L;
     // Under Fifty
     long conditionTime = 1500L;
 
@@ -601,7 +597,6 @@ public class LookupTableTransitionTest {
 
   @Test
   public void secondTimeRangeFemaleMA() {
-    long birthTime = 0L;
     // Under Fifty
     long conditionTime = 1500L;
 

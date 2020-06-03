@@ -314,7 +314,8 @@ public class GeneratorTest {
     // Deserialize
     FileInputStream fis = new FileInputStream(tf);
     ObjectInputStream ois = new ObjectInputStream(fis);
-    Person[] rehydrated = (Person[])ois.readObject();
+    Person[] rehydrated = (Person[]) ois.readObject();
+    ois.close();
     
     return rehydrated;
   }

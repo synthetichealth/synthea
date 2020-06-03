@@ -21,6 +21,7 @@ import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 
 public class Location implements Serializable {
+  private static final long serialVersionUID = 1L;
   private static LinkedHashMap<String, String> stateAbbreviations = loadAbbreviations();
   private static Map<String, String> timezones = loadTimezones();
   private static Map<String, List<String>> foreignPlacesOfBirth = loadCitiesByLanguage();
@@ -57,7 +58,7 @@ public class Location implements Serializable {
       // because allDemographics will only contain that 1 city
       // we copy the Map returned by the Google Table.row since the implementing
       // class is not serializable
-      this.demographics = new HashMap(allDemographics.row(state));
+      this.demographics = new HashMap<String, Demographics>(allDemographics.row(state));
 
       if (city != null 
           && demographics.values().stream().noneMatch(d -> d.city.equalsIgnoreCase(city))) {
@@ -70,7 +71,8 @@ public class Location implements Serializable {
       populationByCityId = new LinkedHashMap<>();
       // sort the demographics to ensure tests pass regardless of implementing class
       // for this.demographics, see comment above on non-serializability of Google Table.row
-      ArrayList<Demographics> sortedDemographics = new ArrayList(this.demographics.values());
+      ArrayList<Demographics> sortedDemographics =
+          new ArrayList<Demographics>(this.demographics.values());
       Collections.sort(sortedDemographics);
       for (Demographics d : sortedDemographics) {
         long pop = d.population;

@@ -2,14 +2,11 @@ package org.mitre.synthea.export;
 
 import static org.mitre.synthea.export.ExportHelper.dateFromTimestamp;
 
-import com.google.common.base.Strings;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,17 +16,7 @@ import org.apache.commons.text.WordUtils;
 import org.mitre.synthea.engine.ExpressedConditionRecord.ConditionWithSymptoms;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
-import org.mitre.synthea.world.concepts.HealthRecord.Code;
-import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
-import org.mitre.synthea.world.concepts.HealthRecord.Entry;
-import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
-import org.mitre.synthea.world.concepts.HealthRecord.Medication;
-import org.mitre.synthea.world.concepts.HealthRecord.Observation;
-import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
-import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 /**
  * Exporter for a simple human-readable text format per person.

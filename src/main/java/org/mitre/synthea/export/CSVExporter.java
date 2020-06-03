@@ -190,7 +190,6 @@ public class CSVExporter {
       File suppliesFile = outputDirectory.resolve("supplies.csv").toFile();
       supplies = new OutputStreamWriter(new FileOutputStream(suppliesFile, append), charset);
 
-
       File organizationsFile = outputDirectory.resolve("organizations.csv").toFile();
       File providersFile = outputDirectory.resolve("providers.csv").toFile();
       organizations = new OutputStreamWriter(
@@ -968,7 +967,7 @@ public class CSVExporter {
       throws IOException {
     // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,UDI
     StringBuilder s = new StringBuilder();
-    
+
     s.append(iso8601Timestamp(device.start)).append(',');
     if (device.stop != 0L) {
       s.append(iso8601Timestamp(device.stop));
@@ -998,16 +997,17 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private void supply(String personID, String encounterID, Encounter encounter, Supply supply)
-          throws IOException {
+    throws IOException {
     // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,QUANTITY
     StringBuilder s = new StringBuilder();
 
-    s.append(dateFromTimestamp(encounter.start)).append(',');
+    s.append(dateFromTimestamp(supply.start)).append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
 
-    s.append(supply.code.code).append(',');
-    s.append(clean(supply.code.display)).append(',');
+    Code code = supply.codes.get(0);
+    s.append(code.code).append(',');
+    s.append(clean(code.display)).append(',');
 
     s.append(supply.quantity);
 

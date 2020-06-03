@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
@@ -302,7 +301,7 @@ public class HealthRecord implements Serializable {
     
     private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
       ois.defaultReadObject();
-      ArrayList<String> stringifiedGoals = (ArrayList<String>)ois.readObject();
+      ArrayList<String> stringifiedGoals = (ArrayList<String>) ois.readObject();
       Gson gson = Utilities.getGson();
       this.goals = new LinkedHashSet<JsonObject>();
       for (String stringifiedGoal: stringifiedGoals) {
@@ -441,10 +440,13 @@ public class HealthRecord implements Serializable {
       return retVal;
     }
   }
-  
-  public class Supply implements Serializable {
+
+  public class Supply extends Entry {
+    public Supply(long start, String type) {
+      super(start, type);
+    }
+
     public int quantity;
-    public Code code;
   }
 
   public enum EncounterType {
@@ -671,7 +673,6 @@ public class HealthRecord implements Serializable {
       encounter = new Encounter(time, EncounterType.WELLNESS.toString());
       encounter.name = "First Wellness";
       encounters.add(encounter);
-      System.out.println("First encounter at " + person.ageInYears(time));
     }
     return encounter;
   }
@@ -914,6 +915,22 @@ public class HealthRecord implements Serializable {
       device.stop = time;
       present.remove(device.type);
     }
+  }
+
+  /**
+   * Track the use of a supply in the provision of care for this patient.
+   * @param time Time the supply was used
+   * @param code SNOMED Code to identify the supply
+   * @param quantity Number of this supply used
+   * @return the new Supply entry
+   */
+  public Supply useSupply(long time, Code code, int quantity) {
+    Encounter encounter = currentEncounter(time);
+    Supply supply = new Supply(time, code.display);
+    supply.codes.add(code);
+    supply.quantity = quantity;
+    encounter.supplies.add(supply);
+    return supply;
   }
 
   /**

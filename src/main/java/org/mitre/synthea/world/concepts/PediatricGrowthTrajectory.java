@@ -106,7 +106,7 @@ public class PediatricGrowthTrajectory implements Serializable {
     // TODO: Make the selection sex specific
     nhanesSamples.reseedRandomGenerator(personSeed);
     this.initialSample = nhanesSamples.sample();
-    this.trajectory = new LinkedList();
+    this.trajectory = new LinkedList<Point>();
     Point p = new Point();
     p.ageInMonths = this.initialSample.agem;
     p.bmi = this.initialSample.bmi;

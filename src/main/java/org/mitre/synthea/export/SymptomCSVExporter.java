@@ -1,47 +1,20 @@
 package org.mitre.synthea.export;
 
-import static org.mitre.synthea.export.ExportHelper.dateFromTimestamp;
-import static org.mitre.synthea.export.ExportHelper.iso8601Timestamp;
-
-import com.google.common.collect.Table;
-import com.google.gson.JsonObject;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.engine.ExpressedConditionRecord.ConditionWithSymptoms;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.modules.QualityOfLifeModule;
-import org.mitre.synthea.world.agents.Clinician;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.Provider;
-import org.mitre.synthea.world.concepts.HealthRecord;
-import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
-import org.mitre.synthea.world.concepts.HealthRecord.Code;
-import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
-import org.mitre.synthea.world.concepts.HealthRecord.Entry;
-import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
-import org.mitre.synthea.world.concepts.HealthRecord.Medication;
-import org.mitre.synthea.world.concepts.HealthRecord.Observation;
-import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 
 /**
  * Researchers have requested a simple table-based format that could easily be

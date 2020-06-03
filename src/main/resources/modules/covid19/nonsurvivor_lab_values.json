@@ -1,0 +1,513 @@
+{
+  "name": "nonsurvivor_lab_values",
+  "remarks": [
+    "Based on Figure 2 from https://doi.org/10.1016/S0140-6736(20)30566-3"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Set Creatine Kinase"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Day": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "DDimer_4",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_admission_days",
+            "operator": "<",
+            "value": 7
+          }
+        },
+        {
+          "transition": "DDimer_7",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_admission_days",
+            "operator": "<",
+            "value": 10
+          }
+        },
+        {
+          "transition": "DDimer_10",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_admission_days",
+            "operator": "<",
+            "value": 13
+          }
+        },
+        {
+          "transition": "DDimer_13",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_admission_days",
+            "operator": "<",
+            "value": 16
+          }
+        },
+        {
+          "transition": "DDimer_16",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_admission_days",
+            "operator": "<",
+            "value": 19
+          }
+        },
+        {
+          "transition": "DDimer_19",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_admission_days",
+            "operator": "==",
+            "value": 22
+          }
+        },
+        {
+          "transition": "DDimer_22"
+        }
+      ]
+    },
+    "DDimer_4": {
+      "type": "SetAttribute",
+      "attribute": "covid19_ddimer",
+      "range": {
+        "low": 1,
+        "high": 2
+      },
+      "direct_transition": "Lymphocytes_4"
+    },
+    "DDimer_7": {
+      "type": "SetAttribute",
+      "attribute": "covid19_ddimer",
+      "range": {
+        "low": 2,
+        "high": 3
+      },
+      "direct_transition": "Lymphocytes_7"
+    },
+    "DDimer_10": {
+      "type": "SetAttribute",
+      "attribute": "covid19_ddimer",
+      "range": {
+        "low": 12,
+        "high": 16
+      },
+      "direct_transition": "Lymphocytes_10"
+    },
+    "DDimer_13": {
+      "type": "SetAttribute",
+      "attribute": "covid19_ddimer",
+      "range": {
+        "low": 14,
+        "high": 19
+      },
+      "direct_transition": "Lymphocytes_13"
+    },
+    "DDimer_16": {
+      "type": "SetAttribute",
+      "attribute": "covid19_ddimer",
+      "range": {
+        "low": 20,
+        "high": 26
+      },
+      "direct_transition": "Lymphocytes_16"
+    },
+    "DDimer_19": {
+      "type": "SetAttribute",
+      "attribute": "covid19_ddimer",
+      "range": {
+        "low": 33,
+        "high": 38
+      },
+      "direct_transition": "Lymphocytes_19"
+    },
+    "DDimer_22": {
+      "type": "SetAttribute",
+      "attribute": "covid19_ddimer",
+      "range": {
+        "low": 39,
+        "high": 45
+      },
+      "direct_transition": "Lymphocytes_22"
+    },
+    "Lymphocytes_4": {
+      "type": "SetAttribute",
+      "attribute": "covid19_lymphocytes",
+      "direct_transition": "Interleukin6_4",
+      "range": {
+        "low": 0.4,
+        "high": 0.8
+      }
+    },
+    "Lymphocytes_19": {
+      "type": "SetAttribute",
+      "attribute": "covid19_lymphocytes",
+      "range": {
+        "low": 0.3,
+        "high": 0.6
+      },
+      "direct_transition": "Interleukin6_19"
+    },
+    "Lymphocytes_16": {
+      "type": "SetAttribute",
+      "attribute": "covid19_lymphocytes",
+      "range": {
+        "low": 0.3,
+        "high": 0.6
+      },
+      "direct_transition": "Interleukin6_16"
+    },
+    "Lymphocytes_13": {
+      "type": "SetAttribute",
+      "attribute": "covid19_lymphocytes",
+      "range": {
+        "low": 0.4,
+        "high": 0.6
+      },
+      "direct_transition": "Interleukin6_13"
+    },
+    "Lymphocytes_10": {
+      "type": "SetAttribute",
+      "attribute": "covid19_lymphocytes",
+      "range": {
+        "low": 0.4,
+        "high": 0.7
+      },
+      "direct_transition": "Interleukin6_10"
+    },
+    "Lymphocytes_7": {
+      "type": "SetAttribute",
+      "attribute": "covid19_lymphocytes",
+      "range": {
+        "low": 0.5,
+        "high": 0.8
+      },
+      "direct_transition": "Interleukin6_7"
+    },
+    "Interleukin6_4": {
+      "type": "SetAttribute",
+      "attribute": "covid19_interleukin6",
+      "direct_transition": "Ferritin_4",
+      "range": {
+        "low": 7.5,
+        "high": 11.5
+      }
+    },
+    "Lymphocytes_22": {
+      "type": "SetAttribute",
+      "attribute": "covid19_lymphocytes",
+      "range": {
+        "low": 0.3,
+        "high": 0.5
+      },
+      "direct_transition": "Interleukin6_22"
+    },
+    "Interleukin6_22": {
+      "type": "SetAttribute",
+      "attribute": "covid19_interleukin6",
+      "range": {
+        "low": 26,
+        "high": 30
+      },
+      "direct_transition": "Ferritin_22"
+    },
+    "Interleukin6_19": {
+      "type": "SetAttribute",
+      "attribute": "covid19_interleukin6",
+      "range": {
+        "low": 24,
+        "high": 28
+      },
+      "direct_transition": "Ferritin_19"
+    },
+    "Interleukin6_16": {
+      "type": "SetAttribute",
+      "attribute": "covid19_interleukin6",
+      "range": {
+        "low": 15,
+        "high": 19
+      },
+      "direct_transition": "Ferritin_16"
+    },
+    "Interleukin6_13": {
+      "type": "SetAttribute",
+      "attribute": "covid19_interleukin6",
+      "range": {
+        "low": 9,
+        "high": 13
+      },
+      "direct_transition": "Ferritin_13"
+    },
+    "Interleukin6_10": {
+      "type": "SetAttribute",
+      "attribute": "covid19_interleukin6",
+      "range": {
+        "low": 8,
+        "high": 12
+      },
+      "direct_transition": "Ferritin_10"
+    },
+    "Interleukin6_7": {
+      "type": "SetAttribute",
+      "attribute": "covid19_interleukin6",
+      "range": {
+        "low": 10,
+        "high": 14
+      },
+      "direct_transition": "Ferritin_7"
+    },
+    "Ferritin_4": {
+      "type": "SetAttribute",
+      "attribute": "covid19_ferritin",
+      "direct_transition": "Cardiac_Troponin_4",
+      "range": {
+        "low": 800,
+        "high": 1200
+      }
+    },
+    "Ferritin_22": {
+      "type": "SetAttribute",
+      "attribute": "covid19_ferritin",
+      "value": 2000,
+      "direct_transition": "Cardiac_Troponin_22"
+    },
+    "Ferritin_19": {
+      "type": "SetAttribute",
+      "attribute": "covid19_ferritin",
+      "value": 2000,
+      "direct_transition": "Cardiac_Troponin_19"
+    },
+    "Ferritin_16": {
+      "type": "SetAttribute",
+      "attribute": "covid19_ferritin",
+      "range": {
+        "low": 1800,
+        "high": 2000
+      },
+      "direct_transition": "Cardiac_Troponin_16"
+    },
+    "Ferritin_13": {
+      "type": "SetAttribute",
+      "attribute": "covid19_ferritin",
+      "range": {
+        "low": 1500,
+        "high": 1900
+      },
+      "direct_transition": "Cardiac_Troponin_13"
+    },
+    "Ferritin_10": {
+      "type": "SetAttribute",
+      "attribute": "covid19_ferritin",
+      "range": {
+        "low": 1400,
+        "high": 1800
+      },
+      "direct_transition": "Cardiac_Troponin_10"
+    },
+    "Ferritin_7": {
+      "type": "SetAttribute",
+      "attribute": "covid19_ferritin",
+      "range": {
+        "low": 1400,
+        "high": 1800
+      },
+      "direct_transition": "Cardiac_Troponin_7"
+    },
+    "Cardiac_Troponin_4": {
+      "type": "SetAttribute",
+      "attribute": "covid19_cardiac_troponin",
+      "direct_transition": "Lactate_Dehydrogenase_4",
+      "range": {
+        "low": 6,
+        "high": 10
+      }
+    },
+    "Cardiac_Troponin_22": {
+      "type": "SetAttribute",
+      "attribute": "covid19_cardiac_troponin",
+      "range": {
+        "low": 250,
+        "high": 350
+      },
+      "direct_transition": "Lactate_Dehydrogenase_22"
+    },
+    "Cardiac_Troponin_19": {
+      "type": "SetAttribute",
+      "attribute": "covid19_cardiac_troponin",
+      "range": {
+        "low": 130,
+        "high": 160
+      },
+      "direct_transition": "Lactate_Dehydrogenase_19"
+    },
+    "Cardiac_Troponin_16": {
+      "type": "SetAttribute",
+      "attribute": "covid19_cardiac_troponin",
+      "range": {
+        "low": 55,
+        "high": 65
+      },
+      "direct_transition": "Lactate_Dehydrogenase_16"
+    },
+    "Cardiac_Troponin_13": {
+      "type": "SetAttribute",
+      "attribute": "covid19_cardiac_troponin",
+      "range": {
+        "low": 50,
+        "high": 60
+      },
+      "direct_transition": "Lactate_Dehydrogenase_13"
+    },
+    "Cardiac_Troponin_10": {
+      "type": "SetAttribute",
+      "attribute": "covid19_cardiac_troponin",
+      "range": {
+        "low": 20,
+        "high": 24
+      },
+      "direct_transition": "Lactate_Dehydrogenase_10"
+    },
+    "Cardiac_Troponin_7": {
+      "type": "SetAttribute",
+      "attribute": "covid19_cardiac_troponin",
+      "range": {
+        "low": 22,
+        "high": 26
+      },
+      "direct_transition": "Lactate_Dehydrogenase_7"
+    },
+    "Lactate_Dehydrogenase_4": {
+      "type": "SetAttribute",
+      "attribute": "covid19_lactate_dehydrogenase",
+      "direct_transition": "Terminal",
+      "range": {
+        "low": 315,
+        "high": 345
+      }
+    },
+    "Lactate_Dehydrogenase_22": {
+      "type": "SetAttribute",
+      "attribute": "covid19_lactate_dehydrogenase",
+      "range": {
+        "low": 500,
+        "high": 600
+      },
+      "direct_transition": "Terminal"
+    },
+    "Lactate_Dehydrogenase_19": {
+      "type": "SetAttribute",
+      "attribute": "covid19_lactate_dehydrogenase",
+      "range": {
+        "low": 390,
+        "high": 430
+      },
+      "direct_transition": "Terminal"
+    },
+    "Lactate_Dehydrogenase_16": {
+      "type": "SetAttribute",
+      "attribute": "covid19_lactate_dehydrogenase",
+      "range": {
+        "low": 370,
+        "high": 390
+      },
+      "direct_transition": "Terminal"
+    },
+    "Lactate_Dehydrogenase_13": {
+      "type": "SetAttribute",
+      "attribute": "covid19_lactate_dehydrogenase",
+      "range": {
+        "low": 390,
+        "high": 410
+      },
+      "direct_transition": "Terminal"
+    },
+    "Lactate_Dehydrogenase_10": {
+      "type": "SetAttribute",
+      "attribute": "covid19_lactate_dehydrogenase",
+      "range": {
+        "low": 380,
+        "high": 400
+      },
+      "direct_transition": "Terminal"
+    },
+    "Lactate_Dehydrogenase_7": {
+      "type": "SetAttribute",
+      "attribute": "covid19_lactate_dehydrogenase",
+      "range": {
+        "low": 300,
+        "high": 330
+      },
+      "direct_transition": "Terminal"
+    },
+    "Set Creatine Kinase": {
+      "type": "SetAttribute",
+      "attribute": "covid19_creatine_kinase",
+      "direct_transition": "Set C-Reactive Protein",
+      "range": {
+        "low": 20,
+        "high": 204
+      }
+    },
+    "Set C-Reactive Protein": {
+      "type": "SetAttribute",
+      "attribute": "covid19_c_reactive_protein",
+      "direct_transition": "Set PT",
+      "range": {
+        "low": 8,
+        "high": 18
+      }
+    },
+    "Set PT": {
+      "type": "SetAttribute",
+      "attribute": "covid19_pt",
+      "range": {
+        "low": 11,
+        "high": 14
+      },
+      "direct_transition": "Set INR"
+    },
+    "Set INR": {
+      "type": "SetAttribute",
+      "attribute": "covid19_inr",
+      "range": {
+        "low": 3,
+        "high": 5
+      },
+      "direct_transition": "Set Procalitonin"
+    },
+    "Set Procalitonin": {
+      "type": "SetAttribute",
+      "attribute": "covid19_procalcitonin",
+      "direct_transition": "Poor Oxygen Saturation",
+      "range": {
+        "low": 0,
+        "high": 0.5
+      }
+    },
+    "Poor Oxygen Saturation": {
+      "type": "VitalSign",
+      "vital_sign": "Oxygen Saturation",
+      "unit": "%",
+      "range": {
+        "low": 75,
+        "high": 89
+      },
+      "direct_transition": "Set PaO2"
+    },
+    "Set PaO2": {
+      "type": "SetAttribute",
+      "attribute": "covid19_pao2",
+      "direct_transition": "Day",
+      "range": {
+        "low": 37,
+        "high": 60
+      }
+    }
+  }
+}

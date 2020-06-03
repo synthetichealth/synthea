@@ -615,7 +615,8 @@ public abstract class Exporter {
         Iterator<Encounter> iter = record.encounters.iterator();
         while (iter.hasNext()) {
           Encounter encounter = iter.next();
-          if (encounter.start > deathTime) {
+          if (encounter.start > deathTime
+              && !encounter.codes.contains(DeathModule.DEATH_CERTIFICATION)) {
             iter.remove();
           }
         }
@@ -624,7 +625,8 @@ public abstract class Exporter {
       Iterator<Encounter> iter = person.record.encounters.iterator();
       while (iter.hasNext()) {
         Encounter encounter = iter.next();
-        if (encounter.start > deathTime) {
+        if (encounter.start > deathTime
+            && !encounter.codes.contains(DeathModule.DEATH_CERTIFICATION)) {
           iter.remove();
         }
       }

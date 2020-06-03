@@ -1,0 +1,216 @@
+{
+  "name": "end_symptoms",
+  "remarks": [
+    "This submodule ends symptoms of COVID19 according to the rates documented in Table 1 of https://www.nejm.org/doi/full/10.1056/NEJMoa2002032",
+    "",
+    "Loss of taste from Table 2 of ",
+    "https://jamanetwork.com/journals/jama/fullarticle/2765183"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Chills End"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Conjunctival Congestion End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 246677007,
+          "display": "Passive conjunctival congestion (finding)"
+        }
+      ],
+      "direct_transition": "Cough End"
+    },
+    "Nasal Congestion End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 68235000,
+          "display": "Nasal congestion (finding)"
+        }
+      ],
+      "direct_transition": "Nausea End"
+    },
+    "Headache End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 25064002,
+          "display": "Headache (finding)"
+        }
+      ],
+      "direct_transition": "Hemoptysis End"
+    },
+    "Cough End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 49727002,
+          "display": "Cough (finding)"
+        }
+      ],
+      "direct_transition": "Diarrhea End"
+    },
+    "Sore Throat End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 267102003,
+          "display": "Sore throat symptom (finding)"
+        }
+      ],
+      "direct_transition": "Sputum Production End"
+    },
+    "Sputum Production End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 248595008,
+          "display": "Sputum finding (finding)"
+        }
+      ],
+      "direct_transition": "Vomiting End"
+    },
+    "Fatigue End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 84229001,
+          "display": "Fatigue (finding)"
+        }
+      ],
+      "direct_transition": "Fever End"
+    },
+    "Hemoptysis End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 66857006,
+          "display": "Hemoptysis (finding)"
+        }
+      ],
+      "direct_transition": "Joint Pain End"
+    },
+    "Shortness of Breath End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 267036007,
+          "display": "Dyspnea (finding)"
+        }
+      ],
+      "direct_transition": "Wheezing End"
+    },
+    "Nausea End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 422587007,
+          "display": "Nausea (finding)"
+        }
+      ],
+      "direct_transition": "Shortness of Breath End"
+    },
+    "Vomiting End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 249497008,
+          "display": "Vomiting symptom (finding)"
+        }
+      ],
+      "direct_transition": "Loss of Taste End"
+    },
+    "Diarrhea End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 267060006,
+          "display": "Diarrhea symptom (finding)"
+        }
+      ],
+      "direct_transition": "Fatigue End"
+    },
+    "Muscle Pain End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 68962001,
+          "display": "Muscle pain (finding)"
+        }
+      ],
+      "direct_transition": "Nasal Congestion End"
+    },
+    "Joint Pain End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 57676002,
+          "display": "Joint pain (finding)"
+        }
+      ],
+      "direct_transition": "Muscle Pain End"
+    },
+    "Chills End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 43724002,
+          "display": "Chill (finding)"
+        }
+      ],
+      "direct_transition": "Conjunctival Congestion End"
+    },
+    "Fever End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 386661006,
+          "display": "Fever (finding)"
+        }
+      ],
+      "direct_transition": "Headache End"
+    },
+    "Loss of Taste End": {
+      "type": "ConditionEnd",
+      "direct_transition": "Terminal",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 36955009,
+          "display": "Loss of taste (finding)"
+        }
+      ]
+    },
+    "Wheezing End": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 56018004,
+          "display": "Wheezing (finding)"
+        }
+      ],
+      "direct_transition": "Sore Throat End"
+    }
+  }
+}

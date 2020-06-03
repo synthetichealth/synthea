@@ -106,6 +106,10 @@ public class TransitionMetrics {
   }
 
   private void countStateStats(State state, Metric stateStats, long endDate) {
+    if (state == null || state.entered == null)
+    {
+      return;
+    }
     stateStats.entered.incrementAndGet();
     long exitTime = (state.exited == null) ? endDate : state.exited; 
     // if they were in the last state when they died or time expired

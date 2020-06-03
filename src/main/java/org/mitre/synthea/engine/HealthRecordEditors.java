@@ -16,7 +16,7 @@ public class HealthRecordEditors {
   private List<HealthRecordEditor> registeredEditors;
 
   private HealthRecordEditors() {
-    this.registeredEditors = new ArrayList<>();
+    this.registeredEditors = new ArrayList<HealthRecordEditor>();
   }
 
   /**
@@ -69,6 +69,6 @@ public class HealthRecordEditors {
    * Remove all registered editors.
    */
   public void resetEditors() {
-    this.registeredEditors = new ArrayList();
+    this.registeredEditors = new ArrayList<HealthRecordEditor>();
   }
 }

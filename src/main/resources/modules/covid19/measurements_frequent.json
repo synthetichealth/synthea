@@ -1,0 +1,221 @@
+{
+  "name": "measurements_frequent",
+  "remarks": [
+    "Frequent observations and labs during hospitalization and ICU."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "D_Dimer"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "D_Dimer": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "ug/mL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "48065-7",
+          "display": "Fibrin D-dimer FEU [Mass/volume] in Platelet poor plasma"
+        }
+      ],
+      "attribute": "covid19_ddimer",
+      "conditional_transition": [
+        {
+          "transition": "Interleukin_6_Rarely_Used_Clinical_Trial_Patients_Only",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "toclizumab"
+          }
+        },
+        {
+          "transition": "Serum_Ferritin"
+        }
+      ]
+    },
+    "Interleukin_6_Rarely_Used_Clinical_Trial_Patients_Only": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "82335-1",
+          "display": "Cytokines panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "pg/mL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "26881-3",
+              "display": "Interleukin 6 [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "attribute": "covid19_interleukin6"
+        }
+      ],
+      "remarks": [
+        "Small percentage of patients will have this. 3%"
+      ],
+      "direct_transition": "Serum_Ferritin"
+    },
+    "Serum_Ferritin": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "75689-0",
+          "display": "Iron panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "ug/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2276-4",
+              "display": "Ferritin [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "attribute": "covid19_ferritin"
+        }
+      ],
+      "direct_transition": "High_Sensitivity_Cardiac_Troponin_I"
+    },
+    "High_Sensitivity_Cardiac_Troponin_I": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "89577-1",
+          "display": "Troponin I.cardiac panel - Serum or Plasma by High sensitivity method"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "pg/mL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "89579-7",
+              "display": "Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method"
+            }
+          ],
+          "attribute": "covid19_cardiac_troponin"
+        }
+      ],
+      "direct_transition": "Lactate_Dehydrogenase"
+    },
+    "Lactate_Dehydrogenase": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "U/L",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "14804-9",
+          "display": "Lactate dehydrogenase [Enzymatic activity/volume] in Serum or Plasma by Lactate to pyruvate reaction"
+        },
+        {
+          "system": "LOINC",
+          "code": "2532-0",
+          "display": "Lactate dehydrogenase [Enzymatic activity/volume] in Serum or Plasma"
+        }
+      ],
+      "attribute": "covid19_lactate_dehydrogenase",
+      "remarks": [
+        "TODO: Should be part of the Panel 42929-0 Lactate dehydrogenase panel - Serum or Plasma, but there are too many other required values that we do not know the ranges for."
+      ],
+      "direct_transition": "Creatine Kinase"
+    },
+    "C-Reactive Protein": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "mg/L",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "1988-5",
+          "display": "C reactive protein [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "direct_transition": "Prothrombin_Time",
+      "attribute": "covid19_c_reactive_protein"
+    },
+    "Creatine Kinase": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "U/L",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2157-6",
+          "display": "Creatine kinase [Enzymatic activity/volume] in Serum or Plasma"
+        }
+      ],
+      "direct_transition": "C-Reactive Protein",
+      "attribute": "covid19_creatine_kinase"
+    },
+    "Prothrombin_Time": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "34528-0",
+          "display": "PT panel - Platelet poor plasma by Coagulation assay"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "s",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5902-2",
+              "display": "Prothrombin time (PT)"
+            }
+          ],
+          "attribute": "covid19_pt"
+        },
+        {
+          "category": "laboratory",
+          "unit": "{INR}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6301-6",
+              "display": "INR in Platelet poor plasma by Coagulation assay"
+            }
+          ],
+          "attribute": "covid19_inr"
+        }
+      ],
+      "direct_transition": "Procalcitonin"
+    },
+    "Procalcitonin": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "ng/mL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "33959-8",
+          "display": "Procalcitonin [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "attribute": "covid19_procalcitonin"
+    }
+  }
+}

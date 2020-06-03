@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
-import org.apache.commons.io.FileExistsException;
 
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;

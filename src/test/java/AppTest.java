@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -123,7 +124,7 @@ public class AppTest {
     System.out.println(output);
   }
 
-  @Test
+  @Ignore @Test
   public void testAppWithOverflow() throws Exception {
     TestHelper.exportOff();
     String[] args = {"-s", "0", "-p", "3", "-o", "false"};

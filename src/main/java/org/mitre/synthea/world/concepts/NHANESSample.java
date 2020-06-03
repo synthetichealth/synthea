@@ -45,7 +45,7 @@ public class NHANESSample implements Serializable {
    */
   public static List<NHANESSample> loadSamples() {
     CsvMapper mapper = new CsvMapper();
-    List<NHANESSample> samples = new LinkedList();
+    List<NHANESSample> samples = new LinkedList<NHANESSample>();
     CsvSchema schema = CsvSchema.emptySchema().withHeader();
     String filename = "nhanes_two_year_olds_bmi.csv";
     try {
@@ -74,6 +74,6 @@ public class NHANESSample implements Serializable {
     List<NHANESSample> samples = loadSamples();
     @SuppressWarnings("rawtypes")
     List sampleWeights = samples.stream().map(i -> new Pair(i, i.prob)).collect(toList());
-    return new EnumeratedDistribution(sampleWeights);
+    return new EnumeratedDistribution<NHANESSample>(sampleWeights);
   }
 }

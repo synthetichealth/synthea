@@ -292,7 +292,8 @@ public class Generator {
       try {
         fis = new FileInputStream(options.initialPopulationSnapshotPath);
         ObjectInputStream ois = new ObjectInputStream(fis);
-        initialPopulation = (List<Person>)ois.readObject();
+        initialPopulation = (List<Person>) ois.readObject();
+        ois.close();
       } catch (Exception ex) {
         System.out.printf("Unable to load population snapshot, error: %s", ex.getMessage());
       }

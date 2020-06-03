@@ -1,0 +1,1053 @@
+{
+  "name": "medications",
+  "remarks": [
+    "This submodule determines clinical trial medication treatments for covid19.",
+    "These treatments were selected on location (EU, Canada, US), clinicaltrials.gov, and:",
+    "",
+    "Sanders JM, Monogue ML, Jodlowski TZ, Cutrell JB. Pharmacologic Treatments for Coronavirus Disease 2019 (COVID-19): A Review. JAMA. Published online April 13, 2020. doi:10.1001/jama.2020.6019",
+    "",
+    "Some of these medications do not have RXNORM codes.",
+    "",
+    "In light of the significant number of therapeutic agents currently being tested via clinical research trials, the team opted to include one agent representative of a potential drug target (e.g., IL-6)  therapeutic class (e.g., antimalarial), or pharmacologic class (e.g., JAK inhibitor) based on limited knowledge of SARS-CoV-2 virology and potential drug targets. The agent selected for inclusion in the model is the agent with the earliest posting date on clinical trials.gov. As protocols differ across clinical trials, treatment dose does not denote a specific protocol but rather the minimum ordering dose at the time of review (April 2020). Additionally, treatment duration denotes the maximum duration noted among protocols that were available to the public. We anticipate updating the submodule as clinical trial results become available."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Determine Clinical Trial Eligibility",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "none"
+          }
+        },
+        {
+          "transition": "Administer Medications"
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Determine Clinical Trial Eligibility": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Determine Clinical Trial Enrollment",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Age",
+                    "operator": ">=",
+                    "quantity": 18,
+                    "unit": "years",
+                    "value": 0
+                  },
+                  {
+                    "condition_type": "Or",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "pregnant",
+                        "operator": "is nil"
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "pregnant",
+                        "operator": "==",
+                        "value": false
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Or",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "ckd",
+                        "operator": "is nil"
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "ckd",
+                        "operator": "<",
+                        "value": 4
+                      }
+                    ]
+                  },
+                  {
+                    "condition_type": "And",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "lung_cancer",
+                        "operator": "is nil"
+                      },
+                      {
+                        "condition_type": "And",
+                        "conditions": [
+                          {
+                            "condition_type": "Attribute",
+                            "attribute": "colorectal_cancer_stage",
+                            "operator": "is nil"
+                          },
+                          {
+                            "condition_type": "Attribute",
+                            "attribute": "breast_cancer_condition",
+                            "operator": "is nil"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "No Clinical Trial"
+        }
+      ]
+    },
+    "Severity Breakdown": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "General",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_severity",
+            "operator": "==",
+            "value": "general"
+          }
+        },
+        {
+          "transition": "Severe",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_severity",
+            "operator": "==",
+            "value": "severe"
+          }
+        },
+        {
+          "transition": "Critical",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_severity",
+            "operator": "==",
+            "value": "critical"
+          }
+        }
+      ]
+    },
+    "Determine Clinical Trial Enrollment": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Severity Breakdown",
+          "distribution": 0.1
+        },
+        {
+          "transition": "No Clinical Trial",
+          "distribution": 0.9
+        }
+      ]
+    },
+    "General": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Losartan Trial",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Hydroxychloroquine Trial",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Hydroxychloroquine and Azithromycin Trial",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Chloroquine Phosphate Trial",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Chloroquine Phosphate and Azithromycin Trial",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Anakinra Trial",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Sirolimus Trial",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Tranexamic Acid Trial",
+          "distribution": 0.1
+        },
+        {
+          "transition": "CM4620 Trial",
+          "distribution": 0.1
+        },
+        {
+          "transition": "CD24Fc Trial",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "Hydroxychloroquine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "979092",
+          "display": "Hydroxychloroquine Sulfate 200 MG Oral Tablet"
+        }
+      ],
+      "administration": true,
+      "reason": "covid19",
+      "direct_transition": "Subtract Dose",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        },
+        "refills": 2
+      }
+    },
+    "Azithromycin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 308460,
+          "display": "Azithromycin 250 MG Oral Tablet"
+        }
+      ],
+      "administration": true,
+      "reason": "covid19",
+      "remarks": [
+        "Really this is only administered if there is an additional bacterial infection in the lungs."
+      ],
+      "direct_transition": "Hydroxychloroquine"
+    },
+    "Administer Medications": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial_duration",
+            "operator": ">",
+            "value": 0
+          },
+          "transition": "Check Clinical Trial"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "No Clinical Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "direct_transition": "Terminal",
+      "value": "none"
+    },
+    "Severe": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Losartan Trial",
+          "distribution": 0.067
+        },
+        {
+          "transition": "Hydroxychloroquine Trial",
+          "distribution": 0.067
+        },
+        {
+          "transition": "Hydroxychloroquine and Azithromycin Trial",
+          "distribution": 0.067
+        },
+        {
+          "transition": "Plasma Trial",
+          "distribution": 0.067
+        },
+        {
+          "transition": "Lopinavir Ritonavir Trial",
+          "distribution": 0.067
+        },
+        {
+          "transition": "Remdesivir Trial",
+          "distribution": 0.067
+        },
+        {
+          "transition": "Toclizumab Trial",
+          "distribution": 0.067
+        },
+        {
+          "transition": "Leronlimab Trial",
+          "distribution": 0.067
+        },
+        {
+          "transition": "Baricitinib Trial",
+          "distribution": 0.067
+        },
+        {
+          "transition": "Chloroquine Phosphate Trial",
+          "distribution": 0.067
+        },
+        {
+          "transition": "Chloroquine Phosphate and Azithromycin Trial",
+          "distribution": 0.067
+        },
+        {
+          "transition": "Anakinra Trial",
+          "distribution": 0.067
+        },
+        {
+          "transition": "Lenzilumab Trial",
+          "distribution": 0.067
+        },
+        {
+          "transition": "CM4620 Trial",
+          "distribution": 0.067
+        },
+        {
+          "transition": "CD24Fc Trial",
+          "distribution": 0.067
+        }
+      ]
+    },
+    "Critical": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Plasma Trial",
+          "distribution": 0.167
+        },
+        {
+          "transition": "Remdesivir Trial",
+          "distribution": 0.167
+        },
+        {
+          "transition": "Toclizumab Trial",
+          "distribution": 0.167
+        },
+        {
+          "transition": "Leronlimab Trial",
+          "distribution": 0.167
+        },
+        {
+          "transition": "Baricitinib Trial",
+          "distribution": 0.167
+        },
+        {
+          "transition": "Aviptadil Trial",
+          "distribution": 0.167
+        }
+      ]
+    },
+    "Losartan Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "value": "losartan",
+      "conditional_transition": [
+        {
+          "transition": "Hydroxychloroquine Trial",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Duration 14 days"
+        }
+      ]
+    },
+    "Hydroxychloroquine Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "value": "hydroxychloroquine",
+      "direct_transition": "Duration 14 days"
+    },
+    "Hydroxychloroquine and Azithromycin Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "value": "hydroxychloroquine+azithromycin",
+      "direct_transition": "Duration 14 days"
+    },
+    "Duration 14 days": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial_duration",
+      "direct_transition": "Administer Medications",
+      "value": 14
+    },
+    "Duration 10 days": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial_duration",
+      "value": 10,
+      "direct_transition": "Administer Medications"
+    },
+    "Plasma Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "direct_transition": "Single Dose",
+      "value": "convalescent_plasma"
+    },
+    "Lopinavir Ritonavir Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "value": "lopinavir_ritonavir",
+      "direct_transition": "Duration 14 days"
+    },
+    "Remdesivir Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "value": "remdesivir",
+      "direct_transition": "Duration 10 days"
+    },
+    "Toclizumab Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "value": "toclizumab",
+      "direct_transition": "Double Dose"
+    },
+    "Leronlimab Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "value": "leronlimab",
+      "direct_transition": "Double Dose"
+    },
+    "Baricitinib Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "value": "baricitinib",
+      "direct_transition": "Duration 14 days"
+    },
+    "Single Dose": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial_duration",
+      "value": 1,
+      "direct_transition": "Administer Medications"
+    },
+    "Double Dose": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial_duration",
+      "value": 2,
+      "direct_transition": "Administer Medications"
+    },
+    "Subtract Dose": {
+      "type": "Counter",
+      "attribute": "covid19_clinical_trial_duration",
+      "action": "decrement",
+      "direct_transition": "Terminal"
+    },
+    "Check Clinical Trial": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Losartan",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "losartan"
+          }
+        },
+        {
+          "transition": "Hydroxychloroquine",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "hydroxychloroquine"
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "hydroxychloroquine+azithromycin"
+          },
+          "transition": "First Five Days"
+        },
+        {
+          "transition": "Human Plasma",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "convalescent_plasma"
+          }
+        },
+        {
+          "transition": "Lopinavir Rotinavir",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "lopinavir_rotinavir"
+          }
+        },
+        {
+          "transition": "Remdesivir",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "remdesivir"
+          }
+        },
+        {
+          "transition": "Toclizumab",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "toclizumab"
+          }
+        },
+        {
+          "transition": "Leronlimab",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "leronlimab"
+          }
+        },
+        {
+          "transition": "Baricitinib",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "baricitinib"
+          }
+        },
+        {
+          "transition": "Chloroquine Phosphate",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "chloroquine_phosphate"
+          }
+        },
+        {
+          "transition": "Azithromycin_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "chloroquine_phosphate+azithromycin"
+          }
+        },
+        {
+          "transition": "Anakinra",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "anakinra"
+          }
+        },
+        {
+          "transition": "Lenzilumab",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "lenzilumab"
+          }
+        },
+        {
+          "transition": "Sirolimus",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "sirolimus"
+          }
+        },
+        {
+          "transition": "Tranexamic Acid",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "tranexamic_acid"
+          }
+        },
+        {
+          "transition": "CM4620",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "cm4620"
+          }
+        },
+        {
+          "transition": "Aviptadil",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "aviptadil"
+          }
+        },
+        {
+          "transition": "CD24Fc",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial",
+            "operator": "==",
+            "value": "cd24fc"
+          }
+        },
+        {
+          "transition": "Subtract Dose"
+        }
+      ]
+    },
+    "Lopinavir Rotinavir": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 597730,
+          "display": "lopinavir 200 MG / Ritonavir 50 MG Oral Tablet"
+        }
+      ],
+      "administration": true,
+      "reason": "covid19",
+      "direct_transition": "Subtract Dose",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        },
+        "refills": 2
+      }
+    },
+    "Losartan": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 979485,
+          "display": "Losartan Potassium 25 MG Oral Tablet"
+        }
+      ],
+      "administration": true,
+      "reason": "covid19",
+      "direct_transition": "Subtract Dose"
+    },
+    "Plasma Transfusion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 13569004,
+          "display": "Transfusion of plasma (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Subtract Dose",
+      "reason": "covid19"
+    },
+    "Human Plasma": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 84879009,
+            "display": "Human plasma, blood product (product)"
+          }
+        }
+      ],
+      "direct_transition": "Plasma Transfusion"
+    },
+    "Remdesivir": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 2284960,
+          "display": "remdesivir 100 MG Injection"
+        }
+      ],
+      "administration": true,
+      "reason": "covid19",
+      "direct_transition": "Subtract Dose"
+    },
+    "Toclizumab": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1657981",
+          "display": "20 ML tocilizumab 20 MG/ML Injection"
+        }
+      ],
+      "remarks": [
+        "Tocilizumab injection to prevent cytokine storms."
+      ],
+      "administration": true,
+      "reason": "covid19",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 8,
+          "unit": "hours"
+        },
+        "duration": {
+          "quantity": 24,
+          "unit": "hours"
+        }
+      },
+      "direct_transition": "Subtract Dose"
+    },
+    "Leronlimab": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 999998,
+          "display": "Leronlimab 700 MG Injection"
+        }
+      ],
+      "administration": true,
+      "reason": "covid19",
+      "direct_transition": "Subtract Dose"
+    },
+    "Baricitinib": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 2047241,
+          "display": "baricitinib 2 MG Oral Tablet"
+        }
+      ],
+      "administration": true,
+      "reason": "covid19",
+      "direct_transition": "Subtract Dose"
+    },
+    "First Five Days": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Azithromycin",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "covid19_clinical_trial_duration",
+            "operator": ">=",
+            "value": 9
+          }
+        },
+        {
+          "transition": "Hydroxychloroquine"
+        }
+      ]
+    },
+    "Chloroquine Phosphate and Azithromycin Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "direct_transition": "Duration 5 days",
+      "value": "chloroquine_phosphate+azithromycin"
+    },
+    "Chloroquine Phosphate Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "direct_transition": "Duration 5 days",
+      "value": "chloroquine_phosphate"
+    },
+    "Duration 5 days": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial_duration",
+      "direct_transition": "Administer Medications",
+      "value": 5
+    },
+    "Chloroquine Phosphate": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1116758,
+          "display": "chloroquine phosphate 500 MG Oral Tablet"
+        }
+      ],
+      "administration": true,
+      "reason": "covid19",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        },
+        "refills": 2
+      },
+      "direct_transition": "Subtract Dose"
+    },
+    "Azithromycin_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 308460,
+          "display": "Azithromycin 250 MG Oral Tablet"
+        }
+      ],
+      "administration": true,
+      "reason": "covid19",
+      "remarks": [
+        "Really this is only administered if there is an additional bacterial infection in the lungs."
+      ],
+      "direct_transition": "Chloroquine Phosphate"
+    },
+    "Duration 15 days": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial_duration",
+      "direct_transition": "Administer Medications",
+      "value": 15
+    },
+    "Anakinra Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "direct_transition": "Duration 15 days",
+      "value": "anakinra"
+    },
+    "Anakinra": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 727711,
+          "display": "0.67 ML anakinra 149 MG/ML Prefilled Syringe"
+        }
+      ],
+      "administration": true,
+      "reason": "covid19",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        },
+        "refills": 4
+      },
+      "direct_transition": "Subtract Dose"
+    },
+    "Lenzilumab Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "direct_transition": "Single Dose",
+      "value": "lenzilumab"
+    },
+    "Lenzilumab": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 999999,
+          "display": "Lenzilumab 200 MG IV"
+        }
+      ],
+      "administration": true,
+      "reason": "covid19",
+      "direct_transition": "Subtract Dose"
+    },
+    "Sirolimus Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "value": "sirolimus",
+      "direct_transition": "Duration 14 days"
+    },
+    "Sirolimus": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 360110,
+          "display": "Sirolimus 2 MG Oral Tablet"
+        }
+      ],
+      "administration": true,
+      "reason": "covid19",
+      "direct_transition": "Subtract Dose"
+    },
+    "Tranexamic Acid Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "direct_transition": "Duration 5 days",
+      "value": "tranexamic_acid"
+    },
+    "Tranexamic Acid": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 883826,
+          "display": "Tranexamic Acid 650 MG Oral Tablet"
+        }
+      ],
+      "administration": true,
+      "reason": "covid19",
+      "direct_transition": "Subtract Dose",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        },
+        "refills": 6
+      }
+    },
+    "CM4620": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 999999,
+          "display": "CM4620 Injectable Emulsion"
+        }
+      ],
+      "administration": true,
+      "reason": "covid19",
+      "direct_transition": "Subtract Dose"
+    },
+    "Duration 3 days": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial_duration",
+      "direct_transition": "Administer Medications",
+      "value": 3
+    },
+    "CM4620 Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "direct_transition": "Duration 3 days",
+      "value": "cm4620"
+    },
+    "Aviptadil": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 999999,
+          "display": "Aviptadil Infusion"
+        }
+      ],
+      "administration": true,
+      "reason": "covid19",
+      "direct_transition": "Subtract Dose",
+      "prescription": {
+        "dosage": {
+          "amount": 150,
+          "frequency": 1,
+          "period": 1,
+          "unit": "hours"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        },
+        "as_needed": true,
+        "instructions": [
+          {
+            "system": "SNOMED-CT",
+            "code": 261754007,
+            "display": "Continuous infusion (qualifier value)"
+          }
+        ]
+      }
+    },
+    "Aviptadil Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "direct_transition": "Duration 5 days",
+      "value": "aviptadil"
+    },
+    "CD24Fc Trial": {
+      "type": "SetAttribute",
+      "attribute": "covid19_clinical_trial",
+      "value": "cd24fc",
+      "direct_transition": "Single Dose"
+    },
+    "CD24Fc": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 999999,
+          "display": "CD24Fc 480 MG IV"
+        }
+      ],
+      "administration": true,
+      "reason": "covid19",
+      "direct_transition": "Subtract Dose"
+    }
+  }
+}
