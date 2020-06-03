@@ -1548,7 +1548,7 @@ public class StateTest {
           iter.remove(); // this module has completed/terminated.
         }
       }
-      encounterModule.endWellnessEncounter(person, timeT);
+      encounterModule.endEncounterModuleEncounters(person, timeT);
 
       timeT += timestep;
     }

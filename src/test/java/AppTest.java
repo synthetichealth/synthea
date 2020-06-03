@@ -6,11 +6,14 @@ import java.util.regex.Pattern;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AppTest {
   private static String testStateDefault;
   private static String testTownDefault;
@@ -51,6 +54,7 @@ public class AppTest {
     String locationString = "Location: " + testTownDefault + ", " + testStateDefault;
     Assert.assertTrue(output.contains(locationString));
     System.setOut(original);
+    System.out.println(output);
   }
 
   @Test
@@ -72,6 +76,7 @@ public class AppTest {
     Assert.assertFalse(output.contains("y/o F"));
     Assert.assertTrue(output.contains("Location: " + Generator.DEFAULT_STATE));
     System.setOut(original);
+    System.out.println(output);
   }
 
   @Test
@@ -94,6 +99,7 @@ public class AppTest {
     regex = "(.\n)*(\\(([0-9]|[0-2][0-9]|[4-9][0-9]) y/o)(.\n)*";
     Assert.assertFalse(output.matches(regex));
     System.setOut(original);
+    System.out.println(output);
   }
 
 
@@ -114,12 +120,13 @@ public class AppTest {
     String locationString = "Location: " + testTownAlternative + ", " + testStateAlternative;
     Assert.assertTrue(output.contains(locationString));
     System.setOut(original);
+    System.out.println(output);
   }
 
   @Test
   public void testAppWithOverflow() throws Exception {
     TestHelper.exportOff();
-    String[] args = {"-s", "1", "-p", "3", "-o", "false"};
+    String[] args = {"-s", "0", "-p", "3", "-o", "false"};
     final PrintStream original = System.out;
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
     final PrintStream print = new PrintStream(out, true);
@@ -134,8 +141,10 @@ public class AppTest {
     Assert.assertTrue(matches.find());
     int alive = Integer.parseInt(matches.group(1));
     int dead = Integer.parseInt(matches.group(2));    
-    Assert.assertEquals(alive + dead, 3);
     System.setOut(original);
+    System.out.println(output);
+    Assert.assertEquals(String.format("Expected 3 total records, got %d alive and %d dead",
+            alive, dead), 3, alive + dead);
   }
 
   @Test
@@ -158,6 +167,7 @@ public class AppTest {
     Assert.assertTrue(output.contains("Allergies"));
     Assert.assertFalse(output.contains("asthma"));
     System.setOut(original);
+    System.out.println(output);
   }
 
   @Test
@@ -171,6 +181,7 @@ public class AppTest {
     Assert.assertEquals("changed value", Config.get("test_key"));
     Assert.assertEquals("true", Config.get("exporter.fhir.export"));
   }
+  
   
   @Test
   public void testAppWithLocalConfigFile() throws Exception {
@@ -200,7 +211,8 @@ public class AppTest {
     Assert.assertTrue(output.contains("Modules:"));
     Assert.assertTrue(output.contains("COPD Module"));
     Assert.assertTrue(output.contains("COPD_TEST Module"));
-    System.setOut(original);    
+    System.setOut(original);
+    System.out.println(output);
   }
   
   @Test
@@ -219,6 +231,7 @@ public class AppTest {
     Assert.assertFalse(output.contains("Running with options:"));
     System.setOut(original);
     System.setErr(originalErr);
+    System.out.println(output);
   }
 
 }

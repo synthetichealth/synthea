@@ -414,12 +414,12 @@ public class Generator {
         }
 
         recordPerson(person, index);
-        
+
         tryNumber++;
         if (!isAlive) {
           // rotate the seed so the next attempt gets a consistent but different one
           personSeed = new Random(personSeed).nextLong();
-          
+
           // if we've tried and failed > 10 times to generate someone over age 90
           // and the options allow for ages as low as 85
           // reduce the age to increase the likelihood of success
@@ -489,7 +489,7 @@ public class Generator {
           iter.remove(); // this module has completed/terminated.
         }
       }
-      encounterModule.endWellnessEncounter(person, time);
+      encounterModule.endEncounterModuleEncounters(person, time);
       person.lastUpdated = time;
       HealthRecordEditors.getInstance().executeAll(
               person, person.record, time, timestep, person.random);
