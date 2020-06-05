@@ -2446,7 +2446,7 @@ public class FhirR4 {
     participant.addRole(mapCodeToCodeableConcept(
         new Code(
             SNOMED_URI,
-            "116153009",
+            "116154003",
             "Patient"),
         SNOMED_URI));
     Patient patient = (Patient) personEntry.getResource();
