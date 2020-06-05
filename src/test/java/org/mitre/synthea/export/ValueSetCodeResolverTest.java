@@ -49,6 +49,10 @@ public class ValueSetCodeResolverTest {
   public WireMockRule mockTerminologyService = new WireMockRule(wiremockOptions()
       .usingFilesUnderDirectory("src/test/resources/wiremock/ValueSetCodeResolverTest"));
 
+  /**
+   * Prepare for each test.
+   * @throws Exception on failure
+   */
   @Before
   public void setUp() throws Exception {
     TerminologyClient terminologyClient = getR4FhirContext()
@@ -285,6 +289,9 @@ public class ValueSetCodeResolverTest {
     valueSetCodeResolver.resolve();
   }
 
+  /**
+   * Clean up after each test.
+   */
   @After
   public void tearDown() {
     if (isHttpRecordingEnabled()) {

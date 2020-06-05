@@ -997,7 +997,7 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private void supply(String personID, String encounterID, Encounter encounter, Supply supply)
-    throws IOException {
+          throws IOException {
     // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,QUANTITY
     StringBuilder s = new StringBuilder();
 

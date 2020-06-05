@@ -74,6 +74,11 @@ public abstract class TestHelper {
     return recordingSource;
   }
 
+  /**
+   * Get a FHIR DSTU2 Context for testing, but only initialize it once.
+   * 
+   * @return a DSTU2 FhirContext
+   */
   public static FhirContext getDstu2FhirContext() {
     if (dstu2FhirContext == null) {
       dstu2FhirContext = FhirContext.forDstu2();
@@ -81,6 +86,11 @@ public abstract class TestHelper {
     return dstu2FhirContext;
   }
 
+  /**
+   * Get a FHIR STU3 Context for testing, but only initialize it once.
+   * 
+   * @return an STU3 FhirContext
+   */
   public static FhirContext getStu3FhirContext() {
     if (stu3FhirContext == null) {
       stu3FhirContext = FhirContext.forDstu3();
