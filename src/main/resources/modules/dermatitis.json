@@ -199,7 +199,7 @@
       ],
       "direct_transition": "Dermatitis_Symptom1"
     },
-     "Dermatitis_Symptom1": {
+    "Dermatitis_Symptom1": {
       "type": "Symptom",
       "symptom": "Itchiness",
       "range": {
@@ -591,7 +591,7 @@
       "prescription": {
         "as_needed": true
       },
-      "direct_transition": "Treating_Flare_Up"
+      "direct_transition": "End_Flare_Up_Encounter"
     },
     "Treating_Flare_Up": {
       "type": "Delay",
@@ -660,7 +660,7 @@
       },
       "direct_transition": "Dermatitis_Symptom2_Ends"
     },
-     "Dermatitis_Symptom2_Ends": {
+    "Dermatitis_Symptom2_Ends": {
       "type": "Symptom",
       "symptom": "Red Skin",
       "exact": {
@@ -668,7 +668,7 @@
       },
       "direct_transition": "Dermatitis_Symptom3_Ends"
     },
-     "Dermatitis_Symptom3_Ends": {
+    "Dermatitis_Symptom3_Ends": {
       "type": "Symptom",
       "symptom": "Rash",
       "exact": {
@@ -676,9 +676,12 @@
       },
       "direct_transition": "Terminal"
     },
-  
     "Terminal": {
       "type": "Terminal"
+    },
+    "End_Flare_Up_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Treating_Flare_Up"
     }
   }
 }

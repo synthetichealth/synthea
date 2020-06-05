@@ -134,7 +134,7 @@
           "display": "Escherichia coli urinary tract infection"
         }
       ],
-      "direct_transition": "UTI_Diagnosis"
+      "direct_transition": "UTI_Symptom1"
     },
     "Cystitis": {
       "type": "ConditionOnset",
@@ -147,7 +147,7 @@
           "display": "Cystitis"
         }
       ],
-      "direct_transition": "UTI_Diagnosis"
+      "direct_transition": "UTI_Symptom1"
     },
     "Pyelonephritis": {
       "type": "ConditionOnset",
@@ -160,7 +160,7 @@
           "display": "Pyelonephritis"
         }
       ],
-      "direct_transition": "UTI_Diagnosis"
+      "direct_transition": "UTI_Symptom1"
     },
     "UTI_Diagnosis": {
       "type": "Encounter",
@@ -173,7 +173,7 @@
           "display": "Encounter for symptom"
         }
       ],
-      "direct_transition": "UTI_Symptom1"
+      "direct_transition": "Prescribe_UTI_Antibiotic"
     },
     "UTI_Symptom1": {
       "type": "Symptom",
@@ -240,12 +240,12 @@
     },
     "Symptom_Period": {
       "type": "Delay",
-      "range" : {
-        "low" : 24,
-        "high" : 48,
-        "unit" : "days"
+      "range": {
+        "low": 24,
+        "high": 48,
+        "unit": "days"
       },
-      "direct_transition" : "Prescribe_UTI_Antibiotic"
+      "direct_transition": "UTI_Diagnosis"
     },
     "Prescribe_UTI_Antibiotic": {
       "type": "MedicationOrder",

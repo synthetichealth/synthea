@@ -260,6 +260,7 @@ public abstract class State implements Cloneable, Serializable {
         encounter = person.getCurrentEncounter(submod);
         if (encounter != null) {
           person.setCurrentEncounter(module, encounter);
+          person.setCurrentEncounter(submod, null);
         }
         return true;
       } else {
@@ -861,16 +862,17 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public boolean process(Person person, long time) {
       HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
-      EncounterType type = EncounterType.fromString(encounter.type);
-      if (type != EncounterType.WELLNESS) {
-        person.record.encounterEnd(time, type);
+      if (encounter != null) {
+        EncounterType type = EncounterType.fromString(encounter.type);
+        if (type != EncounterType.WELLNESS) {
+          person.record.encounterEnd(time, type);
+        }
+        encounter.discharge = dischargeDisposition;
       }
-      encounter.discharge = dischargeDisposition;
 
       // reset current provider hash
       person.removeCurrentProvider(module.name);
       person.setCurrentEncounter(module, null);
-
       return true;
     }
   }

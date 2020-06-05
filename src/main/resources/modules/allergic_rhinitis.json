@@ -121,7 +121,7 @@
           "display": "Seasonal allergic rhinitis"
         }
       ],
-      "direct_transition": "Allergic_Rhinitis_Diagnosis"
+      "direct_transition": "Allergic_Rhinitis_Symptom1"
     },
     "Has_Perennial_Allergic_Rhinitis": {
       "type": "ConditionOnset",
@@ -134,7 +134,7 @@
           "display": "Perennial allergic rhinitis"
         }
       ],
-      "direct_transition": "Allergic_Rhinitis_Diagnosis"
+      "direct_transition": "Allergic_Rhinitis_Symptom1"
     },
     "Has_Perennial_And_Seasonal_Allergic_Rhinitis": {
       "type": "ConditionOnset",
@@ -147,7 +147,7 @@
           "display": "Perennial allergic rhinitis with seasonal variation"
         }
       ],
-      "direct_transition": "Allergic_Rhinitis_Diagnosis"
+      "direct_transition": "Allergic_Rhinitis_Symptom1"
     },
     "Allergic_Rhinitis_Diagnosis": {
       "type": "Encounter",
@@ -160,7 +160,7 @@
           "display": "Encounter for symptom"
         }
       ],
-      "direct_transition": "Allergic_Rhinitis_Symptom1"
+      "direct_transition": "Prescribe_OTC_Antihistamine"
     },
     "Allergic_Rhinitis_Symptom1": {
       "type": "Symptom",
@@ -214,7 +214,7 @@
         "high": 3,
         "unit": "weeks"
       },
-      "direct_transition": "Prescribe_OTC_Antihistamine"
+      "direct_transition": "Allergic_Rhinitis_Diagnosis"
     },
     "Prescribe_OTC_Antihistamine": {
       "type": "CallSubmodule",
