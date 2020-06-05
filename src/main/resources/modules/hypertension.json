@@ -318,7 +318,7 @@
           }
         },
         {
-          "transition": "Wellness_Encounter"
+          "transition": "End_Wellness_No_Action"
         }
       ]
     },
@@ -546,6 +546,10 @@
       "attribute": "blood_pressure_controlled",
       "value": true,
       "direct_transition": "Delay_2_Month_2"
+    },
+    "End_Wellness_No_Action": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wellness_Encounter"
     }
   }
 }

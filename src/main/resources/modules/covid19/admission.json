@@ -531,7 +531,7 @@
     "End_Outcomes": {
       "type": "CallSubmodule",
       "submodule": "covid19/end_outcomes",
-      "direct_transition": "Terminal"
+      "direct_transition": "End_Encounter"
     },
     "Transfer": {
       "type": "EncounterEnd",
@@ -1179,6 +1179,10 @@
       "remarks": [
         "Every 6 hours."
       ]
+    },
+    "End_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
     }
   }
 }

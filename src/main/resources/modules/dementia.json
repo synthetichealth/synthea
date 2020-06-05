@@ -1,4 +1,3 @@
-
 {
   "name": "Dementia",
   "remarks": [
@@ -325,7 +324,7 @@
           ]
         },
         {
-          "transition": "ModerateDecline",
+          "transition": "End_Diagnosis_Encounter",
           "remarks": [
             "before 1993 there were no specific drugs approved for Alzheimer’s by the fda"
           ]
@@ -343,7 +342,7 @@
           "display": "Galantamine 4 MG Oral Tablet"
         }
       ],
-      "direct_transition": "ModerateDecline"
+      "direct_transition": "End_Diagnosis_Encounter"
     },
     "FirstPrescription2": {
       "type": "MedicationOrder",
@@ -356,7 +355,7 @@
           "display": "Donepezil hydrochloride 10 MG Oral Tablet"
         }
       ],
-      "direct_transition": "ModerateDecline"
+      "direct_transition": "End_Diagnosis_Encounter"
     },
     "FirstPrescription3": {
       "type": "MedicationOrder",
@@ -369,7 +368,7 @@
           "display": "Tacrine 10 MG Oral Capsule"
         }
       ],
-      "direct_transition": "ModerateDecline"
+      "direct_transition": "End_Diagnosis_Encounter"
     },
     "ModerateDecline": {
       "type": "Delay",
@@ -727,6 +726,10 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "ModerateDecline"
     }
   }
 }

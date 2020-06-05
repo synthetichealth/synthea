@@ -234,10 +234,10 @@
     "Ear_Infection_End": {
       "type": "ConditionEnd",
       "condition_onset": "Gets_Ear_Infection",
-      "direct_transition": "Loopback_No_Infection"
+      "direct_transition": "End_Wellness_No_Infection"
     },
-    "Loopback_No_Infection": {
-      "type": "Simple",
+    "End_Wellness_No_Infection": {
+      "type": "EncounterEnd",
       "direct_transition": "No_Infection",
       "remarks": [
         "this state only exists to make the graph look nicer"

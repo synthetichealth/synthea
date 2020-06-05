@@ -186,7 +186,7 @@
           "remarks": [
             "Normal level"
           ],
-          "transition": "Wellness_Encounter"
+          "transition": "End_Wellness_Encounter"
         },
         {
           "condition": {
@@ -2184,7 +2184,7 @@
     },
     "Living_With_Diabetes": {
       "type": "Simple",
-      "direct_transition": "Wellness_Encounter"
+      "direct_transition": "End_Wellness_Encounter"
     },
     "check CKD": {
       "type": "Simple",
@@ -2298,7 +2298,7 @@
           }
         },
         {
-          "transition": "Wellness_Encounter"
+          "transition": "End_Wellness_Encounter"
         }
       ]
     },
@@ -2312,7 +2312,7 @@
           "display": "Body mass index 30+ - obesity (finding)"
         }
       ],
-      "direct_transition": "Wellness_Encounter",
+      "direct_transition": "End_Wellness_Encounter",
       "assign_to_attribute": "obesity"
     },
     "Severe Obesity": {
@@ -2326,7 +2326,7 @@
           "display": "Body mass index 40+ - severely obese (finding)"
         }
       ],
-      "direct_transition": "Wellness_Encounter"
+      "direct_transition": "End_Wellness_Encounter"
     },
     "Record_MetabolicPanel": {
       "type": "DiagnosticReport",
@@ -4104,6 +4104,10 @@
         "",
         ""
       ]
+    },
+    "End_Wellness_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wellness_Encounter"
     }
   }
 }

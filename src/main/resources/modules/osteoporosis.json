@@ -121,13 +121,13 @@
       },
       "direct_transition": "Onset_Osteoporosis"
     },
-    "Onset_Osteoporosis" : {
-      "type" : "SetAttribute",
-      "attribute" : "osteoporosis",
-      "value" : true,
-      "direct_transition" : "Osteoporosis_Symptom1"
+    "Onset_Osteoporosis": {
+      "type": "SetAttribute",
+      "attribute": "osteoporosis",
+      "value": true,
+      "direct_transition": "Osteoporosis_Symptom1"
     },
-     "Osteoporosis_Symptom1": {
+    "Osteoporosis_Symptom1": {
       "type": "Symptom",
       "symptom": "Decrease in Height",
       "range": {
@@ -213,7 +213,7 @@
           "transition": "Prescribe_Bisphosphate"
         },
         {
-          "transition": "Terminal",
+          "transition": "End_Diagnosis_Encounter",
           "remarks": "bisphosphates are the best medicine for osteoporosis, but not available until ~1995"
         }
       ]
@@ -227,10 +227,14 @@
           "display": "Alendronic acid 10 MG Oral Tablet"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "End_Diagnosis_Encounter"
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
     }
   }
 }
