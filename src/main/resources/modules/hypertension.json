@@ -27,50 +27,6 @@
       "assign_to_attribute": "hypertension_dx",
       "direct_transition": "Set_BP_Not Controlled"
     },
-    "Hypertension_Medication_Low": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 429503,
-          "display": "Hydrochlorothiazide 12.5 MG"
-        }
-      ],
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        }
-      },
-      "chronic": true,
-      "direct_transition": "End_Wellness_Encounter",
-      "assign_to_attribute": "hypertension_medication",
-      "reason": "hypertension_dx"
-    },
-    "Hypertension_Medication_High": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 310798,
-          "display": "Hydrochlorothiazide 25 MG Oral Tablet"
-        }
-      ],
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        }
-      },
-      "chronic": true,
-      "direct_transition": "End_Wellness_Encounter",
-      "assign_to_attribute": "hypertension_medication",
-      "reason": "hypertension_dx"
-    },
     "Hypertension_Followup_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -107,62 +63,8 @@
         },
         {
           "distributions": [],
-          "transition": "Wellness_Encounter"
+          "transition": "Terminal"
         }
-      ]
-    },
-    "Hypertension_Combination_Medication": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 746030,
-          "display": "Atenolol 50 MG / Chlorthalidone 25 MG Oral Tablet"
-        }
-      ],
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        }
-      },
-      "chronic": true,
-      "assign_to_attribute": "hypertension_medication_2",
-      "reason": "hypertension_dx",
-      "direct_transition": "End_Hypertension_Followup_Encounter"
-    },
-    "End_Hypertension_Comb_Medication": {
-      "type": "MedicationEnd",
-      "referenced_by_attribute": "hypertension_medication_2",
-      "direct_transition": "Hypertension_Combination_Medication_2"
-    },
-    "Hypertension_Combination_Medication_2": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 999967,
-          "display": "amLODIPine 5 MG / Hydrochlorothiazide 12.5 MG / Olmesartan medoxomil 20 MG Oral Tablet"
-        }
-      ],
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        }
-      },
-      "chronic": true,
-      "assign_to_attribute": "hypertension_medication_3",
-      "reason": "hypertension_dx",
-      "direct_transition": "End_Hypertension_Followup_Encounter_2",
-      "remarks": [
-        "Olmesartan is an angiotensin II receptor blocker (ARB) that relaxes the blood vessels.",
-        "Amlodipine is a calcium channel blocker that relaxes the blood vessels.",
-        "Hydrochlorothiazide is a thiazide diuretic (water pill). It is used to help reduce the amount of water in the body by increasing the flow of urine."
       ]
     },
     "Hypertension_Followup_Encounter_2": {
@@ -214,13 +116,13 @@
         },
         {
           "distributions": [],
-          "transition": "Wellness_Encounter"
+          "transition": "Terminal"
         }
       ]
     },
     "End_Hypertension_Followup_Encounter_3": {
       "type": "EncounterEnd",
-      "direct_transition": "Wellness_Encounter"
+      "direct_transition": "Terminal"
     },
     "LifeStyle_Modifications_Hypertension_CarePlan": {
       "type": "CarePlanStart",
@@ -268,59 +170,110 @@
         }
       ],
       "reason": "hypertension_dx",
-      "conditional_transition": [
-        {
-          "transition": "Hypertension_Medication_Low",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": "<",
-            "value": 160
-          }
-        },
-        {
-          "transition": "Hypertension_Medication_High",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": ">=",
-            "value": 160
-          }
-        }
-      ]
-    },
-    "End_Hypertension_Medication": {
-      "type": "MedicationEnd",
-      "referenced_by_attribute": "hypertension_medication",
-      "direct_transition": "Hypertension_Combination_Medication"
+      "direct_transition": "Prescribe_Medication"
     },
     "Wellness_Encounter": {
       "type": "Encounter",
-      "wellness": true,
       "conditional_transition": [
         {
-          "transition": "Diagnose_Hypertension",
+          "transition": "Excluded",
           "condition": {
-            "condition_type": "And",
+            "condition_type": "Or",
             "conditions": [
               {
-                "condition_type": "Attribute",
-                "attribute": "hypertension",
-                "operator": "==",
-                "value": true
+                "condition_type": "Age",
+                "operator": "<",
+                "quantity": 18,
+                "unit": "years",
+                "value": 0
               },
               {
-                "condition_type": "Attribute",
-                "attribute": "hypertension_dx",
-                "operator": "is nil"
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "ckd",
+                    "operator": ">=",
+                    "value": 3
+                  },
+                  {
+                    "condition_type": "Or",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "pregnant",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Or",
+                        "conditions": [
+                          {
+                            "condition_type": "Attribute",
+                            "attribute": "coronary_heart_disease",
+                            "operator": "==",
+                            "value": true
+                          },
+                          {
+                            "condition_type": "Or",
+                            "conditions": [
+                              {
+                                "condition_type": "Or",
+                                "conditions": [
+                                  {
+                                    "condition_type": "Active Condition",
+                                    "codes": [
+                                      {
+                                        "system": "SNOMED-CT",
+                                        "code": 22298006,
+                                        "display": "Myocardial Infarction"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "condition_type": "Active Condition",
+                                    "codes": [
+                                      {
+                                        "system": "SNOMED-CT",
+                                        "code": 399211009,
+                                        "display": "History of myocardial infarction (situation)"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "condition_type": "Or",
+                                "conditions": [
+                                  {
+                                    "condition_type": "Attribute",
+                                    "attribute": "chf",
+                                    "operator": "is not nil"
+                                  },
+                                  {
+                                    "condition_type": "Attribute",
+                                    "attribute": "atrial_fibrillation",
+                                    "operator": "==",
+                                    "value": true
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
         },
         {
-          "transition": "End_Wellness_No_Action"
+          "transition": "Included"
         }
-      ]
+      ],
+      "wellness": true
     },
     "End_Wellness_Encounter": {
       "type": "EncounterEnd",
@@ -381,13 +334,13 @@
       ],
       "conditional_transition": [
         {
-          "transition": "End_Hypertension_Medication",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "blood_pressure_controlled",
             "operator": "==",
             "value": false
-          }
+          },
+          "transition": "Prescribe_Medication_2"
         },
         {
           "transition": "End_Hypertension_Followup_Encounter"
@@ -432,13 +385,13 @@
       ],
       "conditional_transition": [
         {
-          "transition": "End_Hypertension_Comb_Medication",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "blood_pressure_controlled",
             "operator": "==",
             "value": false
-          }
+          },
+          "transition": "Prescribe_Medication_3"
         },
         {
           "transition": "End_Hypertension_Followup_Encounter_2"
@@ -547,7 +500,56 @@
       "value": true,
       "direct_transition": "Delay_2_Month_2"
     },
-    "End_Wellness_No_Action": {
+    "Excluded": {
+      "type": "Simple",
+      "direct_transition": "Wait Until Next Checkup"
+    },
+    "Prescribe_Medication_3": {
+      "type": "CallSubmodule",
+      "submodule": "medications/hypertension_medication",
+      "direct_transition": "End_Hypertension_Followup_Encounter_2"
+    },
+    "Prescribe_Medication_2": {
+      "type": "CallSubmodule",
+      "submodule": "medications/hypertension_medication",
+      "direct_transition": "End_Hypertension_Followup_Encounter"
+    },
+    "Prescribe_Medication": {
+      "type": "CallSubmodule",
+      "submodule": "medications/hypertension_medication",
+      "direct_transition": "End_Wellness_Encounter"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Included": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Diagnose_Hypertension",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "hypertension",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hypertension_dx",
+                "operator": "is nil"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Wait Until Next Checkup"
+        }
+      ]
+    },
+    "Wait Until Next Checkup": {
       "type": "EncounterEnd",
       "direct_transition": "Wellness_Encounter"
     }
