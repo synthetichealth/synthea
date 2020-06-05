@@ -83,6 +83,10 @@ public class CodeResolveAndExportTest {
   public WireMockRule mockTerminologyService = new WireMockRule(wiremockOptions()
       .usingFilesUnderDirectory("src/test/resources/wiremock/CodeResolveAndExportTest"));
 
+  /**
+   * Prepare for each test.
+   * @throws Exception on failure
+   */
   @Before
   public void setUp() throws Exception {
     TerminologyClient terminologyClient = getR4FhirContext()
@@ -397,6 +401,9 @@ public class CodeResolveAndExportTest {
     assertEquals(EXPECTED_VALUE_DISPLAY, display);
   }
 
+  /**
+   * Clean up after each test.
+   */
   @After
   public void tearDown() {
     if (isHttpRecordingEnabled()) {

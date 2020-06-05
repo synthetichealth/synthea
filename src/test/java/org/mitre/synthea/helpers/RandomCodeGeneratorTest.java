@@ -32,6 +32,10 @@ public class RandomCodeGeneratorTest {
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
+  /**
+   * Prepare for each test.
+   * @throws Exception on failure
+   */
   @Before
   public void setUp() {
     TerminologyClient terminologyClient = getR4FhirContext()
@@ -97,6 +101,9 @@ public class RandomCodeGeneratorTest {
     RandomCodeGenerator.getCode(VALUE_SET_URI, SEED);
   }
 
+  /**
+   * Clean up after each test.
+   */
   @After
   public void tearDown() {
     if (isHttpRecordingEnabled()) {

@@ -106,8 +106,7 @@ public class TransitionMetrics {
   }
 
   private void countStateStats(State state, Metric stateStats, long endDate) {
-    if (state == null || state.entered == null)
-    {
+    if (state == null || state.entered == null) {
       return;
     }
     stateStats.entered.incrementAndGet();
