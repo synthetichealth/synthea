@@ -14,8 +14,27 @@
     "Initialize Step": {
       "type": "SetAttribute",
       "attribute": "hypertension_medication_step",
-      "direct_transition": "Increase Step",
-      "value": 0
+      "value": 0,
+      "conditional_transition": [
+        {
+          "transition": "High BP",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": "<",
+            "value": 160
+          }
+        },
+        {
+          "transition": "Very High BP",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": ">=",
+            "value": 160
+          }
+        }
+      ]
     },
     "Check Step": {
       "type": "Simple",
@@ -71,19 +90,19 @@
         {
           "transition": "Step 1 High",
           "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": "<",
-            "value": 160
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": false
           }
         },
         {
           "transition": "Step 1 Very High",
           "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": ">=",
-            "value": 160
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": true
           }
         }
       ]
@@ -94,19 +113,19 @@
         {
           "transition": "Step 2 High",
           "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": "<",
-            "value": 160
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": false
           }
         },
         {
           "transition": "Step 2 Very High",
           "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": ">=",
-            "value": 160
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": true
           }
         }
       ]
@@ -117,19 +136,19 @@
         {
           "transition": "Step 3 High",
           "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": "<",
-            "value": 160
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": false
           }
         },
         {
           "transition": "Step 3 Very High",
           "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": ">=",
-            "value": 160
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": true
           }
         }
       ]
@@ -720,19 +739,19 @@
         {
           "transition": "Step_1_High",
           "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": "<",
-            "value": 160
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": false
           }
         },
         {
           "transition": "Step 1 Very High",
           "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": ">=",
-            "value": 160
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": true
           }
         }
       ]
@@ -743,19 +762,19 @@
         {
           "transition": "Step_2_High",
           "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": "<",
-            "value": 160
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": false
           }
         },
         {
           "transition": "Step 2 Very High",
           "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": ">=",
-            "value": 160
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": true
           }
         }
       ]
@@ -766,19 +785,19 @@
         {
           "transition": "Step_3_High",
           "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": "<",
-            "value": 160
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": false
           }
         },
         {
           "transition": "Step 3 Very High",
           "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": ">=",
-            "value": 160
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": true
           }
         }
       ]
@@ -985,6 +1004,18 @@
         }
       },
       "direct_transition": "Terminal"
+    },
+    "High BP": {
+      "type": "SetAttribute",
+      "attribute": "hypertension_severe",
+      "direct_transition": "Increase Step",
+      "value": false
+    },
+    "Very High BP": {
+      "type": "SetAttribute",
+      "attribute": "hypertension_severe",
+      "value": true,
+      "direct_transition": "Increase Step"
     }
   }
 }
