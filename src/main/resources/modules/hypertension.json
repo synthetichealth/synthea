@@ -251,10 +251,32 @@
                                     "operator": "is not nil"
                                   },
                                   {
-                                    "condition_type": "Attribute",
-                                    "attribute": "atrial_fibrillation",
-                                    "operator": "==",
-                                    "value": true
+                                    "condition_type": "Or",
+                                    "conditions": [
+                                      {
+                                        "condition_type": "Attribute",
+                                        "attribute": "atrial_fibrillation",
+                                        "operator": "==",
+                                        "value": true
+                                      },
+                                      {
+                                        "condition_type": "Or",
+                                        "conditions": [
+                                          {
+                                            "condition_type": "Attribute",
+                                            "attribute": "microalbuminuria",
+                                            "operator": "==",
+                                            "value": true
+                                          },
+                                          {
+                                            "condition_type": "Attribute",
+                                            "attribute": "proteinuria",
+                                            "operator": "==",
+                                            "value": true
+                                          }
+                                        ]
+                                      }
+                                    ]
                                   }
                                 ]
                               }
