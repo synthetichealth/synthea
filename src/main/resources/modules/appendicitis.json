@@ -21,7 +21,8 @@
         {
           "transition": "Terminal"
         }
-      ]
+      ],
+      "name": "Initial"
     },
     "Male": {
       "type": "Simple",
@@ -37,7 +38,8 @@
       ],
       "remarks": [
         "Men have an approx lifetime risk of appendicitis of 8.6%. Ref: http://www.ncbi.nlm.nih.gov/pubmed/2239906"
-      ]
+      ],
+      "name": "Male"
     },
     "Female": {
       "type": "Simple",
@@ -53,7 +55,8 @@
       ],
       "remarks": [
         "Women have an approx lifetime risk of appendicitis of 6.7%. Ref: http://www.ncbi.nlm.nih.gov/pubmed/2239906"
-      ]
+      ],
+      "name": "Female"
     },
     "Pre_appendicitis": {
       "type": "Simple",
@@ -77,7 +80,8 @@
       ],
       "remarks": [
         "Age distribution of appendicitis from https://www.ncbi.nlm.nih.gov/books/NBK169006/ , Table 1"
-      ]
+      ],
+      "name": "Pre_appendicitis"
     },
     "Ages_1_17": {
       "type": "Delay",
@@ -86,7 +90,8 @@
         "high": 17,
         "unit": "years"
       },
-      "direct_transition": "Appendicitis_Symptom1"
+      "direct_transition": "Appendicitis_Symptom1",
+      "name": "Ages_1_17"
     },
     "Ages_18_44": {
       "type": "Delay",
@@ -95,7 +100,8 @@
         "high": 44,
         "unit": "years"
       },
-      "direct_transition": "Appendicitis_Symptom1"
+      "direct_transition": "Appendicitis_Symptom1",
+      "name": "Ages_18_44"
     },
     "Ages_45_64": {
       "type": "Delay",
@@ -104,7 +110,8 @@
         "high": 64,
         "unit": "years"
       },
-      "direct_transition": "Appendicitis_Symptom1"
+      "direct_transition": "Appendicitis_Symptom1",
+      "name": "Ages_45_64"
     },
     "Ages_65_Plus": {
       "type": "Delay",
@@ -113,7 +120,8 @@
         "high": 99,
         "unit": "years"
       },
-      "direct_transition": "Appendicitis_Symptom1"
+      "direct_transition": "Appendicitis_Symptom1",
+      "name": "Ages_65_Plus"
     },
     "Appendicitis_Symptom1": {
       "type": "Symptom",
@@ -122,7 +130,8 @@
         "low": 50,
         "high": 150
       },
-      "direct_transition": "Appendicitis_Symptom2"
+      "direct_transition": "Appendicitis_Symptom2",
+      "name": "Appendicitis_Symptom1"
     },
     "Appendicitis_Symptom2": {
       "type": "Symptom",
@@ -131,7 +140,8 @@
         "low": 50,
         "high": 100
       },
-      "direct_transition": "Appendicitis_Symptom3"
+      "direct_transition": "Appendicitis_Symptom3",
+      "name": "Appendicitis_Symptom2"
     },
     "Appendicitis_Symptom3": {
       "type": "Symptom",
@@ -140,7 +150,8 @@
         "low": 50,
         "high": 100
       },
-      "direct_transition": "Appendicitis_Symptom4"
+      "direct_transition": "Appendicitis_Symptom4",
+      "name": "Appendicitis_Symptom3"
     },
     "Appendicitis_Symptom4": {
       "type": "Symptom",
@@ -149,7 +160,8 @@
         "low": 0,
         "high": 50
       },
-      "direct_transition": "Appendicitis_Symptom5"
+      "direct_transition": "Appendicitis_Symptom5",
+      "name": "Appendicitis_Symptom4"
     },
     "Appendicitis_Symptom5": {
       "type": "Symptom",
@@ -158,7 +170,8 @@
         "low": 0,
         "high": 50
       },
-      "direct_transition": "Appendicitis_Symptom6"
+      "direct_transition": "Appendicitis_Symptom6",
+      "name": "Appendicitis_Symptom5"
     },
     "Appendicitis_Symptom6": {
       "type": "Symptom",
@@ -167,7 +180,8 @@
         "low": 0,
         "high": 50
       },
-      "direct_transition": "Appendicitis_Symptom7"
+      "direct_transition": "Appendicitis_Symptom7",
+      "name": "Appendicitis_Symptom6"
     },
     "Appendicitis_Symptom7": {
       "type": "Symptom",
@@ -176,16 +190,18 @@
         "low": 0,
         "high": 50
       },
-      "direct_transition": "Symptom_Period"
+      "direct_transition": "Symptom_Period",
+      "name": "Appendicitis_Symptom7"
     },
-     "Symptom_Period": {
+    "Symptom_Period": {
       "type": "Delay",
       "range": {
         "low": 1,
         "high": 3,
         "unit": "days"
       },
-      "direct_transition": "Appendicitis"
+      "direct_transition": "Appendicitis",
+      "name": "Symptom_Period"
     },
     "Appendicitis": {
       "type": "ConditionOnset",
@@ -213,7 +229,8 @@
         "(ref: http://emedicine.medscape.com/article/773895-overview#a7 )",
         "From table 1 here: https://www.ncbi.nlm.nih.gov/books/NBK169006/ it's about 30%",
         "For simplicity here I just round to 30% for all age groups."
-      ]
+      ],
+      "name": "Appendicitis"
     },
     "Rupture": {
       "type": "ConditionOnset",
@@ -225,7 +242,8 @@
           "display": "Rupture of appendix"
         }
       ],
-      "direct_transition": "Appendicitis_Encounter"
+      "direct_transition": "Appendicitis_Encounter",
+      "name": "Rupture"
     },
     "Appendicitis_Encounter": {
       "type": "Encounter",
@@ -242,7 +260,8 @@
           "display": "Emergency Room Admission"
         }
       ],
-      "direct_transition": "History_of_Appendectomy"
+      "direct_transition": "History_of_Appendectomy",
+      "name": "Appendicitis_Encounter"
     },
     "History_of_Appendectomy": {
       "type": "ConditionOnset",
@@ -254,7 +273,8 @@
           "display": "History of appendectomy"
         }
       ],
-      "direct_transition": "Appendectomy_Encounter"
+      "direct_transition": "Transfer_To_Inpatient",
+      "name": "History_of_Appendectomy"
     },
     "Appendectomy_Encounter": {
       "type": "Encounter",
@@ -267,7 +287,8 @@
           "display": "Encounter Inpatient"
         }
       ],
-      "direct_transition": "Appendectomy"
+      "direct_transition": "Appendectomy",
+      "name": "Appendectomy_Encounter"
     },
     "Appendectomy": {
       "type": "Procedure",
@@ -279,10 +300,17 @@
           "display": "Appendectomy"
         }
       ],
-      "duration" : { "low" : 40, "high" : 70, "unit" : "minutes" },
-      "remarks" : ["Avg operative time is ~55 minutes",
-                   "https://www.ncbi.nlm.nih.gov/pubmed/17658102"],
-      "direct_transition": "Appendicitis_Symptom1_Ends"
+      "duration": {
+        "low": 40,
+        "high": 70,
+        "unit": "minutes"
+      },
+      "remarks": [
+        "Avg operative time is ~55 minutes",
+        "https://www.ncbi.nlm.nih.gov/pubmed/17658102"
+      ],
+      "direct_transition": "Appendicitis_Symptom1_Ends",
+      "name": "Appendectomy"
     },
     "Appendicitis_Symptom1_Ends": {
       "type": "Symptom",
@@ -290,7 +318,8 @@
       "exact": {
         "quantity": 0
       },
-      "direct_transition": "Appendicitis_Symptom2_Ends"
+      "direct_transition": "Appendicitis_Symptom2_Ends",
+      "name": "Appendicitis_Symptom1_Ends"
     },
     "Appendicitis_Symptom2_Ends": {
       "type": "Symptom",
@@ -298,7 +327,8 @@
       "exact": {
         "quantity": 0
       },
-      "direct_transition": "Appendicitis_Symptom3_Ends"
+      "direct_transition": "Appendicitis_Symptom3_Ends",
+      "name": "Appendicitis_Symptom2_Ends"
     },
     "Appendicitis_Symptom3_Ends": {
       "type": "Symptom",
@@ -306,7 +336,8 @@
       "exact": {
         "quantity": 0
       },
-      "direct_transition": "Appendicitis_Symptom4_Ends"
+      "direct_transition": "Appendicitis_Symptom4_Ends",
+      "name": "Appendicitis_Symptom3_Ends"
     },
     "Appendicitis_Symptom4_Ends": {
       "type": "Symptom",
@@ -314,7 +345,8 @@
       "exact": {
         "quantity": 0
       },
-      "direct_transition": "Appendicitis_Symptom5_Ends"
+      "direct_transition": "Appendicitis_Symptom5_Ends",
+      "name": "Appendicitis_Symptom4_Ends"
     },
     "Appendicitis_Symptom5_Ends": {
       "type": "Symptom",
@@ -322,7 +354,8 @@
       "exact": {
         "quantity": 0
       },
-      "direct_transition": "Appendicitis_Symptom6_Ends"
+      "direct_transition": "Appendicitis_Symptom6_Ends",
+      "name": "Appendicitis_Symptom5_Ends"
     },
     "Appendicitis_Symptom6_Ends": {
       "type": "Symptom",
@@ -330,7 +363,8 @@
       "exact": {
         "quantity": 0
       },
-      "direct_transition": "Appendicitis_Symptom7_Ends"
+      "direct_transition": "Appendicitis_Symptom7_Ends",
+      "name": "Appendicitis_Symptom6_Ends"
     },
     "Appendicitis_Symptom7_Ends": {
       "type": "Symptom",
@@ -338,29 +372,43 @@
       "exact": {
         "quantity": 0
       },
-      "direct_transition": "Recovery"
+      "direct_transition": "Recovery",
+      "name": "Appendicitis_Symptom7_Ends"
     },
-    "Recovery" : {
-      "type" : "Delay",
-      "range" : { "low" : 1, "high" : 5, "unit" : "days" },
-      "remarks" : ["Traditionally, patients are hospitalized for 24 hours after laparoscopic appendectomy. ",
-                   "A retrospective review of 119 patients [...] ",
-                   "Forty-two patients were dismissed on the day of surgery and 77 were admitted for 1 to 5 days postoperatively.",
-                   "https://www.ncbi.nlm.nih.gov/pubmed/22369831"],
-      "direct_transition" : "End_Appendectomy_Encounter"
-    },
-
-    "End_Appendectomy_Encounter" : {
-      "type" : "EncounterEnd",
-      "discharge_disposition" : {
-        "system" : "NUBC",
-        "code" : "01",
-        "display" : "Discharged to home care or self care (routine discharge)"
+    "Recovery": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 5,
+        "unit": "days"
       },
-      "direct_transition": "Terminal"
+      "remarks": [
+        "Traditionally, patients are hospitalized for 24 hours after laparoscopic appendectomy. ",
+        "A retrospective review of 119 patients [...] ",
+        "Forty-two patients were dismissed on the day of surgery and 77 were admitted for 1 to 5 days postoperatively.",
+        "https://www.ncbi.nlm.nih.gov/pubmed/22369831"
+      ],
+      "direct_transition": "End_Appendectomy_Encounter",
+      "name": "Recovery"
+    },
+    "End_Appendectomy_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Terminal",
+      "name": "End_Appendectomy_Encounter"
     },
     "Terminal": {
-      "type": "Terminal"
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "Transfer_To_Inpatient": {
+      "type": "EncounterEnd",
+      "direct_transition": "Appendectomy_Encounter",
+      "name": "Transfer_To_Inpatient"
     }
   }
 }
