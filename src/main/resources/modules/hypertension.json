@@ -72,11 +72,11 @@
           "distributions": [
             {
               "transition": "Set_BP_Controlled_2",
-              "distribution": 0.49
+              "distribution": 0.433
             },
             {
-              "transition": "Delay 2_Month",
-              "distribution": 0.51
+              "transition": "Drop_Outs",
+              "distribution": 0.567
             }
           ]
         },
@@ -125,11 +125,11 @@
           "distributions": [
             {
               "transition": "Set_BP_Controlled_3",
-              "distribution": 0.49
+              "distribution": 0.658
             },
             {
               "transition": "Delay_2_Month_2",
-              "distribution": 0.51
+              "distribution": 0.342
             }
           ]
         },
@@ -288,11 +288,11 @@
       "distributed_transition": [
         {
           "transition": "Set_BP_Controlled",
-          "distribution": 0.49
+          "distribution": 0.275
         },
         {
-          "transition": "Delay_One_Month",
-          "distribution": 0.51
+          "distribution": 0.725,
+          "transition": "Drop Outs"
         }
       ]
     },
@@ -560,6 +560,32 @@
     "Wait Until Next Checkup": {
       "type": "EncounterEnd",
       "direct_transition": "Wellness_Encounter"
+    },
+    "Drop Outs": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Delay_One_Month",
+          "distribution": 0.824
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.176
+        }
+      ]
+    },
+    "Drop_Outs": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Delay 2_Month",
+          "distribution": 0.687
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.313
+        }
+      ]
     }
   }
 }
