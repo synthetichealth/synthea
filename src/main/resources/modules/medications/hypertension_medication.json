@@ -168,24 +168,93 @@
     },
     "Step 1 Very High": {
       "type": "Simple",
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "HCTZ+",
-          "distribution": 0.6
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "microalbuminuria",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "proteinuria",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.67,
+              "transition": "HCTZ+"
+            },
+            {
+              "transition": "Lisinopril+",
+              "distribution": 0.33
+            }
+          ]
         },
         {
-          "transition": "Lisinopril+",
-          "distribution": 0.3
-        },
-        {
-          "transition": "Amlodipine+",
-          "distribution": 0.1
+          "distributions": [
+            {
+              "transition": "HCTZ+",
+              "distribution": 0.6
+            },
+            {
+              "transition": "Lisinopril+",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Amlodipine+",
+              "distribution": 0.1
+            }
+          ]
         }
       ]
     },
     "Step 2 High": {
       "type": "Simple",
       "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "microalbuminuria",
+                    "operator": "==",
+                    "value": true
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "proteinuria",
+                    "operator": "==",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Medication",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 310798,
+                    "display": "Hydrochlorothiazide 25 MG Oral Tablet"
+                  }
+                ]
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "Lisinopril_2"
+        },
         {
           "condition": {
             "condition_type": "Active Medication",
@@ -199,24 +268,45 @@
           },
           "distributions": [
             {
-              "transition": "Amlodipine_2",
-              "distribution": 0.5
+              "distribution": 0.5,
+              "transition": "Amlodipine_2"
             },
             {
-              "transition": "Lisinopril_2",
-              "distribution": 0.5
+              "distribution": 0.5,
+              "transition": "Lisinopril_2"
             }
           ]
         },
         {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "microalbuminuria",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "proteinuria",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "Lisinopril_2"
+        },
+        {
           "distributions": [
             {
-              "transition": "Lisinopril_2",
-              "distribution": 0.5
+              "distribution": 0.5,
+              "transition": "Lisinopril_2"
             },
             {
-              "transition": "HCTZ_2",
-              "distribution": 0.5
+              "distribution": 0.5,
+              "transition": "HCTZ_2"
             }
           ]
         }
@@ -804,18 +894,43 @@
     },
     "Step_1_High": {
       "type": "Simple",
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Lisinopril",
-          "distribution": 0.5
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "microalbuminuria",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "proteinuria",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "Lisinopril"
         },
         {
-          "transition": "Amlodipine",
-          "distribution": 0.25
-        },
-        {
-          "transition": "HCTZ",
-          "distribution": 0.25
+          "distributions": [
+            {
+              "transition": "Lisinopril",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Amlodipine",
+              "distribution": 0.25
+            },
+            {
+              "transition": "HCTZ",
+              "distribution": 0.25
+            }
+          ]
         }
       ]
     },

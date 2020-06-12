@@ -1,11 +1,30 @@
 {
   "name": "Hypertension",
   "remarks": [
-    "Hypertension modelled after the JNC 8 Hypertension Guideline Algorithm.",
+    "This Hypertension model reflects the treatment of Primary Hypertension (HTN) in Adults. ",
     "",
-    "The hypertension model section located in the beginning of the Metabolic Syndrome Standard of Care   ",
+    "Overview",
+    "Hypertension diagnosis definitions, pharmacologic treatment thresholds, and control target recommendations diverge across clinical guidelines. However, the model was informed by the following hypertension guidelines and subsequent updates:",
+    "2018 ESC/ESH Guidelines for the management of arterial hypertension: The Task Force for the management of arterial hypertension of the European Society of Cardiology (ESC) and the European Society of Hypertension (ESH)",
+    "2017 ACC/AHA/AAPA/ABC/ACPM/AGS/APhA/ASH/ASPC/NMA/PCNA guideline for the prevention, detection, evaluation, and management of high blood pressure in adults: a report of the American College of Cardiology/American Heart Association Task Force on Clinical Practice Guidelines. ",
+    "2017 Pharmacologic treatment of hypertension in adults aged 60 years or older to higher versus lower blood pressure targets: a clinical practice guideline from the American College of Physicians and the American Academy of Family Physicians.",
+    "2014 evidence-based guideline for the management of high blood pressure in adults: report from the panel members appointed to the Eighth Joint National Committee (JNC 8). ",
+    "Canadian Hypertension Guidelines",
     "",
-    "The recommendation for first-line therapy for hypertension remains a beta blocker or diuretic given in a low dosage. A target blood pressure of less than 140/90 mm Hg is achieved in about 50 percent of patients treated with monotherapy; two or more agents from different pharmacologic classes are often needed to achieve adequate blood pressure control. Single-dose combination antihypertension therapy is an important option that combines efficacy of blood pressure reduction and a low side effect profile with convenient once-daily dosing to enhance compliance. Combination antihypertensives include combined agents from the following pharmacologic classes: diuretics and potassium-sparing diuretics, beta blockers and diuretics, angiotensin-converting enzyme (ACE) inhibitors and diuretics, angiotensin-II antagonists and diuretics, and calcium channel blockers and ACE inhibitors - https://www.aafp.org/afp/2000/0515/p3049.html"
+    "",
+    "The following model assumptions apply: ",
+    "HTN Definitions: Our model definition of HTN is >= 140/90 for all populations, given general agreement of this threshold for pharmacotherapy across most clinical guidelines. Our model threshold for use of pharmacotherapy is SBP >= 140. We define control as SBP < 140. All individuals do NOT achieve control consistent with epidemiological studies. We acknowledge that HTN may be defined using a lower blood pressure (see ACC/AHA) and that lower pharmacotherapy thresholds and targets may be used for populations with certain comorbid conditions, cardiovascular risk, and/or of a certain age. This model does not reflect all primary HTN care pathways, as individual decision making that accounts for benefits, harms, treatment burden and other factors is a critical part of hypertension management. ",
+    " ",
+    "Pharmacotherapy: Pharmacotherapy represented in the submodule 'medications/hypertension_medication' includes ACE inhibitors/ angiotensin receptor blockers (ARBs), thiazide diuretics, and calcium channel blockers (CCB). The drug representing the pharmacologic category, is the medication most commonly prescribed, rather than the agent used in clinical trials (e.g. hydrochlorothiazide vs chlorthalidone). The use of an ACE-inhibitor is inclusive of the use of an ARB. The model only represents the use of dihydropyridine CCBs. Beta-blockers (BBs) are not represented in the model, as the use of BBs for hypertension management is often guided by other compelling clinical indications such as those noted in the clinical exclusions below. Additionally, evidence suggest that in populations without these comorbid conditions, beta‐blockers may not have the same benefits in preventing death and stroke as CCB, thiazides, and ACE/ARBS. The medication dose represented in the model represents the minimum dose of the usual dose range for HTN treatment. This medication dose is inclusive of a lower dose and/or titration to the maximum dose prior to adding another agent.",
+    "",
+    "Pathway: Once individuals require >= 4 medications for HTN treatment, their treatment is no longer represented in the model; these individuals meet the definition of resistant hypertension often requiring further evaluation and/or use of additional HTN medications. Evidence suggests this is a small percentage of individuals (~5-13%).",
+    "",
+    "Clinical Population Exclusions: The care pathway excludes individuals with ASCVD (e.g coronary heart disease, MI), heart failure, pregnancy, age < 18 years, or CKD > Stage III. Rationale: Recommendations for hypertension treatment differ in pregnancy due to risk of teratogenic effects with certain medications and associated pregnancy complications. In pediatrics, hypertension diagnosis is established based on age, sex, and height percentiles with limited evidence regarding long-term outcomes. For co-morbid cardiovascular conditions, we address hypertension management in current (or future) cardiovascular models since similar medications are used to manage cardiovascular disease and hypertension. For advanced CKD/ESRD, hypertension management pathways often differ with the use of additional medications. ",
+    "",
+    "Additional references to inform population probabilities and pharmacotherapy utilization: ",
+    "- Derington, C.G., King, J.B., Herrick, J.S., Shimbo, D., Kronish, I.M., Saseen, J.J., Muntner, P., Moran, A.E. and Bress, A.P., 2020. Trends in antihypertensive medication monotherapy and combination use among US adults, National Health and Nutrition Examination Survey 2005–2016. Hypertension, 75(4), pp.973-981.",
+    "- Shah, S.J. and Stafford, R.S., 2017. Current trends of hypertension treatment in the United States. American journal of hypertension, 30(10), pp.1008-1014.",
+    ""
   ],
   "states": {
     "Initial": {
@@ -193,7 +212,7 @@
                   {
                     "condition_type": "Attribute",
                     "attribute": "ckd",
-                    "operator": ">=",
+                    "operator": ">",
                     "value": 3
                   },
                   {
@@ -243,42 +262,9 @@
                                 ]
                               },
                               {
-                                "condition_type": "Or",
-                                "conditions": [
-                                  {
-                                    "condition_type": "Attribute",
-                                    "attribute": "chf",
-                                    "operator": "is not nil"
-                                  },
-                                  {
-                                    "condition_type": "Or",
-                                    "conditions": [
-                                      {
-                                        "condition_type": "Attribute",
-                                        "attribute": "atrial_fibrillation",
-                                        "operator": "==",
-                                        "value": true
-                                      },
-                                      {
-                                        "condition_type": "Or",
-                                        "conditions": [
-                                          {
-                                            "condition_type": "Attribute",
-                                            "attribute": "microalbuminuria",
-                                            "operator": "==",
-                                            "value": true
-                                          },
-                                          {
-                                            "condition_type": "Attribute",
-                                            "attribute": "proteinuria",
-                                            "operator": "==",
-                                            "value": true
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
+                                "condition_type": "Attribute",
+                                "attribute": "chf",
+                                "operator": "is not nil"
                               }
                             ]
                           }
