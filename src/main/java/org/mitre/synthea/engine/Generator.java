@@ -7,6 +7,7 @@ import java.io.FilenameFilter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -38,6 +39,7 @@ import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
@@ -111,6 +113,11 @@ public class Generator {
      *  value of -1 will evolve the population to the current system time.
      */
     public int daysToTravelForward = -1;
+    
+    /** Encounter period startDate and endDate **/
+    public Date startDate;
+    public Date endDate;
+    
   }
   
   /**
@@ -436,6 +443,10 @@ public class Generator {
           }
         }
 
+        //Filter the encouters based on period range
+        List<Encounter> encounters = person.record.encounters;
+        List<Encounter> updatedEncounters =  encounters.stream().filter(enc -> isInTheRange(enc)).collect(Collectors.toList());
+        person.record.encounters = updatedEncounters;
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
         Exporter.export(person, finishTime, exporterRuntimeOptions);
@@ -454,6 +465,15 @@ public class Generator {
     }
     return person;
   }
+  
+  private boolean isInTheRange(Encounter enc) {
+		if (options.startDate == null || options.endDate == null)
+			return true;
+		Date encStartDate = new Date(enc.start);
+		Date encEndDate = new Date(enc.stop);
+		return encStartDate.after(options.startDate) && encStartDate.before(options.endDate)
+				&& encEndDate.after(options.startDate) && encEndDate.before(options.endDate);
+	}
   
   /**
    * Update person record to stop time, record the entry and export record.

@@ -24,3 +24,4 @@ src/main/resources/version.txt
 .vscode/launch.json
 .vscode/settings.json
 /build/
+/.nb-gradle/
