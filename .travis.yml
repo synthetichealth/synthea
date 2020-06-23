@@ -16,7 +16,7 @@ before_deploy:
   - git config --local user.name "Jason Walonoski"
   - git config --local user.email "jwalonoski@mitre.org"
   - export TRAVIS_TAG=master-branch-latest
-  - git tag $TRAVIS_TAG
+  - git tag -f $TRAVIS_TAG
 deploy:
   provider: releases
   api_key: $GH_TOKEN
