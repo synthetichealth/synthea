@@ -679,8 +679,11 @@ public class FhirR4 {
       encounterResource.addType().addCoding().setCode("185349003")
           .setDisplay("Encounter for check up").setSystem(SNOMED_URI);
     } else {
-      Code code = encounter.codes.get(0);
+      //encounter.codes.forEach(enc-> System.out.println(enc.code+"::"+enc.display));
+     // Code code = encounter.codes.get(0);
+      for(Code code : encounter.codes) {
       encounterResource.addType(mapCodeToCodeableConcept(code, SNOMED_URI));
+      }
     }
 
     Coding classCode = new Coding();

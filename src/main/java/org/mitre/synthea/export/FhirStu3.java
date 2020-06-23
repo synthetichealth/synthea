@@ -635,8 +635,10 @@ public class FhirStu3 {
           .setDisplay("Encounter for check up").setSystem(SNOMED_URI);
 
     } else {
-      Code code = encounter.codes.get(0);
-      encounterResource.addType(mapCodeToCodeableConcept(code, SNOMED_URI));
+      //Code code = encounter.codes.get(0);
+    	for(Code code : encounter.codes) {
+    		encounterResource.addType(mapCodeToCodeableConcept(code, SNOMED_URI));	
+    	}      
     }
 
     Coding classCode = new Coding();
