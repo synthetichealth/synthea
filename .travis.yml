@@ -27,6 +27,7 @@ deploy:
   skip_cleanup: true
   on:
     tags: false
+    jdk: "openjdk8"
   overwrite: true
   prerelease: true
 after_success:
