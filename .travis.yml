@@ -17,7 +17,8 @@ before_deploy:
   - git config --local user.email "jwalonoski@mitre.org"
   - export TRAVIS_TAG=master-branch-latest
   - git tag -d $TRAVIS_TAG
-  - git push origin :$TRAVIS_TAG
+  - git remote add upstream "https://$GH_TOKEN@github.com/synthetichealth/synthea.git"
+  - git push upstream :$TRAVIS_TAG
   - git tag $TRAVIS_TAG
 deploy:
   provider: releases
