@@ -10,7 +10,16 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
 script:
-- travis_wait ./gradlew check
+- travis_wait ./gradlew check uberJar
+deploy:
+  provider: releases
+  api_key: $GH_TOKEN
+  file: build/libs/synthea-with-dependencies.jar
+  skip_cleanup: true
+  on:
+    tags: false
+  overwrite: true
+  prerelease: true
 after_success:
 - bash <(curl -s https://codecov.io/bash)
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash deploy.sh
