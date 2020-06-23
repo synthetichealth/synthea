@@ -11,6 +11,12 @@ cache:
   - "$HOME/.gradle/wrapper/"
 script:
 - travis_wait ./gradlew check uberJar
+before_deploy:
+  # Set up git user name and tag this commit
+  - git config --local user.name "Jason Walonoski"
+  - git config --local user.email "jwalonoski@mitre.org"
+  - export TRAVIS_TAG=master-branch-latest
+  - git tag $TRAVIS_TAG
 deploy:
   provider: releases
   api_key: $GH_TOKEN
