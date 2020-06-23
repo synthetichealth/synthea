@@ -426,6 +426,28 @@ public class StateTest {
   }
 
   @Test
+  public void deathAfterProcedureWithDuration() throws Exception {
+    Module module = TestHelper.getFixture("procedure_duration_and_death.json");
+
+    // patient is alive
+    assertTrue(person.alive(time));
+
+    // patient dies during the process
+    module.process(person, time);
+
+    // patient is dead later...
+    long step = Utilities.convertTime("days", 7);
+    assertFalse(person.alive(time + step));
+
+    // patient has one encounter...
+    assertTrue(person.hadPriorState("Encounter 1"));
+    assertEquals(1, person.record.encounters.size());
+
+    assertTrue((long) person.attributes.get(Person.DEATHDATE)
+        >= person.record.encounters.get(0).stop);
+  }
+
+  @Test
   public void vitalsign() throws Exception {
     // Setup a mock to track calls to the patient record
     // In this case, the record shouldn't be called at all
