@@ -679,7 +679,7 @@ public class FhirR4 {
       encounterResource.addType().addCoding().setCode("185349003")
           .setDisplay("Encounter for check up").setSystem(SNOMED_URI);
     } else {
-      //encounter.codes.forEach(enc-> System.out.println(enc.code+"::"+enc.display));
+     // encounter.codes.forEach(enc-> System.out.println(enc.code+"::"+enc.display));
      // Code code = encounter.codes.get(0);
       for(Code code : encounter.codes) {
       encounterResource.addType(mapCodeToCodeableConcept(code, SNOMED_URI));
@@ -2117,6 +2117,11 @@ public class FhirR4 {
     reportResource.addCategory(new CodeableConcept(
         new Coding("http://terminology.hl7.org/CodeSystem/v2-0074", "LAB", "Laboratory")));
     reportResource.setCode(mapCodeToCodeableConcept(report.codes.get(0), LOINC_URI));
+    //Adding CodeableConcept.codes to DiagnosticReport.code
+    report.codes.stream().skip(1).forEach(code -> {
+    	CodeableConcept value = (mapCodeToCodeableConcept(code, LOINC_URI));
+    	reportResource.getCode().getCoding().addAll(value.getCoding());
+    });
     reportResource.setSubject(new Reference(personEntry.getFullUrl()));
     reportResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
     reportResource.setEffective(convertFhirDateTime(report.start, true));
