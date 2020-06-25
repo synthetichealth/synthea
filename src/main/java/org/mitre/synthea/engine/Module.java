@@ -14,7 +14,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.spi.FileSystemProvider;
@@ -75,7 +77,7 @@ public class Module implements Serializable {
       URI modulesURI = Module.class.getClassLoader().getResource("modules").toURI();
       fixPathFromJar(modulesURI);
       Path modulesPath = Paths.get(modulesURI);
-      submoduleCount = walkModuleTree(modulesPath, retVal, moduleOverrides);
+      submoduleCount = walkModuleTree(modulesPath, retVal, moduleOverrides, false);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -103,9 +105,10 @@ public class Module implements Serializable {
   }
 
   private static int walkModuleTree(
-          Path modulesPath, Map<String, 
-          ModuleSupplier> retVal, 
-          Properties overrides)
+          Path modulesPath,
+          Map<String, ModuleSupplier> retVal, 
+          Properties overrides,
+          boolean localFiles)
           throws Exception {
     AtomicInteger submoduleCount = new AtomicInteger();
     Path basePath = modulesPath.getParent();
@@ -115,9 +118,10 @@ public class Module implements Serializable {
       if (submodule) {
         submoduleCount.getAndIncrement();
       }
+      Path loadPath = localFiles ? t : basePath.relativize(t);
       retVal.put(relativePath, new ModuleSupplier(submodule,
           relativePath,
-          () -> loadFile(basePath.relativize(t), submodule, overrides)));
+          () -> loadFile(loadPath, submodule, overrides, localFiles)));
     });
     return submoduleCount.get();
   }
@@ -134,7 +138,8 @@ public class Module implements Serializable {
     int originalModuleCount = modules.size();
     Properties moduleOverrides = getModuleOverrides();
     try {
-      walkModuleTree(dir.toPath(), modules, moduleOverrides);
+      submoduleCount = walkModuleTree(dir.toPath().toAbsolutePath(), modules,
+              moduleOverrides, true);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -170,13 +175,15 @@ public class Module implements Serializable {
   public static Module loadFile(Path path, Path modulesFolder, Properties overrides)
          throws Exception {
     boolean submodule = !path.getParent().equals(modulesFolder);
-    return loadFile(path, submodule, overrides);
+    return loadFile(path, submodule, overrides, false);
   }
 
-  private static Module loadFile(Path path, boolean submodule, Properties overrides)
-          throws Exception {
+  private static Module loadFile(Path path, boolean submodule, Properties overrides,
+          boolean localFiles) throws Exception {
     System.out.format("Loading %s %s\n", submodule ? "submodule" : "module", path.toString());
-    String jsonString = Utilities.readResource(path.toString());
+    String jsonString = localFiles
+            ? new String(Files.readAllBytes(path), StandardCharsets.UTF_8)
+            : Utilities.readResource(path.toString());
     if (overrides != null) {
       jsonString = applyOverrides(jsonString, overrides, path.getFileName().toString());
     }
