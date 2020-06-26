@@ -30,6 +30,7 @@ public class App {
     System.out.println("         [-i initialPopulationSnapshotPath]");
     System.out.println("         [-u updatedPopulationSnapshotPath]");
     System.out.println("         [-t updateTimePeriodInDays]");
+    System.out.println("         [-ecnr encounterStartDate-encounterEndDate]");
     System.out.println("         [--config* value]");
     System.out.println("          * any setting from src/main/resources/synthea.properties");
     System.out.println("Examples:");
@@ -41,7 +42,7 @@ public class App {
     System.out.println("run_synthea -s 21 -p 100 Utah \"Salt Lake City\"");
     System.out.println("run_synthea -g M -a 60-65");
     System.out.println("run_synthea -p 10 --exporter.fhir.export true");
-    System.out.println("         [-encr encounterStartDate-encounterEndDate]");
+    System.out.println("run_synthea -encr 01/01/2020-06/01/2020");
     System.out.println("run_synthea -m moduleFilename" + File.pathSeparator + "anotherModule"
         + File.pathSeparator + "module*");
     System.out.println("run_synthea --exporter.baseDirectory \"./output_tx/\" Texas");
