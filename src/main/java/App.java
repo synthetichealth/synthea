@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
 
 /*
@@ -108,7 +109,7 @@ public class App {
             String value = argsQ.poll();
             File localModuleDir = new File(value);
             if (localModuleDir.exists() && localModuleDir.isDirectory()) {
-              options.localModuleDir = localModuleDir;
+              Module.addModules(localModuleDir);
             } else {
               throw new FileNotFoundException(String.format(
                       "Specified local module directory (%s) is not a directory",
