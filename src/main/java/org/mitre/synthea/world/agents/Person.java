@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -431,13 +432,19 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public void recordDeath(long time, Code cause) {
     if (alive(time)) {
-      attributes.put(Person.DEATHDATE, Long.valueOf(time));
+      Optional<Long> lastEncounterStop =
+          this.record.encounters.stream().map(encounter -> encounter.stop).max(Long::compareTo);
+      long deathTime = time;
+      if (lastEncounterStop.isPresent() && lastEncounterStop.get() > time) {
+        deathTime = lastEncounterStop.get();
+      }
+      attributes.put(Person.DEATHDATE, Long.valueOf(deathTime));
       if (cause == null) {
         attributes.remove(CAUSE_OF_DEATH);
       } else {
         attributes.put(CAUSE_OF_DEATH, cause);
       }
-      record.death = time;
+      record.death = deathTime;
     }
   }
 
