@@ -1250,6 +1250,8 @@
     },
     "ECG_Data": {
       "type": "Observation",
+      "category": "procedure",
+      "unit": "",
       "codes": [{
         "system": "SNOMED-CT",
         "code": 29303009,
@@ -1262,6 +1264,8 @@
     },
     "ECG_Chart": {
       "type": "Observation",
+      "category": "procedure",
+      "unit": "",
       "codes": [{
         "system": "SNOMED-CT",
         "code": 29303009,
