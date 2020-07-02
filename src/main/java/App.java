@@ -1,10 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -30,7 +27,6 @@ public class App {
     System.out.println("         [-i initialPopulationSnapshotPath]");
     System.out.println("         [-u updatedPopulationSnapshotPath]");
     System.out.println("         [-t updateTimePeriodInDays]");
-    System.out.println("         [-ecnr encounterStartDate-encounterEndDate]");
     System.out.println("         [--config* value]");
     System.out.println("          * any setting from src/main/resources/synthea.properties");
     System.out.println("Examples:");
@@ -42,7 +38,6 @@ public class App {
     System.out.println("run_synthea -s 21 -p 100 Utah \"Salt Lake City\"");
     System.out.println("run_synthea -g M -a 60-65");
     System.out.println("run_synthea -p 10 --exporter.fhir.export true");
-    System.out.println("run_synthea -encr 01/01/2020-06/01/2020");
     System.out.println("run_synthea -m moduleFilename" + File.pathSeparator + "anotherModule"
         + File.pathSeparator + "module*");
     System.out.println("run_synthea --exporter.baseDirectory \"./output_tx/\" Texas");
@@ -175,16 +170,7 @@ public class App {
             }
 
             Config.set(configSetting, value);
-          } else if (currArg.startsWith("-encr")) {
-              String value = argsQ.poll();
-              if (value.contains("-")) {
-                String[] values = value.split("-");
-                options.startDate = convertStringToDate(values[0]);
-                options.endDate = convertStringToDate(values[1]);
-              } else {
-                throw new Exception("Range format: mm/dd/yyyy-mm/dd/yyyy. E.g. 01/12/2005-12/31/2006.");
-              }
-            } else if (options.state == null) {
+          } else if (options.state == null) {
               options.state = currArg;
            }else {
             // assume it must be the city
@@ -202,18 +188,5 @@ public class App {
       Generator generator = new Generator(options);
       generator.run();
     }
-  }
-  
-  public static Date convertStringToDate(String dateString)
-  {
-      Date date = null;
-      DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-      try{
-          date = df.parse(dateString);
-      }
-      catch ( Exception ex ){
-          System.out.println(ex);
-      }
-      return date;
   }
 }
