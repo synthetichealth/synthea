@@ -150,7 +150,6 @@ public class Generator {
    */
   public Generator(GeneratorOptions o) {
     this(o, new Exporter.ExporterRuntimeOptions());
-    init();
   }
   
   /**
