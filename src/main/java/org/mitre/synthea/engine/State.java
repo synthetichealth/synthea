@@ -358,7 +358,9 @@ public abstract class State implements Cloneable, Serializable {
       }
       clone.outputs = outputList;
       
-      clone.setup();
+      if (ENABLE_PHYSIOLOGY_STATE) {
+        clone.setup();
+      }
       
       return clone;
     }
