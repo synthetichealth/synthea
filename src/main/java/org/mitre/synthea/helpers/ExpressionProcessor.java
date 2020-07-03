@@ -102,13 +102,17 @@ public class ExpressionProcessor {
     String wrappedExpression = convertParameterizedExpressionToCql(cleanExpression);
 
     // Compile our constructed CQL expression into elm once for execution
+    // The compiler isn't thread safe, so only allow one thread at a time
     this.elm = cqlToElm(wrappedExpression);
-    try {
-      this.library = CqlLibraryReader.read(new ByteArrayInputStream(
-          elm.getBytes(StandardCharsets.UTF_8)));
-    } catch (IOException | JAXBException ex) {
-      throw new RuntimeException(ex);
+    synchronized (ExpressionProcessor.class) {
+      try {
+        this.library = CqlLibraryReader.read(new ByteArrayInputStream(
+            elm.getBytes(StandardCharsets.UTF_8)));
+      } catch (IOException | JAXBException ex) {
+        throw new RuntimeException(ex);
+      }
     }
+
     this.context = new Context(library);
     this.expression = expression;
   }
