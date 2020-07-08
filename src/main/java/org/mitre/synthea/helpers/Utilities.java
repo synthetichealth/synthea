@@ -2,16 +2,12 @@ package org.mitre.synthea.helpers;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,7 +21,6 @@ import java.util.function.Consumer;
 
 import org.mitre.synthea.engine.Logic;
 import org.mitre.synthea.engine.State;
-import org.mitre.synthea.engine.State.MedicationOrder;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 public class Utilities {
