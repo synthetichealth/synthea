@@ -1087,6 +1087,7 @@ public class StateTest {
     Code code = medication.codes.get(0);
     assertEquals("860975", code.code);
     assertEquals("24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet", code.display);
+    assertNotNull(medication.prescriptionDetails);
   }
 
   @Test

@@ -326,22 +326,6 @@ public class Utilities {
       .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
       .registerTypeAdapterFactory(InnerClassTypeAdapterFactory.of(Logic.class,"condition_type"))
       .registerTypeAdapterFactory(InnerClassTypeAdapterFactory.of(State.class, "type"))
-      .addDeserializationExclusionStrategy(new ExclusionStrategy(){
-        @Override
-        public boolean shouldSkipField(final FieldAttributes f) {
-          if (f.getDeclaringClass() == MedicationOrder.class) {
-            // Include transient properties in JSON deserialization
-            return false;
-          } else {
-            return f.hasModifier(Modifier.STATIC) || f.hasModifier(Modifier.TRANSIENT);
-          }
-        }
-
-        @Override
-        public boolean shouldSkipClass(final Class<?> clazz) {
-          return false;
-        }
-      })
       .create();
   }
 
