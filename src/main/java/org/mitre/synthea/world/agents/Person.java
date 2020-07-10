@@ -432,12 +432,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public void recordDeath(long time, Code cause) {
     if (alive(time)) {
-      Optional<Long> lastEncounterStop =
-          this.record.encounters.stream().map(encounter -> encounter.stop).max(Long::compareTo);
       long deathTime = time;
-      if (lastEncounterStop.isPresent() && lastEncounterStop.get() > time) {
-        deathTime = lastEncounterStop.get();
-      }
       attributes.put(Person.DEATHDATE, Long.valueOf(deathTime));
       if (cause == null) {
         attributes.remove(CAUSE_OF_DEATH);
