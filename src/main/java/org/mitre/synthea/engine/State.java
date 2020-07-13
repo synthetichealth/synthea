@@ -1082,7 +1082,7 @@ public abstract class State implements Cloneable, Serializable {
   public static class MedicationOrder extends State {
     private List<Code> codes;
     private String reason;
-    private transient JsonObject prescription; // TODO make this a Component
+    private JsonObject prescription; // TODO make this a Component
     private String assignToAttribute;
     private boolean administration;
     private boolean chronic;
@@ -1093,7 +1093,11 @@ public abstract class State implements Cloneable, Serializable {
      * @param oos the stream to write to
      */
     private void writeObject(ObjectOutputStream oos) throws IOException {
-      oos.defaultWriteObject();
+      oos.writeObject(codes);
+      oos.writeObject(reason);
+      oos.writeObject(assignToAttribute);
+      oos.writeBoolean(administration);
+      oos.writeBoolean(chronic);
       if (prescription != null) {
         oos.writeObject(prescription.toString());
       } else {
@@ -1107,7 +1111,11 @@ public abstract class State implements Cloneable, Serializable {
      * @param ois the stream to read from
      */
     private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
-      ois.defaultReadObject();
+      codes = (List<Code>)ois.readObject();
+      reason = (String)ois.readObject();
+      assignToAttribute = (String)ois.readObject();
+      administration = ois.readBoolean();
+      chronic = ois.readBoolean();
       String prescriptionJson = (String) ois.readObject();
       if (prescriptionJson != null) {
         Gson gson = Utilities.getGson();

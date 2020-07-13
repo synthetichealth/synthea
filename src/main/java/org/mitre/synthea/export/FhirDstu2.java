@@ -1174,9 +1174,9 @@ public class FhirDstu2 {
 
       // as_needed is true if present
       if ((rxInfo.has("dosage")) && (!rxInfo.has("as_needed"))) {
-        QuantityDt dose = new QuantityDt()
-            .setValue(rxInfo.get("dosage").getAsJsonObject().get("amount").getAsDouble());
-        dosage.setQuantity((SimpleQuantityDt) dose);
+        SimpleQuantityDt dose = new SimpleQuantityDt();
+        dose.setValue(rxInfo.get("dosage").getAsJsonObject().get("amount").getAsDouble());
+        dosage.setQuantity(dose);
 
         if (rxInfo.has("instructions")) {
           for (JsonElement instructionElement : rxInfo.get("instructions").getAsJsonArray()) {
