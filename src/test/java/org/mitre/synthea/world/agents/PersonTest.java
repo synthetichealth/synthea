@@ -65,7 +65,15 @@ public class PersonTest {
   
   @Test
   public void testSerializationAndDeserialization() throws Exception {
-    // Generate a filled-ou patient record to test on
+    // Skip if physiology generators are enabled since they are incompatible with Java
+    // serialization
+    if (Boolean.valueOf(Config.get("physiology.generators.enabled", "false"))) {
+      System.out.println("Skipping test PersonTest.testSerializationAndDeserialization");
+      System.out.println("Set config physiology.generators.enabled=false to enable this test");
+      return;
+    }
+    
+    // Generate a filled-out patient record to test on
     Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
     opts.population = 1;
     opts.minAge = 50;

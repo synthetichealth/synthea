@@ -323,6 +323,14 @@ public class GeneratorTest {
 
   @Test
   public void testUpdateAfterCreationAndSerialization() throws Exception {
+    // Skip if physiology generators are enabled since they are incompatible with Java
+    // serialization
+    if (Boolean.valueOf(Config.get("physiology.generators.enabled", "false"))) {
+      System.out.println("Skipping test GeneratorTest.testUpdateAfterCreationAndSerialization");
+      System.out.println("Set config physiology.generators.enabled=false to enable this test");
+      return;
+    }
+    
     // Get 100 people
     Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
     opts.population = 1;
