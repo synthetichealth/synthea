@@ -1,6 +1,7 @@
 package org.mitre.synthea.export;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.util.DateUtils;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.Gson;
@@ -21,11 +22,11 @@ import java.util.stream.Collectors;
 
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.AllergyIntolerance;
+
+import org.hl7.fhir.r4.model.*;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCategory;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCriticality;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceType;
-import org.hl7.fhir.r4.model.BooleanType;
-import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryRequestComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleType;
@@ -35,7 +36,6 @@ import org.hl7.fhir.r4.model.CarePlan.CarePlanActivityDetailComponent;
 import org.hl7.fhir.r4.model.CarePlan.CarePlanActivityStatus;
 import org.hl7.fhir.r4.model.CarePlan.CarePlanIntent;
 import org.hl7.fhir.r4.model.CarePlan.CarePlanStatus;
-import org.hl7.fhir.r4.model.CareTeam;
 import org.hl7.fhir.r4.model.CareTeam.CareTeamParticipantComponent;
 import org.hl7.fhir.r4.model.CareTeam.CareTeamStatus;
 import org.hl7.fhir.r4.model.Claim.ClaimStatus;
@@ -44,37 +44,21 @@ import org.hl7.fhir.r4.model.Claim.InsuranceComponent;
 import org.hl7.fhir.r4.model.Claim.ItemComponent;
 import org.hl7.fhir.r4.model.Claim.ProcedureComponent;
 import org.hl7.fhir.r4.model.Claim.SupportingInformationComponent;
-import org.hl7.fhir.r4.model.CodeType;
-import org.hl7.fhir.r4.model.CodeableConcept;
-import org.hl7.fhir.r4.model.Coding;
-import org.hl7.fhir.r4.model.Condition;
-import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointUse;
-import org.hl7.fhir.r4.model.Coverage;
 import org.hl7.fhir.r4.model.Coverage.CoverageStatus;
-import org.hl7.fhir.r4.model.DateTimeType;
-import org.hl7.fhir.r4.model.DateType;
-import org.hl7.fhir.r4.model.DecimalType;
-import org.hl7.fhir.r4.model.Device;
 import org.hl7.fhir.r4.model.Device.DeviceNameType;
 import org.hl7.fhir.r4.model.Device.FHIRDeviceStatus;
-import org.hl7.fhir.r4.model.DiagnosticReport;
 import org.hl7.fhir.r4.model.DiagnosticReport.DiagnosticReportStatus;
-import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.DocumentReference.DocumentReferenceContextComponent;
-import org.hl7.fhir.r4.model.Dosage;
 import org.hl7.fhir.r4.model.Dosage.DosageDoseAndRateComponent;
 import org.hl7.fhir.r4.model.Encounter.EncounterHospitalizationComponent;
 import org.hl7.fhir.r4.model.Encounter.EncounterStatus;
 import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatus;
-import org.hl7.fhir.r4.model.ExplanationOfBenefit;
 import org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome;
 import org.hl7.fhir.r4.model.ExplanationOfBenefit.TotalComponent;
 import org.hl7.fhir.r4.model.ExplanationOfBenefit.Use;
-import org.hl7.fhir.r4.model.Extension;
-import org.hl7.fhir.r4.model.Goal;
 import org.hl7.fhir.r4.model.Goal.GoalLifecycleStatus;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.Identifier;
@@ -82,33 +66,20 @@ import org.hl7.fhir.r4.model.Identifier.IdentifierUse;
 import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesComponent;
 import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesInstanceComponent;
 import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus;
-import org.hl7.fhir.r4.model.Immunization;
 import org.hl7.fhir.r4.model.Immunization.ImmunizationStatus;
-import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Location.LocationPositionComponent;
 import org.hl7.fhir.r4.model.Location.LocationStatus;
 import org.hl7.fhir.r4.model.Media.MediaStatus;
 import org.hl7.fhir.r4.model.Medication.MedicationStatus;
-import org.hl7.fhir.r4.model.MedicationAdministration;
 import org.hl7.fhir.r4.model.MedicationAdministration.MedicationAdministrationDosageComponent;
-import org.hl7.fhir.r4.model.MedicationRequest;
 import org.hl7.fhir.r4.model.MedicationRequest.MedicationRequestIntent;
 import org.hl7.fhir.r4.model.MedicationRequest.MedicationRequestStatus;
-import org.hl7.fhir.r4.model.Meta;
-import org.hl7.fhir.r4.model.Money;
-import org.hl7.fhir.r4.model.Narrative;
 import org.hl7.fhir.r4.model.Narrative.NarrativeStatus;
 import org.hl7.fhir.r4.model.Observation.ObservationComponentComponent;
 import org.hl7.fhir.r4.model.Observation.ObservationStatus;
-import org.hl7.fhir.r4.model.Organization;
-import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Patient.ContactComponent;
 import org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent;
-import org.hl7.fhir.r4.model.Period;
-import org.hl7.fhir.r4.model.PositiveIntType;
-import org.hl7.fhir.r4.model.Practitioner;
-import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.Procedure.ProcedureStatus;
-import org.hl7.fhir.r4.model.Provenance;
 import org.hl7.fhir.r4.model.Provenance.ProvenanceAgentComponent;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
@@ -122,7 +93,6 @@ import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliverySuppliedItemComponent;
 import org.hl7.fhir.r4.model.Timing;
 import org.hl7.fhir.r4.model.Timing.TimingRepeatComponent;
 import org.hl7.fhir.r4.model.Timing.UnitsOfTime;
-import org.hl7.fhir.r4.model.Type;
 import org.hl7.fhir.r4.model.codesystems.DoseRateType;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
@@ -322,11 +292,8 @@ public class FhirR4 {
       explanationOfBenefit(personEntry, bundle, encounterEntry, person,
           encounterClaim, encounter);
     }
-
-    if (USE_US_CORE_IG) {
-      // Add Provenance to the Bundle
-      provenance(bundle, person, stopTime);
-    }
+    navigationalAssistance(person, personEntry, bundle);
+    wic(person, personEntry, bundle);
     return bundle;
   }
 
@@ -395,6 +362,33 @@ public class FhirR4 {
           .setType(mapCodeToCodeableConcept(passportCode, "http://terminology.hl7.org/CodeSystem/v2-0203"))
           .setSystem(SHR_EXT + "passportNumber")
           .setValue((String) person.attributes.get(Person.IDENTIFIER_PASSPORT));
+    }
+
+    if (person.attributes.get(Person.IDENTIFIER_RECORD_ID) != null) {
+      Code siteCode = new Code("http://codi.mitre.org", (String) person.attributes.get(Person.IDENTIFIER_SITE), "Synthetic Denver List ID");
+      patientResource.addIdentifier()
+          .setType(mapCodeToCodeableConcept(siteCode, "http://codi.mitre.org"))
+          .setSystem("http://codi.mitre.org")
+          .setValue((String) person.attributes.get(Person.IDENTIFIER_RECORD_ID));
+    }
+
+    if (person.attributes.get(Person.LINK_ID) != null) {
+      patientResource.addIdentifier()
+          .setSystem("http://codi.mitre.org/link_id")
+          .setValue(person.attributes.get(Person.LINK_ID).toString());
+    }
+
+    if (person.attributes.get(Person.CONTACT_EMAIL) != null) {
+      ContactComponent contact = new ContactComponent();
+      HumanName contactName = new HumanName();
+      contactName.setUse(HumanName.NameUse.OFFICIAL);
+      contactName.addGiven((String) person.attributes.get(Person.CONTACT_GIVEN_NAME));
+      contactName.setFamily((String) person.attributes.get(Person.CONTACT_FAMILY_NAME));
+      contact.setName(contactName);
+      contact.addTelecom().setSystem(ContactPointSystem.EMAIL)
+          .setUse(ContactPointUse.HOME)
+          .setValue((String) person.attributes.get(Person.CONTACT_EMAIL));
+      patientResource.addContact(contact);
     }
 
     if (USE_US_CORE_IG) {
@@ -523,6 +517,8 @@ public class FhirR4 {
     } else if (person.attributes.get(Person.GENDER).equals("F")) {
       patientResource.setGender(AdministrativeGender.FEMALE);
       birthSexExtension.setValue(new CodeType("F"));
+    } else if (person.attributes.get(Person.GENDER).equals("UNK")) {
+      patientResource.setGender(AdministrativeGender.UNKNOWN);
     }
     if (USE_US_CORE_IG) {
       patientResource.addExtension(birthSexExtension);
@@ -766,6 +762,60 @@ public class FhirR4 {
           .setValue(encounterResource.getId());
     }
     return entry;
+  }
+
+  private static BundleEntryComponent navigationalAssistance(Person person, BundleEntryComponent personEntry, Bundle bundle) {
+    if (person.attributes.get("navigation_assistance") == null) {
+      return null;
+    }
+    DocumentReference dr = new DocumentReference();
+    dr.setStatus(Enumerations.DocumentReferenceStatus.CURRENT);
+    CodeableConcept category = new CodeableConcept();
+    category.addCoding(new Coding("http://loinc.org", "47042-7", "Counseling note"));
+    dr.addCategory(category);
+    dr.setSubject(new Reference(personEntry.getFullUrl()));
+    org.hl7.fhir.r4.model.Attachment attachment = new org.hl7.fhir.r4.model.Attachment();
+    attachment.setContentType("application/json");
+    long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
+    Date birth = new Date(birthdate);
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(birth);
+    cal.add(Calendar.MONTH, 6);
+    String docContent = "{\"date\": \""+ DateUtils.formatDate(cal.getTime())
+        + "\", \"interventionNavigation\": true, \"program\": \"HF\"}";
+    Base64BinaryType b64 = new Base64BinaryType(docContent.getBytes());
+    attachment.setDataElement(b64);
+    DocumentReference.DocumentReferenceContentComponent drcc = new DocumentReference.DocumentReferenceContentComponent();
+    drcc.setAttachment(attachment);
+    dr.addContent(drcc);
+    return newEntry(bundle, dr);
+  }
+
+  private static BundleEntryComponent wic(Person person, BundleEntryComponent personEntry, Bundle bundle) {
+    if (person.attributes.get("wic") == null) {
+      return null;
+    }
+    DocumentReference dr = new DocumentReference();
+    dr.setStatus(Enumerations.DocumentReferenceStatus.CURRENT);
+    CodeableConcept category = new CodeableConcept();
+    category.addCoding(new Coding("http://cdc.gov/codi", "wicnote", "WIC Information"));
+    dr.addCategory(category);
+    dr.setSubject(new Reference(personEntry.getFullUrl()));
+    org.hl7.fhir.r4.model.Attachment attachment = new org.hl7.fhir.r4.model.Attachment();
+    attachment.setContentType("application/json");
+    long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
+    Date birth = new Date(birthdate);
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(birth);
+    cal.add(Calendar.MONTH, 7);
+    String docContent = "{\"date\": \""+ DateUtils.formatDate(cal.getTime())
+        + "\", \"interventionNavigation\": false, \"program\": \"WIC\"}";
+    Base64BinaryType b64 = new Base64BinaryType(docContent.getBytes());
+    attachment.setDataElement(b64);
+    DocumentReference.DocumentReferenceContentComponent drcc = new DocumentReference.DocumentReferenceContentComponent();
+    drcc.setAttachment(attachment);
+    dr.addContent(drcc);
+    return newEntry(bundle, dr);
   }
 
   /**

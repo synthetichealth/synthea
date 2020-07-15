@@ -200,7 +200,7 @@ public class Provider implements QuadTreeElement, Serializable {
       return null;
     }
   }
-  
+
   /**
    * Will this provider accept the given person as a patient at the given time?.
    * @param person Person to consider
@@ -290,7 +290,7 @@ public class Provider implements QuadTreeElement, Serializable {
   private static QuadTree generateQuadTree() {
     return new QuadTree();
   }
-  
+
   /**
    * Load into cache the list of providers for a state.
    * @param location the state being loaded.
@@ -304,7 +304,7 @@ public class Provider implements QuadTreeElement, Serializable {
         servicesProvided.add(EncounterType.AMBULATORY);
         servicesProvided.add(EncounterType.OUTPATIENT);
         servicesProvided.add(EncounterType.INPATIENT);
-      
+
         String hospitalFile = Config.get("generate.providers.hospitals.default_file");
         loadProviders(location, hospitalFile, servicesProvided, clinicianSeed);
 
@@ -335,7 +335,7 @@ public class Provider implements QuadTreeElement, Serializable {
   /**
    * Read the providers from the given resource file, only importing the ones for the given state.
    * THIS method is for loading providers and generating clinicians with specific specialties
-   * 
+   *
    * @param location the state being loaded
    * @param filename Location of the file, relative to src/main/resources
    * @param servicesProvided Set of services provided by these facilities
@@ -357,7 +357,7 @@ public class Provider implements QuadTreeElement, Serializable {
       if ((location.state == null)
           || (location.state != null && location.state.equalsIgnoreCase(currState))
           || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
-    
+
         Provider parsed = csvLineToProvider(row);
         parsed.servicesProvided.addAll(servicesProvided);
 
@@ -381,9 +381,9 @@ public class Provider implements QuadTreeElement, Serializable {
               parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE,
                   clinicianSeed, clinicianRand));
         } else {
-          for (String specialty : ClinicianSpecialty.getSpecialties()) { 
+          for (String specialty : ClinicianSpecialty.getSpecialties()) {
             String specialtyCount = row.get(specialty);
-            if (specialtyCount != null && !specialtyCount.trim().equals("") 
+            if (specialtyCount != null && !specialtyCount.trim().equals("")
                 && !specialtyCount.trim().equals("0")) {
               parsed.clinicianMap.put(specialty, 
                   parsed.generateClinicianList(Integer.parseInt(row.get(specialty)), specialty,
@@ -448,7 +448,8 @@ public class Provider implements QuadTreeElement, Serializable {
       out.put(Person.ETHNICITY, ethnicity);
       String language = city.languageFromRaceAndEthnicity(race, ethnicity, clinicianRand);
       out.put(Person.FIRST_LANGUAGE, language);
-      String gender = city.pickGender(clinicianRand);
+      // TODO: Remove the second arg when the file detection is fixed
+      String gender = city.pickGender(clinicianRand, 1);
       if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
         gender = "M";
       } else {
@@ -496,7 +497,7 @@ public class Provider implements QuadTreeElement, Serializable {
     doc.incrementEncounters();
     return doc;
   }
-  
+
   /**
    * Given a line of parsed CSV input, convert the data into a Provider.
    * @param line - read a csv line to a provider's attributes
@@ -552,4 +553,5 @@ public class Provider implements QuadTreeElement, Serializable {
   public Point2D.Double getLonLat() {
     return coordinates;
   }
+
 }

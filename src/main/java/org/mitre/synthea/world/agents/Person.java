@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.mitre.synthea.engine.ExpressedConditionRecord;
@@ -77,6 +80,11 @@ public class Person implements Serializable, QuadTreeElement {
   public static final String IDENTIFIER_SSN = "identifier_ssn";
   public static final String IDENTIFIER_DRIVERS = "identifier_drivers";
   public static final String IDENTIFIER_PASSPORT = "identifier_passport";
+  public static final String IDENTIFIER_SITE = "identifier_site";
+  public static final String IDENTIFIER_RECORD_ID = "identifier_record_id";
+  public static final String CONTACT_FAMILY_NAME = "contact_family_name";
+  public static final String CONTACT_GIVEN_NAME = "contact_given_name";
+  public static final String CONTACT_EMAIL = "contact_email";
   public static final String CAUSE_OF_DEATH = "cause_of_death";
   public static final String SEXUAL_ORIENTATION = "sexual_orientation";
   public static final String LOCATION = "location";
@@ -84,6 +92,8 @@ public class Person implements Serializable, QuadTreeElement {
   public static final String BMI_PERCENTILE = "bmi_percentile";
   public static final String GROWTH_TRAJECTORY = "growth_trajectory";
   public static final String CURRENT_WEIGHT_LENGTH_PERCENTILE = "current_weight_length_percentile";
+  public static final String RECORD_GROUP = "record_group";
+  public static final String LINK_ID = "link_id";
   private static final String DEDUCTIBLE = "deductible";
   private static final String LAST_MONTH_PAID = "last_month_paid";
 
@@ -344,6 +354,18 @@ public class Person implements Serializable, QuadTreeElement {
   */
   public ExpressedConditionRecord getOnsetConditionRecord() {
     return onsetConditionRecord;
+  }
+
+  public int providerCount() {
+    int count = 1;
+    if (hasMultipleRecords) {
+      List<String> uuids = new ArrayList<String>(records.keySet());
+      Set<String> uniqueUuids = new HashSet<String>(uuids);
+      count = uniqueUuids.size();
+    } else {
+      count = record.providerCount();
+    }
+    return count;
   }
   
   /** Updating the method for accounting of the time on which

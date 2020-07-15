@@ -52,6 +52,7 @@ import org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus;
 import org.hl7.fhir.dstu3.model.Condition.ConditionVerificationStatus;
 import org.hl7.fhir.dstu3.model.ContactPoint;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
+import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointUse;
 import org.hl7.fhir.dstu3.model.Coverage;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.DateType;
@@ -91,6 +92,7 @@ import org.hl7.fhir.dstu3.model.Observation.ObservationComponentComponent;
 import org.hl7.fhir.dstu3.model.Observation.ObservationStatus;
 import org.hl7.fhir.dstu3.model.Organization;
 import org.hl7.fhir.dstu3.model.Patient;
+import org.hl7.fhir.dstu3.model.Patient.ContactComponent;
 import org.hl7.fhir.dstu3.model.Patient.PatientCommunicationComponent;
 import org.hl7.fhir.dstu3.model.Period;
 import org.hl7.fhir.dstu3.model.PositiveIntType;
@@ -355,6 +357,27 @@ public class FhirStu3 {
           .setType(mapCodeToCodeableConcept(passportCode, "http://hl7.org/fhir/v2/0203"))
           .setSystem(SHR_EXT + "passportNumber")
           .setValue((String) person.attributes.get(Person.IDENTIFIER_PASSPORT));
+    }
+
+    if (person.attributes.get(Person.IDENTIFIER_RECORD_ID) != null) {
+      Code siteCode = new Code("http://codi.mitre.org", (String) person.attributes.get(Person.IDENTIFIER_SITE), "Synthetic Denver List ID");
+      patientResource.addIdentifier()
+          .setType(mapCodeToCodeableConcept(siteCode, "http://codi.mitre.org"))
+          .setSystem("http://codi.mitre.org")
+          .setValue((String) person.attributes.get(Person.IDENTIFIER_RECORD_ID));
+    }
+
+    if (person.attributes.get(Person.CONTACT_EMAIL) != null) {
+      ContactComponent contact = new ContactComponent();
+      HumanName contactName = new HumanName();
+      contactName.setUse(HumanName.NameUse.OFFICIAL);
+      contactName.addGiven((String) person.attributes.get(Person.CONTACT_GIVEN_NAME));
+      contactName.setFamily((String) person.attributes.get(Person.CONTACT_FAMILY_NAME));
+      contact.setName(contactName);
+      contact.addTelecom().setSystem(ContactPointSystem.EMAIL)
+          .setUse(ContactPointUse.HOME)
+          .setValue((String) person.attributes.get(Person.CONTACT_EMAIL));
+      patientResource.addContact(contact);
     }
 
     // We do not yet account for mixed race

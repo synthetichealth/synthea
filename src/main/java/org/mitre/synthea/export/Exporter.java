@@ -23,6 +23,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.input.FixedRecord;
+import org.mitre.synthea.input.RecordGroup;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -117,10 +119,31 @@ public abstract class Exporter {
    * @param options Runtime exporter options
    */
   public static void export(Person person, long stopTime, ExporterRuntimeOptions options) {
-    if (options.deferExports) {
-      deferredExports.add(new ImmutablePair<Person, Long>(person, stopTime));
+    int yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
+    if (yearsOfHistory > 0) {
+      person = filterForExport(person, yearsOfHistory, stopTime);
+    }
+    if (!person.alive(stopTime)) {
+      filterAfterDeath(person);
+    }
+    if (person.hasMultipleRecords) {
+      int i = 0;
+      for (String key : person.records.keySet()) {
+        person.record = person.records.get(key);
+        if (person.attributes.get(Person.RECORD_GROUP) != null) {
+          RecordGroup rg = (RecordGroup) person.attributes.get(Person.RECORD_GROUP);
+          int recordToPull = i;
+          if (recordToPull >= rg.count) {
+            recordToPull = rg.count - 1;
+          }
+          FixedRecord fr = rg.records.get(recordToPull);
+          fr.totalOverwrite(person);
+        }
+        exportRecord(person, Integer.toString(i), stopTime, options);
+        i++;
+      }
     } else {
-      int yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
+      yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
       if (yearsOfHistory > 0) {
         person = filterForExport(person, yearsOfHistory, stopTime);
       }

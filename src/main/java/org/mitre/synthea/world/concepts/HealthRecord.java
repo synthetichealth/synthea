@@ -17,10 +17,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
@@ -619,6 +621,17 @@ public class HealthRecord implements Serializable {
     this.person = person;
     encounters = new ArrayList<Encounter>();
     present = new HashMap<String, Entry>();
+  }
+
+  public int providerCount() {
+    List<String> uuids = new ArrayList<String>();
+    for (Encounter enc : encounters) {
+      if (enc.provider != null) {
+        uuids.add(enc.provider.uuid);
+      }
+    }
+    Set<String> uniqueUuids = new HashSet<String>(uuids);
+    return uniqueUuids.size();
   }
 
   /**

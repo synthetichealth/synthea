@@ -3,6 +3,9 @@ package org.mitre.synthea.engine;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import org.junit.Test;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
 
 import java.util.List;
 import java.util.Random;
@@ -10,6 +13,7 @@ import java.util.Random;
 import org.junit.Test;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
+import static org.junit.Assert.*;
 
 public class HealthRecordEditorsTest {
   class Dummy implements HealthRecordEditor {
