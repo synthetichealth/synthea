@@ -434,17 +434,19 @@ public class StateTest {
 
     // patient dies during the process
     module.process(person, time);
+    long nextStep = time + Utilities.convertTime("days", 7);
+    module.process(person, nextStep);
 
     // patient is dead later...
-    long step = Utilities.convertTime("days", 7);
-    assertFalse(person.alive(time + step));
+    assertFalse(person.alive(nextStep));
 
     // patient has one encounter...
     assertTrue(person.hadPriorState("Encounter 1"));
     assertEquals(1, person.record.encounters.size());
 
-    assertTrue((long) person.attributes.get(Person.DEATHDATE)
-        >= person.record.encounters.get(0).stop);
+    long deathDate = (long) person.attributes.get(Person.DEATHDATE);
+    long encounterStop = person.record.encounters.get(0).stop;
+    assertTrue(deathDate >= encounterStop);
   }
 
   @Test
@@ -610,7 +612,10 @@ public class StateTest {
     // Then have the appendectomy
     State appendectomy = module.getState("Appendectomy");
     appendectomy.entered = time;
-    assertTrue(appendectomy.process(person, time));
+    // Procedure should block
+    assertTrue( !appendectomy.process(person, time));
+    long nextStep = time + Utilities.convertTime("days", 7);
+    assertTrue(appendectomy.process(person, nextStep));
 
     HealthRecord.Procedure proc = person.record.encounters.get(0).procedures.get(0);
     Code code = proc.codes.get(0);

@@ -178,10 +178,10 @@ public abstract class State implements Cloneable, Serializable {
     boolean exit = process(person, time);
 
     if (exit) {
-      // Delay state returns a special value for exited,
-      // to indicate when the delay actually completed.
-      if (this instanceof Delay) {
-        this.exited = ((Delay)this).next;
+      // Delayable states return a special value for exited,
+      // to indicate when the state actually completed.
+      if (this instanceof Delayable) {
+        this.exited = ((Delayable)this).next;
       } else {
         this.exited = time;
       }
