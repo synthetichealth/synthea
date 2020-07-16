@@ -430,7 +430,7 @@ public abstract class State implements Cloneable, Serializable {
     }
   }
 
-  public static abstract class Delayable extends State {
+  public abstract static class Delayable extends State {
     // next is "transient" in the sense that it represents object state
     // as opposed to the other fields which represent object definition
     // hence it is not set in clone()
