@@ -334,7 +334,7 @@ public class Person implements Serializable, QuadTreeElement {
   }
 
   /**
-   * Returns whether a person is alive at the given time.
+   * Returns whether a person is alive at the given time, including before birth or after death.
    */
   public boolean alive(long time) {
     boolean born = attributes.containsKey(Person.BIRTHDATE);

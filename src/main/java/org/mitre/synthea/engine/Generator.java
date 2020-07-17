@@ -281,37 +281,18 @@ public class Generator {
    */
   public void run() {
 
-    // --- Imports the fixed records file ---
+    // Import the fixed patient demographics records file, if a file path is given.
     if (this.options.fixedRecordPath != null) {
-      Gson gson = new Gson();
-      Type listType = new TypeToken<List<RecordGroup>>() {}.getType();
-      try {
-        this.recordGroups = gson.fromJson(new FileReader(this.options.fixedRecordPath), listType);
-        int linkIdStart = 100000;
-        for (int i = 0; i < this.recordGroups.size(); i++) {
-          this.recordGroups.get(i).linkId = linkIdStart + i;
-          System.out.println(this.recordGroups.get(i));
-        }
-        System.out.println("------------------********************--------------Robi");
-
-      } catch (FileNotFoundException e) {
-        throw new RuntimeException("Couldn't open the fixed records file", e);
-      }
-      this.options.population = this.recordGroups.size();
+      importFixedPatientDemographicsFile();
     }
 
-    // --- Start of standard synthea-master run()
     ExecutorService threadPool = Executors.newFixedThreadPool(8);
 
+    // Generate patients up to the specified population size.
     for (int i = 0; i < this.options.population; i++) {
       final int index = i;
       final long seed = this.random.nextLong();
-      if (false) {
-        threadPool.submit(() -> generatePerson(index, seed));
-      }
-      else {
-        threadPool.submit(() -> generatePersonWithFixedRecord(index, seed));
-      }
+      threadPool.submit(() -> generatePerson(index, seed));
     }
 
     try {
@@ -337,6 +318,25 @@ public class Generator {
     if (this.metrics != null) {
       metrics.printStats(totalGeneratedPopulation.get(), Module.getModules(getModulePredicate()));
     }
+  }
+
+  /**
+   * Imports the file to be used when using fixed patient demographics.
+   */
+  public void importFixedPatientDemographicsFile(){
+    Gson gson = new Gson();
+      Type listType = new TypeToken<List<RecordGroup>>() {}.getType();
+      try {
+        System.out.println("Loading fixed patient demographic records file " + this.options.fixedRecordPath);
+        this.recordGroups = gson.fromJson(new FileReader(this.options.fixedRecordPath), listType);
+        int linkIdStart = 100000;
+        for (int i = 0; i < this.recordGroups.size(); i++) {
+          this.recordGroups.get(i).linkId = linkIdStart + i;
+        }
+      } catch (FileNotFoundException e) {
+        throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
+      }
+      this.options.population = this.recordGroups.size();
   }
   
   /**
@@ -369,18 +369,36 @@ public class Generator {
    * @return generated Person
    */
   public Person generatePerson(int index, long personSeed) {
+
     Person person = null;
+    
     try {
       boolean isAlive = true;
       int tryNumber = 0; // number of tries to create these demographics
       Random randomForDemographics = new Random(personSeed);
-      Map<String, Object> demoAttributes = randomDemographics(randomForDemographics);
+
+      Map<String, Object> demoAttributes = randomDemographics(randomForDemographics, index);
+
+      int providerCount = 0;
+
+      int providerMinimum = 1;
+      // If there are fixed records to use, then determine the provider minimum based on number of records for a person.
+      if (this.recordGroups != null) {
+        // Get the current recordGroup
+        RecordGroup recordGroup = this.recordGroups.get(index);
+        // Pull the provider minimum - there must be 1 provider for each of the records for this person
+        providerMinimum = recordGroup.count;
+      }
+      
 
       do {
-        person = createPerson(personSeed, demoAttributes);
+        person = createPerson(personSeed, demoAttributes, index);
         long finishTime = person.lastUpdated + timestep;
 
+        // isAlive includes if the time is before their birth or after their death.
         isAlive = person.alive(finishTime);
+
+        providerCount = person.providerCount();
 
         if (isAlive && onlyDeadPatients) {
           // rotate the seed so the next attempt gets a consistent but different one
@@ -395,6 +413,21 @@ public class Generator {
           personSeed = new Random(personSeed).nextLong();
           continue;
           // skip the other stuff if the patient is dead and we only want alive patients
+          // note that this skips ahead to the while check and doesn't automatically re-loop
+        }
+
+        // Fixed Records: If the number of providers is less than the number of records for a person, try the simulation again.
+        if (providerCount < providerMinimum) {
+          System.out.println(providerCount);
+          // rotate the seed so the next attempt gets a consistent but different one
+          personSeed = new Random(personSeed).nextLong();
+          tryNumber++;
+          if (tryNumber > 10) {
+            System.out.println("Couldn't get enough providers for " + person.attributes.get(Person.FIRST_NAME) + " " +
+                person.attributes.get(Person.LAST_NAME));
+          }
+          continue;
+          // skip the other stuff if the patient has less providers than the minimum
           // note that this skips ahead to the while check and doesn't automatically re-loop
         }
 
@@ -439,174 +472,7 @@ public class Generator {
     return person;
   }
 
-  /**
-   * Generate a random Person, from the given seed. The returned person will be alive at the end of
-   * the simulation. This means that if in the course of the simulation the person dies, a new
-   * person will be started to replace them. Note also that if the person dies, the seed to produce
-   * them can't be re-used (otherwise the new person would die as well) so a new seed is picked,
-   * based on the given seed.
-   * 
-   * @param index
-   *          Target index in the whole set of people to generate
-   * @param personSeed
-   *          Seed for the random person
-   * @return generated Person
-   */
-  public Person generatePersonWithFixedRecord(int index, long personSeed) {
-    Person person = null;
-    try {
-      boolean isAlive = true;
-      int tryNumber = 0; // number of tries to create these demographics
-      Random randomForDemographics = new Random(personSeed);
-
-      // Fixed Record Stuff
-      int providerMinimum = Integer.parseInt(Config.get("generate.providers.minimum", "1"));
-      if (this.recordGroups != null) {
-        RecordGroup recordGroup = this.recordGroups.get(index);
-        providerMinimum = recordGroup.count;
-        FixedRecord fr = recordGroup.records.get(0);
-        this.location = new Location(fr.getState(), recordGroup.getSafeCity(0));
-      }
-
-      Demographics city = location.randomCity(randomForDemographics);
-      
-      Map<String, Object> demoAttributes = pickDemographics(randomForDemographics, city, index);
-      long start = (long) demoAttributes.get(Person.BIRTHDATE);
-
-      int providerCount = 0;
-
-      do {
-        List<Module> modules = Module.getModules(modulePredicate);
-
-        person = new Person(personSeed);
-        person.populationSeed = this.options.seed;
-        person.attributes.putAll(demoAttributes);
-        person.attributes.put(Person.LOCATION, location);
-
-        if (this.recordGroups != null) {
-          RecordGroup recordGroup = this.recordGroups.get(index);
-          person.attributes.put(Person.RECORD_GROUP, recordGroup);
-          recordGroup.records.get(0).overwriteDemoAttributes(person);
-          person.attributes.put(Person.LINK_ID, recordGroup.linkId);
-        }
-
-        LifecycleModule.birth(person, start);
-        HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
-        EncounterModule encounterModule = new EncounterModule();
-        HealthRecordEditors hrm = HealthRecordEditors.getInstance();
-        long time = start;
-        while (person.alive(time) && time < stop) {
-
-          healthInsuranceModule.process(person, time + timestep);
-          encounterModule.process(person, time);
-
-          Iterator<Module> iter = modules.iterator();
-          while (iter.hasNext()) {
-            Module module = iter.next();
-            // System.out.format("Processing module %s\n", module.name);
-            if (module.process(person, time)) {
-              // System.out.format("Removing module %s\n", module.name);
-              iter.remove(); // this module has completed/terminated.
-            }
-          }
-          encounterModule.endEncounterModuleEncounters(person, time);
-          hrm.executeAll(person, person.record, time, timestep, person.random);
-
-          time += timestep;
-        }
-
-        DeathModule.process(person, time);
-
-        isAlive = person.alive(time);
-
-        providerCount = person.providerCount();
-
-        if (isAlive && onlyDeadPatients) {
-          // rotate the seed so the next attempt gets a consistent but different one
-          personSeed = new Random(personSeed).nextLong();
-          continue;
-          // skip the other stuff if the patient is alive and we only want dead patients
-          // note that this skips ahead to the while check and doesn't automatically re-loop
-        }
-
-        if (providerCount < providerMinimum) {
-          System.out.println(providerCount);
-          // rotate the seed so the next attempt gets a consistent but different one
-          personSeed = new Random(personSeed).nextLong();
-          tryNumber++;
-          if (tryNumber > 10) {
-            System.out.println("Couldn't get enough providers for " + person.attributes.get(Person.FIRST_NAME) + " " +
-                person.attributes.get(Person.LAST_NAME));
-          }
-          continue;
-          // skip the other stuff if the patient has less providers than the minimum
-          // note that this skips ahead to the while check and doesn't automatically re-loop
-        }
-
-        if (database != null) {
-          database.store(person);
-        }
-
-        if (internalStore != null) {
-          internalStore.add(person);
-        }
-        
-        if (this.metrics != null) {
-          metrics.recordStats(person, time, Module.getModules(modulePredicate));
-        }
-
-        if (!this.logLevel.equals("none")) {
-          writeToConsole(person, index, time, isAlive);
-        }
-
-        String key = isAlive ? "alive" : "dead";
-
-        AtomicInteger count = stats.get(key);
-        count.incrementAndGet();
-
-        totalGeneratedPopulation.incrementAndGet();
-        
-        tryNumber++;
-        if (!isAlive) {
-          // rotate the seed so the next attempt gets a consistent but different one
-          personSeed = new Random(personSeed).nextLong();
-          
-          // if we've tried and failed > 10 times to generate someone over age 90
-          // and the options allow for ages as low as 85
-          // reduce the age to increase the likelihood of success
-          if (tryNumber > 10 && (int)person.attributes.get(TARGET_AGE) > 90
-              && (!options.ageSpecified || options.minAge <= 85)) {
-            // pick a new target age between 85 and 90
-            int newTargetAge = randomForDemographics.nextInt(5) + 85;
-            // the final age bracket is 85-110, but our patients rarely break 100
-            // so reducing a target age to 85-90 shouldn't affect numbers too much
-            demoAttributes.put(TARGET_AGE, newTargetAge);
-            long birthdate = birthdateFromTargetAge(newTargetAge, randomForDemographics, index);
-            demoAttributes.put(Person.BIRTHDATE, birthdate);
-            start = birthdate;
-          }
-        }
-
-        // TODO - export is DESTRUCTIVE when it filters out data
-        // this means export must be the LAST THING done with the person
-        Exporter.export(person, time, exporterRuntimeOptions);
-      } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
-          || (isAlive && onlyDeadPatients) || (providerCount < providerMinimum));
-      // if the patient is alive and we want only dead ones => loop & try again
-      //  (and dont even export, see above)
-      // if the patient is dead and we only want dead ones => done
-      // if the patient is dead and we want live ones => loop & try again
-      //  (but do export the record anyway)
-      // if the patient is alive and we want live ones => done
-      // if the provider count is less than the target provider minimum => loop & try again
-    } catch (Throwable e) {
-      // lots of fhir things throw errors for some reason
-      e.printStackTrace();
-      throw e;
-    }
-    return person;
-  }
-
+  // TODO: Remove Index
   /**
    * Create a new person and update them until until Generator.stop or
    * they die, whichever comes sooner.
@@ -614,12 +480,19 @@ public class Generator {
    * @param demoAttributes Demographic attributes for the new person, {@link #randomDemographics}
    * @return the new person
    */
-  public Person createPerson(long personSeed, Map<String, Object> demoAttributes) {
+  public Person createPerson(long personSeed, Map<String, Object> demoAttributes, int index) {
     Person person = new Person(personSeed);
     person.populationSeed = this.options.seed;
     person.attributes.putAll(demoAttributes);
     person.attributes.put(Person.LOCATION, location);
     person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
+
+    if (this.recordGroups != null) {
+      RecordGroup recordGroup = this.recordGroups.get(index);
+      person.attributes.put(Person.RECORD_GROUP, recordGroup);
+      recordGroup.records.get(0).overwriteDemoAttributes(person);
+      person.attributes.put(Person.LINK_ID, recordGroup.linkId);
+    }
 
     LifecycleModule.birth(person, person.lastUpdated);
     person.currentModules = Module.getModules(modulePredicate);
@@ -667,10 +540,18 @@ public class Generator {
    * Create a set of random demographics.
    * @param seed The random seed to use
    * @return demographics
+   * REMOVE index
    */
-  public Map<String, Object> randomDemographics(Random seed) {
+  public Map<String, Object> randomDemographics(Random seed, int index) {
     Demographics city = location.randomCity(seed);
-    Map<String, Object> demoAttributes = pickDemographics(seed, city, 0);
+
+    Map<String, Object> demoAttributes;
+    if(this.recordGroups != null){
+      demoAttributes = generateFixedDemographics(index, random);
+    } else {
+      demoAttributes = pickDemographics(seed, city);
+    }
+
     return demoAttributes;
   }
 
@@ -700,64 +581,60 @@ public class Generator {
     }
   }
 
-  // Remove int index
-  private Map<String, Object> pickDemographics(Random random, Demographics city, int index) {
-    Map<String, Object> out = new HashMap<>();
-    out.put(Person.CITY, city.city);
-    out.put(Person.STATE, city.state);
-    out.put("county", city.county);
-    
-    String race = city.pickRace(random);
-    out.put(Person.RACE, race);
-    String ethnicity = city.pickEthnicity(random);
-    out.put(Person.ETHNICITY, ethnicity);
-    String language = city.languageFromRaceAndEthnicity(race, ethnicity, random);
-    out.put(Person.FIRST_LANGUAGE, language);
+  private Map<String, Object> pickDemographics(Random random, Demographics city) {
+    // Output map of the generated demographc data.
+    Map<String, Object> demographicsOutput = new HashMap<>();
 
-    String gender = "ERROR";
+    // Pull the person's location data.
+    demographicsOutput.put(Person.CITY, city.city);
+    demographicsOutput.put(Person.STATE, city.state);
+    demographicsOutput.put("county", city.county);
+
+    // Generate the person's race data based on their location.
+    String race = city.pickRace(random);
+    demographicsOutput.put(Person.RACE, race);
+    String ethnicity = city.pickEthnicity(random);
+    demographicsOutput.put(Person.ETHNICITY, ethnicity);
+    String language = city.languageFromRaceAndEthnicity(race, ethnicity, random);
+    demographicsOutput.put(Person.FIRST_LANGUAGE, language);
+
+    // Generate the person's gender based on their location.
+    String gender;
     if (options.gender != null) {
       gender = options.gender;
     } else {
-      // If there is a fixed record, then get the person's fixed gender
-      if (true) {
-        Patient newPatient = Utilities.loadPatient(index);
-        if (newPatient != null) {
-          gender = newPatient.getGender().getDisplay();
-        }
-      } else {
-        // If the gender is not fixed, then pick a random gender.
-        gender = city.pickGender(random);
-      }
+      gender = city.pickGender(random);
       if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
         gender = "M";
       } else {
         gender = "F";
       }
     }
-    out.put(Person.GENDER, gender);
+    demographicsOutput.put(Person.GENDER, gender);
 
-    // Socioeconomic variables of education, income, and occupation are set.
+    // Generate the person's socioeconomic variables of education, income, and occupation based on their location.
     String education = city.pickEducation(random);
-    out.put(Person.EDUCATION, education);
+    demographicsOutput.put(Person.EDUCATION, education);
     double educationLevel = city.educationLevel(education, random);
-    out.put(Person.EDUCATION_LEVEL, educationLevel);
+    demographicsOutput.put(Person.EDUCATION_LEVEL, educationLevel);
 
     int income = city.pickIncome(random);
-    out.put(Person.INCOME, income);
+    demographicsOutput.put(Person.INCOME, income);
     double incomeLevel = city.incomeLevel(income);
-    out.put(Person.INCOME_LEVEL, incomeLevel);
+    demographicsOutput.put(Person.INCOME_LEVEL, incomeLevel);
 
     double occupation = random.nextDouble();
-    out.put(Person.OCCUPATION_LEVEL, occupation);
+    demographicsOutput.put(Person.OCCUPATION_LEVEL, occupation);
 
     double sesScore = city.socioeconomicScore(incomeLevel, educationLevel, occupation);
-    out.put(Person.SOCIOECONOMIC_SCORE, sesScore);
-    out.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
+    demographicsOutput.put(Person.SOCIOECONOMIC_SCORE, sesScore);
+    demographicsOutput.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
 
     if (this.onlyVeterans) {
-      out.put("veteran_population_override", Boolean.TRUE);
+      demographicsOutput.put("veteran_population_override", Boolean.TRUE);
     }
 
+    // Generate the person's age data.
     int targetAge;
     if (options.ageSpecified) {
       targetAge = 
@@ -765,28 +642,57 @@ public class Generator {
     } else {
       targetAge = city.pickAge(random);
     }
-    out.put(TARGET_AGE, targetAge);
+    demographicsOutput.put(TARGET_AGE, targetAge);
 
     long birthdate = birthdateFromTargetAge(targetAge, random);
-    out.put(Person.BIRTHDATE, birthdate);
+    demographicsOutput.put(Person.BIRTHDATE, birthdate);
     
-    return out;
+    // Return the generated demographics.
+    return demographicsOutput;
   }
 
-  // WITHOUT Custom Patients
-  private long birthdateFromTargetAge(long targetAge, Random random) {
-    long earliestBirthdate = stop - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
-    long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);
-    return 
-        (long) (earliestBirthdate + ((latestBirthdate - earliestBirthdate) * random.nextDouble()));
-  }
+  /**
+   * Generate a person's demographics from a fixed demographics record before generating random demographics based on the fixed values.
+   * This method should get called when this.recordGroups != null
+   * @param index The index of the fixed record group to base this person off of ????
+   * @param random Random
+   */
+  private Map<String, Object> generateFixedDemographics(int index, Random random) {
 
-  // WITH Custom Patients
-  private long birthdateFromTargetAge(long targetAge, Random random, int index) {
-    if (this.recordGroups != null) {
-      RecordGroup recordGroup = this.recordGroups.get(index);
-      return recordGroup.getValidBirthdate(0);
+    // Get the current recordGroup
+    RecordGroup recordGroup = this.recordGroups.get(index);
+
+    // Pull the provider minimum - there must be 1 provider for each of the records for this person
+    int providerMinimum = recordGroup.count;
+
+    // Pull the 0th fixed record from the group
+    FixedRecord fr = recordGroup.records.get(0);
+
+    // Load the current patient
+    Patient newPatient = Utilities.loadPatient(index);
+
+    // Pull the gender from the current patient
+    if (newPatient != null) {
+      String gender = newPatient.getGender().getDisplay();
     }
+
+    // Pull the location from the fixedrecord
+    this.location = new Location(fr.getState(), recordGroup.getSafeCity(0));
+
+    // This simply pulls the fixed city from the current location when using fixed records
+    Demographics city = location.randomCity(random);
+
+    // Pull the person's birthdate
+    long birthdateFromTargetAge = recordGroup.getValidBirthdate(0);
+
+    // Pick the demographics after the fixed values have been pulled and set.
+    Map<String, Object> demoAttributes = pickDemographics(random, city);
+
+    // Return the Demographic Attributes of the current person.
+    return demoAttributes;
+  }
+
+  private long birthdateFromTargetAge(long targetAge, Random random) {
     long earliestBirthdate = stop - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
     long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);
     return 

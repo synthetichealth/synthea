@@ -320,7 +320,7 @@ public class Utilities {
   }
 
   /**
-   * Load a patient record with seed demographics in json format:
+   * Load a fixed demographics patient record with seed demographics in json format:
    * see src/main/resources/patient_template.json for a working example
    * @param index index of the entry.
    * @return The patient record.
