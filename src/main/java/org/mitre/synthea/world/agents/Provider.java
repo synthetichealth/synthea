@@ -448,8 +448,7 @@ public class Provider implements QuadTreeElement, Serializable {
       out.put(Person.ETHNICITY, ethnicity);
       String language = city.languageFromRaceAndEthnicity(race, ethnicity, clinicianRand);
       out.put(Person.FIRST_LANGUAGE, language);
-      // TODO: Remove the second arg when the file detection is fixed
-      String gender = city.pickGender(clinicianRand, 1);
+      String gender = city.pickGender(clinicianRand);
       if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
         gender = "M";
       } else {

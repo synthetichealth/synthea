@@ -670,7 +670,7 @@ public class Generator {
    */
   public Map<String, Object> randomDemographics(Random seed) {
     Demographics city = location.randomCity(seed);
-    Map<String, Object> demoAttributes = pickDemographics(seed, city);
+    Map<String, Object> demoAttributes = pickDemographics(seed, city, 0);
     return demoAttributes;
   }
 
@@ -700,7 +700,7 @@ public class Generator {
     }
   }
 
-  // WITH Custom patients
+  // Remove int index
   private Map<String, Object> pickDemographics(Random random, Demographics city, int index) {
     Map<String, Object> out = new HashMap<>();
     out.put(Person.CITY, city.city);
@@ -714,11 +714,20 @@ public class Generator {
     String language = city.languageFromRaceAndEthnicity(race, ethnicity, random);
     out.put(Person.FIRST_LANGUAGE, language);
 
-    String gender;
+    String gender = "ERROR";
     if (options.gender != null) {
       gender = options.gender;
     } else {
-      gender = city.pickGender(random, index);
+      // If there is a fixed record, then get the person's fixed gender
+      if (true) {
+        Patient newPatient = Utilities.loadPatient(index);
+        if (newPatient != null) {
+          gender = newPatient.getGender().getDisplay();
+        }
+      } else {
+        // If the gender is not fixed, then pick a random gender.
+        gender = city.pickGender(random);
+      }
       if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
         gender = "M";
       } else {
@@ -727,71 +736,7 @@ public class Generator {
     }
     out.put(Person.GENDER, gender);
 
-    // Socioeconomic variables of education, income, and education are set.
-    String education = city.pickEducation(random);
-    out.put(Person.EDUCATION, education);
-    double educationLevel = city.educationLevel(education, random);
-    out.put(Person.EDUCATION_LEVEL, educationLevel);
-
-    int income = city.pickIncome(random);
-    out.put(Person.INCOME, income);
-    double incomeLevel = city.incomeLevel(income);
-    out.put(Person.INCOME_LEVEL, incomeLevel);
-
-    double occupation = random.nextDouble();
-    out.put(Person.OCCUPATION_LEVEL, occupation);
-
-    double sesScore = city.socioeconomicScore(incomeLevel, educationLevel, occupation);
-    out.put(Person.SOCIOECONOMIC_SCORE, sesScore);
-    out.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
-
-    if (this.onlyVeterans) {
-      out.put("veteran_population_override", Boolean.TRUE);
-    }
-
-    int targetAge;
-    if (options.ageSpecified) {
-      targetAge = 
-          (int) (options.minAge + ((options.maxAge - options.minAge) * random.nextDouble()));
-    } else {
-      targetAge = city.pickAge(random);
-    }
-    out.put(TARGET_AGE, targetAge);
-
-    long birthdate = birthdateFromTargetAge(targetAge, random, index);
-    out.put(Person.BIRTHDATE, birthdate);
-    
-    return out;
-  }
-
-  // WITHOUT Custom Patients
-  private Map<String, Object> pickDemographics(Random random, Demographics city) {
-    Map<String, Object> out = new HashMap<>();
-    out.put(Person.CITY, city.city);
-    out.put(Person.STATE, city.state);
-    out.put("county", city.county);
-    
-    String race = city.pickRace(random);
-    out.put(Person.RACE, race);
-    String ethnicity = city.pickEthnicity(random);
-    out.put(Person.ETHNICITY, ethnicity);
-    String language = city.languageFromRaceAndEthnicity(race, ethnicity, random);
-    out.put(Person.FIRST_LANGUAGE, language);
-
-    String gender;
-    if (options.gender != null) {
-      gender = options.gender;
-    } else {
-      gender = city.pickGender(random);
-      if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
-        gender = "M";
-      } else {
-        gender = "F";
-      }
-    }
-    out.put(Person.GENDER, gender);
-
-    // Socioeconomic variables of education, income, and education are set.
+    // Socioeconomic variables of education, income, and occupation are set.
     String education = city.pickEducation(random);
     out.put(Person.EDUCATION, education);
     double educationLevel = city.educationLevel(education, random);
