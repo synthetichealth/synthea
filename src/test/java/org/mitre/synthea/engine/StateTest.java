@@ -1533,7 +1533,7 @@ public class StateTest {
 
     // Set life signs at birth...
     long timeT = (long) person.attributes.get(Person.BIRTHDATE);
-    LifecycleModule.birth(person, timeT, 0);
+    LifecycleModule.birth(person, timeT);
     // Make sure the patient requires dialysis to use that module's
     // repeating delayed encounters...
     person.attributes.put("ckd", 5);
@@ -1805,7 +1805,7 @@ public class StateTest {
   @Test
   public void testDiagnosticReport() throws Exception {
     // Birth makes the vital signs come alive :-)
-    LifecycleModule.birth(person, (long)person.attributes.get(Person.BIRTHDATE), 0);
+    LifecycleModule.birth(person, (long)person.attributes.get(Person.BIRTHDATE));
 
     Module module = TestHelper.getFixture("observation_groups.json");
 
@@ -1836,7 +1836,7 @@ public class StateTest {
   @Test
   public void testMultiObservation() throws Exception {
     // Birth makes the blood pump :-)
-    LifecycleModule.birth(person, (long)person.attributes.get(Person.BIRTHDATE), 0);
+    LifecycleModule.birth(person, (long)person.attributes.get(Person.BIRTHDATE));
 
     Module module = TestHelper.getFixture("observation_groups.json");
 
@@ -1929,7 +1929,7 @@ public class StateTest {
   public void testExpressionUse() throws Exception {
     
     // Birth makes the vital signs come alive :-)
-    LifecycleModule.birth(person, (long)person.attributes.get(Person.BIRTHDATE),0);
+    LifecycleModule.birth(person, (long)person.attributes.get(Person.BIRTHDATE));
 
     Module module = TestHelper.getFixture("expression_use.json");
     

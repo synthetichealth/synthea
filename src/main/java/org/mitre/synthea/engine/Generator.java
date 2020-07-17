@@ -61,10 +61,11 @@ public class Generator {
   public Location location;
   private AtomicInteger totalGeneratedPopulation;
   private String logLevel;
+  private boolean onlyAlivePatients;
   private boolean onlyDeadPatients;
   private boolean onlyVeterans;
   public TransitionMetrics metrics;
-  public static final String DEFAULT_STATE = "Massachusetts";
+  public static String DEFAULT_STATE = "Massachusetts";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
   private List<RecordGroup> recordGroups;
 
@@ -200,7 +201,17 @@ public class Generator {
     this.location = new Location(options.state, options.city);
 
     this.logLevel = Config.get("generate.log_patients.detail", "simple");
+
     this.onlyDeadPatients = Boolean.parseBoolean(Config.get("generate.only_dead_patients"));
+    this.onlyAlivePatients = Boolean.parseBoolean(Config.get("generate.only_alive_patients"));
+    //If both values are set to true, then they are both set back to the default
+    if (this.onlyDeadPatients && this.onlyAlivePatients) {
+      Config.set("generate.only_dead_patients", "false");
+      Config.set("generate.only_alive_patients", "false");
+      this.onlyDeadPatients = false;
+      this.onlyAlivePatients = false;
+    }
+
     this.onlyVeterans = Boolean.parseBoolean(Config.get("generate.veteran_population_override"));
     this.totalGeneratedPopulation = new AtomicInteger(0);
     this.stats = Collections.synchronizedMap(new HashMap<String, AtomicInteger>());
@@ -269,6 +280,8 @@ public class Generator {
    * Generate the population, using the currently set configuration settings.
    */
   public void run() {
+
+    // --- Imports the fixed records file ---
     if (this.options.fixedRecordPath != null) {
       Gson gson = new Gson();
       Type listType = new TypeToken<List<RecordGroup>>() {}.getType();
@@ -277,18 +290,28 @@ public class Generator {
         int linkIdStart = 100000;
         for (int i = 0; i < this.recordGroups.size(); i++) {
           this.recordGroups.get(i).linkId = linkIdStart + i;
+          System.out.println(this.recordGroups.get(i));
         }
+        System.out.println("------------------********************--------------Robi");
+
       } catch (FileNotFoundException e) {
         throw new RuntimeException("Couldn't open the fixed records file", e);
       }
       this.options.population = this.recordGroups.size();
     }
+
+    // --- Start of standard synthea-master run()
     ExecutorService threadPool = Executors.newFixedThreadPool(8);
 
     for (int i = 0; i < this.options.population; i++) {
       final int index = i;
       final long seed = this.random.nextLong();
-      threadPool.submit(() -> generatePerson(index, seed));
+      if (false) {
+        threadPool.submit(() -> generatePerson(index, seed));
+      }
+      else {
+        threadPool.submit(() -> generatePersonWithFixedRecord(index, seed));
+      }
     }
 
     try {
@@ -328,6 +351,7 @@ public class Generator {
   public Person generatePerson(int index) {
     // System.currentTimeMillis is not unique enough
     long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+    // If generating fixed record patients, then run generatePersonWithFixedRecord(index, personSeed)
     return generatePerson(index, personSeed);
   }
 
@@ -350,6 +374,92 @@ public class Generator {
       boolean isAlive = true;
       int tryNumber = 0; // number of tries to create these demographics
       Random randomForDemographics = new Random(personSeed);
+      Map<String, Object> demoAttributes = randomDemographics(randomForDemographics);
+
+      do {
+        person = createPerson(personSeed, demoAttributes);
+        long finishTime = person.lastUpdated + timestep;
+
+        isAlive = person.alive(finishTime);
+
+        if (isAlive && onlyDeadPatients) {
+          // rotate the seed so the next attempt gets a consistent but different one
+          personSeed = new Random(personSeed).nextLong();
+          continue;
+          // skip the other stuff if the patient is alive and we only want dead patients
+          // note that this skips ahead to the while check and doesn't automatically re-loop
+        }
+
+        if (!isAlive && onlyAlivePatients) {
+          // rotate the seed so the next attempt gets a consistent but different one
+          personSeed = new Random(personSeed).nextLong();
+          continue;
+          // skip the other stuff if the patient is dead and we only want alive patients
+          // note that this skips ahead to the while check and doesn't automatically re-loop
+        }
+
+        recordPerson(person, index);
+
+        tryNumber++;
+        if (!isAlive) {
+          // rotate the seed so the next attempt gets a consistent but different one
+          personSeed = new Random(personSeed).nextLong();
+
+          // if we've tried and failed > 10 times to generate someone over age 90
+          // and the options allow for ages as low as 85
+          // reduce the age to increase the likelihood of success
+          if (tryNumber > 10 && (int)person.attributes.get(TARGET_AGE) > 90
+              && (!options.ageSpecified || options.minAge <= 85)) {
+            // pick a new target age between 85 and 90
+            int newTargetAge = randomForDemographics.nextInt(5) + 85;
+            // the final age bracket is 85-110, but our patients rarely break 100
+            // so reducing a target age to 85-90 shouldn't affect numbers too much
+            demoAttributes.put(TARGET_AGE, newTargetAge);
+            long birthdate = birthdateFromTargetAge(newTargetAge, randomForDemographics);
+            demoAttributes.put(Person.BIRTHDATE, birthdate);
+          }
+        }
+
+        // TODO - export is DESTRUCTIVE when it filters out data
+        // this means export must be the LAST THING done with the person
+        Exporter.export(person, finishTime, exporterRuntimeOptions);
+      } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
+          || (isAlive && onlyDeadPatients));
+      // if the patient is alive and we want only dead ones => loop & try again
+      //  (and dont even export, see above)
+      // if the patient is dead and we only want dead ones => done
+      // if the patient is dead and we want live ones => loop & try again
+      //  (but do export the record anyway)
+      // if the patient is alive and we want live ones => done
+    } catch (Throwable e) {
+      // lots of fhir things throw errors for some reason
+      e.printStackTrace();
+      throw e;
+    }
+    return person;
+  }
+
+  /**
+   * Generate a random Person, from the given seed. The returned person will be alive at the end of
+   * the simulation. This means that if in the course of the simulation the person dies, a new
+   * person will be started to replace them. Note also that if the person dies, the seed to produce
+   * them can't be re-used (otherwise the new person would die as well) so a new seed is picked,
+   * based on the given seed.
+   * 
+   * @param index
+   *          Target index in the whole set of people to generate
+   * @param personSeed
+   *          Seed for the random person
+   * @return generated Person
+   */
+  public Person generatePersonWithFixedRecord(int index, long personSeed) {
+    Person person = null;
+    try {
+      boolean isAlive = true;
+      int tryNumber = 0; // number of tries to create these demographics
+      Random randomForDemographics = new Random(personSeed);
+
+      // Fixed Record Stuff
       int providerMinimum = Integer.parseInt(Config.get("generate.providers.minimum", "1"));
       if (this.recordGroups != null) {
         RecordGroup recordGroup = this.recordGroups.get(index);
@@ -372,6 +482,7 @@ public class Generator {
         person.populationSeed = this.options.seed;
         person.attributes.putAll(demoAttributes);
         person.attributes.put(Person.LOCATION, location);
+
         if (this.recordGroups != null) {
           RecordGroup recordGroup = this.recordGroups.get(index);
           person.attributes.put(Person.RECORD_GROUP, recordGroup);
@@ -379,7 +490,7 @@ public class Generator {
           person.attributes.put(Person.LINK_ID, recordGroup.linkId);
         }
 
-        LifecycleModule.birth(person, start, index);
+        LifecycleModule.birth(person, start);
         HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
         EncounterModule encounterModule = new EncounterModule();
         HealthRecordEditors hrm = HealthRecordEditors.getInstance();
@@ -419,6 +530,7 @@ public class Generator {
         }
 
         if (providerCount < providerMinimum) {
+          System.out.println(providerCount);
           // rotate the seed so the next attempt gets a consistent but different one
           personSeed = new Random(personSeed).nextLong();
           tryNumber++;
@@ -495,6 +607,73 @@ public class Generator {
     return person;
   }
 
+  /**
+   * Create a new person and update them until until Generator.stop or
+   * they die, whichever comes sooner.
+   * @param personSeed Seed for the random person
+   * @param demoAttributes Demographic attributes for the new person, {@link #randomDemographics}
+   * @return the new person
+   */
+  public Person createPerson(long personSeed, Map<String, Object> demoAttributes) {
+    Person person = new Person(personSeed);
+    person.populationSeed = this.options.seed;
+    person.attributes.putAll(demoAttributes);
+    person.attributes.put(Person.LOCATION, location);
+    person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
+
+    LifecycleModule.birth(person, person.lastUpdated);
+    person.currentModules = Module.getModules(modulePredicate);
+
+    updatePerson(person);
+
+    return person;
+  }
+
+  /**
+   * Update a previously created person from the time they were last updated until Generator.stop or
+   * they die, whichever comes sooner.
+   * @param person the previously created person to update
+   */
+  public void updatePerson(Person person) {
+    HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
+    EncounterModule encounterModule = new EncounterModule();
+
+    long time = person.lastUpdated;
+    while (person.alive(time) && time < stop) {
+
+      healthInsuranceModule.process(person, time + timestep);
+      encounterModule.process(person, time);
+
+      Iterator<Module> iter = person.currentModules.iterator();
+      while (iter.hasNext()) {
+        Module module = iter.next();
+        // System.out.format("Processing module %s\n", module.name);
+        if (module.process(person, time)) {
+          // System.out.format("Removing module %s\n", module.name);
+          iter.remove(); // this module has completed/terminated.
+        }
+      }
+      encounterModule.endEncounterModuleEncounters(person, time);
+      person.lastUpdated = time;
+      HealthRecordEditors.getInstance().executeAll(
+              person, person.record, time, timestep, person.random);
+      time += timestep;
+    }
+
+    DeathModule.process(person, time);
+  }
+
+  /**
+   * Create a set of random demographics.
+   * @param seed The random seed to use
+   * @return demographics
+   */
+  public Map<String, Object> randomDemographics(Random seed) {
+    Demographics city = location.randomCity(seed);
+    Map<String, Object> demoAttributes = pickDemographics(seed, city);
+    return demoAttributes;
+  }
+
   private synchronized void writeToConsole(Person person, int index, long time, boolean isAlive) {
     // this is synchronized to ensure all lines for a single person are always printed 
     // consecutively
@@ -521,6 +700,7 @@ public class Generator {
     }
   }
 
+  // WITH Custom patients
   private Map<String, Object> pickDemographics(Random random, Demographics city, int index) {
     Map<String, Object> out = new HashMap<>();
     out.put(Person.CITY, city.city);
@@ -584,6 +764,79 @@ public class Generator {
     return out;
   }
 
+  // WITHOUT Custom Patients
+  private Map<String, Object> pickDemographics(Random random, Demographics city) {
+    Map<String, Object> out = new HashMap<>();
+    out.put(Person.CITY, city.city);
+    out.put(Person.STATE, city.state);
+    out.put("county", city.county);
+    
+    String race = city.pickRace(random);
+    out.put(Person.RACE, race);
+    String ethnicity = city.pickEthnicity(random);
+    out.put(Person.ETHNICITY, ethnicity);
+    String language = city.languageFromRaceAndEthnicity(race, ethnicity, random);
+    out.put(Person.FIRST_LANGUAGE, language);
+
+    String gender;
+    if (options.gender != null) {
+      gender = options.gender;
+    } else {
+      gender = city.pickGender(random);
+      if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
+        gender = "M";
+      } else {
+        gender = "F";
+      }
+    }
+    out.put(Person.GENDER, gender);
+
+    // Socioeconomic variables of education, income, and education are set.
+    String education = city.pickEducation(random);
+    out.put(Person.EDUCATION, education);
+    double educationLevel = city.educationLevel(education, random);
+    out.put(Person.EDUCATION_LEVEL, educationLevel);
+
+    int income = city.pickIncome(random);
+    out.put(Person.INCOME, income);
+    double incomeLevel = city.incomeLevel(income);
+    out.put(Person.INCOME_LEVEL, incomeLevel);
+
+    double occupation = random.nextDouble();
+    out.put(Person.OCCUPATION_LEVEL, occupation);
+
+    double sesScore = city.socioeconomicScore(incomeLevel, educationLevel, occupation);
+    out.put(Person.SOCIOECONOMIC_SCORE, sesScore);
+    out.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
+
+    if (this.onlyVeterans) {
+      out.put("veteran_population_override", Boolean.TRUE);
+    }
+
+    int targetAge;
+    if (options.ageSpecified) {
+      targetAge = 
+          (int) (options.minAge + ((options.maxAge - options.minAge) * random.nextDouble()));
+    } else {
+      targetAge = city.pickAge(random);
+    }
+    out.put(TARGET_AGE, targetAge);
+
+    long birthdate = birthdateFromTargetAge(targetAge, random);
+    out.put(Person.BIRTHDATE, birthdate);
+    
+    return out;
+  }
+
+  // WITHOUT Custom Patients
+  private long birthdateFromTargetAge(long targetAge, Random random) {
+    long earliestBirthdate = stop - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
+    long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);
+    return 
+        (long) (earliestBirthdate + ((latestBirthdate - earliestBirthdate) * random.nextDouble()));
+  }
+
+  // WITH Custom Patients
   private long birthdateFromTargetAge(long targetAge, Random random, int index) {
     if (this.recordGroups != null) {
       RecordGroup recordGroup = this.recordGroups.get(index);
@@ -593,6 +846,40 @@ public class Generator {
     long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);
     return 
         (long) (earliestBirthdate + ((latestBirthdate - earliestBirthdate) * random.nextDouble()));
+  }
+
+  /**
+   * Record the person using whatever tracking mechanisms are currently configured.
+   * @param person the person to record
+   * @param index the index of the person being recorded, e.g. if generating 100 people, the index
+   *     would identify which of those 100 is being recorded.
+   */
+  public void recordPerson(Person person, int index) {
+    long finishTime = person.lastUpdated + timestep;
+    boolean isAlive = person.alive(finishTime);
+    
+    if (database != null) {
+      database.store(person);
+    }
+
+    if (internalStore != null) {
+      internalStore.add(person);
+    }
+
+    if (this.metrics != null) {
+      metrics.recordStats(person, finishTime, Module.getModules(modulePredicate));
+    }
+
+    if (!this.logLevel.equals("none")) {
+      writeToConsole(person, index, finishTime, isAlive);
+    }
+
+    String key = isAlive ? "alive" : "dead";
+
+    AtomicInteger count = stats.get(key);
+    count.incrementAndGet();
+
+    totalGeneratedPopulation.incrementAndGet();
   }
   
   private Predicate<String> getModulePredicate() {

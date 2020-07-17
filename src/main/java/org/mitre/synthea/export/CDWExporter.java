@@ -383,7 +383,7 @@ public class CDWExporter {
       clinician.attributes.put(Person.RACE, "unknown");
       clinician.attributes.put(Person.ETHNICITY, "unknown");
       clinician.attributes.put(Person.FIRST_LANGUAGE, "English");
-      LifecycleModule.birth(clinician, 0L, 0);
+      LifecycleModule.birth(clinician, 0L);
       String name = "Dr. " + clinician.attributes.get(Person.FIRST_NAME);
       name += " " + clinician.attributes.get(Person.LAST_NAME);
       sstaff.addFact("" + i, clean(name));

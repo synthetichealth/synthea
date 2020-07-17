@@ -73,11 +73,32 @@ public class Demographics implements Comparable<Demographics>, Serializable {
     return random.nextInt((high - low) + 1) + low;
   }
 
+  // WITH Custom Patients
   public String pickGender(Random random, int index) {
+    // NOT GOOD NEED TO FIX new stuff
     Patient newPatient = Utilities.loadPatient(index);
     if (newPatient != null) {
       return newPatient.getGender().getDisplay();
     }
+    // lazy-load in case this randomcollection isn't necessary
+    if (genderDistribution == null) {
+      genderDistribution = buildRandomCollectionFromMap(gender);
+    }
+
+    /*
+     * Sample Gender frequency: "gender": { "male": 0.47638487773697935, "female":
+     * 0.5236151222630206 },
+     */
+    return genderDistribution.next(random);
+  }
+
+  // WITHOUT Custom Patients
+  /**
+   * Pick a gender based on the population distribution for the city.
+   * @param random random to use
+   * @return the gender
+   */
+  public String pickGender(Random random) {
     // lazy-load in case this randomcollection isn't necessary
     if (genderDistribution == null) {
       genderDistribution = buildRandomCollectionFromMap(gender);

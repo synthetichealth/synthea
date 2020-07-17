@@ -95,7 +95,7 @@ public class LifecycleModuleTest {
     person.attributes.put(Person.RACE, "white");
     person.attributes.put(Person.ETHNICITY, "english");
     
-    LifecycleModule.birth(person, 0, 0);
+    LifecycleModule.birth(person, 0);
     
     // Person should have some PhysiologyValueGenerators
     Assert.assertEquals(person.vitalSigns.get(VitalSign.SYSTOLIC_BLOOD_PRESSURE).getClass(),

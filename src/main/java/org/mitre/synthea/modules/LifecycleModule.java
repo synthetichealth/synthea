@@ -130,14 +130,16 @@ public final class LifecycleModule extends Module {
    * @param person The baby.
    * @param time The time of birth.
    */
-  public static void birth(Person person, long time, int index) {
+  public static void birth(Person person, long time) {
     Map<String, Object> attributes = person.attributes;
 
     attributes.put(Person.ID, UUID.randomUUID().toString());
     attributes.put(Person.BIRTHDATE, time);
     String gender = (String) attributes.get(Person.GENDER);
     String language = (String) attributes.get(Person.FIRST_LANGUAGE);
+    // master uses fakeFirstName()
     String firstName = patientFirstName(gender, language, person.random, person);
+    // master uses fakeLastName()
     String lastName = patientLastName(language, person.random, person);
     if (appendNumbersToNames) {
       firstName = addHash(firstName);
@@ -209,6 +211,7 @@ public final class LifecycleModule extends Module {
     }
 
     boolean hasStreetAddress2 = person.rand() < 0.5;
+    // master uses fakeAddress()
     attributes.put(Person.ADDRESS, patientAddress(hasStreetAddress2, person.random, person));
 
     attributes.put(Person.ACTIVE_WEIGHT_MANAGEMENT, false);
