@@ -321,7 +321,7 @@ public class Generator {
   }
 
   /**
-   * Imports the file to be used when using fixed patient demographics.
+   * Imports the fixed demographics records file when using fixed patient demographics.
    */
   public void importFixedPatientDemographicsFile(){
     Gson gson = new Gson();
@@ -336,6 +336,7 @@ public class Generator {
       } catch (FileNotFoundException e) {
         throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
       }
+      // Update the population paramater to reflect the number of patients in the fixed demographic records file.
       this.options.population = this.recordGroups.size();
   }
   
@@ -382,15 +383,12 @@ public class Generator {
       int providerCount = 0;
 
       int providerMinimum = 1;
-      // If there are fixed records to use, then determine the provider minimum based on number of records for a person.
+      // If there are fixed records to use, there must be 1 provider for each of this person's records.
       if (this.recordGroups != null) {
-        // Get the current recordGroup
         RecordGroup recordGroup = this.recordGroups.get(index);
-        // Pull the provider minimum - there must be 1 provider for each of the records for this person
         providerMinimum = recordGroup.count;
       }
       
-
       do {
         person = createPerson(personSeed, demoAttributes, index);
         long finishTime = person.lastUpdated + timestep;
@@ -418,7 +416,6 @@ public class Generator {
 
         // Fixed Records: If the number of providers is less than the number of records for a person, try the simulation again.
         if (providerCount < providerMinimum) {
-          System.out.println(providerCount);
           // rotate the seed so the next attempt gets a consistent but different one
           personSeed = new Random(personSeed).nextLong();
           tryNumber++;
@@ -457,7 +454,7 @@ public class Generator {
         // this means export must be the LAST THING done with the person
         Exporter.export(person, finishTime, exporterRuntimeOptions);
       } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
-          || (isAlive && onlyDeadPatients));
+          || (isAlive && onlyDeadPatients) || (providerCount < providerMinimum));
       // if the patient is alive and we want only dead ones => loop & try again
       //  (and dont even export, see above)
       // if the patient is dead and we only want dead ones => done
@@ -540,17 +537,20 @@ public class Generator {
 
   /**
    * Create a set of random demographics.
-   * @param seed The random seed to use
-   * @return demographics
+   * @param seed The random seed to use.
+   * @return A map of demographic attributes.
    * REMOVE index
    */
   public Map<String, Object> randomDemographics(Random seed, int index) {
-    Demographics city = location.randomCity(seed);
 
     Map<String, Object> demoAttributes;
+
     if(this.recordGroups != null){
+      // Pick fixed demographics if a fixed demographics record file is used.
       demoAttributes = pickFixedDemographics(index, random);
     } else {
+      // Pick a random city and demographics based on the location.
+      Demographics city = location.randomCity(seed);
       demoAttributes = pickDemographics(seed, city);
     }
 
@@ -591,7 +591,7 @@ public class Generator {
   }
 
   /**
-   * pickDemographics returns a map of demographics that have been randomly picked based on the location.
+   * Returns a map of demographics that have been randomly picked based on the given location.
    * @param random The random object to use.
    * @param city The city to base the demographics off of.
    * @return a Map<String, Object> of demographics
