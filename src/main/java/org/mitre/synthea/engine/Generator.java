@@ -321,9 +321,12 @@ public class Generator {
   }
 
   /**
-   * Imports the fixed demographics records file when using fixed patient demographics.
+   * Imports the fixed demographics records file when using fixed patient
+   * demographics.
+   * 
+   * @return A list of the groups of records imported.
    */
-  public void importFixedPatientDemographicsFile(){
+  public List<RecordGroup> importFixedPatientDemographicsFile() {
     Gson gson = new Gson();
       Type listType = new TypeToken<List<RecordGroup>>() {}.getType();
       try {
@@ -338,6 +341,8 @@ public class Generator {
       }
       // Update the population paramater to reflect the number of patients in the fixed demographic records file.
       this.options.population = this.recordGroups.size();
+      // Return the record groups.
+      return recordGroups;
   }
   
   /**
@@ -536,10 +541,10 @@ public class Generator {
   }
 
   /**
+   *    * TODO: REMOVE index
    * Create a set of random demographics.
    * @param seed The random seed to use.
    * @return A map of demographic attributes.
-   * REMOVE index
    */
   public Map<String, Object> randomDemographics(Random seed, int index) {
 
