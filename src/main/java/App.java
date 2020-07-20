@@ -117,6 +117,7 @@ public class App {
             }
           } else if (currArg.equalsIgnoreCase("-u")) {
             String value = argsQ.poll();
+            failIfPhysiologyEnabled(currArg);
             File file = new File(value);
             try {
               if (file.createNewFile()) {
@@ -130,6 +131,7 @@ public class App {
             }
           } else if (currArg.equalsIgnoreCase("-i")) {
             String value = argsQ.poll();
+            failIfPhysiologyEnabled(currArg);
             File file = new File(value);
             try {
               if (file.exists() && file.canRead()) {
@@ -188,6 +190,18 @@ public class App {
     if (validArgs) {
       Generator generator = new Generator(options);
       generator.run();
+    }
+  }
+  
+  private static void failIfPhysiologyEnabled(String arg) {
+    if (Boolean.valueOf(Config.get("physiology.generators.enabled", "false"))) {
+      String errString = String.format(
+              "The %s command line switch %s - %s",
+              arg,
+              "cannot be used when physiology generators are enabled",
+              "set configuration option physiology.generators.enabled=false to use"
+      );
+      throw new IllegalArgumentException(errString);
     }
   }
 }
