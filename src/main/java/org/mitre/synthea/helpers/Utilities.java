@@ -322,10 +322,10 @@ public class Utilities {
   /**
    * Load a fixed demographics patient record with seed demographics in json format:
    * see src/main/resources/patient_template.json for a working example
-   * @param index index of the entry.
+   * @param index index of the entry in the fixed demographic file.
    * @return The patient record.
    */
-   public static final Patient loadPatient(int index) {
+   public static final Patient loadFixedDemographicPatient(int index) {
      Patient newPatient = null;
      boolean usePatientFile = Boolean.parseBoolean(Config.get("generate.demographics.use_patient_file"));
      if (usePatientFile) {
@@ -344,7 +344,6 @@ public class Utilities {
          e.printStackTrace();
        }
      }
-
      return newPatient;
    }
 

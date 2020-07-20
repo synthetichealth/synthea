@@ -21,7 +21,7 @@ public class RecordGroup {
         try {
           return this.records.get(i).getBirthDate(true);
         } catch (java.time.DateTimeException|java.lang.NullPointerException|java.lang.IllegalArgumentException dontcare) {
-          // do nothing
+          // Do nothing if the current fixed record does not have a valid birthdate.
         }
       }
     }

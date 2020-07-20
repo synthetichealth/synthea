@@ -374,7 +374,7 @@ public class Generator {
     
     try {
       boolean isAlive = true;
-      int tryNumber = 0; // number of tries to create these demographics
+      int tryNumber = 0; // Number of tries to create these demographics
       Random randomForDemographics = new Random(personSeed);
 
       Map<String, Object> demoAttributes = randomDemographics(randomForDemographics, index);
@@ -487,7 +487,9 @@ public class Generator {
     person.attributes.put(Person.LOCATION, location);
     person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
 
+    // If there are fixed records to use, give them to the person.
     if (this.recordGroups != null) {
+      // Pull this person's group of records.
       RecordGroup recordGroup = this.recordGroups.get(index);
       person.attributes.put(Person.RECORD_GROUP, recordGroup);
       recordGroup.records.get(0).overwriteDemoAttributes(person);
@@ -547,7 +549,7 @@ public class Generator {
 
     Map<String, Object> demoAttributes;
     if(this.recordGroups != null){
-      demoAttributes = generateFixedDemographics(index, random);
+      demoAttributes = pickFixedDemographics(index, random);
     } else {
       demoAttributes = pickDemographics(seed, city);
     }
@@ -555,6 +557,13 @@ public class Generator {
     return demoAttributes;
   }
 
+  /**
+   * Print out the completed person to the consol.
+   * @param person The person to print.
+   * @param index The number person simulated.
+   * @param time The time at which they died/the simulation ended.
+   * @param isAlive Whether the person to print is alive.
+   */
   private synchronized void writeToConsole(Person person, int index, long time, boolean isAlive) {
     // this is synchronized to ensure all lines for a single person are always printed 
     // consecutively
@@ -581,6 +590,12 @@ public class Generator {
     }
   }
 
+  /**
+   * pickDemographics returns a map of demographics that have been randomly picked based on the location.
+   * @param random The random object to use.
+   * @param city The city to base the demographics off of.
+   * @return a Map<String, Object> of demographics
+   */
   private Map<String, Object> pickDemographics(Random random, Demographics city) {
     // Output map of the generated demographc data.
     Map<String, Object> demographicsOutput = new HashMap<>();
@@ -652,41 +667,35 @@ public class Generator {
   }
 
   /**
-   * Generate a person's demographics from a fixed demographics record before generating random demographics based on the fixed values.
-   * This method should get called when this.recordGroups != null
-   * @param index The index of the fixed record group to base this person off of ????
-   * @param random Random
+   * Pick a person's demographics from a fixed demographics record before generating random demographics based on the fixed values.
+   * @param index The index to use.
+   * @param random Random object.
    */
-  private Map<String, Object> generateFixedDemographics(int index, Random random) {
+  private Map<String, Object> pickFixedDemographics(int index, Random random) {
 
     // Get the current recordGroup
     RecordGroup recordGroup = this.recordGroups.get(index);
 
     // Pull the provider minimum - there must be 1 provider for each of the records for this person
     int providerMinimum = recordGroup.count;
-
-    // Pull the 0th fixed record from the group
+    // Pull the first fixed record from the group of fixed records.
     FixedRecord fr = recordGroup.records.get(0);
-
-    // Load the current patient
-    Patient newPatient = Utilities.loadPatient(index);
-
-    // Pull the gender from the current patient
-    if (newPatient != null) {
-      String gender = newPatient.getGender().getDisplay();
-    }
-
-    // Pull the location from the fixedrecord
+    // Load the patient from the current fixed record.
+    Patient newPatient = Utilities.loadFixedDemographicPatient(index);
+    // Pull the location from the fixed record.
     this.location = new Location(fr.getState(), recordGroup.getSafeCity(0));
-
-    // This simply pulls the fixed city from the current location when using fixed records
+    // This simply pulls the city object from the fixed location when using fixed records. When not using fixed records, it is random.
     Demographics city = location.randomCity(random);
 
-    // Pull the person's birthdate
-    long birthdateFromTargetAge = recordGroup.getValidBirthdate(0);
-
-    // Pick the demographics after the fixed values have been pulled and set.
+    // Pick the demographics based on the location of the fixed record.
     Map<String, Object> demoAttributes = pickDemographics(random, city);
+
+    // Overwrite the person's birthdate in demoAttributes with the fixed record birthdate.
+    demoAttributes.put(Person.BIRTHDATE, recordGroup.getValidBirthdate(0));
+    // Overwrite the person's gender in demoAttributes with the fixed record gender.
+    if (newPatient != null) {
+        demoAttributes.put(Person.GENDER, newPatient.getGender().getDisplay());
+    }
 
     // Return the Demographic Attributes of the current person.
     return demoAttributes;
