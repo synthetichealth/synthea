@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.List;
-import java.util.Random;
 
 import org.junit.Test;
 import org.mitre.synthea.world.agents.Person;
@@ -20,8 +19,7 @@ public class HealthRecordEditorsTest {
     }
 
     @Override
-    public void process(Person person, List<HealthRecord.Encounter> encounters, long time, 
-            Random random) {
+    public void process(Person person, List<HealthRecord.Encounter> encounters, long time) {
       person.attributes.put(Person.ZIP, "01730");
     }
   }
@@ -36,9 +34,9 @@ public class HealthRecordEditorsTest {
     HealthRecordEditors hrm = HealthRecordEditors.getInstance();
     hrm.registerEditor(new Dummy());
     Person p = new Person(1);
-    hrm.executeAll(p, new HealthRecord(p), 1, 1, new Random());
+    hrm.executeAll(p, new HealthRecord(p), 1, 1);
     assertNull(p.attributes.get(Person.ZIP));
-    hrm.executeAll(p, new HealthRecord(p), 1100, 1, new Random());
+    hrm.executeAll(p, new HealthRecord(p), 1100, 1);
     assertEquals("01730", p.attributes.get(Person.ZIP));
     hrm.resetEditors();
   }

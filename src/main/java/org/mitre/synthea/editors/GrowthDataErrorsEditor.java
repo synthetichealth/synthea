@@ -3,7 +3,6 @@ package org.mitre.synthea.editors;
 import com.google.gson.Gson;
 
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.mitre.synthea.engine.HealthRecordEditor;
@@ -86,34 +85,32 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
    * @param person The Synthea person to check on whether the module should be run
    * @param encounters The encounters that took place during the last time step of the simulation
    * @param time The current time in the simulation
-   * @param random Random generator that should be used when randomness is needed
    */
-  public void process(Person person, List<HealthRecord.Encounter> encounters, long time,
-                      Random random) {
+  public void process(Person person, List<HealthRecord.Encounter> encounters, long time) {
     List<HealthRecord.Encounter> encountersWithWeights =
         encountersWithObservationsOfCode(encounters, WEIGHT_LOINC_CODE);
     encountersWithWeights.forEach(e -> {
-      if (random.nextDouble() <= config.weightUnitErrorRate) {
+      if (person.rand() <= config.weightUnitErrorRate) {
         introduceWeightUnitError(e);
         recalculateBMI(e);
       }
-      if (random.nextDouble() <= config.weightTransposeErrorRate) {
+      if (person.rand() <= config.weightTransposeErrorRate) {
         introduceTransposeError(e, "weight");
         recalculateBMI(e);
       }
-      if (random.nextDouble() <= config.weightSwitchErrorRate) {
+      if (person.rand() <= config.weightSwitchErrorRate) {
         introduceWeightSwitchError(e);
         recalculateBMI(e);
       }
-      if (random.nextDouble() <= config.weightExtremeErrorRate) {
+      if (person.rand() <= config.weightExtremeErrorRate) {
         introduceWeightExtremeError(e);
         recalculateBMI(e);
       }
-      if (random.nextDouble() <= config.weightDuplicateErrorRate) {
-        introduceWeightDuplicateError(e, random);
+      if (person.rand() <= config.weightDuplicateErrorRate) {
+        introduceWeightDuplicateError(e, person);
         recalculateBMI(e);
       }
-      if (random.nextDouble() <= config.weightCarriedForwardErrorRate) {
+      if (person.rand() <= config.weightCarriedForwardErrorRate) {
         introduceWeightCarriedForwardError(e);
         recalculateBMI(e);
       }
@@ -122,31 +119,31 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
     List<HealthRecord.Encounter> encountersWithHeights =
         encountersWithObservationsOfCode(encounters, HEIGHT_LOINC_CODE);
     encountersWithHeights.forEach(e -> {
-      if (random.nextDouble() <= config.heightUnitErrorRate) {
+      if (person.rand() <= config.heightUnitErrorRate) {
         introduceHeightUnitError(e);
         recalculateBMI(e);
       }
-      if (random.nextDouble() <= config.heightTransposeErrorRate) {
+      if (person.rand() <= config.heightTransposeErrorRate) {
         introduceTransposeError(e, "height");
         recalculateBMI(e);
       }
-      if (random.nextDouble() <= config.heightSwitchErrorRate) {
+      if (person.rand() <= config.heightSwitchErrorRate) {
         introduceHeightSwitchError(e);
         recalculateBMI(e);
       }
-      if (random.nextDouble() <= config.heightExtremeErrorRate) {
+      if (person.rand() <= config.heightExtremeErrorRate) {
         introduceHeightExtremeError(e);
         recalculateBMI(e);
       }
-      if (random.nextDouble() <= config.heightAbsoluteErrorRate) {
-        introduceHeightAbsoluteError(e, random);
+      if (person.rand() <= config.heightAbsoluteErrorRate) {
+        introduceHeightAbsoluteError(e, person);
         recalculateBMI(e);
       }
-      if (random.nextDouble() <= config.heightDuplicateErrorRate) {
-        introduceHeightDuplicateError(e, random);
+      if (person.rand() <= config.heightDuplicateErrorRate) {
+        introduceHeightDuplicateError(e, person);
         recalculateBMI(e);
       }
-      if (random.nextDouble() <= config.heightCarriedForwardErrorRate) {
+      if (person.rand() <= config.heightCarriedForwardErrorRate) {
         introduceHeightCarriedForwardError(e);
         recalculateBMI(e);
       }
@@ -273,10 +270,11 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
    * shoes before getting measured.
    * @param encounter The encounter that contains the observation
    */
-  public static void introduceHeightAbsoluteError(HealthRecord.Encounter encounter, Random random) {
+  public static void introduceHeightAbsoluteError(HealthRecord.Encounter encounter,
+                                                  Person person) {
     HealthRecord.Observation htObs = heightObservation(encounter);
     double heightValue = (Double) htObs.value;
-    double additionalAbsolute = random.nextDouble() * 3;
+    double additionalAbsolute = person.rand() * 3;
     htObs.value = heightValue - (3 + additionalAbsolute);
   }
 
@@ -285,10 +283,10 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
    * @param encounter The encounter that contains the observation
    */
   public static void introduceWeightDuplicateError(HealthRecord.Encounter encounter,
-                                                   Random random) {
+                                                   Person person) {
     HealthRecord.Observation wtObs = weightObservation(encounter);
     double weightValue = (Double) wtObs.value;
-    double jitter = random.nextDouble() - 0.5;
+    double jitter = person.rand() - 0.5;
     HealthRecord.Observation newObs =
         encounter.addObservation(wtObs.start, wtObs.type, weightValue + jitter, "Body Weight");
     newObs.category = "vital-signs";
@@ -300,10 +298,10 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
    * @param encounter The encounter that contains the observation
    */
   public static void introduceHeightDuplicateError(HealthRecord.Encounter encounter,
-                                                   Random random) {
+                                                   Person person) {
     HealthRecord.Observation htObs = heightObservation(encounter);
     double heightValue = (Double) htObs.value;
-    double jitter = random.nextDouble() - 0.5;
+    double jitter = person.rand() - 0.5;
     HealthRecord.Observation newObs = encounter.addObservation(htObs.start, htObs.type,
         heightValue + jitter, "Body Height");
     newObs.category = "vital-signs";

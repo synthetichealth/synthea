@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
@@ -70,7 +69,7 @@ public class Costs {
     // Retrieve the base cost based on the code.
     double baseCost;
     if (costs != null && costs.containsKey(code)) {
-      baseCost = costs.get(code).chooseCost(person.random);
+      baseCost = costs.get(code).chooseCost(person);
     } else {
       baseCost = defaultCost;
     }
@@ -193,8 +192,8 @@ public class Costs {
      * @param random Source of randomness
      * @return Single cost within the range this set of cost data represents
      */
-    private double chooseCost(Random random) {
-      return triangularDistribution(min, max, mode, random.nextDouble());
+    private double chooseCost(Person person) {
+      return triangularDistribution(min, max, mode, person.rand());
     }
 
     /**

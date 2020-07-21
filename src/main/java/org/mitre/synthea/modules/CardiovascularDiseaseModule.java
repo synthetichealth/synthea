@@ -28,6 +28,10 @@ public final class CardiovascularDiseaseModule extends Module {
     this.name = "Cardiovascular Disease";
   }
 
+  public Module clone() {
+    return this;
+  }
+
   @Override
   public boolean process(Person person, long time) {
     if (!person.alive(time)) {

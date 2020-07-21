@@ -33,7 +33,7 @@ public class EncounterModuleTest {
     TestHelper.loadTestProperties();
     String testState = Config.get("test_state.default", "Massachusetts");
     location = new Location(testState, null);
-    location.assignPoint(person, location.randomCityName(person.random));
+    location.assignPoint(person, location.randomCityName(person));
     Provider.loadProviders(location, 1L);
     module = new EncounterModule();
     // Ensure Person's Payer is not null.

@@ -13,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Calendar;
-import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -21,6 +20,7 @@ import java.util.function.Consumer;
 
 import org.mitre.synthea.engine.Logic;
 import org.mitre.synthea.engine.State;
+import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 public class Utilities {
@@ -331,12 +331,12 @@ public class Utilities {
    *
    * @return a String DICOM UID
    */
-  public static String randomDicomUid(int seriesNo, int instanceNo) {
+  public static String randomDicomUid(Person person, long time, int seriesNo, int instanceNo) {
 
     // Add a random salt to increase uniqueness
-    String salt = randomDicomUidSalt();
+    String salt = randomDicomUidSalt(person);
 
-    String now = String.valueOf(System.currentTimeMillis());
+    String now = String.valueOf(time);
     String uid = "1.2.840.99999999";  // 99999999 is an arbitrary organizational identifier
 
     if (seriesNo > 0) {
@@ -354,13 +354,11 @@ public class Utilities {
    * Generates a random string of 8 numbers to use as a salt for DICOM UIDs.
    * @return The 8-digit numeric salt, as a String
    */
-  private static String randomDicomUidSalt() {
-
+  private static String randomDicomUidSalt(Person person) {
     final int MIN = 10000000;
     final int MAX = 99999999;
 
-    Random rand = new Random();
-    int saltInt = rand.nextInt(MAX - MIN + 1) + MIN;
+    int saltInt = person.randInt(MAX - MIN + 1) + MIN;
     return String.valueOf(saltInt);
   }
   
