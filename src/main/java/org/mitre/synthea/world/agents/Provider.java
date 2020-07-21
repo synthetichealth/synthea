@@ -439,7 +439,8 @@ public class Provider implements QuadTreeElement, Serializable {
       long clinicianIdentifier, Provider provider) {
     Clinician clinician = null;
     try {
-      Demographics city = location.randomCity(clinicianRand);
+      Person doc = new Person(clinicianIdentifier);
+      Demographics city = location.randomCity(doc);
       Map<String, Object> out = new HashMap<>();
 
       String race = city.pickRace(clinicianRand);
@@ -464,8 +465,8 @@ public class Provider implements QuadTreeElement, Serializable {
       clinician.attributes.put(Person.ZIP, provider.zip);
       clinician.attributes.put(Person.COORDINATE, provider.coordinates);
 
-      String firstName = LifecycleModule.fakeFirstName(gender, language, clinician.random);
-      String lastName = LifecycleModule.fakeLastName(language, clinician.random);
+      String firstName = LifecycleModule.fakeFirstName(gender, language, doc);
+      String lastName = LifecycleModule.fakeLastName(language, doc);
 
       if (LifecycleModule.appendNumbersToNames) {
         firstName = LifecycleModule.addHash(firstName);
@@ -486,13 +487,13 @@ public class Provider implements QuadTreeElement, Serializable {
 
   /**
    * Randomly chooses a clinician out of a given clinician list.
-   * @param specialty - the specialty to choose from
-   * @param random - random to help choose clinician
+   * @param specialty - the specialty to choose from.
+   * @param person - the patient.
    * @return A clinician with the required specialty.
    */
-  public Clinician chooseClinicianList(String specialty, Random random) {
+  public Clinician chooseClinicianList(String specialty, Person person) {
     ArrayList<Clinician> clinicians = this.clinicianMap.get(specialty);
-    Clinician doc = clinicians.get(random.nextInt(clinicians.size()));
+    Clinician doc = clinicians.get(person.randInt(clinicians.size()));
     doc.incrementEncounters();
     return doc;
   }

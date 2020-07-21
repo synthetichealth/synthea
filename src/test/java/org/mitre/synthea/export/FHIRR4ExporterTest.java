@@ -111,8 +111,8 @@ public class FHIRR4ExporterTest {
       int x = validationErrors.size();
       TestHelper.exportOff();
       Person person = generator.generatePerson(i);
-      FhirR4.TRANSACTION_BUNDLE = person.random.nextBoolean();
-      FhirR4.USE_US_CORE_IG = person.random.nextBoolean();
+      FhirR4.TRANSACTION_BUNDLE = person.randBoolean();
+      FhirR4.USE_US_CORE_IG = person.randBoolean();
       FhirR4.USE_SHR_EXTENSIONS = false;
       String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
       // Check that the fhirJSON doesn't contain unresolved SNOMED-CT strings

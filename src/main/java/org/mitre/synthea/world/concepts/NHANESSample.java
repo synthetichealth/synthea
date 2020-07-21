@@ -39,6 +39,11 @@ public class NHANESSample implements Serializable {
   // Weighted probability that this sample should be selected relative to the other selected samples
   public double prob;
 
+  public String toString() {
+    return String.format("{%d %d %d %f %f %f %s %f %f}",
+        id, sex, agem, wt, ht, swt, racec, bmi, prob);
+  }
+
   /**
    * Load the NHANES samples from resources.
    * @return A list of samples.

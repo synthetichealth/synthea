@@ -317,9 +317,9 @@ public class HealthRecord implements Serializable {
     /**
      * Constructor for ImagingStudy HealthRecord Entry.
      */
-    public ImagingStudy(long time, String type) {
+    public ImagingStudy(Person person, long time, String type) {
       super(time, type);
-      this.dicomUid = Utilities.randomDicomUid(0, 0);
+      this.dicomUid = Utilities.randomDicomUid(person, time, 0, 0);
       this.series = new ArrayList<Series>();
     }
 
@@ -411,11 +411,11 @@ public class HealthRecord implements Serializable {
      * @param person The person who owns or contains the device.
      */
     public void generateUDI(Person person) {
-      deviceIdentifier = trimLong(person.random.nextLong(), 14);
+      deviceIdentifier = trimLong(person.randLong(), 14);
       manufactureTime = start - Utilities.convertTime("weeks", 3);
       expirationTime = start + Utilities.convertTime("years", 25);
-      lotNumber = trimLong(person.random.nextLong(), (int) person.rand(4, 20));
-      serialNumber = trimLong(person.random.nextLong(), (int) person.rand(4, 20));
+      lotNumber = trimLong(person.randLong(), (int) person.rand(4, 20));
+      serialNumber = trimLong(person.randLong(), (int) person.rand(4, 20));
 
       udi = "(01)" + deviceIdentifier;
       udi += "(11)" + udiDate(manufactureTime);
@@ -1175,10 +1175,11 @@ public class HealthRecord implements Serializable {
    * @param series the series associated with the study.
    * @return 
    */
-  public ImagingStudy imagingStudy(long time, String type, List<ImagingStudy.Series> series) {
-    ImagingStudy study = new ImagingStudy(time, type);
+  public ImagingStudy imagingStudy(long time, String type,
+      List<ImagingStudy.Series> series) {
+    ImagingStudy study = new ImagingStudy(this.person, time, type);
     study.series = series;
-    assignImagingStudyDicomUids(study);
+    assignImagingStudyDicomUids(time, study);
     currentEncounter(time).imagingStudies.add(study);
     return study;
   }
@@ -1186,18 +1187,18 @@ public class HealthRecord implements Serializable {
   /**
    * Assigns random DICOM UIDs to each Series and Instance in an imaging study
    * after creation.
-   *
+   * @param time the time of the study.
    * @param study the ImagingStudy to populate with DICOM UIDs.
    */
-  private void assignImagingStudyDicomUids(ImagingStudy study) {
+  private void assignImagingStudyDicomUids(long time, ImagingStudy study) {
 
     int seriesNo = 1;
     for (ImagingStudy.Series series : study.series) {
-      series.dicomUid = Utilities.randomDicomUid(seriesNo, 0);
+      series.dicomUid = Utilities.randomDicomUid(this.person, time, seriesNo, 0);
 
       int instanceNo = 1;
       for (ImagingStudy.Instance instance : series.instances) {
-        instance.dicomUid = Utilities.randomDicomUid(seriesNo, instanceNo);
+        instance.dicomUid = Utilities.randomDicomUid(this.person, time, seriesNo, instanceNo);
         instanceNo += 1;
       }
       seriesNo += 1;

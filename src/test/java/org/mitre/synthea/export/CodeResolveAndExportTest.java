@@ -123,7 +123,7 @@ public class CodeResolveAndExportTest {
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Location location = new Location(Generator.DEFAULT_STATE, null);
-    location.assignPoint(person, location.randomCityName(person.random));
+    location.assignPoint(person, location.randomCityName(person));
     Provider.loadProviders(location, 1L);
 
     Payer.clear();

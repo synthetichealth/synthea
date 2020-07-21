@@ -13,10 +13,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.mitre.synthea.engine.ExpressedConditionRecord;
 import org.mitre.synthea.engine.ExpressedSymptom;
 import org.mitre.synthea.engine.Module;
@@ -87,7 +87,7 @@ public class Person implements Serializable, QuadTreeElement {
   private static final String DEDUCTIBLE = "deductible";
   private static final String LAST_MONTH_PAID = "last_month_paid";
 
-  public final JDKRandomGenerator random;
+  private final Random random;
   public final long seed;
   public long populationSeed;
   /** 
@@ -139,13 +139,13 @@ public class Person implements Serializable, QuadTreeElement {
    * Person constructor.
    */
   public Person(long seed) {
-    this.seed = seed; // keep track of seed so it can be exported later
-    random = new JDKRandomGenerator((int) seed);
+    this.seed = seed;
+    random = new Random(seed);
     attributes = new ConcurrentHashMap<String, Object>();
     vitalSigns = new ConcurrentHashMap<VitalSign, ValueGenerator>();
-    symptoms = new ConcurrentHashMap<String, ExpressedSymptom>();   
+    symptoms = new ConcurrentHashMap<String, ExpressedSymptom>();
     /* initialized the onsetConditions field */
-    onsetConditionRecord = new ExpressedConditionRecord(this);    
+    onsetConditionRecord = new ExpressedConditionRecord(this);
     /* Chronic Medications which will be renewed at each Wellness Encounter */
     chronicMedications = new ConcurrentHashMap<String, HealthRecord.Medication>();
     hasMultipleRecords =
@@ -168,7 +168,7 @@ public class Person implements Serializable, QuadTreeElement {
   }
 
   /**
-   * Retuns a random double.
+   * Returns a random double.
    */
   public double rand() {
     return random.nextDouble();
@@ -178,7 +178,7 @@ public class Person implements Serializable, QuadTreeElement {
    * Returns a random double in the given range.
    */
   public double rand(double low, double high) {
-    return (low + ((high - low) * random.nextDouble()));
+    return (low + ((high - low) * rand()));
   }
 
   /**
@@ -221,7 +221,8 @@ public class Person implements Serializable, QuadTreeElement {
    * @return One of the options randomly selected.
    */
   public String rand(String[] choices) {
-    return choices[random.nextInt(choices.length)];
+    int value = random.nextInt(choices.length);
+    return choices[value];
   }
 
   /**
@@ -246,6 +247,13 @@ public class Person implements Serializable, QuadTreeElement {
   }
 
   /**
+   * Returns a random boolean.
+   */
+  public boolean randBoolean() {
+    return random.nextBoolean();
+  }
+
+  /**
    * Returns a random integer.
    */
   public int randInt() {
@@ -257,6 +265,20 @@ public class Person implements Serializable, QuadTreeElement {
    */
   public int randInt(int bound) {
     return random.nextInt(bound);
+  }
+
+  /**
+   * Returns a double from a normal distribution.
+   */
+  public double randGaussian() {
+    return random.nextGaussian();
+  }
+
+  /**
+   * Return a random long.
+   */
+  public long randLong() {
+    return random.nextLong();
   }
 
   /**

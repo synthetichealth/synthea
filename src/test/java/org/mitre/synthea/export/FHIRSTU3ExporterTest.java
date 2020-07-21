@@ -120,7 +120,7 @@ public class FHIRSTU3ExporterTest {
       Person person = generator.generatePerson(i);
       Config.set("exporter.fhir_stu3.export", "true");
       Config.set("exporter.fhir.use_shr_extensions", "true");
-      FhirStu3.TRANSACTION_BUNDLE = person.random.nextBoolean();
+      FhirStu3.TRANSACTION_BUNDLE = person.randBoolean();
       String fhirJson = FhirStu3.convertToFHIRJson(person, System.currentTimeMillis());
       // Check that the fhirJSON doesn't contain unresolved SNOMED-CT strings
       // (these should have been converted into URIs)

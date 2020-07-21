@@ -722,7 +722,7 @@ public class CDWExporter {
     s.append(NEWLINE);
     write(s.toString(), spatientphone);
 
-    if (person.random.nextBoolean()) {
+    if (person.randBoolean()) {
       // Add an email address
       s.setLength(0);
       s.append(getNextKey(spatientphone)).append(',');

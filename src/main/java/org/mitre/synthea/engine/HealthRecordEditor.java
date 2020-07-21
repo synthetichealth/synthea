@@ -1,7 +1,6 @@
 package org.mitre.synthea.engine;
 
 import java.util.List;
-import java.util.Random;
 
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -45,7 +44,6 @@ public interface HealthRecordEditor {
    * @param person The Synthea person that will have their HealthRecord edited
    * @param encounters The encounters that took place during the last time step of the simulation
    * @param time The current time in the simulation
-   * @param random Random generator that should be used when randomness is needed
    */
-  void process(Person person, List<HealthRecord.Encounter> encounters, long time, Random random);
+  void process(Person person, List<HealthRecord.Encounter> encounters, long time);
 }
