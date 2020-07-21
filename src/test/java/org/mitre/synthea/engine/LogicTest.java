@@ -47,6 +47,7 @@ public class LogicTest {
    */
   @Before
   public void setup() throws IOException {
+    Config.set("exporter.split_records", "false");  // This line is necessary for test_condition_condition to pass due to a null pointer exception caused by a lack of modules in the person's history.
     person = new Person(0L);
     // Give person an income to prevent null pointer.
     person.attributes.put(Person.INCOME, 10000000);

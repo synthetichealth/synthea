@@ -383,13 +383,17 @@ public class Generator {
       int tryNumber = 0; // Number of tries to create these demographics
       Random randomForDemographics = new Random(personSeed);
 
-      Map<String, Object> demoAttributes = randomDemographics(randomForDemographics, index);
+      Map<String, Object> demoAttributes = randomDemographics(randomForDemographics);
+      if(this.recordGroups != null){
+        // Pick fixed demographics if a fixed demographics record file is used.
+        demoAttributes = pickFixedDemographics(index, random);
+      }
 
       int providerCount = 0;
-
       int providerMinimum = 1;
-      // If there are fixed records to use, there must be 1 provider for each of this person's records.
+
       if (this.recordGroups != null) {
+        // If fixed records are used, there must be 1 provider for each of this person's records.
         RecordGroup recordGroup = this.recordGroups.get(index);
         providerMinimum = recordGroup.count;
       }
@@ -419,7 +423,7 @@ public class Generator {
           // note that this skips ahead to the while check and doesn't automatically re-loop
         }
 
-        // Fixed Records: If the number of providers is less than the number of records for a person, try the simulation again.
+        // For fixed records, the person must have 1 provider per record.
         if (providerCount < providerMinimum) {
           // rotate the seed so the next attempt gets a consistent but different one
           personSeed = new Random(personSeed).nextLong();
@@ -541,25 +545,13 @@ public class Generator {
   }
 
   /**
-   *    * TODO: REMOVE index
    * Create a set of random demographics.
    * @param seed The random seed to use.
    * @return A map of demographic attributes.
    */
-  public Map<String, Object> randomDemographics(Random seed, int index) {
-
-    Map<String, Object> demoAttributes;
-
-    if(this.recordGroups != null){
-      // Pick fixed demographics if a fixed demographics record file is used.
-      demoAttributes = pickFixedDemographics(index, random);
-    } else {
-      // Pick a random city and demographics based on the location.
-      Demographics city = location.randomCity(seed);
-      demoAttributes = pickDemographics(seed, city);
-    }
-
-    return demoAttributes;
+  public Map<String, Object> randomDemographics(Random seed) {
+    Demographics city = this.location.randomCity(seed);
+    return pickDemographics(seed, city);
   }
 
   /**
