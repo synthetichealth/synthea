@@ -16,6 +16,7 @@ import org.junit.rules.TemporaryFolder;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.world.agents.Person;
 
 /**
@@ -29,6 +30,7 @@ public class CCDAExporterTest {
   
   @Test
   public void testCCDAExport() throws Exception {
+    RandomCodeGenerator.setBaseUrl("https://r4.ontoserver.csiro.au/fhir");
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());

@@ -158,7 +158,7 @@ public class ValueSetCodeResolver {
       return null;
     }
     return code.valueSet != null
-           ? RandomCodeGenerator.getCode(code.valueSet, person.seed)
+           ? RandomCodeGenerator.getCode(code.valueSet, person.seed, code)
            : code;
   }
   

@@ -11,14 +11,8 @@ import static org.mitre.synthea.TestHelper.getR4FhirContext;
 import static org.mitre.synthea.TestHelper.getStu3FhirContext;
 import static org.mitre.synthea.TestHelper.getTxRecordingSource;
 import static org.mitre.synthea.TestHelper.isHttpRecordingEnabled;
-import static org.mitre.synthea.TestHelper.wiremockOptions;
 import static org.mitre.synthea.TestHelper.years;
 
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,6 +32,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
@@ -44,13 +40,11 @@ import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.ResourceType;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
-import org.mitre.synthea.helpers.TerminologyClient;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -63,15 +57,21 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+
+import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
+import ca.uhn.fhir.model.dstu2.composite.CodingDt;
+import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
+
 public class CodeResolveAndExportTest {
 
-  private static final String EXPECTED_REASON_CODE = "242332002";
+  private static final String EXPECTED_REASON_CODE = "417981005";
   private static final String EXPECTED_REASON_DISPLAY =
-      "Accidental ingestion of matrimony vine berries";
+      "Exposure to blood and/or body fluid";
   private static final String OBSERVATION_CODE = "11376-1";
   private static final String OBSERVATION_DISPLAY = "Injury location";
-  private static final String EXPECTED_VALUE_CODE = "LA14090-7";
-  private static final String EXPECTED_VALUE_DISPLAY = "Trade or service area";
+  private static final String EXPECTED_VALUE_CODE = "LA14088-1";
+  private static final String EXPECTED_VALUE_DISPLAY = "Sports or recreational area";
   private Person person;
   private long time;
   private Path stu3OutputPath;
@@ -79,29 +79,22 @@ public class CodeResolveAndExportTest {
   private Path dstu2OutputPath;
   private Path ccdaOutputPath;
 
-  @Rule
-  public WireMockRule mockTerminologyService = new WireMockRule(wiremockOptions()
-      .usingFilesUnderDirectory("src/test/resources/wiremock/CodeResolveAndExportTest"));
-
   /**
    * Prepare for each test.
    * @throws Exception on failure
    */
   @Before
   public void setUp() throws Exception {
-    TerminologyClient terminologyClient = getR4FhirContext()
-        .newRestfulClient(TerminologyClient.class, mockTerminologyService.baseUrl() + "/fhir");
-    RandomCodeGenerator.initialize(terminologyClient);
     if (isHttpRecordingEnabled()) {
       WireMock.startRecording(getTxRecordingSource());
     }
+    RandomCodeGenerator.setBaseUrl("https://r4.ontoserver.csiro.au/fhir");
 
     TestHelper.exportOff();
     Config.set("exporter.ccda.export", "true");
     Config.set("exporter.fhir.export", "true");
     Config.set("exporter.fhir_stu3.export", "true");
     Config.set("exporter.fhir_dstu2.export", "true");
-    Config.set("generate.terminology_service_url", mockTerminologyService.baseUrl() + "/fhir");
 
     person = new Person(12345L);
     time = new SimpleDateFormat("yyyy-MM-dd").parse("2013-06-10").getTime();
