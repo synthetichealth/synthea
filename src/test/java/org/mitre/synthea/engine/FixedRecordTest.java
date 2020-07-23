@@ -35,7 +35,7 @@ public class FixedRecordTest {
     Payer.clear();
     // Create a generator with the preset fixed demographics test file.
     GeneratorOptions go = new GeneratorOptions();
-    go.fixedRecordPath = new File("fixed_demographics_test.json");  // The file path of the test fixed demographics records.
+    go.fixedRecordPath = new File("src/test/resources/fixed_demographics/fixed_demographics_test.json");  // The file path of the test fixed demographics records.
     go.state = "Colorado";  // Examples are based on Colorado.
     go.population = 100;  // Setting to 100, but should be overwritten by number of patients in input file.
     generator = new Generator(go);
@@ -45,7 +45,7 @@ public class FixedRecordTest {
   @Test
   public void fixedDemographicsImportTest() {
 
-      // List of RecordGroups imported directly from the input file.
+      // List of RecordGroups imported directly from the input file, to be compared against the patient's health records.
       List<RecordGroup> rawRecordGroups = generator.importFixedPatientDemographicsFile();
       
       // Generate each patient from the fixed record input file.
@@ -57,18 +57,17 @@ public class FixedRecordTest {
       assertEquals(4, generator.internalStore.size());
       assertEquals(generator.internalStore.size(), rawRecordGroups.size());
 
-      // Check that each person matches their fixed demographic records.
+      // Check that each person has HealthRecords that match their fixed demographic records.
       for (int p = 0; p < generator.internalStore.size(); p++) {
-        // Get the current person.
+        // Get the current person and pull their list of records.
         Person currentPerson = generator.internalStore.get(p);
-        // Pull the person's group of FixedRecords.
         RecordGroup recordGroup = (RecordGroup) currentPerson.attributes.get(Person.RECORD_GROUP);
         // Make sure the person has the correct number of records, for this input file each person has 3 records.
         assertTrue(currentPerson.records.size() >= 3);
         assertTrue(recordGroup.records.size() == 3);
         // Track the number of fixed records that match the person's attributes exactly.
         int fixedRecordMatches = 0;
-        // Cycle through the person's HealthRecords to compare the associated FixedRecord with the raw imported FixedRecords.
+        // Cycle through the person's records to compare the associated FixedRecord with the raw imported FixedRecords.
         for (int r = 0; r < currentPerson.records.size(); r++) {        
 
           int recordToPull = r;
@@ -104,11 +103,15 @@ public class FixedRecordTest {
           if (
             (currentPerson.attributes.get(Person.FIRST_NAME).equals(rawFixedRecord.firstName)) &&
             (currentPerson.attributes.get(Person.LAST_NAME).equals(rawFixedRecord.lastName)) &&
-            //(currentPerson.attributes.get(Person.ADDRESS).equals(rawFixedRecord.addressLineOne)) &&
+            (currentPerson.attributes.get(Person.ADDRESS).equals(rawFixedRecord.addressLineOne)) &&
             (currentPerson.attributes.get(Person.BIRTHDATE).equals(rawFixedRecord.getBirthDate(true))) &&
             (currentPerson.attributes.get(Person.GENDER).equals(rawFixedRecord.gender)) &&
+            (currentPerson.attributes.get(Person.TELECOM).equals(rawFixedRecord.getTelecom())) &&
+            //(currentPerson.attributes.get(Person.STATE).equals(rawFixedRecord.state)) &&
             (currentPerson.attributes.get(Person.CITY).equals(rawFixedRecord.city)) &&
-            (currentPerson.attributes.get(Person.ZIP).equals(rawFixedRecord.zipcode))
+            (currentPerson.attributes.get(Person.ZIP).equals(rawFixedRecord.zipcode)) &&
+            (currentPerson.attributes.get(Person.IDENTIFIER_RECORD_ID).equals(rawFixedRecord.recordId)) &&
+            (currentPerson.attributes.get(Person.IDENTIFIER_SITE).equals(rawFixedRecord.site))
             ) {
               fixedRecordMatches++;
           }

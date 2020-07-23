@@ -148,6 +148,10 @@ public class FixedRecord {
     return bd;
   }
 
+  /**
+   * Overwrite the Demographic Attributes of the person with this FixedRecord.
+   * @param person The person whos attributes will be overwritten.
+   */
   public void overwriteDemoAttributes(Person person) {
     String g = this.gender;
     if (g.equalsIgnoreCase("None") || g.isBlank()) {
@@ -156,10 +160,18 @@ public class FixedRecord {
     person.attributes.put(Person.GENDER, g);
   }
 
+  /**
+   * Return the telephone number associated with this FixedRecord.
+   * @return The phone number in this FixedRecord.
+   */
   public String getTelecom() {
     return this.phoneAreaCode + "-" + this.phoneNumber;
   }
 
+  /**
+   * Completely overwrites the given person to have the demographic attributes in this FixedRecord.
+   * @param person The person whos attributes will be overwritten.
+   */
   public void totalOverwrite(Person person) {
     String g = this.gender;
     if (g.equalsIgnoreCase("None") || g.isBlank()) {
@@ -180,6 +192,7 @@ public class FixedRecord {
 
     person.attributes.put(Person.TELECOM, this.getTelecom());
     person.attributes.put(Person.CITY, this.city);
+    person.attributes.put(Person.ADDRESS, this.addressLineOne);
     person.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
     person.attributes.put(Person.IDENTIFIER_SITE, this.site);
     person.attributes.put(Person.CONTACT_GIVEN_NAME, this.parentFirstName);
