@@ -6,12 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,14 +36,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public abstract class RandomCodeGenerator {
 
-  private static final String URL_REGEX = "^((((https?|ftps?|gopher|telnet|nntp)://))"
-      + "(%[0-9A-Fa-f]{2}|[-()_.!~*';/?:@<<&=+$,A-Za-z0-9])+)" + "([).!';/?:,][[:blank:]])?$";
-  private static final Pattern URL_PATTERN = Pattern.compile(URL_REGEX);
   public static String expandBaseUrl = Config.get("generate.terminology_service_url") + "/ValueSet/$expand?url=";
-
   private static final Logger logger = LoggerFactory.getLogger(RandomCodeGenerator.class);
   public static Map<String, List<Object>> codeListCache = new HashMap<>();
   public static List<Code> selectedCodes = new ArrayList<>();
+  private static UrlValidator urlValidator = new UrlValidator();
 
   public static RestTemplate restTemplate = new RestTemplate();
 
@@ -59,7 +55,7 @@ public abstract class RandomCodeGenerator {
    */
   @SuppressWarnings("unchecked")
   public static Code getCode(String valueSetUri, long seed, Code code) {
-    if (urlValidator(valueSetUri)) {
+    if (urlValidator.isValid(valueSetUri)) {
       expandValueSet(valueSetUri);
       List<Object> codes = codeListCache.get(valueSetUri);
       int randomIndex = new Random(seed).nextInt(codes.size());
@@ -70,14 +66,6 @@ public abstract class RandomCodeGenerator {
       return newCode;
     }
     return code;
-  }
-
-  private static boolean urlValidator(String url) {
-    if (StringUtils.isEmpty(url)) {
-      return false;
-    }
-    Matcher matcher = URL_PATTERN.matcher(url);
-    return matcher.matches();
   }
 
   @SuppressWarnings("unchecked")
