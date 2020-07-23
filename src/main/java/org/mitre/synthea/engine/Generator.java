@@ -402,9 +402,7 @@ public class Generator {
         person = createPerson(personSeed, demoAttributes, index);
         long finishTime = person.lastUpdated + timestep;
 
-        // isAlive includes if the time is before their birth or after their death.
         isAlive = person.alive(finishTime);
-
         providerCount = person.providerCount();
 
         if (isAlive && onlyDeadPatients) {
@@ -478,7 +476,6 @@ public class Generator {
     return person;
   }
 
-  // TODO: Remove Index
   /**
    * Create a new person and update them until until Generator.stop or
    * they die, whichever comes sooner.
@@ -486,21 +483,12 @@ public class Generator {
    * @param demoAttributes Demographic attributes for the new person, {@link #randomDemographics}
    * @return the new person
    */
-  public Person createPerson(long personSeed, Map<String, Object> demoAttributes, int index) {
+  public Person createPerson(long personSeed, Map<String, Object> demoAttributes) {
     Person person = new Person(personSeed);
     person.populationSeed = this.options.seed;
     person.attributes.putAll(demoAttributes);
     person.attributes.put(Person.LOCATION, location);
     person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
-
-    // If there are fixed records to use, give them to the person.
-    if (this.recordGroups != null) {
-      // Pull this person's group of records.
-      RecordGroup recordGroup = this.recordGroups.get(index);
-      person.attributes.put(Person.RECORD_GROUP, recordGroup);
-      recordGroup.records.get(0).overwriteDemoAttributes(person);
-      person.attributes.put(Person.LINK_ID, recordGroup.linkId);
-    }
 
     LifecycleModule.birth(person, person.lastUpdated);
     person.currentModules = Module.getModules(modulePredicate);
@@ -670,29 +658,29 @@ public class Generator {
    */
   private Map<String, Object> pickFixedDemographics(int index, Random random) {
 
-    // Get the current recordGroup
-    RecordGroup recordGroup = this.recordGroups.get(index);
-
-    // Pull the provider minimum - there must be 1 provider for each of the records for this person
-    int providerMinimum = recordGroup.count;
-    // Pull the first fixed record from the group of fixed records.
-    FixedRecord fr = recordGroup.records.get(0);
     // Load the patient from the current fixed record.
     Patient newPatient = Utilities.loadFixedDemographicPatient(index);
-    // Pull the location from the fixed record.
-    this.location = new Location(fr.getState(), recordGroup.getSafeCity(0));
-    // This simply pulls the city object from the fixed location when using fixed records. When not using fixed records, it is random.
-    Demographics city = location.randomCity(random);
 
+    // Get the current recordGroup
+    RecordGroup recordGroup = this.recordGroups.get(index);
+    // Pull the first fixed record from the group of fixed records.
+    FixedRecord fr = recordGroup.records.get(0);
+    // Get the city from the location in the fixed record.
+    this.location = new Location(fr.getState(), recordGroup.getSafeCity(0));
+    Demographics city = location.randomCity(random);
     // Pick the demographics based on the location of the fixed record.
     Map<String, Object> demoAttributes = pickDemographics(random, city);
-
     // Overwrite the person's birthdate in demoAttributes with the fixed record birthdate.
     demoAttributes.put(Person.BIRTHDATE, recordGroup.getValidBirthdate(0));
-    // Overwrite the person's gender in demoAttributes with the fixed record gender.
-    if (newPatient != null) {
-        demoAttributes.put(Person.GENDER, newPatient.getGender().getDisplay());
+    // Overwrite the person's gender.
+    String g = fr.gender;
+    if (g.equalsIgnoreCase("None") || g.isBlank()) {
+      g = "F";
     }
+    demoAttributes.put(Person.GENDER, g);
+    // Give the person their groud of FixedRecords.
+    demoAttributes.put(Person.RECORD_GROUP, recordGroup);
+    demoAttributes.put(Person.LINK_ID, recordGroup.linkId);
 
     // Return the Demographic Attributes of the current person.
     return demoAttributes;

@@ -149,18 +149,6 @@ public class FixedRecord {
   }
 
   /**
-   * Overwrite the Demographic Attributes of the person with this FixedRecord.
-   * @param person The person whos attributes will be overwritten.
-   */
-  public void overwriteDemoAttributes(Person person) {
-    String g = this.gender;
-    if (g.equalsIgnoreCase("None") || g.isBlank()) {
-      g = "F";
-    }
-    person.attributes.put(Person.GENDER, g);
-  }
-
-  /**
    * Return the telephone number associated with this FixedRecord.
    * @return The phone number in this FixedRecord.
    */
