@@ -2,12 +2,13 @@ package org.mitre.synthea.input;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.apache.commons.lang3.StringUtils;
-import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Person;
-
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+
+import org.apache.commons.lang3.StringUtils;
+
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Person;
 
 public class FixedRecord {
   @SerializedName(value = "LIST_ID")
@@ -71,6 +72,9 @@ public class FixedRecord {
     return "Colorado";
   }
 
+  /**
+   * Gets a safe city from the Fixed Record file in case it is not a valid city.
+   */
   public String getSafeCity() {
     switch (this.city.toLowerCase()) {
       case "greenwood vlg":
@@ -128,6 +132,9 @@ public class FixedRecord {
     }
   }
 
+  /**
+   * Converts the birth year of the record into a birthdate.
+   */
   public long getBirthDate(boolean checkAge) {
     String birthYear = this.birthYear;
     switch (birthYear.length()) {
@@ -136,6 +143,8 @@ public class FixedRecord {
         break;
       case 2:
         birthYear = "20" + birthYear;
+        break;
+      default:
         break;
     }
 
@@ -173,7 +182,8 @@ public class FixedRecord {
     person.attributes.put(Person.LAST_NAME, this.lastName);
     try {
       person.attributes.put(Person.BIRTHDATE, this.getBirthDate(false));
-    } catch (java.time.DateTimeException|java.lang.NumberFormatException|java.lang.NullPointerException dontcare) {
+    } catch (java.time.DateTimeException | java.lang.NumberFormatException
+        | java.lang.NullPointerException dontcare) {
       long bd = LocalDateTime.of(2010, 7,
           2, 0, 0).toInstant(ZoneOffset.UTC)
           .toEpochMilli();

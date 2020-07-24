@@ -130,7 +130,7 @@ public abstract class Exporter {
       int i = 0;
       for (String key : person.records.keySet()) {
         person.record = person.records.get(key);
-        // If the person has a RecordGroup of Fixed Records, overwrite the attributes in each of the health records with the fixed demographics records.
+        // If the person fixed Records, overwrite their attributes from the fixed records.
         if (person.attributes.get(Person.RECORD_GROUP) != null) {
           RecordGroup rg = (RecordGroup) person.attributes.get(Person.RECORD_GROUP);
           int recordToPull = i;

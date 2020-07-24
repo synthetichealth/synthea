@@ -15,14 +15,13 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
@@ -623,6 +622,9 @@ public class HealthRecord implements Serializable {
     present = new HashMap<String, Entry>();
   }
 
+  /**
+   * Returns the number of providers associated with this healthrecord.
+   */
   public int providerCount() {
     List<String> uuids = new ArrayList<String>();
     for (Encounter enc : encounters) {

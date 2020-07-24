@@ -315,7 +315,11 @@ public final class LifecycleModule extends Module {
     return choices.get(random.nextInt(choices.size()));
   }
 
-  public static String patientFirstName(String gender, String language, Random random, Person person) {
+  /**
+   * Gets the patient's first name.
+   */
+  public static String patientFirstName(
+      String gender, String language, Random random, Person person) {
     if (person.attributes.get(Person.RECORD_GROUP) != null) {
       RecordGroup recordGroup = (RecordGroup) person.attributes.get(Person.RECORD_GROUP);
       FixedRecord fr = recordGroup.records.get(0);
@@ -324,6 +328,9 @@ public final class LifecycleModule extends Module {
     return fakeFirstName(gender, language, random);
   }
 
+  /**
+   * Gets the patient's last name.
+   */
   public static String patientLastName(String language, Random random, Person person) {
     if (person.attributes.get(Person.RECORD_GROUP) != null) {
       RecordGroup recordGroup = (RecordGroup) person.attributes.get(Person.RECORD_GROUP);
@@ -333,6 +340,9 @@ public final class LifecycleModule extends Module {
     return fakeLastName(language, random);
   }
 
+  /**
+   * Gets the patient's address.
+   */
   public static String patientAddress(boolean includeLine2, Random random, Person person) {
     if (person.attributes.get(Person.RECORD_GROUP) != null) {
       RecordGroup recordGroup = (RecordGroup) person.attributes.get(Person.RECORD_GROUP);

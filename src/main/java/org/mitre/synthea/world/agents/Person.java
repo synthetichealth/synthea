@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,9 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.mitre.synthea.engine.ExpressedConditionRecord;
@@ -356,6 +354,9 @@ public class Person implements Serializable, QuadTreeElement {
     return onsetConditionRecord;
   }
 
+  /**
+   * Returns the number of providers that this person has.
+   */
   public int providerCount() {
     int count = 1;
     if (hasMultipleRecords) {

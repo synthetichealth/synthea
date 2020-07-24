@@ -23,11 +23,13 @@ public class RecordGroup {
     FixedRecord fr = this.records.get(index);
     try {
       return fr.getBirthDate(true);
-    } catch (java.time.DateTimeException|java.lang.NullPointerException|java.lang.IllegalArgumentException e) {
+    } catch (java.time.DateTimeException | java.lang.NullPointerException
+        | java.lang.IllegalArgumentException e) {
       for (int i = 0; i < this.records.size(); i++) {
         try {
           return this.records.get(i).getBirthDate(true);
-        } catch (java.time.DateTimeException|java.lang.NullPointerException|java.lang.IllegalArgumentException dontcare) {
+        } catch (java.time.DateTimeException | java.lang.NullPointerException
+            | java.lang.IllegalArgumentException dontcare) {
           // Do nothing if the current fixed record does not have a valid birthdate.
         }
       }
@@ -43,12 +45,14 @@ public class RecordGroup {
   public String getSafeCity(int index) {
     FixedRecord fr = this.records.get(index);
     String safeCity = fr.getSafeCity();
-    if (safeCity != null && !StringUtils.isBlank(safeCity) && !safeCity.equalsIgnoreCase("unknown")) {
+    if (safeCity != null && !StringUtils.isBlank(safeCity)
+        && !safeCity.equalsIgnoreCase("unknown")) {
       return safeCity;
     }
     for (int i = 0; i < this.records.size(); i++) {
       safeCity = this.records.get(i).getSafeCity();
-      if (safeCity != null && !StringUtils.isBlank(safeCity) && !safeCity.equalsIgnoreCase("unknown")) {
+      if (safeCity != null && !StringUtils.isBlank(safeCity)
+          && !safeCity.equalsIgnoreCase("unknown")) {
         return safeCity;
       }
     }

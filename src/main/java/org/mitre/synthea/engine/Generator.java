@@ -1,12 +1,16 @@
 package org.mitre.synthea.engine;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FilenameFilter;
+
 import java.lang.reflect.Type;
+
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -20,30 +24,26 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.StringUtils;
-import org.hl7.fhir.r4.model.Patient;
+
 import org.mitre.synthea.datastore.DataStore;
+import org.mitre.synthea.editors.GrowthDataErrorsEditor;
 import org.mitre.synthea.export.CDWExporter;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.TransitionMetrics;
-import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.input.FixedRecord;
 import org.mitre.synthea.input.RecordGroup;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
-import org.mitre.synthea.editors.GrowthDataErrorsEditor;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
-import org.mitre.synthea.world.concepts.PediatricGrowthTrajectory;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
@@ -329,21 +329,22 @@ public class Generator {
    */
   public List<RecordGroup> importFixedPatientDemographicsFile() {
     Gson gson = new Gson();
-      Type listType = new TypeToken<List<RecordGroup>>() {}.getType();
-      try {
-        System.out.println("Loading fixed patient demographic records file " + this.options.fixedRecordPath);
-        this.recordGroups = gson.fromJson(new FileReader(this.options.fixedRecordPath), listType);
-        int linkIdStart = 100000;
-        for (int i = 0; i < this.recordGroups.size(); i++) {
-          this.recordGroups.get(i).linkId = linkIdStart + i;
-        }
-      } catch (FileNotFoundException e) {
-        throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
+    Type listType = new TypeToken<List<RecordGroup>>() {}.getType();
+    try {
+      System.out.println("Loading fixed patient demographic records file: "
+          + this.options.fixedRecordPath);
+      this.recordGroups = gson.fromJson(new FileReader(this.options.fixedRecordPath), listType);
+      int linkIdStart = 100000;
+      for (int i = 0; i < this.recordGroups.size(); i++) {
+        this.recordGroups.get(i).linkId = linkIdStart + i;
       }
-      // Update the population paramater to reflect the number of patients in the fixed demographic records file.
-      this.options.population = this.recordGroups.size();
-      // Return the record groups.
-      return recordGroups;
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
+    }
+    // Update the population size to reflect the number of patients in the fixed records file.
+    this.options.population = this.recordGroups.size();
+    // Return the record groups.
+    return recordGroups;
   }
   
   /**
@@ -358,7 +359,6 @@ public class Generator {
   public Person generatePerson(int index) {
     // System.currentTimeMillis is not unique enough
     long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-    // If generating fixed record patients, then run generatePersonWithFixedRecord(index, personSeed)
     return generatePerson(index, personSeed);
   }
 
@@ -385,7 +385,7 @@ public class Generator {
       Random randomForDemographics = new Random(personSeed);
 
       Map<String, Object> demoAttributes = randomDemographics(randomForDemographics);
-      if(this.recordGroups != null){
+      if (this.recordGroups != null) {
         // Pick fixed demographics if a fixed demographics record file is used.
         demoAttributes = pickFixedDemographics(index, random);
       }
@@ -428,8 +428,9 @@ public class Generator {
           personSeed = new Random(personSeed).nextLong();
           tryNumber++;
           if (tryNumber > 10) {
-            System.out.println("Couldn't get enough providers for " + person.attributes.get(Person.FIRST_NAME) + " " +
-                person.attributes.get(Person.LAST_NAME));
+            System.out.println("Couldn't get enough providers for "
+                + person.attributes.get(Person.FIRST_NAME) + " "
+                + person.attributes.get(Person.LAST_NAME));
           }
           continue;
           // skip the other stuff if the patient has less providers than the minimum
@@ -580,7 +581,7 @@ public class Generator {
    * Returns a map of demographics that have been randomly picked based on the given location.
    * @param random The random object to use.
    * @param city The city to base the demographics off of.
-   * @return a Map<String, Object> of demographics
+   * @return the person's picked demographics.
    */
   private Map<String, Object> pickDemographics(Random random, Demographics city) {
     // Output map of the generated demographc data.
@@ -613,7 +614,7 @@ public class Generator {
     }
     demographicsOutput.put(Person.GENDER, gender);
 
-    // Generate the person's socioeconomic variables of education, income, and occupation based on their location.
+    // Pick the person's socioeconomic variables of education/income/occupation based on location.
     String education = city.pickEducation(random);
     demographicsOutput.put(Person.EDUCATION, education);
     double educationLevel = city.educationLevel(education, random);
@@ -653,33 +654,31 @@ public class Generator {
   }
 
   /**
-   * Pick a person's demographics from a fixed demographics record before generating random demographics based on the fixed values.
+   * Pick a person's demographics based on their FixedRecords.
    * @param index The index to use.
    * @param random Random object.
    */
   private Map<String, Object> pickFixedDemographics(int index, Random random) {
 
-    // Load the patient from the current fixed record.
-    Patient newPatient = Utilities.loadFixedDemographicPatient(index);
-
-    // Get the current recordGroup
+    // Get the first FixedRecord from the current RecordGroup
     RecordGroup recordGroup = this.recordGroups.get(index);
-    // Pull the first fixed record from the group of fixed records.
     FixedRecord fr = recordGroup.records.get(0);
     // Get the city from the location in the fixed record.
     this.location = new Location(fr.getState(), recordGroup.getSafeCity(0));
     Demographics city = location.randomCity(random);
-    // Pick the demographics based on the location of the fixed record.
+    // Pick the rest of the demographics based on the location of the fixed record.
     Map<String, Object> demoAttributes = pickDemographics(random, city);
-    // Overwrite the person's birthdate in demoAttributes with the fixed record birthdate.
+
+    // Overwrite the person's attributes with the FixedRecord.
     demoAttributes.put(Person.BIRTHDATE, recordGroup.getValidBirthdate(0));
-    // Overwrite the person's gender.
+    demoAttributes.put(Person.BIRTH_CITY, city.city);
     String g = fr.gender;
     if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
       g = "F";
     }
     demoAttributes.put(Person.GENDER, g);
-    // Give the person their groud of FixedRecords.
+
+    // Give the person their RecordGroup of FixedRecords.
     demoAttributes.put(Person.RECORD_GROUP, recordGroup);
     demoAttributes.put(Person.LINK_ID, recordGroup.linkId);
 
@@ -687,6 +686,12 @@ public class Generator {
     return demoAttributes;
   }
 
+  /**
+   * Get a birthdate from the given target age.
+   * @param targetAge The target age.
+   * @param random A random object.
+   * @return
+   */
   private long birthdateFromTargetAge(long targetAge, Random random) {
     long earliestBirthdate = stop - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
     long latestBirthdate = stop - TimeUnit.DAYS.toMillis(targetAge * 365L);
