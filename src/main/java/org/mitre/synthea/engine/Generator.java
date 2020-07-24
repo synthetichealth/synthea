@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Patient;
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.export.CDWExporter;
@@ -399,7 +400,7 @@ public class Generator {
       }
       
       do {
-        person = createPerson(personSeed, demoAttributes, index);
+        person = createPerson(personSeed, demoAttributes);
         long finishTime = person.lastUpdated + timestep;
 
         isAlive = person.alive(finishTime);
@@ -674,7 +675,7 @@ public class Generator {
     demoAttributes.put(Person.BIRTHDATE, recordGroup.getValidBirthdate(0));
     // Overwrite the person's gender.
     String g = fr.gender;
-    if (g.equalsIgnoreCase("None") || g.isBlank()) {
+    if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
       g = "F";
     }
     demoAttributes.put(Person.GENDER, g);

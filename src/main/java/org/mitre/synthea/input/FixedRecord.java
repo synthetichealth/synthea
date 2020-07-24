@@ -1,6 +1,8 @@
 package org.mitre.synthea.input;
 
 import com.google.gson.annotations.SerializedName;
+
+import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
@@ -162,7 +164,7 @@ public class FixedRecord {
    */
   public void totalOverwrite(Person person) {
     String g = this.gender;
-    if (g.equalsIgnoreCase("None") || g.isBlank()) {
+    if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
       g = "UNK";
     }
     person.attributes.put(Person.GENDER, g);

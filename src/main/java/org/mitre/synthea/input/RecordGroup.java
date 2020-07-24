@@ -2,6 +2,8 @@ package org.mitre.synthea.input;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * A grouping of FixedRecords that represents a single individual. FixedRecords provide demographic
  * information and the grouping can be used to capture variation that may happen across different
@@ -12,6 +14,11 @@ public class RecordGroup {
   public int count;
   public int linkId;
 
+  /**
+   * Pulls the first valid birthdate from the list of FixedRecords.
+   * @param index The first record to check.
+   * @return
+   */
   public long getValidBirthdate(int index) {
     FixedRecord fr = this.records.get(index);
     try {
@@ -28,15 +35,20 @@ public class RecordGroup {
     throw new RuntimeException("No valid birthdate for: " + fr.firstName + " " + fr.lastName);
   }
 
+  /**
+   * Pulls the first valid city from the list of FixedRecords.
+   * @param index The first record to check.
+   * @return
+   */
   public String getSafeCity(int index) {
     FixedRecord fr = this.records.get(index);
     String safeCity = fr.getSafeCity();
-    if (safeCity != null && !safeCity.isBlank() && !safeCity.equalsIgnoreCase("unknown")) {
+    if (safeCity != null && !StringUtils.isBlank(safeCity) && !safeCity.equalsIgnoreCase("unknown")) {
       return safeCity;
     }
     for (int i = 0; i < this.records.size(); i++) {
       safeCity = this.records.get(i).getSafeCity();
-      if (safeCity != null && !safeCity.isBlank() && !safeCity.equalsIgnoreCase("unknown")) {
+      if (safeCity != null && !StringUtils.isBlank(safeCity) && !safeCity.equalsIgnoreCase("unknown")) {
         return safeCity;
       }
     }

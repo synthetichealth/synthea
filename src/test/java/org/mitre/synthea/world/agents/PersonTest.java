@@ -74,7 +74,7 @@ public class PersonTest {
     int personSeed = 0;
     Random randomForDemographics = new Random(personSeed);
     Map<String, Object> demoAttributes = generator.randomDemographics(randomForDemographics);
-    Person original = generator.createPerson(0, demoAttributes, 0);
+    Person original = generator.createPerson(0, demoAttributes);
     
     Person rehydrated = serializeAndDeserialize(original);
     
