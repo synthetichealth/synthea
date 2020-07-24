@@ -292,8 +292,8 @@ public class Module implements Cloneable, Serializable {
     clone.name = this.name;
     clone.submodule = this.submodule;
     clone.remarks = this.remarks;
-    clone.states = new ConcurrentHashMap<String, State>();
     if (this.states != null) {
+      clone.states = new ConcurrentHashMap<String, State>();
       for (String key : this.states.keySet()) {
         clone.states.put(key, this.states.get(key).clone());
       }

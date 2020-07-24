@@ -21,6 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.LifecycleModule;
@@ -488,12 +489,12 @@ public class Provider implements QuadTreeElement, Serializable {
   /**
    * Randomly chooses a clinician out of a given clinician list.
    * @param specialty - the specialty to choose from.
-   * @param person - the patient.
+   * @param rand - random number generator.
    * @return A clinician with the required specialty.
    */
-  public Clinician chooseClinicianList(String specialty, Person person) {
+  public Clinician chooseClinicianList(String specialty, RandomNumberGenerator rand) {
     ArrayList<Clinician> clinicians = this.clinicianMap.get(specialty);
-    Clinician doc = clinicians.get(person.randInt(clinicians.size()));
+    Clinician doc = clinicians.get(rand.randInt(clinicians.size()));
     doc.incrementEncounters();
     return doc;
   }
