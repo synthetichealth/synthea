@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -173,7 +174,7 @@ public class Costs {
    * Helper class to store a grouping of cost data for a single concept. Currently
    * cost data includes a minimum, maximum, and mode (most common value).
    * Selection of individual prices based on this cost data should be done using
-   * the chooseCost(Random) method.
+   * the chooseCost method.
    */
   private static class CostData {
     private double min;
@@ -189,11 +190,11 @@ public class Costs {
     /**
      * Select an individual cost based on this cost data. Uses a triangular
      * distribution to pick a randomized value.
-     * @param random Source of randomness
+     * @param rand Source of randomness
      * @return Single cost within the range this set of cost data represents
      */
-    private double chooseCost(Person person) {
-      return triangularDistribution(min, max, mode, person.rand());
+    private double chooseCost(RandomNumberGenerator rand) {
+      return triangularDistribution(min, max, mode, rand.rand());
     }
 
     /**

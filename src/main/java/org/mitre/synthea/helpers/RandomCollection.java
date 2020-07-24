@@ -6,8 +6,6 @@ import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
 
-import org.mitre.synthea.world.agents.Person;
-
 /**
  * Random collection of objects, with weightings. Intended to be an equivalent to the ruby Pickup
  * gem. Adapted from https://stackoverflow.com/a/6409791/630384
@@ -48,11 +46,11 @@ public class RandomCollection<E> implements Serializable {
    * Selecting an item from one draw, does not remove the item from the collection
    * for subsequent draws. In other words, an item can be selected repeatedly if
    * the weights are severely imbalanced.
-   * @param person - person object, and the source of the random number generator.
+   * @param random the random number generator.
    * @return a random item from the collection weighted by the item weights.
    */
-  public E next(Person person) {
-    return next(person.rand() * total);
+  public E next(RandomNumberGenerator random) {
+    return next(random.rand() * total);
   }
 
   private E next(double value) {

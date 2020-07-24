@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
@@ -408,14 +409,14 @@ public class HealthRecord implements Serializable {
 
     /**
      * Set the human readable form of the UDI for this Person's device.
-     * @param person The person who owns or contains the device.
+     * @param random the random number generator
      */
-    public void generateUDI(Person person) {
-      deviceIdentifier = trimLong(person.randLong(), 14);
+    public void generateUDI(RandomNumberGenerator random) {
+      deviceIdentifier = trimLong(random.randLong(), 14);
       manufactureTime = start - Utilities.convertTime("weeks", 3);
       expirationTime = start + Utilities.convertTime("years", 25);
-      lotNumber = trimLong(person.randLong(), (int) person.rand(4, 20));
-      serialNumber = trimLong(person.randLong(), (int) person.rand(4, 20));
+      lotNumber = trimLong(random.randLong(), (int) random.rand(4, 20));
+      serialNumber = trimLong(random.randLong(), (int) random.rand(4, 20));
 
       udi = "(01)" + deviceIdentifier;
       udi += "(11)" + udiDate(manufactureTime);

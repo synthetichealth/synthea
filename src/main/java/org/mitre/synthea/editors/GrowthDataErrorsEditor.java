@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.mitre.synthea.engine.HealthRecordEditor;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -271,10 +272,10 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
    * @param encounter The encounter that contains the observation
    */
   public static void introduceHeightAbsoluteError(HealthRecord.Encounter encounter,
-                                                  Person person) {
+                                                  RandomNumberGenerator random) {
     HealthRecord.Observation htObs = heightObservation(encounter);
     double heightValue = (Double) htObs.value;
-    double additionalAbsolute = person.rand() * 3;
+    double additionalAbsolute = random.rand() * 3;
     htObs.value = heightValue - (3 + additionalAbsolute);
   }
 
@@ -283,10 +284,10 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
    * @param encounter The encounter that contains the observation
    */
   public static void introduceWeightDuplicateError(HealthRecord.Encounter encounter,
-                                                   Person person) {
+                                                   RandomNumberGenerator random) {
     HealthRecord.Observation wtObs = weightObservation(encounter);
     double weightValue = (Double) wtObs.value;
-    double jitter = person.rand() - 0.5;
+    double jitter = random.rand() - 0.5;
     HealthRecord.Observation newObs =
         encounter.addObservation(wtObs.start, wtObs.type, weightValue + jitter, "Body Weight");
     newObs.category = "vital-signs";
@@ -298,10 +299,10 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
    * @param encounter The encounter that contains the observation
    */
   public static void introduceHeightDuplicateError(HealthRecord.Encounter encounter,
-                                                   Person person) {
+                                                   RandomNumberGenerator random) {
     HealthRecord.Observation htObs = heightObservation(encounter);
     double heightValue = (Double) htObs.value;
-    double jitter = person.rand() - 0.5;
+    double jitter = random.rand() - 0.5;
     HealthRecord.Observation newObs = encounter.addObservation(htObs.start, htObs.type,
         heightValue + jitter, "Body Height");
     newObs.category = "vital-signs";

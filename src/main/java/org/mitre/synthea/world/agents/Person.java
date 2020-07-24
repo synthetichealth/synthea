@@ -8,7 +8,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +22,7 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.modules.QualityOfLifeModule;
@@ -33,7 +33,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
-public class Person implements Serializable, QuadTreeElement {
+public class Person implements Serializable, RandomNumberGenerator, QuadTreeElement {
   private static final long serialVersionUID = 4322116644425686379L;
   private static final ZoneId timeZone = ZoneId.systemDefault();
 
@@ -172,78 +172,6 @@ public class Person implements Serializable, QuadTreeElement {
    */
   public double rand() {
     return random.nextDouble();
-  }
-
-  /**
-   * Returns a random double in the given range.
-   */
-  public double rand(double low, double high) {
-    return (low + ((high - low) * rand()));
-  }
-
-  /**
-   * Returns a random double in the given range with no more that the specified
-   * number of decimal places.
-   */
-  public double rand(double low, double high, Integer decimals) {
-    double value = rand(low, high);
-    if (decimals != null) {
-      value = BigDecimal.valueOf(value).setScale(decimals, RoundingMode.HALF_UP).doubleValue();
-    }
-    return value;
-  }
-
-  /**
-   * Helper function to get a random number based on an array of [min, max]. This
-   * should be used primarily when pulling ranges from YML.
-   * 
-   * @param range array [min, max]
-   * @return random double between min and max
-   */
-  public double rand(double[] range) {
-    if (range == null || range.length != 2) {
-      throw new IllegalArgumentException(
-          "input range must be of length 2 -- got " + Arrays.toString(range));
-    }
-
-    if (range[0] > range[1]) {
-      throw new IllegalArgumentException(
-          "range must be of the form {low, high} -- got " + Arrays.toString(range));
-    }
-
-    return rand(range[0], range[1]);
-  }
-
-  /**
-   * Return one of the options randomly with uniform distribution.
-   * 
-   * @param choices The options to be returned.
-   * @return One of the options randomly selected.
-   */
-  public String rand(String[] choices) {
-    int value = random.nextInt(choices.length);
-    return choices[value];
-  }
-
-  /**
-   * Helper function to get a random number based on an integer array of [min,
-   * max]. This should be used primarily when pulling ranges from YML.
-   * 
-   * @param range array [min, max]
-   * @return random double between min and max
-   */
-  public double rand(int[] range) {
-    if (range == null || range.length != 2) {
-      throw new IllegalArgumentException(
-          "input range must be of length 2 -- got " + Arrays.toString(range));
-    }
-
-    if (range[0] > range[1]) {
-      throw new IllegalArgumentException(
-          "range must be of the form {low, high} -- got " + Arrays.toString(range));
-    }
-
-    return rand(range[0], range[1]);
   }
 
   /**

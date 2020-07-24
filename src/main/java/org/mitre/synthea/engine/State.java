@@ -34,6 +34,7 @@ import org.mitre.synthea.engine.Transition.LookupTableTransitionOption;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.ExpressionProcessor;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.RandomValueGenerator;
 import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.helpers.Utilities;
@@ -1714,19 +1715,19 @@ public abstract class State implements Cloneable, Serializable {
       return true;
     }
 
-    private void duplicateSeries(Person person, long time) {
+    private void duplicateSeries(RandomNumberGenerator random, long time) {
       if (minNumberSeries > 0 && maxNumberSeries >= minNumberSeries
           && series.size() > 0) {
 
         // Randomly pick the number of series in this study
-        int numberOfSeries = (int) person.rand(minNumberSeries, maxNumberSeries + 1);
+        int numberOfSeries = (int) random.rand(minNumberSeries, maxNumberSeries + 1);
         HealthRecord.ImagingStudy.Series referenceSeries = series.get(0);
         series = new ArrayList<HealthRecord.ImagingStudy.Series>();
 
         // Create the new series with random series UID
         for (int i = 0; i < numberOfSeries; i++) {
           HealthRecord.ImagingStudy.Series newSeries = referenceSeries.clone();
-          newSeries.dicomUid = Utilities.randomDicomUid(person, time, i + 1, 0);
+          newSeries.dicomUid = Utilities.randomDicomUid(random, time, i + 1, 0);
           series.add(newSeries);
         }
       } else {
@@ -1740,7 +1741,7 @@ public abstract class State implements Cloneable, Serializable {
       }
     }
 
-    private void duplicateInstances(Person person, long time) {
+    private void duplicateInstances(RandomNumberGenerator random, long time) {
       for (int i = 0; i < series.size(); i++) {
         HealthRecord.ImagingStudy.Series s = series.get(i);
         if (s.minNumberInstances > 0 && s.maxNumberInstances >= s.minNumberInstances
@@ -1748,14 +1749,14 @@ public abstract class State implements Cloneable, Serializable {
 
           // Randomly pick the number of instances in this series
           int numberOfInstances =
-              (int) person.rand(s.minNumberInstances, s.maxNumberInstances + 1);
+              (int) random.rand(s.minNumberInstances, s.maxNumberInstances + 1);
           HealthRecord.ImagingStudy.Instance referenceInstance = s.instances.get(0);
           s.instances = new ArrayList<HealthRecord.ImagingStudy.Instance>();
 
           // Create the new instances with random instance UIDs
           for (int j = 0; j < numberOfInstances; j++) {
             HealthRecord.ImagingStudy.Instance newInstance = referenceInstance.clone();
-            newInstance.dicomUid = Utilities.randomDicomUid(person, time, i + 1, j + 1);
+            newInstance.dicomUid = Utilities.randomDicomUid(random, time, i + 1, j + 1);
             s.instances.add(newInstance);
           }
         }
