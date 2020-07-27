@@ -35,7 +35,7 @@ import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.input.FixedRecord;
-import org.mitre.synthea.input.RecordGroup;
+import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.HealthInsuranceModule;
@@ -68,7 +68,7 @@ public class Generator {
   public TransitionMetrics metrics;
   public static String DEFAULT_STATE = "Massachusetts";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
-  private List<RecordGroup> recordGroups;
+  private List<FixedRecordGroup> recordGroups;
 
   /**
    * Used only for testing and debugging. Populate this field to keep track of all patients
@@ -331,9 +331,9 @@ public class Generator {
    * 
    * @return A list of the groups of records imported.
    */
-  public List<RecordGroup> importFixedPatientDemographicsFile() {
+  public List<FixedRecordGroup> importFixedPatientDemographicsFile() {
     Gson gson = new Gson();
-    Type listType = new TypeToken<List<RecordGroup>>() {}.getType();
+    Type listType = new TypeToken<List<FixedRecordGroup>>() {}.getType();
     try {
       System.out.println("Loading fixed patient demographic records file: "
           + this.options.fixedRecordPath);
@@ -399,7 +399,7 @@ public class Generator {
 
       if (this.recordGroups != null) {
         // If fixed records are used, there must be 1 provider for each of this person's records.
-        RecordGroup recordGroup = this.recordGroups.get(index);
+        FixedRecordGroup recordGroup = this.recordGroups.get(index);
         providerMinimum = recordGroup.count;
       }
       
@@ -665,7 +665,7 @@ public class Generator {
   private Map<String, Object> pickFixedDemographics(int index, Random random) {
 
     // Get the first FixedRecord from the current RecordGroup
-    RecordGroup recordGroup = this.recordGroups.get(index);
+    FixedRecordGroup recordGroup = this.recordGroups.get(index);
     FixedRecord fr = recordGroup.records.get(0);
     // Get the city from the location in the fixed record.
     this.location = new Location(fr.getState(), recordGroup.getSafeCity(0));
@@ -682,7 +682,7 @@ public class Generator {
     }
     demoAttributes.put(Person.GENDER, g);
 
-    // Give the person their RecordGroup of FixedRecords.
+    // Give the person their FixedRecordGroup of FixedRecords.
     demoAttributes.put(Person.RECORD_GROUP, recordGroup);
     demoAttributes.put(Person.LINK_ID, recordGroup.linkId);
 

@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -135,7 +137,7 @@ public class FixedRecord {
   /**
    * Converts the birth year of the record into a birthdate.
    */
-  public long getBirthDate(boolean checkAge) {
+  public long getBirthDate() {
     String birthYear = this.birthYear;
     switch (birthYear.length()) {
       case 1:
@@ -149,18 +151,14 @@ public class FixedRecord {
     }
 
     long bd = LocalDateTime.of(Integer.parseInt(birthYear), Integer.parseInt(this.birthMonth),
-        Integer.parseInt(this.birthDayOfMonth), 12, 0).toInstant(ZoneOffset.UTC)
-        .toEpochMilli();
-    long twentyFiveYears = Utilities.convertTime("years", 25);
-    long now = System.currentTimeMillis();
-    if (checkAge && bd + twentyFiveYears < now) {
-      throw new IllegalArgumentException("Too old");
-    }
+        Integer.parseInt(this.birthDayOfMonth), 12, 0).toInstant(ZoneOffset.UTC).toEpochMilli();
+
     return bd;
   }
 
   /**
    * Return the telephone number associated with this FixedRecord.
+   * 
    * @return The phone number in this FixedRecord.
    */
   public String getTelecom() {
@@ -168,8 +166,10 @@ public class FixedRecord {
   }
 
   /**
-   * Completely overwrites the given person to have the demographic attributes in this FixedRecord.
-   * @param person The person whos attributes will be overwritten.
+   * Completely overwrites the given person to have the demographic attributes in
+   * this FixedRecord.
+   * 
+   * @param person The person who's attributes will be overwritten.
    */
   public void totalOverwrite(Person person) {
     String g = this.gender;
@@ -178,26 +178,39 @@ public class FixedRecord {
     }
     person.attributes.put(Person.GENDER, g);
 
-    person.attributes.put(Person.FIRST_NAME, this.firstName);
-    person.attributes.put(Person.LAST_NAME, this.lastName);
     try {
-      person.attributes.put(Person.BIRTHDATE, this.getBirthDate(false));
-    } catch (java.time.DateTimeException | java.lang.NumberFormatException
-        | java.lang.NullPointerException dontcare) {
-      long bd = LocalDateTime.of(2010, 7,
-          2, 0, 0).toInstant(ZoneOffset.UTC)
-          .toEpochMilli();
+      person.attributes.put(Person.BIRTHDATE, this.getBirthDate());
+    } catch (java.time.DateTimeException | java.lang.NumberFormatException | java.lang.NullPointerException dontcare) {
+      long bd = LocalDateTime.of(2010, 7, 2, 0, 0).toInstant(ZoneOffset.UTC).toEpochMilli();
       person.attributes.put(Person.BIRTHDATE, bd);
     }
 
-    person.attributes.put(Person.TELECOM, this.getTelecom());
     person.attributes.put(Person.CITY, this.city);
-    person.attributes.put(Person.ADDRESS, this.addressLineOne);
-    person.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
-    person.attributes.put(Person.IDENTIFIER_SITE, this.site);
-    person.attributes.put(Person.CONTACT_GIVEN_NAME, this.parentFirstName);
-    person.attributes.put(Person.CONTACT_FAMILY_NAME, this.parentLastName);
-    person.attributes.put(Person.CONTACT_EMAIL, this.parentEmail);
     person.attributes.put(Person.ZIP, this.zipcode);
+
+    person.attributes.putAll(this.getFixedRecordAttributes());
+
+  }
+
+  /**
+   * Overwrites the given person to have the relevant demographic attributes in
+   * this FixedRecord.
+   * 
+   * @param person The person who's attributes will be overwritten.
+   * @return
+   */
+  public Map<String, Object> getFixedRecordAttributes() {
+    Map<String, Object> attributes = new HashMap<String, Object>();
+    attributes.put(Person.FIRST_NAME, this.firstName);
+    attributes.put(Person.LAST_NAME, this.lastName);
+    attributes.put(Person.NAME, this.firstName + " " + this.lastName);
+    attributes.put(Person.TELECOM, this.getTelecom());
+    attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
+    attributes.put(Person.IDENTIFIER_SITE, this.site);
+    attributes.put(Person.CONTACT_GIVEN_NAME, this.parentFirstName);
+    attributes.put(Person.CONTACT_FAMILY_NAME, this.parentLastName);
+    attributes.put(Person.CONTACT_EMAIL, this.parentEmail);
+    attributes.put(Person.ADDRESS, this.addressLineOne);
+    return attributes;
   }
 }

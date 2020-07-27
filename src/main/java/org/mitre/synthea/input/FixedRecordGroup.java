@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
  * information and the grouping can be used to capture variation that may happen across different
  * provider locations.
  */
-public class RecordGroup {
+public class FixedRecordGroup {
   public List<FixedRecord> records;
   public int count;
   public int linkId;
@@ -22,12 +22,12 @@ public class RecordGroup {
   public long getValidBirthdate(int index) {
     FixedRecord fr = this.records.get(index);
     try {
-      return fr.getBirthDate(true);
+      return fr.getBirthDate();
     } catch (java.time.DateTimeException | java.lang.NullPointerException
         | java.lang.IllegalArgumentException e) {
       for (int i = 0; i < this.records.size(); i++) {
         try {
-          return this.records.get(i).getBirthDate(true);
+          return this.records.get(i).getBirthDate();
         } catch (java.time.DateTimeException | java.lang.NullPointerException
             | java.lang.IllegalArgumentException dontcare) {
           // Do nothing if the current fixed record does not have a valid birthdate.

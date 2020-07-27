@@ -23,7 +23,7 @@ import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.input.FixedRecord;
-import org.mitre.synthea.input.RecordGroup;
+import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.modules.BloodPressureValueGenerator.SysDias;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BMI;
@@ -54,7 +54,6 @@ public final class LifecycleModule extends Module {
 
   public static final boolean appendNumbersToNames =
       Boolean.parseBoolean(Config.get("generate.append_numbers_to_person_names", "false"));
-      // CHANGE
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
   private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
@@ -137,10 +136,9 @@ public final class LifecycleModule extends Module {
     attributes.put(Person.BIRTHDATE, time);
     String gender = (String) attributes.get(Person.GENDER);
     String language = (String) attributes.get(Person.FIRST_LANGUAGE);
-    // master uses fakeFirstName()
-    String firstName = patientFirstName(gender, language, person.random, person);
-    // master uses fakeLastName()
-    String lastName = patientLastName(language, person.random, person);
+
+    String firstName = fakeFirstName(gender, language, person.random);
+    String lastName = fakeLastName(language, person.random);
     if (appendNumbersToNames) {
       firstName = addHash(firstName);
       lastName = addHash(lastName);
@@ -169,21 +167,19 @@ public final class LifecycleModule extends Module {
     if ((person.rand() < prevalenceOfTwins)) {
       attributes.put(Person.MULTIPLE_BIRTH_STATUS, person.randInt(3) + 1);
     }
+
+    String phoneNumber = "555-" + ((person.randInt(999 - 100 + 1) + 100)) + "-"
+        + ((person.randInt(9999 - 1000 + 1) + 1000));
+    attributes.put(Person.TELECOM, phoneNumber);
+
+    boolean hasStreetAddress2 = person.rand() < 0.5;
+    attributes.put(Person.ADDRESS, fakeAddress(hasStreetAddress2, person.random));
+
+    // If using FixedRecords, overwrite the person's attributes with the FixedRecord attributes.
     if (person.attributes.get(Person.RECORD_GROUP) != null) {
-      RecordGroup recordGroup = (RecordGroup) person.attributes.get(Person.RECORD_GROUP);
+      FixedRecordGroup recordGroup = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
       FixedRecord fr = recordGroup.records.get(0);
-
-      attributes.put(Person.TELECOM, fr.getTelecom());
-      attributes.put(Person.IDENTIFIER_RECORD_ID, fr.recordId);
-      attributes.put(Person.IDENTIFIER_SITE, fr.site);
-      attributes.put(Person.CONTACT_GIVEN_NAME, fr.parentFirstName);
-      attributes.put(Person.CONTACT_FAMILY_NAME, fr.parentLastName);
-      attributes.put(Person.CONTACT_EMAIL, fr.parentEmail);
-
-    } else {
-      String phoneNumber = "555-" + ((person.randInt(999 - 100 + 1) + 100)) + "-"
-          + ((person.randInt(9999 - 1000 + 1) + 1000));
-      attributes.put(Person.TELECOM, phoneNumber);
+      attributes.putAll(fr.getFixedRecordAttributes());
     }
 
     String ssn = "999-" + ((person.randInt(99 - 10 + 1) + 10)) + "-"
@@ -209,10 +205,6 @@ public final class LifecycleModule extends Module {
       // For CSV exports so we don't break any existing schemas
       attributes.put(Person.BIRTHPLACE, birthPlace[3]);
     }
-
-    boolean hasStreetAddress2 = person.rand() < 0.5;
-    // master uses fakeAddress()
-    attributes.put(Person.ADDRESS, patientAddress(hasStreetAddress2, person.random, person));
 
     attributes.put(Person.ACTIVE_WEIGHT_MANAGEMENT, false);
     // TODO: Why are the percentiles a vital sign? Sounds more like an attribute?
@@ -313,43 +305,6 @@ public final class LifecycleModule extends Module {
     }
     // pick a random item from the list
     return choices.get(random.nextInt(choices.size()));
-  }
-
-  /**
-   * Gets the patient's first name.
-   */
-  public static String patientFirstName(
-      String gender, String language, Random random, Person person) {
-    if (person.attributes.get(Person.RECORD_GROUP) != null) {
-      RecordGroup recordGroup = (RecordGroup) person.attributes.get(Person.RECORD_GROUP);
-      FixedRecord fr = recordGroup.records.get(0);
-      return fr.firstName;
-    }
-    return fakeFirstName(gender, language, random);
-  }
-
-  /**
-   * Gets the patient's last name.
-   */
-  public static String patientLastName(String language, Random random, Person person) {
-    if (person.attributes.get(Person.RECORD_GROUP) != null) {
-      RecordGroup recordGroup = (RecordGroup) person.attributes.get(Person.RECORD_GROUP);
-      FixedRecord fr = recordGroup.records.get(0);
-      return fr.lastName;
-    }
-    return fakeLastName(language, random);
-  }
-
-  /**
-   * Gets the patient's address.
-   */
-  public static String patientAddress(boolean includeLine2, Random random, Person person) {
-    if (person.attributes.get(Person.RECORD_GROUP) != null) {
-      RecordGroup recordGroup = (RecordGroup) person.attributes.get(Person.RECORD_GROUP);
-      FixedRecord fr = recordGroup.records.get(0);
-      return fr.addressLineOne;
-    }
-    return fakeAddress(includeLine2, random);
   }
 
   /**

@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.mitre.synthea.engine.Generator.GeneratorOptions;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.input.FixedRecord;
-import org.mitre.synthea.input.RecordGroup;
+import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -48,7 +48,7 @@ public class FixedRecordTest {
   public void fixedDemographicsImportTest() {
 
     // List of raw RecordGroups imported directly from the input file for later comparison.
-    List<RecordGroup> rawRecordGroups = generator.importFixedPatientDemographicsFile();
+    List<FixedRecordGroup> rawRecordGroups = generator.importFixedPatientDemographicsFile();
     
     // Generate each patient from the fixed record input file.
     for (int i = 0; i < generator.options.population; i++) {
@@ -63,7 +63,8 @@ public class FixedRecordTest {
     for (int p = 0; p < generator.internalStore.size(); p++) {
       // Get the current person and pull their list of records.
       Person currentPerson = generator.internalStore.get(p);
-      RecordGroup recordGroup = (RecordGroup) currentPerson.attributes.get(Person.RECORD_GROUP);
+      FixedRecordGroup recordGroup
+          = (FixedRecordGroup) currentPerson.attributes.get(Person.RECORD_GROUP);
       // Make sure the person has the correct number of records.
       assertTrue(currentPerson.records.size() >= 3);
       assertTrue(recordGroup.records.size() == 3);
@@ -89,7 +90,7 @@ public class FixedRecordTest {
         // Compare the person's current FixedRecord with the raw imported FixedRecords.
         assertEquals(personFixedRecord.firstName, rawFixedRecord.firstName);
         assertEquals(personFixedRecord.lastName, rawFixedRecord.lastName);
-        assertEquals(personFixedRecord.getBirthDate(true), rawFixedRecord.getBirthDate(true));
+        assertEquals(personFixedRecord.getBirthDate(), rawFixedRecord.getBirthDate());
         assertEquals(personFixedRecord.gender, rawFixedRecord.gender);
         assertEquals(personFixedRecord.phoneAreaCode, rawFixedRecord.phoneAreaCode);
         assertEquals(personFixedRecord.phoneNumber, rawFixedRecord.phoneNumber);
@@ -107,7 +108,7 @@ public class FixedRecordTest {
             && (currentPerson.attributes.get(Person.LAST_NAME).equals(rawFixedRecord.lastName))
             && (currentPerson.attributes.get(Person.ADDRESS).equals(rawFixedRecord.addressLineOne))
             && (currentPerson.attributes.get(Person.BIRTHDATE)
-                .equals(rawFixedRecord.getBirthDate(true)))
+                .equals(rawFixedRecord.getBirthDate()))
             && (currentPerson.attributes.get(Person.GENDER).equals(rawFixedRecord.gender))
             && (currentPerson.attributes.get(Person.TELECOM).equals(rawFixedRecord.getTelecom()))
             && (currentPerson.attributes.get(Person.CITY).equals(rawFixedRecord.city))
