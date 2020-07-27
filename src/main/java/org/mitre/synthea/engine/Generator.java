@@ -285,6 +285,10 @@ public class Generator {
     // Import the fixed patient demographics records file, if a file path is given.
     if (this.options.fixedRecordPath != null) {
       importFixedPatientDemographicsFile();
+      // Since we're using FixedRecords, split records must be true.
+      Config.set("exporter.split_records", "true");
+      // We'll be using the FixedRecord names, so no numbers should be appended to them.
+      Config.set("generate.append_numbers_to_person_names", "false");
     }
 
     ExecutorService threadPool = Executors.newFixedThreadPool(8);
