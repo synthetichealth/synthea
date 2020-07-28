@@ -668,8 +668,8 @@ public class Generator {
     FixedRecordGroup recordGroup = this.recordGroups.get(index);
     FixedRecord fr = recordGroup.records.get(0);
     // Get the city from the location in the fixed record.
-    this.location = new Location(fr.getState(), recordGroup.getSafeCity(0));
-    Demographics city = location.randomCity(random);
+    this.location = new Location(fr.state, recordGroup.getSafeCity(0));
+    Demographics city = this.location.randomCity(random);
     // Pick the rest of the demographics based on the location of the fixed record.
     Map<String, Object> demoAttributes = pickDemographics(random, city);
 

@@ -2,6 +2,7 @@ package org.mitre.synthea.input;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashMap;
@@ -9,8 +10,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.geography.Demographics;
 
 public class FixedRecord {
   @SerializedName(value = "LIST_ID")
@@ -70,68 +71,20 @@ public class FixedRecord {
   @SerializedName(value = "PARENT1_EMAIL")
   public String parentEmail;
 
-  public String getState() {
-    return "Colorado";
-  }
-
   /**
-   * Gets a safe city from the Fixed Record file in case it is not a valid city.
+   * Checks if the FixedRecord contains a valid city.
    */
   public String getSafeCity() {
-    switch (this.city.toLowerCase()) {
-      case "greenwood vlg":
-      case "highlands ranch":
-      case "hghlands ranch":
-      case "highlands  ranch":
-      case "hghlnds ranch":
-      case "hghlnds  ranch":
-      case "hghlnds   ranch":
-      case "ranch":
-      case "centemial":
-      case "cente3nnial":
-        return "Centennial";
-      case "federal hgts":
-        return "Thornton";
-      case "henderson":
-      case "bighton":
-        return "Brighton";
-      case "niwot":
-        return "Longmont";
-      case "franktown":
-      case "sedalia":
-      case "castle":
-      case "castle-rock":
-        return "Castle Rock";
-      case "conifer":
-      case "evergreen":
-      case "pine":
-      case "idledale":
-      case "indian hills":
-        return "Morrison";
-      case "byers":
-      case "strasburg":
-      case "strasbourg":
-      case "watkins":
-        return "Bennett";
-      case "westnminster":
-      case "westminlster":
-        return "Westminster";
-      case "devner":
-        return "Denver";
-      case "allenspark":
-        return "Jamestown";
-      case "lakewoood":
-        return "Lakewood";
-      case "commerce  city":
-      case "commerce              city":
-        return "Commerce City";
-      case "###boulder":
-        return "Boulder";
-      case "littlet0n":
-        return "Littleton";
-      default:
-        return this.city;
+    try {
+      // Checks that the current city/state combo is valid in the Demographics file.
+      if (Demographics.load(this.state).row(this.state).values().stream()
+          .noneMatch(d -> d.city.equalsIgnoreCase(this.city))) {
+        return null;
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    return this.city;
   }
 
   /**
@@ -185,6 +138,7 @@ public class FixedRecord {
       person.attributes.put(Person.BIRTHDATE, bd);
     }
 
+    person.attributes.put(Person.STATE, this.state);
     person.attributes.put(Person.CITY, this.city);
     person.attributes.put(Person.ZIP, this.zipcode);
 
@@ -193,11 +147,9 @@ public class FixedRecord {
   }
 
   /**
-   * Overwrites the given person to have the relevant demographic attributes in
-   * this FixedRecord.
+   * Returns the attributes associated with this FixedRecord.
    * 
-   * @param person The person who's attributes will be overwritten.
-   * @return
+   * @return the attributes associated with this FixedRecord.
    */
   public Map<String, Object> getFixedRecordAttributes() {
     Map<String, Object> attributes = new HashMap<String, Object>();

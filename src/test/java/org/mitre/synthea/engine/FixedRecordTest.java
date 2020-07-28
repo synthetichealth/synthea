@@ -111,6 +111,7 @@ public class FixedRecordTest {
                 .equals(rawFixedRecord.getBirthDate()))
             && (currentPerson.attributes.get(Person.GENDER).equals(rawFixedRecord.gender))
             && (currentPerson.attributes.get(Person.TELECOM).equals(rawFixedRecord.getTelecom()))
+            && (currentPerson.attributes.get(Person.STATE).equals(rawFixedRecord.state))
             && (currentPerson.attributes.get(Person.CITY).equals(rawFixedRecord.city))
             && (currentPerson.attributes.get(Person.ZIP).equals(rawFixedRecord.zipcode))
             && (currentPerson.attributes.get(Person.IDENTIFIER_RECORD_ID)
