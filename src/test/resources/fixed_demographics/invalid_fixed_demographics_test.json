@@ -11,7 +11,7 @@
         "DOB_DAY": "AA",
         "GENDER": "M",
         "PHONE_AREA_CODE": "303",
-        "PHONE_NUMBER": "9373705",
+        "PHONE_NUMBER": "1515151",
         "ADDRESS_STREET1": "12439 Josephine St",
         "ADDRESS_STREET2": "",
         "ADDRESS_CITY": "ThorntonX",
@@ -20,7 +20,7 @@
         "ADDRESS_ZIPCODE": "80241-2744",
         "PARENT1_SURNAME": "Fredric",
         "PARENT1_GIVEN_NAME": "Kimberly Adrienne",
-        "PARENT1_EMAIL": "honeyanneristm@gmail.com"
+        "PARENT1_EMAIL": "89898989@example.com"
       },
       {
         "LIST_ID": "CH",
@@ -32,7 +32,7 @@
         "DOB_DAY": "30",
         "GENDER": "M",
         "PHONE_AREA_CODE": "303",
-        "PHONE_NUMBER": "9373705",
+        "PHONE_NUMBER": "1515151",
         "ADDRESS_STREET1": "josephine st.",
         "ADDRESS_STREET2": "",
         "ADDRESS_CITY": "ThorntonX",
@@ -41,7 +41,7 @@
         "ADDRESS_ZIPCODE": "80241-2744",
         "PARENT1_SURNAME": "Fredrich-Smith",
         "PARENT1_GIVEN_NAME": "Kimberly MNU",
-        "PARENT1_EMAIL": "honeyanneristm@gmail.com"
+        "PARENT1_EMAIL": "89898989@example.com"
       },
       {
         "LIST_ID": "KP",
@@ -53,7 +53,7 @@
         "DOB_DAY": "30",
         "GENDER": "M",
         "PHONE_AREA_CODE": "303",
-        "PHONE_NUMBER": "9373705",
+        "PHONE_NUMBER": "1515151",
         "ADDRESS_STREET1": "3986 Oneida St",
         "ADDRESS_STREET2": "",
         "ADDRESS_CITY": "Littleton",
@@ -62,7 +62,7 @@
         "ADDRESS_ZIPCODE": "80122-4303",
         "PARENT1_SURNAME": "Fredrich",
         "PARENT1_GIVEN_NAME": "Kimberly",
-        "PARENT1_EMAIL": "kaf253@erols.com"
+        "PARENT1_EMAIL": "12121212@example.com"
       }
     ],
     "count": 3
@@ -79,7 +79,7 @@
         "DOB_DAY": "AA",
         "GENDER": "M",
         "PHONE_AREA_CODE": "303",
-        "PHONE_NUMBER": "8630173",
+        "PHONE_NUMBER": "8585858",
         "ADDRESS_STREET1": "10534   Canyon Rd",
         "ADDRESS_STREET2": "",
         "ADDRESS_CITY": "Hghlnds Ranch",
@@ -88,7 +88,7 @@
         "ADDRESS_ZIPCODE": "80129-5453",
         "PARENT1_SURNAME": "Colin",
         "PARENT1_GIVEN_NAME": "Anjanet-Lana",
-        "PARENT1_EMAIL": "MONCUSPARK@LAFAYETTELA.edu"
+        "PARENT1_EMAIL": "89898989@example.com"
       },
       {
         "LIST_ID": "CH",
@@ -100,7 +100,7 @@
         "DOB_DAY": "AA",
         "GENDER": "M",
         "PHONE_AREA_CODE": "303",
-        "PHONE_NUMBER": "8630173",
+        "PHONE_NUMBER": "8585858",
         "ADDRESS_STREET1": "800 S Lima St.",
         "ADDRESS_STREET2": "",
         "ADDRESS_CITY": "Cential",
@@ -109,7 +109,7 @@
         "ADDRESS_ZIPCODE": "80122-1652",
         "PARENT1_SURNAME": "Colin North",
         "PARENT1_GIVEN_NAME": "Lana UNK",
-        "PARENT1_EMAIL": "MONCUSPARK@LAFAYETTELA.edu"
+        "PARENT1_EMAIL": "89898989@example.com"
       },
       {
         "LIST_ID": "DH",
@@ -121,7 +121,7 @@
         "DOB_DAY": "8",
         "GENDER": "M",
         "PHONE_AREA_CODE": "303",
-        "PHONE_NUMBER": "8630173",
+        "PHONE_NUMBER": "8585858",
         "ADDRESS_STREET1": "10534 Colby Canyon Dr",
         "ADDRESS_STREET2": "",
         "ADDRESS_CITY": "Hghlnds Ranch",
@@ -130,7 +130,7 @@
         "ADDRESS_ZIPCODE": "80129-5453",
         "PARENT1_SURNAME": "Coli",
         "PARENT1_GIVEN_NAME": "Anjanet Lana",
-        "PARENT1_EMAIL": "MONCUSPARK@LAFAYETTELA.edu"
+        "PARENT1_EMAIL": "89898989@example.com"
       }
     ],
     "count": 3

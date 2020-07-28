@@ -75,11 +75,11 @@ public class FixedRecord {
   Map<String, Object> attributes;
 
   /**
-   * Checks if the FixedRecord contains a valid city.
+   * Returns the city of this fixedRecord if it is a valid city.
    */
   public String getSafeCity() {
     try {
-      // Checks that the current city/state combo is valid in the Demographics file.
+      // If the the current city/state combo is not in the Demographics file, return null.
       if (Demographics.load(this.state).row(this.state).values().stream()
           .noneMatch(d -> d.city.equalsIgnoreCase(this.city))) {
         return null;
@@ -95,16 +95,6 @@ public class FixedRecord {
    */
   public long getBirthDate() {
     String birthYear = this.birthYear;
-    switch (birthYear.length()) {
-      case 1:
-        birthYear = "200" + birthYear;
-        break;
-      case 2:
-        birthYear = "20" + birthYear;
-        break;
-      default:
-        break;
-    }
 
     long bd = LocalDateTime.of(Integer.parseInt(birthYear), Integer.parseInt(this.birthMonth),
         Integer.parseInt(this.birthDayOfMonth), 12, 0).toInstant(ZoneOffset.UTC).toEpochMilli();
@@ -133,21 +123,12 @@ public class FixedRecord {
       g = "UNK";
     }
     person.attributes.put(Person.GENDER, g);
-
-    try {
-      person.attributes.put(Person.BIRTHDATE, this.getBirthDate());
-    } catch (java.time.DateTimeException | java.lang.NumberFormatException
-        | java.lang.NullPointerException dontcare) {
-      long bd = LocalDateTime.of(2010, 7, 2, 0, 0).toInstant(ZoneOffset.UTC).toEpochMilli();
-      person.attributes.put(Person.BIRTHDATE, bd);
-    }
-
+    person.attributes.put(Person.BIRTHDATE, this.getBirthDate());
     person.attributes.put(Person.STATE, this.state);
     person.attributes.put(Person.CITY, this.city);
     person.attributes.put(Person.ZIP, this.zipcode);
 
     person.attributes.putAll(this.getFixedRecordAttributes());
-
   }
 
   /**

@@ -44,27 +44,27 @@ public class FixedRecordGroupTest {
   @Test(expected = java.lang.RuntimeException.class)
   public void invalidBirthDateTest() {
     // The first person has an invalid birthdate for each FixedRecord in the FixedRecordGroup.
-    recordGroups.get(0).getValidBirthdate(0);
+    recordGroups.get(0).getValidBirthdate();
   }
 
   @Test
   public void onlyThirdBirthDateIsValidTest() {
     // The second person's only valid birthdate is the third one.
-    long date = recordGroups.get(1).getValidBirthdate(0);
+    long date = recordGroups.get(1).getValidBirthdate();
     assertEquals(date, recordGroups.get(1).records.get(2).getBirthDate());
   }
 
   @Test(expected = java.lang.RuntimeException.class)
   public void invalidCityTest() {
     // The second person has an invalid city for each FixedRecord in the FixedRecordGroup.
-    String city = recordGroups.get(1).getSafeCity(0);
+    String city = recordGroups.get(1).getSafeCity();
     System.out.println(city);
   }
 
   @Test
   public void onlyThirdCityIsValidTest() {
     // The first person's only valid city is the third one.
-    String city = recordGroups.get(0).getSafeCity(0);
+    String city = recordGroups.get(0).getSafeCity();
     assertEquals(city, recordGroups.get(0).records.get(2).getSafeCity());
   }
 }

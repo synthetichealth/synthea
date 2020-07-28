@@ -735,13 +735,13 @@ public class Generator {
     FixedRecordGroup recordGroup = this.recordGroups.get(index);
     FixedRecord fr = recordGroup.records.get(0);
     // Get the city from the location in the fixed record.
-    this.location = new Location(fr.state, recordGroup.getSafeCity(0));
+    this.location = new Location(fr.state, recordGroup.getSafeCity());
     Demographics city = this.location.randomCity(random);
     // Pick the rest of the demographics based on the location of the fixed record.
     Map<String, Object> demoAttributes = pickDemographics(random, city);
 
     // Overwrite the person's attributes with the FixedRecord.
-    demoAttributes.put(Person.BIRTHDATE, recordGroup.getValidBirthdate(0));
+    demoAttributes.put(Person.BIRTHDATE, recordGroup.getValidBirthdate());
     demoAttributes.put(Person.BIRTH_CITY, city.city);
     String g = fr.gender;
     if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
