@@ -4,15 +4,19 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FilenameFilter;
-
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -34,6 +38,7 @@ import org.mitre.synthea.export.CDWExporter;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.TransitionMetrics;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.input.FixedRecord;
 import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.modules.DeathModule;
@@ -111,6 +116,14 @@ public class Generator {
     public File localModuleDir;
     public File fixedRecordPath;
     public List<String> enabledModules;
+    /** File used to initialize a population. */
+    public File initialPopulationSnapshotPath;
+    /** File used to store a population snapshot. */
+    public File updatedPopulationSnapshotPath;
+    /** Time period in days to evolve the population loaded from initialPopulationSnapshotPath. A
+     *  value of -1 will evolve the population to the current system time.
+     */
+    public int daysToTravelForward = -1;
   }
   
   /**
@@ -152,9 +165,7 @@ public class Generator {
    * @param o Desired configuration options
    */
   public Generator(GeneratorOptions o) {
-    options = o;
-    exporterRuntimeOptions = new Exporter.ExporterRuntimeOptions();
-    init();
+    this(o, new Exporter.ExporterRuntimeOptions());
   }
   
   /**
@@ -165,6 +176,10 @@ public class Generator {
   public Generator(GeneratorOptions o, Exporter.ExporterRuntimeOptions ero) {
     options = o;
     exporterRuntimeOptions = ero;
+    if (options.updatedPopulationSnapshotPath != null) {
+      exporterRuntimeOptions.deferExports = true;
+      internalStore = Collections.synchronizedList(new LinkedList<>());
+    }
     init();
   }
 
@@ -293,11 +308,36 @@ public class Generator {
 
     ExecutorService threadPool = Executors.newFixedThreadPool(8);
 
-    // Generate patients up to the specified population size.
-    for (int i = 0; i < this.options.population; i++) {
-      final int index = i;
-      final long seed = this.random.nextLong();
-      threadPool.submit(() -> generatePerson(index, seed));
+    if (options.initialPopulationSnapshotPath != null) {
+      FileInputStream fis = null;
+      List<Person> initialPopulation = null;
+      try {
+        fis = new FileInputStream(options.initialPopulationSnapshotPath);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        initialPopulation = (List<Person>) ois.readObject();
+        ois.close();
+      } catch (Exception ex) {
+        System.out.printf("Unable to load population snapshot, error: %s", ex.getMessage());
+      }
+      if (initialPopulation != null && initialPopulation.size() > 0) {
+        // default is to run until current system time.
+        if (options.daysToTravelForward > 0) {
+          stop = initialPopulation.get(0).lastUpdated 
+                  + Utilities.convertTime("days", options.daysToTravelForward);
+        }
+        for (int i = 0; i < initialPopulation.size(); i++) {
+          final int index = i;
+          final Person p = initialPopulation.get(i);        
+          threadPool.submit(() -> updateRecordExportPerson(p, index));
+        }
+      }
+    } else {
+      // Generate patients up to the specified population size.
+      for (int i = 0; i < this.options.population; i++) {
+        final int index = i;
+        final long seed = this.random.nextLong();
+        threadPool.submit(() -> generatePerson(index, seed));
+      }
     }
 
     try {
@@ -316,9 +356,25 @@ public class Generator {
       database.store(Provider.getProviderList());
     }
 
-    Exporter.runPostCompletionExports(this);
+    // Save a snapshot of the generated population using Java Serialization
+    if (options.updatedPopulationSnapshotPath != null) {
+      FileOutputStream fos = null;
+      try {
+        fos = new FileOutputStream(options.updatedPopulationSnapshotPath);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(internalStore);
+        oos.close();
+        fos.close();
+      } catch (Exception ex) {
+        System.out.printf("Unable to save population snapshot, error: %s", ex.getMessage());
+      }
+    }
+    Exporter.runPostCompletionExports(this, exporterRuntimeOptions);
+    //Exporter.runPostCompletionExports(this);
 
-    System.out.println(stats);
+    System.out.printf("Records: total=%d, alive=%d, dead=%d\n", totalGeneratedPopulation.get(),
+            stats.get("alive").get(), stats.get("dead").get());
+    //System.out.println(stats);
 
     if (this.metrics != null) {
       metrics.printStats(totalGeneratedPopulation.get(), Module.getModules(getModulePredicate()));
@@ -479,6 +535,17 @@ public class Generator {
       e.printStackTrace();
       throw e;
     }
+    return person;
+  }
+
+  /**
+   * Update person record to stop time, record the entry and export record.
+   */
+  public Person updateRecordExportPerson(Person person, int index) {
+    updatePerson(person);
+    recordPerson(person, index);
+    long finishTime = person.lastUpdated + timestep;
+    Exporter.export(person, finishTime, exporterRuntimeOptions);
     return person;
   }
 

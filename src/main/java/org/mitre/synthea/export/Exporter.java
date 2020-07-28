@@ -119,32 +119,10 @@ public abstract class Exporter {
    * @param options Runtime exporter options
    */
   public static void export(Person person, long stopTime, ExporterRuntimeOptions options) {
-    int yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
-    if (yearsOfHistory > 0) {
-      person = filterForExport(person, yearsOfHistory, stopTime);
-    }
-    if (!person.alive(stopTime)) {
-      filterAfterDeath(person);
-    }
-    if (person.hasMultipleRecords) {
-      int i = 0;
-      for (String key : person.records.keySet()) {
-        person.record = person.records.get(key);
-        // If the person fixed Records, overwrite their attributes from the fixed records.
-        if (person.attributes.get(Person.RECORD_GROUP) != null) {
-          FixedRecordGroup rg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
-          int recordToPull = i;
-          if (recordToPull >= rg.count) {
-            recordToPull = rg.count - 1;
-          }
-          FixedRecord fr = rg.records.get(recordToPull);
-          fr.totalOverwrite(person);
-        }
-        exportRecord(person, Integer.toString(i), stopTime, options);
-        i++;
-      }
+    if (options.deferExports) {
+      deferredExports.add(new ImmutablePair<Person, Long>(person, stopTime));
     } else {
-      yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
+      int yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
       if (yearsOfHistory > 0) {
         person = filterForExport(person, yearsOfHistory, stopTime);
       }
@@ -155,6 +133,16 @@ public abstract class Exporter {
         int i = 0;
         for (String key : person.records.keySet()) {
           person.record = person.records.get(key);
+          // If the person fixed Records, overwrite their attributes from the fixed records.
+          if (person.attributes.get(Person.RECORD_GROUP) != null) {
+            FixedRecordGroup rg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
+            int recordToPull = i;
+            if (recordToPull >= rg.count) {
+              recordToPull = rg.count - 1;
+            }
+            FixedRecord fr = rg.records.get(recordToPull);
+            fr.totalOverwrite(person);
+          }
           exportRecord(person, Integer.toString(i), stopTime, options);
           i++;
         }

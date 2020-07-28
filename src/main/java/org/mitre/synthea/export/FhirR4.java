@@ -329,6 +329,11 @@ public class FhirR4 {
       explanationOfBenefit(personEntry, bundle, encounterEntry, person,
           encounterClaim, encounter);
     }
+
+    if (USE_US_CORE_IG) {
+      // Add Provenance to the Bundle
+      provenance(bundle, person, stopTime);
+    }
     navigationalAssistance(person, personEntry, bundle);
     wic(person, personEntry, bundle);
     return bundle;

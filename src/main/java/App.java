@@ -25,6 +25,9 @@ public class App {
     System.out.println("         [-m moduleFileWildcardList]");
     System.out.println("         [-c localConfigFilePath]");
     System.out.println("         [-d localModulesDirPath]");
+    System.out.println("         [-i initialPopulationSnapshotPath]");
+    System.out.println("         [-u updatedPopulationSnapshotPath]");
+    System.out.println("         [-t updateTimePeriodInDays]");
     System.out.println("         [-f fixedRecordPath]");
     System.out.println("         [--config* value]");
     System.out.println("          * any setting from src/main/resources/synthea.properties");
@@ -112,6 +115,46 @@ public class App {
               throw new FileNotFoundException(String.format(
                       "Specified local module directory (%s) is not a directory",
                       localModuleDir.getAbsolutePath()));
+            }
+          } else if (currArg.equalsIgnoreCase("-u")) {
+            String value = argsQ.poll();
+            File file = new File(value);
+            try {
+              if (file.createNewFile()) {
+                options.updatedPopulationSnapshotPath = file;
+              } else {
+                throw new IOException("File exists");
+              }
+            } catch (IOException ex) {
+              throw new IOException(String.format("Unable to create snapshot file (%s): %s", 
+                      file.getAbsolutePath(), ex.getMessage()));
+            }
+          } else if (currArg.equalsIgnoreCase("-i")) {
+            String value = argsQ.poll();
+            File file = new File(value);
+            try {
+              if (file.exists() && file.canRead()) {
+                options.initialPopulationSnapshotPath = file;
+              } else {
+                throw new IOException("File does not exist or is not readable");
+              }
+            } catch (IOException ex) {
+              throw new IOException(String.format("Unable to load snapshot file (%s): %s", 
+                      file.getAbsolutePath(), ex.getMessage()));
+            }
+          } else if (currArg.startsWith("-t")) {
+            String value = argsQ.poll();
+            try {
+              options.daysToTravelForward = Integer.parseInt(value);
+              if (options.daysToTravelForward < 1) {
+                throw new NumberFormatException("Must be a positive, non-zero integer");
+              }
+            } catch (NumberFormatException ex) {
+              throw new IllegalArgumentException(
+                      String.format(
+                              "Error in specified updateTimePeriodInDays (%s): %s",
+                              value,
+                              ex.getMessage()));
             }
           } else if (currArg.equalsIgnoreCase("-f")) {
             String value = argsQ.poll();
