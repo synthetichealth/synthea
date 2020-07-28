@@ -71,6 +71,9 @@ public class FixedRecord {
   @SerializedName(value = "PARENT1_EMAIL")
   public String parentEmail;
 
+  // Attributes map
+  Map<String, Object> attributes;
+
   /**
    * Checks if the FixedRecord contains a valid city.
    */
@@ -133,7 +136,8 @@ public class FixedRecord {
 
     try {
       person.attributes.put(Person.BIRTHDATE, this.getBirthDate());
-    } catch (java.time.DateTimeException | java.lang.NumberFormatException | java.lang.NullPointerException dontcare) {
+    } catch (java.time.DateTimeException | java.lang.NumberFormatException
+        | java.lang.NullPointerException dontcare) {
       long bd = LocalDateTime.of(2010, 7, 2, 0, 0).toInstant(ZoneOffset.UTC).toEpochMilli();
       person.attributes.put(Person.BIRTHDATE, bd);
     }
@@ -152,17 +156,19 @@ public class FixedRecord {
    * @return the attributes associated with this FixedRecord.
    */
   public Map<String, Object> getFixedRecordAttributes() {
-    Map<String, Object> attributes = new HashMap<String, Object>();
-    attributes.put(Person.FIRST_NAME, this.firstName);
-    attributes.put(Person.LAST_NAME, this.lastName);
-    attributes.put(Person.NAME, this.firstName + " " + this.lastName);
-    attributes.put(Person.TELECOM, this.getTelecom());
-    attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
-    attributes.put(Person.IDENTIFIER_SITE, this.site);
-    attributes.put(Person.CONTACT_GIVEN_NAME, this.parentFirstName);
-    attributes.put(Person.CONTACT_FAMILY_NAME, this.parentLastName);
-    attributes.put(Person.CONTACT_EMAIL, this.parentEmail);
-    attributes.put(Person.ADDRESS, this.addressLineOne);
-    return attributes;
+    if (this.attributes == null) {
+      this.attributes = new HashMap<String, Object>();
+      this.attributes.put(Person.FIRST_NAME, this.firstName);
+      this.attributes.put(Person.LAST_NAME, this.lastName);
+      this.attributes.put(Person.NAME, this.firstName + " " + this.lastName);
+      this.attributes.put(Person.TELECOM, this.getTelecom());
+      this.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
+      this.attributes.put(Person.IDENTIFIER_SITE, this.site);
+      this.attributes.put(Person.CONTACT_GIVEN_NAME, this.parentFirstName);
+      this.attributes.put(Person.CONTACT_FAMILY_NAME, this.parentLastName);
+      this.attributes.put(Person.CONTACT_EMAIL, this.parentEmail);
+      this.attributes.put(Person.ADDRESS, this.addressLineOne);
+    }
+    return this.attributes;
   }
 }

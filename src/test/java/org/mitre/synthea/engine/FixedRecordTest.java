@@ -35,7 +35,6 @@ public class FixedRecordTest {
     Payer.clear();
     // Create a generator with the preset fixed demographics test file.
     GeneratorOptions go = new GeneratorOptions();
-    // The file path of the test fixed demographics records.
     go.fixedRecordPath = new File(
         "src/test/resources/fixed_demographics/fixed_demographics_test.json");
     go.state = "Colorado";  // Examples are based on Colorado.
