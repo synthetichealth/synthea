@@ -8,21 +8,21 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.mitre.synthea.engine.ExpressedConditionRecord;
 import org.mitre.synthea.engine.ExpressedSymptom;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.modules.QualityOfLifeModule;
@@ -33,7 +33,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
-public class Person implements Serializable, QuadTreeElement {
+public class Person implements Serializable, RandomNumberGenerator, QuadTreeElement {
   private static final long serialVersionUID = 4322116644425686379L;
   private static final ZoneId timeZone = ZoneId.systemDefault();
 
@@ -87,7 +87,7 @@ public class Person implements Serializable, QuadTreeElement {
   private static final String DEDUCTIBLE = "deductible";
   private static final String LAST_MONTH_PAID = "last_month_paid";
 
-  public final JDKRandomGenerator random;
+  private final Random random;
   public final long seed;
   public long populationSeed;
   /** 
@@ -139,13 +139,13 @@ public class Person implements Serializable, QuadTreeElement {
    * Person constructor.
    */
   public Person(long seed) {
-    this.seed = seed; // keep track of seed so it can be exported later
-    random = new JDKRandomGenerator((int) seed);
+    this.seed = seed;
+    random = new Random(seed);
     attributes = new ConcurrentHashMap<String, Object>();
     vitalSigns = new ConcurrentHashMap<VitalSign, ValueGenerator>();
-    symptoms = new ConcurrentHashMap<String, ExpressedSymptom>();   
+    symptoms = new ConcurrentHashMap<String, ExpressedSymptom>();
     /* initialized the onsetConditions field */
-    onsetConditionRecord = new ExpressedConditionRecord(this);    
+    onsetConditionRecord = new ExpressedConditionRecord(this);
     /* Chronic Medications which will be renewed at each Wellness Encounter */
     chronicMedications = new ConcurrentHashMap<String, HealthRecord.Medication>();
     hasMultipleRecords =
@@ -168,81 +168,17 @@ public class Person implements Serializable, QuadTreeElement {
   }
 
   /**
-   * Retuns a random double.
+   * Returns a random double.
    */
   public double rand() {
     return random.nextDouble();
   }
 
   /**
-   * Returns a random double in the given range.
+   * Returns a random boolean.
    */
-  public double rand(double low, double high) {
-    return (low + ((high - low) * random.nextDouble()));
-  }
-
-  /**
-   * Returns a random double in the given range with no more that the specified
-   * number of decimal places.
-   */
-  public double rand(double low, double high, Integer decimals) {
-    double value = rand(low, high);
-    if (decimals != null) {
-      value = BigDecimal.valueOf(value).setScale(decimals, RoundingMode.HALF_UP).doubleValue();
-    }
-    return value;
-  }
-
-  /**
-   * Helper function to get a random number based on an array of [min, max]. This
-   * should be used primarily when pulling ranges from YML.
-   * 
-   * @param range array [min, max]
-   * @return random double between min and max
-   */
-  public double rand(double[] range) {
-    if (range == null || range.length != 2) {
-      throw new IllegalArgumentException(
-          "input range must be of length 2 -- got " + Arrays.toString(range));
-    }
-
-    if (range[0] > range[1]) {
-      throw new IllegalArgumentException(
-          "range must be of the form {low, high} -- got " + Arrays.toString(range));
-    }
-
-    return rand(range[0], range[1]);
-  }
-
-  /**
-   * Return one of the options randomly with uniform distribution.
-   * 
-   * @param choices The options to be returned.
-   * @return One of the options randomly selected.
-   */
-  public String rand(String[] choices) {
-    return choices[random.nextInt(choices.length)];
-  }
-
-  /**
-   * Helper function to get a random number based on an integer array of [min,
-   * max]. This should be used primarily when pulling ranges from YML.
-   * 
-   * @param range array [min, max]
-   * @return random double between min and max
-   */
-  public double rand(int[] range) {
-    if (range == null || range.length != 2) {
-      throw new IllegalArgumentException(
-          "input range must be of length 2 -- got " + Arrays.toString(range));
-    }
-
-    if (range[0] > range[1]) {
-      throw new IllegalArgumentException(
-          "range must be of the form {low, high} -- got " + Arrays.toString(range));
-    }
-
-    return rand(range[0], range[1]);
+  public boolean randBoolean() {
+    return random.nextBoolean();
   }
 
   /**
@@ -257,6 +193,20 @@ public class Person implements Serializable, QuadTreeElement {
    */
   public int randInt(int bound) {
     return random.nextInt(bound);
+  }
+
+  /**
+   * Returns a double from a normal distribution.
+   */
+  public double randGaussian() {
+    return random.nextGaussian();
+  }
+
+  /**
+   * Return a random long.
+   */
+  public long randLong() {
+    return random.nextLong();
   }
 
   /**

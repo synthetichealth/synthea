@@ -30,6 +30,6 @@ public class PayerFinderRandom implements IPayerFinder {
       }
     }
     // Choose a payer from the list of options.
-    return chooseRandomlyFromList(options);
+    return chooseRandomlyFromList(options, person);
   }
 }

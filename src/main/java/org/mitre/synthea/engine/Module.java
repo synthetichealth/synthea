@@ -52,7 +52,7 @@ import org.mitre.synthea.world.agents.Person;
  * across the population, it is important that States are cloned before they are executed. 
  * This keeps the "master" copy of the module clean.
  */
-public class Module implements Serializable {
+public class Module implements Cloneable, Serializable {
 
   private static final Configuration JSON_PATH_CONFIG = Configuration.builder()
       .jsonProvider(new GsonJsonProvider())
@@ -285,6 +285,23 @@ public class Module implements Serializable {
   }
 
   /**
+   * Clone this module. Never provide the original.
+   */
+  public Module clone() {
+    Module clone = new Module();
+    clone.name = this.name;
+    clone.submodule = this.submodule;
+    clone.remarks = this.remarks;
+    if (this.states != null) {
+      clone.states = new ConcurrentHashMap<String, State>();
+      for (String key : this.states.keySet()) {
+        clone.states.put(key, this.states.get(key).clone());
+      }
+    }
+    return clone;
+  }
+
+  /**
    * Process this Module with the given Person at the specified time within the simulation.
    * 
    * @param person
@@ -423,7 +440,7 @@ public class Module implements Serializable {
       if (fault != null) {
         throw new RuntimeException(fault);
       }
-      return module;
+      return module.clone();
     }
   }
 }

@@ -1,9 +1,11 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.TimeZone;
 
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
@@ -20,6 +22,7 @@ public class App {
   public static void usage() {
     System.out.println("Usage: run_synthea [options] [state [city]]");
     System.out.println("Options: [-s seed] [-cs clinicianSeed] [-p populationSize]");
+    System.out.println("         [-r referenceDate as YYYYMMDD]");
     System.out.println("         [-g gender] [-a minAge-maxAge]");
     System.out.println("         [-o overflowPopulation]");
     System.out.println("         [-m moduleFileWildcardList]");
@@ -69,6 +72,11 @@ public class App {
           } else if (currArg.equalsIgnoreCase("-cs")) {
             String value = argsQ.poll();
             options.clinicianSeed = Long.parseLong(value);
+          } else if (currArg.equalsIgnoreCase("-r")) {
+            String value = argsQ.poll();
+            SimpleDateFormat format = new SimpleDateFormat("YYYYMMDD");
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
+            options.referenceTime = format.parse(value).getTime();
           } else if (currArg.equalsIgnoreCase("-p")) {
             String value = argsQ.poll();
             options.population = Integer.parseInt(value);

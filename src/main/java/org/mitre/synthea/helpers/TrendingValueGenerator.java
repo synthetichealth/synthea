@@ -92,7 +92,7 @@ public class TrendingValueGenerator extends ValueGenerator {
     double nextValue;
 
     do {
-      nextValue = person.random.nextGaussian() * standardDeviation + mean;
+      nextValue = person.randGaussian() * standardDeviation + mean;
 
       if ((minimumValue == null || nextValue >= minimumValue) && (maximumValue == null
           || nextValue <= maximumValue)) {

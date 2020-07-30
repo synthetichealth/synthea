@@ -34,6 +34,7 @@ import org.mitre.synthea.engine.Transition.LookupTableTransitionOption;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.ExpressionProcessor;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.RandomValueGenerator;
 import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.helpers.Utilities;
@@ -168,7 +169,6 @@ public abstract class State implements Cloneable, Serializable {
    *         should halt for this time step.
    */
   public boolean run(Person person, long time) {
-    // System.out.format("State: %s\n", this.name);
     if (!person.alive(time)) {
       return false;
     }
@@ -337,7 +337,6 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public Physiology clone() {
-      super.clone();
       Physiology clone = (Physiology) super.clone();
       clone.model = model;
       clone.solver = solver;
@@ -345,6 +344,7 @@ public abstract class State implements Cloneable, Serializable {
       clone.simDuration = simDuration;
       clone.leadTime = leadTime;
       clone.altDirectTransition = altDirectTransition;
+      clone.altTransition = altTransition;
       
       List<IoMapper> inputList = new ArrayList<IoMapper>(inputs.size());
       for (IoMapper mapper : inputs) {
@@ -357,11 +357,11 @@ public abstract class State implements Cloneable, Serializable {
         outputList.add(new IoMapper(mapper));
       }
       clone.outputs = outputList;
-      
+
       if (ENABLE_PHYSIOLOGY_STATE) {
         clone.setup();
       }
-      
+
       return clone;
     }
 
@@ -472,7 +472,8 @@ public abstract class State implements Cloneable, Serializable {
         } else if (range != null) {
           // use a range
           this.next =
-              time + Utilities.convertTime(range.unit, (long) person.rand(range.low, range.high));
+              time + Utilities.convertTime(range.unit,
+                  (long) person.rand(range.low, range.high));
         } else {
           throw new RuntimeException("Delay state has no exact or range: " + this);
         }
@@ -572,7 +573,8 @@ public abstract class State implements Cloneable, Serializable {
       clone.value = value;
       clone.range = range;
       clone.expression = expression;
-      clone.threadExpProcessor = threadExpProcessor;
+      // We shouldn't clone thread local objects since the application is multi-threaded.
+      // clone.threadExpProcessor = threadExpProcessor;
       clone.seriesData = seriesData;
       clone.period = period;
       return clone;
@@ -1372,7 +1374,8 @@ public abstract class State implements Cloneable, Serializable {
       }
       if (duration != null) {
         double durationVal = person.rand(duration.low, duration.high);
-        procedure.stop = procedure.start + Utilities.convertTime(duration.unit, (long) durationVal);
+        procedure.stop = procedure.start
+            + Utilities.convertTime(duration.unit, (long) durationVal);
       }
       // increment number of procedures by respective hospital
       Provider provider;
@@ -1435,7 +1438,8 @@ public abstract class State implements Cloneable, Serializable {
       clone.vitalSign = vitalSign;
       clone.unit = unit;
       clone.expression = expression;
-      clone.threadExpProcessor = threadExpProcessor;
+      // We shouldn't clone thread local objects since the application is multi-threaded.
+      // clone.threadExpProcessor = threadExpProcessor;
       return clone;
     }
 
@@ -1535,7 +1539,8 @@ public abstract class State implements Cloneable, Serializable {
       clone.category = category;
       clone.unit = unit;
       clone.expression = expression;
-      clone.threadExpProcessor = threadExpProcessor;
+      // We shouldn't clone thread local objects since the application is multi-threaded.
+      // clone.threadExpProcessor = threadExpProcessor;
       clone.attachment = attachment;
       return clone;
     }
@@ -1693,8 +1698,8 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public boolean process(Person person, long time) {
       // Randomly pick number of series and instances if bounds were provided
-      duplicateSeries(person);
-      duplicateInstances(person);
+      duplicateSeries(person, time);
+      duplicateInstances(person, time);
 
       // The modality code of the first series is a good approximation
       // of the type of ImagingStudy this is
@@ -1710,19 +1715,19 @@ public abstract class State implements Cloneable, Serializable {
       return true;
     }
 
-    private void duplicateSeries(Person person) {
+    private void duplicateSeries(RandomNumberGenerator random, long time) {
       if (minNumberSeries > 0 && maxNumberSeries >= minNumberSeries
           && series.size() > 0) {
 
         // Randomly pick the number of series in this study
-        int numberOfSeries = (int) person.rand(minNumberSeries, maxNumberSeries + 1);
+        int numberOfSeries = (int) random.rand(minNumberSeries, maxNumberSeries + 1);
         HealthRecord.ImagingStudy.Series referenceSeries = series.get(0);
         series = new ArrayList<HealthRecord.ImagingStudy.Series>();
 
         // Create the new series with random series UID
         for (int i = 0; i < numberOfSeries; i++) {
           HealthRecord.ImagingStudy.Series newSeries = referenceSeries.clone();
-          newSeries.dicomUid = Utilities.randomDicomUid(i + 1, 0);
+          newSeries.dicomUid = Utilities.randomDicomUid(random, time, i + 1, 0);
           series.add(newSeries);
         }
       } else {
@@ -1736,21 +1741,22 @@ public abstract class State implements Cloneable, Serializable {
       }
     }
 
-    private void duplicateInstances(Person person) {
+    private void duplicateInstances(RandomNumberGenerator random, long time) {
       for (int i = 0; i < series.size(); i++) {
         HealthRecord.ImagingStudy.Series s = series.get(i);
         if (s.minNumberInstances > 0 && s.maxNumberInstances >= s.minNumberInstances
             && s.instances.size() > 0) {
 
           // Randomly pick the number of instances in this series
-          int numberOfInstances = (int) person.rand(s.minNumberInstances, s.maxNumberInstances + 1);
+          int numberOfInstances =
+              (int) random.rand(s.minNumberInstances, s.maxNumberInstances + 1);
           HealthRecord.ImagingStudy.Instance referenceInstance = s.instances.get(0);
           s.instances = new ArrayList<HealthRecord.ImagingStudy.Instance>();
 
           // Create the new instances with random instance UIDs
           for (int j = 0; j < numberOfInstances; j++) {
             HealthRecord.ImagingStudy.Instance newInstance = referenceInstance.clone();
-            newInstance.dicomUid = Utilities.randomDicomUid(i + 1, j + 1);
+            newInstance.dicomUid = Utilities.randomDicomUid(random, time, i + 1, j + 1);
             s.instances.add(newInstance);
           }
         }

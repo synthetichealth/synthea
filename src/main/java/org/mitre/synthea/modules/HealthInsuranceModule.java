@@ -33,6 +33,10 @@ public class HealthInsuranceModule extends Module {
    */
   public HealthInsuranceModule() {}
 
+  public Module clone() {
+    return this;
+  }
+
   /**
    * Process this HealthInsuranceModule with the given Person at the specified
    * time within the simulation.
