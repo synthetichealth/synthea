@@ -4,11 +4,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mitre.synthea.TestHelper.LOINC_URI;
 import static org.mitre.synthea.TestHelper.SNOMED_URI;
+import static org.mitre.synthea.TestHelper.getTxRecordingSource;
+import static org.mitre.synthea.TestHelper.isHttpRecordingEnabled;
+import static org.mitre.synthea.TestHelper.wiremockOptions;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
@@ -32,11 +37,18 @@ import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.mitre.synthea.world.geography.Location;
 import org.springframework.web.client.RestTemplate;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+
 public class ValueSetCodeResolverTest {
 
   private Person person;
   private long time;
   private Encounter encounter;
+
+  @Rule
+  public WireMockRule mockTerminologyService = new WireMockRule(wiremockOptions()
+      .usingFilesUnderDirectory("src/test/resources/wiremock/ValueSetCodeResolverTest"));
 
   /**
    * Prepare for each test.
@@ -46,7 +58,10 @@ public class ValueSetCodeResolverTest {
    */
   @Before
   public void setUp() throws Exception {
-    RandomCodeGenerator.setBaseUrl("https://r4.ontoserver.csiro.au/fhir");
+    if (isHttpRecordingEnabled()) {
+      WireMock.startRecording(getTxRecordingSource());
+    }
+    RandomCodeGenerator.setBaseUrl(mockTerminologyService.baseUrl() + "/fhir");
     RandomCodeGenerator.restTemplate = new RestTemplate();
 
     person = new Person(12345L);
@@ -114,8 +129,8 @@ public class ValueSetCodeResolverTest {
     assertEquals(1, resolvedProcedure.reasons.size());
     Code actualProcedureReason = resolvedProcedure.reasons.get(0);
     assertEquals(SNOMED_URI, actualProcedureReason.system);
-    assertEquals("48061001", actualProcedureReason.code);
-    assertEquals("Congenital calculus of kidney", actualProcedureReason.display);
+    assertEquals("699322002", actualProcedureReason.code);
+    assertEquals("Matrix stone of kidney", actualProcedureReason.display);
   }
 
   @Test
@@ -141,14 +156,13 @@ public class ValueSetCodeResolverTest {
     assertEquals(1, resolvedMedication.reasons.size());
     Code actualMedicationReason = resolvedMedication.reasons.get(0);
     assertEquals(SNOMED_URI, actualMedicationReason.system);
-    assertEquals("132111000119107", actualMedicationReason.code);
-    assertEquals("Acute deep venous thrombosis of lower limb due to coronary artery bypass grafting",
-        actualMedicationReason.display);
+    assertEquals("709687000", actualMedicationReason.code);
+    assertEquals("Chronic deep vein thrombosis of pelvic vein", actualMedicationReason.display);
 
     Code actualStopReason = resolvedMedication.stopReason;
     assertEquals(SNOMED_URI, actualStopReason.system);
-    assertEquals("713017009", actualStopReason.code);
-    assertEquals("Noncompliance with antiretroviral medicine regimen", actualStopReason.display);
+    assertEquals("408343002", actualStopReason.code);
+    assertEquals("Indication for each drug checked", actualStopReason.display);
   }
 
   @Test
@@ -173,13 +187,13 @@ public class ValueSetCodeResolverTest {
     assertEquals(1, resolvedCarePlan.reasons.size());
     Code actualCarePlanReason = resolvedCarePlan.reasons.get(0);
     assertEquals(SNOMED_URI, actualCarePlanReason.system);
-    assertEquals("49762007", actualCarePlanReason.code);
-    assertEquals("Hereditary factor XI deficiency disease", actualCarePlanReason.display);
+    assertEquals("773422002", actualCarePlanReason.code);
+    assertEquals("East Texas bleeding disorder", actualCarePlanReason.display);
 
     Code actualStopReason = resolvedCarePlan.stopReason;
     assertEquals(SNOMED_URI, actualStopReason.system);
-    assertEquals("231800009", actualStopReason.code);
-    assertEquals("Rosacea of skin of eyelid", actualStopReason.display);
+    assertEquals("246995007", actualStopReason.code);
+    assertEquals("Pseudo-hypopyon", actualStopReason.display);
   }
 
   @Test
@@ -206,8 +220,9 @@ public class ValueSetCodeResolverTest {
     assertEquals(1, resolvedImagingStudy.series.size());
     Series series = resolvedImagingStudy.series.get(0);
     assertEquals(SNOMED_URI, series.bodySite.system);
-    assertEquals("778055004", series.bodySite.code);
-    assertEquals("Bone structure of right knee", series.bodySite.display);
+    assertEquals("762879008", series.bodySite.code);
+    assertEquals("Structure of right common peroneal nerve in popliteal region",
+        series.bodySite.display);
 
     // Modality and SOP class are not really good candidates for ValueSet-based
     // selection, so we do
@@ -274,5 +289,16 @@ public class ValueSetCodeResolverTest {
     person.attributes = null;
     ValueSetCodeResolver valueSetCodeResolver = new ValueSetCodeResolver(person);
     valueSetCodeResolver.resolve();
+  }
+
+  /**
+   * Clean up after each test.
+   */
+  @After
+  public void tearDown() {
+    if (isHttpRecordingEnabled()) {
+      WireMock.stopRecording();
+    }
+    RandomCodeGenerator.codeListCache.clear();
   }
 }

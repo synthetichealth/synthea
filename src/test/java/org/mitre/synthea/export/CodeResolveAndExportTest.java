@@ -11,6 +11,7 @@ import static org.mitre.synthea.TestHelper.getR4FhirContext;
 import static org.mitre.synthea.TestHelper.getStu3FhirContext;
 import static org.mitre.synthea.TestHelper.getTxRecordingSource;
 import static org.mitre.synthea.TestHelper.isHttpRecordingEnabled;
+import static org.mitre.synthea.TestHelper.wiremockOptions;
 import static org.mitre.synthea.TestHelper.years;
 
 import java.io.File;
@@ -40,6 +41,7 @@ import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.ResourceType;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
@@ -52,12 +54,14 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
+import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.CodingDt;
@@ -65,19 +69,23 @@ import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
 
 public class CodeResolveAndExportTest {
 
-  private static final String EXPECTED_REASON_CODE = "417981005";
+  private static final String EXPECTED_REASON_CODE = "242332002";
   private static final String EXPECTED_REASON_DISPLAY =
-      "Exposure to blood and/or body fluid";
+      "Accidental ingestion of matrimony vine berries";
   private static final String OBSERVATION_CODE = "11376-1";
   private static final String OBSERVATION_DISPLAY = "Injury location";
-  private static final String EXPECTED_VALUE_CODE = "LA14088-1";
-  private static final String EXPECTED_VALUE_DISPLAY = "Sports or recreational area";
+  private static final String EXPECTED_VALUE_CODE = "LA14090-7";
+  private static final String EXPECTED_VALUE_DISPLAY = "Trade or service area";
   private Person person;
   private long time;
   private Path stu3OutputPath;
   private Path r4OutputPath;
   private Path dstu2OutputPath;
   private Path ccdaOutputPath;
+
+  @Rule
+  public WireMockRule mockTerminologyService = new WireMockRule(wiremockOptions()
+      .usingFilesUnderDirectory("src/test/resources/wiremock/CodeResolveAndExportTest"));
 
   /**
    * Prepare for each test.
@@ -88,13 +96,13 @@ public class CodeResolveAndExportTest {
     if (isHttpRecordingEnabled()) {
       WireMock.startRecording(getTxRecordingSource());
     }
-    RandomCodeGenerator.setBaseUrl("https://r4.ontoserver.csiro.au/fhir");
-
     TestHelper.exportOff();
     Config.set("exporter.ccda.export", "true");
     Config.set("exporter.fhir.export", "true");
     Config.set("exporter.fhir_stu3.export", "true");
     Config.set("exporter.fhir_dstu2.export", "true");
+    Config.set("generate.terminology_service_url", mockTerminologyService.baseUrl() + "/fhir");
+    RandomCodeGenerator.restTemplate = new RestTemplate();
 
     person = new Person(12345L);
     time = new SimpleDateFormat("yyyy-MM-dd").parse("2013-06-10").getTime();
