@@ -16,7 +16,6 @@ import static org.mitre.synthea.TestHelper.years;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -96,6 +95,7 @@ public class CodeResolveAndExportTest {
     if (isHttpRecordingEnabled()) {
       WireMock.startRecording(getTxRecordingSource());
     }
+    RandomCodeGenerator.setBaseUrl(mockTerminologyService.baseUrl() + "/fhir");
     TestHelper.exportOff();
     Config.set("exporter.ccda.export", "true");
     Config.set("exporter.fhir.export", "true");
@@ -168,7 +168,7 @@ public class CodeResolveAndExportTest {
     verifyEncounterCodeCcda();
   }
 
-  private void verifyEncounterCodeStu3() throws FileNotFoundException {
+  private void verifyEncounterCodeStu3() throws IOException {
     InputStream inputStream = new FileInputStream(stu3OutputPath.toFile().getAbsolutePath());
     Bundle bundle = (Bundle) getStu3FhirContext().newJsonParser().parseResource(inputStream);
 
@@ -218,9 +218,10 @@ public class CodeResolveAndExportTest {
     assertEquals(LOINC_URI, observationValueCoding.getSystem());
     assertEquals(EXPECTED_VALUE_CODE, observationValueCoding.getCode());
     assertEquals(EXPECTED_VALUE_DISPLAY, observationValueCoding.getDisplay());
+    inputStream.close();
   }
 
-  private void verifyEncounterCodeR4() throws FileNotFoundException {
+  private void verifyEncounterCodeR4() throws IOException {
     InputStream inputStream = new FileInputStream(r4OutputPath.toFile().getAbsolutePath());
     org.hl7.fhir.r4.model.Bundle bundle = (org.hl7.fhir.r4.model.Bundle) getR4FhirContext()
         .newJsonParser().parseResource(inputStream);
@@ -277,9 +278,10 @@ public class CodeResolveAndExportTest {
     assertEquals(LOINC_URI, observationValueCoding.getSystem());
     assertEquals(EXPECTED_VALUE_CODE, observationValueCoding.getCode());
     assertEquals(EXPECTED_VALUE_DISPLAY, observationValueCoding.getDisplay());
+    inputStream.close();
   }
 
-  private void verifyEncounterCodeDstu2() throws FileNotFoundException {
+  private void verifyEncounterCodeDstu2() throws IOException {
     InputStream inputStream = new FileInputStream(dstu2OutputPath.toFile().getAbsolutePath());
     ca.uhn.fhir.model.dstu2.resource.Bundle bundle = 
         (ca.uhn.fhir.model.dstu2.resource.Bundle) getDstu2FhirContext().newJsonParser()
@@ -333,6 +335,7 @@ public class CodeResolveAndExportTest {
     assertEquals(LOINC_URI, observationValueCoding.getSystem());
     assertEquals(EXPECTED_VALUE_CODE, observationValueCoding.getCode());
     assertEquals(EXPECTED_VALUE_DISPLAY, observationValueCoding.getDisplay());
+    inputStream.close();
   }
 
   private void verifyEncounterCodeCcda()
@@ -400,6 +403,7 @@ public class CodeResolveAndExportTest {
     assertEquals(LOINC_OID, system);
     assertEquals(EXPECTED_VALUE_CODE, code);
     assertEquals(EXPECTED_VALUE_DISPLAY, display);
+    inputStream.close();
   }
 
   /**
