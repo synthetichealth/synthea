@@ -115,56 +115,6 @@
         }
       ]
     },
-    "CHF Medication Start 1": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 866414,
-          "display": "24 HR metoprolol succinate 100 MG Extended Release Oral Tablet [Toprol]"
-        }
-      ],
-      "direct_transition": "CHF Medication Start 2",
-      "reason": "chf",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 30,
-          "unit": "days"
-        },
-        "refills": 12
-      }
-    },
-    "CHF Medication Start 2": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "313988",
-          "display": "Furosemide 40 MG Oral Tablet"
-        }
-      ],
-      "direct_transition": "Med_Rec",
-      "reason": "chf",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 30,
-          "unit": "days"
-        },
-        "refills": 10
-      }
-    },
     "end_followup_encounter": {
       "type": "EncounterEnd",
       "direct_transition": "Maintaining CHF"
@@ -181,10 +131,20 @@
             "condition_type": "Or",
             "conditions": [
               {
-                "condition_type": "Attribute",
-                "attribute": "chf_admissions",
-                "operator": ">=",
-                "value": 2
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "chf_stage_d",
+                    "operator": "is not nil"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "chf_admissions",
+                    "operator": ">=",
+                    "value": 2
+                  }
+                ]
               },
               {
                 "condition_type": "Or",
@@ -246,7 +206,7 @@
           "distribution": 0.5
         },
         {
-          "transition": "Maintaining CHF",
+          "transition": "Followup CHF Encounter",
           "distribution": 0.5
         }
       ]
@@ -295,23 +255,20 @@
           ]
         }
       ],
-      "direct_transition": "ED_End"
-    },
-    "ED_End": {
-      "type": "EncounterEnd",
       "distributed_transition": [
         {
-          "distribution": 0.025
+          "transition": "ED_End",
+          "distribution": 0.95
         },
         {
           "transition": "Shock Disorder",
           "distribution": 0.05
-        },
-        {
-          "transition": "Admit_Discharge Transition",
-          "distribution": 0.95
         }
       ]
+    },
+    "ED_End": {
+      "type": "EncounterEnd",
+      "direct_transition": "Admit_Discharge Transition"
     },
     "Admit_Discharge Transition": {
       "type": "Simple",
@@ -546,8 +503,9 @@
       "direct_transition": "end_followup_encounter"
     },
     "Order medications": {
-      "type": "Simple",
-      "direct_transition": "CHF Medication Start 1"
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_meds",
+      "direct_transition": "Med_Rec"
     },
     "Report workup imaging": {
       "type": "DiagnosticReport",
@@ -1386,8 +1344,27 @@
       "direct_transition": "CXR_ED"
     },
     "Progress to Stage D": {
-      "type": "Simple",
-      "direct_transition": "TODO"
+      "type": "SetAttribute",
+      "attribute": "chf_stage_d",
+      "value": true,
+      "distributed_transition": [
+        {
+          "transition": "Stage D Hospice",
+          "distribution": 0.04
+        },
+        {
+          "transition": "Stage D LVAD",
+          "distribution": 0.04
+        },
+        {
+          "transition": "Stage D Transplant",
+          "distribution": 0.04
+        },
+        {
+          "transition": "Potential CHF Flare",
+          "distribution": 0.88
+        }
+      ]
     },
     "ICU Admission": {
       "type": "Encounter",
@@ -1414,10 +1391,6 @@
       ],
       "direct_transition": "Count inpatient stays",
       "reason": "chf"
-    },
-    "TODO": {
-      "type": "Simple",
-      "direct_transition": "Terminal"
     },
     "Wait 12 hours": {
       "type": "Delay",
@@ -1567,7 +1540,6 @@
     "Shock Disorder": {
       "type": "ConditionOnset",
       "assign_to_attribute": "",
-      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1575,7 +1547,7 @@
           "display": "Shock (disorder)"
         }
       ],
-      "direct_transition": "Admit_Discharge Transition"
+      "direct_transition": "ED_End"
     },
     "Oxygen_Saturation_Admission": {
       "type": "Observation",
@@ -1689,7 +1661,7 @@
           "distribution": 0.5
         },
         {
-          "transition": "Initial Encounter End",
+          "transition": "Assessment Procedure",
           "distribution": 0.5
         }
       ]
@@ -1725,7 +1697,7 @@
           ]
         }
       ],
-      "direct_transition": "Initial Encounter End"
+      "direct_transition": "Assessment Procedure"
     },
     "Inpatient_Echocardiography": {
       "type": "ImagingStudy",
@@ -1855,6 +1827,61 @@
       },
       "direct_transition": "End Inpatient Care Plan",
       "reason": "CHF Condition Start"
+    },
+    "Assessment Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 762998009,
+          "display": "Assessment using New York Heart Association Classification (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Assessment Result",
+      "reason": "chf"
+    },
+    "Assessment Result": {
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_nyha_panel",
+      "direct_transition": "Initial Encounter End"
+    },
+    "Stage D Transplant": {
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_transplant",
+      "direct_transition": "Followup CHF Encounter"
+    },
+    "Stage D LVAD": {
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_lvad",
+      "direct_transition": "Followup CHF Encounter"
+    },
+    "Stage D Hospice": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "chf",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 305336008,
+          "display": "Admission to hospice (procedure)"
+        }
+      ],
+      "direct_transition": "Hospice Death"
+    },
+    "Hospice Death": {
+      "type": "Death",
+      "range": {
+        "low": 3,
+        "high": 60,
+        "unit": "days"
+      },
+      "referenced_by_attribute": "chf",
+      "direct_transition": "Terminal"
     }
   }
 }

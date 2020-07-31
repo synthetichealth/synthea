@@ -1,0 +1,385 @@
+{
+  "name": "chf_meds_HFrEF_NYHA4",
+  "remarks": [
+    "Congestive Heart Failure Medications for HFrEF NYHA IV."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "CKD Check"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Diuretic": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "313988",
+          "display": "Furosemide 40 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "direct_transition": "BB",
+      "chronic": true
+    },
+    "BB": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 200033,
+          "display": "carvedilol 25 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "chronic": true,
+      "distributed_transition": [
+        {
+          "transition": "ACE",
+          "distribution": 0.45
+        },
+        {
+          "transition": "ARB",
+          "distribution": 0.45
+        },
+        {
+          "transition": "ARNI",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "ACE": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 314077,
+          "display": "lisinopril 20 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "chronic": true,
+      "direct_transition": "Terminal"
+    },
+    "ARB": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 979492,
+          "display": "losartan potassium 50 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "chronic": true,
+      "direct_transition": "Terminal"
+    },
+    "ARNI": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1656354,
+          "display": "sacubitril 97 MG / valsartan 103 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "chronic": true,
+      "direct_transition": "Terminal"
+    },
+    "Step 1": {
+      "type": "Simple",
+      "direct_transition": "Diuretic"
+    },
+    "CKD Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CKD Path",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": ">=",
+            "value": 4
+          }
+        },
+        {
+          "transition": "Other Path"
+        }
+      ]
+    },
+    "Other Path": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Step 1",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_med_step",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "Other Step 2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_med_step",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Other Step 3",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_med_step",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "CKD Path": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Step 1",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_med_step",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "BiDil Filter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_med_step",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Other Step 2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "MRA",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.9
+        }
+      ]
+    },
+    "MRA": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 313096,
+          "display": "spironolactone 25 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "chronic": true,
+      "direct_transition": "Terminal"
+    },
+    "BiDil": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 905377,
+          "display": "hydralazine hydrochloride 37.5 MG / isosorbide dinitrate 20 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 2,
+          "frequency": 3,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "chronic": true,
+      "direct_transition": "Terminal"
+    },
+    "Dig": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 197604,
+          "display": "digoxin 0.125 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "chronic": true,
+      "direct_transition": "Terminal"
+    },
+    "Other Step 3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Other Step 3 Filter",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "MRA"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Other Step 3 Filter": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "BiDil or Dig",
+          "distribution": 0.05
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.95
+        }
+      ]
+    },
+    "BiDil Filter": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "BiDil",
+          "distribution": 0.05
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.95
+        }
+      ]
+    },
+    "BiDil or Dig": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "BiDil",
+          "distribution": 0.99
+        },
+        {
+          "transition": "Dig",
+          "distribution": 0.01
+        }
+      ]
+    }
+  }
+}

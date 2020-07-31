@@ -37,13 +37,22 @@
       "type": "Simple",
       "conditional_transition": [
         {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_med_step",
+            "operator": ">",
+            "value": 3
+          }
+        },
+        {
+          "transition": "HFmEF",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "chf_type",
             "operator": "==",
             "value": "HFmEF"
-          },
-          "transition": "HFmEF"
+          }
         },
         {
           "transition": "HFpEF",
@@ -181,15 +190,18 @@
       ]
     },
     "HFrEF NYHA 2": {
-      "type": "Simple",
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_meds_hfref_nyha2",
       "direct_transition": "Terminal"
     },
     "HFrEF NYHA 3": {
-      "type": "Simple",
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_meds_hfref_nyha3",
       "direct_transition": "Terminal"
     },
     "HFrEF NYHA 4": {
-      "type": "Simple",
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_meds_hfref_nyha4",
       "direct_transition": "Terminal"
     },
     "BB": {
