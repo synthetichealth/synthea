@@ -188,7 +188,7 @@ public class Location implements Serializable {
   }
 
   /**
-   * Pick the name of a random city from the current "world"?
+   * Pick the name of a random city from the current "world".
    * @param random The source of randomness.
    * @return Demographics of a random city.
    */
