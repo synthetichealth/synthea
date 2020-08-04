@@ -51,13 +51,13 @@ public class LogicTest {
     // Give person an income to prevent null pointer.
     person.attributes.put(Person.INCOME, 10000000);
     Provider mock = Mockito.mock(Provider.class);
-    mock.uuid = "Mock-Provider";
+    Mockito.when(mock.getResourceID()).thenReturn("Mock-Provider");
     for (EncounterType type : EncounterType.values()) {
       person.setProvider(type, mock);
     }
 
     mock = Mockito.mock(Provider.class);
-    mock.uuid = "Mock-Emergency";
+    Mockito.when(mock.getResourceID()).thenReturn("Mock-Emergency");
     person.setProvider(EncounterType.EMERGENCY, mock);
     person.attributes.put(Person.BIRTHDATE, 0L);
     time = System.currentTimeMillis();

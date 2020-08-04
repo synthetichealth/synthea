@@ -132,7 +132,7 @@ public final class LifecycleModule extends Module {
   public static void birth(Person person, long time) {
     Map<String, Object> attributes = person.attributes;
 
-    attributes.put(Person.ID, UUID.randomUUID().toString());
+    attributes.put(Person.ID, person.randUUID().toString());
     attributes.put(Person.BIRTHDATE, time);
     String gender = (String) attributes.get(Person.GENDER);
     String language = (String) attributes.get(Person.FIRST_LANGUAGE);

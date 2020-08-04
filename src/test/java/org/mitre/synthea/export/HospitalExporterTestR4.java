@@ -49,7 +49,7 @@ public class HospitalExporterTestR4 {
     assertFalse(Provider.getProviderList().isEmpty());
 
     Provider.getProviderList().get(0).incrementEncounters(EncounterType.WELLNESS, 0);
-    HospitalExporterR4.export(0L);
+    HospitalExporterR4.export(new Generator(), 0L);
 
     File expectedExportFolder = tempOutputFolder.toPath().resolve("fhir").toFile();
     assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());

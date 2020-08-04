@@ -74,7 +74,7 @@ public class StateTest {
 
     person.history = new LinkedList<>();
     Provider mock = Mockito.mock(Provider.class, withSettings().serializable());
-    mock.uuid = "Mock-UUID";
+    Mockito.when(mock.getResourceID()).thenReturn("Mock-UUID");
     person.setProvider(EncounterType.AMBULATORY, mock);
     person.setProvider(EncounterType.WELLNESS, mock);
     person.setProvider(EncounterType.EMERGENCY, mock);
