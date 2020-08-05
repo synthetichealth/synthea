@@ -336,7 +336,7 @@ public class Utilities {
     // Add a random salt to increase uniqueness
     String salt = randomDicomUidSalt(random);
 
-    String now = String.valueOf(time);
+    String now = String.valueOf(Math.abs(time)); // note time is negative before 1970
     String uid = "1.2.840.99999999";  // 99999999 is an arbitrary organizational identifier
 
     if (seriesNo > 0) {
