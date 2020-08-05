@@ -60,7 +60,7 @@ dependencies {
   compile group: 'info.cqframework', name: 'model', version: '1.3.17'
   compile group: 'info.cqframework', name: 'cql-to-elm', version: '1.3.17'
   
-  compile group: 'org.springframework', name: 'spring-web', version: '3.0.2.RELEASE'
+  compile group: 'org.springframework', name: 'spring-web', version: '5.2.7.RELEASE'
 
   // Java 9 no longer includes these APIs by default
   compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'

@@ -388,7 +388,8 @@ public class CSVExporter {
         /* condition to ignore codes other then retrieved from terminology url */
         if (!StringUtils.isEmpty(Config.get("generate.terminology_service_url"))
             && !RandomCodeGenerator.selectedCodes.isEmpty()) {
-          if (RandomCodeGenerator.selectedCodes.stream().filter(code -> code.code.equals(condition.codes.get(0).code))
+          if (RandomCodeGenerator.selectedCodes.stream()
+              .filter(code -> code.code.equals(condition.codes.get(0).code))
               .findFirst().isPresent()) {
             condition(personID, encounterID, condition);
           }
