@@ -1,0 +1,60 @@
+{
+  "name": "Procedure Length and Death",
+  "remarks": [
+    "Unit Test to ensure that procedure length ",
+    "does not cause an encounter end to extend ",
+    "beyond the deathdate"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Encounter 1",
+      "name": "Initial"
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "Encounter 1": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "Encounter 1"
+        }
+      ],
+      "name": "Encounter 1",
+      "direct_transition": "Procedure_With_Duration"
+    },
+    "Death": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "name": "Death"
+    },
+    "End Encounter 1": {
+      "type": "EncounterEnd",
+      "direct_transition": "Death",
+      "name": "End Encounter 1"
+    },
+    "Procedure_With_Duration": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "Does not matter"
+        }
+      ],
+      "duration": {
+        "low": 24,
+        "high": 48,
+        "unit": "hours"
+      },
+      "direct_transition": "End Encounter 1",
+      "name": "Procedure_With_Duration"
+    }
+  }
+}

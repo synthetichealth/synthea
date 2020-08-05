@@ -18,6 +18,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -232,8 +233,8 @@ public class CPCDSExporter {
     long end = 0;
 
     for (Encounter encounter : person.record.encounters) {
-      String encounterID = UUID.randomUUID().toString();
-      UUID medRecordNumber = UUID.randomUUID();
+      String encounterID = person.randUUID().toString();
+      UUID medRecordNumber = person.randUUID();
       CPCDSAttributes encounterAttributes = new CPCDSAttributes(encounter);
 
 
@@ -256,9 +257,9 @@ public class CPCDSExporter {
       if (start == 999999999999999999L) {
         start = end;
       }
-      String coverageID = coverage(personID, start, end, payerId, type, groupId, groupName,
+      String coverageID = coverage(person, personID, start, end, payerId, type, groupId, groupName,
               planName, planId);
-      claim(encounter, personID, encounterID, medRecordNumber, encounterAttributes, payerId,
+      claim(person, encounter, personID, encounterID, medRecordNumber, encounterAttributes, payerId,
               coverageID);
       hospital(encounter, encounterAttributes, payerName);
     }
@@ -326,16 +327,18 @@ public class CPCDSExporter {
   /**
    * Write a single Coverage CPCDS file.
    *
+   * @param rand        Source of randomness to use when generating ids etc
    * @param personID    ID of the person prescribed the careplan.
    * @param encounterID ID of the encounter where the careplan was prescribed
    * @param careplan    The careplan itself
    * @throws IOException if any IO error occurs
    */
-  private String coverage(String personID, long start, long stop, String payerId, String type,
-          UUID groupId, String groupName, String name, String planId) throws IOException {
+  private String coverage(RandomNumberGenerator rand, String personID, long start, long stop,
+          String payerId, String type, UUID groupId, String groupName, String name, 
+          String planId) throws IOException {
 
     StringBuilder s = new StringBuilder();
-    String coverageID = UUID.randomUUID().toString();
+    String coverageID = rand.randUUID().toString();
     s.append(coverageID).append(',');
     s.append(personID).append(',');
     s.append(personID).append(',');
@@ -370,6 +373,7 @@ public class CPCDSExporter {
    * Method to write a single Claims file. Take an encounter in the parameters and
    * processes Diagnoses, Procedures, and Pharmacy claims for each one, in order.
    * 
+   * @param rand            Source of randomness to use when generating ids etc
    * @param encounter       The encounter object itself
    * @param personID        The Id of the involved patient
    * @param encounterID     The Id of the encounter
@@ -378,8 +382,9 @@ public class CPCDSExporter {
    * @param payerId         The Id of the payer
    * @throws IOException Throws this exception
    */
-  private void claim(Encounter encounter, String personID, String encounterID, UUID medRecordNumber,
-      CPCDSAttributes attributes, String payerId, String coverageID) throws IOException {
+  private void claim(RandomNumberGenerator rand, Encounter encounter, String personID, 
+          String encounterID, UUID medRecordNumber, CPCDSAttributes attributes, String payerId,
+          String coverageID) throws IOException {
 
     StringBuilder s = new StringBuilder();
 
@@ -742,7 +747,7 @@ public class CPCDSExporter {
                   * dayMultiplier.get(duration.get("unit").getAsString());
         }
 
-        UUID rxRef = UUID.randomUUID();
+        UUID rxRef = rand.randUUID();
 
         String[] serviceTypeList = { "01", "04", "06" };
         String serviceType = serviceTypeList[(int) randomLongWithBounds(0, 2)];

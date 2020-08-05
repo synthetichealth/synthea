@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -146,8 +145,8 @@ public class LocationTest {
 
   @Test
   public void testGetForeignPlaceOfBirth_HappyPath() {
-    Random random = new Random(4L);
-    String[] placeOfBirth = location.randomBirthplaceByLanguage(random, "german");
+    Person person = new Person(4L);
+    String[] placeOfBirth = location.randomBirthplaceByLanguage(person, "german");
     for (String part : placeOfBirth) {
       Assert.assertNotNull(part);
       Assert.assertTrue(placeOfBirth[placeOfBirth.length - 1].contains(part));
@@ -156,8 +155,8 @@ public class LocationTest {
 
   @Test
   public void testGetForeignPlaceOfBirth_ValidStringInvalidFormat_1() {
-    Random random = new Random(0L);
-    String[] placeOfBirth = location.randomBirthplaceByLanguage(random, "too_many_elements");
+    Person person = new Person(0L);
+    String[] placeOfBirth = location.randomBirthplaceByLanguage(person, "too_many_elements");
     for (String part : placeOfBirth) {
       Assert.assertNotNull(part);
       Assert.assertTrue(placeOfBirth[placeOfBirth.length - 1].contains(part));
@@ -166,8 +165,8 @@ public class LocationTest {
 
   @Test
   public void testGetForeignPlaceOfBirth_ValidStringInvalidFormat_2() {
-    Random random = new Random(0L);
-    String[] placeOfBirth = location.randomBirthplaceByLanguage(random, "not_enough_elements");
+    Person person = new Person(0L);
+    String[] placeOfBirth = location.randomBirthplaceByLanguage(person, "not_enough_elements");
     for (String part : placeOfBirth) {
       Assert.assertNotNull(part);
       Assert.assertTrue(placeOfBirth[placeOfBirth.length - 1].contains(part));
@@ -176,8 +175,8 @@ public class LocationTest {
 
   @Test
   public void testGetForeignPlaceOfBirth_MissingValue() {
-    Random random = new Random(0L);
-    String[] placeOfBirth = location.randomBirthplaceByLanguage(random, "unknown_ethnicity");
+    Person person = new Person(0L);
+    String[] placeOfBirth = location.randomBirthplaceByLanguage(person, "unknown_ethnicity");
     for (String part : placeOfBirth) {
       Assert.assertNotNull(part);
       Assert.assertTrue(placeOfBirth[placeOfBirth.length - 1].contains(part));
@@ -186,8 +185,8 @@ public class LocationTest {
 
   @Test
   public void testGetForeignPlaceOfBirth_EmptyValue() {
-    Random random = new Random(0L);
-    String[] placeOfBirth = location.randomBirthplaceByLanguage(random, "empty_ethnicity");
+    Person person = new Person(0L);
+    String[] placeOfBirth = location.randomBirthplaceByLanguage(person, "empty_ethnicity");
     for (String part : placeOfBirth) {
       Assert.assertNotNull(part);
       Assert.assertTrue(placeOfBirth[placeOfBirth.length - 1].contains(part));

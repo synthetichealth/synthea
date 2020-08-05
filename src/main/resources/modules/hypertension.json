@@ -1,11 +1,30 @@
 {
   "name": "Hypertension",
   "remarks": [
-    "Hypertension modelled after the JNC 8 Hypertension Guideline Algorithm.",
+    "This Hypertension model reflects the treatment of Primary Hypertension (HTN) in Adults. ",
     "",
-    "The hypertension model section located in the beginning of the Metabolic Syndrome Standard of Care   ",
+    "Overview",
+    "Hypertension diagnosis definitions, pharmacologic treatment thresholds, and control target recommendations diverge across clinical guidelines. However, the model was informed by the following hypertension guidelines and subsequent updates:",
+    "2018 ESC/ESH Guidelines for the management of arterial hypertension: The Task Force for the management of arterial hypertension of the European Society of Cardiology (ESC) and the European Society of Hypertension (ESH)",
+    "2017 ACC/AHA/AAPA/ABC/ACPM/AGS/APhA/ASH/ASPC/NMA/PCNA guideline for the prevention, detection, evaluation, and management of high blood pressure in adults: a report of the American College of Cardiology/American Heart Association Task Force on Clinical Practice Guidelines. ",
+    "2017 Pharmacologic treatment of hypertension in adults aged 60 years or older to higher versus lower blood pressure targets: a clinical practice guideline from the American College of Physicians and the American Academy of Family Physicians.",
+    "2014 evidence-based guideline for the management of high blood pressure in adults: report from the panel members appointed to the Eighth Joint National Committee (JNC 8). ",
+    "Canadian Hypertension Guidelines",
     "",
-    "The recommendation for first-line therapy for hypertension remains a beta blocker or diuretic given in a low dosage. A target blood pressure of less than 140/90 mm Hg is achieved in about 50 percent of patients treated with monotherapy; two or more agents from different pharmacologic classes are often needed to achieve adequate blood pressure control. Single-dose combination antihypertension therapy is an important option that combines efficacy of blood pressure reduction and a low side effect profile with convenient once-daily dosing to enhance compliance. Combination antihypertensives include combined agents from the following pharmacologic classes: diuretics and potassium-sparing diuretics, beta blockers and diuretics, angiotensin-converting enzyme (ACE) inhibitors and diuretics, angiotensin-II antagonists and diuretics, and calcium channel blockers and ACE inhibitors - https://www.aafp.org/afp/2000/0515/p3049.html"
+    "",
+    "The following model assumptions apply: ",
+    "HTN Definitions: Our model definition of HTN is >= 140/90 for all populations, given general agreement of this threshold for pharmacotherapy across most clinical guidelines. Our model threshold for use of pharmacotherapy is SBP >= 140. We define control as SBP < 140. All individuals do NOT achieve control consistent with epidemiological studies. We acknowledge that HTN may be defined using a lower blood pressure (see ACC/AHA) and that lower pharmacotherapy thresholds and targets may be used for populations with certain comorbid conditions, cardiovascular risk, and/or of a certain age. This model does not reflect all primary HTN care pathways, as individual decision making that accounts for benefits, harms, treatment burden and other factors is a critical part of hypertension management. ",
+    " ",
+    "Pharmacotherapy: Pharmacotherapy represented in the submodule 'medications/hypertension_medication' includes ACE inhibitors/ angiotensin receptor blockers (ARBs), thiazide diuretics, and calcium channel blockers (CCB). The drug representing the pharmacologic category, is the medication most commonly prescribed, rather than the agent used in clinical trials (e.g. hydrochlorothiazide vs chlorthalidone). The use of an ACE-inhibitor is inclusive of the use of an ARB. The model only represents the use of dihydropyridine CCBs. Beta-blockers (BBs) are not represented in the model, as the use of BBs for hypertension management is often guided by other compelling clinical indications such as those noted in the clinical exclusions below. Additionally, evidence suggest that in populations without these comorbid conditions, beta‐blockers may not have the same benefits in preventing death and stroke as CCB, thiazides, and ACE/ARBS. The medication dose represented in the model represents the minimum dose of the usual dose range for HTN treatment. This medication dose is inclusive of a lower dose and/or titration to the maximum dose prior to adding another agent.",
+    "",
+    "Pathway: Once individuals require >= 4 medications for HTN treatment, their treatment is no longer represented in the model; these individuals meet the definition of resistant hypertension often requiring further evaluation and/or use of additional HTN medications. Evidence suggests this is a small percentage of individuals (~5-13%).",
+    "",
+    "Clinical Population Exclusions: The care pathway excludes individuals with ASCVD (e.g coronary heart disease, MI), heart failure, pregnancy, age < 18 years, or CKD > Stage III. Rationale: Recommendations for hypertension treatment differ in pregnancy due to risk of teratogenic effects with certain medications and associated pregnancy complications. In pediatrics, hypertension diagnosis is established based on age, sex, and height percentiles with limited evidence regarding long-term outcomes. For co-morbid cardiovascular conditions, we address hypertension management in current (or future) cardiovascular models since similar medications are used to manage cardiovascular disease and hypertension. For advanced CKD/ESRD, hypertension management pathways often differ with the use of additional medications. ",
+    "",
+    "Additional references to inform population probabilities and pharmacotherapy utilization: ",
+    "- Derington, C.G., King, J.B., Herrick, J.S., Shimbo, D., Kronish, I.M., Saseen, J.J., Muntner, P., Moran, A.E. and Bress, A.P., 2020. Trends in antihypertensive medication monotherapy and combination use among US adults, National Health and Nutrition Examination Survey 2005–2016. Hypertension, 75(4), pp.973-981.",
+    "- Shah, S.J. and Stafford, R.S., 2017. Current trends of hypertension treatment in the United States. American journal of hypertension, 30(10), pp.1008-1014.",
+    ""
   ],
   "states": {
     "Initial": {
@@ -27,54 +46,10 @@
       "assign_to_attribute": "hypertension_dx",
       "direct_transition": "Set_BP_Not Controlled"
     },
-    "Hypertension_Medication_Low": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 429503,
-          "display": "Hydrochlorothiazide 12.5 MG"
-        }
-      ],
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        }
-      },
-      "chronic": true,
-      "direct_transition": "End_Wellness_Encounter",
-      "assign_to_attribute": "hypertension_medication",
-      "reason": "hypertension_dx"
-    },
-    "Hypertension_Medication_High": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 310798,
-          "display": "Hydrochlorothiazide 25 MG Oral Tablet"
-        }
-      ],
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        }
-      },
-      "chronic": true,
-      "direct_transition": "End_Wellness_Encounter",
-      "assign_to_attribute": "hypertension_medication",
-      "reason": "hypertension_dx"
-    },
     "Hypertension_Followup_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
+      "reason": "hypertension_dx",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -92,83 +67,53 @@
             "condition_type": "Attribute",
             "attribute": "blood_pressure_controlled",
             "operator": "==",
-            "value": false
+            "value": true
+          },
+          "distributions": [],
+          "transition": "Delay 2_Month"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": true
           },
           "distributions": [
             {
-              "transition": "Set_BP_Controlled_2",
-              "distribution": 0.49
+              "distribution": 0.643,
+              "transition": "Set_BP_Controlled_2"
             },
             {
-              "transition": "Delay 2_Month",
-              "distribution": 0.51
+              "distribution": 0.357,
+              "transition": "Delay 2_Month"
             }
           ]
         },
         {
-          "distributions": [],
-          "transition": "Wellness_Encounter"
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": false
+          },
+          "distributions": [
+            {
+              "distribution": 0.53,
+              "transition": "Set_BP_Controlled_2"
+            },
+            {
+              "distribution": 0.47,
+              "transition": "Delay 2_Month"
+            }
+          ]
         }
-      ]
-    },
-    "Hypertension_Combination_Medication": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 746030,
-          "display": "Atenolol 50 MG / Chlorthalidone 25 MG Oral Tablet"
-        }
-      ],
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        }
-      },
-      "chronic": true,
-      "assign_to_attribute": "hypertension_medication_2",
-      "reason": "hypertension_dx",
-      "direct_transition": "End_Hypertension_Followup_Encounter"
-    },
-    "End_Hypertension_Comb_Medication": {
-      "type": "MedicationEnd",
-      "referenced_by_attribute": "hypertension_medication_2",
-      "direct_transition": "Hypertension_Combination_Medication_2"
-    },
-    "Hypertension_Combination_Medication_2": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 999967,
-          "display": "amLODIPine 5 MG / Hydrochlorothiazide 12.5 MG / Olmesartan medoxomil 20 MG Oral Tablet"
-        }
-      ],
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        }
-      },
-      "chronic": true,
-      "assign_to_attribute": "hypertension_medication_3",
-      "reason": "hypertension_dx",
-      "direct_transition": "End_Hypertension_Followup_Encounter_2",
-      "remarks": [
-        "Olmesartan is an angiotensin II receptor blocker (ARB) that relaxes the blood vessels.",
-        "Amlodipine is a calcium channel blocker that relaxes the blood vessels.",
-        "Hydrochlorothiazide is a thiazide diuretic (water pill). It is used to help reduce the amount of water in the body by increasing the flow of urine."
       ]
     },
     "Hypertension_Followup_Encounter_2": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
+      "reason": "hypertension_dx",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -181,7 +126,6 @@
     "Hypertension_Followup_Encounter_3": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -189,7 +133,8 @@
           "display": "Hypertension follow-up encounter"
         }
       ],
-      "direct_transition": "Record_BP_3"
+      "direct_transition": "Record_BP_3",
+      "reason": "hypertension_dx"
     },
     "End_Hypertension_Followup_Encounter_2": {
       "type": "EncounterEnd",
@@ -199,28 +144,48 @@
             "condition_type": "Attribute",
             "attribute": "blood_pressure_controlled",
             "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "Delay_2_Month_2"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "Delay_2_Month_2"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
             "value": false
           },
           "distributions": [
             {
-              "transition": "Set_BP_Controlled_3",
-              "distribution": 0.49
+              "distribution": 0.643,
+              "transition": "Set_BP_Controlled_3"
             },
             {
-              "transition": "Delay_2_Month_2",
-              "distribution": 0.51
+              "distribution": 0.357,
+              "transition": "Delay_2_Month_2"
             }
           ]
         },
         {
           "distributions": [],
-          "transition": "Wellness_Encounter"
+          "transition": "Delay_2_Month_2"
         }
       ]
     },
     "End_Hypertension_Followup_Encounter_3": {
       "type": "EncounterEnd",
-      "direct_transition": "Wellness_Encounter"
+      "direct_transition": "Terminal"
     },
     "LifeStyle_Modifications_Hypertension_CarePlan": {
       "type": "CarePlanStart",
@@ -268,70 +233,138 @@
         }
       ],
       "reason": "hypertension_dx",
-      "conditional_transition": [
-        {
-          "transition": "Hypertension_Medication_Low",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": "<",
-            "value": 160
-          }
-        },
-        {
-          "transition": "Hypertension_Medication_High",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": ">=",
-            "value": 160
-          }
-        }
-      ]
-    },
-    "End_Hypertension_Medication": {
-      "type": "MedicationEnd",
-      "referenced_by_attribute": "hypertension_medication",
-      "direct_transition": "Hypertension_Combination_Medication"
+      "direct_transition": "Prescribe_Medication"
     },
     "Wellness_Encounter": {
       "type": "Encounter",
-      "wellness": true,
       "conditional_transition": [
         {
-          "transition": "Diagnose_Hypertension",
+          "transition": "Excluded",
           "condition": {
-            "condition_type": "And",
+            "condition_type": "Or",
             "conditions": [
               {
-                "condition_type": "Attribute",
-                "attribute": "hypertension",
-                "operator": "==",
-                "value": true
+                "condition_type": "Age",
+                "operator": "<",
+                "quantity": 18,
+                "unit": "years",
+                "value": 0
               },
               {
-                "condition_type": "Attribute",
-                "attribute": "hypertension_dx",
-                "operator": "is nil"
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "ckd",
+                    "operator": ">",
+                    "value": 3
+                  },
+                  {
+                    "condition_type": "Or",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "pregnant",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Or",
+                        "conditions": [
+                          {
+                            "condition_type": "Attribute",
+                            "attribute": "coronary_heart_disease",
+                            "operator": "==",
+                            "value": true
+                          },
+                          {
+                            "condition_type": "Or",
+                            "conditions": [
+                              {
+                                "condition_type": "Or",
+                                "conditions": [
+                                  {
+                                    "condition_type": "Active Condition",
+                                    "codes": [
+                                      {
+                                        "system": "SNOMED-CT",
+                                        "code": 22298006,
+                                        "display": "Myocardial Infarction"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "condition_type": "Active Condition",
+                                    "codes": [
+                                      {
+                                        "system": "SNOMED-CT",
+                                        "code": 399211009,
+                                        "display": "History of myocardial infarction (situation)"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "condition_type": "Attribute",
+                                "attribute": "chf",
+                                "operator": "is not nil"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
         },
         {
-          "transition": "End_Wellness_No_Action"
+          "transition": "Included"
         }
-      ]
+      ],
+      "wellness": true
     },
     "End_Wellness_Encounter": {
       "type": "EncounterEnd",
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Set_BP_Controlled",
-          "distribution": 0.49
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Set_BP_Controlled",
+              "distribution": 0.342
+            },
+            {
+              "transition": "Delay_One_Month",
+              "distribution": 0.6579999999999999
+            }
+          ]
         },
         {
-          "transition": "Delay_One_Month",
-          "distribution": 0.51
+          "distributions": [
+            {
+              "transition": "Set_BP_Controlled",
+              "distribution": 0.363
+            },
+            {
+              "transition": "Delay_One_Month",
+              "distribution": 0.637
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": false
+          }
         }
       ]
     },
@@ -341,7 +374,54 @@
         "quantity": 1,
         "unit": "months"
       },
-      "direct_transition": "Hypertension_Followup_Encounter"
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "blood_pressure_controlled",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "Hypertension_Followup_Encounter"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "distribution": 0.322,
+              "transition": "Drop Outs"
+            },
+            {
+              "distribution": 0.6779999999999999,
+              "transition": "Hypertension_Followup_Encounter"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": false
+          },
+          "distributions": [
+            {
+              "distribution": 0.267,
+              "transition": "Drop Outs"
+            },
+            {
+              "distribution": 0.7330000000000001,
+              "transition": "Hypertension_Followup_Encounter"
+            }
+          ]
+        }
+      ]
     },
     "Record_BP": {
       "type": "MultiObservation",
@@ -381,13 +461,13 @@
       ],
       "conditional_transition": [
         {
-          "transition": "End_Hypertension_Medication",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "blood_pressure_controlled",
             "operator": "==",
             "value": false
-          }
+          },
+          "transition": "Prescribe_Medication_2"
         },
         {
           "transition": "End_Hypertension_Followup_Encounter"
@@ -432,13 +512,13 @@
       ],
       "conditional_transition": [
         {
-          "transition": "End_Hypertension_Comb_Medication",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "blood_pressure_controlled",
             "operator": "==",
             "value": false
-          }
+          },
+          "transition": "Prescribe_Medication_3"
         },
         {
           "transition": "End_Hypertension_Followup_Encounter_2"
@@ -519,7 +599,46 @@
         "quantity": 2,
         "unit": "months"
       },
-      "direct_transition": "Hypertension_Followup_Encounter_2"
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "blood_pressure_controlled",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "Hypertension_Followup_Encounter_2"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "Hypertension_Followup_Encounter_2"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": false
+          },
+          "distributions": [
+            {
+              "transition": "Drop Outs",
+              "distribution": 0.322
+            },
+            {
+              "transition": "Hypertension_Followup_Encounter_2",
+              "distribution": 0.6779999999999999
+            }
+          ]
+        }
+      ]
     },
     "Delay_2_Month_2": {
       "type": "Delay",
@@ -547,9 +666,62 @@
       "value": true,
       "direct_transition": "Delay_2_Month_2"
     },
-    "End_Wellness_No_Action": {
+    "Excluded": {
+      "type": "Simple",
+      "direct_transition": "Wait Until Next Checkup"
+    },
+    "Prescribe_Medication_3": {
+      "type": "CallSubmodule",
+      "submodule": "medications/hypertension_medication",
+      "direct_transition": "End_Hypertension_Followup_Encounter_2"
+    },
+    "Prescribe_Medication_2": {
+      "type": "CallSubmodule",
+      "submodule": "medications/hypertension_medication",
+      "direct_transition": "End_Hypertension_Followup_Encounter"
+    },
+    "Prescribe_Medication": {
+      "type": "CallSubmodule",
+      "submodule": "medications/hypertension_medication",
+      "direct_transition": "End_Wellness_Encounter"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Included": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Diagnose_Hypertension",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "hypertension",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hypertension_dx",
+                "operator": "is nil"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Wait Until Next Checkup"
+        }
+      ]
+    },
+    "Wait Until Next Checkup": {
       "type": "EncounterEnd",
       "direct_transition": "Wellness_Encounter"
+    },
+    "Drop Outs": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
     }
   }
 }

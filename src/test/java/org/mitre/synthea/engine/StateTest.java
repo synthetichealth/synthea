@@ -74,7 +74,7 @@ public class StateTest {
 
     person.history = new LinkedList<>();
     Provider mock = Mockito.mock(Provider.class, withSettings().serializable());
-    mock.uuid = "Mock-UUID";
+    Mockito.when(mock.getResourceID()).thenReturn("Mock-UUID");
     person.setProvider(EncounterType.AMBULATORY, mock);
     person.setProvider(EncounterType.WELLNESS, mock);
     person.setProvider(EncounterType.EMERGENCY, mock);
@@ -426,6 +426,30 @@ public class StateTest {
   }
 
   @Test
+  public void deathAfterProcedureWithDuration() throws Exception {
+    Module module = TestHelper.getFixture("procedure_duration_and_death.json");
+
+    // patient is alive
+    assertTrue(person.alive(time));
+
+    // patient dies during the process
+    module.process(person, time);
+    long nextStep = time + Utilities.convertTime("days", 7);
+    module.process(person, nextStep);
+
+    // patient is dead later...
+    assertFalse(person.alive(nextStep));
+
+    // patient has one encounter...
+    assertTrue(person.hadPriorState("Encounter 1"));
+    assertEquals(1, person.record.encounters.size());
+
+    long deathDate = (long) person.attributes.get(Person.DEATHDATE);
+    long encounterStop = person.record.encounters.get(0).stop;
+    assertTrue(deathDate >= encounterStop);
+  }
+
+  @Test
   public void vitalsign() throws Exception {
     // Setup a mock to track calls to the patient record
     // In this case, the record shouldn't be called at all
@@ -588,7 +612,10 @@ public class StateTest {
     // Then have the appendectomy
     State appendectomy = module.getState("Appendectomy");
     appendectomy.entered = time;
-    assertTrue(appendectomy.process(person, time));
+    // Procedure should block
+    assertTrue( !appendectomy.process(person, time));
+    long nextStep = time + Utilities.convertTime("days", 7);
+    assertTrue(appendectomy.process(person, nextStep));
 
     HealthRecord.Procedure proc = person.record.encounters.get(0).procedures.get(0);
     Code code = proc.codes.get(0);

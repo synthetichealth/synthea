@@ -104,7 +104,7 @@ public class BirthStatistics {
     if (mother.attributes.containsKey(BIRTH_SEX)) {
       babySex = (String) mother.attributes.get(BIRTH_SEX);
     } else {
-      if (mother.random.nextBoolean()) {
+      if (mother.randBoolean()) {
         babySex = "M";
       } else {
         babySex = "F";

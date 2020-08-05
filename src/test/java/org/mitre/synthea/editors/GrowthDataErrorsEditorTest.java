@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +57,7 @@ public class GrowthDataErrorsEditorTest {
   @Test
   public void process() {
     GrowthDataErrorsEditor m = new GrowthDataErrorsEditor();
-    m.process(new Person(1), record.encounters, 100000, new Random());
+    m.process(new Person(1), record.encounters, 100000);
   }
 
 
@@ -117,7 +116,8 @@ public class GrowthDataErrorsEditorTest {
 
   @Test
   public void introduceHeightAbsoluteError() {
-    GrowthDataErrorsEditor.introduceHeightAbsoluteError(first, new Random());
+    Person person = new Person(0L);
+    GrowthDataErrorsEditor.introduceHeightAbsoluteError(first, person);
     assertTrue((Double) first.findObservation(
             GrowthDataErrorsEditor.HEIGHT_LOINC_CODE).value <= 147d);
     assertTrue((Double) first.findObservation(
@@ -126,7 +126,8 @@ public class GrowthDataErrorsEditorTest {
 
   @Test
   public void introduceWeightDuplicateError() {
-    GrowthDataErrorsEditor.introduceWeightDuplicateError(first, new Random());
+    Person person = new Person(0L);
+    GrowthDataErrorsEditor.introduceWeightDuplicateError(first, person);
     long obsCount = first.observations.stream()
         .filter(o -> o.type.equals(GrowthDataErrorsEditor.WEIGHT_LOINC_CODE))
         .count();
@@ -135,7 +136,8 @@ public class GrowthDataErrorsEditorTest {
 
   @Test
   public void introduceHeightDuplicateError() {
-    GrowthDataErrorsEditor.introduceHeightDuplicateError(first, new Random());
+    Person person = new Person(0L);
+    GrowthDataErrorsEditor.introduceHeightDuplicateError(first, person);
     long obsCount = first.observations.stream()
         .filter(o -> o.type.equals(GrowthDataErrorsEditor.HEIGHT_LOINC_CODE))
         .count();

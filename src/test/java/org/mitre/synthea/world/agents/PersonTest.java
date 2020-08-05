@@ -10,21 +10,38 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.TimeZone;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-
+import org.junit.rules.TemporaryFolder;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.engine.Generator.GeneratorOptions;
+import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.concepts.VitalSign;
 
 public class PersonTest {
   private Person person;
-
+  /**
+   * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
+   */
+  @Rule
+  public TemporaryFolder tempFolder = new TemporaryFolder();
+  
   /**
    * Create a person for use in each test.
    * @throws IOException if something goes wrong.
@@ -65,7 +82,15 @@ public class PersonTest {
   
   @Test
   public void testSerializationAndDeserialization() throws Exception {
-    // Generate a filled-ou patient record to test on
+    // Skip if physiology generators are enabled since they are incompatible with Java
+    // serialization
+    if (Boolean.valueOf(Config.get("physiology.generators.enabled", "false"))) {
+      System.out.println("Skipping test PersonTest.testSerializationAndDeserialization");
+      System.out.println("Set config physiology.generators.enabled=false to enable this test");
+      return;
+    }
+    
+    // Generate a filled-out patient record to test on
     Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
     opts.population = 1;
     opts.minAge = 50;
@@ -79,7 +104,7 @@ public class PersonTest {
     Person rehydrated = serializeAndDeserialize(original);
     
     // Compare the original to the serialized+deserialized version
-    assertEquals(original.random.nextInt(), rehydrated.random.nextInt());
+    assertEquals(original.randInt(), rehydrated.randInt());
     assertEquals(original.seed, rehydrated.seed);
     assertEquals(original.populationSeed, rehydrated.populationSeed);
     assertEquals(original.symptoms.keySet(), rehydrated.symptoms.keySet());
@@ -156,5 +181,409 @@ public class PersonTest {
   @Test()
   public void testVitalSign() {
     person.setVitalSign(VitalSign.HEIGHT, 6.02);
+  }
+
+  @Test()
+  public void testPersonRecreationSerialDifferentGenerator() throws Exception {
+    TestHelper.loadTestProperties();
+    TestHelper.exportOff();
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
+    Config.set("exporter.text.export", "true");
+
+    SimpleDateFormat format = new SimpleDateFormat("YYYYMMDD");
+    format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+    GeneratorOptions options = new GeneratorOptions();
+    options.clinicianSeed = 9L;
+    options.seed = 9L;
+    options.referenceTime = format.parse("20200704").getTime();
+    options.overflow = false;
+
+    List<List<String>> fileContents = new ArrayList<>();
+
+    // Generate two patients that should be identical. Switch the output directory since
+    // the file names should be identical
+    for (int i = 0; i < 2; i++) {
+      File tempOutputFolder = tempFolder.newFolder();
+      Config.set("exporter.baseDirectory", tempOutputFolder.toString());
+
+      Generator generator = new Generator(options);
+      generator.generatePerson(0, 42L);
+      
+      File expectedExportFolder = tempOutputFolder.toPath().resolve("text").toFile();
+      assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
+    
+      // Read the output files
+      for (File txtFile : expectedExportFolder.listFiles()) {
+        if (!txtFile.getName().endsWith(".txt")) {
+          continue;
+        }
+        fileContents.add(Files.readAllLines(txtFile.toPath()));
+      }
+    }
+    
+    // Check that there are exactly two files
+    assertEquals("Expected 2 files, found " + fileContents.size(), 2,
+        fileContents.size());
+
+    // Check that the two files are identical
+    for (int i = 0; i < fileContents.get(0).size(); i++) {
+      assertEquals(fileContents.get(0).get(i), fileContents.get(1).get(i));
+    }
+  }
+
+  @Test()
+  public void testPersonRecreationSerialSameGenerator() throws Exception {
+    TestHelper.loadTestProperties();
+    TestHelper.exportOff();
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
+    Config.set("exporter.text.export", "true");
+
+    SimpleDateFormat format = new SimpleDateFormat("YYYYMMDD");
+    format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+    GeneratorOptions options = new GeneratorOptions();
+    options.clinicianSeed = 9L;
+    options.seed = 9L;
+    options.referenceTime = format.parse("20200704").getTime();
+    options.overflow = false;
+
+    Generator generator = new Generator(options);
+    List<List<String>> fileContents = new ArrayList<>();
+    
+    // Generate two patients that should be identical. Switch the output directory since
+    // the file names should be identical
+    for (int i = 0; i < 2; i++) {
+      File tempOutputFolder = tempFolder.newFolder();
+      Config.set("exporter.baseDirectory", tempOutputFolder.toString());
+      
+      generator.generatePerson(0, 42L);
+
+      // Check that the output files exist
+      File expectedExportFolder = tempOutputFolder.toPath().resolve("text").toFile();
+      assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
+
+      for (File txtFile : expectedExportFolder.listFiles()) {
+        if (!txtFile.getName().endsWith(".txt")) {
+          continue;
+        }
+        fileContents.add(Files.readAllLines(txtFile.toPath()));
+      }
+    }
+  }
+
+  @Test()
+  public void testPersonFhirR4Recreation() throws Exception {
+    TestHelper.loadTestProperties();
+    TestHelper.exportOff();
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
+    Config.set("exporter.fhir.export", "true");
+
+    SimpleDateFormat format = new SimpleDateFormat("YYYYMMDD");
+    format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+    GeneratorOptions options = new GeneratorOptions();
+    options.clinicianSeed = 9L;
+    options.seed = 9L;
+    options.referenceTime = format.parse("20200704").getTime();
+    options.overflow = false;
+
+    Generator generator = new Generator(options);
+    List<List<String>> fileContents = new ArrayList<>();
+    
+    // Generate two patients that should be identical. Switch the output directory since
+    // the file names should be identical
+    for (int i = 0; i < 2; i++) {
+      File tempOutputFolder = tempFolder.newFolder();
+      Config.set("exporter.baseDirectory", tempOutputFolder.toString());
+      
+      generator.generatePerson(0, 42L);
+
+      // Check that the output files exist
+      File expectedExportFolder = tempOutputFolder.toPath().resolve("fhir").toFile();
+      assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
+
+      for (File txtFile : expectedExportFolder.listFiles()) {
+        if (!txtFile.getName().endsWith(".json")) {
+          continue;
+        }
+        fileContents.add(Files.readAllLines(txtFile.toPath()));
+      }
+    }
+
+    
+    // Check that there are exactly two files
+    assertEquals("Expected 2 files, found " + fileContents.size(), 2,
+        fileContents.size());
+
+    // Check that the two files are identical
+    for (int i = 0; i < fileContents.get(0).size(); i++) {
+      assertEquals(fileContents.get(0).get(i), fileContents.get(1).get(i));
+    }
+  }
+
+  @Test()
+  public void testPersonFhirSTU3Recreation() throws Exception {
+    TestHelper.loadTestProperties();
+    TestHelper.exportOff();
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
+    Config.set("exporter.fhir_stu3.export", "true");
+
+    SimpleDateFormat format = new SimpleDateFormat("YYYYMMDD");
+    format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+    GeneratorOptions options = new GeneratorOptions();
+    options.clinicianSeed = 9L;
+    options.seed = 9L;
+    options.referenceTime = format.parse("20200704").getTime();
+    options.overflow = false;
+
+    Generator generator = new Generator(options);
+    List<List<String>> fileContents = new ArrayList<>();
+    
+    // Generate two patients that should be identical. Switch the output directory since
+    // the file names should be identical
+    for (int i = 0; i < 2; i++) {
+      File tempOutputFolder = tempFolder.newFolder();
+      Config.set("exporter.baseDirectory", tempOutputFolder.toString());
+      
+      generator.generatePerson(0, 42L);
+
+      // Check that the output files exist
+      File expectedExportFolder = tempOutputFolder.toPath().resolve("fhir_stu3").toFile();
+      assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
+
+      for (File txtFile : expectedExportFolder.listFiles()) {
+        if (!txtFile.getName().endsWith(".json")) {
+          continue;
+        }
+        fileContents.add(Files.readAllLines(txtFile.toPath()));
+      }
+    }
+
+    
+    // Check that there are exactly two files
+    assertEquals("Expected 2 files, found " + fileContents.size(), 2,
+        fileContents.size());
+
+    // Check that the two files are identical
+    for (int i = 0; i < fileContents.get(0).size(); i++) {
+      assertEquals(fileContents.get(0).get(i), fileContents.get(1).get(i));
+    }
+  }
+  
+  @Test()
+  public void testPersonFhirDSTU2Recreation() throws Exception {
+    TestHelper.loadTestProperties();
+    TestHelper.exportOff();
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
+    Config.set("exporter.fhir_dstu2.export", "true");
+
+    SimpleDateFormat format = new SimpleDateFormat("YYYYMMDD");
+    format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+    GeneratorOptions options = new GeneratorOptions();
+    options.clinicianSeed = 9L;
+    options.seed = 9L;
+    options.referenceTime = format.parse("20200704").getTime();
+    options.overflow = false;
+
+    Generator generator = new Generator(options);
+    List<List<String>> fileContents = new ArrayList<>();
+    
+    // Generate two patients that should be identical. Switch the output directory since
+    // the file names should be identical
+    for (int i = 0; i < 2; i++) {
+      File tempOutputFolder = tempFolder.newFolder();
+      Config.set("exporter.baseDirectory", tempOutputFolder.toString());
+      
+      generator.generatePerson(0, 42L);
+
+      // Check that the output files exist
+      File expectedExportFolder = tempOutputFolder.toPath().resolve("fhir_dstu2").toFile();
+      assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
+
+      for (File txtFile : expectedExportFolder.listFiles()) {
+        if (!txtFile.getName().endsWith(".json")) {
+          continue;
+        }
+        fileContents.add(Files.readAllLines(txtFile.toPath()));
+      }
+    }
+
+    
+    // Check that there are exactly two files
+    assertEquals("Expected 2 files, found " + fileContents.size(), 2,
+        fileContents.size());
+
+    // Check that the two files are identical
+    for (int i = 0; i < fileContents.get(0).size(); i++) {
+      assertEquals(fileContents.get(0).get(i), fileContents.get(1).get(i));
+    }
+  }
+
+  @Test()
+  public void testPersonCcdaRecreation() throws Exception {
+    TestHelper.loadTestProperties();
+    TestHelper.exportOff();
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
+    Config.set("exporter.ccda.export", "true");
+
+    SimpleDateFormat format = new SimpleDateFormat("YYYYMMDD");
+    format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+    GeneratorOptions options = new GeneratorOptions();
+    options.clinicianSeed = 9L;
+    options.seed = 9L;
+    options.referenceTime = format.parse("20200704").getTime();
+    options.overflow = false;
+
+    Generator generator = new Generator(options);
+    List<List<String>> fileContents = new ArrayList<>();
+    
+    // Generate two patients that should be identical. Switch the output directory since
+    // the file names should be identical
+    for (int i = 0; i < 2; i++) {
+      File tempOutputFolder = tempFolder.newFolder();
+      Config.set("exporter.baseDirectory", tempOutputFolder.toString());
+      
+      generator.generatePerson(0, 42L);
+
+      // Check that the output files exist
+      File expectedExportFolder = tempOutputFolder.toPath().resolve("ccda").toFile();
+      assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
+
+      for (File txtFile : expectedExportFolder.listFiles()) {
+        if (!txtFile.getName().endsWith(".xml")) {
+          continue;
+        }
+        fileContents.add(Files.readAllLines(txtFile.toPath()));
+      }
+    }
+
+    
+    // Check that there are exactly two files
+    assertEquals("Expected 2 files, found " + fileContents.size(), 2,
+        fileContents.size());
+
+    // Check that the two files are identical
+    for (int i = 0; i < fileContents.get(0).size(); i++) {
+      assertEquals(fileContents.get(0).get(i), fileContents.get(1).get(i));
+    }
+  }
+
+  @Test()
+  public void testPersonRecreationParallel() throws Exception {
+    TestHelper.loadTestProperties();
+    TestHelper.exportOff();
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
+
+    SimpleDateFormat format = new SimpleDateFormat("YYYYMMDD");
+    format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+    GeneratorOptions options = new GeneratorOptions();
+    options.clinicianSeed = 9L;
+    options.seed = 9L;
+    options.referenceTime = format.parse("20200704").getTime();
+    options.overflow = false;
+    Generator generator = new Generator(options);
+
+    // Generate the patients...
+    List<Future<Person>> generatedPatients = new ArrayList<>(10);
+    ExecutorService threadPool = Executors.newFixedThreadPool(8);
+    for (int i = 0; i < 10; i++) {
+      generatedPatients.add(threadPool.submit(() -> generator.generatePerson(0, 42L)));
+    }
+    threadPool.shutdown();
+    while (!threadPool.awaitTermination(30, TimeUnit.SECONDS)) {
+      /* do nothing */
+    }
+    
+    long endTime = System.currentTimeMillis();
+    Config.set("exporter.text.export", "true");
+    List<List<String>> fileContents = new ArrayList<>();
+
+    for (Future<Person> fp: generatedPatients) {
+      File tempOutputFolder = tempFolder.newFolder();
+      Config.set("exporter.baseDirectory", tempOutputFolder.toString());
+    
+      Person p = fp.get();
+      Exporter.export(p, endTime);
+
+      // Check that the output files exist
+      File expectedExportFolder = tempOutputFolder.toPath().resolve("text").toFile();
+      assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
+
+      for (File txtFile : expectedExportFolder.listFiles()) {
+        if (!txtFile.getName().endsWith(".txt")) {
+          continue;
+        }
+        fileContents.add(Files.readAllLines(txtFile.toPath()));
+      }
+    }
+    
+    assertEquals("Expected 10 files, found " + fileContents.size(), 10,
+        fileContents.size());
+
+    // Check that all files are identical
+    for (int f = 1; f < fileContents.size(); f++) {
+      for (int l = 0; l < fileContents.get(f).size(); l++) {
+        assertEquals(fileContents.get(f - 1).get(l), fileContents.get(f).get(l));
+      }
+    }
+  }
+
+  @Test()
+  public void testPersonRandomStability() {
+    Person personA = new Person(0L);
+    Person personB = new Person(0L);
+
+    double[] doubleRange = { 3.14159d, 42.4233d };
+    int[] intRange = { 33, 333 };
+    String[] choices = { "foo", "bar", "baz" };
+    
+    List<String> resultsA = new ArrayList<String>();
+    List<String> resultsB = new ArrayList<String>();
+
+    int mode = 0;
+    for (int i = 0; i < 1000; i++) {
+      if (mode == 0) {
+        resultsA.add("" + personA.rand());
+        resultsB.add("" + personB.rand());
+      } else if (mode == 1) {
+        resultsA.add("" + personA.rand(doubleRange));
+        resultsB.add("" + personB.rand(doubleRange));
+      } else if (mode == 2) {
+        resultsA.add("" + personA.rand(intRange));
+        resultsB.add("" + personB.rand(intRange));
+      } else if (mode == 3) {
+        resultsA.add("" + personA.rand(choices));
+        resultsB.add("" + personB.rand(choices));
+      } else if (mode == 4) {
+        resultsA.add("" + personA.rand(101.101d, 333.333d));
+        resultsB.add("" + personB.rand(101.101d, 333.333d));
+      } else if (mode == 5) {
+        resultsA.add("" + personA.rand(42.2345d, 98.7654d, 3));
+        resultsB.add("" + personB.rand(42.2345d, 98.7654d, 3));
+      } else if (mode == 6) {
+        resultsA.add("" + personA.randInt());
+        resultsB.add("" + personB.randInt());
+      } else if (mode == 7) {
+        resultsA.add("" + personA.randInt(3333));
+        resultsB.add("" + personB.randInt(3333));
+      } else if (mode == 8) {
+        resultsA.add("" + personA.randGaussian());
+        resultsB.add("" + personB.randGaussian());
+      }
+      mode += 1;
+      if (mode > 8) {
+        mode = 0;
+      }
+    }
+
+    assertEquals(resultsA.size(), resultsB.size());
+    for (int i = 0; i < resultsA.size(); i++) {
+      assertEquals(resultsA.get(i), resultsB.get(i));
+    }
   }
 }

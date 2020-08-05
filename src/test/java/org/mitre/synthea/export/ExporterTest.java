@@ -46,7 +46,7 @@ public class ExporterTest {
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Location location = new Location(Generator.DEFAULT_STATE, null);
-    location.assignPoint(patient, location.randomCityName(patient.random));
+    location.assignPoint(patient, location.randomCityName(patient));
     Provider.loadProviders(location, 1L);
     record = patient.record;
     // Ensure Person's Payer is not null.

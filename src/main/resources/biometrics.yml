@@ -16,7 +16,7 @@ metabolic:
       systolic: [100,139] # mmHg
       diastolic: [70,89]  # mmHg
     hypertensive:
-      systolic: [140,200] # mmHg
+      systolic: [140,160,200] # mmHg
       diastolic: [90,120] # mmHg
   lipid_panel: #https://www.nlm.nih.gov/medlineplus/magazine/issues/summer12/articles/summer12pg6-7.html
     cholesterol:   [160,200,239,259,279,300] # mg/dL

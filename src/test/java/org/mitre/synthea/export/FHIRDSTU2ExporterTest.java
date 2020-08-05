@@ -116,7 +116,7 @@ public class FHIRDSTU2ExporterTest {
       TestHelper.exportOff();
       Person person = generator.generatePerson(i);
       Config.set("exporter.fhir_dstu2.export", "true");
-      FhirDstu2.TRANSACTION_BUNDLE = person.random.nextBoolean();
+      FhirDstu2.TRANSACTION_BUNDLE = person.randBoolean();
       String fhirJson = FhirDstu2.convertToFHIRJson(person, System.currentTimeMillis());
       // Check that the fhirJSON doesn't contain unresolved SNOMED-CT strings
       // (these should have been converted into URIs)
@@ -173,7 +173,7 @@ public class FHIRDSTU2ExporterTest {
 
     person.history = new LinkedList<>();
     Provider mock = Mockito.mock(Provider.class);
-    mock.uuid = "Mock-UUID";
+    Mockito.when(mock.getResourceID()).thenReturn("Mock-UUID");
     person.setProvider(EncounterType.AMBULATORY, mock);
     person.setProvider(EncounterType.WELLNESS, mock);
     person.setProvider(EncounterType.EMERGENCY, mock);
@@ -235,7 +235,7 @@ public class FHIRDSTU2ExporterTest {
 
     person.history = new LinkedList<>();
     Provider mock = Mockito.mock(Provider.class);
-    mock.uuid = "Mock-UUID";
+    Mockito.when(mock.getResourceID()).thenReturn("Mock-UUID");
     person.setProvider(EncounterType.AMBULATORY, mock);
     person.setProvider(EncounterType.WELLNESS, mock);
     person.setProvider(EncounterType.EMERGENCY, mock);

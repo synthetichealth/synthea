@@ -1,9 +1,11 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.TimeZone;
 
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
@@ -20,6 +22,7 @@ public class App {
   public static void usage() {
     System.out.println("Usage: run_synthea [options] [state [city]]");
     System.out.println("Options: [-s seed] [-cs clinicianSeed] [-p populationSize]");
+    System.out.println("         [-r referenceDate as YYYYMMDD]");
     System.out.println("         [-g gender] [-a minAge-maxAge]");
     System.out.println("         [-o overflowPopulation]");
     System.out.println("         [-m moduleFileWildcardList]");
@@ -70,6 +73,11 @@ public class App {
           } else if (currArg.equalsIgnoreCase("-cs")) {
             String value = argsQ.poll();
             options.clinicianSeed = Long.parseLong(value);
+          } else if (currArg.equalsIgnoreCase("-r")) {
+            String value = argsQ.poll();
+            SimpleDateFormat format = new SimpleDateFormat("YYYYMMDD");
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
+            options.referenceTime = format.parse(value).getTime();
           } else if (currArg.equalsIgnoreCase("-p")) {
             String value = argsQ.poll();
             options.population = Integer.parseInt(value);
@@ -118,6 +126,7 @@ public class App {
             }
           } else if (currArg.equalsIgnoreCase("-u")) {
             String value = argsQ.poll();
+            failIfPhysiologyEnabled(currArg);
             File file = new File(value);
             try {
               if (file.createNewFile()) {
@@ -131,6 +140,7 @@ public class App {
             }
           } else if (currArg.equalsIgnoreCase("-i")) {
             String value = argsQ.poll();
+            failIfPhysiologyEnabled(currArg);
             File file = new File(value);
             try {
               if (file.exists() && file.canRead()) {
@@ -198,6 +208,18 @@ public class App {
     if (validArgs) {
       Generator generator = new Generator(options);
       generator.run();
+    }
+  }
+  
+  private static void failIfPhysiologyEnabled(String arg) {
+    if (Boolean.valueOf(Config.get("physiology.generators.enabled", "false"))) {
+      String errString = String.format(
+              "The %s command line switch %s - %s",
+              arg,
+              "cannot be used when physiology generators are enabled",
+              "set configuration option physiology.generators.enabled=false to use"
+      );
+      throw new IllegalArgumentException(errString);
     }
   }
 }
