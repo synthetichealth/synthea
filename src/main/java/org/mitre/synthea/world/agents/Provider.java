@@ -62,7 +62,7 @@ public class Provider implements QuadTreeElement, Serializable {
   private static IProviderFinder providerFinder = buildProviderFinder();
 
   public Map<String, Object> attributes;
-  private String uuid;
+  public String uuid;
   public String id;
   public String name;
   private Location location;

@@ -1,7 +1,6 @@
 package org.mitre.synthea.export;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.util.DateUtils;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -25,7 +24,6 @@ import org.hl7.fhir.r4.model.AllergyIntolerance;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCategory;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCriticality;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceType;
-import org.hl7.fhir.r4.model.Base64BinaryType;
 import org.hl7.fhir.r4.model.BooleanType;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
@@ -71,7 +69,6 @@ import org.hl7.fhir.r4.model.Encounter.EncounterHospitalizationComponent;
 import org.hl7.fhir.r4.model.Encounter.EncounterStatus;
 import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatus;
-import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.ExplanationOfBenefit;
 import org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome;
 import org.hl7.fhir.r4.model.ExplanationOfBenefit.TotalComponent;
@@ -335,8 +332,6 @@ public class FhirR4 {
       // Add Provenance to the Bundle
       provenance(bundle, person, stopTime);
     }
-    navigationalAssistance(person, personEntry, bundle);
-    wic(person, personEntry, bundle);
     return bundle;
   }
 
@@ -805,64 +800,6 @@ public class FhirR4 {
           .setValue(encounterResource.getId());
     }
     return entry;
-  }
-
-  private static BundleEntryComponent navigationalAssistance(
-      Person person, BundleEntryComponent personEntry, Bundle bundle) {
-    if (person.attributes.get("navigation_assistance") == null) {
-      return null;
-    }
-    DocumentReference dr = new DocumentReference();
-    dr.setStatus(Enumerations.DocumentReferenceStatus.CURRENT);
-    CodeableConcept category = new CodeableConcept();
-    category.addCoding(new Coding("http://loinc.org", "47042-7", "Counseling note"));
-    dr.addCategory(category);
-    dr.setSubject(new Reference(personEntry.getFullUrl()));
-    org.hl7.fhir.r4.model.Attachment attachment = new org.hl7.fhir.r4.model.Attachment();
-    attachment.setContentType("application/json");
-    long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
-    Date birth = new Date(birthdate);
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(birth);
-    cal.add(Calendar.MONTH, 6);
-    String docContent = "{\"date\": \"" + DateUtils.formatDate(cal.getTime())
-        + "\", \"interventionNavigation\": true, \"program\": \"HF\"}";
-    Base64BinaryType b64 = new Base64BinaryType(docContent.getBytes());
-    attachment.setDataElement(b64);
-    DocumentReference.DocumentReferenceContentComponent drcc
-        = new DocumentReference.DocumentReferenceContentComponent();
-    drcc.setAttachment(attachment);
-    dr.addContent(drcc);
-    return newEntry(bundle, dr);
-  }
-
-  private static BundleEntryComponent wic(
-      Person person, BundleEntryComponent personEntry, Bundle bundle) {
-    if (person.attributes.get("wic") == null) {
-      return null;
-    }
-    DocumentReference dr = new DocumentReference();
-    dr.setStatus(Enumerations.DocumentReferenceStatus.CURRENT);
-    CodeableConcept category = new CodeableConcept();
-    category.addCoding(new Coding("http://cdc.gov/codi", "wicnote", "WIC Information"));
-    dr.addCategory(category);
-    dr.setSubject(new Reference(personEntry.getFullUrl()));
-    org.hl7.fhir.r4.model.Attachment attachment = new org.hl7.fhir.r4.model.Attachment();
-    attachment.setContentType("application/json");
-    long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
-    Date birth = new Date(birthdate);
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(birth);
-    cal.add(Calendar.MONTH, 7);
-    String docContent = "{\"date\": \"" + DateUtils.formatDate(cal.getTime())
-        + "\", \"interventionNavigation\": false, \"program\": \"WIC\"}";
-    Base64BinaryType b64 = new Base64BinaryType(docContent.getBytes());
-    attachment.setDataElement(b64);
-    DocumentReference.DocumentReferenceContentComponent drcc
-        = new DocumentReference.DocumentReferenceContentComponent();
-    drcc.setAttachment(attachment);
-    dr.addContent(drcc);
-    return newEntry(bundle, dr);
   }
 
   /**

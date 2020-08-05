@@ -377,11 +377,9 @@ public class Generator implements RandomNumberGenerator {
       }
     }
     Exporter.runPostCompletionExports(this, exporterRuntimeOptions);
-    //Exporter.runPostCompletionExports(this);
 
     System.out.printf("Records: total=%d, alive=%d, dead=%d\n", totalGeneratedPopulation.get(),
             stats.get("alive").get(), stats.get("dead").get());
-    //System.out.println(stats);
 
     if (this.metrics != null) {
       metrics.printStats(totalGeneratedPopulation.get(), Module.getModules(getModulePredicate()));
