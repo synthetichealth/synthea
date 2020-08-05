@@ -439,13 +439,14 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public void recordDeath(long time, Code cause) {
     if (alive(time)) {
-      attributes.put(Person.DEATHDATE, Long.valueOf(time));
+      long deathTime = time;
+      attributes.put(Person.DEATHDATE, Long.valueOf(deathTime));
       if (cause == null) {
         attributes.remove(CAUSE_OF_DEATH);
       } else {
         attributes.put(CAUSE_OF_DEATH, cause);
       }
-      record.death = time;
+      record.death = deathTime;
     }
   }
 

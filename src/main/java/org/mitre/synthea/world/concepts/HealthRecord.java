@@ -991,14 +991,6 @@ public class HealthRecord implements Serializable {
         if (time > encounter.stop) {
           encounter.stop = time;
         }
-        // Now, add time for each procedure.
-        long procedureTime;
-        for (Procedure p : encounter.procedures) {
-          procedureTime = (p.stop - p.start);
-          if (procedureTime > 0) {
-            encounter.stop += procedureTime;
-          }
-        }
         // Update Costs/Claim infomation.
         encounter.determineCost();
         encounter.claim.assignCosts();
