@@ -19,10 +19,10 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.world.agents.Clinician;
@@ -379,7 +379,7 @@ public class CSVExporter {
 
     for (Encounter encounter : person.record.encounters) {
 
-      String encounterID = encounter(personID, encounter);
+      String encounterID = encounter(person, personID, encounter);
       String payerID = encounter.claim.payer.uuid;
 
       for (HealthRecord.Entry condition : encounter.conditions) {
@@ -407,11 +407,11 @@ public class CSVExporter {
       }
 
       for (CarePlan careplan : encounter.careplans) {
-        careplan(personID, encounterID, careplan);
+        careplan(person, personID, encounterID, careplan);
       }
 
       for (ImagingStudy imagingStudy : encounter.imagingStudies) {
-        imagingStudy(personID, encounterID, imagingStudy);
+        imagingStudy(person, personID, encounterID, imagingStudy);
       }
       
       for (Device device : encounter.devices) {
@@ -544,17 +544,19 @@ public class CSVExporter {
   /**
    * Write a single Encounter line to encounters.csv.
    *
+   * @param rand      Source of randomness to use when generating ids etc
    * @param personID  The ID of the person that had this encounter
    * @param encounter The encounter itself
    * @return The encounter ID, to be referenced as a "foreign key" if necessary
    * @throws IOException if any IO error occurs
    */
-  private String encounter(String personID, Encounter encounter) throws IOException {
+  private String encounter(RandomNumberGenerator rand, String personID, 
+          Encounter encounter) throws IOException {
     // Id,START,STOP,PATIENT,ORGANIZATION,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,
     // BASE_ENCOUNTER_COST,TOTAL_CLAIM_COST,PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
-    String encounterID = UUID.randomUUID().toString();
+    String encounterID = rand.randUUID().toString();
     // ID
     s.append(encounterID).append(',');
     // START
@@ -873,17 +875,18 @@ public class CSVExporter {
   /**
    * Write a single CarePlan to careplans.csv.
    *
+   * @param rand        Source of randomness to use when generating ids etc
    * @param personID    ID of the person prescribed the careplan.
    * @param encounterID ID of the encounter where the careplan was prescribed
    * @param careplan    The careplan itself
    * @throws IOException if any IO error occurs
    */
-  private String careplan(String personID, String encounterID,
+  private String careplan(RandomNumberGenerator rand, String personID, String encounterID,
       CarePlan careplan) throws IOException {
     // Id,START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
-    String careplanID = UUID.randomUUID().toString();
+    String careplanID = rand.randUUID().toString();
     s.append(careplanID).append(',');
     s.append(dateFromTimestamp(careplan.start)).append(',');
     if (careplan.stop != 0L) {
@@ -915,18 +918,19 @@ public class CSVExporter {
   /**
    * Write a single ImagingStudy to imaging_studies.csv.
    *
+   * @param rand         Source of randomness to use when generating ids etc
    * @param personID     ID of the person the ImagingStudy was taken of.
    * @param encounterID  ID of the encounter where the ImagingStudy was performed
    * @param imagingStudy The ImagingStudy itself
    * @throws IOException if any IO error occurs
    */
-  private String imagingStudy(String personID, String encounterID,
+  private String imagingStudy(RandomNumberGenerator rand, String personID, String encounterID,
       ImagingStudy imagingStudy) throws IOException {
     // Id,DATE,PATIENT,ENCOUNTER,BODYSITE_CODE,BODYSITE_DESCRIPTION,
     // MODALITY_CODE,MODALITY_DESCRIPTION,SOP_CODE,SOP_DESCRIPTION
     StringBuilder s = new StringBuilder();
 
-    String studyID = UUID.randomUUID().toString();
+    String studyID = rand.randUUID().toString();
     s.append(studyID).append(',');
     s.append(iso8601Timestamp(imagingStudy.start)).append(',');
     s.append(personID).append(',');

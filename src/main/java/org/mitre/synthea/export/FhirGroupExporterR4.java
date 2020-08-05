@@ -12,12 +12,12 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import org.hl7.fhir.r4.model.Group;
 import org.hl7.fhir.r4.model.Group.GroupType;
 import org.hl7.fhir.r4.model.Reference;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 
 public abstract class FhirGroupExporterR4 {
 
@@ -44,8 +44,8 @@ public abstract class FhirGroupExporterR4 {
    * @param stop The stop time.
    * @return FHIR Group resource.
    */
-  public static Group export(long stop) {
-    String uuid = UUID.randomUUID().toString();
+  public static Group export(RandomNumberGenerator rand, long stop) {
+    String uuid = rand.randUUID().toString();
 
     Group group = new Group();
     group.setId(uuid);
@@ -65,10 +65,11 @@ public abstract class FhirGroupExporterR4 {
 
   /**
    * Export the current patient list as a FHIR Group resource and save it as a JSON file.
+   * @param stop The stop time.
    */
-  public static void exportAndSave(long stop) {
+  public static void exportAndSave(RandomNumberGenerator rand, long stop) {
     if (Boolean.parseBoolean(Config.get("exporter.groups.fhir.export"))) {
-      Group group = export(stop);
+      Group group = export(rand, stop);
 
       // get output folder
       List<String> folders = new ArrayList<>();

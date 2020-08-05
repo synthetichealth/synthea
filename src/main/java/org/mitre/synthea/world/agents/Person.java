@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.mitre.synthea.engine.ExpressedConditionRecord;
@@ -208,7 +209,14 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public long randLong() {
     return random.nextLong();
   }
-
+  
+  /**
+   * Return a random UUID.
+   */
+  public UUID randUUID() {
+    return new UUID(randLong(), randLong());
+  }
+  
   /**
    * Returns a person's age in Period form.
    */
@@ -509,7 +517,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
     HealthRecord returnValue = this.defaultRecord;
     if (hasMultipleRecords) {
-      String key = provider.uuid;
+      String key = provider.getResourceID();
       if (!records.containsKey(key)) {
         HealthRecord record = null;
         if (this.record != null && this.record.provider == null) {

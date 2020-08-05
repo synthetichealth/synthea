@@ -62,7 +62,7 @@ public class Provider implements QuadTreeElement, Serializable {
   private static IProviderFinder providerFinder = buildProviderFinder();
 
   public Map<String, Object> attributes;
-  public String uuid;
+  private String uuid;
   public String id;
   public String name;
   private Location location;
@@ -118,6 +118,7 @@ public class Provider implements QuadTreeElement, Serializable {
    * Create a new Provider with no information.
    */
   public Provider() {
+    // the uuid field is reinitialized by csvLineToProvider
     uuid = UUID.randomUUID().toString();
     attributes = new LinkedTreeMap<>();
     revenue = 0.0;

@@ -28,6 +28,7 @@ import org.mitre.synthea.editors.GrowthDataErrorsEditor;
 import org.mitre.synthea.export.CDWExporter;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
@@ -45,7 +46,7 @@ import org.mitre.synthea.world.geography.Location;
 /**
  * Generator creates a population by running the generic modules each timestep per Person.
  */
-public class Generator {
+public class Generator implements RandomNumberGenerator {
 
   public DataStore database;
   public GeneratorOptions options;
@@ -360,6 +361,7 @@ public class Generator {
    * simulation. This means that if in the course of the simulation the person dies, a new person
    * will be started to replace them. 
    * The seed used to generate the person is randomized as well.
+   * Note that this method is only used by unit tests.
    * 
    * @param index Target index in the whole set of people to generate
    * @return generated Person
@@ -667,4 +669,54 @@ public class Generator {
         IOCase.INSENSITIVE);
     return path -> filenameFilter.accept(null, path);
   }
+
+  /**
+   * Returns a random double.
+   */
+  public double rand() {
+    return random.nextDouble();
+  }
+
+  /**
+   * Returns a random boolean.
+   */
+  public boolean randBoolean() {
+    return random.nextBoolean();
+  }
+
+  /**
+   * Returns a random integer.
+   */
+  public int randInt() {
+    return random.nextInt();
+  }
+
+  /**
+   * Returns a random integer in the given bound.
+   */
+  public int randInt(int bound) {
+    return random.nextInt(bound);
+  }
+
+  /**
+   * Returns a double from a normal distribution.
+   */
+  public double randGaussian() {
+    return random.nextGaussian();
+  }
+
+  /**
+   * Return a random long.
+   */
+  public long randLong() {
+    return random.nextLong();
+  }
+  
+  /**
+   * Return a random UUID.
+   */
+  public UUID randUUID() {
+    return new UUID(randLong(), randLong());
+  }
+  
 }

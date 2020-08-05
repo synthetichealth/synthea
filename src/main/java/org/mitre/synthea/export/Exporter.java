@@ -147,7 +147,7 @@ public abstract class Exporter {
    * @param person   Patient to export
    * @param stopTime Time at which the simulation stopped
    */
-  protected static void export(Person person, long stopTime) {
+  public static void export(Person person, long stopTime) {
     export(person, stopTime, new ExporterRuntimeOptions());
   }
 
@@ -366,20 +366,20 @@ public abstract class Exporter {
 
     // Before we force bulk data to be off...
     try {
-      FhirGroupExporterR4.exportAndSave(generator.stop);
+      FhirGroupExporterR4.exportAndSave(generator, generator.stop);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     Config.set("exporter.fhir.bulk_data", "false");
     try {
-      HospitalExporterR4.export(generator.stop);
+      HospitalExporterR4.export(generator, generator.stop);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      FhirPractitionerExporterR4.export(generator.stop);
+      FhirPractitionerExporterR4.export(generator, generator.stop);
     } catch (Exception e) {
       e.printStackTrace();
     }

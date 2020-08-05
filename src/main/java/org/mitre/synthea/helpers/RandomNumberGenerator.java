@@ -3,6 +3,7 @@ package org.mitre.synthea.helpers;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
+import java.util.UUID;
 
 public interface RandomNumberGenerator {
   /** Returns a double between 0-1 from a uniform distribution. */
@@ -97,4 +98,7 @@ public interface RandomNumberGenerator {
 
   /** Return a random long. */
   public long randLong();
+  
+  /** Return a random UUID. */
+  public UUID randUUID();
 }
