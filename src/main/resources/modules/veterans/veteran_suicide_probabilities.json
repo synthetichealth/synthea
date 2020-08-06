@@ -92,7 +92,7 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "High Risk",
+          "transition": "Set_High_Risk_Attribute",
           "condition": {
             "condition_type": "And",
             "conditions": [
@@ -101,18 +101,12 @@
                 "attribute": "suicide_risk_factor_count",
                 "operator": ">",
                 "value": 30
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "suicide_risk_factor_count",
-                "operator": "<=",
-                "value": 50
               }
             ]
           }
         },
         {
-          "transition": "Medium Risk",
+          "transition": "Set_Medium_Risk_Attribute",
           "condition": {
             "condition_type": "And",
             "conditions": [
@@ -121,18 +115,12 @@
                 "attribute": "suicide_risk_factor_count",
                 "operator": ">",
                 "value": 15
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "suicide_risk_factor_count",
-                "operator": "<=",
-                "value": 30
               }
             ]
           }
         },
         {
-          "transition": "Low Risk",
+          "transition": "Set_Low_Risk_Attribute",
           "condition": {
             "condition_type": "And",
             "conditions": [
@@ -141,18 +129,12 @@
                 "attribute": "suicide_risk_factor_count",
                 "operator": ">",
                 "value": 10
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "suicide_risk_factor_count",
-                "operator": "<=",
-                "value": 15
               }
             ]
           }
         },
         {
-          "transition": "Baseline"
+          "transition": "Set_Baseline_Risk_Attribute"
         }
       ]
     },
@@ -710,6 +692,30 @@
       "action": "increment",
       "direct_transition": "Alcoholism_Check",
       "amount": 2
+    },
+    "Set_High_Risk_Attribute": {
+      "type": "SetAttribute",
+      "attribute": "suicide_risk_level",
+      "direct_transition": "High Risk",
+      "value": "high"
+    },
+    "Set_Medium_Risk_Attribute": {
+      "type": "SetAttribute",
+      "attribute": "suicide_risk_level",
+      "direct_transition": "Medium Risk",
+      "value": "medium"
+    },
+    "Set_Low_Risk_Attribute": {
+      "type": "SetAttribute",
+      "attribute": "suicide_risk_level",
+      "direct_transition": "Low Risk",
+      "value": "low"
+    },
+    "Set_Baseline_Risk_Attribute": {
+      "type": "SetAttribute",
+      "attribute": "suicide_risk_level",
+      "direct_transition": "Baseline",
+      "value": "baseline"
     }
   }
 }

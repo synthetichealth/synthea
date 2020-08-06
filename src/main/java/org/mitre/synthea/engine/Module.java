@@ -185,7 +185,7 @@ public class Module implements Serializable {
     return new Module(object, submodule);
   }
 
-  private static String applyOverrides(String jsonString, Properties overrides,
+  public static String applyOverrides(String jsonString, Properties overrides,
           String moduleFileName) {
     DocumentContext ctx = JsonPath.using(JSON_PATH_CONFIG).parse(jsonString);
     overrides.forEach((key, value) -> {

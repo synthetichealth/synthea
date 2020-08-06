@@ -23,11 +23,11 @@
           "distributions": [
             {
               "transition": "Loss of Consciousness",
-              "distribution": 0.0094
+              "distribution": 0.173
             },
             {
               "transition": "Terminal",
-              "distribution": 0.9906
+              "distribution": 0.827
             }
           ]
         },

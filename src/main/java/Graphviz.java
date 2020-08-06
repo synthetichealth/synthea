@@ -20,6 +20,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -27,15 +29,19 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Matcher;
-
+import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.export.Exporter;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 
 
 public class Graphviz {
   private static final String NEWLINE = "\\l";
 
+  private static Properties overrides = getModuleOverrides();
+  
   /**
    * Generate the Graphviz-like graphs of the disease modules.
    * @param args Optional path of modules to render. If not provided,
@@ -61,11 +67,28 @@ public class Graphviz {
 
     System.out.println("Completed in " + (System.currentTimeMillis() - start) + " ms.");
   }
+  
+  private static Properties getModuleOverrides() {
+    String moduleOverrideFile = "./overrides/exp11_bestrun.properties";
+    Properties overrides = null;
+    if (moduleOverrideFile != null && !moduleOverrideFile.trim().equals("")) {
+      try {
+        overrides = new Properties();
+        overrides.load(new FileReader(moduleOverrideFile));
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+    return overrides;
+  }
 
   private static void generateJsonModuleGraphs(Path inputPath, File outputFolder) {
     // adapted from Module.loadModules()
     try {
       Utilities.walkAllModules(inputPath, t -> {
+        if (!t.toString().contains("veteran_suicide_probabilities")) return;
+        
         try {
           JsonObject module = loadFile(t, inputPath);
           String relativePath = relativePath(t, inputPath);
@@ -81,11 +104,14 @@ public class Graphviz {
 
   private static JsonObject loadFile(Path path, Path modulesFolder) throws IOException {
     System.out.format("Loading %s\n", path.toString());
-    FileReader fileReader = new FileReader(path.toString());
-    JsonReader reader = new JsonReader(fileReader);
-    JsonObject object = new JsonParser().parse(reader).getAsJsonObject();
-    fileReader.close();
-    reader.close();
+
+    String jsonString = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
+    if (overrides != null) {
+      jsonString = Module.applyOverrides(jsonString, overrides, path.getFileName().toString());
+    }
+    JsonParser parser = new JsonParser();
+    JsonObject object = parser.parse(jsonString).getAsJsonObject();
+
     return object;
   }
 
@@ -351,7 +377,8 @@ public class Graphviz {
       case "Counter":
         String action = state.get("action").getAsString();
         String attribute = state.get("attribute").getAsString();
-        details.append(action).append(" value of attribute ").append(attribute).append(" by 1");
+        int amount = state.get("amount").getAsInt(); 
+        details.append(action).append(" value of attribute ").append(attribute).append(" by ").append(amount);
         break;
       case "VitalSign":
         String vs = state.get("vital_sign").getAsString();
