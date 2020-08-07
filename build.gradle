@@ -235,6 +235,10 @@ run {
   if (project.hasProperty("arams")) {
     args Eval.me(arams)
   }
+  def maxHeapSizeVar = System.getenv("MAX_HEAP_SIZE")
+  if (maxHeapSizeVar != null) {
+    maxHeapSize = maxHeapSizeVar
+  }
 }
 
 task sourceJar(type: Jar) {
