@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import com.google.gson.JsonPrimitive;
 import java.util.Date;
 import org.junit.Test;
+import org.mitre.synthea.world.agents.Person;
 
 public class UtilitiesTest {
 
@@ -178,7 +179,27 @@ public class UtilitiesTest {
     assertEquals(4.8, Utilities.strToObject(Double.TYPE, "4.8"));
 
   }
-  
+
+  @Test
+  public void testDicomUid() {
+    // regex for FHIR OIDs: https://www.hl7.org/fhir/datatypes.html#oid
+    // not including the starting "urn:oid:" here
+    final String UID_REGEX = "[0-2](\\.(0|[1-9][0-9]*))+";
+    String uid;
+    Person person = new Person(0L);
+    uid = Utilities.randomDicomUid(person, 0, 0, 0);
+    assertTrue(uid.matches(UID_REGEX));
+
+    uid = Utilities.randomDicomUid(person, -1, -1, -1);
+    assertTrue(uid.matches(UID_REGEX));
+
+    uid = Utilities.randomDicomUid(person, 1, 2, 3);
+    assertTrue(uid.matches(UID_REGEX));
+
+    uid = Utilities.randomDicomUid(person, Long.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+    assertTrue(uid.matches(UID_REGEX));
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidStrToObject() {
     // Trying to parse a non-primitive class type results in an
