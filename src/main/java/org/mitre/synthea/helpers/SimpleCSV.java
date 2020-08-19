@@ -31,12 +31,30 @@ public class SimpleCSV {
    *           if any exception occurs while parsing the data
    */
   public static List<LinkedHashMap<String, String>> parse(String csvData) throws IOException {
+    return parse(csvData, ',');
+  }
+  
+  /**
+   * Parse the data from the given CSV file into a List of Maps, where the key is the
+   * column name. Uses a LinkedHashMap specifically to ensure the order of columns is preserved in
+   * the resulting maps.
+   * 
+   * @param csvData
+   *          Raw CSV data
+   * @param fieldSeparator
+   *          The separator used in the CSV
+   * @return parsed data
+   * @throws IOException
+   *           if any exception occurs while parsing the data
+   */
+  public static List<LinkedHashMap<String, String>> parse(String csvData, char fieldSeparator)
+          throws IOException {
     // Read schema from the first line; start with bootstrap instance
     // to enable reading of schema from the first line
     // NOTE: reads schema and uses it for binding
     CsvMapper mapper = new CsvMapper();
-    // use first row as header; otherwise defaults are fine
-    CsvSchema schema = CsvSchema.emptySchema().withHeader();
+    // use first row as header and specify column separator; otherwise defaults are fine
+    CsvSchema schema = CsvSchema.emptySchema().withHeader().withColumnSeparator(fieldSeparator);
 
     MappingIterator<LinkedHashMap<String, String>> it = mapper.readerFor(LinkedHashMap.class)
         .with(schema).readValues(csvData);
