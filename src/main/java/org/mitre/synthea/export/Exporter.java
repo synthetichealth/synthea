@@ -13,9 +13,11 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -36,7 +38,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
-public abstract class Exporter {
+public class Exporter {
   
   /**
    * Supported FHIR versions.
@@ -49,6 +51,9 @@ public abstract class Exporter {
   
   private static final List<Pair<Person, Long>> deferredExports = 
           Collections.synchronizedList(new LinkedList<>());
+  
+  private static final Set<Flushable> flushableExporters = 
+          Collections.synchronizedSet(new HashSet<>());
 
   private static final ConcurrentHashMap<Path, PrintWriter> fileWriters = 
           new ConcurrentHashMap<Path, PrintWriter>();
@@ -250,6 +255,15 @@ public abstract class Exporter {
     if (Config.getAsBoolean("exporter.csv.export")) {
       try {
         CSVExporter.getInstance().export(person, stopTime);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    if (Config.getAsBoolean("exporter.bb2.export")) {
+      try {
+        BB2Exporter exporter = BB2Exporter.getInstance();
+        flushableExporters.add(exporter);
+        exporter.export(person, stopTime);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -465,7 +479,21 @@ public abstract class Exporter {
 
     closeOpenFiles();
   }
-
+  
+  /**
+   * Flush any exporters that buffer output. Should be called once all exports have been
+   * completed.
+   */
+  public static void flushFlushables() {
+    for (Flushable f: flushableExporters) {
+      try {
+        f.flush();
+      } catch (IOException ex) {
+        ex.printStackTrace();
+      }
+    }
+  }
+  
   /**
    * Filter the patient's history to only the last __ years
    * but also include relevant history from before that. Exclude
