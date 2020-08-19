@@ -1,12 +1,12 @@
 package org.mitre.synthea.export;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.util.LinkedHashMap;
 import java.util.List;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -60,7 +60,6 @@ public class BB2ExporterTest {
     // if we get here we at least had no exceptions
 
     File expectedExportFolder = exportDir.toPath().resolve("bb2").toFile();
-
     assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
 
     File beneficiaryFile = expectedExportFolder.toPath().resolve("beneficiary.csv").toFile();
@@ -77,5 +76,13 @@ public class BB2ExporterTest {
       assertTrue("Expected non-zero length surname", 
               row.containsKey("BENE_SRNM_NAME") && row.get("BENE_SRNM_NAME").length() > 0);
     }
+    
+    File inpatientFile = expectedExportFolder.toPath().resolve("inpatient.csv").toFile();
+    assertTrue(inpatientFile.exists() && inpatientFile.isFile());
+    // TODO: more meaningful testing of contents (e.g. count of inpatient claims)
+
+    File outpatientFile = expectedExportFolder.toPath().resolve("outpatient.csv").toFile();
+    assertTrue(outpatientFile.exists() && outpatientFile.isFile());
+    // TODO: more meaningful testing of contents (e.g. count of outpatient claims)
   }
 }
