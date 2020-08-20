@@ -276,21 +276,23 @@ public abstract class Transition implements Serializable {
     public String follow(Person person, long time) {
       Integer age = null;
       // Extract Person's list of relevant attributes.
-      ArrayList<String> personsAttributes = new ArrayList<String>();
+      ArrayList<String> personsAttributes = new ArrayList<>();
       for (String currentAttribute : this.attributes) {
         if (currentAttribute.equalsIgnoreCase("age")) {
           age = person.ageInYears(time);
         } else if (currentAttribute.equalsIgnoreCase("time")) {
           // do nothing, we already have it
         } else {
-          String personsAttribute
-              = (String) person.attributes.get(currentAttribute.toLowerCase());
+          Object personsAttribute
+              = person.attributes.get(currentAttribute.toLowerCase());
           if (personsAttribute == null) {
             throw new RuntimeException("LOOKUP TABLE ERROR: Attribute '"
                 + currentAttribute + "' in CSV table '" + this.lookupTableName
                 + "' does not exist as one of this person's attributes.");
           }
-          personsAttributes.add(personsAttribute);
+          // make the value a string so we can compare numbers, booleans, etc
+          // TODO: is there a better way to do this?
+          personsAttributes.add(String.valueOf(personsAttribute));
         }
       }
       // Create key from person's attributes to get distributions

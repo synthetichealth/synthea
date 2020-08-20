@@ -66,9 +66,6 @@
       "type": "Initial",
       "direct_transition": "Wait_Until_18"
     },
-    "Terminal": {
-      "type": "Terminal"
-    },
     "Wait_Until_18": {
       "type": "Guard",
       "allow": {
@@ -166,7 +163,7 @@
               "distribution": 0.57
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.43
             }
           ],
@@ -182,7 +179,7 @@
               "distribution": 0.0125
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.9875
             }
           ],
@@ -220,7 +217,7 @@
               "distribution": 0.57
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.43
             }
           ],
@@ -236,7 +233,7 @@
               "distribution": 0.0125
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.9875
             }
           ],
@@ -271,7 +268,7 @@
               "distribution": 0.3947
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.6053
             }
           ],
@@ -291,7 +288,7 @@
               "distribution": 0.0093
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.9907
             }
           ]
@@ -325,7 +322,7 @@
               "distribution": 0.2019
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.7981
             }
           ],
@@ -345,7 +342,7 @@
               "distribution": 0.0148
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.9852
             }
           ]
@@ -379,7 +376,7 @@
               "distribution": 0.2019
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.7981
             }
           ],
@@ -399,7 +396,7 @@
               "distribution": 0.0148
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.9852
             }
           ]
@@ -433,7 +430,7 @@
               "distribution": 0.1013
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.8987
             }
           ],
@@ -453,7 +450,7 @@
               "distribution": 0.0161
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.9839
             }
           ]
@@ -487,7 +484,7 @@
               "distribution": 0.1013
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.8987
             }
           ],
@@ -507,7 +504,7 @@
               "distribution": 0.0161
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.9839
             }
           ]
@@ -541,7 +538,7 @@
               "distribution": 0.0376
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.9624
             }
           ],
@@ -561,7 +558,7 @@
               "distribution": 0.0088
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.9912
             }
           ]
@@ -595,7 +592,7 @@
               "distribution": 0.0376
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.9624
             }
           ],
@@ -615,7 +612,7 @@
               "distribution": 0.0088
             },
             {
-              "transition": "Terminal",
+              "transition": "Set_Boolean",
               "distribution": 0.9912
             }
           ]
@@ -642,7 +639,7 @@
           }
         },
         {
-          "transition": "Terminal",
+          "transition": "Set_Boolean",
           "distribution": {
             "attribute": "probability_of_no_high_combat_exposure",
             "default": 0.6360000000000001
@@ -654,7 +651,7 @@
       "type": "SetAttribute",
       "attribute": "high_combat_exposure",
       "value": true,
-      "direct_transition": "Terminal"
+      "direct_transition": "Set_Boolean"
     },
     "Set_High_Combat_Exposure_Pre_WW2": {
       "type": "SetAttribute",
@@ -709,6 +706,37 @@
       "attribute": "probability_of_high_combat_exposure",
       "value": 0.348,
       "direct_transition": "Apply_Probabilities"
+    },
+    "Set_Boolean": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Veteran_True",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Veteran_False"
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Veteran_True": {
+      "type": "SetAttribute",
+      "attribute": "veteran_boolean",
+      "direct_transition": "Terminal",
+      "value": true
+    },
+    "Veteran_False": {
+      "type": "SetAttribute",
+      "attribute": "veteran_boolean",
+      "direct_transition": "Terminal",
+      "value": false
     }
   }
 }

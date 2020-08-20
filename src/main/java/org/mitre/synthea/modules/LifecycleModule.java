@@ -432,9 +432,14 @@ public final class LifecycleModule extends Module {
         break;
       case 50:
         // get divorced
-        if (person.attributes.get(Person.MARITAL_STATUS).equals("M")
-            && person.rand() < PREVALENCE_OF_DIVORCE) {
-          person.attributes.put(Person.MARITAL_STATUS, "D");
+        if (person.attributes.get("divorced") == null) {
+          if (person.attributes.get(Person.MARITAL_STATUS).equals("M")
+              && person.rand() < PREVALENCE_OF_DIVORCE) {
+            person.attributes.put(Person.MARITAL_STATUS, "D");
+            person.attributes.put("divorced", true);
+          } else {
+            person.attributes.put("divorced", false);
+          }
         }
         break;
       default:

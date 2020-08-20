@@ -1,6 +1,23 @@
 {
   "name": "Suicide Attempt Fatal",
-  "remarks": [],
+  "remarks": [
+    "https://www.mentalhealth.va.gov/docs/data-sheets/OMHSP_National_Suicide_Data_Report_2005-2016_508.pdf",
+    "",
+    "From Table 1:",
+    "",
+    "            |  nV  |  V   |  m,nV |  m,V | F,nV | F,V  |",
+    "Firearm     | 48.4 | 69.4 | 53.9  | 70.6 | 32.4 | 41.2 | ",
+    "Poisoning   | 16.0 | 10.6 |  9.8  |  9.7 | 34.2 | 30.4 | ",
+    "Suffocation | 26.8 | 15.0 | 27.8  | 14.8 | 23.7 | 19.8 | ",
+    "Other       |  8.8 |  5.1 |  8.5  |  4.9 |  9.8 |  8.6 | ",
+    "",
+    "V = Veteran",
+    "nV = non-Veteran",
+    "M = Male",
+    "F = Female",
+    "",
+    "TODO: we want to link this to access to firearms"
+  ],
   "states": {
     "Initial": {
       "type": "Initial",
@@ -21,22 +38,26 @@
         "15.9% by poisoning ",
         " 7.5% by other means (vehicular, drowning, falls, etc.)"
       ],
-      "distributed_transition": [
+      "lookup_table_transition": [
         {
-          "distribution": 0.499,
-          "transition": "Suicide_By_Firearm"
+          "transition": "Suicide_By_Firearm",
+          "default_probability": 0.499,
+          "lookup_table_name": "suicide_fatal.csv"
         },
         {
-          "distribution": 0.267,
-          "transition": "Suicide_By_Suffocation"
+          "transition": "Suicide_By_Suffocation",
+          "default_probability": 0.267,
+          "lookup_table_name": "suicide_fatal.csv"
         },
         {
-          "distribution": 0.159,
-          "transition": "Suicide_By_Poisoning"
+          "transition": "Suicide_By_Poisoning",
+          "default_probability": 0.159,
+          "lookup_table_name": "suicide_fatal.csv"
         },
         {
-          "distribution": 0.075,
-          "transition": "Suicide_By_Other_Means"
+          "transition": "Suicide_By_Other_Means",
+          "default_probability": 0.07499999999999996,
+          "lookup_table_name": "suicide_fatal.csv"
         }
       ]
     },
