@@ -2,13 +2,13 @@
   "id" : "354d925f-2b48-4184-994e-51676cf8332a",
   "name" : "fhir_valueset_expand",
   "request" : {
-    "url" : "/fhir/ValueSet/$expand",
-    "method" : "POST",
-    "bodyPatterns" : [ {
-      "equalToJson" : "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"url\",\"valueUri\":\"http://loinc.org/vs/LL734-5\"},{\"name\":\"count\",\"valueInteger\":1000},{\"name\":\"offset\",\"valueInteger\":0}]}",
-      "ignoreArrayOrder" : true,
-      "ignoreExtraElements" : true
-    } ]
+    "urlPath" : "/fhir/ValueSet/$expand",
+    "method" : "GET",
+    "queryParameters" : {
+      "url" : {
+        "equalTo" : "http://loinc.org/vs/LL734-5"
+      }
+    }
   },
   "response" : {
     "status" : 200,
