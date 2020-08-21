@@ -195,6 +195,9 @@ public abstract class ExportHelper {
     }
   }
 
+  /**
+   * Get the timestamp for next Friday.
+   */
   public static long nextFriday(long time) {
     Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
     c.setTimeInMillis(time);
