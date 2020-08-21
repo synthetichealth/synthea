@@ -412,7 +412,7 @@ public class PayerTest {
     person.record.encounterEnd(0L, EncounterType.WELLNESS);
     // The total cost should equal the Cost to the Payer summed with the Payer's copay amount.
     assertEquals(totalCost, testPrivatePayer1.getAmountCovered()
-        + testPrivatePayer1.determineCopay(fakeEncounter), 0.001);
+        + fakeEncounter.claim.getPatientCost(), 0.001);
     // The total cost should equal the Payer's uncovered costs plus the Payer's covered costs.
     assertEquals(totalCost, testPrivatePayer1.getAmountCovered()
         + testPrivatePayer1.getAmountUncovered(), 0.001);
@@ -510,12 +510,13 @@ public class PayerTest {
     encounter.codes.add(new Code("SNOMED-CT","705129","Fake SNOMED for null entry"));
     assertTrue(testPrivatePayer1.coversService(encounter.type));
     healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
-    // Person's coverage should equal the cost of the encounter minus the copay.
-    assertEquals(person.getHealthcareCoverage(), encounter.getCost().doubleValue()
-        - testPrivatePayer1.determineCopay(encounter), 0.001);
-    // Person's expenses should equal the copay.
+    // Person's coverage should equal the cost of the encounter minus the copay,
+    // minus the deductible, and minus any coinsurance
+    assertEquals(person.getHealthcareCoverage(), encounter.claim.getTotalClaimCost()
+        - encounter.claim.getPatientCost(), 0.001);
+    // Person's expenses should equal the copay, coinsurance, and deductible.
     assertEquals(person.getHealthcareExpenses(),
-        testPrivatePayer1.determineCopay(encounter), 0.001);
+        encounter.claim.getPatientCost(), 0.001);
   }
 
   @Test
