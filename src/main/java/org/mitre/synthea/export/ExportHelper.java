@@ -2,6 +2,10 @@ package org.mitre.synthea.export;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -186,6 +190,18 @@ public abstract class ExportHelper {
       // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6231579
       return ISO_DATE_FORMAT.format(new Date(time));
     }
+  }
+
+  public static long nextFriday(long time) {
+    Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    c.setTimeInMillis(time);
+    LocalDate d = LocalDate.of(
+        c.get(Calendar.YEAR), 1 + c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+    d = d.with(TemporalAdjusters.next(DayOfWeek.FRIDAY));
+    c.set(Calendar.YEAR, d.getYear());
+    c.set(Calendar.MONTH, d.getMonthValue() - 1);
+    c.set(Calendar.DAY_OF_MONTH, d.getDayOfMonth());
+    return c.getTimeInMillis();
   }
 
   private static final String SNOMED_URI = "http://snomed.info/sct";
