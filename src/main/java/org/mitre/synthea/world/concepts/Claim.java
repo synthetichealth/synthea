@@ -264,10 +264,32 @@ public class Claim implements Serializable {
   }
 
   /**
+<<<<<<< HEAD
    * Returns the total cost of the Claim, including immunizations/procedures tied to the encounter.
    */
   public double getTotalClaimCost() {
     return this.totals.cost;
+//=======
+//   * Returns the additional costs from any charges tied to the encounter.
+//   */
+//  private double getLineItemCosts() {
+//    double additionalCosts = 0.0;
+//    // Sum line-item entry costs.
+//    for (Entry entry : this.items) {
+//      additionalCosts += entry.getCost().doubleValue();
+//    }
+//    return additionalCosts;
+//  }
+//
+//  /**
+//   * Returns the total cost of the Claim, including immunizations/procedures tied to the encounter.
+//   */
+//  public double getTotalClaimCost() {
+//    double totalCost = 0.0;
+//    totalCost += this.getLineItemCosts();
+//    totalCost += mainEntry.getCost().doubleValue();
+//    return totalCost;
+//>>>>>>> Fix claim costs.
   }
 
   /**
