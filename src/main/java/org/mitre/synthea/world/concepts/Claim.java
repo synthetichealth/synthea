@@ -14,7 +14,12 @@ public class Claim implements Serializable {
 
   private Entry mainEntry;
   // The Entries have the actual cost, so the claim has the amount that the payer covered.
-  private double coveredCost;
+  private double totalCost;
+  private double payerCost;
+  private double patientDeductible;
+  private double patientCopay;
+  private double patientCoinsurance;
+  private double patientCost;
   public Payer payer;
   public Person person;
   public List<Entry> items;
@@ -58,36 +63,46 @@ public class Claim implements Serializable {
    */
   public void assignCosts() {
 
-    double totalCost = this.getTotalClaimCost();
-    double patientCopay = payer.determineCopay(mainEntry);
-    double costToPatient = 0.0;
-    double costToPayer = 0.0;
+    totalCost = this.getTotalClaimCost();
+    patientDeductible = payer.getDeductible();
+    patientCopay = payer.determineCopay(mainEntry);
+    patientCoinsurance = payer.getCoinsurance();
+    patientCost = 0.0;
+    payerCost = 0.0;
 
     // Determine who covers the care and assign the costs accordingly.
     if (this.payer.coversCare(mainEntry)) {
       // Person's Payer covers their care.
-      costToPatient = totalCost > patientCopay ? patientCopay : totalCost;
-      costToPayer = totalCost > patientCopay ? totalCost - patientCopay : 0.0;
+      if (totalCost > (patientDeductible + patientCopay)) {
+        patientCost = (patientDeductible + patientCopay);
+        patientCost += (totalCost * patientCoinsurance);
+        if (patientCost > totalCost) {
+          patientCost = totalCost;
+          payerCost = 0;
+        } else {
+          payerCost = totalCost - patientCost;
+        }
+      } else {
+        patientCost = totalCost;
+      }
       this.payerCoversEntry(mainEntry);
-    }  else {
+    } else {
       // Payer will not cover the care.
       this.payerDoesNotCoverEntry(mainEntry);
-      costToPatient = totalCost;
+      patientCost = totalCost;
     }
 
     // Update Person's Expenses and Coverage.
-    this.person.addExpense(costToPatient, mainEntry.start);
-    this.person.addCoverage(costToPayer, mainEntry.start);
+    this.person.addExpense(patientCost, mainEntry.start);
+    this.person.addCoverage(payerCost, mainEntry.start);
     // Update Payer's Covered and Uncovered Costs.
-    this.payer.addCoveredCost(costToPayer);
-    this.payer.addUncoveredCost(costToPatient);
+    this.payer.addCoveredCost(payerCost);
+    this.payer.addUncoveredCost(patientCost);
     // Update the Provider's Revenue if this is an encounter.
     if (mainEntry instanceof Encounter) {
       Encounter e = (Encounter) mainEntry;
       e.provider.addRevenue(totalCost);
     }
-    // Update the Claim.
-    this.coveredCost = costToPayer;
   }
 
   /**
@@ -116,7 +131,26 @@ public class Claim implements Serializable {
    * Returns the total cost that the Payer covered for this claim.
    */
   public double getCoveredCost() {
-    return this.coveredCost;
+    return this.payerCost;
+  }
+
+  public double getDeductiblePaid() {
+    return this.patientDeductible;
+  }
+
+  public double getCopayPaid() {
+    return this.patientCopay;
+  }
+
+  public double getCoinsurancePaid() {
+    return this.patientCoinsurance;
+  }
+
+  /**
+   * Returns the total cost to the patient, including copay, coinsurance, and deductible.
+   */
+  public double getPatientCost() {
+    return this.patientCost;
   }
 
   /**
