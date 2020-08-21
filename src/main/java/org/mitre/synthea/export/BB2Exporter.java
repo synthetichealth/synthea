@@ -133,6 +133,10 @@ public class BB2Exporter implements Flushable {
             (String)person.attributes.get(Person.STATE));
     fieldValues.put(BeneficiaryFields.BENE_ZIP_CD,
             (String)person.attributes.get(Person.ZIP));
+    fieldValues.put(BeneficiaryFields.BENE_RACE_CD,
+            bb2RaceCode(
+                    (String)person.attributes.get(Person.ETHNICITY),
+                    (String)person.attributes.get(Person.RACE)));
     fieldValues.put(BeneficiaryFields.BENE_SRNM_NAME, 
             (String)person.attributes.get(Person.LAST_NAME));
     fieldValues.put(BeneficiaryFields.BENE_GVN_NAME,
@@ -286,6 +290,39 @@ public class BB2Exporter implements Flushable {
     beneficiary.flush();
     inpatient.flush();
     outpatient.flush();
+  }
+
+  /**
+   * Get the BB2 race code. BB2 uses a single code to represent race and ethnicity, we assume
+   * ethnicity gets priority here.
+   * @param ethnicity the Synthea ethnicity
+   * @param race the Synthea race
+   * @return the BB2 race code
+   */
+  private String bb2RaceCode(String ethnicity, String race) {
+    if ("hispanic".equals(ethnicity)) {
+      return "5";
+    } else {
+      String bbRaceCode = "0"; // unknown
+      switch (race) {
+        case "white":
+          bbRaceCode = "1";
+          break;
+        case "black":
+          bbRaceCode = "2";
+          break;
+        case "asian":
+          bbRaceCode = "4";
+          break;
+        case "native":
+          bbRaceCode = "6";
+          break;
+        case "other":
+          bbRaceCode = "3";
+          break;
+      }
+      return bbRaceCode;
+    }
   }
   
   /**
