@@ -613,7 +613,7 @@ public class StateTest {
     State appendectomy = module.getState("Appendectomy");
     appendectomy.entered = time;
     // Procedure should block
-    assertTrue( !appendectomy.process(person, time));
+    assertTrue(!appendectomy.process(person, time));
     long nextStep = time + Utilities.convertTime("days", 7);
     assertTrue(appendectomy.process(person, nextStep));
 
