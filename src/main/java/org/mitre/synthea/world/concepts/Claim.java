@@ -106,7 +106,7 @@ public class Claim implements Serializable {
   }
 
   /**
-   * Returns the additional costs from any immunzations/procedures tied to the encounter.
+   * Returns the additional costs from any charges tied to the encounter.
    */
   private double getLineItemCosts() {
     double additionalCosts = 0.0;
@@ -123,7 +123,7 @@ public class Claim implements Serializable {
   public double getTotalClaimCost() {
     double totalCost = 0.0;
     totalCost += this.getLineItemCosts();
-    totalCost = mainEntry.getCost().doubleValue();
+    totalCost += mainEntry.getCost().doubleValue();
     return totalCost;
   }
 
