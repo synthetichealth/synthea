@@ -34,6 +34,10 @@ public class Costs {
       .parseDouble(Config.get("generate.costs.default_encounter_cost"));
   private static final double DEFAULT_IMMUNIZATION_COST = Double
       .parseDouble(Config.get("generate.costs.default_immunization_cost"));
+  private static final double DEFAULT_LAB_COST = Double
+      .parseDouble(Config.get("generate.costs.default_lab_cost"));
+  private static final double DEFAULT_DEVICE_COST = Double
+      .parseDouble(Config.get("generate.costs.default_device_cost"));
 
   private static final Map<String, Double> LOCATION_ADJUSTMENT_FACTORS = parseAdjustmentFactors();
 
@@ -61,6 +65,10 @@ public class Costs {
     } else if (entry instanceof HealthRecord.Immunization) {
       costs = IMMUNIZATION_COSTS;
       defaultCost = DEFAULT_IMMUNIZATION_COST;
+    } else if (entry instanceof HealthRecord.Device) {
+      defaultCost = DEFAULT_DEVICE_COST;
+    } else if (entry instanceof HealthRecord.Report) {
+      defaultCost = DEFAULT_LAB_COST;
     } else {
       // Not an entry type that has an associated cost.
       return 0.0;
