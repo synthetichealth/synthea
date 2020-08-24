@@ -143,7 +143,32 @@ public class BB2Exporter implements Flushable {
             (String)person.attributes.get(Person.FIRST_NAME));
     long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
     fieldValues.put(BeneficiaryFields.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
+    fieldValues.put(BeneficiaryFields.RFRNC_YR, String.valueOf(getYear(stopTime)));
+    fieldValues.put(BeneficiaryFields.AGE, String.valueOf(ageAtEndOfYear(birthdate, stopTime)));
+    if (person.attributes.get(Person.DEATHDATE) != null) {
+      long deathDate = (long) person.attributes.get(Person.DEATHDATE);
+      fieldValues.put(BeneficiaryFields.DEATH_DT, bb2DateFromTimestamp(deathDate));      
+    }
     beneficiary.writeValues(BeneficiaryFields.class, fieldValues);
+  }
+  
+  /**
+   * Get the year of a point in time.
+   * @param time point in time specified as number of milliseconds since the epoch
+   * @return the year as a four figure value, e.g. 1971
+   */
+  private static int getYear(long time) {
+    return 1900 + new Date(time).getYear();
+  }
+  
+  /**
+   * Calculate the age of a person at the end of the year of a reference point in time.
+   * @param birthdate a person's birthdate specified as number of milliseconds since the epoch
+   * @param stopTime a reference point in time specified as number of milliseconds since the epoch
+   * @return the person's age
+   */
+  private static int ageAtEndOfYear(long birthdate, long stopTime) {
+    return getYear(stopTime) - getYear(birthdate);
   }
 
   /**
