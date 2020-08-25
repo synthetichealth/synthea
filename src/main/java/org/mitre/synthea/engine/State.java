@@ -464,7 +464,7 @@ public abstract class State implements Cloneable, Serializable {
    * step) time.
    */
   public static class Delay extends Delayable {
-    private RangeWithUnit<Long> range;
+    private DurationProvider range;
     private ExactWithUnit<Long> exact;
 
     @Override
@@ -482,7 +482,7 @@ public abstract class State implements Cloneable, Serializable {
         return time + Utilities.convertTime(exact.unit, exact.quantity);
       } else if (range != null) {
         // use a range
-        return time + Utilities.convertTime(range.unit, (long) person.rand(range.low, range.high));
+        return time + Utilities.convertTime(range.getUnit(), range.generate(person));
       } else {
         throw new RuntimeException("Delay state has no exact or range: " + this);
       }
@@ -1342,7 +1342,7 @@ public abstract class State implements Cloneable, Serializable {
   public static class Procedure extends Delayable {
     private List<Code> codes;
     private String reason;
-    private RangeWithUnit<Long> duration;
+    private DurationProvider duration;
     private String assignToAttribute;
     private Long stop;
 
@@ -1389,8 +1389,8 @@ public abstract class State implements Cloneable, Serializable {
         }
       }
       if (duration != null && this.stop == null) {
-        double durationVal = person.rand(duration.low, duration.high);
-        this.stop = procedure.start + Utilities.convertTime(duration.unit, (long) durationVal);
+        double durationVal = duration.generate(person);
+        this.stop = procedure.start + Utilities.convertTime(duration.getUnit(), (long) durationVal);
         procedure.stop = this.stop;
       }
       // increment number of procedures by respective hospital

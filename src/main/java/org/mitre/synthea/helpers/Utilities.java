@@ -18,7 +18,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import org.mitre.synthea.engine.DurationProvider;
 import org.mitre.synthea.engine.Logic;
+import org.mitre.synthea.engine.RandomDurations;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
@@ -320,6 +322,7 @@ public class Utilities {
       .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
       .registerTypeAdapterFactory(InnerClassTypeAdapterFactory.of(Logic.class,"condition_type"))
       .registerTypeAdapterFactory(InnerClassTypeAdapterFactory.of(State.class, "type"))
+      .registerTypeAdapter(DurationProvider.class, new RandomDurations.DurationDeserializer())
       .create();
   }
 
