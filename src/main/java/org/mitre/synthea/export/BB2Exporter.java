@@ -179,13 +179,83 @@ public class BB2Exporter implements Flushable {
    */
   private void exportOutpatient(Person person, long stopTime) throws IOException {
     HashMap<OutpatientFields, String> fieldValues = new HashMap<>();
-    // TODO
-    // for each claim {
-    //   for each field {
-    //     fieldValues.put(fieldName, value)
-    //   }
-    //   outpatient.writeValues(OutpatientFields.class, fieldValues);
-    // }
+
+    for (HealthRecord.Encounter encounter : person.record.encounters) {
+      boolean isAmbulatory = encounter.type.equals(EncounterType.AMBULATORY.toString());
+      boolean isOutpatient = encounter.type.equals(EncounterType.OUTPATIENT.toString());
+      boolean isUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
+      boolean isWellness = encounter.type.equals(EncounterType.WELLNESS.toString());
+      int claimId = this.claimId.incrementAndGet();
+      int claimGroupId = this.claimGroupId.incrementAndGet();
+
+      if (!(isAmbulatory || isOutpatient || isUrgent || isWellness)) {
+        continue;
+      }
+
+      fieldValues.clear();
+      // The REQUIRED fields
+      fieldValues.put(OutpatientFields.DML_IND, "INSERT");
+      fieldValues.put(OutpatientFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
+      fieldValues.put(OutpatientFields.CLM_ID, "" + claimId);
+      fieldValues.put(OutpatientFields.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(OutpatientFields.FINAL_ACTION, "F");
+      fieldValues.put(OutpatientFields.NCH_NEAR_LINE_REC_IDENT_CD, "W"); // W=outpatient
+      fieldValues.put(OutpatientFields.NCH_CLM_TYPE_CD, "40"); // 40=outpatient
+      fieldValues.put(OutpatientFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(OutpatientFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(OutpatientFields.NCH_WKLY_PROC_DT,
+          bb2DateFromTimestamp(nextFriday(encounter.stop)));
+      fieldValues.put(OutpatientFields.CLAIM_QUERY_CODE, "3"); // 1=Interim, 3=Final, 5=Debit
+      fieldValues.put(OutpatientFields.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(OutpatientFields.CLM_FAC_TYPE_CD, "1"); // 1=Hospital, 2=SNF, 7=Dialysis
+      fieldValues.put(OutpatientFields.CLM_SRVC_CLSFCTN_TYPE_CD, "3"); // depends on value of above
+      fieldValues.put(OutpatientFields.CLM_FREQ_CD, "1"); // 1=Admit-Discharge, 9=Final
+      fieldValues.put(OutpatientFields.CLM_PMT_AMT, "" + encounter.claim.getTotalClaimCost());
+      if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
+        fieldValues.put(OutpatientFields.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
+      } else {
+        fieldValues.put(OutpatientFields.NCH_PRMRY_PYR_CLM_PD_AMT,
+            "" + encounter.claim.getCoveredCost());
+      }
+      fieldValues.put(OutpatientFields.PRVDR_STATE_CD, encounter.provider.state);
+      // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
+      String field = null;
+      if (encounter.ended) {
+        field = "1";
+      } else {
+        field = "30"; // the patient is still here
+      }
+      if (!person.alive(encounter.stop)) {
+        field = "20"; // the patient died before the encounter ended
+      }
+      fieldValues.put(OutpatientFields.PTNT_DSCHRG_STUS_CD, field);
+      fieldValues.put(OutpatientFields.CLM_TOT_CHRG_AMT, "" + encounter.claim.getTotalClaimCost());
+      // TODO required in the mapping, but not in the Enum
+      // fieldValues.put(OutpatientFields.CLM_IP_ADMSN_TYPE_CD, null);
+      // fieldValues.put(OutpatientFields.CLM_PASS_THRU_PER_DIEM_AMT, null);
+      // fieldValues.put(OutpatientFields.NCH_BENE_IP_DDCTBL_AMT, null);
+      // fieldValues.put(OutpatientFields.NCH_BENE_PTA_COINSRNC_LBLTY_AM, null);
+      fieldValues.put(OutpatientFields.NCH_BENE_BLOOD_DDCTBL_LBLTY_AM, "0");
+      fieldValues.put(OutpatientFields.NCH_PROFNL_CMPNT_CHRG_AMT, "4"); // fixed $ amount?
+      // TODO required in the mapping, but not in the Enum
+      // fieldValues.put(OutpatientFields.NCH_IP_NCVRD_CHRG_AMT, null);
+      // fieldValues.put(OutpatientFields.NCH_IP_TOT_DDCTN_AMT, null);
+      // fieldValues.put(OutpatientFields.CLM_UTLZTN_DAY_CNT, null);
+      // fieldValues.put(OutpatientFields.BENE_TOT_COINSRNC_DAYS_CNT, null);
+      // fieldValues.put(OutpatientFields.CLM_NON_UTLZTN_DAYS_CNT, null);
+      // fieldValues.put(OutpatientFields.NCH_BLOOD_PNTS_FRNSHD_QTY, null);
+      // fieldValues.put(OutpatientFields.CLM_DRG_OUTLIER_STAY_CD, null);
+      fieldValues.put(OutpatientFields.CLM_LINE_NUM, "1");
+      fieldValues.put(OutpatientFields.REV_CNTR, "0001"); // total charge, lots of alternatives
+      fieldValues.put(OutpatientFields.REV_CNTR_UNIT_CNT, "0");
+      fieldValues.put(OutpatientFields.REV_CNTR_RATE_AMT, "0");
+      fieldValues.put(OutpatientFields.REV_CNTR_TOT_CHRG_AMT,
+          "" + encounter.claim.getCoveredCost());
+      fieldValues.put(OutpatientFields.REV_CNTR_NCVRD_CHRG_AMT,
+          "" + encounter.claim.getPatientCost());
+
+      outpatient.writeValues(OutpatientFields.class, fieldValues);
+    }
   }
   
   /**
