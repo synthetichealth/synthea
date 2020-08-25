@@ -122,6 +122,15 @@
                 "high": 10,
                 "unit": "years"
             },
+            "direct_transition": "5_Year_Mean_Gaussian_Delay"
+        },
+        "5_Year_Mean_Gaussian_Delay": {
+            "type": "Delay",
+            "range": {
+                "mean": 5,
+                "standardDeviation": 2,
+                "unit": "years"
+            },
             "direct_transition": "Terminal"
         },
         "Terminal": {

@@ -389,6 +389,14 @@ public class StateTest {
     assertFalse(delay.process(person, time + 1L * 1000 * 60 * 60 * 24 * 365));
     assertFalse(delay.process(person, time + 2L * 1000 * 60 * 60 * 24 * 365));
     assertTrue(delay.process(person, time + 10L * 1000 * 60 * 60 * 24 * 365));
+
+    // Years
+    delay = module.getState("5_Year_Mean_Gaussian_Delay");
+    delay.entered = time;
+    assertFalse(delay.process(person, time));
+    assertFalse(delay.process(person, time + 1L * 1000 * 60 * 60 * 24 * 365));
+    assertFalse(delay.process(person, time + 2L * 1000 * 60 * 60 * 24 * 365));
+    assertTrue(delay.process(person, time + 10L * 1000 * 60 * 60 * 24 * 365));
   }
 
   @Test
