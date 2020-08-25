@@ -5,12 +5,25 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import org.mitre.synthea.world.agents.Person;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
 
+import org.mitre.synthea.world.agents.Person;
+
+/**
+ * A place for all random duration types for Delay and Procedure states.
+ */
 public abstract class RandomDurations {
+
+  /**
+   * This is essentially a DurationProvider factory. Given JSON, it will provide the correct
+   * DurationProvider by using their detect methods.
+   * @param definition The JSON to look at
+   * @return The appropriate DurationProvider. null if there aren't any properties that will
+   *         satisfy any DurationProvider
+   *
+   */
   public static DurationProvider detectDurationType(JsonObject definition) {
     Uniform u = new Uniform();
     if (u.detect(definition)) {
@@ -23,6 +36,9 @@ public abstract class RandomDurations {
     return null;
   }
 
+  /**
+   * Class to work with Gson to properly parse DurationProviders.
+   */
   public static class DurationDeserializer implements JsonDeserializer<DurationProvider> {
 
     @Override
@@ -38,6 +54,9 @@ public abstract class RandomDurations {
     }
   }
 
+  /**
+   * Base class for building DurationProviders. Handles the duration unit.
+   */
   public abstract static class AbstractDurationProvider implements DurationProvider, Serializable {
     protected String unit;
 
@@ -57,6 +76,11 @@ public abstract class RandomDurations {
     }
   }
 
+  /**
+   * DurationProvider that supplies a random length of time based on a uniform distribution.
+   * Expected properties are "low" and "high" representing the minimum and maximum values
+   * for the duration.
+   */
   public static class Uniform extends AbstractDurationProvider implements Serializable {
     private double low;
     private double high;
@@ -79,6 +103,11 @@ public abstract class RandomDurations {
     }
   }
 
+  /**
+   * DurationProvider that supplies a random length of time based on a Gaussian or normal
+   * distribution. Expected properties are "mean" and "standardDeviation" representing the mean and
+   * standard deviation for the distribution.
+   */
   public static class Gaussian extends AbstractDurationProvider implements Serializable {
     private double mean;
     private double standardDeviation;
