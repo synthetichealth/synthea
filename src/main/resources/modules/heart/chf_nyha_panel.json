@@ -1,0 +1,724 @@
+{
+  "name": "chf_nyha_panel",
+  "remarks": [
+    "Create NYHA Panel"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check Class"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Check Class": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Class 1",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "nyha_class",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "Class 2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "nyha_class",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Class 3",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "nyha_class",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "transition": "Class 4",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "nyha_class",
+            "operator": "==",
+            "value": 4
+          }
+        }
+      ]
+    },
+    "Class 1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Result 1B",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_type",
+            "operator": "==",
+            "value": "HFpEF"
+          }
+        },
+        {
+          "transition": "Result 1C",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_type",
+            "operator": "==",
+            "value": "HFmEF"
+          }
+        },
+        {
+          "transition": "Result 1D",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_type",
+            "operator": "==",
+            "value": "HFrEF"
+          }
+        }
+      ]
+    },
+    "Class 2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Result 2B",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_type",
+            "operator": "==",
+            "value": "HFpEF"
+          }
+        },
+        {
+          "transition": "Result 2C",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_type",
+            "operator": "==",
+            "value": "HFmEF"
+          }
+        },
+        {
+          "transition": "Result 2D",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_type",
+            "operator": "==",
+            "value": "HFrEF"
+          }
+        }
+      ]
+    },
+    "Class 3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Result 3B",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_type",
+            "operator": "==",
+            "value": "HFpEF"
+          }
+        },
+        {
+          "transition": "Result 3C",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_type",
+            "operator": "==",
+            "value": "HFmEF"
+          }
+        },
+        {
+          "transition": "Result 3D",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_type",
+            "operator": "==",
+            "value": "HFrEF"
+          }
+        }
+      ]
+    },
+    "Class 4": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Result 4B",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_type",
+            "operator": "==",
+            "value": "HFpEF"
+          }
+        },
+        {
+          "transition": "Result 4C",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_type",
+            "operator": "==",
+            "value": "HFmEF"
+          }
+        },
+        {
+          "transition": "Result 4D",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_type",
+            "operator": "==",
+            "value": "HFrEF"
+          }
+        }
+      ]
+    },
+    "Result 1B": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "93124-6",
+          "display": "New York Heart Association Functional Classification panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88020-3",
+              "display": "Functional capacity NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28404-4",
+            "display": "Class I"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88021-1",
+              "display": "Objective assessment of cardiovascular disease NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28409-3",
+            "display": "Objective evidence of minimal cardiovascular disease"
+          }
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Result 1C": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "93124-6",
+          "display": "New York Heart Association Functional Classification panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88020-3",
+              "display": "Functional capacity NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28404-4",
+            "display": "Class I"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88021-1",
+              "display": "Objective assessment of cardiovascular disease NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28410-1",
+            "display": "Objective evidence of moderately severe cardiovascular disease"
+          }
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Result 1D": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "93124-6",
+          "display": "New York Heart Association Functional Classification panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88020-3",
+              "display": "Functional capacity NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28404-4",
+            "display": "Class I"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88021-1",
+              "display": "Objective assessment of cardiovascular disease NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28411-9",
+            "display": "Objective evidence of severe cardiovascular disease"
+          }
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Result 2B": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "93124-6",
+          "display": "New York Heart Association Functional Classification panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88020-3",
+              "display": "Functional capacity NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28405-1",
+            "display": "Class II"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88021-1",
+              "display": "Objective assessment of cardiovascular disease NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28409-3",
+            "display": "Objective evidence of minimal cardiovascular disease"
+          }
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Result 2C": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "93124-6",
+          "display": "New York Heart Association Functional Classification panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88020-3",
+              "display": "Functional capacity NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28405-1",
+            "display": "Class II"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88021-1",
+              "display": "Objective assessment of cardiovascular disease NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28410-1",
+            "display": "Objective evidence of moderately severe cardiovascular disease"
+          }
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Result 2D": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "93124-6",
+          "display": "New York Heart Association Functional Classification panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88020-3",
+              "display": "Functional capacity NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28405-1",
+            "display": "Class II"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88021-1",
+              "display": "Objective assessment of cardiovascular disease NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28411-9",
+            "display": "Objective evidence of severe cardiovascular disease"
+          }
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Result 3B": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "93124-6",
+          "display": "New York Heart Association Functional Classification panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88020-3",
+              "display": "Functional capacity NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28406-9",
+            "display": "Class III"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88021-1",
+              "display": "Objective assessment of cardiovascular disease NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28409-3",
+            "display": "Objective evidence of minimal cardiovascular disease"
+          }
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Result 3C": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "93124-6",
+          "display": "New York Heart Association Functional Classification panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88020-3",
+              "display": "Functional capacity NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28406-9",
+            "display": "Class III"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88021-1",
+              "display": "Objective assessment of cardiovascular disease NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28410-1",
+            "display": "Objective evidence of moderately severe cardiovascular disease"
+          }
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Result 3D": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "93124-6",
+          "display": "New York Heart Association Functional Classification panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88020-3",
+              "display": "Functional capacity NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28406-9",
+            "display": "Class III"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88021-1",
+              "display": "Objective assessment of cardiovascular disease NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28411-9",
+            "display": "Objective evidence of severe cardiovascular disease"
+          }
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Result 4B": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "93124-6",
+          "display": "New York Heart Association Functional Classification panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88020-3",
+              "display": "Functional capacity NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28407-7",
+            "display": "Class IV"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88021-1",
+              "display": "Objective assessment of cardiovascular disease NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28409-3",
+            "display": "Objective evidence of minimal cardiovascular disease"
+          }
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Result 4C": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "93124-6",
+          "display": "New York Heart Association Functional Classification panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88020-3",
+              "display": "Functional capacity NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28407-7",
+            "display": "Class IV"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88021-1",
+              "display": "Objective assessment of cardiovascular disease NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28410-1",
+            "display": "Objective evidence of moderately severe cardiovascular disease"
+          }
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Result 4D": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "93124-6",
+          "display": "New York Heart Association Functional Classification panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88020-3",
+              "display": "Functional capacity NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28407-7",
+            "display": "Class IV"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88021-1",
+              "display": "Objective assessment of cardiovascular disease NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28411-9",
+            "display": "Objective evidence of severe cardiovascular disease"
+          }
+        }
+      ],
+      "direct_transition": "Terminal"
+    }
+  }
+}

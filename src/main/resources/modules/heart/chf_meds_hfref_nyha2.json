@@ -1,0 +1,432 @@
+{
+  "name": "chf_meds_HFrEF_NYHA2",
+  "remarks": [
+    "Congestive Heart Failure Medications for HFrEF NYHA II."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "EF Check"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Diuretic": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "313988",
+          "display": "Furosemide 40 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "direct_transition": "BB",
+      "chronic": true
+    },
+    "BB": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 200033,
+          "display": "carvedilol 25 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "chronic": true,
+      "distributed_transition": [
+        {
+          "transition": "ACE",
+          "distribution": 0.45
+        },
+        {
+          "transition": "ARB",
+          "distribution": 0.45
+        },
+        {
+          "transition": "ARNI",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "ACE": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 314077,
+          "display": "lisinopril 20 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "chronic": true,
+      "direct_transition": "Terminal"
+    },
+    "ARB": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 979492,
+          "display": "losartan potassium 50 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "chronic": true,
+      "direct_transition": "Terminal"
+    },
+    "ARNI": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1656354,
+          "display": "sacubitril 97 MG / valsartan 103 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "chronic": true,
+      "direct_transition": "Terminal"
+    },
+    "Step 1": {
+      "type": "Simple",
+      "direct_transition": "Diuretic"
+    },
+    "Step 2": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 979492,
+                "display": "losartan potassium 50 MG Oral Tablet"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Stop ARB",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.8
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 314077,
+                "display": "lisinopril 20 MG Oral Tablet"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Stop ACE",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.8
+            }
+          ]
+        }
+      ]
+    },
+    "Stop ARB": {
+      "type": "MedicationEnd",
+      "direct_transition": "ARNI",
+      "medication_order": "ARB"
+    },
+    "Stop ACE": {
+      "type": "MedicationEnd",
+      "direct_transition": "ARNI",
+      "medication_order": "ACE"
+    },
+    "EF Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CKD Check",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Left ventricular Ejection fraction",
+            "operator": "<=",
+            "value": 35
+          }
+        },
+        {
+          "transition": "EF 36-40"
+        }
+      ]
+    },
+    "CKD Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CKD Path",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": ">=",
+            "value": 4
+          }
+        },
+        {
+          "transition": "Other Path"
+        }
+      ]
+    },
+    "EF 36-40": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Step 1",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_med_step",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "Step 2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_med_step",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Other Path": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Step 1",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_med_step",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "Other Step 2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_med_step",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "IVA Step",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_med_step",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "CKD Path": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Step 1",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_med_step",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "IVA Step",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_med_step",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Other Step 2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "MRA",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.9
+        }
+      ]
+    },
+    "MRA": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 313096,
+          "display": "spironolactone 25 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "chronic": true,
+      "direct_transition": "Terminal"
+    },
+    "IVA": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1649485,
+          "display": "ivabradine 5 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "chronic": true,
+      "direct_transition": "Terminal"
+    },
+    "IVA Step": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "MRA"
+          },
+          "distributions": [
+            {
+              "transition": "IVA",
+              "distribution": 0.01
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.99
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Terminal"
+        }
+      ]
+    }
+  }
+}

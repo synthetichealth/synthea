@@ -1,0 +1,299 @@
+{
+  "name": "chf_meds",
+  "remarks": [
+    "Congestive Heart Failure Medications."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Initialize Check"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Initialize Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Initialize",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_med_check",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Advance"
+        }
+      ]
+    },
+    "Initialize": {
+      "type": "SetAttribute",
+      "attribute": "chf_med_step",
+      "direct_transition": "Branch",
+      "value": 1
+    },
+    "Branch": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_med_step",
+            "operator": ">",
+            "value": 3
+          }
+        },
+        {
+          "transition": "HFmEF",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_type",
+            "operator": "==",
+            "value": "HFmEF"
+          }
+        },
+        {
+          "transition": "HFpEF",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_type",
+            "operator": "==",
+            "value": "HFpEF"
+          }
+        },
+        {
+          "transition": "HFrEF Branch",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_type",
+            "operator": "==",
+            "value": "HFrEF"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Advance": {
+      "type": "Counter",
+      "attribute": "chf_med_step",
+      "action": "increment",
+      "direct_transition": "Branch"
+    },
+    "HFmEF": {
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_meds_hfmef",
+      "direct_transition": "Terminal"
+    },
+    "HFpEF": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Diuretic",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_med_step",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Diuretic": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "313988",
+          "display": "Furosemide 40 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "chronic": true,
+      "direct_transition": "Terminal"
+    },
+    "HFrEF Branch": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "HFrEF NYHA 1",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "nyha_class",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "HFrEF NYHA 2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "nyha_class",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "HFrEF NYHA 3",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "nyha_class",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "transition": "HFrEF NYHA 4",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "nyha_class",
+            "operator": "==",
+            "value": 4
+          }
+        }
+      ]
+    },
+    "HFrEF NYHA 1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "BB",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_med_step",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "HFrEF NYHA 2": {
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_meds_hfref_nyha2",
+      "direct_transition": "Terminal"
+    },
+    "HFrEF NYHA 3": {
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_meds_hfref_nyha3",
+      "direct_transition": "Terminal"
+    },
+    "HFrEF NYHA 4": {
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_meds_hfref_nyha4",
+      "direct_transition": "Terminal"
+    },
+    "BB": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 200033,
+          "display": "carvedilol 25 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "chronic": true,
+      "distributed_transition": [
+        {
+          "transition": "ACE",
+          "distribution": 0.4
+        },
+        {
+          "transition": "ARB",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Diuretic",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "ACE": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 314077,
+          "display": "lisinopril 20 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "chronic": true,
+      "direct_transition": "Diuretic"
+    },
+    "ARB": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 979492,
+          "display": "losartan potassium 50 MG Oral Tablet"
+        }
+      ],
+      "reason": "chf",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "chronic": true,
+      "direct_transition": "Diuretic"
+    }
+  }
+}
