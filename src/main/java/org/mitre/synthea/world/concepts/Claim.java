@@ -75,7 +75,8 @@ public class Claim implements Serializable {
       // Person's Payer covers their care.
       if (totalCost > (patientDeductible + patientCopay)) {
         patientCost = (patientDeductible + patientCopay);
-        patientCost += ((totalCost - patientCost) * patientCoinsurance);
+        patientCoinsurance = ((totalCost - patientCost) * patientCoinsurance);
+        patientCost += patientCoinsurance;
         if (patientCost > totalCost) {
           patientCost = totalCost;
           payerCost = 0;
