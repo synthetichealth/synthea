@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.agents.Provider.ProviderType;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
 public class ProviderFinderNearest implements IProviderFinder {

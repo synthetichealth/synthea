@@ -186,6 +186,7 @@ public class Claim implements Serializable {
 //>>>>>>> Initial BB2 Inpatient claims. Required fields only.
   }
 
+<<<<<<< HEAD
 //<<<<<<< HEAD
   private void assignCosts(ClaimEntry claimEntry, Plan plan) {
     claimEntry.cost = claimEntry.entry.getCost().doubleValue();
@@ -238,6 +239,25 @@ public class Claim implements Serializable {
 //          patientCost = totalCost;
 //          payerCost = 0;
 //>>>>>>> Fix broken unit tests.
+//=======
+//    totalCost = this.getTotalClaimCost();
+//    patientDeductible = payer.getDeductible();
+//    patientCopay = payer.determineCopay(mainEntry);
+//    patientCoinsurance = payer.getCoinsurance();
+//    patientCost = 0.0;
+//    payerCost = 0.0;
+//
+//    // Determine who covers the care and assign the costs accordingly.
+//    if (this.payer.coversCare(mainEntry)) {
+//      // Person's Payer covers their care.
+//      if (totalCost > (patientDeductible + patientCopay)) {
+//        patientCost = (patientDeductible + patientCopay);
+//        patientCoinsurance = ((totalCost - patientCost) * patientCoinsurance);
+//        patientCost += patientCoinsurance;
+//        if (patientCost > totalCost) {
+//          patientCost = totalCost;
+//          payerCost = 0;
+//>>>>>>> Add carrier claims to BB2.
         } else {
           // Payer covers all
           claimEntry.payer = remaining;
