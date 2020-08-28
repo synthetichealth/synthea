@@ -1,0 +1,92 @@
+CARR_NUM,CARR_LINE_PRCNG_LCLTY_CD,STATE,STATE_CODE,DETAIL
+00510,1,Alabama,AL,CAHABA
+00831,2,Alaska,AK,Noridian
+05655,2,Alaska,AK,CIGNA (replaced by MAC #19003)
+00832,3,Arizona,AZ,Noridian (replaced by MAC # 03102)
+03102,3,Arizona,AZ,(eff. 12/1/06) (replaces carrier #00832) 
+00520,4,Arkansas,AR,BC/BS
+02050,9,California,CA,TOLIC (term. 2000)
+31140,9,California,CA,National Heritage Ins.
+31146,9,California,CA,NHIC (eff. 2000)
+00824,14,Colorado,CO,Noridian (term. 2008) (replaced by MAC #04102)
+04102,14,Colorado,CO,(eff. 3/24/08) (replaces carrier #00824) 
+00591,15,Connecticut,CT,First Coast (eff. 2000)
+10230,15,Connecticut,CT,Metra Health (term. 2000)
+00902,17,Delaware,DE,Trailblazer
+00903,16,District of Columbia,DC,Trailblazer
+00811,0,DMERC (A),USA,Healthnow (eff. 2000) (replaced by MAC #16003)
+10555,0,DMERC A,USA,Travelers Insurance Co. (term. 2000)
+00885,0,DMERC C,USA,Palmetto (replaced by MAC #18003)
+00635,0,DMERC-B,USA,Administar (replaced by MAC #17003)
+00590,20,Florida,FL,First Coast
+00511,22,Georgia,GA,CAHABA
+00833,23,Hawaii,HI,Noridian
+05130,24,Idaho,ID,CIGNA
+00952,27,Illinois,IL,Wisconsin Phy Svc
+00630,29,Indiana,IN,Administar
+00640,30,Iowa,IA,Wellmark Inc.
+00826,30,Iowa,IA,Noridian (term. 2008) (replaced by MAC #05102)
+05102,30,Iowa,IA,(eff.2/1/08) (replaces carrier #00826)
+00650,31,Kansas,KS,BCBS (term. 2008) (replaced by MAC #05202)
+05202,31,Kansas,KS,(eff. 3/1/08) (replaces carrier #00650)
+00660,32,Kentucky,KY,Administar
+00528,34,Louisiana,LA,Arkansas BS
+31142,35,Maine,ME,National Heritage Ins.
+00901,38,Maryland,MD,Trailblazer
+31143,40,Massachusetts,MA,National Heritage Ins.
+00953,42,Michigan,MI,Wisconsin Phy Svc
+00954,43,Minnesota,MN,Wisconsin Phy Svc (eff. 2000)
+10240,43,Minnesota,MN,Metra Health (term. 2000)
+00512,44,Mississippi,MS,CAHABA (eff. 2000)
+10250,44,Mississippi,MS,Metra Health (term. 2000)
+00523,47,Missouri,MO,Arkansas BC/BS (term. 2008) (replaced by MAC #05392) 
+00740,47,Missouri,MO,Kansas BS (term.2008) (replaced by MAC #05302) 
+05302,47,Missouri,MO,(eff. 3/2008)
+05302,47,Missouri,MO,(eff. 3/1/08) (replaces carrier #00651 or 00740) 
+05392,47,Missouri,MO,(eff. 6/1/08) (replaces carrier #00523)
+00751,48,Montana,MT,BC/BS (replaced by MAC # 03202)
+03202,48,Montana,MT,(eff. 12/1/06) (replaces carrier #00751) 
+00645,49,Nebraska,NE,Iowa BS
+00655,49,Nebraska,NE,Kansas BC/BS (term. 2008) (replaced by MAC #05402) 
+05402,49,Nebraska,NE,(eff. 3/1/08) (replaces carrier #00655)
+00834,50,Nevada,NV,Noridian
+31144,51,New Hampshire,NH,National Heritage Ins.
+00805,53,New Jersey,NJ,Empire BS
+00521,54,New Mexico,NM,Arkansas BC/BS (term. 2008) (replaced by MAC #04202) 
+04202,54,New Mexico,NM,(eff. 3/1/08 (replaces carrier #00521) 
+00801,59,New York,NY,Healthnow
+00803,59,New York,NY,Empire BS
+14330,59,New York,NY,GHI
+05535,60,North Carolina,NC,CIGNA
+00820,61,North Dakota,ND,Noridian (replaced by MAC #03302)
+03302,61,North Dakota,ND,(eff. 12/1/06) (replaces carrier #00820) 
+00883,62,Ohio,OH,Palmetto (eff. 2002)
+16360,62,Ohio,OH,Nationwide Insurance Co. (term. 2002)
+00522,63,Oklahoma,OK,Arkansas BC/BS (term. 2008) (replaced by MAC #04302) 
+04302,63,Oklahoma,OK,(eff. 3/1/08) (replaces carrier #00522) 
+00835,65,Oregon,OR,Noridian
+00865,67,Pennsylvania,PA,Highmark
+00973,68,Puerto Rico,PR,Triple S Inc.
+10071,0,Railroad Board,RRB,Travelers (term. 2000)
+00524,69,Rhode Island,RI,Arkansas BC/BS (eff. 2004)
+00870,69,Rhode Island,RI,BS (term. 2004)
+00882,0,RRB,RRB,South Carolina PGBA (eff. 2000)
+00880,70,South Carolina,SC,Palmetto
+00889,71,South Dakota,SD,Noridian (eff. 4/1/2006) (replaced by MAC # 03402) 
+03402,71,South Dakota,SD,(eff. 12/1/06) (replaces carrier #00889) 
+05440,72,Tennessee,TN,CIGNA
+00900,80,Texas,TX,Trailblazer (term. 2008) (replaced by MAC # 04402)
+04402,80,Texas,TX,(eff. 6/13/08) (replaces carrier #00900)
+00823,81,Utah,UT,Noridian (eff. 12/1/2005) (replaced by MAC #03502)
+00910,81,Utah,UT,BS
+03502,81,Utah,UT,(eff. 12/1/06) (replaces carrier #00823) 
+31145,82,Vermont,VT,National Heritage Ins.
+00974,83,Virgin Islands,VI,Triple-S Inc.
+00904,84,Virginia,VA,Trailblazer (eff. 2000)
+10490,84,Virginia,VA,Metra Health (term. 2000)
+00836,85,Washington,WA,Noridian
+00884,87,West Virginia,WV,Palmetto (eff. 2002)
+16510,87,West Virginia,WV,Nationwide Insurance Co. (term. 2002)
+00951,88,Wisconsin,WI,Wisconsin Phy Svc
+00825,89,Wyoming,WY,Noridian (replaced by MAC #03602)
+03602,89,Wyoming,WY,(eff. 12/1/06) (replaces carrier #00825)

@@ -954,7 +954,7 @@ public class CPCDSExporter {
       s.append(clean(encounter.provider.state)).append(',');
       s.append(clean(encounter.provider.zip)).append(',');
       s.append(clean(encounter.provider.phone)).append(',');
-      s.append(clean(encounter.provider.type)).append(NEWLINE);
+      s.append(clean(encounter.provider.rawType)).append(NEWLINE);
       
       exportedHospitals.add(attributes.getServiceSiteNPI());
 
