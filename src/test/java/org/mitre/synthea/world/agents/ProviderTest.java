@@ -16,6 +16,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.world.agents.Provider.ProviderType;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
 
@@ -223,7 +224,7 @@ public class ProviderTest {
            try {
              Provider.clear();
              Provider.loadProviders(location, "providers/" + t.getFileName(),
-                 providerServices, 1L);
+                 ProviderType.HOSPITAL, providerServices, 1L);
            } catch (Exception e) {
              throw new RuntimeException("Failed to load provider file " + t, e);
            }
