@@ -38,6 +38,11 @@ import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
 public class Provider implements QuadTreeElement, Serializable {
 
+  public enum ProviderType {
+    DIALYSIS, HOME_HEALTH, HOSPICE, HOSPITAL, LONG_TERM,
+    NURSING, PRIMARY, REHAD, URGENT, VETERAN, PHARMACY;
+  }
+
   public static final String ENCOUNTERS = "encounters";
   public static final String PROCEDURES = "procedures";
   public static final String LABS = "labs";
@@ -72,7 +77,8 @@ public class Provider implements QuadTreeElement, Serializable {
   public String state;
   public String zip;
   public String phone;
-  public String type;
+  public String rawType;
+  public ProviderType type;
   public String ownership;
   /** institutional (e.g. hospital) else professional (e.g. PCP) */
   public boolean institutional;
@@ -365,6 +371,7 @@ public class Provider implements QuadTreeElement, Serializable {
    *
    * @param location the state being loaded
    * @param filename Location of the file, relative to src/main/resources
+   * @param providerType ProviderType
    * @param servicesProvided Set of services provided by these facilities
    * @param institutional If the provider is institutional (true) or professional (false)
    * @throws IOException if the file cannot be read
@@ -502,6 +509,9 @@ public class Provider implements QuadTreeElement, Serializable {
       clinician.attributes.put(Clinician.NAME_PREFIX, "Dr.");
       // Degree's beyond a bachelors degree are not currently tracked.
       clinician.attributes.put(Clinician.EDUCATION, "bs_degree");
+      String ssn = "999-" + ((doc.randInt(99 - 10 + 1) + 10)) + "-"
+          + ((doc.randInt(9999 - 1000 + 1) + 1000));
+      clinician.attributes.put(Person.IDENTIFIER_SSN, ssn);
     } catch (Throwable e) {
       e.printStackTrace();
       throw e;
@@ -544,7 +554,7 @@ public class Provider implements QuadTreeElement, Serializable {
     d.state = line.remove("state");
     d.zip = line.remove("zip");
     d.phone = line.remove("phone");
-    d.type = line.remove("type");
+    d.rawType = line.remove("type");
     d.ownership = line.remove("ownership");
     try {
       d.quality = Integer.parseInt(line.remove("quality"));

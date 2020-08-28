@@ -11,11 +11,16 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.mitre.synthea.helpers.SimpleCSV;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider.ProviderType;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
@@ -27,8 +32,12 @@ public class BB2Exporter implements Flushable {
   private SynchronizedBBLineWriter beneficiary;
   private SynchronizedBBLineWriter outpatient;
   private SynchronizedBBLineWriter inpatient;
+  private SynchronizedBBLineWriter carrier;
+
   private AtomicInteger claimId; // per claim per encounter
   private AtomicInteger claimGroupId; // per encounter
+
+  private List<LinkedHashMap<String, String>> carrierLookup;
 
   private static final String BB2_BENE_ID = "BB2_BENE_ID";
   private static final String BB2_HIC_ID = "BB2_HIC_ID";
@@ -55,6 +64,15 @@ public class BB2Exporter implements Flushable {
     claimId = new AtomicInteger();
     claimGroupId = new AtomicInteger();
     try {
+      String csv = Utilities.readResource("payers/carriers.csv");
+      if (csv.startsWith("\uFEFF")) {
+        csv = csv.substring(1); // Removes BOM.
+      }
+      carrierLookup = SimpleCSV.parse(csv);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    try {
       prepareOutputFiles();
     } catch (IOException e) {
       // wrap the exception in a runtime exception.
@@ -78,6 +96,9 @@ public class BB2Exporter implements Flushable {
     if (outpatient != null) {
       outpatient.close();
     }
+    if (carrier != null) {
+      carrier.close();
+    }
 
     // Initialize output files
     File output = Exporter.getOutputFolder("bb2", null);
@@ -95,6 +116,10 @@ public class BB2Exporter implements Flushable {
     File inpatientFile = outputDirectory.resolve("inpatient.csv").toFile();
     inpatient = new SynchronizedBBLineWriter(inpatientFile);
     inpatient.writeHeader(InpatientFields.class);
+
+    File carrierFile = outputDirectory.resolve("carrier.csv").toFile();
+    carrier = new SynchronizedBBLineWriter(carrierFile);
+    carrier.writeHeader(CarrierFields.class);
   }
   
   /**
@@ -107,6 +132,7 @@ public class BB2Exporter implements Flushable {
     exportBeneficiary(person, stopTime);
     exportOutpatient(person, stopTime);
     exportInpatient(person, stopTime);
+    exportCarrier(person, stopTime);
   }
   
   /**
@@ -185,10 +211,11 @@ public class BB2Exporter implements Flushable {
       boolean isOutpatient = encounter.type.equals(EncounterType.OUTPATIENT.toString());
       boolean isUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
       boolean isWellness = encounter.type.equals(EncounterType.WELLNESS.toString());
+      boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
       int claimId = this.claimId.incrementAndGet();
       int claimGroupId = this.claimGroupId.incrementAndGet();
 
-      if (!(isAmbulatory || isOutpatient || isUrgent || isWellness)) {
+      if (isPrimary || !(isAmbulatory || isOutpatient || isUrgent || isWellness)) {
         continue;
       }
 
@@ -377,6 +404,107 @@ public class BB2Exporter implements Flushable {
   }
 
   /**
+   * Export carrier claims details for a single person.
+   * @param person the person to export
+   * @param stopTime end time of simulation
+   * @throws IOException if something goes wrong
+   */
+  private void exportCarrier(Person person, long stopTime) throws IOException {
+    HashMap<CarrierFields, String> fieldValues = new HashMap<>();
+
+    HealthRecord.Encounter previous = null;
+    double latestHemoglobin = 0;
+
+    for (HealthRecord.Encounter encounter : person.record.encounters) {
+      boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
+
+      int claimId = this.claimId.incrementAndGet();
+      int claimGroupId = this.claimGroupId.incrementAndGet();
+
+      for (HealthRecord.Observation observation : encounter.observations) {
+        if (observation.containsCode("718-7", "http://loinc.org")) {
+          latestHemoglobin = (double) observation.value;
+        }
+      }
+
+      if (!isPrimary) {
+        previous = encounter;
+        continue;
+      }
+
+      fieldValues.clear();
+      // The REQUIRED fields
+      fieldValues.put(CarrierFields.DML_IND, "INSERT");
+      fieldValues.put(CarrierFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
+      fieldValues.put(CarrierFields.CLM_ID, "" + claimId);
+      fieldValues.put(CarrierFields.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(CarrierFields.FINAL_ACTION, "F"); // F or V
+      fieldValues.put(CarrierFields.NCH_NEAR_LINE_REC_IDENT_CD, "O"); // O=physician
+      fieldValues.put(CarrierFields.NCH_CLM_TYPE_CD, "71"); // local carrier, non-DME
+      fieldValues.put(CarrierFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(CarrierFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(CarrierFields.NCH_WKLY_PROC_DT,
+          bb2DateFromTimestamp(nextFriday(encounter.stop)));
+      fieldValues.put(CarrierFields.CARR_CLM_ENTRY_CD, "1");
+      fieldValues.put(CarrierFields.CLM_DISP_CD, "01");
+      fieldValues.put(CarrierFields.CARR_NUM,
+          getCarrier(encounter.provider.state, CarrierFields.CARR_NUM));
+      fieldValues.put(CarrierFields.CARR_CLM_PMT_DNL_CD, "1"); // 1=paid to physician
+      fieldValues.put(CarrierFields.CLM_PMT_AMT, "" + encounter.claim.getTotalClaimCost());
+      if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
+        fieldValues.put(CarrierFields.CARR_CLM_PRMRY_PYR_PD_AMT, "0");
+      } else {
+        fieldValues.put(CarrierFields.CARR_CLM_PRMRY_PYR_PD_AMT,
+            "" + encounter.claim.getCoveredCost());
+      }
+      fieldValues.put(CarrierFields.NCH_CLM_PRVDR_PMT_AMT,
+          "" + encounter.claim.getTotalClaimCost());
+      fieldValues.put(CarrierFields.NCH_CLM_BENE_PMT_AMT, "0");
+      fieldValues.put(CarrierFields.NCH_CARR_CLM_SBMTD_CHRG_AMT,
+          "" + encounter.claim.getTotalClaimCost());
+      fieldValues.put(CarrierFields.NCH_CARR_CLM_ALOWD_AMT,
+          "" + encounter.claim.getCoveredCost());
+      fieldValues.put(CarrierFields.CARR_CLM_CASH_DDCTBL_APLD_AMT,
+          "" + encounter.claim.getDeductiblePaid());
+      fieldValues.put(CarrierFields.CARR_CLM_RFRNG_PIN_NUM, encounter.provider.id);
+      fieldValues.put(CarrierFields.LINE_NUM, "1");
+      fieldValues.put(CarrierFields.CARR_PRFRNG_PIN_NUM, encounter.provider.id);
+      fieldValues.put(CarrierFields.CARR_LINE_PRVDR_TYPE_CD, "0");
+      fieldValues.put(CarrierFields.TAX_NUM,
+          "" + encounter.clinician.attributes.get(Person.IDENTIFIER_SSN));
+      fieldValues.put(CarrierFields.CARR_LINE_RDCD_PMT_PHYS_ASTN_C, "0");
+      fieldValues.put(CarrierFields.LINE_SRVC_CNT, "" + encounter.claim.items.size());
+      fieldValues.put(CarrierFields.LINE_CMS_TYPE_SRVC_CD, "1");
+      fieldValues.put(CarrierFields.LINE_PLACE_OF_SRVC_CD, "11"); // 11=office
+      fieldValues.put(CarrierFields.CARR_LINE_PRCNG_LCLTY_CD,
+          getCarrier(encounter.provider.state, CarrierFields.CARR_LINE_PRCNG_LCLTY_CD));
+      fieldValues.put(CarrierFields.LINE_NCH_PMT_AMT,
+          "" + encounter.claim.getCoveredCost());
+      fieldValues.put(CarrierFields.LINE_BENE_PMT_AMT, "0");
+      fieldValues.put(CarrierFields.LINE_PRVDR_PMT_AMT,
+          "" + encounter.claim.getCoveredCost());
+      fieldValues.put(CarrierFields.LINE_BENE_PTB_DDCTBL_AMT,
+          "" + encounter.claim.getDeductiblePaid());
+      fieldValues.put(CarrierFields.LINE_BENE_PRMRY_PYR_PD_AMT, "0");
+      fieldValues.put(CarrierFields.LINE_COINSRNC_AMT,
+          "" + encounter.claim.getCoinsurancePaid());
+      fieldValues.put(CarrierFields.LINE_SBMTD_CHRG_AMT,
+          "" + encounter.claim.getTotalClaimCost());
+      fieldValues.put(CarrierFields.LINE_ALOWD_CHRG_AMT,
+          "" + encounter.claim.getCoveredCost());
+      // length of encounter in minutes
+      fieldValues.put(CarrierFields.CARR_LINE_MTUS_CNT,
+          "" + ((encounter.stop - encounter.start) / (1000 * 60)));
+
+      fieldValues.put(CarrierFields.LINE_HCT_HGB_RSLT_NUM,
+          "" + latestHemoglobin);
+      fieldValues.put(CarrierFields.CARR_LINE_ANSTHSA_UNIT_CNT, "0");
+
+      carrier.writeValues(CarrierFields.class, fieldValues);
+    }
+  }
+
+  /**
    * Flush contents of any buffered streams to disk.
    * @throws IOException if something goes wrong
    */
@@ -385,6 +513,7 @@ public class BB2Exporter implements Flushable {
     beneficiary.flush();
     inpatient.flush();
     outpatient.flush();
+    carrier.flush();
   }
 
   /**
@@ -419,7 +548,18 @@ public class BB2Exporter implements Flushable {
       return bbRaceCode;
     }
   }
+
+  private String getCarrier(String state, CarrierFields column) {
+    for (LinkedHashMap<String, String> row : carrierLookup) {
+      if (row.get("STATE").equals(state) || row.get("STATE_CODE").equals(state)) {
+        return row.get(column.toString());
+      }
+    }
+    return "0";
+  }
+
   
+
   /**
    * Defines the fields used in the beneficiary file. Note that order is significant, columns will
    * be written in the order specified.
@@ -1129,7 +1269,108 @@ public class BB2Exporter implements Flushable {
     RNDRNG_PHYSN_UPIN,
     RNDRNG_PHYSN_NPI
   }
-  
+
+  private enum CarrierFields {
+    DML_IND,
+    BENE_ID,
+    CLM_ID,
+    CLM_GRP_ID,
+    FINAL_ACTION,
+    NCH_NEAR_LINE_REC_IDENT_CD,
+    NCH_CLM_TYPE_CD,
+    CLM_FROM_DT,
+    CLM_THRU_DT,
+    NCH_WKLY_PROC_DT,
+    CARR_CLM_ENTRY_CD,
+    CLM_DISP_CD,
+    CARR_NUM,
+    CARR_CLM_PMT_DNL_CD,
+    CLM_PMT_AMT,
+    CARR_CLM_PRMRY_PYR_PD_AMT,
+    RFR_PHYSN_UPIN,
+    RFR_PHYSN_NPI,
+    CARR_CLM_PRVDR_ASGNMT_IND_SW,
+    NCH_CLM_PRVDR_PMT_AMT,
+    NCH_CLM_BENE_PMT_AMT,
+    NCH_CARR_CLM_SBMTD_CHRG_AMT,
+    NCH_CARR_CLM_ALOWD_AMT,
+    CARR_CLM_CASH_DDCTBL_APLD_AMT,
+    CARR_CLM_HCPCS_YR_CD,
+    CARR_CLM_RFRNG_PIN_NUM,
+    PRNCPAL_DGNS_CD,
+    PRNCPAL_DGNS_VRSN_CD,
+    ICD_DGNS_CD1,
+    ICD_DGNS_VRSN_CD1,
+    ICD_DGNS_CD2,
+    ICD_DGNS_VRSN_CD2,
+    ICD_DGNS_CD3,
+    ICD_DGNS_VRSN_CD3,
+    ICD_DGNS_CD4,
+    ICD_DGNS_VRSN_CD4,
+    ICD_DGNS_CD5,
+    ICD_DGNS_VRSN_CD5,
+    ICD_DGNS_CD6,
+    ICD_DGNS_VRSN_CD6,
+    ICD_DGNS_CD7,
+    ICD_DGNS_VRSN_CD7,
+    ICD_DGNS_CD8,
+    ICD_DGNS_VRSN_CD8,
+    ICD_DGNS_CD9,
+    ICD_DGNS_VRSN_CD9,
+    ICD_DGNS_CD10,
+    ICD_DGNS_VRSN_CD10,
+    ICD_DGNS_CD11,
+    ICD_DGNS_VRSN_CD11,
+    ICD_DGNS_CD12,
+    ICD_DGNS_VRSN_CD12,
+    CLM_CLNCL_TRIL_NUM,
+    LINE_NUM,
+    CARR_PRFRNG_PIN_NUM,
+    PRF_PHYSN_UPIN,
+    PRF_PHYSN_NPI,
+    ORG_NPI_NUM,
+    CARR_LINE_PRVDR_TYPE_CD,
+    TAX_NUM,
+    PRVDR_STATE_CD,
+    PRVDR_ZIP,
+    PRVDR_SPCLTY,
+    PRTCPTNG_IND_CD,
+    CARR_LINE_RDCD_PMT_PHYS_ASTN_C,
+    LINE_SRVC_CNT,
+    LINE_CMS_TYPE_SRVC_CD,
+    LINE_PLACE_OF_SRVC_CD,
+    CARR_LINE_PRCNG_LCLTY_CD,
+    LINE_1ST_EXPNS_DT,
+    LINE_LAST_EXPNS_DT,
+    HCPCS_CD,
+    HCPCS_1ST_MDFR_CD,
+    HCPCS_2ND_MDFR_CD,
+    BETOS_CD,
+    LINE_NCH_PMT_AMT,
+    LINE_BENE_PMT_AMT,
+    LINE_PRVDR_PMT_AMT,
+    LINE_BENE_PTB_DDCTBL_AMT,
+    LINE_BENE_PRMRY_PYR_CD,
+    LINE_BENE_PRMRY_PYR_PD_AMT,
+    LINE_COINSRNC_AMT,
+    LINE_SBMTD_CHRG_AMT,
+    LINE_ALOWD_CHRG_AMT,
+    LINE_PRCSG_IND_CD,
+    LINE_PMT_80_100_CD,
+    LINE_SERVICE_DEDUCTIBLE,
+    CARR_LINE_MTUS_CNT,
+    CARR_LINE_MTUS_CD,
+    LINE_ICD_DGNS_CD,
+    LINE_ICD_DGNS_VRSN_CD,
+    HPSA_SCRCTY_IND_CD,
+    CARR_LINE_RX_NUM,
+    LINE_HCT_HGB_RSLT_NUM,
+    LINE_HCT_HGB_TYPE_CD,
+    LINE_NDC_CD,
+    CARR_LINE_CLIA_LAB_NUM,
+    CARR_LINE_ANSTHSA_UNIT_CNT
+  }
+
   /**
    * Thread safe singleton pattern adopted from
    * https://stackoverflow.com/questions/7048198/thread-safe-singletons-in-java
