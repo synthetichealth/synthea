@@ -1,0 +1,1274 @@
+{
+  "name": "DLBCL",
+  "remarks": [
+    "Module Describing Clinical Treatment of Diffuse Large B-Cell Lymphoma"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Male",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          }
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Male": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Terminal",
+          "distribution": 0.9756
+        },
+        {
+          "transition": "Pre- DLBCL",
+          "distribution": 0.0244
+        }
+      ],
+      "remarks": [
+        "https://www.cancer.org/cancer/non-hodgkin-lymphoma/about/key-statistics.html#:~:text=Overall%2C%20the%20chance%20that%20a,%2C%20teens%2C%20and%20young%20adults",
+        "the chance that a man will develop NHL in his lifetime is about 1 in 41"
+      ]
+    },
+    "Female": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Terminal",
+          "distribution": 0.9807999999999999
+        },
+        {
+          "transition": "Pre- DLBCL",
+          "distribution": 0.0192
+        }
+      ],
+      "remarks": [
+        "https://www.cancer.org/cancer/non-hodgkin-lymphoma/about/key-statistics.html#:~:text=Overall%2C%20the%20chance%20that%20a,%2C%20teens%2C%20and%20young%20adults",
+        "for a woman, the risk is about 1 in 52"
+      ]
+    },
+    "Pre- DLBCL": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Age 0-34",
+          "distribution": 0.065
+        },
+        {
+          "transition": "Age 75-140",
+          "distribution": 0.289
+        },
+        {
+          "transition": "Age 55-74",
+          "distribution": 0.462
+        },
+        {
+          "transition": "Age 35-54",
+          "distribution": 0.185
+        }
+      ]
+    },
+    "Age 0-34": {
+      "type": "Delay",
+      "remarks": [
+        "https://seer.cancer.gov/statfacts/html/dlbcl.html",
+        "Percent of New Cases by Age Group (all races and both sexes)",
+        "<20 years old: 1.3%",
+        "20-34 years old: 5.2%"
+      ],
+      "range": {
+        "low": 0,
+        "high": 34,
+        "unit": "years"
+      },
+      "direct_transition": "DLBCL_Symptom1"
+    },
+    "Age 35-54": {
+      "type": "Delay",
+      "range": {
+        "low": 35,
+        "high": 54,
+        "unit": "years"
+      },
+      "direct_transition": "DLBCL_Symptom1",
+      "remarks": [
+        "https://seer.cancer.gov/statfacts/html/dlbcl.html",
+        "Percent of New Cases by Age Group (all races and both sexes)",
+        "35-44 years old: 6.2%",
+        "45-54 years old: 12.3%"
+      ]
+    },
+    "Age 55-74": {
+      "type": "Delay",
+      "range": {
+        "low": 55,
+        "high": 74,
+        "unit": "years"
+      },
+      "direct_transition": "DLBCL_Symptom1",
+      "remarks": [
+        "https://seer.cancer.gov/statfacts/html/dlbcl.html",
+        "Percent of New Cases by Age Group (all races and both sexes)",
+        "55-64 years old: 21.2%",
+        "65-74 years old: 25.0%"
+      ]
+    },
+    "Age 75-140": {
+      "type": "Delay",
+      "range": {
+        "low": 75,
+        "high": 140,
+        "unit": "years"
+      },
+      "direct_transition": "DLBCL_Symptom1",
+      "remarks": [
+        "https://seer.cancer.gov/statfacts/html/dlbcl.html",
+        "Percent of New Cases by Age Group (all races and both sexes)",
+        "75-84 years old: 20.1%",
+        ">84 years old: 8.8%"
+      ]
+    },
+    "DLBCL_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Painless, Rapid Swelling of Lymph Nodes in Neck, Underarms, or Groin",
+      "cause": "",
+      "probability": 0.6,
+      "direct_transition": "DLBCL_Symptom4",
+      "exact": {
+        "quantity": 1
+      },
+      "remarks": [
+        "https://lymphoma.org/wp-content/uploads/2018/05/LRF_FACTSHEET_DIFFUSE_LRG_BCELL_LYMPHOMA_DLBCL.pdf"
+      ]
+    },
+    "DLBCL_Symptom4": {
+      "type": "Symptom",
+      "symptom": "B Symptoms (fever, night sweats, and weight loss)",
+      "cause": "",
+      "probability": 0.3,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "DLBCL_Symptom5",
+      "remarks": [
+        "https://www.cancer.gov/types/lymphoma/patient/adult-nhl-treatment-pdq"
+      ]
+    },
+    "DLBCL_Symptom5": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "cause": "",
+      "probability": 1,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "DLBCL_Symptom6",
+      "remarks": [
+        "https://www.cancer.gov/types/lymphoma/patient/adult-nhl-treatment-pdq"
+      ]
+    },
+    "DLBCL_Symptom6": {
+      "type": "Symptom",
+      "symptom": "Loss of Appetite",
+      "cause": "",
+      "probability": 1,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "DLBCL_Symptom7",
+      "remarks": [
+        "https://lymphoma.org/wp-content/uploads/2018/05/LRF_FACTSHEET_DIFFUSE_LRG_BCELL_LYMPHOMA_DLBCL.pdf"
+      ]
+    },
+    "DLBCL_Symptom7": {
+      "type": "Symptom",
+      "symptom": "Shortness of Breath",
+      "cause": "",
+      "probability": 1,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "Time Before Initial Doctor Visit",
+      "remarks": [
+        "https://lymphoma.org/wp-content/uploads/2018/05/LRF_FACTSHEET_DIFFUSE_LRG_BCELL_LYMPHOMA_DLBCL.pdf"
+      ]
+    },
+    "Time Before Initial Doctor Visit": {
+      "type": "Delay",
+      "range": {
+        "low": 0,
+        "high": 1,
+        "unit": "weeks"
+      },
+      "direct_transition": "Diffuse Large B-Cell Lymphoma Diagnosis Encounter I"
+    },
+    "Physical Exam": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 5880005,
+          "display": "Physical Examination Procedure (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "Blood Tests",
+      "remarks": [
+        "https://www.cancer.gov/types/lymphoma/patient/adult-nhl-treatment-pdq"
+      ]
+    },
+    "Blood Tests": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 396550006,
+          "display": "Blood test (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 15,
+        "unit": "minutes"
+      },
+      "direct_transition": "Lymph Node Biopsy",
+      "remarks": [
+        "CBC, LDH, Hep B, uric acid, metabolic panel",
+        "https://www.cancer.gov/types/lymphoma/patient/adult-nhl-treatment-pdq"
+      ]
+    },
+    "Lymph Node Biopsy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 21911005,
+          "display": "Biopsy of lymph node (Procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Diagnosis Encounter I",
+      "remarks": [
+        "https://www.cancer.gov/types/lymphoma/patient/adult-nhl-treatment-pdq"
+      ]
+    },
+    "DLBCL Found": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "DLBCL_Condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 109969005,
+          "display": "Diffuse non-Hodgkins Lymphoma Large Cell (Disorder)"
+        }
+      ],
+      "direct_transition": "Diagnosis Encounter II",
+      "target_encounter": "Diagnosis Encounter II"
+    },
+    "PET-CT Scan": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 450436003,
+          "display": "Positron emission tomography with computed tomography (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "reason": "DLBCL_Condition",
+      "direct_transition": "End Diagnosis Encounter II",
+      "remarks": [
+        "https://lymphoma.org/wp-content/uploads/2018/05/LRF_FACTSHEET_DIFFUSE_LRG_BCELL_LYMPHOMA_DLBCL.pdf"
+      ]
+    },
+    "Staging": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Stage IV",
+          "distribution": 0.34
+        },
+        {
+          "transition": "Stage I",
+          "distribution": 0.24
+        },
+        {
+          "transition": "Stage II",
+          "distribution": 0.19
+        },
+        {
+          "transition": "Stage III",
+          "distribution": 0.17
+        },
+        {
+          "transition": "Unknown Stage",
+          "distribution": 0.05
+        }
+      ]
+    },
+    "Stage I": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21908-9",
+          "display": "LOINC Code"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 30440004,
+        "display": "Lymphoma Stage I"
+      },
+      "direct_transition": "Delay for Analysis of Possible Treatments",
+      "remarks": [
+        "https://seer.cancer.gov/statfacts/html/dlbcl.html"
+      ]
+    },
+    "Stage II": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21908-9]",
+          "display": "LOINC Code"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 76422004,
+        "display": "Lymphoma Stage II"
+      },
+      "direct_transition": "Delay for Analysis of Possible Treatments",
+      "remarks": [
+        "https://seer.cancer.gov/statfacts/html/dlbcl.html"
+      ]
+    },
+    "Stage III": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21909-9",
+          "display": "LOINC Code"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 56944001,
+        "display": "Lymphoma Stage III"
+      },
+      "direct_transition": "Delay for Analysis of Possible Treatments",
+      "remarks": [
+        "https://seer.cancer.gov/statfacts/html/dlbcl.html"
+      ]
+    },
+    "Stage IV": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "21908-9",
+          "display": "LOINC Code"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 66445009,
+        "display": "Lymphoma Stage IV"
+      },
+      "direct_transition": "Delay for Analysis of Possible Treatments",
+      "remarks": [
+        "https://seer.cancer.gov/statfacts/html/dlbcl.html"
+      ]
+    },
+    "Unknown Stage": {
+      "type": "Simple",
+      "direct_transition": "Delay for Analysis of Possible Treatments",
+      "remarks": [
+        "https://seer.cancer.gov/statfacts/html/dlbcl.html"
+      ]
+    },
+    "Delay for Analysis of Possible Treatments": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      },
+      "direct_transition": "Diffuse Large B-cell Lymphoma Treatment Success Rate"
+    },
+    "Diffuse Large B-cell Lymphoma Treatment Success Rate": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Stage I Treatment",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Stage I"
+          }
+        },
+        {
+          "transition": "Stage II Treatment",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Stage II"
+          }
+        },
+        {
+          "transition": "Stage III Treatment",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Stage III"
+          }
+        },
+        {
+          "transition": "Stage IV Treatment",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Stage IV"
+          }
+        },
+        {
+          "transition": "Unknown Stage Treatment",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Unknown Stage"
+          }
+        }
+      ]
+    },
+    "Stage I Treatment": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Treatment Successful",
+          "distribution": 0.733
+        },
+        {
+          "transition": "Treatment Unsuccessful",
+          "distribution": 0.2669999999999999
+        }
+      ],
+      "remarks": [
+        "5-year relative survival rate by stage:",
+        "Stage I – 73.3%",
+        "https://seer.cancer.gov/statfacts/html/dlbcl.html"
+      ]
+    },
+    "Stage II Treatment": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Treatment Successful",
+          "distribution": 0.727
+        },
+        {
+          "transition": "Treatment Unsuccessful",
+          "distribution": 0.27300000000000013
+        }
+      ],
+      "remarks": [
+        "https://seer.cancer.gov/statfacts/html/dlbcl.html",
+        "5-year relative survival rate by stage:",
+        "Stage II – 72.7%"
+      ]
+    },
+    "Stage III Treatment": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Treatment Unsuccessful",
+          "distribution": 0.363
+        },
+        {
+          "transition": "Treatment Successful",
+          "distribution": 0.637
+        }
+      ],
+      "remarks": [
+        "https://seer.cancer.gov/statfacts/html/dlbcl.html",
+        "5-year relative survival rate by stage:",
+        "Stage III – 63.7%"
+      ]
+    },
+    "Stage IV Treatment": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Treatment Successful",
+          "distribution": 0.527
+        },
+        {
+          "transition": "Treatment Unsuccessful",
+          "distribution": 0.47299999999999986
+        }
+      ],
+      "remarks": [
+        "https://seer.cancer.gov/statfacts/html/dlbcl.html",
+        "5-year relative survival rate by stage",
+        "Stage IV – 52.7%"
+      ]
+    },
+    "Unknown Stage Treatment": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Treatment Unsuccessful",
+          "distribution": 0.42300000000000004
+        },
+        {
+          "transition": "Treatment Successful",
+          "distribution": 0.577
+        }
+      ],
+      "remarks": [
+        "https://seer.cancer.gov/statfacts/html/dlbcl.html",
+        "5-year relative survival rate by stage:",
+        "Unknown – 57.7%"
+      ]
+    },
+    "Treatment Unsuccessful": {
+      "type": "SetAttribute",
+      "attribute": "DLBCL_Survival",
+      "value": "No",
+      "direct_transition": "Impending Death from Cancer Complications"
+    },
+    "Treatment Successful": {
+      "type": "SetAttribute",
+      "attribute": "DLBCL_Survival",
+      "value": "Yes",
+      "direct_transition": "Meet with Oncologist for Treatment Options"
+    },
+    "Impending Death from Cancer Complications": {
+      "type": "Death",
+      "range": {
+        "low": 0,
+        "high": 5,
+        "unit": "years"
+      },
+      "referenced_by_attribute": "DLBCL_Condition",
+      "direct_transition": "Meet with Oncologist for Treatment Options"
+    },
+    "Meet with Oncologist for Treatment Options": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 223484005,
+          "display": "Discussion about treatment (procedure)"
+        }
+      ],
+      "reason": "DLBCL_Condition",
+      "direct_transition": "End Meeting with Oncologist for Treatment Options"
+    },
+    "Choose Treatment Option": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Stage I/II Treatment Round 1",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "Stage I Treatment"
+              },
+              {
+                "condition_type": "PriorState",
+                "name": "Stage II Treatment"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Stage III/IV Treatment Round 1",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "Stage III Treatment"
+              },
+              {
+                "condition_type": "PriorState",
+                "name": "Stage IV Treatment"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Stage I/II Treatment Round 1"
+        }
+      ]
+    },
+    "Meet_with_Oncologist_after_First_Round": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 223484005,
+          "display": "Discussion about treatment (procedure)"
+        }
+      ],
+      "direct_transition": "End Meeting with Oncologist after First Round Treatment",
+      "reason": "DLBCL_Condition"
+    },
+    "End Meeting with Oncologist after First Round Treatment": {
+      "type": "EncounterEnd",
+      "direct_transition": "DLBCL_Treatment_Round_Two"
+    },
+    "End meeting with Oncologist": {
+      "type": "EncounterEnd",
+      "direct_transition": "CAR-T Initial Treatment Encounter"
+    },
+    "Kymriah Infusion": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1986442,
+          "display": "Tisagenlecleucel 250000000 Cells Injection"
+        }
+      ],
+      "direct_transition": "End CAR-T therapy treatment encounter",
+      "assign_to_attribute": "CAR-T_therapy",
+      "reason": "DLBCL_Condition",
+      "remarks": [
+        "https://www.cancer.gov/about-cancer/treatment/research/car-t-cells"
+      ]
+    },
+    "Yescarta Infusion": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1987402,
+          "display": "Axicabtagene ciloleucel 200000000 Cells Injection"
+        }
+      ],
+      "direct_transition": "End CAR-T therapy treatment encounter",
+      "assign_to_attribute": "CAR-T_therapy",
+      "reason": "DLBCL_Condition",
+      "remarks": [
+        "https://lymphoma.org/wp-content/uploads/2018/05/LRF_FACTSHEET_DIFFUSE_LRG_BCELL_LYMPHOMA_DLBCL.pdf"
+      ]
+    },
+    "Patient is monitored in hospital for 1-3 weeks": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "weeks"
+      },
+      "direct_transition": "CAR-T therapy side effect 1"
+    },
+    "Meet with Oncologist": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 310513006,
+          "display": "Discharge by medical oncologist (procedure)"
+        }
+      ],
+      "direct_transition": "End_of_Oncology_meeting"
+    },
+    "Meet with Oncologist after First Round": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 310513006,
+          "display": "Discharge by medical oncologist (procedure)"
+        }
+      ],
+      "direct_transition": "End_Meeting_with_Oncologist_after_First_Round_Treatment"
+    },
+    "End_Meeting_with_Oncologist_after_First_Round_Treatment": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "End_of_Oncology_meeting": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Meet_with_Oncologist": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "DLBCL_Condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 223484005,
+          "display": "Discussion about treatment (procedure)"
+        }
+      ],
+      "direct_transition": "End meeting with Oncologist"
+    },
+    "Risk/Recovery Period for 2-3 months ": {
+      "type": "Delay",
+      "direct_transition": "Follow-up after CAR-T therapy",
+      "range": {
+        "low": 2,
+        "high": 3,
+        "unit": "months"
+      },
+      "remarks": [
+        "https://www.dana-farber.org/cellular-therapies-program/car-t-cell-therapy/faq-about-car-t-cell-therapy/"
+      ]
+    },
+    "PET-CT_Scan": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 450436003,
+          "display": "Positron emission tomography with computed tomography (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Follow-up CAR-T therapy encounter",
+      "reason": "DLBCL_Condition"
+    },
+    "First 30 days after discharge patient remains close to hospital": {
+      "type": "Simple",
+      "direct_transition": "Risk/Recovery Period for 2-3 months ",
+      "remarks": [
+        "https://www.dana-farber.org/cellular-therapies-program/car-t-cell-therapy/faq-about-car-t-cell-therapy/"
+      ]
+    },
+    "Lymphodepleting Chemotherapy": {
+      "type": "Simple",
+      "direct_transition": "Cyclophosphamide"
+    },
+    "Cyclophosphamide": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1734919,
+          "display": "Cyclophosphamide 100MG injection"
+        }
+      ],
+      "direct_transition": "Fludarabine",
+      "reason": "DLBCL_Condition",
+      "remarks": [
+        "Fludarabine and cyclophosphamide are two types of chemotherapy drugs used in lymphodepletion. ",
+        "https://www.cancer.gov/about-cancer/treatment/clinical-trials/search/v?id=NCI-2019-05612#:~:text=Fludarabine%20and%20cyclophosphamide%20are%20two%20types%20of%20chemotherapy,the%20body%20before%20tumor%20infiltrating%20lymphocytes%20are%20infused."
+      ]
+    },
+    "Fludarabine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1740865,
+          "display": "2 ML Fludarabine phosphate 25 MG/ML injection"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Kymriah Infusion",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Yescarta Infusion",
+          "distribution": 0.5
+        }
+      ],
+      "reason": "DLBCL_Condition",
+      "remarks": [
+        "Fludarabine and cyclophosphamide are two types of chemotherapy drugs used in lymphodepletion. ",
+        "https://www.cancer.gov/about-cancer/treatment/clinical-trials/search/v?id=NCI-2019-05612#:~:text=Fludarabine%20and%20cyclophosphamide%20are%20two%20types%20of%20chemotherapy,the%20body%20before%20tumor%20infiltrating%20lymphocytes%20are%20infused."
+      ]
+    },
+    "CAR-T Therapy Treatment Effective": {
+      "type": "Observation",
+      "category": "therapy",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 268910001,
+        "display": "Patient condition improved (finding)"
+      },
+      "direct_transition": "Terminal"
+    },
+    "CAR-T Therapy Treatment Ineffective": {
+      "type": "Observation",
+      "category": "therapy",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 271299001,
+        "display": "Patient condition worsened (finding)"
+      },
+      "direct_transition": "Terminal"
+    },
+    "Blood tests after CAR-T therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 396550006,
+          "display": "Blood test (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 15,
+        "unit": "minutes"
+      },
+      "direct_transition": "PET-CT_Scan",
+      "reason": "DLBCL_Condition",
+      "remarks": [
+        "https://www.yescarta.com/"
+      ]
+    },
+    "End Meeting with Oncologist for Treatment Options": {
+      "type": "EncounterEnd",
+      "direct_transition": "Choose Treatment Option"
+    },
+    "Stage I/II Treatment Round 1": {
+      "type": "CallSubmodule",
+      "submodule": "dlbcl/dlbcl_stage_i_ii_treatment_round_one",
+      "conditional_transition": [
+        {
+          "transition": "Remission after Round 1 Treatment",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Treatment_1_Outcome",
+            "operator": "==",
+            "value": "Remission"
+          }
+        },
+        {
+          "transition": "Patient Worsening after Round 1",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Treatment_1_Outcome",
+            "operator": "==",
+            "value": "Worsened"
+          }
+        }
+      ]
+    },
+    "Stage III/IV Treatment Round 1": {
+      "type": "CallSubmodule",
+      "submodule": "dlbcl/dlbcl_stage_iii_iv_treatment_round_one",
+      "conditional_transition": [
+        {
+          "transition": "Patient Worsening after Round 1",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Treatment_1_Outcome",
+            "operator": "==",
+            "value": "Worsened"
+          }
+        },
+        {
+          "transition": "Remission after Round 1 Treatment",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Treatment_1_Outcome",
+            "operator": "==",
+            "value": "Remission"
+          }
+        }
+      ]
+    },
+    "End Diagnosis Encounter I": {
+      "type": "EncounterEnd",
+      "direct_transition": "DLBCL Found"
+    },
+    "Diffuse Large B-Cell Lymphoma Diagnosis Encounter I": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185345009,
+          "display": "Encounter for Symptom (Procedure)"
+        }
+      ],
+      "direct_transition": "Physical Exam"
+    },
+    "Diagnosis Encounter II": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "DLBCL_Condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "PET-CT Scan"
+    },
+    "End Diagnosis Encounter II": {
+      "type": "EncounterEnd",
+      "direct_transition": "Staging"
+    },
+    "Worsening after Treatment Round 2": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to Cancer Treatment"
+        }
+      ],
+      "direct_transition": "Meet_with_Oncologist",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 271299001,
+        "display": "Patient Condition Worsened (finding)"
+      }
+    },
+    "Patient's cells are genetically modified": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 3,
+        "unit": "weeks"
+      },
+      "direct_transition": "CAR-T Therapy Treatment",
+      "remarks": [
+        "https://www.dana-farber.org/cellular-therapies-program/car-t-cell-therapy/how-car-t-cell-therapy-works/"
+      ]
+    },
+    "End CAR-T therapy treatment encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Patient is monitored in hospital for 1-3 weeks"
+    },
+    "Follow-up after CAR-T therapy": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185389009,
+          "display": "Follow-up visit (procedure)"
+        }
+      ],
+      "direct_transition": "Blood tests after CAR-T therapy",
+      "reason": "DLBCL_Condition"
+    },
+    "End Follow-up CAR-T therapy encounter": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "CAR-T Therapy Treatment Effective",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "DLBCL_Survival",
+            "operator": "==",
+            "value": "Yes"
+          }
+        },
+        {
+          "transition": "CAR-T Therapy Treatment Ineffective",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "DLBCL_Survival",
+            "operator": "==",
+            "value": "No"
+          }
+        }
+      ]
+    },
+    "CAR-T therapy side effect 1": {
+      "type": "Symptom",
+      "symptom": "Cytokine Release Syndrome (flu-like, high fever/chills, low blood pressure, difficulty breathing, and confusion)",
+      "cause": "",
+      "probability": 0.58,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "CAR-T therapy side effect 2",
+      "remarks": [
+        "https://www.novartis.com/news/media-releases/primary-analysis-results-from-novartis-pivotal-juliet-trial-show-kymriahtm-tisagenlecleucel-sustained-complete-responses-six-months-adults-rr-dlbcl-difficult",
+        "- cytokine release syndrome (CRS) occurred in 58% of all treated patients, with 23% of patients experiencing grade 3/4 CRS (using Penn Grading Scale)"
+      ]
+    },
+    "CAR-T therapy side effect 2": {
+      "type": "Symptom",
+      "symptom": "Neurologic symptoms (confusion, difficulty understanding language, and speaking)",
+      "cause": "",
+      "probability": 0.21,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "CAR-T therapy side effect 3",
+      "remarks": [
+        "https://www.novartis.com/news/media-releases/primary-analysis-results-from-novartis-pivotal-juliet-trial-show-kymriahtm-tisagenlecleucel-sustained-complete-responses-six-months-adults-rr-dlbcl-difficult",
+        "- Twenty one percent of patients experienced any grade neurologic events"
+      ]
+    },
+    "CAR-T therapy side effect 3": {
+      "type": "Symptom",
+      "symptom": "Diarrhea",
+      "cause": "",
+      "probability": 1,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "CAR-T therapy side effect 4",
+      "remarks": [
+        "https://www.yescarta.com/"
+      ]
+    },
+    "CAR-T therapy side effect 4": {
+      "type": "Symptom",
+      "symptom": "Nausea",
+      "cause": "",
+      "probability": 1,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "CAR-T therapy side effect 5",
+      "remarks": [
+        "https://www.yescarta.com/"
+      ]
+    },
+    "CAR-T therapy side effect 5": {
+      "type": "Symptom",
+      "symptom": "Fast or irregular heartbeat",
+      "cause": "",
+      "probability": 1,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "CAR-T therapy side effect 6",
+      "remarks": [
+        "https://www.yescarta.com/"
+      ]
+    },
+    "CAR-T therapy side effect 6": {
+      "type": "Symptom",
+      "symptom": "Low White Blood Cell Count",
+      "cause": "",
+      "probability": 1,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "CAR-T therapy side effect 7",
+      "remarks": [
+        "https://www.yescarta.com/"
+      ]
+    },
+    "CAR-T therapy side effect 7": {
+      "type": "Symptom",
+      "symptom": "Low Red Blood Cell Count",
+      "cause": "",
+      "probability": 1,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "First 30 days after discharge patient remains close to hospital",
+      "remarks": [
+        "https://www.yescarta.com/"
+      ]
+    },
+    "CAR-T Initial Treatment Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "DLBCL_Condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Leukopheresis"
+    },
+    "End_CAR_T_Initial_Treatment_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Patient's cells are genetically modified"
+    },
+    "CAR-T Therapy Treatment": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "DLBCL_Condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Lymphodepleting Chemotherapy"
+    },
+    "Leukopheresis": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 77257005,
+          "display": "Leukopheresis (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 3,
+        "high": 4,
+        "unit": "hours"
+      },
+      "reason": "",
+      "direct_transition": "End_CAR_T_Initial_Treatment_Encounter",
+      "remarks": [
+        "https://www.dana-farber.org/cellular-therapies-program/car-t-cell-therapy/how-car-t-cell-therapy-works/"
+      ]
+    },
+    "Remission after Round 1 Treatment": {
+      "type": "Observation",
+      "category": "therapy",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "direct_transition": "Meet with Oncologist after First Round",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 268910001,
+        "display": "Patient Condition Improved (finding)"
+      },
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3961873/",
+        "Approximately 50 to 60% of patients with DLBCL achieve and maintain complete remission after first-line therapy"
+      ]
+    },
+    "Remission after Round 2 Treatment": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to Cancer Treatment"
+        }
+      ],
+      "direct_transition": "Meet with Oncologist",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 260415000,
+        "display": "Not detected (qualifier)"
+      }
+    },
+    "Patient Worsening after Round 1": {
+      "type": "Observation",
+      "category": "therapy",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "direct_transition": "Meet_with_Oncologist_after_First_Round",
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3961873/",
+        "10% have refractory disease",
+        "30 to 40% relapse"
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 271299001,
+        "display": "Patient Condition Worsened (finding)"
+      }
+    },
+    "DLBCL_Treatment_Round_Two": {
+      "type": "CallSubmodule",
+      "submodule": "dlbcl/dlbcl_treatment_round_two",
+      "conditional_transition": [
+        {
+          "transition": "Worsening after Treatment Round 2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Treatment_2_Outcome",
+            "operator": "==",
+            "value": "Worsened"
+          }
+        },
+        {
+          "transition": "Remission after Round 2 Treatment",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Treatment_2_Outcome",
+            "operator": "==",
+            "value": "Remission"
+          }
+        }
+      ]
+    }
+  }
+}

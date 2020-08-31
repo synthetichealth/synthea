@@ -1,0 +1,723 @@
+{
+  "name": "DLBCL_Treatment_Round_Two",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Second Line Treatment"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Second Line Treatment": {
+      "type": "Simple",
+      "direct_transition": "Meet Oncologist for Second-line Treatment Options"
+    },
+    "Meet Oncologist for Second-line Treatment Options": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 223484005,
+          "display": "Discussion about treatment (procedure)"
+        }
+      ],
+      "direct_transition": "End Meeting with Oncologist"
+    },
+    "End Meeting with Oncologist": {
+      "type": "EncounterEnd",
+      "direct_transition": "Interim before Treatment"
+    },
+    "Interim before Treatment": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      },
+      "direct_transition": "Encounter for  Second Line Treatment"
+    },
+    "R-DHAP": {
+      "type": "Simple",
+      "direct_transition": "Rituximab_1",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+      ]
+    },
+    "R-ESHAP": {
+      "type": "Simple",
+      "direct_transition": "Rituximab_2",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+      ]
+    },
+    "R-GDP": {
+      "type": "Simple",
+      "direct_transition": "Rituximab_3",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+      ]
+    },
+    "R-GemOx": {
+      "type": "Simple",
+      "direct_transition": "Rituximab_4",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+      ]
+    },
+    "R-ICE": {
+      "type": "Simple",
+      "direct_transition": "Rituximab_5",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+      ]
+    },
+    "R-MINE": {
+      "type": "Simple",
+      "direct_transition": "Rituximab_6",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+      ]
+    },
+    "Rituximab_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Etoposide_1"
+    },
+    "Rituximab_3": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Gemcitabine_1"
+    },
+    "Rituximab_4": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Gemcitabine_2"
+    },
+    "Rituximab_5": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Ifosfamide_1"
+    },
+    "Rituximab_6": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Mesna"
+    },
+    "Methylprednisolone": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1743779,
+          "display": "1 ML methylprednisolone acetate 40 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Cytarabine_2"
+    },
+    "Cytarabine_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 249364,
+          "display": "20 ML cytarabine 100 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Length of Treatment"
+    },
+    "Cytarabine_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 249364,
+          "display": "20 ML cytarabine 100 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Cisplatin_2"
+    },
+    "Cisplatin_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 309311,
+          "display": "cisplatin 1 MG/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Cytarabine_1"
+    },
+    "Cisplatin_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 309311,
+          "display": "cisplatin 1 MG/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Length of Treatment"
+    },
+    "Dexamethasone_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 2045404,
+          "display": "0.005 ML dexamethasone 103.4 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Cisplatin_3"
+    },
+    "Dexamethasone_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 2045404,
+          "display": "0.005 ML dexamethasone 103.4 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Cisplatin_1"
+    },
+    "Rituximab_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Dexamethasone_1"
+    },
+    "Cisplatin_3": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 309311,
+          "display": "cisplatin 1 MG/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Length of Treatment"
+    },
+    "Gemcitabine_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 2058858,
+          "display": "120 ML gemcitabine 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Dexamethasone_2"
+    },
+    "Gemcitabine_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 2058858,
+          "display": "120 ML gemcitabine 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Oxaliplatin"
+    },
+    "Oxaliplatin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1736776,
+          "display": "10 ML oxaliplatin 5 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Length of Treatment"
+    },
+    "Etoposide_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1734340,
+          "display": "etoposide 100 MG Injection"
+        }
+      ],
+      "direct_transition": "Methylprednisolone"
+    },
+    "Etoposide_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1734340,
+          "display": "etoposide 100 MG Injection"
+        }
+      ],
+      "direct_transition": "Length of Treatment"
+    },
+    "Ifosfamide_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1791599,
+          "display": "20 ML ifosfamide 50 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Carboplatin"
+    },
+    "Carboplatin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 597195,
+          "display": "carboplatin 10 MG/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Etoposide_2"
+    },
+    "Mesna": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 204870,
+          "display": "mesna 100 MG/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Ifosfamide_2"
+    },
+    "Ifosfamide_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1791599,
+          "display": "20 ML ifosfamide 50 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Mitoxantrone"
+    },
+    "Mitoxantrone": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 197989,
+          "display": "mitoxantrone 2 MG/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Etoposide_3"
+    },
+    "Etoposide_3": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1734340,
+          "display": "etoposide 100 MG Injection"
+        }
+      ],
+      "direct_transition": "Length of Treatment"
+    },
+    "Encounter for  Second Line Treatment": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Non_candidates_for_Transplant",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Patients_with_intention_to_proceed_to_transplant",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "End Second Line Treatment Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait for PET-CT Scan"
+    },
+    "Wait for PET-CT Scan": {
+      "type": "Delay",
+      "direct_transition": "Encounter for PET-CT Scan",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      }
+    },
+    "Encounter for PET-CT Scan": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "PET-CT Scan"
+    },
+    "PET-CT Scan": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 450436003,
+          "display": "Positron emission tomography with computed tomography (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "End PET-CT Scan Encounter"
+    },
+    "End PET-CT Scan Encounter": {
+      "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "DLBCL_Survival",
+            "operator": "==",
+            "value": "No"
+          },
+          "distributions": [
+            {
+              "transition": "Worsened",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "DLBCL_Survival",
+            "operator": "==",
+            "value": "Yes"
+          },
+          "distributions": [
+            {
+              "transition": "Remission",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Worsened",
+              "distribution": 0.5
+            }
+          ]
+        }
+      ]
+    },
+    "Patients_with_intention_to_proceed_to_transplant": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "R-DHAP",
+          "distribution": 0.1666
+        },
+        {
+          "transition": "R-ESHAP",
+          "distribution": 0.1666
+        },
+        {
+          "transition": "R-GDP",
+          "distribution": 0.1666
+        },
+        {
+          "transition": "R-GemOx",
+          "distribution": 0.1666
+        },
+        {
+          "transition": "R-ICE",
+          "distribution": 0.1666
+        },
+        {
+          "transition": "R-MINE",
+          "distribution": 0.16700000000000004
+        }
+      ],
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6175435/"
+      ]
+    },
+    "Non_candidates_for_Transplant": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Clinical_Trial_2",
+          "distribution": 0.33
+        },
+        {
+          "transition": "Second-line Therapy Regimens",
+          "distribution": 0.33
+        },
+        {
+          "transition": "Palliative Radiation",
+          "distribution": 0.33999999999999986
+        }
+      ]
+    },
+    "Bendamustine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1805001,
+          "display": "bendamustine hydrochloride 100 MG Injection"
+        }
+      ],
+      "direct_transition": "Rituximab_7"
+    },
+    "Rituximab_7": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Length_of_Treatment"
+    },
+    "Gemcitabine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 2058858,
+          "display": "120 ML gemcitabine 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Rituximab_8"
+    },
+    "Rituximab_8": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Length_of_Treatment"
+    },
+    "Brentuximab vedotin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1147323,
+          "display": "brentuximab vedotin 50 MG Injection"
+        }
+      ],
+      "direct_transition": "Length_of_Treatment"
+    },
+    "Lenalidomide": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 602910,
+          "display": "lenalidomide 10 MG Oral Capsule"
+        }
+      ],
+      "direct_transition": "Rituximab_9"
+    },
+    "Rituximab_9": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Length_of_Treatment"
+    },
+    "Ibrutinib": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1442986,
+          "display": "ibrutinib 140 MG Oral Capsule"
+        }
+      ],
+      "direct_transition": "Length_of_Treatment"
+    },
+    "Second-line Therapy Regimens": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Brentuximab vedotin",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Bendamustine",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Gemcitabine",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Lenalidomide",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Ibrutinib",
+          "distribution": 0.2
+        }
+      ],
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml",
+        "https://jnccn.org/view/journals/jnccn/17/6/article-p650.xml"
+      ]
+    },
+    "Clinical_Trial_2": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 110465008,
+          "display": "Clinical trial (procedure)"
+        }
+      ],
+      "direct_transition": "Length_of_Treatment",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/17/6/article-p650.xml"
+      ]
+    },
+    "Palliative Radiation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 168528006,
+          "display": "Palliative course of radiotherapy (procedure)"
+        }
+      ],
+      "direct_transition": "Length_of_Treatment",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/17/6/article-p650.xml"
+      ]
+    },
+    "Length of Treatment": {
+      "type": "Delay",
+      "direct_transition": "End Second Line Treatment Encounter",
+      "range": {
+        "low": 9,
+        "high": 18,
+        "unit": "weeks"
+      }
+    },
+    "Remission": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to Cancer Treatment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 260415000,
+        "display": "Not detected (qualifier)"
+      },
+      "direct_transition": "Remission After Treatment 2"
+    },
+    "Worsened": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to Cancer Treatment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 271299001,
+        "display": "Patient Condition Worsened (finding)"
+      },
+      "direct_transition": "Worsened After Treatment 2"
+    },
+    "Length_of_Treatment": {
+      "type": "Delay",
+      "direct_transition": "End Second Line Treatment Encounter",
+      "range": {
+        "low": 9,
+        "high": 18,
+        "unit": "weeks"
+      }
+    },
+    "Worsened After Treatment 2": {
+      "type": "SetAttribute",
+      "attribute": "Treatment_2_Outcome",
+      "direct_transition": "Terminal",
+      "value": "Worsened"
+    },
+    "Remission After Treatment 2": {
+      "type": "SetAttribute",
+      "attribute": "Treatment_2_Outcome",
+      "direct_transition": "Terminal",
+      "value": "Remission"
+    }
+  }
+}

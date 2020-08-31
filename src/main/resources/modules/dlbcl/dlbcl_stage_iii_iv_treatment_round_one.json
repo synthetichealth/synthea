@@ -1,0 +1,550 @@
+{
+  "name": "DLBCL_Stage_III_IV_Treatment_Round_One",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Meet with Oncologist to discuss initial treatment options"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "End initial meeting with oncologist": {
+      "type": "EncounterEnd",
+      "direct_transition": "Interim before treatment"
+    },
+    "Meet with Oncologist to discuss initial treatment options": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 223484005,
+          "display": "Discussion about treatment (procedure)"
+        }
+      ],
+      "direct_transition": "End initial meeting with oncologist"
+    },
+    "Interim before treatment": {
+      "type": "Delay",
+      "direct_transition": "Stage III/IV Treatment",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      }
+    },
+    "Stage III/IV Treatment": {
+      "type": "Simple",
+      "direct_transition": "Encounter for first-line therapy"
+    },
+    "Encounter for first-line therapy": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "R-CHOP Drugs",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Clinical Trial",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Clinical Trial": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 110465008,
+          "display": "Clinical trial (procedure)"
+        }
+      ],
+      "direct_transition": "Length_of_Clinical_Trial",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+      ]
+    },
+    "R-CHOP Drugs": {
+      "type": "Simple",
+      "direct_transition": "Rituximab"
+    },
+    "Rituximab": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Cyclophosphamide",
+      "remarks": [
+        "https://www.cancer.org/cancer/non-hodgkin-lymphoma/treating/b-cell-lymphoma.html"
+      ]
+    },
+    "Cyclophosphamide": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1734919,
+          "display": "cyclophosphamide 1000 MG Injection"
+        }
+      ],
+      "direct_transition": "Doxorubicin",
+      "remarks": [
+        "https://www.cancer.org/cancer/non-hodgkin-lymphoma/treating/b-cell-lymphoma.html"
+      ]
+    },
+    "Doxorubicin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1790099,
+          "display": "10 ML doxorubicin hydrochloride 2 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Vincristine sulfate",
+      "remarks": [
+        "https://www.cancer.org/cancer/non-hodgkin-lymphoma/treating/b-cell-lymphoma.html"
+      ]
+    },
+    "Vincristine sulfate": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1863343,
+          "display": "1 ML vincristine sulfate 1 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Prednisone",
+      "remarks": [
+        "https://www.cancer.org/cancer/non-hodgkin-lymphoma/treating/b-cell-lymphoma.html"
+      ]
+    },
+    "Prednisone": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 198144,
+          "display": "prednisone 1 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Complete 2-4 cycles before interim re-staging",
+      "remarks": [
+        "https://www.cancer.org/cancer/non-hodgkin-lymphoma/treating/b-cell-lymphoma.html"
+      ]
+    },
+    "Follow-up with oncologist for re-staging": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185389009,
+          "display": "Follow-up visit (procedure)"
+        }
+      ],
+      "direct_transition": "PET-CT Scan Re-Staging"
+    },
+    "End oncologist follow-up for re-staging": {
+      "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "DLBCL_Survival",
+            "operator": "==",
+            "value": "No"
+          },
+          "distributions": [
+            {
+              "transition": "Patient Worsened after First-line Treatment",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "DLBCL_Survival",
+            "operator": "==",
+            "value": "Yes"
+          },
+          "distributions": [
+            {
+              "transition": "Partial Response to First Line Treatment",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Patient Worsened after First-line Treatment",
+              "distribution": 0.5
+            }
+          ]
+        }
+      ]
+    },
+    "Partial Response to First Line Treatment": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 268910001,
+        "display": "Patient condition improved (finding)"
+      },
+      "direct_transition": "Encounter with oncologist to discuss next steps"
+    },
+    "Patient Worsened after First-line Treatment": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 271299001,
+        "display": "Patient's condition worsened (finding)"
+      },
+      "direct_transition": "Worsened"
+    },
+    "PET-CT Scan Re-Staging": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 450436003,
+          "display": "Positron emission tomography with computed tomography (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "End oncologist follow-up for re-staging",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+      ]
+    },
+    "Complete current treatment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 306805000,
+          "display": "Recommendation to continue with treatment (procedure)"
+        }
+      ],
+      "direct_transition": "End Encounter with oncologist to discuss next steps ",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+      ]
+    },
+    "Encounter with oncologist to discuss next steps": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 223484005,
+          "display": "Discussion about treatment (procedure)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Clinical_Trial",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Complete current treatment",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Clinical_Trial": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 110465008,
+          "display": "Clinical trial (procedure)"
+        }
+      ],
+      "direct_transition": "End_Encounter_with_Oncologist_to_Discuss_Next_Steps",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+      ]
+    },
+    "Complete R-CHOP (total of 6 weeks)": {
+      "type": "Delay",
+      "range": {
+        "low": 6,
+        "high": 12,
+        "unit": "weeks"
+      },
+      "direct_transition": "Encounter for end-of-treatment re-staging",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+      ]
+    },
+    "End Encounter with oncologist to discuss next steps ": {
+      "type": "EncounterEnd",
+      "direct_transition": "Complete R-CHOP (total of 6 weeks)"
+    },
+    "Encounter for end-of-treatment re-staging": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185389009,
+          "display": "Follow-up visit (procedure)"
+        }
+      ],
+      "direct_transition": "End-of-treatment PET-CT scan re-staging"
+    },
+    "End-of-treatment PET-CT scan re-staging": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 450436003,
+          "display": "Positron emission tomography with computed tomography (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "End the end-of-treatment re-staging encounter",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+      ]
+    },
+    "Patient is in remission": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 260415000,
+        "display": "Not detected (qualifier)"
+      },
+      "direct_transition": "Interim before check-up"
+    },
+    "Patient worsens": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 271299001,
+        "display": "Patient's condition worsened (finding)"
+      },
+      "direct_transition": "Worsened"
+    },
+    "Check-up": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185349003,
+          "display": "Encounter for check up (procedure)"
+        }
+      ],
+      "direct_transition": "Blood tests"
+    },
+    "Patient stays in remission": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 359746009,
+        "display": "Patient's condition stable (finding)"
+      },
+      "direct_transition": "Remission"
+    },
+    "Blood tests": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 396550006,
+          "display": "Blood test (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 15,
+        "unit": "minutes"
+      },
+      "direct_transition": "End of check-up",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+      ]
+    },
+    "Patient relapses": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 271299001,
+        "display": "Patient's condition worsened (finding)"
+      },
+      "direct_transition": "Worsened"
+    },
+    "End encounter for first-line therapy": {
+      "type": "EncounterEnd",
+      "direct_transition": "Follow-up with oncologist for re-staging"
+    },
+    "Complete 2-4 cycles before interim re-staging": {
+      "type": "Delay",
+      "range": {
+        "low": 6,
+        "high": 12,
+        "unit": "weeks"
+      },
+      "direct_transition": "End encounter for first-line therapy",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+      ]
+    },
+    "End the end-of-treatment re-staging encounter": {
+      "type": "EncounterEnd",
+      "distributed_transition": [
+        {
+          "transition": "Patient is in remission",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Patient worsens",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "End of check-up": {
+      "type": "EncounterEnd",
+      "distributed_transition": [
+        {
+          "transition": "Patient stays in remission",
+          "distribution": 0.65
+        },
+        {
+          "transition": "Patient relapses",
+          "distribution": 0.3500000000000001
+        }
+      ]
+    },
+    "Remission": {
+      "type": "SetAttribute",
+      "attribute": "Treatment_1_Outcome",
+      "direct_transition": "Terminal",
+      "value": "Remission"
+    },
+    "Worsened": {
+      "type": "SetAttribute",
+      "attribute": "Treatment_1_Outcome",
+      "direct_transition": "Terminal",
+      "value": "Worsened"
+    },
+    "Length of clinical trial": {
+      "type": "Delay",
+      "range": {
+        "low": 6,
+        "high": 24,
+        "unit": "months"
+      },
+      "direct_transition": "Encounter for end-of-treatment re-staging",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+      ]
+    },
+    "End_Encounter_with_Oncologist_to_Discuss_Next_Steps": {
+      "type": "EncounterEnd",
+      "direct_transition": "Length of clinical trial"
+    },
+    "Interim before check-up": {
+      "type": "Delay",
+      "direct_transition": "Check-up",
+      "range": {
+        "low": 3,
+        "high": 6,
+        "unit": "months"
+      }
+    },
+    "Length_of_Clinical_Trial": {
+      "type": "Delay",
+      "direct_transition": "End encounter for first-line therapy",
+      "range": {
+        "low": 6,
+        "high": 24,
+        "unit": "months"
+      }
+    }
+  }
+}
