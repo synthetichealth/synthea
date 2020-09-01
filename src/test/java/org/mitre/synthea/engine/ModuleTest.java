@@ -29,6 +29,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.mitre.synthea.helpers.Utilities;
@@ -189,7 +190,9 @@ public class ModuleTest {
   @Test
   public void rejectModulesFromFutureVersions() throws Exception {
     try {
-      String jsonString = Files.readString(Paths.get("src", "test", "resources", "future_module", "module_from_the_future.json"));
+      String jsonString = Files.readAllLines(Paths.get("src", "test", "resources", "future_module", "module_from_the_future.json"))
+          .stream()
+          .collect(Collectors.joining("\n"));
       JsonParser parser = new JsonParser();
       JsonObject object = parser.parse(jsonString).getAsJsonObject();
       new Module(object, false);
