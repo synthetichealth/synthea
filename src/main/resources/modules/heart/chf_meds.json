@@ -295,5 +295,6 @@
       "chronic": true,
       "direct_transition": "Diuretic"
     }
-  }
+  },
+  "gmfVersion": 1
 }

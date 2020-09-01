@@ -497,5 +497,6 @@
       },
       "direct_transition": "Replace_Contraceptive_Implant"
     }
-  }
+  },
+  "gmfVersion": 1
 }

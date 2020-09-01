@@ -923,5 +923,6 @@
     "Allergy_Test_Terminal": {
       "type": "Terminal"
     }
-  }
+  },
+  "gmfVersion": 1
 }

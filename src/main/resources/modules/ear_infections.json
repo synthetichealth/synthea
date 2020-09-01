@@ -243,5 +243,6 @@
         "this state only exists to make the graph look nicer"
       ]
     }
-  }
+  },
+  "gmfVersion": 1
 }

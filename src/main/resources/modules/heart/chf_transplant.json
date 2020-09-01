@@ -80,5 +80,6 @@
       "reason": "chf",
       "direct_transition": "Discharge"
     }
-  }
+  },
+  "gmfVersion": 1
 }

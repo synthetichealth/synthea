@@ -140,5 +140,6 @@
     "Strong_Opioid_Terminal": {
       "type": "Terminal"
     }
-  }
+  },
+  "gmfVersion": 1
 }

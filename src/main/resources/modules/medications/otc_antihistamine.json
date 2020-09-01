@@ -445,5 +445,6 @@
     "OTC_Anthistamine_Terminal": {
       "type": "Terminal"
     }
-  }
+  },
+  "gmfVersion": 1
 }

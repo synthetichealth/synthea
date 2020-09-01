@@ -2095,5 +2095,6 @@
       },
       "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options"
     }
-  }
+  },
+  "gmfVersion": 1
 }

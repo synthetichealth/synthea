@@ -683,5 +683,6 @@
       "type": "EncounterEnd",
       "direct_transition": "Treating_Flare_Up"
     }
-  }
+  },
+  "gmfVersion": 1
 }

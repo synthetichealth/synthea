@@ -112,5 +112,6 @@
       "value": false,
       "direct_transition": "Check D-Dimer"
     }
-  }
+  },
+  "gmfVersion": 1
 }

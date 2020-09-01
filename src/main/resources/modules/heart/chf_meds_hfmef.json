@@ -335,5 +335,6 @@
       "chronic": true,
       "direct_transition": "Terminal"
     }
-  }
+  },
+  "gmfVersion": 1
 }

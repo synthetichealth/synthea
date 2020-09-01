@@ -131,5 +131,6 @@
       "direct_transition": "Terminal",
       "value": 0.004
     }
-  }
+  },
+  "gmfVersion": 1
 }

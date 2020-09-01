@@ -742,5 +742,6 @@
       "direct_transition": "Dialysis weight record",
       "referenced_by_attribute": "anemia_medication"
     }
-  }
+  },
+  "gmfVersion": 1
 }

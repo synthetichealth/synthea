@@ -827,5 +827,6 @@
     "Allergy_Incidence_Terminal": {
       "type": "Terminal"
     }
-  }
+  },
+  "gmfVersion": 1
 }

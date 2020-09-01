@@ -620,5 +620,6 @@
       "unit": "kg",
       "direct_transition": "NTproBNP_lab_workup"
     }
-  }
+  },
+  "gmfVersion": 1
 }
