@@ -2,6 +2,8 @@ package org.mitre.synthea.export;
 
 import static org.mitre.synthea.export.ExportHelper.nextFriday;
 
+import com.google.gson.JsonObject;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -14,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.helpers.SimpleCSV;
@@ -23,6 +26,7 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider.ProviderType;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 
 /**
  * BlueButton 2 Exporter.
@@ -33,9 +37,11 @@ public class BB2Exporter implements Flushable {
   private SynchronizedBBLineWriter outpatient;
   private SynchronizedBBLineWriter inpatient;
   private SynchronizedBBLineWriter carrier;
+  private SynchronizedBBLineWriter prescription;
 
   private AtomicInteger claimId; // per claim per encounter
   private AtomicInteger claimGroupId; // per encounter
+  private AtomicInteger pdeId; // per medication claim
 
   private List<LinkedHashMap<String, String>> carrierLookup;
 
@@ -63,6 +69,7 @@ public class BB2Exporter implements Flushable {
   private BB2Exporter() {
     claimId = new AtomicInteger();
     claimGroupId = new AtomicInteger();
+    pdeId = new AtomicInteger();
     try {
       String csv = Utilities.readResource("payers/carriers.csv");
       if (csv.startsWith("\uFEFF")) {
@@ -99,6 +106,9 @@ public class BB2Exporter implements Flushable {
     if (carrier != null) {
       carrier.close();
     }
+    if (prescription != null) {
+      prescription.close();
+    }
 
     // Initialize output files
     File output = Exporter.getOutputFolder("bb2", null);
@@ -120,6 +130,10 @@ public class BB2Exporter implements Flushable {
     File carrierFile = outputDirectory.resolve("carrier.csv").toFile();
     carrier = new SynchronizedBBLineWriter(carrierFile);
     carrier.writeHeader(CarrierFields.class);
+
+    File prescriptionFile = outputDirectory.resolve("prescription.csv").toFile();
+    prescription = new SynchronizedBBLineWriter(prescriptionFile);
+    prescription.writeHeader(PrescriptionFields.class);
   }
   
   /**
@@ -133,6 +147,7 @@ public class BB2Exporter implements Flushable {
     exportOutpatient(person, stopTime);
     exportInpatient(person, stopTime);
     exportCarrier(person, stopTime);
+    exportPrescription(person, stopTime);
   }
   
   /**
@@ -505,6 +520,96 @@ public class BB2Exporter implements Flushable {
   }
 
   /**
+   * Export prescription claims details for a single person.
+   * @param person the person to export
+   * @param stopTime end time of simulation
+   * @throws IOException if something goes wrong
+   */
+  private void exportPrescription(Person person, long stopTime) throws IOException {
+    HashMap<PrescriptionFields, String> fieldValues = new HashMap<>();
+    HashMap<String, Integer> fillNum = new HashMap<>();
+    double costs = 0;
+    int costYear = 0;
+
+    for (HealthRecord.Encounter encounter : person.record.encounters) {
+      for (Medication medication : encounter.medications) {
+
+        int pdeId = this.pdeId.incrementAndGet();
+        int claimGroupId = this.claimGroupId.incrementAndGet();
+
+        fieldValues.clear();
+        // The REQUIRED fields
+        fieldValues.put(PrescriptionFields.DML_IND, "INSERT");
+        fieldValues.put(PrescriptionFields.PDE_ID, "" + pdeId);
+        fieldValues.put(PrescriptionFields.CLM_GRP_ID, "" + claimGroupId);
+        fieldValues.put(PrescriptionFields.FINAL_ACTION, "F");
+        fieldValues.put(PrescriptionFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
+        fieldValues.put(PrescriptionFields.SRVC_DT, bb2DateFromTimestamp(encounter.start));
+        fieldValues.put(PrescriptionFields.SRVC_PRVDR_ID_QLFYR_CD, "01"); // undefined
+        fieldValues.put(PrescriptionFields.SRVC_PRVDR_ID, encounter.provider.id);
+        fieldValues.put(PrescriptionFields.PRSCRBR_ID_QLFYR_CD, "01"); // undefined
+        fieldValues.put(PrescriptionFields.PRSCRBR_ID,
+            "" + (9_999_999_999L - encounter.clinician.identifier));
+        fieldValues.put(PrescriptionFields.RX_SRVC_RFRNC_NUM, "" + pdeId);
+        // TODO this should be an NDC code, not RxNorm
+        fieldValues.put(PrescriptionFields.PROD_SRVC_ID, medication.codes.get(0).code);
+        // H=hmo, R=ppo, S=stand-alone, E=employer direct, X=limited income
+        fieldValues.put(PrescriptionFields.PLAN_CNTRCT_REC_ID,
+            ("R" + Math.abs(
+                UUID.fromString(medication.claim.payer.uuid)
+                .getMostSignificantBits())).substring(0, 5));
+        fieldValues.put(PrescriptionFields.PLAN_PBP_REC_NUM, "999");
+        // 0=not specified, 1=not compound, 2=compound
+        fieldValues.put(PrescriptionFields.CMPND_CD, "0");
+        fieldValues.put(PrescriptionFields.DAW_PROD_SLCTN_CD, "" + (int) person.rand(0, 9));
+        fieldValues.put(PrescriptionFields.QTY_DSPNSD_NUM, "" + getQuantity(medication, stopTime));
+        fieldValues.put(PrescriptionFields.DAYS_SUPLY_NUM, "" + getDays(medication, stopTime));
+        Integer fill = 1;
+        if (fillNum.containsKey(medication.codes.get(0).code)) {
+          fill = 1 + fillNum.get(medication.codes.get(0).code);
+        }
+        fillNum.put(medication.codes.get(0).code, fill);
+        fieldValues.put(PrescriptionFields.FILL_NUM, "" + fill);
+        fieldValues.put(PrescriptionFields.DRUG_CVRG_STUS_CD, "C");
+        int year = Utilities.getYear(medication.start);
+        if (year != costYear) {
+          costYear = year;
+          costs = 0;
+        }
+        costs += medication.claim.getPatientCost();
+        if (costs <= 4550.00) {
+          fieldValues.put(PrescriptionFields.GDC_BLW_OOPT_AMT, "" + costs);
+          fieldValues.put(PrescriptionFields.GDC_ABV_OOPT_AMT, "0");
+        } else {
+          fieldValues.put(PrescriptionFields.GDC_BLW_OOPT_AMT, "4550.00");
+          fieldValues.put(PrescriptionFields.GDC_ABV_OOPT_AMT, "" + (costs - 4550));
+        }
+        fieldValues.put(PrescriptionFields.PTNT_PAY_AMT, "" + medication.claim.getPatientCost());
+        fieldValues.put(PrescriptionFields.OTHR_TROOP_AMT, "0");
+        fieldValues.put(PrescriptionFields.LICS_AMT, "0");
+        fieldValues.put(PrescriptionFields.PLRO_AMT, "0");
+        fieldValues.put(PrescriptionFields.CVRD_D_PLAN_PD_AMT,
+            "" + medication.claim.getCoveredCost());
+        fieldValues.put(PrescriptionFields.NCVRD_PLAN_PD_AMT,
+            "" + medication.claim.getPatientCost());
+        fieldValues.put(PrescriptionFields.TOT_RX_CST_AMT,
+            "" + medication.claim.getTotalClaimCost());
+        fieldValues.put(PrescriptionFields.RPTD_GAP_DSCNT_NUM, "0");
+        fieldValues.put(PrescriptionFields.PHRMCY_SRVC_TYPE_CD, "0" + (int) person.rand(1, 8));
+        // 00=not specified, 01=home, 02=SNF, 03=long-term, 11=hospice, 14=homeless
+        if (person.attributes.containsKey("homeless")
+            && ((Boolean) person.attributes.get("homeless") == true)) {
+          fieldValues.put(PrescriptionFields.PTNT_RSDNC_CD, "14");
+        } else {
+          fieldValues.put(PrescriptionFields.PTNT_RSDNC_CD, "01");
+        }
+
+        prescription.writeValues(PrescriptionFields.class, fieldValues);
+      }
+    }
+  }
+
+  /**
    * Flush contents of any buffered streams to disk.
    * @throws IOException if something goes wrong
    */
@@ -514,6 +619,7 @@ public class BB2Exporter implements Flushable {
     inpatient.flush();
     outpatient.flush();
     carrier.flush();
+    prescription.flush();
   }
 
   /**
@@ -542,6 +648,7 @@ public class BB2Exporter implements Flushable {
           bbRaceCode = "6";
           break;
         case "other":
+        default:
           bbRaceCode = "3";
           break;
       }
@@ -558,7 +665,51 @@ public class BB2Exporter implements Flushable {
     return "0";
   }
 
-  
+  private int getQuantity(Medication medication, long stopTime) {
+    double amountPerDay = 1;
+    double days = getDays(medication, stopTime);
+
+    if (medication.prescriptionDetails != null
+        && medication.prescriptionDetails.has("dosage")) {
+      JsonObject dosage = medication.prescriptionDetails.getAsJsonObject("dosage");
+      long amount = dosage.get("amount").getAsLong();
+      long frequency = dosage.get("frequency").getAsLong();
+      long period = dosage.get("period").getAsLong();
+      String units = dosage.get("unit").getAsString();
+      long periodTime = Utilities.convertTime(units, period);
+
+      long perPeriod = amount * frequency;
+      amountPerDay = (double) ((double) (perPeriod * periodTime) / (1000.0 * 60 * 60 * 24));
+      if (amountPerDay == 0) {
+        amountPerDay = 1;
+      }
+    }
+
+    return (int) (amountPerDay * days);
+  }
+
+  private int getDays(Medication medication, long stopTime) {
+    double days = 1;
+    long stop = medication.stop;
+    if (stop == 0L) {
+      stop = stopTime;
+    }
+    long medDuration = stop - medication.start;
+    days = (double) (medDuration / (1000 * 60 * 60 * 24));
+
+    if (medication.prescriptionDetails != null
+        && medication.prescriptionDetails.has("duration")) {
+      JsonObject duration = medication.prescriptionDetails.getAsJsonObject("duration");
+      long quantity = duration.get("quantity").getAsLong();
+      String unit = duration.get("unit").getAsString();
+      long durationTime = Utilities.convertTime(unit, quantity);
+      double durationTimeInDays = (double) (durationTime / (1000 * 60 * 60 * 24));
+      if (durationTimeInDays > days) {
+        days = durationTimeInDays;
+      }
+    }
+    return (int) days;
+  }
 
   /**
    * Defines the fields used in the beneficiary file. Note that order is significant, columns will
@@ -1369,6 +1520,50 @@ public class BB2Exporter implements Flushable {
     LINE_NDC_CD,
     CARR_LINE_CLIA_LAB_NUM,
     CARR_LINE_ANSTHSA_UNIT_CNT
+  }
+
+  public enum PrescriptionFields {
+    DML_IND,
+    PDE_ID,
+    CLM_GRP_ID,
+    FINAL_ACTION,
+    BENE_ID,
+    SRVC_DT,
+    PD_DT,
+    SRVC_PRVDR_ID_QLFYR_CD,
+    SRVC_PRVDR_ID,
+    PRSCRBR_ID_QLFYR_CD,
+    PRSCRBR_ID,
+    RX_SRVC_RFRNC_NUM,
+    PROD_SRVC_ID,
+    PLAN_CNTRCT_REC_ID,
+    PLAN_PBP_REC_NUM,
+    CMPND_CD,
+    DAW_PROD_SLCTN_CD,
+    QTY_DSPNSD_NUM,
+    DAYS_SUPLY_NUM,
+    FILL_NUM,
+    DSPNSNG_STUS_CD,
+    DRUG_CVRG_STUS_CD,
+    ADJSTMT_DLTN_CD,
+    NSTD_FRMT_CD,
+    PRCNG_EXCPTN_CD,
+    CTSTRPHC_CVRG_CD,
+    GDC_BLW_OOPT_AMT,
+    GDC_ABV_OOPT_AMT,
+    PTNT_PAY_AMT,
+    OTHR_TROOP_AMT,
+    LICS_AMT,
+    PLRO_AMT,
+    CVRD_D_PLAN_PD_AMT,
+    NCVRD_PLAN_PD_AMT,
+    TOT_RX_CST_AMT,
+    RX_ORGN_CD,
+    RPTD_GAP_DSCNT_NUM,
+    BRND_GNRC_CD,
+    PHRMCY_SRVC_TYPE_CD,
+    PTNT_RSDNC_CD,
+    SUBMSN_CLR_CD
   }
 
   /**
