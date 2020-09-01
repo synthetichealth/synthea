@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -169,7 +171,6 @@ public class ModuleTest {
   public void addLocalModules() {
     Module.addModules(new File("src/test/resources/module"));
     List<Module> allModules = Module.getModules();
-    allModules = Module.getModules();
     assertTrue(allModules.stream().filter(filterOnModuleName("COPD_TEST")).count() == 1);
   }
 
@@ -183,6 +184,20 @@ public class ModuleTest {
       assertSame(fault, e.getCause());
     }
     Module.getModuleByPath("bad_module"); // should not fail now
+  }
+
+  @Test
+  public void rejectModulesFromFutureVersions() throws Exception {
+    try {
+      String jsonString = Files.readString(Path.of("src", "test", "resources", "future_module", "module_from_the_future.json"));
+      JsonParser parser = new JsonParser();
+      JsonObject object = parser.parse(jsonString).getAsJsonObject();
+      new Module(object, false);
+      // Should never get here
+      fail("Didn't throw exception when loading module with version from the future");
+    } catch (IllegalStateException ise) {
+      assertTrue(ise.getMessage().startsWith("Module specifies GMF version"));
+    }
   }
 
   @Test

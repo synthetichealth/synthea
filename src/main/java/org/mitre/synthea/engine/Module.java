@@ -54,6 +54,8 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class Module implements Cloneable, Serializable {
 
+  public static final Double GMF_VERSION = 1.0;
+
   private static final Configuration JSON_PATH_CONFIG = Configuration.builder()
       .jsonProvider(new GsonJsonProvider())
       .mappingProvider(new GsonMappingProvider())
@@ -252,6 +254,7 @@ public class Module implements Cloneable, Serializable {
 
   public String name;
   public boolean submodule;
+  public Double gmfVersion;
   public List<String> remarks;
   private Map<String, State> states;
 
@@ -273,6 +276,14 @@ public class Module implements Cloneable, Serializable {
       JsonElement jsonRemarks = definition.get("remarks");
       for (JsonElement value : jsonRemarks.getAsJsonArray()) {
         remarks.add(value.getAsString());
+      }
+    }
+
+    if(definition.has("gmfVersion")) {
+      this.gmfVersion = definition.get("gmfVersion").getAsDouble();
+      if(this.gmfVersion > GMF_VERSION) {
+        throw new IllegalStateException(String.format("Module specifies GMF version %f in JSON, " +
+            "which is beyond the known GMF version of %f", this.gmfVersion, GMF_VERSION));
       }
     }
 
