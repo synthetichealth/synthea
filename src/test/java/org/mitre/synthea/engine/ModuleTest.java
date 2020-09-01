@@ -17,7 +17,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -189,7 +189,7 @@ public class ModuleTest {
   @Test
   public void rejectModulesFromFutureVersions() throws Exception {
     try {
-      String jsonString = Files.readString(Path.of("src", "test", "resources", "future_module", "module_from_the_future.json"));
+      String jsonString = Files.readString(Paths.get("src", "test", "resources", "future_module", "module_from_the_future.json"));
       JsonParser parser = new JsonParser();
       JsonObject object = parser.parse(jsonString).getAsJsonObject();
       new Module(object, false);
