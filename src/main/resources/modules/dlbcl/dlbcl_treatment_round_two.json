@@ -670,7 +670,7 @@
         {
           "system": "LOINC",
           "code": "88040-1",
-          "display": "Response to Cancer Treatment"
+          "display": "Response to cancer treatment"
         }
       ],
       "value_code": {
@@ -688,13 +688,13 @@
         {
           "system": "LOINC",
           "code": "88040-1",
-          "display": "Response to Cancer Treatment"
+          "display": "Response to cancer treatment"
         }
       ],
       "value_code": {
         "system": "SNOMED-CT",
         "code": 271299001,
-        "display": "Patient Condition Worsened (finding)"
+        "display": "Patient's condition worsened (finding)"
       },
       "direct_transition": "Worsened After Treatment 2"
     },

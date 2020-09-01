@@ -174,7 +174,7 @@
         "Check-ups every 3 to 6 months for 5 years",
         "https://jnccn.org/view/journals/jnccn/17/6/article-p650.xml"
       ],
-      "direct_transition": "Blood tests"
+      "direct_transition": "Check-Up"
     },
     "Blood tests": {
       "type": "Procedure",
@@ -336,14 +336,30 @@
     "Worsened": {
       "type": "SetAttribute",
       "attribute": "Treatment_1_Outcome",
-      "direct_transition": "Terminal",
+      "direct_transition": "End Check-Up",
       "value": "Worsened"
     },
     "Remission": {
       "type": "SetAttribute",
       "attribute": "Treatment_1_Outcome",
-      "direct_transition": "Terminal",
+      "direct_transition": "End Check-Up",
       "value": "Remission"
+    },
+    "Check-Up": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185349003,
+          "display": "Encounter for check up (procedure)"
+        }
+      ],
+      "direct_transition": "Blood tests"
+    },
+    "End Check-Up": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
     }
   }
 }
