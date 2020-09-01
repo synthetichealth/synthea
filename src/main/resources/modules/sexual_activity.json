@@ -489,5 +489,6 @@
     "Terminal": {
       "type": "Terminal"
     }
-  }
+  },
+  "gmfVersion": 1
 }

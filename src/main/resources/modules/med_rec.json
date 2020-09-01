@@ -41,5 +41,6 @@
       "type": "EncounterEnd",
       "direct_transition": "Initial"
     }
-  }
+  },
+  "gmfVersion": 1
 }

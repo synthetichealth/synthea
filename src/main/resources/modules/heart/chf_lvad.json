@@ -89,5 +89,6 @@
       "type": "EncounterEnd",
       "direct_transition": "Terminal"
     }
-  }
+  },
+  "gmfVersion": 1
 }

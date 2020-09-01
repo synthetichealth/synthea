@@ -1501,7 +1501,7 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 16335031000119103,
+        "code": 16335031000119104,
         "display": "High resolution computed tomography of chest without contrast (procedure)"
       },
       "series": [
@@ -1536,7 +1536,7 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 16335031000119103,
+        "code": 16335031000119104,
         "display": "High resolution computed tomography of chest without contrast (procedure)"
       },
       "series": [
@@ -2558,5 +2558,6 @@
         }
       ]
     }
-  }
+  },
+  "gmfVersion": 1
 }

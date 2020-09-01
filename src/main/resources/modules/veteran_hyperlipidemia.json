@@ -836,5 +836,6 @@
       "assign_to_attribute": "statin_renewal",
       "direct_transition": "end encounter"
     }
-  }
+  },
+  "gmfVersion": 1
 }

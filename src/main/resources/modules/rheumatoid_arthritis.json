@@ -41,7 +41,7 @@
       },
       "direct_transition": "RA_Symptom1"
     },
-     "RA_Symptom1": {
+    "RA_Symptom1": {
       "type": "Symptom",
       "symptom": "Joint Pain",
       "range": {
@@ -50,7 +50,7 @@
       },
       "direct_transition": "RA_Symptom2"
     },
-     "RA_Symptom2": {
+    "RA_Symptom2": {
       "type": "Symptom",
       "symptom": "Joint Stiffness",
       "range": {
@@ -334,7 +334,7 @@
       },
       "direct_transition": "RA_Symptom2_Ends"
     },
-     "RA_Symptom2_Ends": {
+    "RA_Symptom2_Ends": {
       "type": "Symptom",
       "symptom": "Joint Stiffness",
       "exact": {
@@ -342,7 +342,7 @@
       },
       "direct_transition": "RA_Symptom3_Ends"
     },
-     "RA_Symptom3_Ends": {
+    "RA_Symptom3_Ends": {
       "type": "Symptom",
       "symptom": "Joint Swelling",
       "exact": {
@@ -350,7 +350,7 @@
       },
       "direct_transition": "RA_Symptom4_Ends"
     },
-     "RA_Symptom4_Ends": {
+    "RA_Symptom4_Ends": {
       "type": "Symptom",
       "symptom": "Fatigue",
       "exact": {
@@ -358,7 +358,7 @@
       },
       "direct_transition": "RA_Symptom5_Ends"
     },
-     "RA_Symptom5_Ends": {
+    "RA_Symptom5_Ends": {
       "type": "Symptom",
       "symptom": "Fever",
       "exact": {
@@ -369,5 +369,6 @@
     "Terminal": {
       "type": "Terminal"
     }
-  }
+  },
+  "gmfVersion": 1
 }

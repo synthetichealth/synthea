@@ -95,5 +95,6 @@
         "25.6 deaths / 100k * 12 attempts / completion == 307.2 attempts / 100k == .003072 == .3 % lifetime probability"
       ]
     }
-  }
+  },
+  "gmfVersion": 1
 }

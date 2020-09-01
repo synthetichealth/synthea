@@ -1251,5 +1251,6 @@
       "submodule": "covid19/measurements_vitals",
       "direct_transition": "Suspected COVID"
     }
-  }
+  },
+  "gmfVersion": 1
 }

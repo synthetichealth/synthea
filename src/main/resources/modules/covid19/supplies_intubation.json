@@ -196,5 +196,6 @@
       "direct_transition": "Supplies_Intubation",
       "assign_to_attribute": "covid19_laryngoscope"
     }
-  }
+  },
+  "gmfVersion": 1
 }

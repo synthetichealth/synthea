@@ -629,5 +629,6 @@
       "value": "Late_Gulf_War",
       "direct_transition": "Terminal"
     }
-  }
+  },
+  "gmfVersion": 1
 }

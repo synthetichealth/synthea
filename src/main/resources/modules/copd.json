@@ -1006,5 +1006,6 @@
       "type": "EncounterEnd",
       "direct_transition": "Consider_Surgery"
     }
-  }
+  },
+  "gmfVersion": 1
 }

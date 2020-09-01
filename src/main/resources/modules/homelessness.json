@@ -438,5 +438,6 @@
       "value": false,
       "direct_transition": "Potential_Homelessness"
     }
-  }
+  },
+  "gmfVersion": 1
 }

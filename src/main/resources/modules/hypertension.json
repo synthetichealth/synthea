@@ -723,5 +723,6 @@
       "type": "Simple",
       "direct_transition": "Terminal"
     }
-  }
+  },
+  "gmfVersion": 1
 }

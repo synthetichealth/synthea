@@ -527,5 +527,6 @@
       "referenced_by_attribute": "ER_PR_medication",
       "direct_transition": "end_encounter"
     }
-  }
+  },
+  "gmfVersion": 1
 }
