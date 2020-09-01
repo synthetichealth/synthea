@@ -1,0 +1,41 @@
+{
+  "name": "Allergies... FROM THE FUTURE!!!!",
+  "gmfVersion": 99.0,
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Allergy_to_Eggs"
+    },
+    "Allergy_to_Eggs": {
+      "type": "AllergyOnset",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "91930004",
+        "display": "Allergy to eggs"
+      }],
+      "target_encounter": "Dr_Visit",
+      "direct_transition": "Dr_Visit"
+    },
+    "Dr_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185345009",
+          "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "Allergy_Ends"
+    },
+    "Allergy_Ends" : {
+      "type" : "AllergyEnd",
+      "allergy_onset" : "Allergy_to_Eggs",
+      "direct_transition" : "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
