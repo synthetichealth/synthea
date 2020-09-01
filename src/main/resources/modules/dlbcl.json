@@ -301,7 +301,7 @@
         "unit": "minutes"
       },
       "reason": "DLBCL_Condition",
-      "direct_transition": "End Diagnosis Encounter II",
+      "direct_transition": "Staging",
       "remarks": [
         "https://lymphoma.org/wp-content/uploads/2018/05/LRF_FACTSHEET_DIFFUSE_LRG_BCELL_LYMPHOMA_DLBCL.pdf"
       ]
@@ -339,7 +339,7 @@
         {
           "system": "LOINC",
           "code": "21908-9",
-          "display": "LOINC Code"
+          "display": "Stage group.clinical Cancer"
         }
       ],
       "value_code": {
@@ -347,7 +347,7 @@
         "code": 30440004,
         "display": "Lymphoma Stage I"
       },
-      "direct_transition": "Delay for Analysis of Possible Treatments",
+      "direct_transition": "End Diagnosis Encounter II",
       "remarks": [
         "https://seer.cancer.gov/statfacts/html/dlbcl.html"
       ]
@@ -359,8 +359,8 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": "21908-9]",
-          "display": "LOINC Code"
+          "code": "21908-9",
+          "display": "Stage group.clinical Cancer"
         }
       ],
       "value_code": {
@@ -368,7 +368,7 @@
         "code": 76422004,
         "display": "Lymphoma Stage II"
       },
-      "direct_transition": "Delay for Analysis of Possible Treatments",
+      "direct_transition": "End Diagnosis Encounter II",
       "remarks": [
         "https://seer.cancer.gov/statfacts/html/dlbcl.html"
       ]
@@ -380,8 +380,8 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": "21909-9",
-          "display": "LOINC Code"
+          "code": "21908-9",
+          "display": "Stage group.clinical Cancer"
         }
       ],
       "value_code": {
@@ -389,7 +389,7 @@
         "code": 56944001,
         "display": "Lymphoma Stage III"
       },
-      "direct_transition": "Delay for Analysis of Possible Treatments",
+      "direct_transition": "End Diagnosis Encounter II",
       "remarks": [
         "https://seer.cancer.gov/statfacts/html/dlbcl.html"
       ]
@@ -402,7 +402,7 @@
         {
           "system": "LOINC",
           "code": "21908-9",
-          "display": "LOINC Code"
+          "display": "Stage group.clinical Cancer"
         }
       ],
       "value_code": {
@@ -410,26 +410,17 @@
         "code": 66445009,
         "display": "Lymphoma Stage IV"
       },
-      "direct_transition": "Delay for Analysis of Possible Treatments",
+      "direct_transition": "End Diagnosis Encounter II",
       "remarks": [
         "https://seer.cancer.gov/statfacts/html/dlbcl.html"
       ]
     },
     "Unknown Stage": {
       "type": "Simple",
-      "direct_transition": "Delay for Analysis of Possible Treatments",
+      "direct_transition": "End Diagnosis Encounter II",
       "remarks": [
         "https://seer.cancer.gov/statfacts/html/dlbcl.html"
       ]
-    },
-    "Delay for Analysis of Possible Treatments": {
-      "type": "Delay",
-      "range": {
-        "low": 1,
-        "high": 7,
-        "unit": "days"
-      },
-      "direct_transition": "Diffuse Large B-cell Lymphoma Treatment Success Rate"
     },
     "Diffuse Large B-cell Lymphoma Treatment Success Rate": {
       "type": "Simple",
@@ -656,11 +647,11 @@
     },
     "End Meeting with Oncologist after First Round Treatment": {
       "type": "EncounterEnd",
-      "direct_transition": "DLBCL_Treatment_Round_Two"
+      "direct_transition": "Delay Before Second-Line Treatment"
     },
     "End meeting with Oncologist": {
       "type": "EncounterEnd",
-      "direct_transition": "CAR-T Initial Treatment Encounter"
+      "direct_transition": "Waiting for Car-T Procedure"
     },
     "Kymriah Infusion": {
       "type": "MedicationOrder",
@@ -785,7 +776,19 @@
       ]
     },
     "Lymphodepleting Chemotherapy": {
-      "type": "Simple",
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 367336001,
+          "display": "Chemotherapy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 240,
+        "unit": "minutes"
+      },
       "direct_transition": "Cyclophosphamide"
     },
     "Cyclophosphamide": {
@@ -939,7 +942,7 @@
     },
     "End Diagnosis Encounter I": {
       "type": "EncounterEnd",
-      "direct_transition": "DLBCL Found"
+      "direct_transition": "Time for Initial Diagnostic Testing"
     },
     "Diffuse Large B-Cell Lymphoma Diagnosis Encounter I": {
       "type": "Encounter",
@@ -966,10 +969,6 @@
       ],
       "direct_transition": "PET-CT Scan"
     },
-    "End Diagnosis Encounter II": {
-      "type": "EncounterEnd",
-      "direct_transition": "Staging"
-    },
     "Worsening after Treatment Round 2": {
       "type": "Observation",
       "category": "procedure",
@@ -978,14 +977,14 @@
         {
           "system": "LOINC",
           "code": "88040-1",
-          "display": "Response to Cancer Treatment"
+          "display": "Response to cancer treatment"
         }
       ],
-      "direct_transition": "Meet_with_Oncologist",
+      "direct_transition": "Delay after Second-Line Treatment",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 271299001,
-        "display": "Patient Condition Worsened (finding)"
+        "display": "Patient's condition worsened (finding)"
       }
     },
     "Patient's cells are genetically modified": {
@@ -1194,11 +1193,11 @@
           "display": "Response to cancer treatment"
         }
       ],
-      "direct_transition": "Meet with Oncologist after First Round",
+      "direct_transition": "Delay Before Meeting for Discharge",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 268910001,
-        "display": "Patient Condition Improved (finding)"
+        "display": "Patient's condition improved (finding)"
       },
       "remarks": [
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3961873/",
@@ -1213,10 +1212,10 @@
         {
           "system": "LOINC",
           "code": "88040-1",
-          "display": "Response to Cancer Treatment"
+          "display": "Response to cancer treatment"
         }
       ],
-      "direct_transition": "Meet with Oncologist",
+      "direct_transition": "Delay after Second-Line Treatment - Discharge",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 260415000,
@@ -1234,7 +1233,7 @@
           "display": "Response to cancer treatment"
         }
       ],
-      "direct_transition": "Meet_with_Oncologist_after_First_Round",
+      "direct_transition": "Delay before post-1st round discussion",
       "remarks": [
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3961873/",
         "10% have refractory disease",
@@ -1243,7 +1242,7 @@
       "value_code": {
         "system": "SNOMED-CT",
         "code": 271299001,
-        "display": "Patient Condition Worsened (finding)"
+        "display": "Patient's condition worsened (finding)"
       }
     },
     "DLBCL_Treatment_Round_Two": {
@@ -1269,6 +1268,82 @@
           }
         }
       ]
+    },
+    "Time for Initial Diagnostic Testing": {
+      "type": "Delay",
+      "direct_transition": "DLBCL Found",
+      "range": {
+        "low": 0,
+        "high": 1,
+        "unit": "weeks"
+      }
+    },
+    "Delay for Analysis of Possible Treatmentss": {
+      "type": "Delay",
+      "direct_transition": "Diffuse Large B-cell Lymphoma Treatment Success Rate",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      }
+    },
+    "End Diagnosis Encounter II": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay for Analysis of Possible Treatmentss"
+    },
+    "Delay before post-1st round discussion": {
+      "type": "Delay",
+      "direct_transition": "Meet_with_Oncologist_after_First_Round",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      }
+    },
+    "Delay Before Meeting for Discharge": {
+      "type": "Delay",
+      "direct_transition": "Meet with Oncologist after First Round",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      }
+    },
+    "Delay Before Second-Line Treatment": {
+      "type": "Delay",
+      "direct_transition": "DLBCL_Treatment_Round_Two",
+      "range": {
+        "low": 1,
+        "high": 2,
+        "unit": "weeks"
+      }
+    },
+    "Delay after Second-Line Treatment": {
+      "type": "Delay",
+      "direct_transition": "Meet_with_Oncologist",
+      "range": {
+        "low": 0,
+        "high": 1,
+        "unit": "weeks"
+      }
+    },
+    "Delay after Second-Line Treatment - Discharge": {
+      "type": "Delay",
+      "direct_transition": "Meet with Oncologist",
+      "range": {
+        "low": 0,
+        "high": 1,
+        "unit": "weeks"
+      }
+    },
+    "Waiting for Car-T Procedure": {
+      "type": "Delay",
+      "direct_transition": "CAR-T Initial Treatment Encounter",
+      "range": {
+        "low": 0,
+        "high": 2,
+        "unit": "weeks"
+      }
     }
   }
 }

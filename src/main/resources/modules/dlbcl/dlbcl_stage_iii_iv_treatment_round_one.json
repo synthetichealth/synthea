@@ -435,9 +435,18 @@
         "high": 15,
         "unit": "minutes"
       },
-      "direct_transition": "End of check-up",
       "remarks": [
         "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Patient stays in remission",
+          "distribution": 0.65
+        },
+        {
+          "transition": "Patient relapses",
+          "distribution": 0.3500000000000001
+        }
       ]
     },
     "Patient relapses": {
@@ -460,7 +469,7 @@
     },
     "End encounter for first-line therapy": {
       "type": "EncounterEnd",
-      "direct_transition": "Follow-up with oncologist for re-staging"
+      "direct_transition": "Delay Before Restaging"
     },
     "Complete 2-4 cycles before interim re-staging": {
       "type": "Delay",
@@ -489,27 +498,18 @@
     },
     "End of check-up": {
       "type": "EncounterEnd",
-      "distributed_transition": [
-        {
-          "transition": "Patient stays in remission",
-          "distribution": 0.65
-        },
-        {
-          "transition": "Patient relapses",
-          "distribution": 0.3500000000000001
-        }
-      ]
+      "direct_transition": "Terminal"
     },
     "Remission": {
       "type": "SetAttribute",
       "attribute": "Treatment_1_Outcome",
-      "direct_transition": "Terminal",
+      "direct_transition": "End of check-up",
       "value": "Remission"
     },
     "Worsened": {
       "type": "SetAttribute",
       "attribute": "Treatment_1_Outcome",
-      "direct_transition": "Terminal",
+      "direct_transition": "End of check-up",
       "value": "Worsened"
     },
     "Length of clinical trial": {
@@ -544,6 +544,15 @@
         "low": 6,
         "high": 24,
         "unit": "months"
+      }
+    },
+    "Delay Before Restaging": {
+      "type": "Delay",
+      "direct_transition": "Follow-up with oncologist for re-staging",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
       }
     }
   }
