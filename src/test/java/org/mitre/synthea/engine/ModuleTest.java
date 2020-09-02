@@ -190,7 +190,8 @@ public class ModuleTest {
   @Test
   public void rejectModulesFromFutureVersions() throws Exception {
     try {
-      String jsonString = Files.readAllLines(Paths.get("src", "test", "resources", "future_module", "module_from_the_future.json"))
+      String jsonString = Files.readAllLines(Paths.get("src", "test",
+          "resources", "future_module", "module_from_the_future.json"))
           .stream()
           .collect(Collectors.joining("\n"));
       JsonParser parser = new JsonParser();
@@ -199,7 +200,7 @@ public class ModuleTest {
       // Should never get here
       fail("Didn't throw exception when loading module with version from the future");
     } catch (IllegalStateException ise) {
-      assertTrue(ise.getMessage().startsWith("Module specifies GMF version"));
+      assertTrue(ise.getMessage().startsWith("Allergies... FROM THE FUTURE!!!! Module specifies GMF version"));
     }
   }
 
