@@ -40,8 +40,8 @@ function addVersion(moduleJSONPath) {
   console.log(moduleJSONPath);
   const rawJSON = fs.readFileSync(moduleJSONPath);
   let module = JSON.parse(rawJSON);
-  if(module['gmfVersion'] === undefined) {
-    module['gmfVersion'] = Number(gmfVersion);
+  if(module['gmf_version'] === undefined) {
+    module['gmf_version'] = Number(gmfVersion);
   }
   const updatedModuleJSON = JSON.stringify(module, null, 2);
   fs.writeFileSync(moduleJSONPath, updatedModuleJSON);

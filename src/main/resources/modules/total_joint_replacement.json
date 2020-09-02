@@ -311,5 +311,5 @@
       "direct_transition": "Delay_Until_New_Replacement_Needed"
     }
   },
-  "gmfVersion": 1
+  "gmf_version": 1
 }

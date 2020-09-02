@@ -1218,5 +1218,5 @@
       "direct_transition": "Consult_Referral_to_Experts_Encounter"
     }
   },
-  "gmfVersion": 1
+  "gmf_version": 1
 }
