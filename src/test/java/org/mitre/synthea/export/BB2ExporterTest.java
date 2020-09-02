@@ -84,5 +84,14 @@ public class BB2ExporterTest {
     File outpatientFile = expectedExportFolder.toPath().resolve("outpatient.csv").toFile();
     assertTrue(outpatientFile.exists() && outpatientFile.isFile());
     // TODO: more meaningful testing of contents (e.g. count of outpatient claims)
+
+    File carrierFile = expectedExportFolder.toPath().resolve("carrier.csv").toFile();
+    assertTrue(carrierFile.exists() && carrierFile.isFile());
+    // TODO: more meaningful testing of contents
+
+    File beneficiaryHistoryFile = expectedExportFolder.toPath().resolve("beneficiary_history.csv")
+            .toFile();
+    assertTrue(beneficiaryHistoryFile.exists() && beneficiaryHistoryFile.isFile());
+    // TODO: more meaningful testing of contents
   }
 }
