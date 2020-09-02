@@ -271,11 +271,11 @@ public class Module implements Cloneable, Serializable {
   public Module(JsonObject definition, boolean submodule) throws Exception {
     name = String.format("%s Module", definition.get("name").getAsString());
 
-    if(definition.has("gmfVersion")) {
-      this.gmfVersion = definition.get("gmfVersion").getAsDouble();
-      if(this.gmfVersion > GMF_VERSION) {
-        throw new IllegalStateException(String.format("%s specifies GMF version %f in JSON, " +
-            "which is beyond the known GMF version of %f",
+    if (definition.has("gmf_version")) {
+      this.gmfVersion = definition.get("gmf_version").getAsDouble();
+      if (this.gmfVersion > GMF_VERSION) {
+        throw new IllegalStateException(String.format("%s specifies GMF version %f in JSON, "
+            + "which is beyond the known GMF version of %f",
             this.name, this.gmfVersion, GMF_VERSION));
       }
     }

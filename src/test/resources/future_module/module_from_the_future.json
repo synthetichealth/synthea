@@ -1,6 +1,6 @@
 {
   "name": "Allergies... FROM THE FUTURE!!!!",
-  "gmfVersion": 99.0,
+  "gmf_version": 99.0,
   "states": {
     "Initial": {
       "type": "Initial",

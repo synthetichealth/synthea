@@ -850,5 +850,5 @@
       "direct_transition": "End_Addiction_Treatment_Encounter"
     }
   },
-  "gmfVersion": 1
+  "gmf_version": 1
 }

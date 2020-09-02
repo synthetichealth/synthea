@@ -837,5 +837,5 @@
       "direct_transition": "end encounter"
     }
   },
-  "gmfVersion": 1
+  "gmf_version": 1
 }

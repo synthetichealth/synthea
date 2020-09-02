@@ -1251,5 +1251,5 @@
       "direct_transition": "Chemotherapy_Hormone Order"
     }
   },
-  "gmfVersion": 1
+  "gmf_version": 1
 }

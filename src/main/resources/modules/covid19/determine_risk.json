@@ -268,5 +268,5 @@
   "remarks": [
     "This submodule determines covid19 risk, severity, and death."
   ],
-  "gmfVersion": 1
+  "gmf_version": 1
 }
