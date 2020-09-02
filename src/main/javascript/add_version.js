@@ -1,3 +1,15 @@
+// This is a stand alone script to add a gmfVersion property to existing
+// GMF JSON. This script takes a directory name and version as arguments.
+//
+// Example:
+//   node add_version.js /path/to/synthea/src/main/resources/modules/ 1.0
+//
+// The script will add the property gmfVersion. It will not overwrite it
+// if it already exists.
+//
+// The script runs on node.js with no other dependencies.
+// Tested on node v14.8.0
+
 const process = require('process');
 const fs = require('fs');
 const path = require('path');
