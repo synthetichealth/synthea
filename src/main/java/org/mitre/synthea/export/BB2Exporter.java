@@ -46,6 +46,8 @@ public class BB2Exporter implements Flushable {
 
   private List<LinkedHashMap<String, String>> carrierLookup;
 
+  private stateCodeMapper stateLookup;
+
   private static final String BB2_BENE_ID = "BB2_BENE_ID";
   private static final String BB2_HIC_ID = "BB2_HIC_ID";
   
@@ -80,6 +82,7 @@ public class BB2Exporter implements Flushable {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+    stateLookup = new stateCodeMapper();
     try {
       prepareOutputFiles();
     } catch (IOException e) {
@@ -174,7 +177,11 @@ public class BB2Exporter implements Flushable {
     String beneId = personId.split("-")[4]; // last segment of UUID
     person.attributes.put(BB2_BENE_ID, beneId);
     fieldValues.put(BeneficiaryFields.BENE_ID, beneId);
-    String hicId = personId.split("-")[0]; // first segment of UUID
+    //String hicId = personId.split("-")[0]; // first segment of UUID
+    String hicId = person.attributes.get(Person.IDENTIFIER_SSN).toString();
+    hicId = hicId.replace("-","") + "A"; // hicId = SSN + letter (A means retired beneficiary but other options too).
+
+    System.out.println("HIC: " + hicId);
     person.attributes.put(BB2_HIC_ID, hicId);
     fieldValues.put(BeneficiaryFields.BENE_CRNT_HIC_NUM, hicId);
     fieldValues.put(BeneficiaryFields.BENE_SEX_IDENT_CD,
@@ -308,7 +315,8 @@ public class BB2Exporter implements Flushable {
         fieldValues.put(OutpatientFields.NCH_PRMRY_PYR_CLM_PD_AMT,
             "" + encounter.claim.getCoveredCost());
       }
-      fieldValues.put(OutpatientFields.PRVDR_STATE_CD, encounter.provider.state);
+      //fieldValues.put(OutpatientFields.PRVDR_STATE_CD, encounter.provider.state);
+      fieldValues.put(OutpatientFields.PRVDR_STATE_CD, stateLookup.getStateCode(encounter.provider.state));
       // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
       String field = null;
       if (encounter.ended) {
@@ -401,6 +409,7 @@ public class BB2Exporter implements Flushable {
             "" + encounter.claim.getCoveredCost());
       }
       fieldValues.put(InpatientFields.PRVDR_STATE_CD, encounter.provider.state);
+      fieldValues.put(InpatientFields.PRVDR_STATE_CD, stateLookup.getStateCode(encounter.provider.state));
       // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
       String field = null;
       if (encounter.ended) {
@@ -759,6 +768,212 @@ public class BB2Exporter implements Flushable {
       }
     }
     return (int) days;
+  }
+
+  /**
+   * Utility class for converting state names and abbreviations to provider state codes
+   */
+  class stateCodeMapper {
+    private HashMap<String, String> ProviderStateCodes;
+    private Map<String, String> StateToAbbrev = this.buildStateAbbrevTable();
+    private Map<String, String> AbbrevToState;
+
+    public stateCodeMapper(){
+      this.ProviderStateCodes = this.buildProviderStateTable();
+      this.StateToAbbrev = this.buildStateAbbrevTable();
+      // support two-way conversion between state name and abbreviations
+      Map<String, String> AbbrevToState = new HashMap<String, String>();
+      for(Map.Entry<String, String> entry : StateToAbbrev.entrySet()){
+        AbbrevToState.put(entry.getValue(), entry.getKey());
+      }
+      this.AbbrevToState = AbbrevToState;
+    }
+
+    /**
+     * Return state code for a given state
+     * @param state (either state name or abbreviation)
+     * @return 2-digit state code
+     */
+    private String getStateCode(String state){
+      if (state.length() == 2) {
+        state = this.changeStateFormat(state);
+      }else{
+        state = this.capitalizeWords(state);
+      }
+      String res = this.ProviderStateCodes.getOrDefault(state, "NONE");
+      return res;
+    }
+    /**
+     * Switch between state name and abbreviation. If state is abbreviation, will return name, and vice versa
+     * @param state
+     * @return
+     */
+    private String changeStateFormat(String state){
+      if (state.length() == 2) {
+        return this.AbbrevToState.getOrDefault(state.toUpperCase(), null);
+      }else{
+        String stateClean = this.capitalizeWords(state.toLowerCase());
+        return this.StateToAbbrev.getOrDefault(stateClean, null);
+      }
+    }
+
+
+    private Map<String, String> buildStateAbbrevTable(){
+      Map<String, String> states = new HashMap<String, String>();
+      states.put("Alabama","AL");
+      states.put("Alaska","AK");
+      states.put("Alberta","AB");
+      states.put("American Samoa","AS");
+      states.put("Arizona","AZ");
+      states.put("Arkansas","AR");
+      states.put("Armed Forces (AE)","AE");
+      states.put("Armed Forces Americas","AA");
+      states.put("Armed Forces Pacific","AP");
+      states.put("British Columbia","BC");
+      states.put("California","CA");
+      states.put("Colorado","CO");
+      states.put("Connecticut","CT");
+      states.put("Delaware","DE");
+      states.put("District Of Columbia","DC");
+      states.put("Florida","FL");
+      states.put("Georgia","GA");
+      states.put("Guam","GU");
+      states.put("Hawaii","HI");
+      states.put("Idaho","ID");
+      states.put("Illinois","IL");
+      states.put("Indiana","IN");
+      states.put("Iowa","IA");
+      states.put("Kansas","KS");
+      states.put("Kentucky","KY");
+      states.put("Louisiana","LA");
+      states.put("Maine","ME");
+      states.put("Manitoba","MB");
+      states.put("Maryland","MD");
+      states.put("Massachusetts","MA");
+      states.put("Michigan","MI");
+      states.put("Minnesota","MN");
+      states.put("Mississippi","MS");
+      states.put("Missouri","MO");
+      states.put("Montana","MT");
+      states.put("Nebraska","NE");
+      states.put("Nevada","NV");
+      states.put("New Brunswick","NB");
+      states.put("New Hampshire","NH");
+      states.put("New Jersey","NJ");
+      states.put("New Mexico","NM");
+      states.put("New York","NY");
+      states.put("Newfoundland","NF");
+      states.put("North Carolina","NC");
+      states.put("North Dakota","ND");
+      states.put("Northwest Territories","NT");
+      states.put("Nova Scotia","NS");
+      states.put("Nunavut","NU");
+      states.put("Ohio","OH");
+      states.put("Oklahoma","OK");
+      states.put("Ontario","ON");
+      states.put("Oregon","OR");
+      states.put("Pennsylvania","PA");
+      states.put("Prince Edward Island","PE");
+      states.put("Puerto Rico","PR");
+      states.put("Quebec","QC");
+      states.put("Rhode Island","RI");
+      states.put("Saskatchewan","SK");
+      states.put("South Carolina","SC");
+      states.put("South Dakota","SD");
+      states.put("Tennessee","TN");
+      states.put("Texas","TX");
+      states.put("Utah","UT");
+      states.put("Vermont","VT");
+      states.put("Virgin Islands","VI");
+      states.put("Virginia","VA");
+      states.put("Washington","WA");
+      states.put("West Virginia","WV");
+      states.put("Wisconsin","WI");
+      states.put("Wyoming","WY");
+      states.put("Yukon Territory","YT");
+      return states;
+    }
+    private  HashMap<String, String> buildProviderStateTable(){
+      HashMap<String, String> ProviderStateCode = new HashMap<String, String>();
+      ProviderStateCode.put("Alabama", "01");
+      ProviderStateCode.put("Alaska", "02");
+      ProviderStateCode.put("Arizona", "03");
+      ProviderStateCode.put("Arkansas", "04");
+      ProviderStateCode.put("California", "05");
+      ProviderStateCode.put("Colorado", "06");
+      ProviderStateCode.put("Connecticut", "07");
+      ProviderStateCode.put("Delaware", "08");
+      ProviderStateCode.put("District of Columbia", "09");
+      ProviderStateCode.put("Florida", "10");
+      ProviderStateCode.put("Georgia", "11");
+      ProviderStateCode.put("Hawaii", "12");
+      ProviderStateCode.put("Idaho", "13");
+      ProviderStateCode.put("Illinois", "14");
+      ProviderStateCode.put("Indiana", "15");
+      ProviderStateCode.put("Iowa", "16");
+      ProviderStateCode.put("Kansas", "17");
+      ProviderStateCode.put("Kentucky", "18");
+      ProviderStateCode.put("Louisiana", "19");
+      ProviderStateCode.put("Maine", "20");
+      ProviderStateCode.put("Maryland", "21");
+      ProviderStateCode.put("Massachusetts", "22");
+      ProviderStateCode.put("Michigan", "23");
+      ProviderStateCode.put("Minnesota", "24");
+      ProviderStateCode.put("Mississippi", "25");
+      ProviderStateCode.put("Missouri", "26");
+      ProviderStateCode.put("Montana", "27");
+      ProviderStateCode.put("Nebraska", "28");
+      ProviderStateCode.put("Nevada", "29");
+      ProviderStateCode.put("New Hampshire", "30");
+      ProviderStateCode.put("New Jersey", "31");
+      ProviderStateCode.put("New Mexico", "32");
+      ProviderStateCode.put("New York", "33");
+      ProviderStateCode.put("North Carolina", "34");
+      ProviderStateCode.put("North Dakota", "35");
+      ProviderStateCode.put("Ohio", "36");
+      ProviderStateCode.put("Oklahoma", "37");
+      ProviderStateCode.put("Oregon", "38");
+      ProviderStateCode.put("Pennsylvania", "39");
+      ProviderStateCode.put("Puerto Rico", "40");
+      ProviderStateCode.put("Rhode Island", "41");
+      ProviderStateCode.put("South Carolina", "42");
+      ProviderStateCode.put("South Dakota", "43");
+      ProviderStateCode.put("Tennessee", "44");
+      ProviderStateCode.put("Texas", "45");
+      ProviderStateCode.put("Utah", "46");
+      ProviderStateCode.put("Vermont", "47");
+      ProviderStateCode.put("Virgin Islands", "48");
+      ProviderStateCode.put("Virginia", "49");
+      ProviderStateCode.put("Washington", "50");
+      ProviderStateCode.put("West Virginia", "51");
+      ProviderStateCode.put("Wisconsin", "52");
+      ProviderStateCode.put("Wyoming", "53");
+      ProviderStateCode.put("Africa", "54");
+      ProviderStateCode.put("California", "55");
+      ProviderStateCode.put("Canada & Islands", "56");
+      ProviderStateCode.put("Central America and West Indies", "57");
+      ProviderStateCode.put("Europe", "58");
+      ProviderStateCode.put("Mexico", "59");
+      ProviderStateCode.put("Oceania", "60");
+      ProviderStateCode.put("Philippines", "61");
+      ProviderStateCode.put("South America", "62");
+      ProviderStateCode.put("U.S. Possessions", "63");
+      ProviderStateCode.put("American Samoa", "64");
+      ProviderStateCode.put("Guam", "65");
+      ProviderStateCode.put("Commonwealth of the Northern Marianas Islands", "66");
+      return ProviderStateCode;
+    }
+
+    private String capitalizeWords(String str){
+      String words[]=str.split("\\s");
+      String capitalizeWords="";
+      for(String w:words){
+        String first=w.substring(0,1);
+        String afterFirst=w.substring(1);
+        capitalizeWords+=first.toUpperCase()+afterFirst+" ";
+      }
+      return capitalizeWords.trim();
+    }
   }
 
   /**
