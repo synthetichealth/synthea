@@ -64,5 +64,6 @@
       },
       "direct_transition": "Bacterial Infection"
     }
-  }
+  },
+  "gmf_version": 1
 }

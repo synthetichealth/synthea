@@ -1,0 +1,94 @@
+{
+  "name": "chf_lvad",
+  "remarks": [
+    "LVAD Insertion Surgery"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Surgical Encounter"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "LVAD Insertion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 232967006,
+          "display": "Implantation of left ventricular assist device (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 4,
+        "high": 8,
+        "unit": "hours"
+      },
+      "direct_transition": "LVAD Device",
+      "reason": "chf"
+    },
+    "LVAD Device": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 360066001,
+        "display": "Left ventricular assist device (physical object)"
+      },
+      "direct_transition": "Recovery"
+    },
+    "Recovery": {
+      "type": "Delay",
+      "direct_transition": "Heart Failure Education",
+      "range": {
+        "low": 2,
+        "high": 3,
+        "unit": "weeks"
+      }
+    },
+    "Preop Delay": {
+      "type": "Delay",
+      "direct_transition": "LVAD Insertion",
+      "range": {
+        "low": 30,
+        "high": 90,
+        "unit": "minutes"
+      }
+    },
+    "Surgical Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "chf",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 387713003,
+          "display": "Surgical procedure (procedure)"
+        }
+      ],
+      "direct_transition": "Preop Delay"
+    },
+    "Heart Failure Education": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 423475008,
+          "display": "Heart failure education (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "reason": "chf",
+      "direct_transition": "Discharge"
+    },
+    "Discharge": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    }
+  },
+  "gmf_version": 1
+}

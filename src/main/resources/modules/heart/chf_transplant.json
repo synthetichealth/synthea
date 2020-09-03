@@ -1,0 +1,85 @@
+{
+  "name": "chf_transplant",
+  "remarks": [
+    "CHF Transplant Surgery"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Surgical Encounter"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Recovery": {
+      "type": "Delay",
+      "direct_transition": "Education",
+      "range": {
+        "low": 2,
+        "high": 3,
+        "unit": "weeks"
+      }
+    },
+    "Preop Delay": {
+      "type": "Delay",
+      "direct_transition": "Transplant Procedure",
+      "range": {
+        "low": 30,
+        "high": 90,
+        "unit": "minutes"
+      }
+    },
+    "Surgical Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "chf",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 387713003,
+          "display": "Surgical procedure (procedure)"
+        }
+      ],
+      "direct_transition": "Preop Delay"
+    },
+    "Discharge": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Transplant Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 32413006,
+          "display": "Transplantation of heart (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 4,
+        "high": 8,
+        "unit": "hours"
+      },
+      "direct_transition": "Recovery",
+      "reason": "chf"
+    },
+    "Education": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 243063003,
+          "display": "Postoperative procedure education (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "reason": "chf",
+      "direct_transition": "Discharge"
+    }
+  },
+  "gmf_version": 1
+}

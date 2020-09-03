@@ -34,6 +34,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 public class BB2Exporter implements Flushable {
   
   private SynchronizedBBLineWriter beneficiary;
+  private SynchronizedBBLineWriter beneficiaryHistory;
   private SynchronizedBBLineWriter outpatient;
   private SynchronizedBBLineWriter inpatient;
   private SynchronizedBBLineWriter carrier;
@@ -97,6 +98,10 @@ public class BB2Exporter implements Flushable {
     if (beneficiary != null) {
       beneficiary.close();
     }
+
+    if (beneficiaryHistory != null) {
+      beneficiaryHistory.close();
+    }
     if (inpatient != null) {
       inpatient.close();
     }
@@ -119,6 +124,11 @@ public class BB2Exporter implements Flushable {
     beneficiary = new SynchronizedBBLineWriter(beneficiaryFile);
     beneficiary.writeHeader(BeneficiaryFields.class);
     
+
+    File beneficiaryHistoryFile = outputDirectory.resolve("beneficiary_history.csv").toFile();
+    beneficiaryHistory = new SynchronizedBBLineWriter(beneficiaryHistoryFile);
+    beneficiaryHistory.writeHeader(BeneficiaryHistoryFields.class);
+
     File outpatientFile = outputDirectory.resolve("outpatient.csv").toFile();
     outpatient = new SynchronizedBBLineWriter(outpatientFile);
     outpatient.writeHeader(OutpatientFields.class);
@@ -144,6 +154,7 @@ public class BB2Exporter implements Flushable {
    */
   void export(Person person, long stopTime) throws IOException {
     exportBeneficiary(person, stopTime);
+    exportBeneficiaryHistory(person, stopTime);
     exportOutpatient(person, stopTime);
     exportInpatient(person, stopTime);
     exportCarrier(person, stopTime);
@@ -194,6 +205,44 @@ public class BB2Exporter implements Flushable {
   }
   
   /**
+<<<<<<< HEAD
+=======
+   * Export a beneficiary history for single person. Assumes exportBeneficiary
+   * was called first to set up various ID on person
+   * @param person the person to export
+   * @param stopTime end time of simulation
+   * @throws IOException if something goes wrong
+   */
+  private void exportBeneficiaryHistory(Person person, long stopTime) throws IOException {
+    HashMap<BeneficiaryHistoryFields, String> fieldValues = new HashMap<>();
+    fieldValues.put(BeneficiaryHistoryFields.DML_IND, "INSERT");
+    String beneId = (String)person.attributes.get(BB2_BENE_ID);
+    fieldValues.put(BeneficiaryHistoryFields.BENE_ID, beneId);
+    String hicId = (String)person.attributes.get(BB2_HIC_ID);
+    fieldValues.put(BeneficiaryHistoryFields.BENE_CRNT_HIC_NUM, hicId);
+    fieldValues.put(BeneficiaryHistoryFields.BENE_SEX_IDENT_CD,
+            (String)person.attributes.get(Person.GENDER));
+    long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
+    fieldValues.put(BeneficiaryHistoryFields.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
+    fieldValues.put(BeneficiaryHistoryFields.BENE_COUNTY_CD,
+            (String)person.attributes.get("county"));
+    fieldValues.put(BeneficiaryHistoryFields.STATE_CODE,
+            (String)person.attributes.get(Person.STATE));
+    fieldValues.put(BeneficiaryHistoryFields.BENE_ZIP_CD,
+            (String)person.attributes.get(Person.ZIP));
+    fieldValues.put(BeneficiaryHistoryFields.BENE_RACE_CD,
+            bb2RaceCode(
+                    (String)person.attributes.get(Person.ETHNICITY),
+                    (String)person.attributes.get(Person.RACE)));
+    fieldValues.put(BeneficiaryHistoryFields.BENE_SRNM_NAME, 
+            (String)person.attributes.get(Person.LAST_NAME));
+    fieldValues.put(BeneficiaryHistoryFields.BENE_GVN_NAME,
+            (String)person.attributes.get(Person.FIRST_NAME));
+    beneficiaryHistory.writeValues(BeneficiaryHistoryFields.class, fieldValues);
+  }
+
+  /**
+>>>>>>> 427017cb51f4edaa66072cefc3516a891d2abadc
    * Get the year of a point in time.
    * @param time point in time specified as number of milliseconds since the epoch
    * @return the year as a four figure value, e.g. 1971
@@ -616,6 +665,7 @@ public class BB2Exporter implements Flushable {
   @Override
   public void flush() throws IOException {
     beneficiary.flush();
+    beneficiaryHistory.flush();
     inpatient.flush();
     outpatient.flush();
     carrier.flush();
@@ -909,6 +959,28 @@ public class BB2Exporter implements Flushable {
     CST_SHR_GRP_OCT_CD,
     CST_SHR_GRP_NOV_CD,
     CST_SHR_GRP_DEC_CD
+  }
+
+  private enum BeneficiaryHistoryFields {
+    DML_IND,
+    BENE_ID,
+    STATE_CODE,
+    BENE_COUNTY_CD,
+    BENE_ZIP_CD,
+    BENE_BIRTH_DT,
+    BENE_SEX_IDENT_CD,
+    BENE_RACE_CD,
+    BENE_ENTLMT_RSN_ORIG,
+    BENE_ENTLMT_RSN_CURR,
+    BENE_ESRD_IND,
+    BENE_MDCR_STATUS_CD,
+    BENE_PTA_TRMNTN_CD,
+    BENE_PTB_TRMNTN_CD,
+    BENE_CRNT_HIC_NUM,
+    BENE_SRNM_NAME,
+    BENE_GVN_NAME,
+    BENE_MDL_NAME,
+    MBI_NUM      
   }
   
   private enum OutpatientFields {

@@ -2313,5 +2313,6 @@
       "value": 0,
       "direct_transition": "Unset_Pregnant_Attribute"
     }
-  }
+  },
+  "gmf_version": 1
 }

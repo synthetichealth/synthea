@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +29,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.mitre.synthea.helpers.Utilities;
@@ -169,7 +172,6 @@ public class ModuleTest {
   public void addLocalModules() {
     Module.addModules(new File("src/test/resources/module"));
     List<Module> allModules = Module.getModules();
-    allModules = Module.getModules();
     assertTrue(allModules.stream().filter(filterOnModuleName("COPD_TEST")).count() == 1);
   }
 
@@ -183,6 +185,23 @@ public class ModuleTest {
       assertSame(fault, e.getCause());
     }
     Module.getModuleByPath("bad_module"); // should not fail now
+  }
+
+  @Test
+  public void rejectModulesFromFutureVersions() throws Exception {
+    try {
+      String jsonString = Files.readAllLines(Paths.get("src", "test",
+          "resources", "future_module", "module_from_the_future.json"))
+          .stream()
+          .collect(Collectors.joining("\n"));
+      JsonParser parser = new JsonParser();
+      JsonObject object = parser.parse(jsonString).getAsJsonObject();
+      new Module(object, false);
+      // Should never get here
+      fail("Didn't throw exception when loading module with version from the future");
+    } catch (IllegalStateException ise) {
+      assertTrue(ise.getMessage().startsWith("Allergies... FROM THE FUTURE!!!! Module specifies GMF version"));
+    }
   }
 
   @Test

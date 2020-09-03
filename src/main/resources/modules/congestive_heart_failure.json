@@ -1,38 +1,5 @@
 {
   "name": "Congestive Heart Failure",
-  "remarks": [
-    "REFERENCES",
-    "This module was built based on the following references:",
-    "1. the existing synthea congestive_heartfailure_module",
-    "2. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5494150/",
-    "3. https://www.acc.org/tools-and-practice-support/clinical-toolkits/~/media/1E4D8F9B69D14F55821BFE642FBFA221.ashx",
-    "4. https://r.details.loinc.org/LOINC/55405-5.html?sections=Comprehensive",
-    "5. https://www.nbt.nhs.uk/sites/default/files/BNP%20fact%20sheet.pdf",
-    "6. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4254520/",
-    "7. http://heartfailure.onlinejacc.org/content/jhf/2/3/278.full.pdf",
-    "8. https://www.ahajournals.org/doi/full/10.1161/JAHA.117.007569",
-    "",
-    "GOALS",
-    "- Simulate entire lifecycle of HF from onset to death",
-    "- Simulate disease progression through NYHA II-IV",
-    "- Include telemedicine (remote monitoring)",
-    "",
-    "LIMITATIONS",
-    "- Age-specific prevalences are based on numbers from Portugal",
-    "",
-    "IN PROGRESS",
-    "- EF observations",
-    "- Reporting on imaging procedures",
-    "- Implement full LOINC heart failure tracking panel",
-    "",
-    "",
-    "TODO:",
-    "- NYHA classification",
-    "- Adopt medications to severity",
-    "- send patients to observation unit ([6])",
-    "- Better modelling of mortality (e.g. clustered ED visits [8])",
-    "- What is a documented probability of acute exacerbations per 6 months? 1% was too low. But what is good number?"
-  ],
   "states": {
     "Initial": {
       "type": "Initial",
@@ -40,7 +7,7 @@
     },
     "CHF symptom onset 1": {
       "type": "Symptom",
-      "symptom": "shortness of breath",
+      "symptom": "Dyspnea on exertion (finding)",
       "cause": "",
       "exact": {
         "quantity": 1
@@ -49,7 +16,7 @@
     },
     "CHF symptom onset 2": {
       "type": "Symptom",
-      "symptom": "swelling",
+      "symptom": "Dyspnea (finding)",
       "cause": "",
       "exact": {
         "quantity": 1
@@ -58,12 +25,12 @@
     },
     "CHF symptom onset 3": {
       "type": "Symptom",
-      "symptom": "exercise intolerance",
+      "symptom": "Paroxysmal dyspnea (finding)",
       "cause": "",
       "exact": {
         "quantity": 1
       },
-      "direct_transition": "CHF Condition Start"
+      "direct_transition": "CHF symptom onset 4"
     },
     "CHF Condition Start": {
       "type": "ConditionOnset",
@@ -89,129 +56,7 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "NTproBNP lab workup"
-    },
-    "Record_MetabolicPanel": {
-      "type": "DiagnosticReport",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "51990-0",
-          "display": "Basic Metabolic Panel"
-        }
-      ],
-      "observations": [
-        {
-          "category": "laboratory",
-          "vital_sign": "Glucose",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2339-0",
-              "display": "Glucose"
-            }
-          ],
-          "unit": "mg/dL"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Urea Nitrogen",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "6299-2",
-              "display": "Urea Nitrogen"
-            }
-          ],
-          "unit": "mg/dL"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Creatinine",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "38483-4",
-              "display": "Creatinine"
-            }
-          ],
-          "unit": "mg/dL"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Calcium",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "49765-1",
-              "display": "Calcium"
-            }
-          ],
-          "unit": "mg/dL"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Sodium",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2947-0",
-              "display": "Sodium"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Potassium",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "6298-4",
-              "display": "Potassium"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Chloride",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2069-3",
-              "display": "Chloride"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Carbon Dioxide",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "20565-8",
-              "display": "Carbon Dioxide"
-            }
-          ],
-          "unit": "mmol/L"
-        }
-      ],
-      "direct_transition": "initial encounter end"
-    },
-    "followup_CHF_encounter": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "chf",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem"
-        }
-      ],
-      "direct_transition": "Workup imaging for CHF"
+      "direct_transition": "Recorded Symptom 1"
     },
     "CHF careplan": {
       "type": "CarePlanStart",
@@ -237,123 +82,9 @@
         }
       ]
     },
-    "initial encounter end": {
-      "type": "EncounterEnd",
-      "distributed_transition": [
-        {
-          "transition": "Check_Anemia_Exist",
-          "distribution": 0.2
-        },
-        {
-          "transition": "intra_encounter time gate",
-          "distribution": 0.8
-        }
-      ],
-      "remarks": [
-        "Anemia prevalence for CHF - https://www.ncbi.nlm.nih.gov/pubmed/20630401",
-        ""
-      ]
-    },
-    "intra_encounter time gate": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 3,
-        "unit": "weeks"
-      },
-      "direct_transition": "followup_CHF_encounter"
-    },
-    "CHF Medication Start 1": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 866414,
-          "display": "24 HR metoprolol succinate 100 MG Extended Release Oral Tablet [Toprol]"
-        }
-      ],
-      "direct_transition": "CHF Medication Start 2",
-      "reason": "chf",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 30,
-          "unit": "days"
-        },
-        "refills": 12
-      }
-    },
-    "CHF Medication Start 2": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "313988",
-          "display": "Furosemide 40 MG Oral Tablet"
-        }
-      ],
-      "direct_transition": "Assign CHF care plan",
-      "reason": "chf",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 30,
-          "unit": "days"
-        },
-        "refills": 10
-      }
-    },
     "end_followup_encounter": {
       "type": "EncounterEnd",
       "direct_transition": "Maintaining CHF"
-    },
-    "chance of CHF": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 1,
-        "unit": "years"
-      },
-      "conditional_transition": [
-        {
-          "transition": "Age_80-Chance of CHF",
-          "condition": {
-            "condition_type": "Age",
-            "operator": ">",
-            "quantity": 80,
-            "unit": "years"
-          }
-        },
-        {
-          "transition": "Age_70-79-Chance of CHF",
-          "condition": {
-            "condition_type": "Age",
-            "operator": ">",
-            "quantity": 70,
-            "unit": "years"
-          }
-        },
-        {
-          "transition": "Age_60-69-Chance of CHF",
-          "condition": {
-            "condition_type": "Age",
-            "operator": ">",
-            "quantity": 60,
-            "unit": "years"
-          }
-        },
-        {
-          "transition": "Age_50-59-Chance of CHF"
-        }
-      ]
     },
     "Maintaining CHF": {
       "type": "Delay",
@@ -361,20 +92,76 @@
         "quantity": 6,
         "unit": "months"
       },
-      "conditional_transition": [
+      "complex_transition": [
         {
-          "transition": "Potential CHF Flare",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "chf_stage_d",
+                    "operator": "is not nil"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "chf_admissions",
+                    "operator": ">=",
+                    "value": 2
+                  }
+                ]
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "nyha_class",
+                    "operator": ">=",
+                    "value": 3
+                  },
+                  {
+                    "condition_type": "Vital Sign",
+                    "vital_sign": "Left ventricular Ejection fraction",
+                    "operator": "<=",
+                    "value": 35
+                  }
+                ]
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Progress to Stage D",
+              "distribution": 0.065
+            },
+            {
+              "transition": "Potential CHF Flare",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Followup CHF Encounter",
+              "distribution": 0.43500000000000005
+            }
+          ]
+        },
+        {
           "condition": {
             "condition_type": "PriorState",
-            "name": "followup_CHF_encounter",
+            "name": "Followup CHF Encounter",
             "within": {
               "quantity": 1,
               "unit": "years"
             }
-          }
+          },
+          "distributions": [],
+          "transition": "Potential CHF Flare"
         },
         {
-          "transition": "followup_CHF_encounter"
+          "distributions": [],
+          "transition": "Followup CHF Encounter"
         }
       ]
     },
@@ -382,18 +169,14 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "acute inpatient CHF flare",
+          "transition": "acute CHF flare",
           "distribution": 0.5
         },
         {
-          "transition": "Maintaining CHF",
+          "transition": "Followup CHF Encounter",
           "distribution": 0.5
         }
       ]
-    },
-    "acute inpatient CHF flare": {
-      "type": "Simple",
-      "direct_transition": "CHF ED Visit"
     },
     "CHF ED Visit": {
       "type": "Encounter",
@@ -405,7 +188,7 @@
           "display": "Encounter for Problem"
         }
       ],
-      "direct_transition": "Record_CMP",
+      "direct_transition": "Oxygen_Saturation",
       "reason": "CHF Condition Start"
     },
     "CXR_ED": {
@@ -439,7 +222,16 @@
           ]
         }
       ],
-      "direct_transition": "ED_End"
+      "distributed_transition": [
+        {
+          "transition": "ED_End",
+          "distribution": 0.95
+        },
+        {
+          "transition": "Shock Disorder",
+          "distribution": 0.05
+        }
+      ]
     },
     "ED_End": {
       "type": "EncounterEnd",
@@ -447,32 +239,59 @@
     },
     "Admit_Discharge Transition": {
       "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Inpatient_admittance",
-          "distribution": 0.84
-        },
-        {
-          "transition": "Maintaining CHF",
-          "distribution": 0.16000000000000014
-        }
-      ],
       "remarks": [
         "Different studies suggest numbers from 74% to 84% for inpatient admittance."
-      ]
-    },
-    "Inpatient_admittance": {
-      "type": "Encounter",
-      "encounter_class": "inpatient",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 308540004,
-          "display": "Inpatient stay (finding)"
-        }
       ],
-      "direct_transition": "Inpatient LOS",
-      "reason": "CHF Condition Start"
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Vital Sign",
+                "vital_sign": "Systolic Blood Pressure",
+                "operator": "<",
+                "value": 90
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "PriorState",
+                    "name": "Oxygen",
+                    "within": {
+                      "quantity": 1,
+                      "unit": "days"
+                    }
+                  },
+                  {
+                    "condition_type": "PriorState",
+                    "name": "Shock Disorder",
+                    "within": {
+                      "quantity": 1,
+                      "unit": "days"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "ICU Admission"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Inpatient Admission",
+              "distribution": 0.84
+            },
+            {
+              "transition": "Maintaining CHF",
+              "distribution": 0.16
+            }
+          ]
+        }
+      ]
     },
     "Inpatient CarePlan": {
       "type": "CarePlanStart",
@@ -483,7 +302,7 @@
           "display": "Inpatient care plan (record artifact)"
         }
       ],
-      "direct_transition": "Inpatient daily routine",
+      "direct_transition": "Med_Rec_2",
       "activities": [
         {
           "system": "SNOMED-CT",
@@ -499,33 +318,18 @@
       "goals": [
         {
           "addresses": [
-            "blood pressure"
+            "chf"
           ],
-          "text": "improved systolic function"
+          "text": "Decongestion"
         },
         {
           "addresses": [
-            "blood pressure"
+            "chf"
           ],
-          "text": "improved diastolic function"
-        },
-        {
-          "addresses": [
-            "text"
-          ],
-          "observation": {
-            "codes": [
-              {
-                "system": "LOINC",
-                "code": "59408-5",
-                "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
-              }
-            ],
-            "operator": ">",
-            "value": 85
-          }
+          "text": "Assess goals of care"
         }
-      ]
+      ],
+      "reason": "chf"
     },
     "Furosemide": {
       "type": "MedicationOrder",
@@ -537,111 +341,24 @@
         }
       ],
       "reason": "chf",
-      "conditional_transition": [
-        {
-          "transition": "Inpatient 3D Echo",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "3decho",
-            "operator": "is nil"
-          }
-        },
-        {
-          "transition": "O2 Vitals"
-        }
-      ]
-    },
-    "Inpatient 3D Echo": {
-      "type": "ImagingStudy",
-      "procedure_code": {
-        "system": "SNOMED-CT",
-        "code": 433236007,
-        "display": "Transthoracic echocardiography"
-      },
-      "series": [
-        {
-          "body_site": {
-            "system": "SNOMED-CT",
-            "code": 261179002,
-            "display": "Thoracic"
-          },
-          "modality": {
-            "system": "DICOM-DCM",
-            "code": "US",
-            "display": "Ultrasound"
-          },
-          "instances": [
-            {
-              "title": "Transthoracic echocardiography",
-              "sop_class": {
-                "system": "DICOM-SOP",
-                "code": "1.2.840.10008.5.1.4.1.1.3.1",
-                "display": "Ultrasound Multiframe Image Storage"
-              }
-            }
-          ]
-        }
-      ],
-      "direct_transition": "Set 3D Echo"
-    },
-    "O2 Vitals": {
-      "type": "VitalSign",
-      "vital_sign": "Oxygen Saturation",
-      "unit": "%",
-      "direct_transition": "Record O2",
-      "range": {
-        "low": 65,
-        "high": 85
-      }
-    },
-    "CXR_Inpt_daily": {
-      "type": "ImagingStudy",
-      "procedure_code": {
-        "system": "SNOMED-CT",
-        "code": 399208008,
-        "display": "Plain chest X-ray"
-      },
-      "series": [
-        {
-          "body_site": {
-            "system": "SNOMED-CT",
-            "code": 51185008,
-            "display": "Thoracic structure"
-          },
-          "modality": {
-            "system": "DICOM-DCM",
-            "code": "DX",
-            "display": "Digital Radiography"
-          },
-          "instances": [
-            {
-              "title": "Plain chest X-ray",
-              "sop_class": {
-                "system": "DICOM-SOP",
-                "code": "1.2.840.10008.5.1.4.1.1.1.1",
-                "display": "Digital X-Ray Image Storage – for Presentation"
-              }
-            }
-          ]
-        }
-      ],
-      "direct_transition": "inpatient daily labs"
+      "administration": true,
+      "direct_transition": "Oxygen_Saturation_Admission"
     },
     "Inpatient Daily Transition": {
       "type": "Delay",
       "exact": {
-        "quantity": 1,
-        "unit": "days"
+        "quantity": 12,
+        "unit": "hours"
       },
       "direct_transition": "Inpatient Death decision"
     },
     "Inpatient Discharge": {
       "type": "Simple",
-      "direct_transition": "End Inpatient Care Plan"
+      "direct_transition": "Heart Failure Education"
     },
     "End Inpatient Care Plan": {
       "type": "CarePlanEnd",
-      "direct_transition": "Reset 3D Echo",
+      "direct_transition": "Check Outcome",
       "careplan": "Inpatient CarePlan"
     },
     "End Inpatient Encounter": {
@@ -678,409 +395,16 @@
         "Discharge the patient. Starting since the early 2000s this has a likelihood of being an enrollment into a telemedical home monitoring program, designed to prevent readmissions."
       ]
     },
-    "inpatient daily labs": {
-      "type": "DiagnosticReport",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "51990-0",
-          "display": "Basic Metabolic Panel"
-        }
-      ],
-      "observations": [
-        {
-          "category": "laboratory",
-          "vital_sign": "Glucose",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2339-0",
-              "display": "Glucose"
-            }
-          ],
-          "unit": "mg/dL"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Urea Nitrogen",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "6299-2",
-              "display": "Urea Nitrogen"
-            }
-          ],
-          "unit": "mg/dL"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Creatinine",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "38483-4",
-              "display": "Creatinine"
-            }
-          ],
-          "unit": "mg/dL"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Calcium",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "49765-1",
-              "display": "Calcium"
-            }
-          ],
-          "unit": "mg/dL"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Sodium",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2947-0",
-              "display": "Sodium"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Potassium",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "6298-4",
-              "display": "Potassium"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Chloride",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2069-3",
-              "display": "Chloride"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Carbon Dioxide",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "20565-8",
-              "display": "Carbon Dioxide"
-            }
-          ],
-          "unit": "mmol/L"
-        }
-      ],
-      "direct_transition": "Inpatient Daily Transition"
-    },
-    "Record_CMP": {
-      "type": "DiagnosticReport",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "24323-8",
-          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
-        }
-      ],
-      "observations": [
-        {
-          "category": "laboratory",
-          "vital_sign": "Glucose",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2339-0",
-              "display": "Glucose"
-            }
-          ],
-          "unit": "mg/dL"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Urea Nitrogen",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "6299-2",
-              "display": "Urea Nitrogen"
-            }
-          ],
-          "unit": "mg/dL"
-        },
-        {
-          "category": "laboratory",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "38483-4",
-              "display": "Creatinine"
-            }
-          ],
-          "unit": "mg/dL",
-          "vital_sign": "Creatinine"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Calcium",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "49765-1",
-              "display": "Calcium"
-            }
-          ],
-          "unit": "mg/dL"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Sodium",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2947-0",
-              "display": "Sodium"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Potassium",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "6298-4",
-              "display": "Potassium"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Chloride",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2069-3",
-              "display": "Chloride"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Carbon Dioxide",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "20565-8",
-              "display": "Carbon Dioxide"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "unit": "mL/min",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
-            }
-          ],
-          "range": {
-            "low": 4,
-            "high": 29
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "g/dL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2885-2",
-              "display": "Protein [Mass/volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 60,
-            "high": 80
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "g/dL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "1751-7",
-              "display": "Albumin [Mass/volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 3.5,
-            "high": 5.5
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "g/L",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "10834-0",
-              "display": "Globulin [Mass/volume] in Serum by calculation"
-            }
-          ],
-          "range": {
-            "low": 2,
-            "high": 3.5
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "mg/dL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "1975-2",
-              "display": "Bilirubin.total [Mass/volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 0.1,
-            "high": 1.2
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "U/L",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "6768-6",
-              "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 20,
-            "high": 140
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "U/L",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "1742-6",
-              "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 20,
-            "high": 60
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "U/L",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "1920-8",
-              "display": "Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 6,
-            "high": 40
-          }
-        }
-      ],
-      "direct_transition": "CXR_ED"
-    },
     "Age Guard": {
       "type": "Guard",
       "allow": {
         "condition_type": "Age",
-        "operator": ">",
-        "quantity": 50,
-        "unit": "years"
+        "operator": ">=",
+        "quantity": 20,
+        "unit": "years",
+        "value": 0
       },
-      "direct_transition": "chance of CHF"
-    },
-    "Age_50-59-Chance of CHF": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "CHF onset",
-          "distribution": 0.003
-        },
-        {
-          "transition": "chance of CHF",
-          "distribution": 0.9970000000000001
-        }
-      ]
-    },
-    "Age_60-69-Chance of CHF": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "CHF onset",
-          "distribution": 0.008
-        },
-        {
-          "transition": "chance of CHF",
-          "distribution": 0.992
-        }
-      ]
-    },
-    "Age_70-79-Chance of CHF": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "CHF onset",
-          "distribution": 0.013
-        },
-        {
-          "transition": "chance of CHF",
-          "distribution": 0.9870000000000001
-        }
-      ]
-    },
-    "Age_80-Chance of CHF": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "CHF onset",
-          "distribution": 0.02
-        },
-        {
-          "transition": "chance of CHF",
-          "distribution": 0.98
-        }
-      ]
-    },
-    "CHF onset": {
-      "type": "Simple",
-      "direct_transition": "Reset inpatient count"
+      "direct_transition": "Determine CHF"
     },
     "CHF careplan for smokers": {
       "type": "CarePlanStart",
@@ -1115,6 +439,19 @@
       "type": "Simple",
       "conditional_transition": [
         {
+          "transition": "Wrap up follow-up encounter",
+          "condition": {
+            "condition_type": "Active CarePlan",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 735984001,
+                "display": "Heart failure self management plan"
+              }
+            ]
+          }
+        },
+        {
           "transition": "CHF careplan for smokers",
           "condition": {
             "condition_type": "Attribute",
@@ -1133,8 +470,9 @@
       "direct_transition": "end_followup_encounter"
     },
     "Order medications": {
-      "type": "Simple",
-      "direct_transition": "CHF Medication Start 1"
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_meds",
+      "direct_transition": "Med_Rec"
     },
     "Report workup imaging": {
       "type": "DiagnosticReport",
@@ -1159,98 +497,24 @@
           "vital_sign": "Left ventricular Ejection fraction"
         }
       ],
-      "direct_transition": "Order medications"
-    },
-    "Workup imaging for CHF": {
-      "type": "ImagingStudy",
-      "procedure_code": {
-        "system": "SNOMED-CT",
-        "code": "434158009",
-        "display": "Transthoracic three dimensional ultrasonography of heart (procedure)"
-      },
-      "series": [
-        {
-          "body_site": {
-            "system": "SNOMED-CT",
-            "code": "261179002",
-            "display": "thoracic"
-          },
-          "modality": {
-            "system": "DICOM-DCM",
-            "code": "US",
-            "display": "Ultrasound"
-          },
-          "instances": [
-            {
-              "title": "Ultrasound Multiframe Image Storage",
-              "sop_class": {
-                "system": "DICOM-SOP",
-                "code": "1.2.840.10008.5.1.4.1.1.3.1",
-                "display": "Ultrasound Multiframe Image Storage"
-              }
-            }
-          ]
-        }
-      ],
-      "direct_transition": "Read workup imaging"
-    },
-    "Calculate LVEF": {
-      "type": "VitalSign",
-      "vital_sign": "Left ventricular Ejection fraction",
-      "unit": "%",
-      "direct_transition": "CHF symptom onset 1",
-      "range": {
-        "low": 30,
-        "high": 49
-      }
-    },
-    "Read workup imaging": {
-      "type": "Observation",
-      "category": "imaging",
-      "unit": "%",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "10230-1",
-          "display": "Left ventricular Ejection fraction"
-        }
-      ],
-      "direct_transition": "Report workup imaging",
-      "vital_sign": "Left ventricular Ejection fraction"
-    },
-    "NTproBNP lab workup": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "pg/mL",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "33762-6",
-          "display": "NT-proBNP"
-        }
-      ],
-      "direct_transition": "Record_MetabolicPanel",
-      "range": {
-        "low": 200,
-        "high": 2000
-      }
+      "direct_transition": "Record_MetabolicPanel"
     },
     "Count inpatient stays": {
       "type": "Counter",
-      "attribute": "inpatient-count",
+      "attribute": "chf_inpatient_admissions",
       "action": "increment",
-      "direct_transition": "Inpatient CarePlan"
+      "direct_transition": "Inpatient LOS"
     },
     "Inpatient LOS": {
       "type": "SetAttribute",
       "attribute": "inpatient-los",
-      "direct_transition": "Count inpatient stays",
+      "direct_transition": "Inpatient CarePlan",
       "value": 0
     },
     "Reset inpatient count": {
       "type": "SetAttribute",
-      "attribute": "inpatient-count",
-      "direct_transition": "Calculate LVEF",
+      "attribute": "chf_inpatient_admissions",
+      "direct_transition": "Reset emergency count",
       "value": 0
     },
     "Inpatient daily routine": {
@@ -1259,11 +523,13 @@
     },
     "Death": {
       "type": "Death",
-      "exact": {
-        "quantity": 1,
-        "unit": "days"
-      },
-      "direct_transition": "Terminal"
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "chf",
+      "range": {
+        "low": 1,
+        "high": 12,
+        "unit": "hours"
+      }
     },
     "Terminal": {
       "type": "Terminal"
@@ -1302,7 +568,7 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "inpatient-count",
+            "attribute": "chf_admissions",
             "operator": ">=",
             "value": 4
           },
@@ -1313,7 +579,19 @@
             },
             {
               "transition": "Inpatient Discharge decision",
-              "distribution": 0.19999999999999996
+              "distribution": 0.2
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.03,
+              "transition": "Death"
+            },
+            {
+              "transition": "Inpatient Discharge decision",
+              "distribution": 0.97
             }
           ]
         }
@@ -1403,39 +681,773 @@
       "direct_transition": "Daily self-measurement",
       "reason": "chf"
     },
-    "Set 3D Echo": {
-      "type": "SetAttribute",
-      "attribute": "3decho",
-      "direct_transition": "O2 Vitals",
-      "value": true
-    },
-    "Reset 3D Echo": {
-      "type": "SetAttribute",
-      "attribute": "3decho",
-      "direct_transition": "End Inpatient Encounter"
-    },
-    "Anemia_Submodule": {
-      "type": "CallSubmodule",
-      "submodule": "anemia/anemia_sub",
-      "direct_transition": "intra_encounter time gate"
-    },
-    "Check_Anemia_Exist": {
+    "Determine CHF": {
       "type": "Simple",
-      "conditional_transition": [
+      "complex_transition": [
         {
-          "transition": "Anemia_Submodule",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "anemia",
-            "operator": "is nil"
-          }
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Age 20-39",
+              "distribution": 0.002
+            },
+            {
+              "transition": "Age 40-59",
+              "distribution": 0.017
+            },
+            {
+              "transition": "Age 50-79",
+              "distribution": 0.048
+            },
+            {
+              "transition": "Age 80+",
+              "distribution": 0.12
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.813
+            }
+          ]
         },
         {
-          "transition": "intra_encounter time gate"
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Age 20-39",
+              "distribution": 0.003
+            },
+            {
+              "transition": "Age 40-59",
+              "distribution": 0.012
+            },
+            {
+              "transition": "Age 50-79",
+              "distribution": 0.069
+            },
+            {
+              "transition": "Age 80+",
+              "distribution": 0.128
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.788
+            }
+          ]
         }
       ]
     },
-    "Record O2": {
+    "Age 20-39": {
+      "type": "Delay",
+      "range": {
+        "low": 0,
+        "high": 19,
+        "unit": "years"
+      },
+      "direct_transition": "Determine Type"
+    },
+    "Age 40-59": {
+      "type": "Delay",
+      "range": {
+        "low": 20,
+        "high": 39,
+        "unit": "years"
+      },
+      "direct_transition": "Determine Type"
+    },
+    "Age 50-79": {
+      "type": "Delay",
+      "range": {
+        "low": 30,
+        "high": 59,
+        "unit": "years"
+      },
+      "direct_transition": "Determine Type"
+    },
+    "Age 80+": {
+      "type": "Delay",
+      "range": {
+        "low": 60,
+        "high": 65,
+        "unit": "years"
+      },
+      "direct_transition": "Determine Type"
+    },
+    "CHF symptom onset 4": {
+      "type": "Symptom",
+      "symptom": "Orthopnea (finding)",
+      "cause": "",
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "CHF symptom onset 5"
+    },
+    "CHF symptom onset 5": {
+      "type": "Symptom",
+      "symptom": "Edema (finding)",
+      "cause": "",
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "CHF symptom onset 6"
+    },
+    "CHF symptom onset 6": {
+      "type": "Symptom",
+      "symptom": "Rales (finding)",
+      "cause": "",
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "CHF Condition Start"
+    },
+    "Recorded Symptom 1": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "75325-1",
+          "display": "Symptom"
+        }
+      ],
+      "direct_transition": "Recorded Symptom 2",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 60845006,
+        "display": "Dyspnea on exertion (finding)"
+      }
+    },
+    "Recorded Symptom 2": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "75325-1",
+          "display": "Symptom"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 267036007,
+        "display": "Dyspnea (finding)"
+      },
+      "direct_transition": "Recorded Symptom 3"
+    },
+    "Recorded Symptom 3": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "75325-1",
+          "display": "Symptom"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 59265000,
+        "display": "Paroxysmal dyspnea (finding)"
+      },
+      "direct_transition": "Recorded Symptom 4"
+    },
+    "Recorded Symptom 4": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "75325-1",
+          "display": "Symptom"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 62744007,
+        "display": "Orthopnea (finding)"
+      },
+      "direct_transition": "Recorded Symptom 5"
+    },
+    "Recorded Symptom 5": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "75325-1",
+          "display": "Symptom"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 267038008,
+        "display": "Edema (finding)"
+      },
+      "direct_transition": "Recorded Symptom 6"
+    },
+    "Recorded Symptom 6": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "75325-1",
+          "display": "Symptom"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 19283009,
+        "display": "Rales (finding)"
+      },
+      "direct_transition": "Initial Lab Work"
+    },
+    "Initial Lab Work": {
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_lab_work",
+      "direct_transition": "ECG"
+    },
+    "Initial Encounter End": {
+      "type": "EncounterEnd",
+      "remarks": [
+        "Anemia prevalence for CHF - https://www.ncbi.nlm.nih.gov/pubmed/20630401",
+        ""
+      ],
+      "direct_transition": "Intra Encounter Time Gate"
+    },
+    "Intra Encounter Time Gate": {
+      "type": "Delay",
+      "direct_transition": "Followup CHF Encounter",
+      "range": {
+        "low": 2,
+        "high": 3,
+        "unit": "weeks"
+      }
+    },
+    "Followup CHF Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "chf",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Echocardiography"
+    },
+    "CHF onset": {
+      "type": "Simple",
+      "direct_transition": "Reset inpatient count"
+    },
+    "HFrEF": {
+      "type": "SetAttribute",
+      "attribute": "chf_type",
+      "value": "HFrEF",
+      "distributed_transition": [
+        {
+          "transition": "LVEF HFrEF Low",
+          "distribution": 0.2
+        },
+        {
+          "transition": "LVEF HFrEF Mid",
+          "distribution": 0.4
+        },
+        {
+          "transition": "LVEF HFrEF High",
+          "distribution": 0.4
+        }
+      ]
+    },
+    "HFpEF": {
+      "type": "SetAttribute",
+      "attribute": "chf_type",
+      "direct_transition": "LVEF HFpEF",
+      "value": "HFpEF"
+    },
+    "Determine Type": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "HFrEF",
+          "distribution": 0.39
+        },
+        {
+          "transition": "HFmEF",
+          "distribution": 0.13
+        },
+        {
+          "transition": "HFpEF",
+          "distribution": 0.48
+        }
+      ]
+    },
+    "LVEF HFpEF": {
+      "type": "VitalSign",
+      "vital_sign": "Left ventricular Ejection fraction",
+      "unit": "",
+      "range": {
+        "low": 50,
+        "high": 100
+      },
+      "distributed_transition": [
+        {
+          "transition": "NYHA Class 1",
+          "distribution": 0.2
+        },
+        {
+          "transition": "NYHA Class 2",
+          "distribution": 0.55
+        },
+        {
+          "transition": "NYHA Class 3",
+          "distribution": 0.2
+        },
+        {
+          "transition": "NYHA Class 4",
+          "distribution": 0.05
+        }
+      ]
+    },
+    "NYHA Class 1": {
+      "type": "SetAttribute",
+      "attribute": "nyha_class",
+      "direct_transition": "CHF onset",
+      "value": 1
+    },
+    "NYHA Class 2": {
+      "type": "SetAttribute",
+      "attribute": "nyha_class",
+      "value": 2,
+      "direct_transition": "CHF onset"
+    },
+    "NYHA Class 3": {
+      "type": "SetAttribute",
+      "attribute": "nyha_class",
+      "value": 3,
+      "direct_transition": "CHF onset"
+    },
+    "NYHA Class 4": {
+      "type": "SetAttribute",
+      "attribute": "nyha_class",
+      "value": 4,
+      "direct_transition": "CHF onset"
+    },
+    "Echocardiography": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 40701008,
+        "display": "Echocardiography (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 80891009,
+            "display": "Heart structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Ultrasound Multiframe Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.3.1",
+                "display": "Ultrasound Multiframe Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Report workup imaging"
+    },
+    "HFmEF": {
+      "type": "SetAttribute",
+      "attribute": "chf_type",
+      "direct_transition": "LVEF HFmEF",
+      "value": "HFmEF"
+    },
+    "LVEF HFmEF": {
+      "type": "VitalSign",
+      "vital_sign": "Left ventricular Ejection fraction",
+      "unit": "",
+      "range": {
+        "low": 41,
+        "high": 49
+      },
+      "distributed_transition": [
+        {
+          "transition": "NYHA Class 1",
+          "distribution": 0.2
+        },
+        {
+          "transition": "NYHA Class 2",
+          "distribution": 0.55
+        },
+        {
+          "transition": "NYHA Class 3",
+          "distribution": 0.2
+        },
+        {
+          "transition": "NYHA Class 4",
+          "distribution": 0.05
+        }
+      ]
+    },
+    "LVEF HFrEF Low": {
+      "type": "VitalSign",
+      "vital_sign": "Left ventricular Ejection fraction",
+      "unit": "",
+      "range": {
+        "low": 5,
+        "high": 19
+      },
+      "distributed_transition": [
+        {
+          "transition": "NYHA Class 3",
+          "distribution": 0.75
+        },
+        {
+          "transition": "NYHA Class 4",
+          "distribution": 0.25
+        }
+      ]
+    },
+    "LVEF HFrEF Mid": {
+      "type": "VitalSign",
+      "vital_sign": "Left ventricular Ejection fraction",
+      "unit": "",
+      "range": {
+        "low": 20,
+        "high": 35
+      },
+      "distributed_transition": [
+        {
+          "transition": "NYHA Class 2",
+          "distribution": 0.65
+        },
+        {
+          "transition": "NYHA Class 3",
+          "distribution": 0.35
+        }
+      ]
+    },
+    "LVEF HFrEF High": {
+      "type": "VitalSign",
+      "vital_sign": "Left ventricular Ejection fraction",
+      "unit": "",
+      "range": {
+        "low": 36,
+        "high": 40
+      },
+      "distributed_transition": [
+        {
+          "transition": "NYHA Class 1",
+          "distribution": 0.25
+        },
+        {
+          "transition": "NYHA Class 2",
+          "distribution": 0.75
+        }
+      ]
+    },
+    "Stop Ibuprofen": {
+      "type": "MedicationEnd",
+      "direct_transition": "Assign CHF care plan",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 198405,
+          "display": "Ibuprofen 100 MG Oral Tablet"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 310965,
+          "display": "Ibuprofen 200 MG Oral Tablet"
+        }
+      ]
+    },
+    "Med_Rec": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "430193006",
+          "display": "Medication Reconciliation (procedure)"
+        }
+      ],
+      "direct_transition": "Stop Ibuprofen"
+    },
+    "Record_MetabolicPanel": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 8,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "51990-0",
+          "display": "Basic Metabolic Panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "vital_sign": "Glucose",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2339-0",
+              "display": "Glucose"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Urea Nitrogen",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6299-2",
+              "display": "Urea Nitrogen"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Creatinine",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "38483-4",
+              "display": "Creatinine"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Calcium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "49765-1",
+              "display": "Calcium"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Sodium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2947-0",
+              "display": "Sodium"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Potassium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6298-4",
+              "display": "Potassium"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Chloride",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2069-3",
+              "display": "Chloride"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Carbon Dioxide",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20565-8",
+              "display": "Carbon Dioxide"
+            }
+          ],
+          "unit": "mmol/L"
+        }
+      ],
+      "direct_transition": "Order medications"
+    },
+    "Repeat Lab Work": {
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_lab_work",
+      "direct_transition": "CXR_ED"
+    },
+    "Progress to Stage D": {
+      "type": "SetAttribute",
+      "attribute": "chf_stage_d",
+      "value": true,
+      "distributed_transition": [
+        {
+          "transition": "Stage D Hospice",
+          "distribution": 0.04
+        },
+        {
+          "transition": "Stage D LVAD",
+          "distribution": 0.04
+        },
+        {
+          "transition": "Stage D Transplant",
+          "distribution": 0.04
+        },
+        {
+          "transition": "Potential CHF Flare",
+          "distribution": 0.88
+        }
+      ]
+    },
+    "ICU Admission": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 305351004,
+          "display": "Admission to intensive care unit (procedure)"
+        }
+      ],
+      "reason": "chf",
+      "direct_transition": "Count ICU stays"
+    },
+    "Inpatient Admission": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 308540004,
+          "display": "Inpatient stay (finding)"
+        }
+      ],
+      "direct_transition": "Count inpatient stays",
+      "reason": "chf"
+    },
+    "Wait 12 hours": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 12,
+        "unit": "hours"
+      },
+      "direct_transition": "Repeat_Lab_Work"
+    },
+    "Furosemide_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1719286,
+          "display": "10 ML Furosemide 10 MG/ML Injection"
+        }
+      ],
+      "reason": "chf",
+      "administration": true,
+      "direct_transition": "Inpatient Daily Transition"
+    },
+    "Repeat_Lab_Work": {
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_lab_work",
+      "direct_transition": "Furosemide_2"
+    },
+    "Dead within 28 days": {
+      "type": "Death",
+      "direct_transition": "End Inpatient Encounter",
+      "range": {
+        "low": 1,
+        "high": 28,
+        "unit": "days"
+      },
+      "referenced_by_attribute": "chf"
+    },
+    "Dead within 1 year": {
+      "type": "Death",
+      "direct_transition": "End Inpatient Encounter",
+      "range": {
+        "low": 29,
+        "high": 364,
+        "unit": "days"
+      },
+      "referenced_by_attribute": "chf"
+    },
+    "Reset ICU count": {
+      "type": "SetAttribute",
+      "attribute": "chf_icu_admissions",
+      "value": 0,
+      "direct_transition": "Reset admission count"
+    },
+    "Reset emergency count": {
+      "type": "SetAttribute",
+      "attribute": "chf_emergency_admissions",
+      "value": 0,
+      "direct_transition": "Reset ICU count"
+    },
+    "Reset admission count": {
+      "type": "SetAttribute",
+      "attribute": "chf_admissions",
+      "value": 0,
+      "direct_transition": "CHF symptom onset 1"
+    },
+    "acute CHF flare": {
+      "type": "Counter",
+      "attribute": "chf_admissions",
+      "action": "increment",
+      "direct_transition": "acute_CHF_flare",
+      "remarks": [
+        "Pregnant patients and patients with Acute myocardial infarction should be excluded and moved down an alternative pathway. "
+      ]
+    },
+    "acute_CHF_flare": {
+      "type": "Counter",
+      "attribute": "chf_emergency_admissions",
+      "action": "increment",
+      "remarks": [
+        "Pregnant patients and patients with Acute myocardial infarction should be excluded and moved down an alternative pathway. "
+      ],
+      "direct_transition": "CHF ED Visit"
+    },
+    "Count ICU stays": {
+      "type": "Counter",
+      "attribute": "chf_icu_admissions",
+      "action": "increment",
+      "direct_transition": "Inpatient LOS"
+    },
+    "Oxygen_Saturation": {
       "type": "Observation",
       "category": "vital-signs",
       "unit": "%",
@@ -1451,8 +1463,429 @@
           "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
         }
       ],
-      "direct_transition": "CXR_Inpt_daily",
-      "vital_sign": "Oxygen Saturation"
+      "vital_sign": "Oxygen Saturation",
+      "conditional_transition": [
+        {
+          "transition": "Oxygen",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Oxygen Saturation",
+            "operator": "<",
+            "value": 90
+          }
+        },
+        {
+          "transition": "Repeat Lab Work"
+        }
+      ]
+    },
+    "Oxygen": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "371908008",
+          "display": "Oxygen administration by mask (procedure)"
+        }
+      ],
+      "remarks": [
+        "Oxygen administration by mask refers to supplemental O2 via nasal cannula or mask, continuous positive airway pressure (CPAP), high flow nasal cannula (HFNC), or non-invasive ventilation (NIV)."
+      ],
+      "direct_transition": "Move_to_Prone_Position"
+    },
+    "Move_to_Prone_Position": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 431182000,
+          "display": "Placing subject in prone position (procedure)"
+        }
+      ],
+      "direct_transition": "Repeat Lab Work"
+    },
+    "Shock Disorder": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 27942005,
+          "display": "Shock (disorder)"
+        }
+      ],
+      "direct_transition": "ED_End"
+    },
+    "Oxygen_Saturation_Admission": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "%",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2708-6",
+          "display": "Oxygen saturation in Arterial blood"
+        },
+        {
+          "system": "LOINC",
+          "code": "59408-5",
+          "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
+        }
+      ],
+      "vital_sign": "Oxygen Saturation",
+      "conditional_transition": [
+        {
+          "transition": "Oxygen_Admission",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Oxygen Saturation",
+            "operator": "<",
+            "value": 90
+          }
+        },
+        {
+          "transition": "Wait 12 hours"
+        }
+      ]
+    },
+    "Oxygen_Admission": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "371908008",
+          "display": "Oxygen administration by mask (procedure)"
+        }
+      ],
+      "remarks": [
+        "Oxygen administration by mask refers to supplemental O2 via nasal cannula or mask, continuous positive airway pressure (CPAP), high flow nasal cannula (HFNC), or non-invasive ventilation (NIV)."
+      ],
+      "direct_transition": "Move_to_Prone_Position_Admission"
+    },
+    "Move_to_Prone_Position_Admission": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 431182000,
+          "display": "Placing subject in prone position (procedure)"
+        }
+      ],
+      "direct_transition": "Wait 12 hours"
+    },
+    "ECG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 29303009,
+          "display": "Electrocardiographic procedure"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "ECG_Data",
+      "reason": "chf"
+    },
+    "ECG_Data": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Cardiovascular_Stress_Test",
+          "distribution": 0.25
+        },
+        {
+          "distribution": 0.75,
+          "transition": "Chest X-Ray Check"
+        }
+      ]
+    },
+    "Cardiovascular_Stress_Test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 76746007,
+          "display": "Cardiovascular stress testing (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "reason": "chf",
+      "direct_transition": "Chest X-Ray Check"
+    },
+    "Chest X-Ray Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Chest X-Ray",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Assessment Procedure",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Chest X-Ray": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 399208008,
+        "display": "Plain chest X-ray (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51185008,
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "CR",
+            "display": "Computed Radiography"
+          },
+          "instances": [
+            {
+              "title": "Title of this image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage – for Presentation"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Assessment Procedure"
+    },
+    "Inpatient_Echocardiography": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 40701008,
+        "display": "Echocardiography (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 80891009,
+            "display": "Heart structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Ultrasound Multiframe Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.3.1",
+                "display": "Ultrasound Multiframe Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Report_workup_imaging"
+    },
+    "Report_workup_imaging": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "55405-5",
+          "display": "Heartfailure Tracking Panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "10230-1",
+              "display": "Left ventricular Ejection fraction"
+            }
+          ],
+          "vital_sign": "Left ventricular Ejection fraction"
+        }
+      ],
+      "direct_transition": "Inpatient daily routine"
+    },
+    "Inpatient_ECG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 29303009,
+          "display": "Electrocardiographic procedure"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "reason": "chf",
+      "distributed_transition": [
+        {
+          "transition": "Inpatient_Echocardiography",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Inpatient daily routine",
+          "distribution": 0.75
+        }
+      ]
+    },
+    "Check Outcome": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Dead within 28 days",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Dead within 1 year",
+          "distribution": 0.3
+        },
+        {
+          "transition": "End Inpatient Encounter",
+          "distribution": 0.6
+        }
+      ]
+    },
+    "Med_Rec_2": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "430193006",
+          "display": "Medication Reconciliation (procedure)"
+        }
+      ],
+      "direct_transition": "Inpatient_ECG"
+    },
+    "Heart Failure Education": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 423475008,
+          "display": "Heart failure education (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Inpatient Care Plan",
+      "reason": "CHF Condition Start"
+    },
+    "Assessment Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 762998009,
+          "display": "Assessment using New York Heart Association Classification (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Assessment Result",
+      "reason": "chf"
+    },
+    "Assessment Result": {
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_nyha_panel",
+      "direct_transition": "Initial Encounter End"
+    },
+    "Stage D Transplant": {
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_transplant",
+      "direct_transition": "Followup CHF Encounter"
+    },
+    "Stage D LVAD": {
+      "type": "CallSubmodule",
+      "submodule": "heart/chf_lvad",
+      "direct_transition": "Followup CHF Encounter"
+    },
+    "Stage D Hospice": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "chf",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 305336008,
+          "display": "Admission to hospice (procedure)"
+        }
+      ],
+      "direct_transition": "Hospice Death"
+    },
+    "Hospice Death": {
+      "type": "Death",
+      "range": {
+        "low": 3,
+        "high": 60,
+        "unit": "days"
+      },
+      "referenced_by_attribute": "chf",
+      "direct_transition": "Terminal"
     }
-  }
+  },
+  "remarks": [
+    "This module was last updated in 2020 based on the existing Synthea congestive_heartfailure_module. ",
+    "The goal of the module is to simulate the life cycle of heart failure (HF) from onset to death, including hospitalizations for acute decompensations and procedural/interventions. ",
+    "",
+    "The module includes the following representations: ",
+    "- HF ACC/AHA Stages C & D",
+    "- NYHA Functional Classification I, II, III, and IV ",
+    "- HF definitions of HF reduced ejection fraction (HFrEF), HF midrange/borderline EF (HFmEF), and HF preserved EF (HFpEF), defined as an EF of <=40, 41-49, and >=50 respectively. For treatment and disease progression purposes, HFrEF is divided into subcategories of EF <20, EF 20-35, and EF 36-40. ",
+    "- Goal directed medical therapy with diuretics, ACE inhibitors, ARBs, ARNIs, beta-blockers, mineralocorticoid receptor agonists (MRA), hydralazine-isosorbide, ivabradine, and digoxin, with treatment based on EF and evidence for use in the NYHA class. ",
+    "- Non-pharmacological interventions for HF management (e.g., exercise, sodium restriction, smoking cessation etc.)",
+    "- Procedural interventions based on clinical indications: ICD, CRT, LVAD, CABG, PCI, transplant",
+    "",
+    "This following model assumptions apply: ",
+    "",
+    "Prevalence: HF prevalence is informed by the Heart disease and stroke statistics—2020 update: a report from the American Heart Association. https://doi.org/10.1161/CIR.0000000000000757 , Circulation 2020;141:e139–e596 ",
+    "",
+    "Pharmacotherapy: A single drug is used to represent a pharmacologic category (e.g., lisinopril for ACE inhibitors). The medication dose represented in the module is inclusive of all medication dosages, including titration to the maximum dose based on HF treatment recommendations. Although hydralazine-isosorbide has been recommended for individuals who identify as African American, we did not make this distinction in the module in light of recent discussions regarding the use of race—a  sociological construct—to  guide medication therapy, as well as clinical observations/discussions with frontline physicians noting that this medication is used across races. Additionally, the module at present does not reflect the use of SGLT-2 inhibitors (i.e., dapagliflozin) for patients with HFrEF and Type 2 diabetes mellitus (DM); however, individuals with Type 2 DM and HFrEF may receive an SGLT-2 as part of the metabolic disease module in Synthea. Medication utilization represented in the module is reflective of undertreatment and medication adherence observed in clinical practice. ",
+    "",
+    "Clinical Population Exclusions: The module care pathway excludes pregnant individuals and individuals <18 years of age. While treatment options for HF therapy during pregnancy are similar to non-pregnant individuals, certain treatments are avoided due to risk of teratogenicity and/or certain treatment considerations are made to prevent the risk of poor fetal outcomes. Individuals <18 patients were excluded considering the impact of congenital heart disease on disease prevalence and treatment options. ",
+    "",
+    "Module references: ",
+    "",
+    "1.  The previous existing synthea congestive_heartfailure_module",
+    "2.  Heart disease and stroke statistics—2020 update: a report from the American Heart Association. https://doi.org/10.1161/CIR.0000000000000757",
+    "3.  Savarese G, Lund LH. Global Public Health Burden of Heart Failure. Card Fail Rev. 2017 Apr;3(1):7-11. doi:10.15420/cfr.2016:25:2. PMID: 28785469; PMCID: PMC5494150.",
+    "4.  https://r.details.loinc.org/LOINC/55405-5.html?sections=Comprehensive",
+    "5.  Yancy, C.W., Jessup, M., Bozkurt, B., Butler, J., Casey, D.E., Drazner, M.H., Fonarow, G.C., Geraci, S.A., Horwich, T., Januzzi, J.L. and Johnson, M.R., 2013. 2013 ACCF/AHA guideline for the management of heart failure: a report of the American College of Cardiology Foundation/American Heart Association Task Force on Practice Guidelines. Journal of the American College of Cardiology, 62(16), pp.e147-e239, DOI: 10.1016/j.jacc.2013.05.019",
+    "6.  Yancy, C.W., Jessup, M., Bozkurt, B., Butler, J., Casey, D.E., Colvin, M.M., Drazner, M.H., Filippatos, G.S., Fonarow, G.C., Givertz, M.M. and Hollenberg, S.M., 2017. 2017 ACC/AHA/HFSA focused update of the 2013 ACCF/AHA guideline for the management of heart failure: a report of the American College of Cardiology/American Heart Association Task Force on Clinical Practice Guidelines and the Heart Failure Society of America. Journal of the American College of Cardiology, 70(6), pp.776-803, DOI: 10.1016/j.jacc.2017.04.025.",
+    "7.  Hollenberg, S.M., Stevenson, L.W., Ahmad, T., Amin, V.J., Bozkurt, B., Butler, J., Davis, L.L., Drazner, M.H., Kirkpatrick, J.N., Peterson, P.N. and Reed, B.N., 2019. 2019 ACC expert consensus decision pathway on risk assessment, management, and clinical trajectory of patients hospitalized with heart failure: a report of the American College of Cardiology Solution Set Oversight Committee. Journal of the American College of Cardiology, 74(15), pp.1966-2011, DOI: 10.1016/j.jacc.2019.08.001.",
+    "8.  Blecker, S., Ladapo, J.A., Doran, K.M., Goldfeld, K.S. and Katz, S., 2014. Emergency department visits for heart failure and subsequent hospitalization or observation unit admission. American heart journal, 168(6), pp.901-908.",
+    "9.  Chang, P.P., Wruck, L.M., Shahar, E., Rossi, J.S., Loehr, L.R., Russell, S.D., Agarwal, S.K., Konety, S.H., Rodriguez, C.J. and Rosamond, W.D., 2018. Trends in hospitalizations and survival of acute decompensated heart failure in four US communities (2005–2014) ARIC study community surveillance. Circulation, 138(1), pp.12-24, https://doi.org/10.1161/CIRCULATIONAHA.117.027551",
+    "10. Kalogeropoulos, A.P., Samman-Tahhan, A., Hedley, J.S., McCue, A.A., Bjork, J.B., Markham, D.W., Bhatt, K.N., Georgiopoulou, V.V., Smith, A.L. and Butler, J., 2017. Progression to stage D heart failure among outpatients with stage C heart failure and reduced ejection fraction. JACC: Heart Failure, 5(7), pp.528-537, DOI: 10.1016/j.jchf.2017.02.020.",
+    "11. CHAMP-HF Registry studies",
+    "12. Get With The Guidelines–Heart Failure Registry studies",
+    ""
+  ],
+  "gmf_version": 1
 }

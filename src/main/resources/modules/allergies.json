@@ -234,5 +234,6 @@
       "submodule": "allergies/immunotherapy",
       "direct_transition": "Living_With_Allergies"
     }
-  }
+  },
+  "gmf_version": 1
 }

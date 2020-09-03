@@ -149,5 +149,6 @@
       "attribute": "opioid_addiction",
       "direct_transition": "Terminal"
     }
-  }
+  },
+  "gmf_version": 1
 }

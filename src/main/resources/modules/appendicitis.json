@@ -410,5 +410,6 @@
       "direct_transition": "Appendectomy_Encounter",
       "name": "Transfer_To_Inpatient"
     }
-  }
+  },
+  "gmf_version": 1
 }
