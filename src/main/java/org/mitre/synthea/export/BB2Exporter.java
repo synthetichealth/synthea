@@ -311,9 +311,7 @@ public class BB2Exporter implements Flushable {
             "" + encounter.claim.getCoveredCost());
       }
       //fieldValues.put(OutpatientFields.PRVDR_STATE_CD, encounter.provider.state);
-      String state_code = stateLookup.getStateCode(encounter.provider.state);
-      System.out.println("StateCD: " + state_code);
-      fieldValues.put(OutpatientFields.PRVDR_STATE_CD, state_code);
+      fieldValues.put(OutpatientFields.PRVDR_STATE_CD, stateLookup.getStateCode(encounter.provider.state));
       // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
       String field = null;
       if (encounter.ended) {
