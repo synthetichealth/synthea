@@ -96,7 +96,7 @@ public class Concepts {
       String mods = modules.toString().replaceAll("\\[|\\]", "").replace(", ", "|").trim();
       String concept = code.system + ',' + code.code + ',' + display + ',' + mods;
       // If the onlyMissingCosts flag is false, then add to list. Otherwise check if the code has a specified cost.
-      if(!onlyMissingCosts || Costs.hasSpecifiedCost(code.code)){
+      if(!onlyMissingCosts || !Costs.hasSpecifiedCost(code.code)){
         conceptList.add(concept);
       }
     }
