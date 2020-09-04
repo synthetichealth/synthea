@@ -27,6 +27,7 @@ import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 /**
@@ -42,15 +43,21 @@ public class Concepts {
    * @throws Exception if any error occurs in reading the module files
    */
   public static void main(String[] args) throws Exception {
-    System.out.println("Performing an inventory of concepts into `output/concepts.csv`...");
+    System.out.println("Performing an inventory of concepts...");
     
-    List<String> output = getConceptInventory();
+    boolean onlyMissingCosts = Boolean.parseBoolean(args[0]);
+    List<String> output = getConceptInventory(onlyMissingCosts);
     
-    Path outFilePath = new File("./output/concepts.csv").toPath();
+    Path outFilePath;
+    if(onlyMissingCosts){
+      outFilePath = new File("./output/concepts_without_costs.csv").toPath();
+    } else {
+      outFilePath = new File("./output/concepts.csv").toPath();
+    }
     
     Files.write(outFilePath, output, StandardOpenOption.CREATE);
     
-    System.out.println("Catalogued " + output.size() + " concepts.");
+    System.out.println("Catalogued " + output.size() + " concepts in file `" + outFilePath.toString() + "`.");
     System.out.println("Done.");
   }
   
@@ -59,7 +66,7 @@ public class Concepts {
    * @return list of CSV strings
    * @throws Exception if any exception occurs in reading the modules.
    */
-  public static List<String> getConceptInventory() throws Exception {
+  public static List<String> getConceptInventory(boolean onlyMissingCosts) throws Exception {
     Map<Code,Set<String>> concepts = new TreeMap<Code,Set<String>>();
 
     Utilities.walkAllModules((modulesPath, modulePath) -> {
@@ -88,7 +95,10 @@ public class Concepts {
       display = display.replaceAll("\\r\\n|\\r|\\n|,", " ").trim();
       String mods = modules.toString().replaceAll("\\[|\\]", "").replace(", ", "|").trim();
       String concept = code.system + ',' + code.code + ',' + display + ',' + mods;
-      conceptList.add(concept);
+      // If the onlyMissingCosts flag is false, then add to list. Otherwise check if the code has a specified cost.
+      if(!onlyMissingCosts || Costs.hasSpecifiedCost(code.code)){
+        conceptList.add(concept);
+      }
     }
     
     return conceptList;
@@ -166,4 +176,5 @@ public class Concepts {
       concepts.get(code).add(module);
     });
   }
+
 }

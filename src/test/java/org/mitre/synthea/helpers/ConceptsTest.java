@@ -32,7 +32,7 @@ public class ConceptsTest {
   
   @Test
   public void testConcepts() throws Exception {
-    List<String> concepts = Concepts.getConceptInventory();
+    List<String> concepts = Concepts.getConceptInventory(false);
     // just intended to ensure no exceptions or anything
     // make sure simpleCSV can parse it
     String csv = concepts.stream().collect(Collectors.joining("\n"));
