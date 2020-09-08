@@ -49,7 +49,7 @@ public class Concepts {
     List<String> output = getConceptInventory(onlyMissingCosts);
     
     Path outFilePath;
-    if(onlyMissingCosts){
+    if (onlyMissingCosts) {
       outFilePath = new File("./output/concepts_without_costs.csv").toPath();
     } else {
       outFilePath = new File("./output/concepts.csv").toPath();
@@ -57,7 +57,8 @@ public class Concepts {
     
     Files.write(outFilePath, output, StandardOpenOption.CREATE);
     
-    System.out.println("Catalogued " + output.size() + " concepts in file `" + outFilePath.toString() + "`.");
+    System.out.println("Catalogued " + output.size() + " concepts in file `"
+        + outFilePath.toString() + "`.");
     System.out.println("Done.");
   }
   
@@ -95,8 +96,8 @@ public class Concepts {
       display = display.replaceAll("\\r\\n|\\r|\\n|,", " ").trim();
       String mods = modules.toString().replaceAll("\\[|\\]", "").replace(", ", "|").trim();
       String concept = code.system + ',' + code.code + ',' + display + ',' + mods;
-      // If the onlyMissingCosts flag is false, then add to list. Otherwise check if the code has a specified cost.
-      if(!onlyMissingCosts || !Costs.hasSpecifiedCost(code.code)){
+      // If onlyMissingCosts is false, add to list. Otherwise check if code has a specified cost.
+      if (!onlyMissingCosts || !Costs.hasSpecifiedCost(code.code)) {
         conceptList.add(concept);
       }
     }

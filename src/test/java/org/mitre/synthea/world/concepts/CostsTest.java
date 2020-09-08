@@ -51,6 +51,48 @@ public class CostsTest {
     assertTrue(cost <= (maxCost * adjFactor));
     assertTrue(cost >= (minCost * adjFactor));
   }
+
+  @Test public void testUpdatedCostsbyKnownCode() {
+    // These tests test some costs added in the August 2020 Costs Update.
+
+    // Test an updated medication cost.
+    // 993452,816.12,1014.45,1237.68,1 ML denosumab 60 MG/ML Prefilled Syringe (Prolia)
+    Code code = new Code("RxNorm","993452","1 ML denosumab 60 MG/ML Prefilled Syringe (Prolia)");
+    double minCost = 816.12;
+    double maxCost = 1237.68;
+    
+    Entry fakeMedication = person.record.medicationStart(time, code.display, true);
+    fakeMedication.codes.add(code);
+    
+    double cost = Costs.determineCostOfEntry(fakeMedication, person);
+    // At this point there is no state set, so there is no geogeaphic factor applied.
+    assertTrue(cost <= maxCost);
+    assertTrue(cost >= minCost);
+    // Now test cost with adjustement factor.
+    person.attributes.put(Person.STATE, "California");
+    double adjFactor = 1.0333;
+    cost = Costs.determineCostOfEntry(fakeMedication, person);
+    assertTrue(cost <= (maxCost * adjFactor));
+    assertTrue(cost >= (minCost * adjFactor));
+
+    // Test an updated procedure cost.
+    // 48387007,235,962.5,1690,"Incision of trachea (procedure)
+    code = new Code("SNOMED","48387007","Incision of trachea (procedure)");
+    minCost = 235;
+    maxCost = 1690;
+    
+    fakeMedication = person.record.medicationStart(time, code.display, true);
+    fakeMedication.codes.add(code);
+    
+    cost = Costs.determineCostOfEntry(fakeMedication, person);
+    // At this point there is no state set, so there is no geogeaphic factor applied.
+    assertTrue(cost <= maxCost);
+    assertTrue(cost >= minCost);
+    // Now test cost with adjustement factor.
+    cost = Costs.determineCostOfEntry(fakeMedication, person);
+    assertTrue(cost <= (maxCost * adjFactor));
+    assertTrue(cost >= (minCost * adjFactor));
+  }
   
   @Test public void testCostByCodeWithDifferentSystem() {
     Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
