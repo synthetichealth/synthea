@@ -208,3 +208,29 @@ CODE,MIN,MODE,MAX,COMMENTS
 77476009,38,250,1000,Application of back brace - https://health.costhelper.com/back-braces.html
 47387005,1600,23800,46000,Head injury rehabilitation - https://www.biausa.org/professionals/research/tbi-model-systems/inpatient-acute-rehabilitation-hospital-bills-and-costs
 48387007,235,962.5,1690,"Incision of trachea (procedure) - https://health.costhelper.com/tracheotomy.html#:~:text=For%20patients%20without%20health%20insurance%2C%20a%20tracheostomy%20and,a%20ventilator%20and%20the%20length%20of%20hospital%20stay."
+229152003,100,100,100,Lower limb exercises (regime/therapy) - https://thervo.com/costs/physical-therapy-cost#knees
+229578001,45,75,100,Ice bath treatment - https://www.healthline.com/health/exercise-fitness/ice-bath-benefits#tips-for-taking-an-ice-bath
+229580007,45,75,100,Ice therapy - https://www.healthline.com/health/exercise-fitness/ice-bath-benefits#tips-for-taking-an-ice-bath
+23426006,40,420,800,Pulmonary Function Test - https://health.costhelper.com/pulmonary-function-tests.html
+304822001,69.2,,330.29,Psychodynamic Interpersonal Therapy - https://jamanetwork.com/journals/jamapsychiatry/fullarticle/1673780
+32485007,1260,2289,3879,"Hospital admission -https://www.kff.org/health-costs/state-indicator/expenses-per-inpatient-day-by-ownership/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D"
+1505002,1260,2289,3879,"Hospital admission for isolation (procedure) - https://www.kff.org/health-costs/state-indicator/expenses-per-inpatient-day-by-ownership/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D"
+74857009,1260,2289,3879,"Hospital admission  short-term  24 hours -https://www.kff.org/health-costs/state-indicator/expenses-per-inpatient-day-by-ownership/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D"
+265764009,423,797,1602,Renal dialysis (procedure) - https://onlinelibrary.wiley.com/doi/full/10.1002/dat.20386
+447759004,17514,17931,21374,Brachytherapy of breast (procedure) - https://www.sciencedirect.com/science/article/pii/S105342961930061X?viewFullText=true
+448337001,79,79,79,Telemedicine consultation with patient - 79
+719858009,79,79,79,"Telehealth monitoring (regime/therapy) - https://www.ortholive.com/blog/examining-the-costs-of-telehealth#:~:text=The%20medical%20devices%20used%20during%20the%20telehealth%20visit,a%20few%20hundred%20dollars%20per%20month%20per%20provider."
+72506001,30000,40000,50000,"Implantable defibrillator  device (physical object) - https://health.usnews.com/health-news/patient-advice/articles/2014/11/26/defibrillator-insertion-implant-for-life#:~:text=Every%20month%2C%20about%2010%2C000%20Americans%20have%20an%20ICD,implant%20alone%20is%20estimated%20at%20%2430%2C000%20to%20%2450%2C000."
+86964003,200,300,400,"Sweat Test - https://health.howstuffworks.com/wellness/men/sweating-odor/sweat-test.htm#:~:text=On%20the%20upside%2C%20the%20test%20doesn%27t%20require%20any,skin%2C%20where%20it%20serves%20as%20a%20sweat%20collector.\"
+708409001,20,50,120,Home nebulizer therapy - https://www.howmuchisit.org/nebulizer-machine-cost/
+698314001,75,75,75,Consultation for treatment - 
+33195004,495,1477,1477,Teleradiotherapy procedure (procedure) - https://www.medicare.gov/procedure-price-lookup/cost/77295
+385186005,198,288,288,Enema - https://www.medicare.gov/procedure-price-lookup/cost/74283
+385949008,161,288,457,Dressing change management - https://www.medicare.gov/procedure-price-lookup/cost/0512t & https://www.medicare.gov/procedure-price-lookup/cost/16030 & https://www.medicare.gov/procedure-price-lookup/cost/16025
+410006001,143,812,2454,"Digital examination of rectum - https://www.medicare.gov/procedure-price-lookup/cost/45300, https://www.medicare.gov/procedure-price-lookup/cost/45990"
+52765003,251,352,864,Intubation - https://www.medicare.gov/procedure-price-lookup/cost/31500 & https://www.medicare.gov/procedure-price-lookup/cost/43757
+408869004,1286,2011.5,2737,Musculoskeletal care - https://www.medicare.gov/procedure-price-lookup/cost/0101t
+112798008,251,352,352,Insertion of endotracheal tube (procedure) - https://www.medicare.gov/procedure-price-lookup/cost/31500
+271280005,138,239,239,Removal of endotracheal tube (procedure) - https://www.medicare.gov/procedure-price-lookup/cost/31502
+36576007,389,447.5,506,Infusion (procedure) - https://www.medicare.gov/procedure-price-lookup/cost/77750
+706004007,7817,9034,10251,Implantable cardiac pacemaker (physical object) - https://www.medicare.gov/procedure-price-lookup/cost/33208
