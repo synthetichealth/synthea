@@ -212,7 +212,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 229578001,45,75,100,Ice bath treatment - https://www.healthline.com/health/exercise-fitness/ice-bath-benefits#tips-for-taking-an-ice-bath
 229580007,45,75,100,Ice therapy - https://www.healthline.com/health/exercise-fitness/ice-bath-benefits#tips-for-taking-an-ice-bath
 23426006,40,420,800,Pulmonary Function Test - https://health.costhelper.com/pulmonary-function-tests.html
-304822001,69.2,,330.29,Psychodynamic Interpersonal Therapy - https://jamanetwork.com/journals/jamapsychiatry/fullarticle/1673780
+304822001,69.2,199.75,330.29,Psychodynamic Interpersonal Therapy - https://jamanetwork.com/journals/jamapsychiatry/fullarticle/1673780
 32485007,1260,2289,3879,"Hospital admission -https://www.kff.org/health-costs/state-indicator/expenses-per-inpatient-day-by-ownership/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D"
 1505002,1260,2289,3879,"Hospital admission for isolation (procedure) - https://www.kff.org/health-costs/state-indicator/expenses-per-inpatient-day-by-ownership/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D"
 74857009,1260,2289,3879,"Hospital admission  short-term  24 hours -https://www.kff.org/health-costs/state-indicator/expenses-per-inpatient-day-by-ownership/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D"
