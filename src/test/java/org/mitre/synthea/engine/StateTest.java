@@ -268,6 +268,19 @@ public class StateTest {
   }
 
   @Test
+  public void gmfTwoDelayExactTime() throws Exception {
+    Module module = TestHelper.getFixture("gmf_two_point_oh.json");
+
+    // Seconds
+    State delay = module.getState("2_Second_Delay");
+    delay.entered = time;
+    assertFalse(delay.process(person, time));
+    assertFalse(delay.process(person, time + 1L * 1000));
+    assertTrue(delay.process(person, time + 2L * 1000));
+    assertTrue(delay.process(person, time + 3L * 1000));
+  }
+
+  @Test
   public void delay_passes_after_exact_time() throws Exception {
     Module module = TestHelper.getFixture("delay.json");
 
@@ -448,6 +461,24 @@ public class StateTest {
     long encounterStop = person.record.encounters.get(0).stop;
     assertTrue(deathDate >= encounterStop);
   }
+
+  @Test
+  public void gmfTwoVitalSign() throws Exception {
+    // Setup a mock to track calls to the patient record
+    // In this case, the record shouldn't be called at all
+    person.record = Mockito.mock(HealthRecord.class);
+
+    Module module = TestHelper.getFixture("gmf_two_point_oh.json");
+
+    State vitalSign = module.getState("VitalSign").clone();
+    assertTrue(vitalSign.process(person, time));
+
+    assertTrue(person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time) >= 110);
+    assertTrue(person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time) <= 130);
+
+    verifyZeroInteractions(person.record);
+  }
+
 
   @Test
   public void vitalsign() throws Exception {
