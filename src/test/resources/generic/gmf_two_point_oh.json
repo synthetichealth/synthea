@@ -1,0 +1,37 @@
+{
+  "name": "GMF 2.0",
+  "gmf_version": 2.0,
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "2_Second_Delay"
+    },
+    "2_Second_Delay": {
+      "type": "Delay",
+      "unit": "seconds",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 2
+        }
+      },
+      "direct_transition": "VitalSign"
+    },
+    "VitalSign" : {
+      "type" : "VitalSign",
+      "vital_sign" : "Systolic Blood Pressure",
+      "distribution" : {
+        "kind" : "UNIFORM",
+        "parameters": {
+          "low": 110,
+          "high": 130
+        }
+      },
+      "unit" : "mm[Hg]",
+      "direct_transition" : "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
