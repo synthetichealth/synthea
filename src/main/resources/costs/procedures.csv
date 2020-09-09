@@ -111,7 +111,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 134435003,16.8,20.7,73.5,"Routine antenatal care - https://bmchealthservres.biomedcentral.com/articles/10.1186/s12913-018-3013-1#:~:text=Adding%20up%20health%20facility%20and%20household%20costs%2C%20the,than%20the%20following%20three%20visits%20%28%246%20-%20%2411%29."
 13569004,1800,2400,3000,Transfusion of plasma (procedure) - https://www.howmuchisit.org/blood-transfusion-cost/
 15081005,1904,2218,2532,"Pulmonary rehabilitation (regime/therapy) - https://pubmed.ncbi.nlm.nih.gov/18415809/#:~:text=Costs%20of%20pulmonary%20rehabilitation%20and%20predictors%20of%20adherence,per%20patient%20of%20rehabilitation%20was%20%242%2C218%20%28SD%20%24314%3B"
-1.57E+12,160,390,2250,Ultrasonography of bilateral breasts (procedure) - https://www.newchoicehealth.com/procedures/breast-ultrasound
+1571000087109,160,390,2250,Ultrasonography of bilateral breasts (procedure) - https://www.newchoicehealth.com/procedures/breast-ultrasound
 162673000,50,200,222,General examination of patient (procedure) - https://health.costhelper.com/physical-exam.html
 162676008,50,200,222,Brief general examination (procedure) - https://health.costhelper.com/physical-exam.html
 169762003,100,150,200,"Postnatal visit - https://children.costhelper.com/post-partum-doctor-visit.html#:~:text=Typical%20costs%3A%20The%20typical%20cost%20of%20a%20postpartum,prenatal%20care%20and%20delivery%20should%20cover%20postpartum%20care."
@@ -133,7 +133,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 226029000,60,120,402,Exercise Therapy - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC153837/ & https://thervo.com/costs/how-much-does-therapy-cost
 229065009,60,120,402,Exercise Therapy - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC153837/ & https://thervo.com/costs/how-much-does-therapy-cost
 229070002,55,77.5,100,Stretching exercises - https://www.menshealth.com/fitness/a19700990/assisted-stretching-worth-it-boutique-fitness-classes/
-2.31E+14,16792,21450,28334,Delivery of rehabilitation for spinal cord injury - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2141733/
+231181000000100,16792,21450,28334,Delivery of rehabilitation for spinal cord injury - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2141733/
 232657004,500000,561200,800000,"Lung Transplant - https://health.costhelper.com/lung-transplants.html#:~:text=The%20typical%20cost%20of%20transplant%20is%20%24500%2C000-%24800%2C000%2C%20depending,whether%20the%20procedure%20involves%20one%20or%20both%20lungs."
 234262008,1000,1370,1740,Excision of axillary lymph node (procedure) - https://pubmed.ncbi.nlm.nih.gov/14605613/
 241055006,80,120,212,Mammogram - symptomatic (procedure) - https://health.costhelper.com/mammogram.html
@@ -198,10 +198,10 @@ CODE,MIN,MODE,MAX,COMMENTS
 737471002,130,150,170,"Minor surgery care management (procedure) - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
 75162002,16792,21450,28334,Spinal cord injury rehabilitation - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2141733/
 90470006,4075,7940.5,11806,Prostatectomy - https://pubmed.ncbi.nlm.nih.gov/22981673/
-7.82E+14,180,195,210,"Major surgery care management - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
-7.84E+14,3616,5000,6990,Depression care management - https://ps.psychiatryonline.org/doi/full/10.1176/appi.ps.201100402
-8.50E+14,30,35,40,"Education about dementia - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
-8.70E+14,79,100,300,"Urinary tract infection care - https://health.costhelper.com/uti.html#:~:text=For%20patients%20not%20covered%20by%20health%20insurance%2C%20treatment,urine%20culture%2C%20antibiotics%20and%20an%20analgesic%20for%20pain."
+781831000000109,180,195,210,"Major surgery care management - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+784051000000106,3616,5000,6990,Depression care management - https://ps.psychiatryonline.org/doi/full/10.1176/appi.ps.201100402
+850261000000100,30,35,40,"Education about dementia - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+869761000000107,79,100,300,"Urinary tract infection care - https://health.costhelper.com/uti.html#:~:text=For%20patients%20not%20covered%20by%20health%20insurance%2C%20treatment,urine%20culture%2C%20antibiotics%20and%20an%20analgesic%20for%20pain."
 79094001,100,300,500,Initial psychiatric interview with mental status and evaluation - https://www.betterhelp.com/advice/psychiatry/how-much-does-a-psychiatrist-cost/
 88848003,100,200,300,Psychiatric follow-up - https://www.betterhelp.com/advice/psychiatry/how-much-does-a-psychiatrist-cost/
 90407005,100,200,300,Evaluation of psychiatric state of patient - https://www.betterhelp.com/advice/psychiatry/how-much-does-a-psychiatrist-cost/
