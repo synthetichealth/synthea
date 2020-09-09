@@ -70,7 +70,7 @@ public class CostsTest {
     assertTrue(cost >= minCost);
     // Now test cost with adjustement factor.
     person.attributes.put(Person.STATE, "California");
-    double adjFactor = 1.0333;
+    double adjFactor = 1.1668;
     cost = Costs.determineCostOfEntry(fakeMedication, person);
     assertTrue(cost <= (maxCost * adjFactor));
     assertTrue(cost >= (minCost * adjFactor));
