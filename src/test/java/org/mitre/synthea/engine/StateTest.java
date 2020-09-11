@@ -508,6 +508,16 @@ public class StateTest {
   }
 
   @Test
+  public void gmfTwoSymptom() throws Exception {
+    Module module = TestHelper.getFixture("gmf_two_point_oh.json");
+
+    State symptom1 = module.getState("SymptomOnset");
+    assertTrue(symptom1.process(person, time));
+    int symptomValue = person.getSymptom("Chest Pain");
+    assertTrue(1 <= symptomValue && symptomValue <= 10);
+  }
+
+  @Test
   public void symptoms() throws Exception {
     Module module = TestHelper.getFixture("symptom.json");
 
@@ -538,6 +548,17 @@ public class StateTest {
     assertTrue(set1.process(person, time));
 
     assertEquals("Vicodin", person.attributes.get("Current Opioid Prescription"));
+  }
+
+  @Test
+  public void gmfTwoSetAttributeWithValue() throws Exception {
+    Module module = TestHelper.getFixture("gmf_two_point_oh.json");
+
+    person.attributes.remove("Favorite Number");
+    State set1 = module.getState("Set_Attribute_1");
+    assertTrue(set1.process(person, time));
+
+    assertEquals(2.0, person.attributes.get("Favorite Number"));
   }
 
   @Test
@@ -609,6 +630,25 @@ public class StateTest {
   }
 
   @Test
+  public void gmfTwoProcedure() throws Exception {
+    person.attributes.remove("Most Recent Surgery");
+    Module module = TestHelper.getFixture("gmf_two_point_oh.json");
+
+    State appendectomy = module.getState("Appendectomy");
+    appendectomy.process(person, time);
+
+    HealthRecord.Procedure procedure = (HealthRecord.Procedure) person.attributes
+        .get("Most Recent Surgery");
+
+    assertEquals(time, procedure.start);
+
+    Code code = procedure.codes.get(0);
+
+    assertEquals("6025007", code.code);
+    assertEquals("Laparoscopic appendectomy", code.display);
+  }
+
+  @Test
   public void procedure_assigns_entity_attribute() throws Exception {
     person.attributes.remove("Most Recent Surgery");
     Module module = TestHelper.getFixture("procedure.json");
@@ -661,6 +701,19 @@ public class StateTest {
   }
 
   @Test
+  public void gmfTwoObservation() throws Exception {
+    Module module = TestHelper.getFixture("gmf_two_point_oh.json");
+    State os = module.getState("Observation");
+    assertTrue(os.process(person, time));
+
+    HealthRecord.Observation observation = person.record.encounters.get(0).observations.get(0);
+    assertEquals("mg/dL", observation.unit);
+    double obsValue = (double) observation.value;
+    assertTrue(obsValue > 0);
+    assertTrue(obsValue < 400);
+  }
+
+    @Test
   public void observation() throws Exception {
     Module module = TestHelper.getFixture("observation.json");
 
