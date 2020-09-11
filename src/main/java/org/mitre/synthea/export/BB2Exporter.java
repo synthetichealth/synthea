@@ -40,6 +40,7 @@ public class BB2Exporter implements Flushable {
   private SynchronizedBBLineWriter carrier;
   private SynchronizedBBLineWriter prescription;
 
+  private AtomicInteger beneId; // per patient identifier
   private AtomicInteger claimId; // per claim per encounter
   private AtomicInteger claimGroupId; // per encounter
   private AtomicInteger pdeId; // per medication claim
@@ -68,6 +69,7 @@ public class BB2Exporter implements Flushable {
    * Create the output folder and files. Write headers to each file.
    */
   private BB2Exporter() {
+    beneId = new AtomicInteger();
     claimId = new AtomicInteger();
     claimGroupId = new AtomicInteger();
     pdeId = new AtomicInteger();
@@ -123,25 +125,25 @@ public class BB2Exporter implements Flushable {
     beneficiary = new SynchronizedBBLineWriter(beneficiaryFile);
     beneficiary.writeHeader(BeneficiaryFields.class);
     
-    File beneficiaryHistoryFile = outputDirectory.resolve("beneficiary_history.csv").toFile();
-    beneficiaryHistory = new SynchronizedBBLineWriter(beneficiaryHistoryFile);
-    beneficiaryHistory.writeHeader(BeneficiaryHistoryFields.class);
-
-    File outpatientFile = outputDirectory.resolve("outpatient.csv").toFile();
-    outpatient = new SynchronizedBBLineWriter(outpatientFile);
-    outpatient.writeHeader(OutpatientFields.class);
+//    File beneficiaryHistoryFile = outputDirectory.resolve("beneficiary_history.csv").toFile();
+//    beneficiaryHistory = new SynchronizedBBLineWriter(beneficiaryHistoryFile);
+//    beneficiaryHistory.writeHeader(BeneficiaryHistoryFields.class);
+//
+//    File outpatientFile = outputDirectory.resolve("outpatient.csv").toFile();
+//    outpatient = new SynchronizedBBLineWriter(outpatientFile);
+//    outpatient.writeHeader(OutpatientFields.class);
     
     File inpatientFile = outputDirectory.resolve("inpatient.csv").toFile();
     inpatient = new SynchronizedBBLineWriter(inpatientFile);
     inpatient.writeHeader(InpatientFields.class);
 
-    File carrierFile = outputDirectory.resolve("carrier.csv").toFile();
-    carrier = new SynchronizedBBLineWriter(carrierFile);
-    carrier.writeHeader(CarrierFields.class);
-
-    File prescriptionFile = outputDirectory.resolve("prescription.csv").toFile();
-    prescription = new SynchronizedBBLineWriter(prescriptionFile);
-    prescription.writeHeader(PrescriptionFields.class);
+//    File carrierFile = outputDirectory.resolve("carrier.csv").toFile();
+//    carrier = new SynchronizedBBLineWriter(carrierFile);
+//    carrier.writeHeader(CarrierFields.class);
+//
+//    File prescriptionFile = outputDirectory.resolve("prescription.csv").toFile();
+//    prescription = new SynchronizedBBLineWriter(prescriptionFile);
+//    prescription.writeHeader(PrescriptionFields.class);
   }
   
   /**
@@ -152,11 +154,11 @@ public class BB2Exporter implements Flushable {
    */
   void export(Person person, long stopTime) throws IOException {
     exportBeneficiary(person, stopTime);
-    exportBeneficiaryHistory(person, stopTime);
-    exportOutpatient(person, stopTime);
+//    exportBeneficiaryHistory(person, stopTime);
+//    exportOutpatient(person, stopTime);
     exportInpatient(person, stopTime);
-    exportCarrier(person, stopTime);
-    exportPrescription(person, stopTime);
+//    exportCarrier(person, stopTime);
+//    exportPrescription(person, stopTime);
   }
   
   /**
@@ -169,9 +171,9 @@ public class BB2Exporter implements Flushable {
     HashMap<BeneficiaryFields, String> fieldValues = new HashMap<>();
     fieldValues.put(BeneficiaryFields.DML_IND, "INSERT");
     String personId = (String)person.attributes.get(Person.ID);
-    String beneId = personId.split("-")[4]; // last segment of UUID
-    person.attributes.put(BB2_BENE_ID, beneId);
-    fieldValues.put(BeneficiaryFields.BENE_ID, beneId);
+    String beneIdStr = Integer.toString(beneId.decrementAndGet());
+    person.attributes.put(BB2_BENE_ID, beneIdStr);
+    fieldValues.put(BeneficiaryFields.BENE_ID, beneIdStr);
     String hicId = personId.split("-")[0]; // first segment of UUID
     person.attributes.put(BB2_HIC_ID, hicId);
     fieldValues.put(BeneficiaryFields.BENE_CRNT_HIC_NUM, hicId);
@@ -212,8 +214,8 @@ public class BB2Exporter implements Flushable {
   private void exportBeneficiaryHistory(Person person, long stopTime) throws IOException {
     HashMap<BeneficiaryHistoryFields, String> fieldValues = new HashMap<>();
     fieldValues.put(BeneficiaryHistoryFields.DML_IND, "INSERT");
-    String beneId = (String)person.attributes.get(BB2_BENE_ID);
-    fieldValues.put(BeneficiaryHistoryFields.BENE_ID, beneId);
+    String beneIdStr = (String)person.attributes.get(BB2_BENE_ID);
+    fieldValues.put(BeneficiaryHistoryFields.BENE_ID, beneIdStr);
     String hicId = (String)person.attributes.get(BB2_HIC_ID);
     fieldValues.put(BeneficiaryHistoryFields.BENE_CRNT_HIC_NUM, hicId);
     fieldValues.put(BeneficiaryHistoryFields.BENE_SEX_IDENT_CD,
@@ -660,11 +662,11 @@ public class BB2Exporter implements Flushable {
   @Override
   public void flush() throws IOException {
     beneficiary.flush();
-    beneficiaryHistory.flush();
+//    beneficiaryHistory.flush();
     inpatient.flush();
-    outpatient.flush();
-    carrier.flush();
-    prescription.flush();
+//    outpatient.flush();
+//    carrier.flush();
+//    prescription.flush();
   }
 
   /**
