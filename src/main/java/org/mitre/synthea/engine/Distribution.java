@@ -42,6 +42,9 @@ public class Distribution implements Serializable {
    * @return True if it is valid, false otherwise
    */
   public boolean validate() {
+    if (parameters == null) {
+      return false;
+    }
     switch (this.kind) {
       case EXACT:
         return this.parameters.containsKey("value");

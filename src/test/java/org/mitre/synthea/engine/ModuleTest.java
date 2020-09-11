@@ -205,6 +205,23 @@ public class ModuleTest {
   }
 
   @Test
+  public void rejectModulesWithBadDistributions() throws Exception {
+    try {
+      String jsonString = Files.readAllLines(Paths.get("src", "test",
+          "resources", "busted_distribution", "module_with_bad_distribution.json"))
+          .stream()
+          .collect(Collectors.joining("\n"));
+      JsonParser parser = new JsonParser();
+      JsonObject object = parser.parse(jsonString).getAsJsonObject();
+      new Module(object, false);
+      // Should never get here
+      fail("Didn't throw exception when loading module with version from the future");
+    } catch (IllegalStateException ise) {
+      assertTrue(ise.getMessage().startsWith("State 2_Second_Delay contains an invalid distribution"));
+    }
+  }
+
+  @Test
   public void getModuleByPath_missingModule() {
     Module module = Module.getModuleByPath("missing_module");
     assertNull(module);
