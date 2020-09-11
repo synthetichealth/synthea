@@ -476,8 +476,13 @@ public abstract class State implements Cloneable, Serializable {
       return clone;
     }
 
+    /**
+     * Based on attributes provided in JSON, determine whether this state was defined with legacy
+     * GMF (Version 1.0).
+     * @return True if the state was defined with legacy GMF
+     */
     public boolean isLegacyGmf() {
-      if(this.exact != null || this.range != null) {
+      if (this.exact != null || this.range != null) {
         return true;
       }
       return false;
@@ -508,6 +513,15 @@ public abstract class State implements Cloneable, Serializable {
     private String unit;
 
     @Override
+    protected void initialize(Module module, String name, JsonObject definition) {
+      super.initialize(module, name, definition);
+      if (distribution != null && !distribution.validate()) {
+        throw new IllegalStateException(
+            String.format("State %s contains an invalid distribution", this.name));
+      }
+    }
+
+    @Override
     public Delay clone() {
       Delay clone = (Delay) super.clone();
       return clone;
@@ -515,7 +529,7 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public long endOfDelay(long time, Person person) {
-      if(isLegacyGmf()) {
+      if (isLegacyGmf()) {
         if (exact != null) {
           // use an exact quantity
           return time + Utilities.convertTime(exact.unit, exact.quantity);
@@ -531,8 +545,13 @@ public abstract class State implements Cloneable, Serializable {
       throw new RuntimeException("Delay state has no distribution properties: " + this);
     }
 
+    /**
+     * Based on attributes provided in JSON, determine whether this state was defined with legacy
+     * GMF (Version 1.0).
+     * @return True if the state was defined with legacy GMF
+     */
     public boolean isLegacyGmf() {
-      if(this.exact != null || this.range != null) {
+      if (this.exact != null || this.range != null) {
         return true;
       }
       return false;
@@ -621,6 +640,11 @@ public abstract class State implements Cloneable, Serializable {
       // Series data default period is 1.0s
       if (period <= 0.0) {
         period = 1.0;
+      }
+
+      if (distribution != null && !distribution.validate()) {
+        throw new IllegalStateException(
+            String.format("State %s contains an invalid distribution", this.name));
       }
     }
 
@@ -1363,6 +1387,15 @@ public abstract class State implements Cloneable, Serializable {
     private String unit;
 
     @Override
+    protected void initialize(Module module, String name, JsonObject definition) {
+      super.initialize(module, name, definition);
+      if (distribution != null && !distribution.validate()) {
+        throw new IllegalStateException(
+            String.format("State %s contains an invalid distribution", this.name));
+      }
+    }
+
+    @Override
     public Procedure clone() {
       Procedure clone = (Procedure) super.clone();
       clone.codes = codes;
@@ -1454,7 +1487,16 @@ public abstract class State implements Cloneable, Serializable {
     private String expression;
     private Distribution distribution;
     private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
-    
+
+    @Override
+    protected void initialize(Module module, String name, JsonObject definition) {
+      super.initialize(module, name, definition);
+      if (distribution != null && !distribution.validate()) {
+        throw new IllegalStateException(
+            String.format("State %s contains an invalid distribution", this.name));
+      }
+    }
+
     private ThreadLocal<ExpressionProcessor> getExpProcessor() {
       // If the ThreadLocal instance hasn't been created yet, create it now
       if (threadExpProcessor == null) {
@@ -1479,9 +1521,11 @@ public abstract class State implements Cloneable, Serializable {
     public boolean process(Person person, long time) {
       if (isLegacyGmf()) {
         if (exact != null) {
-          person.setVitalSign(vitalSign, new ConstantValueGenerator(person, (double) exact.quantity));
+          person.setVitalSign(vitalSign, new ConstantValueGenerator(person,
+              (double) exact.quantity));
         } else if (range != null) {
-          person.setVitalSign(vitalSign, new RandomValueGenerator(person, (double) range.low, (double) range.high));
+          person.setVitalSign(vitalSign, new RandomValueGenerator(person,
+              (double) range.low, (double) range.high));
         }
       } else {
         if (getExpProcessor().get() != null) {
@@ -1491,8 +1535,8 @@ public abstract class State implements Cloneable, Serializable {
           person.setVitalSign(vitalSign, new RandomValueGenerator(person, distribution));
         } else {
           throw new RuntimeException(
-              "VitalSign state has no exact quantity, distribution, expression" +
-                  " or low/high range: " + this);
+              "VitalSign state has no exact quantity, distribution, expression"
+                  + " or low/high range: " + this);
         }
       }
 
@@ -1544,7 +1588,16 @@ public abstract class State implements Cloneable, Serializable {
     private String expression;
     private Distribution distribution;
     private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
-    
+
+    @Override
+    protected void initialize(Module module, String name, JsonObject definition) {
+      super.initialize(module, name, definition);
+      if (distribution != null && !distribution.validate()) {
+        throw new IllegalStateException(
+            String.format("State %s contains an invalid distribution", this.name));
+      }
+    }
+
     private ThreadLocal<ExpressionProcessor> getExpProcessor() {
       // If the ThreadLocal instance hasn't been created yet, create it now
       if (threadExpProcessor == null) {
@@ -1574,10 +1627,11 @@ public abstract class State implements Cloneable, Serializable {
     public boolean process(Person person, long time) {
       String primaryCode = codes.get(0).code;
       Object value = null;
-      if(isLegacyGmf()) {
+      if (isLegacyGmf()) {
         if (exact != null) {
           value = exact.quantity;
-        } if (range != null) {
+        }
+        if (range != null) {
           value = person.rand((double) range.low, (double) range.high, range.decimals);
         }
       } else {
@@ -1825,6 +1879,10 @@ public abstract class State implements Cloneable, Serializable {
         probability = 1.0;
       }
       addressed = false;
+      if (distribution != null && !distribution.validate()) {
+        throw new IllegalStateException(
+            String.format("State %s contains an invalid distribution", this.name));
+      }
     }
 
     @Override
@@ -1853,13 +1911,14 @@ public abstract class State implements Cloneable, Serializable {
             person.setSymptom(this.module.name, cause, symptom, time, quantity, addressed);
           } else if (range != null) {
             person.setSymptom(
-                this.module.name, cause, symptom, time, (int) person.rand((double) range.low, (double) range.high),
-                addressed
+                this.module.name, cause, symptom, time,
+                (int) person.rand((double) range.low, (double) range.high), addressed
             );
           }
         } else {
           if (distribution != null) {
-            person.setSymptom(this.module.name, cause, symptom, time, (int) distribution.generate(person), addressed);
+            person.setSymptom(this.module.name, cause, symptom, time,
+                (int) distribution.generate(person), addressed);
           } else {
             person.setSymptom(this.module.name, cause, symptom, time, 0, addressed);
           }
