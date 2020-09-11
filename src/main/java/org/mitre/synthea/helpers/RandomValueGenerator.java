@@ -1,9 +1,9 @@
 package org.mitre.synthea.helpers;
 
+import java.util.HashMap;
+
 import org.mitre.synthea.engine.Distribution;
 import org.mitre.synthea.world.agents.Person;
-
-import java.util.HashMap;
 
 /**
  * Generate random values within a defined range.

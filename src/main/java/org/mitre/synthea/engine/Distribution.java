@@ -1,10 +1,14 @@
 package org.mitre.synthea.engine;
 
-import org.mitre.synthea.world.agents.Person;
-
 import java.io.Serializable;
 import java.util.HashMap;
 
+import org.mitre.synthea.world.agents.Person;
+
+/**
+ * Representation of different types of distributions that can be used to represent
+ * random variables used in Synthea States.
+ */
 public class Distribution implements Serializable {
   public enum Kind {
     EXACT, GAUSSIAN, UNIFORM
@@ -13,6 +17,11 @@ public class Distribution implements Serializable {
   public Kind kind;
   public HashMap<String, Double> parameters;
 
+  /**
+   * Generate a sample from the random variable.
+   * @param person The place to obtain a repeatable source of randomness
+   * @return The value
+   */
   public double generate(Person person) {
     switch (this.kind) {
       case EXACT:
@@ -27,6 +36,11 @@ public class Distribution implements Serializable {
     }
   }
 
+  /**
+   * Determine whether the Distribution has all of the information it needs to generate a sample
+   * value.
+   * @return True if it is valid, false otherwise
+   */
   public boolean validate() {
     switch (this.kind) {
       case EXACT:
