@@ -2410,7 +2410,7 @@ public class FhirStu3 {
 
       organizationResource.addIdentifier()
           .setSystem("urn:ietf:rfc:3986")
-          .setValue(provider.getResourceID());
+          .setValue("urn:uuid:" + provider.getResourceID());
       organizationResource.addContact().setName(new HumanName().setText("Synthetic Provider"));
     }
 

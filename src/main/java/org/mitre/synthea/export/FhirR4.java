@@ -2207,7 +2207,7 @@ public class FhirR4 {
     }
     documentReference.addIdentifier()
       .setSystem("urn:ietf:rfc:3986")
-      .setValue(reportResource.getId());
+      .setValue("urn:uuid:" + reportResource.getId());
     documentReference.setType(reportResource.getCategoryFirstRep());
     documentReference.addCategory(new CodeableConcept(
         new Coding("http://hl7.org/fhir/us/core/CodeSystem/us-core-documentreference-category",
@@ -2673,7 +2673,7 @@ public class FhirR4 {
       organizationResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-entity-Organization"));
       organizationResource.addIdentifier()
           .setSystem("urn:ietf:rfc:3986")
-          .setValue(provider.getResourceID());
+          .setValue("urn:uuid" + provider.getResourceID());
       organizationResource.addContact().setName(new HumanName().setText("Synthetic Provider"));
     }
     List<CodeableConcept> organizationType = new ArrayList<CodeableConcept>();
