@@ -986,8 +986,8 @@ public class BB2Exporter implements Flushable {
      * @return
      */
     private String zipToCountyCode(String zipcode){
-      // TODO: fix this. Currently hard-coding default value because required field, but will eventually add name-based matching as fallback
-      return ssaTable.getOrDefault(zipcode, "01730");
+      // TODO: fix this. Currently hard-coding default because required field, but will eventually add name-based matching as fallback
+      return ssaTable.getOrDefault(zipcode, "22090");
     }
 
     private HashMap<String, String> buildSSATable(){
