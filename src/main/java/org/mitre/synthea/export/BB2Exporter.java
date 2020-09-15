@@ -980,8 +980,14 @@ public class BB2Exporter implements Flushable {
       return ProviderStateCode;
     }
 
+    /**
+     * Get the SSA county code for a given zipcode. Will eventually use countyname, but wanted to use a unique key
+     * @param zipcode
+     * @return
+     */
     private String zipToCountyCode(String zipcode){
-      return ssaTable.getOrDefault(zipcode, "None");
+      // TODO: fix this. Currently hard-coding default value because required field, but will eventually add name-based matching as fallback
+      return ssaTable.getOrDefault(zipcode, "01730");
     }
 
     private HashMap<String, String> buildSSATable(){
