@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -315,12 +316,12 @@ public class BB2Exporter implements Flushable {
       fieldValues.put(OutpatientFields.CLM_FAC_TYPE_CD, "1"); // 1=Hospital, 2=SNF, 7=Dialysis
       fieldValues.put(OutpatientFields.CLM_SRVC_CLSFCTN_TYPE_CD, "3"); // depends on value of above
       fieldValues.put(OutpatientFields.CLM_FREQ_CD, "1"); // 1=Admit-Discharge, 9=Final
-      fieldValues.put(OutpatientFields.CLM_PMT_AMT, "" + encounter.claim.getTotalClaimCost());
+      fieldValues.put(OutpatientFields.CLM_PMT_AMT, String.format("%.2f", encounter.claim.getTotalClaimCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
         fieldValues.put(OutpatientFields.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(OutpatientFields.NCH_PRMRY_PYR_CLM_PD_AMT,
-            "" + encounter.claim.getCoveredCost());
+            String.format("%.2f", encounter.claim.getCoveredCost()));
       }
       //fieldValues.put(OutpatientFields.PRVDR_STATE_CD, encounter.provider.state);
       fieldValues.put(OutpatientFields.PRVDR_STATE_CD, locationMapper.getStateCode(encounter.provider.state));
@@ -335,7 +336,8 @@ public class BB2Exporter implements Flushable {
         field = "20"; // the patient died before the encounter ended
       }
       fieldValues.put(OutpatientFields.PTNT_DSCHRG_STUS_CD, field);
-      fieldValues.put(OutpatientFields.CLM_TOT_CHRG_AMT, "" + encounter.claim.getTotalClaimCost());
+      fieldValues.put(OutpatientFields.CLM_TOT_CHRG_AMT,
+              String.format("%.2f", encounter.claim.getTotalClaimCost()));
       // TODO required in the mapping, but not in the Enum
       // fieldValues.put(OutpatientFields.CLM_IP_ADMSN_TYPE_CD, null);
       // fieldValues.put(OutpatientFields.CLM_PASS_THRU_PER_DIEM_AMT, null);
@@ -356,9 +358,9 @@ public class BB2Exporter implements Flushable {
       fieldValues.put(OutpatientFields.REV_CNTR_UNIT_CNT, "0");
       fieldValues.put(OutpatientFields.REV_CNTR_RATE_AMT, "0");
       fieldValues.put(OutpatientFields.REV_CNTR_TOT_CHRG_AMT,
-          "" + encounter.claim.getCoveredCost());
+          String.format("%.2f", encounter.claim.getCoveredCost()));
       fieldValues.put(OutpatientFields.REV_CNTR_NCVRD_CHRG_AMT,
-          "" + encounter.claim.getPatientCost());
+          String.format("%.2f", encounter.claim.getPatientCost()));
 
       outpatient.writeValues(OutpatientFields.class, fieldValues);
     }
@@ -408,12 +410,13 @@ public class BB2Exporter implements Flushable {
       fieldValues.put(InpatientFields.CLM_FAC_TYPE_CD, "1"); // 1=Hospital, 2=SNF, 7=Dialysis
       fieldValues.put(InpatientFields.CLM_SRVC_CLSFCTN_TYPE_CD, "1"); // depends on value of above
       fieldValues.put(InpatientFields.CLM_FREQ_CD, "1"); // 1=Admit-Discharge, 9=Final
-      fieldValues.put(InpatientFields.CLM_PMT_AMT, "" + encounter.claim.getTotalClaimCost());
+      fieldValues.put(InpatientFields.CLM_PMT_AMT,
+              String.format("%.2f", encounter.claim.getTotalClaimCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
         fieldValues.put(InpatientFields.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(InpatientFields.NCH_PRMRY_PYR_CLM_PD_AMT,
-            "" + encounter.claim.getCoveredCost());
+            String.format("%.2f", encounter.claim.getCoveredCost()));
       }
       fieldValues.put(InpatientFields.PRVDR_STATE_CD, encounter.provider.state);
       fieldValues.put(InpatientFields.PRVDR_STATE_CD, locationMapper.getStateCode(encounter.provider.state));
@@ -428,7 +431,8 @@ public class BB2Exporter implements Flushable {
         field = "20"; // the patient died before the encounter ended
       }
       fieldValues.put(InpatientFields.PTNT_DSCHRG_STUS_CD, field);
-      fieldValues.put(InpatientFields.CLM_TOT_CHRG_AMT, "" + encounter.claim.getTotalClaimCost());
+      fieldValues.put(InpatientFields.CLM_TOT_CHRG_AMT,
+              String.format("%.2f", encounter.claim.getTotalClaimCost()));
       if (isEmergency) {
         field = "1"; // emergency
       } else if (previousEmergency) {
@@ -439,15 +443,15 @@ public class BB2Exporter implements Flushable {
       fieldValues.put(InpatientFields.CLM_IP_ADMSN_TYPE_CD, field);
       fieldValues.put(InpatientFields.CLM_PASS_THRU_PER_DIEM_AMT, "10"); // fixed $ amount?
       fieldValues.put(InpatientFields.NCH_BENE_IP_DDCTBL_AMT,
-          "" + encounter.claim.getDeductiblePaid());
+          String.format("%.2f", encounter.claim.getDeductiblePaid()));
       fieldValues.put(InpatientFields.NCH_BENE_PTA_COINSRNC_LBLTY_AM,
-          "" + encounter.claim.getCoinsurancePaid());
+          String.format("%.2f", encounter.claim.getCoinsurancePaid()));
       fieldValues.put(InpatientFields.NCH_BENE_BLOOD_DDCTBL_LBLTY_AM, "0");
       fieldValues.put(InpatientFields.NCH_PROFNL_CMPNT_CHRG_AMT, "4"); // fixed $ amount?
       fieldValues.put(InpatientFields.NCH_IP_NCVRD_CHRG_AMT,
-          "" + encounter.claim.getPatientCost());
+          String.format("%.2f", encounter.claim.getPatientCost()));
       fieldValues.put(InpatientFields.NCH_IP_TOT_DDCTN_AMT,
-          "" + encounter.claim.getPatientCost());
+          String.format("%.2f", encounter.claim.getPatientCost()));
       int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
       fieldValues.put(InpatientFields.CLM_UTLZTN_DAY_CNT, "" + days);
       if (days > 60) {
@@ -471,9 +475,9 @@ public class BB2Exporter implements Flushable {
       fieldValues.put(InpatientFields.REV_CNTR_UNIT_CNT, "0");
       fieldValues.put(InpatientFields.REV_CNTR_RATE_AMT, "0");
       fieldValues.put(InpatientFields.REV_CNTR_TOT_CHRG_AMT,
-          "" + encounter.claim.getCoveredCost());
+          String.format("%.2f", encounter.claim.getCoveredCost()));
       fieldValues.put(InpatientFields.REV_CNTR_NCVRD_CHRG_AMT,
-          "" + encounter.claim.getPatientCost());
+          String.format("%.2f", encounter.claim.getPatientCost()));
 
       previous = encounter;
       previousInpatient = isInpatient;
@@ -530,22 +534,23 @@ public class BB2Exporter implements Flushable {
       fieldValues.put(CarrierFields.CARR_NUM,
           getCarrier(encounter.provider.state, CarrierFields.CARR_NUM));
       fieldValues.put(CarrierFields.CARR_CLM_PMT_DNL_CD, "1"); // 1=paid to physician
-      fieldValues.put(CarrierFields.CLM_PMT_AMT, "" + encounter.claim.getTotalClaimCost());
+      fieldValues.put(CarrierFields.CLM_PMT_AMT, 
+              String.format("%.2f", encounter.claim.getTotalClaimCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
         fieldValues.put(CarrierFields.CARR_CLM_PRMRY_PYR_PD_AMT, "0");
       } else {
         fieldValues.put(CarrierFields.CARR_CLM_PRMRY_PYR_PD_AMT,
-            "" + encounter.claim.getCoveredCost());
+            String.format("%.2f", encounter.claim.getCoveredCost()));
       }
       fieldValues.put(CarrierFields.NCH_CLM_PRVDR_PMT_AMT,
-          "" + encounter.claim.getTotalClaimCost());
+          String.format("%.2f", encounter.claim.getTotalClaimCost()));
       fieldValues.put(CarrierFields.NCH_CLM_BENE_PMT_AMT, "0");
       fieldValues.put(CarrierFields.NCH_CARR_CLM_SBMTD_CHRG_AMT,
-          "" + encounter.claim.getTotalClaimCost());
+          String.format("%.2f", encounter.claim.getTotalClaimCost()));
       fieldValues.put(CarrierFields.NCH_CARR_CLM_ALOWD_AMT,
-          "" + encounter.claim.getCoveredCost());
+          String.format("%.2f", encounter.claim.getCoveredCost()));
       fieldValues.put(CarrierFields.CARR_CLM_CASH_DDCTBL_APLD_AMT,
-          "" + encounter.claim.getDeductiblePaid());
+          String.format("%.2f", encounter.claim.getDeductiblePaid()));
       fieldValues.put(CarrierFields.CARR_CLM_RFRNG_PIN_NUM, encounter.provider.id);
       fieldValues.put(CarrierFields.LINE_NUM, "1");
       fieldValues.put(CarrierFields.CARR_PRFRNG_PIN_NUM, encounter.provider.id);
@@ -559,19 +564,19 @@ public class BB2Exporter implements Flushable {
       fieldValues.put(CarrierFields.CARR_LINE_PRCNG_LCLTY_CD,
           getCarrier(encounter.provider.state, CarrierFields.CARR_LINE_PRCNG_LCLTY_CD));
       fieldValues.put(CarrierFields.LINE_NCH_PMT_AMT,
-          "" + encounter.claim.getCoveredCost());
+          String.format("%.2f", encounter.claim.getCoveredCost()));
       fieldValues.put(CarrierFields.LINE_BENE_PMT_AMT, "0");
       fieldValues.put(CarrierFields.LINE_PRVDR_PMT_AMT,
-          "" + encounter.claim.getCoveredCost());
+          String.format("%.2f", encounter.claim.getCoveredCost()));
       fieldValues.put(CarrierFields.LINE_BENE_PTB_DDCTBL_AMT,
-          "" + encounter.claim.getDeductiblePaid());
+          String.format("%.2f", encounter.claim.getDeductiblePaid()));
       fieldValues.put(CarrierFields.LINE_BENE_PRMRY_PYR_PD_AMT, "0");
       fieldValues.put(CarrierFields.LINE_COINSRNC_AMT,
-          "" + encounter.claim.getCoinsurancePaid());
+          String.format("%.2f", encounter.claim.getCoinsurancePaid()));
       fieldValues.put(CarrierFields.LINE_SBMTD_CHRG_AMT,
-          "" + encounter.claim.getTotalClaimCost());
+          String.format("%.2f", encounter.claim.getTotalClaimCost()));
       fieldValues.put(CarrierFields.LINE_ALOWD_CHRG_AMT,
-          "" + encounter.claim.getCoveredCost());
+          String.format("%.2f", encounter.claim.getCoveredCost()));
       // length of encounter in minutes
       fieldValues.put(CarrierFields.CARR_LINE_MTUS_CNT,
           "" + ((encounter.stop - encounter.start) / (1000 * 60)));
@@ -643,22 +648,24 @@ public class BB2Exporter implements Flushable {
         }
         costs += medication.claim.getPatientCost();
         if (costs <= 4550.00) {
-          fieldValues.put(PrescriptionFields.GDC_BLW_OOPT_AMT, "" + costs);
+          fieldValues.put(PrescriptionFields.GDC_BLW_OOPT_AMT, String.format("%.2f", costs));
           fieldValues.put(PrescriptionFields.GDC_ABV_OOPT_AMT, "0");
         } else {
           fieldValues.put(PrescriptionFields.GDC_BLW_OOPT_AMT, "4550.00");
-          fieldValues.put(PrescriptionFields.GDC_ABV_OOPT_AMT, "" + (costs - 4550));
+          fieldValues.put(PrescriptionFields.GDC_ABV_OOPT_AMT,
+                  String.format("%.2f", (costs - 4550)));
         }
-        fieldValues.put(PrescriptionFields.PTNT_PAY_AMT, "" + medication.claim.getPatientCost());
+        fieldValues.put(PrescriptionFields.PTNT_PAY_AMT, 
+                String.format("%.2f", medication.claim.getPatientCost()));
         fieldValues.put(PrescriptionFields.OTHR_TROOP_AMT, "0");
         fieldValues.put(PrescriptionFields.LICS_AMT, "0");
         fieldValues.put(PrescriptionFields.PLRO_AMT, "0");
         fieldValues.put(PrescriptionFields.CVRD_D_PLAN_PD_AMT,
-            "" + medication.claim.getCoveredCost());
+            String.format("%.2f", medication.claim.getCoveredCost()));
         fieldValues.put(PrescriptionFields.NCVRD_PLAN_PD_AMT,
-            "" + medication.claim.getPatientCost());
+            String.format("%.2f", medication.claim.getPatientCost()));
         fieldValues.put(PrescriptionFields.TOT_RX_CST_AMT,
-            "" + medication.claim.getTotalClaimCost());
+            String.format("%.2f", medication.claim.getTotalClaimCost()));
         fieldValues.put(PrescriptionFields.RPTD_GAP_DSCNT_NUM, "0");
         fieldValues.put(PrescriptionFields.PHRMCY_SRVC_TYPE_CD, "0" + (int) person.rand(1, 8));
         // 00=not specified, 01=home, 02=SNF, 03=long-term, 11=hospice, 14=homeless
