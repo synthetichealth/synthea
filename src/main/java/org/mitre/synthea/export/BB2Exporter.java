@@ -47,7 +47,7 @@ public class BB2Exporter implements Flushable {
 
   private List<LinkedHashMap<String, String>> carrierLookup;
 
-  private stateCodeMapper stateLookup;
+  private stateCodeMapper locationMapper;
 
   private static final String BB2_BENE_ID = "BB2_BENE_ID";
   private static final String BB2_HIC_ID = "BB2_HIC_ID";
@@ -77,6 +77,7 @@ public class BB2Exporter implements Flushable {
     pdeId = new AtomicInteger();
     try {
       String csv = Utilities.readResource("payers/carriers.csv");
+
       if (csv.startsWith("\uFEFF")) {
         csv = csv.substring(1); // Removes BOM.
       }
@@ -84,7 +85,7 @@ public class BB2Exporter implements Flushable {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-    stateLookup = new stateCodeMapper();
+    locationMapper = new stateCodeMapper();
     try {
       prepareOutputFiles();
     } catch (IOException e) {
@@ -182,8 +183,14 @@ public class BB2Exporter implements Flushable {
     fieldValues.put(BeneficiaryFields.BENE_CRNT_HIC_NUM, hicId);
     fieldValues.put(BeneficiaryFields.BENE_SEX_IDENT_CD,
             (String)person.attributes.get(Person.GENDER));
+    String zipCode = (String)person.attributes.get(Person.ZIP);
+    //System.out.println("ZIP: " + zipCode + ", SSA Code: " + ssaCode);
+    //fieldValues.put(BeneficiaryFields.BENE_COUNTY_CD,
+    //        (String)person.attributes.get("county"));
+
+
     fieldValues.put(BeneficiaryFields.BENE_COUNTY_CD,
-            (String)person.attributes.get("county"));
+            (String)locationMapper.zipToCountyCode(zipCode));
     fieldValues.put(BeneficiaryFields.STATE_CODE,
             (String)person.attributes.get(Person.STATE));
     fieldValues.put(BeneficiaryFields.BENE_ZIP_CD,
@@ -225,8 +232,11 @@ public class BB2Exporter implements Flushable {
             (String)person.attributes.get(Person.GENDER));
     long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
     fieldValues.put(BeneficiaryHistoryFields.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
+//    fieldValues.put(BeneficiaryHistoryFields.BENE_COUNTY_CD,
+//            (String)person.attributes.get("county"));
+    String zipCode = (String)person.attributes.get(Person.ZIP);
     fieldValues.put(BeneficiaryHistoryFields.BENE_COUNTY_CD,
-            (String)person.attributes.get("county"));
+            (String)locationMapper.zipToCountyCode(zipCode));
     fieldValues.put(BeneficiaryHistoryFields.STATE_CODE,
             (String)person.attributes.get(Person.STATE));
     fieldValues.put(BeneficiaryHistoryFields.BENE_ZIP_CD,
@@ -309,7 +319,7 @@ public class BB2Exporter implements Flushable {
             "" + encounter.claim.getCoveredCost());
       }
       //fieldValues.put(OutpatientFields.PRVDR_STATE_CD, encounter.provider.state);
-      fieldValues.put(OutpatientFields.PRVDR_STATE_CD, stateLookup.getStateCode(encounter.provider.state));
+      fieldValues.put(OutpatientFields.PRVDR_STATE_CD, locationMapper.getStateCode(encounter.provider.state));
       // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
       String field = null;
       if (encounter.ended) {
@@ -402,7 +412,7 @@ public class BB2Exporter implements Flushable {
             "" + encounter.claim.getCoveredCost());
       }
       fieldValues.put(InpatientFields.PRVDR_STATE_CD, encounter.provider.state);
-      fieldValues.put(InpatientFields.PRVDR_STATE_CD, stateLookup.getStateCode(encounter.provider.state));
+      fieldValues.put(InpatientFields.PRVDR_STATE_CD, locationMapper.getStateCode(encounter.provider.state));
       // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
       String field = null;
       if (encounter.ended) {
@@ -770,6 +780,7 @@ public class BB2Exporter implements Flushable {
     private HashMap<String, String> ProviderStateCodes;
     private Map<String, String> StateToAbbrev = this.buildStateAbbrevTable();
     private Map<String, String> AbbrevToState;
+    private HashMap<String, String> ssaTable;
 
     public stateCodeMapper(){
       this.ProviderStateCodes = this.buildProviderStateTable();
@@ -780,6 +791,7 @@ public class BB2Exporter implements Flushable {
         AbbrevToState.put(entry.getValue(), entry.getKey());
       }
       this.AbbrevToState = AbbrevToState;
+      this.ssaTable = buildSSATable();
     }
 
     /**
@@ -957,6 +969,39 @@ public class BB2Exporter implements Flushable {
       return ProviderStateCode;
     }
 
+    private String zipToCountyCode(String zipcode){
+      return ssaTable.getOrDefault(zipcode, "None");
+    }
+
+    private HashMap<String, String> buildSSATable(){
+      HashMap<String, String> ssaTable = new HashMap<String, String>();
+      List<LinkedHashMap<String, String>> csvData;
+
+      try {
+        String csv = Utilities.readResource("geography/fipscodes.csv");
+
+        if (csv.startsWith("\uFEFF")) {
+          csv = csv.substring(1); // Removes BOM.
+        }
+        csvData = SimpleCSV.parse(csv);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+
+      for (LinkedHashMap<String, String> row : csvData) {
+        String zipcode = row.get("zip");
+
+        if (zipcode.length() > 3){
+          if (zipcode.length() == 4){
+            zipcode = "0" + zipcode;
+          }
+        }
+
+        String ssa_code = row.get("ssacounty");
+        ssaTable.put(zipcode, ssa_code);
+      }
+      return ssaTable;
+    }
     private String capitalizeWords(String str){
       String words[]=str.split("\\s");
       String capitalizeWords="";
