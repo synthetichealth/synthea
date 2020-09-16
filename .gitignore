@@ -16,6 +16,9 @@ bin/**
 # don't commit the autobuilt version file
 src/main/resources/version.txt
 
+# don't commit the map
+src/main/resources/map.json
+
 # H2 database files
 **/*.mv.db
 **/*.trace.db
