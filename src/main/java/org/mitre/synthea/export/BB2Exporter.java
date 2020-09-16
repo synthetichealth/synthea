@@ -95,7 +95,7 @@ public class BB2Exporter implements Flushable {
       Gson g = new Gson();
       Type type = new TypeToken<HashMap<String,List<List<String>>>>(){}.getType();
       map = g.fromJson(json, type);
-    } catch (IOException e) {
+    } catch (Exception e) {
       System.out.println("BB2Exporter is running without a map.");
       // No worries. The optional map is not present.
     }
@@ -508,7 +508,7 @@ public class BB2Exporter implements Flushable {
       }
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
-      if (person.record.present != null && !person.record.present.isEmpty()) {
+      if (map != null && person.record.present != null && !person.record.present.isEmpty()) {
         List<String> diagnoses = new ArrayList<String>();
         for (String key : person.record.present.keySet()) {
           if (person.record.conditionActive(key)) {
