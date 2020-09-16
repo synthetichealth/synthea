@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Formatter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -217,8 +216,6 @@ public class BB2Exporter implements Flushable {
   }
   
   /**
-<<<<<<< HEAD
-=======
    * Export a beneficiary history for single person. Assumes exportBeneficiary
    * was called first to set up various ID on person
    * @param person the person to export
@@ -257,7 +254,6 @@ public class BB2Exporter implements Flushable {
   }
 
   /**
->>>>>>> 427017cb51f4edaa66072cefc3516a891d2abadc
    * Get the year of a point in time.
    * @param time point in time specified as number of milliseconds since the epoch
    * @return the year as a four figure value, e.g. 1971
