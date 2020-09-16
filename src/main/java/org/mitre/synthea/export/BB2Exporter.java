@@ -47,7 +47,7 @@ public class BB2Exporter implements Flushable {
 
   private List<LinkedHashMap<String, String>> carrierLookup;
 
-  private stateCodeMapper locationMapper;
+  private StateCodeMapper locationMapper;
 
   private static final String BB2_BENE_ID = "BB2_BENE_ID";
   private static final String BB2_HIC_ID = "BB2_HIC_ID";
@@ -85,7 +85,7 @@ public class BB2Exporter implements Flushable {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-    locationMapper = new stateCodeMapper();
+    locationMapper = new StateCodeMapper();
     try {
       prepareOutputFiles();
     } catch (IOException e) {
@@ -130,25 +130,25 @@ public class BB2Exporter implements Flushable {
     beneficiary = new SynchronizedBBLineWriter(beneficiaryFile);
     beneficiary.writeHeader(BeneficiaryFields.class);
 
-//    File beneficiaryHistoryFile = outputDirectory.resolve("beneficiary_history.csv").toFile();
-//    beneficiaryHistory = new SynchronizedBBLineWriter(beneficiaryHistoryFile);
-//    beneficiaryHistory.writeHeader(BeneficiaryHistoryFields.class);
-//
-//    File outpatientFile = outputDirectory.resolve("outpatient.csv").toFile();
-//    outpatient = new SynchronizedBBLineWriter(outpatientFile);
-//    outpatient.writeHeader(OutpatientFields.class);
+    //    File beneficiaryHistoryFile = outputDirectory.resolve("beneficiary_history.csv").toFile();
+    //    beneficiaryHistory = new SynchronizedBBLineWriter(beneficiaryHistoryFile);
+    //    beneficiaryHistory.writeHeader(BeneficiaryHistoryFields.class);
+    //
+    //    File outpatientFile = outputDirectory.resolve("outpatient.csv").toFile();
+    //    outpatient = new SynchronizedBBLineWriter(outpatientFile);
+    //    outpatient.writeHeader(OutpatientFields.class);
 
     File inpatientFile = outputDirectory.resolve("inpatient.csv").toFile();
     inpatient = new SynchronizedBBLineWriter(inpatientFile);
     inpatient.writeHeader(InpatientFields.class);
 
-//    File carrierFile = outputDirectory.resolve("carrier.csv").toFile();
-//    carrier = new SynchronizedBBLineWriter(carrierFile);
-//    carrier.writeHeader(CarrierFields.class);
-//
-//    File prescriptionFile = outputDirectory.resolve("prescription.csv").toFile();
-//    prescription = new SynchronizedBBLineWriter(prescriptionFile);
-//    prescription.writeHeader(PrescriptionFields.class);
+    //    File carrierFile = outputDirectory.resolve("carrier.csv").toFile();
+    //    carrier = new SynchronizedBBLineWriter(carrierFile);
+    //    carrier.writeHeader(CarrierFields.class);
+    //
+    //    File prescriptionFile = outputDirectory.resolve("prescription.csv").toFile();
+    //    prescription = new SynchronizedBBLineWriter(prescriptionFile);
+    //    prescription.writeHeader(PrescriptionFields.class);
   }
   
   /**
@@ -159,11 +159,11 @@ public class BB2Exporter implements Flushable {
    */
   void export(Person person, long stopTime) throws IOException {
     exportBeneficiary(person, stopTime);
-//    exportBeneficiaryHistory(person, stopTime);
-//    exportOutpatient(person, stopTime);
+    //    exportBeneficiaryHistory(person, stopTime);
+    //    exportOutpatient(person, stopTime);
     exportInpatient(person, stopTime);
-//    exportCarrier(person, stopTime);
-//    exportPrescription(person, stopTime);
+    //    exportCarrier(person, stopTime);
+    //    exportPrescription(person, stopTime);
   }
   
   /**
@@ -183,17 +183,12 @@ public class BB2Exporter implements Flushable {
     person.attributes.put(BB2_HIC_ID, hicId);
     fieldValues.put(BeneficiaryFields.BENE_CRNT_HIC_NUM, hicId);
     fieldValues.put(BeneficiaryFields.BENE_SEX_IDENT_CD,
-            (String)person.attributes.get(Person.GENDER));
+            getBB2SexCode((String)person.attributes.get(Person.GENDER)));
     String zipCode = (String)person.attributes.get(Person.ZIP);
-    //System.out.println("ZIP: " + zipCode + ", SSA Code: " + ssaCode);
-    //fieldValues.put(BeneficiaryFields.BENE_COUNTY_CD,
-    //        (String)person.attributes.get("county"));
-
-
     fieldValues.put(BeneficiaryFields.BENE_COUNTY_CD,
             (String)locationMapper.zipToCountyCode(zipCode));
     fieldValues.put(BeneficiaryFields.STATE_CODE,
-            (String)person.attributes.get(Person.STATE));
+            locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
     fieldValues.put(BeneficiaryFields.BENE_ZIP_CD,
             (String)person.attributes.get(Person.ZIP));
     fieldValues.put(BeneficiaryFields.BENE_RACE_CD,
@@ -215,6 +210,17 @@ public class BB2Exporter implements Flushable {
     beneficiary.writeValues(BeneficiaryFields.class, fieldValues);
   }
   
+  private String getBB2SexCode(String sex) {
+    switch (sex) {
+      case "M":
+        return "1";
+      case "F":
+        return "2";
+      default:
+        return "0";
+    }
+  }
+  
   /**
    * Export a beneficiary history for single person. Assumes exportBeneficiary
    * was called first to set up various ID on person
@@ -230,16 +236,14 @@ public class BB2Exporter implements Flushable {
     String hicId = (String)person.attributes.get(BB2_HIC_ID);
     fieldValues.put(BeneficiaryHistoryFields.BENE_CRNT_HIC_NUM, hicId);
     fieldValues.put(BeneficiaryHistoryFields.BENE_SEX_IDENT_CD,
-            (String)person.attributes.get(Person.GENDER));
+            getBB2SexCode((String)person.attributes.get(Person.GENDER)));
     long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
     fieldValues.put(BeneficiaryHistoryFields.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
-//    fieldValues.put(BeneficiaryHistoryFields.BENE_COUNTY_CD,
-//            (String)person.attributes.get("county"));
     String zipCode = (String)person.attributes.get(Person.ZIP);
     fieldValues.put(BeneficiaryHistoryFields.BENE_COUNTY_CD,
             (String)locationMapper.zipToCountyCode(zipCode));
     fieldValues.put(BeneficiaryHistoryFields.STATE_CODE,
-            (String)person.attributes.get(Person.STATE));
+            locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
     fieldValues.put(BeneficiaryHistoryFields.BENE_ZIP_CD,
             (String)person.attributes.get(Person.ZIP));
     fieldValues.put(BeneficiaryHistoryFields.BENE_RACE_CD,
@@ -312,7 +316,8 @@ public class BB2Exporter implements Flushable {
       fieldValues.put(OutpatientFields.CLM_FAC_TYPE_CD, "1"); // 1=Hospital, 2=SNF, 7=Dialysis
       fieldValues.put(OutpatientFields.CLM_SRVC_CLSFCTN_TYPE_CD, "3"); // depends on value of above
       fieldValues.put(OutpatientFields.CLM_FREQ_CD, "1"); // 1=Admit-Discharge, 9=Final
-      fieldValues.put(OutpatientFields.CLM_PMT_AMT, String.format("%.2f", encounter.claim.getTotalClaimCost()));
+      fieldValues.put(OutpatientFields.CLM_PMT_AMT, String.format("%.2f",
+              encounter.claim.getTotalClaimCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
         fieldValues.put(OutpatientFields.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
@@ -320,7 +325,8 @@ public class BB2Exporter implements Flushable {
             String.format("%.2f", encounter.claim.getCoveredCost()));
       }
       //fieldValues.put(OutpatientFields.PRVDR_STATE_CD, encounter.provider.state);
-      fieldValues.put(OutpatientFields.PRVDR_STATE_CD, locationMapper.getStateCode(encounter.provider.state));
+      fieldValues.put(OutpatientFields.PRVDR_STATE_CD,
+              locationMapper.getStateCode(encounter.provider.state));
       // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
       String field = null;
       if (encounter.ended) {
@@ -415,7 +421,8 @@ public class BB2Exporter implements Flushable {
             String.format("%.2f", encounter.claim.getCoveredCost()));
       }
       fieldValues.put(InpatientFields.PRVDR_STATE_CD, encounter.provider.state);
-      fieldValues.put(InpatientFields.PRVDR_STATE_CD, locationMapper.getStateCode(encounter.provider.state));
+      fieldValues.put(InpatientFields.PRVDR_STATE_CD,
+              locationMapper.getStateCode(encounter.provider.state));
       // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
       String field = null;
       if (encounter.ended) {
@@ -684,11 +691,11 @@ public class BB2Exporter implements Flushable {
   @Override
   public void flush() throws IOException {
     beneficiary.flush();
-//    beneficiaryHistory.flush();
+    //    beneficiaryHistory.flush();
     inpatient.flush();
-//    outpatient.flush();
-//    carrier.flush();
-//    prescription.flush();
+    //    outpatient.flush();
+    //    carrier.flush();
+    //    prescription.flush();
   }
 
   /**
@@ -781,56 +788,57 @@ public class BB2Exporter implements Flushable {
   }
 
   /**
-   * Utility class for converting state names and abbreviations to provider state codes
+   * Utility class for converting state names and abbreviations to provider state codes.
    */
-  class stateCodeMapper {
-    private HashMap<String, String> ProviderStateCodes;
-    private Map<String, String> StateToAbbrev = this.buildStateAbbrevTable();
-    private Map<String, String> AbbrevToState;
+  class StateCodeMapper {
+    private HashMap<String, String> providerStateCodes;
+    private Map<String, String> stateToAbbrev = this.buildStateAbbrevTable();
+    private Map<String, String> abbrevToState;
     private HashMap<String, String> ssaTable;
 
-    public stateCodeMapper(){
-      this.ProviderStateCodes = this.buildProviderStateTable();
-      this.StateToAbbrev = this.buildStateAbbrevTable();
+    public StateCodeMapper() {
+      this.providerStateCodes = this.buildProviderStateTable();
+      this.stateToAbbrev = this.buildStateAbbrevTable();
       // support two-way conversion between state name and abbreviations
-      Map<String, String> AbbrevToState = new HashMap<String, String>();
-      for(Map.Entry<String, String> entry : StateToAbbrev.entrySet()){
-        AbbrevToState.put(entry.getValue(), entry.getKey());
+      Map<String, String> abbrevToState = new HashMap<String, String>();
+      for (Map.Entry<String, String> entry : stateToAbbrev.entrySet()) {
+        abbrevToState.put(entry.getValue(), entry.getKey());
       }
-      this.AbbrevToState = AbbrevToState;
+      this.abbrevToState = abbrevToState;
       this.ssaTable = buildSSATable();
     }
 
     /**
-     * Return state code for a given state
+     * Return state code for a given state.
      * @param state (either state name or abbreviation)
      * @return 2-digit state code
      */
-    private String getStateCode(String state){
+    private String getStateCode(String state) {
       if (state.length() == 2) {
         state = this.changeStateFormat(state);
-      }else{
+      } else {
         state = this.capitalizeWords(state);
       }
-      String res = this.ProviderStateCodes.getOrDefault(state, "NONE");
+      String res = this.providerStateCodes.getOrDefault(state, "NONE");
       return res;
     }
+    
     /**
-     * Switch between state name and abbreviation. If state is abbreviation, will return name, and vice versa
-     * @param state
+     * Switch between state name and abbreviation. If state is abbreviation, will return name,
+     * and vice versa
+     * @param state abbreviation or name of state
      * @return
      */
-    private String changeStateFormat(String state){
+    private String changeStateFormat(String state) {
       if (state.length() == 2) {
-        return this.AbbrevToState.getOrDefault(state.toUpperCase(), null);
-      }else{
+        return this.abbrevToState.getOrDefault(state.toUpperCase(), null);
+      } else {
         String stateClean = this.capitalizeWords(state.toLowerCase());
-        return this.StateToAbbrev.getOrDefault(stateClean, null);
+        return this.stateToAbbrev.getOrDefault(stateClean, null);
       }
     }
 
-
-    private Map<String, String> buildStateAbbrevTable(){
+    private Map<String, String> buildStateAbbrevTable() {
       Map<String, String> states = new HashMap<String, String>();
       states.put("Alabama","AL");
       states.put("Alaska","AK");
@@ -905,88 +913,91 @@ public class BB2Exporter implements Flushable {
       states.put("Yukon Territory","YT");
       return states;
     }
-    private  HashMap<String, String> buildProviderStateTable(){
-      HashMap<String, String> ProviderStateCode = new HashMap<String, String>();
-      ProviderStateCode.put("Alabama", "01");
-      ProviderStateCode.put("Alaska", "02");
-      ProviderStateCode.put("Arizona", "03");
-      ProviderStateCode.put("Arkansas", "04");
-      ProviderStateCode.put("California", "05");
-      ProviderStateCode.put("Colorado", "06");
-      ProviderStateCode.put("Connecticut", "07");
-      ProviderStateCode.put("Delaware", "08");
-      ProviderStateCode.put("District of Columbia", "09");
-      ProviderStateCode.put("Florida", "10");
-      ProviderStateCode.put("Georgia", "11");
-      ProviderStateCode.put("Hawaii", "12");
-      ProviderStateCode.put("Idaho", "13");
-      ProviderStateCode.put("Illinois", "14");
-      ProviderStateCode.put("Indiana", "15");
-      ProviderStateCode.put("Iowa", "16");
-      ProviderStateCode.put("Kansas", "17");
-      ProviderStateCode.put("Kentucky", "18");
-      ProviderStateCode.put("Louisiana", "19");
-      ProviderStateCode.put("Maine", "20");
-      ProviderStateCode.put("Maryland", "21");
-      ProviderStateCode.put("Massachusetts", "22");
-      ProviderStateCode.put("Michigan", "23");
-      ProviderStateCode.put("Minnesota", "24");
-      ProviderStateCode.put("Mississippi", "25");
-      ProviderStateCode.put("Missouri", "26");
-      ProviderStateCode.put("Montana", "27");
-      ProviderStateCode.put("Nebraska", "28");
-      ProviderStateCode.put("Nevada", "29");
-      ProviderStateCode.put("New Hampshire", "30");
-      ProviderStateCode.put("New Jersey", "31");
-      ProviderStateCode.put("New Mexico", "32");
-      ProviderStateCode.put("New York", "33");
-      ProviderStateCode.put("North Carolina", "34");
-      ProviderStateCode.put("North Dakota", "35");
-      ProviderStateCode.put("Ohio", "36");
-      ProviderStateCode.put("Oklahoma", "37");
-      ProviderStateCode.put("Oregon", "38");
-      ProviderStateCode.put("Pennsylvania", "39");
-      ProviderStateCode.put("Puerto Rico", "40");
-      ProviderStateCode.put("Rhode Island", "41");
-      ProviderStateCode.put("South Carolina", "42");
-      ProviderStateCode.put("South Dakota", "43");
-      ProviderStateCode.put("Tennessee", "44");
-      ProviderStateCode.put("Texas", "45");
-      ProviderStateCode.put("Utah", "46");
-      ProviderStateCode.put("Vermont", "47");
-      ProviderStateCode.put("Virgin Islands", "48");
-      ProviderStateCode.put("Virginia", "49");
-      ProviderStateCode.put("Washington", "50");
-      ProviderStateCode.put("West Virginia", "51");
-      ProviderStateCode.put("Wisconsin", "52");
-      ProviderStateCode.put("Wyoming", "53");
-      ProviderStateCode.put("Africa", "54");
-      ProviderStateCode.put("California", "55");
-      ProviderStateCode.put("Canada & Islands", "56");
-      ProviderStateCode.put("Central America and West Indies", "57");
-      ProviderStateCode.put("Europe", "58");
-      ProviderStateCode.put("Mexico", "59");
-      ProviderStateCode.put("Oceania", "60");
-      ProviderStateCode.put("Philippines", "61");
-      ProviderStateCode.put("South America", "62");
-      ProviderStateCode.put("U.S. Possessions", "63");
-      ProviderStateCode.put("American Samoa", "64");
-      ProviderStateCode.put("Guam", "65");
-      ProviderStateCode.put("Commonwealth of the Northern Marianas Islands", "66");
-      return ProviderStateCode;
+    
+    private  HashMap<String, String> buildProviderStateTable() {
+      HashMap<String, String> providerStateCode = new HashMap<String, String>();
+      providerStateCode.put("Alabama", "01");
+      providerStateCode.put("Alaska", "02");
+      providerStateCode.put("Arizona", "03");
+      providerStateCode.put("Arkansas", "04");
+      providerStateCode.put("California", "05");
+      providerStateCode.put("Colorado", "06");
+      providerStateCode.put("Connecticut", "07");
+      providerStateCode.put("Delaware", "08");
+      providerStateCode.put("District of Columbia", "09");
+      providerStateCode.put("Florida", "10");
+      providerStateCode.put("Georgia", "11");
+      providerStateCode.put("Hawaii", "12");
+      providerStateCode.put("Idaho", "13");
+      providerStateCode.put("Illinois", "14");
+      providerStateCode.put("Indiana", "15");
+      providerStateCode.put("Iowa", "16");
+      providerStateCode.put("Kansas", "17");
+      providerStateCode.put("Kentucky", "18");
+      providerStateCode.put("Louisiana", "19");
+      providerStateCode.put("Maine", "20");
+      providerStateCode.put("Maryland", "21");
+      providerStateCode.put("Massachusetts", "22");
+      providerStateCode.put("Michigan", "23");
+      providerStateCode.put("Minnesota", "24");
+      providerStateCode.put("Mississippi", "25");
+      providerStateCode.put("Missouri", "26");
+      providerStateCode.put("Montana", "27");
+      providerStateCode.put("Nebraska", "28");
+      providerStateCode.put("Nevada", "29");
+      providerStateCode.put("New Hampshire", "30");
+      providerStateCode.put("New Jersey", "31");
+      providerStateCode.put("New Mexico", "32");
+      providerStateCode.put("New York", "33");
+      providerStateCode.put("North Carolina", "34");
+      providerStateCode.put("North Dakota", "35");
+      providerStateCode.put("Ohio", "36");
+      providerStateCode.put("Oklahoma", "37");
+      providerStateCode.put("Oregon", "38");
+      providerStateCode.put("Pennsylvania", "39");
+      providerStateCode.put("Puerto Rico", "40");
+      providerStateCode.put("Rhode Island", "41");
+      providerStateCode.put("South Carolina", "42");
+      providerStateCode.put("South Dakota", "43");
+      providerStateCode.put("Tennessee", "44");
+      providerStateCode.put("Texas", "45");
+      providerStateCode.put("Utah", "46");
+      providerStateCode.put("Vermont", "47");
+      providerStateCode.put("Virgin Islands", "48");
+      providerStateCode.put("Virginia", "49");
+      providerStateCode.put("Washington", "50");
+      providerStateCode.put("West Virginia", "51");
+      providerStateCode.put("Wisconsin", "52");
+      providerStateCode.put("Wyoming", "53");
+      providerStateCode.put("Africa", "54");
+      providerStateCode.put("California", "55");
+      providerStateCode.put("Canada & Islands", "56");
+      providerStateCode.put("Central America and West Indies", "57");
+      providerStateCode.put("Europe", "58");
+      providerStateCode.put("Mexico", "59");
+      providerStateCode.put("Oceania", "60");
+      providerStateCode.put("Philippines", "61");
+      providerStateCode.put("South America", "62");
+      providerStateCode.put("U.S. Possessions", "63");
+      providerStateCode.put("American Samoa", "64");
+      providerStateCode.put("Guam", "65");
+      providerStateCode.put("Commonwealth of the Northern Marianas Islands", "66");
+      return providerStateCode;
     }
 
     /**
-     * Get the SSA county code for a given zipcode. Will eventually use countyname, but wanted to use a unique key
-     * @param zipcode
+     * Get the SSA county code for a given zipcode. Will eventually use countyname, but wanted
+     * to use a unique key
+     * @param zipcode the ZIP
      * @return
      */
-    private String zipToCountyCode(String zipcode){
-      // TODO: fix this. Currently hard-coding default because required field, but will eventually add name-based matching as fallback
+    private String zipToCountyCode(String zipcode) {
+      // TODO: fix this. Currently hard-coding default because required field, but will
+      // eventually add name-based matching as fallback
       return ssaTable.getOrDefault(zipcode, "22090");
     }
 
-    private HashMap<String, String> buildSSATable(){
+    private HashMap<String, String> buildSSATable() {
       HashMap<String, String> ssaTable = new HashMap<String, String>();
       List<LinkedHashMap<String, String>> csvData;
 
@@ -1004,24 +1015,25 @@ public class BB2Exporter implements Flushable {
       for (LinkedHashMap<String, String> row : csvData) {
         String zipcode = row.get("zip");
 
-        if (zipcode.length() > 3){
-          if (zipcode.length() == 4){
+        if (zipcode.length() > 3) {
+          if (zipcode.length() == 4) {
             zipcode = "0" + zipcode;
           }
         }
 
-        String ssa_code = row.get("ssacounty");
-        ssaTable.put(zipcode, ssa_code);
+        String ssaCode = row.get("ssacounty");
+        ssaTable.put(zipcode, ssaCode);
       }
       return ssaTable;
     }
-    private String capitalizeWords(String str){
-      String words[]=str.split("\\s");
-      String capitalizeWords="";
-      for(String w:words){
-        String first=w.substring(0,1);
-        String afterFirst=w.substring(1);
-        capitalizeWords+=first.toUpperCase()+afterFirst+" ";
+    
+    private String capitalizeWords(String str) {
+      String[] words = str.split("\\s");
+      String capitalizeWords = "";
+      for (String w: words) {
+        String first = w.substring(0,1);
+        String afterFirst = w.substring(1);
+        capitalizeWords += first.toUpperCase() + afterFirst + " ";
       }
       return capitalizeWords.trim();
     }
