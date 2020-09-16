@@ -2,14 +2,18 @@ package org.mitre.synthea.export;
 
 import static org.mitre.synthea.export.ExportHelper.nextFriday;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,6 +50,7 @@ public class BB2Exporter implements Flushable {
   private AtomicInteger pdeId; // per medication claim
 
   private List<LinkedHashMap<String, String>> carrierLookup;
+  private HashMap<String,List<List<String>>> map;
 
   private StateCodeMapper locationMapper;
 
@@ -84,6 +89,15 @@ public class BB2Exporter implements Flushable {
       carrierLookup = SimpleCSV.parse(csv);
     } catch (IOException e) {
       throw new RuntimeException(e);
+    }
+    try {
+      String json = Utilities.readResource("map.json");
+      Gson g = new Gson();
+      Type type = new TypeToken<HashMap<String,List<List<String>>>>(){}.getType();
+      map = g.fromJson(json, type);
+    } catch (IOException e) {
+      System.out.println("BB2Exporter is running without a map.");
+      // No worries. The optional map is not present.
     }
     locationMapper = new StateCodeMapper();
     try {
@@ -157,7 +171,7 @@ public class BB2Exporter implements Flushable {
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  void export(Person person, long stopTime) throws IOException {
+  public void export(Person person, long stopTime) throws IOException {
     exportBeneficiary(person, stopTime);
     //    exportBeneficiaryHistory(person, stopTime);
     //    exportOutpatient(person, stopTime);
@@ -482,6 +496,38 @@ public class BB2Exporter implements Flushable {
       fieldValues.put(InpatientFields.REV_CNTR_NCVRD_CHRG_AMT,
           String.format("%.2f", encounter.claim.getPatientCost()));
 
+      // OPTIONAL FIELDS
+      if (encounter.reason != null) {
+        // If the encounter has a recorded reason, enter the mapped
+        // values into the principle diagnoses code.
+        if (map != null && map.containsKey(encounter.reason.code)) {
+          List<List<String>> options = map.get(encounter.reason.code);
+          int choice = person.randInt(options.size());
+          String code = options.get(choice).get(0);
+          fieldValues.put(InpatientFields.PRNCPAL_DGNS_CD, code);
+        }
+      }
+      // Use the active condition diagnoses to enter mapped values
+      // into the diagnoses codes.
+      if (person.record.present != null && !person.record.present.isEmpty()) {
+        List<String> diagnoses = new ArrayList<String>();
+        for (String key : person.record.present.keySet()) {
+          if (person.record.conditionActive(key)) {
+            if (map.containsKey(key)) {
+              List<List<String>> options = map.get(key);
+              int choice = person.randInt(options.size());
+              String code = options.get(choice).get(0);
+              diagnoses.add(code);
+            }
+          }
+        }
+        if (!diagnoses.isEmpty()) {
+          for (int i = 0; i < diagnoses.size(); i++) {
+            InpatientFields dxField = inpatientDxFields[i];
+            fieldValues.put(dxField, diagnoses.get(i));
+          }
+        }
+      }
       previous = encounter;
       previousInpatient = isInpatient;
       previousEmergency = isEmergency;
@@ -1770,6 +1816,34 @@ public class BB2Exporter implements Flushable {
     RNDRNG_PHYSN_UPIN,
     RNDRNG_PHYSN_NPI
   }
+
+  private InpatientFields[] inpatientDxFields = {
+      InpatientFields.ICD_DGNS_CD1,
+      InpatientFields.ICD_DGNS_CD2,
+      InpatientFields.ICD_DGNS_CD3,
+      InpatientFields.ICD_DGNS_CD4,
+      InpatientFields.ICD_DGNS_CD5,
+      InpatientFields.ICD_DGNS_CD6,
+      InpatientFields.ICD_DGNS_CD7,
+      InpatientFields.ICD_DGNS_CD8,
+      InpatientFields.ICD_DGNS_CD9,
+      InpatientFields.ICD_DGNS_CD10,
+      InpatientFields.ICD_DGNS_CD11,
+      InpatientFields.ICD_DGNS_CD12,
+      InpatientFields.ICD_DGNS_CD13,
+      InpatientFields.ICD_DGNS_CD14,
+      InpatientFields.ICD_DGNS_CD15,
+      InpatientFields.ICD_DGNS_CD16,
+      InpatientFields.ICD_DGNS_CD17,
+      InpatientFields.ICD_DGNS_CD18,
+      InpatientFields.ICD_DGNS_CD19,
+      InpatientFields.ICD_DGNS_CD20,
+      InpatientFields.ICD_DGNS_CD21,
+      InpatientFields.ICD_DGNS_CD22,
+      InpatientFields.ICD_DGNS_CD23,
+      InpatientFields.ICD_DGNS_CD24,
+      InpatientFields.ICD_DGNS_CD25
+  };
 
   private enum CarrierFields {
     DML_IND,
