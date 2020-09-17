@@ -528,6 +528,31 @@ public class BB2Exporter implements Flushable {
           }
         }
       }
+      // Use the procedures in this encounter to enter mapped values
+      if (map != null && !encounter.procedures.isEmpty()) {
+        List<HealthRecord.Procedure> mappableProcedures = new ArrayList<HealthRecord.Procedure>();
+        List<String> mappedCodes = new ArrayList<String>();
+        for (HealthRecord.Procedure procedure : encounter.procedures) {
+          for (HealthRecord.Code code : procedure.codes) {
+            if (map.containsKey(code.code)) {
+              mappableProcedures.add(procedure);
+              List<List<String>> options = map.get(code.code);
+              int choice = person.randInt(options.size());
+              String mappedCode = options.get(choice).get(0);
+              mappedCodes.add(mappedCode);
+              break;
+            }
+          }
+        }
+        if (!mappableProcedures.isEmpty()) {
+          for (int i = 0; i < mappableProcedures.size(); i++) {
+            InpatientFields[] pxField = inpatientPxFields[i];
+            fieldValues.put(pxField[0], mappedCodes.get(i));
+            fieldValues.put(pxField[1], "0"); // 0=ICD10
+            fieldValues.put(pxField[2], bb2DateFromTimestamp(mappableProcedures.get(i).start));
+          }
+        }
+      }
       previous = encounter;
       previousInpatient = isInpatient;
       previousEmergency = isEmergency;
@@ -1818,31 +1843,84 @@ public class BB2Exporter implements Flushable {
   }
 
   private InpatientFields[] inpatientDxFields = {
-      InpatientFields.ICD_DGNS_CD1,
-      InpatientFields.ICD_DGNS_CD2,
-      InpatientFields.ICD_DGNS_CD3,
-      InpatientFields.ICD_DGNS_CD4,
-      InpatientFields.ICD_DGNS_CD5,
-      InpatientFields.ICD_DGNS_CD6,
-      InpatientFields.ICD_DGNS_CD7,
-      InpatientFields.ICD_DGNS_CD8,
-      InpatientFields.ICD_DGNS_CD9,
-      InpatientFields.ICD_DGNS_CD10,
-      InpatientFields.ICD_DGNS_CD11,
-      InpatientFields.ICD_DGNS_CD12,
-      InpatientFields.ICD_DGNS_CD13,
-      InpatientFields.ICD_DGNS_CD14,
-      InpatientFields.ICD_DGNS_CD15,
-      InpatientFields.ICD_DGNS_CD16,
-      InpatientFields.ICD_DGNS_CD17,
-      InpatientFields.ICD_DGNS_CD18,
-      InpatientFields.ICD_DGNS_CD19,
-      InpatientFields.ICD_DGNS_CD20,
-      InpatientFields.ICD_DGNS_CD21,
-      InpatientFields.ICD_DGNS_CD22,
-      InpatientFields.ICD_DGNS_CD23,
-      InpatientFields.ICD_DGNS_CD24,
-      InpatientFields.ICD_DGNS_CD25
+    InpatientFields.ICD_DGNS_CD1,
+    InpatientFields.ICD_DGNS_CD2,
+    InpatientFields.ICD_DGNS_CD3,
+    InpatientFields.ICD_DGNS_CD4,
+    InpatientFields.ICD_DGNS_CD5,
+    InpatientFields.ICD_DGNS_CD6,
+    InpatientFields.ICD_DGNS_CD7,
+    InpatientFields.ICD_DGNS_CD8,
+    InpatientFields.ICD_DGNS_CD9,
+    InpatientFields.ICD_DGNS_CD10,
+    InpatientFields.ICD_DGNS_CD11,
+    InpatientFields.ICD_DGNS_CD12,
+    InpatientFields.ICD_DGNS_CD13,
+    InpatientFields.ICD_DGNS_CD14,
+    InpatientFields.ICD_DGNS_CD15,
+    InpatientFields.ICD_DGNS_CD16,
+    InpatientFields.ICD_DGNS_CD17,
+    InpatientFields.ICD_DGNS_CD18,
+    InpatientFields.ICD_DGNS_CD19,
+    InpatientFields.ICD_DGNS_CD20,
+    InpatientFields.ICD_DGNS_CD21,
+    InpatientFields.ICD_DGNS_CD22,
+    InpatientFields.ICD_DGNS_CD23,
+    InpatientFields.ICD_DGNS_CD24,
+    InpatientFields.ICD_DGNS_CD25
+  };
+
+  private InpatientFields[][] inpatientPxFields = {
+    { InpatientFields.ICD_PRCDR_CD1, InpatientFields.ICD_PRCDR_VRSN_CD1,
+      InpatientFields.PRCDR_DT1 },
+    { InpatientFields.ICD_PRCDR_CD2, InpatientFields.ICD_PRCDR_VRSN_CD2,
+      InpatientFields.PRCDR_DT2 },
+    { InpatientFields.ICD_PRCDR_CD3, InpatientFields.ICD_PRCDR_VRSN_CD3,
+      InpatientFields.PRCDR_DT3 },
+    { InpatientFields.ICD_PRCDR_CD4, InpatientFields.ICD_PRCDR_VRSN_CD4,
+      InpatientFields.PRCDR_DT4 },
+    { InpatientFields.ICD_PRCDR_CD5, InpatientFields.ICD_PRCDR_VRSN_CD5,
+      InpatientFields.PRCDR_DT5 },
+    { InpatientFields.ICD_PRCDR_CD6, InpatientFields.ICD_PRCDR_VRSN_CD6,
+      InpatientFields.PRCDR_DT6 },
+    { InpatientFields.ICD_PRCDR_CD7, InpatientFields.ICD_PRCDR_VRSN_CD7,
+      InpatientFields.PRCDR_DT7 },
+    { InpatientFields.ICD_PRCDR_CD8, InpatientFields.ICD_PRCDR_VRSN_CD8,
+      InpatientFields.PRCDR_DT8 },
+    { InpatientFields.ICD_PRCDR_CD9, InpatientFields.ICD_PRCDR_VRSN_CD9,
+      InpatientFields.PRCDR_DT9 },
+    { InpatientFields.ICD_PRCDR_CD10, InpatientFields.ICD_PRCDR_VRSN_CD10,
+      InpatientFields.PRCDR_DT10 },
+    { InpatientFields.ICD_PRCDR_CD11, InpatientFields.ICD_PRCDR_VRSN_CD11,
+      InpatientFields.PRCDR_DT11 },
+    { InpatientFields.ICD_PRCDR_CD12, InpatientFields.ICD_PRCDR_VRSN_CD12,
+      InpatientFields.PRCDR_DT12 },
+    { InpatientFields.ICD_PRCDR_CD13, InpatientFields.ICD_PRCDR_VRSN_CD13,
+      InpatientFields.PRCDR_DT13 },
+    { InpatientFields.ICD_PRCDR_CD14, InpatientFields.ICD_PRCDR_VRSN_CD14,
+      InpatientFields.PRCDR_DT14 },
+    { InpatientFields.ICD_PRCDR_CD15, InpatientFields.ICD_PRCDR_VRSN_CD15,
+      InpatientFields.PRCDR_DT15 },
+    { InpatientFields.ICD_PRCDR_CD16, InpatientFields.ICD_PRCDR_VRSN_CD16,
+      InpatientFields.PRCDR_DT16 },
+    { InpatientFields.ICD_PRCDR_CD17, InpatientFields.ICD_PRCDR_VRSN_CD17,
+      InpatientFields.PRCDR_DT17 },
+    { InpatientFields.ICD_PRCDR_CD18, InpatientFields.ICD_PRCDR_VRSN_CD18,
+      InpatientFields.PRCDR_DT18 },
+    { InpatientFields.ICD_PRCDR_CD19, InpatientFields.ICD_PRCDR_VRSN_CD19,
+      InpatientFields.PRCDR_DT19 },
+    { InpatientFields.ICD_PRCDR_CD20, InpatientFields.ICD_PRCDR_VRSN_CD20,
+      InpatientFields.PRCDR_DT20 },
+    { InpatientFields.ICD_PRCDR_CD21, InpatientFields.ICD_PRCDR_VRSN_CD21,
+      InpatientFields.PRCDR_DT21 },
+    { InpatientFields.ICD_PRCDR_CD22, InpatientFields.ICD_PRCDR_VRSN_CD22,
+      InpatientFields.PRCDR_DT22 },
+    { InpatientFields.ICD_PRCDR_CD23, InpatientFields.ICD_PRCDR_VRSN_CD23,
+      InpatientFields.PRCDR_DT23 },
+    { InpatientFields.ICD_PRCDR_CD24, InpatientFields.ICD_PRCDR_VRSN_CD24,
+      InpatientFields.PRCDR_DT24 },
+    { InpatientFields.ICD_PRCDR_CD25, InpatientFields.ICD_PRCDR_VRSN_CD25,
+      InpatientFields.PRCDR_DT25 }
   };
 
   private enum CarrierFields {
