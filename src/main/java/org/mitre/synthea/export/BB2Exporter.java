@@ -187,6 +187,18 @@ public class BB2Exporter implements Flushable {
    */
   private void exportBeneficiary(Person person, long stopTime) throws IOException {
     HashMap<BeneficiaryFields, String> fieldValues = new HashMap<>();
+    // Optional fields that must be zero
+    fieldValues.put(BeneficiaryFields.RFRNC_YR, String.valueOf(getYear(stopTime)));
+    fieldValues.put(BeneficiaryFields.A_MO_CNT, String.valueOf(getMonth(stopTime)));
+    fieldValues.put(BeneficiaryFields.B_MO_CNT, String.valueOf(getMonth(stopTime)));
+    fieldValues.put(BeneficiaryFields.BUYIN_MO_CNT, String.valueOf(getMonth(stopTime)));
+    fieldValues.put(BeneficiaryFields.HMO_MO_CNT, "0");
+    fieldValues.put(BeneficiaryFields.RDS_MO_CNT, String.valueOf(getMonth(stopTime)));
+    fieldValues.put(BeneficiaryFields.AGE, "0");
+    fieldValues.put(BeneficiaryFields.DUAL_MO_CNT, "0");
+    fieldValues.put(BeneficiaryFields.PLAN_CVRG_MO_CNT, String.valueOf(getMonth(stopTime)));
+
+    // Now put in the real data, some of which might overwrite the above
     fieldValues.put(BeneficiaryFields.DML_IND, "INSERT");
     String personId = (String)person.attributes.get(Person.ID);
     String beneIdStr = Integer.toString(beneId.decrementAndGet());
@@ -277,6 +289,15 @@ public class BB2Exporter implements Flushable {
    */
   private static int getYear(long time) {
     return 1900 + new Date(time).getYear();
+  }
+
+  /**
+   * Get the month of a point in time.
+   * @param time point in time specified as number of milliseconds since the epoch
+   * @return the month of the year
+   */
+  private static int getMonth(long time) {
+    return 1 + new Date(time).getMonth();
   }
   
   /**
@@ -496,6 +517,20 @@ public class BB2Exporter implements Flushable {
           String.format("%.2f", encounter.claim.getPatientCost()));
 
       // OPTIONAL FIELDS
+      // Optional numeric fields apparently need to be filled with zeroes.
+      fieldValues.put(InpatientFields.CLM_TOT_PPS_CPTL_AMT, "0");
+      fieldValues.put(InpatientFields.CLM_PPS_CPTL_FSP_AMT, "0");
+      fieldValues.put(InpatientFields.CLM_PPS_CPTL_OUTLIER_AMT, "0");
+      fieldValues.put(InpatientFields.CLM_PPS_CPTL_DSPRPRTNT_SHR_AMT, "0");
+      fieldValues.put(InpatientFields.CLM_PPS_CPTL_IME_AMT, "0");
+      fieldValues.put(InpatientFields.CLM_PPS_CPTL_EXCPTN_AMT, "0");
+      fieldValues.put(InpatientFields.CLM_PPS_OLD_CPTL_HLD_HRMLS_AMT, "0");
+      fieldValues.put(InpatientFields.CLM_PPS_CPTL_DRG_WT_NUM, "0");
+      fieldValues.put(InpatientFields.BENE_LRD_USED_CNT, "0");
+      fieldValues.put(InpatientFields.NCH_DRG_OUTLIER_APRVD_PMT_AMT, "0");
+      fieldValues.put(InpatientFields.IME_OP_CLM_VAL_AMT, "0");
+      fieldValues.put(InpatientFields.DSH_OP_CLM_VAL_AMT, "0");
+      fieldValues.put(InpatientFields.REV_CNTR_NDC_QTY, "0");
       if (encounter.reason != null) {
         // If the encounter has a recorded reason, enter the mapped
         // values into the principle diagnoses code.
