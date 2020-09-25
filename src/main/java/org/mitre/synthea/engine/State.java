@@ -480,8 +480,8 @@ public abstract class State implements Cloneable, Serializable {
    * step) time.
    */
   public static class Delay extends Delayable {
-    private RangeWithUnit<Long> range;
-    private ExactWithUnit<Long> exact;
+    private RangeWithUnit<Double> range;
+    private ExactWithUnit<Double> exact;
 
     @Override
     public Delay clone() {
@@ -496,7 +496,7 @@ public abstract class State implements Cloneable, Serializable {
         return time + Utilities.convertTime(exact.unit, exact.quantity);
       } else if (range != null) {
         // use a range
-        return time + Utilities.convertTime(range.unit, (long) person.rand(range.low, range.high));
+        return time + Utilities.convertTime(range.unit, person.rand(range.low, range.high));
       } else {
         throw new RuntimeException("Delay state has no exact or range: " + this);
       }
@@ -1357,7 +1357,7 @@ public abstract class State implements Cloneable, Serializable {
       }
       if (duration != null && this.stop == null) {
         double durationVal = person.rand(duration.low, duration.high);
-        this.stop = procedure.start + Utilities.convertTime(duration.unit, (long) durationVal);
+        this.stop = procedure.start + Utilities.convertTime(duration.unit, durationVal);
         procedure.stop = this.stop;
       }
       // increment number of procedures by respective hospital
@@ -1907,8 +1907,8 @@ public abstract class State implements Cloneable, Serializable {
     private List<Code> codes;
     private String conditionOnset;
     private String referencedByAttribute;
-    private RangeWithUnit<Integer> range;
-    private ExactWithUnit<Integer> exact;
+    private RangeWithUnit<Double> range;
+    private ExactWithUnit<Double> exact;
 
     @Override
     public Death clone() {
@@ -1946,7 +1946,7 @@ public abstract class State implements Cloneable, Serializable {
         return true;
       } else if (range != null) {
         double duration = person.rand(range.low, range.high);
-        long timeOfDeath = time + Utilities.convertTime(range.unit, (long) duration);
+        long timeOfDeath = time + Utilities.convertTime(range.unit, duration);
         person.recordDeath(timeOfDeath, reason);
         return true;
       } else {
