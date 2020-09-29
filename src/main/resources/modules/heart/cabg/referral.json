@@ -1,0 +1,222 @@
+{
+  "name": "referral",
+  "remarks": [
+    "CABG Referral."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Referral to Cardiology"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Referral to Cardiology": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Referral Procedure"
+    },
+    "Consultation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 698314001,
+          "display": "Consultation for treatment (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Diagnostic"
+    },
+    "Diagnostic": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 77343006,
+          "display": "Angiography (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "TODO Abnormal Findings"
+    },
+    "End Referral Consultation": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait for Next Encounter"
+    },
+    "Referral Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183519002,
+          "display": "Referral to cardiology service (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Consultation"
+    },
+    "TODO Abnormal Findings": {
+      "type": "Simple",
+      "direct_transition": "End Referral Consultation"
+    },
+    "Wait for Next Encounter": {
+      "type": "Delay",
+      "direct_transition": "Referral_to_Surgeon",
+      "range": {
+        "low": 1,
+        "high": 2,
+        "unit": "weeks"
+      }
+    },
+    "Referral_to_Surgeon": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 390906007,
+          "display": "Follow-up encounter (procedure)"
+        }
+      ],
+      "direct_transition": "Referral Procedure 2"
+    },
+    "Referral Procedure 2": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183557002,
+          "display": "Referral to cardiothoracic surgeon (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Referral to Surgeon"
+    },
+    "End Referral to Surgeon": {
+      "type": "EncounterEnd",
+      "direct_transition": "TODO Assign Priority"
+    },
+    "TODO Assign Priority": {
+      "type": "Simple",
+      "direct_transition": "TODO CallSubmodule CABG Surgery"
+    },
+    "End CABG Postop": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Recovery": {
+      "type": "Delay",
+      "direct_transition": "End CABG Postop",
+      "range": {
+        "low": 1,
+        "high": 5,
+        "unit": "days"
+      }
+    },
+    "TODO CallSubmodule CABG Surgery": {
+      "type": "Simple",
+      "direct_transition": "CABG Surgery"
+    },
+    "CABG Surgery": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Emergency CABG",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score_e",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "CABG"
+        }
+      ]
+    },
+    "CABG_Postop": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 390906007,
+          "display": "Follow-up encounter (procedure)"
+        }
+      ],
+      "direct_transition": "Recovery"
+    },
+    "Finish Surgery": {
+      "type": "EncounterEnd",
+      "direct_transition": "CABG_Postop"
+    },
+    "CABG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 232717009,
+          "display": "Coronary artery bypass grafting (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 120,
+        "unit": "minutes"
+      },
+      "direct_transition": "Finish Surgery"
+    },
+    "Emergency CABG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 414088005,
+          "display": "Emergency coronary artery bypass graft (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 120,
+        "unit": "minutes"
+      },
+      "direct_transition": "Finish Surgery"
+    }
+  }
+}
