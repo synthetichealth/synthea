@@ -1,0 +1,216 @@
+{
+  "name": "cardiac_surgery",
+  "remarks": [
+    "Cardiac Surgery Module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Block Pediatric Patients"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Wait Until High Risk": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Or",
+        "conditions": [
+          {
+            "condition_type": "Attribute",
+            "attribute": "atrial_fibrillation",
+            "operator": "==",
+            "value": true
+          },
+          {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 410429000,
+                    "display": "Cardiac Arrest"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "stroke_history",
+                    "operator": "==",
+                    "value": true
+                  },
+                  {
+                    "condition_type": "Or",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "ckd",
+                        "operator": ">=",
+                        "value": 4
+                      },
+                      {
+                        "condition_type": "Or",
+                        "conditions": [
+                          {
+                            "condition_type": "Attribute",
+                            "attribute": "chf",
+                            "operator": "is not nil"
+                          },
+                          {
+                            "condition_type": "Or",
+                            "conditions": [
+                              {
+                                "condition_type": "Attribute",
+                                "attribute": "copd_variant",
+                                "operator": "is not nil"
+                              },
+                              {
+                                "condition_type": "Or",
+                                "conditions": [
+                                  {
+                                    "condition_type": "Attribute",
+                                    "attribute": "hypertension",
+                                    "operator": "is not nil"
+                                  },
+                                  {
+                                    "condition_type": "Or",
+                                    "conditions": [
+                                      {
+                                        "condition_type": "Attribute",
+                                        "attribute": "smoking",
+                                        "operator": "==",
+                                        "value": true
+                                      },
+                                      {
+                                        "condition_type": "Or",
+                                        "conditions": [
+                                          {
+                                            "condition_type": "Attribute",
+                                            "attribute": "smoker",
+                                            "operator": "==",
+                                            "value": true
+                                          },
+                                          {
+                                            "condition_type": "Or",
+                                            "conditions": [
+                                              {
+                                                "condition_type": "Attribute",
+                                                "attribute": "coronary_heart_disease",
+                                                "operator": "is not nil"
+                                              },
+                                              {
+                                                "condition_type": "Or",
+                                                "conditions": [
+                                                  {
+                                                    "condition_type": "Attribute",
+                                                    "attribute": "diabetes",
+                                                    "operator": "is not nil"
+                                                  },
+                                                  {
+                                                    "condition_type": "Or",
+                                                    "conditions": [
+                                                      {
+                                                        "condition_type": "Attribute",
+                                                        "attribute": "metabolic_syndrome",
+                                                        "operator": "is not nil"
+                                                      },
+                                                      {
+                                                        "condition_type": "Or",
+                                                        "conditions": [
+                                                          {
+                                                            "condition_type": "Vital Sign",
+                                                            "vital_sign": "BMI",
+                                                            "operator": ">=",
+                                                            "value": 25
+                                                          },
+                                                          {
+                                                            "condition_type": "Or",
+                                                            "conditions": [
+                                                              {
+                                                                "condition_type": "Active Condition",
+                                                                "codes": [
+                                                                  {
+                                                                    "system": "SNOMED-CT",
+                                                                    "code": 22298006,
+                                                                    "display": "Myocardial Infarction"
+                                                                  }
+                                                                ]
+                                                              },
+                                                              {
+                                                                "condition_type": "Active Condition",
+                                                                "codes": [
+                                                                  {
+                                                                    "system": "SNOMED-CT",
+                                                                    "code": 27942005,
+                                                                    "display": "Shock (disorder)"
+                                                                  }
+                                                                ]
+                                                              }
+                                                            ]
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "direct_transition": "CABG"
+    },
+    "Block Pediatric Patients": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">",
+        "quantity": 18,
+        "unit": "years"
+      },
+      "direct_transition": "Wait Until High Risk"
+    },
+    "CABG": {
+      "type": "SetAttribute",
+      "attribute": "cardiac_surgery",
+      "value": "cabg",
+      "direct_transition": "Assign CARE Score"
+    },
+    "Assign CARE Score": {
+      "type": "CallSubmodule",
+      "submodule": "heart/care_score",
+      "direct_transition": "Set Outcomes"
+    },
+    "Set Outcomes": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/outcomes",
+      "direct_transition": "Referral"
+    },
+    "Referral": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/referral",
+      "direct_transition": "Terminal"
+    }
+  }
+}

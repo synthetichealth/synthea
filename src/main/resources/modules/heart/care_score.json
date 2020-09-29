@@ -1,0 +1,248 @@
+{
+  "name": "care_score",
+  "remarks": [
+    "Set a CARE Score."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Not 2 Check"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Any Score": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "CARE Score 1",
+          "distribution": 0.2
+        },
+        {
+          "transition": "CARE Score 2",
+          "distribution": 0.2
+        },
+        {
+          "transition": "CARE Score 3",
+          "distribution": 0.2
+        },
+        {
+          "transition": "CARE Score 4",
+          "distribution": 0.2
+        },
+        {
+          "transition": "CARE Score 5",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Not 1": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "CARE Score 2",
+          "distribution": 0.25
+        },
+        {
+          "transition": "CARE Score 3",
+          "distribution": 0.25
+        },
+        {
+          "transition": "CARE Score 4",
+          "distribution": 0.25
+        },
+        {
+          "transition": "CARE Score 5",
+          "distribution": 0.25
+        }
+      ]
+    },
+    "Not 1 or 2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "CARE Score 3",
+          "distribution": 0.33
+        },
+        {
+          "transition": "CARE Score 4",
+          "distribution": 0.33
+        },
+        {
+          "transition": "CARE Score 5",
+          "distribution": 0.34
+        }
+      ]
+    },
+    "CARE Score 1": {
+      "type": "SetAttribute",
+      "attribute": "care_score",
+      "direct_transition": "Emergency Check",
+      "value": 1
+    },
+    "CARE Score 2": {
+      "type": "SetAttribute",
+      "attribute": "care_score",
+      "value": 2,
+      "direct_transition": "Emergency Check"
+    },
+    "CARE Score 3": {
+      "type": "SetAttribute",
+      "attribute": "care_score",
+      "value": 3,
+      "direct_transition": "Emergency Check"
+    },
+    "CARE Score 4": {
+      "type": "SetAttribute",
+      "attribute": "care_score",
+      "value": 4,
+      "direct_transition": "Emergency Check"
+    },
+    "CARE Score 5": {
+      "type": "SetAttribute",
+      "attribute": "care_score",
+      "value": 5,
+      "direct_transition": "Emergency Check"
+    },
+    "CARE Score Emergency": {
+      "type": "SetAttribute",
+      "attribute": "care_score_e",
+      "direct_transition": "Terminal",
+      "value": true
+    },
+    "Emergency Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "CARE Score Emergency",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.8
+        }
+      ]
+    },
+    "Not 1 Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Not 1",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "coronary_heart_disease",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "copd_variant",
+                    "operator": "is not nil"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "diabetes",
+                    "operator": "is not nil"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Any Score"
+        }
+      ]
+    },
+    "Not 2 Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Not 1 or 2",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 410429000,
+                    "display": "Cardiac Arrest"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "ckd",
+                    "operator": ">=",
+                    "value": 3
+                  },
+                  {
+                    "condition_type": "Or",
+                    "conditions": [
+                      {
+                        "condition_type": "Vital Sign",
+                        "vital_sign": "Creatinine",
+                        "operator": ">",
+                        "value": 1.5
+                      },
+                      {
+                        "condition_type": "Or",
+                        "conditions": [
+                          {
+                            "condition_type": "Active Condition",
+                            "codes": [
+                              {
+                                "system": "SNOMED-CT",
+                                "code": 22298006,
+                                "display": "Myocardial Infarction"
+                              }
+                            ]
+                          },
+                          {
+                            "condition_type": "Or",
+                            "conditions": [
+                              {
+                                "condition_type": "Vital Sign",
+                                "vital_sign": "Systolic Blood Pressure",
+                                "operator": ">",
+                                "value": 140
+                              },
+                              {
+                                "condition_type": "Active Condition",
+                                "codes": [
+                                  {
+                                    "system": "SNOMED-CT",
+                                    "code": 27942005,
+                                    "display": "Shock (disorder)"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Not 1 Check"
+        }
+      ]
+    }
+  }
+}

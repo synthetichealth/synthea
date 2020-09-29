@@ -1,0 +1,565 @@
+{
+  "name": "outcomes",
+  "remarks": [
+    "Determine CABG Outcomes."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check CARE Score"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Check CARE Score": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CARE Score 3E",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 3
+              }
+            ]
+          }
+        },
+        {
+          "transition": "CARE Score 4E",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 4
+              }
+            ]
+          }
+        },
+        {
+          "transition": "CARE Score 5E",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 5
+              }
+            ]
+          }
+        },
+        {
+          "transition": "CARE Score 1",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "CARE Score 2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "CARE Score 3",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "transition": "CARE Score 4",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 4
+          }
+        },
+        {
+          "transition": "CARE Score 5",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 5
+          }
+        }
+      ]
+    },
+    "CARE Score 1": {
+      "type": "Simple",
+      "direct_transition": "Mortality 1"
+    },
+    "CARE Score 2": {
+      "type": "Simple",
+      "direct_transition": "Mortality_2"
+    },
+    "CARE Score 3": {
+      "type": "Simple",
+      "direct_transition": "Mortality_3"
+    },
+    "CARE Score 4": {
+      "type": "Simple",
+      "direct_transition": "Mortality_4"
+    },
+    "CARE Score 5": {
+      "type": "Simple",
+      "direct_transition": "Mortality_5"
+    },
+    "CARE Score 3E": {
+      "type": "Simple",
+      "direct_transition": "Mortality_3E"
+    },
+    "CARE Score 4E": {
+      "type": "Simple",
+      "direct_transition": "Mortality_4E"
+    },
+    "CARE Score 5E": {
+      "type": "Simple",
+      "direct_transition": "Mortality_5E"
+    },
+    "Mortality 1": {
+      "type": "SetAttribute",
+      "attribute": "cabg_mortality",
+      "range": {
+        "low": 0.003,
+        "high": 0.009
+      },
+      "direct_transition": "Morbidity 1"
+    },
+    "Morbidity 1": {
+      "type": "SetAttribute",
+      "attribute": "cabs_morbidity",
+      "range": {
+        "low": 0.043,
+        "high": 0.068
+      },
+      "direct_transition": "Prolonged LOS 1"
+    },
+    "Prolonged LOS 1": {
+      "type": "SetAttribute",
+      "attribute": "cabg_prolonged_los",
+      "range": {
+        "low": 0.022,
+        "high": 0.039
+      },
+      "direct_transition": "Check Mortality"
+    },
+    "Check Mortality": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Mortality",
+          "distribution": {
+            "attribute": "cabg_mortality",
+            "default": 0.1
+          }
+        },
+        {
+          "transition": "Unset Mortality",
+          "distribution": 0.9
+        }
+      ]
+    },
+    "Mortality": {
+      "type": "SetAttribute",
+      "attribute": "cabg_mortality",
+      "value": true,
+      "direct_transition": "Check Morbidity"
+    },
+    "Check Morbidity": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Set Morbidity",
+          "distribution": {
+            "attribute": "cabg_morbidity",
+            "default": 0.5
+          }
+        },
+        {
+          "distribution": 0.5,
+          "transition": "Unset Morbidity"
+        }
+      ]
+    },
+    "Set Morbidity": {
+      "type": "SetAttribute",
+      "attribute": "cabg_morbidity",
+      "value": true,
+      "distributed_transition": [
+        {
+          "transition": "Heart_Failure",
+          "distribution": 0.2
+        },
+        {
+          "transition": "ARDS",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Focal Brain Injury",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Acute_Kidney_Injury",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Sepsis",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Check Prolonged LOS": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Set Prolonged LOS",
+          "distribution": {
+            "attribute": "cabg_prolonged_los",
+            "default": 0.2
+          }
+        },
+        {
+          "transition": "Unset Prolonged LOS",
+          "distribution": 0.8
+        }
+      ]
+    },
+    "Set Prolonged LOS": {
+      "type": "SetAttribute",
+      "attribute": "cabg_prolonged_los",
+      "value": true,
+      "direct_transition": "Terminal"
+    },
+    "Unset Prolonged LOS": {
+      "type": "SetAttribute",
+      "attribute": "cabg_prolonged_los",
+      "value": false,
+      "direct_transition": "Terminal"
+    },
+    "Unset Mortality": {
+      "type": "SetAttribute",
+      "attribute": "cabg_mortality",
+      "value": false,
+      "direct_transition": "Check Morbidity"
+    },
+    "Mortality_2": {
+      "type": "SetAttribute",
+      "attribute": "cabg_mortality",
+      "range": {
+        "low": 0.007,
+        "high": 0.017
+      },
+      "direct_transition": "Morbidity_2"
+    },
+    "Mortality_3": {
+      "type": "SetAttribute",
+      "attribute": "cabg_mortality",
+      "range": {
+        "low": 0.016,
+        "high": 0.031
+      },
+      "direct_transition": "Morbidity_3"
+    },
+    "Mortality_4": {
+      "type": "SetAttribute",
+      "attribute": "cabg_mortality",
+      "range": {
+        "low": 0.069,
+        "high": 0.113
+      },
+      "direct_transition": "Morbidity_4"
+    },
+    "Mortality_3E": {
+      "type": "SetAttribute",
+      "attribute": "cabg_mortality",
+      "range": {
+        "low": 0.035,
+        "high": 0.057
+      },
+      "direct_transition": "Morbidity_3E"
+    },
+    "Mortality_5": {
+      "type": "SetAttribute",
+      "attribute": "cabg_mortality",
+      "range": {
+        "low": 0.208,
+        "high": 0.396
+      },
+      "direct_transition": "Morbidity_5"
+    },
+    "Mortality_4E": {
+      "type": "SetAttribute",
+      "attribute": "cabg_mortality",
+      "range": {
+        "low": 0.124,
+        "high": 0.221
+      },
+      "direct_transition": "Morbidity_4E"
+    },
+    "Mortality_5E": {
+      "type": "SetAttribute",
+      "attribute": "cabg_mortality",
+      "range": {
+        "low": 0.324,
+        "high": 0.605
+      },
+      "direct_transition": "Morbidity_5E"
+    },
+    "Morbidity_5E": {
+      "type": "SetAttribute",
+      "attribute": "cabs_morbidity",
+      "range": {
+        "low": 0.835,
+        "high": 0.925
+      },
+      "direct_transition": "Prolonged_LOS_5E"
+    },
+    "Morbidity_4E": {
+      "type": "SetAttribute",
+      "attribute": "cabs_morbidity",
+      "range": {
+        "low": 0.595,
+        "high": 0.716
+      },
+      "direct_transition": "Prolonged_LOS_4E"
+    },
+    "Morbidity_3E": {
+      "type": "SetAttribute",
+      "attribute": "cabs_morbidity",
+      "range": {
+        "low": 0.293,
+        "high": 0.35
+      },
+      "direct_transition": "Prolonged_LOS_3E"
+    },
+    "Morbidity_5": {
+      "type": "SetAttribute",
+      "attribute": "cabs_morbidity",
+      "range": {
+        "low": 0.732,
+        "high": 0.847
+      },
+      "direct_transition": "Prolonged_LOS_5"
+    },
+    "Morbidity_4": {
+      "type": "SetAttribute",
+      "attribute": "cabs_morbidity",
+      "range": {
+        "low": 0.441,
+        "high": 0.536
+      },
+      "direct_transition": "Prolonged_LOS_4"
+    },
+    "Morbidity_3": {
+      "type": "SetAttribute",
+      "attribute": "cabs_morbidity",
+      "range": {
+        "low": 0.172,
+        "high": 0.209
+      },
+      "direct_transition": "Prolonged_LOS_3"
+    },
+    "Morbidity_2": {
+      "type": "SetAttribute",
+      "attribute": "cabs_morbidity",
+      "range": {
+        "low": 0.089,
+        "high": 0.121
+      },
+      "direct_transition": "Prolonged_LOS_2"
+    },
+    "Prolonged_LOS_2": {
+      "type": "SetAttribute",
+      "attribute": "cabg_prolonged_los",
+      "range": {
+        "low": 0.042,
+        "high": 0.063
+      },
+      "direct_transition": "Check Mortality"
+    },
+    "Prolonged_LOS_5E": {
+      "type": "SetAttribute",
+      "attribute": "cabg_prolonged_los",
+      "range": {
+        "low": 0.525,
+        "high": 0.734
+      },
+      "direct_transition": "Check Mortality"
+    },
+    "Prolonged_LOS_4E": {
+      "type": "SetAttribute",
+      "attribute": "cabg_prolonged_los",
+      "range": {
+        "low": 0.293,
+        "high": 0.42
+      },
+      "direct_transition": "Check Mortality"
+    },
+    "Prolonged_LOS_3E": {
+      "type": "SetAttribute",
+      "attribute": "cabg_prolonged_los",
+      "range": {
+        "low": 0.128,
+        "high": 0.168
+      },
+      "direct_transition": "Check Mortality"
+    },
+    "Prolonged_LOS_5": {
+      "type": "SetAttribute",
+      "attribute": "cabg_prolonged_los",
+      "range": {
+        "low": 0.404,
+        "high": 0.585
+      },
+      "direct_transition": "Check Mortality"
+    },
+    "Prolonged_LOS_4": {
+      "type": "SetAttribute",
+      "attribute": "cabg_prolonged_los",
+      "range": {
+        "low": 0.201,
+        "high": 0.273
+      },
+      "direct_transition": "Check Mortality"
+    },
+    "Prolonged_LOS_3": {
+      "type": "SetAttribute",
+      "attribute": "cabg_prolonged_los",
+      "range": {
+        "low": 0.076,
+        "high": 0.102
+      },
+      "direct_transition": "Check Mortality"
+    },
+    "Unset Morbidity": {
+      "type": "SetAttribute",
+      "attribute": "cabg_morbidity",
+      "direct_transition": "Check Prolonged LOS",
+      "value": false
+    },
+    "ARDS": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "67782005",
+          "display": "Acute respiratory distress syndrome (disorder)"
+        }
+      ],
+      "target_encounter": "CABG_Postop",
+      "direct_transition": "Sepsis",
+      "assign_to_attribute": "Ventilator Reason"
+    },
+    "Heart_Failure": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "84114007",
+          "display": "Heart failure (disorder)"
+        }
+      ],
+      "target_encounter": "CABG_Postop",
+      "direct_transition": "Sepsis"
+    },
+    "Acute_Kidney_Injury": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "40095003",
+          "display": "Injury of kidney (disorder)"
+        }
+      ],
+      "target_encounter": "CABG_Postop",
+      "direct_transition": "Check Prolonged LOS"
+    },
+    "Septic_Shock": {
+      "assign_to_attribute": "Ventilator Reason",
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "76571007",
+          "display": "Septic shock (disorder)"
+        }
+      ],
+      "target_encounter": "CABG_Postop",
+      "direct_transition": "Check Prolonged LOS"
+    },
+    "Focal Brain Injury": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 210038008,
+          "display": "Focal brain injury (disorder)"
+        }
+      ],
+      "target_encounter": "CABG_Postop",
+      "direct_transition": "Check Prolonged LOS"
+    },
+    "Sepsis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 698819004,
+          "display": "Postoperative sepsis (disorder)"
+        }
+      ],
+      "target_encounter": "CABG_Postop",
+      "conditional_transition": [
+        {
+          "transition": "Septic_Shock",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_mortality",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Check Prolonged LOS"
+        }
+      ]
+    }
+  }
+}
