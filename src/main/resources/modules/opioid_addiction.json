@@ -12,7 +12,9 @@
     "addiction rates using a modified model adapted from Project SAMMI: ",
     "http://projectsammi.github.io/",
     "Prior to 1990 we don't model opioid addiction - prescription rates were far lower and the ",
-    "'opioid crisis' of today is seen as beginning in the 90's and 00's."
+    "'opioid crisis' of today is seen as beginning in the 90's and 00's.",
+    "",
+    "09/16/2020: updated to apply this module from year >=1990 to <2014"
   ],
   "states": {
     "Initial": {
