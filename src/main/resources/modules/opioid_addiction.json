@@ -35,9 +35,21 @@
             "unit": "years"
           },
           {
-            "condition_type": "Date",
-            "operator": ">=",
-            "year": 1990
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Date",
+                "operator": ">=",
+                "year": 1990,
+                "value": 0
+              },
+              {
+                "condition_type": "Date",
+                "operator": "<",
+                "year": 2014,
+                "value": 0
+              }
+            ]
           }
         ]
       },
