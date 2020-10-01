@@ -74,8 +74,8 @@
 ,Alabama,AL,Minor,,33.53895,-86.940261
 ,Alabama,AL,"Moores Mill",,34.852143,-86.52038
 ,Alabama,AL,"Morrison Crossroads",,33.417996,-85.488284
-,Alabama,AL,"Mount Olive CDP",,33.669286,-86.87549
-,Alabama,AL,"Mount Olive CDP",,33.669286,-86.87549
+,Alabama,AL,"Mount Olive",35117,33.669286,-86.87549
+,Alabama,AL,"Mount Olive",35117,33.669286,-86.87549
 ,Alabama,AL,Movico,,31.062763,-88.026619
 ,Alabama,AL,Nanafalia,36764,32.111393,-87.995757
 ,Alabama,AL,"Nances Creek",,33.85465,-85.684728
@@ -554,8 +554,8 @@
 ,Arizona,AZ,"Rainbow City",,33.873032,-109.976274
 ,Arizona,AZ,"Rancho Mesa Verde",,32.594385,-114.655084
 ,Arizona,AZ,"Red Mesa",86514,36.971111,-109.36982
-,Arizona,AZ,"Red Rock CDP",,32.561182,-111.374004
-,Arizona,AZ,"Red Rock CDP",,32.561182,-111.374004
+,Arizona,AZ,"Red Rock",85145,32.561182,-111.374004
+,Arizona,AZ,"Red Rock",85145,32.561182,-111.374004
 ,Arizona,AZ,Rillito,85654,32.415687,-111.154937
 ,Arizona,AZ,"Rincon Valley",,32.110055,-110.68888
 ,Arizona,AZ,"Rio Rico",85648,31.498168,-110.987798
@@ -770,12 +770,12 @@
 ,California,CA,Bangor,95914,39.376087,-121.411654
 ,California,CA,"Bass Lake",93604,37.327282,-119.565326
 ,California,CA,"Bay Point",94565,38.032254,-121.962236
-,California,CA,"Bayview CDP",,40.765335,-124.178605
-,California,CA,"Bayview CDP",,40.765335,-124.178605
+,California,CA,Bayview,,40.765335,-124.178605
+,California,CA,Bayview,,40.765335,-124.178605
 ,California,CA,"Beale AFB",95903,39.108061,-121.351215
 ,California,CA,"Bear Creek",,37.296601,-120.417676
-,California,CA,"Bear Valley CDP",,37.564883,-120.131226
-,California,CA,"Bear Valley CDP",,37.564883,-120.131226
+,California,CA,"Bear Valley",95223,37.564883,-120.131226
+,California,CA,"Bear Valley",95223,37.564883,-120.131226
 ,California,CA,"Bear Valley Springs",93561,35.1794,-118.625971
 ,California,CA,Beckwourth,96129,39.843931,-120.414009
 ,California,CA,Belden,95915,40.006783,-121.248191
@@ -914,8 +914,8 @@
 ,California,CA,Cobb,95426,38.835329,-122.722435
 ,California,CA,"Coffee Creek",,41.079673,-122.716906
 ,California,CA,Cohasset,95973,39.902152,-121.745368
-,California,CA,"Cold Springs CDP",,38.746784,-120.876113
-,California,CA,"Cold Springs CDP",,38.746784,-120.876113
+,California,CA,"Cold Springs",95335,38.746784,-120.876113
+,California,CA,"Cold Springs",95335,38.746784,-120.876113
 ,California,CA,Coleville,96107,38.583412,-119.515997
 ,California,CA,"College City",95912,39.006303,-122.006829
 ,California,CA,Collierville,,38.212831,-121.264972
@@ -1021,8 +1021,8 @@
 ,California,CA,"El Portal",95318,37.673975,-119.806538
 ,California,CA,"El Rancho",,36.220589,-119.06886
 ,California,CA,"El Rio",,34.24528,-119.156865
-,California,CA,"El Sobrante CDP",,37.980052,-122.306811
-,California,CA,"El Sobrante CDP",,37.980052,-122.306811
+,California,CA,"El Sobrante",94803,37.980052,-122.306811
+,California,CA,"El Sobrante",94803,37.980052,-122.306811
 ,California,CA,"El Verano",95433,38.297465,-122.491544
 ,California,CA,Elverta,95626,38.718464,-121.445475
 ,California,CA,"Emerald Lake Hills",,37.46566,-122.265351
@@ -1059,8 +1059,8 @@
 ,California,CA,"Fort Dick",95538,41.869526,-124.167206
 ,California,CA,"Fort Irwin",92310,35.247701,-116.683411
 ,California,CA,"Fort Washington",,36.879298,-119.761256
-,California,CA,"Franklin CDP",,38.367521,-121.461629
-,California,CA,"Franklin CDP",,38.367521,-121.461629
+,California,CA,Franklin,,38.367521,-121.461629
+,California,CA,Franklin,,38.367521,-121.461629
 ,California,CA,"Frazier Park",93222,34.814193,-118.954961
 ,California,CA,Freedom,95019,36.940245,-121.795245
 ,California,CA,Freeport,,38.462935,-121.502107
@@ -1101,8 +1101,8 @@
 ,California,CA,Greenacres,,35.383136,-119.11837
 ,California,CA,"Green Acres",,33.734955,-117.078271
 ,California,CA,Greenhorn,,39.902968,-120.758983
-,California,CA,"Green Valley CDP",,38.263842,-122.162496
-,California,CA,"Green Valley CDP",,38.263842,-122.162496
+,California,CA,"Green Valley",91350,38.263842,-122.162496
+,California,CA,"Green Valley",91350,38.263842,-122.162496
 ,California,CA,Greenview,96037,41.544922,-122.920964
 ,California,CA,Greenville,95947,40.133603,-120.945333
 ,California,CA,Grenada,96038,41.6401,-122.526627
@@ -1226,8 +1226,8 @@
 ,California,CA,"La Riviera",,38.568538,-121.354962
 ,California,CA,Larkfield-Wikiup,,38.512972,-122.753601
 ,California,CA,"La Selva Beach",95076,36.927375,-121.844404
-,California,CA,"Las Flores CDP",,40.072141,-122.157312
-,California,CA,"Las Flores CDP",,40.072141,-122.157312
+,California,CA,"Las Flores",,40.072141,-122.157312
+,California,CA,"Las Flores",,40.072141,-122.157312
 ,California,CA,"Las Lomas",,36.868813,-121.731611
 ,California,CA,Laton,93242,36.433744,-119.691582
 ,California,CA,"La Vina",,36.879865,-120.114802
@@ -1535,8 +1535,8 @@
 ,California,CA,"San Lorenzo",94580,37.67444,-122.135134
 ,California,CA,"San Lucas",93954,36.128349,-121.021732
 ,California,CA,"San Martin",95046,37.082881,-121.596322
-,California,CA,"San Miguel CDP",,37.886699,-122.036833
-,California,CA,"San Miguel CDP",,37.886699,-122.036833
+,California,CA,"San Miguel",93451,37.886699,-122.036833
+,California,CA,"San Miguel",93451,37.886699,-122.036833
 ,California,CA,"San Pasqual",,34.139218,-118.102517
 ,California,CA,"San Simeon",93452,35.618206,-121.137438
 ,California,CA,"Santa Margarita",93453,35.389427,-120.608158
@@ -1593,8 +1593,8 @@
 ,California,CA,Spaulding,96130,40.655664,-120.78626
 ,California,CA,Spreckels,93962,36.624716,-121.646487
 ,California,CA,"Spring Garden",95971,39.891971,-120.786617
-,California,CA,"Spring Valley CDP",,39.076053,-122.584512
-,California,CA,"Spring Valley CDP",,39.076053,-122.584512
+,California,CA,"Spring Valley",91976,39.076053,-122.584512
+,California,CA,"Spring Valley",91976,39.076053,-122.584512
 ,California,CA,"Spring Valley Lake",92395,34.496818,-117.267587
 ,California,CA,Springville,93208,36.114338,-118.836063
 ,California,CA,"Squaw Valley",93646,36.699236,-119.193387
@@ -1609,8 +1609,8 @@
 ,California,CA,Storrie,95980,39.927265,-121.317199
 ,California,CA,Stratford,93266,36.188441,-119.822352
 ,California,CA,Strathmore,93267,36.143436,-119.061469
-,California,CA,"Strawberry CDP",,37.89125,-122.509166
-,California,CA,"Strawberry CDP",,37.89125,-122.509166
+,California,CA,Strawberry,95375,37.89125,-122.509166
+,California,CA,Strawberry,95375,37.89125,-122.509166
 ,California,CA,"Sugarloaf Mountain Park",,35.837963,-118.603961
 ,California,CA,"Sugarloaf Saw Mill",,35.834299,-118.616541
 ,California,CA,"Sugarloaf Village",,35.826851,-118.635447
@@ -1917,8 +1917,8 @@
 ,Colorado,CO,Towaoc,81334,37.212599,-108.726461
 ,Colorado,CO,Towner,81071,38.4704,-102.080455
 ,Colorado,CO,"Trail Side",,40.24904,-103.843203
-,Colorado,CO,"Twin Lakes CDP",,39.103709,-106.318985
-,Colorado,CO,"Twin Lakes CDP",,39.103709,-106.318985
+,Colorado,CO,"Twin Lakes",81228,39.103709,-106.318985
+,Colorado,CO,"Twin Lakes",81228,39.103709,-106.318985
 ,Colorado,CO,"Upper Bear Creek",,39.62688,-105.409691
 ,Colorado,CO,Valdez,,37.125794,-104.672861
 ,Colorado,CO,Valmont,,40.033646,-105.207822
@@ -2296,8 +2296,6 @@
 ,Florida,FL,"Merritt Island",32952,28.309239,-80.675956
 ,Florida,FL,Micco,32976,27.857301,-80.510687
 ,Florida,FL,Middleburg,32050,30.050231,-81.901094
-,Florida,FL,"Midway CDP",,30.405055,-87.009612
-,Florida,FL,"Midway CDP",,30.405055,-87.009612
 ,Florida,FL,Mims,32754,28.691319,-80.843999
 ,Florida,FL,"Miramar Beach",32550,30.384881,-86.343631
 ,Florida,FL,Molino,32577,30.702751,-87.320706
@@ -2367,8 +2365,8 @@
 ,Florida,FL,Pineland,33945,26.66108,-82.148101
 ,Florida,FL,"Pine Level",,30.889154,-87.169481
 ,Florida,FL,"Pine Manor",,26.573721,-81.877627
-,Florida,FL,"Pine Ridge CDP",,28.932999,-82.476177
-,Florida,FL,"Pine Ridge CDP",,28.932999,-82.476177
+,Florida,FL,"Pine Ridge",34465,28.932999,-82.476177
+,Florida,FL,"Pine Ridge",34465,28.932999,-82.476177
 ,Florida,FL,Pinewood,,25.869354,-80.217059
 ,Florida,FL,Pioneer,,26.728538,-81.217199
 ,Florida,FL,Pittman,,28.998374,-81.649218
@@ -2473,8 +2471,8 @@
 ,Florida,FL,Trinity,34655,28.183946,-82.660578
 ,Florida,FL,"Tyndall AFB",32403,30.089367,-85.59914
 ,Florida,FL,"Union Park",32817,28.560725,-81.233316
-,Florida,FL,"University CDP",,28.076942,-82.433319
-,Florida,FL,"University CDP",,28.076942,-82.433319
+,Florida,FL,University,33024,28.076942,-82.433319
+,Florida,FL,University,33024,28.076942,-82.433319
 ,Florida,FL,"University Park",34201,25.749658,-80.371185
 ,Florida,FL,"Upper Grand Lagoon",,30.175633,-85.75301
 ,Florida,FL,Valrico,33594,27.919084,-82.231259
@@ -2518,8 +2516,8 @@
 ,Florida,FL,"Westwood Lakes",,25.724653,-80.369341
 ,Florida,FL,"Whiskey Creek",,26.571131,-81.888563
 ,Florida,FL,"White City",,27.37228,-80.340343
-,Florida,FL,"Whitfield CDP",,30.873458,-87.066657
-,Florida,FL,"Whitfield CDP",,30.873458,-87.066657
+,Florida,FL,Whitfield,,30.873458,-87.066657
+,Florida,FL,Whitfield,,30.873458,-87.066657
 ,Florida,FL,Williamsburg,,28.401262,-81.447802
 ,Florida,FL,"Williston Highlands",,29.333612,-82.535656
 ,Florida,FL,"Willow Oak",,27.921919,-82.024247
@@ -2669,8 +2667,8 @@
 ,Hawaii,HI,Kahaluu-Keauhou,,19.573081,-155.957277
 ,Hawaii,HI,Kahuku,96731,21.680679,-157.941783
 ,Hawaii,HI,Kahului,96732,20.868471,-156.465616
-,Hawaii,HI,"Kailua CDP",,21.396783,-157.735799
-,Hawaii,HI,"Kailua CDP",,21.396783,-157.735799
+,Hawaii,HI,Kailua,96734,21.396783,-157.735799
+,Hawaii,HI,Kailua,96734,21.396783,-157.735799
 ,Hawaii,HI,Kalaeloa,96707,21.321437,-158.081206
 ,Hawaii,HI,Kalaheo,96741,21.918559,-159.518733
 ,Hawaii,HI,Kalaoa,,19.757856,-156.001849
@@ -2764,8 +2762,8 @@
 ,Hawaii,HI,Waimalu,,21.391216,-157.933401
 ,Hawaii,HI,Waimanalo,96795,21.34207,-157.730238
 ,Hawaii,HI,"Waimanalo Beach",,21.329934,-157.693974
-,Hawaii,HI,"Waimea CDP",,21.966496,-159.669388
-,Hawaii,HI,"Waimea CDP",,21.966496,-159.669388
+,Hawaii,HI,Waimea,96796,21.966496,-159.669388
+,Hawaii,HI,Waimea,96796,21.966496,-159.669388
 ,Hawaii,HI,Wainaku,,19.743805,-155.099811
 ,Hawaii,HI,Wainiha,,22.192139,-159.546746
 ,Hawaii,HI,Waiohinu,,19.071524,-155.614252
@@ -3725,8 +3723,8 @@
 ,Maryland,MD,Williston,,38.830321,-75.851454
 ,Maryland,MD,Wilson-Conococheague,,39.651247,-77.827072
 ,Maryland,MD,Woodland,,39.608147,-78.949806
-,Maryland,MD,"Woodlawn CDP",,38.950327,-76.900261
-,Maryland,MD,"Woodlawn CDP",,38.950327,-76.900261
+,Maryland,MD,Woodlawn,21207,38.950327,-76.900261
+,Maryland,MD,Woodlawn,21207,38.950327,-76.900261
 ,Maryland,MD,Woodmore,,38.923412,-76.777931
 ,Maryland,MD,Worton,21678,39.270657,-76.091824
 ,Maryland,MD,Yarrowsburg,,39.376172,-77.684346
@@ -3976,7 +3974,7 @@
 ,Mississippi,MS,"Arnold Line",39401,31.337175,-89.37719
 ,Mississippi,MS,Beechwood,,32.336723,-90.808692
 ,Mississippi,MS,"Big Point",,30.590561,-88.484562
-,Mississippi,MS,"Bogue Chitto CDP",,31.429417,-90.461885
+,Mississippi,MS,"Bogue Chitto",39629,31.429417,-90.461885
 ,Mississippi,MS,Bridgetown,,34.889727,-89.904816
 ,Mississippi,MS,Buckatunna,39322,31.553199,-88.534283
 ,Mississippi,MS,Clara,39324,31.58313,-88.69161
@@ -4688,8 +4686,8 @@
 ,"New Jersey",NJ,Sewaren,07077,40.550726,-74.259885
 ,"New Jersey",NJ,"Shark River Hills",07753,40.192293,-74.047409
 ,"New Jersey",NJ,"Short Hills",07078,40.739157,-74.327442
-,"New Jersey",NJ,"Silver Lake CDP",,40.930877,-74.943138
-,"New Jersey",NJ,"Silver Lake CDP",,40.930877,-74.943138
+,"New Jersey",NJ,"Silver Lake",07460,40.930877,-74.943138
+,"New Jersey",NJ,"Silver Lake",07460,40.930877,-74.943138
 ,"New Jersey",NJ,"Silver Ridge",,39.961716,-74.235938
 ,"New Jersey",NJ,Singac,07424,40.884946,-74.243125
 ,"New Jersey",NJ,"Six Mile Run",,40.470151,-74.534049
@@ -4947,8 +4945,8 @@
 ,"New Mexico",NM,Pinehill,87357,35.003076,-108.408024
 ,"New Mexico",NM,Pinon,88344,32.61953,-105.376919
 ,"New Mexico",NM,"Pinos Altos",88053,32.866469,-108.222027
-,"New Mexico",NM,"Placitas CDP",,32.665593,-107.16977
-,"New Mexico",NM,"Placitas CDP",,32.665593,-107.16977
+,"New Mexico",NM,Placitas,87043,32.665593,-107.16977
+,"New Mexico",NM,Placitas,87043,32.665593,-107.16977
 ,"New Mexico",NM,Playas,88009,31.912585,-108.536315
 ,"New Mexico",NM,Pleasanton,88039,33.279793,-108.880873
 ,"New Mexico",NM,Pojoaque,87501,35.896198,-106.010471
@@ -4982,8 +4980,8 @@
 ,"New Mexico",NM,Salem,87941,32.712197,-107.204377
 ,"New Mexico",NM,"San Acacia",87831,34.254937,-106.902282
 ,"New Mexico",NM,"San Antonio",87832,33.916165,-106.870022
-,"New Mexico",NM,"San Antonito CDP",,33.891806,-106.879946
-,"New Mexico",NM,"San Antonito CDP",,33.891806,-106.879946
+,"New Mexico",NM,"San Antonito",87047,33.891806,-106.879946
+,"New Mexico",NM,"San Antonito",87047,33.891806,-106.879946
 ,"New Mexico",NM,"San Cristobal",87564,36.610127,-105.631801
 ,"New Mexico",NM,"Sandia Heights",,35.174626,-106.48841
 ,"New Mexico",NM,"Sandia Knolls",,35.160436,-106.298747
@@ -4991,8 +4989,8 @@
 ,"New Mexico",NM,"San Felipe Pueblo",,35.438327,-106.41321
 ,"New Mexico",NM,"San Fidel",87049,35.102566,-107.597533
 ,"New Mexico",NM,"San Ildefonso Pueblo",87501,35.888315,-106.129195
-,"New Mexico",NM,"San Jose CDP",,36.036727,-106.100442
-,"New Mexico",NM,"San Jose CDP",,36.036727,-106.100442
+,"New Mexico",NM,"San Jose",87565,36.036727,-106.100442
+,"New Mexico",NM,"San Jose",87565,36.036727,-106.100442
 ,"New Mexico",NM,"San Lorenzo",88041,32.805352,-107.920207
 ,"New Mexico",NM,"San Luis",,35.700913,-107.04308
 ,"New Mexico",NM,"San Mateo",87020,35.323538,-107.649471
@@ -5032,8 +5030,8 @@
 ,"New Mexico",NM,Timberon,88350,32.636306,-105.695249
 ,"New Mexico",NM,Tohatchi,87325,35.840276,-108.752124
 ,"New Mexico",NM,Tome,87060,34.739686,-106.723004
-,"New Mexico",NM,"Torreon CDP",,35.793153,-107.212402
-,"New Mexico",NM,"Torreon CDP",,35.793153,-107.212402
+,"New Mexico",NM,Torreon,87061,35.793153,-107.212402
+,"New Mexico",NM,Torreon,87061,35.793153,-107.212402
 ,"New Mexico",NM,"Trout Valley",,33.036224,-108.189261
 ,"New Mexico",NM,Truchas,87578,36.036692,-105.812546
 ,"New Mexico",NM,"Tse Bonito",,35.652475,-109.036142
@@ -5195,8 +5193,8 @@
 ,"New York",NY,Elwood,11731,40.846198,-73.338874
 ,"New York",NY,Endwell,13760,42.122864,-76.023572
 ,"New York",NY,Fairmount,,43.041397,-76.248556
-,"New York",NY,"Fairview CDP",,41.732112,-73.912395
-,"New York",NY,"Fairview CDP",,41.732112,-73.912395
+,"New York",NY,Fairview,,41.732112,-73.912395
+,"New York",NY,Fairview,,41.732112,-73.912395
 ,"New York",NY,Farmingville,11738,40.838872,-73.040144
 ,"New York",NY,"Felts Mills",13638,44.018932,-75.758227
 ,"New York",NY,Fillmore,14735,42.466951,-78.110703
@@ -5237,8 +5235,6 @@
 ,"New York",NY,Greenlawn,11740,40.864095,-73.363427
 ,"New York",NY,"Greenport West",,41.090906,-72.387821
 ,"New York",NY,Greenvale,11548,40.811957,-73.626327
-,"New York",NY,"Greenville CDP",,42.413789,-74.020324
-,"New York",NY,"Greenville CDP",,42.413789,-74.020324
 ,"New York",NY,Greigsville,,42.830719,-77.901428
 ,"New York",NY,"Groveland Station",,42.663379,-77.76667
 ,"New York",NY,Hailesboro,13645,44.311603,-75.433024
@@ -5332,8 +5328,8 @@
 ,"New York",NY,"Merritt Park",,41.538482,-73.87239
 ,"New York",NY,"Middle Island",11953,40.892509,-72.951175
 ,"New York",NY,"Miller Place",11764,40.937314,-72.986348
-,"New York",NY,"Milton CDP",,41.65622,-73.969625
-,"New York",NY,"Milton CDP",,41.65622,-73.969625
+,"New York",NY,Milton,12547,41.65622,-73.969625
+,"New York",NY,Milton,12547,41.65622,-73.969625
 ,"New York",NY,Mineville,12956,44.092856,-73.521427
 ,"New York",NY,Monsey,10952,41.109477,-74.076972
 ,"New York",NY,Montauk,11954,41.047256,-71.945299
@@ -5931,12 +5927,10 @@
 ,Ohio,OH,"New Burlington",,39.265537,-84.554009
 ,Ohio,OH,"New California",,40.146587,-83.23666
 ,Ohio,OH,"New Hampshire",45870,40.553968,-83.953184
-,Ohio,OH,"New Haven CDP",,39.280001,-84.746667
-,Ohio,OH,"New Haven CDP",,39.280001,-84.746667
+,Ohio,OH,"New Haven",44850,39.280001,-84.746667
+,Ohio,OH,"New Haven",44850,39.280001,-84.746667
 ,Ohio,OH,"New Marshfield",45766,39.324506,-82.21705
 ,Ohio,OH,"New Pittsburg",,40.846668,-82.095172
-,Ohio,OH,"Newport CDP",,40.295214,-84.369352
-,Ohio,OH,"Newport CDP",,40.295214,-84.369352
 ,Ohio,OH,Northbrook,,39.246685,-84.579624
 ,Ohio,OH,Northgate,,39.252953,-84.592682
 ,Ohio,OH,"North Lawrence",44666,40.841878,-81.639934
@@ -6130,8 +6124,8 @@
 ,Oklahoma,OK,"Sand Hill",,35.634209,-95.201201
 ,Oklahoma,OK,Scraper,,35.970552,-94.892782
 ,Oklahoma,OK,Sequoyah,,36.379739,-95.596828
-,Oklahoma,OK,"Shady Grove CDP",,35.43425,-95.407819
-,Oklahoma,OK,"Shady Grove CDP",,35.43425,-95.407819
+,Oklahoma,OK,"Shady Grove",,35.43425,-95.407819
+,Oklahoma,OK,"Shady Grove",,35.43425,-95.407819
 ,Oklahoma,OK,Short,,35.568198,-94.495373
 ,Oklahoma,OK,Simms,,35.39871,-95.164706
 ,Oklahoma,OK,"Snake Creek",,36.178558,-95.093714
@@ -6297,8 +6291,8 @@
 ,Oregon,OR,Williams,97544,42.219433,-123.292208
 ,Oregon,OR,Wimer,,42.552527,-123.145949
 ,Oregon,OR,"Winchester Bay",97467,43.669982,-124.186938
-,Pennsylvania,PA,"Aaronsburg CDP",,40.01087,-80.000919
-,Pennsylvania,PA,"Aaronsburg CDP",,40.01087,-80.000919
+,Pennsylvania,PA,Aaronsburg,16820,40.01087,-80.000919
+,Pennsylvania,PA,Aaronsburg,16820,40.01087,-80.000919
 ,Pennsylvania,PA,Ackermanville,18010,40.83404,-75.226474
 ,Pennsylvania,PA,Adamsville,16110,41.510395,-80.369642
 ,Pennsylvania,PA,Albrightsville,18210,41.011679,-75.606832
@@ -6434,8 +6428,8 @@
 ,Pennsylvania,PA,Dunnstown,17745,41.150071,-77.420699
 ,Pennsylvania,PA,"Eagle Lake",,41.280051,-75.472903
 ,Pennsylvania,PA,Eagleview,,40.059376,-75.680747
-,Pennsylvania,PA,"Eagleville CDP",,41.055987,-77.585317
-,Pennsylvania,PA,"Eagleville CDP",,41.055987,-77.585317
+,Pennsylvania,PA,Eagleville,19403,41.055987,-77.585317
+,Pennsylvania,PA,Eagleville,19403,41.055987,-77.585317
 ,Pennsylvania,PA,Earlston,,40.004081,-78.373206
 ,Pennsylvania,PA,"East Berwick",,41.069717,-76.217444
 ,Pennsylvania,PA,"East Freedom",16637,40.357329,-78.436577
@@ -6490,8 +6484,8 @@
 ,Pennsylvania,PA,Foundryville,,41.076903,-76.234997
 ,Pennsylvania,PA,"Fountain Springs",17921,40.772168,-76.328513
 ,Pennsylvania,PA,"Fox Chase",,40.394796,-75.96342
-,Pennsylvania,PA,"Fredericksburg CDP",,41.643764,-80.17645
-,Pennsylvania,PA,"Fredericksburg CDP",,41.643764,-80.17645
+,Pennsylvania,PA,Fredericksburg,17026,41.643764,-80.17645
+,Pennsylvania,PA,Fredericksburg,17026,41.643764,-80.17645
 ,Pennsylvania,PA,Fredericktown,15333,40.001925,-80.009211
 ,Pennsylvania,PA,Friedens,15541,40.044889,-79.002701
 ,Pennsylvania,PA,Friedensburg,17933,40.607012,-76.229107
@@ -6503,8 +6497,6 @@
 ,Pennsylvania,PA,Gardners,17324,40.006422,-77.208255
 ,Pennsylvania,PA,Gastonville,15336,40.266968,-80.009528
 ,Pennsylvania,PA,Geneva,16316,41.562014,-80.225979
-,Pennsylvania,PA,"Georgetown CDP",,39.941048,-76.080737
-,Pennsylvania,PA,"Georgetown CDP",,39.941048,-76.080737
 ,Pennsylvania,PA,Gibraltar,19508,40.279424,-75.856308
 ,Pennsylvania,PA,Gibsonia,15044,40.63223,-79.968348
 ,Pennsylvania,PA,Gilbertsville,19525,40.323041,-75.60863
@@ -6569,8 +6561,8 @@
 ,Pennsylvania,PA,Inkerman,18640,41.296815,-75.816676
 ,Pennsylvania,PA,Intercourse,17534,40.035156,-76.11239
 ,Pennsylvania,PA,Iola,17846,41.133818,-76.53069
-,Pennsylvania,PA,"Jacksonville CDP",,40.56335,-79.293235
-,Pennsylvania,PA,"Jacksonville CDP",,40.56335,-79.293235
+,Pennsylvania,PA,Jacksonville,19529,40.56335,-79.293235
+,Pennsylvania,PA,Jacksonville,19529,40.56335,-79.293235
 ,Pennsylvania,PA,Jacksonwald,19606,40.33109,-75.83613
 ,Pennsylvania,PA,"James City",16734,41.615684,-78.847378
 ,Pennsylvania,PA,"Jamison City",17814,41.297298,-76.370313
@@ -6719,8 +6711,6 @@
 ,Pennsylvania,PA,Numidia,17858,40.878606,-76.404719
 ,Pennsylvania,PA,Nuremberg,18241,40.937744,-76.16845
 ,Pennsylvania,PA,"Oak Hills",,40.826232,-79.915173
-,Pennsylvania,PA,"Oakland CDP",,40.992159,-80.365829
-,Pennsylvania,PA,"Oakland CDP",,40.992159,-80.365829
 ,Pennsylvania,PA,Oakwood,,41.010907,-80.379465
 ,Pennsylvania,PA,Oberlin,17113,40.239818,-76.815737
 ,Pennsylvania,PA,"Old Orchard",,40.657498,-75.260907
@@ -6909,8 +6899,8 @@
 ,Pennsylvania,PA,"University of Pittsburgh Johnstown",,40.262917,-78.829541
 ,Pennsylvania,PA,"Upper Exeter",,41.404524,-75.854693
 ,Pennsylvania,PA,"Valley Green",,40.156682,-76.794642
-,Pennsylvania,PA,"Valley View CDP",,39.949855,-76.701095
-,Pennsylvania,PA,"Valley View CDP",,39.949855,-76.701095
+,Pennsylvania,PA,"Valley View",17983,39.949855,-76.701095
+,Pennsylvania,PA,"Valley View",17983,39.949855,-76.701095
 ,Pennsylvania,PA,"Van Voorhis",15366,40.159852,-79.97309
 ,Pennsylvania,PA,Vicksburg,17883,40.938397,-76.990478
 ,Pennsylvania,PA,"Village Green-Green Ridge",,39.86379,-75.425646
@@ -7231,8 +7221,8 @@
 ,Tennessee,TN,"Mowbray Mountain",,35.275143,-85.22248
 ,Tennessee,TN,"New Deal",,36.513864,-86.562867
 ,Tennessee,TN,"New Union",,35.533951,-86.083241
-,Tennessee,TN,"Oak Grove CDP",,36.572167,-86.37809
-,Tennessee,TN,"Oak Grove CDP",,36.572167,-86.37809
+,Tennessee,TN,"Oak Grove",,36.572167,-86.37809
+,Tennessee,TN,"Oak Grove",,36.572167,-86.37809
 ,Tennessee,TN,Olivet,,35.204752,-88.193904
 ,Tennessee,TN,Ooltewah,37363,35.072335,-85.054466
 ,Tennessee,TN,"Park City",,35.077877,-86.584122
@@ -7255,8 +7245,8 @@
 ,Tennessee,TN,"Tellico Village",,35.701817,-84.26323
 ,Tennessee,TN,Unionville,37180,35.611753,-86.573883
 ,Tennessee,TN,Walland,37886,35.732045,-83.806818
-,Tennessee,TN,"Walnut Grove CDP",,35.047911,-88.06414
-,Tennessee,TN,"Walnut Grove CDP",,35.047911,-88.06414
+,Tennessee,TN,"Walnut Grove",,35.047911,-88.06414
+,Tennessee,TN,"Walnut Grove",,35.047911,-88.06414
 ,Tennessee,TN,"Walnut Hill",,36.56789,-82.265677
 ,Tennessee,TN,Walterhill,,35.957248,-86.367876
 ,Tennessee,TN,Wildwood,,35.799859,-83.868542
@@ -7333,9 +7323,9 @@
 ,Texas,TX,Chilton,76632,31.286037,-97.060402
 ,Texas,TX,"China Spring",76633,31.649223,-97.304772
 ,Texas,TX,Christoval,76935,31.197614,-100.493296
-,Texas,TX,"Chula Vista CDP",,28.657188,-100.42465
-,Texas,TX,"Chula Vista CDP",,28.657188,-100.42465
-,Texas,TX,"Chula Vista CDP",,28.657188,-100.42465
+,Texas,TX,"Chula Vista",,28.657188,-100.42465
+,Texas,TX,"Chula Vista",,28.657188,-100.42465
+,Texas,TX,"Chula Vista",,28.657188,-100.42465
 ,Texas,TX,"Cienegas Terrace",,29.368983,-100.942851
 ,Texas,TX,"Cinco Ranch",,29.739856,-95.760674
 ,Texas,TX,"Circle D-KC Estates",,30.160456,-97.239843
@@ -7436,8 +7426,8 @@
 ,Texas,TX,Hermleigh,79526,32.640775,-100.750485
 ,Texas,TX,Highlands,77562,29.812869,-95.057826
 ,Texas,TX,"Hillside Acres",,27.676165,-99.177706
-,Texas,TX,"Hilltop CDP",,28.693843,-99.176148
-,Texas,TX,"Hilltop CDP",,28.693843,-99.176148
+,Texas,TX,Hilltop,,28.693843,-99.176148
+,Texas,TX,Hilltop,,28.693843,-99.176148
 ,Texas,TX,"Hilltop Lakes",77871,31.063558,-96.190463
 ,Texas,TX,"Holiday Beach",,28.167125,-97.008001
 ,Texas,TX,"Holly Lake Ranch",75755,32.713177,-95.199372
@@ -7521,8 +7511,8 @@
 ,Texas,TX,Lolita,77971,28.832574,-96.53868
 ,Texas,TX,"Loma Grande",,28.722077,-99.832709
 ,Texas,TX,"Loma Linda",,28.007011,-97.499402
-,Texas,TX,"Loma Linda East CDP",,26.32813,-98.689413
-,Texas,TX,"Loma Linda East CDP",,26.32813,-98.689413
+,Texas,TX,"Loma Linda East",,26.32813,-98.689413
+,Texas,TX,"Loma Linda East",,26.32813,-98.689413
 ,Texas,TX,"Loma Linda West",,26.420471,-98.930372
 ,Texas,TX,"Loma Vista",,26.416872,-98.981412
 ,Texas,TX,Longoria,,26.30238,-98.642489
@@ -7537,8 +7527,8 @@
 ,Texas,TX,"Los Barreras",,26.391164,-98.918353
 ,Texas,TX,"Los Centenarios",,27.61226,-99.212988
 ,Texas,TX,"Los Corralitos",,27.641193,-99.557476
-,Texas,TX,"Los Ebanos CDP",,26.411313,-98.918581
-,Texas,TX,"Los Ebanos CDP",,26.411313,-98.918581
+,Texas,TX,"Los Ebanos",78565,26.411313,-98.918581
+,Texas,TX,"Los Ebanos",78565,26.411313,-98.918581
 ,Texas,TX,"Los Huisaches",,27.907028,-99.475803
 ,Texas,TX,"Los Lobos",,26.606536,-99.161264
 ,Texas,TX,"Los Minerales",,27.655503,-99.617819
@@ -7716,8 +7706,8 @@
 ,Texas,TX,Stonewall,78671,30.253584,-98.660907
 ,Texas,TX,Stowell,77661,29.77996,-94.368614
 ,Texas,TX,"Study Butte",,29.335553,-103.542609
-,Texas,TX,"Sunset CDP",,26.424603,-99.06212
-,Texas,TX,"Sunset CDP",,26.424603,-99.06212
+,Texas,TX,Sunset,76270,26.424603,-99.06212
+,Texas,TX,Sunset,76270,26.424603,-99.06212
 ,Texas,TX,"Sunset Acres",,27.794165,-99.456603
 ,Texas,TX,"Taft Southwest",,27.970844,-97.404687
 ,Texas,TX,"Tanquecitos South Acres",,27.489792,-99.379691
@@ -8151,8 +8141,8 @@
 ,Virginia,VA,Riverdale,,36.674848,-78.894011
 ,Virginia,VA,Riverview,,36.931192,-82.484189
 ,Virginia,VA,Rockwood,,37.462976,-77.574414
-,Virginia,VA,"Rose Hill CDP",,36.664156,-83.373733
-,Virginia,VA,"Rose Hill CDP",,36.664156,-83.373733
+,Virginia,VA,"Rose Hill",24281,36.664156,-83.373733
+,Virginia,VA,"Rose Hill",24281,36.664156,-83.373733
 ,Virginia,VA,Ruckersville,22968,38.228054,-78.377478
 ,Virginia,VA,Rushmere,,37.071443,-76.670817
 ,Virginia,VA,Rustburg,24588,37.272189,-79.100105
@@ -8225,8 +8215,8 @@
 ,Virginia,VA,Woodbridge,22191,38.654353,-77.237111
 ,Virginia,VA,Woodburn,,38.849429,-77.226507
 ,Virginia,VA,Woodlake,,37.42009,-77.677218
-,Virginia,VA,"Woodlawn CDP",,36.738767,-80.809459
-,Virginia,VA,"Woodlawn CDP",,36.738767,-80.809459
+,Virginia,VA,Woodlawn,24381,36.738767,-80.809459
+,Virginia,VA,Woodlawn,24381,36.738767,-80.809459
 ,Virginia,VA,Wyndham,,37.692179,-77.610726
 ,Virginia,VA,Yogaville,,37.66512,-78.692419
 ,Virginia,VA,Yorkshire,,38.788994,-77.449867
@@ -8296,8 +8286,8 @@
 ,Washington,WA,"Clallam Bay",98326,48.253517,-124.257798
 ,Washington,WA,"Clarkston Heights-Vineland",,46.387588,-117.083136
 ,Washington,WA,Clayton,99110,48.001222,-117.561155
-,Washington,WA,"Clear Lake CDP",,46.92844,-122.304963
-,Washington,WA,"Clear Lake CDP",,46.92844,-122.304963
+,Washington,WA,"Clear Lake",,46.92844,-122.304963
+,Washington,WA,"Clear Lake",,46.92844,-122.304963
 ,Washington,WA,Clearview,98290,47.829189,-122.14515
 ,Washington,WA,Cliffdell,98937,46.921391,-121.042047
 ,Washington,WA,Clinton,98236,47.962381,-122.352274
@@ -8336,8 +8326,8 @@
 ,Washington,WA,Eschbach,,46.665058,-120.632531
 ,Washington,WA,Esperance,,47.793236,-122.34909
 ,Washington,WA,"Fairchild AFB",99011,47.618624,-117.648459
-,Washington,WA,"Fairwood CDP",,47.446717,-122.142947
-,Washington,WA,"Fairwood CDP",,47.446717,-122.142947
+,Washington,WA,Fairwood,98058,47.446717,-122.142947
+,Washington,WA,Fairwood,98058,47.446717,-122.142947
 ,Washington,WA,"Fall City",98024,47.569379,-121.913697
 ,Washington,WA,Felida,,45.71431,-122.712657
 ,Washington,WA,"Fern Prairie",,45.636996,-122.39627
