@@ -259,9 +259,9 @@ public class Exporter {
         e.printStackTrace();
       }
     }
-    if (Config.getAsBoolean("exporter.bb2.export")) {
+    if (Config.getAsBoolean("exporter.bfd.export")) {
       try {
-        BB2Exporter exporter = BB2Exporter.getInstance();
+        BB2RIFExporter exporter = BB2RIFExporter.getInstance();
         flushableExporters.add(exporter);
         exporter.export(person, stopTime);
       } catch (IOException e) {
