@@ -107,7 +107,7 @@
     "CARE Score Emergency": {
       "type": "SetAttribute",
       "attribute": "care_score_e",
-      "direct_transition": "Terminal",
+      "direct_transition": "Record Score",
       "value": true
     },
     "Emergency Check": {
@@ -118,8 +118,8 @@
           "distribution": 0.2
         },
         {
-          "transition": "Terminal",
-          "distribution": 0.8
+          "distribution": 0.8,
+          "transition": "CARE Score Non Emergency"
         }
       ]
     },
@@ -241,6 +241,51 @@
         },
         {
           "transition": "Not 1 Check"
+        }
+      ]
+    },
+    "CARE Score Non Emergency": {
+      "type": "SetAttribute",
+      "attribute": "care_score_e",
+      "direct_transition": "Record Score",
+      "value": false
+    },
+    "Record Score": {
+      "type": "MultiObservation",
+      "category": "survey",
+      "number_of_observations": 0,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "99999-0",
+          "display": "CARE Score"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "99999-1",
+              "display": "CARE Score Value"
+            }
+          ],
+          "attribute": "care_score"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "99999-2",
+              "display": "CARE Score E"
+            }
+          ],
+          "attribute": "care_score_e"
         }
       ]
     }
