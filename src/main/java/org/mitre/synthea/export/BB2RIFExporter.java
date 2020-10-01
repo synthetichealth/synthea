@@ -33,9 +33,11 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 
 /**
- * BlueButton 2 Exporter.
+ * BlueButton 2 RIF format exporter. The data format is described here:
+ * <a href="https://github.com/CMSgov/beneficiary-fhir-data/tree/master/apps/bfd-model">
+ * https://github.com/CMSgov/beneficiary-fhir-data/tree/master/apps/bfd-model</a>.
  */
-public class BB2Exporter implements Flushable {
+public class BB2RIFExporter implements Flushable {
   
   private SynchronizedBBLineWriter beneficiary;
   private SynchronizedBBLineWriter beneficiaryHistory;
@@ -75,7 +77,7 @@ public class BB2Exporter implements Flushable {
   /**
    * Create the output folder and files. Write headers to each file.
    */
-  private BB2Exporter() {
+  private BB2RIFExporter() {
     beneId = new AtomicInteger();
     claimId = new AtomicInteger();
     claimGroupId = new AtomicInteger();
@@ -136,7 +138,7 @@ public class BB2Exporter implements Flushable {
     }
 
     // Initialize output files
-    File output = Exporter.getOutputFolder("bb2", null);
+    File output = Exporter.getOutputFolder("bfd", null);
     output.mkdirs();
     Path outputDirectory = output.toPath();
     
@@ -2111,7 +2113,7 @@ public class BB2Exporter implements Flushable {
     /**
      * Singleton instance of the CSVExporter.
      */
-    private static final BB2Exporter instance = new BB2Exporter();
+    private static final BB2RIFExporter instance = new BB2RIFExporter();
   }
 
   /**
@@ -2119,7 +2121,7 @@ public class BB2Exporter implements Flushable {
    * 
    * @return the current instance of the BBExporter.
    */
-  public static BB2Exporter getInstance() {
+  public static BB2RIFExporter getInstance() {
     return SingletonHolder.instance;
   }
 

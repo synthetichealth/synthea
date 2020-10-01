@@ -16,7 +16,7 @@ import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 
-public class BB2ExporterTest {
+public class BB2RIFExporterTest {
   /**
    * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
    */
@@ -35,11 +35,11 @@ public class BB2ExporterTest {
     TestHelper.exportOff();
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
-    bb2ExportEnabled = Config.get("exporter.bb2.export");
-    Config.set("exporter.bb2.export", "true");
+    bb2ExportEnabled = Config.get("exporter.bfd.export");
+    Config.set("exporter.bfd.export", "true");
     exportDir = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", exportDir.toString());
-    BB2Exporter.getInstance().prepareOutputFiles();
+    BB2RIFExporter.getInstance().prepareOutputFiles();
   }
   
   @Test
@@ -59,7 +59,7 @@ public class BB2ExporterTest {
 
     // if we get here we at least had no exceptions
 
-    File expectedExportFolder = exportDir.toPath().resolve("bb2").toFile();
+    File expectedExportFolder = exportDir.toPath().resolve("bfd").toFile();
     assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
 
     File beneficiaryFile = expectedExportFolder.toPath().resolve("beneficiary.csv").toFile();

@@ -238,9 +238,9 @@ public class Exporter {
         e.printStackTrace();
       }
     }
-    if (Boolean.parseBoolean(Config.get("exporter.bb2.export"))) {
+    if (Boolean.parseBoolean(Config.get("exporter.bfd.export"))) {
       try {
-        BB2Exporter exporter = BB2Exporter.getInstance();
+        BB2RIFExporter exporter = BB2RIFExporter.getInstance();
         flushableExporters.add(exporter);
         exporter.export(person, stopTime);
       } catch (IOException e) {
