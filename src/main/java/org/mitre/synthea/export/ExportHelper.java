@@ -144,6 +144,8 @@ public abstract class ExportHelper {
       type = "text";
     } else if (observation.value instanceof Double) {
       type = "numeric";
+    } else if (observation.value instanceof Boolean) {
+      type = "boolean";
     } else if (observation.value != null) {
       type = "text";
     }

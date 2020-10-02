@@ -942,6 +942,8 @@ public class FhirDstu2 {
           .setUnit(unit);
     } else if (value instanceof Components.SampledData) {
       return mapValueToSampledData((Components.SampledData) value, unit);
+    } else if (value instanceof Boolean) {
+      return new StringDt(Boolean.toString((Boolean) value));
     } else {
       throw new IllegalArgumentException("unexpected observation value class: "
           + value.getClass().toString() + "; " + value);
