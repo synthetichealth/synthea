@@ -35,7 +35,7 @@
             <#if entry.value?is_number>
             <value xsi:type="PQ" value="${entry.value}" <#if entry.unit??>unit="${entry.unit}"</#if>/>
             <#elseif entry.value?is_boolean>
-            <value xsi:type="BL" value="${entry.value}" />
+            <value xsi:type="BL" value="${entry.value?c}" />
             <#elseif entry.value?is_hash && entry.value.system?? && entry.value.code?? && entry.value.display??>
             <value xsi:type="CD" codeSystem="<@lookup.oid_for_code_system system=entry.value.system/>" code="${entry.value.code}" displayName="${entry.value.display}" />
             <#elseif entry.value?is_string>
@@ -60,7 +60,7 @@
             <#if obs.value?is_number>
             <value xsi:type="PQ" value="${obs.value}" <#if obs.unit??>unit="${obs.unit}"</#if>/>
             <#elseif obs.value?is_boolean>
-            <value xsi:type="BL" value="${obs.value}" />
+            <value xsi:type="BL" value="${obs.value?c}" />
             <#elseif entry.value?is_hash && entry.value.system?? && entry.value.code?? && entry.value.display??>
             <value xsi:type="CD" codeSystem="<@lookup.oid_for_code_system system=entry.value.system/>" code="${entry.value.code}" displayName="${entry.value.display}" />
             <#elseif obs.value?is_string>
