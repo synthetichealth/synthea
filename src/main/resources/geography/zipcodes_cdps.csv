@@ -149,8 +149,6 @@
 ,Alaska,AK,Chicken,99732,64.087658,-141.82813
 ,Alaska,AK,"Chignik Lagoon",99565,56.304267,-158.500259
 ,Alaska,AK,"Chignik Lake",99548,56.273221,-158.793376
-,Alaska,AK,Chiniak,99615,57.575497,-152.279033
-,Alaska,AK,Chisana,,62.110039,-142.050549
 ,Alaska,AK,Chistochina,,62.596444,-144.941045
 ,Alaska,AK,Chitina,99566,61.553038,-144.175268
 ,Alaska,AK,Circle,99733,65.838617,-144.17533
@@ -166,21 +164,18 @@
 ,Alaska,AK,Deltana,,63.789353,-145.351628
 ,Alaska,AK,"Denali Park",99755,63.572989,-148.673657
 ,Alaska,AK,"Diamond Ridge",,59.702353,-151.554571
-,Alaska,AK,"Dot Lake",99737,63.587198,-144.292357
 ,Alaska,AK,"Dot Lake Village",,63.662262,-144.016014
 ,Alaska,AK,"Dry Creek",,63.626638,-144.639194
 ,Alaska,AK,"Eagle Village",,64.743389,-141.113834
 ,Alaska,AK,"Eielson AFB",99702,64.6733,-147.059464
 ,Alaska,AK,"Elfin Cove",99825,58.191175,-136.312524
 ,Alaska,AK,Ester,99725,64.879056,-148.041153
-,Alaska,AK,"Eureka Roadhouse",,61.958507,-147.155104
 ,Alaska,AK,Evansville,,66.932933,-151.37006
 ,Alaska,AK,"Excursion Inlet",,58.415135,-135.345519
 ,Alaska,AK,"Farmers Loop",,64.908228,-147.698608
 ,Alaska,AK,"Farm Loop",,61.639761,-149.152696
 ,Alaska,AK,Ferry,,64.04962,-148.920602
 ,Alaska,AK,Fishhook,,61.731248,-149.283642
-,Alaska,AK,Flat,,62.441366,-158.040554
 ,Alaska,AK,"Fort Greely",99731,63.967836,-145.714886
 ,Alaska,AK,"Four Mile Road",,64.604476,-149.115192
 ,Alaska,AK,Fox,,64.974859,-147.609007
@@ -188,7 +183,6 @@
 ,Alaska,AK,"Fritz Creek",99603,59.746866,-151.288607
 ,Alaska,AK,"Funny River",,60.48432,-150.788763
 ,Alaska,AK,Gakona,99586,62.368038,-145.305188
-,Alaska,AK,"Game Creek",,58.050105,-135.512547
 ,Alaska,AK,Gateway,,61.566857,-149.222683
 ,Alaska,AK,"Glacier View",,61.848035,-147.772591
 ,Alaska,AK,Glennallen,99588,62.153877,-145.844081
@@ -199,13 +193,11 @@
 ,Alaska,AK,"Harding-Birch Lakes",,64.381305,-146.530601
 ,Alaska,AK,Healy,99743,63.959632,-148.970842
 ,Alaska,AK,"Healy Lake",,64.010145,-144.679396
-,Alaska,AK,"Hobart Bay",,57.417759,-133.306569
 ,Alaska,AK,Hollis,,55.515474,-132.701922
 ,Alaska,AK,Hope,99605,60.886124,-149.632991
 ,Alaska,AK,Hyder,99923,55.981542,-130.038288
 ,Alaska,AK,Igiugig,99613,59.300989,-155.863275
 ,Alaska,AK,Iliamna,99606,59.778342,-154.883752
-,Alaska,AK,"Ivanof Bay",,55.918199,-159.493298
 ,Alaska,AK,Kalifornsky,,60.453398,-151.220304
 ,Alaska,AK,Karluk,99608,57.590981,-154.363413
 ,Alaska,AK,Kasigluk,99609,60.86382,-162.536598
@@ -228,22 +220,18 @@
 ,Alaska,AK,Levelock,99625,59.068246,-156.901021
 ,Alaska,AK,"Lime Village",,61.330068,-155.233784
 ,Alaska,AK,Livengood,,65.476506,-148.422784
-,Alaska,AK,Loring,,55.606676,-131.639976
 ,Alaska,AK,"Lowell Point",,60.076063,-149.493807
 ,Alaska,AK,Lutak,,59.412212,-135.589046
-,Alaska,AK,McCarthy,,61.453957,-142.864693
 ,Alaska,AK,"Manley Hot Springs",99756,65.018757,-150.645281
 ,Alaska,AK,"Meadow Lakes",,61.637987,-149.609611
 ,Alaska,AK,Mendeltna,,62.146097,-146.758029
 ,Alaska,AK,"Mentasta Lake",99780,63.011677,-143.561486
-,Alaska,AK,Mertarvik,,60.810993,-164.49911
 ,Alaska,AK,Metlakatla,99926,55.114699,-131.555726
 ,Alaska,AK,Minto,99758,65.089635,-149.59021
 ,Alaska,AK,"Moose Creek",,64.716369,-147.166627
 ,Alaska,AK,"Moose Pass",99631,60.505936,-149.468361
 ,Alaska,AK,"Mosquito Lake",,59.4751,-136.199101
 ,Alaska,AK,"Mud Bay",,59.151183,-135.356493
-,Alaska,AK,Nabesna,,62.496548,-143.00743
 ,Alaska,AK,Naknek,99633,58.78516,-156.885872
 ,Alaska,AK,Nanwalek,99603,59.333848,-151.929558
 ,Alaska,AK,"Naukati Bay",99901,55.876985,-133.18699
@@ -259,19 +247,13 @@
 ,Alaska,AK,"Northway Junction",,63.02415,-141.791228
 ,Alaska,AK,"Northway Village",,62.982423,-141.925188
 ,Alaska,AK,Oscarville,,60.723444,-161.788239
-,Alaska,AK,Paxson,,62.975706,-145.757621
 ,Alaska,AK,"Pedro Bay",99647,59.782161,-154.107931
 ,Alaska,AK,Perryville,99648,55.934456,-159.155754
 ,Alaska,AK,Petersburg,99833,56.756918,-132.874938
-,Alaska,AK,Petersville,,62.453484,-150.884124
 ,Alaska,AK,"Pitkas Point",,62.037403,-163.268128
 ,Alaska,AK,"Pleasant Valley",,64.885468,-146.89855
-,Alaska,AK,"Point Baker",99927,56.348132,-133.616794
 ,Alaska,AK,"Point Lay",99759,69.747562,-163.011133
 ,Alaska,AK,"Point MacKenzie",,61.35672,-150.16667
-,Alaska,AK,"Point Possession",,60.923081,-150.688844
-,Alaska,AK,"Pope-Vannoy Landing",,59.570602,-154.447236
-,Alaska,AK,"Portage Creek",,58.905086,-157.669543
 ,Alaska,AK,"Port Alsworth",99653,60.15673,-154.33961
 ,Alaska,AK,"Port Clarence",,65.108965,-166.764338
 ,Alaska,AK,"Port Graham",99603,59.339803,-151.846498
@@ -287,7 +269,6 @@
 ,Alaska,AK,"Seldovia Village",,59.46127,-151.588755
 ,Alaska,AK,"Silver Springs",,62.019311,-145.358311
 ,Alaska,AK,Skwentna,99667,61.888689,-151.199994
-,Alaska,AK,Slana,99586,62.617871,-143.522456
 ,Alaska,AK,Sleetmute,99668,61.653861,-157.10302
 ,Alaska,AK,"South Naknek",99670,58.675534,-156.994126
 ,Alaska,AK,"South Van Horn",,64.809734,-147.787752
@@ -296,7 +277,6 @@
 ,Alaska,AK,"Stevens Village",99774,66.023711,-149.080307
 ,Alaska,AK,"Stony River",99557,61.79201,-156.590509
 ,Alaska,AK,Sunrise,,60.870068,-149.467798
-,Alaska,AK,Susitna,,61.54906,-150.727051
 ,Alaska,AK,"Susitna North",,62.153515,-149.728432
 ,Alaska,AK,Sutton-Alpine,,61.741436,-148.874181
 ,Alaska,AK,Takotna,99675,62.982341,-156.084059
@@ -307,7 +287,6 @@
 ,Alaska,AK,Tazlina,,62.050272,-145.443031
 ,Alaska,AK,Tetlin,,63.181275,-142.508662
 ,Alaska,AK,Tok,99776,63.328895,-143.037876
-,Alaska,AK,Tolsona,,62.067589,-146.120635
 ,Alaska,AK,Tonsina,,61.530342,-145.110079
 ,Alaska,AK,"Trapper Creek",99683,62.415358,-150.407836
 ,Alaska,AK,Tuluksak,99679,61.10435,-160.937231
@@ -319,14 +298,11 @@
 ,Alaska,AK,Ugashik,,57.64738,-156.994926
 ,Alaska,AK,Venetie,99781,67.020691,-146.374273
 ,Alaska,AK,Whitestone,,64.152838,-145.906385
-,Alaska,AK,"Whitestone Logging Camp",,58.06538,-135.420477
 ,Alaska,AK,Willow,99683,61.886957,-149.620229
-,Alaska,AK,"Willow Creek",,61.876678,-145.224703
 ,Alaska,AK,Wiseman,,67.480841,-150.154146
 ,Alaska,AK,"Womens Bay",,57.687002,-152.684656
 ,Arizona,AZ,Aguila,85320,33.937516,-113.166483
 ,Arizona,AZ,Ajo,85321,32.392279,-112.883874
-,Arizona,AZ,"Ak Chin",,32.287326,-112.009078
 ,Arizona,AZ,"Ak-Chin Village",,33.019654,-112.080758
 ,Arizona,AZ,"Alamo Lake",,34.255851,-113.500313
 ,Arizona,AZ,"Ali Chuk",,31.816919,-112.558394
@@ -345,9 +321,7 @@
 ,Arizona,AZ,"Ash Fork",86320,35.217187,-112.4913
 ,Arizona,AZ,"Avenue B and C",,32.719042,-114.660049
 ,Arizona,AZ,"Avra Valley",,32.419517,-111.339266
-,Arizona,AZ,Aztec,,32.808134,-113.44271
 ,Arizona,AZ,Bagdad,86321,34.577109,-113.177008
-,Arizona,AZ,"Bear Flat",,34.292399,-111.067383
 ,Arizona,AZ,"Beaver Dam",86432,36.907098,-113.936313
 ,Arizona,AZ,"Beaver Valley",,34.342889,-111.299928
 ,Arizona,AZ,Beyerville,,31.392024,-110.874919
@@ -378,7 +352,6 @@
 ,Arizona,AZ,Central,85531,32.86916,-109.790772
 ,Arizona,AZ,"Central Heights-Midland City",,33.399978,-110.81527
 ,Arizona,AZ,Charco,,32.247321,-112.600116
-,Arizona,AZ,"Chiawuli Tak",,31.940954,-111.776473
 ,Arizona,AZ,Chilchinbito,86033,36.492002,-110.049213
 ,Arizona,AZ,Chinle,86503,36.151148,-109.578682
 ,Arizona,AZ,Chloride,86431,35.409702,-114.197242
@@ -394,7 +367,6 @@
 ,Arizona,AZ,Comobabi,,32.053847,-111.802885
 ,Arizona,AZ,Concho,85924,34.471563,-109.614025
 ,Arizona,AZ,Congress,85332,34.153356,-112.865555
-,Arizona,AZ,"Copper Hill",,33.430941,-110.746483
 ,Arizona,AZ,"Cordes Lakes",86333,34.310276,-112.107304
 ,Arizona,AZ,Cornfields,86505,35.651343,-109.675763
 ,Arizona,AZ,Cornville,86325,34.738959,-111.908556
@@ -402,7 +374,6 @@
 ,Arizona,AZ,Cowlic,85634,31.804747,-111.987629
 ,Arizona,AZ,Crozier,,35.422807,-113.648641
 ,Arizona,AZ,"Crystal Beach",,34.571382,-114.392634
-,Arizona,AZ,Cutter,,33.35838,-110.659327
 ,Arizona,AZ,Dateland,85333,32.820909,-113.541836
 ,Arizona,AZ,"Deer Creek",,34.062342,-111.349481
 ,Arizona,AZ,"Del Muerto",,36.18694,-109.434766
@@ -439,7 +410,6 @@
 ,Arizona,AZ,"Freedom Acres",,34.319886,-111.305152
 ,Arizona,AZ,Gadsden,85336,32.556359,-114.781032
 ,Arizona,AZ,Ganado,86505,35.691875,-109.555727
-,Arizona,AZ,"Geronimo Estates",,34.369442,-111.361802
 ,Arizona,AZ,"Gila Crossing",,33.273015,-112.162668
 ,Arizona,AZ,Gisela,,34.101818,-111.288021
 ,Arizona,AZ,"Gold Canyon",85218,33.371477,-111.436888
@@ -447,7 +417,6 @@
 ,Arizona,AZ,"Golden Valley",86413,35.206066,-114.232753
 ,Arizona,AZ,"Goodyear Village",,33.197313,-111.872344
 ,Arizona,AZ,"Grand Canyon Village",,36.049231,-112.156627
-,Arizona,AZ,"Grand Canyon West",,36.004418,-113.804103
 ,Arizona,AZ,Greasewood,86505,35.52864,-109.860867
 ,Arizona,AZ,"Green Valley",85614,31.832021,-111.025801
 ,Arizona,AZ,Greer,85927,34.005751,-109.460586
@@ -475,7 +444,6 @@
 ,Arizona,AZ,"Keams Canyon",86034,35.820837,-110.203743
 ,Arizona,AZ,"Kino Springs",,31.364128,-110.809745
 ,Arizona,AZ,Klagetoh,86505,35.499997,-109.530457
-,Arizona,AZ,Kohatk,,32.578281,-112.003013
 ,Arizona,AZ,"Kohls Ranch",,34.321053,-111.083855
 ,Arizona,AZ,Komatke,,33.295289,-112.16154
 ,Arizona,AZ,"Ko Vaya",,32.081502,-111.895875
@@ -492,7 +460,6 @@
 ,Arizona,AZ,"Low Mountain",86503,35.948058,-110.100455
 ,Arizona,AZ,Lukachukai,86507,36.411233,-109.225538
 ,Arizona,AZ,Lupton,86508,35.354743,-109.052817
-,Arizona,AZ,McConnico,,35.163594,-114.089738
 ,Arizona,AZ,McNary,85930,34.092153,-109.851376
 ,Arizona,AZ,McNeal,85617,31.610078,-109.658267
 ,Arizona,AZ,"Maish Vaya",,32.170295,-112.134197
@@ -500,7 +467,6 @@
 ,Arizona,AZ,"Maricopa Colony",,33.36259,-112.226809
 ,Arizona,AZ,"Martinez Lake",85365,32.975468,-114.468228
 ,Arizona,AZ,Mayer,86333,34.423366,-112.240791
-,Arizona,AZ,"Mead Ranch",,34.34613,-111.142802
 ,Arizona,AZ,Meadview,86444,35.953156,-114.078871
 ,Arizona,AZ,"Mesa del Caballo",,34.285966,-111.295222
 ,Arizona,AZ,Mescal,85602,31.96743,-110.436582
@@ -523,7 +489,6 @@
 ,Arizona,AZ,"North Fork",,34.01057,-109.959543
 ,Arizona,AZ,Nutrioso,85932,33.951437,-109.205912
 ,Arizona,AZ,"Oak Springs",86506,35.476055,-109.131765
-,Arizona,AZ,Oatman,86433,35.027375,-114.38386
 ,Arizona,AZ,"Oljato-Monument Valley",,36.987248,-110.209642
 ,Arizona,AZ,Oracle,85623,32.608522,-110.782595
 ,Arizona,AZ,"Orange Grove Mobile Manor",,32.598451,-114.660588
@@ -554,7 +519,6 @@
 ,Arizona,AZ,"Rancho Mesa Verde",,32.594385,-114.655084
 ,Arizona,AZ,"Red Mesa",86514,36.971111,-109.36982
 ,Arizona,AZ,"Red Rock",85145,32.561182,-111.374004
-,Arizona,AZ,Rillito,85654,32.415687,-111.154937
 ,Arizona,AZ,"Rincon Valley",,32.110055,-110.68888
 ,Arizona,AZ,"Rio Rico",85648,31.498168,-110.987798
 ,Arizona,AZ,"Rio Verde",85263,33.726592,-111.675849
@@ -578,7 +542,6 @@
 ,Arizona,AZ,"San Manuel",85631,32.60603,-110.647113
 ,Arizona,AZ,"San Miguel",,31.629493,-111.780134
 ,Arizona,AZ,"San Simon",85632,32.267976,-109.23099
-,Arizona,AZ,"Santa Cruz",,33.232701,-112.159368
 ,Arizona,AZ,"San Tan Valley",,33.187907,-111.547252
 ,Arizona,AZ,"Santa Rosa",,32.332558,-112.046404
 ,Arizona,AZ,Sawmill,,35.894089,-109.157213
@@ -628,7 +591,6 @@
 ,Arizona,AZ,Topawa,85639,31.807835,-111.830472
 ,Arizona,AZ,Topock,86436,34.719972,-114.478792
 ,Arizona,AZ,Top-of-the-World,,33.347668,-110.999724
-,Arizona,AZ,Toyei,86505,35.703817,-109.938174
 ,Arizona,AZ,Truxton,86434,35.490372,-113.563011
 ,Arizona,AZ,Tsaile,86556,36.302418,-109.218666
 ,Arizona,AZ,Tubac,85640,31.610681,-111.057047
@@ -639,7 +601,6 @@
 ,Arizona,AZ,"Upper Santan Village",,33.115252,-111.741859
 ,Arizona,AZ,Utting,,33.854415,-113.912864
 ,Arizona,AZ,Vail,85641,32.021703,-110.693688
-,Arizona,AZ,"Vaiva Vo",,32.716654,-111.926902
 ,Arizona,AZ,"Valencia West",,32.135443,-111.112352
 ,Arizona,AZ,Valentine,86437,35.38853,-113.659115
 ,Arizona,AZ,Valle,,35.624454,-112.135121
@@ -669,7 +630,6 @@
 ,Arizona,AZ,Wikieup,85360,34.693034,-113.599504
 ,Arizona,AZ,Wilhoit,,34.408233,-112.615635
 ,Arizona,AZ,Williamson,,34.70817,-112.534192
-,Arizona,AZ,"Willow Canyon",,32.38814,-110.700994
 ,Arizona,AZ,"Willow Valley",,34.927658,-114.626599
 ,Arizona,AZ,"Window Rock",86515,35.670505,-109.063037
 ,Arizona,AZ,"Winslow West",,35.000074,-110.700842
@@ -731,7 +691,6 @@
 ,California,CA,Alleghany,95910,39.46666,-120.841126
 ,California,CA,Allendale,95688,38.442986,-121.98333
 ,California,CA,Allensworth,93219,35.849878,-119.389209
-,California,CA,Almanor,95947,40.214494,-121.17622
 ,California,CA,"Alondra Park",,33.890155,-118.335678
 ,California,CA,Alpaugh,93201,35.88765,-119.487321
 ,California,CA,Alpine,91901,32.842487,-116.755911
@@ -774,7 +733,6 @@
 ,California,CA,"Bear Valley",95223,37.564883,-120.131226
 ,California,CA,"Bear Valley Springs",93561,35.1794,-118.625971
 ,California,CA,Beckwourth,96129,39.843931,-120.414009
-,California,CA,Belden,95915,40.006783,-121.248191
 ,California,CA,"Bella Vista",96008,40.651672,-122.256513
 ,California,CA,"Bell Canyon",91307,34.208134,-118.687588
 ,California,CA,Benbow,,40.060267,-123.765381
@@ -851,7 +809,6 @@
 ,California,CA,"Cameron Park",95682,38.674027,-120.988336
 ,California,CA,Camino,95709,38.741163,-120.68158
 ,California,CA,"Camino Tassajara",,37.790879,-121.885041
-,California,CA,"Camp Nelson",93208,36.141978,-118.61071
 ,California,CA,Campo,91906,32.640965,-116.474516
 ,California,CA,"Camp Pendleton North",,33.319407,-117.319418
 ,California,CA,"Camp Pendleton South",,33.229342,-117.381542
@@ -859,9 +816,7 @@
 ,California,CA,Canby,96015,41.452233,-120.888291
 ,California,CA,"Cantua Creek",93608,36.500045,-120.316361
 ,California,CA,Canyondam,95923,40.169867,-121.076986
-,California,CA,Caribou,95915,40.073244,-121.16567
 ,California,CA,"Carmel Valley Village",93924,36.500627,-121.73182
-,California,CA,Carmet,,38.374452,-123.071859
 ,California,CA,Carmichael,95608,38.635185,-121.323098
 ,California,CA,"Carnelian Bay",96140,39.235165,-120.078207
 ,California,CA,Carrick,,41.446746,-122.363457
@@ -880,7 +835,6 @@
 ,California,CA,Cayucos,93430,35.439581,-120.889828
 ,California,CA,Cazadero,95421,38.527831,-123.109799
 ,California,CA,"Cedar Ridge",95924,38.065736,-120.273869
-,California,CA,"Cedar Slope",,36.14356,-118.577133
 ,California,CA,Cedarville,96104,41.528683,-120.174433
 ,California,CA,Centerville,93657,36.736117,-119.49601
 ,California,CA,Chalfant,93514,37.492115,-118.390408
@@ -1078,7 +1032,6 @@
 ,California,CA,Geyserville,95441,38.717314,-122.903423
 ,California,CA,"Glen Ellen",95442,38.355323,-122.543306
 ,California,CA,"Golden Hills",93561,35.15133,-118.500657
-,California,CA,"Gold Mountain",,39.761315,-120.519054
 ,California,CA,"Gold River",95670,38.626854,-121.249164
 ,California,CA,"Good Hope",,33.770623,-117.277182
 ,California,CA,"Goodyears Bar",95944,39.552354,-120.893102
@@ -1087,7 +1040,6 @@
 ,California,CA,Grangeville,,36.343898,-119.707467
 ,California,CA,"Granite Bay",95746,38.760441,-121.168196
 ,California,CA,"Granite Hills",,32.803279,-116.905608
-,California,CA,Graniteville,95959,39.444366,-120.73603
 ,California,CA,Graton,95444,38.437517,-122.865988
 ,California,CA,Grayson,95363,37.564951,-121.179463
 ,California,CA,"Greeley Hill",,37.757043,-120.130759
@@ -1109,7 +1061,6 @@
 ,California,CA,"Happy Camp",96039,41.815893,-123.392796
 ,California,CA,"Harbison Canyon",,32.827274,-116.83807
 ,California,CA,Hardwick,,36.402596,-119.72077
-,California,CA,Hartland,,36.651816,-118.955295
 ,California,CA,Hartley,,38.420393,-121.950842
 ,California,CA,"Hasley Canyon",,34.481599,-118.666689
 ,California,CA,"Hat Creek",96040,40.789806,-121.474515
@@ -1138,7 +1089,6 @@
 ,California,CA,"Humboldt Hill",,40.722316,-124.197381
 ,California,CA,Hyampom,96046,40.626179,-123.46883
 ,California,CA,Hydesville,95547,40.557875,-124.08225
-,California,CA,Idlewild,,35.809588,-118.670463
 ,California,CA,"Idyllwild-Pine Cove",,33.744209,-116.73069
 ,California,CA,Independence,93526,36.83031,-118.207855
 ,California,CA,"Indian Falls",,40.05875,-120.980314
@@ -1157,7 +1107,6 @@
 ,California,CA,Jenner,95450,38.459034,-123.127467
 ,California,CA,Johannesburg,93528,35.371763,-117.641963
 ,California,CA,Johnstonville,96130,40.380198,-120.586134
-,California,CA,Johnsville,96103,39.76971,-120.699783
 ,California,CA,"Joshua Tree",92252,34.123633,-116.312862
 ,California,CA,Julian,92036,33.073501,-116.588883
 ,California,CA,"Junction City",96048,40.724214,-123.050717
@@ -1213,7 +1162,6 @@
 ,California,CA,"Lake Wildwood",95946,39.23324,-121.19773
 ,California,CA,Lamont,93241,35.265142,-118.916042
 ,California,CA,Lanare,,36.437723,-119.932199
-,California,CA,"La Porte",95981,39.672508,-120.985244
 ,California,CA,"La Presa",,32.712315,-117.00371
 ,California,CA,"La Riviera",,38.568538,-121.354962
 ,California,CA,Larkfield-Wikiup,,38.512972,-122.753601
@@ -1235,14 +1183,12 @@
 ,California,CA,"Leona Valley",93532,34.608144,-118.301322
 ,California,CA,Lewiston,96052,40.696931,-122.822509
 ,California,CA,"Lexington Hills",,37.159016,-121.988793
-,California,CA,Likely,96116,41.226827,-120.501236
 ,California,CA,"Lincoln Village",,38.005487,-121.333801
 ,California,CA,Linda,95901,39.124141,-121.542168
 ,California,CA,Lindcove,,36.359515,-119.072082
 ,California,CA,Linden,95236,38.01814,-121.101562
 ,California,CA,"Linnell Camp",,36.308887,-119.222583
 ,California,CA,Litchfield,96117,40.387724,-120.380985
-,California,CA,"Little Grass Valley",,39.725246,-120.959073
 ,California,CA,"Little River",95456,39.270285,-123.781749
 ,California,CA,Littlerock,93543,34.525126,-117.981631
 ,California,CA,"Little Valley",96056,40.893049,-121.178041
@@ -1276,7 +1222,6 @@
 ,California,CA,"McClenney Tract",,35.821984,-118.647839
 ,California,CA,McCloud,96057,41.254739,-122.136221
 ,California,CA,Macdoel,96058,41.825628,-122.0058
-,California,CA,"McGee Creek",,37.572676,-118.790995
 ,California,CA,McKinleyville,95519,40.951571,-124.077357
 ,California,CA,McKittrick,,35.298028,-119.624921
 ,California,CA,McSwain,,37.314546,-120.586741
@@ -1344,7 +1289,6 @@
 ,California,CA,"Moskowite Corner",,38.443874,-122.19199
 ,California,CA,"Moss Beach",94038,37.518374,-122.503482
 ,California,CA,"Moss Landing",95039,36.805389,-121.786577
-,California,CA,"Mountain Center",92561,33.710749,-116.723312
 ,California,CA,"Mountain Gate",,40.718456,-122.326225
 ,California,CA,"Mountain House",95391,37.774017,-121.545263
 ,California,CA,"Mountain Mesa",93240,35.641137,-118.404645
@@ -1352,11 +1296,9 @@
 ,California,CA,"Mountain View Acres",,34.497558,-117.347173
 ,California,CA,"Mount Hebron",,41.785456,-122.008195
 ,California,CA,"Mount Hermon",95041,37.051034,-122.053347
-,California,CA,"Mount Laguna",91948,32.871105,-116.424687
 ,California,CA,"Muir Beach",94965,37.861565,-122.580322
 ,California,CA,Murphys,95229,38.141339,-120.43413
 ,California,CA,Muscoy,92407,34.155126,-117.347783
-,California,CA,"Myers Flat",95554,40.265478,-123.875548
 ,California,CA,Myrtletown,,40.788731,-124.130658
 ,California,CA,Newcastle,95658,38.866731,-121.131984
 ,California,CA,"New Cuyama",93254,34.942148,-119.680762
@@ -1422,7 +1364,6 @@
 ,California,CA,Paskenta,96074,39.883275,-122.545834
 ,California,CA,"Patterson Tract",,36.379521,-119.295604
 ,California,CA,"Patton Village",96113,40.140133,-120.177784
-,California,CA,Paxton,,40.033606,-121.002569
 ,California,CA,"Paynes Creek",96075,40.341884,-121.924985
 ,California,CA,Pearsonville,93527,35.822945,-117.87825
 ,California,CA,Penngrove,94951,38.300598,-122.670566
@@ -1434,7 +1375,6 @@
 ,California,CA,Phillipsville,95559,40.210704,-123.781212
 ,California,CA,Philo,95463,39.06572,-123.445217
 ,California,CA,"Phoenix Lake",,38.011347,-120.309
-,California,CA,Pierpoint,,36.140468,-118.629615
 ,California,CA,Pike,95960,39.427843,-120.999682
 ,California,CA,"Pine Canyon",,36.172072,-121.143013
 ,California,CA,"Pine Flat",,35.875355,-118.643832
@@ -1454,10 +1394,8 @@
 ,California,CA,"Plumas Lake",95961,38.992329,-121.557954
 ,California,CA,"Point Reyes Station",94956,38.084647,-122.809226
 ,California,CA,"Pollock Pines",95726,38.753396,-120.597898
-,California,CA,Ponderosa,,36.104693,-118.531915
 ,California,CA,"Poplar-Cotton Center",,36.056351,-119.149267
 ,California,CA,"Port Costa",94569,38.044542,-122.184944
-,California,CA,Posey,93260,35.805263,-118.682639
 ,California,CA,"Poso Park",,35.811272,-118.636537
 ,California,CA,Potrero,91963,32.613089,-116.606815
 ,California,CA,"Potter Valley",95469,39.317141,-123.10986
@@ -1560,7 +1498,6 @@
 ,California,CA,"Sierra Village",,38.075627,-120.159336
 ,California,CA,Sierraville,96126,39.582232,-120.362065
 ,California,CA,"Silverado Resort",,38.356302,-122.256334
-,California,CA,"Silver City",,36.463761,-118.650761
 ,California,CA,"Silver Lakes",92342,34.747885,-117.344566
 ,California,CA,Sisquoc,93454,34.861817,-120.294395
 ,California,CA,"Sky Valley",92241,33.891237,-116.35504
@@ -1595,12 +1532,9 @@
 ,California,CA,"Stinson Beach",94970,37.907823,-122.639317
 ,California,CA,"Stirling City",95978,39.904971,-121.537263
 ,California,CA,Stonyford,95979,39.370342,-122.544468
-,California,CA,Storrie,95980,39.927265,-121.317199
 ,California,CA,Stratford,93266,36.188441,-119.822352
 ,California,CA,Strathmore,93267,36.143436,-119.061469
 ,California,CA,Strawberry,95375,37.89125,-122.509166
-,California,CA,"Sugarloaf Mountain Park",,35.837963,-118.603961
-,California,CA,"Sugarloaf Saw Mill",,35.834299,-118.616541
 ,California,CA,"Sugarloaf Village",,35.826851,-118.635447
 ,California,CA,Sultana,93666,36.546344,-119.336041
 ,California,CA,Summerland,93067,34.428412,-119.593075
@@ -1636,7 +1570,6 @@
 ,California,CA,"Three Rocks",93608,36.505148,-120.393534
 ,California,CA,"Timber Cove",,38.541089,-123.258786
 ,California,CA,Tipton,93272,36.058522,-119.312971
-,California,CA,Tobin,95980,39.936076,-121.295921
 ,California,CA,Tomales,94971,38.24703,-122.905355
 ,California,CA,Tonyville,93247,36.247382,-119.090352
 ,California,CA,Tooleville,,36.287753,-119.115435
@@ -1657,7 +1590,6 @@
 ,California,CA,Twain,95984,40.035503,-121.040363
 ,California,CA,"Twain Harte",95383,38.036943,-120.233918
 ,California,CA,"Twin Lakes",,36.961378,-121.991748
-,California,CA,"University of California-Merced",,37.364083,-120.418831
 ,California,CA,"Upper Lake",95485,39.16505,-122.905182
 ,California,CA,Valinda,,34.040036,-117.930052
 ,California,CA,Vallecito,95229,38.078402,-120.443443
@@ -1668,7 +1600,6 @@
 ,California,CA,"Valley Home",95361,37.827241,-120.914343
 ,California,CA,"Valley Ranch",,39.740342,-120.564895
 ,California,CA,"Valley Springs",95226,38.180906,-120.804253
-,California,CA,"Valley Wells",,35.880729,-117.335676
 ,California,CA,"Val Verde",91384,34.450423,-118.671784
 ,California,CA,"Vandenberg AFB",93437,34.718941,-120.490365
 ,California,CA,"Vandenberg Village",93436,34.71174,-120.461933
@@ -1687,7 +1618,6 @@
 ,California,CA,"Walnut Grove",95690,38.250594,-121.534973
 ,California,CA,"Walnut Park",90255,33.968232,-118.221972
 ,California,CA,"Warm Springs",,33.706673,-117.334384
-,California,CA,"Warner Valley",,40.404355,-121.340562
 ,California,CA,Washington,95986,39.359158,-120.790497
 ,California,CA,Waterloo,,38.036452,-121.184555
 ,California,CA,Waukena,93282,36.136112,-119.510977
@@ -1718,7 +1648,6 @@
 ,California,CA,Wilkerson,,37.277339,-118.391588
 ,California,CA,Willowbrook,,33.918932,-118.236045
 ,California,CA,"Willow Creek",95573,40.93933,-123.6411
-,California,CA,Wilsonia,93633,36.734598,-118.955847
 ,California,CA,Wilton,95693,38.412977,-121.212718
 ,California,CA,Winchester,92596,33.714603,-117.077442
 ,California,CA,"Winter Gardens",,32.837512,-116.926555
@@ -1778,7 +1707,6 @@
 ,Colorado,CO,"Comanche Creek",,39.606144,-104.335836
 ,Colorado,CO,Conejos,81129,37.087257,-106.015993
 ,Colorado,CO,"Copper Mountain",80443,39.476895,-106.201113
-,Colorado,CO,Cotopaxi,81223,38.372806,-105.68552
 ,Colorado,CO,Crisman,,40.043382,-105.372398
 ,Colorado,CO,"Dakota Ridge",,39.619223,-105.135065
 ,Colorado,CO,Derby,,39.840791,-104.916254
@@ -1802,7 +1730,6 @@
 ,Colorado,CO,"Fort Garland",81133,37.427916,-105.435008
 ,Colorado,CO,Franktown,80116,39.390015,-104.74239
 ,Colorado,CO,Fruitvale,81504,39.093277,-108.478913
-,Colorado,CO,Fulford,,39.518492,-106.65874
 ,Colorado,CO,Garfield,,38.549268,-106.289276
 ,Colorado,CO,Genesee,,39.687901,-105.271205
 ,Colorado,CO,Gerrard,,37.678349,-106.575244
@@ -1814,7 +1741,6 @@
 ,Colorado,CO,Gunbarrel,,40.063185,-105.171697
 ,Colorado,CO,Hasty,81044,38.106555,-102.956167
 ,Colorado,CO,Heeney,80498,39.873988,-106.304155
-,Colorado,CO,"Hidden Lake",,40.10516,-105.477571
 ,Colorado,CO,"Highlands Ranch",80126,39.540829,-104.971077
 ,Colorado,CO,Hoehne,81046,37.281448,-104.389092
 ,Colorado,CO,"Holly Hills",,39.667776,-104.921728
@@ -1837,7 +1763,6 @@
 ,Colorado,CO,"Lazy Acres",,40.085551,-105.334372
 ,Colorado,CO,"Leadville North",,39.260001,-106.311279
 ,Colorado,CO,Lewis,81327,37.501715,-108.660059
-,Colorado,CO,Leyner,,40.051102,-105.107438
 ,Colorado,CO,"Lincoln Park",,38.425182,-105.213083
 ,Colorado,CO,"Loghill Village",,38.196183,-107.778945
 ,Colorado,CO,Loma,81524,39.20751,-108.805025
@@ -1853,7 +1778,6 @@
 ,Colorado,CO,Mulford,,39.406355,-107.165987
 ,Colorado,CO,Niwot,80503,40.097552,-105.15828
 ,Colorado,CO,"No Name",81601,39.55973,-107.292787
-,Colorado,CO,Norrie,81642,39.328131,-106.656275
 ,Colorado,CO,"North La Junta",81050,37.999608,-103.523187
 ,Colorado,CO,"North Washington",,39.807749,-104.98004
 ,Colorado,CO,Orchard,80649,40.332001,-104.117799
@@ -1909,7 +1833,6 @@
 ,Colorado,CO,"Upper Bear Creek",,39.62688,-105.409691
 ,Colorado,CO,Valdez,,37.125794,-104.672861
 ,Colorado,CO,Valmont,,40.033646,-105.207822
-,Colorado,CO,Vernon,80755,39.939552,-102.306922
 ,Colorado,CO,Vineland,81006,38.244738,-104.459866
 ,Colorado,CO,Watkins,80137,39.675052,-104.582078
 ,Colorado,CO,Welby,80229,39.84022,-104.965502
@@ -1917,7 +1840,6 @@
 ,Colorado,CO,Westcreek,,39.148934,-105.162303
 ,Colorado,CO,Weston,81091,37.145923,-104.868283
 ,Colorado,CO,"West Pleasant View",,39.73188,-105.178431
-,Colorado,CO,Wolcott,81655,39.703571,-106.679301
 ,Colorado,CO,Woodmoor,80132,39.104823,-104.843604
 ,Colorado,CO,"Woody Creek",81656,39.270873,-106.888331
 ,Connecticut,CT,Baltic,06330,41.609703,-72.081896
@@ -2539,7 +2461,6 @@
 ,Georgia,GA,"Dock Junction",,31.201405,-81.515652
 ,Georgia,GA,"Druid Hills",30333,33.78415,-84.329213
 ,Georgia,GA,"Dutch Island",,32.003578,-81.032776
-,Georgia,GA,"Eagle Grove",,34.285577,-83.000722
 ,Georgia,GA,"East Griffin",,33.243443,-84.232599
 ,Georgia,GA,"East Newnan",,33.345796,-84.776725
 ,Georgia,GA,Empire,31014,32.337052,-83.282965
@@ -2557,7 +2478,6 @@
 ,Georgia,GA,Henderson,,32.00705,-81.266602
 ,Georgia,GA,"Heron Bay",,33.339043,-84.192162
 ,Georgia,GA,Hilltop,,33.108235,-84.437141
-,Georgia,GA,Howard,31039,32.604098,-84.379104
 ,Georgia,GA,"Indian Springs",30216,34.960544,-85.159163
 ,Georgia,GA,Irondale,,33.483275,-84.365512
 ,Georgia,GA,"Isle of Hope",,31.985906,-81.052475
@@ -2599,7 +2519,6 @@
 ,Georgia,GA,Sunnyside,,31.239489,-82.341783
 ,Georgia,GA,"Sunset Village",,32.891774,-84.409712
 ,Georgia,GA,"Talahi Island",,32.032985,-80.976021
-,Georgia,GA,"Tate City",,34.976365,-83.551469
 ,Georgia,GA,"The Rock",30285,32.960715,-84.239175
 ,Georgia,GA,Unionville,,31.436548,-83.509063
 ,Georgia,GA,Vinings,30339,33.85916,-84.467843
@@ -2780,7 +2699,6 @@
 ,Idaho,ID,"Smiths Ferry",,44.299159,-116.078379
 ,Idaho,ID,Sweetwater,83540,46.367638,-116.79748
 ,Idaho,ID,Tyhee,83201,42.953817,-112.456211
-,Idaho,ID,"Yellow Pine",83677,44.960716,-115.485434
 ,Illinois,IL,Adair,61411,40.418307,-90.497373
 ,Illinois,IL,Annapolis,62413,39.145416,-87.815666
 ,Illinois,IL,"Apple Canyon Lake",,42.433843,-90.159677
@@ -2795,7 +2713,6 @@
 ,Illinois,IL,"Coyne Center",,41.400111,-90.563158
 ,Illinois,IL,"Crab Orchard",,37.723611,-88.810281
 ,Illinois,IL,"Crystal Lawns",,41.568526,-88.163903
-,Illinois,IL,Darmstadt,62255,38.318739,-89.729237
 ,Illinois,IL,Dayton,61350,41.391523,-88.799197
 ,Illinois,IL,Fairmont,,41.561353,-88.058724
 ,Illinois,IL,Floraville,62298,38.376284,-90.055345
@@ -2921,7 +2838,6 @@
 ,Indiana,IN,"Painted Hills",,39.398179,-86.349245
 ,Indiana,IN,"Parkers Settlement",47638,38.044017,-87.714725
 ,Indiana,IN,"Point Isabel",,40.420603,-85.821997
-,Indiana,IN,Raglesville,47562,38.802277,-86.963009
 ,Indiana,IN,Ragsdale,47573,38.746708,-87.324114
 ,Indiana,IN,"Rolling Prairie",46371,41.674467,-86.619898
 ,Indiana,IN,Roselawn,46372,41.155226,-87.289102
@@ -2979,13 +2895,11 @@
 ,Iowa,IA,"Holiday Lake",52211,41.816627,-92.446696
 ,Iowa,IA,Homestead,52236,41.762682,-91.873124
 ,Iowa,IA,Hutchins,50423,43.08778,-93.88657
-,Iowa,IA,Irvington,50560,43.013546,-94.196051
 ,Iowa,IA,Jacksonville,,41.645074,-95.151693
 ,Iowa,IA,Kent,50851,40.953632,-94.461127
 ,Iowa,IA,"Lake Panorama",50216,41.721545,-94.404021
 ,Iowa,IA,Leando,52551,40.821203,-92.074516
 ,Iowa,IA,"Little Cedar",50454,43.369847,-92.723642
-,Iowa,IA,Loveland,,41.497387,-95.891009
 ,Iowa,IA,Meyer,50455,43.461813,-92.701063
 ,Iowa,IA,"Middle Amana",52307,41.794478,-91.901
 ,Iowa,IA,Miller,50438,43.186371,-93.607646
@@ -2993,17 +2907,14 @@
 ,Iowa,IA,Mona,,43.483288,-92.95012
 ,Iowa,IA,"Mount Sterling",52573,40.620477,-91.933569
 ,Iowa,IA,"New Haven",50461,43.283922,-92.642189
-,Iowa,IA,Otranto,50472,43.460867,-92.98616
 ,Iowa,IA,"Park View",52748,41.692214,-90.539344
 ,Iowa,IA,Percival,51648,40.751269,-95.813266
 ,Iowa,IA,Portland,50401,43.127574,-93.127119
 ,Iowa,IA,"River Sioux",,41.802439,-96.047988
 ,Iowa,IA,Rochester,52772,41.674149,-91.144308
-,Iowa,IA,Roseville,,43.02535,-92.808174
 ,Iowa,IA,"St. Benedict",,43.044008,-94.06095
 ,Iowa,IA,"St. Joseph",,42.91229,-94.230914
 ,Iowa,IA,Saylorville,50313,41.680754,-93.627005
-,Iowa,IA,Sexton,50483,43.074905,-94.089152
 ,Iowa,IA,"South Amana",52334,41.770357,-91.959912
 ,Iowa,IA,"Stone City",,42.105427,-91.350196
 ,Iowa,IA,"Sun Valley Lake",,40.849108,-94.068134
@@ -3023,7 +2934,6 @@
 ,Kansas,KS,"Fort Dodge",67801,37.730399,-99.937003
 ,Kansas,KS,"Fort Riley",66442,39.109992,-96.809559
 ,Kansas,KS,Grantville,66429,39.08074,-95.556843
-,Kansas,KS,Harris,,38.320836,-95.447459
 ,Kansas,KS,Healy,67850,38.603042,-100.61759
 ,Kansas,KS,Hillsdale,66036,38.661396,-94.856905
 ,Kansas,KS,Home,66438,39.841028,-96.519378
@@ -3455,7 +3365,6 @@
 ,Maryland,MD,"Drum Point",,38.330395,-76.435985
 ,Maryland,MD,Dundalk,21222,39.266824,-76.496531
 ,Maryland,MD,Dunkirk,20754,38.718193,-76.676782
-,Maryland,MD,"Eakles Mill",,39.467067,-77.68596
 ,Maryland,MD,"East Riverdale",,38.959773,-76.911007
 ,Maryland,MD,"Eckhart Mines",21528,39.655233,-78.89411
 ,Maryland,MD,Eden,21822,38.278223,-75.654776
@@ -3599,7 +3508,6 @@
 ,Maryland,MD,"North Kensington",,39.039196,-77.071562
 ,Maryland,MD,"North Laurel",,39.128849,-76.846597
 ,Maryland,MD,"North Potomac",20878,39.09677,-77.238503
-,Maryland,MD,Ocean,,39.601558,-78.945025
 ,Maryland,MD,"Ocean Pines",21811,38.382381,-75.140567
 ,Maryland,MD,Odenton,21113,39.066137,-76.693811
 ,Maryland,MD,Oldtown,21555,39.542832,-78.615531
@@ -3925,7 +3833,6 @@
 ,Michigan,MI,"Wolf Lake",,43.244424,-86.112341
 ,Michigan,MI,"Woodland Beach",,41.941718,-83.314014
 ,Michigan,MI,Zeba,,46.787698,-88.411787
-,Minnesota,MN,"Angle Inlet",56711,49.347414,-95.069821
 ,Minnesota,MN,"Ball Club",,47.331104,-93.946058
 ,Minnesota,MN,Ebro,56621,47.49422,-95.541079
 ,Minnesota,MN,Esko,55733,46.710036,-92.372095
@@ -4044,7 +3951,6 @@
 ,Missouri,MO,Grayridge,63850,36.824711,-89.781927
 ,Missouri,MO,"Gray Summit",63039,38.499592,-90.827125
 ,Missouri,MO,Hartwell,64788,38.431481,-93.933918
-,Missouri,MO,Harviell,63945,36.656408,-90.478938
 ,Missouri,MO,Hayward,63873,36.395974,-89.666796
 ,Missouri,MO,"High Ridge",63049,38.460842,-90.533842
 ,Missouri,MO,Horine,63070,38.268821,-90.432101
@@ -4068,7 +3974,6 @@
 ,Missouri,MO,"Old Jamestown",,38.834931,-90.285107
 ,Missouri,MO,Oxly,63955,36.602532,-90.678992
 ,Missouri,MO,Ozora,,37.871244,-90.054794
-,Missouri,MO,"Phelps City",,40.400635,-95.594955
 ,Missouri,MO,Plevna,63464,39.980885,-92.083595
 ,Missouri,MO,Pomona,65789,36.868269,-91.913323
 ,Missouri,MO,Pontiac,65729,36.520049,-92.605131
@@ -4083,7 +3988,6 @@
 ,Missouri,MO,Spokane,65754,36.863219,-93.305568
 ,Missouri,MO,Sundown,,36.565781,-92.638035
 ,Missouri,MO,"Terre du Lac",,37.903026,-90.617162
-,Missouri,MO,Thomasville,65438,36.790741,-91.533944
 ,Missouri,MO,"Villa Ridge",63089,38.465699,-90.882348
 ,Missouri,MO,Wasola,65773,36.778227,-92.567454
 ,Missouri,MO,Weingarten,63670,37.889384,-90.217272
@@ -4148,7 +4052,6 @@
 ,Montana,MT,"East Glacier Park Village",,48.445916,-113.223498
 ,Montana,MT,"East Missoula",59801,46.879666,-113.947243
 ,Montana,MT,Edgar,59026,45.46375,-108.855398
-,Montana,MT,Elkhorn,,46.28431,-111.948837
 ,Montana,MT,Elliston,59728,46.558694,-112.463842
 ,Montana,MT,Elmo,59915,47.829024,-114.348349
 ,Montana,MT,Emigrant,59027,45.384218,-110.756889
@@ -4354,7 +4257,6 @@
 ,Nebraska,NE,Overland,,41.080771,-97.978402
 ,Nebraska,NE,Parks,69041,40.04362,-101.725113
 ,Nebraska,NE,Poole,68869,40.992269,-98.960594
-,Nebraska,NE,Raeville,,41.895582,-98.053616
 ,Nebraska,NE,Richfield,68059,41.110763,-96.076324
 ,Nebraska,NE,Roscoe,69153,41.131613,-101.585195
 ,Nebraska,NE,"St. Libory",,41.08214,-98.359077
@@ -4365,7 +4267,6 @@
 ,Nebraska,NE,Venice,,41.239266,-96.351907
 ,Nebraska,NE,Walton,68461,40.795958,-96.565763
 ,Nebraska,NE,Wann,,41.141891,-96.364161
-,Nebraska,NE,"White Clay",,42.997019,-102.555017
 ,Nebraska,NE,"Willow Island",69171,40.890044,-100.070711
 ,Nebraska,NE,"Woodland Hills",,40.751637,-96.423603
 ,Nebraska,NE,"Woodland Park",,42.05424,-97.345189
@@ -4433,7 +4334,6 @@
 ,Nevada,NV,Mogul,89523,39.516172,-119.923037
 ,Nevada,NV,Montello,89830,41.267232,-114.196994
 ,Nevada,NV,"Mount Charleston",89124,36.262524,-115.613859
-,Nevada,NV,"Mount Wilson",,38.234993,-114.450329
 ,Nevada,NV,"Nellis AFB",89191,36.247353,-115.057315
 ,Nevada,NV,Nelson,89046,35.717933,-114.83135
 ,Nevada,NV,Nixon,89424,39.828015,-119.358952
@@ -4471,7 +4371,6 @@
 ,Nevada,NV,Tonopah,89049,38.099649,-117.248229
 ,Nevada,NV,"Topaz Lake",89410,38.698694,-119.541597
 ,Nevada,NV,"Topaz Ranch Estates",89444,38.735652,-119.500794
-,Nevada,NV,Unionville,89418,40.44375,-118.114901
 ,Nevada,NV,Ursine,89043,37.977287,-114.22887
 ,Nevada,NV,Valmy,89438,40.769878,-117.131587
 ,Nevada,NV,Verdi,89439,39.483479,-120.037661
@@ -4804,7 +4703,6 @@
 ,"New Mexico",NM,"Flora Vista",87415,36.806419,-108.086223
 ,"New Mexico",NM,Galisteo,87540,35.395048,-105.956902
 ,"New Mexico",NM,Gallina,87017,36.230062,-106.808615
-,"New Mexico",NM,Garfield,87936,32.756811,-107.266455
 ,"New Mexico",NM,Gila,88038,32.941344,-108.570533
 ,"New Mexico",NM,"Glen Acres",,32.374774,-108.716011
 ,"New Mexico",NM,Glenwood,88039,33.317641,-108.875163
@@ -4827,7 +4725,6 @@
 ,"New Mexico",NM,Jarales,87023,34.61548,-106.76058
 ,"New Mexico",NM,"Jemez Pueblo",87024,35.606602,-106.732155
 ,"New Mexico",NM,"Keeler Farm",,32.316066,-107.760226
-,"New Mexico",NM,Kingston,88042,32.917335,-107.709555
 ,"New Mexico",NM,"La Cienega",,35.580123,-106.112662
 ,"New Mexico",NM,"La Cueva",87535,35.869447,-106.648507
 ,"New Mexico",NM,Laguna,87026,35.059378,-107.416864
@@ -4861,7 +4758,6 @@
 ,"New Mexico",NM,"Los Chaves",,34.733155,-106.7631
 ,"New Mexico",NM,"Los Luceros",87511,36.114411,-106.03719
 ,"New Mexico",NM,"Los Ojos",87551,36.738548,-106.561657
-,"New Mexico",NM,"Lower Frisco",,33.653035,-108.787558
 ,"New Mexico",NM,"Luis Lopez",87801,33.990467,-106.887768
 ,"New Mexico",NM,Lumberton,87528,36.932771,-106.935366
 ,"New Mexico",NM,Luna,87824,33.81755,-108.941249
@@ -4871,7 +4767,6 @@
 ,"New Mexico",NM,Madrid,87010,35.403259,-106.153788
 ,"New Mexico",NM,Madrone,,34.579214,-106.728478
 ,"New Mexico",NM,Malaga,88263,32.22091,-104.065972
-,"New Mexico",NM,Manzano,,34.643694,-106.367054
 ,"New Mexico",NM,"Manzano Springs",,34.961358,-106.232646
 ,"New Mexico",NM,Mayhill,88339,32.890216,-105.504437
 ,"New Mexico",NM,"Meadow Lake",,34.803137,-106.570358
@@ -4898,13 +4793,11 @@
 ,"New Mexico",NM,"Navajo Dam",87419,36.798328,-107.709203
 ,"New Mexico",NM,Nenahnezad,,36.730783,-108.434462
 ,"New Mexico",NM,Newcomb,87455,36.283424,-108.708181
-,"New Mexico",NM,Newkirk,88431,35.063517,-104.271496
 ,"New Mexico",NM,Nogal,88341,33.538223,-105.711874
 ,"New Mexico",NM,"North Acomita Village",,35.065942,-107.567383
 ,"New Mexico",NM,"North Hobbs",,32.77326,-103.1234
 ,"New Mexico",NM,"North Hurley",88043,32.719838,-108.1285
 ,"New Mexico",NM,"North Light Plant",,36.875106,-108.045837
-,"New Mexico",NM,"North San Ysidro",87538,35.474642,-105.566044
 ,"New Mexico",NM,"North Valley",,35.173116,-106.622788
 ,"New Mexico",NM,Oasis,,32.927704,-107.316417
 ,"New Mexico",NM,"Ohkay Owingeh",87566,36.045305,-106.045938
@@ -4917,13 +4810,11 @@
 ,"New Mexico",NM,Paraje,87007,35.044379,-107.468194
 ,"New Mexico",NM,Pastura,88435,34.785108,-104.942118
 ,"New Mexico",NM,"Peak Place",,35.79117,-105.943205
-,"New Mexico",NM,"Pecan Park",,32.270417,-107.67399
 ,"New Mexico",NM,"Pe�a Blanca",,35.570919,-106.331955
 ,"New Mexico",NM,Pe�asco,,36.17032,-105.69072
 ,"New Mexico",NM,"Picuris Pueblo",,36.200146,-105.723504
 ,"New Mexico",NM,"Pie Town",87827,34.340383,-108.176599
 ,"New Mexico",NM,Pinehill,87357,35.003076,-108.408024
-,"New Mexico",NM,Pinon,88344,32.61953,-105.376919
 ,"New Mexico",NM,"Pinos Altos",88053,32.866469,-108.222027
 ,"New Mexico",NM,Placitas,87043,32.665593,-107.16977
 ,"New Mexico",NM,Playas,88009,31.912585,-108.536315
@@ -4934,7 +4825,6 @@
 ,"New Mexico",NM,"Ponderosa Pine",,34.970897,-106.339616
 ,"New Mexico",NM,Pueblito,87566,36.072716,-106.081107
 ,"New Mexico",NM,Pueblitos,87002,34.618052,-106.781179
-,"New Mexico",NM,Pueblo,,35.32725,-105.435352
 ,"New Mexico",NM,"Pueblo of Sandia Village",,35.253738,-106.570575
 ,"New Mexico",NM,"Pueblo Pintado",87013,35.957695,-107.650562
 ,"New Mexico",NM,"Puerto de Luna",,34.829703,-104.622174
@@ -4949,7 +4839,6 @@
 ,"New Mexico",NM,Rincon,87940,32.672867,-107.076291
 ,"New Mexico",NM,"Rio en Medio",,35.82221,-105.900907
 ,"New Mexico",NM,"Rio Lucio",87553,36.192177,-105.720033
-,"New Mexico",NM,Rivers,,33.674601,-108.779453
 ,"New Mexico",NM,"Rock Springs",,35.608787,-108.829353
 ,"New Mexico",NM,Rodeo,88056,31.839654,-109.026644
 ,"New Mexico",NM,Rodey,87937,32.653824,-107.135792
@@ -5008,7 +4897,6 @@
 ,"New Mexico",NM,Tohatchi,87325,35.840276,-108.752124
 ,"New Mexico",NM,Tome,87060,34.739686,-106.723004
 ,"New Mexico",NM,Torreon,87061,35.793153,-107.212402
-,"New Mexico",NM,"Trout Valley",,33.036224,-108.189261
 ,"New Mexico",NM,Truchas,87578,36.036692,-105.812546
 ,"New Mexico",NM,"Tse Bonito",,35.652475,-109.036142
 ,"New Mexico",NM,"Twin Forks",,32.938514,-105.646395
@@ -5026,7 +4914,6 @@
 ,"New Mexico",NM,Villanueva,87583,35.265923,-105.360208
 ,"New Mexico",NM,Waterflow,87421,36.755425,-108.469456
 ,"New Mexico",NM,Watrous,87750,35.789151,-104.982515
-,"New Mexico",NM,Weed,88354,32.796855,-105.530851
 ,"New Mexico",NM,"West Hammond",,36.685451,-108.041255
 ,"New Mexico",NM,"White Rock",87544,35.808645,-106.208121
 ,"New Mexico",NM,"White Sands",88002,32.380693,-106.483626
@@ -5663,7 +5550,6 @@
 ,"North Carolina",NC,Prospect,,34.735811,-79.225155
 ,"North Carolina",NC,"Pumpkin Center",,34.786034,-77.364175
 ,"North Carolina",NC,Raemon,,34.61713,-79.346275
-,"North Carolina",NC,Rex,28378,34.850794,-79.046852
 ,"North Carolina",NC,Riegelwood,28456,34.340118,-78.220368
 ,"North Carolina",NC,"River Road",,35.508399,-76.987107
 ,"North Carolina",NC,Rockfish,,34.990557,-79.07006
@@ -5713,7 +5599,6 @@
 ,"North Carolina",NC,Woodlawn,,36.117957,-79.29592
 ,"North Carolina",NC,Wrightsboro,,34.288933,-77.929349
 ,"North Dakota",ND,Auburn,,48.506563,-97.436844
-,"North Dakota",ND,Barton,58384,48.508788,-100.173821
 ,"North Dakota",ND,Belcourt,58316,48.842494,-99.744164
 ,"North Dakota",ND,"Brooktree Park",,47.003884,-96.895693
 ,"North Dakota",ND,"De Lamere",,46.266824,-97.333318
@@ -5732,7 +5617,6 @@
 ,"North Dakota",ND,McLeod,58057,46.388675,-97.298694
 ,"North Dakota",ND,Mandaree,58757,47.74504,-102.697469
 ,"North Dakota",ND,"Minot AFB",58704,48.419002,-101.336503
-,"North Dakota",ND,Orrin,58368,48.090938,-100.167109
 ,"North Dakota",ND,Porcupine,58569,46.221838,-101.100104
 ,"North Dakota",ND,Ruthville,58701,48.370814,-101.300234
 ,"North Dakota",ND,Selz,58341,47.859404,-99.893412
@@ -5781,7 +5665,6 @@
 ,Ohio,OH,"Crystal Lakes",,39.888311,-84.02305
 ,Ohio,OH,"Crystal Rock",,41.447787,-82.841928
 ,Ohio,OH,Curtice,43412,41.615995,-83.374317
-,Ohio,OH,Cynthiana,45624,39.173622,-83.348453
 ,Ohio,OH,Damascus,44619,40.906191,-80.949325
 ,Ohio,OH,Darbydale,43123,39.855775,-83.174911
 ,Ohio,OH,Darrtown,45056,39.497474,-84.669028
@@ -6021,7 +5904,6 @@
 ,Oklahoma,OK,Connerville,74836,34.442069,-96.629676
 ,Oklahoma,OK,Copeland,,36.663725,-94.827149
 ,Oklahoma,OK,Dale,74851,35.384193,-97.043511
-,Oklahoma,OK,"Deer Lick",,36.459467,-94.746813
 ,Oklahoma,OK,Dennis,,36.547328,-94.87692
 ,Oklahoma,OK,Dodge,,36.578926,-94.638484
 ,Oklahoma,OK,Dotyville,,36.8514,-94.909763
@@ -6135,7 +6017,6 @@
 ,Oregon,OR,Annex,,44.234248,-116.992408
 ,Oregon,OR,Barview,,43.347917,-124.306543
 ,Oregon,OR,"Bayside Gardens",,45.714329,-123.916474
-,Oregon,OR,Beatty,97621,42.44188,-121.271602
 ,Oregon,OR,Beaver,97108,45.27901,-123.824616
 ,Oregon,OR,Beavercreek,97004,45.281036,-122.50849
 ,Oregon,OR,Bellfountain,,44.365394,-123.35593
@@ -6164,7 +6045,6 @@
 ,Oregon,OR,"Deschutes River Woods",,43.987447,-121.359101
 ,Oregon,OR,Dillard,97432,43.108239,-123.426192
 ,Oregon,OR,"Eagle Crest",97756,44.26142,-121.29955
-,Oregon,OR,Eola,,44.931351,-123.121229
 ,Oregon,OR,"Fair Oaks",,43.410894,-123.219492
 ,Oregon,OR,"Foots Creek",,42.388135,-123.140951
 ,Oregon,OR,"Fort Hill",,45.067024,-123.560509
@@ -6397,7 +6277,6 @@
 ,Pennsylvania,PA,Dryville,19539,40.46179,-75.754469
 ,Pennsylvania,PA,Dunlo,15930,40.293443,-78.717617
 ,Pennsylvania,PA,Dunnstown,17745,41.150071,-77.420699
-,Pennsylvania,PA,"Eagle Lake",,41.280051,-75.472903
 ,Pennsylvania,PA,Eagleview,,40.059376,-75.680747
 ,Pennsylvania,PA,Eagleville,19403,41.055987,-77.585317
 ,Pennsylvania,PA,Earlston,,40.004081,-78.373206
@@ -6440,7 +6319,6 @@
 ,Pennsylvania,PA,Fellsburg,,40.184207,-79.826989
 ,Pennsylvania,PA,Fernville,17815,41.001972,-76.477437
 ,Pennsylvania,PA,Fivepointville,17517,40.179243,-76.056291
-,Pennsylvania,PA,"Flora Dale",,39.959798,-77.24834
 ,Pennsylvania,PA,Flourtown,19031,40.1052,-75.206883
 ,Pennsylvania,PA,"Flying Hills",,40.277907,-75.913223
 ,Pennsylvania,PA,Folsom,19033,39.892381,-75.328666
@@ -6832,7 +6710,6 @@
 ,Pennsylvania,PA,Stormstown,,40.788951,-78.019146
 ,Pennsylvania,PA,Stouchsburg,19567,40.380675,-76.231388
 ,Pennsylvania,PA,"Strodes Mills",17044,40.544419,-77.677474
-,Pennsylvania,PA,Strong,17851,40.797482,-76.440068
 ,Pennsylvania,PA,Sturgeon,15082,40.383467,-80.215247
 ,Pennsylvania,PA,"Summit Station",17979,40.561412,-76.199651
 ,Pennsylvania,PA,"Sunrise Lake",,41.313245,-74.963149
@@ -7082,12 +6959,10 @@
 ,"South Dakota",SD,"Ashland Heights",,44.13337,-103.123541
 ,"South Dakota",SD,"Aurora Center",57375,43.527155,-98.589466
 ,"South Dakota",SD,"Bath Corner",,45.462689,-98.332896
-,"South Dakota",SD,"Bijou Hills",57325,43.528479,-99.143858
 ,"South Dakota",SD,Blackhawk,,44.15138,-103.334003
 ,"South Dakota",SD,"Blucksberg Mountain",,44.359344,-103.453787
 ,"South Dakota",SD,"Brant Lake South",,43.91086,-96.940771
 ,"South Dakota",SD,Bullhead,57621,45.772788,-101.081389
-,"South Dakota",SD,Caputa,57725,43.996035,-102.984619
 ,"South Dakota",SD,"Colonial Pine Hills",,44.014082,-103.314579
 ,"South Dakota",SD,"Corn Creek",,43.576269,-101.208093
 ,"South Dakota",SD,"Cow Creek",,44.549327,-100.467967
@@ -7099,14 +6974,12 @@
 ,"South Dakota",SD,"Fort Thompson",57339,44.054922,-99.404829
 ,"South Dakota",SD,"Gann Valley",57341,44.033506,-98.988421
 ,"South Dakota",SD,"Green Grass",,45.156622,-101.286973
-,"South Dakota",SD,Hamill,57534,43.594048,-99.693197
 ,"South Dakota",SD,"Johnson Siding",,44.084565,-103.437985
 ,"South Dakota",SD,Kyle,57752,43.424902,-102.180518
 ,"South Dakota",SD,"Lake Madison",57075,43.955116,-97.026614
 ,"South Dakota",SD,"Lake Poinsett",57212,44.572462,-97.108429
 ,"South Dakota",SD,"La Plant",57652,45.128207,-100.640898
 ,"South Dakota",SD,"Little Eagle",57639,45.68507,-100.794794
-,"South Dakota",SD,Loomis,57301,43.793067,-98.10352
 ,"South Dakota",SD,"Lower Brule",57548,44.074134,-99.583754
 ,"South Dakota",SD,"Manderson-White Horse Creek",,43.235041,-102.491508
 ,"South Dakota",SD,Mansfield,57460,45.24648,-98.558154
@@ -7218,14 +7091,11 @@
 ,Tennessee,TN,"Wildwood Lake",,35.088202,-84.847707
 ,Tennessee,TN,Wrigley,37098,35.89979,-87.35366
 ,Texas,TX,Abram,78572,26.212593,-98.410851
-,Texas,TX,Aguilares,78369,27.451627,-99.093233
 ,Texas,TX,"Airport Heights",,26.408735,-98.836695
 ,Texas,TX,"Airport Road Addition",,27.218988,-98.098093
 ,Texas,TX,Aldine,77039,29.913438,-95.377431
-,Texas,TX,Alfred,78332,27.874145,-97.979839
 ,Texas,TX,"Alice Acres",,27.711892,-98.107973
 ,Texas,TX,"Alto Bonito Heights",,26.315777,-98.641329
-,Texas,TX,"Amada Acres",,26.343265,-98.739252
 ,Texas,TX,Amargosa,,27.891132,-98.110027
 ,Texas,TX,Amaya,,28.713886,-99.835838
 ,Texas,TX,Amistad,,29.524493,-101.15305
@@ -7256,7 +7126,6 @@
 ,Texas,TX,"Boys Ranch",79010,35.535089,-102.252069
 ,Texas,TX,Briar,,32.98736,-97.561246
 ,Texas,TX,Bristol,,32.444786,-96.567673
-,Texas,TX,Brundage,78834,28.573965,-99.670131
 ,Texas,TX,Bruni,78344,27.428162,-98.832213
 ,Texas,TX,"Brushy Creek",78717,30.512553,-97.737724
 ,Texas,TX,"Buchanan Dam",78609,30.815674,-98.452687
@@ -7276,7 +7145,6 @@
 ,Texas,TX,"Cape Royale",,30.653389,-95.130656
 ,Texas,TX,Carlsbad,76934,31.611248,-100.640647
 ,Texas,TX,"Carrizo Hill",,28.50502,-99.83114
-,Texas,TX,"Casa Blanca",,26.297641,-98.610251
 ,Texas,TX,Casas,,26.475341,-98.933253
 ,Texas,TX,Catarina,78836,28.350178,-99.615258
 ,Texas,TX,"Cedar Point",77520,30.801268,-95.078745
@@ -7302,7 +7170,6 @@
 ,Texas,TX,"Coyote Acres",,27.713177,-98.134633
 ,Texas,TX,Crosby,77532,29.915154,-95.057681
 ,Texas,TX,"Cross Mountain",,29.656327,-98.645584
-,Texas,TX,Cuevitas,,26.256627,-98.577558
 ,Texas,TX,Cumings,,29.585265,-95.795377
 ,Texas,TX,Damon,77430,29.283237,-95.740772
 ,Texas,TX,"Del Mar Heights",,26.05588,-97.423594
@@ -7325,7 +7192,6 @@
 ,Texas,TX,"Elias-Fela Solis",,26.38543,-98.622008
 ,Texas,TX,"El Indio",78860,28.508925,-100.307239
 ,Texas,TX,"Elm Creek",,28.777026,-100.493386
-,Texas,TX,"El Mesquite",,26.384685,-98.771579
 ,Texas,TX,Elmo,75118,32.739676,-96.152689
 ,Texas,TX,"E. Lopez",,26.308661,-98.637851
 ,Texas,TX,"El Quiote",,26.38449,-98.908378
@@ -7344,10 +7210,8 @@
 ,Texas,TX,"Falcon Heights",78545,26.560372,-99.122493
 ,Texas,TX,"Falcon Lake Estates",,26.87195,-99.257431
 ,Texas,TX,"Falcon Mesa",,26.870557,-99.29173
-,Texas,TX,"Falcon Village",78545,26.56511,-99.134151
 ,Texas,TX,Falman,,27.928053,-97.171276
 ,Texas,TX,Fannett,77705,29.926273,-94.243345
-,Texas,TX,Faysville,78539,26.405423,-98.129897
 ,Texas,TX,"Fernando Salinas",,26.397879,-98.831072
 ,Texas,TX,"Fifth Street",,29.598002,-95.551317
 ,Texas,TX,"Flor del Rio",,26.401302,-98.901498
@@ -7358,7 +7222,6 @@
 ,Texas,TX,"Fort Hancock",79839,31.289272,-105.845064
 ,Texas,TX,"Fort Hood",76544,31.134599,-97.780019
 ,Texas,TX,"Four Corners",,29.670331,-95.660042
-,Texas,TX,"Four Points",78732,27.796407,-99.454823
 ,Texas,TX,Fowlerton,78021,28.452766,-98.809567
 ,Texas,TX,Fresno,77545,29.537522,-95.468665
 ,Texas,TX,Fronton,78584,26.425525,-99.07607
@@ -7376,7 +7239,6 @@
 ,Texas,TX,"Grape Creek",76901,31.581676,-100.54737
 ,Texas,TX,"Green Valley Farms",,26.120698,-97.564797
 ,Texas,TX,"Guadalupe Guerra",,26.410816,-99.081881
-,Texas,TX,Guerra,78360,26.882582,-98.894882
 ,Texas,TX,Guthrie,79236,33.622594,-100.328433
 ,Texas,TX,Gutierrez,,26.340527,-98.63289
 ,Texas,TX,Hargill,78549,26.442289,-98.014559
@@ -7388,7 +7250,6 @@
 ,Texas,TX,Heidelberg,78570,26.183077,-97.885018
 ,Texas,TX,Hermleigh,79526,32.640775,-100.750485
 ,Texas,TX,Highlands,77562,29.812869,-95.057826
-,Texas,TX,"Hillside Acres",,27.676165,-99.177706
 ,Texas,TX,Hilltop,,28.693843,-99.176148
 ,Texas,TX,"Hilltop Lakes",77871,31.063558,-96.190463
 ,Texas,TX,"Holiday Beach",,28.167125,-97.008001
@@ -7405,17 +7266,14 @@
 ,Texas,TX,Imperial,79743,31.266844,-102.694651
 ,Texas,TX,"Indian Hills",,26.211768,-97.915836
 ,Texas,TX,"Indian Springs",,30.687609,-94.746229
-,Texas,TX,Indio,,26.548877,-99.095866
 ,Texas,TX,Inez,77968,28.876334,-96.790882
 ,Texas,TX,"Jardin de San Julian",,26.525375,-99.099851
-,Texas,TX,"J.F. Villareal",,26.419911,-98.97883
 ,Texas,TX,Juarez,,26.200902,-97.729621
 ,Texas,TX,"K-Bar Ranch",,27.992824,-97.926747
 ,Texas,TX,Kingsland,78639,30.665926,-98.453505
 ,Texas,TX,Knippa,78870,29.303817,-99.630829
 ,Texas,TX,"La Blanca",78558,26.304793,-98.028601
 ,Texas,TX,"La Carla",,26.435385,-98.740592
-,Texas,TX,"La Casita",78582,26.336898,-98.733732
 ,Texas,TX,"La Chuparosa",,26.403708,-98.926801
 ,Texas,TX,"Lackland AFB",78236,29.386663,-98.617881
 ,Texas,TX,"La Coma",,27.499068,-99.303516
@@ -7450,16 +7308,13 @@
 ,Texas,TX,"La Pryor",78872,28.949057,-99.847918
 ,Texas,TX,"La Puerta",,26.346816,-98.750524
 ,Texas,TX,"Laredo Ranchettes",,27.491353,-99.359782
-,Texas,TX,"Laredo Ranchettes West",,27.490038,-99.370143
 ,Texas,TX,"La Rosita",,26.401682,-98.9321
 ,Texas,TX,Lasana,,26.2561,-97.694875
 ,Texas,TX,Lasara,78561,26.463789,-97.908713
-,Texas,TX,"Las Haciendas",,27.631483,-99.19873
 ,Texas,TX,"Las Lomas",,26.363831,-98.774649
 ,Texas,TX,"Las Lomitas",,27.337838,-98.66289
 ,Texas,TX,"Las Palmas",,26.951633,-99.276013
 ,Texas,TX,"Las Palmas II",,26.201707,-97.737588
-,Texas,TX,"Las Pilas",,27.681463,-99.183235
 ,Texas,TX,"Las Quintas Fronterizas",,28.690208,-100.468309
 ,Texas,TX,"La Tina Ranch",,26.200739,-97.481023
 ,Texas,TX,"Laughlin AFB",78840,29.358463,-100.776883
@@ -7482,19 +7337,14 @@
 ,Texas,TX,Lopezville,78589,26.245288,-98.153701
 ,Texas,TX,"Los Altos",,27.490491,-99.385823
 ,Texas,TX,"Los Alvarez",,26.385936,-98.899036
-,Texas,TX,"Los Angeles",78014,26.494764,-97.786319
 ,Texas,TX,"Los Arcos",,27.614419,-99.210488
-,Texas,TX,"Los Arrieros",,26.515769,-99.08452
 ,Texas,TX,"Los Barreras",,26.391164,-98.918353
-,Texas,TX,"Los Centenarios",,27.61226,-99.212988
 ,Texas,TX,"Los Corralitos",,27.641193,-99.557476
 ,Texas,TX,"Los Ebanos",78565,26.411313,-98.918581
 ,Texas,TX,"Los Huisaches",,27.907028,-99.475803
-,Texas,TX,"Los Lobos",,26.606536,-99.161264
 ,Texas,TX,"Los Minerales",,27.655503,-99.617819
 ,Texas,TX,"Los Nopalitos",,27.619521,-99.205609
 ,Texas,TX,"Lost Creek",,30.302316,-97.8498
-,Texas,TX,"Los Veteranos I",,27.633353,-99.218551
 ,Texas,TX,"Los Veteranos II",,27.771135,-99.443309
 ,Texas,TX,Louise,77455,29.113136,-96.412397
 ,Texas,TX,Lozano,78568,26.18959,-97.54373
@@ -7504,10 +7354,8 @@
 ,Texas,TX,McQueeney,78123,29.600453,-98.047576
 ,Texas,TX,Manchaca,78652,30.135308,-97.836266
 ,Texas,TX,"Manuel Garcia",,26.333654,-98.701643
-,Texas,TX,"Manuel Garcia II",,26.312646,-98.691281
 ,Texas,TX,Marathon,79842,30.220864,-103.236601
 ,Texas,TX,Markham,77456,28.962548,-96.063953
-,Texas,TX,Martinez,,26.422156,-98.75291
 ,Texas,TX,Matagorda,77457,28.696451,-95.966602
 ,Texas,TX,Mauriceville,77626,30.231045,-93.871478
 ,Texas,TX,Medina,78055,26.935079,-99.264419
@@ -7532,8 +7380,6 @@
 ,Texas,TX,Muniz,,26.257821,-98.08967
 ,Texas,TX,Murillo,,26.264195,-98.123331
 ,Texas,TX,"Myrtle Springs",,32.624095,-95.936406
-,Texas,TX,"Narciso Pena",,26.30187,-98.640696
-,Texas,TX,Netos,,26.410807,-98.758513
 ,Texas,TX,"New Falcon",,26.638338,-99.094747
 ,Texas,TX,Nina,,26.281134,-98.580988
 ,Texas,TX,"Nocona Hills",,33.848565,-97.63489
@@ -7579,14 +7425,11 @@
 ,Texas,TX,Powderly,75473,33.809047,-95.499008
 ,Texas,TX,"Prado Verde",,31.889788,-106.613509
 ,Texas,TX,Preston,,33.865502,-96.66354
-,Texas,TX,"Pueblo East",,27.674829,-99.189648
 ,Texas,TX,"Pueblo Nuevo",,27.493908,-99.309882
 ,Texas,TX,Quail,79251,34.914419,-100.380913
 ,Texas,TX,"Quail Creek",,28.777322,-97.084815
 ,Texas,TX,Quemado,78877,28.947141,-100.623748
-,Texas,TX,Quesada,,26.281478,-98.581994
 ,Texas,TX,"Radar Base",,28.855679,-100.535528
-,Texas,TX,"Rafael Pena",,26.300945,-98.64087
 ,Texas,TX,Ramireno,,27.012883,-99.377545
 ,Texas,TX,Ramirez-Perez,,26.316531,-98.69334
 ,Texas,TX,Ramos,,26.427996,-99.026981
@@ -7624,7 +7467,6 @@
 ,Texas,TX,"San Carlos II",,27.489596,-99.368589
 ,Texas,TX,Sanderson,79848,30.150794,-102.407916
 ,Texas,TX,Sandia,78383,28.02124,-97.867639
-,Texas,TX,Sandoval,76574,26.418189,-99.07943
 ,Texas,TX,"Sand Springs",,32.280355,-101.347191
 ,Texas,TX,"Sandy Hollow-Escondidas",,27.929973,-97.79245
 ,Texas,TX,"San Fernando",,26.403309,-98.835072
@@ -7667,16 +7509,13 @@
 ,Texas,TX,Stowell,77661,29.77996,-94.368614
 ,Texas,TX,"Study Butte",,29.335553,-103.542609
 ,Texas,TX,Sunset,76270,26.424603,-99.06212
-,Texas,TX,"Sunset Acres",,27.794165,-99.456603
 ,Texas,TX,"Taft Southwest",,27.970844,-97.404687
 ,Texas,TX,"Tanquecitos South Acres",,27.489792,-99.379691
-,Texas,TX,"Tanquecitos South Acres II",,27.486961,-99.388178
 ,Texas,TX,Terlingua,79852,29.287134,-103.58341
 ,Texas,TX,"The Woodlands",77354,30.172562,-95.509813
 ,Texas,TX,Thompsonville,78959,27.260012,-98.784671
 ,Texas,TX,"Thunderbird Bay",,31.909633,-99.020798
 ,Texas,TX,"Tierra Bonita",,26.272699,-97.827639
-,Texas,TX,"Tierra Dorada",,26.400653,-98.921262
 ,Texas,TX,"Tierra Grande",,27.703686,-97.571818
 ,Texas,TX,"Tierra Verde",,27.761571,-97.717384
 ,Texas,TX,Tilden,78072,28.459855,-98.548677
@@ -7686,12 +7525,9 @@
 ,Texas,TX,Tradewinds,,27.994992,-97.260176
 ,Texas,TX,"Travis Ranch",,32.8033,-96.474907
 ,Texas,TX,Tuleta,78162,28.576701,-97.798026
-,Texas,TX,Tulsita,,28.642329,-97.818052
 ,Texas,TX,Tynan,78391,28.170753,-97.749176
 ,Texas,TX,Utopia,78884,29.624088,-99.512655
 ,Texas,TX,"Uvalde Estates",,29.168689,-99.836142
-,Texas,TX,"Valle Hermoso",,26.382268,-98.787117
-,Texas,TX,"Valle Verde",,27.679691,-99.200997
 ,Texas,TX,"Valle Vista",,26.316046,-98.654655
 ,Texas,TX,"Val Verde Park",,29.374553,-100.830616
 ,Texas,TX,Vanderbilt,77991,28.820811,-96.60964
@@ -7729,8 +7565,6 @@
 ,Utah,UT,"Beryl Junction",84714,37.700983,-113.653495
 ,Utah,UT,Bluebell,84007,40.351374,-110.223817
 ,Utah,UT,Bluff,84512,37.284444,-109.551667
-,Utah,UT,Bonanza,84008,40.030474,-109.188439
-,Utah,UT,Cache,,41.82865,-112.005677
 ,Utah,UT,Carbonville,84501,39.627189,-110.833772
 ,Utah,UT,Central,84722,37.414968,-113.626292
 ,Utah,UT,"Clear Creek",,39.643343,-111.15484
@@ -7750,7 +7584,6 @@
 ,Utah,UT,Garden,,41.874269,-111.41703
 ,Utah,UT,Granite,84070,40.57234,-111.782058
 ,Utah,UT,Halchita,,37.150558,-109.9037
-,Utah,UT,"Halls Crossing",84533,37.465808,-110.66544
 ,Utah,UT,Hoytsville,84017,40.875419,-111.384678
 ,Utah,UT,Jensen,84035,40.369529,-109.355572
 ,Utah,UT,Kearns,84118,40.653056,-112.006667
@@ -7761,7 +7594,6 @@
 ,Utah,UT,Maeser,84078,40.471846,-109.578614
 ,Utah,UT,Magna,84044,40.701667,-112.085833
 ,Utah,UT,Marion,84036,40.681349,-111.282852
-,Utah,UT,"Mexican Hat",84531,37.174258,-109.883578
 ,Utah,UT,"Montezuma Creek",84534,37.2515,-109.30371
 ,Utah,UT,"Mountain Green",84050,41.14768,-111.786458
 ,Utah,UT,"Navajo Mountain",,37.047029,-110.789935
@@ -7960,7 +7792,6 @@
 ,Virginia,VA,"Gloucester Point",23062,37.270274,-76.497368
 ,Virginia,VA,Gratton,24651,37.134728,-81.426759
 ,Virginia,VA,"Great Falls",22066,39.012357,-77.301942
-,Virginia,VA,Greenbackville,23356,38.010003,-75.385368
 ,Virginia,VA,Greenbriar,,38.871638,-77.399054
 ,Virginia,VA,Greenbush,23357,37.73977,-75.679665
 ,Virginia,VA,Greenville,24440,38.00345,-79.153862
@@ -8249,7 +8080,6 @@
 ,Washington,WA,Clinton,98236,47.962381,-122.352274
 ,Washington,WA,"Clover Creek",,47.143317,-122.380456
 ,Washington,WA,"Cohassett Beach",,46.864882,-124.106113
-,Washington,WA,Conway,98238,48.335682,-122.344432
 ,Washington,WA,"Copalis Beach",98535,47.124571,-124.166453
 ,Washington,WA,"Cottage Lake",98072,47.746452,-122.075988
 ,Washington,WA,"Country Homes",,47.747803,-117.41966
@@ -8267,7 +8097,6 @@
 ,Washington,WA,Disautel,98841,48.34513,-119.229901
 ,Washington,WA,Dixie,99329,46.139239,-118.147911
 ,Washington,WA,"Dollars Corner",,45.780236,-122.599968
-,Washington,WA,Donald,98951,46.473604,-120.392106
 ,Washington,WA,Duluth,,45.783819,-122.647039
 ,Washington,WA,"East Cathlamet",,46.196783,-123.358007
 ,Washington,WA,Eastmont,98204,47.897402,-122.181536
@@ -8323,12 +8152,9 @@
 ,Washington,WA,Inchelium,99138,48.36374,-118.245596
 ,Washington,WA,Indianola,98342,47.755273,-122.511484
 ,Washington,WA,Jamestown,,48.122839,-123.091043
-,Washington,WA,"Junction City",98520,46.968895,-123.762288
 ,Washington,WA,Kapowsin,98344,46.968388,-122.222955
 ,Washington,WA,"Kayak Point",,48.142508,-122.342276
 ,Washington,WA,Keller,99140,48.085189,-118.716364
-,Washington,WA,Kendall,98244,48.914994,-122.140567
-,Washington,WA,"Ketron Island",98388,47.156281,-122.634125
 ,Washington,WA,"Key Center",98335,47.330418,-122.755047
 ,Washington,WA,Keyport,98345,47.699248,-122.623822
 ,Washington,WA,Kingston,98346,47.801207,-122.499013
@@ -8350,7 +8176,6 @@
 ,Washington,WA,"Lake Tapps",98391,47.230707,-122.171247
 ,Washington,WA,Lakeview,,47.375543,-119.504282
 ,Washington,WA,"Larch Way",,47.842899,-122.252748
-,Washington,WA,Laurier,99146,48.997298,-118.224786
 ,Washington,WA,Lebam,98554,46.564091,-123.550888
 ,Washington,WA,Lewisville,,45.81652,-122.508244
 ,Washington,WA,Lochsloy,,48.05971,-122.041061
@@ -8374,7 +8199,6 @@
 ,Washington,WA,"Maple Falls",98266,48.911798,-122.110772
 ,Washington,WA,"Maple Heights-Lake Desire",,47.436892,-122.092968
 ,Washington,WA,Maplewood,98371,47.376389,-122.56549
-,Washington,WA,Marblemount,98267,48.536031,-121.437344
 ,Washington,WA,Marietta-Alderwood,,48.788096,-122.555162
 ,Washington,WA,Markham,98520,46.914157,-123.987873
 ,Washington,WA,Marrowstone,,48.031999,-122.684007
@@ -8390,7 +8214,6 @@
 ,Washington,WA,Mineral,98355,46.719299,-122.185993
 ,Washington,WA,Minnehaha,,45.656517,-122.61789
 ,Washington,WA,Mirrormont,,47.460218,-121.990205
-,Washington,WA,Moclips,98562,47.229431,-124.198456
 ,Washington,WA,"Monroe North",,47.882803,-121.988524
 ,Washington,WA,"Moses Lake North",,47.194911,-119.31848
 ,Washington,WA,"Mount Vista",,45.737288,-122.631566
@@ -8417,7 +8240,6 @@
 ,Washington,WA,Oso,98223,48.283764,-121.91624
 ,Washington,WA,"Otis Orchards-East Farms",,47.704932,-117.08515
 ,Washington,WA,Outlook,98938,46.331153,-120.092812
-,Washington,WA,Oyehut,,47.022589,-124.165177
 ,Washington,WA,"Pacific Beach",98571,47.214135,-124.196854
 ,Washington,WA,Packwood,98361,46.608524,-121.670253
 ,Washington,WA,Parker,98939,46.502179,-120.466826
@@ -8541,7 +8363,6 @@
 ,"West Virginia",WV,Boaz,,39.368841,-81.488366
 ,"West Virginia",WV,Bolt,25817,37.761566,-81.416376
 ,"West Virginia",WV,Boomer,25031,38.148749,-81.27478
-,"West Virginia",WV,Bowden,26254,38.909186,-79.708895
 ,"West Virginia",WV,Bradley,25818,37.867888,-81.215582
 ,"West Virginia",WV,Brandywine,26802,38.619385,-79.240624
 ,"West Virginia",WV,Brenton,24818,37.601252,-81.636284
@@ -8769,7 +8590,6 @@
 ,Wisconsin,WI,"New Odanah",,46.60268,-90.659387
 ,Wisconsin,WI,"New Post",54828,45.902783,-91.207142
 ,Wisconsin,WI,Northport,,44.405015,-88.811252
-,Wisconsin,WI,Odanah,54861,46.610688,-90.70122
 ,Wisconsin,WI,"Okauchee Lake",,43.125867,-88.439173
 ,Wisconsin,WI,Polonia,54423,44.580548,-89.410626
 ,Wisconsin,WI,"Post Lake",54428,45.430458,-89.090342
@@ -8797,27 +8617,21 @@
 ,Wisconsin,WI,Woodford,53599,42.647308,-89.857206
 ,Wisconsin,WI,Zoar,,45.005484,-88.874832
 ,Wyoming,WY,Albany,,41.186857,-106.12549
-,Wyoming,WY,Alcova,82620,42.553333,-106.729461
-,Wyoming,WY,"Alpine Northeast",,43.19406,-111.007324
 ,Wyoming,WY,"Alpine Northwest",,43.183823,-111.035589
 ,Wyoming,WY,Alta,83414,43.773624,-111.031262
-,Wyoming,WY,"Antelope Hills",,43.081136,-106.312584
 ,Wyoming,WY,Arapahoe,82510,42.992567,-108.45273
 ,Wyoming,WY,Arlington,82083,41.605258,-106.199739
 ,Wyoming,WY,"Arrowhead Springs",,41.508174,-109.155085
 ,Wyoming,WY,Arvada,82831,44.662179,-106.141976
-,Wyoming,WY,"Atlantic City",82520,42.501195,-108.732896
 ,Wyoming,WY,Auburn,83111,42.794359,-111.013456
 ,Wyoming,WY,Bedford,83112,42.898348,-110.943127
 ,Wyoming,WY,"Bessemer Bend",,42.757556,-106.523721
-,Wyoming,WY,Beulah,82712,44.545961,-104.08279
 ,Wyoming,WY,"Big Horn",82833,44.679076,-106.997071
 ,Wyoming,WY,Bondurant,82922,43.194859,-110.402577
 ,Wyoming,WY,Boulder,82923,42.746142,-109.706729
 ,Wyoming,WY,"Boulder Flats",,42.915574,-108.799299
 ,Wyoming,WY,Brookhurst,,42.860985,-106.228789
 ,Wyoming,WY,Carpenter,82053,41.045607,-104.36437
-,Wyoming,WY,Carter,,41.440444,-110.430327
 ,Wyoming,WY,"Casper Mountain",,42.744829,-106.320553
 ,Wyoming,WY,Centennial,82055,41.307415,-106.138381
 ,Wyoming,WY,Chugcreek,,42.053464,-104.907886
@@ -8835,41 +8649,32 @@
 ,Wyoming,WY,"Fort Bridger",82933,41.318335,-110.389387
 ,Wyoming,WY,"Fort Washakie",82514,43.006905,-108.920417
 ,Wyoming,WY,"Fox Farm-College",,41.110563,-104.786988
-,Wyoming,WY,"Fox Park",,41.080132,-106.153386
 ,Wyoming,WY,Freedom,83120,42.985342,-111.029605
 ,Wyoming,WY,Garland,82435,44.77772,-108.654155
 ,Wyoming,WY,Grover,83122,42.794694,-110.929527
 ,Wyoming,WY,Hartrandt,,42.883584,-106.349223
 ,Wyoming,WY,"Hawk Springs",82217,41.785252,-104.265083
-,Wyoming,WY,Hillsdale,82060,41.207977,-104.47439
 ,Wyoming,WY,"Hill View Heights",,43.814571,-104.150664
 ,Wyoming,WY,Hoback,,43.307625,-110.744868
 ,Wyoming,WY,"Homa Hills",,42.99002,-106.384995
-,Wyoming,WY,Huntley,82218,41.931621,-104.144008
 ,Wyoming,WY,Hyattville,82428,44.249778,-107.614964
 ,Wyoming,WY,"James Town",,41.563972,-109.536499
 ,Wyoming,WY,"Jeffrey City",82310,42.483044,-107.829134
 ,Wyoming,WY,Johnstown,,43.113834,-108.689948
-,Wyoming,WY,Kelly,83011,43.622744,-110.627333
 ,Wyoming,WY,"Lakeview North",,42.096984,-104.958621
 ,Wyoming,WY,"Lance Creek",82222,43.04474,-104.663835
 ,Wyoming,WY,"Little America",82929,41.549363,-109.884876
-,Wyoming,WY,Lonetree,82936,41.034403,-110.144045
 ,Wyoming,WY,Lucerne,,43.718022,-108.18471
-,Wyoming,WY,McKinnon,,41.031441,-109.9383
 ,Wyoming,WY,Mammoth,82190,44.97321,-110.692943
 ,Wyoming,WY,"Meadow Acres",,42.859353,-106.094617
 ,Wyoming,WY,"Moose Wilson Road",,43.531488,-110.834831
 ,Wyoming,WY,Nordic,,43.079317,-110.991324
 ,Wyoming,WY,"North Rock Springs",,41.669074,-109.287932
-,Wyoming,WY,Oakley,,41.750972,-110.526057
 ,Wyoming,WY,Orin,82633,42.651705,-105.177769
 ,Wyoming,WY,Osage,82723,43.98482,-104.434645
 ,Wyoming,WY,Osmond,,42.677715,-110.94076
-,Wyoming,WY,"Owl Creek",,43.781866,-108.56782
 ,Wyoming,WY,Parkman,82838,44.957086,-107.313456
 ,Wyoming,WY,"Point of Rocks",82942,41.683121,-108.775444
-,Wyoming,WY,"Powder River",82648,43.052119,-106.990566
 ,Wyoming,WY,"Purple Sage",,41.551396,-109.320193
 ,Wyoming,WY,"Rafter J Ranch",,43.430513,-110.791464
 ,Wyoming,WY,Ralston,82440,44.706865,-108.885417
@@ -8877,7 +8682,6 @@
 ,Wyoming,WY,"Red Butte",,42.806204,-106.434625
 ,Wyoming,WY,Reliance,82943,41.668198,-109.197696
 ,Wyoming,WY,Robertson,82944,41.181571,-110.42739
-,Wyoming,WY,"Ryan Park",82331,41.313153,-106.489613
 ,Wyoming,WY,Shell,82441,44.534519,-107.784481
 ,Wyoming,WY,Slater,82201,41.877633,-104.788709
 ,Wyoming,WY,"Sleepy Hollow",,44.232678,-105.430862
@@ -8885,7 +8689,6 @@
 ,Wyoming,WY,"South Greeley",,41.093131,-104.806622
 ,Wyoming,WY,"South Park",,43.4255,-110.798549
 ,Wyoming,WY,Story,82832,44.573079,-106.914173
-,Wyoming,WY,"Table Rock",,41.621985,-108.404046
 ,Wyoming,WY,Taylor,,42.070254,-110.989757
 ,Wyoming,WY,"Teton Village",83025,43.593137,-110.844112
 ,Wyoming,WY,Turnerville,83110,42.862266,-110.900716
@@ -8893,8 +8696,6 @@
 ,Wyoming,WY,Veteran,82243,41.962665,-104.38625
 ,Wyoming,WY,"Vista West",,42.862193,-106.43632
 ,Wyoming,WY,"Warren AFB",,41.147053,-104.86163
-,Wyoming,WY,Washam,,41.005604,-109.699135
-,Wyoming,WY,"Westview Circle",,42.061641,-105.06758
 ,Wyoming,WY,Whiting,,42.00888,-104.971051
 ,Wyoming,WY,Wilson,83014,43.480906,-110.920704
 ,Wyoming,WY,"Woods Landing-Jelm",,41.101461,-106.028802
