@@ -11,11 +11,14 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.hl7.fhir.r4.model.Address;
@@ -2721,6 +2724,24 @@ public class FhirR4 {
 
     return newEntry(bundle, organizationResource, provider.getResourceID());
   }
+  
+  /**
+   * Keep track of the id assigned to each provider location.
+   */
+  protected static Map<Provider, String> locationIds = new ConcurrentHashMap<>();
+  
+  /**
+   * Keep track of whether a given bundle already has an entry for a provider location.
+   */
+  protected static Map<Provider, Set<Bundle>> bundlesWithProvider = new ConcurrentHashMap<>();
+  
+  /**
+   * Clear cached location ids. Only used by unit tests.
+   */
+  public static void clearProviderLocationCache() {
+    locationIds.clear();
+    bundlesWithProvider.clear();
+  }
 
   /**
    * Map the Provider into a FHIR Location resource, and add it to the given Bundle.
@@ -2728,49 +2749,63 @@ public class FhirR4 {
    * @param rand     Source of randomness to use when generating ids etc
    * @param bundle   The Bundle to add to
    * @param provider The Provider
-   * @return The added Entry
+   * @return The added Entry or null if the bundle already contains this provider location
    */
   protected static BundleEntryComponent providerLocation(RandomNumberGenerator rand, Bundle bundle,
           Provider provider) {
-    org.hl7.fhir.r4.model.Location location = new org.hl7.fhir.r4.model.Location();
-    if (USE_US_CORE_IG) {
-      Meta meta = new Meta();
-      meta.addProfile(
-          "http://hl7.org/fhir/us/core/StructureDefinition/us-core-location");
-      location.setMeta(meta);
+    if (!bundlesWithProvider.containsKey(provider)) {
+      bundlesWithProvider.put(provider, Collections.newSetFromMap(new ConcurrentHashMap<>()));
     }
-    location.setStatus(LocationStatus.ACTIVE);
-    location.setName(provider.name);
-    // set telecom
-    if (provider.phone != null && !provider.phone.isEmpty()) {
-      ContactPoint contactPoint = new ContactPoint()
-          .setSystem(ContactPointSystem.PHONE)
-          .setValue(provider.phone);
-      location.addTelecom(contactPoint);
-    } else if (USE_US_CORE_IG) {
-      ContactPoint contactPoint = new ContactPoint()
-          .setSystem(ContactPointSystem.PHONE)
-          .setValue("(555) 555-5555");
-      location.addTelecom(contactPoint);
+    BundleEntryComponent locationEntry = null;
+    if (!bundlesWithProvider.get(provider).contains(bundle)) {
+      // add a new bundle entry if this location isn't already present in the bundle
+      org.hl7.fhir.r4.model.Location location = new org.hl7.fhir.r4.model.Location();
+      if (USE_US_CORE_IG) {
+        Meta meta = new Meta();
+        meta.addProfile(
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-location");
+        location.setMeta(meta);
+      }
+      location.setStatus(LocationStatus.ACTIVE);
+      location.setName(provider.name);
+      // set telecom
+      if (provider.phone != null && !provider.phone.isEmpty()) {
+        ContactPoint contactPoint = new ContactPoint()
+            .setSystem(ContactPointSystem.PHONE)
+            .setValue(provider.phone);
+        location.addTelecom(contactPoint);
+      } else if (USE_US_CORE_IG) {
+        ContactPoint contactPoint = new ContactPoint()
+            .setSystem(ContactPointSystem.PHONE)
+            .setValue("(555) 555-5555");
+        location.addTelecom(contactPoint);
+      }
+      // set address
+      Address address = new Address()
+          .addLine(provider.address)
+          .setCity(provider.city)
+          .setPostalCode(provider.zip)
+          .setState(provider.state);
+      if (COUNTRY_CODE != null) {
+        address.setCountry(COUNTRY_CODE);
+      }
+      location.setAddress(address);
+      LocationPositionComponent position = new LocationPositionComponent();
+      position.setLatitude(provider.getY());
+      position.setLongitude(provider.getX());
+      location.setPosition(position);
+      location.setManagingOrganization(new Reference()
+          .setReference(getUrlPrefix("Organization") + provider.getResourceID())
+          .setDisplay(provider.name));
+      if (locationIds.containsKey(provider)) {
+        locationEntry = newEntry(bundle, location, locationIds.get(provider));
+      } else {
+        locationEntry = newEntry(rand, bundle, location);
+        locationIds.put(provider, locationEntry.getResource().getId());    
+      }
+      bundlesWithProvider.get(provider).add(bundle);
     }
-    // set address
-    Address address = new Address()
-        .addLine(provider.address)
-        .setCity(provider.city)
-        .setPostalCode(provider.zip)
-        .setState(provider.state);
-    if (COUNTRY_CODE != null) {
-      address.setCountry(COUNTRY_CODE);
-    }
-    location.setAddress(address);
-    LocationPositionComponent position = new LocationPositionComponent();
-    position.setLatitude(provider.getY());
-    position.setLongitude(provider.getX());
-    location.setPosition(position);
-    location.setManagingOrganization(new Reference()
-        .setReference(getUrlPrefix("Organization") + provider.getResourceID())
-        .setDisplay(provider.name));
-    return newEntry(rand, bundle, location);
+    return locationEntry;
   }
 
   /**

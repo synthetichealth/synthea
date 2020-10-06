@@ -31,6 +31,7 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Generator.GeneratorOptions;
 import org.mitre.synthea.export.Exporter;
+import org.mitre.synthea.export.FhirR4;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.concepts.VitalSign;
 
@@ -294,6 +295,7 @@ public class PersonTest {
     // Generate two patients that should be identical. Switch the output directory since
     // the file names should be identical
     for (int i = 0; i < 2; i++) {
+      FhirR4.clearProviderLocationCache();
       File tempOutputFolder = tempFolder.newFolder();
       Config.set("exporter.baseDirectory", tempOutputFolder.toString());
       
