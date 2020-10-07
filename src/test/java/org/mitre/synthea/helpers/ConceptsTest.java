@@ -40,6 +40,15 @@ public class ConceptsTest {
   }
 
   @Test
+  public void testConceptsWithoutCosts() throws Exception {
+    List<String> concepts = Concepts.getConceptInventory(true);
+    // just intended to ensure no exceptions or anything
+    // make sure simpleCSV can parse it
+    String csv = concepts.stream().collect(Collectors.joining("\n"));
+    SimpleCSV.parse(csv);
+  }
+
+  @Test
   public void testInventoryModule() throws FileNotFoundException {
     Path modulesFolder = Paths.get("src/test/resources/generic");
     Path modulePath = modulesFolder.resolve("example_module.json");
