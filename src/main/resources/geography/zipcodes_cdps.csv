@@ -128,9 +128,6 @@
 ,Alabama,AL,"Mount Olive",35072,33.093498,-86.066947
 ,Alabama,AL,"Mount Olive",35071,33.694975,-86.848078
 ,Alabama,AL,"Mount Olive",35117,33.667778,-86.892599
-,Alabama,AL,"Mount Olive",35072,33.093498,-86.066947
-,Alabama,AL,"Mount Olive",35071,33.694975,-86.848078
-,Alabama,AL,"Mount Olive",35117,33.667778,-86.892599
 ,Alabama,AL,Movico,36560,31.097767,-88.040068
 ,Alabama,AL,Nanafalia,36782,32.116133,-87.912973
 ,Alabama,AL,"Nances Creek",36265,33.847655,-85.784916
@@ -755,10 +752,6 @@
 ,Arizona,AZ,"Red Rock",85131,32.672511,-111.547278
 ,Arizona,AZ,"Red Rock",85145,32.545998,-111.347585
 ,Arizona,AZ,"Red Rock",85658,32.551052,-111.143446
-,Arizona,AZ,"Red Rock",86544,36.619478,-109.164204
-,Arizona,AZ,"Red Rock",85131,32.672511,-111.547278
-,Arizona,AZ,"Red Rock",85145,32.545998,-111.347585
-,Arizona,AZ,"Red Rock",85658,32.551052,-111.143446
 ,Arizona,AZ,"Rincon Valley",85641,32.049048,-110.622850
 ,Arizona,AZ,"Rincon Valley",85747,32.094967,-110.765438
 ,Arizona,AZ,"Rio Rico",85621,31.387978,-110.912001
@@ -1087,13 +1080,8 @@
 ,California,CA,Bayview,94564,37.994038,-122.282589
 ,California,CA,Bayview,94806,37.980790,-122.337627
 ,California,CA,Bayview,95503,40.738322,-124.107619
-,California,CA,Bayview,94564,37.994038,-122.282589
-,California,CA,Bayview,94806,37.980790,-122.337627
-,California,CA,Bayview,95503,40.738322,-124.107619
 ,California,CA,"Beale AFB",95903,39.106099,-121.368180
 ,California,CA,"Bear Creek",95340,37.345785,-120.424150
-,California,CA,"Bear Valley",95223,38.433968,-119.968436
-,California,CA,"Bear Valley",95338,37.508765,-119.982496
 ,California,CA,"Bear Valley",95223,38.433968,-119.968436
 ,California,CA,"Bear Valley",95338,37.508765,-119.982496
 ,California,CA,"Bear Valley Springs",93531,35.221906,-118.582566
@@ -1301,8 +1289,6 @@
 ,California,CA,Cohasset,95973,39.891624,-121.841982
 ,California,CA,"Cold Springs",95667,38.734925,-120.789952
 ,California,CA,"Cold Springs",95335,38.124887,-120.093146
-,California,CA,"Cold Springs",95667,38.734925,-120.789952
-,California,CA,"Cold Springs",95335,38.124887,-120.093146
 ,California,CA,Coleville,96107,38.425282,-119.475743
 ,California,CA,Coleville,96133,38.620964,-119.505184
 ,California,CA,"College City",95912,39.016702,-122.062143
@@ -1481,8 +1467,6 @@
 ,California,CA,"El Rio",93036,34.238786,-119.186492
 ,California,CA,"El Sobrante",94803,37.959549,-122.283578
 ,California,CA,"El Sobrante",92503,33.882579,-117.442303
-,California,CA,"El Sobrante",94803,37.959549,-122.283578
-,California,CA,"El Sobrante",92503,33.882579,-117.442303
 ,California,CA,"El Verano",95476,38.249428,-122.466627
 ,California,CA,Elverta,95626,38.733145,-121.468174
 ,California,CA,Elverta,95673,38.689241,-121.459014
@@ -1548,8 +1532,6 @@
 ,California,CA,"Fort Washington",93720,36.862209,-119.760793
 ,California,CA,Franklin,95348,37.392287,-120.498299
 ,California,CA,Franklin,95757,38.344888,-121.431231
-,California,CA,Franklin,95348,37.392287,-120.498299
-,California,CA,Franklin,95757,38.344888,-121.431231
 ,California,CA,"Frazier Park",93225,34.768503,-119.030293
 ,California,CA,Freedom,95019,36.935538,-121.783134
 ,California,CA,Freedom,95076,36.946256,-121.756479
@@ -1609,8 +1591,6 @@
 ,California,CA,"Green Acres",92545,33.729853,-117.034060
 ,California,CA,"Green Acres",92596,33.665848,-117.049660
 ,California,CA,Greenhorn,95971,39.940063,-120.891328
-,California,CA,"Green Valley",91390,34.545587,-118.420095
-,California,CA,"Green Valley",94534,38.244839,-122.135861
 ,California,CA,"Green Valley",91390,34.545587,-118.420095
 ,California,CA,"Green Valley",94534,38.244839,-122.135861
 ,California,CA,Greenview,96032,41.609516,-122.963525
@@ -1830,8 +1810,6 @@
 ,California,CA,Larkfield-Wikiup,95404,38.525733,-122.690443
 ,California,CA,Larkfield-Wikiup,95492,38.528079,-122.821349
 ,California,CA,"La Selva Beach",95076,36.946256,-121.756479
-,California,CA,"Las Flores",92688,33.619672,-117.612087
-,California,CA,"Las Flores",96035,40.045637,-122.184859
 ,California,CA,"Las Flores",92688,33.619672,-117.612087
 ,California,CA,"Las Flores",96035,40.045637,-122.184859
 ,California,CA,"Las Lomas",95076,36.946256,-121.756479
@@ -2303,8 +2281,6 @@
 ,California,CA,"San Martin",95046,37.099308,-121.599240
 ,California,CA,"San Miguel",94596,37.889098,-122.037553
 ,California,CA,"San Miguel",93451,35.886767,-120.608661
-,California,CA,"San Miguel",94596,37.889098,-122.037553
-,California,CA,"San Miguel",93451,35.886767,-120.608661
 ,California,CA,"San Pasqual",91107,34.155533,-118.086178
 ,California,CA,"San Simeon",93452,35.746484,-121.223355
 ,California,CA,"Santa Margarita",93453,35.303925,-120.256566
@@ -2390,11 +2366,6 @@
 ,California,CA,"Spring Valley",91945,32.733168,-117.034176
 ,California,CA,"Spring Valley",91977,32.726237,-116.994318
 ,California,CA,"Spring Valley",91978,32.724154,-116.940093
-,California,CA,"Spring Valley",95423,39.064446,-122.626701
-,California,CA,"Spring Valley",91941,32.759333,-116.997247
-,California,CA,"Spring Valley",91945,32.733168,-117.034176
-,California,CA,"Spring Valley",91977,32.726237,-116.994318
-,California,CA,"Spring Valley",91978,32.724154,-116.940093
 ,California,CA,"Spring Valley Lake",92395,34.501472,-117.292048
 ,California,CA,Springville,93265,36.245404,-118.693313
 ,California,CA,"Squaw Valley",93641,36.697180,-119.022995
@@ -2415,9 +2386,6 @@
 ,California,CA,Stratford,93266,36.145394,-119.867288
 ,California,CA,Strathmore,,36.13285,-119.111953
 ,California,CA,Strathmore,93267,36.151180,-119.049222
-,California,CA,Strawberry,94920,37.885629,-122.468580
-,California,CA,Strawberry,94941,37.897665,-122.563172
-,California,CA,Strawberry,95375,38.186595,-120.026235
 ,California,CA,Strawberry,94920,37.885629,-122.468580
 ,California,CA,Strawberry,94941,37.897665,-122.563172
 ,California,CA,Strawberry,95375,38.186595,-120.026235
@@ -2887,9 +2855,6 @@
 ,Colorado,CO,Towaoc,81334,37.146139,-108.612966
 ,Colorado,CO,Towner,81071,38.436195,-102.246008
 ,Colorado,CO,"Trail Side",80701,40.165309,-103.870735
-,Colorado,CO,"Twin Lakes",80221,39.817067,-105.011035
-,Colorado,CO,"Twin Lakes",80461,39.231742,-106.313157
-,Colorado,CO,"Twin Lakes",81251,39.112071,-106.474415
 ,Colorado,CO,"Twin Lakes",80221,39.817067,-105.011035
 ,Colorado,CO,"Twin Lakes",80461,39.231742,-106.313157
 ,Colorado,CO,"Twin Lakes",81251,39.112071,-106.474415
@@ -3708,13 +3673,6 @@
 ,Florida,FL,"Pine Ridge",34461,28.866144,-82.494509
 ,Florida,FL,"Pine Ridge",34465,28.929489,-82.489202
 ,Florida,FL,"Pine Ridge",34108,26.246308,-81.808323
-,Florida,FL,"Pine Ridge",34433,29.002221,-82.524892
-,Florida,FL,"Pine Ridge",34434,28.995934,-82.439628
-,Florida,FL,"Pine Ridge",34442,28.937049,-82.386522
-,Florida,FL,"Pine Ridge",34445,28.967990,-82.420744
-,Florida,FL,"Pine Ridge",34461,28.866144,-82.494509
-,Florida,FL,"Pine Ridge",34465,28.929489,-82.489202
-,Florida,FL,"Pine Ridge",34108,26.246308,-81.808323
 ,Florida,FL,Pinewood,33147,25.851225,-80.238166
 ,Florida,FL,Pinewood,33150,25.852190,-80.207174
 ,Florida,FL,Pinewood,33167,25.884867,-80.239362
@@ -3913,13 +3871,6 @@
 ,Florida,FL,University,33647,28.126958,-82.354093
 ,Florida,FL,University,32817,28.591012,-81.243652
 ,Florida,FL,University,32826,28.579737,-81.188811
-,Florida,FL,University,33549,28.137944,-82.446252
-,Florida,FL,University,33559,28.161006,-82.414667
-,Florida,FL,University,33612,28.050827,-82.449573
-,Florida,FL,University,33613,28.083973,-82.450768
-,Florida,FL,University,33647,28.126958,-82.354093
-,Florida,FL,University,32817,28.591012,-81.243652
-,Florida,FL,University,32826,28.579737,-81.188811
 ,Florida,FL,"University Park",33165,25.734345,-80.358271
 ,Florida,FL,"University Park",33174,25.761518,-80.364697
 ,Florida,FL,"University Park",33175,25.734787,-80.406761
@@ -4008,8 +3959,6 @@
 ,Florida,FL,"White City",34981,27.395528,-80.377424
 ,Florida,FL,"White City",34982,27.373264,-80.308018
 ,Florida,FL,"White City",34983,27.324139,-80.350299
-,Florida,FL,Whitfield,34243,27.401013,-82.527887
-,Florida,FL,Whitfield,32570,30.804825,-86.967268
 ,Florida,FL,Whitfield,34243,27.401013,-82.527887
 ,Florida,FL,Whitfield,32570,30.804825,-86.967268
 ,Florida,FL,Williamsburg,32821,28.381999,-81.479599
@@ -4277,10 +4226,6 @@
 ,Hawaii,HI,Kailua,96740,19.756820,-155.919968
 ,Hawaii,HI,Kailua,96734,21.395084,-157.758188
 ,Hawaii,HI,Kailua,96795,21.335013,-157.710924
-,Hawaii,HI,Kailua,96725,19.626488,-155.910336
-,Hawaii,HI,Kailua,96740,19.756820,-155.919968
-,Hawaii,HI,Kailua,96734,21.395084,-157.758188
-,Hawaii,HI,Kailua,96795,21.335013,-157.710924
 ,Hawaii,HI,Kalaeloa,96707,21.363106,-158.082206
 ,Hawaii,HI,Kalaheo,96741,21.956769,-159.513981
 ,Hawaii,HI,Kalaoa,96725,19.626488,-155.910336
@@ -4408,8 +4353,6 @@
 ,Hawaii,HI,Waimalu,96701,21.406053,-157.884952
 ,Hawaii,HI,Waimanalo,96795,21.335013,-157.710924
 ,Hawaii,HI,"Waimanalo Beach",96795,21.335013,-157.710924
-,Hawaii,HI,Waimea,96743,19.862159,-155.698870
-,Hawaii,HI,Waimea,96796,22.094055,-159.718749
 ,Hawaii,HI,Waimea,96743,19.862159,-155.698870
 ,Hawaii,HI,Waimea,96796,22.094055,-159.718749
 ,Hawaii,HI,Wainaku,96720,19.659810,-155.232473
@@ -6060,12 +6003,6 @@
 ,Maryland,MD,Woodlawn,21244,39.334931,-76.776589
 ,Maryland,MD,Woodlawn,20737,38.964265,-76.913538
 ,Maryland,MD,Woodlawn,20784,38.950549,-76.891720
-,Maryland,MD,Woodlawn,21207,39.324167,-76.719484
-,Maryland,MD,Woodlawn,21228,39.272857,-76.747741
-,Maryland,MD,Woodlawn,21229,39.284242,-76.691404
-,Maryland,MD,Woodlawn,21244,39.334931,-76.776589
-,Maryland,MD,Woodlawn,20737,38.964265,-76.913538
-,Maryland,MD,Woodlawn,20784,38.950549,-76.891720
 ,Maryland,MD,Woodmore,20721,38.915222,-76.785129
 ,Maryland,MD,Worton,21678,39.313279,-76.112300
 ,Maryland,MD,Yarrowsburg,21758,39.353205,-77.656813
@@ -7538,10 +7475,6 @@
 ,"New Jersey",NJ,"Silver Lake",07107,40.762918,-74.186559
 ,"New Jersey",NJ,"Silver Lake",07109,40.794927,-74.162353
 ,"New Jersey",NJ,"Silver Lake",07825,40.971247,-74.975723
-,"New Jersey",NJ,"Silver Lake",07003,40.809128,-74.187155
-,"New Jersey",NJ,"Silver Lake",07107,40.762918,-74.186559
-,"New Jersey",NJ,"Silver Lake",07109,40.794927,-74.162353
-,"New Jersey",NJ,"Silver Lake",07825,40.971247,-74.975723
 ,"New Jersey",NJ,"Silver Ridge",08757,39.942397,-74.251072
 ,"New Jersey",NJ,Singac,07424,40.882802,-74.205713
 ,"New Jersey",NJ,"Six Mile Run",08873,40.496619,-74.532009
@@ -7902,9 +7835,6 @@
 ,"New Mexico",NM,Placitas,87937,32.591271,-107.195218
 ,"New Mexico",NM,Placitas,87001,35.376617,-106.337081
 ,"New Mexico",NM,Placitas,87043,35.275451,-106.462126
-,"New Mexico",NM,Placitas,87937,32.591271,-107.195218
-,"New Mexico",NM,Placitas,87001,35.376617,-106.337081
-,"New Mexico",NM,Placitas,87043,35.275451,-106.462126
 ,"New Mexico",NM,Playas,88009,31.995969,-108.574554
 ,"New Mexico",NM,Pleasanton,88039,33.298350,-108.803283
 ,"New Mexico",NM,Pojoaque,87506,35.813114,-105.984455
@@ -7948,9 +7878,6 @@
 ,"New Mexico",NM,"San Antonito",87008,35.119938,-106.406994
 ,"New Mexico",NM,"San Antonito",87047,35.250846,-106.288772
 ,"New Mexico",NM,"San Antonito",87832,33.766896,-106.821217
-,"New Mexico",NM,"San Antonito",87008,35.119938,-106.406994
-,"New Mexico",NM,"San Antonito",87047,35.250846,-106.288772
-,"New Mexico",NM,"San Antonito",87832,33.766896,-106.821217
 ,"New Mexico",NM,"San Cristobal",87564,36.607972,-105.627890
 ,"New Mexico",NM,"Sandia Heights",87111,35.143913,-106.487460
 ,"New Mexico",NM,"Sandia Heights",87122,35.191009,-106.501625
@@ -7960,9 +7887,6 @@
 ,"New Mexico",NM,"San Felipe Pueblo",87001,35.376617,-106.337081
 ,"New Mexico",NM,"San Fidel",87049,35.113635,-107.596844
 ,"New Mexico",NM,"San Ildefonso Pueblo",87506,35.813114,-105.984455
-,"New Mexico",NM,"San Jose",87532,35.993867,-106.088977
-,"New Mexico",NM,"San Jose",87537,36.052227,-106.188827
-,"New Mexico",NM,"San Jose",87565,35.413824,-105.489881
 ,"New Mexico",NM,"San Jose",87532,35.993867,-106.088977
 ,"New Mexico",NM,"San Jose",87537,36.052227,-106.188827
 ,"New Mexico",NM,"San Jose",87565,35.413824,-105.489881
@@ -8019,9 +7943,6 @@
 ,"New Mexico",NM,Timberon,88350,32.640607,-105.678321
 ,"New Mexico",NM,Tohatchi,87325,35.993895,-108.614262
 ,"New Mexico",NM,Tome,87031,34.691701,-107.017993
-,"New Mexico",NM,Torreon,87013,35.931703,-107.367228
-,"New Mexico",NM,Torreon,87016,34.806200,-105.955483
-,"New Mexico",NM,Torreon,87061,34.731143,-106.379632
 ,"New Mexico",NM,Torreon,87013,35.931703,-107.367228
 ,"New Mexico",NM,Torreon,87016,34.806200,-105.955483
 ,"New Mexico",NM,Torreon,87061,34.731143,-106.379632
@@ -8355,10 +8276,6 @@
 ,"New York",NY,Fairview,12601,41.701921,-73.911519
 ,"New York",NY,Fairview,10603,41.054400,-73.779287
 ,"New York",NY,Fairview,10607,41.039089,-73.811368
-,"New York",NY,Fairview,12538,41.792230,-73.893767
-,"New York",NY,Fairview,12601,41.701921,-73.911519
-,"New York",NY,Fairview,10603,41.054400,-73.779287
-,"New York",NY,Fairview,10607,41.039089,-73.811368
 ,"New York",NY,Farmingville,11738,40.838199,-73.038213
 ,"New York",NY,Farmingville,11779,40.812958,-73.114490
 ,"New York",NY,Farmingville,11784,40.868923,-73.041215
@@ -8622,10 +8539,6 @@
 ,"New York",NY,"Miller Place",11764,40.938993,-72.979047
 ,"New York",NY,"Miller Place",11766,40.939219,-73.018666
 ,"New York",NY,"Miller Place",11953,40.892505,-72.951172
-,"New York",NY,Milton,12020,43.001589,-73.868123
-,"New York",NY,Milton,12542,41.613876,-74.015014
-,"New York",NY,Milton,12547,41.660687,-73.986567
-,"New York",NY,Milton,,43.045801000000004,-73.898137
 ,"New York",NY,Milton,12020,43.001589,-73.868123
 ,"New York",NY,Milton,12542,41.613876,-74.015014
 ,"New York",NY,Milton,12547,41.660687,-73.986567
@@ -9704,11 +9617,6 @@
 ,Ohio,OH,"New Haven",44865,40.993406,-82.676943
 ,Ohio,OH,"New Haven",44890,41.085172,-82.710562
 ,Ohio,OH,"New Haven",,41.025647,-82.675422
-,Ohio,OH,"New Haven",45030,39.259888,-84.759577
-,Ohio,OH,"New Haven",44850,41.035393,-82.684018
-,Ohio,OH,"New Haven",44865,40.993406,-82.676943
-,Ohio,OH,"New Haven",44890,41.085172,-82.710562
-,Ohio,OH,"New Haven",,41.025647,-82.675422
 ,Ohio,OH,"New Marshfield",45701,39.311963,-82.086020
 ,Ohio,OH,"New Marshfield",45766,39.325638,-82.257391
 ,Ohio,OH,"New Pittsburg",44691,40.805744,-81.982470
@@ -9994,10 +9902,6 @@
 ,Oklahoma,OK,"Shady Grove",74464,35.927971,-94.982454
 ,Oklahoma,OK,"Shady Grove",74426,35.451697,-95.530308
 ,Oklahoma,OK,"Shady Grove",74020,36.246194,-96.420750
-,Oklahoma,OK,"Shady Grove",74441,35.976851,-95.145009
-,Oklahoma,OK,"Shady Grove",74464,35.927971,-94.982454
-,Oklahoma,OK,"Shady Grove",74426,35.451697,-95.530308
-,Oklahoma,OK,"Shady Grove",74020,36.246194,-96.420750
 ,Oklahoma,OK,Short,74948,35.467968,-94.568942
 ,Oklahoma,OK,Simms,74455,35.361221,-95.261462
 ,Oklahoma,OK,Simms,74470,35.476717,-95.166878
@@ -10259,9 +10163,6 @@
 ,Pennsylvania,PA,Aaronsburg,16820,40.895701,-77.392432
 ,Pennsylvania,PA,Aaronsburg,15333,40.030787,-80.013210
 ,Pennsylvania,PA,Aaronsburg,15368,40.013872,-79.989284
-,Pennsylvania,PA,Aaronsburg,16820,40.895701,-77.392432
-,Pennsylvania,PA,Aaronsburg,15333,40.030787,-80.013210
-,Pennsylvania,PA,Aaronsburg,15368,40.013872,-79.989284
 ,Pennsylvania,PA,Ackermanville,18013,40.848762,-75.177293
 ,Pennsylvania,PA,Ackermanville,18072,40.844140,-75.259135
 ,Pennsylvania,PA,Adamsville,16110,41.505249,-80.380762
@@ -10474,10 +10375,6 @@
 ,Pennsylvania,PA,Eagleville,16841,41.044614,-77.698187
 ,Pennsylvania,PA,Eagleville,19403,40.148673,-75.375506
 ,Pennsylvania,PA,Eagleville,19426,40.191299,-75.437052
-,Pennsylvania,PA,Eagleville,16826,41.053921,-77.580410
-,Pennsylvania,PA,Eagleville,16841,41.044614,-77.698187
-,Pennsylvania,PA,Eagleville,19403,40.148673,-75.375506
-,Pennsylvania,PA,Eagleville,19426,40.191299,-75.437052
 ,Pennsylvania,PA,Earlston,15537,40.000385,-78.366843
 ,Pennsylvania,PA,"East Berwick",18603,41.082035,-76.258139
 ,Pennsylvania,PA,"East Freedom",16637,40.341102,-78.467242
@@ -10560,8 +10457,6 @@
 ,Pennsylvania,PA,Foundryville,18603,41.082035,-76.258139
 ,Pennsylvania,PA,"Fountain Springs",17921,40.751575,-76.360586
 ,Pennsylvania,PA,"Fox Chase",19605,40.397910,-75.943197
-,Pennsylvania,PA,Fredericksburg,16335,41.630953,-80.156056
-,Pennsylvania,PA,Fredericksburg,17026,40.458441,-76.431397
 ,Pennsylvania,PA,Fredericksburg,16335,41.630953,-80.156056
 ,Pennsylvania,PA,Fredericksburg,17026,40.458441,-76.431397
 ,Pennsylvania,PA,Fredericktown,15333,40.030787,-80.013210
@@ -10689,14 +10584,6 @@
 ,Pennsylvania,PA,Intercourse,17529,40.041933,-76.097142
 ,Pennsylvania,PA,Intercourse,17572,39.974435,-76.119357
 ,Pennsylvania,PA,Iola,17846,41.141745,-76.517122
-,Pennsylvania,PA,Jacksonville,16841,41.044614,-77.698187
-,Pennsylvania,PA,Jacksonville,15717,40.457206,-79.243213
-,Pennsylvania,PA,Jacksonville,15725,40.518948,-79.348779
-,Pennsylvania,PA,Jacksonville,15727,40.558009,-79.309754
-,Pennsylvania,PA,Jacksonville,15748,40.523638,-79.084150
-,Pennsylvania,PA,Jacksonville,15752,40.540593,-79.283249
-,Pennsylvania,PA,Jacksonville,15756,40.566558,-79.297083
-,Pennsylvania,PA,Jacksonville,15774,40.654690,-79.323835
 ,Pennsylvania,PA,Jacksonville,16841,41.044614,-77.698187
 ,Pennsylvania,PA,Jacksonville,15717,40.457206,-79.243213
 ,Pennsylvania,PA,Jacksonville,15725,40.518948,-79.348779
@@ -11208,9 +11095,6 @@
 ,Pennsylvania,PA,"University of Pittsburgh Johnstown",15904,40.311595,-78.840989
 ,Pennsylvania,PA,"Upper Exeter",18643,41.370822,-75.840422
 ,Pennsylvania,PA,"Valley Green",17319,40.160489,-76.793975
-,Pennsylvania,PA,"Valley View",17938,40.653070,-76.517083
-,Pennsylvania,PA,"Valley View",17983,40.642622,-76.547166
-,Pennsylvania,PA,"Valley View",17403,39.923228,-76.712794
 ,Pennsylvania,PA,"Valley View",17938,40.653070,-76.517083
 ,Pennsylvania,PA,"Valley View",17983,40.642622,-76.547166
 ,Pennsylvania,PA,"Valley View",17403,39.923228,-76.712794
@@ -11737,9 +11621,6 @@
 ,Tennessee,TN,"Oak Grove",37022,36.514582,-86.317038
 ,Tennessee,TN,"Oak Grove",37148,36.566636,-86.495247
 ,Tennessee,TN,"Oak Grove",37615,36.402425,-82.457180
-,Tennessee,TN,"Oak Grove",37022,36.514582,-86.317038
-,Tennessee,TN,"Oak Grove",37148,36.566636,-86.495247
-,Tennessee,TN,"Oak Grove",37615,36.402425,-82.457180
 ,Tennessee,TN,Olivet,38372,35.143564,-88.156874
 ,Tennessee,TN,Ooltewah,37363,35.115688,-85.063804
 ,Tennessee,TN,"Park City",37334,35.166452,-86.580895
@@ -11773,8 +11654,6 @@
 ,Tennessee,TN,Unionville,37160,35.455761,-86.484563
 ,Tennessee,TN,Unionville,37180,35.606468,-86.586661
 ,Tennessee,TN,Walland,37886,35.745588,-83.804718
-,Tennessee,TN,"Walnut Grove",38372,35.143564,-88.156874
-,Tennessee,TN,"Walnut Grove",37048,36.491315,-86.595908
 ,Tennessee,TN,"Walnut Grove",38372,35.143564,-88.156874
 ,Tennessee,TN,"Walnut Grove",37048,36.491315,-86.595908
 ,Tennessee,TN,"Walnut Hill",37620,36.549613,-82.094040
@@ -11889,12 +11768,6 @@
 ,Texas,TX,"China Spring",76633,31.695095,-97.328822
 ,Texas,TX,"China Spring",76708,31.627123,-97.215893
 ,Texas,TX,Christoval,76935,31.083442,-100.423683
-,Texas,TX,"Chula Vista",78566,26.148406,-97.370376
-,Texas,TX,"Chula Vista",78852,28.729787,-100.316678
-,Texas,TX,"Chula Vista",78839,28.718319,-99.823476
-,Texas,TX,"Chula Vista",78566,26.148406,-97.370376
-,Texas,TX,"Chula Vista",78852,28.729787,-100.316678
-,Texas,TX,"Chula Vista",78839,28.718319,-99.823476
 ,Texas,TX,"Chula Vista",78566,26.148406,-97.370376
 ,Texas,TX,"Chula Vista",78852,28.729787,-100.316678
 ,Texas,TX,"Chula Vista",78839,28.718319,-99.823476
@@ -12025,8 +11898,6 @@
 ,Texas,TX,Highlands,77562,29.834034,-95.051267
 ,Texas,TX,Hilltop,78017,28.711947,-99.177422
 ,Texas,TX,Hilltop,78582,26.530903,-98.740235
-,Texas,TX,Hilltop,78017,28.711947,-99.177422
-,Texas,TX,Hilltop,78582,26.530903,-98.740235
 ,Texas,TX,"Hilltop Lakes",77855,31.133325,-96.136815
 ,Texas,TX,"Hilltop Lakes",77871,31.064168,-96.126849
 ,Texas,TX,"Holiday Beach",78382,28.132627,-97.062070
@@ -12147,8 +12018,6 @@
 ,Texas,TX,"Los Arcos",78043,27.554788,-99.265533
 ,Texas,TX,"Los Barreras",78582,26.530903,-98.740235
 ,Texas,TX,"Los Corralitos",78045,27.833815,-99.681424
-,Texas,TX,"Los Ebanos",78565,26.253727,-98.567191
-,Texas,TX,"Los Ebanos",78582,26.530903,-98.740235
 ,Texas,TX,"Los Ebanos",78565,26.253727,-98.567191
 ,Texas,TX,"Los Ebanos",78582,26.530903,-98.740235
 ,Texas,TX,"Los Huisaches",78045,27.833815,-99.681424
@@ -12379,8 +12248,6 @@
 ,Texas,TX,Stowell,77661,29.751627,-94.420716
 ,Texas,TX,Stowell,77665,29.812999,-94.416117
 ,Texas,TX,"Study Butte",79852,29.396230,-103.617232
-,Texas,TX,Sunset,76270,33.455656,-97.752881
-,Texas,TX,Sunset,78584,26.573310,-98.962760
 ,Texas,TX,Sunset,76270,33.455656,-97.752881
 ,Texas,TX,Sunset,78584,26.573310,-98.962760
 ,Texas,TX,"Taft Southwest",78390,27.997261,-97.327442
@@ -13134,11 +13001,6 @@
 ,Virginia,VA,"Rose Hill",22310,38.783717,-77.122678
 ,Virginia,VA,"Rose Hill",22315,38.758337,-77.151192
 ,Virginia,VA,"Rose Hill",24281,36.637323,-83.340226
-,Virginia,VA,"Rose Hill",22303,38.794380,-77.078837
-,Virginia,VA,"Rose Hill",22306,38.755738,-77.097779
-,Virginia,VA,"Rose Hill",22310,38.783717,-77.122678
-,Virginia,VA,"Rose Hill",22315,38.758337,-77.151192
-,Virginia,VA,"Rose Hill",24281,36.637323,-83.340226
 ,Virginia,VA,Ruckersville,22968,38.240602,-78.400888
 ,Virginia,VA,Rushmere,23430,37.001261,-76.655932
 ,Virginia,VA,Rustburg,24504,37.365249,-79.048192
@@ -13277,9 +13139,6 @@
 ,Virginia,VA,Woodlawn,24343,36.770411,-80.690913
 ,Virginia,VA,Woodlawn,24381,36.729989,-80.840655
 ,Virginia,VA,Woodlawn,22309,38.720336,-77.106155
-,Virginia,VA,Woodlawn,24343,36.770411,-80.690913
-,Virginia,VA,Woodlawn,24381,36.729989,-80.840655
-,Virginia,VA,Woodlawn,22309,38.720336,-77.106155
 ,Virginia,VA,Wyndham,23059,37.702234,-77.574005
 ,Virginia,VA,Yogaville,23921,37.586321,-78.623535
 ,Virginia,VA,Yorkshire,20111,38.748968,-77.427873
@@ -13388,13 +13247,6 @@
 ,Washington,WA,"Clear Lake",98235,48.462505,-122.233980
 ,Washington,WA,"Clear Lake",98273,48.402754,-122.376148
 ,Washington,WA,"Clear Lake",98284,48.546832,-122.135222
-,Washington,WA,"Clear Lake",,48.458789,-122.19933
-,Washington,WA,"Clear Lake",98328,46.865890,-122.157916
-,Washington,WA,"Clear Lake",98338,47.034316,-122.276854
-,Washington,WA,"Clear Lake",98360,47.051415,-122.153242
-,Washington,WA,"Clear Lake",98235,48.462505,-122.233980
-,Washington,WA,"Clear Lake",98273,48.402754,-122.376148
-,Washington,WA,"Clear Lake",98284,48.546832,-122.135222
 ,Washington,WA,Clearview,98012,47.841376,-122.198939
 ,Washington,WA,Clearview,98072,47.760785,-122.130531
 ,Washington,WA,Clearview,98296,47.840783,-122.101084
@@ -13456,9 +13308,6 @@
 ,Washington,WA,Esperance,98020,47.802344,-122.374193
 ,Washington,WA,Esperance,98026,47.840735,-122.332660
 ,Washington,WA,"Fairchild AFB",99011,47.618832,-117.648158
-,Washington,WA,Fairwood,98058,47.442737,-122.123973
-,Washington,WA,Fairwood,99208,47.788172,-117.480897
-,Washington,WA,Fairwood,99218,47.758924,-117.409388
 ,Washington,WA,Fairwood,98058,47.442737,-122.123973
 ,Washington,WA,Fairwood,99208,47.788172,-117.480897
 ,Washington,WA,Fairwood,99218,47.758924,-117.409388
