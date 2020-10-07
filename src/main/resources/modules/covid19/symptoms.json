@@ -1,6 +1,5 @@
 {
   "name": "symptoms",
-  
   "remarks": [
     "This submodule sets symptoms of COVID19 according to the rates documented in Table 1 of https://www.nejm.org/doi/full/10.1056/NEJMoa2002032"
   ],
