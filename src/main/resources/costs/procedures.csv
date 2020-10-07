@@ -98,3 +98,139 @@ CODE,MIN,MODE,MAX,COMMENTS
 415070008,10727.40,21454.79933,42909.60,Percutaneous coronary intervention
 40701008,400.00,1000.0,2000.00,Echocardiography (procedure)
 434158009,400.00,1000.0,2000.00,Transthoracic three dimensional ultrasonography of heart (procedure)
+185389009,75,75,75,Follow-up visit (procedure) -  Prior costs update source
+103744005,383,431,733,Administration of intravenous fluids - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3825225/
+103746007,100,125,150,"Heparin therapy (procedure) - https://www.aafp.org/afp/1999/0315/p1607.html#:~:text=In%20our%20community%2C%20the%20cost%20of%20low-molecular-weight%20heparin,using%20low-molecular-weight%20heparin%20instead%20of%20standard%20heparin%20therapy."
+108290001,18368,111728,399056,Radiation oncology AND/OR radiotherapy (procedure) - https://jamanetwork.com/journals/jamaoncology/article-abstract/2758570
+113076002,176,206,236,Oral Glucose Tolerance Test - https://doi.org/10.2337/diacare.26.9.2536
+384692006,17514,17931,21374,Intracavitary brachytherapy (procedure) - https://www.sciencedirect.com/science/article/pii/S105342961930061X?viewFullText=true
+113120007,17514,17931,21374,Interstitial brachytherapy (procedure) - https://www.sciencedirect.com/science/article/pii/S105342961930061X?viewFullText=true
+11816003,100,150,200,"Diet education (procedure) - https://health.costhelper.com/nutritionist.html#:~:text=Typical%20costs%3A%20For%20patients%20not%20covered%20by%20health,end%20if%20the%20dietitian%20comes%20to%20your%20home."
+122548005,2558,3196,7990,Biopsy of breast (procedure) - https://www.healthcarebluebook.com/ui/proceduredetails/508
+133901003,704,44024,717306,Burn care - https://pubmed.ncbi.nlm.nih.gov/25041616/
+134435003,16.8,20.7,73.5,"Routine antenatal care - https://bmchealthservres.biomedcentral.com/articles/10.1186/s12913-018-3013-1#:~:text=Adding%20up%20health%20facility%20and%20household%20costs%2C%20the,than%20the%20following%20three%20visits%20%28%246%20-%20%2411%29."
+13569004,1800,2400,3000,Transfusion of plasma (procedure) - https://www.howmuchisit.org/blood-transfusion-cost/
+15081005,1904,2218,2532,"Pulmonary rehabilitation (regime/therapy) - https://pubmed.ncbi.nlm.nih.gov/18415809/#:~:text=Costs%20of%20pulmonary%20rehabilitation%20and%20predictors%20of%20adherence,per%20patient%20of%20rehabilitation%20was%20%242%2C218%20%28SD%20%24314%3B"
+1571000087109,160,390,2250,Ultrasonography of bilateral breasts (procedure) - https://www.newchoicehealth.com/procedures/breast-ultrasound
+162673000,50,200,222,General examination of patient (procedure) - https://health.costhelper.com/physical-exam.html
+162676008,50,200,222,Brief general examination (procedure) - https://health.costhelper.com/physical-exam.html
+169762003,100,150,200,"Postnatal visit - https://children.costhelper.com/post-partum-doctor-visit.html#:~:text=Typical%20costs%3A%20The%20typical%20cost%20of%20a%20postpartum,prenatal%20care%20and%20delivery%20should%20cover%20postpartum%20care."
+170836005,20,60,100,Allergic disorder monitoring - https://www.thepricer.org/allergy-shots-cost/
+170837001,20,60,100,Allergic disorder initial assessment - https://www.thepricer.org/allergy-shots-cost/
+170838006,20,60,100,Allergic disorder follow-up assessment - https://www.thepricer.org/allergy-shots-cost/
+180207008,1800,2400,3000,Intravenous blood transfusion of packed cells (procedure) - https://www.howmuchisit.org/blood-transfusion-cost/
+183063000,100,150,200,"low salt diet education - https://health.costhelper.com/nutritionist.html#:~:text=Typical%20costs%3A%20For%20patients%20not%20covered%20by%20health,end%20if%20the%20dietitian%20comes%20to%20your%20home."
+183460006,1189,4215,11986,Obstetric emergency hospital admission - https://www.healthaffairs.org/doi/full/10.1377/hlthaff.2014.1088
+183478001,391,391,1389,"Emergency hospital admission for asthma - http://www.ahdbonline.com/articles/652-article-652#:~:text=The%20cost%20of%20a%20visit%20to%20the%20emergency,H.%20Stanford%2C%20PharmD%2C%20MS%2C%20a%20researcher%20with%20GlaxoSmithKline."
+183495009,141,253,365,"Non-urgent orthopedic admission - https://www.mdsave.com/procedures/orthopedic-established-patient-office-visit/d784f8ca#:~:text=How%20Much%20Does%20an%20Orthopedic%20Established%20Patient%20Office,and%20save.%20Read%20more%20about%20how%20MDsave%20works."
+183801001,5667,6156,7464,Inpatient stay 3 days - https://www.beckershospitalreview.com/finance/average-hospital-expenses-per-inpatient-day-across-50-states.html -- multiplied each of these by 3.
+210098006,180,195,210,"Domiciliary or rest home patient evaluation and management - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+223472008,30,35,40,"Discussion about hygiene - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+223484005,70,75,80,"Discussion about treatment (procedure) - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+225302006,400,450,500,"Insulin Therapy - https://www.diabetesselfmanagement.com/blog/the-cost-of-insulin/#:~:text=Insulin%20costs%20have%20soared%20from%20%24100%E2%80%93%24200%20per%20month,has%20risen%20from%20%24130%20to%20%24495%20per%20month."
+225323000,50,60,85,Smoking cessation education - https://www.aarc.org/education/online-courses/smoking-cessation-training/
+225358003,5000,5500,6622,Wound care - https://www.todayswoundclinic.com/the-cost-outpatient-wound-care
+226029000,60,120,402,Exercise Therapy - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC153837/ & https://thervo.com/costs/how-much-does-therapy-cost
+229065009,60,120,402,Exercise Therapy - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC153837/ & https://thervo.com/costs/how-much-does-therapy-cost
+229070002,55,77.5,100,Stretching exercises - https://www.menshealth.com/fitness/a19700990/assisted-stretching-worth-it-boutique-fitness-classes/
+231181000000100,16792,21450,28334,Delivery of rehabilitation for spinal cord injury - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2141733/
+232657004,500000,561200,800000,"Lung Transplant - https://health.costhelper.com/lung-transplants.html#:~:text=The%20typical%20cost%20of%20transplant%20is%20%24500%2C000-%24800%2C000%2C%20depending,whether%20the%20procedure%20involves%20one%20or%20both%20lungs."
+234262008,1000,1370,1740,Excision of axillary lymph node (procedure) - https://pubmed.ncbi.nlm.nih.gov/14605613/
+241055006,80,120,212,Mammogram - symptomatic (procedure) - https://health.costhelper.com/mammogram.html
+241615005,500,1468,3000,Magnetic resonance imaging of breast (procedure) - https://www.businessinsider.com/how-much-an-mri-costs-by-state-2017-3
+24165007,100,125,150,"Alcoholism counseling - https://scrippsresearchlajolla.com/blog/alcohol-counseling-cost#:~:text=Estimates%20of%20the%20average%20cost%20of%20inpatient%20counseling,costly%2C%20coming%20in%20at%20around%20%24140%20a%20week."
+243072006,30,35,40,"Cancer education - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+24623002,80,120,212,Screening mammography (procedure) - https://health.costhelper.com/mammogram.html
+261352009,0.38,2.5,5.75,Face mask (physical object) - https://www.cnn.com/2020/04/16/politics/ppe-price-costs-rising-economy-personal-protective-equipment/index.html
+29303009,500,1500,2850,Electrocardiographic procedure - https://health.costhelper.com/ecg.html
+302497006,14000,26000,38000,Hemodialysis (procedure) - https://khn.org/news/first-kidney-failure-then-a-540842-bill-for-dialysis/
+304510005,30,35,40,"Recommendation to avoid exercise - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+266707007,3700,4700,5700,"Drug addiction therapy - https://www.drugabuse.gov/publications/principles-drug-addiction-treatment-research-based-guide-third-edition/frequently-asked-questions/drug-addiction-treatment-worth-its-cost#:~:text=For%20example%2C%20the%20average%20cost%20for%201%20full,use%20and%20its%20associated%20health%20and%20social%20costs."
+310061009,100,125,200,Gynecology service (qualifier value) - https://www.encyclopedia.com/articles/how-much-does-it-cost-to-see-a-gynecologist-without-health-insurance/
+311791003,70,75,80,"Information gathering (procedure) - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+313071005,140,789,1000,"Counseling for substance abuse (procedure) - https://addictionblog.org/FAQ/costs/how-much-does-addiction-counseling-cost/#:~:text=One%20study%20estimated%20that%20the%20average%20cost%20of,type%20of%20counseling%20was%20around%20%24140%20per%20week."
+305351004,1783,48744,784351,Admission to intensive care unit (procedure) - https://academic.oup.com/bjaed/article/6/4/160/387292 & https://academic.oup.com/bjaed/article/6/4/160/387292
+35025007,100,150,250,Manual pelvic examination (procedure) - https://health.costhelper.com/pelvic-exams.html
+361235007,486.08,542.25,598.42,Isolation of infected patient (procedure) - https://www.sciencedirect.com/science/article/pii/S0196655313013308?viewFullText=true [Cost was multiplied by 14 days as an average length of isolation
+38102005,15278,18537,32446,Open Removal of Gall Bladder - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3667156/
+385691007,200,250,950,"Fracture care - https://health.costhelper.com/sprained-broken-wrist.html#:~:text=A%20typical%20doctor%20fee%20for%20non-surgical%20treatment%20of,wrist%20typically%20costs%20%247%2C000%20to%20%2410%2C000%20or%20more."
+386394001,508,750,1000,"Pregnancy termination care - https://www.plannedparenthood.org/learn/teens/ask-experts/how-much-does-an-abortion-cost, https://www.guttmacher.org/fact-sheet/induced-abortion-united-states"
+392020005,2210.7,3133.5,9627,"PICC care - https://pubmed.ncbi.nlm.nih.gov/29258628/#:~:text=PICC%20per%20patient%20per%20day%20%28including%20inpatient%20hospital,the%20median%20total%20and%20adjusted%20costs%20per%20patient"
+392021009,29250.9,33512.92,37774.9,Lumpectomy of breast (procedure) - https://pubmed.ncbi.nlm.nih.gov/3778203/ [Adjusted 1986 dollars to 2020 dollars]
+395082007,180,195,210,"Cancer care plan - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+396487001,10096,12660,15223,Sentinel lymph node biopsy (procedure) - https://pubmed.ncbi.nlm.nih.gov/14605613/
+409526008,0.38,2.5,5.75,Personal protective equipment (physical object) - https://www.cnn.com/2020/04/16/politics/ppe-price-costs-rising-economy-personal-protective-equipment/index.html
+410620009,75,75,75,Well child visit (procedure) - Prior costs update source
+412776001,180,195,210,"Chronic obstructive pulmonary disease clinical management plan - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+413473000,100,125,150,Counseling about alcohol consumption - https://scrippsresearchlajolla.com/blog/alcohol-counseling-cost
+415300000,70,75,80,"Review of systems (procedure) - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+225337009,9.95,9.95,9.95,Suicide Risk Assessment - http://www.suicide-risk-assessment.com/cost.html
+426990007,291.2,201.2,211.2,Home oxygen therapy (procedure) - https://www.homecaremag.com/news/home_oxygen_cost
+433114000,200,250,300,Human epidermal growth factor receptor 2 gene detection by immunohistochemistry (procedure) - https://pubmed.ncbi.nlm.nih.gov/10923081/ 
+434363004,1527,1527,3267,"Human epidermal growth factor receptor 2 gene detection by fluorescence in situ hybridization (procedure) - https://pubmed.ncbi.nlm.nih.gov/23583531/#:~:text=If%20office%20based%20biopsies%20were%20used%20then%20cost,167%20biopsies%2C%20compared%20to%20biopsy%20in%20all%20patients."
+443402002,30,35,40,"Lifestyle education regarding hypertension - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+443497002,10096,12659.5,15223,Excision of sentinel lymph node (procedure) - https://pubmed.ncbi.nlm.nih.gov/14605613/
+45595009,1947,4662,20276,Laparoscopic Removal of Gall Bladder - https://www.healthcarebluebook.com/ui/proceduredetails/74
+50849002,880,1389,1895,Emergency room admission (procedure) - https://www.usatoday.com/story/news/health/2019/06/04/hospital-billing-code-changes-help-explain-176-surge-er-costs/1336321001/
+56251003,20,50,120,Nebulizer Therapy - https://www.howmuchisit.org/nebulizer-machine-cost/
+58332002,30,35,40,"Allergy education - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+60112009,0,250,500,Drug addiction counseling - https://www.rehabs.com/addiction/how-much-does-rehab-cost/
+65575008,1778,2220,5550,Biopsy of prostate - https://www.healthcarebluebook.com/ui/proceduredetails?cftId=92&g=Prostate%20Biopsy
+69031006,2558,3196,7990,Excision of breast tissue (procedure) - https://www.healthcarebluebook.com/ui/proceduredetails/508
+702927004,110,156,202,Urgent care clinic (procedure) - https://www.acpjournals.org/doi/10.7326/0003-4819-151-5-200909010-00006
+703040004,130,150,170,"Agreeing on diabetes care plan - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+705643001,1000,1000,1000,"Coronary artery stent (physical object) - https://www.thefiscaltimes.com/Articles/2010/04/26/The-High-Cost-of-Heart-Disease#:~:text=While%20a%20bare%20metal%20stent%20can%20cost%20less,be%20anywhere%20from%20%2430%2C000%20to%20more%20than%20%24100%2C000."
+710081004,1179,1519,2321,smoking cessation therapy - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3358703/
+710818004,24.16,39.5,39.5,Inhaled steroid therapy - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5895474/
+71651007,80,120,212,Mammography (procedure) - https://health.costhelper.com/mammogram.html
+718347000,70,75,80,"Mental health care plan (record artifact) - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+734163000,70,75,80,"Care Plan - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+735984001,180,195,210,"Heart failure self management plan -  http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+736252007,180,195,210,"Cancer care plan - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+736254008,130,150,170,"Psychiatry care plan - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+736285004,30,35,40,"Hyperlipidemia clinical management plan - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+736353004,30,60,80,"Inpatient care plan (record artifact) - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+736376001,70,75,80,"Infectious disease care plan (record artifact) - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+736690008,180,195,210,"Dialysis care plan (record artifact) - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+385892002,30,35,40,"Mental health screening (procedure) - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+715252007,30,35,40,"Depression screening using Patient Health Questionnaire Nine Item score (procedure) - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+737434004,130,150,170,"Major depressive disorder clinical management plan - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+737471002,130,150,170,"Minor surgery care management (procedure) - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+75162002,16792,21450,28334,Spinal cord injury rehabilitation - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2141733/
+90470006,4075,7940.5,11806,Prostatectomy - https://pubmed.ncbi.nlm.nih.gov/22981673/
+781831000000109,180,195,210,"Major surgery care management - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+784051000000106,3616,5000,6990,Depression care management - https://ps.psychiatryonline.org/doi/full/10.1176/appi.ps.201100402
+850261000000100,30,35,40,"Education about dementia - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+869761000000107,79,100,300,"Urinary tract infection care - https://health.costhelper.com/uti.html#:~:text=For%20patients%20not%20covered%20by%20health%20insurance%2C%20treatment,urine%20culture%2C%20antibiotics%20and%20an%20analgesic%20for%20pain."
+79094001,100,300,500,Initial psychiatric interview with mental status and evaluation - https://www.betterhelp.com/advice/psychiatry/how-much-does-a-psychiatrist-cost/
+88848003,100,200,300,Psychiatric follow-up - https://www.betterhelp.com/advice/psychiatry/how-much-does-a-psychiatrist-cost/
+90407005,100,200,300,Evaluation of psychiatric state of patient - https://www.betterhelp.com/advice/psychiatry/how-much-does-a-psychiatrist-cost/
+77476009,38,250,1000,Application of back brace - https://health.costhelper.com/back-braces.html
+47387005,1600,23800,46000,Head injury rehabilitation - https://www.biausa.org/professionals/research/tbi-model-systems/inpatient-acute-rehabilitation-hospital-bills-and-costs
+48387007,235,962.5,1690,"Incision of trachea (procedure) - https://health.costhelper.com/tracheotomy.html#:~:text=For%20patients%20without%20health%20insurance%2C%20a%20tracheostomy%20and,a%20ventilator%20and%20the%20length%20of%20hospital%20stay."
+229152003,100,100,100,Lower limb exercises (regime/therapy) - https://thervo.com/costs/physical-therapy-cost#knees
+229578001,45,75,100,Ice bath treatment - https://www.healthline.com/health/exercise-fitness/ice-bath-benefits#tips-for-taking-an-ice-bath
+229580007,45,75,100,Ice therapy - https://www.healthline.com/health/exercise-fitness/ice-bath-benefits#tips-for-taking-an-ice-bath
+23426006,40,420,800,Pulmonary Function Test - https://health.costhelper.com/pulmonary-function-tests.html
+304822001,69.2,199.75,330.29,Psychodynamic Interpersonal Therapy - https://jamanetwork.com/journals/jamapsychiatry/fullarticle/1673780
+32485007,1260,2289,3879,"Hospital admission -https://www.kff.org/health-costs/state-indicator/expenses-per-inpatient-day-by-ownership/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D"
+1505002,1260,2289,3879,"Hospital admission for isolation (procedure) - https://www.kff.org/health-costs/state-indicator/expenses-per-inpatient-day-by-ownership/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D"
+74857009,1260,2289,3879,"Hospital admission  short-term  24 hours -https://www.kff.org/health-costs/state-indicator/expenses-per-inpatient-day-by-ownership/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D"
+265764009,423,797,1602,Renal dialysis (procedure) - https://onlinelibrary.wiley.com/doi/full/10.1002/dat.20386
+447759004,17514,17931,21374,Brachytherapy of breast (procedure) - https://www.sciencedirect.com/science/article/pii/S105342961930061X?viewFullText=true
+448337001,79,79,79,Telemedicine consultation with patient - 79
+719858009,79,79,79,"Telehealth monitoring (regime/therapy) - https://www.ortholive.com/blog/examining-the-costs-of-telehealth#:~:text=The%20medical%20devices%20used%20during%20the%20telehealth%20visit,a%20few%20hundred%20dollars%20per%20month%20per%20provider."
+72506001,30000,40000,50000,"Implantable defibrillator  device (physical object) - https://health.usnews.com/health-news/patient-advice/articles/2014/11/26/defibrillator-insertion-implant-for-life#:~:text=Every%20month%2C%20about%2010%2C000%20Americans%20have%20an%20ICD,implant%20alone%20is%20estimated%20at%20%2430%2C000%20to%20%2450%2C000."
+86964003,200,300,400,"Sweat Test - https://health.howstuffworks.com/wellness/men/sweating-odor/sweat-test.htm#:~:text=On%20the%20upside%2C%20the%20test%20doesn%27t%20require%20any,skin%2C%20where%20it%20serves%20as%20a%20sweat%20collector.\"
+708409001,20,50,120,Home nebulizer therapy - https://www.howmuchisit.org/nebulizer-machine-cost/
+698314001,75,75,75,Consultation for treatment - 
+33195004,495,1477,1477,Teleradiotherapy procedure (procedure) - https://www.medicare.gov/procedure-price-lookup/cost/77295
+385186005,198,288,288,Enema - https://www.medicare.gov/procedure-price-lookup/cost/74283
+385949008,161,288,457,Dressing change management - https://www.medicare.gov/procedure-price-lookup/cost/0512t & https://www.medicare.gov/procedure-price-lookup/cost/16030 & https://www.medicare.gov/procedure-price-lookup/cost/16025
+410006001,143,812,2454,"Digital examination of rectum - https://www.medicare.gov/procedure-price-lookup/cost/45300, https://www.medicare.gov/procedure-price-lookup/cost/45990"
+52765003,251,352,864,Intubation - https://www.medicare.gov/procedure-price-lookup/cost/31500 & https://www.medicare.gov/procedure-price-lookup/cost/43757
+408869004,1286,2011.5,2737,Musculoskeletal care - https://www.medicare.gov/procedure-price-lookup/cost/0101t
+112798008,251,352,352,Insertion of endotracheal tube (procedure) - https://www.medicare.gov/procedure-price-lookup/cost/31500
+271280005,138,239,239,Removal of endotracheal tube (procedure) - https://www.medicare.gov/procedure-price-lookup/cost/31502
+36576007,389,447.5,506,Infusion (procedure) - https://www.medicare.gov/procedure-price-lookup/cost/77750
+706004007,7817,9034,10251,Implantable cardiac pacemaker (physical object) - https://www.medicare.gov/procedure-price-lookup/cost/33208

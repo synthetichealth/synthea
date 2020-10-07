@@ -164,6 +164,15 @@ task concepts(type: JavaExec) {
   description 'Create a list of simulated concepts'
   classpath sourceSets.main.runtimeClasspath
   main = "org.mitre.synthea.helpers.Concepts"
+  args 'false'
+}
+
+task conceptswithoutcosts(type: JavaExec) {
+  group 'Application'
+  description 'Create a list of simulated concepts without costs'
+  classpath sourceSets.main.runtimeClasspath
+  main = "org.mitre.synthea.helpers.Concepts"
+  args 'true'
 }
 
 task attributes(type: JavaExec) {
