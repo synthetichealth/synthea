@@ -23,6 +23,9 @@ public class SimpleCSVTest {
     // Unparse
     String csv = SimpleCSV.unparse(data);
     assertTrue(csv.equals(TEST_CSV));
+
+    // Valid
+    assertTrue(SimpleCSV.isValid(csv));
   }
   
 }
