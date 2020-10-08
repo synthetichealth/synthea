@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
  * Helper class to translate CSV data back and forth between raw string data and a simple data
@@ -87,5 +89,29 @@ public class SimpleCSV {
     schemaBuilder.addColumns(columns, ColumnType.STRING);
 
     return mapper.writer(schemaBuilder.build()).writeValueAsString(data);
+  }
+
+  /**
+   * Simple CSV validator that ensures the number of columns in each file matches
+   * the number of elements in each row.
+   *
+   * csvData is split based on NEWLINE into a stream of strings.
+   *
+   * The stream is converted to a string of longs equaling the number of commas
+   * found for each csv line.
+   *
+   * Finally each distinct counts are taken from the stream. If the number of distinct
+   * counts is only one, we can confirm the CSV is valid.
+   *
+   * @param csvData
+   *          Raw CSV data
+   * @return
+   *          True if number of commas is consistent for each line
+   *          Otherwise returns False
+   */
+  public static boolean isValid(String csvData) {
+    Stream<String> csvLines = Arrays.stream(csvData.split("\n"));
+    Stream<Long> csvLineElementCount = csvLines.map( line -> line.chars().filter( c -> c == ',').count() );
+    return csvLineElementCount.distinct().count() == 1L;
   }
 }
