@@ -14,6 +14,12 @@ import static org.mitre.synthea.TestHelper.isHttpRecordingEnabled;
 import static org.mitre.synthea.TestHelper.wiremockOptions;
 import static org.mitre.synthea.TestHelper.years;
 
+import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
+import ca.uhn.fhir.model.dstu2.composite.CodingDt;
+import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -58,13 +64,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
 
 public class CodeResolveAndExportTest {
 

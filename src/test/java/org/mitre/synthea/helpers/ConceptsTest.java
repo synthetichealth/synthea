@@ -37,6 +37,7 @@ public class ConceptsTest {
     // make sure simpleCSV can parse it
     String csv = concepts.stream().collect(Collectors.joining("\n"));
     SimpleCSV.parse(csv);
+    assertTrue(SimpleCSV.isValid(csv));
   }
 
   @Test
@@ -46,6 +47,7 @@ public class ConceptsTest {
     // make sure simpleCSV can parse it
     String csv = concepts.stream().collect(Collectors.joining("\n"));
     SimpleCSV.parse(csv);
+    assertTrue(SimpleCSV.isValid(csv));
   }
 
   @Test
