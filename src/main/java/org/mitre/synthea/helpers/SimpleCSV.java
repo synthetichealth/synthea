@@ -6,12 +6,12 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema.ColumnType;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 /**
@@ -95,13 +95,13 @@ public class SimpleCSV {
    * Simple CSV validator that ensures the number of columns in each file matches
    * the number of elements in each row.
    *
-   * csvData is split based on NEWLINE into a stream of strings.
+   * <p>csvData is split based on NEWLINE into a stream of strings.
    *
-   * The stream is converted to a string of longs equaling the number of commas
+   * <p>The stream is converted to a string of longs equaling the number of commas
    * found for each csv line.
    *
-   * Finally each distinct counts are taken from the stream. If the number of distinct
-   * counts is only one, we can confirm the CSV is valid.
+   * <p>Finally each distinct counts are taken from the stream. If the number of
+   * distinct counts is only one, we can confirm the CSV is valid.
    *
    * @param csvData
    *          Raw CSV data
@@ -111,7 +111,8 @@ public class SimpleCSV {
    */
   public static boolean isValid(String csvData) {
     Stream<String> csvLines = Arrays.stream(csvData.split("\n"));
-    Stream<Long> csvLineElementCount = csvLines.map( line -> line.chars().filter( c -> c == ',').count() );
+    Stream<Long> csvLineElementCount =
+        csvLines.map(line -> line.chars().filter(c -> c == ',').count());
     return csvLineElementCount.distinct().count() == 1L;
   }
 }
