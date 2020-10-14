@@ -591,6 +591,24 @@ public class Generator implements RandomNumberGenerator {
       healthInsuranceModule.process(person, time + timestep);
       encounterModule.process(person, time);
 
+      // If fixed Patient Demographics are being used and address changing is true...
+      if(options.fixedRecordPath != null && Boolean.parseBoolean(Config.get("fixeddemographics.addresschanging", "false"))) {
+        // Check if the person's address needs to be updated.
+        FixedRecordGroup frg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
+        // Pull the FixedRecord that meets the current date.
+        FixedRecord fr = frg.checkAddressUpdate(Utilities.getYear(System.currentTimeMillis()));
+        // Update the person's address with the new FixedRecord. Make sure the new city is a valid city.
+        person.attributes.put(Person.ADDRESS, fr.addressLineOne);
+        String newCity = fr.getSafeCity();
+        if(newCity == null){
+          new RuntimeException("ERROR: Fixed input record for " +fr.firstName + " "
+          + fr.lastName + " in year " + Utilities.getYear(System.currentTimeMillis()) + " has an invalid city.");
+        }
+        person.attributes.put(Person.CITY, newCity);
+        person.attributes.put(Person.STATE, fr.state);  // Probably redundant, but may be useful in future.
+        // Update the person's provider based on their new location (optional?).
+      }
+
       Iterator<Module> iter = person.currentModules.iterator();
       while (iter.hasNext()) {
         Module module = iter.next();

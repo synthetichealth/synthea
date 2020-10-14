@@ -71,6 +71,9 @@ public class FixedRecord {
   @SerializedName(value = "PARENT1_EMAIL")
   public String parentEmail;
 
+  @SerializedName(value = "RECORD_DATES")
+  public String recordDates;
+
   // Attributes map
   Map<String, Object> attributes;
 
@@ -150,6 +153,7 @@ public class FixedRecord {
       this.attributes.put(Person.CONTACT_EMAIL, this.parentEmail);
       this.attributes.put(Person.ADDRESS, this.addressLineOne);
     }
+    System.out.println(this.recordDates);
     return this.attributes;
   }
 }

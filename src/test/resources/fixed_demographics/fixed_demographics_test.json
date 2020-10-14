@@ -20,7 +20,8 @@
         "ADDRESS_ZIPCODE": "80241-2744",
         "PARENT1_SURNAME": "Fredric",
         "PARENT1_GIVEN_NAME": "Kimberly Adrienne",
-        "PARENT1_EMAIL": "89898989@example.com"
+        "PARENT1_EMAIL": "89898989@example.com",
+        "RECORD_DATES": "2014-2016"
       },
       {
         "LIST_ID": "CH",
@@ -41,7 +42,8 @@
         "ADDRESS_ZIPCODE": "80241-2744",
         "PARENT1_SURNAME": "Fredrich-Smith",
         "PARENT1_GIVEN_NAME": "Kimberly MNU",
-        "PARENT1_EMAIL": "89898989@example.com"
+        "PARENT1_EMAIL": "89898989@example.com",
+        "RECORD_DATES": "2017-2018"
       },
       {
         "LIST_ID": "KP",
@@ -62,7 +64,8 @@
         "ADDRESS_ZIPCODE": "80122-4303",
         "PARENT1_SURNAME": "Fredrich",
         "PARENT1_GIVEN_NAME": "Kimberly",
-        "PARENT1_EMAIL": "12121212@example.com"
+        "PARENT1_EMAIL": "12121212@example.com",
+        "RECORD_DATES": "2019-2021"
       }
     ],
     "count": 3
@@ -88,7 +91,8 @@
         "ADDRESS_ZIPCODE": "80129-5453",
         "PARENT1_SURNAME": "Colin",
         "PARENT1_GIVEN_NAME": "Anjanet-Lana",
-        "PARENT1_EMAIL": "65656565@example.edu"
+        "PARENT1_EMAIL": "65656565@example.edu",
+        "RECORD_DATES": "2014-2018"
       },
       {
         "LIST_ID": "CH",
@@ -109,7 +113,8 @@
         "ADDRESS_ZIPCODE": "80122-1652",
         "PARENT1_SURNAME": "Colin North",
         "PARENT1_GIVEN_NAME": "Lana UNK",
-        "PARENT1_EMAIL": "65656565@example.edu"
+        "PARENT1_EMAIL": "65656565@example.edu",
+        "RECORD_DATES": "2019-2020"
       },
       {
         "LIST_ID": "DH",
@@ -130,7 +135,8 @@
         "ADDRESS_ZIPCODE": "80129-5453",
         "PARENT1_SURNAME": "Coli",
         "PARENT1_GIVEN_NAME": "Anjanet Lana",
-        "PARENT1_EMAIL": "65656565@example.edu"
+        "PARENT1_EMAIL": "65656565@example.edu",
+        "RECORD_DATES": "2021-2022"
       }
     ],
     "count": 3
@@ -156,7 +162,8 @@
         "ADDRESS_ZIPCODE": "80110-1924",
         "PARENT1_SURNAME": "Dubo",
         "PARENT1_GIVEN_NAME": "John Paul",
-        "PARENT1_EMAIL": "345345345@example.com"
+        "PARENT1_EMAIL": "345345345@example.com",
+        "RECORD_DATES": "2012-2015"
       },
       {
         "LIST_ID": "CH",
@@ -177,7 +184,8 @@
         "ADDRESS_ZIPCODE": "80011-5825",
         "PARENT1_SURNAME": "Dubois-Deville",
         "PARENT1_GIVEN_NAME": "John P",
-        "PARENT1_EMAIL": "12341234@example.com"
+        "PARENT1_EMAIL": "12341234@example.com",
+        "RECORD_DATES": "2016-2018"
       },
       {
         "LIST_ID": "KP",
@@ -198,7 +206,8 @@
         "ADDRESS_ZIPCODE": "80110-1924",
         "PARENT1_SURNAME": "Dubois",
         "PARENT1_GIVEN_NAME": "John",
-        "PARENT1_EMAIL": "12341234@example.com"
+        "PARENT1_EMAIL": "12341234@example.com",
+        "RECORD_DATES": "2019-2022"
       }
     ],
     "count": 3
@@ -224,7 +233,8 @@
         "ADDRESS_ZIPCODE": "80228-3653",
         "PARENT1_SURNAME": "Cisio",
         "PARENT1_GIVEN_NAME": "C Paola",
-        "PARENT1_EMAIL": "43214321@example.com"
+        "PARENT1_EMAIL": "43214321@example.com",
+        "RECORD_DATES": "2012-2018"
       },
       {
         "LIST_ID": "CH",
@@ -245,7 +255,8 @@
         "ADDRESS_ZIPCODE": "80122-1652",
         "PARENT1_SURNAME": "Cosio-Ortez",
         "PARENT1_GIVEN_NAME": "Colleen MNU",
-        "PARENT1_EMAIL": "43214321@example.com"
+        "PARENT1_EMAIL": "43214321@example.com",
+        "RECORD_DATES": "2018-2021"
       },
       {
         "LIST_ID": "KP",
@@ -266,7 +277,8 @@
         "ADDRESS_ZIPCODE": "80228-3653",
         "PARENT1_SURNAME": "Cosio",
         "PARENT1_GIVEN_NAME": "Colleen",
-        "PARENT1_EMAIL": "43214321@example.com"
+        "PARENT1_EMAIL": "43214321@example.com",
+        "RECORD_DATES": "2022-2022"
       }
     ],
     "count": 3

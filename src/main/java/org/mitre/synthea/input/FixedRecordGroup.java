@@ -14,7 +14,7 @@ public class FixedRecordGroup {
 
   /**
    * Pulls the first valid birthdate from the list of FixedRecords.
-   * @return
+   * @return long valid birthdate
    */
   public long getValidBirthdate() {
     for (int i = 0; i < this.records.size(); i++) {
@@ -31,7 +31,7 @@ public class FixedRecordGroup {
 
   /**
    * Pulls the first valid city from the list of FixedRecords.
-   * @return
+   * @return String safe city name
    */
   public String getSafeCity() {
     for (int i = 0; i < this.records.size(); i++) {
@@ -40,7 +40,23 @@ public class FixedRecordGroup {
         return safeCity;
       }
     }
-    throw new RuntimeException("No valid city for: " + this.records.get(0).firstName + " "
-        + this.records.get(0).lastName);
+    throw new RuntimeException("ERROR: No valid city for " + this.records.get(0).firstName + " "
+        + this.records.get(0).lastName + ".");
+  }
+
+  /**
+   * Returns a FixedRecord which has a recordDates range that includes the given year.
+   * @return FixedRecord that meets the daterange of the given year
+   */
+  public FixedRecord checkAddressUpdate(int currentYear) {
+    for(FixedRecord record : records) {
+      // Pull out the 2 years from the current fixed record.
+      String years[] = record.recordDates.split("-");
+      // Check if the current year is between the years in the current fixed record.
+      if(currentYear >= Integer.parseInt(years[0]) && currentYear <= Integer.parseInt(years[1])){
+        return record;
+      }
+    }
+    throw new RuntimeException("ERROR: Invalid input record dates for " + this.records.get(0).firstName + " " + this.records.get(0).lastName + ".");
   }
 }
