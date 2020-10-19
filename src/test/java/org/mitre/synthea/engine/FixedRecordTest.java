@@ -70,7 +70,7 @@ public class FixedRecordTest {
       // Track the number of fixed records that match the person's attributes exactly.
       int fixedRecordMatches = 0;
       // Cycle the person's FixedRecords to compare them to the raw imported FixedRecords.
-      for (int r = 0; r < currentPerson.records.size(); r++) {        
+      for (int r = 0; r < currentPerson.records.size(); r++) {
 
         int recordToPull = r;
         if (recordToPull >= recordGroup.count) {
@@ -105,14 +105,14 @@ public class FixedRecordTest {
         if (
             (currentPerson.attributes.get(Person.FIRST_NAME).equals(rawFixedRecord.firstName))
             && (currentPerson.attributes.get(Person.LAST_NAME).equals(rawFixedRecord.lastName))
-            && (currentPerson.attributes.get(Person.ADDRESS).equals(rawFixedRecord.addressLineOne))
+            // && (currentPerson.attributes.get(Person.ADDRESS).equals(rawFixedRecord.addressLineOne))
             && (currentPerson.attributes.get(Person.BIRTHDATE)
                 .equals(rawFixedRecord.getBirthDate()))
             && (currentPerson.attributes.get(Person.GENDER).equals(rawFixedRecord.gender))
             && (currentPerson.attributes.get(Person.TELECOM).equals(rawFixedRecord.getTelecom()))
             && (currentPerson.attributes.get(Person.STATE).equals(rawFixedRecord.state))
-            && (currentPerson.attributes.get(Person.CITY).equals(rawFixedRecord.city))
-            && (currentPerson.attributes.get(Person.ZIP).equals(rawFixedRecord.zipcode))
+            // && (currentPerson.attributes.get(Person.CITY).equals(rawFixedRecord.city))
+            // && (currentPerson.attributes.get(Person.ZIP).equals(rawFixedRecord.zipcode))
             && (currentPerson.attributes.get(Person.IDENTIFIER_RECORD_ID)
                 .equals(rawFixedRecord.recordId))
             && (currentPerson.attributes.get(Person.IDENTIFIER_SITE).equals(rawFixedRecord.site))
@@ -120,7 +120,7 @@ public class FixedRecordTest {
           fixedRecordMatches++;
         }
       }
-      // One FixedRecord should match the person's attributes exactly as a "gold standard" record.
+      // One FixedRecord should match the person's attributes (Except Address) exactly as a "gold standard" record.
       assertTrue(fixedRecordMatches >= 1);
     }
   }
