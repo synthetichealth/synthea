@@ -632,14 +632,16 @@ public class Generator implements RandomNumberGenerator {
     // Pull the FixedRecord that meets the current date.
     FixedRecord fr = frg.getCurrentFixedRecord(Utilities.getYear(System.currentTimeMillis()));
     if(fr != null){
-      System.out.println("hjhjhj");
       // Update the person's address and location from the new FixedRecord. If the address changed, update their provider and health record.
       if(fr.overwriteAddress(person, this)){
-        System.out.println("overwriting");
+        // Get the person's birthdate in case the new one is invalid.
+        Long birthDate = (Long) person.attributes.get(Person.BIRTHDATE);
         person.attributes.putAll(fr.getFixedRecordAttributes());
         // Update the person's provider based on their new location. This is required so that a new health record is made for the change of address (record).
         person.setProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(System.currentTimeMillis()));
         person.record = person.getHealthRecord(person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()), System.currentTimeMillis());
+        // Fix the person's birthdate to their real birthdate in case the FixedRecord's is incorrect.
+        person.attributes.put(Person.BIRTHDATE, birthDate);
       }
     }
   }
