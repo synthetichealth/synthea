@@ -295,7 +295,6 @@ public class PersonTest {
     // Generate two patients that should be identical. Switch the output directory since
     // the file names should be identical
     for (int i = 0; i < 2; i++) {
-      FhirR4.clearProviderLocationCache();
       File tempOutputFolder = tempFolder.newFolder();
       Config.set("exporter.baseDirectory", tempOutputFolder.toString());
       
