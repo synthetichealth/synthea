@@ -11,6 +11,11 @@ public class FixedRecordGroup {
   public List<FixedRecord> records;
   public int count;
   public int linkId;
+  public int year;
+
+  public FixedRecordGroup(){
+    year = 0;
+  }
 
   /**
    * Pulls the first valid birthdate from the list of FixedRecords.
@@ -46,17 +51,21 @@ public class FixedRecordGroup {
 
   /**
    * Returns a FixedRecord which has a recordDates range that includes the given year.
-   * @return FixedRecord that meets the daterange of the given year
+   * @return FixedRecord that meets the daterange of the given year. Returns null if the current year's record has already been accessed.
    */
-  public FixedRecord checkAddressUpdate(int currentYear) {
-    for(FixedRecord record : records) {
-      // Pull out the 2 years from the current fixed record.
-      String years[] = record.recordDates.split("-");
-      // Check if the current year is between the years in the current fixed record.
-      if(currentYear >= Integer.parseInt(years[0]) && currentYear <= Integer.parseInt(years[1])){
-        return record;
+  public FixedRecord getCurrentFixedRecord(int currentYear) {
+    if(year < currentYear){
+      year = currentYear;
+      for(FixedRecord record : records) {
+        // Check if the current year is between the years in the current fixed record.
+        if(record.checkRecordDates(currentYear)){
+          return record;
+        }
       }
-    }
     throw new RuntimeException("ERROR: Invalid input record dates for " + this.records.get(0).firstName + " " + this.records.get(0).lastName + ".");
+  } else {
+    return null;
   }
+}
+
 }

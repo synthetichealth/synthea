@@ -530,7 +530,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * @param provider the provider of the encounter
    * @param time the current time (To determine person's current income and payer)
    */
-  private synchronized HealthRecord getHealthRecord(Provider provider, long time) {
+  public synchronized HealthRecord getHealthRecord(Provider provider, long time) {
 
     // If the person has no more income at this time, then operate on the UncoveredHealthRecord.
     // Note: If person has no more income then they can no longer afford copays/premiums/etc.
@@ -542,9 +542,11 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     HealthRecord returnValue = this.defaultRecord;
     if (hasMultipleRecords) {
       String key = provider.getResourceID();
+      // If the given provider does not have a health record for this person...
       if (!records.containsKey(key)) {
         HealthRecord record = null;
         if (this.record != null && this.record.provider == null) {
+          // If the active healthrecord does not have a provider, assign the active record to this record.
           record = this.record;
         } else {
           record = new HealthRecord(this);
@@ -954,7 +956,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   @Override
   public double getX() {
-    return getLonLat().getX();
+    return getLonLat().getX(); 
   }
 
   @Override

@@ -133,16 +133,6 @@ public abstract class Exporter {
         int i = 0;
         for (String key : person.records.keySet()) {
           person.record = person.records.get(key);
-          // If the person fixed Records, overwrite their attributes from the fixed records.
-          if (person.attributes.get(Person.RECORD_GROUP) != null) {
-            FixedRecordGroup rg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
-            int recordToPull = i;
-            if (recordToPull >= rg.count) {
-              recordToPull = rg.count - 1;
-            }
-            FixedRecord fr = rg.records.get(recordToPull);
-            fr.totalOverwrite(person);
-          }
           exportRecord(person, Integer.toString(i), stopTime, options);
           i++;
         }

@@ -50,6 +50,7 @@ import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
+import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
@@ -450,19 +451,18 @@ public class Generator implements RandomNumberGenerator {
       int tryNumber = 0; // Number of tries to create these demographics
       Random randomForDemographics = new Random(personSeed);
 
-      Map<String, Object> demoAttributes = randomDemographics(randomForDemographics);
-      if (this.recordGroups != null) {
-        // Pick fixed demographics if a fixed demographics record file is used.
-        demoAttributes = pickFixedDemographics(index, random);
-      }
+      Map<String, Object> demoAttributes;
 
       int providerCount = 0;
       int providerMinimum = 1;
-
       if (this.recordGroups != null) {
+        // Pick fixed demographics if a fixed demographics record file is used.
+        demoAttributes = pickFixedDemographics(index, random);
         // If fixed records are used, there must be 1 provider for each of this person's records.
         FixedRecordGroup recordGroup = this.recordGroups.get(index);
         providerMinimum = recordGroup.count;
+      } else {
+       demoAttributes = randomDemographics(randomForDemographics);
       }
       
       do {
@@ -488,7 +488,7 @@ public class Generator implements RandomNumberGenerator {
           // note that this skips ahead to the while check and doesn't automatically re-loop
         }
 
-        // For fixed records, the person must have 1 provider per record.
+        // For fixed records, the person must have at least 1 provider per record.
         if (providerCount < providerMinimum) {
           // rotate the seed so the next attempt gets a consistent but different one
           personSeed = new Random(personSeed).nextLong();
@@ -570,6 +570,11 @@ public class Generator implements RandomNumberGenerator {
     person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
 
     LifecycleModule.birth(person, person.lastUpdated);
+
+    // Set the default record after all attributes have been set.
+    person.defaultRecord = new HealthRecord(person);
+    person.record = person.defaultRecord;
+
     person.currentModules = Module.getModules(modulePredicate);
 
     updatePerson(person);
@@ -588,26 +593,16 @@ public class Generator implements RandomNumberGenerator {
 
     long time = person.lastUpdated;
     while (person.alive(time) && time < stop) {
-      healthInsuranceModule.process(person, time + timestep);
-      encounterModule.process(person, time);
 
       // If fixed Patient Demographics are being used and address changing is true...
       if(options.fixedRecordPath != null && Boolean.parseBoolean(Config.get("fixeddemographics.addresschanging", "false"))) {
-        // Check if the person's address needs to be updated.
-        FixedRecordGroup frg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
-        // Pull the FixedRecord that meets the current date.
-        FixedRecord fr = frg.checkAddressUpdate(Utilities.getYear(System.currentTimeMillis()));
-        // Update the person's address with the new FixedRecord. Make sure the new city is a valid city.
-        person.attributes.put(Person.ADDRESS, fr.addressLineOne);
-        String newCity = fr.getSafeCity();
-        if(newCity == null){
-          new RuntimeException("ERROR: Fixed input record for " +fr.firstName + " "
-          + fr.lastName + " in year " + Utilities.getYear(System.currentTimeMillis()) + " has an invalid city.");
-        }
-        person.attributes.put(Person.CITY, newCity);
-        person.attributes.put(Person.STATE, fr.state);  // Probably redundant, but may be useful in future.
-        // Update the person's provider based on their new location (optional?).
+        updateFixedAddress(person);
       }
+
+      // Process Health Insurance.
+      healthInsuranceModule.process(person, time + timestep);
+      // Process encounters.
+      encounterModule.process(person, time);
 
       Iterator<Module> iter = person.currentModules.iterator();
       while (iter.hasNext()) {
@@ -624,6 +619,29 @@ public class Generator implements RandomNumberGenerator {
     }
 
     DeathModule.process(person, time);
+  }
+
+  /**
+   * Updates the person's address information from their Fixed Record that matches the current year.
+   * @param person The person to use
+   * @return
+   */
+  public void updateFixedAddress(Person person){
+    // Check if the person's address needs to be updated.
+    FixedRecordGroup frg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
+    // Pull the FixedRecord that meets the current date.
+    FixedRecord fr = frg.getCurrentFixedRecord(Utilities.getYear(System.currentTimeMillis()));
+    if(fr != null){
+      System.out.println("hjhjhj");
+      // Update the person's address and location from the new FixedRecord. If the address changed, update their provider and health record.
+      if(fr.overwriteAddress(person, this)){
+        System.out.println("overwriting");
+        person.attributes.putAll(fr.getFixedRecordAttributes());
+        // Update the person's provider based on their new location. This is required so that a new health record is made for the change of address (record).
+        person.setProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(System.currentTimeMillis()));
+        person.record = person.getHealthRecord(person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()), System.currentTimeMillis());
+      }
+    }
   }
 
   /**
@@ -774,6 +792,8 @@ public class Generator implements RandomNumberGenerator {
     // Give the person their FixedRecordGroup of FixedRecords.
     demoAttributes.put(Person.RECORD_GROUP, recordGroup);
     demoAttributes.put(Person.LINK_ID, recordGroup.linkId);
+
+    demoAttributes.putAll(fr.getFixedRecordAttributes());
 
     // Return the Demographic Attributes of the current person.
     return demoAttributes;

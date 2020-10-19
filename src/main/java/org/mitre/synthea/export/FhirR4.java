@@ -255,6 +255,10 @@ public class FhirR4 {
       bundle.setType(BundleType.COLLECTION);
     }
 
+    if( person.attributes.get(Person.RECORD_GROUP) != null && Boolean.parseBoolean(Config.get("fixeddemographics.addresschanging", "false"))) {
+      person.attributes.putAll(person.record.demographicsAtRecordCreation);
+    }
+
     BundleEntryComponent personEntry = basicInfo(person, bundle, stopTime);
 
     for (Encounter encounter : person.record.encounters) {

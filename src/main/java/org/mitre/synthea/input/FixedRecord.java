@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.geography.Demographics;
 
@@ -82,9 +82,14 @@ public class FixedRecord {
    */
   public String getSafeCity() {
     try {
-      // If the the current city/state combo is not in the Demographics file, return null.
+      // If the the current city/state combo is not in the Demographics file, return
+      // null.
       if (Demographics.load(this.state).row(this.state).values().stream()
           .noneMatch(d -> d.city.equalsIgnoreCase(this.city))) {
+        // If Hghlnds Ranch, return Highlands Ranch
+        if (this.city.equals("Hghlnds Ranch")) {
+          return "Breckenridge";
+        }
         return null;
       }
     } catch (IOException e) {
@@ -115,26 +120,6 @@ public class FixedRecord {
   }
 
   /**
-   * Completely overwrites the given person to have the demographic attributes in
-   * this FixedRecord.
-   * 
-   * @param person The person who's attributes will be overwritten.
-   */
-  public void totalOverwrite(Person person) {
-    String g = this.gender;
-    if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
-      g = "UNK";
-    }
-    person.attributes.put(Person.GENDER, g);
-    person.attributes.put(Person.BIRTHDATE, this.getBirthDate());
-    person.attributes.put(Person.STATE, this.state);
-    person.attributes.put(Person.CITY, this.city);
-    person.attributes.put(Person.ZIP, this.zipcode);
-
-    person.attributes.putAll(this.getFixedRecordAttributes());
-  }
-
-  /**
    * Returns the attributes associated with this FixedRecord.
    * 
    * @return the attributes associated with this FixedRecord.
@@ -151,9 +136,49 @@ public class FixedRecord {
       this.attributes.put(Person.CONTACT_GIVEN_NAME, this.parentFirstName);
       this.attributes.put(Person.CONTACT_FAMILY_NAME, this.parentLastName);
       this.attributes.put(Person.CONTACT_EMAIL, this.parentEmail);
-      this.attributes.put(Person.ADDRESS, this.addressLineOne);
+      // this.attributes.put(Person.ADDRESS, this.addressLineOne);
+      String g = this.gender;
+      if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
+        g = "UNK";
+      }
+      this.attributes.put(Person.GENDER, g);
+      this.attributes.put(Person.BIRTHDATE, this.getBirthDate());
+      // this.attributes.put(Person.STATE, this.state);
+      // this.attributes.put(Person.CITY, this.getSafeCity());
+      // this.attributes.put(Person.ZIP, this.zipcode);
     }
     System.out.println(this.recordDates);
     return this.attributes;
+  }
+
+  /**
+   * Checks the record dates of the current FixedRecord in relation to the given
+   * year.
+   * 
+   * @return Whether the given year is within the FixedRecord date range.
+   */
+  public boolean checkRecordDates(int currentYear) {
+    // Pull out the 2 years from the current fixed record.
+    String years[] = this.recordDates.split("-");
+    // Check if the current year is between the years in the current fixed record.
+    return currentYear >= Integer.parseInt(years[0]) && currentYear <= Integer.parseInt(years[1]);
+  }
+
+  /**
+   * Overwrites the address attribute information for the given person with this
+   * FixedRecord.
+   * 
+   * @return Whether the address changed since the last FixedRecord.
+   */
+  public boolean overwriteAddress(Person person, Generator generator) {
+    String oldCity = (String) person.attributes.get(Person.CITY);
+    person.attributes.put(Person.ADDRESS, this.addressLineOne);
+    person.attributes.put(Person.STATE, this.state);
+    person.attributes.put(Person.CITY, this.getSafeCity());
+    person.attributes.put(Person.ZIP, this.zipcode);
+    // Fix the person's safe city in case it is invalid and update their location
+    // point.
+    generator.location.assignPoint(person, (String) person.attributes.get(Person.CITY));
+    return !oldCity.equals(person.attributes.get(Person.CITY));
   }
 }
