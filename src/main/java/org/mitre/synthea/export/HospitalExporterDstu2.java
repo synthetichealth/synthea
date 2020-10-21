@@ -34,10 +34,10 @@ public abstract class HospitalExporterDstu2 {
    * Export the hospital in FHIR DSTU2 format.
    */
   public static void export(long stop) {
-    if (Boolean.parseBoolean(Config.get("exporter.hospital.fhir_dstu2.export"))) {
+    if (Config.getAsBoolean("exporter.hospital.fhir_dstu2.export")) {
       
       Bundle bundle = new Bundle();
-      if (Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"))) {
+      if (Config.getAsBoolean("exporter.fhir.transaction_bundle")) {
         bundle.setType(BundleTypeEnum.TRANSACTION);
       } else {
         bundle.setType(BundleTypeEnum.COLLECTION);

@@ -173,11 +173,11 @@ public class FhirR4 {
   private static final Map languageLookup = loadLanguageLookup();
 
   protected static boolean USE_SHR_EXTENSIONS =
-      Boolean.parseBoolean(Config.get("exporter.fhir.use_shr_extensions"));
+      Config.getAsBoolean("exporter.fhir.use_shr_extensions");
   protected static boolean TRANSACTION_BUNDLE =
-      Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
+      Config.getAsBoolean("exporter.fhir.transaction_bundle");
   protected static boolean USE_US_CORE_IG =
-      Boolean.parseBoolean(Config.get("exporter.fhir.use_us_core_ig"));
+      Config.getAsBoolean("exporter.fhir.use_us_core_ig");
 
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
@@ -3046,7 +3046,7 @@ public class FhirR4 {
    * @return "[resourceType]/" or "urn:uuid:"
    */
   protected static String getUrlPrefix(String resourceType) {
-    if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
+    if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
       return resourceType + "/";
     } else {
       return "urn:uuid:";

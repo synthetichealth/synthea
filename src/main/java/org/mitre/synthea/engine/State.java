@@ -69,7 +69,7 @@ public abstract class State implements Cloneable, Serializable {
   public List<String> remarks;
   
   public static boolean ENABLE_PHYSIOLOGY_STATE =
-      Boolean.parseBoolean(Config.get("physiology.state.enabled", "false"));
+      Config.getAsBoolean("physiology.state.enabled", false);
 
   protected void initialize(Module module, String name, JsonObject definition) {
     this.module = module;

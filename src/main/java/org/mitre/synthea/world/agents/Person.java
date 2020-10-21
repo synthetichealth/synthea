@@ -150,13 +150,13 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     /* Chronic Medications which will be renewed at each Wellness Encounter */
     chronicMedications = new ConcurrentHashMap<String, HealthRecord.Medication>();
     hasMultipleRecords =
-        Boolean.parseBoolean(Config.get("exporter.split_records", "false"));
+        Config.getAsBoolean("exporter.split_records", false);
     if (hasMultipleRecords) {
       records = new ConcurrentHashMap<String, HealthRecord>();
     }
     defaultRecord = new HealthRecord(this);
     lossOfCareEnabled =
-        Boolean.parseBoolean(Config.get("generate.payers.loss_of_care", "false"));
+        Config.getAsBoolean("generate.payers.loss_of_care", false);
     if (lossOfCareEnabled) {
       lossOfCareRecord = new HealthRecord(this);
     }

@@ -49,7 +49,7 @@ public final class LifecycleModule extends Module {
   public static final String ADHERENCE_PROBABILITY = "adherence probability";
 
   public static final boolean appendNumbersToNames =
-      Boolean.parseBoolean(Config.get("generate.append_numbers_to_person_names", "false"));
+      Config.getAsBoolean("generate.append_numbers_to_person_names", false);
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
   private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
@@ -876,11 +876,11 @@ public final class LifecycleModule extends Module {
   }
 
   protected static boolean ENABLE_DEATH_BY_NATURAL_CAUSES =
-      Boolean.parseBoolean(Config.get("lifecycle.death_by_natural_causes"));
+      Config.getAsBoolean("lifecycle.death_by_natural_causes");
   protected static boolean ENABLE_DEATH_BY_LOSS_OF_CARE =
-      Boolean.parseBoolean(Config.get("lifecycle.death_by_loss_of_care"));
+      Config.getAsBoolean("lifecycle.death_by_loss_of_care");
   protected static boolean ENABLE_PHYSIOLOGY_GENERATORS =
-      Boolean.parseBoolean(Config.get("physiology.generators.enabled", "false"));
+      Config.getAsBoolean("physiology.generators.enabled", false);
 
   // Death From Natural Causes SNOMED Code
   private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000",

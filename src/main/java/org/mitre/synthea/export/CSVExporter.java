@@ -142,7 +142,7 @@ public class CSVExporter {
       output.mkdirs();
       Path outputDirectory = output.toPath();
 
-      if (Boolean.parseBoolean(Config.get("exporter.csv.folder_per_run"))) {
+      if (Config.getAsBoolean("exporter.csv.folder_per_run")) {
         // we want a folder per run, so name it based on the timestamp
         // TODO: do we want to consider names based on the current generation options?
         String timestamp = ExportHelper.iso8601Timestamp(System.currentTimeMillis());
@@ -153,7 +153,7 @@ public class CSVExporter {
 
       File patientsFile = outputDirectory.resolve("patients.csv").toFile();
       boolean append =
-          patientsFile.exists() && Boolean.parseBoolean(Config.get("exporter.csv.append_mode"));
+          patientsFile.exists() && Config.getAsBoolean("exporter.csv.append_mode");
       patients = new OutputStreamWriter(new FileOutputStream(patientsFile, append), charset);
 
       File allergiesFile = outputDirectory.resolve("allergies.csv").toFile();
