@@ -1,0 +1,236 @@
+{
+  "name": "Stable Ischemic Heart Disease",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Chance_of_IHD"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Chance_of_IHD": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "transition": "IHD_Start",
+          "distribution": {
+            "attribute": "ihd_risk",
+            "default": 0
+          }
+        },
+        {
+          "transition": "Chance_of_IHD",
+          "distribution": 1
+        }
+      ]
+    },
+    "IHD_Start": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Diagnosis_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 414545008,
+          "display": "Ischemic heart disease (disorder)"
+        }
+      ],
+      "direct_transition": "Delay_Until_Symptoms"
+    },
+    "Delay_Until_Symptoms": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Symptoms_Start",
+          "distribution": 1
+        },
+        {
+          "transition": "Cardiac_Arrest",
+          "distribution": 1
+        },
+        {
+          "transition": "Delay_Until_Symptoms",
+          "distribution": 1
+        }
+      ]
+    },
+    "Symptoms_Start": {
+      "type": "Symptom",
+      "symptom": "Chest Pain",
+      "cause": "",
+      "probability": 1,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "New_State"
+    },
+    "Cardiac_Arrest": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 410429000,
+          "display": "Cardiac arrest (disorder)"
+        }
+      ]
+    },
+    "ECG / Labs": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Stress Test",
+          "distribution": 1
+        },
+        {
+          "transition": "CABG",
+          "distribution": 1
+        }
+      ]
+    },
+    "Stress Test": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Medical_Therapy",
+          "distribution": 1
+        },
+        {
+          "transition": "CABG",
+          "distribution": 1
+        }
+      ]
+    },
+    "Medical_Therapy": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "direct_transition": "Prescribe_CHD_Meds"
+    },
+    "Symptoms_Continue": {
+      "type": "Simple",
+      "direct_transition": "CABG"
+    },
+    "CABG": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
+    },
+    "Diagnosis_Encounter": {
+      "type": "Encounter",
+      "reason": "",
+      "direct_transition": "ECG / Labs",
+      "wellness": true
+    },
+    "Prescribe_CHD_Meds": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Start_Clopidogrel",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1997,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Start_Amlodipine",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1994,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Start_Simvastatin",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1991,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Start_Nitroglycerin"
+        }
+      ]
+    },
+    "Start_Clopidogrel": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1234",
+          "display": "RxNorm Code"
+        }
+      ],
+      "direct_transition": "Start_Simvastatin"
+    },
+    "Start_Simvastatin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1234",
+          "display": "RxNorm Code"
+        }
+      ],
+      "direct_transition": "Start_Amlodipine"
+    },
+    "Start_Amlodipine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1234",
+          "display": "RxNorm Code"
+        }
+      ],
+      "direct_transition": "Start_Nitroglycerin"
+    },
+    "Start_Nitroglycerin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1234",
+          "display": "RxNorm Code"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Symptoms_Continue",
+          "distribution": 1
+        },
+        {
+          "transition": "Medical_Therapy",
+          "distribution": 1
+        }
+      ]
+    },
+    "New_State": {
+      "type": "Symptom",
+      "symptom": "Dyspnea on exertion",
+      "cause": "",
+      "probability": 1,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "Diagnosis_Encounter"
+    }
+  }
+}
