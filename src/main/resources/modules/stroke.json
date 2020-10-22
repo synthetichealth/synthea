@@ -1,0 +1,139 @@
+{
+  "name": "Stroke",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Chance_of_Stroke"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Mechanical Thrombectomy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 433112001,
+          "display": "Percutaneous mechanical thrombectomy of portal vein using fluoroscopic guidance"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Encounter"
+    },
+    "Stroke": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Emergency_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 230690007,
+          "display": "Stroke"
+        }
+      ],
+      "direct_transition": "Emergency_Encounter"
+    },
+    "Emergency_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 50849002,
+          "display": "Emergency room admission (procedure)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Clopidogrel",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">",
+            "year": 1997
+          }
+        },
+        {
+          "transition": "Alteplase",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">",
+            "year": 1987
+          }
+        },
+        {
+          "transition": "Echocardiogram"
+        }
+      ]
+    },
+    "End_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Chance_of_Stroke": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Stroke",
+          "distribution": {
+            "attribute": "stroke_risk",
+            "default": 0
+          }
+        },
+        {
+          "transition": "Chance_of_Stroke",
+          "distribution": 1
+        }
+      ]
+    },
+    "Clopidogrel": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 309362,
+          "display": "Clopidogrel 75 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Alteplase"
+    },
+    "Alteplase": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1804799,
+          "display": "Alteplase 100 MG Injection"
+        }
+      ],
+      "direct_transition": "Echocardiogram"
+    },
+    "Echocardiogram": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 40701008,
+          "display": "Echocardiography (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Mechanical Thrombectomy"
+    }
+  }
+}

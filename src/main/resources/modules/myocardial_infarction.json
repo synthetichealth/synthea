@@ -1,0 +1,185 @@
+{
+  "name": "Myocardial Infarction",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Chance_of_MI"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Nitroglycerin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 705129,
+          "display": "Nitroglycerin 0.4 MG/ACTUAT Mucosal Spray"
+        }
+      ],
+      "direct_transition": "Atorvastatin"
+    },
+    "Atorvastatin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 259255,
+          "display": "Atorvastatin 80 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Captopril"
+    },
+    "Captopril": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 833036,
+          "display": "aptopril 25 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Clopidogrel"
+    },
+    "Clopidogrel": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 309362,
+          "display": "Clopidogrel 75 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Echocardiogram"
+    },
+    "Echocardiogram": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 40701008,
+          "display": "Echocardiography (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "CABG"
+    },
+    "CABG": {
+      "type": "Simple",
+      "direct_transition": "History of MI",
+      "remarks": [
+        "TODO: replace this with a CallSubmodule"
+      ]
+    },
+    "History of MI": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 399211009,
+          "display": "History of myocardial infarction (situation)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "End_Encounter",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Death",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "NSTEMI": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "myocardial_infarction",
+      "target_encounter": "Emergency_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 401314000,
+          "display": "Acute non-ST segment elevation myocardial infarction (disorder)"
+        }
+      ],
+      "direct_transition": "Emergency_Encounter"
+    },
+    "STEMI": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "myocardial_infarction",
+      "target_encounter": "Emergency_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 401303003,
+          "display": "Acute ST segment elevation myocardial infarction (disorder)"
+        }
+      ],
+      "direct_transition": "Emergency_Encounter"
+    },
+    "Emergency_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 50849002,
+          "display": "Emergency room admission (procedure)"
+        }
+      ],
+      "direct_transition": "Nitroglycerin"
+    },
+    "End_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Death": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "myocardial_infarction"
+    },
+    "Chance_of_MI": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "transition": "MI_Variants",
+          "distribution": {
+            "attribute": "mi_risk",
+            "default": 0
+          }
+        },
+        {
+          "transition": "Chance_of_MI",
+          "distribution": 1
+        }
+      ]
+    },
+    "MI_Variants": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "NSTEMI",
+          "distribution": 0.6
+        },
+        {
+          "transition": "STEMI",
+          "distribution": 0.4
+        }
+      ]
+    }
+  }
+}

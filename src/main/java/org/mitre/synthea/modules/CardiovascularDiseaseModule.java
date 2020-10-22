@@ -42,15 +42,22 @@ public final class CardiovascularDiseaseModule extends Module {
     // since this is intended to only be temporary
     // until we can convert this module to GMF
 
-    calculateCardioRisk(person, time);
-    onsetCoronaryHeartDisease(person, time);
-    coronaryHeartDiseaseProgression(person, time);
-    noCoronaryHeartDisease(person, time);
+    boolean useFramingham = false;
+    if (useFramingham) {
+        calculateCardioRisk(person, time);
+    } else {
+        calculateAscvdRisk(person, time);
+    }
+
+
+//    onsetCoronaryHeartDisease(person, time);
+//    coronaryHeartDiseaseProgression(person, time);
+//    noCoronaryHeartDisease(person, time);
     calculateAtrialFibrillationRisk(person, time);
-    getAtrialFibrillation(person, time);
+//    getAtrialFibrillation(person, time);
     calculateStrokeRisk(person, time);
-    getStroke(person, time);
-    endEmergency(person, time);
+//    getStroke(person, time);
+//    endEmergency(person, time);
 
     // java modules will never "finish"
     return false;
@@ -295,6 +302,9 @@ public final class CardiovascularDiseaseModule extends Module {
     return Math.min(Math.max(value, min), max);
   }
 
+  private static final long tenYearsInMS = TimeUnit.DAYS.toMillis(3650);
+  private static final long oneMonthInMS = TimeUnit.DAYS.toMillis(30); // roughly
+  
   /**
    * Calculates the risk of cardiovascular disease using Framingham points
    * and look up tables, putting the current risk in a "cardio_risk" attribute.
@@ -357,19 +367,105 @@ public final class CardiovascularDiseaseModule extends Module {
 
     int treated = bpTreated ? 0 : 1;
     framinghamPoints += sysBpChd[bpRange][treated];
-    double risk;
+    double framinghamRisk;
     // restrict lower and upper bound of framingham score
     if (gender.equals("M")) {
       framinghamPoints = bound(framinghamPoints, 0, 17);
-      risk = risk_chd_m.get(framinghamPoints);
+      framinghamRisk = risk_chd_m.get(framinghamPoints);
     } else {
       framinghamPoints = bound(framinghamPoints, 8, 25);
-      risk = risk_chd_f.get(framinghamPoints);
+      framinghamRisk = risk_chd_f.get(framinghamPoints);
     }
+    
+    person.attributes.put("framingham_risk", framinghamRisk);
 
-    person.attributes.put("cardio_risk",
-        Utilities.convertRiskToTimestep(risk, TimeUnit.DAYS.toMillis(3650)));
+    double timestepRisk = Utilities.convertRiskToTimestep(framinghamRisk, tenYearsInMS);
+    person.attributes.put("cardio_risk", timestepRisk);
+    
+    double monthlyRisk = Utilities.convertRiskToTimestep(framinghamRisk, tenYearsInMS, oneMonthInMS);
+    person.attributes.put("mi_risk", monthlyRisk);
   }
+  
+  
+  /**
+   * Computes the ASCVD Risk Estimate for an individual over the next 10 years.
+   * @param patientInfo - patientInfo object from ASCVDRisk data model
+   * @returns {*} Returns the risk score or 0 if not in the appropriate age range
+   */
+	private static void calculateAscvdRisk(Person person, long time) {
+		int age = person.ageInYears(time);
+		String gender = (String) person.attributes.get(Person.GENDER);
+		String race = (String) person.attributes.get(Person.RACE);
+		Double sysBP = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time);
+		Double diaBP = person.getVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, time);
+		Double totalChol = person.getVitalSign(VitalSign.TOTAL_CHOLESTEROL, time);
+		Double hdl = person.getVitalSign(VitalSign.HDL, time);
+
+		boolean smoker = (Boolean) person.attributes.getOrDefault(Person.SMOKER, false);
+		boolean diabetic = (Boolean) person.attributes.getOrDefault("diabetes", false);
+		boolean hypertensive = (Boolean) person.attributes.getOrDefault("hypertension", false);
+		if (sysBP == null || diaBP == null || totalChol == null) {
+			return;
+		}
+		if (age < 40 || age > 79) {
+			return;
+		}
+		double lnAge = Math.log(age);
+		double lnTotalChol = Math.log(totalChol);
+		double lnHdl = Math.log(hdl);
+		double trlnsbp = hypertensive ? Math.log(sysBP) : 0;
+		double ntlnsbp = hypertensive ? 0 : Math.log(diaBP);
+		double ageTotalChol = lnAge * lnTotalChol;
+		double ageHdl = lnAge * lnHdl;
+		double agetSbp = lnAge * trlnsbp;
+		double agentSbp = lnAge * ntlnsbp;
+		double ageSmoke = smoker ? lnAge : 0;
+
+		boolean isAA = race.equals("black");
+		boolean isMale = gender.equals("M");
+		double s010Ret = 0;
+		double mnxbRet = 0;
+		double predictRet = 0;
+
+		int smokerInt = smoker ? 1 : 0;
+		int diabeticInt = diabetic ? 1 : 0;
+
+		if (isAA && !isMale) {
+			s010Ret = 0.95334;
+			mnxbRet = 86.6081;
+			predictRet = (17.1141 * lnAge) + (0.9396 * lnTotalChol) + (-18.9196 * lnHdl) + (4.4748 * ageHdl)
+					+ (29.2907 * trlnsbp) + (-6.4321 * agetSbp) + (27.8197 * ntlnsbp) + (-6.0873 * agentSbp)
+					+ (0.6908 * smokerInt) + (0.8738 * diabeticInt);
+		} else if (!isAA && !isMale) {
+			s010Ret = 0.96652;
+			mnxbRet = -29.1817;
+			predictRet = (-29.799 * lnAge) + (4.884 * (lnAge * lnAge)) + (13.54 * lnTotalChol) + (-3.114 * ageTotalChol)
+					+ (-13.578 * lnHdl) + (3.149 * ageHdl) + (2.019 * trlnsbp) + (1.957 * ntlnsbp) + (7.574 * smokerInt)
+					+ (-1.665 * ageSmoke) + (0.661 * diabeticInt);
+		} else if (isAA && isMale) {
+			s010Ret = 0.89536;
+			mnxbRet = 19.5425;
+			predictRet = (2.469 * lnAge) + (0.302 * lnTotalChol) + (-0.307 * lnHdl) + (1.916 * trlnsbp)
+					+ (1.809 * ntlnsbp) + (0.549 * smokerInt) + (0.645 * diabeticInt);
+		} else {
+			s010Ret = 0.91436;
+			mnxbRet = 61.1816;
+			predictRet = (12.344 * lnAge) + (11.853 * lnTotalChol) + (-2.664 * ageTotalChol) + (-7.99 * lnHdl)
+					+ (1.769 * ageHdl) + (1.797 * trlnsbp) + (1.764 * ntlnsbp) + (7.837 * smokerInt)
+					+ (-1.795 * ageSmoke) + (0.658 * diabeticInt);
+		}
+
+		double ascvdRisk = (1 - Math.pow(s010Ret, Math.exp(predictRet - mnxbRet)));
+		
+	    person.attributes.put("ascvd_risk", ascvdRisk);
+
+	    double timestepRisk = Utilities.convertRiskToTimestep(ascvdRisk, tenYearsInMS);
+	    person.attributes.put("cardio_risk", timestepRisk);
+	    
+	    double monthlyRisk = Utilities.convertRiskToTimestep(ascvdRisk, tenYearsInMS, oneMonthInMS);
+	    person.attributes.put("mi_risk", monthlyRisk);
+	}
+
 
   /**
    * The patient rolls the probability dice. If their roll is less than their
