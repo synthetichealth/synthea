@@ -33,10 +33,10 @@ public abstract class HospitalExporterStu3 {
    * Export the hospital in FHIR STU3 format.
    */
   public static void export(long stop) {
-    if (Boolean.parseBoolean(Config.get("exporter.hospital.fhir_stu3.export"))) {
+    if (Config.getAsBoolean("exporter.hospital.fhir_stu3.export")) {
 
       Bundle bundle = new Bundle();
-      if (Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"))) {
+      if (Config.getAsBoolean("exporter.fhir.transaction_bundle")) {
         bundle.setType(BundleType.TRANSACTION);
       } else {
         bundle.setType(BundleType.COLLECTION);

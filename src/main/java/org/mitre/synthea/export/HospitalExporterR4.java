@@ -35,11 +35,11 @@ public abstract class HospitalExporterR4 {
    * Export the hospital in FHIR R4 format.
    */
   public static void export(RandomNumberGenerator rand, long stop) {
-    if (Boolean.parseBoolean(Config.get("exporter.hospital.fhir.export"))) {
+    if (Config.getAsBoolean("exporter.hospital.fhir.export")) {
 
       Bundle bundle = new Bundle();
-      if (Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"))) {
-        bundle.setType(BundleType.TRANSACTION);
+      if (Config.getAsBoolean("exporter.fhir.transaction_bundle")) {
+        bundle.setType(BundleType.BATCH);
       } else {
         bundle.setType(BundleType.COLLECTION);
       }
