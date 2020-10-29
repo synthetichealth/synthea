@@ -17,13 +17,13 @@ public class FixedRecord {
   @SerializedName(value = "LIST_ID")
   public String site;
 
-  @SerializedName(value = "RECORD_ID")
+  @SerializedName(value = "record_id")
   public String recordId;
 
-  @SerializedName(value = "CHILD_SURNAME")
+  @SerializedName(value = "SN")
   public String lastName;
 
-  @SerializedName(value = "CHILD_GIVEN_NAME")
+  @SerializedName(value = "GN")
   public String firstName;
 
   @SerializedName(value = "DOB_YEAR")
@@ -38,13 +38,13 @@ public class FixedRecord {
   @SerializedName(value = "GENDER")
   public String gender;
 
-  @SerializedName(value = "PHONE_AREA_CODE")
+  @SerializedName(value = "PHONE_CODE")
   public String phoneAreaCode;
 
   @SerializedName(value = "PHONE_NUMBER")
   public String phoneNumber;
 
-  @SerializedName(value = "ADDRESS_STREET1")
+  @SerializedName(value = "ADDRESS1")
   public String addressLineOne;
 
   @SerializedName(value = "ADDRESS_STREET2")
@@ -59,7 +59,7 @@ public class FixedRecord {
   @SerializedName(value = "ADDRESS_COUNTRY")
   public String country;
 
-  @SerializedName(value = "ADDRESS_ZIPCODE")
+  @SerializedName(value = "ADDRESS_ZIP")
   public String zipcode;
 
   @SerializedName(value = "PARENT1_SURNAME")
@@ -73,6 +73,12 @@ public class FixedRecord {
 
   @SerializedName(value = "RECORD_DATES")
   public String recordDates;
+
+  @SerializedName(value = "hh_id")
+  public String householdId;
+
+  @SerializedName(value = "hh_status")
+  public String householdRole;
 
   // Attributes map
   Map<String, Object> attributes;
@@ -131,11 +137,11 @@ public class FixedRecord {
       this.attributes.put(Person.LAST_NAME, this.lastName);
       this.attributes.put(Person.NAME, this.firstName + " " + this.lastName);
       this.attributes.put(Person.TELECOM, this.getTelecom());
-      this.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
-      this.attributes.put(Person.IDENTIFIER_SITE, this.site);
-      this.attributes.put(Person.CONTACT_GIVEN_NAME, this.parentFirstName);
-      this.attributes.put(Person.CONTACT_FAMILY_NAME, this.parentLastName);
-      this.attributes.put(Person.CONTACT_EMAIL, this.parentEmail);
+      // this.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
+      // this.attributes.put(Person.IDENTIFIER_SITE, this.site);
+      // this.attributes.put(Person.CONTACT_GIVEN_NAME, this.parentFirstName);
+      // this.attributes.put(Person.CONTACT_FAMILY_NAME, this.parentLastName);
+      // this.attributes.put(Person.CONTACT_EMAIL, this.parentEmail);
       // this.attributes.put(Person.ADDRESS, this.addressLineOne);
       String g = this.gender;
       if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
@@ -172,6 +178,7 @@ public class FixedRecord {
    */
   public boolean overwriteAddress(Person person, Generator generator) {
     String oldCity = (String) person.attributes.get(Person.CITY);
+    String oldAddress = (String) person.attributes.get(Person.ADDRESS);
     person.attributes.put(Person.ADDRESS, this.addressLineOne);
     person.attributes.put(Person.STATE, this.state);
     person.attributes.put(Person.CITY, this.getSafeCity());
@@ -179,6 +186,6 @@ public class FixedRecord {
     // Fix the person's safe city in case it is invalid and update their location
     // point.
     generator.location.assignPoint(person, (String) person.attributes.get(Person.CITY));
-    return !oldCity.equals(person.attributes.get(Person.CITY));
+    return !oldCity.equals(person.attributes.get(Person.CITY)) && !oldAddress.equals(person.attributes.get(Person.ADDRESS));
   }
 }

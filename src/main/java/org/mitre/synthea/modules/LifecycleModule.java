@@ -183,6 +183,11 @@ public final class LifecycleModule extends Module {
       FixedRecord fr = recordGroup.records.get(0);
       attributes.putAll(fr.getFixedRecordAttributes());
     }
+    // If using household fixed records, overwrite the attributes.
+    if(person.attributes.get(Person.HOUSEHOLD) != null) {
+      person.attributes.putAll(
+          ((FixedRecord) person.attributes.get(Person.GOLD_STANDARD_FIXED_RECORD)).getFixedRecordAttributes());
+    }
 
     String ssn = "999-" + ((person.randInt(99 - 10 + 1) + 10)) + "-"
         + ((person.randInt(9999 - 1000 + 1) + 1000));

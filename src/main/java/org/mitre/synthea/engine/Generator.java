@@ -42,6 +42,8 @@ import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.input.FixedRecord;
 import org.mitre.synthea.input.FixedRecordGroup;
+import org.mitre.synthea.input.Household;
+import org.mitre.synthea.input.HouseholdModule;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.HealthInsuranceModule;
@@ -76,7 +78,13 @@ public class Generator implements RandomNumberGenerator {
   public TransitionMetrics metrics;
   public static String DEFAULT_STATE = "Massachusetts";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
+
+  // Fixed Records
   private List<FixedRecordGroup> recordGroups;
+
+  // Households
+  private List<FixedRecord> importedFixedRecords;
+  private Map<Integer, Household> households;
 
   /**
    * Used only for testing and debugging. Populate this field to keep track of all patients
@@ -306,12 +314,18 @@ public class Generator implements RandomNumberGenerator {
   public void run() {
 
     // Import the fixed patient demographics records file, if a file path is given.
-    if (this.options.fixedRecordPath != null) {
+    if (this.options.fixedRecordPath != null && !Boolean.parseBoolean(Config.get("fixeddemographics.predeterminedBirths", "false"))) {
       importFixedPatientDemographicsFile();
       // Since we're using FixedRecords, split records must be true.
       Config.set("exporter.split_records", "true");
       // We'll be using the FixedRecord names, so no numbers should be appended to them.
       Config.set("generate.append_numbers_to_person_names", "false");
+    } else if (Boolean.parseBoolean(Config.get("fixeddemographics.predeterminedBirths", "false"))){
+      // Import household demogarphics.
+      this.importedFixedRecords = importHouseholdDemographicsFile();
+      Config.set("generate.append_numbers_to_person_names", "false");
+      // Initialize households map.
+      this.households = new HashMap<Integer, Household>();
     }
 
     ExecutorService threadPool = Executors.newFixedThreadPool(8);
@@ -412,6 +426,27 @@ public class Generator implements RandomNumberGenerator {
     // Return the record groups.
     return recordGroups;
   }
+
+  /**
+   * Imports the households demographics records file.
+   * 
+   * @return A list of the of records imported.
+   */
+  public List<FixedRecord> importHouseholdDemographicsFile() {
+    Gson gson = new Gson();
+    Type listType = new TypeToken<List<FixedRecord>>() {}.getType();
+    List<FixedRecord> fixedRecords;
+    try {
+      System.out.println("Loading fixed patient demographic records file: "
+          + this.options.fixedRecordPath);
+          fixedRecords = gson.fromJson(new FileReader(this.options.fixedRecordPath), listType);
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
+    }
+    this.options.population = fixedRecords.size();
+    // Return the record groups.
+    return fixedRecords;
+  }
   
   /**
    * Generate a completely random Person. The returned person will be alive at the end of the
@@ -455,7 +490,12 @@ public class Generator implements RandomNumberGenerator {
 
       int providerCount = 0;
       int providerMinimum = 1;
-      if (this.recordGroups != null) {
+      if(Boolean.parseBoolean(Config.get("fixeddemographics.predeterminedBirths", "false"))) {
+        // Get the Demographic attributes
+        FixedRecord currentRecord = importedFixedRecords.get(index);
+        demoAttributes = pickHouseholdGoldStandardDemographics(currentRecord, random);
+        
+      } else if (this.recordGroups != null) {
         // Pick fixed demographics if a fixed demographics record file is used.
         demoAttributes = pickFixedDemographics(index, random);
         // If fixed records are used, there must be 1 provider for each of this person's records.
@@ -577,6 +617,18 @@ public class Generator implements RandomNumberGenerator {
 
     person.currentModules = Module.getModules(modulePredicate);
 
+    // Add the person to their household.
+    if (true) {
+      Household personHousehold = (Household) person.attributes.get(Person.HOUSEHOLD);
+      if (person.ageInDecimalYears(System.currentTimeMillis()) > 18) {
+        personHousehold.addAdult(person);
+      }
+      else {
+        personHousehold.addChild(person);
+      }
+    }
+
+    // Enter the loop of updating the person's life.
     updatePerson(person);
 
     return person;
@@ -589,6 +641,7 @@ public class Generator implements RandomNumberGenerator {
    */
   public void updatePerson(Person person) {
     HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
+    HouseholdModule householdModule = new HouseholdModule();
     EncounterModule encounterModule = new EncounterModule();
 
     long time = person.lastUpdated;
@@ -599,8 +652,12 @@ public class Generator implements RandomNumberGenerator {
         updateFixedAddress(person);
       }
 
+
+
       // Process Health Insurance.
       healthInsuranceModule.process(person, time + timestep);
+      // Process Household.
+      householdModule.process(person, time);
       // Process encounters.
       encounterModule.process(person, time);
 
@@ -773,9 +830,11 @@ public class Generator implements RandomNumberGenerator {
    */
   private Map<String, Object> pickFixedDemographics(int index, Random random) {
 
+    FixedRecord fr;
     // Get the first FixedRecord from the current RecordGroup
     FixedRecordGroup recordGroup = this.recordGroups.get(index);
-    FixedRecord fr = recordGroup.records.get(0);
+    fr = recordGroup.records.get(0);
+    
     // Get the city from the location in the fixed record.
     this.location = new Location(fr.state, recordGroup.getSafeCity());
     Demographics city = this.location.randomCity(random);
@@ -798,6 +857,35 @@ public class Generator implements RandomNumberGenerator {
     demoAttributes.putAll(fr.getFixedRecordAttributes());
 
     // Return the Demographic Attributes of the current person.
+    return demoAttributes;
+  }
+
+  private Map<String, Object> pickHouseholdGoldStandardDemographics(FixedRecord goldStandardFixedRecord, Random random) {
+    this.location = new Location(goldStandardFixedRecord.state, goldStandardFixedRecord.city);
+    Demographics city = this.location.randomCity(random);
+    // Pick the rest of the demographics based on the location of the fixed record.
+    Map<String, Object> demoAttributes = pickDemographics(random, city);
+
+    // Overwrite the person's attributes with the FixedRecord.
+    demoAttributes.put(Person.BIRTHDATE, goldStandardFixedRecord.getBirthDate());
+    demoAttributes.put(Person.BIRTH_CITY, city.city);
+    String g = goldStandardFixedRecord.gender;
+    if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
+      g = "F";
+    }
+    demoAttributes.put(Person.GENDER, g);
+
+    // Generate the person's household based on the ID if it does not yet exist.
+    int householdId = Integer.parseInt(goldStandardFixedRecord.householdId);
+    if(this.households.get(householdId) == null){
+      this.households.put(householdId, new Household(householdId));
+    }
+    demoAttributes.put(Person.HOUSEHOLD, this.households.get(householdId));
+    // Set the person's gold standard fixed record.
+    demoAttributes.put(Person.GOLD_STANDARD_FIXED_RECORD, goldStandardFixedRecord);
+
+    demoAttributes.putAll(goldStandardFixedRecord.getFixedRecordAttributes());
+
     return demoAttributes;
   }
 
