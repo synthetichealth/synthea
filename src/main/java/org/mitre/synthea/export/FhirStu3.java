@@ -95,6 +95,7 @@ import org.hl7.fhir.dstu3.model.Period;
 import org.hl7.fhir.dstu3.model.PositiveIntType;
 import org.hl7.fhir.dstu3.model.Practitioner;
 import org.hl7.fhir.dstu3.model.Procedure.ProcedureStatus;
+import org.hl7.fhir.dstu3.model.Property;
 import org.hl7.fhir.dstu3.model.Quantity;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.ReferralRequest;
@@ -653,19 +654,17 @@ public class FhirStu3 {
           .setDisplay(encounter.reason.display).setSystem(SNOMED_URI);
     }
 
-    if (encounter.provider != null) {
-      String providerFullUrl = findProviderUrl(encounter.provider, bundle);
-
-      if (providerFullUrl != null) {
-        encounterResource.setServiceProvider(new Reference(providerFullUrl));
-      } else {
-        BundleEntryComponent providerOrganization = provider(bundle, encounter.provider);
-        encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
-      }
-    } else { // no associated provider, patient goes to wellness provider
-      Provider provider = person.getProvider(EncounterType.WELLNESS, encounter.start);
+    Provider provider = encounter.provider;
+    if (provider == null) {
+      // no associated provider, patient goes to wellness provider
+      provider = person.getProvider(EncounterType.WELLNESS, encounter.start);
+    }
+    
+    if (TRANSACTION_BUNDLE) {
+      encounterResource.setServiceProvider(new Reference(
+              ExportHelper.buildFhirSearchUrl("Organization", provider.getResourceID())));
+    } else {
       String providerFullUrl = findProviderUrl(provider, bundle);
-
       if (providerFullUrl != null) {
         encounterResource.setServiceProvider(new Reference(providerFullUrl));
       } else {
@@ -673,16 +672,24 @@ public class FhirStu3 {
         encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
       }
     }
+    encounterResource.getServiceProvider().setDisplay(provider.name);
 
     if (encounter.clinician != null) {
-      String practitionerFullUrl = findPractitioner(encounter.clinician, bundle);
-
-      if (practitionerFullUrl != null) {
-        encounterResource.addParticipant().setIndividual(new Reference(practitionerFullUrl));
+      if (TRANSACTION_BUNDLE) {
+        encounterResource.addParticipant().setIndividual(new Reference(
+                ExportHelper.buildFhirNpiSearchUrl(encounter.clinician)));
       } else {
-        BundleEntryComponent practitioner = practitioner(bundle, encounter.clinician);
-        encounterResource.addParticipant().setIndividual(new Reference(practitioner.getFullUrl()));
+        String practitionerFullUrl = findPractitioner(encounter.clinician, bundle);
+        if (practitionerFullUrl != null) {
+          encounterResource.addParticipant().setIndividual(new Reference(practitionerFullUrl));
+        } else {
+          BundleEntryComponent practitioner = practitioner(bundle, encounter.clinician);
+          encounterResource.addParticipant()
+                  .setIndividual(new Reference(practitioner.getFullUrl()));
+        }
       }
+      encounterResource.getParticipantFirstRep().getIndividual()
+              .setDisplay(encounter.clinician.getFullname());
     }
 
     if (encounter.discharge != null) {
@@ -2426,8 +2433,9 @@ public class FhirStu3 {
   protected static BundleEntryComponent practitioner(Bundle bundle, Clinician clinician) {
     Practitioner practitionerResource = new Practitioner();
 
-    practitionerResource.addIdentifier().setSystem("http://hl7.org/fhir/sid/us-npi")
-    .setValue("" + clinician.identifier);
+    practitionerResource.addIdentifier()
+            .setSystem("http://hl7.org/fhir/sid/us-npi")
+            .setValue("" + (9_999_999_999L - clinician.identifier));
     practitionerResource.setActive(true);
     practitionerResource.addName().setFamily(
         (String) clinician.attributes.get(Clinician.LAST_NAME))
@@ -2650,7 +2658,16 @@ public class FhirStu3 {
     if (TRANSACTION_BUNDLE) {
       BundleEntryRequestComponent request = entry.getRequest();
       request.setMethod(HTTPVerb.POST);
-      request.setUrl(resource.getResourceType().name());
+      String resourceType = resource.getResourceType().name();
+      request.setUrl(resourceType);
+      if (ExportHelper.UNDUPLICATED_FHIR_RESOURCES.contains(resourceType)) {
+        Property prop = entry.getResource().getNamedProperty("identifier");
+        if (prop != null && prop.getValues().size() > 0) {
+          Identifier identifier = (Identifier)prop.getValues().get(0);
+          request.setIfNoneExist(
+              "identifier=" + identifier.getSystem() + "|" + identifier.getValue());
+        }
+      }
       entry.setRequest(request);
     }
 

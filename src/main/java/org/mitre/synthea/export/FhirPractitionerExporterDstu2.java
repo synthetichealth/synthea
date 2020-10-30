@@ -41,7 +41,7 @@ public abstract class FhirPractitionerExporterDstu2 {
 
       Bundle bundle = new Bundle();
       if (Config.getAsBoolean("exporter.fhir.transaction_bundle")) {
-        bundle.setType(BundleTypeEnum.TRANSACTION);
+        bundle.setType(BundleTypeEnum.BATCH);
       } else {
         bundle.setType(BundleTypeEnum.COLLECTION);
       }

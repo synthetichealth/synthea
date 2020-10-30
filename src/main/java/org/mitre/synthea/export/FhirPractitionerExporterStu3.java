@@ -39,7 +39,7 @@ public abstract class FhirPractitionerExporterStu3 {
 
       Bundle bundle = new Bundle();
       if (Config.getAsBoolean("exporter.fhir.transaction_bundle")) {
-        bundle.setType(BundleType.TRANSACTION);
+        bundle.setType(BundleType.BATCH);
       } else {
         bundle.setType(BundleType.COLLECTION);
       }

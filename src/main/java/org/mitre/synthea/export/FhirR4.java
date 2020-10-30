@@ -10,7 +10,6 @@ import com.google.gson.JsonObject;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -644,21 +643,6 @@ public class FhirR4 {
     return newEntry(bundle, patientResource, (String) person.attributes.get(Person.ID));
   }
   
-  private static String buildGenericSearchUrl(String resourceType, String identifier) {
-    return String.format("%s?identifier=%s|%s", resourceType, 
-            "https://github.com/synthetichealth/synthea", identifier);
-  }
-  
-  private static String buildNPISearchUrl(Clinician clinician) {
-    if (clinician == null) {
-      return null;
-    } else {
-      return String.format("%s?identifier=%s|%s", "Practitioner", 
-              "http://hl7.org/fhir/sid/us-npi",
-              Long.toString(9_999_999_999L - clinician.identifier));
-    }
-  }
-  
   /**
    * Map the given Encounter into a FHIR Encounter resource, and add it to the given Bundle.
    *
@@ -723,7 +707,7 @@ public class FhirR4 {
     
     if (TRANSACTION_BUNDLE) {
       encounterResource.setServiceProvider(new Reference(
-              buildGenericSearchUrl("Organization", provider.getResourceID())));
+              ExportHelper.buildFhirSearchUrl("Organization", provider.getResourceID())));
     } else {
       String providerFullUrl = findProviderUrl(provider, bundle);
       if (providerFullUrl != null) {
@@ -736,7 +720,7 @@ public class FhirR4 {
     encounterResource.getServiceProvider().setDisplay(provider.name);
     if (USE_US_CORE_IG) {
       String referenceUrl = TRANSACTION_BUNDLE
-              ? buildGenericSearchUrl("Location", provider.getResourceLocationID())
+              ? ExportHelper.buildFhirSearchUrl("Location", provider.getResourceLocationID())
               : findLocationUrl(provider, bundle);
       encounterResource.addLocation().setLocation(new Reference()
           .setReference(referenceUrl)
@@ -746,7 +730,7 @@ public class FhirR4 {
     if (encounter.clinician != null) {
       if (TRANSACTION_BUNDLE) {
         encounterResource.addParticipant().setIndividual(new Reference(
-                buildNPISearchUrl(encounter.clinician)));
+                ExportHelper.buildFhirNpiSearchUrl(encounter.clinician)));
       } else {
         String practitionerFullUrl = findPractitioner(encounter.clinician, bundle);
         if (practitionerFullUrl != null) {
@@ -1110,7 +1094,8 @@ public class FhirR4 {
     if (encounter.clinician != null) {
       // This is what should happen if BlueButton 2.0 wasn't needlessly restrictive
       String practitionerFullUrl = TRANSACTION_BUNDLE
-              ? buildGenericSearchUrl("Practitioner", encounter.clinician.getResourceID())
+              ? ExportHelper.buildFhirSearchUrl("Practitioner",
+                      encounter.clinician.getResourceID())
               : findPractitioner(encounter.clinician, bundle);
       eob.setProvider(new Reference(practitionerFullUrl));
       eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
@@ -1121,7 +1106,8 @@ public class FhirR4 {
       referral.addPerformer(new Reference(practitionerFullUrl));
     } else if (encounter.provider != null) {
       String providerUrl = TRANSACTION_BUNDLE
-              ? buildGenericSearchUrl("Practitioner", encounter.provider.getResourceLocationID())
+              ? ExportHelper.buildFhirSearchUrl("Practitioner",
+                      encounter.provider.getResourceLocationID())
               : findProviderUrl(encounter.provider, bundle);
       eob.setProvider(new Reference(providerUrl));
       eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
@@ -1814,14 +1800,15 @@ public class FhirR4 {
       clinicianDisplay = clinician.getFullname();
     }
     String practitionerFullUrl = TRANSACTION_BUNDLE
-            ? buildNPISearchUrl(clinician)
+            ? ExportHelper.buildFhirNpiSearchUrl(clinician)
             : findPractitioner(clinician, bundle);
     Provider providerOrganization = person.record.provider;
     if (providerOrganization == null) {
       providerOrganization = person.getProvider(EncounterType.WELLNESS, stopTime);
     }
     String organizationFullUrl = TRANSACTION_BUNDLE
-            ? buildGenericSearchUrl("Organization", providerOrganization.getResourceID())
+            ? ExportHelper.buildFhirSearchUrl("Organization",
+                    providerOrganization.getResourceID())
             : findProviderUrl(providerOrganization, bundle);
 
     // Provenance Author...
@@ -2827,8 +2814,9 @@ public class FhirR4 {
           "http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner");
       practitionerResource.setMeta(meta);
     }
-    practitionerResource.addIdentifier().setSystem("http://hl7.org/fhir/sid/us-npi")
-    .setValue("" + (9_999_999_999L - clinician.identifier));
+    practitionerResource.addIdentifier()
+            .setSystem("http://hl7.org/fhir/sid/us-npi")
+            .setValue("" + (9_999_999_999L - clinician.identifier));
     practitionerResource.setActive(true);
     practitionerResource.addName().setFamily(
         (String) clinician.attributes.get(Clinician.LAST_NAME))
@@ -2997,13 +2985,6 @@ public class FhirR4 {
   }
   
   /**
-   * Resources that should include an ifNoneExist precondition when outputting transaction
-   * bundles.
-   */
-  private static final List<String> UNDUPLICATED_RESOURCES = Arrays.asList(
-          "Location", "Organization", "Practitioner");
-
-  /**
    * Helper function to create an Entry for the given Resource within the given Bundle. Sets the
    * resourceID to a random UUID, sets the entry's fullURL to that resourceID, and adds the entry to
    * the bundle.
@@ -3026,7 +3007,7 @@ public class FhirR4 {
       request.setMethod(HTTPVerb.POST);
       String resourceType = resource.getResourceType().name();
       request.setUrl(resourceType);
-      if (UNDUPLICATED_RESOURCES.contains(resourceType)) {
+      if (ExportHelper.UNDUPLICATED_FHIR_RESOURCES.contains(resourceType)) {
         Property prop = entry.getResource().getNamedProperty("identifier");
         if (prop != null && prop.getValues().size() > 0) {
           Identifier identifier = (Identifier)prop.getValues().get(0);
