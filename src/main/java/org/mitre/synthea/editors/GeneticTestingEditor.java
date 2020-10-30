@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import org.mitre.synthea.editors.GeneticTestingEditor.DnaSynthesisConfig.MedicalCategory;
@@ -132,7 +131,7 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
   
   @Override
   public void process(Person person, List<HealthRecord.Encounter> encounters, 
-      long time, Random random) {
+      long time) {
     if (encounters.isEmpty()) {
       return;
     }

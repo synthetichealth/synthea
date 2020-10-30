@@ -45,6 +45,9 @@ public class GeneticTestingEditorTest {
     }
   }
   
+  /**
+   * Setup for each test.
+   */
   @Before
   public void setup() {
     person = new Person(1);
@@ -130,7 +133,7 @@ public class GeneticTestingEditorTest {
     HealthRecord.Encounter e = record.encounterStart(1000, 
         HealthRecord.EncounterType.OUTPATIENT);
     GeneticTestingEditor editor = new GeneticTestingEditor();
-    editor.process(person, Arrays.asList(e), 0, person.random);
+    editor.process(person, Arrays.asList(e), 0);
     assertEquals(1, e.reports.size());
     assertEquals(1, e.reports.get(0).codes.size());
     assertEquals(GeneticTestingEditor.GENETIC_TESTING_REPORT_TYPE,

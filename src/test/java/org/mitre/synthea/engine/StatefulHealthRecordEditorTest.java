@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +24,7 @@ public class StatefulHealthRecordEditorTest {
 
     @Override
     public void process(Person person, List<HealthRecord.Encounter> encounters,
-        long time, Random random) {
+        long time) {
     }
   }
   
