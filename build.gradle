@@ -35,6 +35,7 @@ checkstyle {
 dependencies {
   // This dependency is found on compile classpath of this component and consumers.
   compile 'com.google.code.gson:gson:2.8.0'
+  compile 'com.univocity:univocity-parsers:2.8.4'
   compile 'com.jayway.jsonpath:json-path:2.4.0'
   compile 'ca.uhn.hapi.fhir:hapi-fhir-base:4.1.0'
   compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:4.1.0'
