@@ -21,11 +21,14 @@ public class GrowthDataErrorsEditorTest {
   @Before
   public void setup() {
     record = new HealthRecord(new Person(1));
-    HealthRecord.Encounter e = record.encounterStart(1000, HealthRecord.EncounterType.OUTPATIENT);
+    HealthRecord.Encounter e = record.encounterStart(1000,
+        HealthRecord.EncounterType.OUTPATIENT);
     // Weight Observation
-    e.addObservation(1000, GrowthDataErrorsEditor.WEIGHT_LOINC_CODE, 50d, "Body Weight");
+    e.addObservation(1000, GrowthDataErrorsEditor.WEIGHT_LOINC_CODE, 50d,
+        "Body Weight");
     // Height Observation
-    e.addObservation(1000, GrowthDataErrorsEditor.HEIGHT_LOINC_CODE, 150d, "Body Height");
+    e.addObservation(1000, GrowthDataErrorsEditor.HEIGHT_LOINC_CODE, 150d,
+        "Body Height");
     e.addObservation(1000, GrowthDataErrorsEditor.BMI_LOINC_CODE, 22.2d,
         "Body Mass Index");
     e.codes.add(new HealthRecord.Code("http://snomed.info/sct", "183452005", ""));
@@ -150,7 +153,8 @@ public class GrowthDataErrorsEditorTest {
   @Test
   public void encountersWithObservationsOfCode() {
     GrowthDataErrorsEditor mod = new GrowthDataErrorsEditor();
-    List<HealthRecord.Encounter> es = mod.encountersWithObservationsOfCode(record.encounters,
+    List<HealthRecord.Encounter> es = mod.encountersWithObservationsOfCode(
+        record.encounters,
         GrowthDataErrorsEditor.HEIGHT_LOINC_CODE);
     assertEquals(2, es.size());
 
