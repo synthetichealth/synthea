@@ -156,9 +156,9 @@ public class FhirStu3 {
   private static final Map languageLookup = loadLanguageLookup();
 
   private static final boolean USE_SHR_EXTENSIONS =
-      Boolean.parseBoolean(Config.get("exporter.fhir.use_shr_extensions"));
+      Config.getAsBoolean("exporter.fhir.use_shr_extensions");
   protected static boolean TRANSACTION_BUNDLE =
-      Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
+      Config.getAsBoolean("exporter.fhir.transaction_bundle");
 
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
@@ -430,7 +430,7 @@ public class FhirStu3 {
       ethnicityDisplay = "Hispanic or Latino";
     } else {
       ethnicity = "nonhispanic";
-      ethnicityDisplay = "Not Hispanic or Latino";
+      ethnicityDisplay = "Non Hispanic or Latino";
     }
 
     String ethnicityNum = (String) raceEthnicityCodes.get(ethnicity);
@@ -2425,7 +2425,7 @@ public class FhirStu3 {
 
       organizationResource.addIdentifier()
           .setSystem("urn:ietf:rfc:3986")
-          .setValue(provider.getResourceID());
+          .setValue("urn:uuid:" + provider.getResourceID());
       organizationResource.addContact().setName(new HumanName().setText("Synthetic Provider"));
     }
 
@@ -2655,7 +2655,7 @@ public class FhirStu3 {
     BundleEntryComponent entry = bundle.addEntry();
 
     resource.setId(resourceID);
-    if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
+    if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
       entry.setFullUrl(resource.fhirType() + "/" + resourceID);
     } else {
       entry.setFullUrl("urn:uuid:" + resourceID);

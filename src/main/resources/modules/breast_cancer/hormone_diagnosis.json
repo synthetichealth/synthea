@@ -426,5 +426,6 @@
         "quantity": "greater than 2.2"
       }
     }
-  }
+  },
+  "gmf_version": 1
 }

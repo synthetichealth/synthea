@@ -139,7 +139,7 @@ public class FhirDstu2 {
   private static final Map languageLookup = loadLanguageLookup();
 
   protected static boolean TRANSACTION_BUNDLE =
-      Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
+      Config.getAsBoolean("exporter.fhir.transaction_bundle");
 
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
@@ -1819,7 +1819,7 @@ public class FhirDstu2 {
     Entry entry = bundle.addEntry();
 
     resource.setId(resourceID);
-    if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
+    if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
       entry.setFullUrl(resource.getResourceName() + "/" + resourceID);
     } else {
       entry.setFullUrl("urn:uuid:" + resourceID);

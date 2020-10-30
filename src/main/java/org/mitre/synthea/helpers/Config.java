@@ -43,7 +43,7 @@ public abstract class Config {
   public static String get(String key) {
     return properties.getProperty(key);
   }
-
+  
   /**
    * Get a named property, or the default value if not found.
    *
@@ -53,6 +53,31 @@ public abstract class Config {
    */
   public static String get(String key, String defaultValue) {
     return properties.getProperty(key, defaultValue);
+  }
+
+  /**
+   * Get a named property as a boolean value.
+   *
+   * @param key property name
+   * @return value for the property, or null if not found
+   */
+  public static boolean getAsBoolean(String key) {
+    return Boolean.parseBoolean(get(key));
+  }
+
+  /**
+   * Get a named property as a boolean, or the default value if not found.
+   *
+   * @param key          property name
+   * @param defaultValue value to return if the property is not found in the list
+   * @return value for the property, or defaultValue if not found
+   */
+  public static boolean getAsBoolean(String key, boolean defaultValue) {
+    if (properties.containsKey(key)) {
+      return getAsBoolean(key);
+    } else {
+      return defaultValue;
+    }
   }
 
   /**
@@ -86,7 +111,7 @@ public abstract class Config {
    * @param key property name
    */
   public static void remove(String key) {
-    if (properties.stringPropertyNames().contains(key)) {
+    if (properties.containsKey(key)) {
       properties.remove(key);
     }
   }

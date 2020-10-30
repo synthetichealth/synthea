@@ -36,11 +36,11 @@ public abstract class FhirPractitionerExporterR4 {
    * Export the practitioner in FHIR R4 format.
    */
   public static void export(RandomNumberGenerator rand, long stop) {
-    if (Boolean.parseBoolean(Config.get("exporter.practitioner.fhir.export"))) {
+    if (Config.getAsBoolean("exporter.practitioner.fhir.export")) {
 
       Bundle bundle = new Bundle();
-      if (Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"))) {
-        bundle.setType(BundleType.TRANSACTION);
+      if (Config.getAsBoolean("exporter.fhir.transaction_bundle")) {
+        bundle.setType(BundleType.BATCH);
       } else {
         bundle.setType(BundleType.COLLECTION);
       }

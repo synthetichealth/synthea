@@ -535,5 +535,6 @@
       "type": "EncounterEnd",
       "direct_transition": "Potential_Infection"
     }
-  }
+  },
+  "gmf_version": 1
 }

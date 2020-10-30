@@ -613,11 +613,14 @@ public class StateTest {
     State appendectomy = module.getState("Appendectomy");
     appendectomy.entered = time;
     // Procedure should block
-    assertTrue( !appendectomy.process(person, time));
+    assertTrue(!appendectomy.process(person, time));
     long nextStep = time + Utilities.convertTime("days", 7);
     assertTrue(appendectomy.process(person, nextStep));
 
-    HealthRecord.Procedure proc = person.record.encounters.get(0).procedures.get(0);
+    List<HealthRecord.Procedure> procedures = person.record.encounters.get(0).procedures;
+    assertEquals(1, procedures.size());
+    
+    HealthRecord.Procedure proc = procedures.get(0);
     Code code = proc.codes.get(0);
 
     assertEquals("6025007", code.code);

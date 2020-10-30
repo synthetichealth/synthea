@@ -2,13 +2,13 @@
   "id" : "afb23edd-cafa-4361-90d0-9f8790a3dc48",
   "name" : "fhir_valueset_expand",
   "request" : {
-    "url" : "/fhir/ValueSet/$expand",
-    "method" : "POST",
-    "bodyPatterns" : [ {
-      "equalToJson" : "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"url\",\"valueUri\":\"http://snomed.info/sct?fhir_vs=ecl/<<2491000087104\"},{\"name\":\"count\",\"valueInteger\":1000},{\"name\":\"offset\",\"valueInteger\":0}]}",
-      "ignoreArrayOrder" : true,
-      "ignoreExtraElements" : true
-    } ]
+    "urlPath" : "/fhir/ValueSet/$expand",
+    "method" : "GET",
+    "queryParameters" : {
+      "url" : {
+        "equalTo" : "http://snomed.info/sct?fhir_vs=ecl/<<2491000087104"
+      }
+    }
   },
   "response" : {
     "status" : 200,

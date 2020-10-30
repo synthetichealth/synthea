@@ -31,6 +31,7 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Generator.GeneratorOptions;
 import org.mitre.synthea.export.Exporter;
+import org.mitre.synthea.export.FhirR4;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.concepts.VitalSign;
 

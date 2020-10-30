@@ -731,5 +731,6 @@
       "type": "EncounterEnd",
       "direct_transition": "ModerateDecline"
     }
-  }
+  },
+  "gmf_version": 1
 }

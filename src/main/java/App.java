@@ -197,7 +197,7 @@ public class App {
             // assume it must be the city
             options.city = currArg;
           }
-        } 
+        }
       } catch (Exception e) {
         e.printStackTrace();
         usage();
@@ -205,10 +205,24 @@ public class App {
       }
     }
     
-    if (validArgs) {
+    if (validArgs && validateConfig(options)) {
       Generator generator = new Generator(options);
       generator.run();
     }
+  }
+  
+  private static boolean validateConfig(Generator.GeneratorOptions options) {
+    if (Config.getAsBoolean("exporter.fhir.transaction_bundle")
+            && ! Config.getAsBoolean("exporter.practitioner.fhir.export")
+            && ! Config.getAsBoolean("exporter.hospital.fhir.export")) {
+      System.out.println("Warning: Synthea is configured to export FHIR transaction bundles "
+              + "for generated patients but not to export the practitioners and organizations "
+              + "that the patient bundle entries will reference. "
+              + "See https://github.com/synthetichealth/synthea/wiki/FHIR-Transaction-Bundles "
+              + "for more information."
+      );
+    }
+    return true;
   }
   
   private static void failIfPhysiologyEnabled(String arg) {

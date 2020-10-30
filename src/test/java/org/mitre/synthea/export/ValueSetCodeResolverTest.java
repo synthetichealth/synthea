@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mitre.synthea.TestHelper.LOINC_URI;
 import static org.mitre.synthea.TestHelper.SNOMED_URI;
-import static org.mitre.synthea.TestHelper.getR4FhirContext;
 import static org.mitre.synthea.TestHelper.getTxRecordingSource;
 import static org.mitre.synthea.TestHelper.isHttpRecordingEnabled;
 import static org.mitre.synthea.TestHelper.wiremockOptions;
@@ -23,7 +22,6 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
-import org.mitre.synthea.helpers.TerminologyClient;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -38,6 +36,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.mitre.synthea.world.geography.Location;
+import org.springframework.web.client.RestTemplate;
 
 public class ValueSetCodeResolverTest {
 
@@ -51,17 +50,18 @@ public class ValueSetCodeResolverTest {
 
   /**
    * Prepare for each test.
-   * @throws Exception on failure
+   * 
+   * @throws Exception
+   *           on failure
    */
   @Before
   public void setUp() throws Exception {
-    TerminologyClient terminologyClient = getR4FhirContext()
-        .newRestfulClient(TerminologyClient.class, mockTerminologyService.baseUrl() + "/fhir");
-    RandomCodeGenerator.initialize(terminologyClient);
     if (isHttpRecordingEnabled()) {
       WireMock.startRecording(getTxRecordingSource());
     }
-    
+    RandomCodeGenerator.setBaseUrl(mockTerminologyService.baseUrl() + "/fhir");
+    RandomCodeGenerator.restTemplate = new RestTemplate();
+
     person = new Person(12345L);
     time = new SimpleDateFormat("yyyy-MM-dd").parse("2014-09-25").getTime();
 
@@ -88,7 +88,8 @@ public class ValueSetCodeResolverTest {
     Code observationType = new Code(LOINC_URI, "73985-4", "Exercise activity");
     Code observationValue = new Code(LOINC_URI, "LA11837-4", "Bicycling");
     observationValue.valueSet = "http://loinc.org/vs/LL734-5";
-    encounter.addObservation(time, observationType.code, observationValue, observationType.display);
+    encounter.addObservation(time, observationType.code,
+        observationValue, observationType.display);
 
     Code reportType = new Code(SNOMED_URI, "371543004",
         "Comprehensive history and physical report");
@@ -192,14 +193,14 @@ public class ValueSetCodeResolverTest {
 
     Code actualStopReason = resolvedCarePlan.stopReason;
     assertEquals(SNOMED_URI, actualStopReason.system);
-    assertEquals("200405004", actualStopReason.code);
-    assertEquals("Retracted nipple in pregnancy, the puerperium or lactation - delivered "
-        + "with postnatal complication", actualStopReason.display);
+    assertEquals("246995007", actualStopReason.code);
+    assertEquals("Pseudo-hypopyon", actualStopReason.display);
   }
 
   @Test
   public void resolveCodesInImagingStudy() throws Exception {
-    // We load the imaging study from a module fixture, as there doesn't seem to be a way to
+    // We load the imaging study from a module fixture, as there doesn't seem to be
+    // a way to
     // instantiate it programmatically.
     Module module = TestHelper.getFixture("imaging_study_with_valueset.json");
     person.history = new ArrayList<>();
@@ -224,7 +225,8 @@ public class ValueSetCodeResolverTest {
     assertEquals("Structure of right common peroneal nerve in popliteal region",
         series.bodySite.display);
 
-    // Modality and SOP class are not really good candidates for ValueSet-based selection, so we do
+    // Modality and SOP class are not really good candidates for ValueSet-based
+    // selection, so we do
     // not currently have a sensible test case for these.
   }
 
@@ -262,7 +264,8 @@ public class ValueSetCodeResolverTest {
 
   @Test
   public void handlesNullCodesInImagingStudy() throws Exception {
-    // We load the imaging study from a module fixture, as there doesn't seem to be a way to
+    // We load the imaging study from a module fixture, as there doesn't seem to be
+    // a way to
     // instantiate it programmatically.
     Module module = TestHelper.getFixture("imaging_study_with_valueset.json");
     person.history = new ArrayList<>();
@@ -297,5 +300,6 @@ public class ValueSetCodeResolverTest {
     if (isHttpRecordingEnabled()) {
       WireMock.stopRecording();
     }
+    RandomCodeGenerator.codeListCache.clear();
   }
 }

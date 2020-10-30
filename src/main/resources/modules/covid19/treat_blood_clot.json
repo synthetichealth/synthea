@@ -254,5 +254,6 @@
       "reason": "covid19_clot",
       "direct_transition": "Terminal"
     }
-  }
+  },
+  "gmf_version": 1
 }

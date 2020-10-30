@@ -417,5 +417,6 @@
       ],
       "direct_transition": "Mild Respiratory Distress"
     }
-  }
+  },
+  "gmf_version": 1
 }
