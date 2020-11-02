@@ -28,6 +28,7 @@ import org.mitre.synthea.editors.GeneticTestingEditor;
 import org.mitre.synthea.editors.GrowthDataErrorsEditor;
 import org.mitre.synthea.export.CDWExporter;
 import org.mitre.synthea.export.Exporter;
+import org.mitre.synthea.helpers.ClinicalNoteService;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.TransitionMetrics;
@@ -497,6 +498,10 @@ public class Generator implements RandomNumberGenerator {
       person.lastUpdated = time;
       HealthRecordEditors.getInstance().executeAll(person, person.record, time, timestep);
       time += timestep;
+    }
+      
+    if (Boolean.parseBoolean(Config.get("generate.clinical_note", "false"))) {
+        ClinicalNoteService.generateNote(person, time);
     }
 
     DeathModule.process(person, time);

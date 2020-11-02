@@ -314,6 +314,9 @@ public class FhirR4 {
         String clinicalNoteText = ClinicalNoteExporter.export(person, encounter);
         boolean lastNote =
             (encounter == person.record.encounters.get(person.record.encounters.size() - 1));
+        if (lastNote && person.record.note != null) {
+          clinicalNoteText = person.record.note.text;
+        }
         clinicalNote(person, personEntry, bundle, encounterEntry, clinicalNoteText, lastNote);
       }
 

@@ -63,6 +63,9 @@ dependencies {
   
   compile group: 'org.springframework', name: 'spring-web', version: '5.2.7.RELEASE'
 
+  // HTTP Client for reaching out to services, like clinical note generation
+  compile "com.squareup.okhttp3:okhttp:4.4.0"
+
   // Java 9 no longer includes these APIs by default
   compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
   compile 'org.glassfish.jaxb:jaxb-runtime:2.3.0'
@@ -97,6 +100,7 @@ dependencies {
   testCompile 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:4.1.0'
   testCompile 'com.helger:ph-schematron:5.0.4'
   testCompile 'com.helger:ph-commons:9.1.1'
+  testCompile "com.squareup.okhttp3:mockwebserver:4.4.0"
 }
 
 // Provide more descriptive test failure output
