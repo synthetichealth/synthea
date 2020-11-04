@@ -164,7 +164,7 @@
     },
     "Morbidity 1": {
       "type": "SetAttribute",
-      "attribute": "cabs_morbidity",
+      "attribute": "cabg_morbidity",
       "range": {
         "low": 0.043,
         "high": 0.068
@@ -344,7 +344,7 @@
     },
     "Morbidity_5E": {
       "type": "SetAttribute",
-      "attribute": "cabs_morbidity",
+      "attribute": "cabg_morbidity",
       "range": {
         "low": 0.835,
         "high": 0.925
@@ -353,7 +353,7 @@
     },
     "Morbidity_4E": {
       "type": "SetAttribute",
-      "attribute": "cabs_morbidity",
+      "attribute": "cabg_morbidity",
       "range": {
         "low": 0.595,
         "high": 0.716
@@ -362,7 +362,7 @@
     },
     "Morbidity_3E": {
       "type": "SetAttribute",
-      "attribute": "cabs_morbidity",
+      "attribute": "cabg_morbidity",
       "range": {
         "low": 0.293,
         "high": 0.35
@@ -371,7 +371,7 @@
     },
     "Morbidity_5": {
       "type": "SetAttribute",
-      "attribute": "cabs_morbidity",
+      "attribute": "cabg_morbidity",
       "range": {
         "low": 0.732,
         "high": 0.847
@@ -380,7 +380,7 @@
     },
     "Morbidity_4": {
       "type": "SetAttribute",
-      "attribute": "cabs_morbidity",
+      "attribute": "cabg_morbidity",
       "range": {
         "low": 0.441,
         "high": 0.536
@@ -389,7 +389,7 @@
     },
     "Morbidity_3": {
       "type": "SetAttribute",
-      "attribute": "cabs_morbidity",
+      "attribute": "cabg_morbidity",
       "range": {
         "low": 0.172,
         "high": 0.209
@@ -398,7 +398,7 @@
     },
     "Morbidity_2": {
       "type": "SetAttribute",
-      "attribute": "cabs_morbidity",
+      "attribute": "cabg_morbidity",
       "range": {
         "low": 0.089,
         "high": 0.121
