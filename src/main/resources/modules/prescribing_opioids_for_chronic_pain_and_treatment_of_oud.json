@@ -5,7 +5,7 @@
     "",
     "Version Number: 1.0",
     "",
-    "Last Updated: 09/16/2020",
+    "Last Updated: 11/02/2020",
     "",
     "Module Steward: Office of the National Coordinator for Health Information Technology (ONC)",
     "",
@@ -20,7 +20,10 @@
     "",
     "Reference: CDC Guideline for Prescribing Opioids for Chronic Pain — United States, 2016.",
     "",
-    "Reference: The ASAM National Practice Guideline for the Use of Medications in the Treatment of Addiction Involving Opioid Use, June 1, 2015. "
+    "Reference: The ASAM National Practice Guideline for the Use of Medications in the Treatment of Addiction Involving Opioid Use, June 1, 2015. ",
+    "",
+    "",
+    ""
   ],
   "states": {
     "Initial": {
@@ -1997,7 +2000,8 @@
         }
       ],
       "administration": true,
-      "chronic": false
+      "chronic": false,
+      "reason": "Condition_Drug_Overdose"
     },
     "End_ED_Visit": {
       "type": "EncounterEnd",
@@ -2013,7 +2017,8 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "PEG_Assessment_Score_4"
+      "direct_transition": "PEG_Assessment_Score_4",
+      "reason": "Condition_OUD"
     },
     "Urine_Drug_Testing_Positive": {
       "type": "Observation",
@@ -2470,7 +2475,7 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Buprenorphine_Or_Methadone",
+          "transition": "Buprenorphine_Or_Methadone_Or_Naltrexone",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "pharmaco",
@@ -2509,7 +2514,8 @@
         "high": 60,
         "unit": "minutes"
       },
-      "direct_transition": "Rx_Buprenorphine_2"
+      "direct_transition": "Rx_Buprenorphine_2",
+      "reason": "Condition_OUD"
     },
     "Psychosocial_Therapy_2": {
       "type": "Procedure",
@@ -2525,7 +2531,8 @@
         "high": 60,
         "unit": "minutes"
       },
-      "direct_transition": "Set_Attribute_Treatment_Pshychosocial_Only"
+      "direct_transition": "Set_Attribute_Treatment_Pshychosocial_Only",
+      "reason": "Condition_OUD"
     },
     "Rx_Buprenorphine_1": {
       "type": "MedicationOrder",
@@ -2537,7 +2544,8 @@
         }
       ],
       "direct_transition": "Set_Attribute_Treatment_Pharmaco_Only",
-      "assign_to_attribute": "on_buprenorphine"
+      "assign_to_attribute": "on_buprenorphine",
+      "reason": "Condition_OUD"
     },
     "Rx_Buprenorphine_2": {
       "type": "MedicationOrder",
@@ -2549,7 +2557,8 @@
         }
       ],
       "direct_transition": "Set_Attribute_Treatment_Pharmaco_Psychosocial",
-      "assign_to_attribute": "on_buprenorphine"
+      "assign_to_attribute": "on_buprenorphine",
+      "reason": "Condition_OUD"
     },
     "Condition_OUD": {
       "type": "ConditionOnset",
@@ -2581,11 +2590,19 @@
         },
         {
           "transition": "Rx_Methadone_1",
-          "distribution": 0.02
+          "distribution": 0.01
         },
         {
           "transition": "Psychosocial_Therapy_5",
-          "distribution": 0.03
+          "distribution": 0.01
+        },
+        {
+          "transition": "Rx_Naltrexone_1",
+          "distribution": 0.01
+        },
+        {
+          "transition": "Psychosocial_Therapy_6",
+          "distribution": 0.02
         }
       ]
     },
@@ -2606,7 +2623,7 @@
     "Encounter_OUD_Treatment_Cont": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "Condition_OUD",
+      "reason": "Condition_OUD_2",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2652,7 +2669,8 @@
         },
         "refills": 3
       },
-      "chronic": true
+      "chronic": true,
+      "reason": "Condition_OUD_2"
     },
     "Rx_Buprenorphine_4": {
       "type": "MedicationOrder",
@@ -2677,7 +2695,8 @@
           "unit": "days"
         },
         "refills": 3
-      }
+      },
+      "reason": "Condition_OUD_2"
     },
     "End_Encounter_OUD_Treatment_Cont": {
       "type": "EncounterEnd",
@@ -2787,8 +2806,17 @@
             "attribute": "on_methadone",
             "operator": "is not nil"
           }
+        },
+        {
+          "transition": "Rx_Naltrexone_4",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "on_naltrexone",
+            "operator": "is not nil"
+          }
         }
-      ]
+      ],
+      "reason": "Condition_OUD_2"
     },
     "Psychosocial_Therapy_3": {
       "type": "Procedure",
@@ -2804,7 +2832,8 @@
         "high": 60,
         "unit": "minutes"
       },
-      "direct_transition": "End_Encounter_OUD_Treatment_Cont"
+      "direct_transition": "End_Encounter_OUD_Treatment_Cont",
+      "reason": "Condition_OUD_2"
     },
     "PEG_Assessment_Score_4": {
       "type": "MultiObservation",
@@ -2884,11 +2913,11 @@
       "distributed_transition": [
         {
           "transition": "Addiction",
-          "distribution": 0.25
+          "distribution": 0.1
         },
         {
           "transition": "Chronic_Pain_Population",
-          "distribution": 0.75
+          "distribution": 0.9
         }
       ]
     },
@@ -2897,7 +2926,7 @@
       "distributed_transition": [
         {
           "transition": "Terminal",
-          "distribution": 0.25
+          "distribution": 0.4
         },
         {
           "transition": "Chronic_Pain_Population",
@@ -2905,7 +2934,7 @@
         },
         {
           "transition": "Addiction",
-          "distribution": 0.25
+          "distribution": 0.1
         }
       ]
     },
@@ -2914,7 +2943,7 @@
       "distributed_transition": [
         {
           "transition": "Terminal",
-          "distribution": 0.11
+          "distribution": 0.28
         },
         {
           "transition": "Chronic_Pain_Population",
@@ -2922,7 +2951,7 @@
         },
         {
           "transition": "Addiction",
-          "distribution": 0.29
+          "distribution": 0.12
         }
       ]
     },
@@ -2997,8 +3026,9 @@
           "display": "methadone hydrochloride 10 MG Oral Tablet"
         }
       ],
-      "direct_transition": "Set_Attribute_Treatment_Methadone_Only",
-      "assign_to_attribute": "on_methadone"
+      "direct_transition": "Set_Attribute_Treatment_Pharmaco_Only",
+      "assign_to_attribute": "on_methadone",
+      "reason": "Condition_OUD"
     },
     "Rx_Methadone_2": {
       "type": "MedicationOrder",
@@ -3009,14 +3039,9 @@
           "display": "methadone hydrochloride 10 MG Oral Tablet"
         }
       ],
-      "direct_transition": "Set_Attribute_Methadone_Psychosocial",
-      "assign_to_attribute": "on_methadone"
-    },
-    "Set_Attribute_Treatment_Methadone_Only": {
-      "type": "SetAttribute",
-      "attribute": "pharmaco",
-      "value": true,
-      "direct_transition": "End_Encounter_OUD"
+      "direct_transition": "Set_Attribute_Treatment_Pharmaco_Psychosocial",
+      "assign_to_attribute": "on_methadone",
+      "reason": "Condition_OUD"
     },
     "Psychosocial_Therapy_5": {
       "type": "Procedure",
@@ -3032,34 +3057,8 @@
         "high": 60,
         "unit": "minutes"
       },
-      "direct_transition": "Rx_Methadone_2"
-    },
-    "Set_Attribute_Methadone_Psychosocial": {
-      "type": "SetAttribute",
-      "attribute": "pharmaco_and_psychosocial",
-      "direct_transition": "End_Encounter_OUD",
-      "value": true
-    },
-    "Buprenorphine_Or_Methadone": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Rx_Buprenorphine_3",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "on_buprenorphine",
-            "operator": "is not nil"
-          }
-        },
-        {
-          "transition": "Rx_Methadone_3",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "on_methadone",
-            "operator": "is not nil"
-          }
-        }
-      ]
+      "direct_transition": "Rx_Methadone_2",
+      "reason": "Condition_OUD"
     },
     "Rx_Methadone_3": {
       "type": "MedicationOrder",
@@ -3070,7 +3069,8 @@
           "display": "methadone hydrochloride 10 MG Oral Tablet"
         }
       ],
-      "direct_transition": "End_Encounter_OUD_Treatment_Cont"
+      "direct_transition": "End_Encounter_OUD_Treatment_Cont",
+      "reason": "Condition_OUD_2"
     },
     "Rx_Methadone_4": {
       "type": "MedicationOrder",
@@ -3081,7 +3081,8 @@
           "display": "methadone hydrochloride 10 MG Oral Tablet"
         }
       ],
-      "direct_transition": "End_Encounter_OUD_Treatment_Cont"
+      "direct_transition": "End_Encounter_OUD_Treatment_Cont",
+      "reason": "Condition_OUD_2"
     },
     "Age_and_Module_Effective_Time_Guard": {
       "type": "Guard",
@@ -3104,6 +3105,102 @@
         ]
       },
       "direct_transition": "General_Adult_Population"
+    },
+    "Rx_Naltrexone_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1483744,
+          "display": "Naltrexone hydrochloride 50 MG Oral Tablet"
+        }
+      ],
+      "assign_to_attribute": "on_naltrexone",
+      "reason": "Condition_OUD",
+      "direct_transition": "Set_Attribute_Treatment_Pharmaco_Only"
+    },
+    "Psychosocial_Therapy_6": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 408919008,
+          "display": "Psychosocial care (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "reason": "Condition_OUD",
+      "direct_transition": "Rx_Naltrexone_2"
+    },
+    "Rx_Naltrexone_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1483744,
+          "display": "Naltrexone hydrochloride 50 MG Oral Tablet"
+        }
+      ],
+      "assign_to_attribute": "on_naltrexone",
+      "reason": "Condition_OUD",
+      "direct_transition": "Set_Attribute_Treatment_Pharmaco_Psychosocial"
+    },
+    "Buprenorphine_Or_Methadone_Or_Naltrexone": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Rx_Buprenorphine_3",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "on_buprenorphine",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Rx_Methadone_3",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "on_methadone",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Rx_Naltrexone_3",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "on_naltrexone",
+            "operator": "is not nil"
+          }
+        }
+      ]
+    },
+    "Rx_Naltrexone_3": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1483744,
+          "display": "Naltrexone hydrochloride 50 MG Oral Tablet"
+        }
+      ],
+      "reason": "Condition_OUD_2",
+      "direct_transition": "End_Encounter_OUD_Treatment_Cont"
+    },
+    "Rx_Naltrexone_4": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1483744,
+          "display": "Naltrexone hydrochloride 50 MG Oral Tablet"
+        }
+      ],
+      "reason": "Condition_OUD_2",
+      "direct_transition": "End_Encounter_OUD_Treatment_Cont"
     }
   }
 }
