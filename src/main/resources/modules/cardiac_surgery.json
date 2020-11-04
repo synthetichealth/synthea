@@ -142,12 +142,67 @@
                                                                 ]
                                                               },
                                                               {
-                                                                "condition_type": "Active Condition",
-                                                                "codes": [
+                                                                "condition_type": "Or",
+                                                                "conditions": [
                                                                   {
-                                                                    "system": "SNOMED-CT",
-                                                                    "code": 27942005,
-                                                                    "display": "Shock (disorder)"
+                                                                    "condition_type": "Active Condition",
+                                                                    "codes": [
+                                                                      {
+                                                                        "system": "SNOMED-CT",
+                                                                        "code": 27942005,
+                                                                        "display": "Shock (disorder)"
+                                                                      }
+                                                                    ]
+                                                                  },
+                                                                  {
+                                                                    "condition_type": "Or",
+                                                                    "conditions": [
+                                                                      {
+                                                                        "condition_type": "Active Condition",
+                                                                        "codes": [
+                                                                          {
+                                                                            "system": "SNOMED-CT",
+                                                                            "code": 55822004,
+                                                                            "display": "Hyperlipidemia"
+                                                                          }
+                                                                        ]
+                                                                      },
+                                                                      {
+                                                                        "condition_type": "Or",
+                                                                        "conditions": [
+                                                                          {
+                                                                            "condition_type": "And",
+                                                                            "conditions": [
+                                                                              {
+                                                                                "condition_type": "Gender",
+                                                                                "gender": "M"
+                                                                              },
+                                                                              {
+                                                                                "condition_type": "Age",
+                                                                                "operator": ">=",
+                                                                                "quantity": 55,
+                                                                                "unit": "years"
+                                                                              }
+                                                                            ]
+                                                                          },
+                                                                          {
+                                                                            "condition_type": "And",
+                                                                            "conditions": [
+                                                                              {
+                                                                                "condition_type": "Gender",
+                                                                                "gender": "F"
+                                                                              },
+                                                                              {
+                                                                                "condition_type": "Age",
+                                                                                "operator": ">=",
+                                                                                "quantity": 65,
+                                                                                "unit": "years"
+                                                                              }
+                                                                            ]
+                                                                          }
+                                                                        ]
+                                                                      }
+                                                                    ]
                                                                   }
                                                                 ]
                                                               }
