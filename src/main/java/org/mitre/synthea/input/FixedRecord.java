@@ -1,5 +1,6 @@
 package org.mitre.synthea.input;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.IOException;
@@ -16,6 +17,9 @@ import org.mitre.synthea.world.geography.Demographics;
 public class FixedRecord {
   @SerializedName(value = "LIST_ID")
   public String site;
+
+  @SerializedName(value = "seed_id")
+  public String seedID;
 
   @SerializedName(value = "record_id")
   public String recordId;
@@ -81,7 +85,8 @@ public class FixedRecord {
   public String householdRole;
 
   // Attributes map
-  Map<String, Object> attributes;
+  @Expose(serialize = false, deserialize = true) private transient Map<String, Object> attributes;
+
 
   /**
    * Returns the city of this fixedRecord if it is a valid city.

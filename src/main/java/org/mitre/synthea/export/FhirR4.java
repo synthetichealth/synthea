@@ -135,6 +135,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.input.Household;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
@@ -418,6 +419,12 @@ public class FhirR4 {
       patientResource.addIdentifier()
           .setSystem("http://codi.mitre.org/link_id")
           .setValue(person.attributes.get(Person.LINK_ID).toString());
+    }
+
+    if (person.attributes.get(Person.HOUSEHOLD) != null) {
+      patientResource.addIdentifier()
+          .setSystem("http://mitre.org/household_id")
+          .setValue(String.valueOf(((Household) person.attributes.get(Person.HOUSEHOLD)).id));
     }
 
     if (person.attributes.get(Person.CONTACT_EMAIL) != null) {

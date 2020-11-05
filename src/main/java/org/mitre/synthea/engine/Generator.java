@@ -12,7 +12,6 @@ import java.io.FilenameFilter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,7 +30,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.StringUtils;
-
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.editors.GrowthDataErrorsEditor;
 import org.mitre.synthea.export.CDWExporter;
@@ -42,6 +40,7 @@ import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.input.FixedRecord;
 import org.mitre.synthea.input.FixedRecordGroup;
+import org.mitre.synthea.input.FixedRecordGroupManager;
 import org.mitre.synthea.input.Household;
 import org.mitre.synthea.input.HouseholdModule;
 import org.mitre.synthea.modules.DeathModule;
@@ -58,7 +57,8 @@ import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
 
 /**
- * Generator creates a population by running the generic modules each timestep per Person.
+ * Generator creates a population by running the generic modules each timestep
+ * per Person.
  */
 public class Generator implements RandomNumberGenerator {
 
@@ -79,38 +79,38 @@ public class Generator implements RandomNumberGenerator {
   public static String DEFAULT_STATE = "Massachusetts";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
 
-  // Fixed Records
-  private List<FixedRecordGroup> recordGroups;
-
   // Households
-  private List<FixedRecord> importedFixedRecords;
+  private FixedRecordGroupManager fixedRecordGroupManager;
   private Map<Integer, Household> households;
 
   /**
-   * Used only for testing and debugging. Populate this field to keep track of all patients
-   * generated, living or dead, during a simulation. Note that this may result in significantly
-   * increased memory usage as patients cannot be GC'ed.
+   * Used only for testing and debugging. Populate this field to keep track of all
+   * patients generated, living or dead, during a simulation. Note that this may
+   * result in significantly increased memory usage as patients cannot be GC'ed.
    */
   List<Person> internalStore;
 
   /**
-   * A filename predicate used to filter a subset of modules. Helpful when testing a particular
-   * module. Use "-m filename" on the command line to filter which modules get loaded.
+   * A filename predicate used to filter a subset of modules. Helpful when testing
+   * a particular module. Use "-m filename" on the command line to filter which
+   * modules get loaded.
    */
   Predicate<String> modulePredicate;
-  
+
   private static final String TARGET_AGE = "target_age";
 
   /**
-   * Helper class following the "Parameter Object" pattern.
-   * This class provides the default values for Generator, or alternatives may be set.
+   * Helper class following the "Parameter Object" pattern. This class provides
+   * the default values for Generator, or alternatives may be set.
    */
   public static class GeneratorOptions {
     public int population = Integer.parseInt(Config.get("generate.default_population", "1"));
     public long seed = System.currentTimeMillis();
     public long clinicianSeed = seed;
-    /** Population as exclusively live persons or including deceased.
-     * True for live, false includes deceased */
+    /**
+     * Population as exclusively live persons or including deceased. True for live,
+     * false includes deceased
+     */
     public boolean overflow = true;
     /** Gender to be generated. M for Male, F for Female, null for any. */
     public String gender;
@@ -122,8 +122,10 @@ public class Generator implements RandomNumberGenerator {
     public int maxAge = 140;
     public String city;
     public String state;
-    /** When Synthea is used as a standalone library, this directory holds
-     * any locally created modules. */
+    /**
+     * When Synthea is used as a standalone library, this directory holds any
+     * locally created modules.
+     */
     public File localModuleDir;
     public File fixedRecordPath;
     public List<String> enabledModules;
@@ -131,14 +133,19 @@ public class Generator implements RandomNumberGenerator {
     public File initialPopulationSnapshotPath;
     /** File used to store a population snapshot. */
     public File updatedPopulationSnapshotPath;
-    /** Time period in days to evolve the population loaded from initialPopulationSnapshotPath. A
-     *  value of -1 will evolve the population to the current system time.
+    /**
+     * Time period in days to evolve the population loaded from
+     * initialPopulationSnapshotPath. A value of -1 will evolve the population to
+     * the current system time.
      */
     public int daysToTravelForward = -1;
-    /** Reference Time when to start Synthea. By default equal to the current system time. */
+    /**
+     * Reference Time when to start Synthea. By default equal to the current system
+     * time.
+     */
     public long referenceTime = seed;
   }
-  
+
   /**
    * Create a Generator, using all default settings.
    */
@@ -147,8 +154,8 @@ public class Generator implements RandomNumberGenerator {
   }
 
   /**
-   * Create a Generator, with the given population size.
-   * All other settings are left as defaults.
+   * Create a Generator, with the given population size. All other settings are
+   * left as defaults.
    * 
    * @param population Target population size
    */
@@ -157,13 +164,13 @@ public class Generator implements RandomNumberGenerator {
     options.population = population;
     init();
   }
-  
+
   /**
-   * Create a Generator, with the given population size and seed.
-   * All other settings are left as defaults.
+   * Create a Generator, with the given population size and seed. All other
+   * settings are left as defaults.
    * 
    * @param population Target population size
-   * @param seed Seed used for randomness
+   * @param seed       Seed used for randomness
    */
   public Generator(int population, long seed, long clinicianSeed) {
     this(new GeneratorOptions(), new Exporter.ExporterRuntimeOptions());
@@ -175,15 +182,17 @@ public class Generator implements RandomNumberGenerator {
 
   /**
    * Create a Generator, with the given options.
+   * 
    * @param o Desired configuration options
    */
   public Generator(GeneratorOptions o) {
     this(o, new Exporter.ExporterRuntimeOptions());
   }
-  
+
   /**
    * Create a Generator, with the given options.
-   * @param o Desired configuration options
+   * 
+   * @param o   Desired configuration options
    * @param ero Desired exporter options
    */
   public Generator(GeneratorOptions o, Exporter.ExporterRuntimeOptions ero) {
@@ -210,9 +219,8 @@ public class Generator implements RandomNumberGenerator {
         this.database = null;
         break;
       default:
-        throw new IllegalArgumentException(
-            "Unexpected value for config setting generate.database_type: '" + dbType
-                + "' . Valid values are file, in-memory, or none.");
+        throw new IllegalArgumentException("Unexpected value for config setting generate.database_type: '" + dbType
+            + "' . Valid values are file, in-memory, or none.");
     }
 
     if (options.state == null) {
@@ -234,7 +242,7 @@ public class Generator implements RandomNumberGenerator {
 
     this.onlyDeadPatients = Boolean.parseBoolean(Config.get("generate.only_dead_patients"));
     this.onlyAlivePatients = Boolean.parseBoolean(Config.get("generate.only_alive_patients"));
-    //If both values are set to true, then they are both set back to the default
+    // If both values are set to true, then they are both set back to the default
     if (this.onlyDeadPatients && this.onlyAlivePatients) {
       Config.set("generate.only_dead_patients", "false");
       Config.set("generate.only_alive_patients", "false");
@@ -250,8 +258,7 @@ public class Generator implements RandomNumberGenerator {
     stats.put("alive", new AtomicInteger(0));
     stats.put("dead", new AtomicInteger(0));
 
-    if (Boolean.parseBoolean(
-          Config.get("generate.track_detailed_transition_metrics", "false"))) {
+    if (Boolean.parseBoolean(Config.get("generate.track_detailed_transition_metrics", "false"))) {
       this.metrics = new TransitionMetrics();
     }
 
@@ -264,9 +271,9 @@ public class Generator implements RandomNumberGenerator {
       Module.addModules(options.localModuleDir);
     }
     List<String> coreModuleNames = getModuleNames(Module.getModules(path -> false));
-    List<String> moduleNames = getModuleNames(Module.getModules(modulePredicate)); 
+    List<String> moduleNames = getModuleNames(Module.getModules(modulePredicate));
     Costs.loadCostData(); // ensure cost data loads early
-    
+
     String locationName;
     if (options.city == null) {
       locationName = options.state;
@@ -274,12 +281,9 @@ public class Generator implements RandomNumberGenerator {
       locationName = options.city + ", " + options.state;
     }
     System.out.println("Running with options:");
-    System.out.println(String.format(
-        "Population: %d\nSeed: %d\nProvider Seed:%d\nReference Time: %d\nLocation: %s",
-        options.population, options.seed, options.clinicianSeed, options.referenceTime,
-        locationName));
-    System.out.println(String.format("Min Age: %d\nMax Age: %d",
-        options.minAge, options.maxAge));
+    System.out.println(String.format("Population: %d\nSeed: %d\nProvider Seed:%d\nReference Time: %d\nLocation: %s",
+        options.population, options.seed, options.clinicianSeed, options.referenceTime, locationName));
+    System.out.println(String.format("Min Age: %d\nMax Age: %d", options.minAge, options.maxAge));
     if (options.gender != null) {
       System.out.println(String.format("Gender: %s", options.gender));
     }
@@ -290,8 +294,7 @@ public class Generator implements RandomNumberGenerator {
       System.out.println(String.format("       > [%d loaded]", moduleNames.size()));
     }
 
-    if (Boolean.parseBoolean(
-        Config.get("growtherrors", "false"))) {
+    if (Boolean.parseBoolean(Config.get("growtherrors", "false"))) {
       HealthRecordEditors hrm = HealthRecordEditors.getInstance();
       hrm.registerEditor(new GrowthDataErrorsEditor());
     }
@@ -299,33 +302,32 @@ public class Generator implements RandomNumberGenerator {
 
   /**
    * Extracts a list of names from the supplied list of modules.
+   * 
    * @param modules A collection of modules
    * @return A list of module names.
    */
   private List<String> getModuleNames(List<Module> modules) {
-    return modules.stream()
-            .map(m -> m.name)
-            .collect(Collectors.toList());
+    return modules.stream().map(m -> m.name).collect(Collectors.toList());
   }
-  
+
   /**
    * Generate the population, using the currently set configuration settings.
    */
   public void run() {
 
     // Import the fixed patient demographics records file, if a file path is given.
-    if (this.options.fixedRecordPath != null && !Boolean.parseBoolean(Config.get("fixeddemographics.predeterminedBirths", "false"))) {
-      importFixedPatientDemographicsFile();
-      // Since we're using FixedRecords, split records must be true.
-      Config.set("exporter.split_records", "true");
+    if (this.options.fixedRecordPath != null) {
+      // Import household demogarphics.
+      this.fixedRecordGroupManager = importFixedDemographicsFile();
       // We'll be using the FixedRecord names, so no numbers should be appended to them.
       Config.set("generate.append_numbers_to_person_names", "false");
-    } else if (Boolean.parseBoolean(Config.get("fixeddemographics.predeterminedBirths", "false"))){
-      // Import household demogarphics.
-      this.importedFixedRecords = importHouseholdDemographicsFile();
-      Config.set("generate.append_numbers_to_person_names", "false");
-      // Initialize households map.
-      this.households = new HashMap<Integer, Household>();
+      // Since we're using FixedRecords, split records must be true.
+      Config.set("exporter.split_records", "true");
+
+      if (Boolean.parseBoolean(Config.get("fixeddemographics.predeterminedBirths", "false"))) {
+        // Initialize households map.
+        this.households = new HashMap<Integer, Household>();
+      }
     }
 
     ExecutorService threadPool = Executors.newFixedThreadPool(8);
@@ -344,12 +346,11 @@ public class Generator implements RandomNumberGenerator {
       if (initialPopulation != null && initialPopulation.size() > 0) {
         // default is to run until current system time.
         if (options.daysToTravelForward > 0) {
-          stop = initialPopulation.get(0).lastUpdated 
-                  + Utilities.convertTime("days", options.daysToTravelForward);
+          stop = initialPopulation.get(0).lastUpdated + Utilities.convertTime("days", options.daysToTravelForward);
         }
         for (int i = 0; i < initialPopulation.size(); i++) {
           final int index = i;
-          final Person p = initialPopulation.get(i);        
+          final Person p = initialPopulation.get(i);
           threadPool.submit(() -> updateRecordExportPerson(p, index));
         }
       }
@@ -394,7 +395,7 @@ public class Generator implements RandomNumberGenerator {
     Exporter.runPostCompletionExports(this, exporterRuntimeOptions);
 
     System.out.printf("Records: total=%d, alive=%d, dead=%d\n", totalGeneratedPopulation.get(),
-            stats.get("alive").get(), stats.get("dead").get());
+        stats.get("alive").get(), stats.get("dead").get());
 
     if (this.metrics != null) {
       metrics.printStats(totalGeneratedPopulation.get(), Module.getModules(getModulePredicate()));
@@ -405,47 +406,26 @@ public class Generator implements RandomNumberGenerator {
    * Imports the fixed demographics records file when using fixed patient
    * demographics.
    * 
-   * @return A list of the groups of records imported.
+   * @return the fixed record manager.
    */
-  public List<FixedRecordGroup> importFixedPatientDemographicsFile() {
+  public FixedRecordGroupManager importFixedDemographicsFile() {
     Gson gson = new Gson();
-    Type listType = new TypeToken<List<FixedRecordGroup>>() {}.getType();
-    try {
-      System.out.println("Loading fixed patient demographic records file: "
-          + this.options.fixedRecordPath);
-      this.recordGroups = gson.fromJson(new FileReader(this.options.fixedRecordPath), listType);
-      int linkIdStart = 100000;
-      for (int i = 0; i < this.recordGroups.size(); i++) {
-        this.recordGroups.get(i).linkId = linkIdStart + i;
-      }
-    } catch (FileNotFoundException e) {
-      throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
-    }
-    // Update the population size to reflect the number of patients in the fixed records file.
-    this.options.population = this.recordGroups.size();
-    // Return the record groups.
-    return recordGroups;
-  }
+    // Type listType = new TypeToken<List<FixedRecord>>() {}.getType();
 
-  /**
-   * Imports the households demographics records file.
-   * 
-   * @return A list of the of records imported.
-   */
-  public List<FixedRecord> importHouseholdDemographicsFile() {
-    Gson gson = new Gson();
-    Type listType = new TypeToken<List<FixedRecord>>() {}.getType();
-    List<FixedRecord> fixedRecords;
+    Type jsonType = new TypeToken<FixedRecordGroupManager>() {}.getType();
+
+    FixedRecordGroupManager fixedRecordManager;
     try {
       System.out.println("Loading fixed patient demographic records file: "
           + this.options.fixedRecordPath);
-          fixedRecords = gson.fromJson(new FileReader(this.options.fixedRecordPath), listType);
+          fixedRecordManager = gson.fromJson(new FileReader(this.options.fixedRecordPath), jsonType);
     } catch (FileNotFoundException e) {
       throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
     }
-    this.options.population = fixedRecords.size();
-    // Return the record groups.
-    return fixedRecords;
+    fixedRecordManager.createRecordGroups();
+    this.options.population = fixedRecordManager.getPopulationSize();
+    // Return the FixedRecordGroupManager.
+    return fixedRecordManager;
   }
   
   /**
@@ -490,17 +470,13 @@ public class Generator implements RandomNumberGenerator {
 
       int providerCount = 0;
       int providerMinimum = 1;
-      if(Boolean.parseBoolean(Config.get("fixeddemographics.predeterminedBirths", "false"))) {
+      if(this.fixedRecordGroupManager != null) {
         // Get the Demographic attributes
-        FixedRecord currentRecord = importedFixedRecords.get(index);
-        demoAttributes = pickHouseholdGoldStandardDemographics(currentRecord, random);
+        FixedRecordGroup recordGroup = this.fixedRecordGroupManager.getRecordGroup(index);
+        demoAttributes = pickFixedDemographics(recordGroup, random);
+        // If fixed records are used, there must be 1 provider for each of this person's variant records.
+        providerMinimum = recordGroup.getRecordCount();
         
-      } else if (this.recordGroups != null) {
-        // Pick fixed demographics if a fixed demographics record file is used.
-        demoAttributes = pickFixedDemographics(index, random);
-        // If fixed records are used, there must be 1 provider for each of this person's records.
-        FixedRecordGroup recordGroup = this.recordGroups.get(index);
-        providerMinimum = recordGroup.count;
       } else {
        demoAttributes = randomDemographics(randomForDemographics);
       }
@@ -824,67 +800,43 @@ public class Generator implements RandomNumberGenerator {
   }
 
   /**
-   * Pick a person's demographics based on their FixedRecords.
-   * @param index The index to use.
+   * Pick a person's demographics based on their seed fixed record.
+   * @param recordGroup The record group to pull demographics from.
    * @param random Random object.
    */
-  private Map<String, Object> pickFixedDemographics(int index, Random random) {
-
-    FixedRecord fr;
-    // Get the first FixedRecord from the current RecordGroup
-    FixedRecordGroup recordGroup = this.recordGroups.get(index);
-    fr = recordGroup.records.get(0);
-    
-    // Get the city from the location in the fixed record.
-    this.location = new Location(fr.state, recordGroup.getSafeCity());
+  private Map<String, Object> pickFixedDemographics(FixedRecordGroup recordGroup, Random random) {
+    FixedRecord seedRecord = recordGroup.seedRecord;
+    this.location = new Location(
+      seedRecord.state,
+      seedRecord.city);
     Demographics city = this.location.randomCity(random);
     // Pick the rest of the demographics based on the location of the fixed record.
     Map<String, Object> demoAttributes = pickDemographics(random, city);
 
     // Overwrite the person's attributes with the FixedRecord.
-    demoAttributes.put(Person.BIRTHDATE, recordGroup.getValidBirthdate());
+    demoAttributes.put(Person.BIRTHDATE, seedRecord.getBirthDate());
     demoAttributes.put(Person.BIRTH_CITY, city.city);
-    String g = fr.gender;
+    String g = seedRecord.gender;
     if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
       g = "F";
     }
     demoAttributes.put(Person.GENDER, g);
 
-    // Give the person their FixedRecordGroup of FixedRecords.
+    if(Boolean.parseBoolean(Config.get("fixeddemographics.predeterminedBirths", "false"))){
+      // Generate the person's household based on the ID if it does not yet exist.
+      int householdId = Integer.parseInt(seedRecord.householdId);
+      if(this.households.get(householdId) == null){
+        this.households.put(householdId, new Household(householdId));
+      }
+      demoAttributes.put(Person.HOUSEHOLD, this.households.get(householdId));
+    }
+   
     demoAttributes.put(Person.RECORD_GROUP, recordGroup);
     demoAttributes.put(Person.LINK_ID, recordGroup.linkId);
+    // Set the person's fixed seed record.
+    demoAttributes.put(Person.SEED_RECORD, seedRecord);
 
-    demoAttributes.putAll(fr.getFixedRecordAttributes());
-
-    // Return the Demographic Attributes of the current person.
-    return demoAttributes;
-  }
-
-  private Map<String, Object> pickHouseholdGoldStandardDemographics(FixedRecord goldStandardFixedRecord, Random random) {
-    this.location = new Location(goldStandardFixedRecord.state, goldStandardFixedRecord.city);
-    Demographics city = this.location.randomCity(random);
-    // Pick the rest of the demographics based on the location of the fixed record.
-    Map<String, Object> demoAttributes = pickDemographics(random, city);
-
-    // Overwrite the person's attributes with the FixedRecord.
-    demoAttributes.put(Person.BIRTHDATE, goldStandardFixedRecord.getBirthDate());
-    demoAttributes.put(Person.BIRTH_CITY, city.city);
-    String g = goldStandardFixedRecord.gender;
-    if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
-      g = "F";
-    }
-    demoAttributes.put(Person.GENDER, g);
-
-    // Generate the person's household based on the ID if it does not yet exist.
-    int householdId = Integer.parseInt(goldStandardFixedRecord.householdId);
-    if(this.households.get(householdId) == null){
-      this.households.put(householdId, new Household(householdId));
-    }
-    demoAttributes.put(Person.HOUSEHOLD, this.households.get(householdId));
-    // Set the person's gold standard fixed record.
-    demoAttributes.put(Person.GOLD_STANDARD_FIXED_RECORD, goldStandardFixedRecord);
-
-    demoAttributes.putAll(goldStandardFixedRecord.getFixedRecordAttributes());
+    demoAttributes.putAll(seedRecord.getFixedRecordAttributes());
 
     return demoAttributes;
   }

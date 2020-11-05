@@ -1,5 +1,6 @@
 package org.mitre.synthea.input;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,30 +9,34 @@ import java.util.List;
  * provider locations.
  */
 public class FixedRecordGroup {
-  public List<FixedRecord> records;
-  public int count;
+  public FixedRecord seedRecord;
+  public List<FixedRecord> variantRecords;
   public int linkId;
   public int year;
 
-  public FixedRecordGroup(){
+  public FixedRecordGroup(FixedRecord seedRecord){
     year = 0;
+    this.seedRecord = seedRecord;
+    this.variantRecords = new ArrayList<FixedRecord>();
+  }
+
+  public void addVariantRecord(FixedRecord variantRecord){
+    this.variantRecords.add(variantRecord);
   }
 
   /**
-   * Pulls the first valid birthdate from the list of FixedRecords.
+   * Returns the valid birthdate in the seed record
    * @return long valid birthdate
    */
   public long getValidBirthdate() {
-    for (int i = 0; i < this.records.size(); i++) {
-      try {
-        return this.records.get(i).getBirthDate();
-      } catch (java.time.DateTimeException | java.lang.NullPointerException
-          | java.lang.IllegalArgumentException dontcare) {
-        // Do nothing if the current fixed record does not have a valid birthdate.
-      }
+    try {
+      return this.seedRecord.getBirthDate();
+    } catch (java.time.DateTimeException | java.lang.NullPointerException
+        | java.lang.IllegalArgumentException dontcare) {
+      // Do nothing if the current fixed record does not have a valid birthdate.
     }
-    throw new RuntimeException("No valid birthdate for: " + this.records.get(0).firstName + " "
-        + this.records.get(0).lastName);
+    throw new RuntimeException("No valid birthdate for: " + this.seedRecord.firstName + " "
+        + this.seedRecord.lastName);
   }
 
   /**
@@ -39,14 +44,12 @@ public class FixedRecordGroup {
    * @return String safe city name
    */
   public String getSafeCity() {
-    for (int i = 0; i < this.records.size(); i++) {
-      String safeCity = this.records.get(i).getSafeCity();
-      if (safeCity != null) {
-        return safeCity;
-      }
+    String safeCity = seedRecord.getSafeCity();
+    if (safeCity != null) {
+      return safeCity;
     }
-    throw new RuntimeException("ERROR: No valid city for " + this.records.get(0).firstName + " "
-        + this.records.get(0).lastName + ".");
+    throw new RuntimeException("ERROR: No valid city for " + seedRecord.firstName + " "
+        + seedRecord.lastName + ".");
   }
 
   /**
@@ -56,16 +59,20 @@ public class FixedRecordGroup {
   public FixedRecord getCurrentFixedRecord(int currentYear) {
     if(year < currentYear){
       year = currentYear;
-      for(FixedRecord record : records) {
+      for(FixedRecord record : variantRecords) {
         // Check if the current year is between the years in the current fixed record.
         if(record.checkRecordDates(currentYear)){
           return record;
         }
       }
-    throw new RuntimeException("ERROR: Invalid input record dates for " + this.records.get(0).firstName + " " + this.records.get(0).lastName + ".");
-  } else {
-    return null;
+    throw new RuntimeException("ERROR: Invalid input record dates for " + this.seedRecord.firstName + " " + this.seedRecord.lastName + ".");
+    } else {
+      return null;
+    }
   }
-}
+
+  public int getRecordCount() {
+    return this.variantRecords.size();
+  }
 
 }

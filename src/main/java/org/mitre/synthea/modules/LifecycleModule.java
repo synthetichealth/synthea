@@ -177,16 +177,16 @@ public final class LifecycleModule extends Module {
     boolean hasStreetAddress2 = person.rand() < 0.5;
     attributes.put(Person.ADDRESS, fakeAddress(hasStreetAddress2, person));
 
-    // If using FixedRecords, overwrite the person's attributes with the FixedRecord attributes.
+    // If using FixedRecords, overwrite the person's attributes with the seed fixed record attributes.
     if (person.attributes.get(Person.RECORD_GROUP) != null) {
       FixedRecordGroup recordGroup = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
-      FixedRecord fr = recordGroup.records.get(0);
+      FixedRecord fr = recordGroup.seedRecord;
       attributes.putAll(fr.getFixedRecordAttributes());
     }
     // If using household fixed records, overwrite the attributes.
     if(person.attributes.get(Person.HOUSEHOLD) != null) {
       person.attributes.putAll(
-          ((FixedRecord) person.attributes.get(Person.GOLD_STANDARD_FIXED_RECORD)).getFixedRecordAttributes());
+          ((FixedRecord) person.attributes.get(Person.SEED_RECORD)).getFixedRecordAttributes());
     }
 
     String ssn = "999-" + ((person.randInt(99 - 10 + 1) + 10)) + "-"
