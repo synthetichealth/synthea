@@ -228,7 +228,7 @@
           "distribution": 0.2
         },
         {
-          "transition": "ARDS",
+          "transition": "Respiratory Failure",
           "distribution": 0.2
         },
         {
@@ -474,19 +474,6 @@
       "direct_transition": "Check Prolonged LOS",
       "value": false
     },
-    "ARDS": {
-      "type": "ConditionOnset",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "67782005",
-          "display": "Acute respiratory distress syndrome (disorder)"
-        }
-      ],
-      "target_encounter": "CABG_Postop",
-      "direct_transition": "Sepsis",
-      "assign_to_attribute": "Ventilator Reason"
-    },
     "Heart_Failure": {
       "type": "ConditionOnset",
       "codes": [
@@ -560,6 +547,19 @@
           "transition": "Check Prolonged LOS"
         }
       ]
+    },
+    "Respiratory Failure": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 65710008,
+          "display": "Acute respiratory failure (disorder)"
+        }
+      ],
+      "target_encounter": "CABG_Postop",
+      "direct_transition": "Sepsis",
+      "assign_to_attribute": "Ventilator Reason"
     }
   }
 }
