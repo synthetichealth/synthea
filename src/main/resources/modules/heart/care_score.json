@@ -16,23 +16,23 @@
       "distributed_transition": [
         {
           "transition": "CARE Score 1",
-          "distribution": 0.2
+          "distribution": 0.04
         },
         {
           "transition": "CARE Score 2",
-          "distribution": 0.2
+          "distribution": 0.491
         },
         {
           "transition": "CARE Score 3",
-          "distribution": 0.2
+          "distribution": 0.427
         },
         {
           "transition": "CARE Score 4",
-          "distribution": 0.2
+          "distribution": 0.033
         },
         {
           "transition": "CARE Score 5",
-          "distribution": 0.2
+          "distribution": 0.009
         }
       ]
     },
@@ -41,19 +41,19 @@
       "distributed_transition": [
         {
           "transition": "CARE Score 2",
-          "distribution": 0.25
+          "distribution": 0.512
         },
         {
           "transition": "CARE Score 3",
-          "distribution": 0.25
+          "distribution": 0.445
         },
         {
           "transition": "CARE Score 4",
-          "distribution": 0.25
+          "distribution": 0.034
         },
         {
           "transition": "CARE Score 5",
-          "distribution": 0.25
+          "distribution": 0.009
         }
       ]
     },
@@ -62,52 +62,95 @@
       "distributed_transition": [
         {
           "transition": "CARE Score 3",
-          "distribution": 0.33
+          "distribution": 0.911
         },
         {
           "transition": "CARE Score 4",
-          "distribution": 0.33
+          "distribution": 0.07
         },
         {
           "transition": "CARE Score 5",
-          "distribution": 0.34
+          "distribution": 0.019
         }
       ]
     },
     "CARE Score 1": {
       "type": "SetAttribute",
       "attribute": "care_score",
-      "direct_transition": "Emergency Check",
+      "direct_transition": "Priority 4",
       "value": 1
     },
     "CARE Score 2": {
       "type": "SetAttribute",
       "attribute": "care_score",
       "value": 2,
-      "direct_transition": "Emergency Check"
+      "direct_transition": "Priority 4"
     },
     "CARE Score 3": {
       "type": "SetAttribute",
       "attribute": "care_score",
       "value": 3,
-      "direct_transition": "Emergency Check"
+      "distributed_transition": [
+        {
+          "transition": "Priority 4",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Priority 3",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Priority 2",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Priority 1",
+          "distribution": 0.1
+        }
+      ]
     },
     "CARE Score 4": {
       "type": "SetAttribute",
       "attribute": "care_score",
       "value": 4,
-      "direct_transition": "Emergency Check"
+      "distributed_transition": [
+        {
+          "transition": "Priority 4",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Priority 3",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Priority 2",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Priority 1",
+          "distribution": 0.1
+        }
+      ]
     },
     "CARE Score 5": {
       "type": "SetAttribute",
       "attribute": "care_score",
       "value": 5,
-      "direct_transition": "Emergency Check"
+      "distributed_transition": [
+        {
+          "transition": "Priority 1",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Priority 2",
+          "distribution": 0.5
+        }
+      ]
     },
     "CARE Score Emergency": {
       "type": "SetAttribute",
       "attribute": "care_score_e",
-      "direct_transition": "Record Score",
+      "direct_transition": "Priority Override",
       "value": true
     },
     "Emergency Check": {
@@ -288,6 +331,36 @@
           "attribute": "care_score_e"
         }
       ]
+    },
+    "Priority 4": {
+      "type": "SetAttribute",
+      "attribute": "care_priority_level",
+      "direct_transition": "Emergency Check",
+      "value": 4
+    },
+    "Priority 2": {
+      "type": "SetAttribute",
+      "attribute": "care_priority_level",
+      "value": 2,
+      "direct_transition": "Emergency Check"
+    },
+    "Priority 1": {
+      "type": "SetAttribute",
+      "attribute": "care_priority_level",
+      "value": 1,
+      "direct_transition": "Emergency Check"
+    },
+    "Priority 3": {
+      "type": "SetAttribute",
+      "attribute": "care_priority_level",
+      "value": 3,
+      "direct_transition": "Emergency Check"
+    },
+    "Priority Override": {
+      "type": "SetAttribute",
+      "attribute": "care_priority_level",
+      "direct_transition": "Record Score",
+      "value": 1
     }
   }
 }
