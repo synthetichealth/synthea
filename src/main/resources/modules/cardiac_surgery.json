@@ -234,7 +234,7 @@
           }
         ]
       },
-      "direct_transition": "CABG"
+      "direct_transition": "Cardiac Encounter"
     },
     "Block Pediatric Patients": {
       "type": "Guard",
@@ -260,12 +260,77 @@
     "Set Outcomes": {
       "type": "CallSubmodule",
       "submodule": "heart/cabg/outcomes",
-      "direct_transition": "Referral"
+      "direct_transition": "Referral_Procedure"
     },
     "Referral": {
       "type": "CallSubmodule",
       "submodule": "heart/cabg/referral",
       "direct_transition": "Terminal"
+    },
+    "Cardiac Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "cardiac_surgery_reason",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "CABG"
+    },
+    "Referral_Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183519002,
+          "display": "Referral to cardiology service (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "reason": "cardiac_surgery_reason",
+      "direct_transition": "End Cardiac Encounter"
+    },
+    "End Cardiac Encounter": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Urgent",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score_e",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Non Urgent"
+        }
+      ]
+    },
+    "Urgent": {
+      "type": "Delay",
+      "direct_transition": "Referral",
+      "range": {
+        "low": 12,
+        "high": 48,
+        "unit": "hours"
+      }
+    },
+    "Non Urgent": {
+      "type": "Delay",
+      "direct_transition": "Referral",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      }
     }
   }
 }
