@@ -318,16 +318,11 @@ public class Generator implements RandomNumberGenerator {
     // Import the fixed patient demographics records file, if a file path is given.
     if (this.options.fixedRecordPath != null) {
       // Import household demogarphics.
-      this.fixedRecordGroupManager = importFixedDemographicsFile();
+      importFixedDemographicsFile();
       // We'll be using the FixedRecord names, so no numbers should be appended to them.
       Config.set("generate.append_numbers_to_person_names", "false");
       // Since we're using FixedRecords, split records must be true.
       Config.set("exporter.split_records", "true");
-
-      if (Boolean.parseBoolean(Config.get("fixeddemographics.predeterminedBirths", "false"))) {
-        // Initialize households map.
-        this.households = new HashMap<Integer, Household>();
-      }
     }
 
     ExecutorService threadPool = Executors.newFixedThreadPool(8);
@@ -424,7 +419,8 @@ public class Generator implements RandomNumberGenerator {
     }
     fixedRecordManager.createRecordGroups();
     this.options.population = fixedRecordManager.getPopulationSize();
-    // Return the FixedRecordGroupManager.
+    // Return and set the FixedRecordGroupManager.
+    this.fixedRecordGroupManager = fixedRecordManager;
     return fixedRecordManager;
   }
   
@@ -594,7 +590,7 @@ public class Generator implements RandomNumberGenerator {
     person.currentModules = Module.getModules(modulePredicate);
 
     // Add the person to their household.
-    if (true) {
+    if(Boolean.parseBoolean(Config.get("fixeddemographics.households", "false"))){
       Household personHousehold = (Household) person.attributes.get(Person.HOUSEHOLD);
       if (person.ageInDecimalYears(System.currentTimeMillis()) > 18) {
         personHousehold.addAdult(person);
@@ -822,7 +818,10 @@ public class Generator implements RandomNumberGenerator {
     }
     demoAttributes.put(Person.GENDER, g);
 
-    if(Boolean.parseBoolean(Config.get("fixeddemographics.predeterminedBirths", "false"))){
+    if(Boolean.parseBoolean(Config.get("fixeddemographics.households", "false"))){
+      if(this.households == null){
+        this.households = new HashMap<Integer, Household>();
+      }
       // Generate the person's household based on the ID if it does not yet exist.
       int householdId = Integer.parseInt(seedRecord.householdId);
       if(this.households.get(householdId) == null){

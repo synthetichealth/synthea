@@ -1,5 +1,4 @@
-
-  {
+{
     "seed_records": [
         {
           "record_id": 1,
@@ -296,5 +295,4 @@
           "PARENT_SN": "Smith"
         }
     ]
-  }
-
+}

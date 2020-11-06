@@ -97,10 +97,6 @@ public class FixedRecord {
       // null.
       if (Demographics.load(this.state).row(this.state).values().stream()
           .noneMatch(d -> d.city.equalsIgnoreCase(this.city))) {
-        // If Hghlnds Ranch, return Highlands Ranch
-        if (this.city.equals("Hghlnds Ranch")) {
-          return "Breckenridge";
-        }
         return null;
       }
     } catch (IOException e) {

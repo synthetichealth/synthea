@@ -42,9 +42,9 @@ public class Household {
             this.secondAdult = newAdult;
         } else {
             throw new RuntimeException(
-                    "There can only be a max of 2 adults per household and a 3rd was added. Household includes adults "
+                    "There can only be a max of 2 adults per household and a 3rd was added. Household already includes adults "
                             + this.firstAdult.attributes.get(Person.NAME) + " and "
-                            + this.secondAdult.attributes.get(Person.NAME) + " to whom "
+                            + this.secondAdult.attributes.get(Person.NAME) + ". "
                             + newAdult.attributes.get(Person.NAME) + " was aattempted to be added.");
         }
     }
