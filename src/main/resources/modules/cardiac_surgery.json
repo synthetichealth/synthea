@@ -234,7 +234,19 @@
           }
         ]
       },
-      "direct_transition": "Cardiac Encounter"
+      "conditional_transition": [
+        {
+          "transition": "Reason",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cardiac_surgery_reason",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Cardiac Encounter"
+        }
+      ]
     },
     "Block Pediatric Patients": {
       "type": "Guard",
@@ -331,6 +343,19 @@
         "high": 7,
         "unit": "days"
       }
+    },
+    "Reason": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "cardiac_surgery_reason",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 399211009,
+          "display": "History of myocardial infarction (situation)"
+        }
+      ],
+      "direct_transition": "Cardiac Encounter",
+      "target_encounter": "Cardiac Encounter"
     }
   }
 }
