@@ -49,28 +49,6 @@
       "type": "EncounterEnd",
       "direct_transition": "Wait for Appointment"
     },
-    "Wait for Next Encounter": {
-      "type": "Delay",
-      "direct_transition": "Referral_to_Surgeon",
-      "range": {
-        "low": 1,
-        "high": 7,
-        "unit": "days"
-      }
-    },
-    "Referral_to_Surgeon": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "Abnormal Findings",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 390906007,
-          "display": "Follow-up encounter (procedure)"
-        }
-      ],
-      "direct_transition": "Referral Procedure 2"
-    },
     "Referral Procedure 2": {
       "type": "Procedure",
       "codes": [
@@ -85,16 +63,8 @@
         "high": 60,
         "unit": "minutes"
       },
-      "direct_transition": "End Referral to Surgeon",
+      "direct_transition": "Preoperative Testing",
       "reason": "Abnormal Findings"
-    },
-    "End Referral to Surgeon": {
-      "type": "EncounterEnd",
-      "direct_transition": "TODO Assign Priority"
-    },
-    "TODO Assign Priority": {
-      "type": "Simple",
-      "direct_transition": "TODO CallSubmodule CABG Surgery"
     },
     "End CABG Postop": {
       "type": "EncounterEnd",
@@ -109,10 +79,6 @@
         "unit": "days"
       }
     },
-    "TODO CallSubmodule CABG Surgery": {
-      "type": "Simple",
-      "direct_transition": "CABG Surgery"
-    },
     "CABG Surgery": {
       "type": "Encounter",
       "encounter_class": "inpatient",
@@ -124,25 +90,12 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "conditional_transition": [
-        {
-          "transition": "Emergency CABG",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_score_e",
-            "operator": "==",
-            "value": true
-          }
-        },
-        {
-          "transition": "CABG"
-        }
-      ]
+      "direct_transition": "Emergency Check"
     },
     "CABG_Postop": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason": "Abnormal Findings",
+      "reason": "History of CABG",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -170,7 +123,7 @@
         "high": 120,
         "unit": "minutes"
       },
-      "direct_transition": "Finish Surgery",
+      "direct_transition": "History of CABG",
       "reason": "Abnormal Findings"
     },
     "Emergency CABG": {
@@ -187,7 +140,7 @@
         "high": 120,
         "unit": "minutes"
       },
-      "direct_transition": "Finish Surgery",
+      "direct_transition": "History of CABG",
       "reason": "Abnormal Findings"
     },
     "Cardiology Consultation": {
@@ -361,7 +314,221 @@
     },
     "End_Referral_Consultation": {
       "type": "EncounterEnd",
-      "direct_transition": "Wait for Next Encounter"
+      "conditional_transition": [
+        {
+          "transition": "Priority 1 Next Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "Priority 2 Next Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Priority 3 Next Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "transition": "Priority 4 Next_Encounter"
+        }
+      ]
+    },
+    "Priority 1 Next Encounter": {
+      "type": "Delay",
+      "direct_transition": "Set Immediate Admission",
+      "range": {
+        "low": 0,
+        "high": 48,
+        "unit": "hours"
+      }
+    },
+    "Priority 2 Next Encounter": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Preoperative Outpatient",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Set Immediate Admission",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Priority 3 Next Encounter": {
+      "type": "Delay",
+      "direct_transition": "Preoperative Outpatient",
+      "range": {
+        "low": 7,
+        "high": 21,
+        "unit": "days"
+      }
+    },
+    "Priority 4 Next_Encounter": {
+      "type": "Delay",
+      "range": {
+        "low": 21,
+        "high": 45,
+        "unit": "days"
+      },
+      "direct_transition": "Preoperative Outpatient"
+    },
+    "Immediate Surgical Admission": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "Abnormal Findings",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 112802009,
+          "display": "Cardiovascular operative procedure (procedure)"
+        }
+      ],
+      "direct_transition": "Referral Procedure 2"
+    },
+    "Preoperative Outpatient": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Abnormal Findings",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 390906007,
+          "display": "Follow-up encounter (procedure)"
+        }
+      ],
+      "direct_transition": "Referral Procedure 2"
+    },
+    "Preoperative Testing": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/preoperative",
+      "conditional_transition": [
+        {
+          "transition": "Emergency Check",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_immediate_admission",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "End Preoperative"
+        }
+      ]
+    },
+    "End Preoperative": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Priority_2_Next_Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Priority_3_Next_Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "transition": "Priority_4_Next_Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 4
+          }
+        }
+      ]
+    },
+    "Set Immediate Admission": {
+      "type": "SetAttribute",
+      "attribute": "cabg_immediate_admission",
+      "direct_transition": "Immediate Surgical Admission",
+      "value": true
+    },
+    "Priority_2_Next_Encounter": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      },
+      "direct_transition": "CABG Surgery"
+    },
+    "Priority_3_Next_Encounter": {
+      "type": "Delay",
+      "range": {
+        "low": 7,
+        "high": 21,
+        "unit": "days"
+      },
+      "direct_transition": "CABG Surgery"
+    },
+    "Priority_4_Next_Encounter": {
+      "type": "Delay",
+      "range": {
+        "low": 21,
+        "high": 45,
+        "unit": "days"
+      },
+      "direct_transition": "CABG Surgery"
+    },
+    "Emergency Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Emergency CABG",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score_e",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "CABG"
+        }
+      ]
+    },
+    "History of CABG": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "cabg_history",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 399261000,
+          "display": "History of coronary artery bypass grafting (situation)"
+        }
+      ],
+      "direct_transition": "Finish Surgery"
     }
   }
 }
