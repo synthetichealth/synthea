@@ -174,8 +174,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1234",
-          "display": "RxNorm Code"
+          "code": 309362,
+          "display": "Clopidogrel 75 MG Oral Tablet"
         }
       ],
       "direct_transition": "Start_Simvastatin"
@@ -185,8 +185,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1234",
-          "display": "RxNorm Code"
+          "code": 312961,
+          "display": "Simvastatin 20 MG Oral Tablet"
         }
       ],
       "direct_transition": "Start_Amlodipine"
@@ -196,8 +196,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1234",
-          "display": "RxNorm Code"
+          "code": 197361,
+          "display": "Amlodipine 5 MG Oral Tablet"
         }
       ],
       "direct_transition": "Start_Nitroglycerin"
@@ -207,8 +207,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1234",
-          "display": "RxNorm Code"
+          "code": 705129,
+          "display": "Nitroglycerin 0.4 MG/ACTUAT Mucosal Spray"
         }
       ],
       "distributed_transition": [
