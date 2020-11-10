@@ -28,7 +28,7 @@ public class FixedRecordGroup {
    * Returns the valid birthdate in the seed record
    * @return long valid birthdate
    */
-  public long getValidBirthdate() {
+  public long getSeedBirthdate() {
     try {
       return this.seedRecord.getBirthDate();
     } catch (java.time.DateTimeException | java.lang.NullPointerException
@@ -40,10 +40,10 @@ public class FixedRecordGroup {
   }
 
   /**
-   * Pulls the first valid city from the list of FixedRecords.
+   * Returns the city associated with the seed record.
    * @return String safe city name
    */
-  public String getSafeCity() {
+  public String getSeedCity() {
     String safeCity = seedRecord.getSafeCity();
     if (safeCity != null) {
       return safeCity;
@@ -53,22 +53,30 @@ public class FixedRecordGroup {
   }
 
   /**
+   * Returns the current year's record city. If it is an invalid city, returns the seed's city.
+   * @return String safe city name
+   */
+  public String getCurrentCity(int currentYear) {
+    String city = getCurrentFixedRecord(currentYear).getSafeCity();
+    if (city != null) {
+      return city;
+    }
+    return this.getSeedCity();
+  }
+
+  /**
    * Returns a FixedRecord which has a recordDates range that includes the given year.
-   * @return FixedRecord that meets the daterange of the given year. Returns null if the current year's record has already been accessed.
+   * @return FixedRecord that meets the daterange of the given year.
    */
   public FixedRecord getCurrentFixedRecord(int currentYear) {
-    if(year < currentYear){
-      year = currentYear;
-      for(FixedRecord record : variantRecords) {
-        // Check if the current year is between the years in the current fixed record.
-        if(record.checkRecordDates(currentYear)){
-          return record;
-        }
+    FixedRecord currentRecordCandidate = variantRecords.get(0);
+    for(FixedRecord record : variantRecords) {
+      // Check if the start date of the current record is the highest yet that predates the given year.
+      if(record.addressStartDate >= currentYear && record.addressStartDate <= currentRecordCandidate.addressStartDate){
+        currentRecordCandidate = record;
       }
-    throw new RuntimeException("ERROR: Invalid input record dates for " + this.seedRecord.firstName + " " + this.seedRecord.lastName + ".");
-    } else {
-      return null;
     }
+    return currentRecordCandidate;
   }
 
   public int getRecordCount() {

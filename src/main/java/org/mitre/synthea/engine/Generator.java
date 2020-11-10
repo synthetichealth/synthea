@@ -660,6 +660,7 @@ public class Generator implements RandomNumberGenerator {
     FixedRecordGroup frg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
     // Pull the FixedRecord that meets the current date.
     FixedRecord fr = frg.getCurrentFixedRecord(Utilities.getYear(System.currentTimeMillis()));
+    // TODO: This needs to be changed!!! getCurrentFixedRecord() should no longer return null.
     if(fr != null){
       // Update the person's address and location from the new FixedRecord. If the address changed, update their provider and health record.
       if(fr.overwriteAddress(person, this)){
@@ -804,7 +805,7 @@ public class Generator implements RandomNumberGenerator {
     FixedRecord seedRecord = recordGroup.seedRecord;
     this.location = new Location(
       seedRecord.state,
-      seedRecord.city);
+      seedRecord.getSafeCity());
     Demographics city = this.location.randomCity(random);
     // Pick the rest of the demographics based on the location of the fixed record.
     Map<String, Object> demoAttributes = pickDemographics(random, city);

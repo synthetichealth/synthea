@@ -12,7 +12,6 @@ import org.mitre.synthea.input.FixedRecordGroupManager;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Provider;
 
-
 public class FixedRecordGroupTest {
 
   // The generator.
@@ -25,7 +24,7 @@ public class FixedRecordGroupTest {
    */
   @BeforeClass
   public static void setup() {
-    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Colorado");
     Config.set("generate.only_dead_patients", "false"); 
     Config.set("exporter.split_records", "true");
     Provider.clear();
@@ -41,29 +40,25 @@ public class FixedRecordGroupTest {
   }
 
   @Test(expected = java.lang.RuntimeException.class)
-  public void invalidBirthDateTest() {
-    // The first person has an invalid birthdate for each FixedRecord in the FixedRecordGroup.
-    fixedRecordGroupManager.getRecordGroup(0).getValidBirthdate();
-  }
-
-  @Test
-  public void onlyThirdBirthDateIsValidTest() {
-    // The second person's only valid birthdate is the third one.
-    long date = fixedRecordGroupManager.getRecordGroup(1).getValidBirthdate();
-    assertEquals(date, fixedRecordGroupManager.getRecordGroup(1).variantRecords.get(2).getBirthDate());
+  public void invalidSeedBirthDateTest() {
+    // The first person's seed birthdate is invalid.
+    fixedRecordGroupManager.getRecordGroup(0).getSeedBirthdate();
   }
 
   @Test(expected = java.lang.RuntimeException.class)
-  public void invalidCityTest() {
-    // The second person has an invalid city for each FixedRecord in the FixedRecordGroup.
-    String city = fixedRecordGroupManager.getRecordGroup(1).getSafeCity();
+  public void invalidSeedCityTest() {
+    // The second person's seed city is invalid.
+    String city = fixedRecordGroupManager.getRecordGroup(1).getSeedCity();
     System.out.println(city);
   }
 
   @Test
-  public void onlyThirdCityIsValidTest() {
-    // The first person's only valid city is the third one.
-    String city = fixedRecordGroupManager.getRecordGroup(0).getSafeCity();
-    assertEquals(city, fixedRecordGroupManager.getRecordGroup(0).variantRecords.get(2).getSafeCity());
+  public void variantRecordCityIsInvalid() {
+    // The first person's 2015 variant record has an invalid city, return the seed city instead.
+    String validCity = fixedRecordGroupManager.getRecordGroup(0).getCurrentCity(2015);
+    String invalidCity = fixedRecordGroupManager.getRecordGroup(0).getCurrentFixedRecord(2015).getSafeCity();
+    assertEquals("Thornton", validCity);
+    assertEquals("INVALID_CITY_NAME", invalidCity);
+    assertEquals(validCity, fixedRecordGroupManager.getRecordGroup(0).seedRecord.getSafeCity());
   }
 }

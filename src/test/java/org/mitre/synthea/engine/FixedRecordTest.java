@@ -67,8 +67,19 @@ public class FixedRecordTest {
       // Make sure the person has the correct number of records.
       assertTrue(currentPerson.records.size() >= 3);
       assertTrue(recordGroup.variantRecords.size() == 3);
-      // Track the number of fixed records that match the person's attributes exactly.
-      int fixedRecordMatches = 0;
+      // The seed fixed record should match the input fixed record exactly.
+      FixedRecord seedRecord = recordGroup.seedRecord;
+      assertTrue(
+          (currentPerson.attributes.get(Person.FIRST_NAME).equals(seedRecord.firstName))
+          && (currentPerson.attributes.get(Person.LAST_NAME).equals(seedRecord.lastName))
+          && (currentPerson.attributes.get(Person.ADDRESS).equals(seedRecord.addressLineOne))
+          && (currentPerson.attributes.get(Person.BIRTHDATE).equals(seedRecord.getBirthDate()))
+          && (currentPerson.attributes.get(Person.GENDER).equals(seedRecord.gender))
+          && (currentPerson.attributes.get(Person.TELECOM).equals(seedRecord.getTelecom()))
+          && (currentPerson.attributes.get(Person.STATE).equals(seedRecord.state))
+          && (currentPerson.attributes.get(Person.CITY).equals(seedRecord.city))
+          && (currentPerson.attributes.get(Person.ZIP).equals(seedRecord.zipcode))
+          );
       // Cycle the person's FixedRecords to compare them to the raw imported FixedRecords.
       for (int r = 0; r < currentPerson.records.size(); r++) {
 
@@ -100,26 +111,7 @@ public class FixedRecordTest {
         assertEquals(personFixedRecord.parentFirstName, rawFixedRecord.parentFirstName);
         assertEquals(personFixedRecord.parentLastName, rawFixedRecord.parentLastName);
         assertEquals(personFixedRecord.parentEmail, rawFixedRecord.parentEmail);
-
-        // The seed fixed Record should match the input fixed record exactly.
-        FixedRecord seedRecord = recordGroup.seedRecord;
-        if (
-            (currentPerson.attributes.get(Person.FIRST_NAME).equals(seedRecord.firstName))
-            && (currentPerson.attributes.get(Person.LAST_NAME).equals(seedRecord.lastName))
-            // && (currentPerson.attributes.get(Person.ADDRESS).equals(rawFixedRecord.addressLineOne))
-            && (currentPerson.attributes.get(Person.BIRTHDATE)
-                .equals(seedRecord.getBirthDate()))
-            && (currentPerson.attributes.get(Person.GENDER).equals(seedRecord.gender))
-            && (currentPerson.attributes.get(Person.TELECOM).equals(seedRecord.getTelecom()))
-            && (currentPerson.attributes.get(Person.STATE).equals(seedRecord.state))
-            // && (currentPerson.attributes.get(Person.CITY).equals(rawFixedRecord.city))
-            // && (currentPerson.attributes.get(Person.ZIP).equals(rawFixedRecord.zipcode))
-            ) {
-          fixedRecordMatches++;
-        }
-      }
-      // One FixedRecord should match the person's attributes (Except Address) exactly as a "gold standard" record.
-      assertTrue(fixedRecordMatches >= 1);
     }
+  }
   }
 }

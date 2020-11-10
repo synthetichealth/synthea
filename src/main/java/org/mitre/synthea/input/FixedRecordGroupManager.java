@@ -33,7 +33,6 @@ public class FixedRecordGroupManager {
     recordGroups = new HashMap<Integer, FixedRecordGroup>();
     // Initialize with the seed records.
     for(FixedRecord seedRecord : seedRecords) {
-      System.out.println("hhj: " + seedRecord);
       this.recordGroups.put(Integer.parseInt(seedRecord.recordId), new FixedRecordGroup(seedRecord));
     }
     // Populate the seeded record groups with variant records.

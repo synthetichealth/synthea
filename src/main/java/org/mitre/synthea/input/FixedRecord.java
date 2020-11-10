@@ -75,8 +75,8 @@ public class FixedRecord {
   @SerializedName(value = "PARENT1_EMAIL")
   public String parentEmail;
 
-  @SerializedName(value = "RECORD_DATES")
-  public String recordDates;
+  @SerializedName(value = "ADDRESS_ACTIVE_START")
+  public int addressStartDate;
 
   @SerializedName(value = "hh_id")
   public String householdId;
@@ -154,21 +154,7 @@ public class FixedRecord {
       // this.attributes.put(Person.CITY, this.getSafeCity());
       // this.attributes.put(Person.ZIP, this.zipcode);
     }
-    System.out.println(this.recordDates);
     return this.attributes;
-  }
-
-  /**
-   * Checks the record dates of the current FixedRecord in relation to the given
-   * year.
-   * 
-   * @return Whether the given year is within the FixedRecord date range.
-   */
-  public boolean checkRecordDates(int currentYear) {
-    // Pull out the 2 years from the current fixed record.
-    String years[] = this.recordDates.split("-");
-    // Check if the current year is between the years in the current fixed record.
-    return currentYear >= Integer.parseInt(years[0]) && currentYear <= Integer.parseInt(years[1]);
   }
 
   /**

@@ -374,8 +374,6 @@ public class Provider implements QuadTreeElement, Serializable {
         }
 
         parsed.location = location;
-        // String city = parsed.city;
-        // String address = parsed.address;
 
         if (row.get("hasSpecialties") == null
             || row.get("hasSpecialties").equalsIgnoreCase("false")) {

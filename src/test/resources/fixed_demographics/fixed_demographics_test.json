@@ -147,7 +147,7 @@
           "PHONE_NUMBER": 1515151,
           "ADDRESS1": "12439 Josephine St",
           "ADDRESS2": "",
-          "ADDRESS_CITY": "Thornton",
+          "ADDRESS_CITY": "INVALID_CITY_NAME",
           "ADDRESS_STATE": "Colorado",
           "ADDRESS_ZIP": 80241-2744,
           "PARENT_EMAIL": "89898989@example.com",
