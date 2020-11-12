@@ -1,0 +1,108 @@
+{
+  "name": "operation",
+  "remarks": [
+    "CABG operation."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Emergency_Check"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Emergency_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Emergency_CABG",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score_e",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "CABG"
+        }
+      ]
+    },
+    "CABG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 232717009,
+          "display": "Coronary artery bypass grafting (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 120,
+        "unit": "minutes"
+      },
+      "direct_transition": "History_of_CABG",
+      "reason": "Abnormal Findings"
+    },
+    "Emergency_CABG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 414088005,
+          "display": "Emergency coronary artery bypass graft (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 120,
+        "unit": "minutes"
+      },
+      "direct_transition": "History_of_CABG",
+      "reason": "Abnormal Findings"
+    },
+    "History_of_CABG": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "cabg_history",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 399261000,
+          "display": "History of coronary artery bypass grafting (situation)"
+        }
+      ],
+      "direct_transition": "Finish_Surgery"
+    },
+    "Finish_Surgery": {
+      "type": "EncounterEnd",
+      "direct_transition": "CABG_Postop"
+    },
+    "CABG_Postop": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "History of CABG",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 390906007,
+          "display": "Follow-up encounter (procedure)"
+        }
+      ],
+      "direct_transition": "Recovery"
+    },
+    "Recovery": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 5,
+        "unit": "days"
+      },
+      "direct_transition": "End_CABG_Postop"
+    },
+    "End_CABG_Postop": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    }
+  }
+}
