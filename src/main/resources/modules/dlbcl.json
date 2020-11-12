@@ -694,18 +694,6 @@
       },
       "direct_transition": "CAR-T therapy side effect 1"
     },
-    "Meet with Oncologist": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 310513006,
-          "display": "Discharge by medical oncologist (procedure)"
-        }
-      ],
-      "direct_transition": "End_of_Oncology_meeting"
-    },
     "Meet with Oncologist after First Round": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -716,13 +704,9 @@
           "display": "Discharge by medical oncologist (procedure)"
         }
       ],
-      "direct_transition": "End_Meeting_with_Oncologist_after_First_Round_Treatment"
+      "direct_transition": "DLBCL Remission"
     },
     "End_Meeting_with_Oncologist_after_First_Round_Treatment": {
-      "type": "EncounterEnd",
-      "direct_transition": "Terminal"
-    },
-    "End_of_Oncology_meeting": {
       "type": "EncounterEnd",
       "direct_transition": "Terminal"
     },
@@ -848,7 +832,7 @@
         "code": 268910001,
         "display": "Patient condition improved (finding)"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Delay Before Meeting for Discharge"
     },
     "CAR-T Therapy Treatment Ineffective": {
       "type": "Observation",
@@ -1215,7 +1199,7 @@
           "display": "Response to cancer treatment"
         }
       ],
-      "direct_transition": "Delay after Second-Line Treatment - Discharge",
+      "direct_transition": "Delay Before Meeting for Discharge",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 260415000,
@@ -1305,9 +1289,12 @@
       "direct_transition": "Meet with Oncologist after First Round",
       "range": {
         "low": 1,
-        "high": 7,
-        "unit": "days"
-      }
+        "high": 2,
+        "unit": "months"
+      },
+      "remarks": [
+        "https://www.cancer.org/treatment/survivorship-during-and-after-treatment/when-cancer-doesnt-go-away.html#:~:text=To%20qualify%20as%20either%20type,cancer%20definitely%20has%20been%20cured."
+      ]
     },
     "Delay Before Second-Line Treatment": {
       "type": "Delay",
@@ -1327,15 +1314,6 @@
         "unit": "weeks"
       }
     },
-    "Delay after Second-Line Treatment - Discharge": {
-      "type": "Delay",
-      "direct_transition": "Meet with Oncologist",
-      "range": {
-        "low": 0,
-        "high": 1,
-        "unit": "weeks"
-      }
-    },
     "Waiting for Car-T Procedure": {
       "type": "Delay",
       "direct_transition": "CAR-T Initial Treatment Encounter",
@@ -1344,6 +1322,11 @@
         "high": 2,
         "unit": "weeks"
       }
+    },
+    "DLBCL Remission": {
+      "type": "ConditionEnd",
+      "direct_transition": "End_Meeting_with_Oncologist_after_First_Round_Treatment",
+      "referenced_by_attribute": "DLBCL_Condition"
     }
   }
 }

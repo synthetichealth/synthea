@@ -464,27 +464,27 @@
       "distributed_transition": [
         {
           "transition": "R-DHAP",
-          "distribution": 0.1666
+          "distribution": 0.05
         },
         {
           "transition": "R-ESHAP",
-          "distribution": 0.1666
+          "distribution": 0.05
         },
         {
           "transition": "R-GDP",
-          "distribution": 0.1666
+          "distribution": 0.28
         },
         {
           "transition": "R-GemOx",
-          "distribution": 0.1666
+          "distribution": 0.28
         },
         {
           "transition": "R-ICE",
-          "distribution": 0.1666
+          "distribution": 0.28
         },
         {
           "transition": "R-MINE",
-          "distribution": 0.16700000000000004
+          "distribution": 0.06
         }
       ],
       "remarks": [
@@ -496,15 +496,15 @@
       "distributed_transition": [
         {
           "transition": "Clinical_Trial_2",
-          "distribution": 0.33
+          "distribution": 0.1
         },
         {
           "transition": "Second-line Therapy Regimens",
-          "distribution": 0.33
+          "distribution": 0.5
         },
         {
           "transition": "Palliative Radiation",
-          "distribution": 0.33999999999999986
+          "distribution": 0.4
         }
       ]
     },

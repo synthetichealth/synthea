@@ -6,40 +6,10 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Meet with Oncologist to discuss initial treatment options"
+      "direct_transition": "Encounter for first-line therapy"
     },
     "Terminal": {
       "type": "Terminal"
-    },
-    "End initial meeting with oncologist": {
-      "type": "EncounterEnd",
-      "direct_transition": "Interim before treatment"
-    },
-    "Meet with Oncologist to discuss initial treatment options": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 223484005,
-          "display": "Discussion about treatment (procedure)"
-        }
-      ],
-      "direct_transition": "End initial meeting with oncologist"
-    },
-    "Interim before treatment": {
-      "type": "Delay",
-      "direct_transition": "Stage III/IV Treatment",
-      "range": {
-        "low": 1,
-        "high": 7,
-        "unit": "days"
-      }
-    },
-    "Stage III/IV Treatment": {
-      "type": "Simple",
-      "direct_transition": "Encounter for first-line therapy"
     },
     "Encounter for first-line therapy": {
       "type": "Encounter",
@@ -55,11 +25,11 @@
       "distributed_transition": [
         {
           "transition": "R-CHOP Drugs",
-          "distribution": 0.5
+          "distribution": 0.85
         },
         {
           "transition": "Clinical Trial",
-          "distribution": 0.5
+          "distribution": 0.1499999999999999
         }
       ]
     },
@@ -533,7 +503,7 @@
       "direct_transition": "Check-up",
       "range": {
         "low": 3,
-        "high": 6,
+        "high": 12,
         "unit": "months"
       }
     },
