@@ -359,14 +359,6 @@ public class FhirStu3 {
           .setValue((String) person.attributes.get(Person.IDENTIFIER_PASSPORT));
     }
 
-    if (person.attributes.get(Person.IDENTIFIER_RECORD_ID) != null) {
-      Code siteCode = new Code("http://codi.mitre.org", (String) person.attributes.get(Person.IDENTIFIER_SITE), "Synthetic Denver List ID");
-      patientResource.addIdentifier()
-          .setType(mapCodeToCodeableConcept(siteCode, "http://codi.mitre.org"))
-          .setSystem("http://codi.mitre.org")
-          .setValue((String) person.attributes.get(Person.IDENTIFIER_RECORD_ID));
-    }
-
     if (person.attributes.get(Person.CONTACT_EMAIL) != null) {
       ContactComponent contact = new ContactComponent();
       HumanName contactName = new HumanName();

@@ -407,20 +407,6 @@ public class FhirR4 {
           .setValue((String) person.attributes.get(Person.IDENTIFIER_PASSPORT));
     }
 
-    if (person.attributes.get(Person.IDENTIFIER_RECORD_ID) != null) {
-      Code siteCode = new Code("http://codi.mitre.org", (String) person.attributes.get(Person.IDENTIFIER_SITE), "Synthetic Denver List ID");
-      patientResource.addIdentifier()
-          .setType(mapCodeToCodeableConcept(siteCode, "http://codi.mitre.org"))
-          .setSystem("http://codi.mitre.org")
-          .setValue((String) person.attributes.get(Person.IDENTIFIER_RECORD_ID));
-    }
-
-    if (person.attributes.get(Person.LINK_ID) != null) {
-      patientResource.addIdentifier()
-          .setSystem("http://codi.mitre.org/link_id")
-          .setValue(person.attributes.get(Person.LINK_ID).toString());
-    }
-
     if (person.attributes.get(Person.HOUSEHOLD) != null) {
       patientResource.addIdentifier()
           .setSystem("http://mitre.org/household_id")
