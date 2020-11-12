@@ -21,6 +21,7 @@ public class FixedRecordTest {
 
   // The generator.
   private static Generator generator;
+  private static FixedRecordGroupManager fixedRecordGroupManager;
 
   /**
    * Configure settings across these tests.
@@ -41,13 +42,12 @@ public class FixedRecordTest {
     go.population = 100;  // Should be overwritten by number of patients in input file.
     generator = new Generator(go);
     generator.internalStore = new LinkedList<>(); // Allows us to access patients within generator.
+    // List of raw RecordGroups imported directly from the input file for later comparison.
+    fixedRecordGroupManager = generator.importFixedDemographicsFile();
   }
 
   @Test
   public void fixedDemographicsImportTest() {
-
-    // List of raw RecordGroups imported directly from the input file for later comparison.
-    FixedRecordGroupManager fixedRecordGroupManager = generator.importFixedDemographicsFile();
     
     // Generate each patient from the fixed record input file.
     for (int i = 0; i < generator.options.population; i++) {
@@ -113,5 +113,18 @@ public class FixedRecordTest {
         assertEquals(personFixedRecord.parentEmail, rawFixedRecord.parentEmail);
     }
   }
+  }
+
+  @Test
+  public void variantRecordCityIsInvalid() {
+    // The first person's 2015 variant record has an invalid city, return the seed city instead.
+    String validCity = fixedRecordGroupManager.getRecordGroup(0).getCurrentCity(2015);
+    String invalidCity = fixedRecordGroupManager.getRecordGroup(0).getCurrentFixedRecord(2015).city;
+    assertEquals("Thornton", validCity);
+    assertEquals("INVALID_CITY_NAME", invalidCity);
+    assertEquals(validCity, fixedRecordGroupManager.getRecordGroup(0).getSeedCity());
+    assertEquals(validCity, fixedRecordGroupManager.getRecordGroup(0).seedRecord.getSafeCity());
+    // If a fixed record has an invalid city, safecity should return null.
+    assertEquals(null, fixedRecordGroupManager.getRecordGroup(0).getCurrentFixedRecord(2015).getSafeCity());
   }
 }

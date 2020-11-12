@@ -70,10 +70,10 @@ public class FixedRecordGroup {
    */
   public FixedRecord getCurrentFixedRecord(int currentYear) {
     FixedRecord currentRecordCandidate = variantRecords.get(0);
-    for(FixedRecord record : variantRecords) {
+    for(FixedRecord currentRecord : variantRecords) {
       // Check if the start date of the current record is the highest yet that predates the given year.
-      if(record.addressStartDate >= currentYear && record.addressStartDate <= currentRecordCandidate.addressStartDate){
-        currentRecordCandidate = record;
+      if(currentRecord.addressStartDate >= currentYear && currentRecord.addressStartDate <= currentRecordCandidate.addressStartDate){
+        currentRecordCandidate = currentRecord;
       }
     }
     return currentRecordCandidate;
