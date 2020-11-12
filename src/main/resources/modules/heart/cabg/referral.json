@@ -11,23 +11,6 @@
     "Terminal": {
       "type": "Terminal"
     },
-    "Consultation": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 698314001,
-          "display": "Consultation for treatment (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 30,
-        "high": 60,
-        "unit": "minutes"
-      },
-      "direct_transition": "Diagnostic",
-      "reason": "cardiac_surgery_reason"
-    },
     "Diagnostic": {
       "type": "Procedure",
       "codes": [
@@ -66,19 +49,6 @@
       "direct_transition": "Preoperative Testing",
       "reason": "Abnormal Findings"
     },
-    "End CABG Postop": {
-      "type": "EncounterEnd",
-      "direct_transition": "Terminal"
-    },
-    "Recovery": {
-      "type": "Delay",
-      "direct_transition": "End CABG Postop",
-      "range": {
-        "low": 1,
-        "high": 5,
-        "unit": "days"
-      }
-    },
     "CABG Surgery": {
       "type": "Encounter",
       "encounter_class": "inpatient",
@@ -86,88 +56,11 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem (procedure)"
+          "code": 112802009,
+          "display": "Cardiovascular operative procedure (procedure)"
         }
       ],
-      "direct_transition": "Emergency Check"
-    },
-    "CABG_Postop": {
-      "type": "Encounter",
-      "encounter_class": "inpatient",
-      "reason": "History of CABG",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 390906007,
-          "display": "Follow-up encounter (procedure)"
-        }
-      ],
-      "direct_transition": "Recovery"
-    },
-    "Finish Surgery": {
-      "type": "EncounterEnd",
-      "direct_transition": "CABG_Postop"
-    },
-    "CABG": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 232717009,
-          "display": "Coronary artery bypass grafting (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 30,
-        "high": 120,
-        "unit": "minutes"
-      },
-      "direct_transition": "History of CABG",
-      "reason": "Abnormal Findings"
-    },
-    "Emergency CABG": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 414088005,
-          "display": "Emergency coronary artery bypass graft (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 30,
-        "high": 120,
-        "unit": "minutes"
-      },
-      "direct_transition": "History of CABG",
-      "reason": "Abnormal Findings"
-    },
-    "Cardiology Consultation": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "cardiac_surgery_reason",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem (procedure)"
-        }
-      ],
-      "direct_transition": "Consultation"
-    },
-    "New_State": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "target_encounter": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
-        }
-      ],
-      "direct_transition": "New_State"
+      "direct_transition": "Terminal"
     },
     "Abnormal Findings": {
       "type": "ConditionOnset",
@@ -211,7 +104,7 @@
     "Set Consultation Count": {
       "type": "SetAttribute",
       "attribute": "cabg_consultation_count",
-      "direct_transition": "Cardiology Consultation",
+      "direct_transition": "Cardiology Consultation Encounter",
       "value": 0
     },
     "Referral to Surgery": {
@@ -310,7 +203,7 @@
       "type": "Counter",
       "attribute": "cabg_consultation_count",
       "action": "increment",
-      "direct_transition": "Cardiology Consultation"
+      "direct_transition": "Cardiology Consultation Encounter"
     },
     "End_Referral_Consultation": {
       "type": "EncounterEnd",
@@ -423,7 +316,7 @@
       "submodule": "heart/cabg/preoperative",
       "conditional_transition": [
         {
-          "transition": "Emergency Check",
+          "transition": "Terminal",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "cabg_immediate_admission",
@@ -501,34 +394,35 @@
       },
       "direct_transition": "CABG Surgery"
     },
-    "Emergency Check": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Emergency CABG",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_score_e",
-            "operator": "==",
-            "value": true
-          }
-        },
-        {
-          "transition": "CABG"
-        }
-      ]
-    },
-    "History of CABG": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "cabg_history",
+    "Cardiology Consultation Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "cardiac_surgery_reason",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 399261000,
-          "display": "History of coronary artery bypass grafting (situation)"
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "Finish Surgery"
+      "direct_transition": "Cardiology Consultation"
+    },
+    "Cardiology Consultation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 698314001,
+          "display": "Consultation for treatment (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Diagnostic",
+      "reason": "cardiac_surgery_reason"
     }
   }
 }
