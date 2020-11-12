@@ -79,9 +79,10 @@ public class Generator implements RandomNumberGenerator {
   public static String DEFAULT_STATE = "Massachusetts";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
 
-  // Households
+  // FixedRecords
   private FixedRecordGroupManager fixedRecordGroupManager;
-  private Map<Integer, Household> households;
+  // Households
+  public Map<Integer, Household> households;
 
   /**
    * Used only for testing and debugging. Populate this field to keep track of all
@@ -801,7 +802,7 @@ public class Generator implements RandomNumberGenerator {
    * @param recordGroup The record group to pull demographics from.
    * @param random Random object.
    */
-  private Map<String, Object> pickFixedDemographics(FixedRecordGroup recordGroup, Random random) {
+  public Map<String, Object> pickFixedDemographics(FixedRecordGroup recordGroup, Random random) {
     FixedRecord seedRecord = recordGroup.seedRecord;
     this.location = new Location(
       seedRecord.state,

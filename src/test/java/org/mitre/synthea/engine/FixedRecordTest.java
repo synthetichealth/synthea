@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.junit.BeforeClass;
@@ -40,23 +41,24 @@ public class FixedRecordTest {
         "src/test/resources/fixed_demographics/fixed_demographics_test.json");
     go.state = "Colorado";  // Examples are based on Colorado.
     go.population = 100;  // Should be overwritten by number of patients in input file.
+    // go.enabledModules = new ArrayList<String>(); // Prevent extraneous modules from being laoded.
+    // go.enabledModules.add("");
     generator = new Generator(go);
     generator.internalStore = new LinkedList<>(); // Allows us to access patients within generator.
     // List of raw RecordGroups imported directly from the input file for later comparison.
     fixedRecordGroupManager = generator.importFixedDemographicsFile();
+    // Generate each patient from the fixed record input file.
+    for (int i = 0; i < generator.options.population; i++) {
+      generator.generatePerson(i);
+    }    
   }
 
   @Test
   public void fixedDemographicsImportTest() {
     
-    // Generate each patient from the fixed record input file.
-    for (int i = 0; i < generator.options.population; i++) {
-      generator.generatePerson(i);
-    }
-
-    // Make sure that the correct number of people were imported from the fixed records.
+    // Make sure that the correct number of people were imported from the fixed records file.
     assertEquals(4, generator.internalStore.size());
-    assertEquals(generator.internalStore.size(), fixedRecordGroupManager.getPopulationSize());
+    assertEquals(4, fixedRecordGroupManager.getPopulationSize());
 
     // Check that each person has HealthRecords that match their fixed demographic records.
     for (int p = 0; p < generator.internalStore.size(); p++) {
@@ -67,19 +69,18 @@ public class FixedRecordTest {
       // Make sure the person has the correct number of records.
       assertTrue(currentPerson.records.size() >= 3);
       assertTrue(recordGroup.variantRecords.size() == 3);
-      // The seed fixed record should match the input fixed record exactly.
+      // The seed fixed record should match the person's initial attributes exactly.
       FixedRecord seedRecord = recordGroup.seedRecord;
-      assertTrue(
-          (currentPerson.attributes.get(Person.FIRST_NAME).equals(seedRecord.firstName))
-          && (currentPerson.attributes.get(Person.LAST_NAME).equals(seedRecord.lastName))
-          && (currentPerson.attributes.get(Person.ADDRESS).equals(seedRecord.addressLineOne))
-          && (currentPerson.attributes.get(Person.BIRTHDATE).equals(seedRecord.getBirthDate()))
-          && (currentPerson.attributes.get(Person.GENDER).equals(seedRecord.gender))
-          && (currentPerson.attributes.get(Person.TELECOM).equals(seedRecord.getTelecom()))
-          && (currentPerson.attributes.get(Person.STATE).equals(seedRecord.state))
-          && (currentPerson.attributes.get(Person.CITY).equals(seedRecord.city))
-          && (currentPerson.attributes.get(Person.ZIP).equals(seedRecord.zipcode))
-          );
+      assertEquals(currentPerson.attributes.get(Person.FIRST_NAME), (seedRecord.firstName));
+      assertEquals(currentPerson.attributes.get(Person.LAST_NAME), (seedRecord.lastName));
+      assertEquals(currentPerson.attributes.get(Person.ADDRESS), (seedRecord.addressLineOne));
+      assertEquals(currentPerson.attributes.get(Person.BIRTHDATE), (seedRecord.getBirthDate()));
+      assertEquals(currentPerson.attributes.get(Person.GENDER), (seedRecord.gender));
+      assertEquals(currentPerson.attributes.get(Person.TELECOM), (seedRecord.getTelecom()));
+      assertEquals(currentPerson.attributes.get(Person.STATE), (seedRecord.state));
+      assertEquals(currentPerson.attributes.get(Person.CITY), (seedRecord.city));
+      assertEquals(currentPerson.attributes.get(Person.ZIP), (seedRecord.zipcode));
+          
       // Cycle the person's FixedRecords to compare them to the raw imported FixedRecords.
       for (int r = 0; r < currentPerson.records.size(); r++) {
 

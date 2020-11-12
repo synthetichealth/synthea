@@ -29,8 +29,6 @@ public class HouseholdModule extends Module {
     Household household = (Household) person.attributes.get(Person.HOUSEHOLD);
 
     
-
-
     return true;
   }
     

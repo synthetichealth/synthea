@@ -44,8 +44,8 @@ public class Household {
             throw new RuntimeException(
                     "There can only be a max of 2 adults per household and a 3rd was added. Household already includes adults "
                             + this.firstAdult.attributes.get(Person.NAME) + " and "
-                            + this.secondAdult.attributes.get(Person.NAME) + ". "
-                            + newAdult.attributes.get(Person.NAME) + " was aattempted to be added.");
+                            + this.secondAdult.attributes.get(Person.NAME) + ". New adult "
+                            + newAdult.attributes.get(Person.NAME) + " was attempted to be added.");
         }
     }
 
@@ -60,6 +60,23 @@ public class Household {
             throw new RuntimeException("New child of a household cannot be null.");
         }
         this.dependents.add(newChild);
+    }
+    
+    /**
+     * Get the list of adults in this household.
+     */
+    public List<Person> getAdults(){
+        List<Person> adults = new ArrayList<Person>();
+        if(firstAdult != null) adults.add(firstAdult);
+        if(secondAdult != null) adults.add(secondAdult);
+        return adults;
+    }
+
+    /**
+     * Get the list of dependents in this household.
+     */
+    public List<Person> getDependents(){
+        return this.dependents;
     }
 
 }
