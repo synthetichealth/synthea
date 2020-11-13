@@ -277,7 +277,7 @@
     "Referral": {
       "type": "CallSubmodule",
       "submodule": "heart/cabg/referral",
-      "direct_transition": "Terminal"
+      "direct_transition": "Operation"
     },
     "Cardiac Encounter": {
       "type": "Encounter",
@@ -356,6 +356,11 @@
       ],
       "direct_transition": "Cardiac Encounter",
       "target_encounter": "Cardiac Encounter"
+    },
+    "Operation": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/operation",
+      "direct_transition": "Terminal"
     }
   }
 }
