@@ -1144,7 +1144,10 @@
               "display": "Left ventricular Ejection fraction"
             }
           ],
-          "vital_sign": "Left ventricular Ejection fraction"
+          "range": {
+            "low": 30,
+            "high": 49
+          }
         }
       ],
       "direct_transition": "PFTS Check"
@@ -1371,7 +1374,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "{urine specific gravity}",
+          "unit": "[urine specific gravity]",
           "codes": [
             {
               "system": "LOINC",
@@ -1517,7 +1520,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "{urine specific gravity}",
+          "unit": "[urine specific gravity]",
           "codes": [
             {
               "system": "LOINC",

@@ -6,7 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Emergency_Check"
+      "direct_transition": "OR Labs"
     },
     "Terminal": {
       "type": "Terminal"
@@ -72,7 +72,7 @@
           "display": "History of coronary artery bypass grafting (situation)"
         }
       ],
-      "direct_transition": "Finish_Surgery"
+      "direct_transition": "Surgery Documentation"
     },
     "Finish_Surgery": {
       "type": "EncounterEnd",
@@ -103,6 +103,447 @@
     "End_CABG_Postop": {
       "type": "EncounterEnd",
       "direct_transition": "Terminal"
+    },
+    "OR Labs": {
+      "type": "Simple",
+      "direct_transition": "OR Meds"
+    },
+    "OR Meds": {
+      "type": "Simple",
+      "direct_transition": "Arterial Line Insertion"
+    },
+    "Arterial Line Insertion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 392247006,
+          "display": "Insertion of catheter into artery (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Administer Anesthesia"
+    },
+    "Administer Anesthesia": {
+      "type": "CallSubmodule",
+      "submodule": "surgery/general_anesthesia",
+      "direct_transition": "Pulmonary Catheterization"
+    },
+    "Pulmonary Catheterization": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 65677008,
+          "display": "Pulmonary catheterization with Swan-Ganz catheter (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Prep Patient"
+    },
+    "Prep Patient": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 223495004,
+          "display": "Preparation of patient for procedure (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 5
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "On Pump"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 4
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "On Pump"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 3
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "On Pump",
+              "distribution": 0.947
+            },
+            {
+              "transition": "Off Pump",
+              "distribution": 0.053
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 5
+          },
+          "distributions": [
+            {
+              "transition": "On Pump",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Off Pump",
+              "distribution": 0.2
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "transition": "On Pump",
+              "distribution": 0.946
+            },
+            {
+              "transition": "Off Pump",
+              "distribution": 0.054
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 3
+          },
+          "distributions": [
+            {
+              "transition": "On Pump",
+              "distribution": 0.988
+            },
+            {
+              "transition": "Off Pump",
+              "distribution": 0.012
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 2
+          },
+          "distributions": [
+            {
+              "transition": "On Pump",
+              "distribution": 0.991
+            },
+            {
+              "transition": "Off Pump",
+              "distribution": 0.009
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "On Pump",
+              "distribution": 0.987
+            },
+            {
+              "transition": "Off Pump",
+              "distribution": 0.013
+            }
+          ]
+        }
+      ]
+    },
+    "Cannulation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 42825003,
+          "display": "Cannulation (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "CPB"
+    },
+    "On Pump": {
+      "type": "Simple",
+      "direct_transition": "Cannulation"
+    },
+    "Off Pump": {
+      "type": "Simple",
+      "direct_transition": "Emergency_Check"
+    },
+    "CPB": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 63697000,
+          "display": "Cardiopulmonary bypass operation (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Placement of Aortic Cross Clamp"
+    },
+    "Placement of Aortic Cross Clamp": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 301882004,
+          "display": "Placement of aortic cross clamp (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Induced cardioplegia"
+    },
+    "Induced cardioplegia": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 8290005,
+          "display": "Induced cardioplegia (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Emergency Check"
+    },
+    "Removal of Aortic Cross Clamp": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 301884003,
+          "display": "Removal of aortic cross clamp (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "End CPB"
+    },
+    "End CPB": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 5
+          },
+          "distributions": [
+            {
+              "transition": "CPB",
+              "distribution": 0.083
+            },
+            {
+              "transition": "Vascular Cannula Removal",
+              "distribution": 0.917
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "transition": "CPB",
+              "distribution": 0.054
+            },
+            {
+              "transition": "Vascular Cannula Removal",
+              "distribution": 0.946
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "CPB",
+              "distribution": 0.003
+            },
+            {
+              "transition": "Vascular Cannula Removal",
+              "distribution": 0.9970000000000001
+            }
+          ]
+        }
+      ]
+    },
+    "Vascular Cannula Removal": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 233553003,
+          "display": "Vascular cannula removal (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "History_of_CABG"
+    },
+    "Emergency Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "On Pump Emergency CABG",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score_e",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "On Pump CABG"
+        }
+      ]
+    },
+    "On Pump CABG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 232717009,
+          "display": "Coronary artery bypass grafting (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 120,
+        "unit": "minutes"
+      },
+      "reason": "Abnormal Findings",
+      "direct_transition": "Removal of Aortic Cross Clamp"
+    },
+    "On Pump Emergency CABG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 414088005,
+          "display": "Emergency coronary artery bypass graft (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 120,
+        "unit": "minutes"
+      },
+      "reason": "Abnormal Findings",
+      "direct_transition": "Removal of Aortic Cross Clamp"
+    },
+    "Surgery Documentation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 23745001,
+          "display": "Documentation procedure (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Finish_Surgery"
     }
   }
 }
