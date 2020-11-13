@@ -37,7 +37,7 @@ checkstyle {
 
 dependencies {
   // This dependency is found on compile classpath of this component and consumers.
-  implementation 'com.google.code.gson:gson:2.8.0'
+  implementation 'com.google.code.gson:gson:2.8.6'
   implementation 'com.jayway.jsonpath:json-path:2.4.0'
   implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:4.1.0'
   implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:4.1.0'
@@ -48,12 +48,12 @@ dependencies {
   implementation 'org.freemarker:freemarker:2.3.26-incubating'
   implementation 'com.h2database:h2:1.4.196'
   // google guava for some data structures
-  implementation 'com.google.guava:guava:23.0'
-  implementation 'guru.nidi:graphviz-java:0.2.2'
+  implementation 'com.google.guava:guava:30.0-jre'
+  implementation 'guru.nidi:graphviz-java:0.2.4'
   // CSV Stuff
   implementation 'org.apache.commons:commons-csv:1.5'
   implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.8.8'
-  implementation 'org.yaml:snakeyaml:1.25'
+  implementation 'org.yaml:snakeyaml:1.27'
   implementation 'org.apache.commons:commons-math3:3.6.1'
   implementation 'org.apache.commons:commons-text:1.2'
   implementation 'commons-validator:commons-validator:1.4.0'
@@ -72,12 +72,12 @@ dependencies {
 
   // get rid of SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
   // if we switch to a real logging framework we may want to switch this
-  implementation "org.slf4j:slf4j-api:1.6.1"
+  implementation "org.slf4j:slf4j-api:1.7.9"
   // compile "org.slf4j:slf4j-nop:1.6.1" // SLF4J seems to already be provided by org.apache.logging.log4j
   
   // Physiology simulation dependencies
   implementation files('lib/sbscl/SimulationCoreLibrary_v1.5_slim.jar')
-  implementation 'org.sbml.jsbml:jsbml:1.4', {
+  implementation 'org.sbml.jsbml:jsbml:1.5', {
       exclude group:'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
   }
   implementation 'org.apache.commons:commons-math:2.2'
