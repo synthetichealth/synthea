@@ -80,7 +80,7 @@ public class Generator implements RandomNumberGenerator {
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
 
   // FixedRecords
-  private FixedRecordGroupManager fixedRecordGroupManager;
+  FixedRecordGroupManager fixedRecordGroupManager;
   // Households
   public Map<Integer, Household> households;
 
@@ -657,12 +657,11 @@ public class Generator implements RandomNumberGenerator {
    * @return
    */
   public void updateFixedAddress(Person person){
-    // Check if the person's address needs to be updated.
+    // Check if the person's fixed record gets updated, meaning that their health record and address should update.
     FixedRecordGroup frg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
-    // Pull the FixedRecord that meets the current date.
-    FixedRecord fr = frg.getCurrentFixedRecord(Utilities.getYear(System.currentTimeMillis()));
-    // TODO: This needs to be changed!!! getCurrentFixedRecord() should no longer return null.
-    if(fr != null){
+    if(frg.updateCurrentRecord(Utilities.getYear(System.currentTimeMillis()))){
+      // Pull the newly updated fixedRecord.
+      FixedRecord fr = frg.getCurrentRecord();
       // Update the person's address and location from the new FixedRecord. If the address changed, update their provider and health record.
       if(fr.overwriteAddress(person, this)){
         // Get the person's birthdate in case the new one is invalid.

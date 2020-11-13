@@ -4,8 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Random;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,13 +49,36 @@ public class FixedRecordTest {
     // List of raw RecordGroups imported directly from the input file for later comparison.
     fixedRecordGroupManager = generator.importFixedDemographicsFile();
     // Generate each patient from the fixed record input file.
-    for (int i = 0; i < generator.options.population; i++) {
-      generator.generatePerson(i);
-    }    
+   
   }
 
   @Test
-  public void fixedDemographicsImportTest() {
+  public void initialFixedDemographicsImportTest() {
+
+    // Check that the initial attributes match the seed record.
+    for (int i = 0; i < generator.options.population; i++) {
+      FixedRecordGroup recordGroup = generator.fixedRecordGroupManager.getRecordGroup(i);
+      Map<String, Object> demoAttributes = generator.pickFixedDemographics(recordGroup, new Random(i));
+      FixedRecord seedRecord = recordGroup.seedRecord;
+      assertEquals(demoAttributes.get(Person.FIRST_NAME), (seedRecord.firstName));
+      assertEquals(demoAttributes.get(Person.LAST_NAME), (seedRecord.lastName));
+      assertEquals(demoAttributes.get(Person.ADDRESS), (seedRecord.addressLineOne));
+      assertEquals(demoAttributes.get(Person.BIRTHDATE), (seedRecord.getBirthDate()));
+      assertEquals(demoAttributes.get(Person.GENDER), (seedRecord.gender));
+      assertEquals(demoAttributes.get(Person.TELECOM), (seedRecord.getTelecom()));
+      assertEquals(demoAttributes.get(Person.STATE), (seedRecord.state));
+      assertEquals(demoAttributes.get(Person.CITY), (seedRecord.city));
+      assertEquals(demoAttributes.get(Person.ZIP), (seedRecord.zipcode));
+    }
+  }
+
+  @Test
+  public void fixedDemographicsTest() {
+
+    // Generate the people.
+    for (int i = 0; i < generator.options.population; i++) {
+      generator.generatePerson(i);
+    }
     
     // Make sure that the correct number of people were imported from the fixed records file.
     assertEquals(4, generator.internalStore.size());
@@ -69,33 +93,22 @@ public class FixedRecordTest {
       // Make sure the person has the correct number of records.
       assertTrue(currentPerson.records.size() >= 3);
       assertTrue(recordGroup.variantRecords.size() == 3);
-      // The seed fixed record should match the person's initial attributes exactly.
-      FixedRecord seedRecord = recordGroup.seedRecord;
-      assertEquals(currentPerson.attributes.get(Person.FIRST_NAME), (seedRecord.firstName));
-      assertEquals(currentPerson.attributes.get(Person.LAST_NAME), (seedRecord.lastName));
-      assertEquals(currentPerson.attributes.get(Person.ADDRESS), (seedRecord.addressLineOne));
-      assertEquals(currentPerson.attributes.get(Person.BIRTHDATE), (seedRecord.getBirthDate()));
-      assertEquals(currentPerson.attributes.get(Person.GENDER), (seedRecord.gender));
-      assertEquals(currentPerson.attributes.get(Person.TELECOM), (seedRecord.getTelecom()));
-      assertEquals(currentPerson.attributes.get(Person.STATE), (seedRecord.state));
-      assertEquals(currentPerson.attributes.get(Person.CITY), (seedRecord.city));
-      assertEquals(currentPerson.attributes.get(Person.ZIP), (seedRecord.zipcode));
           
       // Cycle the person's FixedRecords to compare them to the raw imported FixedRecords.
-      for (int r = 0; r < currentPerson.records.size(); r++) {
+      for (int recordNum = 0; recordNum < currentPerson.records.size(); recordNum++) {
 
-        int recordToPull = r;
-        if (recordToPull >= recordGroup.variantRecords.size()) {
+        int recordToPull = recordNum;
+        if (recordNum >= recordGroup.variantRecords.size()) {
           recordToPull = recordGroup.variantRecords.size() - 1;
         }
         FixedRecord personFixedRecord = recordGroup.variantRecords.get(recordToPull);
         FixedRecord rawFixedRecord;
         
         // If the person has more HealthRecords than FixedRecords, use the last FixedRecord.
-        if (fixedRecordGroupManager.getRecordGroup(p).variantRecords.size() <= r) {
-          rawFixedRecord = fixedRecordGroupManager.getRecordGroup(p).variantRecords.get(r - 1);
+        if (fixedRecordGroupManager.getRecordGroup(p).variantRecords.size() <= recordNum) {
+          rawFixedRecord = fixedRecordGroupManager.getRecordGroup(p).variantRecords.get(recordNum - 1);
         } else {
-          rawFixedRecord = fixedRecordGroupManager.getRecordGroup(p).variantRecords.get(r);
+          rawFixedRecord = fixedRecordGroupManager.getRecordGroup(p).variantRecords.get(recordNum);
         }
         
         // Compare the person's current FixedRecord with the raw imported FixedRecords.
@@ -118,14 +131,16 @@ public class FixedRecordTest {
 
   @Test
   public void variantRecordCityIsInvalid() {
+    // First, set the current fixed record to the 2015 variant record.
+    assertTrue(fixedRecordGroupManager.getRecordGroup(0).updateCurrentRecord(2015));
     // The first person's 2015 variant record has an invalid city, return the seed city instead.
-    String validCity = fixedRecordGroupManager.getRecordGroup(0).getCurrentCity(2015);
-    String invalidCity = fixedRecordGroupManager.getRecordGroup(0).getCurrentFixedRecord(2015).city;
+    String validCity = fixedRecordGroupManager.getRecordGroup(0).getSafeCurrentCity();
+    String invalidCity = fixedRecordGroupManager.getRecordGroup(0).getCurrentRecord().city;
     assertEquals("Thornton", validCity);
     assertEquals("INVALID_CITY_NAME", invalidCity);
     assertEquals(validCity, fixedRecordGroupManager.getRecordGroup(0).getSeedCity());
     assertEquals(validCity, fixedRecordGroupManager.getRecordGroup(0).seedRecord.getSafeCity());
     // If a fixed record has an invalid city, safecity should return null.
-    assertEquals(null, fixedRecordGroupManager.getRecordGroup(0).getCurrentFixedRecord(2015).getSafeCity());
+    assertEquals(null, fixedRecordGroupManager.getRecordGroup(0).getCurrentRecord().getSafeCity());
   }
 }

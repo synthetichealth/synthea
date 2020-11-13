@@ -51,17 +51,4 @@ public class InvalidFixedRecordTest {
     String city = fixedRecordGroupManager.getRecordGroup(1).getSeedCity();
     System.out.println(city);
   }
-
-  @Test
-  public void variantRecordCityIsInvalid() {
-    // The first person's 2015 variant record has an invalid city, return the seed city instead.
-    String validCity = fixedRecordGroupManager.getRecordGroup(0).getCurrentCity(2015);
-    String invalidCity = fixedRecordGroupManager.getRecordGroup(0).getCurrentFixedRecord(2015).city;
-    assertEquals("Thornton", validCity);
-    assertEquals("INVALID_CITY_NAME", invalidCity);
-    assertEquals(validCity, fixedRecordGroupManager.getRecordGroup(0).getSeedCity());
-    assertEquals(validCity, fixedRecordGroupManager.getRecordGroup(0).seedRecord.getSafeCity());
-    // If a fixed record has an invalid safe city, it should return null.
-    assertEquals(null, fixedRecordGroupManager.getRecordGroup(0).getCurrentFixedRecord(2015).getSafeCity());
-  }
 }

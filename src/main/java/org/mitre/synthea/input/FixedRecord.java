@@ -140,19 +140,19 @@ public class FixedRecord {
       this.attributes.put(Person.TELECOM, this.getTelecom());
       // this.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
       // this.attributes.put(Person.IDENTIFIER_SITE, this.site);
-      // this.attributes.put(Person.CONTACT_GIVEN_NAME, this.parentFirstName);
-      // this.attributes.put(Person.CONTACT_FAMILY_NAME, this.parentLastName);
-      // this.attributes.put(Person.CONTACT_EMAIL, this.parentEmail);
-      // this.attributes.put(Person.ADDRESS, this.addressLineOne);
+      this.attributes.put(Person.CONTACT_GIVEN_NAME, this.parentFirstName);
+      this.attributes.put(Person.CONTACT_FAMILY_NAME, this.parentLastName);
+      this.attributes.put(Person.CONTACT_EMAIL, this.parentEmail);
+      this.attributes.put(Person.ADDRESS, this.addressLineOne);
       String g = this.gender;
       if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
         g = "UNK";
       }
       this.attributes.put(Person.GENDER, g);
       this.attributes.put(Person.BIRTHDATE, this.getBirthDate());
-      // this.attributes.put(Person.STATE, this.state);
-      // this.attributes.put(Person.CITY, this.getSafeCity());
-      // this.attributes.put(Person.ZIP, this.zipcode);
+      this.attributes.put(Person.STATE, this.state);
+      this.attributes.put(Person.CITY, this.getSafeCity());
+      this.attributes.put(Person.ZIP, this.zipcode);
     }
     return this.attributes;
   }

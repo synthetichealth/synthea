@@ -11,13 +11,13 @@ import java.util.List;
 public class FixedRecordGroup {
   public FixedRecord seedRecord;
   public List<FixedRecord> variantRecords;
+  public int currentVariantRecord;
   public int linkId;
-  public int year;
 
   public FixedRecordGroup(FixedRecord seedRecord){
-    year = 0;
     this.seedRecord = seedRecord;
     this.variantRecords = new ArrayList<FixedRecord>();
+    this.currentVariantRecord = -1;
   }
 
   public void addVariantRecord(FixedRecord variantRecord){
@@ -56,8 +56,8 @@ public class FixedRecordGroup {
    * Returns the current year's record city. If it is an invalid city, returns the seed's city.
    * @return String safe city name
    */
-  public String getCurrentCity(int currentYear) {
-    String city = getCurrentFixedRecord(currentYear).getSafeCity();
+  public String getSafeCurrentCity() {
+    String city = getCurrentRecord().getSafeCity();
     if (city != null) {
       return city;
     }
@@ -68,15 +68,42 @@ public class FixedRecordGroup {
    * Returns a FixedRecord which has a recordDates range that includes the given year.
    * @return FixedRecord that meets the daterange of the given year.
    */
-  public FixedRecord getCurrentFixedRecord(int currentYear) {
-    FixedRecord currentRecordCandidate = variantRecords.get(0);
-    for(FixedRecord currentRecord : variantRecords) {
+  // public FixedRecord getCurrentFixedRecord(int currentYear) {
+  //   FixedRecord currentRecordCandidate = variantRecords.get(0);
+  //   for(FixedRecord currentRecord : variantRecords) {
+  //     // Check if the start date of the current record is the highest yet that predates the given year.
+  //     if(currentRecord.addressStartDate >= currentYear && currentRecord.addressStartDate <= currentRecordCandidate.addressStartDate){
+  //       currentRecordCandidate = currentRecord;
+  //     }
+  //   }
+  //   return currentRecordCandidate;
+  // }
+
+  public boolean updateCurrentRecord(int currentYear) {
+    int currentRecordCandidate = 0;
+    for(int i = 0; i < variantRecords.size(); i++) {
+      FixedRecord currentRecord = variantRecords.get(i);
       // Check if the start date of the current record is the highest yet that predates the given year.
-      if(currentRecord.addressStartDate >= currentYear && currentRecord.addressStartDate <= currentRecordCandidate.addressStartDate){
-        currentRecordCandidate = currentRecord;
+      if(currentRecord.addressStartDate >= currentYear && currentRecord.addressStartDate <= variantRecords.get(currentRecordCandidate).addressStartDate){
+        currentRecordCandidate = i;
       }
     }
-    return currentRecordCandidate;
+    if(currentRecordCandidate != this.currentVariantRecord) {
+      // The current record has changed, update it and return true.
+      this.currentVariantRecord = currentRecordCandidate;
+      return true;
+    }
+    else {
+      // No update made, return false.
+      return false;
+    }
+  }
+
+  public FixedRecord getCurrentRecord(){
+    if(this.currentVariantRecord == -1) {
+      throw new RuntimeException("Current year's record must be updated and set before accessing it.");
+    }
+    return this.variantRecords.get(this.currentVariantRecord);
   }
 
   public int getRecordCount() {
