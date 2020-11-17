@@ -646,8 +646,11 @@ public class Generator implements RandomNumberGenerator {
       // Pull the newly updated fixedRecord.
       FixedRecord fr = frg.getCurrentRecord();
       fr.overwriteAddress(person, this);
-      // Get the person's birthdate in case the new one is invalid.
+      // Save the person's birthdate in case the new one is invalid.
       Long birthDate = (Long) person.attributes.get(Person.BIRTHDATE);
+      // Save the person's name in case the new one is invalid.
+      String firstName = (String) person.attributes.get(Person.FIRST_NAME);
+      String lastName = (String) person.attributes.get(Person.LAST_NAME);
       person.attributes.putAll(fr.getFixedRecordAttributes());
       /*
        * Update the person's provider based on their new record.
@@ -657,8 +660,10 @@ public class Generator implements RandomNumberGenerator {
        */
       person.forceNewProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(time));
       person.record = person.getHealthRecord(person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()), System.currentTimeMillis());
-      // Fix the person's birthdate to their real birthdate in case the FixedRecord's is incorrect.
+      // Fix the person's birthdate and name to their real ones in case the FixedRecord's is incorrect.
       person.attributes.put(Person.BIRTHDATE, birthDate);
+      person.attributes.putAll(((FixedRecord) person.attributes.get(Person.SEED_RECORD)).getNameAttributes());
+      
     }
   }
 

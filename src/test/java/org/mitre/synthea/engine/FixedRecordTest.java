@@ -17,6 +17,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.input.FixedRecord;
 import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.input.FixedRecordGroupManager;
+import org.mitre.synthea.input.Household;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -132,7 +133,6 @@ public class FixedRecordTest {
     // Test that the correct number of people were imported from the fixed records file.
     assertEquals(7, generator.internalStore.size());
     assertEquals(7, fixedRecordGroupManager.getPopulationSize());
-    assertEquals(2, generator.households.size());
 
     /* Test that the correct number of records were imported for each person. */
     // 0. Jane Doe
@@ -284,5 +284,27 @@ public class FixedRecordTest {
     assertEquals(validCity, fixedRecordGroupManager.getRecordGroup(0).seedRecord.getSafeCity());
     // If a fixed record has an invalid city, getSafeCity should return null.
     assertEquals(null, fixedRecordGroupManager.getRecordGroup(0).getCurrentRecord().getSafeCity());
+  }
+
+  @Test
+  public void checkHouseholdsTest() {
+
+    // Make sure that the correct number of households were generated.
+    assertEquals(2, generator.households.size());
+
+    Map<Integer, Household> households = generator.households;
+    // household 1 should have the following members:
+    assertTrue(households.get(1).getAdults().stream().anyMatch(adult -> adult.attributes.get(Person.FIRST_NAME).equals("Jane")));
+    assertTrue(households.get(1).getAdults().stream().anyMatch(adult -> adult.attributes.get(Person.NAME).equals("John Doe")));
+    assertTrue(households.get(1).getAdults().size() == 2);
+    assertTrue(households.get(1).getDependents().stream().anyMatch(dependent -> dependent.attributes.get(Person.NAME).equals("Robert Doe")));
+    assertTrue(households.get(1).getDependents().stream().anyMatch(dependent -> dependent.attributes.get(Person.NAME).equals("Sally Doe")));
+    assertTrue(households.get(1).getDependents().size() == 2);
+    // household 2 should have the following members:
+    assertTrue(households.get(2).getAdults().stream().anyMatch(adult -> adult.attributes.get(Person.FIRST_NAME).equals("Kate")));
+    assertTrue(households.get(2).getAdults().stream().anyMatch(adult -> adult.attributes.get(Person.NAME).equals("Frank Smith")));
+    assertTrue(households.get(2).getAdults().size() == 2);
+    assertTrue(households.get(2).getDependents().stream().anyMatch(dependent -> dependent.attributes.get(Person.NAME).equals("William Smith")));
+    assertTrue(households.get(2).getDependents().size() == 1);
   }
 }

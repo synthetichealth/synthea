@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.engine.Generator;
@@ -136,9 +138,7 @@ public class FixedRecord {
   public Map<String, Object> getFixedRecordAttributes() {
     if (this.attributes == null) {
       this.attributes = new HashMap<String, Object>();
-      this.attributes.put(Person.FIRST_NAME, this.firstName);
-      this.attributes.put(Person.LAST_NAME, this.lastName);
-      this.attributes.put(Person.NAME, this.firstName + " " + this.lastName);
+      this.attributes.putAll(this.getNameAttributes());
       this.attributes.put(Person.TELECOM, this.getTelecom());
       // this.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
       // this.attributes.put(Person.IDENTIFIER_SITE, this.site);
@@ -186,5 +186,16 @@ public class FixedRecord {
     // point.
     generator.location.assignPoint(person, (String) person.attributes.get(Person.CITY));
     return !oldCity.equals(person.attributes.get(Person.CITY)) && !oldAddress.equals(person.attributes.get(Person.ADDRESS));
+  }
+
+  /**
+   * Returns the name attributes of the current fixed record.
+   */
+  public Map<String, Object> getNameAttributes() {
+    return Stream.of(new String[][] {
+      {Person.FIRST_NAME, this.firstName},
+      {Person.LAST_NAME, this.lastName},
+      {Person.NAME, this.firstName + " " + this.lastName},
+    }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
   }
 }
