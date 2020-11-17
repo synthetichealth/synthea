@@ -465,14 +465,11 @@ public class Generator implements RandomNumberGenerator {
 
       Map<String, Object> demoAttributes;
 
-      int providerCount = 0;
-      int providerMinimum = 1;
       if(this.fixedRecordGroupManager != null) {
         // Get the Demographic attributes
         FixedRecordGroup recordGroup = this.fixedRecordGroupManager.getRecordGroup(index);
         demoAttributes = pickFixedDemographics(recordGroup, random);
         // If fixed records are used, there must be 1 provider for each of this person's variant records.
-        providerMinimum = recordGroup.getRecordCount();
         
       } else {
        demoAttributes = randomDemographics(randomForDemographics);
@@ -483,7 +480,6 @@ public class Generator implements RandomNumberGenerator {
         long finishTime = person.lastUpdated + timestep;
 
         isAlive = person.alive(finishTime);
-        providerCount = person.providerCount();
 
         if (isAlive && onlyDeadPatients) {
           // rotate the seed so the next attempt gets a consistent but different one
@@ -501,24 +497,10 @@ public class Generator implements RandomNumberGenerator {
           // note that this skips ahead to the while check and doesn't automatically re-loop
         }
 
-        // For fixed records, the person must have at least 1 provider per record.
-        if (providerCount < providerMinimum) {
-          // rotate the seed so the next attempt gets a consistent but different one
-          personSeed = new Random(personSeed).nextLong();
-          tryNumber++;
-          if (tryNumber > 10) {
-            System.out.println("Couldn't get enough providers for "
-                + person.attributes.get(Person.FIRST_NAME) + " "
-                + person.attributes.get(Person.LAST_NAME));
-          }
-          continue;
-          // skip the other stuff if the patient has less providers than the minimum
-          // note that this skips ahead to the while check and doesn't automatically re-loop
-        }
+
 
         recordPerson(person, index);
 
-        tryNumber++;
         if (!isAlive) {
           // rotate the seed so the next attempt gets a consistent but different one
           personSeed = randomForDemographics.nextLong();
@@ -526,7 +508,7 @@ public class Generator implements RandomNumberGenerator {
           // if we've tried and failed > 10 times to generate someone over age 90
           // and the options allow for ages as low as 85
           // reduce the age to increase the likelihood of success
-          if (tryNumber > 10 && (int)person.attributes.get(TARGET_AGE) > 90
+          if ((int)person.attributes.get(TARGET_AGE) > 90
               && (!options.ageSpecified || options.minAge <= 85)) {
             // pick a new target age between 85 and 90
             int newTargetAge = randomForDemographics.nextInt(5) + 85;
@@ -542,7 +524,7 @@ public class Generator implements RandomNumberGenerator {
         // this means export must be the LAST THING done with the person
         Exporter.export(person, finishTime, exporterRuntimeOptions);
       } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
-          || (isAlive && onlyDeadPatients) || (providerCount < providerMinimum));
+          || (isAlive && onlyDeadPatients));
       // if the patient is alive and we want only dead ones => loop & try again
       //  (and dont even export, see above)
       // if the patient is dead and we only want dead ones => done
@@ -591,13 +573,16 @@ public class Generator implements RandomNumberGenerator {
     person.currentModules = Module.getModules(modulePredicate);
 
     // Add the person to their household.
-    if(Boolean.parseBoolean(Config.get("fixeddemographics.households", "false"))){
+    if (Boolean.parseBoolean(Config.get("fixeddemographics.households", "false"))) {
       Household personHousehold = (Household) person.attributes.get(Person.HOUSEHOLD);
-      if (person.ageInDecimalYears(System.currentTimeMillis()) > 18) {
-        personHousehold.addAdult(person);
-      }
-      else {
-        personHousehold.addChild(person);
+      // Because people are sometimes re-simulated, we must make sure they have not already been added to the household.
+      if(!personHousehold.includesPerson(person)){
+        if (person.ageInDecimalYears(System.currentTimeMillis()) > 18) {
+          personHousehold.addAdult(person);
+        }
+        else {
+          personHousehold.addChild(person);
+        }
       }
     }
 
@@ -621,11 +606,9 @@ public class Generator implements RandomNumberGenerator {
     while (person.alive(time) && time < stop) {
 
       // If fixed Patient Demographics are being used and address changing is true...
-      if(options.fixedRecordPath != null && Boolean.parseBoolean(Config.get("fixeddemographics.addresschanging", "false"))) {
-        updateFixedAddress(person);
+      if(options.fixedRecordPath != null /*&& Boolean.parseBoolean(Config.get("fixeddemographics.addresschanging", "false"))*/) {
+        updateFixedAddress(person, time);
       }
-
-
 
       // Process Health Insurance.
       healthInsuranceModule.process(person, time + timestep);
@@ -656,23 +639,26 @@ public class Generator implements RandomNumberGenerator {
    * @param person The person to use
    * @return
    */
-  public void updateFixedAddress(Person person){
-    // Check if the person's fixed record gets updated, meaning that their health record and address should update.
+  public void updateFixedAddress(Person person, long time){
+    // Check if the person's fixed record has been updated, meaning that their health record, provider, and address should also update.
     FixedRecordGroup frg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
-    if(frg.updateCurrentRecord(Utilities.getYear(System.currentTimeMillis()))){
+    if(frg.updateCurrentRecord(Utilities.getYear(time))){
       // Pull the newly updated fixedRecord.
       FixedRecord fr = frg.getCurrentRecord();
-      // Update the person's address and location from the new FixedRecord. If the address changed, update their provider and health record.
-      if(fr.overwriteAddress(person, this)){
-        // Get the person's birthdate in case the new one is invalid.
-        Long birthDate = (Long) person.attributes.get(Person.BIRTHDATE);
-        person.attributes.putAll(fr.getFixedRecordAttributes());
-        // Update the person's provider based on their new location. This is required so that a new health record is made for the change of address (record).
-        person.setProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(System.currentTimeMillis()));
-        person.record = person.getHealthRecord(person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()), System.currentTimeMillis());
-        // Fix the person's birthdate to their real birthdate in case the FixedRecord's is incorrect.
-        person.attributes.put(Person.BIRTHDATE, birthDate);
-      }
+      fr.overwriteAddress(person, this);
+      // Get the person's birthdate in case the new one is invalid.
+      Long birthDate = (Long) person.attributes.get(Person.BIRTHDATE);
+      person.attributes.putAll(fr.getFixedRecordAttributes());
+      /*
+       * Update the person's provider based on their new record.
+       * This is required so that a new health record is made for the start date
+       * of the fixed record which impacts the provider and care location and timing as well
+       * as any change of address.
+       */
+      person.forceNewProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(time));
+      person.record = person.getHealthRecord(person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()), System.currentTimeMillis());
+      // Fix the person's birthdate to their real birthdate in case the FixedRecord's is incorrect.
+      person.attributes.put(Person.BIRTHDATE, birthDate);
     }
   }
 

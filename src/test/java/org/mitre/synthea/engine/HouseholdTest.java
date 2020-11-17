@@ -53,7 +53,7 @@ public class HouseholdTest {
   @Test
   public void checkHouseholdsTest() {
 
-    // Make sure that the correct number of people were imported from the fixed records.
+    // Make sure that the correct number of people and households were imported from the fixed records.
     assertEquals(7, generator.internalStore.size());
     assertEquals(7, fixedRecordGroupManager.getPopulationSize());
     assertEquals(2, generator.households.size());

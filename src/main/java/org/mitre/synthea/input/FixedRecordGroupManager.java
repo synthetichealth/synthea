@@ -42,6 +42,10 @@ public class FixedRecordGroupManager {
       }
       this.recordGroups.get(Integer.parseInt(variantRecord.seedID)).addVariantRecord(variantRecord);
     }
+    // Set the date ranges of the fixed records.
+    for(FixedRecordGroup recordGroup : this.recordGroups.values()) {
+      recordGroup.setVariantRecordYearRanges();
+    }
   }
 
   public int getPopulationSize() {

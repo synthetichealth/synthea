@@ -61,22 +61,36 @@ public class Household {
         }
         this.dependents.add(newChild);
     }
-    
+
     /**
      * Get the list of adults in this household.
      */
-    public List<Person> getAdults(){
+    public List<Person> getAdults() {
         List<Person> adults = new ArrayList<Person>();
-        if(firstAdult != null) adults.add(firstAdult);
-        if(secondAdult != null) adults.add(secondAdult);
+        if (firstAdult != null)
+            adults.add(firstAdult);
+        if (secondAdult != null)
+            adults.add(secondAdult);
         return adults;
     }
 
     /**
      * Get the list of dependents in this household.
      */
-    public List<Person> getDependents(){
+    public List<Person> getDependents() {
         return this.dependents;
+    }
+
+    /**
+     * Returns whether the given person exists in the current household.
+     */
+    public boolean includesPerson(Person person) {
+        FixedRecord seedRecord = (FixedRecord) person.attributes.get(Person.SEED_RECORD);
+        boolean matchesFirstAdult = (this.firstAdult == null) ? false : this.firstAdult.attributes.get(Person.SEED_RECORD).equals(seedRecord);
+        boolean matchesSecondAdult = (this.secondAdult == null) ? false : this.firstAdult.attributes.get(Person.SEED_RECORD).equals(seedRecord);
+        boolean matchesDependent = this.dependents.stream().anyMatch(dependent -> dependent.attributes.get(Person.SEED_RECORD).equals(seedRecord));
+        System.out.println(matchesFirstAdult + " " + matchesSecondAdult + " " + matchesDependent);
+        return matchesFirstAdult || matchesSecondAdult || matchesDependent;
     }
 
 }

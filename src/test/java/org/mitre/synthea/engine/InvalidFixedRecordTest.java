@@ -1,7 +1,5 @@
 package org.mitre.synthea.engine;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 
 import org.junit.BeforeClass;

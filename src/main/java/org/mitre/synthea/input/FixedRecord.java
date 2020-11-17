@@ -66,14 +66,14 @@ public class FixedRecord {
   @SerializedName(value = "ADDRESS_ZIP")
   public String zipcode;
 
-  @SerializedName(value = "PARENT1_SURNAME")
-  public String parentLastName;
+  @SerializedName(value = "CONTACT_SN")
+  public String contactLastName;
 
-  @SerializedName(value = "PARENT1_GIVEN_NAME")
-  public String parentFirstName;
+  @SerializedName(value = "CONTACT_GN")
+  public String contactFirstName;
 
-  @SerializedName(value = "PARENT1_EMAIL")
-  public String parentEmail;
+  @SerializedName(value = "CONTACT_EMAIL")
+  public String contactEmail;
 
   @SerializedName(value = "ADDRESS_ACTIVE_START")
   public int addressStartDate;
@@ -86,6 +86,8 @@ public class FixedRecord {
 
   // Attributes map
   @Expose(serialize = false, deserialize = true) private transient Map<String, Object> attributes;
+
+  public int addressEndDate;
 
 
   /**
@@ -140,9 +142,11 @@ public class FixedRecord {
       this.attributes.put(Person.TELECOM, this.getTelecom());
       // this.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
       // this.attributes.put(Person.IDENTIFIER_SITE, this.site);
-      this.attributes.put(Person.CONTACT_GIVEN_NAME, this.parentFirstName);
-      this.attributes.put(Person.CONTACT_FAMILY_NAME, this.parentLastName);
-      this.attributes.put(Person.CONTACT_EMAIL, this.parentEmail);
+      if(this.contactLastName != null) {
+        this.attributes.put(Person.CONTACT_GIVEN_NAME, this.contactFirstName);
+        this.attributes.put(Person.CONTACT_FAMILY_NAME, this.contactLastName);
+      }
+      this.attributes.put(Person.CONTACT_EMAIL, this.contactEmail);
       this.attributes.put(Person.ADDRESS, this.addressLineOne);
       String g = this.gender;
       if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
@@ -151,7 +155,11 @@ public class FixedRecord {
       this.attributes.put(Person.GENDER, g);
       this.attributes.put(Person.BIRTHDATE, this.getBirthDate());
       this.attributes.put(Person.STATE, this.state);
-      this.attributes.put(Person.CITY, this.getSafeCity());
+      if(this.getSafeCity() != null) {
+        this.attributes.put(Person.CITY, this.getSafeCity());
+      } else {
+        this.attributes.put(Person.CITY, this.city);
+      }
       this.attributes.put(Person.ZIP, this.zipcode);
     }
     return this.attributes;
@@ -168,7 +176,11 @@ public class FixedRecord {
     String oldAddress = (String) person.attributes.get(Person.ADDRESS);
     person.attributes.put(Person.ADDRESS, this.addressLineOne);
     person.attributes.put(Person.STATE, this.state);
-    person.attributes.put(Person.CITY, this.getSafeCity());
+    if(this.getSafeCity() != null) {
+      person.attributes.put(Person.CITY, this.getSafeCity());
+    } else {
+      person.attributes.put(Person.CITY, ((FixedRecord) person.attributes.get(Person.SEED_RECORD)).getSafeCity());
+    }
     person.attributes.put(Person.ZIP, this.zipcode);
     // Fix the person's safe city in case it is invalid and update their location
     // point.

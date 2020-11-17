@@ -17,6 +17,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.mitre.synthea.engine.ExpressedConditionRecord;
 import org.mitre.synthea.engine.ExpressedSymptom;
@@ -654,6 +655,11 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public void setProvider(EncounterType type, long time) {
     Provider provider = Provider.findService(this, type, time);
+    setProvider(type, provider);
+  }
+
+  public void forceNewProvider(EncounterType type, long time){
+    Provider provider = Provider.findServiceNewProvider(this, type, time, this.records.values().stream().map(record -> record.provider.uuid).collect(Collectors.toList()));
     setProvider(type, provider);
   }
 

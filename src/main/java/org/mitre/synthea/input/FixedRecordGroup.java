@@ -3,6 +3,8 @@ package org.mitre.synthea.input;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mitre.synthea.helpers.Utilities;
+
 /**
  * A grouping of FixedRecords that represents a single individual. FixedRecords provide demographic
  * information and the grouping can be used to capture variation that may happen across different
@@ -17,15 +19,40 @@ public class FixedRecordGroup {
   public FixedRecordGroup(FixedRecord seedRecord){
     this.seedRecord = seedRecord;
     this.variantRecords = new ArrayList<FixedRecord>();
-    this.currentVariantRecord = -1;
+    this.currentVariantRecord = this.getEarliestRecord();
   }
 
   public void addVariantRecord(FixedRecord variantRecord){
     this.variantRecords.add(variantRecord);
   }
 
+  public void setVariantRecordYearRanges(){
+    for(int i = 0; i < variantRecords.size(); i++) {
+      int nextAddressStartDate = this.getNextAddressStartDate(this.variantRecords.get(i).addressStartDate);
+      this.variantRecords.get(i).addressEndDate = nextAddressStartDate-1;
+    }
+
+  }
+
+  private int getNextAddressStartDate(int currentAddressStartDate) {
+    // Create a list of the address start dates after the given date.
+    List<Integer> addressStartDates = new ArrayList<Integer>();
+    for(int i = 0; i < variantRecords.size(); i++) {
+      if(this.variantRecords.get(i).addressStartDate > currentAddressStartDate) {
+        addressStartDates.add(this.variantRecords.get(i).addressStartDate);
+      }
+    }
+    // If there are no address start dates, this is the last date. return the current year + 5.
+    if(addressStartDates.size() == 0){
+      return Utilities.getYear(System.currentTimeMillis()) + 5;
+    }
+    // Return the smallest address start date.
+    return addressStartDates.stream().min((i, j) -> i.compareTo(j)).get();
+  }
+
   /**
    * Returns the valid birthdate in the seed record
+   * 
    * @return long valid birthdate
    */
   public long getSeedBirthdate() {
@@ -68,38 +95,39 @@ public class FixedRecordGroup {
    * Returns a FixedRecord which has a recordDates range that includes the given year.
    * @return FixedRecord that meets the daterange of the given year.
    */
-  // public FixedRecord getCurrentFixedRecord(int currentYear) {
-  //   FixedRecord currentRecordCandidate = variantRecords.get(0);
-  //   for(FixedRecord currentRecord : variantRecords) {
-  //     // Check if the start date of the current record is the highest yet that predates the given year.
-  //     if(currentRecord.addressStartDate >= currentYear && currentRecord.addressStartDate <= currentRecordCandidate.addressStartDate){
-  //       currentRecordCandidate = currentRecord;
-  //     }
-  //   }
-  //   return currentRecordCandidate;
-  // }
-
   public boolean updateCurrentRecord(int currentYear) {
-    int currentRecordCandidate = 0;
     for(int i = 0; i < variantRecords.size(); i++) {
       FixedRecord currentRecord = variantRecords.get(i);
-      // Check if the start date of the current record is the highest yet that predates the given year.
-      if(currentRecord.addressStartDate >= currentYear && currentRecord.addressStartDate <= variantRecords.get(currentRecordCandidate).addressStartDate){
-        currentRecordCandidate = i;
+      // System.out.println(currentRecord.addressStartDate + "-" + currentRecord.addressEndDate);
+      // Check if the the current year falls within the current record date range.
+      if(currentRecord.addressStartDate <= currentYear && currentYear <= currentRecord.addressEndDate){
+        if(i != this.currentVariantRecord){
+          // The record has changed.
+          this.currentVariantRecord = i;
+          return true;
+        } else {
+          return false;
+        }
       }
     }
-    if(currentRecordCandidate != this.currentVariantRecord) {
-      // The current record has changed, update it and return true.
-      this.currentVariantRecord = currentRecordCandidate;
-      return true;
-    }
-    else {
-      // No update made, return false.
-      return false;
-    }
+    return false;
   }
 
-  public FixedRecord getCurrentRecord(){
+  /**
+   * Returns the index of the earlist FixedRecord in the RecordGroup.
+   * @return Earliest FixedRecord index.
+   */
+  private int getEarliestRecord() {
+    int currentEarliest = 0;
+    for(int i = 0; i < variantRecords.size(); i++) {
+      if(this.variantRecords.get(i).addressStartDate < this.variantRecords.get(currentEarliest).addressStartDate) {
+        currentEarliest = i;
+      }
+    }
+    return currentEarliest;
+  }
+
+  public FixedRecord getCurrentRecord() {
     if(this.currentVariantRecord == -1) {
       throw new RuntimeException("Current year's record must be updated and set before accessing it.");
     }
