@@ -51,6 +51,7 @@ public class FixedRecordTest {
   private static FixedRecordGroupManager fixedRecordGroupManager;
 
   // TODO: Fix an issue where dead people will cause the population to be one larger.
+  // TODO: Do some closer-up tests of finding new providers when a record change occurs.
   // TODO: Test address movement.
   // TODO: Fix an issue where more than 2 adults may be added to a household.
 
@@ -84,7 +85,6 @@ public class FixedRecordTest {
 
     // First, we'll hard-code check the first person's (Jane Doe) seed record and initial attributes.
     FixedRecordGroup janeDoeRecordGroup = generator.fixedRecordGroupManager.getRecordGroup(0);
-    // Test Jane Doe's VariantRecord 1.
     Map<String, String> testAttributes = Stream.of(new String[][] {
       {RECORD_ID, "1"},
       {HH_ID, "1"},
@@ -106,7 +106,7 @@ public class FixedRecordTest {
     testRecordAttributes(janeDoeRecordGroup.seedRecord, testAttributes);
 
     // Now check that the rest of the population's initial attributes match the seed record.
-    for (int i = 1; i < generator.options.population; i++) {
+    for (int i = 0; i < generator.options.population; i++) {
       FixedRecordGroup recordGroup = generator.fixedRecordGroupManager.getRecordGroup(i);
       Map<String, Object> demoAttributes = generator.pickFixedDemographics(recordGroup, new Random(i));
       FixedRecord seedRecord = recordGroup.seedRecord;
