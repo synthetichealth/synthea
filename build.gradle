@@ -6,10 +6,8 @@
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
 
-compileJava {
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
-}
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
 apply plugin: 'application'
 apply plugin: 'eclipse'
