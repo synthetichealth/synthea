@@ -1162,8 +1162,8 @@
         }
       ],
       "duration": {
-        "low": 20,
-        "high": 30,
+        "low": 40,
+        "high": 50,
         "unit": "minutes"
       },
       "direct_transition": "Chest_X_Ray"
@@ -1227,8 +1227,8 @@
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 60,
+        "low": 45,
+        "high": 90,
         "unit": "minutes"
       },
       "direct_transition": "Doppler Check"
