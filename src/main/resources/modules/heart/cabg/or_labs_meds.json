@@ -1,0 +1,267 @@
+{
+  "name": "or_labs_meds",
+  "remarks": [
+    "OR Labs and Meds. CPB meds not included."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Activated Clotting Time"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Activated Clotting Time": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "s",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "3184-9",
+          "display": "Activated clotting time (ACT) of Blood by Coagulation assay"
+        }
+      ],
+      "direct_transition": "Arterial_Blood_Gas",
+      "range": {
+        "low": 110,
+        "high": 130
+      }
+    },
+    "Arterial_Blood_Gas": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24336-0",
+          "display": "Gas panel - Arterial blood"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "[pH]",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2744-1",
+              "display": "pH of Arterial blood"
+            }
+          ],
+          "range": {
+            "low": 6.8,
+            "high": 7.3
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mm[Hg]",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2019-8",
+              "display": "Carbon dioxide [Partial pressure] in Arterial blood"
+            }
+          ],
+          "range": {
+            "low": 35,
+            "high": 45
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mm[Hg]",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2703-7",
+              "display": "Oxygen [Partial pressure] in Arterial blood"
+            }
+          ],
+          "range": {
+            "low": 80,
+            "high": 100
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mmol/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1960-4",
+              "display": "Bicarbonate [Moles/volume] in Arterial blood"
+            }
+          ],
+          "range": {
+            "low": 22,
+            "high": 27
+          }
+        },
+        {
+          "category": "vital-signs",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2708-6",
+              "display": "Oxygen saturation in Arterial blood"
+            },
+            {
+              "system": "LOINC",
+              "code": "59408-5",
+              "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
+            }
+          ],
+          "vital_sign": "Oxygen Saturation"
+        }
+      ],
+      "direct_transition": "Venous Blood Gas"
+    },
+    "Venous Blood Gas": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24339-4",
+          "display": "Gas panel - Venous blood"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "[pH]",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2746-6",
+              "display": "pH of Venous blood"
+            }
+          ],
+          "range": {
+            "low": 7.31,
+            "high": 7.45
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mm[Hg]",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2021-4",
+              "display": "Carbon dioxide [Partial pressure] in Venous blood"
+            }
+          ],
+          "range": {
+            "low": 37,
+            "high": 50
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mm[Hg]",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2705-2",
+              "display": "Oxygen [Partial pressure] in Venous blood"
+            }
+          ],
+          "range": {
+            "low": 37,
+            "high": 47
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mmol/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "14627-4",
+              "display": "Bicarbonate [Moles/volume] in Venous blood"
+            }
+          ],
+          "range": {
+            "low": 22,
+            "high": 28
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mmol/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2027-1",
+              "display": "Carbon dioxide, total [Moles/volume] in Venous blood"
+            }
+          ],
+          "range": {
+            "low": 0.5,
+            "high": 2
+          }
+        }
+      ],
+      "direct_transition": "Magnesium"
+    },
+    "Magnesium": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "mg/dL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "19123-9",
+          "display": "Magnesium [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 1.6,
+        "high": 2.3
+      },
+      "direct_transition": "Gas and Carbon monoxide and Electrolytes panel - Arterial blood"
+    },
+    "Gas and Carbon monoxide and Electrolytes panel - Arterial blood": {
+      "type": "Simple",
+      "direct_transition": "Cefazolin"
+    },
+    "Cefazolin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1665060,
+          "display": "cefazolin 2000 MG Injection"
+        }
+      ],
+      "direct_transition": "Heparin",
+      "administration": true
+    },
+    "Heparin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1659263,
+          "display": "1 ML heparin sodium, porcine 5000 UNT/ML Injection"
+        }
+      ],
+      "direct_transition": "Protamine",
+      "administration": true
+    },
+    "Protamine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1796676,
+          "display": "25 ML protamine sulfate (USP) 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "administration": true
+    }
+  }
+}

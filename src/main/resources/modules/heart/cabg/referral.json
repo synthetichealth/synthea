@@ -21,8 +21,8 @@
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 60,
+        "low": 45,
+        "high": 90,
         "unit": "minutes"
       },
       "direct_transition": "Abnormal Findings",
@@ -72,34 +72,7 @@
           "display": "Abnormal findings diagnostic imaging heart+coronary circulat (finding)"
         }
       ],
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "cabg_consultation_count",
-            "operator": ">",
-            "value": 0
-          },
-          "distributions": [],
-          "transition": "Referral to Surgery"
-        },
-        {
-          "distributions": [
-            {
-              "transition": "Referral to Surgery",
-              "distribution": 0.35
-            },
-            {
-              "transition": "Referral to Service",
-              "distribution": 0.15
-            },
-            {
-              "transition": "Repeat Referral",
-              "distribution": 0.5
-            }
-          ]
-        }
-      ]
+      "direct_transition": "Postoperative Care"
     },
     "Set Consultation Count": {
       "type": "SetAttribute",
@@ -117,8 +90,8 @@
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 60,
+        "low": 5,
+        "high": 15,
         "unit": "minutes"
       },
       "reason": "Abnormal Findings",
@@ -157,8 +130,8 @@
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 60,
+        "low": 5,
+        "high": 15,
         "unit": "minutes"
       },
       "reason": "Abnormal Findings",
@@ -183,8 +156,8 @@
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 60,
+        "low": 5,
+        "high": 15,
         "unit": "minutes"
       },
       "reason": "Abnormal Findings",
@@ -417,12 +390,56 @@
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 60,
+        "low": 60,
+        "high": 120,
         "unit": "minutes"
       },
       "direct_transition": "Diagnostic",
       "reason": "cardiac_surgery_reason"
+    },
+    "Postoperative Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 133899007,
+          "display": "Postoperative care (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 5.5,
+        "high": 6.5,
+        "unit": "hours"
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_consultation_count",
+            "operator": ">",
+            "value": 0
+          },
+          "distributions": [],
+          "transition": "Referral to Surgery"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Referral to Surgery",
+              "distribution": 0.35
+            },
+            {
+              "transition": "Referral to Service",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Repeat Referral",
+              "distribution": 0.5
+            }
+          ]
+        }
+      ],
+      "reason": "Select Condition/Enter Attribute"
     }
   }
 }

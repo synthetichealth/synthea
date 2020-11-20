@@ -1,0 +1,329 @@
+{
+  "name": "postop",
+  "remarks": [
+    "CABG Postoperative, ICU, and Ward."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check Alive"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "CABG_Postop": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 397821002,
+          "display": "Patient transfer to intensive care unit (procedure)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Prolonged Recovery",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_prolonged_los",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Recovery"
+        }
+      ],
+      "reason": "cabg_history"
+    },
+    "Recovery": {
+      "type": "SetAttribute",
+      "attribute": "cabg_icu_los",
+      "direct_transition": "Ventilation Check",
+      "range": {
+        "low": 1,
+        "high": 5
+      }
+    },
+    "Discharge": {
+      "type": "EncounterEnd",
+      "direct_transition": "Admission to Ward"
+    },
+    "Check Alive": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Deceased",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_mortality",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "CABG_Postop"
+        }
+      ]
+    },
+    "Deceased": {
+      "type": "Death",
+      "direct_transition": "Terminal"
+    },
+    "Prolonged Recovery": {
+      "type": "SetAttribute",
+      "attribute": "cabg_prolonged_los",
+      "direct_transition": "Ventilation Check",
+      "range": {
+        "low": 6,
+        "high": 10
+      }
+    },
+    "Begin Day": {
+      "type": "Counter",
+      "attribute": "cabg_icu_los",
+      "action": "decrement",
+      "direct_transition": "ICU Labs"
+    },
+    "End Day": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Begin Day",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_icu_los",
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Discharge to Ward"
+        }
+      ]
+    },
+    "Ventilation Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Ventilation",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Ventilator Reason",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Extubation"
+        }
+      ]
+    },
+    "Ventilation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "26763009",
+          "display": "Controlled ventilation procedure and therapy, initiation and management (procedure)"
+        }
+      ],
+      "reason": "Ventilator Reason",
+      "direct_transition": "End Ventilation",
+      "duration": {
+        "low": 4,
+        "high": 6,
+        "unit": "hours"
+      }
+    },
+    "Extubation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "271280005",
+          "display": "Removal of endotracheal tube (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "direct_transition": "Begin Day"
+    },
+    "End Ventilation": {
+      "type": "ConditionEnd",
+      "direct_transition": "Extubation",
+      "referenced_by_attribute": "Ventilator Reason"
+    },
+    "ICU Labs": {
+      "type": "Simple",
+      "direct_transition": "ICU Meds"
+    },
+    "ICU Meds": {
+      "type": "Simple",
+      "direct_transition": "End Day"
+    },
+    "Discharge to Ward": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 306706006,
+          "display": "Discharge to ward (procedure)"
+        }
+      ],
+      "direct_transition": "Discharge",
+      "reason": "cagb_history"
+    },
+    "Admission to Ward": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 305342007,
+          "display": "Admission to ward (procedure)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Prolonged Recovery",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_prolonged_los",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Recovery"
+        }
+      ],
+      "direct_transition": "Education",
+      "reason": "cabg_history"
+    },
+    "Walking Exercise Test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 302761001,
+          "display": "Walking exercise test (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 3,
+        "unit": "hours"
+      },
+      "direct_transition": "Stair Climbing Test",
+      "reason": "cabg_history"
+    },
+    "Stair Climbing Test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 252482003,
+          "display": "Stair-climbing test (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Discharge from Hospital",
+      "reason": "cabg_history"
+    },
+    "Discharge to Home": {
+      "type": "EncounterEnd",
+      "direct_transition": "Post Discharge Outcomes",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      }
+    },
+    "Discharge to Facility": {
+      "type": "EncounterEnd",
+      "direct_transition": "Post Discharge Outcomes",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "04",
+        "display": "Discharged/transferred to a facility that provides custodial or supportive care"
+      }
+    },
+    "Post Discharge Outcomes": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Readmission to Ward",
+          "distribution": 0.02
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.98
+        }
+      ]
+    },
+    "Education": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 243063003,
+          "display": "Postoperative procedure education (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Walking Exercise Test",
+      "reason": "cabg_history"
+    },
+    "Discharge from Hospital": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 308283009,
+          "display": "Discharge from hospital (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Discharge to Home",
+          "distribution": 0.8
+        },
+        {
+          "transition": "Discharge to Facility",
+          "distribution": 0.2
+        }
+      ],
+      "reason": "cabg_history"
+    },
+    "Readmission to Ward": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 30,
+        "unit": "days"
+      },
+      "direct_transition": "Admission to Ward"
+    }
+  }
+}
