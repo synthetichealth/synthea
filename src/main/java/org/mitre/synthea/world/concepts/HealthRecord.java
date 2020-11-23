@@ -15,6 +15,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -620,6 +621,20 @@ public class HealthRecord implements Serializable {
     this.person = person;
     encounters = new ArrayList<Encounter>();
     present = new HashMap<String, Entry>();
+  }
+
+  /**
+   * Returns the number of providers associated with this healthrecord.
+   */
+  public int providerCount() {
+    List<String> uuids = new ArrayList<String>();
+    for (Encounter enc : encounters) {
+      if (enc.provider != null) {
+        uuids.add(enc.provider.uuid);
+      }
+    }
+    Set<String> uniqueUuids = new HashSet<String>(uuids);
+    return uniqueUuids.size();
   }
 
   /**

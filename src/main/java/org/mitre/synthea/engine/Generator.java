@@ -1,11 +1,18 @@
 package org.mitre.synthea.engine;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Type;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,6 +30,8 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.StringUtils;
+
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.editors.GrowthDataErrorsEditor;
 import org.mitre.synthea.export.CDWExporter;
@@ -31,6 +40,8 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.input.FixedRecord;
+import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.HealthInsuranceModule;
@@ -64,6 +75,7 @@ public class Generator implements RandomNumberGenerator {
   public TransitionMetrics metrics;
   public static String DEFAULT_STATE = "Massachusetts";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
+  private List<FixedRecordGroup> recordGroups;
 
   /**
    * Used only for testing and debugging. Populate this field to keep track of all patients
@@ -101,6 +113,10 @@ public class Generator implements RandomNumberGenerator {
     public int maxAge = 140;
     public String city;
     public String state;
+    /** When Synthea is used as a standalone library, this directory holds
+     * any locally created modules. */
+    public File localModuleDir;
+    public File fixedRecordPath;
     public List<String> enabledModules;
     /** File used to initialize a population. */
     public File initialPopulationSnapshotPath;
@@ -234,6 +250,9 @@ public class Generator implements RandomNumberGenerator {
     // Initialize Payers
     Payer.loadPayers(location);
     // ensure modules load early
+    if (options.localModuleDir != null) {
+      Module.addModules(options.localModuleDir);
+    }
     List<String> coreModuleNames = getModuleNames(Module.getModules(path -> false));
     List<String> moduleNames = getModuleNames(Module.getModules(modulePredicate)); 
     Costs.loadCostData(); // ensure cost data loads early
@@ -282,6 +301,16 @@ public class Generator implements RandomNumberGenerator {
    * Generate the population, using the currently set configuration settings.
    */
   public void run() {
+
+    // Import the fixed patient demographics records file, if a file path is given.
+    if (this.options.fixedRecordPath != null) {
+      importFixedPatientDemographicsFile();
+      // Since we're using FixedRecords, split records must be true.
+      Config.set("exporter.split_records", "true");
+      // We'll be using the FixedRecord names, so no numbers should be appended to them.
+      Config.set("generate.append_numbers_to_person_names", "false");
+    }
+
     ExecutorService threadPool = Executors.newFixedThreadPool(8);
 
     if (options.initialPopulationSnapshotPath != null) {
@@ -308,6 +337,7 @@ public class Generator implements RandomNumberGenerator {
         }
       }
     } else {
+      // Generate patients up to the specified population size.
       for (int i = 0; i < this.options.population; i++) {
         final int index = i;
         final long seed = this.random.nextLong();
@@ -353,6 +383,32 @@ public class Generator implements RandomNumberGenerator {
       metrics.printStats(totalGeneratedPopulation.get(), Module.getModules(getModulePredicate()));
     }
   }
+
+  /**
+   * Imports the fixed demographics records file when using fixed patient
+   * demographics.
+   * 
+   * @return A list of the groups of records imported.
+   */
+  public List<FixedRecordGroup> importFixedPatientDemographicsFile() {
+    Gson gson = new Gson();
+    Type listType = new TypeToken<List<FixedRecordGroup>>() {}.getType();
+    try {
+      System.out.println("Loading fixed patient demographic records file: "
+          + this.options.fixedRecordPath);
+      this.recordGroups = gson.fromJson(new FileReader(this.options.fixedRecordPath), listType);
+      int linkIdStart = 100000;
+      for (int i = 0; i < this.recordGroups.size(); i++) {
+        this.recordGroups.get(i).linkId = linkIdStart + i;
+      }
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
+    }
+    // Update the population size to reflect the number of patients in the fixed records file.
+    this.options.population = this.recordGroups.size();
+    // Return the record groups.
+    return recordGroups;
+  }
   
   /**
    * Generate a completely random Person. The returned person will be alive at the end of the
@@ -369,7 +425,7 @@ public class Generator implements RandomNumberGenerator {
     long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
     return generatePerson(index, personSeed);
   }
-  
+
   /**
    * Generate a random Person, from the given seed. The returned person will be alive at the end of
    * the simulation. This means that if in the course of the simulation the person dies, a new
@@ -384,18 +440,35 @@ public class Generator implements RandomNumberGenerator {
    * @return generated Person
    */
   public Person generatePerson(int index, long personSeed) {
+
     Person person = null;
+    
     try {
       boolean isAlive = true;
-      int tryNumber = 0; // number of tries to create these demographics
+      int tryNumber = 0; // Number of tries to create these demographics
       Random randomForDemographics = new Random(personSeed);
-      Map<String, Object> demoAttributes = randomDemographics(randomForDemographics);
 
+      Map<String, Object> demoAttributes = randomDemographics(randomForDemographics);
+      if (this.recordGroups != null) {
+        // Pick fixed demographics if a fixed demographics record file is used.
+        demoAttributes = pickFixedDemographics(index, random);
+      }
+
+      int providerCount = 0;
+      int providerMinimum = 1;
+
+      if (this.recordGroups != null) {
+        // If fixed records are used, there must be 1 provider for each of this person's records.
+        FixedRecordGroup recordGroup = this.recordGroups.get(index);
+        providerMinimum = recordGroup.count;
+      }
+      
       do {
         person = createPerson(personSeed, demoAttributes);
         long finishTime = person.lastUpdated + timestep;
 
         isAlive = person.alive(finishTime);
+        providerCount = person.providerCount();
 
         if (isAlive && onlyDeadPatients) {
           // rotate the seed so the next attempt gets a consistent but different one
@@ -410,6 +483,21 @@ public class Generator implements RandomNumberGenerator {
           personSeed = randomForDemographics.nextLong();
           continue;
           // skip the other stuff if the patient is dead and we only want alive patients
+          // note that this skips ahead to the while check and doesn't automatically re-loop
+        }
+
+        // For fixed records, the person must have 1 provider per record.
+        if (providerCount < providerMinimum) {
+          // rotate the seed so the next attempt gets a consistent but different one
+          personSeed = new Random(personSeed).nextLong();
+          tryNumber++;
+          if (tryNumber > 10) {
+            System.out.println("Couldn't get enough providers for "
+                + person.attributes.get(Person.FIRST_NAME) + " "
+                + person.attributes.get(Person.LAST_NAME));
+          }
+          continue;
+          // skip the other stuff if the patient has less providers than the minimum
           // note that this skips ahead to the while check and doesn't automatically re-loop
         }
 
@@ -439,7 +527,7 @@ public class Generator implements RandomNumberGenerator {
         // this means export must be the LAST THING done with the person
         Exporter.export(person, finishTime, exporterRuntimeOptions);
       } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
-          || (isAlive && onlyDeadPatients));
+          || (isAlive && onlyDeadPatients) || (providerCount < providerMinimum));
       // if the patient is alive and we want only dead ones => loop & try again
       //  (and dont even export, see above)
       // if the patient is dead and we only want dead ones => done
@@ -453,7 +541,7 @@ public class Generator implements RandomNumberGenerator {
     }
     return person;
   }
-  
+
   /**
    * Update person record to stop time, record the entry and export record.
    */
@@ -462,6 +550,28 @@ public class Generator implements RandomNumberGenerator {
     recordPerson(person, index);
     long finishTime = person.lastUpdated + timestep;
     Exporter.export(person, finishTime, exporterRuntimeOptions);
+    return person;
+  }
+
+  /**
+   * Create a new person and update them until until Generator.stop or
+   * they die, whichever comes sooner.
+   * @param personSeed Seed for the random person
+   * @param demoAttributes Demographic attributes for the new person, {@link #randomDemographics}
+   * @return the new person
+   */
+  public Person createPerson(long personSeed, Map<String, Object> demoAttributes) {
+    Person person = new Person(personSeed);
+    person.populationSeed = this.options.seed;
+    person.attributes.putAll(demoAttributes);
+    person.attributes.put(Person.LOCATION, location);
+    person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
+
+    LifecycleModule.birth(person, person.lastUpdated);
+    person.currentModules = Module.getModules(modulePredicate);
+
+    updatePerson(person);
+
     return person;
   }
 
@@ -495,29 +605,7 @@ public class Generator implements RandomNumberGenerator {
 
     DeathModule.process(person, time);
   }
-  
-  /**
-   * Create a new person and update them until until Generator.stop or
-   * they die, whichever comes sooner.
-   * @param personSeed Seed for the random person
-   * @param demoAttributes Demographic attributes for the new person, {@link #randomDemographics}
-   * @return the new person
-   */
-  public Person createPerson(long personSeed, Map<String, Object> demoAttributes) {
-    Person person = new Person(personSeed);
-    person.populationSeed = this.options.seed;
-    person.attributes.putAll(demoAttributes);
-    person.attributes.put(Person.LOCATION, location);
-    person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
 
-    LifecycleModule.birth(person, person.lastUpdated);
-    person.currentModules = Module.getModules(modulePredicate);
-
-    updatePerson(person);
-    
-    return person;
-  }
-  
   /**
    * Create a set of random demographics.
    * @param random The random number generator to use.
@@ -528,7 +616,162 @@ public class Generator implements RandomNumberGenerator {
     Map<String, Object> demoAttributes = pickDemographics(random, city);
     return demoAttributes;
   }
-  
+
+  /**
+   * Print out the completed person to the consol.
+   * @param person The person to print.
+   * @param index The number person simulated.
+   * @param time The time at which they died/the simulation ended.
+   * @param isAlive Whether the person to print is alive.
+   */
+  private synchronized void writeToConsole(Person person, int index, long time, boolean isAlive) {
+    // this is synchronized to ensure all lines for a single person are always printed 
+    // consecutively
+    String deceased = isAlive ? "" : "DECEASED";
+    System.out.format("%d -- %s (%d y/o %s) %s, %s %s\n", index + 1,
+        person.attributes.get(Person.NAME), person.ageInYears(time),
+        person.attributes.get(Person.GENDER),
+        person.attributes.get(Person.CITY), person.attributes.get(Person.STATE),
+        deceased);
+
+    if (this.logLevel.equals("detailed")) {
+      System.out.println("ATTRIBUTES");
+      for (String attribute : person.attributes.keySet()) {
+        System.out.format("  * %s = %s\n", attribute, person.attributes.get(attribute));
+      }
+      System.out.format("SYMPTOMS: %d\n", person.symptomTotal());
+      System.out.println(person.record.textSummary());
+      System.out.println("VITAL SIGNS");
+      for (VitalSign vitalSign : person.vitalSigns.keySet()) {
+        System.out.format("  * %25s = %6.2f\n", vitalSign,
+            person.getVitalSign(vitalSign, time).doubleValue());
+      }
+      System.out.println("-----");
+    }
+  }
+
+  /**
+   * Returns a map of demographics that have been randomly picked based on the given location.
+   * @param random The random object to use.
+   * @param city The city to base the demographics off of.
+   * @return the person's picked demographics.
+   */
+  private Map<String, Object> pickDemographics(Random random, Demographics city) {
+    // Output map of the generated demographc data.
+    Map<String, Object> demographicsOutput = new HashMap<>();
+
+    // Pull the person's location data.
+    demographicsOutput.put(Person.CITY, city.city);
+    demographicsOutput.put(Person.STATE, city.state);
+    demographicsOutput.put("county", city.county);
+
+    // Generate the person's race data based on their location.
+    String race = city.pickRace(random);
+    demographicsOutput.put(Person.RACE, race);
+    String ethnicity = city.pickEthnicity(random);
+    demographicsOutput.put(Person.ETHNICITY, ethnicity);
+    String language = city.languageFromRaceAndEthnicity(race, ethnicity, random);
+    demographicsOutput.put(Person.FIRST_LANGUAGE, language);
+
+    // Generate the person's gender based on their location.
+    String gender;
+    if (options.gender != null) {
+      gender = options.gender;
+    } else {
+      gender = city.pickGender(random);
+      if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
+        gender = "M";
+      } else {
+        gender = "F";
+      }
+    }
+    demographicsOutput.put(Person.GENDER, gender);
+
+    // Pick the person's socioeconomic variables of education/income/occupation based on location.
+    String education = city.pickEducation(random);
+    demographicsOutput.put(Person.EDUCATION, education);
+    double educationLevel = city.educationLevel(education, random);
+    demographicsOutput.put(Person.EDUCATION_LEVEL, educationLevel);
+
+    int income = city.pickIncome(random);
+    demographicsOutput.put(Person.INCOME, income);
+    double incomeLevel = city.incomeLevel(income);
+    demographicsOutput.put(Person.INCOME_LEVEL, incomeLevel);
+
+    double occupation = random.nextDouble();
+    demographicsOutput.put(Person.OCCUPATION_LEVEL, occupation);
+
+    double sesScore = city.socioeconomicScore(incomeLevel, educationLevel, occupation);
+    demographicsOutput.put(Person.SOCIOECONOMIC_SCORE, sesScore);
+    demographicsOutput.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
+
+    if (this.onlyVeterans) {
+      demographicsOutput.put("veteran_population_override", Boolean.TRUE);
+    }
+
+    // Generate the person's age data.
+    int targetAge;
+    if (options.ageSpecified) {
+      targetAge = 
+          (int) (options.minAge + ((options.maxAge - options.minAge) * random.nextDouble()));
+    } else {
+      targetAge = city.pickAge(random);
+    }
+    demographicsOutput.put(TARGET_AGE, targetAge);
+
+    long birthdate = birthdateFromTargetAge(targetAge, random);
+    demographicsOutput.put(Person.BIRTHDATE, birthdate);
+    
+    // Return the generated demographics.
+    return demographicsOutput;
+  }
+
+  /**
+   * Pick a person's demographics based on their FixedRecords.
+   * @param index The index to use.
+   * @param random Random object.
+   */
+  private Map<String, Object> pickFixedDemographics(int index, Random random) {
+
+    // Get the first FixedRecord from the current RecordGroup
+    FixedRecordGroup recordGroup = this.recordGroups.get(index);
+    FixedRecord fr = recordGroup.records.get(0);
+    // Get the city from the location in the fixed record.
+    this.location = new Location(fr.state, recordGroup.getSafeCity());
+    Demographics city = this.location.randomCity(random);
+    // Pick the rest of the demographics based on the location of the fixed record.
+    Map<String, Object> demoAttributes = pickDemographics(random, city);
+
+    // Overwrite the person's attributes with the FixedRecord.
+    demoAttributes.put(Person.BIRTHDATE, recordGroup.getValidBirthdate());
+    demoAttributes.put(Person.BIRTH_CITY, city.city);
+    String g = fr.gender;
+    if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
+      g = "F";
+    }
+    demoAttributes.put(Person.GENDER, g);
+
+    // Give the person their FixedRecordGroup of FixedRecords.
+    demoAttributes.put(Person.RECORD_GROUP, recordGroup);
+    demoAttributes.put(Person.LINK_ID, recordGroup.linkId);
+
+    // Return the Demographic Attributes of the current person.
+    return demoAttributes;
+  }
+
+  /**
+   * Get a birthdate from the given target age.
+   * @param targetAge The target age.
+   * @param random A random object.
+   * @return
+   */
+  private long birthdateFromTargetAge(long targetAge, Random random) {
+    long earliestBirthdate = referenceTime - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
+    long latestBirthdate = referenceTime - TimeUnit.DAYS.toMillis(targetAge * 365L);
+    return 
+        (long) (earliestBirthdate + ((latestBirthdate - earliestBirthdate) * random.nextDouble()));
+  }
+
   /**
    * Record the person using whatever tracking mechanisms are currently configured.
    * @param person the person to record
@@ -561,102 +804,6 @@ public class Generator implements RandomNumberGenerator {
     count.incrementAndGet();
 
     totalGeneratedPopulation.incrementAndGet();
-  }
-
-  private synchronized void writeToConsole(Person person, int index, long time, boolean isAlive) {
-    // this is synchronized to ensure all lines for a single person are always printed 
-    // consecutively
-    String deceased = isAlive ? "" : "DECEASED";
-    System.out.format("%d -- %s (%d y/o %s) %s, %s %s\n", index + 1,
-        person.attributes.get(Person.NAME), person.ageInYears(time),
-        person.attributes.get(Person.GENDER),
-        person.attributes.get(Person.CITY), person.attributes.get(Person.STATE),
-        deceased);
-
-    if (this.logLevel.equals("detailed")) {
-      System.out.println("ATTRIBUTES");
-      for (String attribute : person.attributes.keySet()) {
-        System.out.format("  * %s = %s\n", attribute, person.attributes.get(attribute));
-      }
-      System.out.format("SYMPTOMS: %d\n", person.symptomTotal());
-      System.out.println(person.record.textSummary());
-      System.out.println("VITAL SIGNS");
-      for (VitalSign vitalSign : person.vitalSigns.keySet()) {
-        System.out.format("  * %25s = %6.2f\n", vitalSign,
-            person.getVitalSign(vitalSign, time).doubleValue());
-      }
-      System.out.println("-----");
-    }
-  }
-
-  private Map<String, Object> pickDemographics(Random random, Demographics city) {
-    Map<String, Object> out = new HashMap<>();
-    out.put(Person.CITY, city.city);
-    out.put(Person.STATE, city.state);
-    out.put("county", city.county);
-    
-    String race = city.pickRace(random);
-    out.put(Person.RACE, race);
-    String ethnicity = city.pickEthnicity(random);
-    out.put(Person.ETHNICITY, ethnicity);
-    String language = city.languageFromRaceAndEthnicity(race, ethnicity, random);
-    out.put(Person.FIRST_LANGUAGE, language);
-
-    String gender;
-    if (options.gender != null) {
-      gender = options.gender;
-    } else {
-      gender = city.pickGender(random);
-      if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
-        gender = "M";
-      } else {
-        gender = "F";
-      }
-    }
-    out.put(Person.GENDER, gender);
-
-    // Socioeconomic variables of education, income, and education are set.
-    String education = city.pickEducation(random);
-    out.put(Person.EDUCATION, education);
-    double educationLevel = city.educationLevel(education, random);
-    out.put(Person.EDUCATION_LEVEL, educationLevel);
-
-    int income = city.pickIncome(random);
-    out.put(Person.INCOME, income);
-    double incomeLevel = city.incomeLevel(income);
-    out.put(Person.INCOME_LEVEL, incomeLevel);
-
-    double occupation = random.nextDouble();
-    out.put(Person.OCCUPATION_LEVEL, occupation);
-
-    double sesScore = city.socioeconomicScore(incomeLevel, educationLevel, occupation);
-    out.put(Person.SOCIOECONOMIC_SCORE, sesScore);
-    out.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
-
-    if (this.onlyVeterans) {
-      out.put("veteran_population_override", Boolean.TRUE);
-    }
-
-    int targetAge;
-    if (options.ageSpecified) {
-      targetAge = 
-          (int) (options.minAge + ((options.maxAge - options.minAge) * random.nextDouble()));
-    } else {
-      targetAge = city.pickAge(random);
-    }
-    out.put(TARGET_AGE, targetAge);
-
-    long birthdate = birthdateFromTargetAge(targetAge, random);
-    out.put(Person.BIRTHDATE, birthdate);
-    
-    return out;
-  }
-  
-  private long birthdateFromTargetAge(long targetAge, Random random) {
-    long earliestBirthdate = referenceTime - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
-    long latestBirthdate = referenceTime - TimeUnit.DAYS.toMillis(targetAge * 365L);
-    return 
-        (long) (earliestBirthdate + ((latestBirthdate - earliestBirthdate) * random.nextDouble()));
   }
   
   private Predicate<String> getModulePredicate() {

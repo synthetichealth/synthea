@@ -23,6 +23,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.input.FixedRecord;
+import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -131,6 +133,16 @@ public abstract class Exporter {
         int i = 0;
         for (String key : person.records.keySet()) {
           person.record = person.records.get(key);
+          // If the person fixed Records, overwrite their attributes from the fixed records.
+          if (person.attributes.get(Person.RECORD_GROUP) != null) {
+            FixedRecordGroup rg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
+            int recordToPull = i;
+            if (recordToPull >= rg.count) {
+              recordToPull = rg.count - 1;
+            }
+            FixedRecord fr = rg.records.get(recordToPull);
+            fr.totalOverwrite(person);
+          }
           exportRecord(person, Integer.toString(i), stopTime, options);
           i++;
         }
