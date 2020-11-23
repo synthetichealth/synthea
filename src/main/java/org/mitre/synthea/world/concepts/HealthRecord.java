@@ -623,7 +623,7 @@ public class HealthRecord implements Serializable {
     this.person = person;
     encounters = new ArrayList<Encounter>();
     present = new HashMap<String, Entry>();
-    if(person.attributes.get(Person.RECORD_GROUP) != null){
+    if(person.attributes.get(Person.RECORD_GROUP) != null) {
       this.demographicsAtRecordCreation = new HashMap<String,Object>(person.attributes);
     }
   }

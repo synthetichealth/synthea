@@ -38,8 +38,12 @@ public class Household {
             throw new RuntimeException("New adult of a household cannot be null.");
         } else if (this.firstAdult == null) {
             this.firstAdult = newAdult;
+            // We are making the assumption that, if an adult is in a household, that they are married. This prevents people's last names from changing.
+            this.firstAdult.attributes.put(Person.MARITAL_STATUS, "M");
         } else if (this.secondAdult == null) {
             this.secondAdult = newAdult;
+            // We are making the assumption that, if an adult is in a household, that they are married. This prevents people's last names from changing.
+            this.secondAdult.attributes.put(Person.MARITAL_STATUS, "M");
         } else {
             throw new RuntimeException(
                     "There can only be a max of 2 adults per household and a 3rd was added. Household already includes adults "
@@ -85,10 +89,10 @@ public class Household {
      * Returns whether the given person exists in the current household.
      */
     public boolean includesPerson(Person person) {
-        FixedRecord seedRecord = (FixedRecord) person.attributes.get(Person.SEED_RECORD);
-        boolean matchesFirstAdult = (this.firstAdult == null) ? false : this.firstAdult.attributes.get(Person.SEED_RECORD).equals(seedRecord);
-        boolean matchesSecondAdult = (this.secondAdult == null) ? false : this.firstAdult.attributes.get(Person.SEED_RECORD).equals(seedRecord);
-        boolean matchesDependent = this.dependents.stream().anyMatch(dependent -> dependent.attributes.get(Person.SEED_RECORD).equals(seedRecord));
+        FixedRecord seedRecord = ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP)).seedRecord;
+        boolean matchesFirstAdult = (this.firstAdult == null) ? false : ((FixedRecordGroup) this.firstAdult.attributes.get(Person.RECORD_GROUP)).seedRecord.equals(seedRecord);
+        boolean matchesSecondAdult = (this.secondAdult == null) ? false : ((FixedRecordGroup) this.secondAdult.attributes.get(Person.RECORD_GROUP)).seedRecord.equals(seedRecord);
+        boolean matchesDependent = this.dependents.stream().anyMatch(dependent -> ((FixedRecordGroup) dependent.attributes.get(Person.RECORD_GROUP)).seedRecord.equals(seedRecord));
         System.out.println(matchesFirstAdult + " " + matchesSecondAdult + " " + matchesDependent);
         return matchesFirstAdult || matchesSecondAdult || matchesDependent;
     }

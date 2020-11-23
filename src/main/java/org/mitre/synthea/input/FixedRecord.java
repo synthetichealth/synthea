@@ -140,7 +140,7 @@ public class FixedRecord {
       this.attributes = new HashMap<String, Object>();
       this.attributes.putAll(this.getNameAttributes());
       this.attributes.put(Person.TELECOM, this.getTelecom());
-      // this.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
+      this.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
       // this.attributes.put(Person.IDENTIFIER_SITE, this.site);
       if(this.contactLastName != null) {
         this.attributes.put(Person.CONTACT_GIVEN_NAME, this.contactFirstName);
@@ -179,7 +179,7 @@ public class FixedRecord {
     if(this.getSafeCity() != null) {
       person.attributes.put(Person.CITY, this.getSafeCity());
     } else {
-      person.attributes.put(Person.CITY, ((FixedRecord) person.attributes.get(Person.SEED_RECORD)).getSafeCity());
+      person.attributes.put(Person.CITY, ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP)).getSeedCity());
     }
     person.attributes.put(Person.ZIP, this.zipcode);
     // Fix the person's safe city in case it is invalid and update their location

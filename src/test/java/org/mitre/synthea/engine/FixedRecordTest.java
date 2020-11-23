@@ -1,18 +1,23 @@
 package org.mitre.synthea.engine;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Patient;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mitre.synthea.engine.Generator.GeneratorOptions;
+import org.mitre.synthea.export.FhirR4;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.input.FixedRecord;
 import org.mitre.synthea.input.FixedRecordGroup;
@@ -21,6 +26,9 @@ import org.mitre.synthea.input.Household;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import ca.uhn.fhir.parser.IParser;
+
+import ca.uhn.fhir.context.FhirContext;
 
 public class FixedRecordTest {
 
@@ -53,7 +61,9 @@ public class FixedRecordTest {
   // TODO: Fix an issue where dead people will cause the population to be one larger.
   // TODO: Do some closer-up tests of finding new providers when a record change occurs.
   // TODO: Test address movement.
-  // TODO: Fix an issue where more than 2 adults may be added to a household.
+  // TODO: Fix an issue where more than 2 adults might be added to a household.
+  // TODO: Fix an issue where the wrong city may be displayed in the console.
+  // TODO: Fix failing households tests.
 
   /**
    * Configure settings across these tests.
@@ -61,7 +71,7 @@ public class FixedRecordTest {
    */
   @BeforeClass
   public static void setup() {
-    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "California");
     Config.set("generate.only_dead_patients", "false"); 
     Config.set("exporter.split_records", "true");
     Provider.clear();
@@ -70,8 +80,9 @@ public class FixedRecordTest {
     GeneratorOptions go = new GeneratorOptions();
     go.fixedRecordPath = new File(
         "src/test/resources/fixed_demographics/households_fixed_demographics_test.json");
-    go.state = "Colorado";  // Examples are based on Colorado.
+    go.state = "California";  // Examples are based on California.
     go.population = 100;  // Should be overwritten by number of patients in input file.
+    go.overflow = false;  // Prevent deceased patients from increasing the population size.
     // go.enabledModules = new ArrayList<String>(); // Prevent extraneous modules from being laoded.
     // go.enabledModules.add("");
     generator = new Generator(go);
@@ -127,7 +138,51 @@ public class FixedRecordTest {
 
     // Generate each patient from the fixed record input file.
     for (int i = 0; i < generator.options.population; i++) {
-      generator.generatePerson(i);
+      Person currentPerson = generator.generatePerson(i);
+      // Cycle through the population and check that their exported FHIR resource attributes match their FixedRecords.
+      for (String key : currentPerson.records.keySet()) {
+
+        // Parse out the current record that we're checking.
+        currentPerson.record = currentPerson.records.get(key);
+        String fhirJson = FhirR4.convertToFHIRJson(currentPerson, System.currentTimeMillis());
+        FhirContext ctx = FhirContext.forR4();
+        IParser parser = ctx.newJsonParser().setPrettyPrint(true);
+        Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
+
+        // Match the current record with the FixedRecord it should be equivalent to.
+        FixedRecord currentFixedRecord = getRecordMatch(currentPerson, i);
+        assertNotNull(currentFixedRecord);
+
+        // first element of the bundle is the patient resource.
+        Patient patient = ((Patient) bundle.getEntry().get(0).getResource());
+        // Birthdate parsing
+        long millis = patient.getBirthDate().getTime();
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(millis);
+        // Phone number parsing
+        String[] phoneNumber = patient.getTelecomFirstRep().getValue().split("-");
+        Map<String, String> testAttributes = Stream.of(new String[][] {
+          {FIRST_NAME, patient.getNameFirstRep().getGivenAsSingleString()},
+          {LAST_NAME, patient.getNameFirstRep().getFamily()},
+          {BIRTH_YEAR, Integer.toString(c.get(Calendar.YEAR))},
+          {BIRTH_MONTH, Integer.toString(c.get(Calendar.MONTH) + 1)},
+          {BIRTH_DAY_OF_MONTH, Integer.toString(c.get(Calendar.DAY_OF_MONTH))},
+          {GENDER, patient.getGender().getDisplay().substring(0,1)},
+          {PHONE_CODE, phoneNumber[0]},
+          {PHONE_NUMBER, phoneNumber[1]},
+          {ADDRESS_1, patient.getAddressFirstRep().getLine().get(0).toString()},
+          {CITY, patient.getAddressFirstRep().getCity()},
+          {STATE, patient.getAddressFirstRep().getState()},
+          {CONTACT_EMAIL, patient.getContact().get(0).getTelecom().get(0).getValue()},
+          {ZIP, patient.getAddressFirstRep().getPostalCode()},
+        }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
+        // Only Children have a contact person.
+        if(patient.getContact().get(0).getName() != null) {
+          testAttributes.put(CONTACT_LAST_NAME, patient.getContact().get(0).getName().getFamily());
+          testAttributes.put(CONTACT_FIRST_NAME, patient.getContact().get(0).getName().getGivenAsSingleString());
+        }
+        testRecordAttributes(currentFixedRecord, testAttributes);
+      }
     }
     
     // Test that the correct number of people were imported from the fixed records file.
@@ -139,9 +194,16 @@ public class FixedRecordTest {
     Person janeDoe = generator.internalStore.get(0);
     FixedRecordGroup janeDoeRecordGroup
         = (FixedRecordGroup) janeDoe.attributes.get(Person.RECORD_GROUP);
-    // Make sure the person has the correct number of records.
+    // Make sure the person has the correct number of variant fixed records.
     assertEquals(janeDoeRecordGroup.variantRecords.size(), 3);
+    assertTrue(janeDoeRecordGroup.variantRecords.stream().anyMatch(record -> record.recordId.equals("101")));
+    assertTrue(janeDoeRecordGroup.variantRecords.stream().anyMatch(record -> record.recordId.equals("102")));
+    assertTrue(janeDoeRecordGroup.variantRecords.stream().anyMatch(record -> record.recordId.equals("103")));
+    // Make sure the person has the correct number of health records.
     assertTrue("Records: " + janeDoe.records.size(), janeDoe.records.size() >= 3);
+    assertTrue(janeDoe.records.values().stream().anyMatch(record -> record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID).equals("101")));
+    assertTrue(janeDoe.records.values().stream().anyMatch(record -> record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID).equals("102")));
+    assertTrue(janeDoe.records.values().stream().anyMatch(record -> record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID).equals("103")));
     // Test Jane Doe's VariantRecord 1.
     Map<String, String> testAttributes = Stream.of(new String[][] {
       {SEED_ID, "1"},
@@ -170,7 +232,7 @@ public class FixedRecordTest {
       {RECORD_ID, "102"},
       {HH_ID, "1"},
       {HH_STATUS, "adult"},
-      {FIRST_NAME, "Jane/Janice"},
+      {FIRST_NAME, "Jane Janice"},
       {LAST_NAME, "Dow"},
       {BIRTH_YEAR, "1984"},
       {BIRTH_MONTH, "3"},
@@ -252,6 +314,20 @@ public class FixedRecordTest {
     assertTrue("Records: " + williamSmith.records.size(), williamSmith.records.size() >= 1);
   }
 
+  private FixedRecord getRecordMatch(Person person, int index) {
+    FixedRecordGroup recordGroup = fixedRecordGroupManager.getRecordGroup(index);
+
+    String recordId = (String) person.record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID);
+    System.out.println("record id " + recordId);
+    for(FixedRecord record : recordGroup.variantRecords) {
+      if(record.recordId.equals(recordId)){
+        return record;
+      }
+    }
+    // If we reach here, there was no matching record id.
+    return null;
+  }
+
   public void testRecordAttributes(FixedRecord personFixedRecord, Map<String, String> testAttribtues) {
     assertEquals(personFixedRecord.firstName, testAttribtues.get(FIRST_NAME));
     assertEquals(personFixedRecord.lastName, testAttribtues.get(LAST_NAME));
@@ -265,9 +341,12 @@ public class FixedRecordTest {
     assertEquals(personFixedRecord.addressLineTwo, testAttribtues.get(ADDRESS_2));
     assertEquals(personFixedRecord.city, testAttribtues.get(CITY));
     assertEquals(personFixedRecord.zipcode, testAttribtues.get(ZIP));
-    assertEquals(personFixedRecord.contactFirstName, testAttribtues.get(CONTACT_FIRST_NAME));
-    assertEquals(personFixedRecord.contactLastName, testAttribtues.get(CONTACT_LAST_NAME));
     assertEquals(personFixedRecord.contactEmail, testAttribtues.get(CONTACT_EMAIL));
+    if(personFixedRecord.contactFirstName != null){
+      // Only children have a contact person.
+      assertEquals(personFixedRecord.contactFirstName, testAttribtues.get(CONTACT_FIRST_NAME));
+      assertEquals(personFixedRecord.contactLastName, testAttribtues.get(CONTACT_LAST_NAME));
+    }
   }
 
   @Test
@@ -288,7 +367,6 @@ public class FixedRecordTest {
 
   @Test
   public void checkHouseholdsTest() {
-
     // Make sure that the correct number of households were generated.
     assertEquals(2, generator.households.size());
 
@@ -306,5 +384,14 @@ public class FixedRecordTest {
     assertTrue(households.get(2).getAdults().size() == 2);
     assertTrue(households.get(2).getDependents().stream().anyMatch(dependent -> dependent.attributes.get(Person.NAME).equals("William Smith")));
     assertTrue(households.get(2).getDependents().size() == 1);
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void moreThanTwoAdultsInHosueholdTest() {
+    Household houshold = new Household(0);
+    houshold.addAdult(new Person(0));
+    houshold.addAdult(new Person(0));
+    // On the third adult, a Runtime Exception should be called since there can only be 2 adults.
+    houshold.addAdult(new Person(0));
   }
 }

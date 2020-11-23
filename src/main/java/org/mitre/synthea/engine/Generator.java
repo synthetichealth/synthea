@@ -566,9 +566,20 @@ public class Generator implements RandomNumberGenerator {
 
     LifecycleModule.birth(person, person.lastUpdated);
 
+    if(person.attributes.get(Person.RECORD_GROUP) != null) {
+      FixedRecordGroup frg = ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP));
+      frg.updateCurrentRecord(Utilities.getYear(person.lastUpdated));
+      person.attributes.putAll(frg.getCurrentRecord().getFixedRecordAttributes());
+    }
+    
     // Set the default record after all attributes have been set.
     person.defaultRecord = new HealthRecord(person);
     person.record = person.defaultRecord;
+
+    if(person.attributes.get(Person.RECORD_GROUP) != null) {
+      FixedRecordGroup frg = ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP));
+      person.attributes.put(Person.BIRTHDATE, frg.getSeedBirthdate());
+    }
 
     person.currentModules = Module.getModules(modulePredicate);
 
@@ -605,9 +616,9 @@ public class Generator implements RandomNumberGenerator {
     long time = person.lastUpdated;
     while (person.alive(time) && time < stop) {
 
-      // If fixed Patient Demographics are being used and address changing is true...
-      if(options.fixedRecordPath != null /*&& Boolean.parseBoolean(Config.get("fixeddemographics.addresschanging", "false"))*/) {
-        updateFixedAddress(person, time);
+      // If fixed Patient Demographics are being used then check to update the current fixedrecord.
+      if(person.attributes.get(Person.RECORD_GROUP) != null) {
+        updateFixedDemographicRecord(person, time);
       }
 
       // Process Health Insurance.
@@ -639,18 +650,13 @@ public class Generator implements RandomNumberGenerator {
    * @param person The person to use
    * @return
    */
-  public void updateFixedAddress(Person person, long time){
+  public void updateFixedDemographicRecord(Person person, long time){
     // Check if the person's fixed record has been updated, meaning that their health record, provider, and address should also update.
     FixedRecordGroup frg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
     if(frg.updateCurrentRecord(Utilities.getYear(time))){
       // Pull the newly updated fixedRecord.
       FixedRecord fr = frg.getCurrentRecord();
       fr.overwriteAddress(person, this);
-      // Save the person's birthdate in case the new one is invalid.
-      Long birthDate = (Long) person.attributes.get(Person.BIRTHDATE);
-      // Save the person's name in case the new one is invalid.
-      String firstName = (String) person.attributes.get(Person.FIRST_NAME);
-      String lastName = (String) person.attributes.get(Person.LAST_NAME);
       person.attributes.putAll(fr.getFixedRecordAttributes());
       /*
        * Update the person's provider based on their new record.
@@ -661,8 +667,8 @@ public class Generator implements RandomNumberGenerator {
       person.forceNewProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(time));
       person.record = person.getHealthRecord(person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()), System.currentTimeMillis());
       // Fix the person's birthdate and name to their real ones in case the FixedRecord's is incorrect.
-      person.attributes.put(Person.BIRTHDATE, birthDate);
-      person.attributes.putAll(((FixedRecord) person.attributes.get(Person.SEED_RECORD)).getNameAttributes());
+      // person.attributes.put(Person.BIRTHDATE, frg.getSeedBirthdate());
+      //person.attributes.putAll(((FixedRecord) person.attributes.get(Person.SEED_RECORD)).getNameAttributes());
       
     }
   }
@@ -824,8 +830,6 @@ public class Generator implements RandomNumberGenerator {
    
     demoAttributes.put(Person.RECORD_GROUP, recordGroup);
     demoAttributes.put(Person.LINK_ID, recordGroup.linkId);
-    // Set the person's fixed seed record.
-    demoAttributes.put(Person.SEED_RECORD, seedRecord);
 
     demoAttributes.putAll(seedRecord.getFixedRecordAttributes());
 
