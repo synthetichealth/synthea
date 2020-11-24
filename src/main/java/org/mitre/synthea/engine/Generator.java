@@ -497,8 +497,6 @@ public class Generator implements RandomNumberGenerator {
           // note that this skips ahead to the while check and doesn't automatically re-loop
         }
 
-
-
         recordPerson(person, index);
 
         if (!isAlive) {
@@ -659,17 +657,13 @@ public class Generator implements RandomNumberGenerator {
       fr.overwriteAddress(person, this);
       person.attributes.putAll(fr.getFixedRecordAttributes());
       /*
-       * Update the person's provider based on their new record.
+       * Force update the person's provider based on their new record.
        * This is required so that a new health record is made for the start date
-       * of the fixed record which impacts the provider and care location and timing as well
-       * as any change of address.
+       * of the fixed record which impacts the provider, care location, timing, and
+       * any change of address.
        */
       person.forceNewProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(time));
       person.record = person.getHealthRecord(person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()), System.currentTimeMillis());
-      // Fix the person's birthdate and name to their real ones in case the FixedRecord's is incorrect.
-      // person.attributes.put(Person.BIRTHDATE, frg.getSeedBirthdate());
-      //person.attributes.putAll(((FixedRecord) person.attributes.get(Person.SEED_RECORD)).getNameAttributes());
-      
     }
   }
 
@@ -858,6 +852,11 @@ public class Generator implements RandomNumberGenerator {
   public void recordPerson(Person person, int index) {
     long finishTime = person.lastUpdated + timestep;
     boolean isAlive = person.alive(finishTime);
+
+    if(person.attributes.get(Person.RECORD_GROUP) != null) {
+      // Set the person's attributes to their seed attributes to ensure the console display is correct.
+      person.attributes.putAll(((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP)).seedRecord.getFixedRecordAttributes());
+    }
     
     if (database != null) {
       database.store(person);

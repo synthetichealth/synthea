@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.Map;
@@ -58,7 +59,6 @@ public class FixedRecordTest {
   private static Generator generator;
   private static FixedRecordGroupManager fixedRecordGroupManager;
 
-  // TODO: Fix an issue where dead people will cause the population to be one larger.
   // TODO: Do some closer-up tests of finding new providers when a record change occurs.
   // TODO: Test address movement.
   // TODO: Fix an issue where more than 2 adults might be added to a household.
@@ -83,8 +83,8 @@ public class FixedRecordTest {
     go.state = "California";  // Examples are based on California.
     go.population = 100;  // Should be overwritten by number of patients in input file.
     go.overflow = false;  // Prevent deceased patients from increasing the population size.
-    // go.enabledModules = new ArrayList<String>(); // Prevent extraneous modules from being laoded.
-    // go.enabledModules.add("");
+    go.enabledModules = new ArrayList<String>(); // Prevent extraneous modules from being laoded to improve test speed.
+    go.enabledModules.add("");
     generator = new Generator(go);
     generator.internalStore = new LinkedList<>(); // Allows us to access patients within generator.
     // List of raw RecordGroups imported directly from the input file for later comparison.
@@ -254,7 +254,7 @@ public class FixedRecordTest {
       {RECORD_ID, "103"},
       {HH_ID, "1"},
       {HH_STATUS, "adult"},
-      {FIRST_NAME, "Jane"},
+      {FIRST_NAME, "Jan"},
       {LAST_NAME, "Doe"},
       {BIRTH_YEAR, "1984"},
       {BIRTH_MONTH, "3"},
@@ -369,25 +369,24 @@ public class FixedRecordTest {
   public void checkHouseholdsTest() {
     // Make sure that the correct number of households were generated.
     assertEquals(2, generator.households.size());
-
     Map<Integer, Household> households = generator.households;
-    // household 1 should have the following members:
-    assertTrue(households.get(1).getAdults().stream().anyMatch(adult -> adult.attributes.get(Person.FIRST_NAME).equals("Jane")));
-    assertTrue(households.get(1).getAdults().stream().anyMatch(adult -> adult.attributes.get(Person.NAME).equals("John Doe")));
+    // Household 1 should have the following members:
+    assertTrue(households.get(1).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup) adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("1")));
+    assertTrue(households.get(1).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup) adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("2")));
     assertTrue(households.get(1).getAdults().size() == 2);
-    assertTrue(households.get(1).getDependents().stream().anyMatch(dependent -> dependent.attributes.get(Person.NAME).equals("Robert Doe")));
-    assertTrue(households.get(1).getDependents().stream().anyMatch(dependent -> dependent.attributes.get(Person.NAME).equals("Sally Doe")));
+    assertTrue(households.get(1).getDependents().stream().anyMatch(dependent -> ((FixedRecordGroup) dependent.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("5")));
+    assertTrue(households.get(1).getDependents().stream().anyMatch(dependent -> ((FixedRecordGroup) dependent.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("6")));
     assertTrue(households.get(1).getDependents().size() == 2);
-    // household 2 should have the following members:
-    assertTrue(households.get(2).getAdults().stream().anyMatch(adult -> adult.attributes.get(Person.FIRST_NAME).equals("Kate")));
-    assertTrue(households.get(2).getAdults().stream().anyMatch(adult -> adult.attributes.get(Person.NAME).equals("Frank Smith")));
+    // Household 2 should have the following members:
+    assertTrue(households.get(2).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup) adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("3")));
+    assertTrue(households.get(2).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup) adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("4")));
     assertTrue(households.get(2).getAdults().size() == 2);
-    assertTrue(households.get(2).getDependents().stream().anyMatch(dependent -> dependent.attributes.get(Person.NAME).equals("William Smith")));
+    assertTrue(households.get(2).getDependents().stream().anyMatch(dependent -> ((FixedRecordGroup) dependent.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("7")));
     assertTrue(households.get(2).getDependents().size() == 1);
   }
 
   @Test(expected = RuntimeException.class)
-  public void moreThanTwoAdultsInHosueholdTest() {
+  public void moreThanTwoAdultsInHouseholdTest() {
     Household houshold = new Household(0);
     houshold.addAdult(new Person(0));
     houshold.addAdult(new Person(0));
