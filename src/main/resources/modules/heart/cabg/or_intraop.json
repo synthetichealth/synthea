@@ -1,0 +1,1728 @@
+{
+  "name": "or_intraop",
+  "remarks": [
+    "CABG device implantation and intraop medications."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Assist_Device_Check"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Device": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": "360064003",
+        "display": "Ventricular assist device (physical object)"
+      },
+      "direct_transition": "IABP_Check"
+    },
+    "IABP_Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "distributions": [
+            {
+              "transition": "IABP Start",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Dopamine_Check",
+              "distribution": 0.5
+            }
+          ],
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 5
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 5
+          },
+          "distributions": [
+            {
+              "transition": "IABP Start",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Dopamine_Check",
+              "distribution": 0.8
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 4
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "IABP Start",
+              "distribution": 0.286
+            },
+            {
+              "transition": "Dopamine_Check",
+              "distribution": 0.714
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "transition": "IABP Start",
+              "distribution": 0.107
+            },
+            {
+              "transition": "Dopamine_Check",
+              "distribution": 0.893
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 3
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "IABP Start",
+              "distribution": 0.24
+            },
+            {
+              "transition": "Dopamine_Check",
+              "distribution": 0.76
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 3
+          },
+          "distributions": [
+            {
+              "transition": "IABP Start",
+              "distribution": 0.028
+            },
+            {
+              "transition": "Dopamine_Check",
+              "distribution": 0.972
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 2
+          },
+          "distributions": [
+            {
+              "transition": "IABP Start",
+              "distribution": 0.002
+            },
+            {
+              "transition": "Dopamine_Check",
+              "distribution": 0.998
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 1
+          },
+          "distributions": [],
+          "transition": "Dopamine_Check"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "IABP Start",
+              "distribution": 0.17
+            },
+            {
+              "transition": "Dopamine_Check",
+              "distribution": 0.8300000000000001
+            }
+          ]
+        }
+      ]
+    },
+    "Dopamine_Check": {
+      "type": "Simple",
+      "direct_transition": "Max Pressors"
+    },
+    "Assist_Device_Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "distributions": [
+            {
+              "transition": "Assist_Device_Implantation",
+              "distribution": 0.036
+            },
+            {
+              "transition": "IABP_Check",
+              "distribution": 0.964
+            }
+          ],
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 5
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 5
+          },
+          "distributions": [
+            {
+              "transition": "Assist_Device_Implantation",
+              "distribution": 0.2
+            },
+            {
+              "transition": "IABP_Check",
+              "distribution": 0.8
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 4
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Assist_Device_Implantation",
+              "distribution": 0.036
+            },
+            {
+              "transition": "IABP_Check",
+              "distribution": 0.964
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "transition": "Assist_Device_Implantation",
+              "distribution": 0.036
+            },
+            {
+              "transition": "IABP_Check",
+              "distribution": 0.964
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 3
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Assist_Device_Implantation",
+              "distribution": 0.027
+            },
+            {
+              "transition": "IABP_Check",
+              "distribution": 0.973
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 3
+          },
+          "distributions": [
+            {
+              "transition": "Assist_Device_Implantation",
+              "distribution": 0.004
+            },
+            {
+              "transition": "IABP_Check",
+              "distribution": 0.996
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 2
+          },
+          "distributions": [
+            {
+              "transition": "Assist_Device_Implantation",
+              "distribution": 0.007
+            },
+            {
+              "transition": "IABP_Check",
+              "distribution": 0.993
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 1
+          },
+          "distributions": [
+            {
+              "transition": "Assist_Device_Implantation",
+              "distribution": 0.013
+            },
+            {
+              "transition": "IABP_Check",
+              "distribution": 0.987
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Assist_Device_Implantation",
+              "distribution": 0.036
+            },
+            {
+              "transition": "IABP_Check",
+              "distribution": 0.964
+            }
+          ]
+        }
+      ]
+    },
+    "Assist_Device_Implantation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "232965003",
+          "display": "Implantation of ventricular assist device (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "Device"
+    },
+    "Intra Aortic Balloon Pump": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "399217008",
+          "display": "Cardioassist by aortic balloon pump (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "IABP Stop"
+    },
+    "IABP Start": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": "129113006",
+        "display": "Intra-aortic balloon pump, device (physical object)"
+      },
+      "direct_transition": "Intra Aortic Balloon Pump"
+    },
+    "IABP Stop": {
+      "type": "DeviceEnd",
+      "direct_transition": "Dopamine_Check",
+      "device": "IABP Start"
+    },
+    "Max Pressors": {
+      "type": "SetAttribute",
+      "attribute": "max_pressors",
+      "direct_transition": "Dopamine Check",
+      "value": 3
+    },
+    "Dopamine Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "max_pressors",
+            "operator": "==",
+            "value": 0
+          },
+          "distributions": [],
+          "transition": "Terminal"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 5
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "Dobutamine Check"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 5
+          },
+          "distributions": [],
+          "transition": "Dobutamine Check"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 4
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "Dobutamine Check"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 4
+          },
+          "distributions": [],
+          "transition": "Dobutamine Check"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 3
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Dopamine Low",
+              "distribution": 0.013
+            },
+            {
+              "transition": "Dobutamine Check",
+              "distribution": 0.987
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 3
+          },
+          "distributions": [
+            {
+              "transition": "Dopamine Low",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Dobutamine Check",
+              "distribution": 0.999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 2
+          },
+          "distributions": [],
+          "transition": "Dobutamine Check"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 1
+          },
+          "distributions": [],
+          "transition": "Dobutamine Check"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Dopamine Low",
+              "distribution": 0.002
+            },
+            {
+              "transition": "Dobutamine Check",
+              "distribution": 0.998
+            }
+          ]
+        }
+      ]
+    },
+    "Dobutamine Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "max_pressors",
+            "operator": "==",
+            "value": 0
+          },
+          "distributions": [],
+          "transition": "Terminal"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Dobutamine",
+              "distribution": 0.083
+            },
+            {
+              "transition": "Epinephrine Check",
+              "distribution": 0.917
+            }
+          ],
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 5
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 5
+          },
+          "distributions": [
+            {
+              "transition": "Dobutamine",
+              "distribution": 0.031
+            },
+            {
+              "transition": "Epinephrine Check",
+              "distribution": 0.969
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 4
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Dobutamine",
+              "distribution": 0.031
+            },
+            {
+              "transition": "Epinephrine Check",
+              "distribution": 0.969
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "transition": "Dobutamine",
+              "distribution": 0.054
+            },
+            {
+              "transition": "Epinephrine Check",
+              "distribution": 0.946
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 3
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Dobutamine",
+              "distribution": 0.027
+            },
+            {
+              "transition": "Epinephrine Check",
+              "distribution": 0.973
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 3
+          },
+          "distributions": [
+            {
+              "transition": "Dobutamine",
+              "distribution": 0.032
+            },
+            {
+              "transition": "Epinephrine Check",
+              "distribution": 0.968
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 2
+          },
+          "distributions": [
+            {
+              "transition": "Dobutamine",
+              "distribution": 0.011
+            },
+            {
+              "transition": "Epinephrine Check",
+              "distribution": 0.9890000000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 1
+          },
+          "distributions": [
+            {
+              "distribution": 0.039,
+              "transition": "Dobutamine"
+            },
+            {
+              "transition": "Epinephrine Check",
+              "distribution": 0.9610000000000001
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Dobutamine",
+              "distribution": 0.031
+            },
+            {
+              "transition": "Epinephrine Check",
+              "distribution": 0.969
+            }
+          ]
+        }
+      ]
+    },
+    "Epinephrine Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "max_pressors",
+            "operator": "==",
+            "value": 0
+          },
+          "distributions": [],
+          "transition": "Terminal"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Epinephrine",
+              "distribution": 0.083
+            },
+            {
+              "transition": "Norephinephrine Check",
+              "distribution": 0.917
+            }
+          ],
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 5
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 5
+          },
+          "distributions": [
+            {
+              "transition": "Epinephrine",
+              "distribution": 0.015
+            },
+            {
+              "transition": "Norephinephrine Check",
+              "distribution": 0.985
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 4
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Epinephrine",
+              "distribution": 0.015
+            },
+            {
+              "transition": "Norephinephrine Check",
+              "distribution": 0.985
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "transition": "Epinephrine",
+              "distribution": 0.018
+            },
+            {
+              "transition": "Norephinephrine Check",
+              "distribution": 0.982
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 3
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Epinephrine",
+              "distribution": 0.015
+            },
+            {
+              "transition": "Norephinephrine Check",
+              "distribution": 0.985
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 3
+          },
+          "distributions": [
+            {
+              "transition": "Epinephrine",
+              "distribution": 0.015
+            },
+            {
+              "transition": "Norephinephrine Check",
+              "distribution": 0.985
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 2
+          },
+          "distributions": [
+            {
+              "transition": "Epinephrine",
+              "distribution": 0.002
+            },
+            {
+              "transition": "Norephinephrine Check",
+              "distribution": 0.998
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 1
+          },
+          "distributions": [],
+          "transition": "Norephinephrine Check"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Epinephrine",
+              "distribution": 0.015
+            },
+            {
+              "transition": "Norephinephrine Check",
+              "distribution": 0.985
+            }
+          ]
+        }
+      ]
+    },
+    "Norephinephrine Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "max_pressors",
+            "operator": "==",
+            "value": 0
+          },
+          "distributions": [],
+          "transition": "Terminal"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Norephinephrine",
+              "distribution": 0.833
+            },
+            {
+              "transition": "Milrinone Check",
+              "distribution": 0.16700000000000004
+            }
+          ],
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 5
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 5
+          },
+          "distributions": [
+            {
+              "transition": "Norephinephrine",
+              "distribution": 0.4
+            },
+            {
+              "transition": "Milrinone Check",
+              "distribution": 0.6
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 4
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Norephinephrine",
+              "distribution": 0.714
+            },
+            {
+              "transition": "Milrinone Check",
+              "distribution": 0.28600000000000003
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "transition": "Norephinephrine",
+              "distribution": 0.661
+            },
+            {
+              "transition": "Milrinone Check",
+              "distribution": 0.33899999999999997
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 3
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Norephinephrine",
+              "distribution": 0.573
+            },
+            {
+              "transition": "Milrinone Check",
+              "distribution": 0.42700000000000005
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 3
+          },
+          "distributions": [
+            {
+              "transition": "Norephinephrine",
+              "distribution": 0.483
+            },
+            {
+              "transition": "Milrinone Check",
+              "distribution": 0.517
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 2
+          },
+          "distributions": [
+            {
+              "transition": "Norephinephrine",
+              "distribution": 0.367
+            },
+            {
+              "transition": "Milrinone Check",
+              "distribution": 0.633
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 1
+          },
+          "distributions": [
+            {
+              "distribution": 0.286,
+              "transition": "Norephinephrine"
+            },
+            {
+              "transition": "Milrinone Check",
+              "distribution": 0.714
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Norephinephrine",
+              "distribution": 0.54
+            },
+            {
+              "transition": "Milrinone Check",
+              "distribution": 0.45999999999999996
+            }
+          ]
+        }
+      ]
+    },
+    "Milrinone Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "max_pressors",
+            "operator": "==",
+            "value": 0
+          },
+          "distributions": [],
+          "transition": "Terminal"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Milrinone",
+              "distribution": 0.917
+            },
+            {
+              "transition": "Vasopressin Check",
+              "distribution": 0.08299999999999996
+            }
+          ],
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 5
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 5
+          },
+          "distributions": [
+            {
+              "transition": "Milrinone",
+              "distribution": 0.6
+            },
+            {
+              "transition": "Vasopressin Check",
+              "distribution": 0.40000000000000013
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 4
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Milrinone",
+              "distribution": 0.286
+            },
+            {
+              "transition": "Vasopressin Check",
+              "distribution": 0.714
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "transition": "Milrinone",
+              "distribution": 0.286
+            },
+            {
+              "transition": "Vasopressin Check",
+              "distribution": 0.714
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 3
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Milrinone",
+              "distribution": 0.373
+            },
+            {
+              "transition": "Vasopressin Check",
+              "distribution": 0.627
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 3
+          },
+          "distributions": [
+            {
+              "transition": "Milrinone",
+              "distribution": 0.153
+            },
+            {
+              "transition": "Vasopressin Check",
+              "distribution": 0.847
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 2
+          },
+          "distributions": [
+            {
+              "transition": "Milrinone",
+              "distribution": 0.043
+            },
+            {
+              "transition": "Vasopressin Check",
+              "distribution": 0.9570000000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 1
+          },
+          "distributions": [
+            {
+              "distribution": 0.065,
+              "transition": "Milrinone"
+            },
+            {
+              "transition": "Vasopressin Check",
+              "distribution": 0.935
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Milrinone",
+              "distribution": 0.34
+            },
+            {
+              "transition": "Vasopressin Check",
+              "distribution": 0.6599999999999999
+            }
+          ]
+        }
+      ]
+    },
+    "Vasopressin Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "max_pressors",
+            "operator": "==",
+            "value": 0
+          },
+          "distributions": [],
+          "transition": "Terminal"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Vasopressin",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.5
+            }
+          ],
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 5
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 5
+          },
+          "distributions": [
+            {
+              "transition": "Vasopressin",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.8
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 4
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Vasopressin",
+              "distribution": 0.286
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.714
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "transition": "Vasopressin",
+              "distribution": 0.107
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.893
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 3
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Vasopressin",
+              "distribution": 0.24
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.76
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 3
+          },
+          "distributions": [
+            {
+              "transition": "Vasopressin",
+              "distribution": 0.028
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.972
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 2
+          },
+          "distributions": [
+            {
+              "transition": "Vasopressin",
+              "distribution": 0.002
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.998
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 1
+          },
+          "distributions": [],
+          "transition": "Terminal"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Vasopressin",
+              "distribution": 0.17
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.8300000000000001
+            }
+          ]
+        }
+      ]
+    },
+    "Less Pressor": {
+      "type": "Counter",
+      "attribute": "max_pressors",
+      "action": "decrement",
+      "direct_transition": "Dobutamine Check"
+    },
+    "Less_Pressor": {
+      "type": "Counter",
+      "attribute": "max_pressors",
+      "action": "decrement",
+      "direct_transition": "Epinephrine Check"
+    },
+    "Less_Pressor_2": {
+      "type": "Counter",
+      "attribute": "max_pressors",
+      "action": "decrement",
+      "direct_transition": "Norephinephrine Check"
+    },
+    "Less_Pressor_3": {
+      "type": "Counter",
+      "attribute": "max_pressors",
+      "action": "decrement",
+      "direct_transition": "Milrinone Check"
+    },
+    "Less_Pressor_4": {
+      "type": "Counter",
+      "attribute": "max_pressors",
+      "action": "decrement",
+      "direct_transition": "Vasopressin Check"
+    },
+    "Less_Pressor_5": {
+      "type": "Counter",
+      "attribute": "max_pressors",
+      "action": "decrement",
+      "direct_transition": "Terminal"
+    },
+    "Dopamine Low": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1743938",
+          "display": "10 ML dopamine hydrochloride 40 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Less Pressor",
+      "administration": true
+    },
+    "Dobutamine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1812168",
+          "display": "20 ML dobutamine 12.5 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Less_Pressor",
+      "administration": true
+    },
+    "Epinephrine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1660014",
+          "display": "1 ML EPINEPHrine 1 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Less_Pressor_2",
+      "administration": true
+    },
+    "Norephinephrine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "242969",
+          "display": "4 ML norepinephrine 1 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Less_Pressor_3",
+      "administration": true
+    },
+    "Milrinone": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1791854",
+          "display": "10 ML milrinone lactate 1 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Less_Pressor_4",
+      "administration": true
+    },
+    "Vasopressin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "2103182",
+          "display": "1 ML vasopressin (USP) 20 UNT/ML Injection"
+        }
+      ],
+      "direct_transition": "Less_Pressor_5",
+      "administration": true
+    }
+  }
+}
