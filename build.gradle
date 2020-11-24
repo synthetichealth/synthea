@@ -160,7 +160,7 @@ task uberJar(type: Jar) {
         )
     }
     archiveBaseName = 'synthea-with-dependencies'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
 
