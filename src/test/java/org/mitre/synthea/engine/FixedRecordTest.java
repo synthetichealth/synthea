@@ -1,6 +1,7 @@
 package org.mitre.synthea.engine;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -8,6 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -20,6 +22,7 @@ import org.junit.Test;
 import org.mitre.synthea.engine.Generator.GeneratorOptions;
 import org.mitre.synthea.export.FhirR4;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.input.FixedRecord;
 import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.input.FixedRecordGroupManager;
@@ -27,6 +30,7 @@ import org.mitre.synthea.input.Household;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.HealthRecord;
 import ca.uhn.fhir.parser.IParser;
 
 import ca.uhn.fhir.context.FhirContext;
@@ -59,11 +63,8 @@ public class FixedRecordTest {
   private static Generator generator;
   private static FixedRecordGroupManager fixedRecordGroupManager;
 
-  // TODO: Do some closer-up tests of finding new providers when a record change occurs.
   // TODO: Test address movement.
   // TODO: Fix an issue where more than 2 adults might be added to a household.
-  // TODO: Fix an issue where the wrong city may be displayed in the console.
-  // TODO: Fix failing households tests.
 
   /**
    * Configure settings across these tests.
@@ -366,7 +367,35 @@ public class FixedRecordTest {
   }
 
   @Test
-  public void checkHouseholdsTest() {
+  public void checkForcedProviderChange() {
+    // List of prior providers that cannnot match a future one.
+    List<String> providerIds = new ArrayList<String>();
+    // Pull out Jane Doe to run provider tests on.
+    Person person = generator.households.get(1).getAdults().get(0);
+    // Pull out all existing Provider UUIDs.
+    providerIds.addAll(person.records.values().stream().map(record -> record.provider.uuid).collect(Collectors.toList()));
+    // Force a new provider.
+    person.forceNewProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(0L));
+    person.record = person.getHealthRecord(person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()), System.currentTimeMillis());
+    // Check that the new provider ID is not in the list of prior IDs.
+    String firstUuid = person.record.provider.uuid;
+    assertFalse(providerIds.stream().anyMatch(uuid -> uuid.equals(firstUuid)));
+    // Force a new provider.
+    person.forceNewProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(0L));
+    person.record = person.getHealthRecord(person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()), System.currentTimeMillis());
+    // Check that the new provider ID is not in the list of prior IDs.
+    String secondUuid = person.record.provider.uuid;
+    assertFalse(providerIds.stream().anyMatch(uuid -> uuid.equals(secondUuid)));
+    // Force a new provider.
+    person.forceNewProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(0L));
+    person.record = person.getHealthRecord(person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()), System.currentTimeMillis());
+    // Check that the new provider ID is not in the list of prior IDs.
+    String thirdUuid = person.record.provider.uuid;
+    assertFalse(providerIds.stream().anyMatch(uuid -> uuid.equals(thirdUuid)));
+  }
+
+  @Test
+  public void checkHouseholdMembers() {
     // Make sure that the correct number of households were generated.
     assertEquals(2, generator.households.size());
     Map<Integer, Household> households = generator.households;
@@ -386,7 +415,7 @@ public class FixedRecordTest {
   }
 
   @Test(expected = RuntimeException.class)
-  public void moreThanTwoAdultsInHouseholdTest() {
+  public void moreThanTwoAdultsInHouseholdException() {
     Household houshold = new Household(0);
     houshold.addAdult(new Person(0));
     houshold.addAdult(new Person(0));
