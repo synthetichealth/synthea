@@ -42,7 +42,6 @@ import org.mitre.synthea.input.FixedRecord;
 import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.input.FixedRecordGroupManager;
 import org.mitre.synthea.input.Household;
-import org.mitre.synthea.input.HouseholdModule;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.HealthInsuranceModule;
@@ -220,7 +219,8 @@ public class Generator implements RandomNumberGenerator {
         this.database = null;
         break;
       default:
-        throw new IllegalArgumentException("Unexpected value for config setting generate.database_type: '" + dbType
+        throw new IllegalArgumentException(
+          "Unexpected value for config setting generate.database_type: '" + dbType
             + "' . Valid values are file, in-memory, or none.");
     }
 
@@ -282,8 +282,10 @@ public class Generator implements RandomNumberGenerator {
       locationName = options.city + ", " + options.state;
     }
     System.out.println("Running with options:");
-    System.out.println(String.format("Population: %d\nSeed: %d\nProvider Seed:%d\nReference Time: %d\nLocation: %s",
-        options.population, options.seed, options.clinicianSeed, options.referenceTime, locationName));
+    System.out.println(String.format(
+        "Population: %d\nSeed: %d\nProvider Seed:%d\nReference Time: %d\nLocation: %s",
+        options.population, options.seed, options.clinicianSeed, options.referenceTime,
+        locationName));
     System.out.println(String.format("Min Age: %d\nMax Age: %d", options.minAge, options.maxAge));
     if (options.gender != null) {
       System.out.println(String.format("Gender: %s", options.gender));
@@ -342,7 +344,8 @@ public class Generator implements RandomNumberGenerator {
       if (initialPopulation != null && initialPopulation.size() > 0) {
         // default is to run until current system time.
         if (options.daysToTravelForward > 0) {
-          stop = initialPopulation.get(0).lastUpdated + Utilities.convertTime("days", options.daysToTravelForward);
+          stop = initialPopulation.get(0).lastUpdated
+              + Utilities.convertTime("days", options.daysToTravelForward);
         }
         for (int i = 0; i < initialPopulation.size(); i++) {
           final int index = i;
@@ -414,7 +417,7 @@ public class Generator implements RandomNumberGenerator {
     try {
       System.out.println("Loading fixed patient demographic records file: "
           + this.options.fixedRecordPath);
-          fixedRecordManager = gson.fromJson(new FileReader(this.options.fixedRecordPath), jsonType);
+      fixedRecordManager = gson.fromJson(new FileReader(this.options.fixedRecordPath), jsonType);
     } catch (FileNotFoundException e) {
       throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
     }
@@ -465,14 +468,14 @@ public class Generator implements RandomNumberGenerator {
 
       Map<String, Object> demoAttributes;
 
-      if(this.fixedRecordGroupManager != null) {
+      if (this.fixedRecordGroupManager != null) {
         // Get the Demographic attributes
         FixedRecordGroup recordGroup = this.fixedRecordGroupManager.getRecordGroup(index);
         demoAttributes = pickFixedDemographics(recordGroup, random);
-        // If fixed records are used, there must be 1 provider for each of this person's variant records.
+        // If fixed records are used, there must be 1 provider for each variant record.
         
       } else {
-       demoAttributes = randomDemographics(randomForDemographics);
+        demoAttributes = randomDemographics(randomForDemographics);
       }
       
       do {
@@ -564,7 +567,7 @@ public class Generator implements RandomNumberGenerator {
 
     LifecycleModule.birth(person, person.lastUpdated);
 
-    if(person.attributes.get(Person.RECORD_GROUP) != null) {
+    if (person.attributes.get(Person.RECORD_GROUP) != null) {
       FixedRecordGroup frg = ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP));
       frg.updateCurrentRecord(Utilities.getYear(person.lastUpdated));
       person.attributes.putAll(frg.getCurrentRecord().getFixedRecordAttributes());
@@ -574,7 +577,7 @@ public class Generator implements RandomNumberGenerator {
     person.defaultRecord = new HealthRecord(person);
     person.record = person.defaultRecord;
 
-    if(person.attributes.get(Person.RECORD_GROUP) != null) {
+    if (person.attributes.get(Person.RECORD_GROUP) != null) {
       FixedRecordGroup frg = ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP));
       person.attributes.put(Person.BIRTHDATE, frg.getSeedBirthdate());
     }
@@ -584,12 +587,12 @@ public class Generator implements RandomNumberGenerator {
     // Add the person to their household.
     if (Boolean.parseBoolean(Config.get("fixeddemographics.households", "false"))) {
       Household personHousehold = (Household) person.attributes.get(Person.HOUSEHOLD);
-      // Because people are sometimes re-simulated, we must make sure they have not already been added to the household.
-      if(!personHousehold.includesPerson(person)){
+      // Because people are sometimes re-simulated, we must make sure they
+      // have not already been added to the household.
+      if (!personHousehold.includesPerson(person)) {
         if (person.ageInDecimalYears(System.currentTimeMillis()) > 18) {
           personHousehold.addAdult(person);
-        }
-        else {
+        } else {
           personHousehold.addChild(person);
         }
       }
@@ -608,21 +611,18 @@ public class Generator implements RandomNumberGenerator {
    */
   public void updatePerson(Person person) {
     HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
-    HouseholdModule householdModule = new HouseholdModule();
     EncounterModule encounterModule = new EncounterModule();
 
     long time = person.lastUpdated;
     while (person.alive(time) && time < stop) {
 
       // If fixed Patient Demographics are being used then check to update the current fixedrecord.
-      if(person.attributes.get(Person.RECORD_GROUP) != null) {
+      if (person.attributes.get(Person.RECORD_GROUP) != null) {
         updateFixedDemographicRecord(person, time);
       }
 
       // Process Health Insurance.
       healthInsuranceModule.process(person, time + timestep);
-      // Process Household.
-      householdModule.process(person, time);
       // Process encounters.
       encounterModule.process(person, time);
 
@@ -648,10 +648,11 @@ public class Generator implements RandomNumberGenerator {
    * @param person The person to use
    * @return
    */
-  public void updateFixedDemographicRecord(Person person, long time){
-    // Check if the person's fixed record has been updated, meaning that their health record, provider, and address should also update.
+  public void updateFixedDemographicRecord(Person person, long time) {
+    // Check if the person's fixed record has been updated, meaning that their
+    // health record, provider, and address should also update.
     FixedRecordGroup frg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
-    if(frg.updateCurrentRecord(Utilities.getYear(time))){
+    if (frg.updateCurrentRecord(Utilities.getYear(time))) {
       // Pull the newly updated fixedRecord.
       FixedRecord fr = frg.getCurrentRecord();
       fr.overwriteAddress(person, this);
@@ -663,7 +664,9 @@ public class Generator implements RandomNumberGenerator {
        * any change of address.
        */
       person.forceNewProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(time));
-      person.record = person.getHealthRecord(person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()), System.currentTimeMillis());
+      person.record = person.getHealthRecord(person.getProvider(
+          HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()),
+          System.currentTimeMillis());
     }
   }
 
@@ -810,13 +813,13 @@ public class Generator implements RandomNumberGenerator {
     }
     demoAttributes.put(Person.GENDER, g);
 
-    if(Boolean.parseBoolean(Config.get("fixeddemographics.households", "false"))){
-      if(this.households == null){
+    if (Boolean.parseBoolean(Config.get("fixeddemographics.households", "false"))) {
+      if (this.households == null) {
         this.households = new HashMap<Integer, Household>();
       }
       // Generate the person's household based on the ID if it does not yet exist.
       int householdId = Integer.parseInt(seedRecord.householdId);
-      if(this.households.get(householdId) == null){
+      if (this.households.get(householdId) == null) {
         this.households.put(householdId, new Household(householdId));
       }
       demoAttributes.put(Person.HOUSEHOLD, this.households.get(householdId));
@@ -853,9 +856,10 @@ public class Generator implements RandomNumberGenerator {
     long finishTime = person.lastUpdated + timestep;
     boolean isAlive = person.alive(finishTime);
 
-    if(person.attributes.get(Person.RECORD_GROUP) != null) {
-      // Set the person's attributes to their seed attributes to ensure the console display is correct.
-      person.attributes.putAll(((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP)).seedRecord.getFixedRecordAttributes());
+    if (person.attributes.get(Person.RECORD_GROUP) != null) {
+      // Set the person's attributes to their seed record to ensure the console display is correct.
+      person.attributes.putAll(((FixedRecordGroup)
+          person.attributes.get(Person.RECORD_GROUP)).seedRecord.getFixedRecordAttributes());
     }
     
     if (database != null) {

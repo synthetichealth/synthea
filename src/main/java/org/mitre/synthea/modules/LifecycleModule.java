@@ -177,7 +177,7 @@ public final class LifecycleModule extends Module {
     boolean hasStreetAddress2 = person.rand() < 0.5;
     attributes.put(Person.ADDRESS, fakeAddress(hasStreetAddress2, person));
 
-    // If using FixedRecords, overwrite the person's attributes with the seed fixed record attributes.
+    // If using FixedRecords, overwrite the person's attributes with the seed record attributes.
     if (person.attributes.get(Person.RECORD_GROUP) != null) {
       FixedRecordGroup recordGroup = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
       FixedRecord seedRecord = recordGroup.seedRecord;

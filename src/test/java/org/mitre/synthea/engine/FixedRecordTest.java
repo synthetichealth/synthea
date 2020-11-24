@@ -5,6 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,6 +20,7 @@ import java.util.stream.Stream;
 
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Patient;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mitre.synthea.engine.Generator.GeneratorOptions;
@@ -31,9 +35,6 @@ import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
-import ca.uhn.fhir.parser.IParser;
-
-import ca.uhn.fhir.context.FhirContext;
 
 public class FixedRecordTest {
 
@@ -75,6 +76,7 @@ public class FixedRecordTest {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "California");
     Config.set("generate.only_dead_patients", "false"); 
     Config.set("exporter.split_records", "true");
+    Config.set("fixeddemographics.households", "true");
     Provider.clear();
     Payer.clear();
     // Create a generator with the preset fixed demographics test file.
@@ -84,7 +86,8 @@ public class FixedRecordTest {
     go.state = "California";  // Examples are based on California.
     go.population = 100;  // Should be overwritten by number of patients in input file.
     go.overflow = false;  // Prevent deceased patients from increasing the population size.
-    go.enabledModules = new ArrayList<String>(); // Prevent extraneous modules from being laoded to improve test speed.
+    // Prevent extraneous modules from being laoded to improve test speed.
+    go.enabledModules = new ArrayList<String>();
     go.enabledModules.add("");
     generator = new Generator(go);
     generator.internalStore = new LinkedList<>(); // Allows us to access patients within generator.
@@ -92,10 +95,18 @@ public class FixedRecordTest {
     fixedRecordGroupManager = generator.importFixedDemographicsFile();   
   }
 
+  @AfterClass
+  public static void resetConfig() {
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "California");
+    Config.set("generate.only_dead_patients", "false"); 
+    Config.set("exporter.split_records", "false");
+    Config.set("fixeddemographics.households", "false");
+  }
+
   @Test
   public void initialFixedDemographicsImportTest() {
 
-    // First, we'll hard-code check the first person's (Jane Doe) seed record and initial attributes.
+    // Hard-coded checks for the first person's (Jane Doe) seed record and initial attributes.
     FixedRecordGroup janeDoeRecordGroup = generator.fixedRecordGroupManager.getRecordGroup(0);
     Map<String, String> testAttributes = Stream.of(new String[][] {
       {RECORD_ID, "1"},
@@ -120,7 +131,8 @@ public class FixedRecordTest {
     // Now check that the rest of the population's initial attributes match the seed record.
     for (int i = 0; i < generator.options.population; i++) {
       FixedRecordGroup recordGroup = generator.fixedRecordGroupManager.getRecordGroup(i);
-      Map<String, Object> demoAttributes = generator.pickFixedDemographics(recordGroup, new Random(i));
+      Map<String, Object> demoAttributes
+          = generator.pickFixedDemographics(recordGroup, new Random(i));
       FixedRecord seedRecord = recordGroup.seedRecord;
       assertEquals(demoAttributes.get(Person.FIRST_NAME), (seedRecord.firstName));
       assertEquals(demoAttributes.get(Person.LAST_NAME), (seedRecord.lastName));
@@ -140,7 +152,7 @@ public class FixedRecordTest {
     // Generate each patient from the fixed record input file.
     for (int i = 0; i < generator.options.population; i++) {
       Person currentPerson = generator.generatePerson(i);
-      // Cycle through the population and check that their exported FHIR resource attributes match their FixedRecords.
+      // Check that patients' exported FHIR resource attributes match their FixedRecords.
       for (String key : currentPerson.records.keySet()) {
 
         // Parse out the current record that we're checking.
@@ -178,9 +190,10 @@ public class FixedRecordTest {
           {ZIP, patient.getAddressFirstRep().getPostalCode()},
         }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
         // Only Children have a contact person.
-        if(patient.getContact().get(0).getName() != null) {
+        if (patient.getContact().get(0).getName() != null) {
           testAttributes.put(CONTACT_LAST_NAME, patient.getContact().get(0).getName().getFamily());
-          testAttributes.put(CONTACT_FIRST_NAME, patient.getContact().get(0).getName().getGivenAsSingleString());
+          testAttributes.put(CONTACT_FIRST_NAME,
+              patient.getContact().get(0).getName().getGivenAsSingleString());
         }
         testRecordAttributes(currentFixedRecord, testAttributes);
       }
@@ -197,14 +210,20 @@ public class FixedRecordTest {
         = (FixedRecordGroup) janeDoe.attributes.get(Person.RECORD_GROUP);
     // Make sure the person has the correct number of variant fixed records.
     assertEquals(janeDoeRecordGroup.variantRecords.size(), 3);
-    assertTrue(janeDoeRecordGroup.variantRecords.stream().anyMatch(record -> record.recordId.equals("101")));
-    assertTrue(janeDoeRecordGroup.variantRecords.stream().anyMatch(record -> record.recordId.equals("102")));
-    assertTrue(janeDoeRecordGroup.variantRecords.stream().anyMatch(record -> record.recordId.equals("103")));
+    assertTrue(janeDoeRecordGroup.variantRecords
+        .stream().anyMatch(record -> record.recordId.equals("101")));
+    assertTrue(janeDoeRecordGroup.variantRecords
+        .stream().anyMatch(record -> record.recordId.equals("102")));
+    assertTrue(janeDoeRecordGroup.variantRecords
+        .stream().anyMatch(record -> record.recordId.equals("103")));
     // Make sure the person has the correct number of health records.
     assertTrue("Records: " + janeDoe.records.size(), janeDoe.records.size() >= 3);
-    assertTrue(janeDoe.records.values().stream().anyMatch(record -> record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID).equals("101")));
-    assertTrue(janeDoe.records.values().stream().anyMatch(record -> record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID).equals("102")));
-    assertTrue(janeDoe.records.values().stream().anyMatch(record -> record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID).equals("103")));
+    assertTrue(janeDoe.records.values().stream().anyMatch(record
+        -> record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID).equals("101")));
+    assertTrue(janeDoe.records.values().stream().anyMatch(record
+        -> record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID).equals("102")));
+    assertTrue(janeDoe.records.values().stream().anyMatch(record
+        -> record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID).equals("103")));
     // Test Jane Doe's VariantRecord 1.
     Map<String, String> testAttributes = Stream.of(new String[][] {
       {SEED_ID, "1"},
@@ -313,15 +332,39 @@ public class FixedRecordTest {
     // Make sure the person has the correct number of records.
     assertEquals(williamSmithRecordGroup.variantRecords.size(), 1);
     assertTrue("Records: " + williamSmith.records.size(), williamSmith.records.size() >= 1);
+    
+    // Check that the households and their members were created properly.
+    assertEquals(2, generator.households.size());
+    Map<Integer, Household> households = generator.households;
+    // Household 1 should have the following members:
+    assertTrue(households.get(1).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup)
+        adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("1")));
+    assertTrue(households.get(1).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup)
+        adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("2")));
+    assertTrue(households.get(1).getAdults().size() == 2);
+    assertTrue(households.get(1).getDependents().stream().anyMatch(dependent -> ((FixedRecordGroup)
+        dependent.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("5")));
+    assertTrue(households.get(1).getDependents().stream().anyMatch(dependent -> ((FixedRecordGroup)
+        dependent.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("6")));
+    assertTrue(households.get(1).getDependents().size() == 2);
+    // Household 2 should have the following members:
+    assertTrue(households.get(2).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup)
+        adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("3")));
+    assertTrue(households.get(2).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup)
+        adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("4")));
+    assertTrue(households.get(2).getAdults().size() == 2);
+    assertTrue(households.get(2).getDependents().stream().anyMatch(dependent -> ((FixedRecordGroup)
+        dependent.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("7")));
+    assertTrue(households.get(2).getDependents().size() == 1);
   }
 
   private FixedRecord getRecordMatch(Person person, int index) {
     FixedRecordGroup recordGroup = fixedRecordGroupManager.getRecordGroup(index);
 
-    String recordId = (String) person.record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID);
-    System.out.println("record id " + recordId);
-    for(FixedRecord record : recordGroup.variantRecords) {
-      if(record.recordId.equals(recordId)){
+    String recordId = (String) person.record.demographicsAtRecordCreation
+        .get(Person.IDENTIFIER_RECORD_ID);
+    for (FixedRecord record : recordGroup.variantRecords) {
+      if (record.recordId.equals(recordId)) {
         return record;
       }
     }
@@ -329,7 +372,8 @@ public class FixedRecordTest {
     return null;
   }
 
-  public void testRecordAttributes(FixedRecord personFixedRecord, Map<String, String> testAttribtues) {
+  private void testRecordAttributes(
+        FixedRecord personFixedRecord, Map<String, String> testAttribtues) {
     assertEquals(personFixedRecord.firstName, testAttribtues.get(FIRST_NAME));
     assertEquals(personFixedRecord.lastName, testAttribtues.get(LAST_NAME));
     assertEquals(personFixedRecord.birthYear, testAttribtues.get(BIRTH_YEAR));
@@ -343,8 +387,8 @@ public class FixedRecordTest {
     assertEquals(personFixedRecord.city, testAttribtues.get(CITY));
     assertEquals(personFixedRecord.zipcode, testAttribtues.get(ZIP));
     assertEquals(personFixedRecord.contactEmail, testAttribtues.get(CONTACT_EMAIL));
-    if(personFixedRecord.contactFirstName != null){
-      // Only children have a contact person.
+    if (personFixedRecord.contactFirstName != null) {
+      // Only children have a contact person (in the fixed record test file).
       assertEquals(personFixedRecord.contactFirstName, testAttribtues.get(CONTACT_FIRST_NAME));
       assertEquals(personFixedRecord.contactLastName, testAttribtues.get(CONTACT_LAST_NAME));
     }
@@ -352,7 +396,7 @@ public class FixedRecordTest {
 
   @Test
   public void variantRecordCityIsInvalid() {
-    // First, set the current fixed record to the 2015 variant record of the first person (Jane Doe).
+    // Set the current fixed record to the 2015 variant record of the first person (Jane Doe).
     fixedRecordGroupManager.getRecordGroup(0).updateCurrentRecord(1984);
     assertTrue(fixedRecordGroupManager.getRecordGroup(0).updateCurrentRecord(2015));
     // Jane Doe's 2015 variant record has an invalid city, so the safe city is the seed city.
@@ -373,45 +417,29 @@ public class FixedRecordTest {
     // Pull out Jane Doe to run provider tests on.
     Person person = generator.households.get(1).getAdults().get(0);
     // Pull out all existing Provider UUIDs.
-    providerIds.addAll(person.records.values().stream().map(record -> record.provider.uuid).collect(Collectors.toList()));
+    providerIds.addAll(person.records.values().stream().map(record
+        -> record.provider.uuid).collect(Collectors.toList()));
     // Force a new provider.
     person.forceNewProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(0L));
-    person.record = person.getHealthRecord(person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()), System.currentTimeMillis());
+    person.record = person.getHealthRecord(person.getProvider(HealthRecord.EncounterType.WELLNESS,
+        System.currentTimeMillis()), System.currentTimeMillis());
     // Check that the new provider ID is not in the list of prior IDs.
     String firstUuid = person.record.provider.uuid;
     assertFalse(providerIds.stream().anyMatch(uuid -> uuid.equals(firstUuid)));
     // Force a new provider.
     person.forceNewProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(0L));
-    person.record = person.getHealthRecord(person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()), System.currentTimeMillis());
+    person.record = person.getHealthRecord(person.getProvider(HealthRecord.EncounterType.WELLNESS,
+        System.currentTimeMillis()), System.currentTimeMillis());
     // Check that the new provider ID is not in the list of prior IDs.
     String secondUuid = person.record.provider.uuid;
     assertFalse(providerIds.stream().anyMatch(uuid -> uuid.equals(secondUuid)));
     // Force a new provider.
     person.forceNewProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(0L));
-    person.record = person.getHealthRecord(person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()), System.currentTimeMillis());
+    person.record = person.getHealthRecord(person.getProvider(HealthRecord.EncounterType.WELLNESS,
+        System.currentTimeMillis()), System.currentTimeMillis());
     // Check that the new provider ID is not in the list of prior IDs.
     String thirdUuid = person.record.provider.uuid;
     assertFalse(providerIds.stream().anyMatch(uuid -> uuid.equals(thirdUuid)));
-  }
-
-  @Test
-  public void checkHouseholdMembers() {
-    // Make sure that the correct number of households were generated.
-    assertEquals(2, generator.households.size());
-    Map<Integer, Household> households = generator.households;
-    // Household 1 should have the following members:
-    assertTrue(households.get(1).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup) adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("1")));
-    assertTrue(households.get(1).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup) adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("2")));
-    assertTrue(households.get(1).getAdults().size() == 2);
-    assertTrue(households.get(1).getDependents().stream().anyMatch(dependent -> ((FixedRecordGroup) dependent.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("5")));
-    assertTrue(households.get(1).getDependents().stream().anyMatch(dependent -> ((FixedRecordGroup) dependent.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("6")));
-    assertTrue(households.get(1).getDependents().size() == 2);
-    // Household 2 should have the following members:
-    assertTrue(households.get(2).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup) adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("3")));
-    assertTrue(households.get(2).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup) adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("4")));
-    assertTrue(households.get(2).getAdults().size() == 2);
-    assertTrue(households.get(2).getDependents().stream().anyMatch(dependent -> ((FixedRecordGroup) dependent.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("7")));
-    assertTrue(households.get(2).getDependents().size() == 1);
   }
 
   @Test(expected = RuntimeException.class)

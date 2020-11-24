@@ -1,7 +1,6 @@
 package org.mitre.synthea.helpers;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.parser.IParser;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
@@ -21,15 +20,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.Patient;
-
 import org.mitre.synthea.engine.Logic;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 public class Utilities {
-  private static final FhirContext ctx = FhirContext.forR4();
   /**
    * Convert a quantity of time in a specified units into milliseconds.
    *

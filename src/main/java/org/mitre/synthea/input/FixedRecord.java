@@ -142,7 +142,7 @@ public class FixedRecord {
       this.attributes.put(Person.TELECOM, this.getTelecom());
       this.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
       // this.attributes.put(Person.IDENTIFIER_SITE, this.site);
-      if(this.contactLastName != null) {
+      if (this.contactLastName != null) {
         this.attributes.put(Person.CONTACT_GIVEN_NAME, this.contactFirstName);
         this.attributes.put(Person.CONTACT_FAMILY_NAME, this.contactLastName);
       }
@@ -155,7 +155,7 @@ public class FixedRecord {
       this.attributes.put(Person.GENDER, g);
       this.attributes.put(Person.BIRTHDATE, this.getBirthDate());
       this.attributes.put(Person.STATE, this.state);
-      if(this.getSafeCity() != null) {
+      if (this.getSafeCity() != null) {
         this.attributes.put(Person.CITY, this.getSafeCity());
       } else {
         this.attributes.put(Person.CITY, this.city);
@@ -176,16 +176,18 @@ public class FixedRecord {
     String oldAddress = (String) person.attributes.get(Person.ADDRESS);
     person.attributes.put(Person.ADDRESS, this.addressLineOne);
     person.attributes.put(Person.STATE, this.state);
-    if(this.getSafeCity() != null) {
+    if (this.getSafeCity() != null) {
       person.attributes.put(Person.CITY, this.getSafeCity());
     } else {
-      person.attributes.put(Person.CITY, ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP)).getSeedCity());
+      person.attributes.put(Person.CITY, ((FixedRecordGroup)
+          person.attributes.get(Person.RECORD_GROUP)).getSeedCity());
     }
     person.attributes.put(Person.ZIP, this.zipcode);
     // Fix the person's safe city in case it is invalid and update their location
     // point.
     generator.location.assignPoint(person, (String) person.attributes.get(Person.CITY));
-    return !oldCity.equals(person.attributes.get(Person.CITY)) && !oldAddress.equals(person.attributes.get(Person.ADDRESS));
+    return !oldCity.equals(person.attributes.get(Person.CITY))
+        && !oldAddress.equals(person.attributes.get(Person.ADDRESS));
   }
 
   /**

@@ -544,11 +544,11 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     HealthRecord returnValue = this.defaultRecord;
     if (hasMultipleRecords) {
       String key = provider.getResourceID();
-      // If the given provider does not have a health record for this person...
+      // Check If the given provider does not have a health record for this person.
       if (!records.containsKey(key)) {
         HealthRecord record = null;
         if (this.record != null && this.record.provider == null) {
-          // If the active healthrecord does not have a provider, assign the active record to this record.
+          // If the active healthrecord does not have a provider, assign it as the active record.
           record = this.record;
         } else {
           record = new HealthRecord(this);
@@ -657,8 +657,12 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     setProvider(type, provider);
   }
 
-  public void forceNewProvider(EncounterType type, long time){
-    Provider provider = Provider.findServiceNewProvider(this, type, time, this.records.values().stream().map(record -> record.provider.uuid).collect(Collectors.toList()));
+  /**
+   * Force find a new provider that does not already have a healthrecord for the person.
+   */
+  public void forceNewProvider(EncounterType type, long time) {
+    Provider provider = Provider.findServiceNewProvider(this, type, time, this.records.values()
+        .stream().map(record -> record.provider.uuid).collect(Collectors.toList()));
     setProvider(type, provider);
   }
 
