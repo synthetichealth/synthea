@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
 
@@ -134,7 +135,18 @@ public class FHIRR4ExporterTest {
           if (!eresult.isSuccessful()) {
             for (SingleValidationMessage emessage : eresult.getMessages()) {
               boolean valid = false;
-              if (emessage.getMessage().contains("@ AllergyIntolerance ait-2")) {
+              if (emessage.getSeverity() == ResultSeverityEnum.INFORMATION
+                      || emessage.getSeverity() == ResultSeverityEnum.WARNING) {
+                /*
+                 * Ignore warnings.
+                 */
+                valid = true;
+              } else if (emessage.getMessage().contains("us-core-documentreference-type")) {
+                /*
+                 * The instance validator does not expand intentional value sets like this one.
+                 */
+                valid = true;
+              } else if (emessage.getMessage().contains("@ AllergyIntolerance ait-2")) {
                 /*
                  * The ait-2 invariant:
                  * Description:
@@ -159,13 +171,16 @@ public class FHIRR4ExporterTest {
                  * fails, even if it is valid.
                  */
                 valid = true; // ignore this error
-              } else if (emessage.getMessage().contains("[active, inactive, entered-in-error]")
-                  || emessage.getMessage().contains("MedicationStatusCodes-list")) {
+              } else if (
+                  emessage.getMessage().contains("Unknown extension http://hl7.org/fhir/us/core")
+                  || emessage.getMessage().contains("Unknown extension http://synthetichealth")
+                  || emessage.getMessage().contains("not be resolved, so has not been checked")) {
                 /*
-                 * MedicationStatement.status has more legal values than this... including
-                 * completed and stopped.
+                 * Despite setting instanceValidator.setAnyExtensionsAllowed(true) and
+                 * instanceValidator.setErrorForUnknownProfiles(false), the FHIR validator still
+                 * reports these as errors
                  */
-                valid = true;
+                valid = true; // ignore this error
               }
               if (!valid) {
                 System.out.println(parser.encodeResourceToString(entry.getResource()));

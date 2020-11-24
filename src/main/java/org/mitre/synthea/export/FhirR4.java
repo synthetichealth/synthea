@@ -2064,7 +2064,7 @@ public class FhirR4 {
     medicationResource.setMedication(mapCodeToCodeableConcept(code, system));
     medicationResource.setEffective(new DateTimeType(new Date(medication.start)));
 
-    medicationResource.setStatus("completed");
+    medicationResource.setStatus(MedicationAdministration.MedicationAdministrationStatus.COMPLETED);
 
     if (medication.prescriptionDetails != null) {
       JsonObject rxInfo = medication.prescriptionDetails;

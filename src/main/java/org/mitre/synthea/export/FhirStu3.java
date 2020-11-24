@@ -953,14 +953,6 @@ public class FhirStu3 {
     org.hl7.fhir.dstu3.model.Encounter encounterResource =
         (org.hl7.fhir.dstu3.model.Encounter) encounterEntry.getResource();
 
-    Meta meta = new Meta();
-    if (inpatient) {
-      meta.addProfile("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-claim");
-    }  else if (outpatient) {
-      meta.addProfile("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-claim");
-    }
-    eob.setMeta(meta);
-
     // First add the extensions
     // will have to deal with different claim types (e.g. inpatient vs outpatient)
     if (inpatient) {

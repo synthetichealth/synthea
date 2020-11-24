@@ -186,7 +186,12 @@ public class FHIRSTU3ExporterTest {
             ValidationResult bbResult = validationResources.validateSTU3(entry.getResource());
 
             for (SingleValidationMessage message : bbResult.getMessages()) {
-              if (message.getSeverity() == ResultSeverityEnum.ERROR) {
+              if (message.getMessage().contains("extension https://bluebutton.cms.gov/assets")) {
+                /*
+                 * The instance validator complains about the BlueButton extensions, ignore
+                 */
+                continue;
+              } else if (message.getSeverity() == ResultSeverityEnum.ERROR) {
                 if (!(message.getMessage().contains(
                     "Element 'ExplanationOfBenefit.id': minimum required = 1, but only found 0")
                     || message.getMessage().contains("Could not verify slice for profile"))) {

@@ -1,12 +1,16 @@
 package org.mitre.synthea.export;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.context.support.DefaultProfileValidationSupport;
 import ca.uhn.fhir.validation.FhirValidator;
-import ca.uhn.fhir.validation.IValidatorModule;
 import ca.uhn.fhir.validation.SchemaBaseValidator;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
 import ca.uhn.fhir.validation.schematron.SchematronBaseValidator;
+import org.hl7.fhir.common.hapi.validation.support.CommonCodeSystemsTerminologyService;
+import org.hl7.fhir.common.hapi.validation.support.InMemoryTerminologyServerValidationSupport;
+import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
+import org.hl7.fhir.common.hapi.validation.validator.FhirInstanceValidator;
 
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.slf4j.Logger;
@@ -22,7 +26,7 @@ public class ValidationResources {
   static final Logger logger = LoggerFactory.getLogger(ValidationResources.class);
 
   /**
-   * Create FHIR context, validator, and validation support.
+   * Create FHIR context, validator, and validation chain.
    */
   public ValidationResources() {
     initializeSTU3();
@@ -31,41 +35,34 @@ public class ValidationResources {
 
   private void initializeSTU3() {
     FhirContext ctx = FhirContext.forDstu3();
-    validatorSTU3 = ctx.newValidator();
-    org.hl7.fhir.dstu3.hapi.validation.FhirInstanceValidator instanceValidator =
-        new org.hl7.fhir.dstu3.hapi.validation.FhirInstanceValidator();
-    ValidationSupportSTU3 validationSupport = new ValidationSupportSTU3();
-    org.hl7.fhir.dstu3.hapi.validation.ValidationSupportChain support =
-        new org.hl7.fhir.dstu3.hapi.validation.ValidationSupportChain(
-            new org.hl7.fhir.dstu3.hapi.ctx.DefaultProfileValidationSupport(), validationSupport);
-    instanceValidator.setValidationSupport(support);
-
-    IValidatorModule schemaValidator = new SchemaBaseValidator(ctx);
-    IValidatorModule schematronValidator = new SchematronBaseValidator(ctx);
-
-    validatorSTU3.registerValidatorModule(schemaValidator);
-    validatorSTU3.registerValidatorModule(schematronValidator);
-    validatorSTU3.registerValidatorModule(instanceValidator);
+    FhirInstanceValidator instanceValidator =
+        new FhirInstanceValidator(ctx);
+    ValidationSupportChain chain = new ValidationSupportChain(
+            new ValidationSupportSTU3(ctx),
+            new DefaultProfileValidationSupport(ctx),
+            new InMemoryTerminologyServerValidationSupport(ctx),
+            new CommonCodeSystemsTerminologyService(ctx)
+    );
+    instanceValidator.setValidationSupport(chain);
+    instanceValidator.setAnyExtensionsAllowed(true);
+    instanceValidator.setErrorForUnknownProfiles(false);
+    validatorSTU3 = ctx.newValidator().registerValidatorModule(instanceValidator);
   }
 
   private void initializeR4() {
     FhirContext ctx = FhirContext.forR4();
-    validatorR4 = ctx.newValidator();
-    org.hl7.fhir.r4.hapi.validation.FhirInstanceValidator instanceValidator =
-        new org.hl7.fhir.r4.hapi.validation.FhirInstanceValidator();
-    ValidationSupportR4 validationSupport = new ValidationSupportR4();
-    org.hl7.fhir.r4.hapi.validation.ValidationSupportChain support =
-        new org.hl7.fhir.r4.hapi.validation.ValidationSupportChain(
-            new org.hl7.fhir.r4.hapi.ctx.DefaultProfileValidationSupport(), validationSupport);
-    instanceValidator.setValidationSupport(support);
-    instanceValidator.setNoTerminologyChecks(true);
-
-    IValidatorModule schemaValidator = new SchemaBaseValidator(ctx);
-    IValidatorModule schematronValidator = new SchematronBaseValidator(ctx);
-
-    validatorR4.registerValidatorModule(schemaValidator);
-    validatorR4.registerValidatorModule(schematronValidator);
-    validatorR4.registerValidatorModule(instanceValidator);
+    FhirInstanceValidator instanceValidator =
+        new FhirInstanceValidator(ctx);
+    ValidationSupportChain chain = new ValidationSupportChain(
+            new ValidationSupportR4(ctx),
+            new DefaultProfileValidationSupport(ctx),
+            new InMemoryTerminologyServerValidationSupport(ctx),
+            new CommonCodeSystemsTerminologyService(ctx)
+    );
+    instanceValidator.setValidationSupport(chain);
+    instanceValidator.setAnyExtensionsAllowed(true);
+    instanceValidator.setErrorForUnknownProfiles(false);
+    validatorR4 = ctx.newValidator().registerValidatorModule(instanceValidator);
   }
 
   /**
