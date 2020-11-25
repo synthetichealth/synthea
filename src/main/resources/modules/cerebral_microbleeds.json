@@ -1,0 +1,328 @@
+{
+  "name": "Cerebral Microbleeds",
+  "remarks": [
+    "This module produces cerebral microbleeds in some patients with ischemic stroke or during early stages of Alzheimer's disease.",
+    "",
+    "Reference:",
+    "- For microbleed data:",
+    "https://alzres.biomedcentral.com/articles/10.1186/alzrt263",
+    ""
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Stroke or Alzheimers"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Cerebral Microbleeds": {
+      "type": "Delay",
+      "direct_transition": "Gait Disturbance",
+      "range": {
+        "low": 1,
+        "high": 30,
+        "unit": "days"
+      }
+    },
+    "Emergency Visit": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission (procedure)"
+        }
+      ],
+      "reason": "microbleed_emergency_reason",
+      "direct_transition": "CT Scan"
+    },
+    "Gait Disturbance": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "microbleed_emergency_reason",
+      "target_encounter": "Emergency Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "22325002",
+          "display": "Abnormal gait (finding)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Cognitive Impairment",
+          "distribution": 0.6
+        },
+        {
+          "distribution": 0.4,
+          "transition": "Other Symptoms"
+        }
+      ]
+    },
+    "Cognitive Impairment": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "microbleed_emergency_reason",
+      "target_encounter": "Emergency Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "386806002",
+          "display": "Impaired cognition (finding)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Trouble Speaking",
+          "distribution": 0.33
+        },
+        {
+          "transition": "Weak Arm",
+          "distribution": 0.33
+        },
+        {
+          "transition": "Tingling Face",
+          "distribution": 0.34
+        }
+      ]
+    },
+    "Brain MRI": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "241601008",
+        "display": "Magnetic resonance imaging of head (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "69536005",
+            "display": "Head structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "MR",
+            "display": "Magnetic Resonance"
+          },
+          "instances": [
+            {
+              "title": "MRI Image of Brain",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.4",
+                "display": "MR Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Diagnosis Delay"
+    },
+    "Diagnosed Microbleeds": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "cerebral_microbleed",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "723857007",
+          "display": "Silent micro-hemorrhage of brain (disorder)"
+        }
+      ],
+      "direct_transition": "Stop Warfarin"
+    },
+    "End Emergency Visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "CT Scan": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 241517007,
+          "display": "CT of head (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "conditional_transition": [
+        {
+          "transition": "MRI Delay",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1980,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Diagnosis Delay"
+        }
+      ]
+    },
+    "Stroke or Alzheimers": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Or",
+        "conditions": [
+          {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "stroke_history",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 230690007,
+                    "display": "Stroke"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "Type of Alzheimer's",
+            "operator": "is not nil"
+          }
+        ]
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Cerebral Microbleeds",
+              "distribution": 0.71
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.29
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Cerebral Microbleeds",
+              "distribution": 0.18
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.82
+            }
+          ]
+        }
+      ]
+    },
+    "Stop Warfarin": {
+      "type": "MedicationEnd",
+      "direct_transition": "Vitamin K",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 855332,
+          "display": "Warfarin Sodium 5 MG Oral Tablet"
+        }
+      ]
+    },
+    "Vitamin K": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1362805,
+          "display": "Calcium Carbonate 1250 MG / Cholecalciferol 1000 UNT / Vitamin K 0.4 MG Chewable Tablet"
+        }
+      ],
+      "direct_transition": "End Emergency Visit",
+      "reason": "Diagnosed Microbleeds",
+      "administration": true
+    },
+    "Diagnosis Delay": {
+      "type": "Delay",
+      "direct_transition": "Diagnosed Microbleeds",
+      "range": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      }
+    },
+    "MRI Delay": {
+      "type": "Delay",
+      "direct_transition": "Brain MRI",
+      "range": {
+        "low": 1,
+        "high": 24,
+        "unit": "hours"
+      }
+    },
+    "Trouble Speaking": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 8011004,
+          "display": "Dysarthria (finding)"
+        }
+      ],
+      "direct_transition": "Emergency Visit",
+      "target_encounter": "Emergency Visit"
+    },
+    "Weak Arm": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Emergency Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 249944006,
+          "display": "Monoparesis - arm (disorder)"
+        }
+      ],
+      "direct_transition": "Emergency Visit"
+    },
+    "Tingling Face": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Emergency Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 309557009,
+          "display": "Numbness of face (finding)"
+        }
+      ],
+      "direct_transition": "Emergency Visit"
+    },
+    "Other Symptoms": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Weak Arm",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Tingling Face",
+          "distribution": 0.5
+        }
+      ]
+    }
+  }
+}

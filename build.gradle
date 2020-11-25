@@ -25,6 +25,9 @@ repositories {
   maven {
     url "https://oss.sonatype.org/content/repositories/snapshots"
   }
+  maven {
+    url 'https://www.dcm4che.org/maven2/'
+  }
 }
 
 checkstyle {
@@ -65,6 +68,9 @@ dependencies {
 
   // HTTP Client for reaching out to services, like clinical note generation
   compile "com.squareup.okhttp3:okhttp:4.4.0"
+
+  // DICOM support
+  compile group: 'dcm4che', name: 'dcm4che-core', version: '2.0.29'
 
   // Java 9 no longer includes these APIs by default
   compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
