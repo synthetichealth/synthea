@@ -800,7 +800,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "IU/L",
+          "unit": "[iU]/L",
           "codes": [
             {
               "system": "LOINC",
@@ -815,7 +815,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "IU/L",
+          "unit": "[iU]/L",
           "codes": [
             {
               "system": "LOINC",
@@ -986,7 +986,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "IU/L",
+          "unit": "[iU]/L",
           "codes": [
             {
               "system": "LOINC",
@@ -1035,7 +1035,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "M/uL",
+          "unit": "10*6/uL",
           "codes": [
             {
               "system": "LOINC",

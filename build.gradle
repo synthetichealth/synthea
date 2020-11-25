@@ -115,7 +115,7 @@ test {
     // showStackTraces = true
     // showStandardStreams = true
   }
-  maxHeapSize = "4096m"
+  maxHeapSize = "8192m"
 }
 
 buildscript {
