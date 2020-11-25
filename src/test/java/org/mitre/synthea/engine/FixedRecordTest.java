@@ -64,7 +64,6 @@ public class FixedRecordTest {
   private static Generator generator;
   private static FixedRecordGroupManager fixedRecordGroupManager;
 
-  // TODO: Test address movement.
   // TODO: Fix an issue where more than 2 adults might be added to a household.
 
   /**
@@ -93,19 +92,26 @@ public class FixedRecordTest {
     generator.internalStore = new LinkedList<>(); // Allows us to access patients within generator.
     // List of raw RecordGroups imported directly from the input file for later comparison.
     fixedRecordGroupManager = generator.importFixedDemographicsFile();   
+    // Generate each patient from the fixed record input file.
+    for (int i = 0; i < generator.options.population; i++) {
+      generator.generatePerson(i);
+    }
   }
 
+  /**
+   * Resets any Config settings that may interfere with other tests.
+   */
   @AfterClass
   public static void resetConfig() {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "California");
     Config.set("generate.only_dead_patients", "false"); 
     Config.set("exporter.split_records", "false");
     Config.set("fixeddemographics.households", "false");
+    Config.set("generate.append_numbers_to_person_names", "true");
   }
 
   @Test
-  public void initialFixedDemographicsImportTest() {
-
+  public void checkFixedDemographicsImport() {
     // Hard-coded checks for the first person's (Jane Doe) seed record and initial attributes.
     FixedRecordGroup janeDoeRecordGroup = generator.fixedRecordGroupManager.getRecordGroup(0);
     Map<String, String> testAttributes = Stream.of(new String[][] {
@@ -147,11 +153,10 @@ public class FixedRecordTest {
   }
 
   @Test
-  public void fixedDemographicsTest() {
-
-    // Generate each patient from the fixed record input file.
+  public void checkFixedDemographicsExport() {
+    // Check each patient from the fixed record input file.
     for (int i = 0; i < generator.options.population; i++) {
-      Person currentPerson = generator.generatePerson(i);
+      Person currentPerson = generator.internalStore.get(i);
       // Check that patients' exported FHIR resource attributes match their FixedRecords.
       for (String key : currentPerson.records.keySet()) {
 
@@ -198,7 +203,10 @@ public class FixedRecordTest {
         testRecordAttributes(currentFixedRecord, testAttributes);
       }
     }
+  }
     
+  @Test
+  public void checkFixedDemographicsVariantAttributes() {
     // Test that the correct number of people were imported from the fixed records file.
     assertEquals(7, generator.internalStore.size());
     assertEquals(7, fixedRecordGroupManager.getPopulationSize());
@@ -332,30 +340,6 @@ public class FixedRecordTest {
     // Make sure the person has the correct number of records.
     assertEquals(williamSmithRecordGroup.variantRecords.size(), 1);
     assertTrue("Records: " + williamSmith.records.size(), williamSmith.records.size() >= 1);
-    
-    // Check that the households and their members were created properly.
-    assertEquals(2, generator.households.size());
-    Map<Integer, Household> households = generator.households;
-    // Household 1 should have the following members:
-    assertTrue(households.get(1).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup)
-        adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("1")));
-    assertTrue(households.get(1).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup)
-        adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("2")));
-    assertTrue(households.get(1).getAdults().size() == 2);
-    assertTrue(households.get(1).getDependents().stream().anyMatch(dependent -> ((FixedRecordGroup)
-        dependent.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("5")));
-    assertTrue(households.get(1).getDependents().stream().anyMatch(dependent -> ((FixedRecordGroup)
-        dependent.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("6")));
-    assertTrue(households.get(1).getDependents().size() == 2);
-    // Household 2 should have the following members:
-    assertTrue(households.get(2).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup)
-        adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("3")));
-    assertTrue(households.get(2).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup)
-        adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("4")));
-    assertTrue(households.get(2).getAdults().size() == 2);
-    assertTrue(households.get(2).getDependents().stream().anyMatch(dependent -> ((FixedRecordGroup)
-        dependent.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("7")));
-    assertTrue(households.get(2).getDependents().size() == 1);
   }
 
   private FixedRecord getRecordMatch(Person person, int index) {
@@ -392,6 +376,85 @@ public class FixedRecordTest {
       assertEquals(personFixedRecord.contactFirstName, testAttribtues.get(CONTACT_FIRST_NAME));
       assertEquals(personFixedRecord.contactLastName, testAttribtues.get(CONTACT_LAST_NAME));
     }
+  }
+
+  @Test
+  public void checkAddressHistory() {
+    // Check that the correct address returns for the given years.
+    FixedRecordGroup frg = fixedRecordGroupManager.getRecordGroup(0);
+    // 1984 Address
+    frg.updateCurrentRecord(1984);
+    FixedRecord currentRecord = frg.getCurrentRecord();
+    assertEquals(currentRecord.addressLineOne, "56 Fetter Lane");
+    assertEquals(currentRecord.city, "San Francisco");
+    assertEquals(currentRecord.state, "California");
+    assertEquals(currentRecord.addressStartDate, 1984);
+    assertEquals(currentRecord.addressEndDate, 1998);
+    // 1999 Address
+    frg.updateCurrentRecord(1999);
+    currentRecord = frg.getCurrentRecord();
+    assertEquals(currentRecord.addressLineOne, "fetter      lane");
+    assertEquals(currentRecord.city, "San Francisco");
+    assertEquals(currentRecord.state, "California");
+    assertEquals(currentRecord.addressStartDate, 1999);
+    assertEquals(currentRecord.addressEndDate, 2001);
+    // 2002 Address
+    frg.updateCurrentRecord(2002);
+    currentRecord = frg.getCurrentRecord();
+    assertEquals(currentRecord.addressLineOne, "13 strawberry ln.");
+    assertEquals(currentRecord.city, "INVALID_CITY_NAME");
+    assertEquals(currentRecord.state, "California");
+    assertEquals(currentRecord.addressStartDate, 2002);
+     // 1998 Address
+    frg.updateCurrentRecord(1998);
+    currentRecord = frg.getCurrentRecord();
+    assertEquals(currentRecord.addressLineOne, "56 Fetter Lane");
+    assertEquals(currentRecord.city, "San Francisco");
+    assertEquals(currentRecord.state, "California");
+    assertEquals(currentRecord.addressStartDate, 1984);
+    assertEquals(currentRecord.addressEndDate, 1998);
+    // 2001 Address
+    frg.updateCurrentRecord(2001);
+    currentRecord = frg.getCurrentRecord();
+    assertEquals(currentRecord.addressLineOne, "fetter      lane");
+    assertEquals(currentRecord.city, "San Francisco");
+    assertEquals(currentRecord.state, "California");
+    assertEquals(currentRecord.addressStartDate, 1999);
+    assertEquals(currentRecord.addressEndDate, 2001);
+    // 2020 Address
+    frg.updateCurrentRecord(2020);
+    currentRecord = frg.getCurrentRecord();
+    assertEquals(currentRecord.addressLineOne, "13 strawberry ln.");
+    assertEquals(currentRecord.city, "INVALID_CITY_NAME");
+    assertEquals(currentRecord.state, "California");
+    assertEquals(currentRecord.addressStartDate, 2002);
+  }
+
+  @Test
+  public void checkHouseholds() {
+    // Check that the households and their members were created properly.
+    assertEquals(2, generator.households.size());
+    Map<Integer, Household> households = generator.households;
+    // Household 1 should have the following members:
+    assertTrue(households.get(1).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup)
+        adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("1")));
+    assertTrue(households.get(1).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup)
+        adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("2")));
+    assertTrue(households.get(1).getAdults().size() == 2);
+    assertTrue(households.get(1).getDependents().stream().anyMatch(dependent -> ((FixedRecordGroup)
+        dependent.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("5")));
+    assertTrue(households.get(1).getDependents().stream().anyMatch(dependent -> ((FixedRecordGroup)
+        dependent.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("6")));
+    assertTrue(households.get(1).getDependents().size() == 2);
+    // Household 2 should have the following members:
+    assertTrue(households.get(2).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup)
+        adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("3")));
+    assertTrue(households.get(2).getAdults().stream().anyMatch(adult -> ((FixedRecordGroup)
+        adult.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("4")));
+    assertTrue(households.get(2).getAdults().size() == 2);
+    assertTrue(households.get(2).getDependents().stream().anyMatch(dependent -> ((FixedRecordGroup)
+        dependent.attributes.get(Person.RECORD_GROUP)).seedRecord.recordId.equals("7")));
+    assertTrue(households.get(2).getDependents().size() == 1);
   }
 
   @Test

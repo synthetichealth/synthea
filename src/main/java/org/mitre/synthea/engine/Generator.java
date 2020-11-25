@@ -408,24 +408,20 @@ public class Generator implements RandomNumberGenerator {
    * @return the fixed record manager.
    */
   public FixedRecordGroupManager importFixedDemographicsFile() {
+    
     Gson gson = new Gson();
-    // Type listType = new TypeToken<List<FixedRecord>>() {}.getType();
-
     Type jsonType = new TypeToken<FixedRecordGroupManager>() {}.getType();
 
-    FixedRecordGroupManager fixedRecordManager;
     try {
       System.out.println("Loading fixed patient demographic records file: "
           + this.options.fixedRecordPath);
-      fixedRecordManager = gson.fromJson(new FileReader(this.options.fixedRecordPath), jsonType);
+          this.fixedRecordGroupManager = gson.fromJson(new FileReader(this.options.fixedRecordPath), jsonType);
     } catch (FileNotFoundException e) {
       throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
     }
-    fixedRecordManager.createRecordGroups();
-    this.options.population = fixedRecordManager.getPopulationSize();
-    // Return and set the FixedRecordGroupManager.
-    this.fixedRecordGroupManager = fixedRecordManager;
-    return fixedRecordManager;
+    this.fixedRecordGroupManager.createRecordGroups();
+    this.options.population = this.fixedRecordGroupManager.getPopulationSize();
+    return this.fixedRecordGroupManager;
   }
   
   /**
