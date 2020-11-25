@@ -402,8 +402,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 133899007,
-          "display": "Postoperative care (regime/therapy)"
+          "code": 722492002,
+          "display": "Postoperative procedure (procedure)"
         }
       ],
       "duration": {
