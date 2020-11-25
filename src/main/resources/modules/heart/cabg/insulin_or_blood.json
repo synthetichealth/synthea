@@ -1,0 +1,292 @@
+{
+  "name": "insulin_or_blood",
+  "remarks": [
+    "Diabetes need insulin and anemics need blood."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Insulin Check"
+    },
+    "Insulin Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Insulin Infusion Px",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hyperglycemia",
+                "operator": "is not nil"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Anemia Check"
+        }
+      ]
+    },
+    "Anemia Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia",
+            "operator": "is not nil"
+          },
+          "distributions": [],
+          "transition": "RBC"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "RBC",
+              "distribution": 0.833
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.16700000000000004
+            }
+          ],
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 5
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 5
+          },
+          "distributions": [
+            {
+              "transition": "RBC",
+              "distribution": 0.4
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.6000000000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 4
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "RBC",
+              "distribution": 0.286
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.714
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "transition": "RBC",
+              "distribution": 0.446
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.554
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score",
+                "operator": "==",
+                "value": 3
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "care_score_e",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "RBC",
+              "distribution": 0.4
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.6000000000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 3
+          },
+          "distributions": [
+            {
+              "transition": "RBC",
+              "distribution": 0.235
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.7650000000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 2
+          },
+          "distributions": [
+            {
+              "transition": "RBC",
+              "distribution": 0.141
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.859
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_score",
+            "operator": "==",
+            "value": 1
+          },
+          "distributions": [
+            {
+              "transition": "RBC",
+              "distribution": 0.052
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.948
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "RBC",
+              "distribution": 0.349
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.651
+            }
+          ]
+        }
+      ]
+    },
+    "Insulin Infusion Px": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 180178009,
+          "display": "Continuous subcutaneous infusion of insulin (procedure)"
+        }
+      ],
+      "direct_transition": "Insulin Infusion Rx"
+    },
+    "Insulin Infusion Rx": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 311034,
+          "display": "insulin, regular, human 100 UNT/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Anemia Check",
+      "administration": true
+    },
+    "RBC": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 71493000,
+          "display": "Transfusion of packed red blood cells (procedure)"
+        }
+      ],
+      "direct_transition": "RBC Supply"
+    },
+    "RBC Supply": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 2,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 431069006,
+            "display": "Packed red blood cells (product)"
+          }
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

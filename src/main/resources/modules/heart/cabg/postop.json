@@ -89,8 +89,8 @@
     "End Day": {
       "type": "Delay",
       "exact": {
-        "quantity": 1,
-        "unit": "days"
+        "quantity": 12,
+        "unit": "hours"
       },
       "conditional_transition": [
         {
@@ -162,12 +162,14 @@
       "referenced_by_attribute": "Ventilator Reason"
     },
     "ICU Labs": {
-      "type": "Simple",
-      "direct_transition": "ICU Meds"
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/labs_common",
+      "direct_transition": "Electrocardiogram_ECG"
     },
     "ICU Meds": {
-      "type": "Simple",
-      "direct_transition": "End Day"
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/icu_meds_devices",
+      "direct_transition": "Half Day"
     },
     "Discharge to Ward": {
       "type": "Procedure",
@@ -324,6 +326,73 @@
         "unit": "days"
       },
       "direct_transition": "Admission to Ward"
+    },
+    "Electrocardiogram_ECG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 29303009,
+          "display": "Electrocardiographic procedure (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 40,
+        "high": 50,
+        "unit": "minutes"
+      },
+      "direct_transition": "Chest_X_Ray"
+    },
+    "Chest_X_Ray": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 399208008,
+        "display": "Plain chest X-ray (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51185008,
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "CR",
+            "display": "Computed Radiography"
+          },
+          "instances": [
+            {
+              "title": "Title of this image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage – for Presentation"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Insulin or Blood"
+    },
+    "Half Day": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 12,
+        "unit": "hours"
+      },
+      "direct_transition": "Repeat_ICU_Labs"
+    },
+    "Repeat_ICU_Labs": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/labs_common",
+      "direct_transition": "End Day"
+    },
+    "Insulin or Blood": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/insulin_or_blood",
+      "direct_transition": "ICU Meds"
     }
   }
 }

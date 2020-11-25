@@ -1,0 +1,839 @@
+{
+  "name": "labs_common",
+  "remarks": [
+    "Reuseable lab block."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "CBC"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Arterial_Blood_Gas": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24336-0",
+          "display": "Gas panel - Arterial blood"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "[pH]",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2744-1",
+              "display": "pH of Arterial blood"
+            }
+          ],
+          "range": {
+            "low": 6.8,
+            "high": 7.3
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mm[Hg]",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2019-8",
+              "display": "Carbon dioxide [Partial pressure] in Arterial blood"
+            }
+          ],
+          "range": {
+            "low": 35,
+            "high": 45
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mm[Hg]",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2703-7",
+              "display": "Oxygen [Partial pressure] in Arterial blood"
+            }
+          ],
+          "range": {
+            "low": 80,
+            "high": 100
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mmol/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1960-4",
+              "display": "Bicarbonate [Moles/volume] in Arterial blood"
+            }
+          ],
+          "range": {
+            "low": 22,
+            "high": 27
+          }
+        },
+        {
+          "category": "vital-signs",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2708-6",
+              "display": "Oxygen saturation in Arterial blood"
+            },
+            {
+              "system": "LOINC",
+              "code": "59408-5",
+              "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
+            }
+          ],
+          "vital_sign": "Oxygen Saturation"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Magnesium": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "mg/dL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "19123-9",
+          "display": "Magnesium [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 1.6,
+        "high": 2.3
+      },
+      "direct_transition": "Phosphorus"
+    },
+    "CBC": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6690-2",
+              "display": "Leukocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 3.4,
+            "high": 10.8
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*6/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "789-8",
+              "display": "Erythrocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 3.77,
+            "high": 5.8
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 11.1,
+            "high": 17.7
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "4544-3",
+              "display": "Hematocrit [Volume Fraction] of Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 34,
+            "high": 51
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "787-2",
+              "display": "MCV [Entitic volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 79,
+            "high": 97
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "pg",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "785-6",
+              "display": "MCH [Entitic mass] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 26.6,
+            "high": 33
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "786-4",
+              "display": "MCHC [Mass/volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 31.5,
+            "high": 35.7
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "788-0",
+              "display": "Erythrocyte distribution width [Ratio] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 12.3,
+            "high": 15.4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "777-3",
+              "display": "Platelets [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 150,
+            "high": 450
+          }
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Comprehensive_Metabolic_Panel_with_Normal_Kidney",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Comprehensive_Metabolic_Panel_with_Kidney_Damage"
+        }
+      ]
+    },
+    "Comprehensive_Metabolic_Panel_with_Normal_Kidney": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24323-8",
+          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "vital_sign": "Glucose",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2345-7",
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Urea Nitrogen",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "3094-0",
+              "display": "Urea nitrogen [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL",
+          "vital_sign": "Creatinine"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Calcium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "17861-6",
+              "display": "Calcium [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Sodium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2951-2",
+              "display": "Sodium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Potassium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Chloride",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2075-0",
+              "display": "Chloride [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Carbon Dioxide",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2028-9",
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mL/min",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "33914-3",
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+            }
+          ],
+          "vital_sign": "EGFR"
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2885-2",
+              "display": "Protein [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 6,
+            "high": 8.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1751-7",
+              "display": "Albumin [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 4,
+            "high": 5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mg/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1975-2",
+              "display": "Bilirubin.total [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 0.3,
+            "high": 1.2
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6768-6",
+              "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 39,
+            "high": 117
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1742-6",
+              "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 44
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1920-8",
+              "display": "Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 40
+          }
+        }
+      ],
+      "direct_transition": "Magnesium"
+    },
+    "Comprehensive_Metabolic_Panel_with_Kidney_Damage": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24323-8",
+          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "vital_sign": "Glucose",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2345-7",
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Urea Nitrogen",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "3094-0",
+              "display": "Urea nitrogen [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL",
+          "range": {
+            "low": 2.5,
+            "high": 3
+          }
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Calcium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "17861-6",
+              "display": "Calcium [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Sodium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2951-2",
+              "display": "Sodium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Potassium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Chloride",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2075-0",
+              "display": "Chloride [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Carbon Dioxide",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2028-9",
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mL/min",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "33914-3",
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+            }
+          ],
+          "range": {
+            "low": 5,
+            "high": 14
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2885-2",
+              "display": "Protein [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 6,
+            "high": 8.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1751-7",
+              "display": "Albumin [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 4,
+            "high": 5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mg/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1975-2",
+              "display": "Bilirubin.total [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 6,
+            "high": 15
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6768-6",
+              "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 39,
+            "high": 117
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1742-6",
+              "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 44
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1920-8",
+              "display": "Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 40
+          }
+        }
+      ],
+      "direct_transition": "Magnesium"
+    },
+    "Phosphorus": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "mg/dL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2777-1",
+          "display": "Phosphate [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 2.5,
+        "high": 4.5
+      },
+      "distributed_transition": [
+        {
+          "transition": "Prothrombin_Time",
+          "distribution": 0.95
+        },
+        {
+          "transition": "Prothrombin_Time_High",
+          "distribution": 0.05
+        }
+      ]
+    },
+    "Prothrombin_Time": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "34528-0",
+          "display": "PT panel - Platelet poor plasma by Coagulation assay"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "s",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5902-2",
+              "display": "Prothrombin time (PT)"
+            }
+          ],
+          "range": {
+            "low": 9.1,
+            "high": 12
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{INR}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6301-6",
+              "display": "INR in Platelet poor plasma by Coagulation assay"
+            }
+          ],
+          "range": {
+            "low": 0.8,
+            "high": 1.2
+          }
+        }
+      ],
+      "direct_transition": "Partial_thromboplastin_time_PTT"
+    },
+    "Prothrombin_Time_High": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "34528-0",
+          "display": "PT panel - Platelet poor plasma by Coagulation assay"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "s",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5902-2",
+              "display": "Prothrombin time (PT)"
+            }
+          ],
+          "range": {
+            "low": 9.1,
+            "high": 12
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{INR}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6301-6",
+              "display": "INR in Platelet poor plasma by Coagulation assay"
+            }
+          ],
+          "range": {
+            "low": 2,
+            "high": 3
+          }
+        }
+      ],
+      "direct_transition": "Partial_thromboplastin_time_PTT"
+    },
+    "Partial_thromboplastin_time_PTT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "s",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "3173-2",
+          "display": "aPTT in Blood by Coagulation assay"
+        }
+      ],
+      "range": {
+        "low": 25,
+        "high": 40
+      },
+      "direct_transition": "Arterial_Blood_Gas"
+    }
+  }
+}
