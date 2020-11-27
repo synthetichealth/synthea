@@ -1,7 +1,20 @@
 {
   "name": "DLBCL",
   "remarks": [
-    "Module Describing Clinical Treatment of Diffuse Large B-Cell Lymphoma"
+    "Module Describing Clinical Treatment of Diffuse Large B-Cell Lymphoma.",
+    "Starts from initial, and covers DLBCL symptoms, diagnosis, staging, and treatment. Chance of survival is assigned based upon diagnosed cancer stage, and alligns with 5-year DLBCL survival rates, as reported by NCI SEER. Module aligns with mCODE data elements where possible. ",
+    "",
+    "Primary sources for information gathering:",
+    "1) NCI SEER: https://seer.cancer.gov/statfacts/html/dlbcl.html",
+    "2) Lymphoma Research Foundation: https://lymphoma.org/",
+    "3) American Cancer Society: https://www.cancer.org/cancer/non-hodgkin-lymphoma/",
+    "4) Official Journal of the National Comprehensive Cancer Network: https://jnccn.org/",
+    "5) Conversation with Dr. William A. Wood, UNC hematologist and oncologist with a clinical focus in blood cancers",
+    "6) Conversation with Dr. Miguel-Angel Perales, MSKCC Chief, Adult Bone Marrow Transplant Service",
+    "",
+    "",
+    "",
+    ""
   ],
   "states": {
     "Initial": {
@@ -567,7 +580,7 @@
     "Impending Death from Cancer Complications": {
       "type": "Death",
       "range": {
-        "low": 0,
+        "low": 2,
         "high": 5,
         "unit": "years"
       },
@@ -693,22 +706,6 @@
         "unit": "weeks"
       },
       "direct_transition": "CAR-T therapy side effect 1"
-    },
-    "Meet with Oncologist after First Round": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 310513006,
-          "display": "Discharge by medical oncologist (procedure)"
-        }
-      ],
-      "direct_transition": "DLBCL Remission"
-    },
-    "End_Meeting_with_Oncologist_after_First_Round_Treatment": {
-      "type": "EncounterEnd",
-      "direct_transition": "Terminal"
     },
     "Meet_with_Oncologist": {
       "type": "Encounter",
@@ -881,7 +878,7 @@
       "submodule": "dlbcl/dlbcl_stage_i_ii_treatment_round_one",
       "conditional_transition": [
         {
-          "transition": "Remission after Round 1 Treatment",
+          "transition": "Delay Before Meeting for Discharge",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "Treatment_1_Outcome",
@@ -890,7 +887,7 @@
           }
         },
         {
-          "transition": "Patient Worsening after Round 1",
+          "transition": "Delay before post-1st round discussion",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "Treatment_1_Outcome",
@@ -905,7 +902,7 @@
       "submodule": "dlbcl/dlbcl_stage_iii_iv_treatment_round_one",
       "conditional_transition": [
         {
-          "transition": "Patient Worsening after Round 1",
+          "transition": "Delay before post-1st round discussion",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "Treatment_1_Outcome",
@@ -914,7 +911,7 @@
           }
         },
         {
-          "transition": "Remission after Round 1 Treatment",
+          "transition": "Delay Before Meeting for Discharge",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "Treatment_1_Outcome",
@@ -1166,28 +1163,6 @@
         "https://www.dana-farber.org/cellular-therapies-program/car-t-cell-therapy/how-car-t-cell-therapy-works/"
       ]
     },
-    "Remission after Round 1 Treatment": {
-      "type": "Observation",
-      "category": "therapy",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "88040-1",
-          "display": "Response to cancer treatment"
-        }
-      ],
-      "direct_transition": "Delay Before Meeting for Discharge",
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": 268910001,
-        "display": "Patient's condition improved (finding)"
-      },
-      "remarks": [
-        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3961873/",
-        "Approximately 50 to 60% of patients with DLBCL achieve and maintain complete remission after first-line therapy"
-      ]
-    },
     "Remission after Round 2 Treatment": {
       "type": "Observation",
       "category": "procedure",
@@ -1204,29 +1179,6 @@
         "system": "SNOMED-CT",
         "code": 260415000,
         "display": "Not detected (qualifier)"
-      }
-    },
-    "Patient Worsening after Round 1": {
-      "type": "Observation",
-      "category": "therapy",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "88040-1",
-          "display": "Response to cancer treatment"
-        }
-      ],
-      "direct_transition": "Delay before post-1st round discussion",
-      "remarks": [
-        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3961873/",
-        "10% have refractory disease",
-        "30 to 40% relapse"
-      ],
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": 271299001,
-        "display": "Patient's condition worsened (finding)"
       }
     },
     "DLBCL_Treatment_Round_Two": {
@@ -1286,7 +1238,7 @@
     },
     "Delay Before Meeting for Discharge": {
       "type": "Delay",
-      "direct_transition": "Meet with Oncologist after First Round",
+      "direct_transition": "Meet with Oncologist for Discharge",
       "range": {
         "low": 1,
         "high": 2,
@@ -1325,8 +1277,24 @@
     },
     "DLBCL Remission": {
       "type": "ConditionEnd",
-      "direct_transition": "End_Meeting_with_Oncologist_after_First_Round_Treatment",
+      "direct_transition": "Discharge",
       "referenced_by_attribute": "DLBCL_Condition"
+    },
+    "Meet with Oncologist for Discharge": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 310513006,
+          "display": "Discharge by medical oncologist (procedure)"
+        }
+      ],
+      "direct_transition": "DLBCL Remission"
+    },
+    "Discharge": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
     }
   }
 }

@@ -464,7 +464,7 @@
       "distributed_transition": [
         {
           "transition": "R-DHAP",
-          "distribution": 0.05
+          "distribution": 0.25
         },
         {
           "transition": "R-ESHAP",
@@ -472,23 +472,25 @@
         },
         {
           "transition": "R-GDP",
-          "distribution": 0.28
+          "distribution": 0.095
         },
         {
           "transition": "R-GemOx",
-          "distribution": 0.28
+          "distribution": 0.2
         },
         {
           "transition": "R-ICE",
-          "distribution": 0.28
+          "distribution": 0.4
         },
         {
           "transition": "R-MINE",
-          "distribution": 0.06
+          "distribution": 0.005
         }
       ],
       "remarks": [
-        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6175435/"
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6175435/",
+        "",
+        "Distribution of drug regimens is based upon conversations with Dr. Wood and Dr. Perales regarding which drug lines are most commonly used in practice today."
       ]
     },
     "Non_candidates_for_Transplant": {
@@ -496,16 +498,19 @@
       "distributed_transition": [
         {
           "transition": "Clinical_Trial_2",
-          "distribution": 0.1
+          "distribution": 0.05
         },
         {
           "transition": "Second-line Therapy Regimens",
-          "distribution": 0.5
+          "distribution": 0.35
         },
         {
           "transition": "Palliative Radiation",
-          "distribution": 0.4
+          "distribution": 0.6
         }
+      ],
+      "remarks": [
+        "Distribution based upon conversation with Dr. Wood."
       ]
     },
     "Bendamustine": {
@@ -601,28 +606,29 @@
       "distributed_transition": [
         {
           "transition": "Brentuximab vedotin",
-          "distribution": 0.2
+          "distribution": 0.3
         },
         {
           "transition": "Bendamustine",
-          "distribution": 0.2
+          "distribution": 0.04
         },
         {
           "transition": "Gemcitabine",
-          "distribution": 0.2
+          "distribution": 0.18
         },
         {
           "transition": "Lenalidomide",
-          "distribution": 0.2
+          "distribution": 0.18
         },
         {
           "transition": "Ibrutinib",
-          "distribution": 0.2
+          "distribution": 0.3
         }
       ],
       "remarks": [
         "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml",
-        "https://jnccn.org/view/journals/jnccn/17/6/article-p650.xml"
+        "https://jnccn.org/view/journals/jnccn/17/6/article-p650.xml",
+        "Distribution based upon conversation with Dr. Wood."
       ]
     },
     "Clinical_Trial_2": {
