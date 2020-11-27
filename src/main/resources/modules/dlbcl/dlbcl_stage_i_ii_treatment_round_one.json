@@ -154,8 +154,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 260415000,
-        "display": "Not detected (qualifier value)"
+        "code": 268910001,
+        "display": "Patient condition improved (finding)"
       },
       "direct_transition": "Check-ups"
     },
