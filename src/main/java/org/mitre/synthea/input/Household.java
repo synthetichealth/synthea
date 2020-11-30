@@ -99,7 +99,6 @@ public class Household {
         this.secondAdult.attributes.get(Person.RECORD_GROUP)).seedRecord.equals(seedRecord);
     boolean matchesDependent = this.dependents.stream().anyMatch(dependent -> ((FixedRecordGroup)
         dependent.attributes.get(Person.RECORD_GROUP)).seedRecord.equals(seedRecord));
-    System.out.println(matchesFirstAdult + " " + matchesSecondAdult + " " + matchesDependent);
     return matchesFirstAdult || matchesSecondAdult || matchesDependent;
   }
 

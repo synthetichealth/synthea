@@ -112,7 +112,6 @@ public class FixedRecordGroup {
   public boolean updateCurrentRecord(int currentYear) {
     for (int i = 0; i < variantRecords.size(); i++) {
       FixedRecord currentRecord = variantRecords.get(i);
-      // System.out.println(currentRecord.addressStartDate + "-" + currentRecord.addressEndDate);
       // Check if the the current year falls within the current record date range.
       if (currentRecord.addressStartDate <= currentYear
           && currentYear <= currentRecord.addressEndDate) {

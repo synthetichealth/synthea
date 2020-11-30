@@ -47,6 +47,5 @@ public class InvalidFixedRecordTest {
   public void invalidSeedCityTest() {
     // The second person's seed city is invalid.
     String city = fixedRecordGroupManager.getRecordGroup(1).getSeedCity();
-    System.out.println(city);
   }
 }

@@ -78,39 +78,36 @@ public class Generator implements RandomNumberGenerator {
   public static String DEFAULT_STATE = "Massachusetts";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
 
-  // FixedRecords
+  // Fixed Record Mana
   FixedRecordGroupManager fixedRecordGroupManager;
   // Households
   public Map<Integer, Household> households;
 
   /**
-   * Used only for testing and debugging. Populate this field to keep track of all
-   * patients generated, living or dead, during a simulation. Note that this may
-   * result in significantly increased memory usage as patients cannot be GC'ed.
+   * Used only for testing and debugging. Populate this field to keep track of all patients
+   * generated, living or dead, during a simulation. Note that this may result in significantly
+   * increased memory usage as patients cannot be GC'ed.
    */
   List<Person> internalStore;
 
   /**
-   * A filename predicate used to filter a subset of modules. Helpful when testing
-   * a particular module. Use "-m filename" on the command line to filter which
-   * modules get loaded.
+   * A filename predicate used to filter a subset of modules. Helpful when testing a particular
+   * module. Use "-m filename" on the command line to filter which modules get loaded.
    */
   Predicate<String> modulePredicate;
 
   private static final String TARGET_AGE = "target_age";
 
   /**
-   * Helper class following the "Parameter Object" pattern. This class provides
-   * the default values for Generator, or alternatives may be set.
+   * Helper class following the "Parameter Object" pattern.
+   * This class provides the default values for Generator, or alternatives may be set.
    */
   public static class GeneratorOptions {
     public int population = Integer.parseInt(Config.get("generate.default_population", "1"));
     public long seed = System.currentTimeMillis();
     public long clinicianSeed = seed;
-    /**
-     * Population as exclusively live persons or including deceased. True for live,
-     * false includes deceased
-     */
+    /** Population as exclusively live persons or including deceased.
+     * True for live, false includes deceased */
     public boolean overflow = true;
     /** Gender to be generated. M for Male, F for Female, null for any. */
     public String gender;
@@ -122,10 +119,8 @@ public class Generator implements RandomNumberGenerator {
     public int maxAge = 140;
     public String city;
     public String state;
-    /**
-     * When Synthea is used as a standalone library, this directory holds any
-     * locally created modules.
-     */
+    /** When Synthea is used as a standalone library, this directory holds
+     * any locally created modules. */
     public File localModuleDir;
     public File fixedRecordPath;
     public List<String> enabledModules;
@@ -133,16 +128,10 @@ public class Generator implements RandomNumberGenerator {
     public File initialPopulationSnapshotPath;
     /** File used to store a population snapshot. */
     public File updatedPopulationSnapshotPath;
-    /**
-     * Time period in days to evolve the population loaded from
-     * initialPopulationSnapshotPath. A value of -1 will evolve the population to
-     * the current system time.
-     */
+    /** Time period in days to evolve the population loaded from initialPopulationSnapshotPath. A
+     *  value of -1 will evolve the population to the current system time. */
     public int daysToTravelForward = -1;
-    /**
-     * Reference Time when to start Synthea. By default equal to the current system
-     * time.
-     */
+    /** Reference Time when to start Synthea. By default equal to the current system time. */
     public long referenceTime = seed;
   }
 
@@ -154,8 +143,8 @@ public class Generator implements RandomNumberGenerator {
   }
 
   /**
-   * Create a Generator, with the given population size. All other settings are
-   * left as defaults.
+   * Create a Generator, with the given population size and seed.
+   * All other settings are left as defaults.
    * 
    * @param population Target population size
    */
@@ -170,7 +159,7 @@ public class Generator implements RandomNumberGenerator {
    * settings are left as defaults.
    * 
    * @param population Target population size
-   * @param seed       Seed used for randomness
+   * @param seed Seed used for randomness
    */
   public Generator(int population, long seed, long clinicianSeed) {
     this(new GeneratorOptions(), new Exporter.ExporterRuntimeOptions());
@@ -192,7 +181,7 @@ public class Generator implements RandomNumberGenerator {
   /**
    * Create a Generator, with the given options.
    * 
-   * @param o   Desired configuration options
+   * @param o Desired configuration options
    * @param ero Desired exporter options
    */
   public Generator(GeneratorOptions o, Exporter.ExporterRuntimeOptions ero) {
@@ -221,7 +210,7 @@ public class Generator implements RandomNumberGenerator {
       default:
         throw new IllegalArgumentException(
           "Unexpected value for config setting generate.database_type: '" + dbType
-            + "' . Valid values are file, in-memory, or none.");
+          + "' . Valid values are file, in-memory, or none.");
     }
 
     if (options.state == null) {
@@ -259,7 +248,8 @@ public class Generator implements RandomNumberGenerator {
     stats.put("alive", new AtomicInteger(0));
     stats.put("dead", new AtomicInteger(0));
 
-    if (Boolean.parseBoolean(Config.get("generate.track_detailed_transition_metrics", "false"))) {
+    if (Boolean.parseBoolean(
+          Config.get("generate.track_detailed_transition_metrics", "false"))) {
       this.metrics = new TransitionMetrics();
     }
 
@@ -459,7 +449,6 @@ public class Generator implements RandomNumberGenerator {
     
     try {
       boolean isAlive = true;
-      int tryNumber = 0; // Number of tries to create these demographics
       Random randomForDemographics = new Random(personSeed);
 
       Map<String, Object> demoAttributes;
@@ -669,7 +658,6 @@ public class Generator implements RandomNumberGenerator {
   /**
    * Create a set of random demographics.
    * @param random The random number generator to use.
-   * @return demographics
    */
   public Map<String, Object> randomDemographics(Random random) {
     Demographics city = location.randomCity(random);

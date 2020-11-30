@@ -264,7 +264,6 @@ public class Provider implements QuadTreeElement, Serializable {
    */
   public static Provider findServiceNewProvider(Person person, EncounterType service, long time,
       List<String> takenIds) {
-    System.out.println(takenIds);
     double maxDistance = MAX_PROVIDER_SEARCH_DISTANCE;
     double degrees = 0.125;
     List<Provider> options = null;
