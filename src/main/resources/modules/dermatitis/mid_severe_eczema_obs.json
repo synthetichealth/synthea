@@ -83,5 +83,6 @@
     "Eczema_Obs_Terminal": {
       "type": "Terminal"
     }
-  }
+  },
+  "gmf_version": 1
 }

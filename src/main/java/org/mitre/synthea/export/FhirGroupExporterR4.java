@@ -68,7 +68,7 @@ public abstract class FhirGroupExporterR4 {
    * @param stop The stop time.
    */
   public static void exportAndSave(RandomNumberGenerator rand, long stop) {
-    if (Boolean.parseBoolean(Config.get("exporter.groups.fhir.export"))) {
+    if (Config.getAsBoolean("exporter.groups.fhir.export")) {
       Group group = export(rand, stop);
 
       // get output folder
@@ -80,7 +80,7 @@ public abstract class FhirGroupExporterR4 {
       Path outFilePath = null;
       String groupJson = null;
 
-      if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
+      if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
         IParser parser = FHIR_CTX.newJsonParser().setPrettyPrint(false);
         groupJson = parser.encodeResourceToString(group);
         String filename = group.getResourceType().toString() + ".ndjson";

@@ -1233,10 +1233,13 @@
       "model": "circulation/McSharry2003_Synthetic_ECG.xml",
       "solver": "runge_kutta",
       "step_size": 0.01,
-      "sim_duration": 4.0,
-      "lead_time": 0.0,
+      "sim_duration": 4,
+      "lead_time": 0,
       "inputs": [
-        {"from_exp": "#{BMI} * 0.497 + 56.15", "to": "hrmean"}
+        {
+          "from_exp": "#{BMI} * 0.497 + 56.15",
+          "to": "hrmean"
+        }
       ],
       "outputs": [
         {
@@ -1252,13 +1255,17 @@
       "type": "Observation",
       "category": "procedure",
       "unit": "",
-      "codes": [{
-        "system": "SNOMED-CT",
-        "code": 29303009,
-        "display": "Electrocardiographic procedure"
-      }],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 29303009,
+          "display": "Electrocardiographic procedure"
+        }
+      ],
       "sampled_data": {
-        "attributes": ["ecg_result"]
+        "attributes": [
+          "ecg_result"
+        ]
       },
       "direct_transition": "ECG_Chart"
     },
@@ -1266,28 +1273,32 @@
       "type": "Observation",
       "category": "procedure",
       "unit": "",
-      "codes": [{
-        "system": "SNOMED-CT",
-        "code": 29303009,
-        "display": "Electrocardiographic procedure"
-      }],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 29303009,
+          "display": "Electrocardiographic procedure"
+        }
+      ],
       "attachment": {
         "chart": {
-        	"type": "line",
-        	"title": "Electrocardiogram",
-        	"axis_attribute_x": "time",
-        	"width": 400,
-        	"height": 200,
-        	"series": [
-        		{"attribute": "ecg_result"}
-        	]
+          "type": "line",
+          "title": "Electrocardiogram",
+          "axis_attribute_x": "time",
+          "width": 400,
+          "height": 200,
+          "series": [
+            {
+              "attribute": "ecg_result"
+            }
+          ]
         }
       },
       "direct_transition": "Clear_ECG_result"
     },
     "Clear_ECG_result": {
       "type": "SetAttribute",
-      "attribute" : "ecg_result",
+      "attribute": "ecg_result",
       "direct_transition": "Gall_Bladder_Imaging"
     },
     "Heparin": {
@@ -1369,5 +1380,6 @@
       "direct_transition": "Complete_Blood_Count",
       "medication_order": "Antiemetic"
     }
-  }
+  },
+  "gmf_version": 1
 }

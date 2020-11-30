@@ -620,5 +620,6 @@
       "referenced_by_attribute": "Sore Throat Antibiotic",
       "direct_transition": "Potential_Infection"
     }
-  }
+  },
+  "gmf_version": 1
 }

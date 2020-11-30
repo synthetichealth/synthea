@@ -11,6 +11,7 @@ bin/**
 /bin/
 
 /output/
+/out/
 
 # don't commit the autobuilt version file
 src/main/resources/version.txt
@@ -24,3 +25,6 @@ src/main/resources/version.txt
 .vscode/launch.json
 .vscode/settings.json
 /build/
+
+src/main/resources/map.json
+

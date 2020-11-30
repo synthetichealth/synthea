@@ -1046,5 +1046,6 @@
       ],
       "direct_transition": "Determine Nausea or Vomiting"
     }
-  }
+  },
+  "gmf_version": 1
 }

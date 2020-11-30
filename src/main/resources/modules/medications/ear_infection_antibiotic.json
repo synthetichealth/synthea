@@ -521,5 +521,6 @@
     "Ear_Infection_Antibiotic_Terminal": {
       "type": "Terminal"
     }
-  }
+  },
+  "gmf_version": 1
 }

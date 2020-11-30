@@ -217,7 +217,7 @@ public class Generator implements RandomNumberGenerator {
       options.state = DEFAULT_STATE;
     }
     int stateIndex = Location.getIndex(options.state);
-    if (Boolean.parseBoolean(Config.get("exporter.cdw.export"))) {
+    if (Config.getAsBoolean("exporter.cdw.export")) {
       CDWExporter.getInstance().setKeyStart((stateIndex * 1_000_000) + 1);
     }
 
@@ -230,9 +230,9 @@ public class Generator implements RandomNumberGenerator {
 
     this.logLevel = Config.get("generate.log_patients.detail", "simple");
 
-    this.onlyDeadPatients = Boolean.parseBoolean(Config.get("generate.only_dead_patients"));
-    this.onlyAlivePatients = Boolean.parseBoolean(Config.get("generate.only_alive_patients"));
-    // If both values are set to true, then they are both set back to the default
+    this.onlyDeadPatients = Config.getAsBoolean("generate.only_dead_patients");
+    this.onlyAlivePatients = Config.getAsBoolean("generate.only_alive_patients");
+    //If both values are set to true, then they are both set back to the default
     if (this.onlyDeadPatients && this.onlyAlivePatients) {
       Config.set("generate.only_dead_patients", "false");
       Config.set("generate.only_alive_patients", "false");
@@ -240,7 +240,7 @@ public class Generator implements RandomNumberGenerator {
       this.onlyAlivePatients = false;
     }
 
-    this.onlyVeterans = Boolean.parseBoolean(Config.get("generate.veteran_population_override"));
+    this.onlyVeterans = Config.getAsBoolean("generate.veteran_population_override");
     this.totalGeneratedPopulation = new AtomicInteger(0);
     this.stats = Collections.synchronizedMap(new HashMap<String, AtomicInteger>());
     this.modulePredicate = getModulePredicate();
@@ -248,8 +248,7 @@ public class Generator implements RandomNumberGenerator {
     stats.put("alive", new AtomicInteger(0));
     stats.put("dead", new AtomicInteger(0));
 
-    if (Boolean.parseBoolean(
-          Config.get("generate.track_detailed_transition_metrics", "false"))) {
+    if (Config.getAsBoolean("generate.track_detailed_transition_metrics", false)) {
       this.metrics = new TransitionMetrics();
     }
 
@@ -287,7 +286,7 @@ public class Generator implements RandomNumberGenerator {
       System.out.println(String.format("       > [%d loaded]", moduleNames.size()));
     }
 
-    if (Boolean.parseBoolean(Config.get("growtherrors", "false"))) {
+    if (Config.getAsBoolean("growtherrors", false)) {
       HealthRecordEditors hrm = HealthRecordEditors.getInstance();
       hrm.registerEditor(new GrowthDataErrorsEditor());
     }

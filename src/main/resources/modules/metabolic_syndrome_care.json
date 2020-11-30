@@ -4109,5 +4109,6 @@
       "type": "EncounterEnd",
       "direct_transition": "Wellness_Encounter"
     }
-  }
+  },
+  "gmf_version": 1
 }

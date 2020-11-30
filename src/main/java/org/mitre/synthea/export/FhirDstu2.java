@@ -8,6 +8,7 @@ import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.CodingDt;
 import ca.uhn.fhir.model.dstu2.composite.ContactPointDt;
 import ca.uhn.fhir.model.dstu2.composite.HumanNameDt;
+import ca.uhn.fhir.model.dstu2.composite.IdentifierDt;
 import ca.uhn.fhir.model.dstu2.composite.MoneyDt;
 import ca.uhn.fhir.model.dstu2.composite.NarrativeDt;
 import ca.uhn.fhir.model.dstu2.composite.PeriodDt;
@@ -139,7 +140,7 @@ public class FhirDstu2 {
   private static final Map languageLookup = loadLanguageLookup();
 
   protected static boolean TRANSACTION_BUNDLE =
-      Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"));
+      Config.getAsBoolean("exporter.fhir.transaction_bundle");
 
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
@@ -541,40 +542,43 @@ public class FhirDstu2 {
           .setDisplay(encounter.reason.display).setSystem(SNOMED_URI);
     }
 
-    if (encounter.provider != null) {
-      String providerFullUrl = findProviderUrl(encounter.provider, bundle);
-
-      if (providerFullUrl != null) {
-        encounterResource.setServiceProvider(new ResourceReferenceDt(providerFullUrl));
-      } else {
-        Entry providerOrganization = provider(bundle, encounter.provider);
-        encounterResource
-            .setServiceProvider(new ResourceReferenceDt(providerOrganization.getFullUrl()));
-      }
-    } else { // no associated provider, patient goes to wellness provider
-      Provider provider = person.getProvider(EncounterType.WELLNESS, encounter.start);
+    Provider provider = encounter.provider;
+    if (provider == null) {
+      // no associated provider, patient goes to wellness provider
+      provider = person.getProvider(EncounterType.WELLNESS, encounter.start);
+    }
+    if (TRANSACTION_BUNDLE) {
+      encounterResource.setServiceProvider(new ResourceReferenceDt(
+              ExportHelper.buildFhirSearchUrl("Organization", provider.getResourceID())));
+    } else {
       String providerFullUrl = findProviderUrl(provider, bundle);
-
       if (providerFullUrl != null) {
         encounterResource.setServiceProvider(new ResourceReferenceDt(providerFullUrl));
       } else {
         Entry providerOrganization = provider(bundle, provider);
-        encounterResource
-            .setServiceProvider(new ResourceReferenceDt(providerOrganization.getFullUrl()));
+        encounterResource.setServiceProvider(new ResourceReferenceDt(
+                providerOrganization.getFullUrl()));
       }
     }
-
+    encounterResource.getServiceProvider().setDisplay(provider.name);
+    
     if (encounter.clinician != null) {
-      String practitionerFullUrl = findPractitioner(encounter.clinician, bundle);
-
-      if (practitionerFullUrl != null) {
-        encounterResource.addParticipant().setIndividual(
-            new ResourceReferenceDt(practitionerFullUrl));
+      if (TRANSACTION_BUNDLE) {
+        encounterResource.addParticipant().setIndividual(new ResourceReferenceDt(
+                ExportHelper.buildFhirNpiSearchUrl(encounter.clinician)));
       } else {
-        Entry practitioner = practitioner(bundle, encounter.clinician);
-        encounterResource.addParticipant().setIndividual(
-            new ResourceReferenceDt(practitioner.getFullUrl()));
+        String practitionerFullUrl = findPractitioner(encounter.clinician, bundle);
+        if (practitionerFullUrl != null) {
+          encounterResource.addParticipant().setIndividual(
+              new ResourceReferenceDt(practitionerFullUrl));
+        } else {
+          Entry practitioner = practitioner(bundle, encounter.clinician);
+          encounterResource.addParticipant().setIndividual(
+              new ResourceReferenceDt(practitioner.getFullUrl()));
+        }
       }
+      encounterResource.getParticipantFirstRep().getIndividual()
+              .setDisplay(encounter.clinician.getFullname());
     }
 
     if (encounter.discharge != null) {
@@ -1624,8 +1628,9 @@ public class FhirDstu2 {
   protected static Entry practitioner(Bundle bundle, Clinician clinician) {
     Practitioner practitionerResource = new Practitioner();
 
-    practitionerResource.addIdentifier().setSystem("http://hl7.org/fhir/sid/us-npi")
-    .setValue("" + clinician.identifier);
+    practitionerResource.addIdentifier()
+            .setSystem("http://hl7.org/fhir/sid/us-npi")
+            .setValue("" + (9_999_999_999L - clinician.identifier));
     practitionerResource.setActive(true);
     practitionerResource.getName().addFamily(
         (String) clinician.attributes.get(Clinician.LAST_NAME))
@@ -1819,7 +1824,7 @@ public class FhirDstu2 {
     Entry entry = bundle.addEntry();
 
     resource.setId(resourceID);
-    if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
+    if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
       entry.setFullUrl(resource.getResourceName() + "/" + resourceID);
     } else {
       entry.setFullUrl("urn:uuid:" + resourceID);
@@ -1829,7 +1834,27 @@ public class FhirDstu2 {
     if (TRANSACTION_BUNDLE) {
       EntryRequest request = entry.getRequest();
       request.setMethod(HTTPVerbEnum.POST);
-      request.setUrl(resource.getResourceName());
+      String resourceType = resource.getResourceName();
+      request.setUrl(resourceType);
+      if (ExportHelper.UNDUPLICATED_FHIR_RESOURCES.contains(resourceType)) {
+        IdentifierDt identifier = null;
+        switch (resourceType) {
+          case "Practitioner":
+            Practitioner practitioner = (Practitioner)resource;
+            identifier = practitioner.getIdentifierFirstRep();
+            break;
+          case "Organization":
+            Organization organization = (Organization)resource;
+            identifier = organization.getIdentifierFirstRep();
+            break;
+          default:
+            break;
+        }
+        if (identifier != null) {
+          request.setIfNoneExist(
+              "identifier=" + identifier.getSystem() + "|" + identifier.getValue());
+        }
+      }
       entry.setRequest(request);
     }
 

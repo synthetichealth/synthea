@@ -572,5 +572,6 @@
       },
       "direct_transition": "MH & SUD Comorbidty Check"
     }
-  }
+  },
+  "gmf_version": 1
 }

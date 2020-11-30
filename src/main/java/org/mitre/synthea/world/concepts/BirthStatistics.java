@@ -30,8 +30,8 @@ public class BirthStatistics {
   /** Default birth height. */
   public static final double DEFAULT_HEIGHT = 51.0; // centimeters (cm)
 
-  private static final boolean LOG_OUTPUT = Boolean.parseBoolean(
-      Config.get("generate.birthweights.logging", "false"));
+  private static final boolean LOG_OUTPUT = 
+      Config.getAsBoolean("generate.birthweights.logging", false);
   private static FileWriter OUTPUT = openFile();
 
   private static FileWriter openFile() {

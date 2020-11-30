@@ -69,7 +69,7 @@ public abstract class State implements Cloneable, Serializable {
   public List<String> remarks;
   
   public static boolean ENABLE_PHYSIOLOGY_STATE =
-      Boolean.parseBoolean(Config.get("physiology.state.enabled", "false"));
+      Config.getAsBoolean("physiology.state.enabled", false);
 
   protected void initialize(Module module, String name, JsonObject definition) {
     this.module = module;
@@ -438,9 +438,24 @@ public abstract class State implements Cloneable, Serializable {
 
     public abstract long endOfDelay(long time, Person person);
 
+    /**
+     * Process any aspect of this state which should only happen once.
+     * Because of the nature of Delay states, this state may get called
+     * multiple times: once per timestep while delaying. To ensure
+     * any actions which are supposed to happen only happen once,
+     * this function should be overriden in subclasses.
+     *
+     * @param person the person being simulated
+     * @param time the date within the simulated world
+     */
+    public void processOnce(Person person, long time) {
+      // do nothing. allow subclasses to override
+    }
+
     @Override
     public boolean process(Person person, long time) {
       if (this.next == null) {
+        this.processOnce(person, time);
         this.next = this.endOfDelay(time, person);
       }
 
@@ -1366,7 +1381,7 @@ public abstract class State implements Cloneable, Serializable {
     }
 
     @Override
-    public boolean process(Person person, long time) {
+    public void processOnce(Person person, long time) {
       String primaryCode = codes.get(0).code;
       HealthRecord.Procedure procedure = person.record.procedure(time, primaryCode);
       entry = procedure;
@@ -1406,8 +1421,6 @@ public abstract class State implements Cloneable, Serializable {
       if (assignToAttribute != null) {
         person.attributes.put(assignToAttribute, procedure);
       }
-
-      return super.process(person, time);
     }
   }
 

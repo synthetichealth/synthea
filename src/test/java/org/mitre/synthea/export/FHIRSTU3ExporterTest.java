@@ -247,6 +247,9 @@ public class FHIRSTU3ExporterTest {
     person.attributes.put(Person.INCOME, Integer.parseInt(Config
         .get("generate.demographics.socioeconomic.income.poverty")) * 2);
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    person.attributes.put(Person.CONTACT_EMAIL, "test@test.test");
+    person.attributes.put(Person.CONTACT_GIVEN_NAME, "John");
+    person.attributes.put(Person.CONTACT_FAMILY_NAME, "Appleseed");
 
     person.history = new LinkedList<>();
     Provider mock = Mockito.mock(Provider.class);

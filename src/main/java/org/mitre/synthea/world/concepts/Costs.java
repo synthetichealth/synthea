@@ -171,6 +171,19 @@ public class Costs {
   }
 
   /**
+   * Returns Whether or not this code has an ossociated specified cost in one of the cost CSVs.
+   * 
+   * @param code String
+   * @return true if the code has a sepcified cost; false otherwise
+   */
+  public static boolean hasSpecifiedCost(String code) {
+    return PROCEDURE_COSTS.containsKey(code)
+        || MEDICATION_COSTS.containsKey(code)
+        || ENCOUNTER_COSTS.containsKey(code)
+        || IMMUNIZATION_COSTS.containsKey(code);
+  }
+
+  /**
    * Helper class to store a grouping of cost data for a single concept. Currently
    * cost data includes a minimum, maximum, and mode (most common value).
    * Selection of individual prices based on this cost data should be done using

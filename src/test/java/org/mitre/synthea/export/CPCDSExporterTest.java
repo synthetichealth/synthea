@@ -64,6 +64,7 @@ public class CPCDSExporterTest {
       // the CPCDS exporter doesn't use the SimpleCSV class to write the data,
       // so we can use it here for a level of validation
       SimpleCSV.parse(csvData);
+      assertTrue(SimpleCSV.isValid(csvData));
 
       count++;
     }

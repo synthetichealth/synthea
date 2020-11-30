@@ -1,7 +1,5 @@
 package org.mitre.synthea.helpers;
 
-import ca.uhn.fhir.context.FhirContext;
-
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.gson.FieldNamingPolicy;

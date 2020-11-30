@@ -64,6 +64,7 @@ public class Provider implements QuadTreeElement, Serializable {
 
   public Map<String, Object> attributes;
   public String uuid;
+  private String locationUuid;
   public String id;
   public String name;
   private Location location;
@@ -119,8 +120,9 @@ public class Provider implements QuadTreeElement, Serializable {
    * Create a new Provider with no information.
    */
   public Provider() {
-    // the uuid field is reinitialized by csvLineToProvider
+    // the uuid fields are reinitialized by csvLineToProvider
     uuid = UUID.randomUUID().toString();
+    locationUuid = UUID.randomUUID().toString();
     attributes = new LinkedTreeMap<>();
     revenue = 0.0;
     utilization = HashBasedTable.create();
@@ -151,6 +153,10 @@ public class Provider implements QuadTreeElement, Serializable {
 
   public String getResourceID() {
     return uuid;
+  }
+
+  public String getResourceLocationID() {
+    return locationUuid;
   }
 
   public Map<String, Object> getAttributes() {
@@ -546,6 +552,8 @@ public class Provider implements QuadTreeElement, Serializable {
     }
     String base = d.id + d.name;
     d.uuid = UUID.nameUUIDFromBytes(base.getBytes()).toString();
+    d.locationUuid = UUID.nameUUIDFromBytes(
+            new StringBuilder(base).reverse().toString().getBytes()).toString();
     d.address = line.remove("address");
     d.city = line.remove("city");
     d.state = line.remove("state");

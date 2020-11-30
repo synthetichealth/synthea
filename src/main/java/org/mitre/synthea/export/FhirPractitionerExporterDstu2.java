@@ -37,11 +37,11 @@ public abstract class FhirPractitionerExporterDstu2 {
    * Export the practitioner in FHIR DSTU2 format.
    */
   public static void export(long stop) {
-    if (Boolean.parseBoolean(Config.get("exporter.practitioner.fhir_dstu2.export"))) {
+    if (Config.getAsBoolean("exporter.practitioner.fhir_dstu2.export")) {
 
       Bundle bundle = new Bundle();
-      if (Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"))) {
-        bundle.setType(BundleTypeEnum.TRANSACTION);
+      if (Config.getAsBoolean("exporter.fhir.transaction_bundle")) {
+        bundle.setType(BundleTypeEnum.BATCH);
       } else {
         bundle.setType(BundleTypeEnum.COLLECTION);
       }
