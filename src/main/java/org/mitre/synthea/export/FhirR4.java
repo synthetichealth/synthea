@@ -235,6 +235,10 @@ public class FhirR4 {
 
     return mappingTable;
   }
+  
+  public static FhirContext getContext() {
+    return FHIR_CTX;
+  }
 
   /**
    * Convert the given Person into a FHIR Bundle of the Patient and the

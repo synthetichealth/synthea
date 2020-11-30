@@ -48,7 +48,7 @@ public class ValidationSupportR4 extends PrePopulatedValidationSupport {
    */
   private void loadFromDirectory(String rootDir) throws Throwable {
 
-    IParser jsonParser = FhirContext.forR4().newJsonParser();
+    IParser jsonParser = FhirR4.getContext().newJsonParser();
     jsonParser.setParserErrorHandler(new StrictErrorHandler());
 
     URL profilesFolder = ClassLoader.getSystemClassLoader().getResource(rootDir);

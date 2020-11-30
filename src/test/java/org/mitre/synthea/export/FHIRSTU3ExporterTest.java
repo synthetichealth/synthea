@@ -100,7 +100,7 @@ public class FHIRSTU3ExporterTest {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
 
-    FhirContext ctx = FhirContext.forDstu3();
+    FhirContext ctx = FhirStu3.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
 
     FhirValidator validator = ctx.newValidator();
@@ -284,7 +284,7 @@ public class FHIRSTU3ExporterTest {
     assertTrue(sampleObs.process(person, time));
     person.history.add(sampleObs);
     
-    FhirContext ctx = FhirContext.forDstu3();
+    FhirContext ctx = FhirStu3.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirStu3.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
@@ -350,7 +350,7 @@ public class FHIRSTU3ExporterTest {
     assertTrue(urlState.process(person, time));
     person.history.add(urlState);
     
-    FhirContext ctx = FhirContext.forDstu3();
+    FhirContext ctx = FhirStu3.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirStu3.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);

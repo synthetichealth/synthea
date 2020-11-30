@@ -32,7 +32,7 @@ public class ValidationResources {
   }
 
   private void initializeSTU3() {
-    FhirContext ctx = FhirContext.forDstu3();
+    FhirContext ctx = FhirStu3.getContext();
     FhirInstanceValidator instanceValidator =
         new FhirInstanceValidator(ctx);
     ValidationSupportChain chain = new ValidationSupportChain(
@@ -48,7 +48,7 @@ public class ValidationResources {
   }
 
   private void initializeR4() {
-    FhirContext ctx = FhirContext.forR4();
+    FhirContext ctx = FhirR4.getContext();
     FhirInstanceValidator instanceValidator =
         new FhirInstanceValidator(ctx);
     ValidationSupportChain chain = new ValidationSupportChain(

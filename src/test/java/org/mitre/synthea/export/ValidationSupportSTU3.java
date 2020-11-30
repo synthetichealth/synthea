@@ -46,7 +46,7 @@ public class ValidationSupportSTU3 extends PrePopulatedValidationSupport  {
    */
   private void loadFromDirectory(String rootDir) throws Throwable {
 
-    IParser jsonParser = FhirContext.forDstu3().newJsonParser();
+    IParser jsonParser = FhirStu3.getContext().newJsonParser();
     jsonParser.setParserErrorHandler(new StrictErrorHandler());
 
     URL profilesFolder = ClassLoader.getSystemClassLoader().getResource(rootDir);
