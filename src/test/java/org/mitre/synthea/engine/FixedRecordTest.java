@@ -64,8 +64,6 @@ public class FixedRecordTest {
   private static Generator generator;
   private static FixedRecordGroupManager fixedRecordGroupManager;
 
-  // TODO: Fix an issue where more than 2 adults might be added to a household.
-
   /**
    * Configure settings across these tests.
    * @throws Exception on test configuration loading errors.
