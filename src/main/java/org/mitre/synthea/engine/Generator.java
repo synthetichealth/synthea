@@ -315,6 +315,8 @@ public class Generator implements RandomNumberGenerator {
       Config.set("generate.append_numbers_to_person_names", "false");
       // Since we're using FixedRecords, split records must be true.
       Config.set("exporter.split_records", "true");
+      // We want every person to survive the simulation.
+      Config.set("generate.only_alive_patients", "true");
     }
 
     ExecutorService threadPool = Executors.newFixedThreadPool(8);
@@ -630,7 +632,6 @@ public class Generator implements RandomNumberGenerator {
   /**
    * Updates the person's address information from their Fixed Record that matches the current year.
    * @param person The person to use
-   * @return
    */
   public void updateFixedDemographicRecord(Person person, long time) {
     // Check if the person's fixed record has been updated, meaning that their

@@ -102,10 +102,10 @@ public class FixedRecordTest {
   @AfterClass
   public static void resetConfig() {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "California");
-    Config.set("generate.only_dead_patients", "false"); 
     Config.set("exporter.split_records", "false");
     Config.set("fixeddemographics.households", "false");
     Config.set("generate.append_numbers_to_person_names", "true");
+    Config.set("generate.only_alive_patients", "false");
   }
 
   @Test
@@ -165,7 +165,7 @@ public class FixedRecordTest {
         IParser parser = ctx.newJsonParser().setPrettyPrint(true);
         Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
 
-        // Match the current record with the FixedRecord it should be equivalent to.
+        // Match the current record with the FixedRecord that matches its record id.
         FixedRecord currentFixedRecord = getRecordMatch(currentPerson, i);
         assertNotNull(currentFixedRecord);
 
