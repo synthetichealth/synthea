@@ -163,12 +163,14 @@
       "type": "Delay",
       "range": {
         "low": 3,
-        "high": 12,
+        "high": 18,
         "unit": "months"
       },
       "remarks": [
         "Check-ups every 3 to 6 months for 5 years",
-        "https://jnccn.org/view/journals/jnccn/17/6/article-p650.xml"
+        "https://jnccn.org/view/journals/jnccn/17/6/article-p650.xml",
+        "",
+        "Also based upon conversation with Dr. Wood stating that relapse can take months to years - it is not immediate."
       ],
       "direct_transition": "Check-Up"
     },
@@ -186,15 +188,43 @@
         "high": 15,
         "unit": "minutes"
       },
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Patient relapses",
-          "distribution": 0.5
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "DLBCL_Survival",
+            "operator": "==",
+            "value": "No"
+          },
+          "distributions": [
+            {
+              "transition": "Patient relapses",
+              "distribution": 1
+            }
+          ]
         },
         {
-          "transition": "Patient stays in remission",
-          "distribution": 0.5
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "DLBCL_Survival",
+            "operator": "==",
+            "value": "Yes"
+          },
+          "distributions": [
+            {
+              "transition": "Patient stays in remission",
+              "distribution": 0.6
+            },
+            {
+              "transition": "Patient relapses",
+              "distribution": 0.4
+            }
+          ]
         }
+      ],
+      "remarks": [
+        "Around half of patients go into full remission after first-line therapy, according to Dr. Perales. 60% remission is adjusted for a slightly increased remission rate for lower-stage patients",
+        ""
       ]
     },
     "Patient relapses": {
@@ -268,38 +298,14 @@
     },
     "End PET-CT Scan Follow-up": {
       "type": "EncounterEnd",
-      "complex_transition": [
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "DLBCL_Survival",
-            "operator": "==",
-            "value": "No"
-          },
-          "distributions": [
-            {
-              "transition": "Patient worsened after treatment",
-              "distribution": 1
-            }
-          ]
+          "transition": "Patient worsened after treatment",
+          "distribution": 0.1
         },
         {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "DLBCL_Survival",
-            "operator": "==",
-            "value": "Yes"
-          },
-          "distributions": [
-            {
-              "transition": "Patient is in remission after treatment",
-              "distribution": 0.5
-            },
-            {
-              "transition": "Patient worsened after treatment",
-              "distribution": 0.5
-            }
-          ]
+          "transition": "Patient is in remission after treatment",
+          "distribution": 0.9
         }
       ]
     },

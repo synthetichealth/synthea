@@ -502,15 +502,15 @@
         },
         {
           "transition": "Second-line Therapy Regimens",
-          "distribution": 0.35
+          "distribution": 0.25
         },
         {
           "transition": "Palliative Radiation",
-          "distribution": 0.6
+          "distribution": 0.7
         }
       ],
       "remarks": [
-        "Distribution based upon conversation with Dr. Wood."
+        "Distribution based upon conversation with Dr. Wood and Dr. Perales"
       ]
     },
     "Bendamustine": {
