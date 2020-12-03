@@ -74,6 +74,8 @@ public class FixedRecordTest {
     Config.set("generate.only_dead_patients", "false"); 
     Config.set("exporter.split_records", "true");
     Config.set("fixeddemographics.households", "true");
+    Config.set("generate.append_numbers_to_person_names", "false");
+    Config.set("generate.only_alive_patients", "true");
     Provider.clear();
     Payer.clear();
     // Create a generator with the preset fixed demographics test file.
@@ -158,7 +160,7 @@ public class FixedRecordTest {
       // Check that patients' exported FHIR resource attributes match their FixedRecords.
       for (String key : currentPerson.records.keySet()) {
 
-        // Parse out the current record that we're checking.
+        // Parse out the current record to check.
         currentPerson.record = currentPerson.records.get(key);
         String fhirJson = FhirR4.convertToFHIRJson(currentPerson, System.currentTimeMillis());
         FhirContext ctx = FhirContext.forR4();
@@ -169,7 +171,7 @@ public class FixedRecordTest {
         FixedRecord currentFixedRecord = getRecordMatch(currentPerson, i);
         assertNotNull(currentFixedRecord);
 
-        // first element of the bundle is the patient resource.
+        // First element of bundle is the patient resource.
         Patient patient = ((Patient) bundle.getEntry().get(0).getResource());
         // Birthdate parsing
         long millis = patient.getBirthDate().getTime();
