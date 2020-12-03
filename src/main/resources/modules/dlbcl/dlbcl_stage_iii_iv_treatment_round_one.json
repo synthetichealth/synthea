@@ -1,8 +1,5 @@
 {
   "name": "DLBCL_Stage_III_IV_Treatment_Round_One",
-  "remarks": [
-    "A blank module"
-  ],
   "states": {
     "Initial": {
       "type": "Initial",
@@ -25,12 +22,15 @@
       "distributed_transition": [
         {
           "transition": "R-CHOP Drugs",
-          "distribution": 0.85
+          "distribution": 0.8999999999999999
         },
         {
           "transition": "Clinical Trial",
-          "distribution": 0.1499999999999999
+          "distribution": 0.1
         }
+      ],
+      "remarks": [
+        "Only about 5% of DLBCL patients enroll in clinical trials, according to Dr. Perales. As is set up now, 10% of high stage patients and 0% of low stage patients enroll in clinical trials."
       ]
     },
     "Clinical Trial": {
@@ -136,39 +136,18 @@
     },
     "End oncologist follow-up for re-staging": {
       "type": "EncounterEnd",
-      "complex_transition": [
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "DLBCL_Survival",
-            "operator": "==",
-            "value": "No"
-          },
-          "distributions": [
-            {
-              "transition": "Patient Worsened after First-line Treatment",
-              "distribution": 1
-            }
-          ]
+          "transition": "Patient Worsened after First-line Treatment",
+          "distribution": 0.1
         },
         {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "DLBCL_Survival",
-            "operator": "==",
-            "value": "Yes"
-          },
-          "distributions": [
-            {
-              "transition": "Partial Response to First Line Treatment",
-              "distribution": 0.5
-            },
-            {
-              "transition": "Patient Worsened after First-line Treatment",
-              "distribution": 0.5
-            }
-          ]
+          "transition": "Partial Response to First Line Treatment",
+          "distribution": 0.9
         }
+      ],
+      "remarks": [
+        "Per Conversation with Dr. Wood: Most patients who are not survivors or get second line therapy are ones who receive R-CHOP with initial success but then relapse – can take months to years to relapse, not immediate"
       ]
     },
     "Partial Response to First Line Treatment": {
@@ -226,20 +205,6 @@
         "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
       ]
     },
-    "Complete current treatment": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 306805000,
-          "display": "Recommendation to continue with treatment (procedure)"
-        }
-      ],
-      "direct_transition": "End Encounter with oncologist to discuss next steps ",
-      "remarks": [
-        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
-      ]
-    },
     "Encounter with oncologist to discuss next steps": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -251,14 +216,16 @@
           "display": "Discussion about treatment (procedure)"
         }
       ],
-      "distributed_transition": [
+      "conditional_transition": [
         {
           "transition": "Clinical_Trial",
-          "distribution": 0.5
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Clinical Trial"
+          }
         },
         {
-          "transition": "Complete current treatment",
-          "distribution": 0.5
+          "transition": "Complete current R-CHOP Treatment"
         }
       ]
     },
@@ -337,8 +304,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 260415000,
-        "display": "Not detected (qualifier)"
+        "code": 268910001,
+        "display": "Patient condition improved (finding)"
       },
       "direct_transition": "Interim before check-up"
     },
@@ -406,16 +373,42 @@
         "unit": "minutes"
       },
       "remarks": [
-        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml",
+        "",
+        "Distribution corresponds to conversation with Dr. Wood stating that around 50% of patients will go into remission after first-line therapy "
       ],
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Patient stays in remission",
-          "distribution": 0.65
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "DLBCL_Survival",
+            "operator": "==",
+            "value": "No"
+          },
+          "distributions": [
+            {
+              "transition": "Patient relapses",
+              "distribution": 1
+            }
+          ]
         },
         {
-          "transition": "Patient relapses",
-          "distribution": 0.3500000000000001
+          "distributions": [
+            {
+              "transition": "Patient stays in remission",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Patient relapses",
+              "distribution": 0.5
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "DLBCL_Survival",
+            "operator": "==",
+            "value": "Yes"
+          }
         }
       ]
     },
@@ -458,11 +451,11 @@
       "distributed_transition": [
         {
           "transition": "Patient is in remission",
-          "distribution": 0.5
+          "distribution": 0.9
         },
         {
           "transition": "Patient worsens",
-          "distribution": 0.5
+          "distribution": 0.1
         }
       ]
     },
@@ -503,9 +496,12 @@
       "direct_transition": "Check-up",
       "range": {
         "low": 3,
-        "high": 12,
+        "high": 18,
         "unit": "months"
-      }
+      },
+      "remarks": [
+        "Based upon conversation with Dr. Wood stating that relapse can take months to years - it is not immediate."
+      ]
     },
     "Length_of_Clinical_Trial": {
       "type": "Delay",
@@ -524,6 +520,20 @@
         "high": 7,
         "unit": "days"
       }
+    },
+    "Complete current R-CHOP Treatment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 306805000,
+          "display": "Recommendation to continue with treatment (procedure)"
+        }
+      ],
+      "direct_transition": "End Encounter with oncologist to discuss next steps ",
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
+      ]
     }
   }
 }
