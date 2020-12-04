@@ -12,6 +12,12 @@ public class DICOMFileSelector {
   private static List<String> dicomFileNames;
 
   public static String selectRandomDICOMFile(Person person) throws IOException {
+    initialize();
+    int index = person.randInt(dicomFileNames.size());
+    return dicomFileNames.remove(index);
+  }
+
+  private static void initialize() throws IOException {
     if(dicomFileNames == null) {
       dicomFileNames = new ArrayList();
       String dicomDirectory = Config.get("dicom.directory");
@@ -20,7 +26,10 @@ public class DICOMFileSelector {
         dicomFileNames.add(p.toString());
       });
     }
-    int index = person.randInt(dicomFileNames.size());
-    return dicomFileNames.get(index);
+  }
+
+  public static boolean filesRemain() throws IOException {
+    initialize();
+    return dicomFileNames.size() > 0;
   }
 }
