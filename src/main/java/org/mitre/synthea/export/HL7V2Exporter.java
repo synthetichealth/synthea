@@ -5,21 +5,25 @@ import ca.uhn.hl7v2.model.DataTypeException;
 import ca.uhn.hl7v2.model.v28.datatype.XAD;
 import ca.uhn.hl7v2.model.v28.datatype.XPN;
 import ca.uhn.hl7v2.model.v28.message.ADT_A01;
+import ca.uhn.hl7v2.model.v28.segment.AL1;
 import ca.uhn.hl7v2.model.v28.segment.DG1;
 import ca.uhn.hl7v2.model.v28.segment.EVN;
 import ca.uhn.hl7v2.model.v28.segment.MSH;
 import ca.uhn.hl7v2.model.v28.segment.PID;
+import ca.uhn.hl7v2.model.v28.segment.RXE;
 import java.io.IOException;
 
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
@@ -33,6 +37,7 @@ public class HL7V2Exporter {
     private static final String MSG_EVENT_TYPE = "A01";
 
     private static ADT_A01 adt;
+    private static final HashMap<String, String> customSegs = new HashMap();
 
     public static String export(Person person, long time) {
         // create a super encounter... this makes it easier to access
@@ -73,7 +78,7 @@ public class HL7V2Exporter {
         person.attributes.put("ethnicity_lookup", RaceAndEthnicity.LOOK_UP_CDC_ETHNICITY_CODE);
         person.attributes.put("ethnicity_display_lookup", RaceAndEthnicity.LOOK_UP_CDC_ETHNICITY_DISPLAY);
 
-        String msgContent;
+        final StringBuilder msgContent = new StringBuilder();
         try {
             String curDT = getCurrentTimeStamp();
             adt = new ADT_A01();
@@ -83,15 +88,24 @@ public class HL7V2Exporter {
             generatePID(person);
             generateAL1s(person);
             generateDG1s(person);
-            msgContent = adt.encode();
-            msgContent = msgContent.replace("\r", "\n");
+            generateRXEs(person);
+            String rawMsg = adt.encode();
+            //Fix the end-of-segment default HAPI uses
+            rawMsg = rawMsg.replace("\r", "\n");
+            msgContent.append(rawMsg);
+            //Add any non-standard segments that HAPI doesn't like
+            customSegs.forEach((k, seg) -> {
+                System.out.println(String.format("\tAdding Custom Seg: '%s'-%s", k, seg));
+                msgContent.append(seg);     
+                msgContent.append("\n");
+            });
         } catch (HL7Exception | IOException ex) {
             ex.printStackTrace();
-            msgContent = "BLAMMO! error=" + ex.getMessage();
+            msgContent.append(String.format("BLAMMO! error=%s", ex.getMessage()));
         }
 
         StringWriter writer = new StringWriter();
-        writer.write(msgContent);
+        writer.write(msgContent.toString());
         return writer.toString();
     }
 
@@ -126,9 +140,10 @@ public class HL7V2Exporter {
         evn.getRecordedDateTime().setValue(curDT);
     }
 
-    private static void generatePID(Person person) throws DataTypeException, HL7Exception {
+    private static void generatePID(Person person) throws DataTypeException, HL7Exception {       
         PID pid = adt.getPID();
         Map<String, Object> pattrs = person.attributes;
+        System.out.println("\tGenerating PID: " + pattrs.get("name"));          
         XPN patientName = pid.getPatientName(0);
         patientName.getFamilyName().getSurname().setValue(getStrAttr(pattrs, "last_name"));
         patientName.getGivenName().setValue(getStrAttr(pattrs, "first_name"));
@@ -167,14 +182,35 @@ public class HL7V2Exporter {
         pid.getPid15_PrimaryLanguage().getText().setValue(getStrAttr(pattrs, "first_language"));
     }
 
-    private static void generateAL1s(Person person) {
+    private static void generateAL1s(Person person) throws DataTypeException, HL7Exception {
         List<Entry> allergies = (List<Entry>) person.attributes.get("ehr_allergies");
         if (allergies == null || allergies.isEmpty()) {
             return;
         }
-        allergies.forEach((entry) -> {
-            System.out.println(entry);
-        });
+        Integer ac = 0;
+        for (Entry entry : allergies) {
+            System.out.println("\tGenerating AL1: " + entry.toString());
+            AL1 a = new AL1(adt, adt.getModelClassFactory());
+            a.getAl11_SetIDAL1().setValue(String.valueOf(ac+1));
+            Integer cc = 0;
+            for (Code c : entry.codes) {
+                switch (cc) {
+                    case 0:
+                        a.getAl12_AllergenTypeCode().getCwe1_Identifier().setValue(c.code);
+                        a.getAl12_AllergenTypeCode().getCwe2_Text().setValue(c.display);
+                        a.getAl12_AllergenTypeCode().getCwe3_NameOfCodingSystem().setValue(c.system);
+                        break;
+                    case 1:
+                        a.getAl12_AllergenTypeCode().getCwe4_AlternateIdentifier().setValue(c.code);
+                        a.getAl12_AllergenTypeCode().getCwe5_AlternateText().setValue(c.display);
+                        a.getAl12_AllergenTypeCode().getCwe6_NameOfAlternateCodingSystem().setValue(c.system);
+                        break;
+                    case 2:
+                        break;
+                }
+            }
+            adt.insertAL1(a, ac++);
+        }
     }
 
     private static void generateDG1s(Person person) throws DataTypeException, HL7Exception {
@@ -184,6 +220,7 @@ public class HL7V2Exporter {
         }
         Integer dc = 0;
         for (Entry entry : conditions) {
+            System.out.println("\tGenerating DG1: " + entry.toString());            
             DG1 d = new DG1(adt, adt.getModelClassFactory());
             Integer cc = 0;
             for (Code c : entry.codes) {
@@ -197,7 +234,7 @@ public class HL7V2Exporter {
                         d.getDiagnosisCodeDG1().getCwe4_AlternateIdentifier().setValue(c.code);
                         d.getDiagnosisCodeDG1().getCwe5_AlternateText().setValue(c.display);
                         d.getDiagnosisCodeDG1().getCwe6_NameOfAlternateCodingSystem().setValue(c.system);
-                        break;      
+                        break;
                     case 2:
                         break;
                 }
@@ -209,6 +246,65 @@ public class HL7V2Exporter {
         }
     }
 
+    private static void generateRXEs(Person person) throws DataTypeException, HL7Exception {
+        Map<String,HealthRecord.Medication> meds = person.chronicMedications;
+        if (meds == null || meds.isEmpty()) {
+            return;
+        }
+        Integer mc = 0;
+        for (HealthRecord.Medication med : meds.values()) {
+            System.out.println("\tGenerating RXE: " + med.toString());            
+            RXE m = new RXE(adt, adt.getModelClassFactory());
+            Integer cc = 0;
+            for (Code c : med.codes) {
+                switch (cc) {
+                    case 0:
+                        System.out.println("\t\tAdding Med Code:" + c.toString());
+                        m.getGiveCode().getCwe1_Identifier().setValue(c.code);
+                        m.getGiveCode().getCwe2_Text().setValue(c.display);
+                        m.getGiveCode().getCwe3_NameOfCodingSystem().setValue(c.system);
+                        break;
+                    case 1:
+                        System.out.println("\t\tAdding Alternate Med Code:" + c.toString());                        
+                        m.getGiveCode().getCwe4_AlternateIdentifier().setValue(c.code);
+                        m.getGiveCode().getCwe5_AlternateText().setValue(c.display);
+                        m.getGiveCode().getCwe6_NameOfAlternateCodingSystem().setValue(c.system);
+                        break;
+                    case 2:
+                        break;
+                }
+            }
+            if (med.reasons!=null && med.reasons.size()>0) {
+                Integer rc = 0;
+                for (Code c : med.reasons) {  
+                    System.out.println("\t\tAdding Med Reason Code:" + c.toString());                     
+                    m.insertGiveIndication(rc);
+                    m.getGiveIndication(rc).getCwe1_Identifier().setValue(c.code);
+                    m.getGiveIndication(rc).getCwe2_Text().setValue(c.display);   
+                    m.getGiveIndication(rc).getCwe3_NameOfCodingSystem().setValue(c.system);  
+                    rc++;
+                }              
+            }
+            if (med.prescriptionDetails!=null) {
+                if (med.prescriptionDetails.get("dosage")!=null) {
+                    String dosageUnits = med.prescriptionDetails.get("dosage").getAsJsonObject().get("unit").getAsString();
+                    Integer dosageFreq = med.prescriptionDetails.get("dosage").getAsJsonObject().get("frequency").getAsInt();   
+                    Integer dosageAmt = med.prescriptionDetails.get("dosage").getAsJsonObject().get("amount").getAsInt();   
+                    m.getGiveRateAmount().setValue(dosageAmt.toString() + "/" + dosageUnits);
+                    m.getGivePerTimeUnit().setValue(dosageFreq.toString());
+                    if (med.prescriptionDetails.get("duration")!=null) {
+                        String durationUnits = med.prescriptionDetails.get("duration").getAsJsonObject().get("unit").getAsString();
+                        Integer durationQty = med.prescriptionDetails.get("duration").getAsJsonObject().get("quantity").getAsInt();
+                        m.getGiveAmountMaximum().setValue(String.valueOf(durationQty * dosageAmt));
+                    }
+                }
+
+            }
+                
+            customSegs.put(String.format("RXE.%s", mc++), m.encode());
+        }        
+    }
+        
     private static String getStrAttr(Map<String, Object> pattrs, String key) {
         if (pattrs.containsKey(key)) {
             return (String) pattrs.get(key);
