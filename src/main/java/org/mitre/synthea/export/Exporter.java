@@ -233,7 +233,7 @@ public abstract class Exporter {
       FhirGroupExporterR4.addPatient((String) person.attributes.get(Person.ID));
     }
     if (Config.getAsBoolean("exporter.hl7v2.export")) {
-      String hl7V2Msg = HL7V2Exporter.export(person, stopTime);
+      String hl7V2Msg = HL7V2Exporter.getInstance().export(person, stopTime);
       File outDirectory = getOutputFolder("hl7v2", person);
       Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "er7"));
       writeNewFile(outFilePath, hl7V2Msg);        
