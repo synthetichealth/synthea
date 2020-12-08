@@ -81,7 +81,7 @@ public class FixedRecordTest {
     // Create a generator with the preset fixed demographics test file.
     GeneratorOptions go = new GeneratorOptions();
     go.fixedRecordPath = new File(
-        "src/test/resources/fixed_demographics/households_fixed_demographics_test.json");
+        "./src/test/resources/fixed_demographics/households_fixed_demographics_test.json");
     go.state = "California";  // Examples are based on California.
     go.population = 100;  // Should be overwritten by number of patients in input file.
     go.overflow = false;  // Prevent deceased patients from increasing the population size.
@@ -155,8 +155,8 @@ public class FixedRecordTest {
   @Test
   public void checkFixedDemographicsExport() {
     // Check each patient from the fixed record input file.
-    for (int i = 0; i < generator.options.population; i++) {
-      Person currentPerson = generator.internalStore.get(i);
+    for (int personIndex = 0; personIndex < generator.options.population; personIndex++) {
+      Person currentPerson = generator.internalStore.get(personIndex);
       // Check that patients' exported FHIR resource attributes match their FixedRecords.
       for (String key : currentPerson.records.keySet()) {
 
@@ -168,7 +168,7 @@ public class FixedRecordTest {
         Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
 
         // Match the current record with the FixedRecord that matches its record id.
-        FixedRecord currentFixedRecord = getRecordMatch(currentPerson, i);
+        FixedRecord currentFixedRecord = getRecordMatch(currentPerson);
         assertNotNull(currentFixedRecord);
 
         // First element of bundle is the patient resource.
@@ -342,8 +342,8 @@ public class FixedRecordTest {
     assertTrue("Records: " + williamSmith.records.size(), williamSmith.records.size() >= 1);
   }
 
-  private FixedRecord getRecordMatch(Person person, int index) {
-    FixedRecordGroup recordGroup = fixedRecordGroupManager.getRecordGroup(index);
+  private FixedRecord getRecordMatch(Person person) {
+    FixedRecordGroup recordGroup = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
 
     String recordId = (String) person.record.demographicsAtRecordCreation
         .get(Person.IDENTIFIER_RECORD_ID);

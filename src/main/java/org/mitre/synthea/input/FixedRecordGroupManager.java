@@ -23,19 +23,12 @@ public class FixedRecordGroupManager {
   @Expose(serialize = false, deserialize = true)
   private transient Map<Integer, FixedRecordGroup> recordGroups;
 
-  @Expose(serialize = false, deserialize = true)
-  private transient int linkId;
-
-  @Expose(serialize = false, deserialize = true)
-  private transient int year;
-
   public FixedRecordGroupManager() {}
 
   /**
    * Creates the record groups based on the imported records.
    */
   public void createRecordGroups() {
-    year = 0;
     recordGroups = new HashMap<Integer, FixedRecordGroup>();
     // Initialize with the seed records.
     for (FixedRecord seedRecord : seedRecords) {
