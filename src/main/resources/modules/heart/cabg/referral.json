@@ -390,8 +390,8 @@
         }
       ],
       "duration": {
-        "low": 60,
-        "high": 120,
+        "low": 45,
+        "high": 60,
         "unit": "minutes"
       },
       "direct_transition": "Diagnostic",
@@ -407,8 +407,8 @@
         }
       ],
       "duration": {
-        "low": 5.5,
-        "high": 6.5,
+        "low": 2,
+        "high": 4,
         "unit": "hours"
       },
       "complex_transition": [
