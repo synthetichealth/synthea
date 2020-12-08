@@ -220,9 +220,9 @@
         }
       ],
       "duration": {
-        "low": 1,
-        "high": 3,
-        "unit": "hours"
+        "low": 5,
+        "high": 20,
+        "unit": "minutes"
       },
       "direct_transition": "Stair Climbing Test",
       "reason": "cabg_history"
@@ -237,7 +237,7 @@
         }
       ],
       "duration": {
-        "low": 20,
+        "low": 5,
         "high": 30,
         "unit": "minutes"
       },
@@ -267,11 +267,15 @@
       "distributed_transition": [
         {
           "transition": "Readmission to Ward",
-          "distribution": 0.02
+          "distribution": 0.106
+        },
+        {
+          "transition": "Dying After Discharge",
+          "distribution": 0.0065
         },
         {
           "transition": "Terminal",
-          "distribution": 0.98
+          "distribution": 0.8875
         }
       ]
     },
@@ -393,6 +397,15 @@
       "type": "CallSubmodule",
       "submodule": "heart/cabg/insulin_or_blood",
       "direct_transition": "ICU Meds"
+    },
+    "Dying After Discharge": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "range": {
+        "low": 1,
+        "high": 30,
+        "unit": "days"
+      }
     }
   }
 }

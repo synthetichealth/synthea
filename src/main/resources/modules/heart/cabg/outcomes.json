@@ -484,7 +484,7 @@
         }
       ],
       "target_encounter": "CABG_Postop",
-      "direct_transition": "Sepsis"
+      "direct_transition": "Check Prolonged LOS"
     },
     "Acute_Kidney_Injury": {
       "type": "ConditionOnset",
@@ -558,7 +558,7 @@
         }
       ],
       "target_encounter": "CABG_Postop",
-      "direct_transition": "Sepsis",
+      "direct_transition": "Check Prolonged LOS",
       "assign_to_attribute": "Ventilator Reason"
     }
   }
