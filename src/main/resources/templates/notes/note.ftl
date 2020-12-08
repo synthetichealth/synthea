@@ -9,7 +9,7 @@ ${time?number_to_date?string["yyyy-MM-dd"]}
 </#list><#else>No complaints.</#if>
 
 # History of Present Illness
-<#if name??>${name?keep_before_last(" ")}<#else>John Doe</#if>
+<#if name??>${name?keep_before_last(" ")}<#else><#if gender=='F'>Jane<#else>John</#if> Doe</#if>
  is a <#if ehr_ageInYears gt 0>${ehr_ageInYears} year-old<#elseif ehr_ageInMonths gt 0>${ehr_ageInMonths} month-old<#else>newborn</#if> ${ethnicity_display_lookup[race]} ${race} <#if gender=='F'>female<#else>male</#if>.<#if ehr_activeConditions?has_content> Patient has a history of <#list ehr_activeConditions as display>${display?lower_case}<#sep>, </#list>.</#if>
 
 # Social History
