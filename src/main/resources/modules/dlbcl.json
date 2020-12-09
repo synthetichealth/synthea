@@ -800,16 +800,17 @@
       "distributed_transition": [
         {
           "transition": "Kymriah Infusion",
-          "distribution": 0.5
+          "distribution": 0.25
         },
         {
           "transition": "Yescarta Infusion",
-          "distribution": 0.5
+          "distribution": 0.75
         }
       ],
       "reason": "DLBCL_Condition",
       "remarks": [
         "Fludarabine and cyclophosphamide are two types of chemotherapy drugs used in lymphodepletion. ",
+        "75-25 split between administered CAR-T drugs in practice today was informed by Dr. Perales.",
         "https://www.cancer.gov/about-cancer/treatment/clinical-trials/search/v?id=NCI-2019-05612#:~:text=Fludarabine%20and%20cyclophosphamide%20are%20two%20types%20of%20chemotherapy,the%20body%20before%20tumor%20infiltrating%20lymphocytes%20are%20infused."
       ]
     },
@@ -950,34 +951,18 @@
       ],
       "direct_transition": "PET-CT Scan"
     },
-    "Worsening after Treatment Round 2": {
-      "type": "Observation",
-      "category": "procedure",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "88040-1",
-          "display": "Response to cancer treatment"
-        }
-      ],
-      "direct_transition": "Delay after Second-Line Treatment",
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": 271299001,
-        "display": "Patient's condition worsened (finding)"
-      }
-    },
     "Patient's cells are genetically modified": {
       "type": "Delay",
       "range": {
         "low": 2,
-        "high": 3,
+        "high": 4,
         "unit": "weeks"
       },
       "direct_transition": "CAR-T Therapy Treatment",
       "remarks": [
-        "https://www.dana-farber.org/cellular-therapies-program/car-t-cell-therapy/how-car-t-cell-therapy-works/"
+        "https://www.dana-farber.org/cellular-therapies-program/car-t-cell-therapy/how-car-t-cell-therapy-works/",
+        "Delay time was confirmed by Dr. Wood and Dr. Perales",
+        ""
       ]
     },
     "End CAR-T therapy treatment encounter": {
@@ -1163,30 +1148,12 @@
         "https://www.dana-farber.org/cellular-therapies-program/car-t-cell-therapy/how-car-t-cell-therapy-works/"
       ]
     },
-    "Remission after Round 2 Treatment": {
-      "type": "Observation",
-      "category": "procedure",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "88040-1",
-          "display": "Response to cancer treatment"
-        }
-      ],
-      "direct_transition": "Delay Before Meeting for Discharge",
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": 260415000,
-        "display": "Not detected (qualifier)"
-      }
-    },
     "DLBCL_Treatment_Round_Two": {
       "type": "CallSubmodule",
       "submodule": "dlbcl/dlbcl_treatment_round_two",
       "conditional_transition": [
         {
-          "transition": "Worsening after Treatment Round 2",
+          "transition": "Delay after Second-Line Treatment",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "Treatment_2_Outcome",
@@ -1195,7 +1162,7 @@
           }
         },
         {
-          "transition": "Remission after Round 2 Treatment",
+          "transition": "Delay Before Meeting for Discharge",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "Treatment_2_Outcome",

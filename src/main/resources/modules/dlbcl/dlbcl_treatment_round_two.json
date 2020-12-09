@@ -424,39 +424,18 @@
     },
     "End PET-CT Scan Encounter": {
       "type": "EncounterEnd",
-      "complex_transition": [
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "DLBCL_Survival",
-            "operator": "==",
-            "value": "No"
-          },
-          "distributions": [
-            {
-              "transition": "Worsened",
-              "distribution": 1
-            }
-          ]
+          "transition": "Second Line Treatment Inneffective",
+          "distribution": 0.1
         },
         {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "DLBCL_Survival",
-            "operator": "==",
-            "value": "Yes"
-          },
-          "distributions": [
-            {
-              "transition": "Remission",
-              "distribution": 0.5
-            },
-            {
-              "transition": "Worsened",
-              "distribution": 0.5
-            }
-          ]
+          "transition": "Second-Line Treatment Halted Spread of Disease",
+          "distribution": 0.9
         }
+      ],
+      "remarks": [
+        "Remission is typically detected at a subsequent follow-up visit"
       ]
     },
     "Patients_with_intention_to_proceed_to_transplant": {
@@ -668,42 +647,6 @@
         "unit": "weeks"
       }
     },
-    "Remission": {
-      "type": "Observation",
-      "category": "procedure",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "88040-1",
-          "display": "Response to cancer treatment"
-        }
-      ],
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": 260415000,
-        "display": "Not detected (qualifier)"
-      },
-      "direct_transition": "Remission After Treatment 2"
-    },
-    "Worsened": {
-      "type": "Observation",
-      "category": "procedure",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "88040-1",
-          "display": "Response to cancer treatment"
-        }
-      ],
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": 271299001,
-        "display": "Patient's condition worsened (finding)"
-      },
-      "direct_transition": "Worsened After Treatment 2"
-    },
     "Length_of_Treatment": {
       "type": "Delay",
       "direct_transition": "End Second Line Treatment Encounter",
@@ -724,6 +667,159 @@
       "attribute": "Treatment_2_Outcome",
       "direct_transition": "Terminal",
       "value": "Remission"
+    },
+    "Check-Up After Second Line Treatment": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "Encounter for check up (procedure)"
+        }
+      ],
+      "direct_transition": "Blood Tests"
+    },
+    "Delay after Second-Line Treatment": {
+      "type": "Delay",
+      "direct_transition": "Check-Up After Second Line Treatment",
+      "remarks": [
+        "At most cancer centers, follow-up visits are scheduled every 2 to 3 months for the first 1 to 2 years after treatment is completed, which is when the risk of recurrence is highest.",
+        "https://www.cancer.net/cancer-types/lymphoma-hodgkin/follow-care#:~:text=At%20most%20cancer%20centers%2C%20follow,until%205%20years%20have%20passed."
+      ],
+      "range": {
+        "low": 2,
+        "high": 3,
+        "unit": "months"
+      }
+    },
+    "Second-Line Treatment Halted Spread of Disease": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 359746009,
+        "display": "Patient's condition stable (finding)"
+      },
+      "direct_transition": "Delay after Second-Line Treatment",
+      "remarks": [
+        "According to Dr. Wood, if you received second line treatment and achieved remission, you don’t go onto CAR-T. Wait for subsequent progression of disease and then go onto CAR-T."
+      ]
+    },
+    "Second Line Treatment Inneffective": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 271299001,
+        "display": "Patient's condition worsened (finding)"
+      },
+      "direct_transition": "Worsened After Treatment 2"
+    },
+    "Blood Tests": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 396550006,
+          "display": "Blood test (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 15,
+        "unit": "minutes"
+      },
+      "remarks": [
+        "According to Dr. Perales, around half of patients go into full remission after first-line therapy, and about another half go into full remission after second-line therapy."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "DLBCL_Survival",
+            "operator": "==",
+            "value": "No"
+          },
+          "distributions": [
+            {
+              "transition": "Patient Relapses",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Second-Line Therapy Shown to be Effective",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Patient Relapses",
+              "distribution": 0.5
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "DLBCL_Survival",
+            "operator": "==",
+            "value": "Yes"
+          }
+        }
+      ]
+    },
+    "Patient Relapses": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "direct_transition": "Worsened After Treatment 2",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 271299001,
+        "display": "Patient's condition worsened (finding)"
+      }
+    },
+    "Second-Line Therapy Shown to be Effective": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "88040-1",
+          "display": "Response to cancer treatment"
+        }
+      ],
+      "direct_transition": "Remission After Treatment 2",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 268910001,
+        "display": "Patient condition improved (finding)"
+      }
     }
   }
 }
