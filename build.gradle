@@ -88,7 +88,7 @@ dependencies {
   implementation 'org.jfree:jfreechart:1.5.0'
 
   implementation 'ca.uhn.hapi:hapi-base:2.3'
-  implementation 'ca.uhn.hapi:hapi-structures-v28:2.3'
+  implementation 'ca.uhn.hapi:hapi-structures-v251:2.3'
     
   // Use JUnit test framework
   testImplementation 'junit:junit:4.12'
