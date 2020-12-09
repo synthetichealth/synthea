@@ -235,7 +235,7 @@ public abstract class Exporter {
     if (Config.getAsBoolean("exporter.hl7v2.export")) {
       String hl7V2Msg = HL7V2Exporter.getInstance().export(person, stopTime);
       File outDirectory = getOutputFolder("hl7v2", person);
-      Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "er7"));
+      Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "hl7"));
       writeNewFile(outFilePath, hl7V2Msg);        
     }    
     if (Config.getAsBoolean("exporter.ccda.export")) {
