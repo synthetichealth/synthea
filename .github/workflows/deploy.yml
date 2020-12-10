@@ -30,7 +30,14 @@ jobs:
           mkdir -p output/build/javadoc
           mv build/docs/javadoc/* output/build/javadoc
       
-
+      - name: Delete Previous master-branch-latest Tag
+        uses: dev-drprasad/delete-tag-and-release@v0.1.2
+        with:
+          delete_release: true
+          tag_name: master-branch-latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Create Release
         id: create_release 
         # note id is referenced below in Deploy uberJar
@@ -38,9 +45,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: master-branch-latest
-          body: TODO put some text here
+          tag_name: master-branch-latest
           draft: false
           prerelease: true
                 
