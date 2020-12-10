@@ -30,7 +30,7 @@ public class HospitalExporterTestR4 {
 
   @Test
   public void testFHIRExport() throws Exception {
-    FhirContext ctx = FhirContext.forR4();
+    FhirContext ctx = FhirR4.getContext();
     FhirValidator validator = ctx.newValidator();
     validator.setValidateAgainstStandardSchema(true);
     validator.setValidateAgainstStandardSchematron(true);

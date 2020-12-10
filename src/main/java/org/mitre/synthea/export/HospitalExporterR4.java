@@ -27,8 +27,6 @@ import org.mitre.synthea.world.agents.Provider;
 
 public abstract class HospitalExporterR4 {
 
-  private static final FhirContext FHIR_CTX = FhirContext.forR4();
-
   private static final String SYNTHEA_URI = "http://synthetichealth.github.io/synthea/";
 
   /**
@@ -54,7 +52,7 @@ public abstract class HospitalExporterR4 {
         }
       }
 
-      String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true)
+      String bundleJson = FhirR4.getContext().newJsonParser().setPrettyPrint(true)
           .encodeResourceToString(bundle);
 
       // get output folder

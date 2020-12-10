@@ -239,6 +239,10 @@ public class FhirR4 {
 
     return mappingTable;
   }
+  
+  public static FhirContext getContext() {
+    return FHIR_CTX;
+  }
 
   /**
    * Convert the given Person into a FHIR Bundle of the Patient and the
@@ -2083,7 +2087,7 @@ public class FhirR4 {
     medicationResource.setMedication(mapCodeToCodeableConcept(code, system));
     medicationResource.setEffective(new DateTimeType(new Date(medication.start)));
 
-    medicationResource.setStatus("completed");
+    medicationResource.setStatus(MedicationAdministration.MedicationAdministrationStatus.COMPLETED);
 
     if (medication.prescriptionDetails != null) {
       JsonObject rxInfo = medication.prescriptionDetails;

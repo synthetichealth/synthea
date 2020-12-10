@@ -184,7 +184,7 @@ public abstract class Exporter {
       File outDirectory = getOutputFolder("fhir_stu3", person);
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
         org.hl7.fhir.dstu3.model.Bundle bundle = FhirStu3.convertToFHIR(person, stopTime);
-        IParser parser = FhirContext.forDstu3().newJsonParser().setPrettyPrint(false);
+        IParser parser = FhirStu3.getContext().newJsonParser().setPrettyPrint(false);
         for (org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           String filename = entry.getResource().getResourceType().toString() + ".ndjson";
           Path outFilePath = outDirectory.toPath().resolve(filename);
@@ -201,7 +201,7 @@ public abstract class Exporter {
       File outDirectory = getOutputFolder("fhir_dstu2", person);
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
         ca.uhn.fhir.model.dstu2.resource.Bundle bundle = FhirDstu2.convertToFHIR(person, stopTime);
-        IParser parser = FhirContext.forDstu2().newJsonParser().setPrettyPrint(false);
+        IParser parser = FhirDstu2.getContext().newJsonParser().setPrettyPrint(false);
         for (ca.uhn.fhir.model.dstu2.resource.Bundle.Entry entry : bundle.getEntry()) {
           String filename = entry.getResource().getResourceName() + ".ndjson";
           Path outFilePath = outDirectory.toPath().resolve(filename);
@@ -218,7 +218,7 @@ public abstract class Exporter {
       File outDirectory = getOutputFolder("fhir", person);
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
         org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
-        IParser parser = FhirContext.forR4().newJsonParser().setPrettyPrint(false);
+        IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(false);
         for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           String filename = entry.getResource().getResourceType().toString() + ".ndjson";
           Path outFilePath = outDirectory.toPath().resolve(filename);

@@ -171,6 +171,10 @@ public class FhirDstu2 {
       throw new ExceptionInInitializerError(e);
     }
   }
+  
+  public static FhirContext getContext() {
+    return FHIR_CTX;
+  }
 
   /**
    * Convert the given Person into a FHIR Bundle with the Patient and the

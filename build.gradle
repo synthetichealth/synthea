@@ -41,11 +41,14 @@ dependencies {
   // This dependency is found on compile classpath of this component and consumers.
   implementation 'com.google.code.gson:gson:2.8.6'
   implementation 'com.jayway.jsonpath:json-path:2.4.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:4.2.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:4.2.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:4.2.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:4.2.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-client:4.2.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:5.2.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:5.2.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:5.2.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:5.2.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-client:5.2.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation:5.2.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:5.2.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:5.2.0'
   // C-CDA export uses Apache FreeMarker templates
   implementation 'org.freemarker:freemarker:2.3.26-incubating'
   implementation 'com.h2database:h2:1.4.196'
@@ -112,7 +115,7 @@ test {
     // showStackTraces = true
     // showStandardStreams = true
   }
-  maxHeapSize = "2048m"
+  maxHeapSize = "4096m"
 }
 
 buildscript {
