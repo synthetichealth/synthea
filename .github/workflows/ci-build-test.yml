@@ -1,24 +1,57 @@
 on: [push, pull_request]
 
 jobs:
-  build:
+  check_java_latest:
     runs-on: ubuntu-latest
-    
-    strategy:
-      matrix:
-        # test against latest update of each major Java version, as well as specific updates of LTS versions:
-        java: [8, 15]
-        
-    name: Java ${{ matrix.java }}
+    name: Java 15
     
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK ${{ matrix.java }}
+      - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: ${{ matrix.java }}
-      - name: Build with Gradle
-        run: ./gradlew build
-      - name: Test on Java 8
-        if: ${{ matrix.java == 8 }}
+          java-version: 15
+
+      - name: Gradle cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-jdk15-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-jdk15
+            
+      - name: Compile with Gradle
+        run: ./gradlew assemble
+  
+  
+  check_java8:
+    runs-on: ubuntu-latest
+    name: Java 8
+    
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+
+      - name: Gradle cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-jdk8-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-jdk8
+            
+      - name: Compile with Gradle
+        run: ./gradlew assemble
+  
+      - name: Test
         run: ./gradlew check
+  
+      - name: Code coverage
+        uses: codecov/codecov-action@v1
