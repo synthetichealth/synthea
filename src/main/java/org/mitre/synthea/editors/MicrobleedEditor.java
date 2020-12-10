@@ -20,7 +20,7 @@ public class MicrobleedEditor implements HealthRecordEditor {
   @Override
   public boolean shouldRun(Person person, HealthRecord record, long time) {
     try {
-      return person.ageInYears(time) <= MIN_AGE && DICOMFileSelector.filesRemain();
+      return person.ageInYears(time) >= MIN_AGE && DICOMFileSelector.filesRemain();
     } catch (IOException e) {
       System.out.println("Unable to see if there are DICOM files to use");
       e.printStackTrace();
