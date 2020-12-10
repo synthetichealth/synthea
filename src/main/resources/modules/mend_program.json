@@ -10,7 +10,8 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Wellness_Encounter"
+      "direct_transition": "Wellness_Encounter",
+      "name": "Initial"
     },
     "Wellness_Encounter": {
       "remarks": [
@@ -56,9 +57,10 @@
         },
         {
           "distributions": [],
-          "transition": "Initial"
+          "transition": "End_Not_Referred_Wellness_Encounter"
         }
-      ]
+      ],
+      "name": "Wellness_Encounter"
     },
     "Comprehensive_Multidisciplinary_Intervention_Care_Plan": {
       "type": "CarePlanStart",
@@ -67,7 +69,8 @@
         {
           "system": "SNOMED-CT",
           "code": "718361005",
-          "display": "Weight management program"
+          "display": "Weight management program",
+          "value_set": ""
         }
       ],
       "activities": [
@@ -82,7 +85,8 @@
           "display": "Increased physical activity"
         }
       ],
-      "direct_transition": "End_Wellness_Encounter"
+      "direct_transition": "End_Wellness_Encounter",
+      "name": "Comprehensive_Multidisciplinary_Intervention_Care_Plan"
     },
     "End_Wellness_Encounter": {
       "type": "EncounterEnd",
@@ -95,24 +99,28 @@
           "transition": "End_MEND_Program",
           "distribution": 0.584
         }
-      ]
+      ],
+      "name": "End_Wellness_Encounter"
     },
     "Set_MEND_Weeks": {
       "type": "SetAttribute",
       "attribute": "mend_weeks",
       "direct_transition": "Increment_MEND_Week",
-      "value": 0
+      "value": 0,
+      "name": "Set_MEND_Weeks"
     },
     "Increment_MEND_Week": {
       "type": "Counter",
       "attribute": "mend_weeks",
       "action": "increment",
-      "direct_transition": "MEND_Visits"
+      "direct_transition": "MEND_Visits",
+      "name": "Increment_MEND_Week"
     },
     "MEND_Visits": {
       "type": "CallSubmodule",
       "submodule": "weight_loss/mend_week",
-      "direct_transition": "Check_MEND_Weeks"
+      "direct_transition": "Check_MEND_Weeks",
+      "name": "MEND_Visits"
     },
     "Wait_For_Initial_MEND_Week": {
       "type": "Delay",
@@ -121,11 +129,18 @@
         "high": 21,
         "unit": "days"
       },
-      "direct_transition": "Set_MEND_Weeks"
+      "direct_transition": "Set_MEND_Weeks",
+      "name": "Wait_For_Initial_MEND_Week"
     },
     "Not_Referred": {
       "type": "Simple",
-      "direct_transition": "Initial"
+      "direct_transition": "End_Not_Referred_Wellness_Encounter",
+      "name": "Not_Referred"
+    },
+    "End_Not_Referred_Wellness_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Initial",
+      "name": "End_Not_Referred_Wellness_Encounter"
     },
     "Check_MEND_Weeks": {
       "type": "Simple",
@@ -142,10 +157,12 @@
         {
           "transition": "Increment_MEND_Week"
         }
-      ]
+      ],
+      "name": "Check_MEND_Weeks"
     },
     "End_MEND_Program": {
-      "type": "Terminal"
+      "type": "Terminal",
+      "name": "End_MEND_Program"
     }
   }
 }
