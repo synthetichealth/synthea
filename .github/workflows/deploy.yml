@@ -1,0 +1,68 @@
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+
+      - name: Gradle cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-jdk8-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-jdk8
+            
+      - name: Create Artifacts
+        run: |
+          ./gradlew uberJar javadoc graphviz
+          mkdir -p output/build/javadoc
+          mv build/docs/javadoc/* output/build/javadoc
+      
+
+      - name: Create Release
+        id: create_release 
+        # note id is referenced below in Deploy uberJar
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: master-branch-latest
+          body: TODO put some text here
+          draft: false
+          prerelease: true
+                
+      - name: Deploy UberJar
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          # This pulls from the CREATE RELEASE step above, referencing its ID to get its outputs object, which include a `upload_url` 
+          asset_path: build/libs/synthea-with-dependencies.jar
+          asset_name: synthea-with-dependencies.jar
+          asset_content_type: application/java-archive
+        
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3 
+        # note: watch for v4 to be released
+        with: 
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          keep_files: true
+          publish_dir: ./output
+          user_name: 'Jason Walonoski'
+          user_email: 'jwalonoski@mitre.org'
+          commit_message: rebuild graphs, javadoc and binary distribution at
+          # note the commit SHA is appended automatically
