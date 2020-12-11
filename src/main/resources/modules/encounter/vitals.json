@@ -6,7 +6,6 @@
   "states": {
     "Initial": {
       "type": "Observation",
-      "target_encounter": "current_encounter",
       "category": "vital-signs",
       "vital_sign": "Height",
       "codes": [
@@ -21,7 +20,6 @@
     },
     "Record_Weight": {
       "type": "Observation",
-      "target_encounter": "current_encounter",
       "category": "vital-signs",
       "vital_sign": "Weight",
       "codes": [
@@ -52,7 +50,6 @@
     },
     "Record_BMI": {
       "type": "Observation",
-      "target_encounter": "current_encounter",
       "category": "vital-signs",
       "vital_sign": "BMI",
       "codes": [
@@ -101,7 +98,6 @@
           "unit": "mm[Hg]"
         }
       ],
-      "target_encounter": "current_encounter",
       "direct_transition": "Vitals_Terminal"
     },
     "Vitals_Terminal": {
