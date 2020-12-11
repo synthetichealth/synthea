@@ -1734,6 +1734,7 @@ public abstract class State implements Cloneable, Serializable {
       // of the type of ImagingStudy this is
       String primaryModality = series.get(0).modality.code;
       entry = person.record.imagingStudy(time, primaryModality, series);
+      entry.codes.add(procedureCode);
 
       // Also add the Procedure equivalent of this ImagingStudy to the patient's record
       String primaryProcedureCode = procedureCode.code;
