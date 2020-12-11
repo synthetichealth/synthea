@@ -10,6 +10,17 @@ import org.junit.Test;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.mitre.synthea.editors.GrowthDataErrorsEditor;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
+
+import java.util.List;
+import java.util.Random;
+
+import static org.junit.Assert.*;
+
 public class GrowthDataErrorsEditorTest {
   private HealthRecord record;
   private HealthRecord.Encounter first;

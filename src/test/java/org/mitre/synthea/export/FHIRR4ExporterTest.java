@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
 
@@ -97,7 +98,7 @@ public class FHIRR4ExporterTest {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
 
-    FhirContext ctx = FhirContext.forR4();
+    FhirContext ctx = FhirR4.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     ValidationResources validator = new ValidationResources();
     List<String> validationErrors = new ArrayList<String>();
@@ -134,7 +135,18 @@ public class FHIRR4ExporterTest {
           if (!eresult.isSuccessful()) {
             for (SingleValidationMessage emessage : eresult.getMessages()) {
               boolean valid = false;
-              if (emessage.getMessage().contains("@ AllergyIntolerance ait-2")) {
+              if (emessage.getSeverity() == ResultSeverityEnum.INFORMATION
+                      || emessage.getSeverity() == ResultSeverityEnum.WARNING) {
+                /*
+                 * Ignore warnings.
+                 */
+                valid = true;
+              } else if (emessage.getMessage().contains("us-core-documentreference-type")) {
+                /*
+                 * The instance validator does not expand intentional value sets like this one.
+                 */
+                valid = true;
+              } else if (emessage.getMessage().contains("@ AllergyIntolerance ait-2")) {
                 /*
                  * The ait-2 invariant:
                  * Description:
@@ -159,13 +171,16 @@ public class FHIRR4ExporterTest {
                  * fails, even if it is valid.
                  */
                 valid = true; // ignore this error
-              } else if (emessage.getMessage().contains("[active, inactive, entered-in-error]")
-                  || emessage.getMessage().contains("MedicationStatusCodes-list")) {
+              } else if (
+                  emessage.getMessage().contains("Unknown extension http://hl7.org/fhir/us/core")
+                  || emessage.getMessage().contains("Unknown extension http://synthetichealth")
+                  || emessage.getMessage().contains("not be resolved, so has not been checked")) {
                 /*
-                 * MedicationStatement.status has more legal values than this... including
-                 * completed and stopped.
+                 * Despite setting instanceValidator.setAnyExtensionsAllowed(true) and
+                 * instanceValidator.setErrorForUnknownProfiles(false), the FHIR validator still
+                 * reports these as errors
                  */
-                valid = true;
+                valid = true; // ignore this error
               }
               if (!valid) {
                 System.out.println(parser.encodeResourceToString(entry.getResource()));
@@ -196,6 +211,9 @@ public class FHIRR4ExporterTest {
     person.attributes.put(Person.INCOME, Integer.parseInt(Config
         .get("generate.demographics.socioeconomic.income.poverty")) * 2);
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    person.attributes.put(Person.CONTACT_EMAIL, "test@test.test");
+    person.attributes.put(Person.CONTACT_GIVEN_NAME, "John");
+    person.attributes.put(Person.CONTACT_FAMILY_NAME, "Appleseed");
 
     person.history = new LinkedList<>();
     Provider mock = Mockito.mock(Provider.class);
@@ -228,7 +246,7 @@ public class FHIRR4ExporterTest {
     assertTrue(sampleObs.process(person, time));
     person.history.add(sampleObs);
     
-    FhirContext ctx = FhirContext.forR4();
+    FhirContext ctx = FhirR4.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
@@ -294,7 +312,7 @@ public class FHIRR4ExporterTest {
     assertTrue(urlState.process(person, time));
     person.history.add(urlState);
     
-    FhirContext ctx = FhirContext.forR4();
+    FhirContext ctx = FhirR4.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);

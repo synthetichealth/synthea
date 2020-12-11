@@ -1,6 +1,7 @@
 package org.mitre.synthea.export;
 
 import ca.uhn.fhir.context.FhirContext;
+
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.Gson;
@@ -81,8 +82,8 @@ import org.hl7.fhir.r4.model.Identifier.IdentifierUse;
 import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesComponent;
 import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesInstanceComponent;
 import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus;
-import org.hl7.fhir.r4.model.Immunization;
 import org.hl7.fhir.r4.model.Immunization.ImmunizationStatus;
+import org.hl7.fhir.r4.model.Immunization;
 import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Location.LocationPositionComponent;
 import org.hl7.fhir.r4.model.Location.LocationStatus;
@@ -101,6 +102,7 @@ import org.hl7.fhir.r4.model.Observation.ObservationComponentComponent;
 import org.hl7.fhir.r4.model.Observation.ObservationStatus;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Patient.ContactComponent;
 import org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent;
 import org.hl7.fhir.r4.model.Period;
 import org.hl7.fhir.r4.model.PositiveIntType;
@@ -124,8 +126,10 @@ import org.hl7.fhir.r4.model.Timing.TimingRepeatComponent;
 import org.hl7.fhir.r4.model.Timing.UnitsOfTime;
 import org.hl7.fhir.r4.model.Type;
 import org.hl7.fhir.r4.model.codesystems.DoseRateType;
+
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
+
 import org.mitre.synthea.engine.Components;
 import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.helpers.Config;
@@ -235,6 +239,10 @@ public class FhirR4 {
 
     return mappingTable;
   }
+  
+  public static FhirContext getContext() {
+    return FHIR_CTX;
+  }
 
   /**
    * Convert the given Person into a FHIR Bundle of the Patient and the
@@ -282,7 +290,7 @@ public class FhirR4 {
       for (HealthRecord.Device device : encounter.devices) {
         device(person, personEntry, bundle, device);
       }
-      
+
       for (HealthRecord.Supply supply : encounter.supplies) {
         supplyDelivery(person, personEntry, bundle, supply, encounter);
       }
@@ -400,6 +408,19 @@ public class FhirR4 {
           .setType(mapCodeToCodeableConcept(passportCode, "http://terminology.hl7.org/CodeSystem/v2-0203"))
           .setSystem(SHR_EXT + "passportNumber")
           .setValue((String) person.attributes.get(Person.IDENTIFIER_PASSPORT));
+    }
+
+    if (person.attributes.get(Person.CONTACT_EMAIL) != null) {
+      ContactComponent contact = new ContactComponent();
+      HumanName contactName = new HumanName();
+      contactName.setUse(HumanName.NameUse.OFFICIAL);
+      contactName.addGiven((String) person.attributes.get(Person.CONTACT_GIVEN_NAME));
+      contactName.setFamily((String) person.attributes.get(Person.CONTACT_FAMILY_NAME));
+      contact.setName(contactName);
+      contact.addTelecom().setSystem(ContactPointSystem.EMAIL)
+          .setUse(ContactPointUse.HOME)
+          .setValue((String) person.attributes.get(Person.CONTACT_EMAIL));
+      patientResource.addContact(contact);
     }
 
     if (USE_US_CORE_IG) {
@@ -528,6 +549,8 @@ public class FhirR4 {
     } else if (person.attributes.get(Person.GENDER).equals("F")) {
       patientResource.setGender(AdministrativeGender.FEMALE);
       birthSexExtension.setValue(new CodeType("F"));
+    } else if (person.attributes.get(Person.GENDER).equals("UNK")) {
+      patientResource.setGender(AdministrativeGender.UNKNOWN);
     }
     if (USE_US_CORE_IG) {
       patientResource.addExtension(birthSexExtension);
@@ -548,8 +571,8 @@ public class FhirR4 {
 
     Address birthplace = new Address();
     birthplace.setCity((String) person.attributes.get(Person.BIRTH_CITY))
-            .setState((String) person.attributes.get(Person.BIRTH_STATE))
-            .setCountry((String) person.attributes.get(Person.BIRTH_COUNTRY));
+        .setState((String) person.attributes.get(Person.BIRTH_STATE))
+        .setCountry((String) person.attributes.get(Person.BIRTH_COUNTRY));
 
     Extension birthplaceExtension = new Extension(
         "http://hl7.org/fhir/StructureDefinition/patient-birthPlace");
@@ -2067,7 +2090,7 @@ public class FhirR4 {
     medicationResource.setMedication(mapCodeToCodeableConcept(code, system));
     medicationResource.setEffective(new DateTimeType(new Date(medication.start)));
 
-    medicationResource.setStatus("completed");
+    medicationResource.setStatus(MedicationAdministration.MedicationAdministrationStatus.COMPLETED);
 
     if (medication.prescriptionDetails != null) {
       JsonObject rxInfo = medication.prescriptionDetails;

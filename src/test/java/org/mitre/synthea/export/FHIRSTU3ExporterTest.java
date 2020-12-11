@@ -100,7 +100,7 @@ public class FHIRSTU3ExporterTest {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
 
-    FhirContext ctx = FhirContext.forDstu3();
+    FhirContext ctx = FhirStu3.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
 
     FhirValidator validator = ctx.newValidator();
@@ -186,7 +186,12 @@ public class FHIRSTU3ExporterTest {
             ValidationResult bbResult = validationResources.validateSTU3(entry.getResource());
 
             for (SingleValidationMessage message : bbResult.getMessages()) {
-              if (message.getSeverity() == ResultSeverityEnum.ERROR) {
+              if (message.getMessage().contains("extension https://bluebutton.cms.gov/assets")) {
+                /*
+                 * The instance validator complains about the BlueButton extensions, ignore
+                 */
+                continue;
+              } else if (message.getSeverity() == ResultSeverityEnum.ERROR) {
                 if (!(message.getMessage().contains(
                     "Element 'ExplanationOfBenefit.id': minimum required = 1, but only found 0")
                     || message.getMessage().contains("Could not verify slice for profile"))) {
@@ -247,6 +252,9 @@ public class FHIRSTU3ExporterTest {
     person.attributes.put(Person.INCOME, Integer.parseInt(Config
         .get("generate.demographics.socioeconomic.income.poverty")) * 2);
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    person.attributes.put(Person.CONTACT_EMAIL, "test@test.test");
+    person.attributes.put(Person.CONTACT_GIVEN_NAME, "John");
+    person.attributes.put(Person.CONTACT_FAMILY_NAME, "Appleseed");
 
     person.history = new LinkedList<>();
     Provider mock = Mockito.mock(Provider.class);
@@ -279,7 +287,7 @@ public class FHIRSTU3ExporterTest {
     assertTrue(sampleObs.process(person, time));
     person.history.add(sampleObs);
     
-    FhirContext ctx = FhirContext.forDstu3();
+    FhirContext ctx = FhirStu3.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirStu3.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
@@ -345,7 +353,7 @@ public class FHIRSTU3ExporterTest {
     assertTrue(urlState.process(person, time));
     person.history.add(urlState);
     
-    FhirContext ctx = FhirContext.forDstu3();
+    FhirContext ctx = FhirStu3.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirStu3.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);

@@ -23,6 +23,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.input.FixedRecord;
+import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -131,6 +133,16 @@ public abstract class Exporter {
         int i = 0;
         for (String key : person.records.keySet()) {
           person.record = person.records.get(key);
+          // If the person fixed Records, overwrite their attributes from the fixed records.
+          if (person.attributes.get(Person.RECORD_GROUP) != null) {
+            FixedRecordGroup rg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
+            int recordToPull = i;
+            if (recordToPull >= rg.count) {
+              recordToPull = rg.count - 1;
+            }
+            FixedRecord fr = rg.records.get(recordToPull);
+            fr.totalOverwrite(person);
+          }
           exportRecord(person, Integer.toString(i), stopTime, options);
           i++;
         }
@@ -172,7 +184,7 @@ public abstract class Exporter {
       File outDirectory = getOutputFolder("fhir_stu3", person);
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
         org.hl7.fhir.dstu3.model.Bundle bundle = FhirStu3.convertToFHIR(person, stopTime);
-        IParser parser = FhirContext.forDstu3().newJsonParser().setPrettyPrint(false);
+        IParser parser = FhirStu3.getContext().newJsonParser().setPrettyPrint(false);
         for (org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           String filename = entry.getResource().getResourceType().toString() + ".ndjson";
           Path outFilePath = outDirectory.toPath().resolve(filename);
@@ -189,7 +201,7 @@ public abstract class Exporter {
       File outDirectory = getOutputFolder("fhir_dstu2", person);
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
         ca.uhn.fhir.model.dstu2.resource.Bundle bundle = FhirDstu2.convertToFHIR(person, stopTime);
-        IParser parser = FhirContext.forDstu2().newJsonParser().setPrettyPrint(false);
+        IParser parser = FhirDstu2.getContext().newJsonParser().setPrettyPrint(false);
         for (ca.uhn.fhir.model.dstu2.resource.Bundle.Entry entry : bundle.getEntry()) {
           String filename = entry.getResource().getResourceName() + ".ndjson";
           Path outFilePath = outDirectory.toPath().resolve(filename);
@@ -206,7 +218,7 @@ public abstract class Exporter {
       File outDirectory = getOutputFolder("fhir", person);
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
         org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
-        IParser parser = FhirContext.forR4().newJsonParser().setPrettyPrint(false);
+        IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(false);
         for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           String filename = entry.getResource().getResourceType().toString() + ".ndjson";
           Path outFilePath = outDirectory.toPath().resolve(filename);

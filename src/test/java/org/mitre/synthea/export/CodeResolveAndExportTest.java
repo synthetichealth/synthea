@@ -6,9 +6,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mitre.synthea.TestHelper.LOINC_OID;
 import static org.mitre.synthea.TestHelper.LOINC_URI;
 import static org.mitre.synthea.TestHelper.SNOMED_URI;
-import static org.mitre.synthea.TestHelper.getDstu2FhirContext;
-import static org.mitre.synthea.TestHelper.getR4FhirContext;
-import static org.mitre.synthea.TestHelper.getStu3FhirContext;
 import static org.mitre.synthea.TestHelper.getTxRecordingSource;
 import static org.mitre.synthea.TestHelper.isHttpRecordingEnabled;
 import static org.mitre.synthea.TestHelper.wiremockOptions;
@@ -169,7 +166,7 @@ public class CodeResolveAndExportTest {
 
   private void verifyEncounterCodeStu3() throws IOException {
     InputStream inputStream = new FileInputStream(stu3OutputPath.toFile().getAbsolutePath());
-    Bundle bundle = (Bundle) getStu3FhirContext().newJsonParser().parseResource(inputStream);
+    Bundle bundle = (Bundle) FhirStu3.getContext().newJsonParser().parseResource(inputStream);
 
     // Find encounter reason code.
     Optional<BundleEntryComponent> maybeEncounterEntry = bundle.getEntry().stream()
@@ -222,7 +219,7 @@ public class CodeResolveAndExportTest {
 
   private void verifyEncounterCodeR4() throws IOException {
     InputStream inputStream = new FileInputStream(r4OutputPath.toFile().getAbsolutePath());
-    org.hl7.fhir.r4.model.Bundle bundle = (org.hl7.fhir.r4.model.Bundle) getR4FhirContext()
+    org.hl7.fhir.r4.model.Bundle bundle = (org.hl7.fhir.r4.model.Bundle) FhirR4.getContext()
         .newJsonParser().parseResource(inputStream);
 
     // Find encounter reason code.
@@ -283,7 +280,7 @@ public class CodeResolveAndExportTest {
   private void verifyEncounterCodeDstu2() throws IOException {
     InputStream inputStream = new FileInputStream(dstu2OutputPath.toFile().getAbsolutePath());
     ca.uhn.fhir.model.dstu2.resource.Bundle bundle = 
-        (ca.uhn.fhir.model.dstu2.resource.Bundle) getDstu2FhirContext().newJsonParser()
+        (ca.uhn.fhir.model.dstu2.resource.Bundle) FhirDstu2.getContext().newJsonParser()
             .parseResource(inputStream);
 
     // Find encounter reason code.
