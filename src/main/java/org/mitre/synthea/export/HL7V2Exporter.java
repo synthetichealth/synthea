@@ -10,13 +10,17 @@ import ca.uhn.hl7v2.model.v251.datatype.NM;
 import ca.uhn.hl7v2.model.v251.datatype.ST;
 import ca.uhn.hl7v2.model.v251.datatype.TS;
 import ca.uhn.hl7v2.model.v251.datatype.XAD;
+import ca.uhn.hl7v2.model.v251.datatype.XCN;
+import ca.uhn.hl7v2.model.v251.datatype.XON;
 import ca.uhn.hl7v2.model.v251.datatype.XPN;
 import ca.uhn.hl7v2.model.v251.datatype.XTN;
+import ca.uhn.hl7v2.model.v251.group.ADT_A01_INSURANCE;
 import ca.uhn.hl7v2.model.v251.group.ADT_A01_PROCEDURE;
 import ca.uhn.hl7v2.model.v251.message.ADT_A01;
 import ca.uhn.hl7v2.model.v251.segment.AL1;
 import ca.uhn.hl7v2.model.v251.segment.DG1;
 import ca.uhn.hl7v2.model.v251.segment.EVN;
+import ca.uhn.hl7v2.model.v251.segment.IN1;
 import ca.uhn.hl7v2.model.v251.segment.MSH;
 import ca.uhn.hl7v2.model.v251.segment.OBX;
 import ca.uhn.hl7v2.model.v251.segment.PD1;
@@ -24,6 +28,7 @@ import ca.uhn.hl7v2.model.v251.segment.PID;
 import ca.uhn.hl7v2.model.v251.segment.PRB;
 import ca.uhn.hl7v2.model.v251.segment.PV1;
 import ca.uhn.hl7v2.model.v251.segment.RXE;
+import ca.uhn.hl7v2.model.v251.segment.SFT;
 
 import java.io.IOException;
 
@@ -38,8 +43,10 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.world.agents.Clinician;
+import org.mitre.synthea.world.agents.Payer;
 
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -49,7 +56,7 @@ import org.mitre.synthea.world.concepts.RaceAndEthnicity;
 
 public class HL7V2Exporter {
 
-    private static final String HL7_VERSION = "2.8";
+    private static final String HL7_VERSION = "2.5.1";
     private static final String CW_NAMESPACE_ID = "CWNS";
     private static final String MSG_TYPE = "ADT";
     private static final String MSG_EVENT_TYPE = "A01";
@@ -106,6 +113,7 @@ public class HL7V2Exporter {
             adt = new ADT_A01();
             adt.initQuickstart(MSG_TYPE, MSG_EVENT_TYPE, "P");
             generateMSH(curDT);
+            generateSFT();
             generateEVN(curDT);
             processPatient(person);
             processEncounters(person);
@@ -161,6 +169,15 @@ public class HL7V2Exporter {
         msh.getVersionID().getVersionID().setValue(HL7_VERSION);
     }
 
+    private void generateSFT() throws DataTypeException {
+        SFT sft = adt.getSFT();
+        XON xon = sft.getSft1_SoftwareVendorOrganization();
+        xon.getXon1_OrganizationName().setValue("QueuePoint Systems, Inc.");
+        xon.getXon2_OrganizationNameTypeCode().setValue("Q");
+        sft.getSft2_SoftwareCertifiedVersionOrReleaseNumber().setValue("1.0");
+        sft.getSft3_SoftwareProductName().setValue("Caterwaul");
+    }
+
     private void generateEVN(String curDT) throws DataTypeException {
         EVN evn = adt.getEVN();
         evn.getRecordedDateTime().getTime().setValue(curDT);
@@ -176,12 +193,12 @@ public class HL7V2Exporter {
         patientName.getFamilyName().getSurname().setValue(getStrAttr(pattrs, "last_name"));
         patientName.getGivenName().setValue(getStrAttr(pattrs, "first_name"));
         patientName.getPrefixEgDR().setValue(getStrAttr(pattrs, "name_prefix"));
-        
+
         pid.getPid2_PatientID().getCx1_IDNumber().setValue(String.valueOf(Math.abs(getStrAttr(pattrs, "UUID").hashCode())));
-        CX patientId = pid.insertPatientIdentifierList(0);        
+        CX patientId = pid.insertPatientIdentifierList(0);
         patientId.getIDNumber().setValue(getStrAttr(pattrs, "id"));
         patientId.getAssigningAuthority().getHd1_NamespaceID().setValue(CW_NAMESPACE_ID);
-        
+
         XAD patientAddress = pid.insertPatientAddress(0);
         patientAddress.getStreetAddress().getStreetOrMailingAddress().setValue("123 Main Street");
         patientAddress.getCity().setValue(getStrAttr(pattrs, "city"));
@@ -192,12 +209,11 @@ public class HL7V2Exporter {
 
         //pid.getDriverSLicenseNumberPatient().setValue(pattrs.get("identifier_drivers").toString()); Not valid anymore in HL7
         //pid.getSSNNumberPatient().setValue(pattrs.get("ssn").toString()); Not valid anymore
-        
         String raceName = getStrAttr(pattrs, "race");
         CE race = pid.insertPid10_Race(0);
         race.getText().setValue(raceName);
         race.getIdentifier().setValue(((Map) pattrs.get("race_lookup")).get(raceName).toString());
-        
+
         CE ethnicGroup = pid.insertPid22_EthnicGroup(0);
         ethnicGroup.getText().setValue(((Map) pattrs.get("ethnicity_display_lookup")).get(raceName).toString());
         ethnicGroup.getIdentifier().setValue(((Map) pattrs.get("ethnicity_lookup")).get(raceName).toString());
@@ -211,9 +227,9 @@ public class HL7V2Exporter {
         if (StringUtils.isNotBlank(mothersName)) {
             String[] nameParts = mothersName.split("\\ ");
             if (nameParts.length > 1) {
-                
-                XPN mothersMaiden = pid.insertMotherSMaidenName(0); 
-                
+
+                XPN mothersMaiden = pid.insertMotherSMaidenName(0);
+
                 mothersMaiden.getGivenName().setValue(nameParts[0]);
                 mothersMaiden.getFamilyName().getSurname().setValue(nameParts[1]);
             }
@@ -222,8 +238,16 @@ public class HL7V2Exporter {
         homePhone.getTelephoneNumber().setValue(getStrAttr(pattrs, "telecom"));
 
         pid.getPid15_PrimaryLanguage().getText().setValue(getStrAttr(pattrs, "first_language"));
-        
-        PD1 pd1 = adt.getPD1();
+
+        Provider pcp = (Provider) person.attributes.get("preferredProvideroutpatient");
+        if (pcp != null) {
+            PD1 pd1 = adt.getPD1();
+            XCN provId = pd1.insertPatientPrimaryCareProviderNameIDNo(0);
+            provId.getXcn1_IDNumber().setValue(pcp.id);
+            XON pcpFac = pd1.insertPatientPrimaryFacility(0);
+            pcpFac.getOrganizationName().setValue(pcp.name);
+            pcpFac.getOrganizationIdentifier().setValue(pcp.id);
+        }
     }
 
     private void processEncounters(Person person) throws DataTypeException, HL7Exception {
@@ -233,8 +257,8 @@ public class HL7V2Exporter {
         PV1 pv1 = adt.getPV1();
         pv1.getPv11_SetIDPV1().setValue("1");
         IS eClass = pv1.getPv12_PatientClass();
-        IS aType = pv1.getPv14_AdmissionType(); 
-        switch(e.type) {
+        IS aType = pv1.getPv14_AdmissionType();
+        switch (e.type) {
             case "inpatient":
                 eClass.setValue("I");
                 break;
@@ -259,24 +283,46 @@ public class HL7V2Exporter {
                 eClass.setValue(e.type.toUpperCase());
                 break;
         }
-        Clinician prov =e.clinician;
-        if (e.provider!=null) {
+        Clinician prov = e.clinician;
+        if (e.provider != null) {
             pv1.getAssignedPatientLocation().getFacility().getHd1_NamespaceID().setValue(e.provider.name);
             pv1.getVisitNumber().getCx1_IDNumber().setValue(String.valueOf(e.hashCode()));
         }
         pv1.getAssignedPatientLocation().getFacility();
         pv1.getAttendingDoctor(0).getXcn1_IDNumber().setValue(String.valueOf(prov.identifier));
-        pv1.getAttendingDoctor(0).getXcn2_FamilyName().getFn1_Surname().setValue((String)prov.getAttributes().get("last_name"));
-        pv1.getAttendingDoctor(0).getXcn3_GivenName().setValue((String)prov.getAttributes().get("first_name"));
-        if (e.start>0) {
+        pv1.getAttendingDoctor(0).getXcn2_FamilyName().getFn1_Surname().setValue((String) prov.getAttributes().get("last_name"));
+        pv1.getAttendingDoctor(0).getXcn3_GivenName().setValue((String) prov.getAttributes().get("first_name"));
+        if (e.start > 0) {
             pv1.getAdmitDateTime().getTime().setValue(new Date(e.start));
-            if (e.stop>0) {
+            if (e.stop > 0) {
                 TS t = pv1.insertDischargeDateTime(0);
                 t.getTime().setValue(new Date(e.stop));
             }
         }
+
+        Payer payer = person.getPayerAtAge(person.ageInYears(e.start));
+        if (payer != null) {
+            ADT_A01_INSURANCE adtInsurance = adt.getINSURANCE();
+            IN1 in1 = adtInsurance.getIN1();
+            in1.getIn11_SetIDIN1().setValue("1");
+            in1.getIn12_InsurancePlanID().getCe1_Identifier().setValue(String.valueOf(payer.uuid.hashCode()));
+            XON insComp = in1.insertInsuranceCompanyName(0);
+            insComp.getOrganizationName().setValue(payer.getName());
+            XAD insAddr = in1.insertIn15_InsuranceCompanyAddress(0);
+            insAddr.getXad1_StreetAddress().getStreetOrMailingAddress().setValue((String) payer.getAttributes().get("address"));
+            insAddr.getXad3_City().setValue((String) payer.getAttributes().get("city"));
+            insAddr.getXad4_StateOrProvince().setValue((String) payer.getAttributes().get("state_headquartered"));
+            insAddr.getXad5_ZipOrPostalCode().setValue((String) payer.getAttributes().get("zip"));
+
+            in1.getIn118_InsuredSDateOfBirth().getTs1_Time().setValue(getDateAttr(person.attributes, "birthdate"));
+            in1.getIn117_InsuredSRelationshipToPatient().getCe1_Identifier().setValue("SEL");
+            in1.getIn117_InsuredSRelationshipToPatient().getCe2_Text().setValue("SELF");
+
+            in1.getIn137_PolicyDeductible().getCp1_Price().getMo1_Quantity().setValue(String.valueOf(payer.getDeductible()));
+            in1.getIn115_PlanType().setValue(payer.getOwnership().toUpperCase());
+        }
     }
-    
+
     private void processAllergies(Person person) throws DataTypeException, HL7Exception {
         List<Entry> allergies = (List<Entry>) person.attributes.get("ehr_allergies");
         if (allergies == null || allergies.isEmpty()) {
@@ -314,7 +360,7 @@ public class HL7V2Exporter {
         for (Entry entry : conditions) {
 //            System.out.println("\tGenerating PRB: " + entry.name);
             PRB p = new PRB(adt, adt.getModelClassFactory());
-            if (entry.codes != null && entry.codes.size() > 0 && StringUtils.containsIgnoreCase(entry.codes.get(0).display, "finding")) {               
+            if (entry.codes != null && entry.codes.size() > 0 && StringUtils.containsIgnoreCase(entry.codes.get(0).display, "finding")) {
                 Code c = entry.codes.get(0);
                 if (seenConditionCode.contains(c.code)) {
 //                    System.out.println("\t\tSkipping Dup Diag:" + c.display);
@@ -334,7 +380,7 @@ public class HL7V2Exporter {
             }
         }
     }
-    
+
     private void processDiagnosis(Person person) throws DataTypeException, HL7Exception {
         List<Entry> conditions = (List<Entry>) person.attributes.get("ehr_conditions");
         if (conditions == null || conditions.isEmpty()) {
@@ -346,7 +392,7 @@ public class HL7V2Exporter {
 //            System.out.println("\tGenerating DG1: " + entry.name);
             DG1 d = new DG1(adt, adt.getModelClassFactory());
             if (entry.codes != null && entry.codes.size() > 0 && !StringUtils.containsIgnoreCase(entry.codes.get(0).display, "finding")) {
-                d.getDg11_SetIDDG1().setValue(String.valueOf(dc + 1));   
+                d.getDg11_SetIDDG1().setValue(String.valueOf(dc + 1));
                 Code c = entry.codes.get(0);
                 if (seenConditionCode.contains(c.code)) {
 //                    System.out.println("\t\tSkipping Dup Diag:" + c.display);
@@ -377,7 +423,7 @@ public class HL7V2Exporter {
         for (HealthRecord.Medication med : meds.values()) {
 //            System.out.println("\tGenerating RXE: " + med.name);
             RXE m = new RXE(adt, adt.getModelClassFactory());
-            if (med.codes != null && med.codes.size() > 0) {                
+            if (med.codes != null && med.codes.size() > 0) {
                 Code medCode = med.codes.get(0);
                 if (seenMedCodes.contains(medCode.code)) {
 //                    System.out.println("\t\tSkipping Dup Med Code:" + medCode.display);
@@ -432,7 +478,7 @@ public class HL7V2Exporter {
 //            System.out.println("\tGenerating PR1: " + entry.name);
             ADT_A01_PROCEDURE p = new ADT_A01_PROCEDURE(adt, adt.getModelClassFactory());
             if (entry.codes != null && entry.codes.size() > 0) {
-                p.getPR1().getPr11_SetIDPR1().setValue(String.valueOf(pc + 1));                 
+                p.getPR1().getPr11_SetIDPR1().setValue(String.valueOf(pc + 1));
                 Code procCode = entry.codes.get(0);
                 if (seenProcCodes.contains(procCode.code)) {
 //                    System.out.println("\t\tSkipping Dup Procedure Code:" + procCode.display);
@@ -462,7 +508,7 @@ public class HL7V2Exporter {
     private void processVitals(Person person) throws HL7Exception {
         List<HealthRecord.Encounter> encounters = (List<HealthRecord.Encounter>) person.attributes.get("ehr_encounters");
         AtomicInteger ox = new AtomicInteger(1);
-        List<String> seenVitalCodes = new ArrayList();        
+        List<String> seenVitalCodes = new ArrayList();
         for (Encounter encounter : encounters) {
             if (encounter.observations.size() > 0) {
                 for (Observation obs : encounter.observations) {
@@ -492,7 +538,7 @@ public class HL7V2Exporter {
             }
             //Otherwise, track that we're adding one
             seenVitalCodes.add(obscode.code);
-            
+
 //            System.out.println("\t\tAdding Observation Code:" + obscode.display);
             v.getObx3_ObservationIdentifier().getCe1_Identifier().setValue(obscode.code);
             v.getObx3_ObservationIdentifier().getCe2_Text().setValue(obscode.display);
@@ -500,24 +546,24 @@ public class HL7V2Exporter {
 
             //Set the Units
             v.getObx6_Units().getCe2_Text().setValue(obs.unit);
-            
+
             //Generate a slot for the value
             v.insertObx5_ObservationValue(0);
             //Based on the object class of obs.value, generate the appropriate HL7 DataType and populate it into OBX5
             //We set OBX2 to the DataType (e.g., ST or NM)
             if (obs.value instanceof Double) {
-                NM nm = new NM(adt);            
+                NM nm = new NM(adt);
                 nm.parse(obs.value.toString());
-                v.getObx5_ObservationValue()[0].setData(nm);         
-                v.getObx2_ValueType().setValue("NM");                  
+                v.getObx5_ObservationValue()[0].setData(nm);
+                v.getObx2_ValueType().setValue("NM");
             } else if (obs.value instanceof HealthRecord.Code) {
-                Code c = (HealthRecord.Code)obs.value;
+                Code c = (HealthRecord.Code) obs.value;
                 CWE cwe = new CWE(adt);
                 cwe.getCwe1_Identifier().setValue(c.code);
                 cwe.getCwe2_Text().setValue(c.display);
                 cwe.getCwe3_NameOfCodingSystem().setValue(translateSystem(c.system));
-                v.getObx5_ObservationValue()[0].setData(cwe);       
-                v.getObx2_ValueType().setValue("CWE");  
+                v.getObx5_ObservationValue()[0].setData(cwe);
+                v.getObx2_ValueType().setValue("CWE");
             } else if (obs.value instanceof String) {
                 ST st = new ST(adt);
                 st.setValue(obs.value.toString());
@@ -530,14 +576,14 @@ public class HL7V2Exporter {
             v.getDateTimeOfTheObservation().getTime().setValue(new Date(obs.start));
             //Add it to the  list of observations
             //To preserve order of the OBX's, use 'custom'
-            customSegs.put(String.format("OBX.%s", ox.get()), v.encode());            
+            customSegs.put(String.format("OBX.%s", ox.get()), v.encode());
 //            adt.insertOBX(v, 0);
             ox.incrementAndGet();
         }
     }
 
     private String translateSystem(String systemName) {
-        switch(systemName) {
+        switch (systemName) {
             case "snomed-ct":
                 return "SCT";
             case "loinc":
@@ -545,10 +591,13 @@ public class HL7V2Exporter {
             case "rxnorm":
                 return "RXNORM";
             default:
-                if (StringUtils.isBlank(systemName)) return "????";
+                if (StringUtils.isBlank(systemName)) {
+                    return "????";
+                }
                 return systemName.toUpperCase();
         }
     }
+
     private String getStrAttr(Map<String, Object> pattrs, String key) {
         if (pattrs.containsKey(key)) {
             return (String) pattrs.get(key);
