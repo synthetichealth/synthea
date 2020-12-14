@@ -12,6 +12,8 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.risk_calculators.ASCVD;
+import org.mitre.synthea.modules.risk_calculators.Framingham;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -50,6 +52,8 @@ public final class CardiovascularDiseaseModule extends Module {
         calculateAscvdRisk(person, time);
     }
 
+    double framinghamCVD = Framingham.cvd10Year(person, time, false);
+    person.attributes.put("framingham_cvd", framinghamCVD);
 
 //    onsetCoronaryHeartDisease(person, time);
 //    coronaryHeartDiseaseProgression(person, time);
@@ -68,76 +72,6 @@ public final class CardiovascularDiseaseModule extends Module {
   // RESOURCES//
   //////////////
 
-  // estimate cardiovascular risk of developing coronary heart disease (CHD)
-  // http://www.nhlbi.nih.gov/health-pro/guidelines/current/cholesterol-guidelines/quick-desk-reference-html/10-year-risk-framingham-table
-
-  // Indices in the array correspond to these age ranges: 20-24, 25-29, 30-34 35-39, 40-44, 45-49,
-  // 50-54, 55-59, 60-64, 65-69, 70-74, 75-79
-  private static final int[] age_chd_m = { -9, -9, -9, -4, 0, 3, 6, 8, 10, 11, 12, 13 };
-  private static final int[] age_chd_f = { -7, -7, -7, -3, 0, 3, 6, 8, 10, 12, 14, 16 };
-
-  private static final int[][] age_chol_chd_m = {
-      // <160, 160-199, 200-239, 240-279, >280
-      { 0, 4, 7, 9, 11 }, // 20-29 years
-      { 0, 4, 7, 9, 11 }, // 30-39 years
-      { 0, 3, 5, 6, 8 }, // 40-49 years
-      { 0, 2, 3, 4, 5 }, // 50-59 years
-      { 0, 1, 1, 2, 3 }, // 60-69 years
-      { 0, 0, 0, 1, 1 } // 70-79 years
-  };
-
-  private static final int[][] age_chol_chd_f = {
-      // <160, 160-199, 200-239, 240-279, >280
-      { 0, 4, 8, 11, 13 }, // 20-29 years
-      { 0, 4, 8, 11, 13 }, // 30-39 years
-      { 0, 3, 6, 8, 10 }, // 40-49 years
-      { 0, 2, 4, 5, 7 }, // 50-59 years
-      { 0, 1, 2, 3, 4 }, // 60-69 years
-      { 0, 1, 1, 2, 2 } // 70-79 years
-  };
-
-  // 20-29, 30-39, 40-49, 50-59, 60-69, 70-79 age ranges
-  private static final int[] age_smoke_chd_m = { 8, 8, 5, 3, 1, 1 };
-  private static final int[] age_smoke_chd_f = { 9, 9, 7, 4, 2, 1 };
-
-  // true/false refers to whether or not blood pressure is treated
-  private static final int[][] sys_bp_chd_m = {
-      // true, false
-      { 0, 0 }, // <120
-      { 1, 0 }, // 120-129
-      { 2, 1 }, // 130-139
-      { 2, 1 }, // 140-149
-      { 2, 1 }, // 150-159
-      { 3, 2 } // >=160
-  };
-  private static final int[][] sys_bp_chd_f = {
-      // true, false
-      { 0, 0 }, // <120
-      { 3, 1 }, // 120-129
-      { 4, 2 }, // 130-139
-      { 5, 3 }, // 140-149
-      { 5, 3 }, // 150-159
-      { 6, 4 } // >=160
-  };
-
-  private static final Map<Integer, Double> risk_chd_m;
-  private static final Map<Integer, Double> risk_chd_f;
-
-  private static final int[] hdl_lookup_chd = new int[] { 2, 1, 0, -1 }; // <40, 40-49, 50-59, >60
-
-  // Framingham score system for calculating atrial fibrillation (significant factor for stroke
-  // risk)
-  private static final int[][] age_af = {
-      // age ranges: 45-49, 50-54, 55-59, 60-64, 65-69, 70-74, 75-79, 80-84, >84
-      { 1, 2, 3, 4, 5, 6, 7, 7, 8 }, // male
-      { -3, -2, 0, 1, 3, 4, 6, 7, 8 } // female
-  };
-
-  // only covers points 1-9. <=0 and >= 10 are in if statement
-  private static final double[] risk_af_table = { 0.01, // 0 or less
-      0.02, 0.02, 0.03, 0.04, 0.06, 0.08, 0.12, 0.16, 0.22, 0.3 // 10 or greater
-  };
-
   private static final String CVD_ENCOUNTER = "cardiovascular_encounter";
   private static final Map<String, Code> LOOKUP;
   private static final Map<String, Integer> MEDICATION_AVAILABLE;
@@ -146,48 +80,6 @@ public final class CardiovascularDiseaseModule extends Module {
   private static final Map<String, List<String>> HISTORY_CONDITIONS;
 
   static {
-    // framingham point scores gives a 10-year risk
-    risk_chd_m = new HashMap<>();
-    risk_chd_m.put(-1, 0.005); // '-1' represents all scores <0
-    risk_chd_m.put(0, 0.01);
-    risk_chd_m.put(1, 0.01);
-    risk_chd_m.put(2, 0.01);
-    risk_chd_m.put(3, 0.01);
-    risk_chd_m.put(4, 0.01);
-    risk_chd_m.put(5, 0.02);
-    risk_chd_m.put(6, 0.02);
-    risk_chd_m.put(7, 0.03);
-    risk_chd_m.put(8, 0.04);
-    risk_chd_m.put(9, 0.05);
-    risk_chd_m.put(10, 0.06);
-    risk_chd_m.put(11, 0.08);
-    risk_chd_m.put(12, 0.1);
-    risk_chd_m.put(13, 0.12);
-    risk_chd_m.put(14, 0.16);
-    risk_chd_m.put(15, 0.20);
-    risk_chd_m.put(16, 0.25);
-    risk_chd_m.put(17, 0.3); // '17' represents all scores >16
-
-    risk_chd_f = new HashMap<>();
-    risk_chd_f.put(8, 0.005); // '8' represents all scores <9
-    risk_chd_f.put(9, 0.01);
-    risk_chd_f.put(10, 0.01);
-    risk_chd_f.put(11, 0.01);
-    risk_chd_f.put(12, 0.01);
-    risk_chd_f.put(13, 0.02);
-    risk_chd_f.put(14, 0.02);
-    risk_chd_f.put(15, 0.03);
-    risk_chd_f.put(16, 0.04);
-    risk_chd_f.put(17, 0.05);
-    risk_chd_f.put(18, 0.06);
-    risk_chd_f.put(19, 0.08);
-    risk_chd_f.put(20, 0.11);
-    risk_chd_f.put(21, 0.14);
-    risk_chd_f.put(22, 0.17);
-    risk_chd_f.put(23, 0.22);
-    risk_chd_f.put(24, 0.27);
-    risk_chd_f.put(25, 0.3); // '25' represents all scores >24
-
     MEDICATION_AVAILABLE = new HashMap<>();
     MEDICATION_AVAILABLE.put("clopidogrel", 1997);
     MEDICATION_AVAILABLE.put("simvastatin", 1991);
@@ -313,71 +205,7 @@ public final class CardiovascularDiseaseModule extends Module {
    * @param time The risk is calculated for the given time.
    */
   private static void calculateCardioRisk(Person person, long time) {
-    int age = person.ageInYears(time);
-    String gender = (String) person.attributes.get(Person.GENDER);
-    Double sysBP = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time);
-    Double diaBP = person.getVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, time);
-    Double chol = person.getVitalSign(VitalSign.TOTAL_CHOLESTEROL, time);
-    if (sysBP == null || diaBP == null || chol == null) {
-      return;
-    }
-
-    Boolean bpTreated = (Boolean)
-        person.attributes.getOrDefault("blood_pressure_controlled", false);
-
-    Double hdl = person.getVitalSign(VitalSign.HDL, time);
-
-    // calculate which index in a lookup array a number corresponds to based on ranges in scoring
-    int shortAgeRange = bound((age - 20) / 5, 0, 11);
-    int longAgeRange = bound((age - 20) / 10, 0, 5);
-
-    // 0: <160, 1: 160-199, 2: 200-239, 3: 240-279, 4: >280
-    int cholRange = bound((chol.intValue() - 160) / 40 + 1, 0, 4);
-
-    // 0: <120, 1: 120-129, 2: 130-139, 3: 140-149, 4: 150-159, 5: >=160
-    int bpRange = bound((sysBP.intValue() - 120) / 10 + 1, 0, 5);
-    int framinghamPoints = 0;
-
-    int[] ageChd;
-    int[][] ageCholChd;
-    int[] ageSmokeChd;
-    int[][] sysBpChd;
-
-    if (gender.equals("M")) {
-      ageChd = age_chd_m;
-      ageCholChd = age_chol_chd_m;
-      ageSmokeChd = age_smoke_chd_m;
-      sysBpChd = sys_bp_chd_m;
-    } else {
-      ageChd = age_chd_f;
-      ageCholChd = age_chol_chd_f;
-      ageSmokeChd = age_smoke_chd_f;
-      sysBpChd = sys_bp_chd_f;
-    }
-
-    framinghamPoints += ageChd[shortAgeRange];
-    framinghamPoints += ageCholChd[longAgeRange][cholRange];
-
-    if ((Boolean) person.attributes.getOrDefault(Person.SMOKER, false)) {
-      framinghamPoints += ageSmokeChd[longAgeRange];
-    }
-
-    // 0: <40, 1: 40-49, 2: 50-59, 3: >60
-    int hdlRange = bound((hdl.intValue() - 40) / 10 + 1, 0, 3);
-    framinghamPoints += hdl_lookup_chd[hdlRange];
-
-    int treated = bpTreated ? 0 : 1;
-    framinghamPoints += sysBpChd[bpRange][treated];
-    double framinghamRisk;
-    // restrict lower and upper bound of framingham score
-    if (gender.equals("M")) {
-      framinghamPoints = bound(framinghamPoints, 0, 17);
-      framinghamRisk = risk_chd_m.get(framinghamPoints);
-    } else {
-      framinghamPoints = bound(framinghamPoints, 8, 25);
-      framinghamRisk = risk_chd_f.get(framinghamPoints);
-    }
-    
+    double framinghamRisk = Framingham.chd10Year(person, time, false);
     person.attributes.put("framingham_risk", framinghamRisk);
 
     double timestepRisk = Utilities.convertRiskToTimestep(framinghamRisk, tenYearsInMS);
@@ -387,94 +215,12 @@ public final class CardiovascularDiseaseModule extends Module {
     person.attributes.put("mi_risk", monthlyRisk);
   }
   
-  
-  /**
-   * Equation Parameters of the Pooled Cohort Equations for Estimation of 10-Year Risk of Hard ASCVD
-   * See Appendix 7, Table A  https://doi.org/10.1161/01.cir.0000437741.48606.98
-   * "N/A" becomes 0
-   */
-	private static final double[][] ASCVD_COEFFICIENTS = {
-                          // sex:  ------women-----   ----men----
-                          // race: ---w---  --aa--  ---w--  --aa--
-/* Ln Age (y) */                 { -29.799, 17.114,  12.344, 2.469 },
-/* (Ln Age)^2 */                 { 4.884,   0,       0,      0 },
-/* Ln Total Chol */              { 13.540,  0.940,   11.853, 0.302 },
-/* Ln Age × Ln Total Chol */     { -3.114,  0,       -2.664, 0 },
-/* Ln HDL-C */                   { -13.578, -18.920, -7.990, -0.307 },
-/* Ln Age × Ln HDL-C */          { 3.149,   4.475,   1.769,  0 },
-/* Ln Treated SysBP */           { 2.019,   29.291,  1.797,  1.916 },
-/* Ln Age × Ln Treated SysBP */  { 0,       -6.432,  0,      0 },
-/* Ln Untreated SysBP */         { 1.957,   27.820,  1.764,  1.809 },
-/* Ln Age × Ln Untreat SysBP */  { 0,       -6.087,  0,      0 },
-/* Current Smoker (1=Y, 0=N) */  { 7.574,   0.691,   7.837,  0.549 },
-/* Ln Age × Current Smoker */    { -1.665,  0,       -1.795, 0 },
-/* Diabetes (1=Y, 0=N) */        { 0.661,   0.874,   0.658,  0.645 },
-
-/* Mean (Coefficient × Value) */ { -29.18,  86.61,   61.18,  19.54 },
-/* Baseline Survival */          { 0.9665,  0.9533,  0.9144, 0.8954 }
-	};
-
-
+ 
   /**
    * Calculates the 10-year ASCVD Risk Estimates.
    */
   private static void calculateAscvdRisk(Person person, long time) {
-	int age = person.ageInYears(time);
-	String gender = (String) person.attributes.get(Person.GENDER);
-	String race = (String) person.attributes.get(Person.RACE);
-	Double sysBP = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time);
-	Double diaBP = person.getVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, time);
-	Double totalChol = person.getVitalSign(VitalSign.TOTAL_CHOLESTEROL, time);
-	Double hdl = person.getVitalSign(VitalSign.HDL, time);
-
-	boolean smoker = (Boolean) person.attributes.getOrDefault(Person.SMOKER, false);
-	boolean diabetic = (Boolean) person.attributes.getOrDefault("diabetes", false);
-	boolean hypertensive = (Boolean) person.attributes.getOrDefault("hypertension", false);
-	if (sysBP == null || diaBP == null || totalChol == null) {
-		return;
-	}
-	if (age < 40 || age > 79) {
-		return;
-	}
-	double lnAge = Math.log(age);
-	double lnTotalChol = Math.log(totalChol);
-	double lnHdl = Math.log(hdl);
-	double lnTreatedSBP = hypertensive ? Math.log(sysBP) : 0;    
-	double lnUntreatSBP = hypertensive ? 0 : Math.log(sysBP);
-    int smokerInt = smoker ? 1 : 0;
-    int diabeticInt = diabetic ? 1 : 0;
-
-    double[] values = {
-/* Ln Age (y) */                lnAge,
-/* (Ln Age)^2 */                (lnAge * lnAge),
-/* Ln Total Chol */             lnTotalChol,
-/* Ln Age × Ln Total Chol */    (lnAge * lnTotalChol),
-/* Ln HDL-C */                  lnHdl,
-/* Ln Age × Ln HDL-C */         (lnAge * lnHdl),
-/* Ln Treated SysBP */          lnTreatedSBP,
-/* Ln Age × Ln Treated SysBP */ (lnAge * lnTreatedSBP),
-/* Ln Untreated SysBP */        lnUntreatSBP,
-/* Ln Age × Ln Untreat SysBP */ (lnAge * lnUntreatSBP),
-/* Current Smoker (1=Y, 0=N) */ smokerInt,
-/* Ln Age × Current Smoker */   (lnAge * smokerInt),
-/* Diabetes (1=Y, 0=N) */       diabeticInt
-    };
-
-    int raceSexIndex = 0; // index in ASCVD_COEFFICIENTS above
-    if (gender.equals("M")) raceSexIndex += 2;
-    if (race.equals("black")) raceSexIndex += 1;
-
-
-	double raceSexMean = ASCVD_COEFFICIENTS[13][raceSexIndex];
-    double baselineSurvival = ASCVD_COEFFICIENTS[14][raceSexIndex];
-	double individualSum = 0;
-
-    for (int i = 0 ; i < 13 ; i++) {
-      individualSum += ASCVD_COEFFICIENTS[i][raceSexIndex] * values[i];
-    }
-
-	double ascvdRisk = (1 - Math.pow(baselineSurvival, Math.exp(individualSum - raceSexMean)));
-	
+	  double ascvdRisk = ASCVD.ascvd10Year(person, time, false);
     person.attributes.put("ascvd_risk", ascvdRisk);
 
     double timestepRisk = Utilities.convertRiskToTimestep(ascvdRisk, tenYearsInMS);
@@ -601,34 +347,9 @@ public final class CardiovascularDiseaseModule extends Module {
    * @param time The time.
    */
   private static void calculateAtrialFibrillationRisk(Person person, long time) {
-    int age = person.ageInYears(time);
-    if (age < 45 || person.attributes.containsKey("atrial_fibrillation")
-        || person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time) == null
-        || person.getVitalSign(VitalSign.BMI, time) == null) {
-      return;
-    }
-
-    int afScore = 0;
-    int ageRange = Math.min((age - 45) / 5, 8);
-    int genderIndex = (person.attributes.get(Person.GENDER).equals("M")) ? 0 : 1;
-    afScore += age_af[genderIndex][ageRange];
-    if (person.getVitalSign(VitalSign.BMI, time) >= 30) {
-      afScore += 1;
-    }
-
-    if (person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time) >= 160) {
-      afScore += 1;
-    }
-
-    if ((Boolean) person.attributes.getOrDefault("blood_pressure_controlled", false)) {
-      afScore += 1;
-    }
-
-    afScore = bound(afScore, 0, 10);
-
-    double afRisk = risk_af_table[afScore]; // 10-yr risk
+    double afRisk = Framingham.atrialFibrillation10Year(person, time, false);
     person.attributes.put("atrial_fibrillation_risk",
-        Utilities.convertRiskToTimestep(afRisk, TimeUnit.DAYS.toMillis(3650)));
+        Utilities.convertRiskToTimestep(afRisk, tenYearsInMS));
   }
 
 
@@ -646,53 +367,6 @@ public final class CardiovascularDiseaseModule extends Module {
     }
   }
 
-  // https://www.heart.org/idc/groups/heart-public/@wcm/@sop/@smd/documents/downloadable/ucm_449858.pdf
-  // Prevalence of stroke by age and sex (Male, Female)
-  private static final double[] stroke_rate_20_39 = { 0.002, 0.007 };
-  private static final double[] stroke_rate_40_59 = { 0.019, 0.022 };
-
-  private static final double[][] ten_year_stroke_risk = {
-      { 0, 0.03, 0.03, 0.04, 0.04, 0.05, 0.05, 0.06, 0.07, 0.08, 0.1, // male section
-          0.11, 0.13, 0.15, 0.17, 0.2, 0.22, 0.26, 0.29, 0.33, 0.37, 0.42, 0.47, 0.52, 0.57, 0.63,
-          0.68, 0.74, 0.79, 0.84, 0.88 },
-      { 0, 0.01, 0.01, 0.02, 0.02, 0.02, 0.03, 0.04, 0.04, 0.05, 0.06, // female
-          0.08, 0.09, 0.11, 0.13, 0.16, 0.19, 0.23, 0.27, 0.32, 0.37, 0.43, 0.5, 0.57, 0.64, 0.71,
-          0.78, 0.84 } };
-
-  // the index for each range corresponds to the number of points
-  private static final int[][] age_stroke = { 
-      { 54, 57, 60, 63, 66, 69, 73, 76, 79, 82, 85 }, // male
-      { 54, 57, 60, 63, 65, 68, 71, 74, 77, 79, 82 } // female
-  };
-
-  private static final int[][] untreated_sys_bp_stroke = {
-      { 0, 106, 116, 126, 136, 146, 156, 166, 176, 185, 196 }, // male
-      { 0, 95, 107, 119, 131, 144, 156, 168, 181, 193, 205 } // female
-  };
-
-  private static final int[][] treated_sys_bp_stroke = {
-      { 0, 106, 113, 118, 124, 130, 136, 143, 151, 162, 177 }, // male
-      { 0, 95, 107, 114, 120, 126, 132, 140, 149, 161, 205 } // female
-  };
-
-  private static final int getIndexForValueInRangelist(int value, int[] data) {
-    for (int i = 0; i < data.length - 1; i++) {
-      if (data[i] <= value && value <= data[i + 1]) {
-        return i;
-      }
-    }
-    // the last segment is open-ended
-    if (value >= data[data.length - 1]) {
-      return data.length - 1;
-    }
-
-    // shouldn't be possible to get here if we do everything right
-    throw new RuntimeException("unexpected value " + value + " for data " + Arrays.toString(data));
-  }
-
-  private static final double[] diabetes_stroke = { 2, 3 };
-  private static final double[] chd_stroke_points = { 4, 2 };
-  private static final double[] atrial_fibrillation_stroke_points = { 4, 6 };
 
   /**
    * Depending on gender, age, smoking status, and various comorbidities (e.g. diabetes,
@@ -702,78 +376,11 @@ public final class CardiovascularDiseaseModule extends Module {
    * @param time The time.
    */
   private static void calculateStrokeRisk(Person person, long time) {
-    Double bloodPressure = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time);
-    if (bloodPressure == null) {
-      return;
-    }
-
-    // https://www.heart.org/idc/groups/heart-public/@wcm/@sop/@smd/documents/downloadable/ucm_449858.pdf
-    // calculate stroke risk based off of prevalence of stroke in age group for people younger than
-    // 54. Framingham score system does not cover these.
-
-    int genderIndex = ((String) person.attributes.get(Person.GENDER)).equals("M") ? 0 : 1;
-
-    int age = person.ageInYears(time);
-
-    if (age < 20) {
-      // no risk set
-      return;
-    } else if (age < 40) {
-      double rate = stroke_rate_20_39[genderIndex];
-      person.attributes.put("stroke_risk",
-          Utilities.convertRiskToTimestep(rate, TimeUnit.DAYS.toMillis(3650)));
-      return;
-    } else if (age < 55) {
-      double rate = stroke_rate_40_59[genderIndex];
-      person.attributes.put("stroke_risk",
-          Utilities.convertRiskToTimestep(rate, TimeUnit.DAYS.toMillis(3650)));
-      return;
-    }
-
-    int strokePoints = 0;
-    if ((Boolean) person.attributes.getOrDefault(Person.SMOKER, false)) {
-      strokePoints += 3;
-    }
-    if ((Boolean) person.attributes.getOrDefault("left_ventricular_hypertrophy", false)) {
-      strokePoints += 5;
-    }
-
-    strokePoints += getIndexForValueInRangelist(age, age_stroke[genderIndex]);
-
-    int bp = bloodPressure.intValue();
     
-    if ((Boolean) person.attributes.getOrDefault("blood_pressure_controlled", false)) {
-      strokePoints += getIndexForValueInRangelist(bp, treated_sys_bp_stroke[genderIndex]);
-    } else {
-      strokePoints += getIndexForValueInRangelist(bp, untreated_sys_bp_stroke[genderIndex]);
-    }
-
-    if ((Boolean) person.attributes.getOrDefault("diabetes", false)) {
-      strokePoints += diabetes_stroke[genderIndex];
-    }
-
-    if ((Boolean) person.attributes.getOrDefault("coronary_heart_disease", false)) {
-      strokePoints += chd_stroke_points[genderIndex];
-    }
-
-    if ((Boolean) person.attributes.getOrDefault("atrial_fibrillation", false)) {
-      strokePoints += atrial_fibrillation_stroke_points[genderIndex];
-    }
-
-    double tenStrokeRisk;
-
-    if (strokePoints >= ten_year_stroke_risk[genderIndex].length) {
-      // off the charts
-      int worstCase = ten_year_stroke_risk[genderIndex].length - 1;
-      tenStrokeRisk = ten_year_stroke_risk[genderIndex][worstCase];
-    } else {
-      tenStrokeRisk = ten_year_stroke_risk[genderIndex][strokePoints];
-    }
-
+    double tenStrokeRisk = Framingham.stroke10Year(person, time, false);
     // divide 10 year risk by 365 * 10 to get daily risk.
     person.attributes.put("stroke_risk",
-        Utilities.convertRiskToTimestep(tenStrokeRisk, TimeUnit.DAYS.toMillis(3650)));
-    person.attributes.put("stroke_points", strokePoints);
+        Utilities.convertRiskToTimestep(tenStrokeRisk, tenYearsInMS));
   }
 
   /**
@@ -1005,6 +612,7 @@ public final class CardiovascularDiseaseModule extends Module {
     Attributes.inventory(attributes, m, "cardiovascular_procedures", true, false, null);
     Attributes.inventory(attributes, m, "cardiovascular_disease_med_changes", true, false, null);
     Attributes.inventory(attributes, m, "diabetes", true, false, "false");
+    Attributes.inventory(attributes, m, "framingham_cvd", false, true, "0.25");
     Attributes.inventory(attributes, m, "left_ventricular_hypertrophy", true, false, "false");
     Attributes.inventory(attributes, m, "stroke_risk", true, false, null);
     // Write

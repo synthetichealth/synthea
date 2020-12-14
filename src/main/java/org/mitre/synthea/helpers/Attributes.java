@@ -40,6 +40,8 @@ import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.modules.QualityOfLifeModule;
+import org.mitre.synthea.modules.risk_calculators.ASCVD;
+import org.mitre.synthea.modules.risk_calculators.Framingham;
 import org.mitre.synthea.world.agents.Person;
 
 /**
@@ -143,6 +145,8 @@ public class Attributes {
     });
 
     CardiovascularDiseaseModule.inventoryAttributes(attributes);
+    Framingham.inventoryAttributes(attributes);
+    ASCVD.inventoryAttributes(attributes);
     DeathModule.inventoryAttributes(attributes);
     EncounterModule.inventoryAttributes(attributes);
     HealthInsuranceModule.inventoryAttributes(attributes);
