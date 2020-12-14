@@ -25,6 +25,25 @@ jobs:
       - name: Compile with Gradle
         run: ./gradlew assemble
   
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        if: always()
+        with:
+          status: custom
+          job_name: Java 15
+          author_name: Java 15 Build
+          fields: workflow,commit,repo,author,took
+          # see https://action-slack.netlify.app/usecase/02-custom for custom payload info
+          custom_payload: |
+            {
+              attachments: [{
+                color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
+                text: `${process.env.AS_WORKFLOW} -- (${process.env.AS_COMMIT}) of ${process.env.AS_REPO} by ${process.env.AS_AUTHOR} ${{ job.status }} in ${process.env.AS_TOOK}`,
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
   
   check_java8:
     runs-on: ubuntu-latest
@@ -55,3 +74,22 @@ jobs:
   
       - name: Code coverage
         uses: codecov/codecov-action@v1
+
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        if: always()
+        with:
+          status: custom
+          job_name: Java 8
+          author_name: Java 8 Build/Test
+          fields: workflow,commit,repo,author,took
+          # see https://action-slack.netlify.app/usecase/02-custom for custom payload info
+          custom_payload: |
+            {
+              attachments: [{
+                color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
+                text: `${process.env.AS_WORKFLOW} -- (${process.env.AS_COMMIT}) of ${process.env.AS_REPO} by ${process.env.AS_AUTHOR} ${{ job.status }} in ${process.env.AS_TOOK}`,
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

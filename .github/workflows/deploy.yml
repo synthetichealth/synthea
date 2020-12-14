@@ -71,3 +71,22 @@ jobs:
           user_email: 'jwalonoski@mitre.org'
           commit_message: rebuild graphs, javadoc and binary distribution at
           # note the commit SHA is appended automatically
+
+      - name: Slack Notification on Failure
+        uses: 8398a7/action-slack@v3
+        if: failure()
+        with:
+          status: custom
+          job_name: Deploy
+          author_name: Deploy Workflow
+          fields: workflow,commit,repo,author,took
+          # see https://action-slack.netlify.app/usecase/02-custom for custom payload info
+          custom_payload: |
+            {
+              attachments: [{
+                color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
+                text: `${process.env.AS_WORKFLOW} -- (${process.env.AS_COMMIT}) of ${process.env.AS_REPO} by ${process.env.AS_AUTHOR} ${{ job.status }} in ${process.env.AS_TOOK}`,
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
