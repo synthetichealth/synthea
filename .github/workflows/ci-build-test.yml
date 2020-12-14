@@ -38,7 +38,7 @@ jobs:
             {
               attachments: [{
                 color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
-                text: `${process.env.AS_WORKFLOW} -- (${process.env.AS_COMMIT}) of ${process.env.AS_REPO} by ${process.env.AS_AUTHOR} ${{ job.status }} in ${process.env.AS_TOOK}`,
+                text: `${process.env.AS_WORKFLOW} -- (${process.env.AS_COMMIT}) of ${process.env.AS_REPO}@${{ github.head_ref || github.ref }} by ${process.env.AS_AUTHOR} ${{ job.status }} in ${process.env.AS_TOOK}`,
               }]
             }
         env:
@@ -88,7 +88,7 @@ jobs:
             {
               attachments: [{
                 color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
-                text: `${process.env.AS_WORKFLOW} -- (${process.env.AS_COMMIT}) of ${process.env.AS_REPO} by ${process.env.AS_AUTHOR} ${{ job.status }} in ${process.env.AS_TOOK}`,
+                text: `${process.env.AS_WORKFLOW} -- (${process.env.AS_COMMIT}) of ${process.env.AS_REPO}@${{ github.head_ref || github.ref }} by ${process.env.AS_AUTHOR} ${{ job.status }} in ${process.env.AS_TOOK}`,
               }]
             }
         env:
