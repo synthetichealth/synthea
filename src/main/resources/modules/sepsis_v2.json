@@ -2,8 +2,8 @@
   "name": "Sepsis",
   "remarks": [
     "Module Title: Sepsis",
-    "Version Number: 1.0",
-    "Last Updated: 11/24/2020",
+    "Version Number: 2.0",
+    "Last Updated: 12/14/2020",
     "Module Steward: ONC",
     "Module Developer: Clinovations Government + Health",
     "Description: Sepsis is a leading cause of death in critically ill patients in the United States. This module models the treatment of sepsis in patients >=18 years of age. It is based on the Surviving Sepsis Campaign clinical care guidelines for sepsis, particularly the guidelines for the Hour-1 Bundle for initial resuscitation of sepsis and septic shock. ",
@@ -40,16 +40,7 @@
     },
     "Administer_Broad_Spectrum_Abx": {
       "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Piperacillin_Tazobactam",
-          "distribution": 0.5
-        },
-        {
-          "transition": "Vancomycin",
-          "distribution": 0.5
-        }
-      ]
+      "direct_transition": "Piperacillin_Tazobactam"
     },
     "Age_Guard": {
       "type": "Guard",
@@ -88,7 +79,7 @@
       ],
       "reason": "Sepsis",
       "administration": true,
-      "direct_transition": "Vitals_and_Labs"
+      "direct_transition": "Vancomycin"
     },
     "Vancomycin": {
       "type": "MedicationOrder",
@@ -117,7 +108,8 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "Lactate_Level"
+      "direct_transition": "Check_Septic_Shock",
+      "reason": "Sepsis"
     },
     "Lactate_Level": {
       "type": "Observation",
@@ -356,7 +348,8 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "Ventilator_Weaning"
+      "direct_transition": "Ventilator_Weaning",
+      "reason": "Acute_Respiratory_Distress_Syndrome_ARDS"
     },
     "Norepinephrine": {
       "type": "MedicationOrder",
@@ -372,7 +365,8 @@
       "remarks": [
         "Among them, NE remains the most commonly used vasopressor and is recommended as the first-line agent by the Surviving Sepsis Campaign (SSC) experts (2). As a strong α-adrenergic agonist, NE increases blood pressure primarily through its vasoconstrictive properties with little effect on heart rate. Ref: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7333107/#:~:text=Among%20them%2C%20NE%20remains%20the,little%20effect%20on%20heart%20rate.",
         ""
-      ]
+      ],
+      "reason": "Septic_Shock"
     },
     "Admit_to_ICU": {
       "type": "Procedure",
@@ -388,7 +382,7 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "Fluid_Resuscitation",
+      "direct_transition": "Lactate_Level",
       "reason": "Septic_Shock"
     },
     "Admit_to_Inpatient": {
@@ -405,7 +399,8 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "Delay_3-10_days"
+      "direct_transition": "Delay_3-10_days",
+      "reason": "Sepsis"
     },
     "Sepsis_ED_Encounter": {
       "type": "Encounter",
@@ -431,7 +426,7 @@
           "display": "Lactate [Mass/volume] in Blood"
         }
       ],
-      "direct_transition": "Check_Septic_Shock",
+      "direct_transition": "Fluid_Resuscitation",
       "range": {
         "low": 1,
         "high": 4
@@ -557,7 +552,8 @@
       "remarks": [
         "The incidence of ARDS is approximately 18% in patients with septic shock, and mortality approaches 50%.  Ref: https://www.medscape.com/answers/168402-27366/what-is-the-incidence-of-acute-respiratory-distress-syndrome-ards-in-sepsisseptic-shock-and-what-are-the-potential-outcomes#:~:text=The%20patients%20demonstrate%20severe%20dyspnea,sepsis%2C%2018%2D25%25).",
         ""
-      ]
+      ],
+      "reason": "Acute_Respiratory_Distress_Syndrome_ARDS"
     }
   }
 }
