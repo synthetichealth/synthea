@@ -1,0 +1,3206 @@
+{
+  "name": "Prescribing Opioids for Chronic Pain and Treatment of OUD",
+  "remarks": [
+    "Module Title: Prescribing Opioids for Chronic Pain and Treatment of Opioids Use Disorder",
+    "",
+    "Version Number: 1.0",
+    "",
+    "Last Updated: 11/02/2020",
+    "",
+    "Module Steward: Office of the National Coordinator for Health Information Technology (ONC)",
+    "",
+    "Module Developer: Clinovations Government + Health",
+    "",
+    "Description: This module models the prescribing of opioids for chronic pain and treatment of opioid use disorder (OUD) for patients age >= 18. It is based on the Centers for Disease Control (CDC) Guideline for Prescribing Opioids for Chronic Pain. This CDC guideline provides recommendations for the prescribing of opioid pain medication by primary care clinicians for chronic pain (i.e., pain conditions that typically last >3 months or past the time of normal tissue healing) in outpatient settings outside of active cancer treatment, palliative care, and end-of-life care. The applicable year of this module is set to 2014 and after. This module does not address the transition from acute pain to chronic pain. The Treatment of OUD component of this module is modeled based on the American Society of Addiction Medicine (ASAM) National Practice Guideline for the Use of Medications in the Treatment of Addiction Involving Opioid Use.",
+    "",
+    "Disclaimer: SyntheaTM is an open-source synthetic patient generator, created by MITRE, that models the medical history of synthetic patients. This module is developed using the Synthea Module Builder and is limited to the capabilities of Synthea and the Synthea Module Builder. ",
+    "This Synthea module is not a clinical guideline, does not establish a standard of medical care, and has not been tested for all potential applications. THIS MODULE IS PROVIDED \"AS IS\" WITHOUT WARRANTY OF ANY KIND.",
+    "",
+    "Related Module(s): The Opioid Addiction (opioid_addiction.json) module applies to the period prior to 2014. ",
+    "",
+    "Reference: CDC Guideline for Prescribing Opioids for Chronic Pain — United States, 2016.",
+    "",
+    "Reference: The ASAM National Practice Guideline for the Use of Medications in the Treatment of Addiction Involving Opioid Use, June 1, 2015. ",
+    "",
+    "",
+    ""
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Age_and_Module_Effective_Time_Guard"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "General_Adult_Population": {
+      "type": "Delay",
+      "distributed_transition": [
+        {
+          "transition": "Condition_Chronic_Low_Back_Pain",
+          "distribution": 0.09
+        },
+        {
+          "transition": "Condition_Chronic_Neck_Pain",
+          "distribution": 0.12
+        },
+        {
+          "transition": "Condition_Migraine",
+          "distribution": 0.01
+        },
+        {
+          "transition": "Condition_Fibromyalgia",
+          "distribution": 0.03
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.72
+        },
+        {
+          "transition": "Condition_Chronic_Neck_Pain_3",
+          "distribution": 0.03
+        }
+      ],
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      }
+    },
+    "Nonpharmacologic_Treatment_Careplan_1": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 276239002,
+          "display": "Therapy (regime/therapy)"
+        }
+      ],
+      "assign_to_attribute": "therapy_referral",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 91251008,
+          "display": "Physical therapy procedure (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 228557008,
+          "display": "Cognitive and behavior therapy"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "End_Initial_Chronic_Pain_Encounter",
+          "distribution": 0.44
+        },
+        {
+          "transition": "Enter_Nonopioid_Pharmacologic_Treatment_1",
+          "distribution": 0.29
+        },
+        {
+          "transition": "Enter_IR/SA_Opioid_Directed_Use_1",
+          "distribution": 0.27
+        }
+      ]
+    },
+    "Enter_Nonopioid_Pharmacologic_Treatment_1": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Rx_Ibuprofen_1",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Rx_Acetaminophen_1",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Enter_IR/SA_Opioid_Directed_Use_1": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Rx_Percocet_1",
+          "distribution": 0.2325
+        },
+        {
+          "transition": "Rx_Codeine_1",
+          "distribution": 0.0925
+        },
+        {
+          "transition": "Rx_Vicodin_1",
+          "distribution": 0.5525
+        },
+        {
+          "transition": "Rx_Tramadol_1",
+          "distribution": 0.1225
+        }
+      ]
+    },
+    "Rx_Vicodin_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 856987,
+          "display": "Acetaminophen 300 MG / Hydrocodone Bitartrate 5 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "End_Initial_Chronic_Pain_Encounter",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 4,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        },
+        "instructions": [
+          {
+            "system": "SNOMED-CT",
+            "code": 225757006,
+            "display": "Every four to six hours (qualifier value)"
+          }
+        ],
+        "refills": 3
+      },
+      "assign_to_attribute": "IR_opioid_Rx_1",
+      "chronic": true
+    },
+    "Rx_Percocet_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1049625,
+          "display": "Acetaminophen 325 MG / Oxycodone Hydrochloride 10 MG Oral Tablet [Percocet]"
+        }
+      ],
+      "direct_transition": "End_Initial_Chronic_Pain_Encounter",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 4,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        },
+        "instructions": [
+          {
+            "system": "SNOMED-CT",
+            "code": 307468000,
+            "display": "Every six hours (qualifier value)"
+          }
+        ],
+        "refills": 3
+      },
+      "assign_to_attribute": "IR_opioid_Rx_1",
+      "chronic": true
+    },
+    "Rx_Ibuprofen_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 206905,
+          "display": "Ibuprofen 400 MG Oral Tablet [Ibu]"
+        }
+      ],
+      "direct_transition": "End_Initial_Chronic_Pain_Encounter",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 4,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        },
+        "instructions": [
+          {
+            "system": "SNOMED-CT",
+            "code": 225757006,
+            "display": "Every four to six hours (qualifier value)"
+          }
+        ],
+        "as_needed": true,
+        "refills": 3
+      },
+      "assign_to_attribute": "nonopioid_Rx_1"
+    },
+    "Rx_Acetaminophen_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 209387,
+          "display": "Acetaminophen 325 MG Oral Tablet [Tylenol]"
+        }
+      ],
+      "direct_transition": "End_Initial_Chronic_Pain_Encounter",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 4,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        },
+        "instructions": [
+          {
+            "system": "SNOMED-CT",
+            "code": 225757006,
+            "display": "Every four to six hours (qualifier value)"
+          }
+        ],
+        "refills": 3
+      },
+      "assign_to_attribute": "nonopioid_Rx_1",
+      "administration": false,
+      "chronic": true
+    },
+    "PEG_Assessment_Score_1": {
+      "type": "MultiObservation",
+      "category": "survey",
+      "number_of_observations": 0,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "91148-7",
+          "display": "Pain intensity, Enjoyment of life, General activity (PEG) 3 item pain scale"
+        }
+      ],
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "75893-8",
+              "display": "What number best describes your pain on average in the past week?"
+            }
+          ],
+          "range": {
+            "low": 1,
+            "high": 10
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "91145-3",
+              "display": "What number best describes how, during the past week, pain has interfered with your enjoyment of life?"
+            }
+          ],
+          "range": {
+            "low": 1,
+            "high": 10
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "91146-1",
+              "display": "What number best describes how, during the past week, pain has interfered with your general activity?"
+            }
+          ],
+          "range": {
+            "low": 1,
+            "high": 10
+          }
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Without_Urine_Drug_Testing",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Enter_Urine_Drug_Testing",
+          "distribution": 0.8
+        }
+      ]
+    },
+    "Condition_Chronic_Low_Back_Pain": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "chronic_low_back_pain_only",
+      "target_encounter": "Initial_Prescribing_Encounter_for_Chronic_Pain",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 278860009,
+          "display": "Chronic low back pain (finding)"
+        }
+      ],
+      "direct_transition": "Initial_Prescribing_Encounter_for_Chronic_Pain"
+    },
+    "End_Initial_Chronic_Pain_Encounter": {
+      "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "therapy_referral",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.8,
+              "transition": "Enter_Physical_Therapy_1"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Enter_CBT_Therapy_1"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "therapy_referral",
+            "operator": "is nil"
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "On_Opioid_Or_Nonopioid_1"
+            }
+          ]
+        }
+      ]
+    },
+    "Chronic_Pain_Population": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Condition_Chronic_Neck_Pain_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chronic_neck_pain_only",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Condition_Chronic_Low_Back_Pain_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chronic_low_back_pain_only",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Condition_Migraine_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "migraine_only",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Condition_Fibromyalgia_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chronic_low_back_pain_with_fibromyalgia",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Condition_Chronic_Neck_Pain_4",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chronic_neck_and_low_back_pain",
+            "operator": "is not nil"
+          }
+        }
+      ]
+    },
+    "Cognitive Behavior Therapy (CBT)_1": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 228557008,
+          "display": "Cognitive and behavioral therapy (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_CBT_Therapy_Encounter_1"
+    },
+    "Condition_Chronic_Neck_Pain": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "chronic_neck_and_low_back_pain",
+      "target_encounter": "Initial_Prescribing_Encounter_for_Chronic_Pain",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 1121000119107,
+          "display": "Chronic neck pain (finding)"
+        }
+      ],
+      "direct_transition": "Condition_Chronic_Low_Back_Pain_3"
+    },
+    "Condition_Fibromyalgia": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "chronic_low_back_pain_with_fibromyalgia",
+      "target_encounter": "Initial_Prescribing_Encounter_for_Chronic_Pain",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 203082005,
+          "display": "Fibromyalgia (disorder)"
+        }
+      ],
+      "direct_transition": "Condition_Chronic_Low_Back_Pain_3"
+    },
+    "Condition_Chronic_Low_Back_Pain_2": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "chronic_low_back_pain",
+      "target_encounter": "Follow_Up_Encounter_for_Chronic_Pain",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 278860009,
+          "display": "Chronic low back pain (finding)"
+        }
+      ],
+      "direct_transition": "Follow_Up_Encounter_for_Chronic_Pain"
+    },
+    "Condition_Chronic_Neck_Pain_2": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "chronic_neck_pain",
+      "target_encounter": "Follow_Up_Encounter_for_Chronic_Pain",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 1121000119107,
+          "display": "Chronic neck pain (finding)"
+        }
+      ],
+      "direct_transition": "Follow_Up_Encounter_for_Chronic_Pain"
+    },
+    "Condition_Fibromyalgia_2": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "fibromyalgia",
+      "target_encounter": "Follow_Up_Encounter_for_Chronic_Pain",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 203082005,
+          "display": "Fibromyalgia (disorder)"
+        }
+      ],
+      "direct_transition": "Condition_Chronic_Low_Back_Pain_2"
+    },
+    "Condition_Migraine": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "migraine_only",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 427419006,
+          "display": "Transformed migraine (disorder)"
+        }
+      ],
+      "direct_transition": "Initial_Prescribing_Encounter_for_Chronic_Pain",
+      "target_encounter": "Initial_Prescribing_Encounter_for_Chronic_Pain"
+    },
+    "Condition_Migraine_2": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "migraine",
+      "target_encounter": "Follow_Up_Encounter_for_Chronic_Pain",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 427419006,
+          "display": "Transformed migraine (disorder)"
+        }
+      ],
+      "direct_transition": "Follow_Up_Encounter_for_Chronic_Pain"
+    },
+    "Follow_Up_Encounter_for_Chronic_Pain": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 390906007,
+          "display": "Follow-up encounter (procedure)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Enter_Urine_Drug_Testing_2",
+          "distribution": 0.5
+        },
+        {
+          "transition": "PEG_Assessment_Score_2",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "End_Follow_Up_Encounter_for_Chronic_Pain": {
+      "type": "EncounterEnd",
+      "direct_transition": "On_Opioid_Or_Nonopioid_2"
+    },
+    "Enter_ER/LA_Opioid_Directed_Use": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Rx_12HR_Hydrocodone",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Rx_Oxycontin",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Rx_Duragesic",
+          "distribution": 0.4
+        }
+      ]
+    },
+    "Rx_12HR_Hydrocodone": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1860491,
+          "display": "12 HR Hydrocodone Bitartrate 10 MG Extended Release Oral Capsule"
+        }
+      ],
+      "direct_transition": "End_Follow_Up_Encounter_for_Chronic_Pain",
+      "assign_to_attribute": "ER_opioid_Rx",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        },
+        "instructions": [
+          {
+            "system": "SNOMED-CT",
+            "code": 1831000175103,
+            "display": "Every 12 hours as needed (qualifier value)"
+          }
+        ],
+        "refills": 3
+      }
+    },
+    "Rx_Oxycontin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1049504,
+          "display": "Abuse-Deterrent 12 HR Oxycodone Hydrochloride 10 MG Extended Release Oral Tablet [Oxycontin]"
+        }
+      ],
+      "direct_transition": "End_Follow_Up_Encounter_for_Chronic_Pain",
+      "assign_to_attribute": "ER_opioid_Rx",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        },
+        "refills": 3
+      }
+    },
+    "Rx_Duragesic": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 245134,
+          "display": "72 HR Fentanyl 0.025 MG/HR Transdermal System"
+        }
+      ],
+      "direct_transition": "End_Follow_Up_Encounter_for_Chronic_Pain",
+      "assign_to_attribute": "ER_opioid_Rx",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 3,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        },
+        "instructions": [
+          {
+            "system": "SNOMED-CT",
+            "code": 396143001,
+            "display": "Every seventy two hours as needed (qualifier value)"
+          }
+        ],
+        "refills": 3
+      }
+    },
+    "Enter_Nonopioid_Pharmacologic_Treatment_2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Rx_Ibuprofen_2",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Rx_Acetaminophen_2",
+          "distribution": 0.5
+        }
+      ],
+      "assign_to_attribute": "on_opioid_or_nonopioid"
+    },
+    "Rx_Acetaminophen_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 209387,
+          "display": "Acetaminophen 325 MG Oral Tablet [Tylenol]"
+        }
+      ],
+      "direct_transition": "End_Follow_Up_Encounter_for_Chronic_Pain",
+      "assign_to_attribute": "nonopioid_Rx_2",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 4,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        },
+        "instructions": [
+          {
+            "system": "SNOMED-CT",
+            "code": 225757006,
+            "display": "Every four to six hours (qualifier value)"
+          }
+        ],
+        "refills": 3
+      },
+      "chronic": true
+    },
+    "Rx_Ibuprofen_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 206905,
+          "display": "Ibuprofen 400 MG Oral Tablet [Ibu]"
+        }
+      ],
+      "direct_transition": "End_Follow_Up_Encounter_for_Chronic_Pain",
+      "assign_to_attribute": "nonopioid_Rx_2",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 4,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        },
+        "instructions": [
+          {
+            "system": "SNOMED-CT",
+            "code": 225757006,
+            "display": "Every four to six hours (qualifier value)"
+          }
+        ],
+        "refills": 3
+      }
+    },
+    "Nonpharmacologic_Treatment_Careplan_2": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 276239002,
+          "display": "Therapy (regime/therapy)"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 91251008,
+          "display": "Physical therapy procedure (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 228557008,
+          "display": "Cognitive and behavioral therapy (regime/therapy)"
+        }
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "IR_opioid_Rx_1",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "Enter_IR/SA_Opioid_Directed_Use_2",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Enter_ER/LA_Opioid_Directed_Use",
+              "distribution": 0.8
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "nonopioid_Rx_1",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "Enter_Nonopioid_Pharmacologic_Treatment_2",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Enter_IR/SA_Opioid_Directed_Use_2",
+              "distribution": 0.8
+            }
+          ]
+        }
+      ]
+    },
+    "Physical_Therapy_1": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 229064008,
+          "display": "Movement therapy (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "PT_Pain_Observation"
+    },
+    "Enter_CBT_Therapy_1": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 3,
+        "unit": "days"
+      },
+      "direct_transition": "CBT_Therapy_Counter_1"
+    },
+    "CBT_Encounter_1": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 308335008,
+          "display": "Patient encounter procedure (procedure)"
+        }
+      ],
+      "direct_transition": "CBT_Pain_Observation"
+    },
+    "Enter_Physical_Therapy_1": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 3,
+        "unit": "days"
+      },
+      "direct_transition": "Physical_Therapy_Counter_1"
+    },
+    "CBT_Therapy_Counter_1": {
+      "type": "Counter",
+      "attribute": "number_of_CBT",
+      "action": "increment",
+      "direct_transition": "CBT_Encounter_1"
+    },
+    "End_CBT_Therapy_Encounter_1": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Enter_CBT_Therapy_1",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "number_of_CBT",
+            "operator": "<",
+            "value": 8
+          }
+        },
+        {
+          "transition": "End_Nonpharmacologic_Treatment_Careplan_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "number_of_CBT",
+            "operator": "==",
+            "value": 8
+          }
+        }
+      ]
+    },
+    "Physical_Therapy_Counter_1": {
+      "type": "Counter",
+      "attribute": "number_of_PT",
+      "action": "increment",
+      "direct_transition": "Physical_Therapy_Encounter_1"
+    },
+    "Physical_Therapy_Encounter_1": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 308335008,
+          "display": "Patient encounter procedure (procedure)"
+        }
+      ],
+      "direct_transition": "Physical_Therapy_1"
+    },
+    "PT_Pain_Observation": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "score",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "38208-5",
+          "display": "Pain severity - Reported"
+        }
+      ],
+      "direct_transition": "End_Physical_Therapy_Encounter_1",
+      "range": {
+        "low": 1,
+        "high": 10
+      }
+    },
+    "CBT_Pain_Observation": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "score",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "38208-5",
+          "display": "Pain severity - Reported"
+        }
+      ],
+      "range": {
+        "low": 1,
+        "high": 10
+      },
+      "direct_transition": "Cognitive Behavior Therapy (CBT)_1"
+    },
+    "End_Physical_Therapy_Encounter_1": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "End_Nonpharmacologic_Treatment_Careplan_1",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "number_of_PT",
+            "operator": "==",
+            "value": 10
+          }
+        },
+        {
+          "transition": "Enter_Physical_Therapy_1",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "number_of_PT",
+            "operator": "<",
+            "value": 10
+          }
+        }
+      ]
+    },
+    "PEG_Assessment_Score_2": {
+      "type": "MultiObservation",
+      "category": "survey",
+      "number_of_observations": 0,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "91148-7",
+          "display": "Pain intensity, Enjoyment of life, General activity (PEG) 3 item pain scale"
+        }
+      ],
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "75893-8",
+              "display": "What number best describes your pain on average in the past week?"
+            }
+          ],
+          "range": {
+            "low": 1,
+            "high": 10
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "91145-3",
+              "display": "What number best describes how, during the past week, pain has interfered with your enjoyment of life?"
+            }
+          ],
+          "range": {
+            "low": 1,
+            "high": 10
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "91146-1",
+              "display": "What number best describes how, during the past week, pain has interfered with your general activity?"
+            }
+          ],
+          "range": {
+            "low": 1,
+            "high": 10
+          }
+        }
+      ],
+      "direct_transition": "Nonpharmacologic_Treatment_Careplan_2"
+    },
+    "Enter_IR/SA_Opioid_Directed_Use_2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Rx_Percocet_2",
+          "distribution": 0.2325
+        },
+        {
+          "transition": "Rx_Vicodin_2",
+          "distribution": 0.5525
+        },
+        {
+          "transition": "Rx_Tramadol_2",
+          "distribution": 0.1225
+        },
+        {
+          "transition": "Rx_Codeine_2",
+          "distribution": 0.0925
+        }
+      ]
+    },
+    "Rx_Vicodin_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 856987,
+          "display": "Acetaminophen 300 MG / Hydrocodone Bitartrate 5 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "End_Follow_Up_Encounter_for_Chronic_Pain",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 4,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        },
+        "instructions": [
+          {
+            "system": "SNOMED-CT",
+            "code": 225757006,
+            "display": "Every four to six hours (qualifier value)"
+          }
+        ],
+        "refills": 3
+      },
+      "assign_to_attribute": "IR_opioid_Rx_2"
+    },
+    "Rx_Percocet_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1049625,
+          "display": "Acetaminophen 325 MG / Oxycodone Hydrochloride 10 MG Oral Tablet [Percocet]"
+        }
+      ],
+      "direct_transition": "End_Follow_Up_Encounter_for_Chronic_Pain",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 4,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        },
+        "instructions": [
+          {
+            "system": "SNOMED-CT",
+            "code": 307468000,
+            "display": "Every six hours (qualifier value)"
+          }
+        ],
+        "refills": 3
+      },
+      "assign_to_attribute": "IR_opioid_Rx_2",
+      "chronic": true
+    },
+    "On_Opioid_Or_Nonopioid_1": {
+      "type": "Delay",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "nonopioid_Rx_1",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "On_Nonopioid_Prescription_1",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "IR_opioid_Rx_1",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "On_IR_Opioid_Prescription_1",
+              "distribution": 1
+            }
+          ]
+        }
+      ],
+      "range": {
+        "low": 10,
+        "high": 30,
+        "unit": "days"
+      }
+    },
+    "On_Opioid_Or_Nonopioid_2": {
+      "type": "Delay",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "IR_opioid_Rx_2",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "On_IR_Opioid_Prescription_2",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "On_Nonopioid_Prescription_2",
+              "distribution": 1
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "nonopioid_Rx_2",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "On_ER_Opioid_Prescription",
+              "distribution": 1
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ER_opioid_Rx",
+            "operator": "is not nil"
+          }
+        }
+      ],
+      "exact": {
+        "quantity": 30,
+        "unit": "days"
+      }
+    },
+    "Rx_Tramadol_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 835603,
+          "display": "tramadol hydrochloride 50 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "End_Initial_Chronic_Pain_Encounter",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        },
+        "as_needed": true,
+        "instructions": [
+          {
+            "system": "SNOMED-CT",
+            "code": 225757006,
+            "display": "Every four to six hours (qualifier value)"
+          }
+        ],
+        "refills": 3
+      },
+      "assign_to_attribute": "IR_opioid_Rx_1",
+      "chronic": true
+    },
+    "Rx_Codeine_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 993770,
+          "display": "Acetaminophen 300 MG / Codeine Phosphate 15 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "End_Initial_Chronic_Pain_Encounter",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 4,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        },
+        "instructions": [
+          {
+            "system": "SNOMED-CT",
+            "code": 225756002,
+            "display": "Every four hours (qualifier value)"
+          }
+        ],
+        "refills": 3
+      },
+      "assign_to_attribute": "IR_opioid_Rx_1",
+      "remarks": [
+        "Acetaminophen / Codeine"
+      ],
+      "chronic": true
+    },
+    "Rx_Tramadol_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 835603,
+          "display": "tramadol hydrochloride 50 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "End_Follow_Up_Encounter_for_Chronic_Pain",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 4,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        },
+        "as_needed": true,
+        "instructions": [
+          {
+            "system": "SNOMED-CT",
+            "code": 225757006,
+            "display": "Every four to six hours (qualifier value)"
+          }
+        ],
+        "refills": 3
+      },
+      "assign_to_attribute": "IR_opioid_Rx_2",
+      "chronic": true
+    },
+    "Rx_Codeine_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 993770,
+          "display": "Acetaminophen 300 MG / Codeine Phosphate 15 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "End_Follow_Up_Encounter_for_Chronic_Pain",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 4,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        },
+        "instructions": [
+          {
+            "system": "SNOMED-CT",
+            "code": 225756002,
+            "display": "Every four hours (qualifier value)"
+          }
+        ],
+        "refills": 3
+      },
+      "assign_to_attribute": "IR_opioid_Rx_2",
+      "chronic": true
+    },
+    "PEG_Assessment_Score_3": {
+      "type": "MultiObservation",
+      "category": "vital-signs",
+      "number_of_observations": 0,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "91148-7",
+          "display": "Pain intensity, Enjoyment of life, General activity (PEG) 3 item pain scale"
+        }
+      ],
+      "direct_transition": "Addiction",
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "75893-8",
+              "display": "What number best describes your pain on average in the past week?"
+            }
+          ],
+          "range": {
+            "low": 1,
+            "high": 10
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "91145-3",
+              "display": "What number best describes how, during the past week, pain has interfered with your enjoyment of life?"
+            }
+          ],
+          "range": {
+            "low": 1,
+            "high": 10
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "91146-1",
+              "display": "What number best describes how, during the past week, pain has interfered with your general activity?"
+            }
+          ],
+          "range": {
+            "low": 1,
+            "high": 10
+          }
+        }
+      ]
+    },
+    "Enter_Urine_Drug_Testing_2": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 18,
+                "unit": "years",
+                "value": 0
+              },
+              {
+                "condition_type": "Age",
+                "operator": "<=",
+                "quantity": 44,
+                "unit": "years",
+                "value": 0
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Urine_Drug_Testing_Aberrant_Positive_2",
+              "distribution": 0.093
+            },
+            {
+              "transition": "Urine_Drug_Testing_Negative_2",
+              "distribution": 0.907
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">",
+                "quantity": 45,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Age",
+                "operator": "<",
+                "quantity": 64,
+                "unit": "years",
+                "value": 0
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Urine_Drug_Testing_Aberrant_Positive_2",
+              "distribution": 0.05
+            },
+            {
+              "transition": "Urine_Drug_Testing_Negative_2",
+              "distribution": 0.95
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 65,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Urine_Drug_Testing_Aberrant_Positive_2",
+              "distribution": 0.039
+            },
+            {
+              "transition": "Urine_Drug_Testing_Negative_2",
+              "distribution": 0.961
+            }
+          ]
+        }
+      ]
+    },
+    "Urine_Drug_Testing_Aberrant_Positive_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "n/a",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "65750-2",
+          "display": "Drugs of abuse 5 panel - Urine by Screen method"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 10828004,
+        "display": "Positive (qualifier value)"
+      },
+      "direct_transition": "PEG_Assessment_Score_3"
+    },
+    "Urine_Drug_Testing_Negative_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "n/a",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "65750-2",
+          "display": "Drugs of abuse 5 panel - Urine by Screen method"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 260385009,
+        "display": "Negative (qualifier value)"
+      },
+      "direct_transition": "PEG_Assessment_Score_2"
+    },
+    "Urine_Drug_Testing_Negative_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "n/a",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "65750-2",
+          "display": "Drugs of abuse 5 panel - Urine by Screen method"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 260385009,
+        "display": "Negative (qualifier value)"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Nonpharmacologic_Treatment_Careplan_1",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Enter_Nonopioid_Pharmacologic_Treatment_1",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Enter_IR/SA_Opioid_Directed_Use_1",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Urine_Drug_Testing_Aberrant_Positive_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "n/a",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "65750-2",
+          "display": "Drugs of abuse 5 panel - Urine by Screen method"
+        }
+      ],
+      "direct_transition": "Addiction",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 10828004,
+        "display": "Positive (qualifier value)"
+      }
+    },
+    "Initial_Prescribing_Encounter_for_Chronic_Pain": {
+      "type": "Encounter",
+      "encounter_class": "outpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "PEG_Assessment_Score_1"
+    },
+    "Addiction": {
+      "type": "Delay",
+      "range": {
+        "low": 0,
+        "high": 60,
+        "unit": "days"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Start_Treatment_Opioid_Use_Disorder",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Chronic_Pain_Population",
+          "distribution": 0.9
+        }
+      ]
+    },
+    "Enter_Urine_Drug_Testing": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 18,
+                "unit": "years",
+                "value": 0
+              },
+              {
+                "condition_type": "Age",
+                "operator": "<=",
+                "quantity": 44,
+                "unit": "years",
+                "value": 0
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Urine_Drug_Testing_Negative_1",
+              "distribution": 0.907
+            },
+            {
+              "transition": "Urine_Drug_Testing_Aberrant_Positive_1",
+              "distribution": 0.093
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Urine_Drug_Testing_Negative_1",
+              "distribution": 0.95
+            },
+            {
+              "transition": "Urine_Drug_Testing_Aberrant_Positive_1",
+              "distribution": 0.05
+            }
+          ],
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">",
+                "quantity": 45,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Age",
+                "operator": "<",
+                "quantity": 64,
+                "unit": "years",
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Urine_Drug_Testing_Negative_1",
+              "distribution": 0.961
+            },
+            {
+              "transition": "Urine_Drug_Testing_Aberrant_Positive_1",
+              "distribution": 0.039
+            }
+          ],
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 65,
+            "unit": "years",
+            "value": 0
+          }
+        }
+      ]
+    },
+    "Condition_Chronic_Neck_Pain_3": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "chronic_neck_pain_only",
+      "target_encounter": "Initial_Prescribing_Encounter_for_Chronic_Pain",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 1121000119107,
+          "display": "Chronic neck pain (finding)"
+        }
+      ],
+      "direct_transition": "Initial_Prescribing_Encounter_for_Chronic_Pain"
+    },
+    "Condition_Chronic_Neck_Pain_4": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 1121000119107,
+          "display": "Chronic neck pain (finding)"
+        }
+      ],
+      "direct_transition": "Condition_Chronic_Low_Back_Pain_2",
+      "target_encounter": "Follow_Up_Encounter_for_Chronic_Pain"
+    },
+    "Condition_Chronic_Low_Back_Pain_3": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 278860009,
+          "display": "Chronic low back pain (finding)"
+        }
+      ],
+      "direct_transition": "Initial_Prescribing_Encounter_for_Chronic_Pain",
+      "target_encounter": "Initial_Prescribing_Encounter_for_Chronic_Pain"
+    },
+    "Without_Urine_Drug_Testing": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Enter_IR/SA_Opioid_Directed_Use_1",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Nonpharmacologic_Treatment_Careplan_1",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Enter_Nonopioid_Pharmacologic_Treatment_1",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "End_Nonpharmacologic_Treatment_Careplan_1": {
+      "type": "CarePlanEnd",
+      "careplan": "Nonpharmacologic_Treatment_Careplan_1",
+      "distributed_transition": [
+        {
+          "transition": "Terminal",
+          "distribution": 0.8
+        },
+        {
+          "transition": "Chronic_Pain_Population",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "End_Nonpharmacologic_Treatment_Careplan_2": {
+      "type": "CarePlanEnd",
+      "distributed_transition": [
+        {
+          "transition": "Chronic_Pain_Population",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.8
+        }
+      ],
+      "careplan": "Nonpharmacologic_Treatment_Careplan_1"
+    },
+    "Enter_Overdose": {
+      "type": "Simple",
+      "direct_transition": "Opioid_Addiction_Symptom_1"
+    },
+    "ED_Visit": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "Condition_Drug_Overdose",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 50849002,
+          "display": "Emergency room admission (procedure)"
+        }
+      ],
+      "direct_transition": "Naloxone"
+    },
+    "Opioid_Addiction_Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Anxiety",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_2",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Confusion",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_3",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Cognitive Difficulties",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_4",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_4": {
+      "type": "Symptom",
+      "symptom": "Nausea/Vomiting",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_5",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_5": {
+      "type": "Symptom",
+      "symptom": "Constipation",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_6",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_6": {
+      "type": "Symptom",
+      "symptom": "Reduced Sex Drive",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_7",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_7": {
+      "type": "Symptom",
+      "symptom": "Slurred Speech",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_8",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_8": {
+      "type": "Symptom",
+      "symptom": "Shallow Breathing",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_9",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_9": {
+      "type": "Symptom",
+      "symptom": "Mood Swing",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_10",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_10": {
+      "type": "Symptom",
+      "symptom": "Sensitivity to Pain",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_11",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_11": {
+      "type": "Symptom",
+      "symptom": "Yawning",
+      "cause": "Opioid_Addiction",
+      "probability": 0.5,
+      "direct_transition": "Opioid_Addiction_Symptom_12",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_12": {
+      "type": "Symptom",
+      "symptom": "Sweating",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Condition_Drug_Overdose",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Death": {
+      "type": "Death",
+      "direct_transition": "End_ED_Visit_Disposition_Death",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 55680006,
+          "display": "Drug overdose (disorder)"
+        }
+      ]
+    },
+    "Naloxone": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1191222,
+          "display": "naloxone hydrochloride 0.4 MG/ML Injectable Solution"
+        }
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "readmit_2_days",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "Death",
+              "distribution": 0.0025
+            },
+            {
+              "transition": "End_ED_Visit",
+              "distribution": 0.9750000000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "readmit_1_month",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.011,
+              "transition": "Death"
+            },
+            {
+              "transition": "End_ED_Visit",
+              "distribution": 0.9890000000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "readmit_1_year",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.055,
+              "transition": "Death"
+            },
+            {
+              "transition": "End_ED_Visit",
+              "distribution": 0.9450000000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "history_nonfatal_ED_overdose",
+            "operator": "is nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.0002,
+              "transition": "Death"
+            },
+            {
+              "distribution": 0.9997999999999999,
+              "transition": "End_ED_Visit"
+            }
+          ]
+        }
+      ],
+      "administration": true,
+      "chronic": false,
+      "reason": "Condition_Drug_Overdose"
+    },
+    "End_ED_Visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Set_Attribute_Hx_Nonfatal_ED_Overdose"
+    },
+    "Encounter_OUD": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "PEG_Assessment_Score_4",
+      "reason": "Condition_OUD"
+    },
+    "Urine_Drug_Testing_Positive": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "n/a",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "65750-2",
+          "display": "Drugs of abuse 5 panel - Urine by Screen method"
+        }
+      ],
+      "direct_transition": "DSM-5_OUD_Diagnostic_Criteria",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 10828004,
+        "display": "Positive (qualifier value)"
+      }
+    },
+    "Opioid_Addiction_Symptom_2_1": {
+      "type": "Symptom",
+      "symptom": "Anxiety",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_2_2",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_2_2": {
+      "type": "Symptom",
+      "symptom": "Confusion",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_2_3",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_2_3": {
+      "type": "Symptom",
+      "symptom": "Cognitive Difficulties",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_2_4",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_2_4": {
+      "type": "Symptom",
+      "symptom": "Nausea/Vomiting",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_2_5",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_2_5": {
+      "type": "Symptom",
+      "symptom": "Constipation",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_2_6",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_2_6": {
+      "type": "Symptom",
+      "symptom": "Reduced Sex Drive",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_2_7",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_2_7": {
+      "type": "Symptom",
+      "symptom": "Slurred Speech",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_2_8",
+      "range": {
+        "low": 80,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_2_8": {
+      "type": "Symptom",
+      "symptom": "Shallow Breathing",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_2_9",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_2_9": {
+      "type": "Symptom",
+      "symptom": "Mood Swing",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_2_10",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_2_10": {
+      "type": "Symptom",
+      "symptom": "Sensitivity to Pain",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_2_11",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_2_11": {
+      "type": "Symptom",
+      "symptom": "Yawning",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Opioid_Addiction_Symptom_2_12",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "Opioid_Addiction_Symptom_2_12": {
+      "type": "Symptom",
+      "symptom": "Sweating",
+      "cause": "Opioid_Addiction",
+      "probability": 0.3,
+      "direct_transition": "Encounter_OUD",
+      "range": {
+        "low": 1,
+        "high": 100
+      }
+    },
+    "DSM-5_OUD_Diagnostic_Criteria": {
+      "type": "MultiObservation",
+      "category": "survey",
+      "number_of_observations": 0,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "99999-0",
+          "display": "DSM-5 Clinical Diagnostic Criteria for Opioid Use Disorder"
+        }
+      ],
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "score",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "99999-1",
+              "display": "Opioids are often taken in larger amounts or over a longer period than was intended"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 1
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "score",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "99999-2",
+              "display": "There is a persistent desire or unsuccessful efforts to cut down or control opioid use"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 1
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "score",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "99999-3",
+              "display": "A great deal of time is spent in activities necessary to obtain the opioid, use the opioid, or recover from its effects"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 1
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "score",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "99999-4",
+              "display": "Craving or a strong desire to use opioids"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 1
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "score",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "99999-5",
+              "display": "Recurrent opioid use resulting in a failure to fulfill major role obligations at work, school, or home"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 1
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "score",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "99999-6",
+              "display": "Continued opioid use despite having persistent or recurrent social or interpersonal problems caused or exacerbated by the effects of opioids"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 1
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "score",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "99999-7",
+              "display": "Important social, occupational, or recreational activities are given up or reduced because of opioid use"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 1
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "score",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "99999-8",
+              "display": "Recurrent opioid use in situations in which it is physically hazardous"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 1
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "score",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "99999-9",
+              "display": "Continued use despite knowledge of having a persistent or recurrent physical or psychological problem that is likely to have been caused or exacerbated by opioids."
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 1
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "score",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "99999-10",
+              "display": "Tolerance,as defined by either of the following: a) Need for markedly increased amounts of opioids to achieve intoxication or desired effect b) Markedly diminished effect with continued use of the same amount of opioid"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 1
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "score",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "99999-11",
+              "display": "Withdrawal,* as manifested by either of the following: a) Characteristic opioid withdrawal syndrome b) Same (or a closely related) substance is taken to relieve or avoid withdrawal symptoms"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 1
+          }
+        }
+      ],
+      "direct_transition": "Condition_OUD"
+    },
+    "Condition_Drug_Overdose": {
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 55680006,
+          "display": "Drug overdose (disorder)"
+        }
+      ],
+      "direct_transition": "ED_Visit"
+    },
+    "End_Encounter_OUD": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "no_treatment",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Enter_Continued_OUD_Treatment",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "no_treatment",
+            "operator": "is nil"
+          }
+        }
+      ]
+    },
+    "Set_Attribute_Hx_Nonfatal_ED_Overdose": {
+      "type": "SetAttribute",
+      "attribute": "history_nonfatal_ED_overdose",
+      "value": true,
+      "distributed_transition": [
+        {
+          "transition": "No_OUD_Treatment",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Enter_OUD_Treatment_1",
+          "distribution": 0.75
+        }
+      ]
+    },
+    "End_ED_Visit_Disposition_Death": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": 41,
+        "display": "Expired in a medical facility, such as a hospital, SNF, ICF or freestanding hospice"
+      }
+    },
+    "Enter_OUD_Treatment_1": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "direct_transition": "Enter_Evaluate Opioid_Use_Disorder"
+    },
+    "Delay_Within_2_Days": {
+      "type": "Delay",
+      "direct_transition": "Set_Attribute_Readmit_1",
+      "range": {
+        "low": 0,
+        "high": 2,
+        "unit": "days"
+      }
+    },
+    "No_OUD_Treatment": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Delay_Within_2_Days",
+          "distribution": 0.046
+        },
+        {
+          "transition": "Delay_Within_1_Month",
+          "distribution": 0.205
+        },
+        {
+          "transition": "Delay_Within_1_Year",
+          "distribution": 0.749
+        }
+      ]
+    },
+    "Delay_Within_1_Month": {
+      "type": "Delay",
+      "direct_transition": "Set_Attribute_Readmit_3",
+      "range": {
+        "low": 3,
+        "high": 30,
+        "unit": "days"
+      }
+    },
+    "Delay_Within_1_Year": {
+      "type": "Delay",
+      "direct_transition": "Set_Attribute_Readmit_2",
+      "range": {
+        "low": 1,
+        "high": 12,
+        "unit": "months"
+      }
+    },
+    "Set_Attribute_Readmit_2": {
+      "type": "SetAttribute",
+      "attribute": "readmit_1_year",
+      "direct_transition": "Enter_Overdose",
+      "value": true
+    },
+    "Set_Attribute_Readmit_1": {
+      "type": "SetAttribute",
+      "attribute": "readmit_2_days",
+      "direct_transition": "Enter_Overdose",
+      "value": true
+    },
+    "Enter_Treatment_Options": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Buprenorphine_Or_Methadone_Or_Naltrexone",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "pharmaco",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Psychosocial_Therapy_4",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "pharmaco_and_psychosocial",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Psychosocial_Therapy_3",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "psychosocial",
+            "operator": "is not nil"
+          }
+        }
+      ]
+    },
+    "Psychosocial_Therapy_1": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 408919008,
+          "display": "Psychosocial care (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Rx_Buprenorphine_2",
+      "reason": "Condition_OUD"
+    },
+    "Psychosocial_Therapy_2": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 408919008,
+          "display": "Psychosocial care (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Set_Attribute_Treatment_Pshychosocial_Only",
+      "reason": "Condition_OUD"
+    },
+    "Rx_Buprenorphine_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 351266,
+          "display": "buprenorphine 2 MG / naloxone 0.5 MG Sublingual Tablet"
+        }
+      ],
+      "direct_transition": "Set_Attribute_Treatment_Pharmaco_Only",
+      "assign_to_attribute": "on_buprenorphine",
+      "reason": "Condition_OUD"
+    },
+    "Rx_Buprenorphine_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 351266,
+          "display": "buprenorphine 2 MG / naloxone 0.5 MG Sublingual Tablet"
+        }
+      ],
+      "direct_transition": "Set_Attribute_Treatment_Pharmaco_Psychosocial",
+      "assign_to_attribute": "on_buprenorphine",
+      "reason": "Condition_OUD"
+    },
+    "Condition_OUD": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Encounter_OUD",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 5602001,
+          "display": "Opioid abuse (disorder)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Psychosocial_Therapy_1",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Psychosocial_Therapy_2",
+          "distribution": 0.05
+        },
+        {
+          "transition": "Rx_Buprenorphine_1",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Set_Attribute_No_Treatment",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Rx_Methadone_1",
+          "distribution": 0.01
+        },
+        {
+          "transition": "Psychosocial_Therapy_5",
+          "distribution": 0.01
+        },
+        {
+          "transition": "Rx_Naltrexone_1",
+          "distribution": 0.01
+        },
+        {
+          "transition": "Psychosocial_Therapy_6",
+          "distribution": 0.02
+        }
+      ]
+    },
+    "Set_Attribute_Readmit_3": {
+      "type": "SetAttribute",
+      "attribute": "readmit_1_month",
+      "direct_transition": "Enter_Overdose",
+      "value": true
+    },
+    "Enter_Continued_OUD_Treatment": {
+      "type": "Delay",
+      "direct_transition": "Encounter_OUD_Treatment_Cont",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      }
+    },
+    "Encounter_OUD_Treatment_Cont": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Condition_OUD_2",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 1853470,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Condition_OUD_2"
+    },
+    "Condition_OUD_2": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Encounter_OUD_Treatment_Cont",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 5602001,
+          "display": "Opioid abuse (disorder)"
+        }
+      ],
+      "direct_transition": "Enter_Treatment_Options"
+    },
+    "Rx_Buprenorphine_3": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 351266,
+          "display": "buprenorphine 2 MG / naloxone 0.5 MG Sublingual Tablet"
+        }
+      ],
+      "direct_transition": "End_Encounter_OUD_Treatment_Cont",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        },
+        "refills": 3
+      },
+      "chronic": true,
+      "reason": "Condition_OUD_2"
+    },
+    "Rx_Buprenorphine_4": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 351266,
+          "display": "buprenorphine 2 MG / naloxone 0.5 MG Sublingual Tablet"
+        }
+      ],
+      "direct_transition": "End_Encounter_OUD_Treatment_Cont",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        },
+        "refills": 3
+      },
+      "reason": "Condition_OUD_2"
+    },
+    "End_Encounter_OUD_Treatment_Cont": {
+      "type": "EncounterEnd",
+      "direct_transition": "Counter_Treatment_Visit"
+    },
+    "Enter_Next_Treatment_Visit": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Encounter_OUD_Treatment_Cont",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "num_oud_treatment_visit",
+            "operator": "<",
+            "value": 5
+          }
+        },
+        {
+          "transition": "Enter_Evaluate_OUD_Or_Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "num_oud_treatment_visit",
+            "operator": ">",
+            "value": 5
+          }
+        }
+      ]
+    },
+    "Counter_Treatment_Visit": {
+      "type": "Counter",
+      "attribute": "num_oud_treatment_visit",
+      "action": "increment",
+      "direct_transition": "Enter_Next_Treatment_Visit"
+    },
+    "Enter_Evaluate Opioid_Use_Disorder": {
+      "type": "Simple",
+      "direct_transition": "Opioid_Addiction_Symptom_2_1"
+    },
+    "Set_Attribute_No_Treatment": {
+      "type": "SetAttribute",
+      "attribute": "no_treatment",
+      "direct_transition": "End_Encounter_OUD",
+      "value": true
+    },
+    "Set_Attribute_Treatment_Pshychosocial_Only": {
+      "type": "SetAttribute",
+      "attribute": "psychosocial",
+      "direct_transition": "End_Encounter_OUD",
+      "value": true
+    },
+    "Set_Attribute_Treatment_Pharmaco_Psychosocial": {
+      "type": "SetAttribute",
+      "attribute": "pharmaco_and_psychosocial",
+      "direct_transition": "End_Encounter_OUD",
+      "value": true
+    },
+    "Set_Attribute_Treatment_Pharmaco_Only": {
+      "type": "SetAttribute",
+      "attribute": "pharmaco",
+      "direct_transition": "End_Encounter_OUD",
+      "value": true
+    },
+    "Enter_Evaluate_OUD_Or_Terminal": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Terminal",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Enter_Evaluate Opioid_Use_Disorder",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Psychosocial_Therapy_4": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 408919008,
+          "display": "Psychosocial care (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Rx_Buprenorphine_4",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "on_buprenorphine",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Rx_Methadone_4",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "on_methadone",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Rx_Naltrexone_4",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "on_naltrexone",
+            "operator": "is not nil"
+          }
+        }
+      ],
+      "reason": "Condition_OUD_2"
+    },
+    "Psychosocial_Therapy_3": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 408919008,
+          "display": "Psychosocial care (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Encounter_OUD_Treatment_Cont",
+      "reason": "Condition_OUD_2"
+    },
+    "PEG_Assessment_Score_4": {
+      "type": "MultiObservation",
+      "category": "survey",
+      "number_of_observations": 0,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "91148-7",
+          "display": "Pain intensity, Enjoyment of life, General activity (PEG) 3 item pain scale"
+        }
+      ],
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "75893-8",
+              "display": "What number best describes your pain on average in the past week?"
+            }
+          ],
+          "range": {
+            "low": 1,
+            "high": 10
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "91145-3",
+              "display": "What number best describes how, during the past week, pain has interfered with your enjoyment of life?"
+            }
+          ],
+          "range": {
+            "low": 1,
+            "high": 10
+          }
+        },
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "91146-1",
+              "display": "What number best describes how, during the past week, pain has interfered with your general activity?"
+            }
+          ],
+          "range": {
+            "low": 1,
+            "high": 10
+          }
+        }
+      ],
+      "direct_transition": "Urine_Drug_Testing_Positive"
+    },
+    "On_Nonopioid_Prescription_1": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Chronic_Pain_Population",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "On_IR_Opioid_Prescription_1": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Addiction",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Chronic_Pain_Population",
+          "distribution": 0.9
+        }
+      ]
+    },
+    "On_IR_Opioid_Prescription_2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Terminal",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Chronic_Pain_Population",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Addiction",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "On_ER_Opioid_Prescription": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Terminal",
+          "distribution": 0.28
+        },
+        {
+          "transition": "Chronic_Pain_Population",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Addiction",
+          "distribution": 0.12
+        }
+      ]
+    },
+    "On_Nonopioid_Prescription_2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Terminal",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Chronic_Pain_Population",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Start_Treatment_Opioid_Use_Disorder": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "IR_opioid_Rx_1",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "IR_opioid_Rx_2",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.0015,
+              "transition": "Enter_Overdose"
+            },
+            {
+              "transition": "Enter_Evaluate Opioid_Use_Disorder",
+              "distribution": 0.9985
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ER_opioid_Rx",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "Enter_Overdose",
+              "distribution": 0.0035
+            },
+            {
+              "transition": "Enter_Evaluate Opioid_Use_Disorder",
+              "distribution": 0.9965
+            }
+          ]
+        }
+      ]
+    },
+    "Rx_Methadone_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 864706,
+          "display": "methadone hydrochloride 10 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Set_Attribute_Treatment_Pharmaco_Only",
+      "assign_to_attribute": "on_methadone",
+      "reason": "Condition_OUD"
+    },
+    "Rx_Methadone_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 864706,
+          "display": "methadone hydrochloride 10 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Set_Attribute_Treatment_Pharmaco_Psychosocial",
+      "assign_to_attribute": "on_methadone",
+      "reason": "Condition_OUD"
+    },
+    "Psychosocial_Therapy_5": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 408919008,
+          "display": "Psychosocial care (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Rx_Methadone_2",
+      "reason": "Condition_OUD"
+    },
+    "Rx_Methadone_3": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 864706,
+          "display": "methadone hydrochloride 10 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "End_Encounter_OUD_Treatment_Cont",
+      "reason": "Condition_OUD_2"
+    },
+    "Rx_Methadone_4": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 864706,
+          "display": "methadone hydrochloride 10 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "End_Encounter_OUD_Treatment_Cont",
+      "reason": "Condition_OUD_2"
+    },
+    "Age_and_Module_Effective_Time_Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "And",
+        "conditions": [
+          {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 18,
+            "unit": "years",
+            "value": 0
+          },
+          {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 2014,
+            "value": 0
+          }
+        ]
+      },
+      "direct_transition": "General_Adult_Population"
+    },
+    "Rx_Naltrexone_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1483744,
+          "display": "Naltrexone hydrochloride 50 MG Oral Tablet"
+        }
+      ],
+      "assign_to_attribute": "on_naltrexone",
+      "reason": "Condition_OUD",
+      "direct_transition": "Set_Attribute_Treatment_Pharmaco_Only"
+    },
+    "Psychosocial_Therapy_6": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 408919008,
+          "display": "Psychosocial care (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "reason": "Condition_OUD",
+      "direct_transition": "Rx_Naltrexone_2"
+    },
+    "Rx_Naltrexone_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1483744,
+          "display": "Naltrexone hydrochloride 50 MG Oral Tablet"
+        }
+      ],
+      "assign_to_attribute": "on_naltrexone",
+      "reason": "Condition_OUD",
+      "direct_transition": "Set_Attribute_Treatment_Pharmaco_Psychosocial"
+    },
+    "Buprenorphine_Or_Methadone_Or_Naltrexone": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Rx_Buprenorphine_3",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "on_buprenorphine",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Rx_Methadone_3",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "on_methadone",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Rx_Naltrexone_3",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "on_naltrexone",
+            "operator": "is not nil"
+          }
+        }
+      ]
+    },
+    "Rx_Naltrexone_3": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1483744,
+          "display": "Naltrexone hydrochloride 50 MG Oral Tablet"
+        }
+      ],
+      "reason": "Condition_OUD_2",
+      "direct_transition": "End_Encounter_OUD_Treatment_Cont"
+    },
+    "Rx_Naltrexone_4": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1483744,
+          "display": "Naltrexone hydrochloride 50 MG Oral Tablet"
+        }
+      ],
+      "reason": "Condition_OUD_2",
+      "direct_transition": "End_Encounter_OUD_Treatment_Cont"
+    }
+  }
+}
