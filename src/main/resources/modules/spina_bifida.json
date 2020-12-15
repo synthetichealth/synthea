@@ -1,0 +1,994 @@
+{
+  "name": "Spina Bifida",
+  "remarks": [
+    "Module Title: Spina Bifida",
+    "",
+    "Version Number: 1.0",
+    "",
+    "Last Updated: 11/30/2020",
+    "",
+    "Module Steward: Office of the National Coordinator for Health Information Technology (ONC)",
+    "",
+    "Module Developer: Clinovations Government + Health",
+    "",
+    "Description: Spina bifida is the most common permanently disabling birth defect that is associated with life (1). It is a condition that affects the spine and a type of neural tube detect. The three most common types of spina bifida are myelomeningocele, meningocele, spina bifida occulta. This module models myelomeningocele, the most severe form of spina bifida, for patients age < 18.",
+    "",
+    "Disclaimer: SyntheaTM is an open-source synthetic patient generator, created by MITRE, that models the medical history of synthetic patients. This module is developed using the Synthea Module Builder and is limited to the capabilities of Synthea and the Synthea Module Builder. ",
+    "This Synthea module is not a clinical guideline, does not establish a standard of medical care, and has not been tested for all potential applications. THIS MODULE IS PROVIDED \"AS IS\" WITHOUT WARRANTY OF ANY KIND.",
+    "",
+    "Related Module(s): None ",
+    "",
+    "Reference(s): list of references are available in the Synthea Module Companion Guide for Spina Bifida.",
+    "",
+    "",
+    ""
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Enter_Spina_Bifida"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Myelomeningocele": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Encounter_NICU",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 414667000,
+          "display": "Meningomyelocele (disorder)"
+        }
+      ],
+      "direct_transition": "Encounter_NICU"
+    },
+    "Meningocele": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 171131006,
+          "display": "Meningocele (disorder)"
+        }
+      ],
+      "direct_transition": "Delay_Meningocele",
+      "target_encounter": "Encounter_Meningocele"
+    },
+    "Spina_Bifida_Occulta": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Encounter_Occulta",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 76916001,
+          "display": "Spina bifida occulta (disorder)"
+        }
+      ],
+      "direct_transition": "Delay_Occulta"
+    },
+    "Encounter_NICU": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "Myelomeningocele",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 32485007,
+          "display": "Hospital admission (procedure)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Chiari_II_Malformation",
+          "distribution": 0.9
+        },
+        {
+          "transition": "Neurological_Exam",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "Myelomeningocele_Repair": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 42839003,
+          "display": "Repair of myelomeningocele (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 4,
+        "high": 6,
+        "unit": "hours"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Hydrocephalus",
+          "distribution": 0.85
+        },
+        {
+          "transition": "Delay_Discharge",
+          "distribution": 0.15
+        }
+      ],
+      "reason": "Myelomeningocele"
+    },
+    "Encounter_Occulta": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Spina_Bifida_Occulta",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 308335008,
+          "display": "Patient encounter procedure (procedure)"
+        }
+      ],
+      "direct_transition": "End_Encounter_Occulta"
+    },
+    "Delay_Occulta": {
+      "type": "Delay",
+      "direct_transition": "Encounter_Occulta",
+      "range": {
+        "low": 10,
+        "high": 30,
+        "unit": "years"
+      }
+    },
+    "End_Encounter_Occulta": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Encounter_Meningocele": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Meningocele",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 308335008,
+          "display": "Patient encounter procedure (procedure)"
+        }
+      ],
+      "direct_transition": "End_Encounter_Meningocele"
+    },
+    "Delay_Meningocele": {
+      "type": "Delay",
+      "direct_transition": "Encounter_Meningocele",
+      "range": {
+        "low": 0,
+        "high": 2,
+        "unit": "years"
+      }
+    },
+    "End_Encounter_Meningocele": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Delay_Myelomeningocele": {
+      "type": "Delay",
+      "range": {
+        "low": 24,
+        "high": 48,
+        "unit": "hours"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Myelomeningocele_Repair",
+          "distribution": 0.96
+        },
+        {
+          "transition": "Had_Fetal_Surgery",
+          "distribution": 0.04
+        }
+      ]
+    },
+    "Hydrocephalus": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Encounter_NICU",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 230745008,
+          "display": "Hydrocephalus (disorder)"
+        }
+      ],
+      "direct_transition": "Delay_Shunt_Placement"
+    },
+    "Ventriculoperitoneal_Shunt": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 47020004,
+          "display": "Ventriculoperitoneal shunt (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Delay_Discharge",
+      "reason": "Hydrocephalus"
+    },
+    "Orthopedic_Exam": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 36321500,
+          "display": "Musculoskeletal system physical examination (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "Foot_Deformity",
+      "reason": "Myelomeningocele"
+    },
+    "Scoliosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Encounter_NICU",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 298382003,
+          "display": "Scoliosis deformity of spine (disorder)"
+        }
+      ],
+      "remarks": [
+        "It resulted in six articles, two concerning diastematomyelia (103 patients, 82 females and 21 males) and four about myelomeningocele (479 patients, 283 females and 196 males) with an overall weighted prevalence of scoliosis (20-degree Cobb angle cutoff) of 44.4% and 52.5%, respectively.",
+        "",
+        "https://thejns.org/pediatrics/view/journals/j-neurosurg-pediatr/20/1/article-p99.xml#:~:text=Pooled%20statistical%20analysis%20of%20the,MMC%20and%20scoliosis%20than%20males.",
+        "Pooled statistical analysis of the included articles revealed the prevalence of scoliosis in MMC patients to be 53% (95% CI 0.42–0.64). Slightly more females (56%) are affected with both MMC and scoliosis than males."
+      ],
+      "direct_transition": "Chance_of_Kyphosis"
+    },
+    "Foot_Deformity": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Encounter_NICU",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 302297009,
+          "display": "Congenital deformity of foot (disorder)"
+        }
+      ],
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3221758/",
+        "Almost all patients with spina bifida will experience ",
+        "problems with foot deformity"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Scoliosis",
+          "distribution": 0.53
+        },
+        {
+          "transition": "Chance_of_Kyphosis",
+          "distribution": 0.37
+        }
+      ]
+    },
+    "Enter_Spina_Bifida": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Myelomeningocele",
+          "distribution": 0.00035
+        },
+        {
+          "transition": "Meningocele",
+          "distribution": 0.0001
+        },
+        {
+          "transition": "Spina_Bifida_Occulta",
+          "distribution": 0.00025
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.9993
+        }
+      ]
+    },
+    "Delay_Shunt_Placement": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 5,
+        "unit": "days"
+      },
+      "remarks": [
+        "Usually a shunt is placed several days",
+        "after the initial repair, although infrequently this may need to be done at the same",
+        "time as the repair"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Ventriculoperitoneal_Shunt",
+          "distribution": 0.8
+        },
+        {
+          "transition": "ETV",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Had_Fetal_Surgery": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Encounter_NICU",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 120991000119102,
+          "display": "History of undergoing in utero procedure while a fetus (situation)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Hydrocephalus",
+          "distribution": 0.45
+        },
+        {
+          "transition": "Delay_Discharge",
+          "distribution": 0.55
+        }
+      ]
+    },
+    "Neurological_Exam": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 84728005,
+          "display": "Neurological examination (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "Orthopedic_Exam",
+      "reason": "Myelomeningocele"
+    },
+    "Chiari_II_Malformation": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Encounter_NICU",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 373587001,
+          "display": "Chiari malformation type II (disorder)"
+        }
+      ],
+      "direct_transition": "Neurological_Exam"
+    },
+    "SB_Visit_1st": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Myelomeningocele",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 308335008,
+          "display": "Patient encounter procedure (procedure)"
+        }
+      ],
+      "direct_transition": "Urodynamic_Test"
+    },
+    "ETV": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 441763001,
+          "display": "Endoscopic third ventriculostomy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 60,
+        "high": 90,
+        "unit": "minutes"
+      },
+      "direct_transition": "CPC",
+      "reason": "Hydrocephalus"
+    },
+    "CPC": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 17881005,
+          "display": "Cauterization of choroid plexus (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Delay_Discharge",
+      "reason": "Hydrocephalus"
+    },
+    "Kyphosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Encounter_NICU",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 414564002,
+          "display": "Kyphosis deformity of spine (disorder)"
+        }
+      ],
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3069279/#:~:text=Spinal%20deformity%20is%20a%20common,9%2C%2021%2C%2025%5D.",
+        "",
+        "Spinal deformity is a common problem in myelomeningocele. Although it is less common than scoliosis, rigid kyphosis reportedly occurs in 8% to 20% of patients with myelomeningocele [1–3, 6, 9, 21, 25]. "
+      ],
+      "direct_transition": "Chance_of_Survival_Day1"
+    },
+    "Delay_Discharge": {
+      "type": "Delay",
+      "direct_transition": "Chance_of_Survival_2",
+      "range": {
+        "low": 3,
+        "high": 7,
+        "unit": "days"
+      }
+    },
+    "End_Encounter_NICU": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_SB_Visit"
+    },
+    "Delay_SB_Visit": {
+      "type": "Delay",
+      "direct_transition": "SB_Visit_1st",
+      "range": {
+        "low": 2,
+        "high": 3,
+        "unit": "months"
+      }
+    },
+    "CT_Head": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 303653007,
+          "display": "Computed tomography of head (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "MRI_Spine",
+      "reason": "Myelomeningocele"
+    },
+    "MRI_Spine": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 241645008,
+          "display": "Magnetic resonance imaging of spine (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Muscle_Testing",
+      "reason": "Myelomeningocele"
+    },
+    "Muscle_Testing": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 9002005,
+          "display": "Manual testing of muscle function (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Latex_Allergy",
+          "distribution": 0.6
+        },
+        {
+          "transition": "End_SB_Visit_1st",
+          "distribution": 0.4
+        }
+      ],
+      "reason": "Myelomeningocele"
+    },
+    "End_SB_Visit_1st": {
+      "type": "EncounterEnd",
+      "direct_transition": "Living_With_SB"
+    },
+    "Living_With_SB": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Delay_3_Months",
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 1,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Living_With_SB_2",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 1,
+            "unit": "years",
+            "value": 0
+          }
+        }
+      ]
+    },
+    "End_SB_Visit_Under_Age_5": {
+      "type": "EncounterEnd",
+      "distributed_transition": [
+        {
+          "transition": "Living_With_SB_3",
+          "distribution": 0.99
+        },
+        {
+          "transition": "Death",
+          "distribution": 0.01
+        }
+      ]
+    },
+    "SB_Visit_Under_Age_5": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Myelomeningocele",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 308335008,
+          "display": "Patient encounter procedure (procedure)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Condition_UTI_3",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Condition_Pressure_Ulcer_3",
+          "distribution": 0.106
+        },
+        {
+          "transition": "End_SB_Visit_Under_Age_5",
+          "distribution": 0.394
+        }
+      ]
+    },
+    "SB_Visit_After_Age_5": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Myelomeningocele",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 308335008,
+          "display": "Patient encounter procedure (procedure)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Condition_UTI_2",
+          "distribution": 0.5
+        },
+        {
+          "transition": "End_SB_Visit_After_Age_5",
+          "distribution": 0.394
+        },
+        {
+          "transition": "Condition_Pressure_Ulcer",
+          "distribution": 0.106
+        }
+      ]
+    },
+    "End_SB_Visit_After_Age_5": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 18,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Living_With_SB_4",
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years",
+            "value": 0
+          }
+        }
+      ]
+    },
+    "Living_With_SB_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Living_With_SB",
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 1,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Delay_6_Months",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 1,
+                "unit": "years",
+                "value": 0
+              },
+              {
+                "condition_type": "Age",
+                "operator": "<",
+                "quantity": 5,
+                "unit": "years",
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Delay_1_Year",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 5,
+            "unit": "years",
+            "value": 0
+          }
+        }
+      ]
+    },
+    "Living_With_SB_3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Living_With_SB_2",
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 5,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Delay_1_Year",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 5,
+            "unit": "years",
+            "value": 0
+          }
+        }
+      ]
+    },
+    "Latex_Allergy": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "SB_Visit_1st",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 300916003,
+          "display": "Allergy to latex (finding)"
+        }
+      ],
+      "direct_transition": "End_SB_Visit_1st"
+    },
+    "Chance_of_Kyphosis": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Kyphosis",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Chance_of_Survival_Day1",
+          "distribution": 0.8
+        }
+      ]
+    },
+    "Office_Visit_Under_Age_1": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Myelomeningocele",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 308335008,
+          "display": "Patient encounter procedure (procedure)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Condition_UTI",
+          "distribution": 0.5
+        },
+        {
+          "transition": "End_Office_Visit_Under_Age_1",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "End_Office_Visit_Under_Age_1": {
+      "type": "EncounterEnd",
+      "direct_transition": "Living_With_SB_2"
+    },
+    "Death": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 414667000,
+          "display": "Meningomyelocele (disorder)"
+        }
+      ],
+      "remarks": [
+        "https://onlinelibrary.wiley.com/doi/pdf/10.1111/j.1469-8749.2009.03543.x",
+        "One in three of the cohort (40 ⁄ 117) died before the age of 5 years."
+      ]
+    },
+    "Living_With_SB_4": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Death",
+          "distribution": 0.005
+        },
+        {
+          "transition": "Delay_1_Year",
+          "distribution": 0.995
+        }
+      ]
+    },
+    "Urodynamic_Test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 252895004,
+          "display": "Urodynamic studies (procedure"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Renal_Ultrasound",
+      "reason": "Myelomeningocele"
+    },
+    "Renal_Ultrasound": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 709640007,
+          "display": "Doppler ultrasonography of renal vein (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "CT_Head",
+      "reason": "Myelomeningocele"
+    },
+    "Delay_3_Months": {
+      "type": "Delay",
+      "direct_transition": "Office_Visit_Under_Age_1",
+      "exact": {
+        "quantity": 3,
+        "unit": "months"
+      }
+    },
+    "Delay_6_Months": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 6,
+        "unit": "months"
+      },
+      "direct_transition": "SB_Visit_Under_Age_5"
+    },
+    "Delay_1_Year": {
+      "type": "Delay",
+      "direct_transition": "SB_Visit_After_Age_5",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      }
+    },
+    "Chance_of_Survival_Day1": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Death",
+          "distribution": 0.061
+        },
+        {
+          "transition": "Delay_Myelomeningocele",
+          "distribution": 0.939
+        }
+      ],
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6899817/"
+      ]
+    },
+    "Chance_of_Survival_2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "End_Encounter_NICU",
+          "distribution": 0.98
+        },
+        {
+          "transition": "Death",
+          "distribution": 0.02
+        }
+      ]
+    },
+    "Condition_UTI": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 68566005,
+          "display": "Urinary tract infectious disease (disorder)"
+        }
+      ],
+      "direct_transition": "End_Office_Visit_Under_Age_1",
+      "target_encounter": "Office_Visit_Under_Age_1"
+    },
+    "Condition_UTI_3": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "SB_Visit_Under_Age_5",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 68566005,
+          "display": "Urinary tract infectious disease (disorder)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "End_SB_Visit_Under_Age_5",
+          "distribution": 0.9
+        },
+        {
+          "transition": "Condition_Pressure_Ulcer_4",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "Condition_Pressure_Ulcer_3": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "SB_Visit_Under_Age_5",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 399912005,
+          "display": "Pressure ulcer (disorder)"
+        }
+      ],
+      "direct_transition": "End_SB_Visit_Under_Age_5"
+    },
+    "Condition_Pressure_Ulcer_4": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "SB_Visit_Under_Age_5",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 399912005,
+          "display": "Pressure ulcer (disorder)"
+        }
+      ],
+      "direct_transition": "End_SB_Visit_Under_Age_5"
+    },
+    "Condition_UTI_2": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "SB_Visit_After_Age_5",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 68566005,
+          "display": "Urinary tract infectious disease (disorder)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Condition_Pressure_Ulcer_2",
+          "distribution": 0.1
+        },
+        {
+          "transition": "End_SB_Visit_After_Age_5",
+          "distribution": 0.9
+        }
+      ]
+    },
+    "Condition_Pressure_Ulcer": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "SB_Visit_After_Age_5",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 399912005,
+          "display": "Pressure ulcer (disorder)"
+        }
+      ],
+      "direct_transition": "End_SB_Visit_After_Age_5"
+    },
+    "Condition_Pressure_Ulcer_2": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "SB_Visit_After_Age_5",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 399912005,
+          "display": "Pressure ulcer (disorder)"
+        }
+      ],
+      "direct_transition": "End_SB_Visit_After_Age_5"
+    }
+  }
+}
