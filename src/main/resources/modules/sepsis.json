@@ -2,8 +2,8 @@
   "name": "Sepsis",
   "remarks": [
     "Module Title: Sepsis",
-    "Version Number: 2.0",
-    "Last Updated: 12/14/2020",
+    "Version Number: 1.0",
+    "Last Updated: 12/15/2020",
     "Module Steward: ONC",
     "Module Developer: Clinovations Government + Health",
     "Description: Sepsis is a leading cause of death in critically ill patients in the United States. This module models the treatment of sepsis in patients >=18 years of age. It is based on the Surviving Sepsis Campaign clinical care guidelines for sepsis, particularly the guidelines for the Hour-1 Bundle for initial resuscitation of sepsis and septic shock. ",
