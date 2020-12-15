@@ -910,7 +910,7 @@
     "PT_Pain_Observation": {
       "type": "Observation",
       "category": "survey",
-      "unit": "score",
+      "unit": "{score}",
       "codes": [
         {
           "system": "LOINC",
@@ -927,7 +927,7 @@
     "CBT_Pain_Observation": {
       "type": "Observation",
       "category": "survey",
-      "unit": "score",
+      "unit": "{score}",
       "codes": [
         {
           "system": "LOINC",
@@ -2184,7 +2184,7 @@
       "observations": [
         {
           "category": "survey",
-          "unit": "score",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -2199,7 +2199,7 @@
         },
         {
           "category": "survey",
-          "unit": "score",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -2214,7 +2214,7 @@
         },
         {
           "category": "survey",
-          "unit": "score",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -2229,7 +2229,7 @@
         },
         {
           "category": "survey",
-          "unit": "score",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -2244,7 +2244,7 @@
         },
         {
           "category": "survey",
-          "unit": "score",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -2259,7 +2259,7 @@
         },
         {
           "category": "survey",
-          "unit": "score",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -2274,7 +2274,7 @@
         },
         {
           "category": "survey",
-          "unit": "score",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -2289,7 +2289,7 @@
         },
         {
           "category": "survey",
-          "unit": "score",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -2304,7 +2304,7 @@
         },
         {
           "category": "survey",
-          "unit": "score",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -2319,7 +2319,7 @@
         },
         {
           "category": "survey",
-          "unit": "score",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -2334,7 +2334,7 @@
         },
         {
           "category": "survey",
-          "unit": "score",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
