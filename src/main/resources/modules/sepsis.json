@@ -382,7 +382,7 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "Lactate_Level",
+      "direct_transition": "Fluid_Resuscitation2",
       "reason": "Septic_Shock"
     },
     "Admit_to_Inpatient": {
@@ -554,6 +554,23 @@
         ""
       ],
       "reason": "Acute_Respiratory_Distress_Syndrome_ARDS"
+    },
+    "Fluid_Resuscitation2": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 430701006,
+          "display": "Resuscitation using intravenous fluid (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Lactate_Level",
+      "reason": "Septic_Shock"
     }
   }
 }
