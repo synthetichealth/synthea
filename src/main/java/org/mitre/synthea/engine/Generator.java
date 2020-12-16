@@ -406,7 +406,8 @@ public class Generator implements RandomNumberGenerator {
     try {
       System.out.println("Loading fixed patient demographic records file: "
           + this.options.fixedRecordPath);
-          this.fixedRecordGroupManager = gson.fromJson(new FileReader(this.options.fixedRecordPath), jsonType);
+      this.fixedRecordGroupManager
+          = gson.fromJson(new FileReader(this.options.fixedRecordPath), jsonType);
     } catch (FileNotFoundException e) {
       throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
     }

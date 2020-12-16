@@ -169,7 +169,9 @@ public class FixedRecordTest {
 
         // Match the current record with the FixedRecord that matches its record id.
         FixedRecord currentFixedRecord = getRecordMatch(currentPerson);
-        assertNotNull(currentFixedRecord);
+        assertNotNull("Did not find a record match for "
+            + currentPerson.attributes.get(Person.NAME) + " with record ID "
+            + currentFixedRecord.recordId, currentFixedRecord);
 
         // First element of bundle is the patient resource.
         Patient patient = ((Patient) bundle.getEntry().get(0).getResource());

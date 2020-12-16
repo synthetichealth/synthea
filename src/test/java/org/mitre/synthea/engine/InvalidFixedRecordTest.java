@@ -46,6 +46,6 @@ public class InvalidFixedRecordTest {
   @Test(expected = java.lang.RuntimeException.class)
   public void invalidSeedCityTest() {
     // The second person's seed city is invalid.
-    String city = fixedRecordGroupManager.getRecordGroup(1).getSeedCity();
+    fixedRecordGroupManager.getRecordGroup(1).getSeedCity();
   }
 }
