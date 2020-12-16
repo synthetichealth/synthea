@@ -141,7 +141,6 @@ public class FixedRecord {
       this.attributes.putAll(this.getNameAttributes());
       this.attributes.put(Person.TELECOM, this.getTelecom());
       this.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
-      // this.attributes.put(Person.IDENTIFIER_SITE, this.site);
       if (this.contactLastName != null) {
         this.attributes.put(Person.CONTACT_GIVEN_NAME, this.contactFirstName);
         this.attributes.put(Person.CONTACT_FAMILY_NAME, this.contactLastName);

@@ -170,8 +170,8 @@ public class FixedRecordTest {
         // Match the current record with the FixedRecord that matches its record id.
         FixedRecord currentFixedRecord = getRecordMatch(currentPerson);
         assertNotNull("Did not find a record match for "
-            + currentPerson.attributes.get(Person.NAME) + " with record ID "
-            + currentFixedRecord.recordId, currentFixedRecord);
+            + currentPerson.attributes.get(Person.NAME) + " with record ID " + currentPerson.record
+            .demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID), currentFixedRecord);
 
         // First element of bundle is the patient resource.
         Patient patient = ((Patient) bundle.getEntry().get(0).getResource());
@@ -407,7 +407,7 @@ public class FixedRecordTest {
     assertEquals(currentRecord.city, "INVALID_CITY_NAME");
     assertEquals(currentRecord.state, "California");
     assertEquals(currentRecord.addressStartDate, 2002);
-     // 1998 Address
+    // 1998 Address
     frg.updateCurrentRecord(1998);
     currentRecord = frg.getCurrentRecord();
     assertEquals(currentRecord.addressLineOne, "56 Fetter Lane");
