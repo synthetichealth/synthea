@@ -33,7 +33,7 @@ import org.mitre.synthea.input.FixedRecordGroupManager;
 import org.mitre.synthea.input.Household;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.agents.Provider; 
 import org.mitre.synthea.world.concepts.HealthRecord;
 
 public class FixedRecordTest {
@@ -171,7 +171,9 @@ public class FixedRecordTest {
         FixedRecord currentFixedRecord = getRecordMatch(currentPerson);
         assertNotNull("Did not find a record match for "
             + currentPerson.attributes.get(Person.NAME) + " with record ID " + currentPerson.record
-            .demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID), currentFixedRecord);
+            .demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID) + ". Person has "
+            + ((FixedRecordGroup) currentPerson.attributes.get(Person.RECORD_GROUP)).variantRecords
+            .size() + " imported fixed records in their fixed record group.", currentFixedRecord);
 
         // First element of bundle is the patient resource.
         Patient patient = ((Patient) bundle.getEntry().get(0).getResource());
