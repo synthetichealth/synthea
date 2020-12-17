@@ -12,12 +12,10 @@ import org.mitre.synthea.world.agents.Provider;
 
 public class InvalidFixedRecordTest {
 
-  // The generator.
-  private static Generator generator;
   private static FixedRecordGroupManager fixedRecordGroupManager;
 
   /**
-   * Configure settings across these tests.
+   * Configure settings to be set before tests.
    * @throws Exception on test configuration loading errors.
    */
   @BeforeClass
@@ -31,10 +29,8 @@ public class InvalidFixedRecordTest {
     GeneratorOptions go = new GeneratorOptions();
     go.fixedRecordPath = new File(
         "src/test/resources/fixed_demographics/invalid_fixed_demographics_test.json");
-    go.state = "Colorado";  // Examples are based on Colorado.
-    go.population = 100;  // Should be overwritten by number of patients in input file.
-    generator = new Generator(go);
-    fixedRecordGroupManager = generator.importFixedDemographicsFile();
+    go.state = "California";  // Examples are based on California.
+    fixedRecordGroupManager = new Generator(go).importFixedDemographicsFile();
   }
 
   @Test(expected = java.lang.RuntimeException.class)

@@ -462,6 +462,7 @@ public class Generator implements RandomNumberGenerator {
         // If fixed records are used, there must be 1 provider for each variant record.
         
       } else {
+        // Standard random demographics.
         demoAttributes = randomDemographics(randomForDemographics);
       }
       
@@ -546,6 +547,8 @@ public class Generator implements RandomNumberGenerator {
    * @return the new person
    */
   public Person createPerson(long personSeed, Map<String, Object> demoAttributes) {
+    
+    // Initialize person.
     Person person = new Person(personSeed);
     person.populationSeed = this.options.seed;
     person.attributes.putAll(demoAttributes);
@@ -554,41 +557,42 @@ public class Generator implements RandomNumberGenerator {
 
     LifecycleModule.birth(person, person.lastUpdated);
 
+    // Initialize the person to their fixed record attributes if used.
     if (person.attributes.get(Person.RECORD_GROUP) != null) {
-      FixedRecordGroup frg = ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP));
-      frg.updateCurrentRecord(Utilities.getYear(person.lastUpdated));
-      person.attributes.putAll(frg.getCurrentRecord().getFixedRecordAttributes());
-    }
-    
-    // Set the default record after all attributes have been set.
-    person.defaultRecord = new HealthRecord(person);
-    person.record = person.defaultRecord;
-
-    if (person.attributes.get(Person.RECORD_GROUP) != null) {
-      FixedRecordGroup frg = ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP));
-      person.attributes.put(Person.BIRTHDATE, frg.getSeedBirthdate());
+      setFixedDemographics(person);
     }
 
     person.currentModules = Module.getModules(modulePredicate);
-
-    // Add the person to their household.
-    if (Boolean.parseBoolean(Config.get("fixeddemographics.households", "false"))) {
-      Household personHousehold = (Household) person.attributes.get(Person.HOUSEHOLD);
-      // Because people are sometimes re-simulated, we must make sure they
-      // have not already been added to the household.
-      if (!personHousehold.includesPerson(person)) {
-        if (person.ageInDecimalYears(System.currentTimeMillis()) > 18) {
-          personHousehold.addAdult(person);
-        } else {
-          personHousehold.addChild(person);
-        }
-      }
-    }
 
     // Enter the loop of updating the person's life.
     updatePerson(person);
 
     return person;
+  }
+
+  /**
+   * Sets the demographics of the person based on imported fixed records.
+   * 
+   * @param person the person whose demographics are to be set.
+   */
+  public void setFixedDemographics(Person person) {
+    FixedRecordGroup frg = ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP));
+    frg.updateCurrentRecord(Utilities.getYear(person.lastUpdated));
+    person.attributes.putAll(frg.getCurrentRecord().getFixedRecordAttributes());
+    // Reset person's default records after attributes have been reset.
+    person.initializeDefaultHealthRecords();
+    person.attributes.put(Person.BIRTHDATE, frg.getSeedBirthdate());
+    // Add the person to their household if they have one.
+    Household personHousehold = (Household) person.attributes.get(Person.HOUSEHOLD);
+    // Because people are sometimes re-simulated, we must make sure they
+    // have not already been added to the household.
+    if (!personHousehold.includesPerson(person)) {
+      if (person.ageInDecimalYears(System.currentTimeMillis()) > 18) {
+        personHousehold.addAdult(person);
+      } else {
+        personHousehold.addChild(person);
+      }
+    }
   }
 
   /**
@@ -798,7 +802,7 @@ public class Generator implements RandomNumberGenerator {
     }
     demoAttributes.put(Person.GENDER, g);
 
-    if (Boolean.parseBoolean(Config.get("fixeddemographics.households", "false"))) {
+    if (this.fixedRecordGroupManager != null) {
       if (this.households == null) {
         this.households = new HashMap<Integer, Household>();
       }
@@ -811,7 +815,6 @@ public class Generator implements RandomNumberGenerator {
     }
    
     demoAttributes.put(Person.RECORD_GROUP, recordGroup);
-    demoAttributes.put(Person.LINK_ID, recordGroup.linkId);
 
     demoAttributes.putAll(seedRecord.getFixedRecordAttributes());
 

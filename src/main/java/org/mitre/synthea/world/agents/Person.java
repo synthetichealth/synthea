@@ -159,23 +159,29 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     onsetConditionRecord = new ExpressedConditionRecord(this);
     /* Chronic Medications which will be renewed at each Wellness Encounter */
     chronicMedications = new ConcurrentHashMap<String, HealthRecord.Medication>();
-    hasMultipleRecords =
-        Config.getAsBoolean("exporter.split_records", false);
+    hasMultipleRecords = Config.getAsBoolean("exporter.split_records", false);
     if (hasMultipleRecords) {
       records = new ConcurrentHashMap<String, HealthRecord>();
     }
-    defaultRecord = new HealthRecord(this);
-    lossOfCareEnabled =
-        Config.getAsBoolean("generate.payers.loss_of_care", false);
-    if (lossOfCareEnabled) {
-      lossOfCareRecord = new HealthRecord(this);
-    }
-    record = defaultRecord;
+    this.initializeDefaultHealthRecords();
     // 128 because it's a nice power of 2, and nobody will reach that age
     payerHistory = new Payer[128];
     payerOwnerHistory = new String[128];
     annualHealthExpenses = new HashMap<Integer, Double>();
     annualHealthCoverage = new HashMap<Integer, Double>();
+  }
+
+  /**
+   * Initializes person's default health records. May need to be called if attributes
+   * change due to fixed demographics.
+   */
+  public void initializeDefaultHealthRecords() {
+    this.defaultRecord = new HealthRecord(this);
+    this.record = this.defaultRecord;
+    this.lossOfCareEnabled = Config.getAsBoolean("generate.payers.loss_of_care", false);
+    if (this.lossOfCareEnabled) {
+      this.lossOfCareRecord = new HealthRecord(this);
+    }
   }
 
   /**

@@ -89,8 +89,15 @@ public class FixedRecord {
   // Attributes map
   @Expose(serialize = false, deserialize = true) private transient Map<String, Object> attributes;
 
+  // The end date that this record is valid. To be set based on other records in the record group.
   public int addressEndDate;
 
+  /**
+   * Constructor
+   */
+  public FixedRecord(){
+    this.attributes = null;
+  }
 
   /**
    * Returns the city of this fixedRecord if it is a valid city.
@@ -122,31 +129,16 @@ public class FixedRecord {
   }
 
   /**
-   * Return the telephone number associated with this FixedRecord.
-   * 
-   * @return The phone number in this FixedRecord.
-   */
-  public String getTelecom() {
-    return this.phoneAreaCode + "-" + this.phoneNumber;
-  }
-
-  /**
    * Returns the attributes associated with this FixedRecord.
    * 
-   * @return the attributes associated with this FixedRecord.
+   * @return the attribute Map associated with this FixedRecord.
    */
   public Map<String, Object> getFixedRecordAttributes() {
     if (this.attributes == null) {
       this.attributes = new HashMap<String, Object>();
       this.attributes.putAll(this.getNameAttributes());
-      this.attributes.put(Person.TELECOM, this.getTelecom());
+      this.attributes.put(Person.TELECOM, this.phoneAreaCode + "-" + this.phoneNumber);
       this.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
-      if (this.contactLastName != null) {
-        this.attributes.put(Person.CONTACT_GIVEN_NAME, this.contactFirstName);
-        this.attributes.put(Person.CONTACT_FAMILY_NAME, this.contactLastName);
-      }
-      this.attributes.put(Person.CONTACT_EMAIL, this.contactEmail);
-      this.attributes.put(Person.ADDRESS, this.addressLineOne);
       String g = this.gender;
       if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
         g = "UNK";
@@ -159,7 +151,13 @@ public class FixedRecord {
       } else {
         this.attributes.put(Person.CITY, this.city);
       }
+      this.attributes.put(Person.ADDRESS, this.addressLineOne);
       this.attributes.put(Person.ZIP, this.zipcode);
+      if (this.contactLastName != null) {
+        this.attributes.put(Person.CONTACT_GIVEN_NAME, this.contactFirstName);
+        this.attributes.put(Person.CONTACT_FAMILY_NAME, this.contactLastName);
+      }
+      this.attributes.put(Person.CONTACT_EMAIL, this.contactEmail);
     }
     return this.attributes;
   }
@@ -182,9 +180,9 @@ public class FixedRecord {
           person.attributes.get(Person.RECORD_GROUP)).getSeedCity());
     }
     person.attributes.put(Person.ZIP, this.zipcode);
-    // Fix the person's safe city in case it is invalid and update their location
-    // point.
+    // Fix the person's safe city in case it is invalid and update their location point.
     generator.location.assignPoint(person, (String) person.attributes.get(Person.CITY));
+    // Return a boolean indicating whether the address was changed.
     return !oldCity.equals(person.attributes.get(Person.CITY))
         && !oldAddress.equals(person.attributes.get(Person.ADDRESS));
   }
@@ -192,7 +190,7 @@ public class FixedRecord {
   /**
    * Returns the name attributes of the current fixed record.
    */
-  public Map<String, Object> getNameAttributes() {
+  private Map<String, Object> getNameAttributes() {
     return Stream.of(new String[][] {
       {Person.FIRST_NAME, this.firstName},
       {Person.LAST_NAME, this.lastName},

@@ -14,7 +14,6 @@ public class FixedRecordGroup {
   public FixedRecord seedRecord;
   public List<FixedRecord> variantRecords;
   public int currentVariantRecord;
-  public int linkId;
 
   /**
    * Create the FixedRecordGroup for a person based on a seed record.
@@ -77,7 +76,7 @@ public class FixedRecordGroup {
       // Do nothing if the current fixed record does not have a valid birthdate.
     }
     throw new RuntimeException("No valid birthdate for: " + this.seedRecord.firstName + " "
-        + this.seedRecord.lastName);
+        + this.seedRecord.lastName + "'s seed record id " + seedRecord.recordId + ".");
   }
 
   /**
@@ -90,7 +89,7 @@ public class FixedRecordGroup {
       return safeCity;
     }
     throw new RuntimeException("ERROR: No valid city for " + seedRecord.firstName + " "
-        + seedRecord.lastName + ".");
+        + seedRecord.lastName + "'s seed record id " + seedRecord.recordId + ".");
   }
 
   /**

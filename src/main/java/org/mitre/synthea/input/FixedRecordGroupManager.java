@@ -29,7 +29,7 @@ public class FixedRecordGroupManager {
    * Creates the record groups based on the imported records.
    */
   public void createRecordGroups() {
-    recordGroups = new HashMap<Integer, FixedRecordGroup>();
+    this.recordGroups = new HashMap<Integer, FixedRecordGroup>();
     // Initialize with the seed records.
     for (FixedRecord seedRecord : seedRecords) {
       this.recordGroups.put(Integer.parseInt(seedRecord.recordId),

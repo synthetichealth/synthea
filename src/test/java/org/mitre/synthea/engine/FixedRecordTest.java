@@ -38,11 +38,13 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 
 public class FixedRecordTest {
 
+  /* String Constants */
   public static final String BIRTH_YEAR = "birth_year";
   public static final String BIRTH_MONTH = "birth_month";
   public static final String BIRTH_DAY_OF_MONTH = "birth_day";
   public static final String FIRST_NAME = "first_name";
   public static final String LAST_NAME = "last_name";
+  public static final String NAME = "full_name";
   public static final String GENDER = "gender";
   public static final String SEED_ID = "seed_id";
   public static final String RECORD_ID = "record_id";
@@ -60,12 +62,13 @@ public class FixedRecordTest {
   public static final String CONTACT_LAST_NAME = "contact_last";
   public static final String CONTACT_EMAIL = "email";
 
-  // The generator.
+  /* Generator */
   private static Generator generator;
+  /* Fixed Record Manager */
   private static FixedRecordGroupManager fixedRecordGroupManager;
 
   /**
-   * Configure settings across these tests.
+   * Configure settings to be set before tests.
    * @throws Exception on test configuration loading errors.
    */
   @BeforeClass
@@ -73,7 +76,6 @@ public class FixedRecordTest {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "California");
     Config.set("generate.only_dead_patients", "false"); 
     Config.set("exporter.split_records", "true");
-    Config.set("fixeddemographics.households", "true");
     Config.set("generate.append_numbers_to_person_names", "false");
     Config.set("generate.only_alive_patients", "true");
     Provider.clear();
@@ -99,13 +101,12 @@ public class FixedRecordTest {
   }
 
   /**
-   * Resets any Config settings that may interfere with other tests.
+   * Resets any Configuration settings that may interfere with other tests.
    */
   @AfterClass
   public static void resetConfig() {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "California");
     Config.set("exporter.split_records", "false");
-    Config.set("fixeddemographics.households", "false");
     Config.set("generate.append_numbers_to_person_names", "true");
     Config.set("generate.only_alive_patients", "false");
   }
@@ -120,6 +121,7 @@ public class FixedRecordTest {
       {HH_STATUS, "adult"},
       {FIRST_NAME, "Jane"},
       {LAST_NAME, "Doe"},
+      {NAME, "Jane Doe"},
       {BIRTH_YEAR, "1984"},
       {BIRTH_MONTH, "3"},
       {BIRTH_DAY_OF_MONTH, "12"},
@@ -142,10 +144,12 @@ public class FixedRecordTest {
       FixedRecord seedRecord = recordGroup.seedRecord;
       assertEquals(demoAttributes.get(Person.FIRST_NAME), (seedRecord.firstName));
       assertEquals(demoAttributes.get(Person.LAST_NAME), (seedRecord.lastName));
-      assertEquals(demoAttributes.get(Person.ADDRESS), (seedRecord.addressLineOne));
+      assertEquals(demoAttributes.get(Person.NAME), (seedRecord.firstName + " " + seedRecord.lastName));
       assertEquals(demoAttributes.get(Person.BIRTHDATE), (seedRecord.getBirthDate()));
       assertEquals(demoAttributes.get(Person.GENDER), (seedRecord.gender));
-      assertEquals(demoAttributes.get(Person.TELECOM), (seedRecord.getTelecom()));
+      assertEquals(demoAttributes.get(Person.TELECOM), (seedRecord.phoneAreaCode + "-"
+          + seedRecord.phoneNumber));
+      assertEquals(demoAttributes.get(Person.ADDRESS), (seedRecord.addressLineOne));
       assertEquals(demoAttributes.get(Person.STATE), (seedRecord.state));
       assertEquals(demoAttributes.get(Person.CITY), (seedRecord.city));
       assertEquals(demoAttributes.get(Person.ZIP), (seedRecord.zipcode));
@@ -169,11 +173,16 @@ public class FixedRecordTest {
 
         // Match the current record with the FixedRecord that matches its record id.
         FixedRecord currentFixedRecord = getRecordMatch(currentPerson);
+        // Check that a record group was found. Very detailed error message for debugging purposes.
+        // currentFixedRecord = null;
         assertNotNull("Did not find a record match for "
-            + currentPerson.attributes.get(Person.NAME) + " with record ID " + currentPerson.record
+            + currentPerson.attributes.get(Person.NAME) + " with record id " + currentPerson.record
             .demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID) + ". Person has "
             + ((FixedRecordGroup) currentPerson.attributes.get(Person.RECORD_GROUP)).variantRecords
-            .size() + " imported fixed records in their fixed record group.", currentFixedRecord);
+            .size() + " imported fixed records in their fixed record group with record ids "
+            + (((FixedRecordGroup) currentPerson.attributes.get(Person.RECORD_GROUP)))
+            .variantRecords.stream().map(variantRecord -> variantRecord.recordId).collect(
+            Collectors.toList()) + ".", currentFixedRecord);
 
         // First element of bundle is the patient resource.
         Patient patient = ((Patient) bundle.getEntry().get(0).getResource());
@@ -186,6 +195,9 @@ public class FixedRecordTest {
         Map<String, String> testAttributes = Stream.of(new String[][] {
           {FIRST_NAME, patient.getNameFirstRep().getGivenAsSingleString()},
           {LAST_NAME, patient.getNameFirstRep().getFamily()},
+          {NAME, patient.getNameFirstRep().getNameAsSingleString().replace("Mr. ", "")
+              .replace("Ms. ", "").replace("Mrs. " ,"").replace(" PhD", "").replace(" JD","")
+              .replace(" MD", "")},
           {BIRTH_YEAR, Integer.toString(c.get(Calendar.YEAR))},
           {BIRTH_MONTH, Integer.toString(c.get(Calendar.MONTH) + 1)},
           {BIRTH_DAY_OF_MONTH, Integer.toString(c.get(Calendar.DAY_OF_MONTH))},
@@ -244,6 +256,7 @@ public class FixedRecordTest {
       {HH_STATUS, "adult"},
       {FIRST_NAME, "Jane"},
       {LAST_NAME, "Doe"},
+      {NAME, "Jane Doe"},
       {BIRTH_YEAR, "1974"},
       {BIRTH_MONTH, "3"},
       {BIRTH_DAY_OF_MONTH, "12"},
@@ -266,6 +279,7 @@ public class FixedRecordTest {
       {HH_STATUS, "adult"},
       {FIRST_NAME, "Jane Janice"},
       {LAST_NAME, "Dow"},
+      {NAME, "Jane Janice Dow"},
       {BIRTH_YEAR, "1984"},
       {BIRTH_MONTH, "3"},
       {BIRTH_DAY_OF_MONTH, "12"},
@@ -288,6 +302,7 @@ public class FixedRecordTest {
       {HH_STATUS, "adult"},
       {FIRST_NAME, "Jan"},
       {LAST_NAME, "Doe"},
+      {NAME, "Jan Doe"},
       {BIRTH_YEAR, "1984"},
       {BIRTH_MONTH, "3"},
       {BIRTH_DAY_OF_MONTH, "12"},
@@ -349,11 +364,11 @@ public class FixedRecordTest {
   private FixedRecord getRecordMatch(Person person) {
     FixedRecordGroup recordGroup = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
 
-    String recordId = (String) person.record.demographicsAtRecordCreation
+    String currentRecordId = (String) person.record.demographicsAtRecordCreation
         .get(Person.IDENTIFIER_RECORD_ID);
-    for (FixedRecord record : recordGroup.variantRecords) {
-      if (record.recordId.equals(recordId)) {
-        return record;
+    for (FixedRecord currentRecord : recordGroup.variantRecords) {
+      if (currentRecord.recordId.equals(currentRecordId)) {
+        return currentRecord;
       }
     }
     // If we reach here, there was no matching record id.
@@ -364,6 +379,7 @@ public class FixedRecordTest {
         FixedRecord personFixedRecord, Map<String, String> testAttribtues) {
     assertEquals(personFixedRecord.firstName, testAttribtues.get(FIRST_NAME));
     assertEquals(personFixedRecord.lastName, testAttribtues.get(LAST_NAME));
+    assertEquals(personFixedRecord.firstName + " " + personFixedRecord.lastName, testAttribtues.get(NAME));
     assertEquals(personFixedRecord.birthYear, testAttribtues.get(BIRTH_YEAR));
     assertEquals(personFixedRecord.birthMonth, testAttribtues.get(BIRTH_MONTH));
     assertEquals(personFixedRecord.birthDayOfMonth, testAttribtues.get(BIRTH_DAY_OF_MONTH));
