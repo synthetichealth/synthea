@@ -672,7 +672,7 @@
         {
           "system": "RxNorm",
           "code": 1986442,
-          "display": "Tisagenlecleucel 250000000 Cells Injection"
+          "display": "tisagenlecleucel 250000000 CELLS Injection"
         }
       ],
       "direct_transition": "End CAR-T therapy treatment encounter",
@@ -688,7 +688,7 @@
         {
           "system": "RxNorm",
           "code": 1987402,
-          "display": "Axicabtagene ciloleucel 200000000 Cells Injection"
+          "display": "68 ML axicabtagene ciloleucel 2940000 CELLS/ML Injection"
         }
       ],
       "direct_transition": "End CAR-T therapy treatment encounter",
@@ -778,7 +778,7 @@
         {
           "system": "RxNorm",
           "code": 1734919,
-          "display": "Cyclophosphamide 100MG injection"
+          "display": "Cyclophosphamide 1000 MG Injection"
         }
       ],
       "direct_transition": "Fludarabine",
