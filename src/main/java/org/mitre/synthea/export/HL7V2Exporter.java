@@ -33,6 +33,8 @@ import ca.uhn.hl7v2.model.v251.segment.SFT;
 import java.io.IOException;
 
 import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -553,6 +555,9 @@ public class HL7V2Exporter {
             //We set OBX2 to the DataType (e.g., ST or NM)
             if (obs.value instanceof Double) {
                 NM nm = new NM(adt);
+                //Fix Values that are some crazy number of digits of precision or scientific notation e.g. 3.777961337608282E-4
+                obs.value = new BigDecimal((Double)obs.value).round(new MathContext(8));
+                
                 nm.parse(obs.value.toString());
                 v.getObx5_ObservationValue()[0].setData(nm);
                 v.getObx2_ValueType().setValue("NM");
