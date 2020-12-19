@@ -42,321 +42,171 @@
       "direct_transition": "Encounter for  Second Line Treatment"
     },
     "R-DHAP": {
-      "type": "Simple",
-      "direct_transition": "Rituximab_1",
-      "remarks": [
-        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
-      ]
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        },
+        {
+          "system": "RxNorm",
+          "code": 2045404,
+          "display": "0.005 ML dexamethasone 103.4 MG/ML Injection"
+        },
+        {
+          "system": "RxNorm",
+          "code": 309311,
+          "display": "cisplatin 1 MG/ML Injectable Solution"
+        },
+        {
+          "system": "RxNorm",
+          "code": 249364,
+          "display": "20 ML cytarabine 100 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Length of Drug Treatment - Transplant",
+      "assign_to_attribute": "second_line_drug_regimen"
     },
     "R-ESHAP": {
-      "type": "Simple",
-      "direct_transition": "Rituximab_2",
-      "remarks": [
-        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
-      ]
-    },
-    "R-GDP": {
-      "type": "Simple",
-      "direct_transition": "Rituximab_3",
-      "remarks": [
-        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
-      ]
-    },
-    "R-GemOx": {
-      "type": "Simple",
-      "direct_transition": "Rituximab_4",
-      "remarks": [
-        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
-      ]
-    },
-    "R-ICE": {
-      "type": "Simple",
-      "direct_transition": "Rituximab_5",
-      "remarks": [
-        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
-      ]
-    },
-    "R-MINE": {
-      "type": "Simple",
-      "direct_transition": "Rituximab_6",
-      "remarks": [
-        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
-      ]
-    },
-    "Rituximab_2": {
       "type": "MedicationOrder",
       "codes": [
         {
           "system": "RxNorm",
           "code": 1657862,
           "display": "10 ML rituximab 10 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Etoposide_1"
-    },
-    "Rituximab_3": {
-      "type": "MedicationOrder",
-      "codes": [
+        },
         {
           "system": "RxNorm",
-          "code": 1657862,
-          "display": "10 ML rituximab 10 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Gemcitabine_1"
-    },
-    "Rituximab_4": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1657862,
-          "display": "10 ML rituximab 10 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Gemcitabine_2"
-    },
-    "Rituximab_5": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1657862,
-          "display": "10 ML rituximab 10 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Ifosfamide_1"
-    },
-    "Rituximab_6": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1657862,
-          "display": "10 ML rituximab 10 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Mesna"
-    },
-    "Methylprednisolone": {
-      "type": "MedicationOrder",
-      "codes": [
+          "code": 1734340,
+          "display": "etoposide 100 MG Injection"
+        },
         {
           "system": "RxNorm",
           "code": 1743779,
           "display": "1 ML methylprednisolone acetate 40 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Cytarabine_2"
-    },
-    "Cytarabine_1": {
-      "type": "MedicationOrder",
-      "codes": [
+        },
         {
           "system": "RxNorm",
           "code": 249364,
           "display": "20 ML cytarabine 100 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Length of Treatment"
-    },
-    "Cytarabine_2": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 249364,
-          "display": "20 ML cytarabine 100 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Cisplatin_2"
-    },
-    "Cisplatin_1": {
-      "type": "MedicationOrder",
-      "codes": [
+        },
         {
           "system": "RxNorm",
           "code": 309311,
           "display": "cisplatin 1 MG/ML Injectable Solution"
         }
       ],
-      "direct_transition": "Cytarabine_1"
+      "direct_transition": "Length of Drug Treatment - Transplant",
+      "assign_to_attribute": "second_line_drug_regimen"
     },
-    "Cisplatin_2": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 309311,
-          "display": "cisplatin 1 MG/ML Injectable Solution"
-        }
-      ],
-      "direct_transition": "Length of Treatment"
-    },
-    "Dexamethasone_2": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 2045404,
-          "display": "0.005 ML dexamethasone 103.4 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Cisplatin_3"
-    },
-    "Dexamethasone_1": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 2045404,
-          "display": "0.005 ML dexamethasone 103.4 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Cisplatin_1"
-    },
-    "Rituximab_1": {
+    "R-GDP": {
       "type": "MedicationOrder",
       "codes": [
         {
           "system": "RxNorm",
           "code": 1657862,
           "display": "10 ML rituximab 10 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Dexamethasone_1"
-    },
-    "Cisplatin_3": {
-      "type": "MedicationOrder",
-      "codes": [
+        },
+        {
+          "system": "RxNorm",
+          "code": 2058858,
+          "display": "120 ML gemcitabine 10 MG/ML Injection"
+        },
+        {
+          "system": "RxNorm",
+          "code": 2045404,
+          "display": "0.005 ML dexamethasone 103.4 MG/ML Injection"
+        },
         {
           "system": "RxNorm",
           "code": 309311,
           "display": "cisplatin 1 MG/ML Injectable Solution"
         }
       ],
-      "direct_transition": "Length of Treatment"
+      "direct_transition": "Length of Drug Treatment - Transplant",
+      "assign_to_attribute": "second_line_drug_regimen"
     },
-    "Gemcitabine_1": {
+    "R-GemOx": {
       "type": "MedicationOrder",
       "codes": [
         {
           "system": "RxNorm",
-          "code": 2058858,
-          "display": "120 ML gemcitabine 10 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Dexamethasone_2"
-    },
-    "Gemcitabine_2": {
-      "type": "MedicationOrder",
-      "codes": [
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        },
         {
           "system": "RxNorm",
           "code": 2058858,
           "display": "120 ML gemcitabine 10 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Oxaliplatin"
-    },
-    "Oxaliplatin": {
-      "type": "MedicationOrder",
-      "codes": [
+        },
         {
           "system": "RxNorm",
           "code": 1736776,
           "display": "10 ML oxaliplatin 5 MG/ML Injection"
         }
       ],
-      "direct_transition": "Length of Treatment"
+      "direct_transition": "Length of Drug Treatment - Transplant",
+      "assign_to_attribute": "second_line_drug_regimen"
     },
-    "Etoposide_1": {
+    "R-ICE": {
       "type": "MedicationOrder",
       "codes": [
         {
           "system": "RxNorm",
-          "code": 1734340,
-          "display": "etoposide 100 MG Injection"
-        }
-      ],
-      "direct_transition": "Methylprednisolone"
-    },
-    "Etoposide_2": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1734340,
-          "display": "etoposide 100 MG Injection"
-        }
-      ],
-      "direct_transition": "Length of Treatment"
-    },
-    "Ifosfamide_1": {
-      "type": "MedicationOrder",
-      "codes": [
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        },
         {
           "system": "RxNorm",
           "code": 1791599,
           "display": "20 ML ifosfamide 50 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Carboplatin"
-    },
-    "Carboplatin": {
-      "type": "MedicationOrder",
-      "codes": [
+        },
         {
           "system": "RxNorm",
           "code": 597195,
           "display": "carboplatin 10 MG/ML Injectable Solution"
-        }
-      ],
-      "direct_transition": "Etoposide_2"
-    },
-    "Mesna": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 204870,
-          "display": "mesna 100 MG/ML Injectable Solution"
-        }
-      ],
-      "direct_transition": "Ifosfamide_2"
-    },
-    "Ifosfamide_2": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1791599,
-          "display": "20 ML ifosfamide 50 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Mitoxantrone"
-    },
-    "Mitoxantrone": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 197989,
-          "display": "mitoxantrone 2 MG/ML Injectable Solution"
-        }
-      ],
-      "direct_transition": "Etoposide_3"
-    },
-    "Etoposide_3": {
-      "type": "MedicationOrder",
-      "codes": [
+        },
         {
           "system": "RxNorm",
           "code": 1734340,
           "display": "etoposide 100 MG Injection"
         }
       ],
-      "direct_transition": "Length of Treatment"
+      "direct_transition": "Length of Drug Treatment - Transplant",
+      "assign_to_attribute": "second_line_drug_regimen"
+    },
+    "R-MINE": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        },
+        {
+          "system": "RxNorm",
+          "code": 204870,
+          "display": "mesna 100 MG/ML Injectable Solution"
+        },
+        {
+          "system": "RxNorm",
+          "code": 1791599,
+          "display": "20 ML ifosfamide 50 MG/ML Injection"
+        },
+        {
+          "system": "RxNorm",
+          "code": 197989,
+          "display": "mitoxantrone 2 MG/ML Injectable Solution"
+        },
+        {
+          "system": "RxNorm",
+          "code": 1734340,
+          "display": "etoposide 100 MG Injection"
+        }
+      ],
+      "direct_transition": "Length of Drug Treatment - Transplant",
+      "assign_to_attribute": "second_line_drug_regimen"
     },
     "Encounter for  Second Line Treatment": {
       "type": "Encounter",
@@ -480,7 +330,7 @@
           "distribution": 0.05
         },
         {
-          "transition": "Second-line Therapy Regimens",
+          "transition": "Second-line Therapy Drug Regimens",
           "distribution": 0.25
         },
         {
@@ -492,50 +342,6 @@
         "Distribution based upon conversation with Dr. Wood and Dr. Perales"
       ]
     },
-    "Bendamustine": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1805001,
-          "display": "bendamustine hydrochloride 100 MG Injection"
-        }
-      ],
-      "direct_transition": "Rituximab_7"
-    },
-    "Rituximab_7": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1657862,
-          "display": "10 ML rituximab 10 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Length_of_Treatment"
-    },
-    "Gemcitabine": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 2058858,
-          "display": "120 ML gemcitabine 10 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Rituximab_8"
-    },
-    "Rituximab_8": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1657862,
-          "display": "10 ML rituximab 10 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Length_of_Treatment"
-    },
     "Brentuximab vedotin": {
       "type": "MedicationOrder",
       "codes": [
@@ -545,29 +351,8 @@
           "display": "brentuximab vedotin 50 MG Injection"
         }
       ],
-      "direct_transition": "Length_of_Treatment"
-    },
-    "Lenalidomide": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 602910,
-          "display": "lenalidomide 10 MG Oral Capsule"
-        }
-      ],
-      "direct_transition": "Rituximab_9"
-    },
-    "Rituximab_9": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1657862,
-          "display": "10 ML rituximab 10 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Length_of_Treatment"
+      "direct_transition": "Length of Drug Treatment - Transplant",
+      "assign_to_attribute": "second_line_drug_regimen"
     },
     "Ibrutinib": {
       "type": "MedicationOrder",
@@ -578,37 +363,8 @@
           "display": "ibrutinib 140 MG Oral Capsule"
         }
       ],
-      "direct_transition": "Length_of_Treatment"
-    },
-    "Second-line Therapy Regimens": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Brentuximab vedotin",
-          "distribution": 0.3
-        },
-        {
-          "transition": "Bendamustine",
-          "distribution": 0.04
-        },
-        {
-          "transition": "Gemcitabine",
-          "distribution": 0.18
-        },
-        {
-          "transition": "Lenalidomide",
-          "distribution": 0.18
-        },
-        {
-          "transition": "Ibrutinib",
-          "distribution": 0.3
-        }
-      ],
-      "remarks": [
-        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml",
-        "https://jnccn.org/view/journals/jnccn/17/6/article-p650.xml",
-        "Distribution based upon conversation with Dr. Wood."
-      ]
+      "direct_transition": "Length of Drug Treatment - Transplant",
+      "assign_to_attribute": "second_line_drug_regimen"
     },
     "Clinical_Trial_2": {
       "type": "Procedure",
@@ -619,7 +375,7 @@
           "display": "Clinical trial (procedure)"
         }
       ],
-      "direct_transition": "Length_of_Treatment",
+      "direct_transition": "Length_of_Non-Drug Treatment",
       "remarks": [
         "https://jnccn.org/view/journals/jnccn/17/6/article-p650.xml"
       ]
@@ -633,39 +389,21 @@
           "display": "Palliative course of radiotherapy (procedure)"
         }
       ],
-      "direct_transition": "Length_of_Treatment",
+      "direct_transition": "Length_of_Non-Drug Treatment",
       "remarks": [
         "https://jnccn.org/view/journals/jnccn/17/6/article-p650.xml"
       ]
     },
-    "Length of Treatment": {
-      "type": "Delay",
-      "direct_transition": "End Second Line Treatment Encounter",
-      "range": {
-        "low": 9,
-        "high": 18,
-        "unit": "weeks"
-      }
-    },
-    "Length_of_Treatment": {
-      "type": "Delay",
-      "direct_transition": "End Second Line Treatment Encounter",
-      "range": {
-        "low": 9,
-        "high": 18,
-        "unit": "weeks"
-      }
-    },
     "Worsened After Treatment 2": {
       "type": "SetAttribute",
       "attribute": "Treatment_2_Outcome",
-      "direct_transition": "Terminal",
+      "direct_transition": "End Post-Second-Line Check-Up Encounter",
       "value": "Worsened"
     },
     "Remission After Treatment 2": {
       "type": "SetAttribute",
       "attribute": "Treatment_2_Outcome",
-      "direct_transition": "Terminal",
+      "direct_transition": "End Post-Second-Line Check-Up Encounter",
       "value": "Remission"
     },
     "Check-Up After Second Line Treatment": {
@@ -820,6 +558,114 @@
         "code": 268910001,
         "display": "Patient condition improved (finding)"
       }
+    },
+    "Second-line Therapy Drug Regimens": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Brentuximab vedotin",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Bendamustine+Rituximab",
+          "distribution": 0.04
+        },
+        {
+          "transition": "Gemcitabine+Rituximab",
+          "distribution": 0.18
+        },
+        {
+          "transition": "Lenalidomide+Rituximab",
+          "distribution": 0.18
+        },
+        {
+          "transition": "Ibrutinib",
+          "distribution": 0.3
+        }
+      ],
+      "remarks": [
+        "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml",
+        "https://jnccn.org/view/journals/jnccn/17/6/article-p650.xml",
+        "Distribution based upon conversation with Dr. Wood."
+      ]
+    },
+    "Length_of_Non-Drug Treatment": {
+      "type": "Delay",
+      "direct_transition": "End Second Line Treatment Encounter",
+      "range": {
+        "low": 9,
+        "high": 18,
+        "unit": "weeks"
+      }
+    },
+    "End Second Line Drug Treatment": {
+      "type": "MedicationEnd",
+      "direct_transition": "End Second Line Treatment Encounter",
+      "referenced_by_attribute": "second_line_drug_regimen"
+    },
+    "Length of Drug Treatment - Transplant": {
+      "type": "Delay",
+      "direct_transition": "End Second Line Drug Treatment",
+      "range": {
+        "low": 9,
+        "high": 18,
+        "unit": "weeks"
+      }
+    },
+    "End Post-Second-Line Check-Up Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Lenalidomide+Rituximab": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 602910,
+          "display": "lenalidomide 10 MG Oral Capsule"
+        },
+        {
+          "system": "RxNorm",
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Length of Drug Treatment - Transplant",
+      "assign_to_attribute": "second_line_drug_regimen"
+    },
+    "Bendamustine+Rituximab": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1805001,
+          "display": "bendamustine hydrochloride 100 MG Injection"
+        },
+        {
+          "system": "RxNorm",
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Length of Drug Treatment - Transplant",
+      "assign_to_attribute": "second_line_drug_regimen"
+    },
+    "Gemcitabine+Rituximab": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 2058858,
+          "display": "120 ML gemcitabine 10 MG/ML Injection"
+        },
+        {
+          "system": "RxNorm",
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Length of Drug Treatment - Transplant",
+      "assign_to_attribute": "second_line_drug_regimen"
     }
   }
 }

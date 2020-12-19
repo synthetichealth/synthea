@@ -675,7 +675,7 @@
           "display": "tisagenlecleucel 250000000 CELLS Injection"
         }
       ],
-      "direct_transition": "End CAR-T therapy treatment encounter",
+      "direct_transition": "End Car-T Chemo",
       "assign_to_attribute": "CAR-T_therapy",
       "reason": "DLBCL_Condition",
       "remarks": [
@@ -691,7 +691,7 @@
           "display": "68 ML axicabtagene ciloleucel 2940000 CELLS/ML Injection"
         }
       ],
-      "direct_transition": "End CAR-T therapy treatment encounter",
+      "direct_transition": "End Car-T Chemo",
       "assign_to_attribute": "CAR-T_therapy",
       "reason": "DLBCL_Condition",
       "remarks": [
@@ -705,7 +705,7 @@
         "high": 3,
         "unit": "weeks"
       },
-      "direct_transition": "CAR-T therapy side effect 1"
+      "direct_transition": "End CAR-T therapy treatment encounter"
     },
     "Meet_with_Oncologist": {
       "type": "Encounter",
@@ -770,49 +770,7 @@
         "high": 240,
         "unit": "minutes"
       },
-      "direct_transition": "Cyclophosphamide"
-    },
-    "Cyclophosphamide": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1734919,
-          "display": "Cyclophosphamide 1000 MG Injection"
-        }
-      ],
-      "direct_transition": "Fludarabine",
-      "reason": "DLBCL_Condition",
-      "remarks": [
-        "Fludarabine and cyclophosphamide are two types of chemotherapy drugs used in lymphodepletion. ",
-        "https://www.cancer.gov/about-cancer/treatment/clinical-trials/search/v?id=NCI-2019-05612#:~:text=Fludarabine%20and%20cyclophosphamide%20are%20two%20types%20of%20chemotherapy,the%20body%20before%20tumor%20infiltrating%20lymphocytes%20are%20infused."
-      ]
-    },
-    "Fludarabine": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1740865,
-          "display": "2 ML Fludarabine phosphate 25 MG/ML injection"
-        }
-      ],
-      "distributed_transition": [
-        {
-          "transition": "Kymriah Infusion",
-          "distribution": 0.25
-        },
-        {
-          "transition": "Yescarta Infusion",
-          "distribution": 0.75
-        }
-      ],
-      "reason": "DLBCL_Condition",
-      "remarks": [
-        "Fludarabine and cyclophosphamide are two types of chemotherapy drugs used in lymphodepletion. ",
-        "75-25 split between administered CAR-T drugs in practice today was informed by Dr. Perales.",
-        "https://www.cancer.gov/about-cancer/treatment/clinical-trials/search/v?id=NCI-2019-05612#:~:text=Fludarabine%20and%20cyclophosphamide%20are%20two%20types%20of%20chemotherapy,the%20body%20before%20tumor%20infiltrating%20lymphocytes%20are%20infused."
-      ]
+      "direct_transition": "Cyclophosphamide and Fludarabine Chemotherapy"
     },
     "CAR-T Therapy Treatment Effective": {
       "type": "Observation",
@@ -846,7 +804,7 @@
       "value_code": {
         "system": "SNOMED-CT",
         "code": 271299001,
-        "display": "Patient condition worsened (finding)"
+        "display": "Patient's condition worsened (finding)"
       },
       "direct_transition": "Terminal"
     },
@@ -928,7 +886,7 @@
     },
     "Diffuse Large B-Cell Lymphoma Diagnosis Encounter I": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -967,7 +925,7 @@
     },
     "End CAR-T therapy treatment encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Patient is monitored in hospital for 1-3 weeks"
+      "direct_transition": "CAR-T therapy side effect 1"
     },
     "Follow-up after CAR-T therapy": {
       "type": "Encounter",
@@ -1262,6 +1220,48 @@
     "Discharge": {
       "type": "EncounterEnd",
       "direct_transition": "Terminal"
+    },
+    "Cyclophosphamide and Fludarabine Chemotherapy": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1734919,
+          "display": "Cyclophosphamide 1000 MG Injection"
+        },
+        {
+          "system": "RxNorm",
+          "code": 1740865,
+          "display": "2 ML Fludarabine phosphate 25 MG/ML injection"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Kymriah Infusion",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Yescarta Infusion",
+          "distribution": 0.75
+        }
+      ],
+      "reason": "DLBCL_Condition",
+      "remarks": [
+        "Fludarabine and cyclophosphamide are two types of chemotherapy drugs used in lymphodepletion. ",
+        "75-25 split between administered CAR-T drugs in practice today was informed by Dr. Perales.",
+        "https://www.cancer.gov/about-cancer/treatment/clinical-trials/search/v?id=NCI-2019-05612#:~:text=Fludarabine%20and%20cyclophosphamide%20are%20two%20types%20of%20chemotherapy,the%20body%20before%20tumor%20infiltrating%20lymphocytes%20are%20infused."
+      ],
+      "assign_to_attribute": "car-t_chemo"
+    },
+    "End Car-T Chemo": {
+      "type": "MedicationEnd",
+      "direct_transition": "New_State",
+      "medication_order": "Cyclophosphamide and Fludarabine Chemotherapy"
+    },
+    "New_State": {
+      "type": "MedicationEnd",
+      "direct_transition": "Patient is monitored in hospital for 1-3 weeks",
+      "referenced_by_attribute": "CAR-T_therapy"
     }
   }
 }

@@ -22,7 +22,7 @@
       "distributed_transition": [
         {
           "transition": "R-CHOP Drugs",
-          "distribution": 0.8999999999999999
+          "distribution": 0.9
         },
         {
           "transition": "Clinical Trial",
@@ -45,80 +45,6 @@
       "direct_transition": "Length_of_Clinical_Trial",
       "remarks": [
         "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
-      ]
-    },
-    "R-CHOP Drugs": {
-      "type": "Simple",
-      "direct_transition": "Rituximab"
-    },
-    "Rituximab": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1657862,
-          "display": "10 ML rituximab 10 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Cyclophosphamide",
-      "remarks": [
-        "https://www.cancer.org/cancer/non-hodgkin-lymphoma/treating/b-cell-lymphoma.html"
-      ]
-    },
-    "Cyclophosphamide": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1734919,
-          "display": "cyclophosphamide 1000 MG Injection"
-        }
-      ],
-      "direct_transition": "Doxorubicin",
-      "remarks": [
-        "https://www.cancer.org/cancer/non-hodgkin-lymphoma/treating/b-cell-lymphoma.html"
-      ]
-    },
-    "Doxorubicin": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1790099,
-          "display": "10 ML doxorubicin hydrochloride 2 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Vincristine sulfate",
-      "remarks": [
-        "https://www.cancer.org/cancer/non-hodgkin-lymphoma/treating/b-cell-lymphoma.html"
-      ]
-    },
-    "Vincristine sulfate": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1863343,
-          "display": "1 ML vincristine sulfate 1 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Prednisone",
-      "remarks": [
-        "https://www.cancer.org/cancer/non-hodgkin-lymphoma/treating/b-cell-lymphoma.html"
-      ]
-    },
-    "Prednisone": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 198144,
-          "display": "prednisone 1 MG Oral Tablet"
-        }
-      ],
-      "direct_transition": "Complete 2-4 cycles before interim re-staging",
-      "remarks": [
-        "https://www.cancer.org/cancer/non-hodgkin-lymphoma/treating/b-cell-lymphoma.html"
       ]
     },
     "Follow-up with oncologist for re-staging": {
@@ -184,7 +110,10 @@
         "code": 271299001,
         "display": "Patient's condition worsened (finding)"
       },
-      "direct_transition": "Worsened"
+      "direct_transition": "Worsened",
+      "remarks": [
+        "If condition worsened after initial treatment, they do not continue through regimen"
+      ]
     },
     "PET-CT Scan Re-Staging": {
       "type": "Procedure",
@@ -304,8 +233,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 268910001,
-        "display": "Patient condition improved (finding)"
+        "code": 359746009,
+        "display": "Patient's condition stable (finding)"
       },
       "direct_transition": "Interim before check-up"
     },
@@ -441,7 +370,7 @@
         "high": 12,
         "unit": "weeks"
       },
-      "direct_transition": "End encounter for first-line therapy",
+      "direct_transition": "End R-CHOP Drugs",
       "remarks": [
         "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
       ]
@@ -534,6 +463,45 @@
       "remarks": [
         "https://jnccn.org/view/journals/jnccn/14/2/article-p196.xml"
       ]
+    },
+    "R-CHOP Drugs": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        },
+        {
+          "system": "RxNorm",
+          "code": 1734919,
+          "display": "cyclophosphamide 1000 MG Injection"
+        },
+        {
+          "system": "RxNorm",
+          "code": 1790099,
+          "display": "10 ML doxorubicin hydrochloride 2 MG/ML Injection"
+        },
+        {
+          "system": "RxNorm",
+          "code": 1863343,
+          "display": "1 ML vincristine sulfate 1 MG/ML Injection"
+        },
+        {
+          "system": "RxNorm",
+          "code": 198144,
+          "display": "prednisone 1 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Complete 2-4 cycles before interim re-staging",
+      "remarks": [
+        "https://www.cancer.org/cancer/non-hodgkin-lymphoma/treating/b-cell-lymphoma.html"
+      ]
+    },
+    "End R-CHOP Drugs": {
+      "type": "MedicationEnd",
+      "direct_transition": "End encounter for first-line therapy",
+      "medication_order": "R-CHOP Drugs"
     }
   }
 }

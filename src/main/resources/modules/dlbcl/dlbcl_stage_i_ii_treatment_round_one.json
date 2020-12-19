@@ -8,80 +8,6 @@
       "type": "Initial",
       "direct_transition": "First-line chemoimmunotherapy encounter"
     },
-    "R-CHOP Drugs": {
-      "type": "Simple",
-      "direct_transition": "Rituximab"
-    },
-    "Rituximab": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1657862,
-          "display": "10 ML rituximab 10 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Cyclophosphamide",
-      "remarks": [
-        "https://www.cancer.gov/types/lymphoma/hp/adult-nhl-treatment-pdq#_85_toc"
-      ]
-    },
-    "Cyclophosphamide": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1734919,
-          "display": "cyclophosphamide 1000 MG Injection"
-        }
-      ],
-      "direct_transition": "Doxorubicin Hydrochloride",
-      "remarks": [
-        "https://www.cancer.gov/types/lymphoma/hp/adult-nhl-treatment-pdq#_85_toc"
-      ]
-    },
-    "Doxorubicin Hydrochloride": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1790099,
-          "display": "10 ML doxorubicin hydrochloride 2 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Vincristine sulfate",
-      "remarks": [
-        "https://www.cancer.gov/types/lymphoma/hp/adult-nhl-treatment-pdq#_85_toc"
-      ]
-    },
-    "Vincristine sulfate": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1863343,
-          "display": "1 ML vincristine sulfate 1 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Prednisone",
-      "remarks": [
-        "https://www.cancer.gov/types/lymphoma/hp/adult-nhl-treatment-pdq#_85_toc"
-      ]
-    },
-    "Prednisone": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 198144,
-          "display": "prednisone 1 MG Oral Tablet"
-        }
-      ],
-      "direct_transition": "3 to 6 cycles of R-CHOP",
-      "remarks": [
-        "https://www.cancer.gov/types/lymphoma/hp/adult-nhl-treatment-pdq#_85_toc"
-      ]
-    },
     "3 to 6 cycles of R-CHOP": {
       "type": "Delay",
       "range": {
@@ -89,7 +15,7 @@
         "high": 18,
         "unit": "weeks"
       },
-      "direct_transition": "End of first-line chemoimmunotherapy encounter",
+      "direct_transition": "End R-CHOP Drugs",
       "remarks": [
         "https://lymphoma.org/aboutlymphoma/nhl/dlbcl/dlbcltreatment/"
       ]
@@ -336,6 +262,46 @@
     "End Check-Up": {
       "type": "EncounterEnd",
       "direct_transition": "Terminal"
+    },
+    "R-CHOP Drugs": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1657862,
+          "display": "10 ML rituximab 10 MG/ML Injection"
+        },
+        {
+          "system": "RxNorm",
+          "code": 1734919,
+          "display": "cyclophosphamide 1000 MG Injection"
+        },
+        {
+          "system": "RxNorm",
+          "code": 1790099,
+          "display": "10 ML doxorubicin hydrochloride 2 MG/ML Injection"
+        },
+        {
+          "system": "RxNorm",
+          "code": 1863343,
+          "display": "1 ML vincristine sulfate 1 MG/ML Injection"
+        },
+        {
+          "system": "RxNorm",
+          "code": 198144,
+          "display": "prednisone 1 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "3 to 6 cycles of R-CHOP",
+      "remarks": [
+        "https://www.cancer.gov/types/lymphoma/hp/adult-nhl-treatment-pdq#_85_toc"
+      ],
+      "chronic": false
+    },
+    "End R-CHOP Drugs": {
+      "type": "MedicationEnd",
+      "direct_transition": "End of first-line chemoimmunotherapy encounter",
+      "medication_order": "R-CHOP Drugs"
     }
   }
 }
