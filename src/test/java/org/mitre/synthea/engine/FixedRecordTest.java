@@ -174,7 +174,6 @@ public class FixedRecordTest {
         // Match the current record with the FixedRecord that matches its record id.
         FixedRecord currentFixedRecord = getRecordMatch(currentPerson);
         // Check that a record group was found. Very detailed error message for debugging purposes.
-        // currentFixedRecord = null;
         assertNotNull("Did not find a record match for "
             + currentPerson.attributes.get(Person.NAME) + " with record id " + currentPerson.record
             .demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID) + ". Person has "
@@ -182,7 +181,9 @@ public class FixedRecordTest {
             .size() + " imported fixed records in their fixed record group with record ids "
             + (((FixedRecordGroup) currentPerson.attributes.get(Person.RECORD_GROUP)))
             .variantRecords.stream().map(variantRecord -> variantRecord.recordId).collect(
-            Collectors.toList()) + ".", currentFixedRecord);
+            Collectors.toList()) + ". Person's health records have ids " + currentPerson.records
+            .values().stream().map(record -> record.demographicsAtRecordCreation.get
+            (Person.IDENTIFIER_RECORD_ID)).collect(Collectors.toList()), currentFixedRecord);
 
         // First element of bundle is the patient resource.
         Patient patient = ((Patient) bundle.getEntry().get(0).getResource());

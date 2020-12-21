@@ -180,8 +180,7 @@ public final class LifecycleModule extends Module {
     // If using FixedRecords, overwrite the person's attributes with the seed record attributes.
     if (person.attributes.get(Person.RECORD_GROUP) != null) {
       FixedRecordGroup recordGroup = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
-      FixedRecord seedRecord = recordGroup.seedRecord;
-      attributes.putAll(seedRecord.getFixedRecordAttributes());
+      attributes.putAll(recordGroup.seedRecord.getFixedRecordAttributes());
     }
 
     String ssn = "999-" + ((person.randInt(99 - 10 + 1) + 10)) + "-"
