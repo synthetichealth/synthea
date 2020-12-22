@@ -138,7 +138,6 @@ public class FixedRecord {
       this.attributes = new HashMap<String, Object>();
       this.attributes.putAll(this.getNameAttributes());
       this.attributes.put(Person.TELECOM, this.phoneAreaCode + "-" + this.phoneNumber);
-      this.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
       String g = this.gender;
       if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
         g = "UNK";

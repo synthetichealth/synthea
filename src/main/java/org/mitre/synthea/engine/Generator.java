@@ -579,6 +579,7 @@ public class Generator implements RandomNumberGenerator {
     FixedRecordGroup frg = ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP));
     frg.updateCurrentRecord(Utilities.getYear(person.lastUpdated));
     person.attributes.putAll(frg.getCurrentRecord().getFixedRecordAttributes());
+    person.attributes.put(Person.IDENTIFIER_RECORD_ID, frg.getCurrentRecord().recordId);
     // Reset person's default records after attributes have been reset.
     person.initializeDefaultHealthRecords();
     person.attributes.put(Person.BIRTHDATE, frg.getSeedBirthdate());
@@ -647,6 +648,7 @@ public class Generator implements RandomNumberGenerator {
       FixedRecord fr = frg.getCurrentRecord();
       fr.overwriteAddress(person, this);
       person.attributes.putAll(fr.getFixedRecordAttributes());
+      person.attributes.put(Person.IDENTIFIER_RECORD_ID, frg.getCurrentRecord().recordId);
       /*
        * Force update the person's provider based on their new record.
        * This is required so that a new health record is made for the start date
