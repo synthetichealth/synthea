@@ -165,10 +165,10 @@ public class FixedRecordTest {
     for (int personIndex = 0; personIndex < generator.options.population; personIndex++) {
       Person currentPerson = generator.internalStore.get(personIndex);
       // Check that patients' exported FHIR resource attributes match their FixedRecords.
-      for (String key : currentPerson.records.keySet()) {
+      for (HealthRecord healthRecord : currentPerson.records.values()) {
 
-        // Parse out the current record to check.
-        currentPerson.record = currentPerson.records.get(key);
+        // Convert the current record to exported FHIR.
+        currentPerson.record = healthRecord;
         String fhirJson = FhirR4.convertToFHIRJson(currentPerson, System.currentTimeMillis());
         FhirContext ctx = FhirContext.forR4();
         IParser parser = ctx.newJsonParser().setPrettyPrint(true);
@@ -187,6 +187,8 @@ public class FixedRecordTest {
             Collectors.toList()) + ". Person's health records have ids " + currentPerson.records
             .values().stream().map(record -> record.demographicsAtRecordCreation.get
             (Person.IDENTIFIER_RECORD_ID)).collect(Collectors.toList()), currentFixedRecord);
+        assertEquals(currentFixedRecord.recordId, healthRecord.demographicsAtRecordCreation.get(
+            Person.IDENTIFIER_RECORD_ID));
 
         // First element of bundle is the patient resource.
         Patient patient = ((Patient) bundle.getEntry().get(0).getResource());
