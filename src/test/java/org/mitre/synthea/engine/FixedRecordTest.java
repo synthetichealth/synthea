@@ -199,6 +199,7 @@ public class FixedRecordTest {
         // Phone number parsing
         String[] phoneNumber = patient.getTelecomFirstRep().getValue().split("-");
         Map<String, String> testAttributes = Stream.of(new String[][] {
+          {RECORD_ID, patient.getIdentifier().get(patient.getIdentifier().size() - 2).getValue()},
           {FIRST_NAME, patient.getNameFirstRep().getGivenAsSingleString()},
           {LAST_NAME, patient.getNameFirstRep().getFamily()},
           {NAME, patient.getNameFirstRep().getNameAsSingleString().replace("Mr. ", "")
@@ -390,26 +391,29 @@ public class FixedRecordTest {
   }
 
   private void testRecordAttributes(
-        FixedRecord personFixedRecord, Map<String, String> testAttribtues) {
-    assertEquals(personFixedRecord.firstName, testAttribtues.get(FIRST_NAME));
-    assertEquals(personFixedRecord.lastName, testAttribtues.get(LAST_NAME));
-    assertEquals(personFixedRecord.firstName + " " + personFixedRecord.lastName,
+        FixedRecord fixedRecord, Map<String, String> testAttribtues) {
+    assertEquals(fixedRecord.recordId, testAttribtues.get(RECORD_ID));
+    assertEquals("Expected: <" + fixedRecord.firstName + "> but was: <"
+        + testAttribtues.get(FIRST_NAME) + ">. Fixed record id is: " + fixedRecord.recordId + ".",
+        fixedRecord.firstName, testAttribtues.get(FIRST_NAME));
+    assertEquals(fixedRecord.lastName, testAttribtues.get(LAST_NAME));
+    assertEquals(fixedRecord.firstName + " " + fixedRecord.lastName,
         testAttribtues.get(NAME));
-    assertEquals(personFixedRecord.birthYear, testAttribtues.get(BIRTH_YEAR));
-    assertEquals(personFixedRecord.birthMonth, testAttribtues.get(BIRTH_MONTH));
-    assertEquals(personFixedRecord.birthDayOfMonth, testAttribtues.get(BIRTH_DAY_OF_MONTH));
-    assertEquals(personFixedRecord.gender, testAttribtues.get(GENDER));
-    assertEquals(personFixedRecord.phoneAreaCode, testAttribtues.get(PHONE_CODE));
-    assertEquals(personFixedRecord.phoneNumber, testAttribtues.get(PHONE_NUMBER));
-    assertEquals(personFixedRecord.addressLineOne, testAttribtues.get(ADDRESS_1));
-    assertEquals(personFixedRecord.addressLineTwo, testAttribtues.get(ADDRESS_2));
-    assertEquals(personFixedRecord.city, testAttribtues.get(CITY));
-    assertEquals(personFixedRecord.zipcode, testAttribtues.get(ZIP));
-    assertEquals(personFixedRecord.contactEmail, testAttribtues.get(CONTACT_EMAIL));
-    if (personFixedRecord.contactFirstName != null) {
+    assertEquals(fixedRecord.birthYear, testAttribtues.get(BIRTH_YEAR));
+    assertEquals(fixedRecord.birthMonth, testAttribtues.get(BIRTH_MONTH));
+    assertEquals(fixedRecord.birthDayOfMonth, testAttribtues.get(BIRTH_DAY_OF_MONTH));
+    assertEquals(fixedRecord.gender, testAttribtues.get(GENDER));
+    assertEquals(fixedRecord.phoneAreaCode, testAttribtues.get(PHONE_CODE));
+    assertEquals(fixedRecord.phoneNumber, testAttribtues.get(PHONE_NUMBER));
+    assertEquals(fixedRecord.addressLineOne, testAttribtues.get(ADDRESS_1));
+    assertEquals(fixedRecord.addressLineTwo, testAttribtues.get(ADDRESS_2));
+    assertEquals(fixedRecord.city, testAttribtues.get(CITY));
+    assertEquals(fixedRecord.zipcode, testAttribtues.get(ZIP));
+    assertEquals(fixedRecord.contactEmail, testAttribtues.get(CONTACT_EMAIL));
+    if (fixedRecord.contactFirstName != null) {
       // Only children have a contact person (in the fixed record test file).
-      assertEquals(personFixedRecord.contactFirstName, testAttribtues.get(CONTACT_FIRST_NAME));
-      assertEquals(personFixedRecord.contactLastName, testAttribtues.get(CONTACT_LAST_NAME));
+      assertEquals(fixedRecord.contactFirstName, testAttribtues.get(CONTACT_FIRST_NAME));
+      assertEquals(fixedRecord.contactLastName, testAttribtues.get(CONTACT_LAST_NAME));
     }
   }
 
@@ -503,9 +507,9 @@ public class FixedRecordTest {
     assertEquals("Eureka", validCity);
     assertEquals("INVALID_CITY_NAME", invalidCity);
     assertEquals(validCity, fixedRecordGroupManager.getRecordGroup(0).getSeedCity());
-    assertEquals(validCity, fixedRecordGroupManager.getRecordGroup(0).seedRecord.getSafeCity());
+    assertEquals(validCity, fixedRecordGroupManager.getRecordGroup(0).seedRecord.getCity());
     // If a fixed record has an invalid city, getSafeCity should return null.
-    assertEquals(null, fixedRecordGroupManager.getRecordGroup(0).getCurrentRecord().getSafeCity());
+    assertEquals(null, fixedRecordGroupManager.getRecordGroup(0).getCurrentRecord().getCity());
   }
 
   @Test

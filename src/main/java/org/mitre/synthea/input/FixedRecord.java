@@ -17,29 +17,27 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.geography.Demographics;
 
 public class FixedRecord {
-  @SerializedName(value = "LIST_ID")
-  public String site;
 
-  @SerializedName(value = "seed_id")
-  public String seedID;
-
-  @SerializedName(value = "record_id")
+  @SerializedName(value = "RECORD_ID")
   public String recordId;
 
-  @SerializedName(value = "SN")
-  public String lastName;
+  @SerializedName(value = "SEED_ID")
+  public String seedID;
 
   @SerializedName(value = "GN")
   public String firstName;
 
-  @SerializedName(value = "DOB_YEAR")
-  public String birthYear;
+  @SerializedName(value = "SN")
+  public String lastName;
+
+  @SerializedName(value = "DOB_DAY")
+  public String birthDayOfMonth;
 
   @SerializedName(value = "DOB_MONTH")
   public String birthMonth;
 
-  @SerializedName(value = "DOB_DAY")
-  public String birthDayOfMonth;
+  @SerializedName(value = "DOB_YEAR")
+  public String birthYear;
 
   @SerializedName(value = "GENDER")
   public String gender;
@@ -50,10 +48,10 @@ public class FixedRecord {
   @SerializedName(value = "PHONE_NUMBER")
   public String phoneNumber;
 
-  @SerializedName(value = "ADDRESS1")
+  @SerializedName(value = "ADDRESS_1")
   public String addressLineOne;
 
-  @SerializedName(value = "ADDRESS_STREET2")
+  @SerializedName(value = "ADDRESS_2")
   public String addressLineTwo;
 
   @SerializedName(value = "ADDRESS_CITY")
@@ -68,11 +66,11 @@ public class FixedRecord {
   @SerializedName(value = "ADDRESS_ZIP")
   public String zipcode;
 
-  @SerializedName(value = "CONTACT_SN")
-  public String contactLastName;
-
   @SerializedName(value = "CONTACT_GN")
   public String contactFirstName;
+
+  @SerializedName(value = "CONTACT_SN")
+  public String contactLastName;
 
   @SerializedName(value = "CONTACT_EMAIL")
   public String contactEmail;
@@ -80,10 +78,10 @@ public class FixedRecord {
   @SerializedName(value = "ADDRESS_ACTIVE_START")
   public int addressStartDate;
 
-  @SerializedName(value = "hh_id")
+  @SerializedName(value = "HOUSEHOLD_ID")
   public String householdId;
 
-  @SerializedName(value = "hh_status")
+  @SerializedName(value = "HOUSEHOLD_STATUS")
   public String householdRole;
 
   // Attributes map
@@ -102,7 +100,7 @@ public class FixedRecord {
   /**
    * Returns the city of this fixedRecord if it is a valid city.
    */
-  public String getSafeCity() {
+  public String getCity() {
     try {
       // If the the current city/state combo is not in the Demographics file, return
       // null.
@@ -145,8 +143,8 @@ public class FixedRecord {
       this.attributes.put(Person.GENDER, g);
       this.attributes.put(Person.BIRTHDATE, this.getBirthDate());
       this.attributes.put(Person.STATE, this.state);
-      if (this.getSafeCity() != null) {
-        this.attributes.put(Person.CITY, this.getSafeCity());
+      if (this.getCity() != null) {
+        this.attributes.put(Person.CITY, this.getCity());
       } else {
         this.attributes.put(Person.CITY, this.city);
       }
@@ -172,8 +170,8 @@ public class FixedRecord {
     String oldAddress = (String) person.attributes.get(Person.ADDRESS);
     person.attributes.put(Person.ADDRESS, this.addressLineOne);
     person.attributes.put(Person.STATE, this.state);
-    if (this.getSafeCity() != null) {
-      person.attributes.put(Person.CITY, this.getSafeCity());
+    if (this.getCity() != null) {
+      person.attributes.put(Person.CITY, this.getCity());
     } else {
       person.attributes.put(Person.CITY, ((FixedRecordGroup)
           person.attributes.get(Person.RECORD_GROUP)).getSeedCity());

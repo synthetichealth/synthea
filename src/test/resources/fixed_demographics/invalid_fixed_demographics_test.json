@@ -1,9 +1,9 @@
 {
   "seed_records": [
       {
-        "record_id": 19436338,
-        "hh_id": 1,
-        "hh_status": "child",
+        "RECORD_ID": 19436338,
+        "HOUSEHOLD_ID": 1,
+        "HOUSEHOLD_STATUS": "child",
         "GN": "Alex",
         "SN": "Fredrich",
         "DOB_MONTH": 754,
@@ -22,9 +22,9 @@
         "PARENT_SN": "Fredrich"
       },
       {
-        "record_id": 19436367,
-        "hh_id": 2,
-        "hh_status": "child",
+        "RECORD_ID": 19436367,
+        "HOUSEHOLD_ID": 2,
+        "HOUSEHOLD_STATUS": "child",
         "GN": "Colin",
         "SN": "Esteban Garrison",
         "DOB_MONTH": 3,
@@ -43,9 +43,9 @@
         "PARENT_SN": "Colin"
       },
       {
-        "record_id": 19436371,
-        "hh_id": 3,
-        "hh_status": "child",
+        "RECORD_ID": 19436371,
+        "HOUSEHOLD_ID": 3,
+        "HOUSEHOLD_STATUS": "child",
         "GN": "Monica",
         "SN": "Dubois",
         "DOB_MONTH": 11,
@@ -64,9 +64,9 @@
         "PARENT_SN": "Dubois"
       },
       {
-        "record_id": 19436374,
-        "hh_id": 4,
-        "hh_status": "child",
+        "RECORD_ID": 19436374,
+        "HOUSEHOLD_ID": 4,
+        "HOUSEHOLD_STATUS": "child",
         "GN": "Melissa-Jole",
         "SN": "Cosio",
         "DOB_MONTH": 6,
@@ -87,10 +87,10 @@
   ],
   "variant_records": [
       {
-        "seed_id": 19436338,
-        "record_id": 500,
-        "hh_id": 1,
-        "hh_status": "child",
+        "SEED_ID": 19436338,
+        "RECORD_ID": 500,
+        "HOUSEHOLD_ID": 1,
+        "HOUSEHOLD_STATUS": "child",
         "GN": "Alex or Alex Neil",
         "SN": "Fredrich",
         "DOB_MONTH": 7,
@@ -110,10 +110,10 @@
         "ADDRESS_ACTIVE_START": 2014
       },
       {
-        "seed_id": 19436338,
-        "record_id": 501,
-        "hh_id": 1,
-        "hh_status": "child",
+        "SEED_ID": 19436338,
+        "RECORD_ID": 501,
+        "HOUSEHOLD_ID": 1,
+        "HOUSEHOLD_STATUS": "child",
         "GN": "Alex Neil",
         "SN": "Fredrich",
         "DOB_MONTH": 7,
@@ -133,10 +133,10 @@
         "ADDRESS_ACTIVE_START": 2019
       },
       {
-        "seed_id": 19436338,
-        "record_id": 502,
-        "hh_id": 1,
-        "hh_status": "child",
+        "SEED_ID": 19436338,
+        "RECORD_ID": 502,
+        "HOUSEHOLD_ID": 1,
+        "HOUSEHOLD_STATUS": "child",
         "GN": "Alex",
         "SN": "Fredrich",
         "DOB_MONTH": 7,
@@ -156,10 +156,10 @@
         "ADDRESS_ACTIVE_START": 2017
       },
       {
-        "seed_id": 19436367,
-        "record_id": 600,
-        "hh_id": 2,
-        "hh_status": "child",
+        "SEED_ID": 19436367,
+        "RECORD_ID": 600,
+        "HOUSEHOLD_ID": 2,
+        "HOUSEHOLD_STATUS": "child",
         "GN": "Colin",
         "SN": "Esteban Garrison",
         "DOB_MONTH": 3,
@@ -179,10 +179,10 @@
         "ADDRESS_ACTIVE_START": 2014
       },
       {
-        "seed_id": 19436367,
-        "record_id": 601,
-        "hh_id": 2,
-        "hh_status": "child",
+        "SEED_ID": 19436367,
+        "RECORD_ID": 601,
+        "HOUSEHOLD_ID": 2,
+        "HOUSEHOLD_STATUS": "child",
         "GN": "Colin",
         "SN": "Esteban Garrison",
         "DOB_MONTH": 3,
@@ -202,10 +202,10 @@
         "ADDRESS_ACTIVE_START": 2019
       },
       {
-        "seed_id": 19436367,
-        "record_id": 602,
-        "hh_id": 2,
-        "hh_status": "child",
+        "SEED_ID": 19436367,
+        "RECORD_ID": 602,
+        "HOUSEHOLD_ID": 2,
+        "HOUSEHOLD_STATUS": "child",
         "GN": "Colin",
         "SN": "Esteban Garrison",
         "DOB_MONTH": 3,
@@ -225,10 +225,10 @@
         "ADDRESS_ACTIVE_START": 2020
       },
       {
-        "seed_id": 19436371,
-        "record_id": 700,
-        "hh_id": 3,
-        "hh_status": "child",
+        "SEED_ID": 19436371,
+        "RECORD_ID": 700,
+        "HOUSEHOLD_ID": 3,
+        "HOUSEHOLD_STATUS": "child",
         "GN": "Monica MNU",
         "SN": "Dubois",
         "DOB_MONTH": 11,
@@ -248,10 +248,10 @@
         "ADDRESS_ACTIVE_START": 2020
       },
       {
-        "seed_id": 19436371,
-        "record_id": 701,
-        "hh_id": 3,
-        "hh_status": "child",
+        "SEED_ID": 19436371,
+        "RECORD_ID": 701,
+        "HOUSEHOLD_ID": 3,
+        "HOUSEHOLD_STATUS": "child",
         "GN": "Monica June",
         "SN": "Dubois",
         "DOB_MONTH": 11,
@@ -271,10 +271,10 @@
         "ADDRESS_ACTIVE_START": 2018
       },
       {
-        "seed_id": 19436371,
-        "record_id": 702,
-        "hh_id": 3,
-        "hh_status": "child",
+        "SEED_ID": 19436371,
+        "RECORD_ID": 702,
+        "HOUSEHOLD_ID": 3,
+        "HOUSEHOLD_STATUS": "child",
         "GN": "Monica June",
         "SN": "Dubois",
         "DOB_MONTH": 11,
@@ -294,10 +294,10 @@
         "ADDRESS_ACTIVE_START": 2012
       },
       {
-        "seed_id": 19436374,
-        "record_id": 800,
-        "hh_id": 4,
-        "hh_status": "child",
+        "SEED_ID": 19436374,
+        "RECORD_ID": 800,
+        "HOUSEHOLD_ID": 4,
+        "HOUSEHOLD_STATUS": "child",
         "GN": "Melissa-Jole",
         "SN": "Cosio",
         "DOB_MONTH": 6,
@@ -317,10 +317,10 @@
         "ADDRESS_ACTIVE_START": 2012
       },
       {
-        "seed_id": 19436374,
-        "record_id": 801,
-        "hh_id": 4,
-        "hh_status": "child",
+        "SEED_ID": 19436374,
+        "RECORD_ID": 801,
+        "HOUSEHOLD_ID": 4,
+        "HOUSEHOLD_STATUS": "child",
         "GN": "Melissa Jole",
         "SN": "Cosio",
         "DOB_MONTH": 6,
@@ -340,10 +340,10 @@
         "ADDRESS_ACTIVE_START": 2018
       },
       {
-        "seed_id": 19436374,
-        "record_id": 802,
-        "hh_id": 4,
-        "hh_status": "child",
+        "SEED_ID": 19436374,
+        "RECORD_ID": 802,
+        "HOUSEHOLD_ID": 4,
+        "HOUSEHOLD_STATUS": "child",
         "GN": "Melissa Jole",
         "SN": "Cosio",
         "DOB_MONTH": 6,

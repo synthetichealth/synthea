@@ -788,7 +788,7 @@ public class Generator implements RandomNumberGenerator {
     FixedRecord seedRecord = recordGroup.seedRecord;
     this.location = new Location(
       seedRecord.state,
-      seedRecord.getSafeCity());
+      seedRecord.getCity());
     Demographics city = this.location.randomCity(random);
     // Pick the rest of the demographics based on the location of the fixed record.
     Map<String, Object> demoAttributes = pickDemographics(random, city);
@@ -844,11 +844,11 @@ public class Generator implements RandomNumberGenerator {
     long finishTime = person.lastUpdated + timestep;
     boolean isAlive = person.alive(finishTime);
 
-    if (person.attributes.get(Person.RECORD_GROUP) != null) {
-      // Set the person's attributes to their seed record to ensure the console display is correct.
-      person.attributes.putAll(((FixedRecordGroup)
-          person.attributes.get(Person.RECORD_GROUP)).seedRecord.getFixedRecordAttributes());
-    }
+    // if (person.attributes.get(Person.RECORD_GROUP) != null) {
+    //   // Set the person's attributes to their seed record to ensure the console display is correct.
+    //   person.attributes.putAll(((FixedRecordGroup)
+    //       person.attributes.get(Person.RECORD_GROUP)).seedRecord.getFixedRecordAttributes());
+    // }
     
     if (database != null) {
       database.store(person);

@@ -84,7 +84,7 @@ public class FixedRecordGroup {
    * @return String safe city name
    */
   public String getSeedCity() {
-    String safeCity = seedRecord.getSafeCity();
+    String safeCity = seedRecord.getCity();
     if (safeCity != null) {
       return safeCity;
     }
@@ -97,7 +97,7 @@ public class FixedRecordGroup {
    * @return String safe city name
    */
   public String getSafeCurrentCity() {
-    String city = getCurrentRecord().getSafeCity();
+    String city = getCurrentRecord().getCity();
     if (city != null) {
       return city;
     }

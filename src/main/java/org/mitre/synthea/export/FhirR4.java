@@ -408,6 +408,12 @@ public class FhirR4 {
           .setValue((String) person.attributes.get(Person.IDENTIFIER_PASSPORT));
     }
 
+    if (person.attributes.get(Person.RECORD_GROUP) != null) {
+      patientResource.addIdentifier()
+          .setSystem("http://mitre.org/record_id")
+          .setValue(String.valueOf((person.attributes.get(Person.IDENTIFIER_RECORD_ID))));
+    }
+    
     if (person.attributes.get(Person.HOUSEHOLD) != null) {
       patientResource.addIdentifier()
           .setSystem("http://mitre.org/household_id")
