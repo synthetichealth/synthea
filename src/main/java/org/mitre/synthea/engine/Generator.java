@@ -458,9 +458,7 @@ public class Generator implements RandomNumberGenerator {
       if (this.fixedRecordGroupManager != null) {
         // Get the Demographic attributes
         FixedRecordGroup recordGroup = this.fixedRecordGroupManager.getRecordGroup(index);
-        demoAttributes = pickFixedDemographics(recordGroup, random);
-        // If fixed records are used, there must be 1 provider for each variant record.
-        
+        demoAttributes = pickFixedDemographics(recordGroup, random);        
       } else {
         // Standard random demographics.
         demoAttributes = randomDemographics(randomForDemographics);

@@ -220,6 +220,8 @@ public class FixedRecordTest {
           testAttributes.put(CONTACT_FIRST_NAME,
               patient.getContact().get(0).getName().getGivenAsSingleString());
         }
+        assertNotNull("Person's variant records should have a seed id; seed records do not.",
+            currentFixedRecord.seedID);
         testRecordAttributes(currentFixedRecord, testAttributes);
       }
     }
@@ -274,6 +276,8 @@ public class FixedRecordTest {
       {ADDRESS_START, "1984"},
       {CONTACT_EMAIL, "jane-doe@something.com"}
     }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
+    assertNotNull("Person's variant records should have a seed id; seed records do not.",
+        janeDoeRecordGroup.variantRecords.get(0).seedID);
     testRecordAttributes(janeDoeRecordGroup.variantRecords.get(0), testAttributes);
     // Test Jane Doe's VariantRecord 2.
     testAttributes = Stream.of(new String[][] {
@@ -297,6 +301,8 @@ public class FixedRecordTest {
       {ADDRESS_START, "1999"},
       {CONTACT_EMAIL, "jane-doe@something.com"}
     }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
+    assertNotNull("Person's variant records should have a seed id; seed records do not.",
+        janeDoeRecordGroup.variantRecords.get(1).seedID);
     testRecordAttributes(janeDoeRecordGroup.variantRecords.get(1), testAttributes);
     // Test Jane Doe's VariantRecord 3.
     testAttributes = Stream.of(new String[][] {
@@ -320,6 +326,8 @@ public class FixedRecordTest {
       {ADDRESS_START, "2002"},
       {CONTACT_EMAIL, "jane-doe@something.com"}
     }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
+    assertNotNull("Person's variant records should have a seed id; seed records do not.",
+        janeDoeRecordGroup.variantRecords.get(2).seedID);
     testRecordAttributes(janeDoeRecordGroup.variantRecords.get(2), testAttributes);
     // 1. John Doe
     Person johnDoe = generator.internalStore.get(1);
@@ -383,7 +391,8 @@ public class FixedRecordTest {
         FixedRecord personFixedRecord, Map<String, String> testAttribtues) {
     assertEquals(personFixedRecord.firstName, testAttribtues.get(FIRST_NAME));
     assertEquals(personFixedRecord.lastName, testAttribtues.get(LAST_NAME));
-    assertEquals(personFixedRecord.firstName + " " + personFixedRecord.lastName, testAttribtues.get(NAME));
+    assertEquals(personFixedRecord.firstName + " " + personFixedRecord.lastName,
+        testAttribtues.get(NAME));
     assertEquals(personFixedRecord.birthYear, testAttribtues.get(BIRTH_YEAR));
     assertEquals(personFixedRecord.birthMonth, testAttribtues.get(BIRTH_MONTH));
     assertEquals(personFixedRecord.birthDayOfMonth, testAttribtues.get(BIRTH_DAY_OF_MONTH));
