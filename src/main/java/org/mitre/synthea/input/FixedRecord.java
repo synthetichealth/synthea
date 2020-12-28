@@ -134,6 +134,7 @@ public class FixedRecord {
   public Map<String, Object> getFixedRecordAttributes() {
     if (this.attributes == null) {
       this.attributes = new HashMap<String, Object>();
+      this.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
       this.attributes.putAll(this.getNameAttributes());
       this.attributes.put(Person.TELECOM, this.phoneAreaCode + "-" + this.phoneNumber);
       String g = this.gender;

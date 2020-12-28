@@ -144,7 +144,6 @@ public final class EncounterModule extends Module {
     if (person.attributes.get(Person.RECORD_GROUP) != null) {
       FixedRecordGroup frg = ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP));
       person.attributes.putAll(frg.getCurrentRecord().getFixedRecordAttributes());
-      person.attributes.put(Person.IDENTIFIER_RECORD_ID, frg.getCurrentRecord().recordId);
     }
 
     // create the encounter

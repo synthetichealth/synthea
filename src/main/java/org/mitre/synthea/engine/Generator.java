@@ -577,7 +577,6 @@ public class Generator implements RandomNumberGenerator {
     FixedRecordGroup frg = ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP));
     frg.updateCurrentRecord(Utilities.getYear(person.lastUpdated));
     person.attributes.putAll(frg.getCurrentRecord().getFixedRecordAttributes());
-    person.attributes.put(Person.IDENTIFIER_RECORD_ID, frg.getCurrentRecord().recordId);
     // Reset person's default records after attributes have been reset.
     person.initializeDefaultHealthRecords();
     person.attributes.put(Person.BIRTHDATE, frg.getSeedBirthdate());
@@ -646,7 +645,6 @@ public class Generator implements RandomNumberGenerator {
       FixedRecord fr = frg.getCurrentRecord();
       fr.overwriteAddress(person, this);
       person.attributes.putAll(fr.getFixedRecordAttributes());
-      person.attributes.put(Person.IDENTIFIER_RECORD_ID, frg.getCurrentRecord().recordId);
       /*
        * Force update the person's provider based on their new record.
        * This is required so that a new health record is made for the start date
@@ -844,11 +842,11 @@ public class Generator implements RandomNumberGenerator {
     long finishTime = person.lastUpdated + timestep;
     boolean isAlive = person.alive(finishTime);
 
-    // if (person.attributes.get(Person.RECORD_GROUP) != null) {
-    //   // Set the person's attributes to their seed record to ensure the console display is correct.
-    //   person.attributes.putAll(((FixedRecordGroup)
-    //       person.attributes.get(Person.RECORD_GROUP)).seedRecord.getFixedRecordAttributes());
-    // }
+    if (person.attributes.get(Person.RECORD_GROUP) != null) {
+      // Set the person's attributes to their seed record to ensure console display is correct.
+      person.attributes.putAll(((FixedRecordGroup)
+          person.attributes.get(Person.RECORD_GROUP)).seedRecord.getFixedRecordAttributes());
+    }
     
     if (database != null) {
       database.store(person);
@@ -864,6 +862,12 @@ public class Generator implements RandomNumberGenerator {
 
     if (!this.logLevel.equals("none")) {
       writeToConsole(person, index, finishTime, isAlive);
+    }
+
+    if (person.attributes.get(Person.RECORD_GROUP) != null) {
+      // Reset the person's attributes to their current demographics.
+      person.attributes.putAll(((FixedRecordGroup) person.attributes
+          .get(Person.RECORD_GROUP)).getCurrentRecord().getFixedRecordAttributes());
     }
 
     String key = isAlive ? "alive" : "dead";
