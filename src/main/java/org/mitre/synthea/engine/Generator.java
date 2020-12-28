@@ -526,8 +526,8 @@ public class Generator implements RandomNumberGenerator {
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
         Exporter.export(person, finishTime, exporterRuntimeOptions);
-      } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
-          || (isAlive && onlyDeadPatients) || (providerCount < providerMinimum));
+      } while (!patientMeetsCriteria(isAlive, providerCount, providerMinimum));
+      //repeat while patient doesn't meet criteria
       // if the patient is alive and we want only dead ones => loop & try again
       //  (and dont even export, see above)
       // if the patient is dead and we only want dead ones => done
@@ -540,6 +540,39 @@ public class Generator implements RandomNumberGenerator {
       throw e;
     }
     return person;
+  }
+  
+  /**
+   * Determines if a patient meets the requested criteria
+   * If a patient does not meet the criteria the process will be repeated so a new one is generated
+   * @param isAlive
+   * @param providerCount
+   * @param providerMinimum
+   * @return true if patient meets criteria, false otherwise
+   */
+  
+  public boolean patientMeetsCriteria(boolean isAlive, int providerCount, int providerMinimum) {
+    if(!isAlive && !onlyDeadPatients && this.options.overflow) { 
+      //if patient is not alive and the criteria isn't dead patients new patient is needed
+	  return false;
+	}
+	  
+	if(isAlive && onlyDeadPatients) {
+	  //if patient is alive and the criteria is dead patients new patient is needed
+	  return false;
+	}
+	  
+	if(!isAlive && onlyAlivePatients) {
+	  //if patient is not alive and the criteria is alive patients new patient is needed
+	  return false;
+	}
+	
+	if(providerCount < providerMinimum) {
+	  //if provider count less than provider min new patient is needed
+	  return false;
+	}
+	
+	return true;
   }
 
   /**
