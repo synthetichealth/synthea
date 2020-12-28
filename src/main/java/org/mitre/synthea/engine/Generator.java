@@ -526,8 +526,7 @@ public class Generator implements RandomNumberGenerator {
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
         Exporter.export(person, finishTime, exporterRuntimeOptions);
-      } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
-          || (isAlive && onlyDeadPatients) || (providerCount < providerMinimum));
+      } while (determinePass(isAlive, providerCount, providerMinimum));
       // if the patient is alive and we want only dead ones => loop & try again
       //  (and dont even export, see above)
       // if the patient is dead and we only want dead ones => done
@@ -540,6 +539,13 @@ public class Generator implements RandomNumberGenerator {
       throw e;
     }
     return person;
+  }
+  
+  public boolean determinePass(boolean isAlive, int providerCount, int providerMinimum) {
+	  return (!isAlive && !onlyDeadPatients && this.options.overflow)
+			  || (isAlive && onlyDeadPatients) || (!isAlive && onlyAlivePatients)||(providerCount < providerMinimum);
+	  //(!isAlive && !onlyDeadPatients && this.options.overflow)
+      //|| (isAlive && onlyDeadPatients) || (providerCount < providerMinimum)
   }
 
   /**
