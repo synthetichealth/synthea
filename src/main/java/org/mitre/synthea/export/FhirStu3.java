@@ -2195,7 +2195,8 @@ public class FhirStu3 {
     imagingStudyResource.setContext(new Reference(encounterEntry.getFullUrl()));
 
     if (! imagingStudy.codes.isEmpty()) {
-      imagingStudyResource.addProcedureCode(mapCodeToCodeableConcept(imagingStudy.codes.get(0), SNOMED_URI));
+      imagingStudyResource.addProcedureCode(
+          mapCodeToCodeableConcept(imagingStudy.codes.get(0), SNOMED_URI));
     }
 
     Date startDate = new Date(imagingStudy.start);

@@ -2576,7 +2576,8 @@ public class FhirR4 {
     }
 
     if (! imagingStudy.codes.isEmpty()) {
-      imagingStudyResource.addProcedureCode(mapCodeToCodeableConcept(imagingStudy.codes.get(0), SNOMED_URI));
+      imagingStudyResource.addProcedureCode(
+          mapCodeToCodeableConcept(imagingStudy.codes.get(0), SNOMED_URI));
     }
 
     Date startDate = new Date(imagingStudy.start);
