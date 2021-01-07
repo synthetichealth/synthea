@@ -245,8 +245,8 @@ public class CSVExporter {
         "Id,START,STOP,PATIENT,ORGANIZATION,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,"
         + "BASE_ENCOUNTER_COST,TOTAL_CLAIM_COST,PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION");
     encounters.write(NEWLINE);
-    imagingStudies.write("Id,DATE,PATIENT,ENCOUNTER,BODYSITE_CODE,BODYSITE_DESCRIPTION,"
-        + "MODALITY_CODE,MODALITY_DESCRIPTION,SOP_CODE,SOP_DESCRIPTION,PROCEDURE_CODE");
+    imagingStudies.write("Id,DATE,PATIENT,ENCOUNTER,SERIES_UID,BODYSITE_CODE,BODYSITE_DESCRIPTION,"
+        + "MODALITY_CODE,MODALITY_DESCRIPTION,INSTANCE_UID,SOP_CODE,SOP_DESCRIPTION,PROCEDURE_CODE");
     imagingStudies.write(NEWLINE);
     devices.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,UDI");
     devices.write(NEWLINE);
@@ -938,34 +938,41 @@ public class CSVExporter {
    */
   private String imagingStudy(RandomNumberGenerator rand, String personID, String encounterID,
       ImagingStudy imagingStudy) throws IOException {
-    // Id,DATE,PATIENT,ENCOUNTER,BODYSITE_CODE,BODYSITE_DESCRIPTION,
-    // MODALITY_CODE,MODALITY_DESCRIPTION,SOP_CODE,SOP_DESCRIPTION,PROCEDURE_CODE
+    // Id,DATE,PATIENT,ENCOUNTER,SERIES_UID,BODYSITE_CODE,BODYSITE_DESCRIPTION,
+    // MODALITY_CODE,MODALITY_DESCRIPTION,INSTANCE_UID,SOP_CODE,SOP_DESCRIPTION,PROCEDURE_CODE
     StringBuilder s = new StringBuilder();
 
     String studyID = rand.randUUID().toString();
-    s.append(studyID).append(',');
-    s.append(iso8601Timestamp(imagingStudy.start)).append(',');
-    s.append(personID).append(',');
-    s.append(encounterID).append(',');
 
-    ImagingStudy.Series series1 = imagingStudy.series.get(0);
-    ImagingStudy.Instance instance1 = series1.instances.get(0);
+    for (ImagingStudy.Series series: imagingStudy.series) {
+      String seriesDicomUid = series.dicomUid;
+      Code bodySite = series.bodySite;
+      Code modality = series.modality;
+      for (ImagingStudy.Instance instance: series.instances) {
+        String instanceDicomUid = instance.dicomUid;
+        Code sopClass = instance.sopClass;
+        s.append(studyID).append(',');
+        s.append(iso8601Timestamp(imagingStudy.start)).append(',');
+        s.append(personID).append(',');
+        s.append(encounterID).append(',');
 
-    Code bodySite = series1.bodySite;
-    Code modality = series1.modality;
-    Code sopClass = instance1.sopClass;
+        s.append(seriesDicomUid).append(',');
 
-    s.append(bodySite.code).append(',');
-    s.append(bodySite.display).append(',');
+        s.append(bodySite.code).append(',');
+        s.append(bodySite.display).append(',');
 
-    s.append(modality.code).append(',');
-    s.append(modality.display).append(',');
+        s.append(modality.code).append(',');
+        s.append(modality.display).append(',');
 
-    s.append(sopClass.code).append(',');
-    s.append(sopClass.display).append(',');
-    s.append(imagingStudy.codes.get(0).code);
+        s.append(instanceDicomUid).append(',');
 
-    s.append(NEWLINE);
+        s.append(sopClass.code).append(',');
+        s.append(sopClass.display).append(',');
+        s.append(imagingStudy.codes.get(0).code);
+
+        s.append(NEWLINE);
+      }
+    }
 
     write(s.toString(), imagingStudies);
 

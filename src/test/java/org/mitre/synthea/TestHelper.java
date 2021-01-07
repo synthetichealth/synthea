@@ -100,6 +100,8 @@ public abstract class TestHelper {
     Config.set("exporter.text.export", "false");
     Config.set("exporter.text.per_encounter_export", "false");
     Config.set("exporter.csv.export", "false");
+    Config.set("exporter.split_records", "false");
+    Config.set("exporter.split_records.duplicate_data", "false");
     Config.set("exporter.symptoms.csv.export", "false");
     Config.set("exporter.symptoms.text.export", "false");
     Config.set("exporter.cpcds.export", "false");
