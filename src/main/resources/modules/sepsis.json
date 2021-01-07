@@ -59,7 +59,7 @@
       ],
       "distributed_transition": [
         {
-          "transition": "Sepsis",
+          "transition": "Delay",
           "distribution": 0.06
         },
         {
@@ -571,6 +571,15 @@
       },
       "direct_transition": "Lactate_Level",
       "reason": "Septic_Shock"
+    },
+    "Delay": {
+      "type": "Delay",
+      "direct_transition": "Sepsis",
+      "range": {
+        "low": 2,
+        "high": 40,
+        "unit": "years"
+      }
     }
   }
 }
