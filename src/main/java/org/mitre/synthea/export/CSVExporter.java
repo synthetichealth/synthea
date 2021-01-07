@@ -246,7 +246,7 @@ public class CSVExporter {
         + "BASE_ENCOUNTER_COST,TOTAL_CLAIM_COST,PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION");
     encounters.write(NEWLINE);
     imagingStudies.write("Id,DATE,PATIENT,ENCOUNTER,SERIES_UID,BODYSITE_CODE,BODYSITE_DESCRIPTION,"
-        + "MODALITY_CODE,MODALITY_DESCRIPTION,INSTANCE_UID,SOP_CODE,SOP_DESCRIPTION");
+        + "MODALITY_CODE,MODALITY_DESCRIPTION,INSTANCE_UID,SOP_CODE,SOP_DESCRIPTION,PROCEDURE_CODE");
     imagingStudies.write(NEWLINE);
     devices.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,UDI");
     devices.write(NEWLINE);
@@ -939,16 +939,16 @@ public class CSVExporter {
   private String imagingStudy(RandomNumberGenerator rand, String personID, String encounterID,
       ImagingStudy imagingStudy) throws IOException {
     // Id,DATE,PATIENT,ENCOUNTER,SERIES_UID,BODYSITE_CODE,BODYSITE_DESCRIPTION,
-    // MODALITY_CODE,MODALITY_DESCRIPTION,INSTANCE_UID,SOP_CODE,SOP_DESCRIPTION
+    // MODALITY_CODE,MODALITY_DESCRIPTION,INSTANCE_UID,SOP_CODE,SOP_DESCRIPTION,PROCEDURE_CODE
     StringBuilder s = new StringBuilder();
 
     String studyID = rand.randUUID().toString();
 
-    for(ImagingStudy.Series series: imagingStudy.series) {
+    for (ImagingStudy.Series series: imagingStudy.series) {
       String seriesDicomUid = series.dicomUid;
       Code bodySite = series.bodySite;
       Code modality = series.modality;
-      for(ImagingStudy.Instance instance: series.instances) {
+      for (ImagingStudy.Instance instance: series.instances) {
         String instanceDicomUid = instance.dicomUid;
         Code sopClass = instance.sopClass;
         s.append(studyID).append(',');
@@ -967,10 +967,10 @@ public class CSVExporter {
         s.append(instanceDicomUid).append(',');
 
         s.append(sopClass.code).append(',');
-        s.append(sopClass.display);
+        s.append(sopClass.display).append(',');
+        s.append(imagingStudy.codes.get(0).code);
 
         s.append(NEWLINE);
-
       }
     }
 
