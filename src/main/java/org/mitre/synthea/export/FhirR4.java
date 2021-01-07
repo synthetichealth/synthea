@@ -2223,8 +2223,8 @@ public class FhirR4 {
       reportResource.addPerformer(encounter.getServiceProvider());
     }
     reportResource.addPresentedForm()
-        .setContentType("text/plain")
-        .setData(clinicalNoteText.getBytes());
+        .setContentType("text/plain; charset=utf-8")
+        .setData(clinicalNoteText.getBytes(java.nio.charset.StandardCharsets.UTF_8));
     newEntry(rand, bundle, reportResource);
 
     // Add a DocumentReference
@@ -2677,9 +2677,10 @@ public class FhirR4 {
     contentResource.setLanguage(content.language);
     if (content.data != null) {
       contentResource.setDataElement(new org.hl7.fhir.r4.model.Base64BinaryType(content.data));
+    } else {
+      contentResource.setSize(content.size);
     }
     contentResource.setUrl(content.url);
-    contentResource.setSize(content.size);
     contentResource.setTitle(content.title);
     if (content.hash != null) {
       contentResource.setHashElement(new org.hl7.fhir.r4.model.Base64BinaryType(content.hash));
