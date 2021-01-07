@@ -1,0 +1,576 @@
+{
+  "name": "Sepsis",
+  "remarks": [
+    "Module Title: Sepsis",
+    "Version Number: 1.0",
+    "Last Updated: 12/15/2020",
+    "Module Steward: ONC",
+    "Module Developer: Clinovations Government + Health",
+    "Description: Sepsis is a leading cause of death in critically ill patients in the United States. This module models the treatment of sepsis in patients >=18 years of age. It is based on the Surviving Sepsis Campaign clinical care guidelines for sepsis, particularly the guidelines for the Hour-1 Bundle for initial resuscitation of sepsis and septic shock. ",
+    "",
+    "References: ",
+    "1. Hotchkiss RS, Karl IE. The Pathophysiology and Treatment of Sepsis. N Engl J Med. 2003 Jan 9;348(2):138–50. ",
+    "2. \tSurviving Sepsis Campaign: International Guidelines for Mana... : Critical Care Medicine [Internet]. [cited 2020 Oct 16]. Available from: https://journals.lww.com/ccmjournal/Fulltext/2017/03000/Surviving_Sepsis_Campaign___International.15.aspx",
+    "3. \tDellinger RP, Schorr CA, Levy MM. A Users’ Guide to the 2016 Surviving Sepsis Guidelines. Crit Care Med. 2017 Mar;45(3):381–385. ",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Age_Guard"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Sepsis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 91302008,
+          "display": "Sepsis (disorder)"
+        }
+      ],
+      "direct_transition": "Sepsis_ED_Encounter",
+      "target_encounter": "Sepsis_ED_Encounter"
+    },
+    "Administer_Broad_Spectrum_Abx": {
+      "type": "Simple",
+      "direct_transition": "Piperacillin_Tazobactam"
+    },
+    "Age_Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 18,
+        "unit": "years",
+        "value": 0
+      },
+      "remarks": [
+        "Sepsis shown to be present in 6% of hospital admissions, with a sensitivity of 69.7% (95% confidence interval [CI] 52.9% to 92.0%), 98.1% specificity (95% CI 97.7% to 98.5%),",
+        "70.4% positive predictive value (95% CI 64.0% to 78.8%), and 98.0% negative predictive value (95% CI 95.9% to",
+        "99.6%) when using Sepsis-3 criteria as the reference standard. ",
+        "Ref: https://www.cdc.gov/sepsis/clinicaltools/index.html?CDC_AA_refVal=https%3A%2F%2Fwww.cdc.gov%2Fsepsis%2Fdatareports%2Findex.html"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Sepsis",
+          "distribution": 0.06
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.94
+        }
+      ]
+    },
+    "Piperacillin_Tazobactam": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1659131,
+          "display": "piperacillin 2000 MG / tazobactam 250 MG Injection"
+        }
+      ],
+      "reason": "Sepsis",
+      "administration": true,
+      "direct_transition": "Vancomycin"
+    },
+    "Vancomycin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1807510,
+          "display": "150 ML vancomycin 5 MG/ML Injection"
+        }
+      ],
+      "reason": "Sepsis",
+      "administration": true,
+      "direct_transition": "Vitals_and_Labs"
+    },
+    "Fluid_Resuscitation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 430701006,
+          "display": "Resuscitation using intravenous fluid (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Check_Septic_Shock",
+      "reason": "Sepsis"
+    },
+    "Lactate_Level": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "mmol/L",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "59032-3",
+          "display": "Lactate [Mass/volume] in Blood"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Administer_Vasopressors",
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "59032-3",
+                "display": "Lactate [Mass/volume] in Blood"
+              }
+            ],
+            "operator": ">=",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Set_Systolic"
+        }
+      ],
+      "range": {
+        "low": 0,
+        "high": 4
+      }
+    },
+    "Administer_Vasopressors": {
+      "type": "Simple",
+      "direct_transition": "Norepinephrine"
+    },
+    "Vitals_and_Labs": {
+      "type": "Simple",
+      "direct_transition": "Capillary_Refill"
+    },
+    "Blood_Cultures": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "600-7",
+          "display": "Blood Culture, Routine"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88262-1",
+              "display": "Gram positive blood culture panel by Probe in Positive blood culture"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 10828004,
+            "display": "Positive (qualifier value)"
+          }
+        }
+      ],
+      "direct_transition": "Administer_Broad_Spectrum_Abx"
+    },
+    "Discharge_to_Home": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": 1,
+        "display": "Discharge to home"
+      }
+    },
+    "Delay_3-10_days": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 10,
+        "unit": "days"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Discharge_to_Home",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Admit_to_ICU",
+          "distribution": 0.4
+        }
+      ]
+    },
+    "Delay_in_ICU": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 2,
+        "unit": "days"
+      },
+      "remarks": [
+        "Overall mortality of sepsis is 12.5% among patients with sepsis. Ref: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6250243/#:~:text=The%20higher%20prevalence%20of%20sepsis,sepsis%20and%20septic%20shock%2C%20respectively."
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Death",
+          "distribution": 0.125
+        },
+        {
+          "transition": "Admit_to_Inpatient",
+          "distribution": 0.875
+        }
+      ]
+    },
+    "Death": {
+      "type": "Death",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Terminal",
+      "remarks": [
+        "Overall mortality of sepsis is 12.5% among patients with sepsis. Ref: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6250243/#:~:text=The%20higher%20prevalence%20of%20sepsis,sepsis%20and%20septic%20shock%2C%20respectively."
+      ]
+    },
+    "Septic_Shock": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 76571007,
+          "display": "Septic shock (disorder)"
+        }
+      ],
+      "direct_transition": "Admit_to_ICU"
+    },
+    "Capillary_Refill": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "44963-7",
+          "display": "Capillary refill [Time] of Nail bed"
+        }
+      ],
+      "direct_transition": "Pulse_Oximetry",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 50427001,
+        "display": "Increased capillary filling time (finding)"
+      }
+    },
+    "Pulse_Oximetry": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "%",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2713-6",
+          "display": "Oxygen Saturation"
+        }
+      ],
+      "direct_transition": "Lactate_Level1",
+      "vital_sign": "Oxygen Saturation"
+    },
+    "Check_Septic_Shock": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Low_MAP",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Normal_MAP",
+          "distribution": 0.8
+        }
+      ],
+      "remarks": [
+        "Twenty percent of sepsis patients develop septic shock which can involve cardiovascular failure. Ref: https://pubmed.ncbi.nlm.nih.gov/22734959/ "
+      ]
+    },
+    "Acute_Respiratory_Distress_Syndrome_ARDS": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "ARDS",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 67782005,
+          "display": "Acute respiratory distress syndrome (disorder)"
+        }
+      ],
+      "direct_transition": "Ventilator"
+    },
+    "Check_ARDS": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Acute_Respiratory_Distress_Syndrome_ARDS",
+          "distribution": 0.18
+        },
+        {
+          "transition": "Delay_in_ICU",
+          "distribution": 0.8200000000000001
+        }
+      ],
+      "remarks": [
+        "The incidence of ARDS is approximately 18% in patients with septic shock, and mortality approaches 50%. ",
+        "",
+        "Ref: https://www.medscape.com/answers/168402-27366/what-is-the-incidence-of-acute-respiratory-distress-syndrome-ards-in-sepsisseptic-shock-and-what-are-the-potential-outcomes#:~:text=The%20patients%20demonstrate%20severe%20dyspnea,sepsis%2C%2018%2D25%25).",
+        ""
+      ]
+    },
+    "Ventilator": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 40617009,
+          "display": "Artificial respiration (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Ventilator_Weaning",
+      "reason": "Acute_Respiratory_Distress_Syndrome_ARDS"
+    },
+    "Norepinephrine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 242969,
+          "display": "4 ML norepinephrine 1 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Set_Systolic",
+      "administration": true,
+      "remarks": [
+        "Among them, NE remains the most commonly used vasopressor and is recommended as the first-line agent by the Surviving Sepsis Campaign (SSC) experts (2). As a strong α-adrenergic agonist, NE increases blood pressure primarily through its vasoconstrictive properties with little effect on heart rate. Ref: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7333107/#:~:text=Among%20them%2C%20NE%20remains%20the,little%20effect%20on%20heart%20rate.",
+        ""
+      ],
+      "reason": "Septic_Shock"
+    },
+    "Admit_to_ICU": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 305351004,
+          "display": "Admit to ICU (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Fluid_Resuscitation2",
+      "reason": "Septic_Shock"
+    },
+    "Admit_to_Inpatient": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 449214001,
+          "display": "Transfer to stepdown unit (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Delay_3-10_days",
+      "reason": "Sepsis"
+    },
+    "Sepsis_ED_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "Sepsis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Blood_Cultures"
+    },
+    "Lactate_Level1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "mmol/L",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "59032-3",
+          "display": "Lactate [Mass/volume] in Blood"
+        }
+      ],
+      "direct_transition": "Fluid_Resuscitation",
+      "range": {
+        "low": 1,
+        "high": 4
+      }
+    },
+    "Low_MAP": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8478-0",
+          "display": "Mean blood pressure"
+        }
+      ],
+      "direct_transition": "Septic_Shock",
+      "range": {
+        "low": 20,
+        "high": 60
+      }
+    },
+    "Normal_MAP": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8478-0",
+          "display": "Mean blood pressure"
+        }
+      ],
+      "direct_transition": "Admit_to_Inpatient",
+      "range": {
+        "low": 70,
+        "high": 100
+      }
+    },
+    "Set_Diastolic": {
+      "type": "VitalSign",
+      "vital_sign": "Diastolic Blood Pressure",
+      "unit": "mm[Hg]",
+      "direct_transition": "Record_Blood_Pressure",
+      "range": {
+        "low": 40,
+        "high": 120
+      }
+    },
+    "Set_Systolic": {
+      "type": "VitalSign",
+      "vital_sign": "Systolic Blood Pressure",
+      "unit": "mm[Hg]",
+      "direct_transition": "Set_Diastolic",
+      "range": {
+        "low": 40,
+        "high": 120
+      }
+    },
+    "Record_Blood_Pressure": {
+      "type": "MultiObservation",
+      "category": "vital-signs",
+      "number_of_observations": 0,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85354-9",
+          "display": "Blood Pressure"
+        }
+      ],
+      "observations": [
+        {
+          "category": "vital-signs",
+          "unit": "mm[Hg]",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8480-6",
+              "display": "Systolic Blood Pressure"
+            }
+          ],
+          "vital_sign": "Systolic Blood Pressure"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mm[Hg]",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8462-4",
+              "display": "Diastolic Blood Pressure"
+            }
+          ],
+          "vital_sign": "Diastolic Blood Pressure"
+        }
+      ],
+      "direct_transition": "Check_ARDS"
+    },
+    "Ventilator_Weaning": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 243174005,
+          "display": "Weaning from mechanically assisted ventilation (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 3,
+        "high": 10,
+        "unit": "days"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Delay_in_ICU",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Death",
+          "distribution": 0.5
+        }
+      ],
+      "remarks": [
+        "The incidence of ARDS is approximately 18% in patients with septic shock, and mortality approaches 50%.  Ref: https://www.medscape.com/answers/168402-27366/what-is-the-incidence-of-acute-respiratory-distress-syndrome-ards-in-sepsisseptic-shock-and-what-are-the-potential-outcomes#:~:text=The%20patients%20demonstrate%20severe%20dyspnea,sepsis%2C%2018%2D25%25).",
+        ""
+      ],
+      "reason": "Acute_Respiratory_Distress_Syndrome_ARDS"
+    },
+    "Fluid_Resuscitation2": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 430701006,
+          "display": "Resuscitation using intravenous fluid (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Lactate_Level",
+      "reason": "Septic_Shock"
+    }
+  }
+}
