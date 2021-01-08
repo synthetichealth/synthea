@@ -1,0 +1,192 @@
+{
+  "name": "STEMI Pathway",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "STEMI"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Admission_to_Hospital": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 32485007,
+          "display": "Hospital admission (procedure)"
+        }
+      ],
+      "direct_transition": "CABG_Referral1",
+      "reason": "STEMI"
+    },
+    "CABG_Referral1": {
+      "type": "Simple",
+      "direct_transition": "Ticagrelor"
+    },
+    "Ticagrelor": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1116635,
+          "display": "ticagrelor 90 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Bivalirudin",
+      "reason": "STEMI"
+    },
+    "Bivalirudin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1997015,
+          "display": "50 ML bivalirudin 5 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Pick_a_better_name_for_this",
+      "reason": "STEMI"
+    },
+    "Referral_to_Cardiac_Surgery": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
+    },
+    "Pick_a_better_name_for_this": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "PCI",
+          "distribution": 0.96
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.04
+        }
+      ]
+    },
+    "Tenecteplase": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 313212,
+          "display": "tenecteplase 50 MG Injection"
+        }
+      ],
+      "direct_transition": "Clopidogrel_Once",
+      "reason": "STEMI"
+    },
+    "Enoxaparin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 854255,
+          "display": "enoxaparin sodium 100 MG/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Hospital_Transfer",
+      "reason": "STEMI",
+      "administration": true
+    },
+    "Hospital_Admission": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "STEMI",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 32485007,
+          "display": "Hospital admission (procedure)"
+        }
+      ],
+      "direct_transition": "CABG_Referral2"
+    },
+    "Hospital_Transfer": {
+      "type": "Simple",
+      "direct_transition": "Hospital_Admission"
+    },
+    "CABG_Referral2": {
+      "type": "Simple",
+      "direct_transition": "Pick_a_better_name_for_this"
+    },
+    "PCI": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 415070008,
+          "display": "Percutaneous coronary intervention (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 90,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Referral_to_Cardiac_Surgery",
+          "distribution": 0.0104
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.9896
+        }
+      ],
+      "reason": "STEMI"
+    },
+    "Clopidogrel_Once": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 309362,
+          "display": "clopidogrel 75 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Clopidogrel_Daily",
+      "reason": "STEMI",
+      "administration": true
+    },
+    "Clopidogrel_Daily": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 309362,
+          "display": "clopidogrel 75 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Enoxaparin",
+      "reason": "STEMI",
+      "chronic": true
+    },
+    "STEMI": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "acs_variant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 401303003,
+          "display": "Acute ST segment elevation myocardial infarction (disorder)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Admission_to_Hospital",
+          "distribution": 0.95
+        },
+        {
+          "transition": "Tenecteplase",
+          "distribution": 0.05
+        }
+      ]
+    }
+  }
+}
