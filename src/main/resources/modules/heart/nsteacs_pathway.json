@@ -1,0 +1,254 @@
+{
+  "name": "NSTEACS Pathway",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "ECG"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "ECG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Check_Troponin_I",
+      "remarks": [
+        "Repeat ECG x2 q 30 mins"
+      ]
+    },
+    "Check_Troponin_I": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "NSTEMI",
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "89579-7",
+                "display": "Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method"
+              }
+            ],
+            "operator": ">",
+            "value": 0.04
+          }
+        },
+        {
+          "transition": "Unstable_Angina"
+        }
+      ]
+    },
+    "NSTEMI": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "acs_variant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 401314000,
+          "display": "Acute non-ST segment elevation myocardial infarction (disorder)"
+        }
+      ],
+      "direct_transition": "Risk_Assessment"
+    },
+    "Unstable_Angina": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "acs_variant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 4557003,
+          "display": "Preinfarction syndrome (disorder)"
+        }
+      ],
+      "direct_transition": "Risk_Assessment"
+    },
+    "Risk_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 225338004,
+          "display": "Risk assessment (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Hospital_Admission",
+      "reason": "acs_variant"
+    },
+    "Ischemia-Guided": {
+      "type": "Simple",
+      "direct_transition": "Enoxaparin"
+    },
+    "Invasive Care": {
+      "type": "Simple",
+      "direct_transition": "Heparin"
+    },
+    "Enoxaparin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 854255,
+          "display": "enoxaparin sodium 100 MG/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Ticagrelor",
+      "reason": "acs_variant"
+    },
+    "Ticagrelor": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1116635,
+          "display": "ticagrelor 90 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Stress_Testing",
+      "reason": "acs_variant"
+    },
+    "Stress_Testing": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 76746007,
+          "display": "Cardiovascular stress testing (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Referral",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.7
+        }
+      ],
+      "reason": "acs_variant"
+    },
+    "Referral": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "PCI",
+          "distribution": 0.9
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "PCI": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 415070008,
+          "display": "Percutaneous coronary intervention (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 90,
+        "unit": "minutes"
+      },
+      "direct_transition": "Terminal",
+      "reason": "acs_variant"
+    },
+    "Hospital_Admission": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "acs_variant",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 32485007,
+          "display": "Hospital admission (procedure)"
+        }
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 0,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "transition": "Ischemia-Guided",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Invasive Care",
+              "distribution": 0.2
+            }
+          ]
+        }
+      ]
+    },
+    "Heparin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1234",
+          "display": "RxNorm Code"
+        }
+      ],
+      "direct_transition": "CABG_Referral"
+    },
+    "CABG_Referral": {
+      "type": "Simple",
+      "direct_transition": "Ticagrelor2"
+    },
+    "Ticagrelor2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1116635,
+          "display": "ticagrelor 90 MG Oral Tablet"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "PCI",
+          "distribution": 0.9
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.1
+        }
+      ],
+      "reason": "acs_variant"
+    }
+  }
+}
