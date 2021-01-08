@@ -143,12 +143,15 @@ public class LossOfCareHealthRecordTest {
 
     // Pay monthly premium 8 times.
     long oneMonth = Utilities.convertTime("months", 1);
+    oneMonth += Utilities.convertTime("days", 15);
     HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
     for (int i = 0; i < 8; i++) {
       healthInsuranceModule.process(person, time + (oneMonth * i));
     }
     // Person should now have no insurance.
     assertTrue(person.getPayerAtTime(time).equals(Payer.noInsurance));
+    
+    
 
     // Encounter is uncovered and unaffordable.
     Encounter uncoveredEncounter3

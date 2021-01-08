@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -376,12 +377,16 @@ public class PayerTest {
     for (int year = 0; year <= 64; year++) {
       for (int month = 0; month < 24; month++) {
         // Person checks to pay twice a month. Only needs to pay once a month.
+        //System.out.println(Utilities.convertCalendarYearsToTime(year));
+        //System.out.println(Utilities.convertTime("months", month / 2));
         healthInsuranceModule.process(person, Utilities.convertCalendarYearsToTime(year)
             + Utilities.convertTime("months", month / 2));
       }
     }
     int totalMonthlyPremiumsOwed = (int) (testPrivatePayer1.getMonthlyPremium() * 12 * 65);
     // The payer's revenue should equal the total monthly premiums.
+    System.out.println(totalMonthlyPremiumsOwed);
+    System.out.println(testPrivatePayer1.getRevenue());
     assertEquals(totalMonthlyPremiumsOwed, testPrivatePayer1.getRevenue(), 0.001);
     // The person's health care expenses should equal the total monthly premiums.
     assertEquals(totalMonthlyPremiumsOwed, person.getHealthcareExpenses(), 0.001);
@@ -568,14 +573,19 @@ public class PayerTest {
     person.attributes.put(QualityOfLifeModule.QOLS, new HashMap<Integer, Double>());
 
     // Get private insurance for 55 years.
-    for (int year = 0; year <= 55; year++) {
+    long currentTime = startTime + Utilities.convertTime("months", 6) + Utilities.convertTime("days", 15);
+    for (int year = 0; year < 55; year++) {
       ((Map<Integer, Double>)
           person.attributes.get(QualityOfLifeModule.QOLS)).put(2000 + year, 1.0);
-      long currentTime = startTime + Utilities.convertTime("years", year);
-      healthInsuranceModule.process(person, currentTime);
+        currentTime += Utilities.convertTime("years", 1);
+        System.out.println("Year: " + Utilities.getYear(currentTime));
+        healthInsuranceModule.process(person, currentTime);
     }
+    System.out.println(testPrivatePayer1.getNumYearsCovered());
+    System.out.println(testPrivatePayer2.getNumYearsCovered());
     int totalYearsCovered = testPrivatePayer1.getNumYearsCovered()
         + testPrivatePayer2.getNumYearsCovered();
+    System.out.println("Years covered: " + totalYearsCovered);
     assertEquals(55, totalYearsCovered);
   }
 

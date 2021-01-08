@@ -54,6 +54,7 @@ public class HealthInsuranceModule extends Module {
     // If the payerHistory at the current age is null, they must get insurance for the new year.
     // Note: This means the person will check to change insurance yearly, just after their
     // birthday.
+    
     if (person.getPayerAtTime(time) == null) {
       // Update their last payer with person's QOLS for that year.
       if (person.getPreviousPayerAtTime(time) != null) {
@@ -69,7 +70,7 @@ public class HealthInsuranceModule extends Module {
       // Update the new Payer's customer statistics.
       newPayer.incrementCustomers(person);
     }
-
+     
     // Checks if person has paid their premium this month. If not, they pay it.
     person.checkToPayMonthlyPremium(time);
 

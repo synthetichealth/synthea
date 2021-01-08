@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.google.gson.JsonPrimitive;
+
+import java.time.Instant;
 import java.util.Date;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -26,13 +28,19 @@ public class UtilitiesTest {
   }
 
   // Ignore temporarily, renable after 1/1.
-  @Ignore @Test
+  @Test
   public void testYears() {
     int gap = 75;
-    long time = System.currentTimeMillis();
+    int day_gap = 1;
+    long time = Utilities.convertCalendarYearsToTime(2021)+ Utilities.convertTime("hours", 0);
+    System.out.println("TIME");
+    System.out.println(Instant.ofEpochSecond(time / 1000));
     int year = Utilities.getYear(time);
-    long earlierTime = time - Utilities.convertTime("years", gap);
-    int earlierYear = Utilities.getYear(earlierTime);
+    double earlierTime = time - Utilities.convertTime("years", gap);
+    System.out.println("TIME TEST");
+    System.out.println(time);
+    int earlierYear = Utilities.getYear((long)earlierTime);
+    System.out.println(earlierYear);
     assertEquals(gap, (year - earlierYear));
   }
 
