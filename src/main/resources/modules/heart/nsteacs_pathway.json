@@ -16,8 +16,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 29303009,
+          "display": "Electrocardiographic procedure (procedure)"
         }
       ],
       "duration": {
@@ -219,11 +219,14 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1234",
-          "display": "RxNorm Code"
+          "code": 1361048,
+          "display": "heparin sodium, porcine 100 UNT/ML Injectable Solution"
         }
       ],
-      "direct_transition": "CABG_Referral"
+      "direct_transition": "CABG_Referral",
+      "remarks": [
+        "TODO: fix this code! almost certainly the wrong code"
+      ]
     },
     "CABG_Referral": {
       "type": "Simple",
