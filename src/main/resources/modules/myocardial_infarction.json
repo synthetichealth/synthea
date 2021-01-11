@@ -34,7 +34,7 @@
     },
     "STEMI": {
       "type": "CallSubmodule",
-      "submodule": "",
+      "submodule": "heart/stemi_pathway",
       "direct_transition": "TTE"
     },
     "End_Encounter": {
@@ -111,8 +111,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1234",
-          "display": "RxNorm Code"
+          "code": 198039,
+          "display": "nitroglycerin 0.4 MG Sublingual Tablet"
         }
       ],
       "direct_transition": "Lab test"
@@ -225,8 +225,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 736372004,
+          "display": "Discharge care plan (record artifact)"
         }
       ],
       "direct_transition": "History of MI"
@@ -246,7 +246,7 @@
     },
     "NSTEACS": {
       "type": "CallSubmodule",
-      "submodule": "",
+      "submodule": "heart/nsteacs_pathway",
       "direct_transition": "TTE"
     },
     "Aspirin_Once": {
