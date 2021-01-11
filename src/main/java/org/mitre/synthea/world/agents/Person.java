@@ -752,8 +752,6 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public Payer getPayerAtTime(long time) {
     int ageInYears = this.ageInYears(time);
-    //System.out.println(ageInYears);
-    System.out.println(Instant.ofEpochSecond(time / 1000));
     if (this.payerHistory.length > ageInYears) {
       return this.payerHistory[ageInYears];
     } else {
@@ -882,9 +880,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     }
     
     int currentMonth = Utilities.getMonth(time);
-    System.out.println("Current Month: " + currentMonth);
     int lastMonthPaid = (int) this.attributes.get(Person.LAST_MONTH_PAID);
-    //System.out.println("Last Month Paid" + lastMonthPaid);
     if (currentMonth > lastMonthPaid || (currentMonth == 1 && lastMonthPaid == 12)) {
 
       // TODO - Check that they can still afford the premium due to any newly incurred health costs.

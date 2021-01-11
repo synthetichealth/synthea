@@ -31,16 +31,10 @@ public class UtilitiesTest {
   @Test
   public void testYears() {
     int gap = 75;
-    int day_gap = 1;
-    long time = Utilities.convertCalendarYearsToTime(2021)+ Utilities.convertTime("hours", 0);
-    System.out.println("TIME");
-    System.out.println(Instant.ofEpochSecond(time / 1000));
+    long time = System.currentTimeMillis();
     int year = Utilities.getYear(time);
     double earlierTime = time - Utilities.convertTime("years", gap);
-    System.out.println("TIME TEST");
-    System.out.println(time);
     int earlierYear = Utilities.getYear((long)earlierTime);
-    System.out.println(earlierYear);
     assertEquals(gap, (year - earlierYear));
   }
 
