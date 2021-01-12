@@ -153,7 +153,8 @@
       "reason": "acs_variant"
     },
     "Referral": {
-      "type": "Simple",
+      "type": "CallSubmodule",
+      "submodule": "heart/nsteacs_cad_referral",
       "distributed_transition": [
         {
           "transition": "PCI",
@@ -229,7 +230,8 @@
       ]
     },
     "CABG_Referral": {
-      "type": "Simple",
+      "type": "CallSubmodule",
+      "submodule": "heart/nsteacs_cad_referral",
       "direct_transition": "Ticagrelor2"
     },
     "Ticagrelor2": {

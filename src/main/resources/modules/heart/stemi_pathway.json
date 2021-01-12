@@ -25,7 +25,8 @@
       "reason": "STEMI"
     },
     "CABG_Referral1": {
-      "type": "Simple",
+      "type": "CallSubmodule",
+      "submodule": "heart/stemi_cad_referral",
       "direct_transition": "Ticagrelor"
     },
     "Ticagrelor": {
@@ -112,7 +113,8 @@
       "direct_transition": "Hospital_Admission"
     },
     "CABG_Referral2": {
-      "type": "Simple",
+      "type": "CallSubmodule",
+      "submodule": "heart/stemi_cad_referral",
       "direct_transition": "Pick_a_better_name_for_this"
     },
     "PCI": {
