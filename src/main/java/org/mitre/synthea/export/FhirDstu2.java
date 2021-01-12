@@ -539,8 +539,7 @@ public class FhirDstu2 {
     encounterResource.setClassElement(encounterClass);
     encounterResource.setPeriod(new PeriodDt()
         .setStart(new DateTimeDt(new Date(encounter.start)))
-        .setEnd(new DateTimeDt(new Date(
-                encounter.stop > encounter.start ? encounter.stop : encounter.start))));
+        .setEnd(new DateTimeDt(new Date(encounter.stop))));
 
     if (encounter.reason != null) {
       encounterResource.addReason().addCoding().setCode(encounter.reason.code)
