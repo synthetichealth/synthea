@@ -1117,8 +1117,7 @@ public class FhirR4 {
     if (encounter.clinician != null) {
       // This is what should happen if BlueButton 2.0 wasn't needlessly restrictive
       String practitionerFullUrl = TRANSACTION_BUNDLE
-              ? ExportHelper.buildFhirSearchUrl("Practitioner",
-                      encounter.clinician.getResourceID())
+              ? ExportHelper.buildFhirNpiSearchUrl(encounter.clinician)
               : findPractitioner(encounter.clinician, bundle);
       eob.setProvider(new Reference(practitionerFullUrl));
       eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
@@ -1129,7 +1128,7 @@ public class FhirR4 {
       referral.addPerformer(new Reference(practitionerFullUrl));
     } else if (encounter.provider != null) {
       String providerUrl = TRANSACTION_BUNDLE
-              ? ExportHelper.buildFhirSearchUrl("Practitioner",
+              ? ExportHelper.buildFhirSearchUrl("Location",
                       encounter.provider.getResourceLocationID())
               : findProviderUrl(encounter.provider, bundle);
       eob.setProvider(new Reference(providerUrl));
