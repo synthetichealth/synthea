@@ -17,7 +17,7 @@
       "observations": [
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -32,7 +32,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -47,7 +47,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -62,7 +62,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -77,7 +77,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -110,7 +110,7 @@
       "observations": [
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -125,7 +125,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -157,7 +157,7 @@
       "observations": [
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -172,7 +172,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -187,7 +187,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -202,7 +202,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -217,7 +217,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -253,7 +253,7 @@
       "observations": [
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -268,7 +268,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -283,7 +283,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -298,7 +298,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -313,7 +313,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -328,7 +328,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -343,7 +343,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -358,7 +358,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -390,7 +390,7 @@
       "observations": [
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -405,7 +405,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -420,7 +420,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -435,7 +435,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -449,7 +449,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -464,7 +464,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -479,7 +479,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -634,7 +634,7 @@
       "observations": [
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -649,7 +649,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -664,7 +664,7 @@
         },
         {
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -680,7 +680,7 @@
         {
           "type": "Observation",
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -696,7 +696,7 @@
         {
           "type": "Observation",
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -712,7 +712,7 @@
         {
           "type": "Observation",
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -728,7 +728,7 @@
         {
           "type": "Observation",
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
@@ -744,7 +744,7 @@
         {
           "type": "Observation",
           "category": "survey",
-          "unit": "units",
+          "unit": "{score}",
           "codes": [
             {
               "system": "LOINC",
