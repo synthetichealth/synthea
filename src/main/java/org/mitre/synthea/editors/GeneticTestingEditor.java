@@ -464,7 +464,7 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
       sb.append(this.strand).append(",");
       sb.append(this.ancestralAllele).append(",");
       sb.append("\"").append(this.variantAlleleList).append("\",");
-      sb.append(this.gene).append(",");
+      sb.append("\"").append(this.gene).append("\",");
       sb.append(this.clinicalSignificance).append(",");
       sb.append(this.allele).append(",");
       sb.append(this.variant);
