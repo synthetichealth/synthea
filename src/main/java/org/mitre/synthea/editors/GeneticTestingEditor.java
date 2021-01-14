@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.Set;
 
 import org.mitre.synthea.editors.GeneticTestingEditor.DnaSynthesisConfig.MedicalCategory;
 import org.mitre.synthea.engine.StatefulHealthRecordEditor;
+import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -171,6 +173,20 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
       encounter.reports.add(geneticTestingReport);
       Map<String, Object> context = this.getOrInitContextFor(person);
       context.put(PRIOR_GENETIC_TESTING, time);
+
+      File outDir = Exporter.getOutputFolder("dna", person);
+      Path outFilePath = outDir.toPath().resolve(Exporter.filename(person, "_dna", "csv"));
+      try(FileWriter fw = new FileWriter(outFilePath.toFile())) {
+        BufferedWriter bw = new BufferedWriter(fw);
+        bw.write(GeneticMarker.csvHeader());
+        bw.write("\n");
+        for (GeneticMarker marker: markers) {
+          bw.write(marker.toCSVRow());
+          bw.write("\n");
+        }
+        bw.flush();
+      }
+
     } catch (IOException | InterruptedException ex) {
       System.out.println("Unable to invoke DNA synthesis script");
       ex.printStackTrace();
@@ -433,6 +449,27 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
     static final String BENIGN_CLINICAL_SIGNIFICANCE = "Benign";
     static final String LIKELY_BENIGN_CLINICAL_SIGNIFICANCE = "Likely Benign";
     static final String DRUG_RESPONSE_CLINICAL_SIGNIFICANCE = "Drug Response";
+
+    public static String csvHeader() {
+      return "INDEX,INDEX_PREFIX,CHROMOSOME,LOCATION,STRAND,ANCESTRAL_ALLELE,VARIANT_ALLELE_LIST," +
+          "GENE,CLINICAL_SIGNIFICANCE,ALLELE,VARIANT";
+    }
+
+    public String toCSVRow() {
+      StringBuilder sb = new StringBuilder();
+      sb.append(this.index).append(",");
+      sb.append(this.indexPrefix).append(",");
+      sb.append(this.chromosome).append(",");
+      sb.append(this.location).append(",");
+      sb.append(this.strand).append(",");
+      sb.append(this.ancestralAllele).append(",");
+      sb.append("\"").append(this.variantAlleleList).append("\",");
+      sb.append(this.gene).append(",");
+      sb.append(this.clinicalSignificance).append(",");
+      sb.append(this.allele).append(",");
+      sb.append(this.variant);
+      return sb.toString();
+    }
 
     @Override
     public String toString() {
