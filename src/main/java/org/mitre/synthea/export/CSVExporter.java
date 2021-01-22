@@ -15,12 +15,16 @@ import java.math.RoundingMode;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
+import org.apache.commons.io.output.NullOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
@@ -121,6 +125,8 @@ public class CSVExporter {
    * Writer for payerTransitions.csv
    */
   private OutputStreamWriter payerTransitions;
+  
+  public static final int NUMBER_OF_FILES = 16;
 
   /**
    * Charset for specifying the character set of the output files.
@@ -133,10 +139,14 @@ public class CSVExporter {
   private static final String NEWLINE = System.lineSeparator();
 
   /**
-   * Constructor for the CSVExporter - initialize the 9 specified files and store
+   * Constructor for the CSVExporter - initialize the specified files and store
    * the writers in fields.
    */
   private CSVExporter() {
+    init();
+  }
+  
+  void init() {
     try {
       File output = Exporter.getOutputFolder("csv", null);
       output.mkdirs();
@@ -150,58 +160,80 @@ public class CSVExporter {
         outputDirectory = outputDirectory.resolve(subfolderName);
         outputDirectory.toFile().mkdirs();
       }
+      
+      String includedFilesStr = Config.get("exporter.csv.included_files", "").trim();
+      String excludedFilesStr = Config.get("exporter.csv.excluded_files", "").trim();
+      
+      List<String> includedFiles = new ArrayList<>();
+      List<String> excludedFiles = new ArrayList<>();
+      
+      if (!includedFilesStr.isEmpty() && !excludedFilesStr.isEmpty()) {
+        System.err.println(
+            "CSV exporter: Included and Excluded file settings are both set -- ignoring both");
+      } else {
+        if (!includedFilesStr.isEmpty()) {
+          List<String> files = Arrays.asList(includedFilesStr.split(","));
+          // normalize filenames -- trim, lowercase, add .csv if not included
+          files = files.stream().map(f -> f.trim().toLowerCase())
+              .map(f -> f.endsWith(".csv") ? f : f + ".csv").collect(Collectors.toList());
+          includedFiles.addAll(files);
+
+          if (!includedFiles.contains("patients.csv")) {
+            System.err.println("WARNING! CSV exporter is set to not include patients.csv!");
+            System.err.println("This is probably not what you want!");
+          }
+
+        } else {
+          List<String> files = Arrays.asList(excludedFilesStr.split(","));
+          // normalize filenames -- trim, lowercase, add .csv if not included
+          files = files.stream().map(f -> f.trim().toLowerCase())
+              .map(f -> f.endsWith(".csv") ? f : f + ".csv").collect(Collectors.toList());
+          excludedFiles.addAll(files);
+        }
+      }
 
       File patientsFile = outputDirectory.resolve("patients.csv").toFile();
-      boolean append =
-          patientsFile.exists() && Config.getAsBoolean("exporter.csv.append_mode");
-      patients = new OutputStreamWriter(new FileOutputStream(patientsFile, append), charset);
+      boolean append = patientsFile.exists() && Config.getAsBoolean("exporter.csv.append_mode");
+      patients = getWriter(outputDirectory, "patients.csv", append, includedFiles, excludedFiles);
 
-      File allergiesFile = outputDirectory.resolve("allergies.csv").toFile();
-      allergies = new OutputStreamWriter(new FileOutputStream(allergiesFile, append), charset);
+      allergies = getWriter(outputDirectory, "allergies.csv", append, includedFiles, excludedFiles);
 
-      File medicationsFile = outputDirectory.resolve("medications.csv").toFile();
-      medications = new OutputStreamWriter(new FileOutputStream(medicationsFile, append), charset);
+      medications = getWriter(outputDirectory, "medications.csv", append, includedFiles,
+          excludedFiles);
 
-      File conditionsFile = outputDirectory.resolve("conditions.csv").toFile();
-      conditions = new OutputStreamWriter(new FileOutputStream(conditionsFile, append), charset);
+      conditions = getWriter(outputDirectory, "conditions.csv", append, includedFiles,
+          excludedFiles);
 
-      File careplansFile = outputDirectory.resolve("careplans.csv").toFile();
-      careplans = new OutputStreamWriter(new FileOutputStream(careplansFile, append), charset);
+      careplans = getWriter(outputDirectory, "careplans.csv", append, includedFiles, excludedFiles);
 
-      File observationsFile = outputDirectory.resolve("observations.csv").toFile();
-      observations = new OutputStreamWriter(
-          new FileOutputStream(observationsFile, append), charset);
+      observations = getWriter(outputDirectory, "observations.csv", append, includedFiles,
+          excludedFiles);
 
-      File proceduresFile = outputDirectory.resolve("procedures.csv").toFile();
-      procedures = new OutputStreamWriter(new FileOutputStream(proceduresFile, append), charset);
+      procedures = getWriter(outputDirectory, "procedures.csv", append, includedFiles,
+          excludedFiles);
 
-      File immunizationsFile = outputDirectory.resolve("immunizations.csv").toFile();
-      immunizations = new OutputStreamWriter(
-          new FileOutputStream(immunizationsFile, append), charset);
+      immunizations = getWriter(outputDirectory, "immunizations.csv", append, includedFiles,
+          excludedFiles);
 
-      File encountersFile = outputDirectory.resolve("encounters.csv").toFile();
-      encounters = new OutputStreamWriter(new FileOutputStream(encountersFile, append), charset);
+      encounters = getWriter(outputDirectory, "encounters.csv", append, includedFiles,
+          excludedFiles);
 
-      File imagingStudiesFile = outputDirectory.resolve("imaging_studies.csv").toFile();
-      imagingStudies = new OutputStreamWriter(
-          new FileOutputStream(imagingStudiesFile, append), charset);
+      imagingStudies = getWriter(outputDirectory, "imaging_studies.csv", append, includedFiles,
+          excludedFiles);
 
-      File devicesFile = outputDirectory.resolve("devices.csv").toFile();
-      devices = new OutputStreamWriter(new FileOutputStream(devicesFile, append), charset);
+      devices = getWriter(outputDirectory, "devices.csv", append, includedFiles, excludedFiles);
 
-      File suppliesFile = outputDirectory.resolve("supplies.csv").toFile();
-      supplies = new OutputStreamWriter(new FileOutputStream(suppliesFile, append), charset);
+      supplies = getWriter(outputDirectory, "supplies.csv", append, includedFiles, excludedFiles);
 
-      File organizationsFile = outputDirectory.resolve("organizations.csv").toFile();
-      File providersFile = outputDirectory.resolve("providers.csv").toFile();
-      organizations = new OutputStreamWriter(
-          new FileOutputStream(organizationsFile, append), charset);
-      providers = new OutputStreamWriter(new FileOutputStream(providersFile, append), charset);
-      File payersFile = outputDirectory.resolve("payers.csv").toFile();
-      File payerTransitionsFile = outputDirectory.resolve("payer_transitions.csv").toFile();
-      payers = new OutputStreamWriter(new FileOutputStream(payersFile, append), charset);
-      payerTransitions = new OutputStreamWriter(
-          new FileOutputStream(payerTransitionsFile, append), charset);
+      organizations = getWriter(outputDirectory, "organizations.csv", append, includedFiles,
+          excludedFiles);
+
+      providers = getWriter(outputDirectory, "providers.csv", append, includedFiles, excludedFiles);
+
+      payers = getWriter(outputDirectory, "payers.csv", append, includedFiles, excludedFiles);
+
+      payerTransitions = getWriter(outputDirectory, "payer_transitions.csv", append, includedFiles,
+          excludedFiles);
 
       if (!append) {
         writeCSVHeaders();
@@ -1196,5 +1228,39 @@ public class CSVExporter {
     synchronized (writer) {
       writer.write(line);
     }
+  }
+  
+  /**
+   * "No-op" writer to use to prevent writing to excluded files.
+   * Note that this uses an Apache "NullOutputStream", but JDK11 provides its own.
+   */
+  private static final OutputStreamWriter NO_OP =
+      new OutputStreamWriter(NullOutputStream.NULL_OUTPUT_STREAM);
+  
+  /**
+   * Helper method to get the writer for the given output file.
+   * Returns a "no-op" writer for any excluded files.
+   * 
+   * @param outputDirectory Parent directory for output csv files
+   * @param filename Filename for the current file
+   * @param append True = append to an existing file, False = overwrite any existing files
+   * @param includedFiles List of filenames that should be included in output
+   * @param excludedFiles List of filenames that should not be included in output
+   * 
+   * @return OutputStreamWriter for the given output file.
+   */
+  private OutputStreamWriter getWriter(Path outputDirectory, String filename, boolean append,
+      List<String> includedFiles, List<String> excludedFiles) throws IOException {
+
+    boolean excluded = (!includedFiles.isEmpty() && !includedFiles.contains(filename)) 
+        || excludedFiles.contains(filename);
+    if (excluded) {
+      return NO_OP;
+    }
+    
+    File file = outputDirectory.resolve(filename).toFile();
+    // file writing may fail if we tell it to append to a file that doesn't already exist
+    append = append && file.exists();
+    return new OutputStreamWriter(new FileOutputStream(file, append), charset);
   }
 }
