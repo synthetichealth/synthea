@@ -155,16 +155,7 @@
     "Referral": {
       "type": "CallSubmodule",
       "submodule": "heart/nsteacs_cad_referral",
-      "distributed_transition": [
-        {
-          "transition": "PCI",
-          "distribution": 0.9
-        },
-        {
-          "transition": "Terminal",
-          "distribution": 0.1
-        }
-      ]
+      "direct_transition": "Operation"
     },
     "PCI": {
       "type": "Procedure",
@@ -232,7 +223,7 @@
     "CABG_Referral": {
       "type": "CallSubmodule",
       "submodule": "heart/nsteacs_cad_referral",
-      "direct_transition": "Ticagrelor2"
+      "direct_transition": "CABG_Operation"
     },
     "Ticagrelor2": {
       "type": "MedicationOrder",
@@ -254,6 +245,39 @@
         }
       ],
       "reason": "acs_variant"
+    },
+    "CABG_Operation": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/operation",
+      "conditional_transition": [
+        {
+          "transition": "Deceased",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_mortality",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Postop ICU and Ward"
+        }
+      ],
+      "direct_transition": "Ticagrelor2"
+    },
+    "Operation": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/operation",
+      "distributed_transition": [
+        {
+          "transition": "PCI",
+          "distribution": 0.9
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.1
+        }
+      ]
     }
   }
 }

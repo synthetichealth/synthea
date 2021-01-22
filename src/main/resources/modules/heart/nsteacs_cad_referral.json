@@ -1,5 +1,5 @@
 {
-  "name": "cabg_referral",
+  "name": "nsteacs_cad_referral",
   "remarks": [
     "CABG Referral."
   ],
@@ -169,23 +169,8 @@
           }
         },
         {
-          "transition": "Priority 2 Next Encounter",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_priority_level",
-            "operator": "==",
-            "value": 2
-          }
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_priority_level",
-            "operator": "==",
-            "value": 3
-          }
-        },
-        {}
+          "transition": "Priority 2 Next Encounter"
+        }
       ]
     },
     "Priority 1 Next Encounter": {
@@ -255,37 +240,7 @@
           }
         },
         {
-          "transition": "End Preoperative"
-        }
-      ]
-    },
-    "End Preoperative": {
-      "type": "EncounterEnd",
-      "conditional_transition": [
-        {
-          "transition": "Priority_2_Next_Encounter",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_priority_level",
-            "operator": "==",
-            "value": 2
-          }
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_priority_level",
-            "operator": "==",
-            "value": 3
-          }
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_priority_level",
-            "operator": "==",
-            "value": 4
-          }
+          "transition": "Priority_2_Next_Encounter"
         }
       ]
     },
