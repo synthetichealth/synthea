@@ -221,34 +221,19 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "And",
+            "condition_type": "Or",
             "conditions": [
               {
-                "condition_type": "Or",
-                "conditions": [
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "microalbuminuria",
-                    "operator": "==",
-                    "value": true
-                  },
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "proteinuria",
-                    "operator": "==",
-                    "value": true
-                  }
-                ]
+                "condition_type": "Attribute",
+                "attribute": "microalbuminuria",
+                "operator": "==",
+                "value": true
               },
               {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 310798,
-                    "display": "Hydrochlorothiazide 25 MG Oral Tablet"
-                  }
-                ]
+                "condition_type": "Attribute",
+                "attribute": "proteinuria",
+                "operator": "==",
+                "value": true
               }
             ]
           },
@@ -276,27 +261,6 @@
               "transition": "Lisinopril_2"
             }
           ]
-        },
-        {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "microalbuminuria",
-                "operator": "==",
-                "value": true
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "proteinuria",
-                "operator": "==",
-                "value": true
-              }
-            ]
-          },
-          "distributions": [],
-          "transition": "Lisinopril_2"
         },
         {
           "distributions": [
@@ -961,10 +925,10 @@
         },
         {
           "condition": {
-            "condition_type": "Active Condition",
+            "condition_type": "Active Medication",
             "codes": [
               {
-                "system": "SNOMED-CT",
+                "system": "RxNorm",
                 "code": 308136,
                 "display": "amLODIPine 2.5 MG Oral Tablet"
               }
