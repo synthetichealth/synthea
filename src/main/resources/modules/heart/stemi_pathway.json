@@ -131,17 +131,8 @@
         "high": 90,
         "unit": "minutes"
       },
-      "distributed_transition": [
-        {
-          "transition": "Referral_to_Cardiac_Surgery",
-          "distribution": 0.0104
-        },
-        {
-          "transition": "Terminal",
-          "distribution": 0.9896
-        }
-      ],
-      "reason": "STEMI"
+      "reason": "STEMI",
+      "direct_transition": "History_of_PCI"
     },
     "Clopidogrel_Once": {
       "type": "MedicationOrder",
@@ -227,6 +218,27 @@
         }
       ],
       "direct_transition": "Pick_a_better_name_for_this"
+    },
+    "History_of_PCI": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "pci_history",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 405741001,
+          "display": "History of percutaneous coronary intervention (situation)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Referral_to_Cardiac_Surgery",
+          "distribution": 0.0104
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.9896
+        }
+      ]
     }
   }
 }
