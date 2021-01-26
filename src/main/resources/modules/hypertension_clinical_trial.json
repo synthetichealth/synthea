@@ -1,0 +1,1440 @@
+{
+  "name": "hypertension_clinical_trial",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Initialize Trial Inclusion Criteria"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Wait for Study Start Date": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Date",
+        "operator": ">",
+        "date": {
+          "year": 2010,
+          "month": 11,
+          "day": 1,
+          "hour": 0,
+          "minute": 0,
+          "second": 0,
+          "millisecond": 0
+        }
+      },
+      "direct_transition": "Enrollment Period",
+      "remarks": [
+        "Enrollment start date was November 2010."
+      ]
+    },
+    "Enrollment Period": {
+      "type": "Delay",
+      "range": {
+        "low": 0,
+        "high": 29,
+        "unit": "months"
+      },
+      "direct_transition": "Screening_Visit"
+    },
+    "Record_BP": {
+      "type": "MultiObservation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85354-9",
+          "display": "Blood Pressure"
+        }
+      ],
+      "observations": [
+        {
+          "category": "vital-signs",
+          "vital_sign": "Systolic Blood Pressure",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8480-6",
+              "display": "Systolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]"
+        },
+        {
+          "category": "vital-signs",
+          "vital_sign": "Diastolic Blood Pressure",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8462-4",
+              "display": "Diastolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]"
+        }
+      ],
+      "direct_transition": "Check Systolic Blood Pressure"
+    },
+    "Record_EGFR": {
+      "type": "Observation",
+      "category": "laboratory",
+      "vital_sign": "EGFR",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "33914-3",
+          "display": "Estimated Glomerular Filtration Rate"
+        }
+      ],
+      "unit": "mL/min/{1.73_m2}",
+      "direct_transition": "Check eGFR"
+    },
+    "Record_FHS_CVD_Risk": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "65853-4",
+          "display": "General cardiovascular disease 10Y risk [#] Framingham.D'Agostino"
+        }
+      ],
+      "attribute": "framingham_cvd",
+      "direct_transition": "Check FHS CVD Risk"
+    },
+    "Record_LipidPanel": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 4,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "57698-3",
+          "display": "Lipid Panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "vital_sign": "Total Cholesterol",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2093-3",
+              "display": "Total Cholesterol"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Triglycerides",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2571-8",
+              "display": "Triglycerides"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "LDL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "18262-6",
+              "display": "Low Density Lipoprotein Cholesterol"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "HDL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2085-9",
+              "display": "High Density Lipoprotein Cholesterol"
+            }
+          ],
+          "unit": "mg/dL"
+        }
+      ],
+      "direct_transition": "Record_Height"
+    },
+    "Record_ACR": {
+      "type": "Observation",
+      "vital_sign": "Microalbumin Creatinine Ratio",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "14959-1",
+          "display": "Microalbumin Creatinine Ratio"
+        }
+      ],
+      "unit": "mg/g",
+      "direct_transition": "Check for Proteinuria"
+    },
+    "Record_Height": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "vital_sign": "Height",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8302-2",
+          "display": "Body Height"
+        }
+      ],
+      "unit": "cm",
+      "direct_transition": "Record_Weight"
+    },
+    "Record_Weight": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "vital_sign": "Weight",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29463-7",
+          "display": "Body Weight"
+        }
+      ],
+      "unit": "kg",
+      "direct_transition": "Record_BMI_Percentile"
+    },
+    "Record_BMI_Percentile": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "%",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "59576-9",
+          "display": "Body mass index (BMI) [Percentile] Per age and gender"
+        }
+      ],
+      "attribute": "bmi_percentile",
+      "direct_transition": "Check Trial Inclusion Criteria"
+    },
+    "Screening_Visit": {
+      "type": "Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "Referral to clinical trial (procedure)"
+        }
+      ],
+      "direct_transition": "Record_BP"
+    },
+    "Record_HA1C": {
+      "type": "Observation",
+      "vital_sign": "Blood Glucose",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "4548-4",
+          "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+        }
+      ],
+      "unit": "%",
+      "direct_transition": "Record Fasting Glucose"
+    },
+    "Active Hypertension Medications": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set Inclusion Criterion SBP ",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "At Least",
+                "minimum": 3,
+                "conditions": [
+                  {
+                    "condition_type": "Active Medication",
+                    "codes": [
+                      {
+                        "system": "RxNorm",
+                        "code": 308136,
+                        "display": "amLODIPine 2.5 MG Oral Tablet"
+                      }
+                    ]
+                  },
+                  {
+                    "condition_type": "Active Medication",
+                    "codes": [
+                      {
+                        "system": "RxNorm",
+                        "code": 314076,
+                        "display": "lisinopril 10 MG Oral Tablet"
+                      }
+                    ]
+                  },
+                  {
+                    "condition_type": "Active Medication",
+                    "codes": [
+                      {
+                        "system": "RxNorm",
+                        "code": 310798,
+                        "display": "Hydrochlorothiazide 25 MG Oral Tablet"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "condition_type": "Vital Sign",
+                "vital_sign": "Systolic Blood Pressure",
+                "operator": "<=",
+                "value": 160
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Set Inclusion Criterion SBP ",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "At Least",
+                "minimum": 2,
+                "conditions": [
+                  {
+                    "condition_type": "Active Medication",
+                    "codes": [
+                      {
+                        "system": "RxNorm",
+                        "code": 308136,
+                        "display": "amLODIPine 2.5 MG Oral Tablet"
+                      }
+                    ]
+                  },
+                  {
+                    "condition_type": "Active Medication",
+                    "codes": [
+                      {
+                        "system": "RxNorm",
+                        "code": 314076,
+                        "display": "lisinopril 10 MG Oral Tablet"
+                      }
+                    ]
+                  },
+                  {
+                    "condition_type": "Active Medication",
+                    "codes": [
+                      {
+                        "system": "RxNorm",
+                        "code": 310798,
+                        "display": "Hydrochlorothiazide 25 MG Oral Tablet"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "condition_type": "Vital Sign",
+                "vital_sign": "Systolic Blood Pressure",
+                "operator": "<=",
+                "value": 170
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Set Inclusion Criterion SBP ",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "At Most",
+                "maximum": 1,
+                "conditions": [
+                  {
+                    "condition_type": "Active Medication",
+                    "codes": [
+                      {
+                        "system": "RxNorm",
+                        "code": 308136,
+                        "display": "amLODIPine 2.5 MG Oral Tablet"
+                      }
+                    ]
+                  },
+                  {
+                    "condition_type": "Active Medication",
+                    "codes": [
+                      {
+                        "system": "RxNorm",
+                        "code": 314076,
+                        "display": "lisinopril 10 MG Oral Tablet"
+                      }
+                    ]
+                  },
+                  {
+                    "condition_type": "Active Medication",
+                    "codes": [
+                      {
+                        "system": "RxNorm",
+                        "code": 310798,
+                        "display": "Hydrochlorothiazide 25 MG Oral Tablet"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "condition_type": "Vital Sign",
+                "vital_sign": "Systolic Blood Pressure",
+                "operator": "<=",
+                "value": 180
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Check Age"
+        }
+      ]
+    },
+    "Initialize Trial Inclusion Criteria": {
+      "type": "Simple",
+      "direct_transition": "Initialize Trial Eligibility"
+    },
+    "Initialize Inclusion Criterion SBP": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_incl_crit_sbp",
+      "direct_transition": "Initialize Inclusion Criterion Age",
+      "value": false
+    },
+    "Initialize Trial Eligibility": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_eligibility",
+      "direct_transition": "Initialize Inclusion Criterion SBP",
+      "value": false
+    },
+    "Randomization": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Assign to Standard Treatment Arm",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Assign to Intensive Treatment Arm",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Record Clinical Trial Enrollment Criteria": {
+      "type": "MultiObservation",
+      "category": "survey",
+      "number_of_observations": 0,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "clinical_trial_enrollment_criteria",
+          "display": "clinical_trial_enrollment_criteria"
+        }
+      ],
+      "direct_transition": "End Screening Visit",
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "",
+              "display": "htn_trial_eligibility"
+            }
+          ],
+          "attribute": "htn_trial_eligibility"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "",
+              "display": "htn_trial_treatment_arm"
+            }
+          ],
+          "attribute": "htn_trial_treatment_arm"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "",
+              "display": "htn_trial_inclusion"
+            }
+          ],
+          "attribute": "htn_trial_inclusion"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "",
+              "display": "htn_trial_exclusion"
+            }
+          ],
+          "attribute": "htn_trial_exclusion"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "",
+              "display": "htn_trial_incl_crit_sbp"
+            }
+          ],
+          "attribute": "htn_trial_incl_crit_sbp"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "htn_trial_incl_crit_age",
+              "display": "htn_trial_incl_crit_age"
+            }
+          ],
+          "attribute": "htn_trial_incl_crit_age"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "htn_trial_incl_crit_cvdrisk_old_age",
+              "display": "htn_trial_incl_crit_cvdrisk_old_age"
+            }
+          ],
+          "attribute": "htn_trial_incl_crit_cvdrisk_old_age"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "htn_incl_crit_cvdrisk_fhs",
+              "display": "htn_incl_crit_cvdrisk_fhs"
+            }
+          ],
+          "attribute": "htn_incl_crit_cvdrisk_fhs"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "htn_trial_incl_crit_cvd",
+              "display": "htn_trial_incl_crit_cvd"
+            }
+          ],
+          "attribute": "htn_trial_incl_crit_cvd"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "htn_trial_incl_crit_cvdrisk_decreased_egfr",
+              "display": "htn_trial_incl_crit_cvdrisk_decreased_egfr"
+            }
+          ],
+          "attribute": "htn_trial_incl_crit_cvdrisk_decreased_egfr"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "htn_trial_excl_crit_esrd",
+              "display": "htn_trial_excl_crit_esrd"
+            }
+          ],
+          "attribute": "htn_trial_excl_crit_esrd"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "htn_excl_crit_stroke",
+              "display": "htn_excl_crit_stroke"
+            }
+          ],
+          "attribute": "htn_excl_crit_stroke"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "htn_trial_excl_crit_diabetes",
+              "display": "htn_trial_excl_crit_diabetes"
+            }
+          ],
+          "attribute": "htn_trial_excl_crit_diabetes"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "diabetes_dx",
+              "display": "diabetes_dx"
+            }
+          ],
+          "attribute": "diabetes_stage"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "htn_trial_excl_crit_proteinuria",
+              "display": "htn_trial_excl_crit_proteinuria"
+            }
+          ],
+          "attribute": "htn_trial_excl_crit_proteinuria"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "htn_trial_excl_crit_lvef",
+              "display": "htn_trial_excl_crit_lvef"
+            }
+          ],
+          "attribute": "htn_trial_excl_crit_lvef"
+        }
+      ]
+    },
+    "Set Inclusion Criterion FHS CVD Risk": {
+      "type": "SetAttribute",
+      "attribute": "htn_incl_crit_fhs",
+      "direct_transition": "Check for Cardiovascular Disease",
+      "value": true
+    },
+    "Initialize Inclusion Criterion Age": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_incl_crit_age",
+      "direct_transition": "Initialize Inclusion Criterion CVD Risk - Old Age",
+      "value": false
+    },
+    "Initialize Exclusion Criterion Stroke": {
+      "type": "SetAttribute",
+      "attribute": "htn_excl_crit_stroke",
+      "direct_transition": "Initialize Exclusion Criterion Diabetes",
+      "value": false
+    },
+    "Initialize Exclusion Criterion Diabetes": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_excl_crit_diabetes",
+      "direct_transition": "Initialize Exclusion Criterion Proteinuria",
+      "value": false
+    },
+    "Initialize Inclusion Criterion CVD Risk - Old Age": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_incl_crit_cvdrisk_old_age",
+      "direct_transition": "Intialize Inclusion Criterion CVD Risk - FHS CVD Risk",
+      "value": false
+    },
+    "Intialize Inclusion Criterion CVD Risk - FHS CVD Risk": {
+      "type": "SetAttribute",
+      "attribute": "htn_incl_crit_cvdrisk_fhs",
+      "direct_transition": "Initialize Inclusion Criterion CVD",
+      "value": false
+    },
+    "Set Inclusion Criterion CVD Risk - Old Age": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_incl_crit_cvdrisk_old_age",
+      "direct_transition": "Set Inclusion Criterion Age",
+      "value": true
+    },
+    "Set Inclusion Criterion Age": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_incl_crit_age",
+      "direct_transition": "Record_FHS_CVD_Risk",
+      "value": true
+    },
+    "Initialize Inclusion Criterion CVD": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_incl_crit_cvd",
+      "direct_transition": "Initialize Inclusion Criterion Decreased eGFR",
+      "value": false
+    },
+    "Check for Cardiovascular Disease": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set Inclusion Criterion CVD",
+          "condition": {
+            "condition_type": "At Least",
+            "minimum": 1,
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 399211009,
+                    "display": "History of myocardial infarction (situation)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 405741001,
+                    "display": "History of percutaneous coronary intervention (situation)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 399261000,
+                    "display": "History of coronary artery bypass grafting (situation)"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Record_EGFR"
+        }
+      ],
+      "remarks": [
+        "Synthea does not allow checks for past procedures as a condition type in conditional transitions. As a workaround, we check for active conditions pointing to a history of CABG or PCI. These conditions are assigned in the appropriate modules whenever a patient has the relevant procedure."
+      ]
+    },
+    "Set Inclusion Criterion CVD": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_incl_crit_cvd",
+      "direct_transition": "Record_EGFR",
+      "value": true,
+      "remarks": [
+        "TODO: add exclusion for patients with CVD event or procedure, or hospitalization for unstable angina within the past 3 months. Currently not possible because a conditional transitional does not allow for past procedures/encounters as conditions."
+      ]
+    },
+    "Check FHS CVD Risk": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set Inclusion Criterion FHS CVD Risk",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "framingham_cvd",
+            "operator": ">=",
+            "value": 0.15
+          }
+        },
+        {
+          "transition": "Check for Cardiovascular Disease"
+        }
+      ]
+    },
+    "Check Systolic Blood Pressure": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Active Hypertension Medications",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": ">=",
+            "value": 130
+          }
+        },
+        {
+          "transition": "Check Trial Inclusion Criteria"
+        }
+      ]
+    },
+    "Set Inclusion Criterion SBP ": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_incl_crit_sbp",
+      "direct_transition": "Check Age",
+      "value": true
+    },
+    "Check Age": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set Inclusion Criterion CVD Risk - Old Age",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 75,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Set Inclusion Criterion Age",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 50,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Check Trial Inclusion Criteria"
+        }
+      ]
+    },
+    "Check for Stroke": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set Exclusion Criterion Stroke",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 230690007,
+                "display": "Stroke"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Set Exclusion Criterion Stroke"
+        }
+      ]
+    },
+    "Set Exclusion Criterion Stroke": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_excl_crit_stroke",
+      "direct_transition": "Check for Diabetes Medications",
+      "value": true
+    },
+    "Check eGFR": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set Inclusion Criterion Decreased eGFR",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "EGFR",
+            "operator": "<=",
+            "value": 59
+          }
+        },
+        {
+          "transition": "Check for Stroke"
+        }
+      ],
+      "remarks": [
+        "TODO: consider calculating eGFR based on serum creatine based on Modification of Diet in Renal Disease (MDRD) equation, per original trial. Currently eGFR estimated from serum creatinine."
+      ]
+    },
+    "Set Exclusion Criterion ESRD": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_excl_crit_esrd",
+      "direct_transition": "Check for Stroke",
+      "value": true
+    },
+    "Set Inclusion Criterion Decreased eGFR": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_incl_crit_decreased_egfr",
+      "value": true,
+      "conditional_transition": [
+        {
+          "transition": "Set Exclusion Criterion ESRD",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Vital Sign",
+                "vital_sign": "EGFR",
+                "operator": "<",
+                "value": 20
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 46177005,
+                    "display": "End stage renal disease (disorder)"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "Initialize Inclusion Criterion Decreased eGFR": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_incl_crit_cvdrisk_decreased_egfr",
+      "direct_transition": "Initialize Exclusion Criterion ESRD",
+      "value": true
+    },
+    "Check for Diabetes Medications": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set Exclusion Criterion Diabetes",
+          "condition": {
+            "condition_type": "At Least",
+            "minimum": 1,
+            "conditions": [
+              {
+                "condition_type": "Active Medication",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 860975,
+                    "display": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Medication",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 897122,
+                    "display": "3 ML liraglutide 6 MG/ML Pen Injector"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Medication",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 1373463,
+                    "display": "canagliflozin 100 MG Oral Tablet"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Medication",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 106892,
+                    "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Medication",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 865098,
+                    "display": "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Record_HA1C"
+        }
+      ]
+    },
+    "Check for Diabetes Diagnosis": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set Exclusion Criterion Diabetes",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 44054006,
+                "display": "Diabetes"
+              }
+            ]
+          }
+        },
+        {}
+      ]
+    },
+    "Set Exclusion Criterion Diabetes": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_excl_crit_diabetes",
+      "direct_transition": "Record_ACR",
+      "value": true
+    },
+    "Record Fasting Glucose": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "mg/dL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "1558-6",
+          "display": "Fasting glucose [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "vital_sign": "Glucose",
+      "conditional_transition": [
+        {
+          "transition": "Set Exclusion Criterion Diabetes",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Vital Sign",
+                "vital_sign": "Blood Glucose",
+                "operator": ">=",
+                "value": 6.5
+              },
+              {
+                "condition_type": "Vital Sign",
+                "vital_sign": "Glucose",
+                "operator": ">=",
+                "value": 126
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Check for Diabetes Diagnosis"
+        }
+      ],
+      "remarks": [
+        "TODO: per trial diabetes exclusion definition, two concordant tests or repeat testing in different days is necessary to confirm diabetes diagnosis."
+      ]
+    },
+    "End Screening Visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Initialize Exclusion Criterion ESRD": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_excl_crit_esrd",
+      "direct_transition": "Initialize Exclusion Criterion Stroke",
+      "value": false
+    },
+    "Inclusion Criteria Met": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_inclusion",
+      "direct_transition": "Check Trial Exclusion Criteria",
+      "value": true
+    },
+    "Check Trial Exclusion Criteria": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Exclusion Criteria Met",
+          "condition": {
+            "condition_type": "At Least",
+            "minimum": 1,
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "htn_trial_excl_crit_esrd",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "htn_trial_excl_crit_stroke",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "htn_trial_excl_crit_diabetes",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "htn_trial_excl_crit_proteinuria",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "htn_trial_excl_crit_lvef",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Check Trial Eligibility"
+        }
+      ],
+      "remarks": [
+        "TODO: add cardiovascular event or procedure (clinical CVD as defined for inclusion) within 3 months prior to screening",
+        "TODO: add hospitalization for unstable angina within 3 months prior to screening",
+        "TODO: add symptomatic heart failure within 6 months prior to screening visit"
+      ]
+    },
+    "Check Trial Inclusion Criteria": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Inclusion Criteria Met",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "htn_trial_incl_crit_sbp",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "htn_trial_incl_crit_age",
+                    "operator": "==",
+                    "value": true
+                  },
+                  {
+                    "condition_type": "At Least",
+                    "minimum": 1,
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "htn_trial_incl_crit_cvdrisk_fhs",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "htn_trial_incl_crit_cvd",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "htn_trial_incl_crit_cvdrisk_decreased_egfr",
+                        "operator": "==",
+                        "value": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Inclusion Criteria Met",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "htn_trial_incl_crit_cvdrisk_old_age",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "htn_trial_incl_crit_sbp",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Check Trial Exclusion Criteria"
+        }
+      ]
+    },
+    "Exclusion Criteria Met": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_exclusion",
+      "direct_transition": "Check Trial Eligibility",
+      "value": true
+    },
+    "Check Trial Eligibility": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Eligible For Trial",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "htn_trial_inclusion",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "htn_trial_exclusion",
+                "operator": "==",
+                "value": false
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Record Clinical Trial Enrollment Criteria"
+        }
+      ]
+    },
+    "Eligible For Trial": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_eligibility",
+      "direct_transition": "Randomization",
+      "value": true
+    },
+    "Check for Proteinuria": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set Exclusion Criterion Proteinuria",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Microalbumin Creatinine Ratio",
+            "operator": ">=",
+            "value": 600
+          }
+        }
+      ],
+      "remarks": [
+        "Trial eligibility criteria look for proteinuria *anytime* within the past 6 months, and ranked preference for measurement of proteinuria: 1) 24 hour urinary protein excretion >= 1g/day; 2) 24 hour albumin excretion >= 600 mg/day; 3) spor urine protein/creatinine ratio >= 1g/g creatinine; 4) spot urine albumin/creatinine ratio >= 600 mg/g creatinine. Currently, only #4 is available for use in Synthea.",
+        "",
+        "TODO: check for measurements meeting threshold for exclusion at anytime in the 6 months prior to the screening visit."
+      ]
+    },
+    "Set Exclusion Criterion Proteinuria": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_excl_crit_proteinuria",
+      "direct_transition": "Record Left Ventricular Ejection Fraction",
+      "value": true
+    },
+    "Initialize Exclusion Criterion Proteinuria": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_excl_crit_proteinuria",
+      "direct_transition": "Initialize Exclusion Criterion LVEF",
+      "value": false
+    },
+    "Assign to Standard Treatment Arm": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_treatment_arm",
+      "value": "standard",
+      "direct_transition": "Record Clinical Trial Enrollment Criteria"
+    },
+    "Assign to Intensive Treatment Arm": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_treatment_arm",
+      "value": "intensive",
+      "direct_transition": "Record Clinical Trial Enrollment Criteria"
+    },
+    "Record Left Ventricular Ejection Fraction": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "55405-5",
+          "display": "Heartfailure Tracking Panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "10230-1",
+              "display": "Left ventricular Ejection fraction"
+            }
+          ],
+          "vital_sign": "Left ventricular Ejection fraction"
+        }
+      ],
+      "direct_transition": "Check for Severely Decreased LVEF"
+    },
+    "Record Metabolic Panel": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 8,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "51990-0",
+          "display": "Basic Metabolic Panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "vital_sign": "Glucose",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2339-0",
+              "display": "Glucose"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Urea Nitrogen",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6299-2",
+              "display": "Urea Nitrogen"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Creatinine",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "38483-4",
+              "display": "Creatinine"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Calcium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "49765-1",
+              "display": "Calcium"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Sodium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2947-0",
+              "display": "Sodium"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Potassium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6298-4",
+              "display": "Potassium"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Chloride",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2069-3",
+              "display": "Chloride"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Carbon Dioxide",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20565-8",
+              "display": "Carbon Dioxide"
+            }
+          ],
+          "unit": "mmol/L"
+        }
+      ],
+      "direct_transition": "Record_LipidPanel"
+    },
+    "Check for Severely Decreased LVEF": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set Exclusion Criterion LVEF",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Left ventricular Ejection fraction",
+            "operator": "<",
+            "value": 35
+          }
+        }
+      ]
+    },
+    "Set Exclusion Criterion LVEF": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_excl_crit_lvef",
+      "direct_transition": "Record Metabolic Panel",
+      "value": true
+    },
+    "Initialize Exclusion Criterion LVEF": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_excl_crit_lvef",
+      "direct_transition": "Wait for Study Start Date",
+      "value": false
+    }
+  }
+}
