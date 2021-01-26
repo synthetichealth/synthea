@@ -121,14 +121,17 @@ public abstract class State implements Cloneable, Serializable {
    * clone() should copy all the necessary variables of this State so that it can be correctly
    * executed and modified without altering the original copy. So for example, 'entered' and
    * 'exited' times should not be copied so the clone can be cleanly executed.
+   * Implementation note: the base Object.clone() copies over all fields automatically
+   * (as a shallow copy), so we don't need to do that ourselves. Instead, we should 
+   * 1. explicitly null out any fields that should not be copied, such as entered/exited
+   * 2. deep copy mutable reference types, if necessary.
    */
   public State clone() {
     try {
       State clone = (State) super.clone();
-      clone.module = this.module;
-      clone.name = this.name;
-      clone.transition = this.transition;
-      clone.remarks = this.remarks;
+      clone.entered = null;
+      clone.exited = null;
+      clone.entry = null;
       return clone;
     } catch (CloneNotSupportedException e) {
       // should not happen, and not something we can handle
@@ -232,7 +235,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public CallSubmodule clone() {
       CallSubmodule clone = (CallSubmodule) super.clone();
-      clone.submodule = submodule;
       return clone;
     }
 
@@ -337,15 +339,7 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public Physiology clone() {
-      Physiology clone = (Physiology) super.clone();
-      clone.model = model;
-      clone.solver = solver;
-      clone.stepSize = stepSize;
-      clone.simDuration = simDuration;
-      clone.leadTime = leadTime;
-      clone.altDirectTransition = altDirectTransition;
-      clone.altTransition = altTransition;
-      
+      Physiology clone = (Physiology) super.clone();     
       List<IoMapper> inputList = new ArrayList<IoMapper>(inputs.size());
       for (IoMapper mapper : inputs) {
         inputList.add(new IoMapper(mapper));
@@ -433,9 +427,16 @@ public abstract class State implements Cloneable, Serializable {
   public abstract static class Delayable extends State {
     // next is "transient" in the sense that it represents object state
     // as opposed to the other fields which represent object definition
-    // hence it is not set in clone()
+    // hence it is unset in clone()
     public Long next;
 
+    @Override
+    public Delayable clone() {
+      Delayable clone = (Delayable) super.clone();
+      clone.next = null;
+      return clone;
+    }
+    
     public abstract long endOfDelay(long time, Person person);
 
     /**
@@ -485,8 +486,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public Delay clone() {
       Delay clone = (Delay) super.clone();
-      clone.exact = exact;
-      clone.range = range;
       return clone;
     }
 
@@ -524,7 +523,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public Guard clone() {
       Guard clone = (Guard) super.clone();
-      clone.allow = allow;
       return clone;
     }
 
@@ -590,14 +588,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public SetAttribute clone() {
       SetAttribute clone = (SetAttribute) super.clone();
-      clone.attribute = attribute;
-      clone.value = value;
-      clone.range = range;
-      clone.expression = expression;
-      // We shouldn't clone thread local objects since the application is multi-threaded.
-      // clone.threadExpProcessor = threadExpProcessor;
-      clone.seriesData = seriesData;
-      clone.period = period;
       return clone;
     }
 
@@ -660,9 +650,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public Counter clone() {
       Counter clone = (Counter) super.clone();
-      clone.attribute = attribute;
-      clone.increment = increment;
-      clone.amount = amount;
       return clone;
     }
 
@@ -724,10 +711,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public Encounter clone() {
       Encounter clone = (Encounter) super.clone();
-      clone.wellness = wellness;
-      clone.encounterClass = encounterClass;
-      clone.reason = reason;
-      clone.codes = codes;
       return clone;
     }
 
@@ -880,7 +863,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public EncounterEnd clone() {
       EncounterEnd clone = (EncounterEnd) super.clone();
-      clone.dischargeDisposition = dischargeDisposition;
       return clone;
     }
 
@@ -916,9 +898,6 @@ public abstract class State implements Cloneable, Serializable {
 
     public OnsetState clone() {
       OnsetState clone = (OnsetState) super.clone();
-      clone.codes = codes;
-      clone.assignToAttribute = assignToAttribute;
-      clone.targetEncounter = targetEncounter;
       return clone;
     }
 
@@ -999,9 +978,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public ConditionEnd clone() {
       ConditionEnd clone = (ConditionEnd) super.clone();
-      clone.codes = codes;
-      clone.conditionOnset = conditionOnset;
-      clone.referencedByAttribute = referencedByAttribute;
       return clone;
     }
 
@@ -1074,9 +1050,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public AllergyEnd clone() {
       AllergyEnd clone = (AllergyEnd) super.clone();
-      clone.codes = codes;
-      clone.allergyOnset = allergyOnset;
-      clone.referencedByAttribute = referencedByAttribute;
       return clone;
     }
 
@@ -1151,12 +1124,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public MedicationOrder clone() {
       MedicationOrder clone = (MedicationOrder) super.clone();
-      clone.codes = codes;
-      clone.reason = reason;
-      clone.prescription = prescription;
-      clone.assignToAttribute = assignToAttribute;
-      clone.administration = administration;
-      clone.chronic = chronic;
       return clone;
     }
 
@@ -1226,9 +1193,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public MedicationEnd clone() {
       MedicationEnd clone = (MedicationEnd) super.clone();
-      clone.codes = codes;
-      clone.medicationOrder = medicationOrder;
-      clone.referencedByAttribute = referencedByAttribute;
       return clone;
     }
 
@@ -1264,11 +1228,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public CarePlanStart clone() {
       CarePlanStart clone = (CarePlanStart) super.clone();
-      clone.codes = codes;
-      clone.activities = activities;
-      clone.goals = goals;
-      clone.reason = reason;
-      clone.assignToAttribute = assignToAttribute;
       return clone;
     }
 
@@ -1326,9 +1285,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public CarePlanEnd clone() {
       CarePlanEnd clone = (CarePlanEnd) super.clone();
-      clone.codes = codes;
-      clone.careplan = careplan;
-      clone.referencedByAttribute = referencedByAttribute;
       return clone;
     }
 
@@ -1364,10 +1320,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public Procedure clone() {
       Procedure clone = (Procedure) super.clone();
-      clone.codes = codes;
-      clone.reason = reason;
-      clone.duration = duration;
-      clone.assignToAttribute = assignToAttribute;
       return clone;
     }
 
@@ -1462,13 +1414,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public VitalSign clone() {
       VitalSign clone = (VitalSign) super.clone();
-      clone.range = range;
-      clone.exact = exact;
-      clone.vitalSign = vitalSign;
-      clone.unit = unit;
-      clone.expression = expression;
-      // We shouldn't clone thread local objects since the application is multi-threaded.
-      // clone.threadExpProcessor = threadExpProcessor;
       return clone;
     }
 
@@ -1558,19 +1503,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public Observation clone() {
       Observation clone = (Observation) super.clone();
-      clone.codes = codes;
-      clone.range = range;
-      clone.exact = exact;
-      clone.valueCode = valueCode;
-      clone.attribute = attribute;
-      clone.vitalSign = vitalSign;
-      clone.sampledData = sampledData;
-      clone.category = category;
-      clone.unit = unit;
-      clone.expression = expression;
-      // We shouldn't clone thread local objects since the application is multi-threaded.
-      // clone.threadExpProcessor = threadExpProcessor;
-      clone.attachment = attachment;
       return clone;
     }
 
@@ -1623,7 +1555,17 @@ public abstract class State implements Cloneable, Serializable {
     public ObservationGroup clone() {
       ObservationGroup clone = (ObservationGroup) super.clone();
       clone.codes = codes;
-      clone.observations = observations;
+      
+      // IMPORTANT: because each observation gets process()ed when the state gets processed,
+      // we need to ensure we deep clone the list
+      // (otherwise as this gets passed around, the same objects are used for different patients
+      // which causes weird and unexpected results)
+      List<Observation> cloneObs = new ArrayList<>(observations);
+      for (int i = 0; i < cloneObs.size(); i++) {
+        cloneObs.set(i, cloneObs.get(i).clone());
+      }
+      clone.observations = cloneObs;
+      
       return clone;
     }
   }
@@ -1642,7 +1584,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public MultiObservation clone() {
       MultiObservation clone = (MultiObservation) super.clone();
-      clone.category = category;
       return clone;
     }
 
@@ -1717,10 +1658,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public ImagingStudy clone() {
       ImagingStudy clone = (ImagingStudy) super.clone();
-      clone.procedureCode = procedureCode;
-      clone.series = series;
-      clone.minNumberSeries = minNumberSeries;
-      clone.maxNumberSeries = maxNumberSeries;
       return clone;
     }
 
@@ -1825,12 +1762,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public Symptom clone() {
       Symptom clone = (Symptom) super.clone();
-      clone.symptom = symptom;
-      clone.cause = cause;
-      clone.probability = probability;
-      clone.range = range;
-      clone.exact = exact;
-      clone.addressed = addressed;
       return clone;
     }
 
@@ -1869,10 +1800,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public Device clone() {
       Device clone = (Device) super.clone();
-      clone.code = code;
-      clone.manufacturer = manufacturer;
-      clone.model = model;
-      clone.assignToAttribute = assignToAttribute;
       return clone;
     }
 
@@ -1908,9 +1835,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public DeviceEnd clone() {
       DeviceEnd clone = (DeviceEnd) super.clone();
-      clone.codes = codes;
-      clone.device = device;
-      clone.referencedByAttribute = referencedByAttribute;
       return clone;
     }
 
@@ -1943,7 +1867,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public SupplyList clone() {
       SupplyList clone = (SupplyList) super.clone();
-      clone.supplies = supplies;
       return clone;
     }
 
@@ -1991,11 +1914,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public Death clone() {
       Death clone = (Death) super.clone();
-      clone.codes = codes;
-      clone.conditionOnset = conditionOnset;
-      clone.referencedByAttribute = referencedByAttribute;
-      clone.range = range;
-      clone.exact = exact;
       return clone;
     }
 

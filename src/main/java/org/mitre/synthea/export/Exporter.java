@@ -372,6 +372,7 @@ public abstract class Exporter {
       for (Pair<Person, Long> entry: deferredExports) {
         export(entry.getLeft(), entry.getRight(), nonDeferredOptions);
       }
+      deferredExports.clear();
     }
     
     String bulk = Config.get("exporter.fhir.bulk_data");

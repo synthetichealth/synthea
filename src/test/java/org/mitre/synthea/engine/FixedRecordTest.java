@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.engine.Generator.GeneratorOptions;
 import org.mitre.synthea.helpers.Config;
@@ -20,14 +20,14 @@ import org.mitre.synthea.world.agents.Provider;
 public class FixedRecordTest {
 
   // The generator.
-  private static Generator generator;
+  private Generator generator;
 
   /**
    * Configure settings across these tests.
    * @throws Exception on test configuration loading errors.
    */
-  @BeforeClass
-  public static void setup() {
+  @Before
+  public void setup() {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("generate.only_dead_patients", "false"); 
     Config.set("exporter.split_records", "true");
