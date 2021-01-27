@@ -628,18 +628,6 @@
             }
           ],
           "attribute": "htn_trial_excl_crit_proteinuria"
-        },
-        {
-          "category": "survey",
-          "unit": "",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "htn_trial_excl_crit_lvef",
-              "display": "htn_trial_excl_crit_lvef"
-            }
-          ],
-          "attribute": "htn_trial_excl_crit_lvef"
         }
       ]
     },
@@ -1095,12 +1083,6 @@
                 "attribute": "htn_trial_excl_crit_proteinuria",
                 "operator": "==",
                 "value": true
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "htn_trial_excl_crit_lvef",
-                "operator": "==",
-                "value": true
               }
             ]
           }
@@ -1254,14 +1236,14 @@
     "Set Exclusion Criterion Proteinuria": {
       "type": "SetAttribute",
       "attribute": "htn_trial_excl_crit_proteinuria",
-      "direct_transition": "Record Left Ventricular Ejection Fraction",
+      "direct_transition": "Record Metabolic Panel",
       "value": true
     },
     "Initialize Exclusion Criterion Proteinuria": {
       "type": "SetAttribute",
       "attribute": "htn_trial_excl_crit_proteinuria",
-      "direct_transition": "Initialize Exclusion Criterion LVEF",
-      "value": false
+      "value": false,
+      "direct_transition": "Wait for Study Start Date"
     },
     "Assign to Standard Treatment Arm": {
       "type": "SetAttribute",
@@ -1274,31 +1256,6 @@
       "attribute": "htn_trial_treatment_arm",
       "value": "intensive",
       "direct_transition": "Record Clinical Trial Enrollment Criteria"
-    },
-    "Record Left Ventricular Ejection Fraction": {
-      "type": "DiagnosticReport",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "55405-5",
-          "display": "Heartfailure Tracking Panel"
-        }
-      ],
-      "observations": [
-        {
-          "category": "laboratory",
-          "unit": "%",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "10230-1",
-              "display": "Left ventricular Ejection fraction"
-            }
-          ],
-          "vital_sign": "Left ventricular Ejection fraction"
-        }
-      ],
-      "direct_transition": "Check for Severely Decreased LVEF"
     },
     "Record Metabolic Panel": {
       "type": "DiagnosticReport",
@@ -1409,32 +1366,6 @@
         }
       ],
       "direct_transition": "Record_LipidPanel"
-    },
-    "Check for Severely Decreased LVEF": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Set Exclusion Criterion LVEF",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Left ventricular Ejection fraction",
-            "operator": "<",
-            "value": 35
-          }
-        }
-      ]
-    },
-    "Set Exclusion Criterion LVEF": {
-      "type": "SetAttribute",
-      "attribute": "htn_trial_excl_crit_lvef",
-      "direct_transition": "Record Metabolic Panel",
-      "value": true
-    },
-    "Initialize Exclusion Criterion LVEF": {
-      "type": "SetAttribute",
-      "attribute": "htn_trial_excl_crit_lvef",
-      "direct_transition": "Wait for Study Start Date",
-      "value": false
     }
   }
 }
