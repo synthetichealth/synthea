@@ -1554,7 +1554,6 @@ public abstract class State implements Cloneable, Serializable {
 
     public ObservationGroup clone() {
       ObservationGroup clone = (ObservationGroup) super.clone();
-      clone.codes = codes;
       
       // IMPORTANT: because each observation gets process()ed when the state gets processed,
       // we need to ensure we deep clone the list
