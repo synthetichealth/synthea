@@ -6,7 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Initialize Trial Inclusion Criteria"
+      "direct_transition": "Initialize"
     },
     "Terminal": {
       "type": "Terminal"
@@ -407,10 +407,6 @@
         }
       ]
     },
-    "Initialize Trial Inclusion Criteria": {
-      "type": "Simple",
-      "direct_transition": "Initialize Trial Eligibility"
-    },
     "Initialize Inclusion Criterion SBP": {
       "type": "SetAttribute",
       "attribute": "htn_trial_incl_crit_sbp",
@@ -420,7 +416,7 @@
     "Initialize Trial Eligibility": {
       "type": "SetAttribute",
       "attribute": "htn_trial_eligibility",
-      "direct_transition": "Initialize Inclusion Criterion SBP",
+      "direct_transition": "Initialize Trial Inclusion - Overall",
       "value": false
     },
     "Randomization": {
@@ -480,10 +476,10 @@
             {
               "system": "LOINC",
               "code": "",
-              "display": "htn_trial_inclusion"
+              "display": "htn_trial_incl_crit_overall"
             }
           ],
-          "attribute": "htn_trial_inclusion"
+          "attribute": "htn_trial_incl_crit_overall"
         },
         {
           "category": "survey",
@@ -492,10 +488,10 @@
             {
               "system": "LOINC",
               "code": "",
-              "display": "htn_trial_exclusion"
+              "display": "htn_trial_excl_crit_overall"
             }
           ],
-          "attribute": "htn_trial_exclusion"
+          "attribute": "htn_trial_excl_crit_overall"
         },
         {
           "category": "survey",
@@ -829,7 +825,7 @@
           }
         },
         {
-          "transition": "Set Exclusion Criterion Stroke"
+          "transition": "Check for Diabetes Medications"
         }
       ]
     },
@@ -893,6 +889,9 @@
               }
             ]
           }
+        },
+        {
+          "transition": "Check for Stroke"
         }
       ]
     },
@@ -1047,7 +1046,7 @@
     },
     "Inclusion Criteria Met": {
       "type": "SetAttribute",
-      "attribute": "htn_trial_inclusion",
+      "attribute": "htn_trial_incl_crit_overall",
       "direct_transition": "Check Trial Exclusion Criteria",
       "value": true
     },
@@ -1176,7 +1175,7 @@
     },
     "Exclusion Criteria Met": {
       "type": "SetAttribute",
-      "attribute": "htn_trial_exclusion",
+      "attribute": "htn_trial_excl_crit_overall",
       "direct_transition": "Check Trial Eligibility",
       "value": true
     },
@@ -1190,13 +1189,13 @@
             "conditions": [
               {
                 "condition_type": "Attribute",
-                "attribute": "htn_trial_inclusion",
+                "attribute": "htn_trial_incl_crit_overall",
                 "operator": "==",
                 "value": true
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "htn_trial_exclusion",
+                "attribute": "htn_trial_excl_crit_overall",
                 "operator": "==",
                 "value": false
               }
@@ -1366,6 +1365,22 @@
         }
       ],
       "direct_transition": "Record_LipidPanel"
+    },
+    "Initialize Trial Inclusion - Overall": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_incl_crit_overall",
+      "direct_transition": "Initialize Trial Exclusion - Overall",
+      "value": false
+    },
+    "Initialize Trial Exclusion - Overall": {
+      "type": "SetAttribute",
+      "attribute": "htn_trial_excl_crit_overall",
+      "direct_transition": "Initialize Inclusion Criterion SBP",
+      "value": false
+    },
+    "Initialize": {
+      "type": "Simple",
+      "direct_transition": "Initialize Trial Eligibility"
     }
   }
 }
