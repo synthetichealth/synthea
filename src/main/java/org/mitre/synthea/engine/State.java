@@ -1559,9 +1559,9 @@ public abstract class State implements Cloneable, Serializable {
       // we need to ensure we deep clone the list
       // (otherwise as this gets passed around, the same objects are used for different patients
       // which causes weird and unexpected results)
-      List<Observation> cloneObs = new ArrayList<>(observations);
-      for (int i = 0; i < cloneObs.size(); i++) {
-        cloneObs.set(i, cloneObs.get(i).clone());
+      List<Observation> cloneObs = new ArrayList<>(observations.size());
+      for (Observation o : observations) {
+        cloneObs.add(o.clone());
       }
       clone.observations = cloneObs;
       
