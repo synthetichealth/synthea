@@ -25,8 +25,6 @@ public class UtilitiesTest {
     assertTrue(date > year);
   }
 
-  // Ignore temporarily, re-enable after 1/1.
-  @Ignore
   @Test
   public void testYears() {
     int gap = 75;

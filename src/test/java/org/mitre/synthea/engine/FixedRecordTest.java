@@ -81,7 +81,8 @@ public class FixedRecordTest {
         
         // If the person has more HealthRecords than FixedRecords, use the last FixedRecord.
         if (rawRecordGroups.get(p).records.size() <= r) {
-          rawFixedRecord = rawRecordGroups.get(p).records.get(r - 1);
+          int recordCount = rawRecordGroups.get(p).records.size();
+          rawFixedRecord = rawRecordGroups.get(p).records.get(recordCount - 1);
         } else {
           rawFixedRecord = rawRecordGroups.get(p).records.get(r);
         }
