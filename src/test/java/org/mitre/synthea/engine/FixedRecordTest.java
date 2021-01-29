@@ -72,20 +72,11 @@ public class FixedRecordTest {
       // Cycle the person's FixedRecords to compare them to the raw imported FixedRecords.
       for (int r = 0; r < currentPerson.records.size(); r++) {        
 
-        int recordToPull = r;
-        if (recordToPull >= recordGroup.count) {
-          recordToPull = recordGroup.count - 1;
-        }
+        int recordToPull = Math.min(r, recordGroup.count - 1);
         FixedRecord personFixedRecord = recordGroup.records.get(recordToPull);
-        FixedRecord rawFixedRecord;
-        
-        // If the person has more HealthRecords than FixedRecords, use the last FixedRecord.
-        if (rawRecordGroups.get(p).records.size() <= r) {
-          int recordCount = rawRecordGroups.get(p).records.size();
-          rawFixedRecord = rawRecordGroups.get(p).records.get(recordCount - 1);
-        } else {
-          rawFixedRecord = rawRecordGroups.get(p).records.get(r);
-        }
+
+        recordToPull = Math.min(r, rawRecordGroups.get(p).records.size() - 1);
+        FixedRecord rawFixedRecord = rawRecordGroups.get(p).records.get(recordToPull);
         
         // Compare the person's current FixedRecord with the raw imported FixedRecords.
         assertEquals(personFixedRecord.firstName, rawFixedRecord.firstName);
