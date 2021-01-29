@@ -369,7 +369,7 @@ public class Module implements Cloneable, Serializable {
     while (current.run(person, time, terminateOnDeath)) {
       Long exited = current.exited;      
       nextStateName = current.transition(person, time);
-      // System.out.println(" Transitioning to " + nextStateName);
+      // System.out.println(" Transitioning from " + current.name + " to " + nextStateName);
       current = states.get(nextStateName).clone(); // clone the state so we don't dirty the original
       person.history.add(0, current);
       if (exited != null && exited < time) {
