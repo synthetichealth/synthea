@@ -863,7 +863,7 @@
     },
     "Set Inclusion Criterion Decreased eGFR": {
       "type": "SetAttribute",
-      "attribute": "htn_trial_incl_crit_decreased_egfr",
+      "attribute": "htn_trial_incl_crit_cvdrisk_decreased_egfr",
       "value": true,
       "conditional_transition": [
         {
@@ -899,7 +899,7 @@
       "type": "SetAttribute",
       "attribute": "htn_trial_incl_crit_cvdrisk_decreased_egfr",
       "direct_transition": "Initialize Exclusion Criterion ESRD",
-      "value": true
+      "value": false
     },
     "Check for Diabetes Medications": {
       "type": "Simple",
