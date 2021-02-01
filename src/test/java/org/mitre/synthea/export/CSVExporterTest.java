@@ -29,6 +29,8 @@ public class CSVExporterTest {
   
   private static File exportDir;
 
+  private static final int NUMBER_OF_FILES = 16;
+
   /**
    * Global setup for export tests.
    * @throws Exception if something goes wrong
@@ -91,8 +93,8 @@ public class CSVExporterTest {
       count++;
     }
 
-    assertEquals("Expected " + CSVExporter.NUMBER_OF_FILES
-        + " CSV files in the output directory, found " + count, CSVExporter.NUMBER_OF_FILES, count);
+    assertEquals("Expected " + NUMBER_OF_FILES
+        + " CSV files in the output directory, found " + count, NUMBER_OF_FILES, count);
   }
   
   @Test
@@ -233,7 +235,7 @@ public class CSVExporterTest {
       count++;
     }
 
-    int expected = CSVExporter.NUMBER_OF_FILES - 4;
+    int expected = NUMBER_OF_FILES - 4;
     assertEquals("Expected " + expected + " CSV files in the output directory, found " + count,
         expected, count);
     assertTrue("patients.csv is present but should have been excluded", !foundPatients);

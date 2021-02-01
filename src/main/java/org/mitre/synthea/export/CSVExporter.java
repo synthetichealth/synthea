@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -125,8 +126,6 @@ public class CSVExporter {
    * Writer for payerTransitions.csv
    */
   private OutputStreamWriter payerTransitions;
-  
-  public static final int NUMBER_OF_FILES = 16;
 
   /**
    * Charset for specifying the character set of the output files.
@@ -164,19 +163,15 @@ public class CSVExporter {
       String includedFilesStr = Config.get("exporter.csv.included_files", "").trim();
       String excludedFilesStr = Config.get("exporter.csv.excluded_files", "").trim();
       
-      List<String> includedFiles = new ArrayList<>();
-      List<String> excludedFiles = new ArrayList<>();
+      List<String> includedFiles = Collections.emptyList();
+      List<String> excludedFiles = Collections.emptyList();
       
       if (!includedFilesStr.isEmpty() && !excludedFilesStr.isEmpty()) {
         System.err.println(
             "CSV exporter: Included and Excluded file settings are both set -- ignoring both");
       } else {
         if (!includedFilesStr.isEmpty()) {
-          List<String> files = Arrays.asList(includedFilesStr.split(","));
-          // normalize filenames -- trim, lowercase, add .csv if not included
-          files = files.stream().map(f -> f.trim().toLowerCase())
-              .map(f -> f.endsWith(".csv") ? f : f + ".csv").collect(Collectors.toList());
-          includedFiles.addAll(files);
+          includedFiles = propStringToList(includedFilesStr);
 
           if (!includedFiles.contains("patients.csv")) {
             System.err.println("WARNING! CSV exporter is set to not include patients.csv!");
@@ -184,16 +179,11 @@ public class CSVExporter {
           }
 
         } else {
-          List<String> files = Arrays.asList(excludedFilesStr.split(","));
-          // normalize filenames -- trim, lowercase, add .csv if not included
-          files = files.stream().map(f -> f.trim().toLowerCase())
-              .map(f -> f.endsWith(".csv") ? f : f + ".csv").collect(Collectors.toList());
-          excludedFiles.addAll(files);
+          excludedFiles = propStringToList(excludedFilesStr);
         }
       }
 
-      File patientsFile = outputDirectory.resolve("patients.csv").toFile();
-      boolean append = patientsFile.exists() && Config.getAsBoolean("exporter.csv.append_mode");
+      boolean append = Config.getAsBoolean("exporter.csv.append_mode");
       patients = getWriter(outputDirectory, "patients.csv", append, includedFiles, excludedFiles);
 
       allergies = getWriter(outputDirectory, "allergies.csv", append, includedFiles, excludedFiles);
@@ -244,6 +234,25 @@ public class CSVExporter {
       // and if these do throw ioexceptions there's nothing we can do anyway
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * Helper function to convert a list of files directly from synthea.properties to filenames.
+   * @param fileListString String directly from Config, ex "patients.csv,conditions , procedures"
+   * @return normalized list of filenames as strings
+   */
+  private static List<String> propStringToList(String fileListString) {
+    List<String> files = Arrays.asList(fileListString.split(","));
+    // normalize filenames -- trim, lowercase, add .csv if not included
+    files = files.stream().map(f -> {
+      f = f.trim().toLowerCase();
+      if (!f.endsWith(".csv")) {
+        f = f + ".csv";
+      }
+      return f;
+    }).collect(Collectors.toList());
+
+    return files;
   }
 
   /**
