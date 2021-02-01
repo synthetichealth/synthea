@@ -11,35 +11,6 @@
     "Terminal": {
       "type": "Terminal"
     },
-    "Wait for Study Start Date": {
-      "type": "Guard",
-      "allow": {
-        "condition_type": "Date",
-        "operator": ">",
-        "date": {
-          "year": 2010,
-          "month": 11,
-          "day": 1,
-          "hour": 0,
-          "minute": 0,
-          "second": 0,
-          "millisecond": 0
-        }
-      },
-      "direct_transition": "Enrollment Period",
-      "remarks": [
-        "Enrollment start date was November 2010."
-      ]
-    },
-    "Enrollment Period": {
-      "type": "Delay",
-      "range": {
-        "low": 0,
-        "high": 29,
-        "unit": "months"
-      },
-      "direct_transition": "Screening_Visit"
-    },
     "Record_BP": {
       "type": "MultiObservation",
       "category": "vital-signs",
@@ -1244,7 +1215,7 @@
       "type": "SetAttribute",
       "attribute": "htn_trial_excl_crit_proteinuria",
       "value": false,
-      "direct_transition": "Wait for Study Start Date"
+      "direct_transition": "Wait for Age 50"
     },
     "Assign to Standard Treatment Arm": {
       "type": "SetAttribute",
@@ -1383,6 +1354,26 @@
     "Initialize": {
       "type": "Simple",
       "direct_transition": "Initialize Trial Eligibility"
+    },
+    "Wait for Age 50": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 50,
+        "unit": "years",
+        "value": 0
+      },
+      "direct_transition": "Random Delay After Patient Turns 50"
+    },
+    "Random Delay After Patient Turns 50": {
+      "type": "Delay",
+      "direct_transition": "Screening_Visit",
+      "range": {
+        "low": 0,
+        "high": 50,
+        "unit": "years"
+      }
     }
   }
 }
