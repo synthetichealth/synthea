@@ -396,7 +396,7 @@ public abstract class Logic implements Serializable {
   public static class PriorState extends Logic {
     private String name;
     private String since;
-    private ExactWithUnit<Long> within;
+    private ExactWithUnit<Double> within;
     private Long window;
 
     @Override

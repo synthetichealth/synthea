@@ -54,6 +54,36 @@ public class Utilities {
   }
 
   /**
+   * Convert a quantity of time in a specified units into milliseconds.
+   *
+   * @param units
+   *          : "hours", "minutes", "seconds", "days", "weeks", "years", or "months"
+   * @param value
+   *          : quantity of units
+   * @return milliseconds
+   */
+  public static long convertTime(String units, double value) {
+    switch (units) {
+      case "hours":
+        return TimeUnit.MINUTES.toMillis((long)(60.0 * value));
+      case "minutes":
+        return TimeUnit.SECONDS.toMillis((long)(60.0 * value));
+      case "seconds":
+        return (long)(1000.0 * value);
+      case "days":
+        return TimeUnit.HOURS.toMillis((long)(24.0 * value));
+      case "years":
+        return TimeUnit.DAYS.toMillis((long)(365.0 * value));
+      case "months":
+        return TimeUnit.DAYS.toMillis((long)(30.0 * value));
+      case "weeks":
+        return TimeUnit.DAYS.toMillis((long)(7.0 * value));
+      default:
+        throw new RuntimeException("Unexpected time unit: " + units);
+    }
+  }
+
+  /**
    * Convert a calendar year (e.g. 2020) to a Unix timestamp
    */
   public static long convertCalendarYearsToTime(int years) {
