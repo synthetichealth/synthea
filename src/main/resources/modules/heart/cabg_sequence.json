@@ -1,0 +1,47 @@
+{
+  "name": "cabg_sequence",
+  "remarks": [
+    "Cardiac Surgery Module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Referral and Preoperative Testing"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Operation": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/operation",
+      "conditional_transition": [
+        {
+          "transition": "Deceased",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_mortality",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Postop ICU and Ward"
+        }
+      ]
+    },
+    "Referral and Preoperative Testing": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/referral",
+      "direct_transition": "Operation"
+    },
+    "Postop ICU and Ward": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/postop",
+      "direct_transition": "Terminal"
+    },
+    "Deceased": {
+      "type": "Death",
+      "direct_transition": "Terminal"
+    }
+  }
+}

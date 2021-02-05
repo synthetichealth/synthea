@@ -53,16 +53,24 @@
       "distributed_transition": [
         {
           "transition": "Symptoms_Start",
-          "distribution": 1
+          "distribution": 0.25
         },
         {
           "transition": "Cardiac_Arrest",
-          "distribution": 1
+          "distribution": 0.0005
         },
         {
           "transition": "Delay_Until_Symptoms",
-          "distribution": 1
+          "distribution": 0.7495
         }
+      ],
+      "remarks": [
+        "The original Java code used sex-based annual risk of event: M = 0.042, F = 0.015",
+        "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1647098/pdf/amjph00262-0029.pdf",
+        "",
+        "Then 80% of events are MI, 20% cardiac arrest",
+        "",
+        "For now assume .03 chance annually * .2 == .006 chance annually == .0005 chance monthly (not just divided by 12 btw, the match just works that way)"
       ]
     },
     "Symptoms_Start": {
@@ -73,7 +81,7 @@
       "exact": {
         "quantity": 1
       },
-      "direct_transition": "New_State"
+      "direct_transition": "Dyspnea_Symptom"
     },
     "Cardiac_Arrest": {
       "type": "Death",
@@ -91,11 +99,11 @@
       "distributed_transition": [
         {
           "transition": "Stress Test",
-          "distribution": 1
+          "distribution": 0.99
         },
         {
           "transition": "CABG",
-          "distribution": 1
+          "distribution": 0.01
         }
       ]
     },
@@ -104,11 +112,11 @@
       "distributed_transition": [
         {
           "transition": "Medical_Therapy",
-          "distribution": 1
+          "distribution": 0.99
         },
         {
           "transition": "CABG",
-          "distribution": 1
+          "distribution": 0.01
         }
       ]
     },
@@ -125,7 +133,8 @@
       "direct_transition": "CABG"
     },
     "CABG": {
-      "type": "Simple",
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg_sequence",
       "direct_transition": "Terminal"
     },
     "Diagnosis_Encounter": {
@@ -214,15 +223,15 @@
       "distributed_transition": [
         {
           "transition": "Symptoms_Continue",
-          "distribution": 1
+          "distribution": 0.9
         },
         {
           "transition": "Medical_Therapy",
-          "distribution": 1
+          "distribution": 0.1
         }
       ]
     },
-    "New_State": {
+    "Dyspnea_Symptom": {
       "type": "Symptom",
       "symptom": "Dyspnea on exertion",
       "cause": "",

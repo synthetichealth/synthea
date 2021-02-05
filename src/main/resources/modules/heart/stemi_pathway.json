@@ -211,7 +211,7 @@
     },
     "CABG_Operation2": {
       "type": "CallSubmodule",
-      "submodule": "heart/cabg/operation",
+      "submodule": "heart/cabg_sequence",
       "conditional_transition": [
         {
           "transition": "Deceased",
