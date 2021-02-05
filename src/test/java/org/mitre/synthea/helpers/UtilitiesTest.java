@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.google.gson.JsonPrimitive;
+
+import java.util.Calendar;
 import java.util.Date;
 import org.junit.Test;
 import org.mitre.synthea.world.agents.Person;
@@ -27,7 +29,9 @@ public class UtilitiesTest {
   @Test
   public void testYears() {
     int gap = 75;
-    long time = System.currentTimeMillis();
+    Calendar calendar = Calendar.getInstance();
+    calendar.set(2020, Calendar.FEBRUARY, 1);
+    long time = calendar.getTimeInMillis();
     int year = Utilities.getYear(time);
     long earlierTime = time - Utilities.convertTime("years", gap);
     int earlierYear = Utilities.getYear(earlierTime);
