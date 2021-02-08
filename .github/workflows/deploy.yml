@@ -66,6 +66,8 @@ jobs:
         with: 
           github_token: ${{ secrets.GITHUB_TOKEN }}
           keep_files: true
+          # do not create a .nojekyll file
+          enable_jekyll: true
           publish_dir: ./output
           user_name: 'Jason Walonoski'
           user_email: 'jwalonoski@mitre.org'
