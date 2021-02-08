@@ -600,7 +600,7 @@
     },
     "Set Inclusion Criterion FHS CVD Risk": {
       "type": "SetAttribute",
-      "attribute": "htn_incl_crit_fhs",
+      "attribute": "htn_incl_crit_cvdrisk_fhs",
       "direct_transition": "Check for Cardiovascular Disease",
       "value": true
     },
