@@ -148,7 +148,7 @@ public class ModuleOverrides {
     }
 
     try (JsonReader reader = new JsonReader(new FileReader(modulePath.toString()))) {
-      JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
+      JsonObject module = JsonParser.parseReader(reader).getAsJsonObject();
 
       String lineStart = moduleFilename + "\\:\\:$";
       lines.addAll(handleElement(lineStart, "$", module));

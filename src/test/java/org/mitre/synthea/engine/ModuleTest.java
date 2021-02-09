@@ -194,8 +194,7 @@ public class ModuleTest {
           "resources", "future_module", "module_from_the_future.json"))
           .stream()
           .collect(Collectors.joining("\n"));
-      JsonParser parser = new JsonParser();
-      JsonObject object = parser.parse(jsonString).getAsJsonObject();
+      JsonObject object = JsonParser.parseString(jsonString).getAsJsonObject();
       new Module(object, false);
       // Should never get here
       fail("Didn't throw exception when loading module with version from the future");
@@ -270,8 +269,7 @@ public class ModuleTest {
       try {
         FileReader fileReader = new FileReader(t.toString());
         JsonReader reader = new JsonReader(fileReader);
-        JsonParser parser = new JsonParser();
-        JsonObject object = parser.parse(reader).getAsJsonObject();
+        JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
         JsonObject states = object.getAsJsonObject("states");
         for (String stateName : states.keySet()) {
           JsonObject state = states.getAsJsonObject(stateName);
