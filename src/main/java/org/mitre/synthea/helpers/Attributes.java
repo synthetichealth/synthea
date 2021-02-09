@@ -135,7 +135,7 @@ public class Attributes {
 
     Utilities.walkAllModules((basePath, modulePath) -> {
       try (JsonReader reader = new JsonReader(new FileReader(modulePath.toString()))) {
-        JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
+        JsonObject module = JsonParser.parseReader(reader).getAsJsonObject();
         inventoryModule(attributes, module);
       } catch (IOException e) {
         throw new RuntimeException("Unable to read modules", e);

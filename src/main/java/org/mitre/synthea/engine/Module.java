@@ -189,8 +189,7 @@ public class Module implements Cloneable, Serializable {
     if (overrides != null) {
       jsonString = applyOverrides(jsonString, overrides, path.getFileName().toString());
     }
-    JsonParser parser = new JsonParser();
-    JsonObject object = parser.parse(jsonString).getAsJsonObject();
+    JsonObject object = JsonParser.parseString(jsonString).getAsJsonObject();
     return new Module(object, submodule);
   }
 

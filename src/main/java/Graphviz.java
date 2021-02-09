@@ -83,7 +83,7 @@ public class Graphviz {
     System.out.format("Loading %s\n", path.toString());
     FileReader fileReader = new FileReader(path.toString());
     JsonReader reader = new JsonReader(fileReader);
-    JsonObject object = new JsonParser().parse(reader).getAsJsonObject();
+    JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
     fileReader.close();
     reader.close();
     return object;
