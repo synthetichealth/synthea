@@ -1398,12 +1398,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public Procedure clone() {
       Procedure clone = (Procedure) super.clone();
-      clone.codes = codes;
-      clone.reason = reason;
-      clone.duration = duration;
-      clone.assignToAttribute = assignToAttribute;
-      clone.distribution = distribution;
-      clone.unit = unit;
       return clone;
     }
 
@@ -1888,11 +1882,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public Symptom clone() {
       Symptom clone = (Symptom) super.clone();
-      clone.symptom = symptom;
-      clone.cause = cause;
-      clone.probability = probability;
-      clone.addressed = addressed;
-      clone.distribution = distribution;
       return clone;
     }
 
