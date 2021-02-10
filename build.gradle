@@ -275,7 +275,7 @@ artifacts {
 }
 
 def mavenGroup = 'org.mitre.synthea'
-def mavenVersion = '2.7.0'
+def mavenVersion = '3.0.0-SNAPSHOT'
 
 publishing {
     publications {
