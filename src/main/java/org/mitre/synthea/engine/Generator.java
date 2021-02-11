@@ -32,7 +32,6 @@ import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.StringUtils;
 
-import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.editors.GrowthDataErrorsEditor;
 import org.mitre.synthea.export.CDWExporter;
 import org.mitre.synthea.export.Exporter;
@@ -59,7 +58,6 @@ import org.mitre.synthea.world.geography.Location;
  */
 public class Generator implements RandomNumberGenerator {
 
-  public DataStore database;
   public GeneratorOptions options;
   private Random random;
   public long timestep;
@@ -188,24 +186,6 @@ public class Generator implements RandomNumberGenerator {
   }
 
   private void init() {
-    String dbType = Config.get("generate.database_type");
-
-    switch (dbType) {
-      case "in-memory":
-        this.database = new DataStore(false);
-        break;
-      case "file":
-        this.database = new DataStore(true);
-        break;
-      case "none":
-        this.database = null;
-        break;
-      default:
-        throw new IllegalArgumentException(
-            "Unexpected value for config setting generate.database_type: '" + dbType
-                + "' . Valid values are file, in-memory, or none.");
-    }
-
     if (options.state == null) {
       options.state = DEFAULT_STATE;
     }
@@ -353,12 +333,6 @@ public class Generator implements RandomNumberGenerator {
     } catch (InterruptedException e) {
       System.out.println("Generator interrupted. Attempting to shut down associated thread pool.");
       threadPool.shutdownNow();
-    }
-
-    // have to store providers at the end to correctly capture utilization #s
-    // TODO - de-dup hospitals if using a file-based database?
-    if (database != null) {
-      database.store(Provider.getProviderList());
     }
 
     // Save a snapshot of the generated population using Java Serialization
@@ -813,10 +787,6 @@ public class Generator implements RandomNumberGenerator {
   public void recordPerson(Person person, int index) {
     long finishTime = person.lastUpdated + timestep;
     boolean isAlive = person.alive(finishTime);
-    
-    if (database != null) {
-      database.store(person);
-    }
 
     if (internalStore != null) {
       internalStore.add(person);
