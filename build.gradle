@@ -145,24 +145,6 @@ task graphviz(type: JavaExec) {
   main = "Graphviz"
 }
 
-
-// // hk: run individual files
-// task hktest(type: JavaExec) {
-//   group = "Execution"
-//   dependsOn build
-//   description 'Run Howard\'s tests'
-//   classpath sourceSets.main.runtimeClasspath
-//   // ext {
-//   //   hkMainClass = "org.mitre.synthea.export.ExportConfigClass"
-//   // }
-//   // application {
-//   //   mainClassName = hkMainClass
-//   // }
-//   // main = hkMainClass
-//   commandLine "java", "-classpath", sourceSets.main.runtimeClasspath.getAsPath(), org.mitre.synthea.export.ExportConfigClass
-// }
-
-
 task uberJar(type: Jar) {
     def versionFile = new File("$projectDir/src/main/resources/version.txt")
     def versionText = "N/A"

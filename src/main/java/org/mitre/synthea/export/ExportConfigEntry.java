@@ -91,23 +91,4 @@ public class ExportConfigEntry {
       ", prescription='" + getPrescription() + "'" +
       "}";
   }
-
-
-  public String toMinString( boolean printAll ) {
-
-    // String optStr = getIsOptional() ? "opt" : "req";
-    // String fixedValue = getFixedValue().isEmpty() ? "" : " fixedValue: " + getFixedValue();
-    // String sampledValue = getSampledValues().isEmpty() ? "" : " sampledValue: " + getSampledValues();
-    // String expression = getExpression().isEmpty() ? "" : " expression: " + getExpression();
-    // String retval;
-    // if ( getFixedValue().isEmpty() && getSampledValues().isEmpty() && getExpression().isEmpty() ) {
-    //   retval = String.format( "  %30s:%5s", getColumnName(), optStr );
-    // }
-    // else {
-    //   retval =  String.format( "  %30s:%5s => %5s %20s %s", getColumnName(), optStr, fixedValue, sampledValue, expression );
-    // }
-
-    // return retval;
-    return "...";
-  }
 }

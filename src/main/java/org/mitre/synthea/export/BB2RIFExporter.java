@@ -874,14 +874,18 @@ public class BB2RIFExporter implements Flushable {
   public class ExportDataBuilder {
     private ExportConfig exportConfig = null;
 
-    /** constructor
-     *  @param configFilePath the path to the configuration file
-     *  @param type the ExportConfig.ExportConfigType enum type
-     */
+    /** constructor */
     public ExportDataBuilder() {
       this.exportConfig = new ExportConfig( "src/main/resources/exporters/cms_field_values.tsv" );
     }
 
+    /** Sets the known field values based on exporter config TSV file
+     * @param type output type (one of the ExportConfigType types)
+     * @param fieldValues reference to a HashMap of field values in each of the exportXXXXX() functions
+     * @param getCellValueFunc reference to Function that retrieves the string value relevant to the current output type from the config file
+     * @param getFieldEnumFunc reference to Function that retrieves the enum relevant to the current output type
+     * @return
+     */
     HashMap setKnown( ExportConfig.ExportConfigType type, HashMap fieldValues, Function<ExportConfigEntry, String> getCellValueFunc, Function<String, AbstractFields> getFieldEnumFunc ) {
       fieldValues.clear();
       List<ExportConfigEntry> configs = this.exportConfig.getConfigItemsByType(type);
