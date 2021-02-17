@@ -16,8 +16,10 @@ bin/**
 # don't commit the autobuilt version file
 src/main/resources/version.txt
 
-# don't commit the map
+# don't commit the code maps
 src/main/resources/map.json
+src/main/resources/condition_code_map.json
+src/main/resources/medication_code_map.json
 
 # H2 database files
 **/*.mv.db
@@ -28,6 +30,3 @@ src/main/resources/map.json
 .vscode/launch.json
 .vscode/settings.json
 /build/
-
-src/main/resources/map.json
-
