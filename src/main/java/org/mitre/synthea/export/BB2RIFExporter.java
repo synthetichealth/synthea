@@ -124,7 +124,6 @@ public class BB2RIFExporter implements Flushable {
     if (beneficiary != null) {
       beneficiary.close();
     }
-
     if (beneficiaryHistory != null) {
       beneficiaryHistory.close();
     }
@@ -178,12 +177,13 @@ public class BB2RIFExporter implements Flushable {
    * @throws IOException if something goes wrong
    */
   public void export(Person person, long stopTime) throws IOException {
-    exportBeneficiary(person, stopTime, true);
-    exportBeneficiaryHistory(person, stopTime, true);
-    exportInpatient(person, stopTime, true);
-    exportOutpatient(person, stopTime, true );
-    // exportCarrier(person, stopTime, true );
-    //    exportPrescription(person, stopTime);
+    boolean useConfig = true;
+    exportBeneficiary(person, stopTime, useConfig);
+    exportBeneficiaryHistory(person, stopTime, useConfig);
+    exportInpatient(person, stopTime, useConfig);
+    exportOutpatient(person, stopTime, useConfig );
+    // exportCarrier(person, stopTime, useConfig );
+    //    exportPrescription(person, stopTime, useConfig);
   }
   
   /**

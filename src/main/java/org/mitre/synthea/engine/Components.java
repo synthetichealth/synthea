@@ -214,9 +214,10 @@ public abstract class Components {
     public void process(Person person) {
       // Check if chart configuration is provided to generate an image based on data
       // stored in the patient's attributes
+      ChartRenderer.Base64EncodedChart renderedChart = null;
       if (chart != null) {
         try {
-          data = ChartRenderer.drawChartAsBase64(person, chart);
+          renderedChart = ChartRenderer.drawChartAsBase64(person, chart);
         } catch (IOException ex) {
           throw new RuntimeException(ex);
         }
@@ -227,12 +228,9 @@ public abstract class Components {
         contentType = "image/png";
       }
       
-      if (data != null) {
-        // The ratio of output bytes to input bytes is 4:3 (33% overhead).
-        // Specifically, given an input of n bytes, the output will be 4*ceil(n/3)
-        // bytes long, including padding characters.
-        // See https://en.wikipedia.org/wiki/Base64
-        size = (int) (4 * Math.ceil(data.length() / 3.0));
+      if (renderedChart != null) {
+        data = renderedChart.getEncodedBytes();
+        size = renderedChart.getUnencodedLength();
         
         // Generate the SHA-1 hash if it hasn't been provided
         if (hash == null) {

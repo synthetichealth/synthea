@@ -92,7 +92,7 @@ public class CPCDSExporter {
       output.mkdirs();
       Path outputDirectory = output.toPath();
 
-      if (Boolean.parseBoolean(Config.get("exporter.cpcds.folder_per_run"))) {
+      if (Config.getAsBoolean("exporter.cpcds.folder_per_run")) {
         // we want a folder per run, so name it based on the timestamp
         String timestamp = ExportHelper.iso8601Timestamp(System.currentTimeMillis());
         String subfolderName = timestamp.replaceAll("\\W+", "_"); // make sure it's filename-safe
@@ -103,7 +103,7 @@ public class CPCDSExporter {
       File patientsFile = outputDirectory.resolve("CPCDS_Members.csv").toFile();
 
       boolean append = patientsFile.exists()
-              && Boolean.parseBoolean(Config.get("exporter.cpcds.append_mode"));
+              && Config.getAsBoolean("exporter.cpcds.append_mode");
 
       File coverageFile = outputDirectory.resolve("CPCDS_Coverages.csv").toFile();
       File claimsFile = outputDirectory.resolve("CPCDS_Claims.csv").toFile();
@@ -238,7 +238,7 @@ public class CPCDSExporter {
       CPCDSAttributes encounterAttributes = new CPCDSAttributes(encounter);
 
 
-      if (Boolean.parseBoolean(Config.get("exporter.cpcds.single_payer"))) {
+      if (Config.getAsBoolean("exporter.cpcds.single_payer")) {
         payerId = "b1c428d6-4f07-31e0-90f0-68ffa6ff8c76";
         payerName = clean(Config.get("single_payer.name"));
       } else {

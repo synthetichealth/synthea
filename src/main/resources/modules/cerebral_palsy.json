@@ -1,0 +1,1555 @@
+{
+  "name": "Cerebral Palsy",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "remarks": [
+        "Prevalence was higher for males than females (prevalence ratio 1.5:1; 95% CI 1.2–1.8), higher for black non‐Hispanic children than for white non‐Hispanic children (prevalence ratio 1.5:1; 95% CI 1.2–1.8), and similar for Hispanic children compared with White non‐Hispanic children (prevalence ratio 0.9:1; 95% CI 0.6–1.3). Ref: https://onlinelibrary.wiley.com/doi/full/10.1111/dmcn.12268"
+      ],
+      "direct_transition": "Age_and_Applicable_Time_Guard"
+    },
+    "Oral_Appliance_Fitting": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 234817001,
+          "display": "Insertion of oral appliance for the handicapped (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Pharmacologic_Interventions",
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Rx_Glycopyrrolate": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1437975,
+          "display": "Glycopyrrolate 1.5 MG Oral Tablet [Glycate]"
+        }
+      ],
+      "direct_transition": "End_Cerebral_Palsy_Encounter1",
+      "assign_to_attribute": "Rx_Glycopyrrolate",
+      "remarks": [
+        "Patient will receive prescription for Glycopyrrolate. No prevalence data is available to determine distribution probability. Assigned 40% of CP population based on TEP member expert feedback received which states this may be the currently most prescribed anticholinergic for sialorrhea . "
+      ],
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Rx_Scopolamine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 351875,
+          "display": "72 HR Scopolamine 0.0139 MG/HR Transdermal System [Transdermal Scop]"
+        }
+      ],
+      "direct_transition": "End_Cerebral_Palsy_Encounter1",
+      "remarks": [
+        "It has been suggested that anticholinergic drugs such as benztropine, glycopyrrolate and scopolamine could be useful in the treatment of drooling. However, to date it has not been shown that any one anticholinergic is more effective than another. Scopolamine skin patches for transdermal administration could be a useful alternative in the treatment of these patients, and a number of studies have detected a reduction in saliva secretion with this treatment, although efficacy varies between patients  Ref: Mato A, Limeres J, Tomas I, Munos M, Abuin C, Feijoo J,Diz P. Management of drooling in disabled patients withscopolamine patches. British Journal of Clinical Pharmacology2010;69:684-688."
+      ],
+      "assign_to_attribute": "Rx_Scopolamine",
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Rx_Benztropine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 885219,
+          "display": "Benztropine mesylate 0.5 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "End_Cerebral_Palsy_Encounter1",
+      "remarks": [
+        "A significant decrease in drooling during the benztropine condition relative to placebo was demonstrated and conservative response rates (calculated by deleting placebo responders), ranged up to 65 to 70 per cent. Ref: Camp-Bruno JA, Winsberg BG, Green-Parsons AP, Abrams JP.Efficacy of benztropine therapy for drooling. DevelopmentalMedicine and Child Neurology 1989;31:309-319."
+      ],
+      "assign_to_attribute": "Rx_Benztropine"
+    },
+    "Male": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Pre-Cerebral Palsy",
+          "distribution": 0.0034
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.9966
+        }
+      ]
+    },
+    "Female": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Pre-Cerebral Palsy",
+          "distribution": 0.003
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.997
+        }
+      ]
+    },
+    "Age_and_Applicable_Time_Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": "<=",
+        "quantity": 18,
+        "unit": "years",
+        "value": 0
+      },
+      "remarks": [
+        "Since 2000, MADDSP and research has focused on 8-year-old children for all developmental disabilities monitored by the CDC. Previous studies have shown that, by this age, most children with developmental disabilities had been identified for services. Ref: https://www.cdc.gov/ncbddd/developmentaldisabilities/maddsp.html"
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Male",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          }
+        }
+      ]
+    },
+    "Condition_Onset_Cerebral Palsy": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 128188000,
+          "display": "Cerebral palsy (disorder)"
+        }
+      ],
+      "direct_transition": "Cerebral_Palsy_Encounter1",
+      "target_encounter": "Cerebral_Palsy_Encounter1"
+    },
+    "Cerebral_Palsy_Encounter1": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 108219001,
+          "display": "Physician visit with evaluation AND/OR management service (procedure)"
+        }
+      ],
+      "reason": "Condition_Onset_Cerebral Palsy",
+      "direct_transition": "Check_Dystonia"
+    },
+    "Flexible _Fiberoptic_Endoscopic_Evaluation_of_Swallowing_FEES": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 311834001,
+          "display": "Fiberoptic Endoscopic Evaluation of Swallowing"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Posterior_Drooling",
+      "reason": "Condition_Onset_Cerebral Palsy"
+    },
+    "Posterior_Drooling": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "Posterior_Drooling",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 288959006,
+          "display": "Unable to swallow saliva (finding)"
+        }
+      ],
+      "direct_transition": "Medication_Review2"
+    },
+    "Medication_Review2": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 182836005,
+          "display": "Review of Medication (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Oral_Hygiene2",
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Oral_Hygiene2": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 717778001,
+          "display": "Mouth care (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Posture_Training2",
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Posture_Training2": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 229069003,
+          "display": "Posture training (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Pharmacologic_Interventions",
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Pharmacologic_Interventions": {
+      "type": "Simple",
+      "remarks": [
+        "It has been suggested that anticholinergic drugs such as benztropine, glycopyrrolate and scopolamine could be useful in the treatment of drooling. However, to date it has not been shown that any one anticholinergic is more effective than another. Ref: \tMato A, Limeres J, Tomás I, et al. Management of drooling in disabled patients with scopolamine patches. Br J Clin Pharmacol. 2010;69(6):684-688. doi:10.1111/j.1365-2125.2010.03659.x. Technical Expert Panel (TEP) Feedback provided in June 2020 suggested Glycopyrrolate is prescribed more often than other anticholinergics, so probabilities were set at 40% Glycopyrrolate and 20% for each of the others. ",
+        ""
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "asthma_condition",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "Rx_Glycopyrrolate",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Rx_Scopolamine",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Rx_Benztropine",
+              "distribution": 0.25
+            },
+            {
+              "transition": "Rx_Benzhexol_Hydrochloride",
+              "distribution": 0.25
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "asthma_condition",
+            "operator": "is nil"
+          },
+          "distributions": [
+            {
+              "transition": "Monitoring",
+              "distribution": 0.25
+            },
+            {
+              "transition": "Rx_Glycopyrrolate",
+              "distribution": 0.25
+            },
+            {
+              "transition": "Rx_Scopolamine",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Rx_Benztropine",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Rx_Benzhexol_Hydrochloride",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Rx_Atropine",
+              "distribution": 0.05
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Rx_Glycopyrrolate",
+              "distribution": 0.35
+            },
+            {
+              "transition": "Rx_Scopolamine",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Rx_Benztropine",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Rx_Benzhexol_Hydrochloride",
+              "distribution": 0.25
+            }
+          ],
+          "condition": {
+            "condition_type": "Symptom",
+            "symptom": "Cerebral_Palsy_Pneumonia",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Monitoring",
+              "distribution": 0.4
+            },
+            {
+              "transition": "Rx_Glycopyrrolate",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Rx_Benztropine",
+              "distribution": 0.1
+            },
+            {
+              "transition": "Rx_Benzhexol_Hydrochloride",
+              "distribution": 0.1
+            },
+            {
+              "transition": "Rx_Scopolamine",
+              "distribution": 0.2
+            }
+          ],
+          "condition": {
+            "condition_type": "Symptom",
+            "symptom": "Cerebral_Palsy_Pneumonia",
+            "operator": "==",
+            "value": 0
+          }
+        }
+      ]
+    },
+    "Behavioral_Therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 166001,
+          "display": "Behavioral therapy (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Pharmacologic_Interventions",
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Behavioral_and_Non_Pharmacologic_Interventions": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Oromotor_Exercises",
+          "distribution": 0.33
+        },
+        {
+          "transition": "Behavioral_Therapy",
+          "distribution": 0.33
+        },
+        {
+          "transition": "Oral_Appliance_Fitting",
+          "distribution": 0.33999999999999986
+        }
+      ]
+    },
+    "Oromotor_Exercises": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 311707005,
+          "display": "Oromotor Exercises"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Pharmacologic_Interventions",
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Salivagram_Radionuclide_Imaging": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 312421008,
+          "display": "Radionuclide Imaging"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Posterior_Drooling",
+      "reason": "Condition_Onset_Cerebral Palsy"
+    },
+    "Anterior_Drooling": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "Anterior_Drooling",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 62718007,
+          "display": "Dribbling from mouth (finding)"
+        }
+      ],
+      "direct_transition": "Medication_Review1"
+    },
+    "Medication_Review1": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 182836005,
+          "display": "Review of medication (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Oral_Hygiene1",
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Oral_Hygiene1": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 717778001,
+          "display": "Mouth care (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Posture_Training1",
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Posture_Training1": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 229069003,
+          "display": "Posture training (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Behavioral_and_Non_Pharmacologic_Interventions",
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "End_Cerebral_Palsy_Encounter1": {
+      "type": "EncounterEnd",
+      "direct_transition": "Living_with_CP"
+    },
+    "Surgical_Interventions": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Posterior_Drooling",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "Duct_Ligation_Surgery",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Submandibular_Gland_Excision_Surgery",
+              "distribution": 0.5
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Anterior_Drooling",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "Submandibular_Duct_Relocation_Surgery",
+              "distribution": 0.33
+            },
+            {
+              "transition": "Submandibular_Gland_Excision_Surgery",
+              "distribution": 0.33
+            },
+            {
+              "transition": "Duct_Ligation_Surgery",
+              "distribution": 0.33999999999999986
+            }
+          ]
+        }
+      ]
+    },
+    "Submandibular_Duct_Relocation_Surgery": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 173521004,
+          "display": "Transposition of submandibular duct (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Surgical_Encounter2",
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Submandibular_Gland_Excision_Surgery": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 7227006,
+          "display": "Excision of submandibular gland (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Surgical_Encounter2",
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Duct_Ligation_Surgery": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 302351005,
+          "display": "Ligation of salivary duct (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Surgical_Encounter2",
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Rx_Benzhexol_Hydrochloride": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 905269,
+          "display": "Trihexyphenidyl Hydrochloride 2 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "End_Cerebral_Palsy_Encounter1",
+      "assign_to_attribute": "Rx_Benzhexol_Hydrochloride",
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Cerebral_Palsy_Sialorrhea": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 53827007,
+          "display": "Excessive salivation (disorder)"
+        }
+      ],
+      "target_encounter": "Cerebral_Palsy_Encounter1",
+      "distributed_transition": [
+        {
+          "distribution": 0.05,
+          "transition": "Videofluoroscopic_Swallowing_Study_VFSS"
+        },
+        {
+          "transition": "Anterior_Drooling",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Salivagram_Radionuclide_Imaging",
+          "distribution": 0.05
+        },
+        {
+          "transition": "Flexible _Fiberoptic_Endoscopic_Evaluation_of_Swallowing_FEES",
+          "distribution": 0.05
+        },
+        {
+          "transition": "Posterior_Drooling",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Anterior_and_Posterior_Drooling",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "End_Followup_Encounter": {
+      "type": "EncounterEnd",
+      "distributed_transition": [
+        {
+          "transition": "Living_with_CP",
+          "distribution": 0.8
+        },
+        {
+          "transition": "Delay_Surgical Encounter",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Followup_Cerebral_Palsy_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 390906007,
+          "display": "Follow-up encounter (procedure)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Constipation",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 905269,
+                "display": "trihexyphenidyl hydrochloride 2 MG Oral Tablet"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Urinary_Retention",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 351875,
+                "display": "72 HR scopolamine 0.0139 MG/HR Transdermal System [Transderm Scop]"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Constipation",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 885219,
+                "display": "benztropine mesylate 0.5 MG Oral Tablet"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Monitoring2",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Monitoring"
+          }
+        }
+      ]
+    },
+    "Delay_Surgical Encounter": {
+      "type": "Delay",
+      "range": {
+        "low": 7,
+        "high": 10,
+        "unit": "days"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Living_with_CP",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Submandibular_Duct_Relocation_Surgery"
+          }
+        },
+        {
+          "transition": "Living_with_CP",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Submandibular_Gland_Excision_Surgery"
+          }
+        },
+        {
+          "transition": "Living_with_CP",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Duct_Ligation_Surgery"
+          }
+        },
+        {
+          "transition": "Surgical_Encounter2",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 4,
+            "unit": "years"
+          }
+        },
+        {
+          "transition": "Surgical_Encounter1",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 0,
+            "unit": "years"
+          }
+        },
+        {
+          "transition": "Living_with_CP",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Monitoring2"
+          }
+        },
+        {
+          "transition": "Living_with_CP",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Monitoring"
+          }
+        }
+      ]
+    },
+    "Urinary_Retention": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "Urinary Retention",
+      "target_encounter": "Followup_Cerebral_Palsy_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 267064002,
+          "display": "Retention of urine (disorder)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "End_Rx_Scopolamine",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 351875,
+                "display": "72 HR scopolamine 0.0139 MG/HR Transdermal System"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "Constipation": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "Constipation",
+      "target_encounter": "Followup_Cerebral_Palsy_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 14760008,
+          "display": "Constipation (finding)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "End_Rx_Benzhexol",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 905269,
+                "display": "trihexyphenidyl hydrochloride 2 MG Oral Tablet"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "End_ Rx_Benztropine",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 885219,
+                "display": "benztropine mesylate 0.5 MG Oral Tablet"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "Care_Plan_Constipation": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 389082000,
+          "display": "Constipation Care (regime/therapy)"
+        }
+      ],
+      "assign_to_attribute": "Care_Plan_Constipation",
+      "conditional_transition": [
+        {
+          "transition": "Rx_Glycopyrrolate2",
+          "condition": {
+            "condition_type": "Not",
+            "condition": {
+              "condition_type": "Active Medication",
+              "codes": [
+                {
+                  "system": "RxNorm",
+                  "code": 1437975,
+                  "display": "glycopyrrolate 1.5 MG Oral Tablet [Glycate]"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "transition": "Care_Plan_Constipation_End",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 1437975,
+                "display": "glycopyrrolate 1.5 MG Oral Tablet [Glycate]"
+              }
+            ]
+          }
+        }
+      ],
+      "reason": "Constipation"
+    },
+    "Care_Plan_Urinary_Retention": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 386490009,
+          "display": "Urinary retention care (regime/therapy)"
+        }
+      ],
+      "assign_to_attribute": "Care_Plan_Urinary_Retention",
+      "conditional_transition": [
+        {
+          "transition": "Care_Plan_Urinary Retention_End",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 1437975,
+                "display": "glycopyrrolate 1.5 MG Oral Tablet [Glycate]"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Rx_Glycopyrrolate2",
+          "condition": {
+            "condition_type": "Not",
+            "condition": {
+              "condition_type": "Active Medication",
+              "codes": [
+                {
+                  "system": "RxNorm",
+                  "code": 1437975,
+                  "display": "glycopyrrolate 1.5 MG Oral Tablet [Glycate]"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "reason": "Urinary_Retention"
+    },
+    "Rx_Glycopyrrolate2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 143975,
+          "display": "glycopyrrolate 1.5 MG Oral Tablet [Glycate]"
+        }
+      ],
+      "reason": "Cerebral_Palsy_Sialorrhea",
+      "conditional_transition": [
+        {
+          "transition": "Care_Plan_Urinary Retention_End",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Care_Plan_Urinary_Retention",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Care_Plan_Constipation_End",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Care_Plan_Constipation",
+            "operator": "is not nil"
+          }
+        }
+      ],
+      "chronic": false
+    },
+    "Surgical_Encounter1": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 40274000,
+          "display": "General outpatient clinic admission (procedure)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Rx_Botulinum_Toxin_A",
+          "distribution": 0.75
+        },
+        {
+          "transition": "Rx_Botulinum_Toxin_B",
+          "distribution": 0.25
+        }
+      ],
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "End_Surgical_Encounter1": {
+      "type": "EncounterEnd",
+      "direct_transition": "Living_with_CP"
+    },
+    "Postoperative_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Cerebral_Palsy_Sialorrhea",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183646003,
+          "display": "Postoperative visit (finding)"
+        }
+      ],
+      "direct_transition": "End_Postoperative_Visit"
+    },
+    "Delay_Postoperative Visit": {
+      "type": "Delay",
+      "direct_transition": "Postoperative_Visit",
+      "range": {
+        "low": 2,
+        "high": 7,
+        "unit": "days"
+      }
+    },
+    "Care_Plan_Urinary Retention_End": {
+      "type": "CarePlanEnd",
+      "direct_transition": "End_Followup_Encounter",
+      "careplan": "Care_Plan_Urinary_Retention"
+    },
+    "Care_Plan_Constipation_End": {
+      "type": "CarePlanEnd",
+      "direct_transition": "End_Followup_Encounter",
+      "careplan": "Care_Plan_Constipation"
+    },
+    "End_Rx_Benzhexol": {
+      "type": "MedicationEnd",
+      "direct_transition": "Care_Plan_Constipation",
+      "medication_order": "Rx_Benzhexol_Hydrochloride"
+    },
+    "End_ Rx_Benztropine": {
+      "type": "MedicationEnd",
+      "direct_transition": "Care_Plan_Constipation",
+      "medication_order": "Rx_Benztropine"
+    },
+    "End_Rx_Scopolamine": {
+      "type": "MedicationEnd",
+      "medication_order": "Rx_Scopolamine",
+      "direct_transition": "Care_Plan_Urinary_Retention"
+    },
+    "Cerebral_Palsy_Dystonia": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Cerebral_Palsy_Encounter1",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 15802004,
+          "display": "Dystonia (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Pain",
+      "remarks": [
+        "In around one in six cases, cerebral palsy causes involuntary muscle spasms and unwanted movement - this is described as dystonic cerebral palsy (or alternatively dyskinetic or choreoathetoid cerebral palsy). Ref: https://www.dystonia.org.uk/dystonic-cerebral-palsy"
+      ]
+    },
+    "Cerebral_Palsy_Pain": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Cerebral_Palsy_Encounter1",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 22253000,
+          "display": "Pain (finding)"
+        }
+      ],
+      "direct_transition": "Check_Central_Hypotonia",
+      "remarks": [
+        "We included 2777 children (57% boys) at a median age of 7 years; 32.4% reported pain, with significantly more girls than boys experiencing pain  Ref: Alriksson-Schmidt A, Hägglund G. Pain in children and adolescents with cerebral palsy: a population-based registry study. Acta Paediatr. 2016;105(6):665‐670. doi:10.1111/apa.13368"
+      ]
+    },
+    "Cerebral_Palsy_Central_Hypotonia": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Cerebral_Palsy_Encounter1",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 398152000,
+          "display": "Poor muscle tone (finding)"
+        }
+      ],
+      "direct_transition": "Check_Spasticity",
+      "remarks": [
+        "Hypotonic CP is marked by extremely loose and floppy muscle tone.  This type of CP accounts for less than half of all cases. Ref: https://www.birthinjuryguide.org/cerebral-palsy/types/hypertonic-and-hypotonic-cerebral-palsy/"
+      ]
+    },
+    "Cerebral_Palsy_Spasticity": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Cerebral_Palsy_Encounter1",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 221360009,
+          "display": "Spasticity (finding)"
+        }
+      ],
+      "direct_transition": "Check_Osteoporosis",
+      "remarks": [
+        "Most (77.4%) of the children identified with CP had spastic CP. Ref: https://www.cdc.gov/ncbddd/cp/data.html"
+      ]
+    },
+    "Cerebral_Palsy_Osteoporosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Cerebral_Palsy_Encounter1",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 64859006,
+          "display": "Osteoporosis (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Epilepsy",
+      "remarks": [
+        "Low bone mineral density is found in more than 50% of adults with a variety of disabilities, including CP. Numbers of children with osteoporosis from CP is still being evaluated, but preventative measures are recommended due to the high number of adults with CP and Osteoporosis. Ref: https://www.ncbi.nlm.nih.gov/pubmed/19740209. "
+      ]
+    },
+    "Cerebral_Palsy_Epilepsy": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Cerebral_Palsy_Encounter1",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 84757009,
+          "display": "Epilepsy (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Intellectual_Disability",
+      "remarks": [
+        "As many as half of all children with CP have one or more seizures. Children with both cerebral palsy and epilepsy are more likely to have intellectual disability. Ref: https://www.ninds.nih.gov/Disorders/Patient-Caregiver-Education/Hope-Through-Research/Cerebral-Palsy-Hope-Through-Research"
+      ]
+    },
+    "Cerebral_Palsy_Intellectual_Disability": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Cerebral_Palsy_Encounter1",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 110359009,
+          "display": "Intellectual disability (disorder)"
+        }
+      ],
+      "remarks": [
+        "1 in 2 people with cerebral palsy have an intellectual disability. 1 in 5 people have a moderate to severe intellectual disability. Generally, the greater the level of a person’s physical impairment, the more likely it is that they will have an intellectual disability. However, there are people who have a profound level of physical impairment, who do not have an intellectual disability. Conversely, there can be others with a mild physical impairment who have an intellectual disability. Ref: https://cerebralpalsy.org.au/our-research/about-cerebral-palsy/what-is-cerebral-palsy/how-cerebral-palsy-affects-people/#:~:text=1%20in%202%20people%20with,will%20have%20an%20intellectual%20disability."
+      ],
+      "direct_transition": "Check_GERD"
+    },
+    "Cerebral_Palsy_GERD": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Cerebral_Palsy_Encounter1",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 235595009,
+          "display": "Gastroesophageal reflux disease (disorder)"
+        }
+      ],
+      "direct_transition": "Hip_Surveillance",
+      "remarks": [
+        "Gastroesophageal reflux (GERD) is an involuntary passage of the gastric contents into the esophagus. It has been found in a higher prevalence (up to 75 percent) in cerebral palsy patients.  ",
+        "Reference: https://pubmed.ncbi.nlm.nih.gov/12886578/#:~:text=Gastroesophageal%20reflux%20(GER)%20is%20an,and%20can%20cause%20dental%20erosion."
+      ]
+    },
+    "Surgical_Encounter2": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Cerebral_Palsy_Sialorrhea",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 371883000,
+          "display": "Outpatient Procedure (procedure)"
+        }
+      ],
+      "direct_transition": "Surgical_Interventions"
+    },
+    "End_Surgical_Encounter2": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_Postoperative Visit"
+    },
+    "End_Postoperative_Visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Living_with_CP"
+    },
+    "Botulinum_Toxin_B_Injection": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 404909007,
+          "display": "Injection of botulinum toxin (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Rx_Botulinum_Toxin_B",
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Botulinum_Toxin_A_Injection": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 404909007,
+          "display": "Injection of botulinum toxin (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Rx_Botulinum_Toxin_A",
+      "remarks": [
+        "Botulinum toxin A (BoNT-A) is the most common neurotoxin used to treat drooling. Some researchers have also used Botulinum Toxin B (BoNT-B) (Berweck 2007; Witherow 2008). Botulinum toxins act by inhibiting the release of acetylcholine at the neuromuscular junction and reducing the amount of saliva produced by the salivary glands.  Ref: Walshe  M, Smith  M, Pennington  L. Interventions for drooling in children with cerebral palsy. Cochrane Database of Systematic Reviews 2012, Issue 11. Art. No.: CD008624. DOI: 10.1002/14651858.CD008624.pub3"
+      ],
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Rx_Botulinum_Toxin_A": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1789958,
+          "display": "Dysport botulinum toxin A 300 UNT Injection"
+        }
+      ],
+      "direct_transition": "Botulinum_Toxin_A_Injection",
+      "administration": true,
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Rx_Botulinum_Toxin_B": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 860182,
+          "display": "rimabotulinumtoxinB 5000 UNT/ML [Myobloc]"
+        }
+      ],
+      "direct_transition": "Botulinum_Toxin_B_Injection",
+      "administration": true,
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Living_with_CP": {
+      "type": "Delay",
+      "direct_transition": "Followup_Cerebral_Palsy_Encounter",
+      "range": {
+        "low": 3,
+        "high": 12,
+        "unit": "months"
+      }
+    },
+    "Anterior_and_Posterior_Drooling": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "Anterior_Drooling",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 62718007,
+          "display": "Dribbling from mouth (finding)"
+        }
+      ],
+      "direct_transition": "Anterior_and_Posterior_Drooling2"
+    },
+    "Anterior_and_Posterior_Drooling2": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "Posterior_Drooling",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 288959006,
+          "display": "Unable to swallow saliva (finding)"
+        }
+      ],
+      "direct_transition": "Medication_Review1"
+    },
+    "Pre-Cerebral Palsy": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "direct_transition": "Condition_Onset_Cerebral Palsy",
+      "remarks": [
+        "The delay is set to one month so the initial encounter does not  collide with other module encounters. ",
+        "",
+        ""
+      ]
+    },
+    "Videofluoroscopic_Swallowing_Study_VFSS": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 241149003,
+          "display": "Videofluoroscopy swallow (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Posterior_Drooling",
+      "reason": "Condition_Onset_Cerebral Palsy"
+    },
+    "Monitoring": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 182777000,
+          "display": "Monitoring of patient (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Living_with_CP"
+    },
+    "Cerebral_Palsy_Pneumonia": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Cerebral_Palsy_Encounter1",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 233604007,
+          "display": "Pneumonia (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Sialorrhea",
+      "remarks": [
+        "Ref: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5297954/#:~:text=In%20a%20survey%20performed%20in,%25%20had%20wound%2Drelated%20issues."
+      ]
+    },
+    "Rx_Atropine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1190766,
+          "display": "atropine sulfate 0.31 MG/ML Ophthalmic Solution (used Sublingual)"
+        }
+      ],
+      "direct_transition": "End_Cerebral_Palsy_Encounter1",
+      "remarks": [
+        "In conclusion, intraoral sublingual administration of atropine eyedrops decreased drooling and reduced salivary secretion rate in children with disabilities. A majority of the parents considered the method to be efficient but sometimes not practical. No irreversible side effects were noted. Ref: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5324542/ "
+      ],
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "Monitoring2": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 182777000,
+          "display": "Monitoring of patient (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Followup_Encounter",
+      "reason": "Cerebral_Palsy_Sialorrhea"
+    },
+    "End_Rx_Botulinum_Toxin_A": {
+      "type": "MedicationEnd",
+      "direct_transition": "End_Surgical_Encounter1",
+      "medication_order": "Rx_Botulinum_Toxin_A"
+    },
+    "End_Rx_Botulinum_Toxin_B": {
+      "type": "MedicationEnd",
+      "direct_transition": "End_Surgical_Encounter1",
+      "medication_order": "Rx_Botulinum_Toxin_B"
+    },
+    "Check_Dystonia": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Cerebral_Palsy_Dystonia",
+          "distribution": 0.166
+        },
+        {
+          "transition": "Check_Pain",
+          "distribution": 0.8340000000000001
+        }
+      ]
+    },
+    "Check_Pain": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Cerebral_Palsy_Pain",
+          "distribution": 0.324
+        },
+        {
+          "transition": "Check_Central_Hypotonia",
+          "distribution": 0.6759999999999999
+        }
+      ]
+    },
+    "Check_Central_Hypotonia": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Cerebral_Palsy_Central_Hypotonia",
+          "distribution": 0.45
+        },
+        {
+          "transition": "Check_Spasticity",
+          "distribution": 0.55
+        }
+      ]
+    },
+    "Check_Spasticity": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Cerebral_Palsy_Spasticity",
+          "distribution": 0.774
+        },
+        {
+          "transition": "Check_Osteoporosis",
+          "distribution": 0.22599999999999998
+        }
+      ]
+    },
+    "Check_Osteoporosis": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Cerebral_Palsy_Osteoporosis",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Check_Epilepsy",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Check_Epilepsy": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Cerebral_Palsy_Epilepsy",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Check_Intellectual_Disability",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Check_Intellectual_Disability": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Cerebral_Palsy_Intellectual_Disability",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Check_GERD",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Check_GERD": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Cerebral_Palsy_GERD",
+          "distribution": 0.75
+        },
+        {
+          "transition": "Hip_Surveillance",
+          "distribution": 0.25
+        }
+      ]
+    },
+    "Hip_Surveillance": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Cerebral_Palsy_Hip_Dislocation",
+          "distribution": 0.175
+        },
+        {
+          "transition": "Check_Pneumonia",
+          "distribution": 0.825
+        }
+      ]
+    },
+    "Cerebral_Palsy_Hip_Dislocation": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Cerebral_Palsy_Encounter1",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 157265008,
+          "display": "Dislocation of hip joint (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Pneumonia",
+      "remarks": [
+        "The risk of progression to hip dislocation is 15–20% in the total population of children with CP. Ref: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2194677/ "
+      ]
+    },
+    "Check_Pneumonia": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Cerebral_Palsy_Pneumonia",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Check_Sialorrhea",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Check_Sialorrhea": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Cerebral_Palsy_Sialorrhea",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.6000000000000001
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "remarks": [
+    "Module Title: Treatment of Sialorrhea in Cerebral Palsy",
+    "Version Number: 1.0",
+    "Last Updated: 10/28/2020",
+    "Module Steward: ONC",
+    "Module Developer: Clinovations Government + Health",
+    "Description: This module models the treatment of Sialorrhea in Cerebral Palsy in patients age <=18 years of age. It is based on the American Academy for Cerebral Palsy and Developmental Medicine (AACPDM) clinical care pathway for Sialorrhea. This guideline provides recommendations for treatment of Sialorrhea in outpatient settings for the pediatric patient with cerebral palsy. ",
+    "While this module contains other conditions, which may occur in the cerebral palsy patient such as dystonia, pain, spasticity, central hypotonia and osteoporosis, treatments for these conditions is not yet modeled in the module. ",
+    "",
+    "Reference: AACPDM Clinical Care Pathway for Sialorrhea in Cerebral Palsy  (September 2017, AACPDM Care Pathways, for review 2020) https://www.aacpdm.org/publications/care-pathways/sialorrhea",
+    "",
+    ""
+  ]
+}

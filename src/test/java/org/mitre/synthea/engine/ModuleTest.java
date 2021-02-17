@@ -200,7 +200,8 @@ public class ModuleTest {
       // Should never get here
       fail("Didn't throw exception when loading module with version from the future");
     } catch (IllegalStateException ise) {
-      assertTrue(ise.getMessage().startsWith("Allergies... FROM THE FUTURE!!!! Module specifies GMF version"));
+      assertTrue(ise.getMessage()
+          .startsWith("Allergies... FROM THE FUTURE!!!! Module specifies GMF version"));
     }
   }
 

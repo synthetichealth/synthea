@@ -1,2 +1,11 @@
 CODE,MIN,MODE,MAX,COMMENTS
 183452005,75,75,75,"Encounter for 'checkup', Encounter for symptom, Encounter for problem, etc"
+185317003,75,75,75,Telephone encounter (procedure) - Prior costs update source
+185345009,75,75,75,Encounter for symptom - Prior costs update source
+185347001,75,75,75,Encounter for problem - Prior costs update source
+185349003,75,75,75,Encounter for 'check-up' - Prior costs update source
+185389009,75,75,75,Follow-up visit (encounter) - Prior costs update source
+183452005,75,75,75,Encounter Inpatient - Prior costs update source
+270427003,75,75,75,Patient-initiated encounter - Prior costs update source
+390906007,75,75,75,Follow-Up Encounter - Prior costs update source
+316744009,75,75,75,Office Visit - Prior costs update source

@@ -62,6 +62,7 @@ public class CCDAExporterTest {
       }
     }
 
-    assertEquals(0, validationErrors.size());
+    assertEquals("Validation of exported CCDA failed: "
+        + String.join("|", validationErrors), 0, validationErrors.size());
   }
 }

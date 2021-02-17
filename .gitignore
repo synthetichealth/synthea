@@ -11,6 +11,7 @@ bin/**
 /bin/
 
 /output/
+/out/
 
 # don't commit the autobuilt version file
 src/main/resources/version.txt
@@ -30,3 +31,4 @@ src/main/resources/map.json
 
 # VS Code plugin files
 .history
+src/main/resources/map.json

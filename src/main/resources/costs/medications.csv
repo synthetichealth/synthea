@@ -113,3 +113,81 @@ CODE,MIN,MODE,MAX,COMMENTS
 1804799,6000,6400,6800,"Alteplase 100 MG Injection -- not found in data, used https://www.managedcaremag.com/news/cost-clot-busting-drug-alteplase-outpaces-reimbursement"
 855332,1.5,15,250,Warfarin Sodium 5 MG Oral Tablet
 833036,15,65,150,"Captopril 25 MG Oral Tablet -- high variability, ranges 15-150, avg ~65"
+1114085,6.45,6.45,6.45,100 ML zoledronic acid 0.04 MG/ML Injection - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+1116758,64.76,232.4,302,chloroquine phosphate 500 MG Oral Tablet - https://www.goodrx.com/aralen?kw=price&utm_source=bing&utm_medium=cpc&utm_term=aralen|p&utm_campaign=aralen&utm_content=Ad-Group_General&msclkid=b1c17c16e7cf11ec047d232b92825621
+1234995,0.78,1.25,2.94,Rocuronium bromide 10 MG/ML Injectable Solution - https://www.drugs.com/price-guide/rocuronium
+1243052,445.66,445.66,445.66,Kalydeco 150 MG Oral Tablet - https://www.drugs.com/price-guide/kalydeco
+1601380,619.36,619.36,619.36,palbociclib 100 MG Oral Capsule - https://www.drugs.com/price-guide/ibrance
+1656318,4.58,4.58,4.58,Cefotaxime 2000 MG Injection - https://www.drugs.com/price-guide/cefotaxime
+1657981,120.84,120.84,120.84,20 ML tocilizumab 20 MG/ML Injection - https://www.drugs.com/price-guide/actemra
+1658084,3302.79,3302.79,3302.79,ado-trastuzumab emtansine 100 MG Injection - https://www.drugs.com/price-guide/kadcyla
+1659149,6.93,8.09,13.86,piperacillin 4000 MG / tazobactam 500 MG Injection - https://www.drugs.com/price-guide/piperacillin-tazobactam
+1659263,1.02,1.76,2.75,1 ML heparin sodium  porcine 5000 UNT/ML Injection - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+1665227,0.01,0.01,0.01,20 ML Ciprofloxacin 10 MG/ML Injection - https://data.medicaid.gov/d/a4y5-998d/visualization
+1719286,0.08,0.09,0.3,10 ML Furosemide 10 MG/ML Injection - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+1723208,2,3.08,4.16,10 ML Alfentanil 0.5 MG/ML Injection - https://www.drugs.com/price-guide/alfentanil
+1729584,108.99,108.99,108.99,"remifentanil 2 MG Injection - https://www.drugs.com/price-guide/remifentanil#:~:text=Remifentanil%20Prices%20This%20remifentanil%20price%20guide%20is%20based,for%20injection%2C%20depending%20on%20the%20pharmacy%20you%20visit."
+1732136,0.99,1.76,2.05,1 ML Morphine Sulfate 5 MG/ML Injection - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+1732186,1.72,2,2.34,100 ML Epirubicin Hydrochloride 2 MG/ML Injection - https://www.drugs.com/price-guide/epirubicin
+1734919,454,454,454,Cyclophosphamide 1000 MG Injection - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+1735006,0.36,0.511,0.61,10 ML Fentanyl 0.05 MG/ML Injection - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+1737449,2.11,2.66,3.22,10 ML Pamidronate Disodium 3 MG/ML Injection - https://www.drugs.com/price-guide/pamidronate
+1740467,0.18,0.33,0.43,2 ML Ondansetron 2 MG/ML Injection - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+1790099,2.63,2.98,3.13,10 ML Doxorubicin Hydrochloride 2 MG/ML Injection - https://www.drugs.com/price-guide/doxorubicin
+1791701,0.39,0.45,0.51,"10 ML Fluorouracil 50 MG/ML Injection - https://www.drugs.com/price-guide/fluorouracil#:~:text=Fluorouracil%20Prices.%20This%20fluorouracil%20price%20guide%20is%20based,only%20and%20are%20not%20valid%20with%20insurance%20plans."
+1807513,4.88,6.9,9.2,vancomycin 1000 MG Injection - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+1808217,0.27,0.27,0.27,"100 ML Propofol 10 MG/ML Injection - https://www.drugs.com/price-guide/propofol#:~:text=Brand%20names%20for%20propofol%20include%20Diprivan.%20Propofol%20Prices.,100%20milliliters%2C%20depending%20on%20the%20pharmacy%20you%20visit."
+1809104,4.72,5.22,5.84,5 ML SUFentanil 0.05 MG/ML Injection - https://www.drugs.com/price-guide/sufentanil
+1860480,27.98,31.11,34.45,1 ML DOCEtaxel 20 MG/ML Injection - https://www.drugs.com/price-guide/docetaxel
+1873983,219.61,245.5,263.81,ribociclib 200 MG Oral Tablet - https://www.drugs.com/price-guide/kisqali
+1940648,96.88,96.88,96.88,neratinib 40 MG Oral Tablet - https://www.drugs.com/price-guide/nerlynx
+1946840,231.42,231.42,231.42,Verzenio 100 MG Oral Tablet - https://www.drugs.com/price-guide/verzenio
+198031,1.69,2.35,3.02,24hr nicotine transdermal patch - https://www.drugs.com/price-guide/nicotine
+198240,0.19,0.21,0.22,Tamoxifen 10 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+198440,0.02,0.05,0.07,Acetaminophen 500 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+199224,0.12,0.17,0.21,anastrozole 1 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+200064,0.13,0.17,0.2,letrozole 2.5 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+2001499,0.33,3.6,7.76,Vitamin B 12 5 MG/ML Injectable Solution (cyanocobalamin) - https://data.medicaid.gov/d/a4y5-998d/visualization
+200243,0.44,0.45,0.46,"sevoflurane 1000 MG/ML Inhalant Solution - https://www.drugs.com/price-guide/sevoflurane#:~:text=Sevoflurane%20Prices%20This%20sevoflurane%20price%20guide%20is%20based,250%20milliliters%2C%20depending%20on%20the%20pharmacy%20you%20visit."
+2047241,79.14,79.14,79.14,baricitinib 2 MG Oral Tablet - https://www.drugs.com/price-guide/olumiant
+205532,30.65,39.5,44.79,Pulmozyme (Dornase Alfa) - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+205923,57.33,58.5,60.2,1 ML Epoetin Alfa 4000 UNT/ML Injection [Epogen] - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+2103182,2.36,12.45,31.46,"1 ML Vasopressin (USP) 20 UNT/ML Injection - https://www.drugs.com/price-guide/vasopressin#:~:text=Vasopressin%20Prices.%20This%20vasopressin%20price%20guide%20is%20based,only%20and%20are%20not%20valid%20with%20insurance%20plans."
+2119714,978.09,978.09,978.09,5 ML hyaluronidase-oysk 2000 UNT/ML / trastuzumab 120 MG/ML Injection - https://www.drugs.com/price-guide/herceptin-hylecta
+2284960,7.5,7.5,7.5,remdesivir 100 MG Injection - https://www.drugs.com/price-guide/remdesivir
+238100,0.57,0.77,1.9,Lorazepam 2 MG/ML Injectable Solution - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+242969,2.08,3.45,4.22,"4 ML Norepinephrine 1 MG/ML Injection - https://www.drugs.com/price-guide/norepinephrine#:~:text=The%20cost%20for%20norepinephrine%20intravenous%20solution%20%281%20mg%2FmL%29,only%20and%20are%20not%20valid%20with%20insurance%20plans."
+245314,0.45,1.25,2.1,Albuterol 5 MG/ML Inhalation Solution - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+308136,0.02,0.02,0.03,amLODIPine 2.5 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+308460,0.37,0.5,0.69,Azithromycin 250 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+309845,0.09,0.1,0.12,Diazepam 5 MG/ML Injectable Solution - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+310261,1.88,6,10.22,exemestane 25 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+310325,0.01,0.01,0.01,ferrous sulfate 325 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+310385,0.02,0.03,0.04,FLUoxetine 20 MG Oral Capsule - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+310798,0.01,0.01,0.02,Hydrochlorothiazide 25 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+311700,0.22,0.22,0.22,Midazolam 1 MG/ML Injectable Solution - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+312938,0.05,0.08,0.08,Sertraline 100 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+313002,0.05,0.06,0.08,Sodium Chloride 9 MG/ML Injectable Solution - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+313572,17.5,28.3,46.28,Vancomycin 50 MG/ML Injectable Solution - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+313988,0.01,0.32,0.04,Furosemide 40 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+314076,0.02,0.02,0.02,lisinopril 10 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+314231,0.02,0.03,0.03,Simvastatin 10 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+360110,17.02,17.88,17.88,Sirolimus 2 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+542347,0.14,0.2,0.23,"Isoflurane 999 MG/ML Inhalant Solution - https://www.drugs.com/price-guide/isoflurane#:~:text=Brand%20names%20for%20isoflurane%20include%20Forane%2C%20and%20Terrell.,100%20milliliters%2C%20depending%20on%20the%20pharmacy%20you%20visit."
+562366,0.01,0.45,0.7,desflurane 1000 MG/ML Inhalation Solution - https://www.drugs.com/price-guide/suprane
+597195,0.99,0.99,0.99,Carboplatin 10 MG/ML Injectable Solution - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+597730,1.17,2.34,2.34,lopinavir 200 MG / Ritonavir 50 MG Oral Tablet - https://www.drugs.com/price-guide/lopinavir-ritonavir
+672149,58.2,58.2,58.2,lapatinib 250 MG Oral Tablet - https://www.drugs.com/price-guide/tykerb
+727711,136.25,192.31,192.31,0.67 ML anakinra 149 MG/ML Prefilled Syringe (Kineret) - https://data.medicaid.gov/d/a4y5-998d/visualization
+727762,203.39,203.39,203.39,5 ML fulvestrant 50 MG/ML Prefilled Syringe - https://www.drugs.com/price-guide/faslodex
+752899,633.2,633.2,633.2,0.25 ML Leuprolide Acetate 30 MG/ML Prefilled Syringe - https://www.drugs.com/price-guide/leuprolide
+854228,9.1,10.88,38.57,0.3 ML Enoxaparin sodium 100 MG/ML Prefilled Syringe - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+854235,9.1,10.88,38.57,0.4 ML Enoxaparin sodium 100 MG/ML Prefilled Syringe - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+854252,11.56,13.07,60.71,1 ML Enoxaparin sodium 150 MG/ML Prefilled Syringe - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+856980,0.03,0.49,1.69,Acetaminophen/Hydrocodone - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+866414,0.2,0.2,1.73,24 HR metoprolol succinate 100 MG Extended Release Oral Tablet [Toprol] - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+883826,1.63,2.33,4.03,Tranexamic Acid 650 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+966222,0.25,0.28,0.43,Levothyroxine Sodium 0.075 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+979092,0.1,0.28,2.62,Hydroxychloroquine Sulfate 200 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+979485,0.03,0.08,0.09,Losartan Potassium 25 MG Oral Tablet - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
+993452,816.12,1014.45,1237.68,1 ML denosumab 60 MG/ML Prefilled Syringe (Prolia) - https://data.medicaid.gov/d/a4y5-998d/visualization

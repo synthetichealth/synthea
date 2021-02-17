@@ -1278,7 +1278,7 @@
           ]
         }
       ],
-      "direct_transition": "Broken_Bone_Immobilization"
+      "direct_transition": "Crutches"
     },
     "Broken_Rib": {
       "type": "ConditionOnset",
@@ -1637,7 +1637,7 @@
           "display": "Encounter for 'check-up'"
         }
       ],
-      "direct_transition": "End_Broken_Bone_Injury"
+      "direct_transition": "End Crutches"
     },
     "End_Broken_Bone_Injury": {
       "type": "ConditionEnd",
@@ -2746,6 +2746,26 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Crutches": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 363753007,
+        "display": "Crutches (physical object)"
+      },
+      "direct_transition": "Broken_Bone_Immobilization"
+    },
+    "End Crutches": {
+      "type": "DeviceEnd",
+      "direct_transition": "End_Broken_Bone_Injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 363753007,
+          "display": "Crutches (physical object)"
+        }
+      ]
     }
   },
   "gmf_version": 1

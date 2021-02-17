@@ -26,8 +26,6 @@ import org.mitre.synthea.world.agents.Provider;
 
 public abstract class FhirPractitionerExporterStu3 {
 
-  private static final FhirContext FHIR_CTX = FhirContext.forDstu3();
-
   private static final String EXTENSION_URI = 
       "http://synthetichealth.github.io/synthea/utilization-encounters-extension";
 
@@ -35,11 +33,11 @@ public abstract class FhirPractitionerExporterStu3 {
    * Export the practitioner in FHIR STU3 format.
    */
   public static void export(long stop) {
-    if (Boolean.parseBoolean(Config.get("exporter.practitioner.fhir_stu3.export"))) {
+    if (Config.getAsBoolean("exporter.practitioner.fhir_stu3.export")) {
 
       Bundle bundle = new Bundle();
-      if (Boolean.parseBoolean(Config.get("exporter.fhir.transaction_bundle"))) {
-        bundle.setType(BundleType.TRANSACTION);
+      if (Config.getAsBoolean("exporter.fhir.transaction_bundle")) {
+        bundle.setType(BundleType.BATCH);
       } else {
         bundle.setType(BundleType.COLLECTION);
       }
@@ -66,7 +64,7 @@ public abstract class FhirPractitionerExporterStu3 {
         }
       }
 
-      String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true)
+      String bundleJson = FhirStu3.getContext().newJsonParser().setPrettyPrint(true)
           .encodeResourceToString(bundle);
 
       // get output folder

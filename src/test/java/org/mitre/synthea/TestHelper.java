@@ -75,42 +75,6 @@ public abstract class TestHelper {
   }
 
   /**
-   * Get a FHIR DSTU2 Context for testing, but only initialize it once.
-   * 
-   * @return a DSTU2 FhirContext
-   */
-  public static FhirContext getDstu2FhirContext() {
-    if (dstu2FhirContext == null) {
-      dstu2FhirContext = FhirContext.forDstu2();
-    }
-    return dstu2FhirContext;
-  }
-
-  /**
-   * Get a FHIR STU3 Context for testing, but only initialize it once.
-   * 
-   * @return an STU3 FhirContext
-   */
-  public static FhirContext getStu3FhirContext() {
-    if (stu3FhirContext == null) {
-      stu3FhirContext = FhirContext.forDstu3();
-    }
-    return stu3FhirContext;
-  }
-
-  /**
-   * Get an R4 FHIR Context for testing, but only initialize it once.
-   * 
-   * @return an R4 FhirContext
-   */
-  public static FhirContext getR4FhirContext() {
-    if (r4FhirContext == null) {
-      r4FhirContext = FhirContext.forR4();
-    }
-    return r4FhirContext;
-  }
-
-  /**
    * Returns a WireMock response builder representing a response from a FHIR server.
    * 
    * @return a ResponseDefinitionBuilder object
@@ -136,6 +100,8 @@ public abstract class TestHelper {
     Config.set("exporter.text.export", "false");
     Config.set("exporter.text.per_encounter_export", "false");
     Config.set("exporter.csv.export", "false");
+    Config.set("exporter.split_records", "false");
+    Config.set("exporter.split_records.duplicate_data", "false");
     Config.set("exporter.bfd.export", "false");
     Config.set("exporter.symptoms.csv.export", "false");
     Config.set("exporter.symptoms.text.export", "false");
