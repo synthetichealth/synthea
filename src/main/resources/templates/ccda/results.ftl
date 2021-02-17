@@ -33,7 +33,7 @@
             <effectiveTime value="${obs.start?number_to_date?string["yyyyMMddHHmmss"]}"/>
             <#if obs.value??>
             <#if obs.value?is_number>
-            <value xsi:type="PQ" value="${obs.value}" <#if obs.unit??>unit="${obs.unit}"</#if>/>
+            <value xsi:type="PQ" value="${obs.value}" <#if obs.unit?? && (obs.unit?length > 0)>unit="${obs.unit}"</#if>/>
             <#elseif obs.value?is_boolean>
             <value xsi:type="BL" value="${obs.value}" />
             <#elseif obs.value?is_string>

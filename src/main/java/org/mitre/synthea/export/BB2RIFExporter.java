@@ -120,7 +120,6 @@ public class BB2RIFExporter implements Flushable {
     if (beneficiary != null) {
       beneficiary.close();
     }
-
     if (beneficiaryHistory != null) {
       beneficiaryHistory.close();
     }

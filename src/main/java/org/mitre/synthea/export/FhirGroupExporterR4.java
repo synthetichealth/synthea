@@ -21,7 +21,6 @@ import org.mitre.synthea.helpers.RandomNumberGenerator;
 
 public abstract class FhirGroupExporterR4 {
 
-  private static final FhirContext FHIR_CTX = FhirContext.forR4();
   private static final List<String> patientList = new ArrayList<String>();
 
   /**
@@ -68,7 +67,7 @@ public abstract class FhirGroupExporterR4 {
    * @param stop The stop time.
    */
   public static void exportAndSave(RandomNumberGenerator rand, long stop) {
-    if (Boolean.parseBoolean(Config.get("exporter.groups.fhir.export"))) {
+    if (Config.getAsBoolean("exporter.groups.fhir.export")) {
       Group group = export(rand, stop);
 
       // get output folder
@@ -80,13 +79,13 @@ public abstract class FhirGroupExporterR4 {
       Path outFilePath = null;
       String groupJson = null;
 
-      if (Boolean.parseBoolean(Config.get("exporter.fhir.bulk_data"))) {
-        IParser parser = FHIR_CTX.newJsonParser().setPrettyPrint(false);
+      if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
+        IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(false);
         groupJson = parser.encodeResourceToString(group);
         String filename = group.getResourceType().toString() + ".ndjson";
         outFilePath = f.toPath().resolve(filename);
       } else {
-        IParser parser = FHIR_CTX.newJsonParser().setPrettyPrint(true);
+        IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(true);
         groupJson = parser.encodeResourceToString(group);
         outFilePath = f.toPath().resolve("groupInformation" + stop + ".json");
       }

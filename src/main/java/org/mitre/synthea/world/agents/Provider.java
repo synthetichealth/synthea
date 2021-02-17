@@ -67,7 +67,8 @@ public class Provider implements QuadTreeElement, Serializable {
   private static IProviderFinder providerFinder = buildProviderFinder();
 
   public Map<String, Object> attributes;
-  private String uuid;
+  public String uuid;
+  private String locationUuid;
   public String id;
   public String name;
   private Location location;
@@ -124,8 +125,9 @@ public class Provider implements QuadTreeElement, Serializable {
    * Create a new Provider with no information.
    */
   public Provider() {
-    // the uuid field is reinitialized by csvLineToProvider
+    // the uuid fields are reinitialized by csvLineToProvider
     uuid = UUID.randomUUID().toString();
+    locationUuid = UUID.randomUUID().toString();
     attributes = new LinkedTreeMap<>();
     revenue = 0.0;
     utilization = HashBasedTable.create();
@@ -156,6 +158,10 @@ public class Provider implements QuadTreeElement, Serializable {
 
   public String getResourceID() {
     return uuid;
+  }
+
+  public String getResourceLocationID() {
+    return locationUuid;
   }
 
   public Map<String, Object> getAttributes() {
@@ -208,7 +214,7 @@ public class Provider implements QuadTreeElement, Serializable {
       return null;
     }
   }
-  
+
   /**
    * Will this provider accept the given person as a patient at the given time?.
    * @param person Person to consider
@@ -299,7 +305,7 @@ public class Provider implements QuadTreeElement, Serializable {
   private static QuadTree generateQuadTree() {
     return new QuadTree();
   }
-  
+
   /**
    * Load into cache the list of providers for a state.
    * @param location the state being loaded.
@@ -313,7 +319,7 @@ public class Provider implements QuadTreeElement, Serializable {
         servicesProvided.add(EncounterType.AMBULATORY);
         servicesProvided.add(EncounterType.OUTPATIENT);
         servicesProvided.add(EncounterType.INPATIENT);
-      
+
         String hospitalFile = Config.get("generate.providers.hospitals.default_file");
         loadProviders(location, hospitalFile,
             ProviderType.HOSPITAL, servicesProvided, clinicianSeed);
@@ -348,7 +354,7 @@ public class Provider implements QuadTreeElement, Serializable {
   /**
    * Read the providers from the given resource file, only importing the ones for the given state.
    * THIS method is for loading providers and generating clinicians with specific specialties
-   * 
+   *
    * @param location the state being loaded
    * @param filename Location of the file, relative to src/main/resources
    * @param providerType ProviderType
@@ -371,7 +377,7 @@ public class Provider implements QuadTreeElement, Serializable {
       if ((location.state == null)
           || (location.state != null && location.state.equalsIgnoreCase(currState))
           || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
-    
+
         Provider parsed = csvLineToProvider(row);
         parsed.type = providerType;
         parsed.servicesProvided.addAll(servicesProvided);
@@ -396,9 +402,9 @@ public class Provider implements QuadTreeElement, Serializable {
               parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE,
                   clinicianSeed, clinicianRand));
         } else {
-          for (String specialty : ClinicianSpecialty.getSpecialties()) { 
+          for (String specialty : ClinicianSpecialty.getSpecialties()) {
             String specialtyCount = row.get(specialty);
-            if (specialtyCount != null && !specialtyCount.trim().equals("") 
+            if (specialtyCount != null && !specialtyCount.trim().equals("")
                 && !specialtyCount.trim().equals("0")) {
               parsed.clinicianMap.put(specialty, 
                   parsed.generateClinicianList(Integer.parseInt(row.get(specialty)), specialty,
@@ -515,7 +521,7 @@ public class Provider implements QuadTreeElement, Serializable {
     doc.incrementEncounters();
     return doc;
   }
-  
+
   /**
    * Given a line of parsed CSV input, convert the data into a Provider.
    * @param line - read a csv line to a provider's attributes
@@ -531,6 +537,8 @@ public class Provider implements QuadTreeElement, Serializable {
     }
     String base = d.id + d.name;
     d.uuid = UUID.nameUUIDFromBytes(base.getBytes()).toString();
+    d.locationUuid = UUID.nameUUIDFromBytes(
+            new StringBuilder(base).reverse().toString().getBytes()).toString();
     d.address = line.remove("address");
     d.city = line.remove("city");
     d.state = line.remove("state");
@@ -571,4 +579,5 @@ public class Provider implements QuadTreeElement, Serializable {
   public Point2D.Double getLonLat() {
     return coordinates;
   }
+
 }

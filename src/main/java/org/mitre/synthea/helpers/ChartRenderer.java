@@ -581,19 +581,37 @@ public class ChartRenderer {
     }
   }
   
+  public static class Base64EncodedChart {
+    private final String encodedBytes;
+    private final int unencodedLength;
+    
+    public Base64EncodedChart(byte[] bytes) {
+      this.encodedBytes = new String(Base64.getEncoder().encode(bytes));
+      this.unencodedLength = bytes.length;
+    }
+
+    public String getEncodedBytes() {
+      return encodedBytes;
+    }
+
+    public int getUnencodedLength() {
+      return unencodedLength;
+    }
+  }
+  
   /**
    * Draw a JFreeChart to a base64 encoded image based on values from a MultiTable.
    * @param table MultiTable to retrieve values from
    * @param config chart configuration options
    */
-  public static String drawChartAsBase64(MultiTable table, MultiTableChartConfig config)
+  public static Base64EncodedChart drawChartAsBase64(MultiTable table, MultiTableChartConfig config)
       throws IOException {
     
     JFreeChart chart = createChart(table, config);
 
     byte[] imgBytes = ChartUtils.encodeAsPNG(chart.createBufferedImage(config.getWidth(),
         config.getHeight()));
-    return new String(Base64.getEncoder().encode(imgBytes));
+    return new Base64EncodedChart(imgBytes);
   }
   
   /**
@@ -601,13 +619,13 @@ public class ChartRenderer {
    * @param person Person to retrieve attribute values from
    * @param config chart configuration options
    */
-  public static String drawChartAsBase64(Person person, PersonChartConfig config)
+  public static Base64EncodedChart drawChartAsBase64(Person person, PersonChartConfig config)
       throws IOException {
     
     JFreeChart chart = createChart(person, config);
 
     byte[] imgBytes = ChartUtils.encodeAsPNG(chart.createBufferedImage(config.getWidth(),
         config.getHeight()));
-    return new String(Base64.getEncoder().encode(imgBytes));
+    return new Base64EncodedChart(imgBytes);
   }
 }

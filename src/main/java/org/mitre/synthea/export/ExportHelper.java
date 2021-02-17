@@ -5,8 +5,10 @@ import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -14,6 +16,7 @@ import org.hl7.fhir.dstu3.model.Condition;
 import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.engine.Components.SampledData;
 import org.mitre.synthea.helpers.TimeSeriesData;
+import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
@@ -233,4 +236,38 @@ public abstract class ExportHelper {
     }
     return system;
   }
+  
+  /**
+   * Build a FHIR search url for the specified type of resource and identifier. This method
+   * hard codes the identifier type to "https://github.com/synthetichealth/synthea".
+   * @param resourceType type of FHIR resource
+   * @param identifier the identifier value
+   * @return FHIR search URL
+   */
+  public static String buildFhirSearchUrl(String resourceType, String identifier) {
+    return String.format("%s?identifier=%s|%s", resourceType, 
+            "https://github.com/synthetichealth/synthea", identifier);
+  }
+  
+  /**
+   * Build a FHIR search URL for a clinician using the clinician's NPI identifier.
+   * @param clinician the Synthea clinician instance
+   * @return FHIR search URL or null if clinician is null
+   */
+  public static String buildFhirNpiSearchUrl(Clinician clinician) {
+    if (clinician == null) {
+      return null;
+    } else {
+      return String.format("%s?identifier=%s|%s", "Practitioner", 
+              "http://hl7.org/fhir/sid/us-npi",
+              Long.toString(9_999_999_999L - clinician.identifier));
+    }
+  }
+  
+  /**
+   * FHIR resources that should include an ifNoneExist precondition when outputting transaction
+   * bundles.
+   */
+  public static final List<String> UNDUPLICATED_FHIR_RESOURCES = Arrays.asList(
+          "Location", "Organization", "Practitioner");
 }

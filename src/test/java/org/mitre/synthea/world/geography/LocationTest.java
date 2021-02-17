@@ -1,6 +1,7 @@
 package org.mitre.synthea.world.geography;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -75,29 +76,32 @@ public class LocationTest {
     List<LinkedHashMap<String, String>> zips = SimpleCSV.parse(zipFileContents);
     
     // parse all the locations from the zip codes and put them in a a set.
-    Set<String> availableLocations = new HashSet<>();
+    Set<String> zipLocations = new HashSet<>();
     for (Map<String,String> line : zips) {
       String city = line.get("NAME");
       String state = line.get("USPS");
       String key = (city + ", " + state).toUpperCase();
-      availableLocations.add(key);
+      zipLocations.add(key);
     }
 
-    // iterate over all the locations in the demographics file, 
-    // and check them all against the locations set from above
-    List<String> mismatches = new ArrayList<>();
+    // parse all the locations from demographics and put them in a a set.
+    Set<String> demoLocations = new HashSet<>();
     for (LinkedHashMap<String,String> line : demographics) {
       String city = line.get("NAME");
       String state = line.get("STNAME");
       
-      String original = (city + ", " + state);
-      String key = original.toUpperCase();
-      if (!availableLocations.contains(key)) {
-        mismatches.add(original + "|");
-      }
+      String key = (city + ", " + state).toUpperCase();
+      demoLocations.add(key);
     }
-    String message = mismatches.toString();
-    Assert.assertEquals(message, 0, mismatches.size());
+
+    Set<String> demosWithoutZip = Sets.difference(demoLocations, zipLocations);
+    Set<String> zipsWithoutDemo = Sets.difference(zipLocations, demoLocations);
+
+    String message = "Locations without zip: " + demosWithoutZip.toString();
+    Assert.assertEquals(message, 0, demosWithoutZip.size());
+
+    message = "Zips without demographics: " + zipsWithoutDemo.toString();
+    Assert.assertEquals(message, 0, zipsWithoutDemo.size());
   }
 
   @Test

@@ -91,7 +91,7 @@ public class ChartRendererTest {
     
     MultiTable table = getMockTable();
     
-    String b64 = ChartRenderer.drawChartAsBase64(table, chartCfg);
+    String b64 = ChartRenderer.drawChartAsBase64(table, chartCfg).getEncodedBytes();
     
     assertTrue(Base64.isBase64(b64));
   }
@@ -175,7 +175,7 @@ public class ChartRendererTest {
     
     chartCfg.setSeries(seriesList);
     
-    String b64 = ChartRenderer.drawChartAsBase64(person, chartCfg);
+    String b64 = ChartRenderer.drawChartAsBase64(person, chartCfg).getEncodedBytes();
     
     assertTrue(Base64.isBase64(b64));
   }

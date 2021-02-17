@@ -248,7 +248,7 @@
         "also available is the Clinical Dementia Rating (CDR)",
         "http://alzheimer.wustl.edu/cdr/cdr.htm"
       ],
-      "unit": "(score)",
+      "unit": "{score}",
       "codes": [
         {
           "system": "LOINC",
@@ -451,7 +451,7 @@
         "13 to 20 suggests moderate dementia, and less than 12 indicates severe dementia",
         "http://www.alz.org/alzheimers_disease_steps_to_diagnosis.asp"
       ],
-      "unit": "(score)",
+      "unit": "{score}",
       "conditional_transition": [
         {
           "condition": {
@@ -597,7 +597,7 @@
         "13 to 20 suggests moderate dementia, and less than 12 indicates severe dementia",
         "http://www.alz.org/alzheimers_disease_steps_to_diagnosis.asp"
       ],
-      "unit": "(score)",
+      "unit": "{score}",
       "direct_transition": "End_Severe_Encounter"
     },
     "End_Severe_Encounter": {
@@ -648,7 +648,7 @@
         "13 to 20 suggests moderate dementia, and less than 12 indicates severe dementia",
         "http://www.alz.org/alzheimers_disease_steps_to_diagnosis.asp"
       ],
-      "unit": "(score)",
+      "unit": "{score}",
       "direct_transition": "End_VerySevere_Encounter"
     },
     "End_VerySevere_Encounter": {

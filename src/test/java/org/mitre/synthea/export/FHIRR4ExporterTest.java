@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
 
@@ -15,7 +16,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
-import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Media;
@@ -97,7 +97,7 @@ public class FHIRR4ExporterTest {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
 
-    FhirContext ctx = FhirContext.forR4();
+    FhirContext ctx = FhirR4.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     ValidationResources validator = new ValidationResources();
     List<String> validationErrors = new ArrayList<String>();
@@ -121,57 +121,72 @@ public class FHIRR4ExporterTest {
         validationErrors.add(
             "JSON contains unconverted references to 'SNOMED-CT' (should be URIs)");
       }
-      // Now validate the resource...
-      IBaseResource resource = ctx.newJsonParser().parseResource(fhirJson);
-      ValidationResult result = validator.validateR4(resource);
-      if (!result.isSuccessful()) {
-        // If the validation failed, let's crack open the Bundle and validate
-        // each individual entry.resource to get context-sensitive error
-        // messages...
-        Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
-        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-          ValidationResult eresult = validator.validateR4(entry.getResource());
-          if (!eresult.isSuccessful()) {
-            for (SingleValidationMessage emessage : eresult.getMessages()) {
-              boolean valid = false;
-              if (emessage.getMessage().contains("@ AllergyIntolerance ait-2")) {
-                /*
-                 * The ait-2 invariant:
-                 * Description:
-                 * AllergyIntolerance.clinicalStatus SHALL NOT be present
-                 * if verification Status is entered-in-error
-                 * Expression:
-                 * verificationStatus!='entered-in-error' or clinicalStatus.empty()
-                 */
-                valid = true;
-              } else if (emessage.getMessage().contains("@ ExplanationOfBenefit dom-3")) {
-                /*
-                 * For some reason, it doesn't like the contained ServiceRequest and contained
-                 * Coverage resources in the ExplanationOfBenefit, both of which are
-                 * properly referenced. Running $validate on test servers finds this valid...
-                 */
-                valid = true;
-              } else if (emessage.getMessage().contains(
-                  "per-1: If present, start SHALL have a lower value than end")) {
-                /*
-                 * The per-1 invariant does not account for daylight savings time... so, if the
-                 * daylight savings switch happens between the start and end, the validation
-                 * fails, even if it is valid.
-                 */
-                valid = true; // ignore this error
-              } else if (emessage.getMessage().contains("[active, inactive, entered-in-error]")
-                  || emessage.getMessage().contains("MedicationStatusCodes-list")) {
-                /*
-                 * MedicationStatement.status has more legal values than this... including
-                 * completed and stopped.
-                 */
-                valid = true;
-              }
-              if (!valid) {
-                System.out.println(parser.encodeResourceToString(entry.getResource()));
-                System.out.println("ERROR: " + emessage.getMessage());
-                validationErrors.add(emessage.getMessage());
-              }
+
+      // Let's crack open the Bundle and validate
+      // each individual entry.resource to get context-sensitive error
+      // messages...
+      // IMPORTANT: this approach significantly reduces memory usage when compared to
+      // validating the entire bundle at a time, but means that validating references
+      // is impossible.
+      // As of 2021-01-05, validating the bundle didn't validate references anyway,
+      // but at some point we may want to do that.
+      Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
+      for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+        ValidationResult eresult = validator.validateR4(entry.getResource());
+        if (!eresult.isSuccessful()) {
+          for (SingleValidationMessage emessage : eresult.getMessages()) {
+            boolean valid = false;
+            if (emessage.getSeverity() == ResultSeverityEnum.INFORMATION
+                    || emessage.getSeverity() == ResultSeverityEnum.WARNING) {
+              /*
+               * Ignore warnings.
+               */
+              valid = true;
+            } else if (emessage.getMessage().contains("us-core-documentreference-type")) {
+              /*
+               * The instance validator does not expand intentional value sets like this one.
+               */
+              valid = true;
+            } else if (emessage.getMessage().contains("@ AllergyIntolerance ait-2")) {
+              /*
+               * The ait-2 invariant:
+               * Description:
+               * AllergyIntolerance.clinicalStatus SHALL NOT be present
+               * if verification Status is entered-in-error
+               * Expression:
+               * verificationStatus!='entered-in-error' or clinicalStatus.empty()
+               */
+              valid = true;
+            } else if (emessage.getMessage().contains("@ ExplanationOfBenefit dom-3")) {
+              /*
+               * For some reason, it doesn't like the contained ServiceRequest and contained
+               * Coverage resources in the ExplanationOfBenefit, both of which are
+               * properly referenced. Running $validate on test servers finds this valid...
+               */
+              valid = true;
+            } else if (emessage.getMessage().contains(
+                "per-1: If present, start SHALL have a lower value than end")) {
+              /*
+               * The per-1 invariant does not account for daylight savings time... so, if the
+               * daylight savings switch happens between the start and end, the validation
+               * fails, even if it is valid.
+               */
+              valid = true; // ignore this error
+            } else if (
+                emessage.getMessage().contains("Unknown extension http://hl7.org/fhir/us/core")
+                || emessage.getMessage().contains("Unknown extension http://synthetichealth")
+                || emessage.getMessage().contains("not be resolved, so has not been checked")) {
+              /*
+               * Despite setting instanceValidator.setAnyExtensionsAllowed(true) and
+               * instanceValidator.setErrorForUnknownProfiles(false), the FHIR validator still
+               * reports these as errors
+               */
+              valid = true; // ignore this error
+            }
+            if (!valid) {
+              System.out.println(parser.encodeResourceToString(entry.getResource()));
+              System.out.println("ERROR: " + emessage.getMessage());
+              validationErrors.add(emessage.getMessage());
             }
           }
         }
@@ -196,6 +211,9 @@ public class FHIRR4ExporterTest {
     person.attributes.put(Person.INCOME, Integer.parseInt(Config
         .get("generate.demographics.socioeconomic.income.poverty")) * 2);
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    person.attributes.put(Person.CONTACT_EMAIL, "test@test.test");
+    person.attributes.put(Person.CONTACT_GIVEN_NAME, "John");
+    person.attributes.put(Person.CONTACT_FAMILY_NAME, "Appleseed");
 
     person.history = new LinkedList<>();
     Provider mock = Mockito.mock(Provider.class);
@@ -228,7 +246,7 @@ public class FHIRR4ExporterTest {
     assertTrue(sampleObs.process(person, time));
     person.history.add(sampleObs);
     
-    FhirContext ctx = FhirContext.forR4();
+    FhirContext ctx = FhirR4.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
@@ -294,7 +312,7 @@ public class FHIRR4ExporterTest {
     assertTrue(urlState.process(person, time));
     person.history.add(urlState);
     
-    FhirContext ctx = FhirContext.forR4();
+    FhirContext ctx = FhirR4.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);

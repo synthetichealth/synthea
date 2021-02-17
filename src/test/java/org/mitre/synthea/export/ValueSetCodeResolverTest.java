@@ -8,9 +8,10 @@ import static org.mitre.synthea.TestHelper.getTxRecordingSource;
 import static org.mitre.synthea.TestHelper.isHttpRecordingEnabled;
 import static org.mitre.synthea.TestHelper.wiremockOptions;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -36,9 +37,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.mitre.synthea.world.geography.Location;
 import org.springframework.web.client.RestTemplate;
-
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class ValueSetCodeResolverTest {
 
@@ -90,9 +88,11 @@ public class ValueSetCodeResolverTest {
     Code observationType = new Code(LOINC_URI, "73985-4", "Exercise activity");
     Code observationValue = new Code(LOINC_URI, "LA11837-4", "Bicycling");
     observationValue.valueSet = "http://loinc.org/vs/LL734-5";
-    encounter.addObservation(time, observationType.code, observationValue, observationType.display);
+    encounter.addObservation(time, observationType.code,
+        observationValue, observationType.display);
 
-    Code reportType = new Code(SNOMED_URI, "371543004", "Comprehensive history and physical report");
+    Code reportType = new Code(SNOMED_URI, "371543004",
+        "Comprehensive history and physical report");
     reportType.valueSet = SNOMED_URI + "?fhir_vs=<<371531000";
     person.record.report(time, reportType.code, 1);
 
@@ -113,7 +113,8 @@ public class ValueSetCodeResolverTest {
 
   @Test
   public void resolveProcedureReason() {
-    Code procedureType = new Code(SNOMED_URI, "236172004", "Nephroscopic lithotripsy of ureteric calculus");
+    Code procedureType = new Code(SNOMED_URI, "236172004",
+        "Nephroscopic lithotripsy of ureteric calculus");
     Code procedureReason = new Code(SNOMED_URI, "95570007", "Renal calculus");
     procedureReason.valueSet = SNOMED_URI + "?fhir_vs=ecl/<" + procedureReason.code;
     Procedure procedure = person.record.procedure(time, procedureType.display);

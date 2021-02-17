@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -78,6 +79,11 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String IDENTIFIER_SSN = "identifier_ssn";
   public static final String IDENTIFIER_DRIVERS = "identifier_drivers";
   public static final String IDENTIFIER_PASSPORT = "identifier_passport";
+  public static final String IDENTIFIER_SITE = "identifier_site";
+  public static final String IDENTIFIER_RECORD_ID = "identifier_record_id";
+  public static final String CONTACT_FAMILY_NAME = "contact_family_name";
+  public static final String CONTACT_GIVEN_NAME = "contact_given_name";
+  public static final String CONTACT_EMAIL = "contact_email";
   public static final String CAUSE_OF_DEATH = "cause_of_death";
   public static final String SEXUAL_ORIENTATION = "sexual_orientation";
   public static final String LOCATION = "location";
@@ -85,6 +91,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String BMI_PERCENTILE = "bmi_percentile";
   public static final String GROWTH_TRAJECTORY = "growth_trajectory";
   public static final String CURRENT_WEIGHT_LENGTH_PERCENTILE = "current_weight_length_percentile";
+  public static final String RECORD_GROUP = "record_group";
+  public static final String LINK_ID = "link_id";
   private static final String DEDUCTIBLE = "deductible";
   private static final String LAST_MONTH_PAID = "last_month_paid";
 
@@ -150,13 +158,13 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     /* Chronic Medications which will be renewed at each Wellness Encounter */
     chronicMedications = new ConcurrentHashMap<String, HealthRecord.Medication>();
     hasMultipleRecords =
-        Boolean.parseBoolean(Config.get("exporter.split_records", "false"));
+        Config.getAsBoolean("exporter.split_records", false);
     if (hasMultipleRecords) {
       records = new ConcurrentHashMap<String, HealthRecord>();
     }
     defaultRecord = new HealthRecord(this);
     lossOfCareEnabled =
-        Boolean.parseBoolean(Config.get("generate.payers.loss_of_care", "false"));
+        Config.getAsBoolean("generate.payers.loss_of_care", false);
     if (lossOfCareEnabled) {
       lossOfCareRecord = new HealthRecord(this);
     }
@@ -302,6 +310,21 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   */
   public ExpressedConditionRecord getOnsetConditionRecord() {
     return onsetConditionRecord;
+  }
+
+  /**
+   * Returns the number of providers that this person has.
+   */
+  public int providerCount() {
+    int count = 1;
+    if (hasMultipleRecords) {
+      List<String> uuids = new ArrayList<String>(records.keySet());
+      Set<String> uniqueUuids = new HashSet<String>(uuids);
+      count = uniqueUuids.size();
+    } else {
+      count = record.providerCount();
+    }
+    return count;
   }
   
   /** Updating the method for accounting of the time on which
