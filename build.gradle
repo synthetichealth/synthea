@@ -62,6 +62,8 @@ dependencies {
   
   compile group: 'org.springframework', name: 'spring-web', version: '5.2.7.RELEASE'
 
+  compile group: 'com.opencsv', name: 'opencsv', version: '5.2'
+
   // Java 9 no longer includes these APIs by default
   compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
   compile 'org.glassfish.jaxb:jaxb-runtime:2.3.0'
@@ -137,6 +139,24 @@ task graphviz(type: JavaExec) {
   classpath sourceSets.main.runtimeClasspath
   main = "Graphviz"
 }
+
+
+// // hk: run individual files
+// task hktest(type: JavaExec) {
+//   group = "Execution"
+//   dependsOn build
+//   description 'Run Howard\'s tests'
+//   classpath sourceSets.main.runtimeClasspath
+//   // ext {
+//   //   hkMainClass = "org.mitre.synthea.export.ExportConfigClass"
+//   // }
+//   // application {
+//   //   mainClassName = hkMainClass
+//   // }
+//   // main = hkMainClass
+//   commandLine "java", "-classpath", sourceSets.main.runtimeClasspath.getAsPath(), org.mitre.synthea.export.ExportConfigClass
+// }
+
 
 task uberJar(type: Jar) {
     def versionFile = new File("$projectDir/src/main/resources/version.txt")
