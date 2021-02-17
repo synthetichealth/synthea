@@ -19,7 +19,7 @@ public class ExportConfigEntry {
    *  @param value the string to evaluate for newlines, tabs, etc.
   */
   public String trimAllWhitespace( String value ) {
-    return value.stripTrailing().stripLeading();
+    return value.trim();
   }
 
   public String getField() {
