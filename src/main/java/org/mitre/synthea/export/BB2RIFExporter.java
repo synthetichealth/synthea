@@ -797,7 +797,7 @@ public class BB2RIFExporter implements Flushable {
     inpatient.flush();
     //    outpatient.flush();
     //    carrier.flush();
-    //    prescription.flush();
+    prescription.flush();
   }
 
   /**
