@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -155,10 +156,10 @@ public class BB2RIFExporter implements Flushable {
     //    File carrierFile = outputDirectory.resolve("carrier.csv").toFile();
     //    carrier = new SynchronizedBBLineWriter(carrierFile);
     //    carrier.writeHeader(CarrierFields.class);
-    //
-    //    File prescriptionFile = outputDirectory.resolve("prescription.csv").toFile();
-    //    prescription = new SynchronizedBBLineWriter(prescriptionFile);
-    //    prescription.writeHeader(PrescriptionFields.class);
+    
+    File prescriptionFile = outputDirectory.resolve("prescription.csv").toFile();
+    prescription = new SynchronizedBBLineWriter(prescriptionFile);
+    prescription.writeHeader(PrescriptionFields.class);
   }
   
   /**
@@ -173,7 +174,7 @@ public class BB2RIFExporter implements Flushable {
     //    exportOutpatient(person, stopTime);
     exportInpatient(person, stopTime);
     //    exportCarrier(person, stopTime);
-    //    exportPrescription(person, stopTime);
+    exportPrescription(person, stopTime);
   }
   
   /**
@@ -285,7 +286,9 @@ public class BB2RIFExporter implements Flushable {
    * @return the year as a four figure value, e.g. 1971
    */
   private static int getYear(long time) {
-    return 1900 + new Date(time).getYear();
+    Calendar cal = Calendar.getInstance();
+    cal.setTimeInMillis(time);
+    return cal.get(Calendar.YEAR);
   }
 
   /**
@@ -294,7 +297,9 @@ public class BB2RIFExporter implements Flushable {
    * @return the month of the year
    */
   private static int getMonth(long time) {
-    return 1 + new Date(time).getMonth();
+    Calendar cal = Calendar.getInstance();
+    cal.setTimeInMillis(time);
+    return 1 + cal.get(Calendar.MONTH);
   }
   
   /**
