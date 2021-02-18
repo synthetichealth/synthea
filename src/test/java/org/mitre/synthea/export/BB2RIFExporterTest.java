@@ -111,8 +111,8 @@ public class BB2RIFExporterTest {
       assertTrue(mapper.canMap("10509002"));
       assertEquals("J20.9", mapper.getMapped("10509002", generator));
       assertFalse(mapper.canMap("not a code"));
-    } catch (IOException e) {
+    } catch (IOException | IllegalArgumentException e) {
       // No worries. The optional mapping file is not present.
-    }      
+    }
   }
 }
