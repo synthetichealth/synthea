@@ -25,6 +25,11 @@ repositories {
   }
 }
 
+// Uncomment to see deprecation warnings
+// tasks.withType(JavaCompile) {
+//   options.compilerArgs << "-Xlint:deprecation"
+// }
+
 checkstyle {
   toolVersion '8.4'
   //showViolations = true
