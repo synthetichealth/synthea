@@ -2190,7 +2190,7 @@ public class BB2RIFExporter implements Flushable {
     /**
      * Write a BB2 file line.
      * @param enumClass the enumeration class whose members define the column names
-     * @param fieldValues a sparse conditionCodeMap of column names to values, missing values will
+     * @param fieldValues a sparse map of column names to values, missing values will
      *     result in empty values in the corresponding column
      * @throws IOException if something goes wrong 
      */
