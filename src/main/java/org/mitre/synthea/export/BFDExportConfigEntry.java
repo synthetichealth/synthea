@@ -6,7 +6,7 @@ import java.io.Reader;
 /** A single line in the export configuration TSV file, containing the full properties for a specification 
  *  Implementation Note: the names of the properties MUST be exactly the same as the heading in the TSV file
 */
-public class ExportConfigEntry {
+public class BFDExportConfigEntry {
   private String field;
   private String beneficiary;
   private String beneficiary_history;  

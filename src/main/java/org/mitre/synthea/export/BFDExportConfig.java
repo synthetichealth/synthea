@@ -14,9 +14,9 @@ import com.opencsv.bean.CsvToBeanBuilder;
 
 
 /**
- * Export configuration class
+ * Export configuration class for BFD
  */
-public class ExportConfig {
+public class BFDExportConfig {
 
   enum ExportConfigType {
     BENEFICIARY,
@@ -35,38 +35,38 @@ public class ExportConfig {
   
 
   private File configFile;
-  private List<ExportConfigEntry> allConfigs = null;
+  private List<BFDExportConfigEntry> allConfigs = null;
   
-  private List<ExportConfigEntry> beneficiaryConfigs = new ArrayList<ExportConfigEntry>();
-  private List<ExportConfigEntry> beneficiaryHistoryConfigs = new ArrayList<ExportConfigEntry>();
-  private List<ExportConfigEntry> carrierConfigs = new ArrayList<ExportConfigEntry>();
-  // private List<ExportConfigEntry> dmeConfigs = new ArrayList<ExportConfigEntry>();
-  private List<ExportConfigEntry> inpatientConfigs = new ArrayList<ExportConfigEntry>();
-  // private List<ExportConfigEntry> hhaConfigs = new ArrayList<ExportConfigEntry>();
-  // private List<ExportConfigEntry> hospiceConfigs = new ArrayList<ExportConfigEntry>();
-  // private List<ExportConfigEntry> medicareBeneficiaryIdConfigs = new ArrayList<ExportConfigEntry>();
-  private List<ExportConfigEntry> outpatientConfigs = new ArrayList<ExportConfigEntry>();
-  // private List<ExportConfigEntry> pdeConfigs = new ArrayList<ExportConfigEntry>();
-  private List<ExportConfigEntry> prescriptionConfigs = new ArrayList<ExportConfigEntry>();
-  // private List<ExportConfigEntry> snfConfigs = new ArrayList<ExportConfigEntry>();
+  private List<BFDExportConfigEntry> beneficiaryConfigs = new ArrayList<BFDExportConfigEntry>();
+  private List<BFDExportConfigEntry> beneficiaryHistoryConfigs = new ArrayList<BFDExportConfigEntry>();
+  private List<BFDExportConfigEntry> carrierConfigs = new ArrayList<BFDExportConfigEntry>();
+  // private List<BFDExportConfigEntry> dmeConfigs = new ArrayList<BFDExportConfigEntry>();
+  private List<BFDExportConfigEntry> inpatientConfigs = new ArrayList<BFDExportConfigEntry>();
+  // private List<BFDExportConfigEntry> hhaConfigs = new ArrayList<BFDExportConfigEntry>();
+  // private List<BFDExportConfigEntry> hospiceConfigs = new ArrayList<BFDExportConfigEntry>();
+  // private List<BFDExportConfigEntry> medicareBeneficiaryIdConfigs = new ArrayList<BFDExportConfigEntry>();
+  private List<BFDExportConfigEntry> outpatientConfigs = new ArrayList<BFDExportConfigEntry>();
+  // private List<BFDExportConfigEntry> pdeConfigs = new ArrayList<BFDExportConfigEntry>();
+  private List<BFDExportConfigEntry> prescriptionConfigs = new ArrayList<BFDExportConfigEntry>();
+  // private List<BFDExportConfigEntry> snfConfigs = new ArrayList<BFDExportConfigEntry>();
   
   /** constructor
    *  @param configFilePath path to the configuration TSV file
    */
-  public ExportConfig( String configFilePath ) {
+  public BFDExportConfig( String configFilePath ) {
     this.configFile = new File( configFilePath );
     this.initConfigs();
   }
 
   /** initialize object from configuration file
-   *  @return the List of ExportConfigEntry
+   *  @return the List of BFDExportConfigEntry
    */
-  private List<ExportConfigEntry> initConfigs() {
+  private List<BFDExportConfigEntry> initConfigs() {
     try {
       System.out.println("reading from " + this.configFile.getAbsolutePath() );
       Reader reader = new BufferedReader(new FileReader(this.configFile));
-      CsvToBean<ExportConfigEntry> csvReader = new CsvToBeanBuilder<ExportConfigEntry>(reader)
-        .withType(ExportConfigEntry.class)
+      CsvToBean<BFDExportConfigEntry> csvReader = new CsvToBeanBuilder<BFDExportConfigEntry>(reader)
+        .withType(BFDExportConfigEntry.class)
         .withSeparator('\t')
         .withIgnoreLeadingWhiteSpace(true)
         .withIgnoreEmptyLine(true)
@@ -74,7 +74,7 @@ public class ExportConfig {
       this.allConfigs = csvReader.parse();
 
       // this.initConfigItems();
-      for ( ExportConfigEntry prop: this.getAllConfigs() ) {
+      for ( BFDExportConfigEntry prop: this.getAllConfigs() ) {
         if ( !prop.getBeneficiary().isEmpty() ) {
           this.beneficiaryConfigs.add(prop);
         }
@@ -103,13 +103,13 @@ public class ExportConfig {
   }
 
   /** returns all the config items */
-  public List<ExportConfigEntry> getAllConfigs() {
+  public List<BFDExportConfigEntry> getAllConfigs() {
     return this.allConfigs;
   }
 
 
   /** returns all inpatient config items */
-  public List<ExportConfigEntry> getConfigItemsByType(ExportConfigType type) {
+  public List<BFDExportConfigEntry> getConfigItemsByType(ExportConfigType type) {
     switch( type ) {
       case BENEFICIARY:
         return this.beneficiaryConfigs;
