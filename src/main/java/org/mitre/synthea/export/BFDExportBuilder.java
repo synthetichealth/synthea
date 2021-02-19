@@ -110,7 +110,7 @@ public class BFDExportBuilder {
      * @param getFieldEnumFunc reference to Function that retrieves the enum relevant to the current output type
      * @return
      */
-  public HashMap setKnown( ExportConfigType type, HashMap fieldValues, Function<BFDExportConfigEntry, String> getCellValueFunc, Function<String, Enum> getFieldEnumFunc ) {
+  public HashMap setFromConfig( ExportConfigType type, HashMap fieldValues, Function<BFDExportConfigEntry, String> getCellValueFunc, Function<String, Enum> getFieldEnumFunc ) {
     fieldValues.clear();
     List<BFDExportConfigEntry> configs = this.getConfigItemsByType(type);
     try {
@@ -138,7 +138,7 @@ public class BFDExportBuilder {
       System.out.println("config props defined and processed for " + type + ":  " + propCount );
     }
     catch (Exception ex) {
-      System.out.println("ExportDataBuilder.setKnown ERROR:  " + ex);
+      System.out.println("ExportDataBuilder.setFromConfig ERROR:  " + ex);
     }
 
     return fieldValues;
