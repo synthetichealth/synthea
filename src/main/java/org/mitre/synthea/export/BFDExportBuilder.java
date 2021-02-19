@@ -59,9 +59,7 @@ public class BFDExportBuilder {
     this.initConfigs();
   }
 
-  /** initialize object from configuration file
-   *  @return the List of BFDExportConfigEntry
-   */
+  /** initialize object from configuration file */
   private List<BFDExportConfigEntry> initConfigs() {
     try {
       System.out.println("reading from " + this.configFile.getAbsolutePath() );
