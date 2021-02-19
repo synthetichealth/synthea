@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.mitre.synthea.export.BFDExportConfig.ExportConfigType;
+import org.mitre.synthea.export.BFDExportBuilder.ExportConfigType;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
@@ -57,7 +57,7 @@ public class BB2RIFExporter implements Flushable {
   private HashMap<String,List<List<String>>> map;
 
   private StateCodeMapper locationMapper;
-  private ExportDataBuilder outputBuilder;
+  private BFDExportBuilder outputBuilder;
 
   private static final String BB2_BENE_ID = "BB2_BENE_ID";
   private static final String BB2_HIC_ID = "BB2_HIC_ID";
@@ -113,7 +113,7 @@ public class BB2RIFExporter implements Flushable {
       // and if these do throw ioexceptions there's nothing we can do anyway
       throw new RuntimeException(e);
     }
-    outputBuilder = new ExportDataBuilder();  // builder that uses the exporter TSV config files
+    outputBuilder = new BFDExportBuilder();  // builder that uses the exporter TSV config files
   }
   
   /**
@@ -190,7 +190,7 @@ public class BB2RIFExporter implements Flushable {
    * Export a beneficiary details for single person.
    * @param person the person to export
    * @param stopTime end time of simulation
-   * @param useConfig flag to use BFDExportConfig; use false to use original code, true to use BFDExportConfig and ExportBuilder
+   * @param useConfig flag to use BFDExportBuilder; use false to use original code, true to use BFDExportBuilder and ExportBuilder
    * @throws IOException if something goes wrong
    */
   private void exportBeneficiary(Person person, long stopTime, boolean useConfig) throws IOException {
@@ -198,7 +198,7 @@ public class BB2RIFExporter implements Flushable {
 
     if ( useConfig ) {        
       Function<BFDExportConfigEntry, String> getCellValueFunc = prop -> prop.getBeneficiary(); // gets output specific cell from configs
-      Function<String, AbstractFields> getFieldEnumFunc = field -> BeneficiaryFields.valueOf(field);  // gets output specific enums
+      Function<String, Enum> getFieldEnumFunc = field -> BeneficiaryFields.valueOf(field);  // gets output specific enums
       this.outputBuilder.setKnown(ExportConfigType.BENEFICIARY, fieldValues, getCellValueFunc, getFieldEnumFunc);
     }
     else {
@@ -269,7 +269,7 @@ public class BB2RIFExporter implements Flushable {
    * was called first to set up various ID on person
    * @param person the person to export
    * @param stopTime end time of simulation
-   * @param useConfig flag to use BFDExportConfig; use false to use original code, true to use BFDExportConfig and ExportBuilder
+   * @param useConfig flag to use BFDExportBuilder; use false to use original code, true to use BFDExportBuilder and ExportBuilder
    * @throws IOException if something goes wrong
    */
   private void exportBeneficiaryHistory(Person person, long stopTime, boolean useConfig) throws IOException {
@@ -277,7 +277,7 @@ public class BB2RIFExporter implements Flushable {
 
     if ( useConfig ) {        
       Function<BFDExportConfigEntry, String> getCellValueFunc = prop -> prop.getBeneficiary_history(); // gets output specific cell from configs
-      Function<String, AbstractFields> getFieldEnumFunc = field -> BeneficiaryHistoryFields.valueOf(field);  // gets output specific enums
+      Function<String, Enum> getFieldEnumFunc = field -> BeneficiaryHistoryFields.valueOf(field);  // gets output specific enums
       this.outputBuilder.setKnown(ExportConfigType.BENEFICIARY_HISTORY, fieldValues, getCellValueFunc, getFieldEnumFunc);
     }
     else {
@@ -342,7 +342,7 @@ public class BB2RIFExporter implements Flushable {
    * Export outpatient claims details for a single person.
    * @param person the person to export
    * @param stopTime end time of simulation
-   * @param useConfig flag to use BFDExportConfig; use false to use original code, true to use BFDExportConfig and ExportBuilder
+   * @param useConfig flag to use BFDExportBuilder; use false to use original code, true to use BFDExportBuilder and ExportBuilder
    * @throws IOException if something goes wrong
    */
   private void exportOutpatient(Person person, long stopTime, boolean useConfig ) throws IOException {
@@ -363,7 +363,7 @@ public class BB2RIFExporter implements Flushable {
 
       if ( useConfig ) {        
         Function<BFDExportConfigEntry, String> getCellValueFunc = prop -> prop.getOutpatient(); // gets output specific cell from configs
-        Function<String, AbstractFields> getFieldEnumFunc = field -> OutpatientFields.valueOf(field);  // gets output specific enums
+        Function<String, Enum> getFieldEnumFunc = field -> OutpatientFields.valueOf(field);  // gets output specific enums
         this.outputBuilder.setKnown(ExportConfigType.OUTPATIENT, fieldValues, getCellValueFunc, getFieldEnumFunc);
       }
       else {
@@ -443,7 +443,7 @@ public class BB2RIFExporter implements Flushable {
    * Export inpatient claims details for a single person.
    * @param person the person to export
    * @param stopTime end time of simulation
-   * @param useConfig flag to use BFDExportConfig; use false to use original code, true to use BFDExportConfig and ExportBuilder
+   * @param useConfig flag to use BFDExportBuilder; use false to use original code, true to use BFDExportBuilder and ExportBuilder
    * @throws IOException if something goes wrong
    */
   private void exportInpatient(Person person, long stopTime, boolean useConfig ) throws IOException {
@@ -469,7 +469,7 @@ public class BB2RIFExporter implements Flushable {
 
       if ( useConfig ) {        
         Function<BFDExportConfigEntry, String> getCellValueFunc = prop -> prop.getInpatient(); // gets output specific cell from configs
-        Function<String, AbstractFields> getFieldEnumFunc = field -> InpatientFields.valueOf(field);  // gets output specific enums
+        Function<String, Enum> getFieldEnumFunc = field -> InpatientFields.valueOf(field);  // gets output specific enums
         this.outputBuilder.setKnown(ExportConfigType.INPATIENT, fieldValues, getCellValueFunc, getFieldEnumFunc);
       }
       else {
@@ -648,7 +648,7 @@ public class BB2RIFExporter implements Flushable {
    * Export carrier claims details for a single person.
    * @param person the person to export
    * @param stopTime end time of simulation
-   * @param useConfig flag to use BFDExportConfig; use false to use original code, true to use BFDExportConfig and ExportBuilder
+   * @param useConfig flag to use BFDExportBuilder; use false to use original code, true to use BFDExportBuilder and ExportBuilder
    * @throws IOException if something goes wrong
    */
   private void exportCarrier(Person person, long stopTime, boolean useConfig) throws IOException {
@@ -676,7 +676,7 @@ public class BB2RIFExporter implements Flushable {
 
       if ( useConfig ) {
         Function<BFDExportConfigEntry, String> getCellValueFunc = prop -> prop.getCarrier(); // gets output specific cell from configs
-        Function<String, AbstractFields> getFieldEnumFunc = field -> CarrierFields.valueOf(field);  // gets output specific enums
+        Function<String, Enum> getFieldEnumFunc = field -> CarrierFields.valueOf(field);  // gets output specific enums
         this.outputBuilder.setKnown(ExportConfigType.CARRIER, fieldValues, getCellValueFunc, getFieldEnumFunc);
       }
       else {
@@ -759,7 +759,7 @@ public class BB2RIFExporter implements Flushable {
    * Export prescription claims details for a single person.
    * @param person the person to export
    * @param stopTime end time of simulation
-   * @param useConfig flag to use BFDExportConfig; use false to use original code, true to use BFDExportConfig and ExportBuilder
+   * @param useConfig flag to use BFDExportBuilder; use false to use original code, true to use BFDExportBuilder and ExportBuilder
    * @throws IOException if something goes wrong
    */
   private void exportPrescription(Person person, long stopTime, boolean useConfig) throws IOException {
@@ -776,7 +776,7 @@ public class BB2RIFExporter implements Flushable {
 
         if ( useConfig ) {        
           Function<BFDExportConfigEntry, String> getCellValueFunc = prop -> prop.getPrescription(); // gets output specific cell from configs
-          Function<String, AbstractFields> getFieldEnumFunc = field -> PrescriptionFields.valueOf(field);  // gets output specific enums
+          Function<String, Enum> getFieldEnumFunc = field -> PrescriptionFields.valueOf(field);  // gets output specific enums
           this.outputBuilder.setKnown(ExportConfigType.PRESCRIPTION, fieldValues, getCellValueFunc, getFieldEnumFunc);
         }
         else {
@@ -874,63 +874,6 @@ public class BB2RIFExporter implements Flushable {
 
   public interface GetEnumValueInterface {
     public int getEnumValue( String field );
-  }
-
-
-  /**
-   * Exporter Data Builder
-   */
-  public class ExportDataBuilder {
-    private BFDExportConfig exportConfig = null;
-
-    /** constructor */
-    public ExportDataBuilder() {
-      this.exportConfig = new BFDExportConfig( "src/main/resources/exporters/cms_field_values.tsv" );
-    }
-
-    /** Sets the known field values based on exporter config TSV file
-     * @param type output type (one of the ExportConfigType types)
-     * @param fieldValues reference to a HashMap of field values in each of the exportXXXXX() functions
-     * @param getCellValueFunc reference to Function that retrieves the string value relevant to the current output type from the config file
-     * @param getFieldEnumFunc reference to Function that retrieves the enum relevant to the current output type
-     * @return
-     */
-    HashMap setKnown( BFDExportConfig.ExportConfigType type, HashMap fieldValues, Function<BFDExportConfigEntry, String> getCellValueFunc, Function<String, AbstractFields> getFieldEnumFunc ) {
-      fieldValues.clear();
-      List<BFDExportConfigEntry> configs = this.exportConfig.getConfigItemsByType(type);
-      try {
-        // System.out.println("^^^^^"+type+"^^^^^"+configs.get(0));
-        int propCount = 0;
-        int fixedValuePropsProcessed = 0;
-        for ( BFDExportConfigEntry prop: configs ) {
-          String cell = getCellValueFunc.apply( prop );
-          // System.out.println("*****"+cell);
-          if ( !cell.isEmpty() ) {
-            propCount++;
-            fixedValuePropsProcessed ++;
-            String value = cell;
-            String comment = null;
-            int commentStart = cell.indexOf("(");
-            if ( commentStart >= 0 ) {
-              value = cell.substring(0, commentStart - 1);
-              comment = cell.substring(commentStart + 1, cell.length()-1);
-            }
-            AbstractFields fieldEnum = getFieldEnumFunc.apply(prop.getField());
-            // System.out.println("     field enum"+fieldEnum);
-            // System.out.println("     value: " + value);
-            // System.out.println("     comment: " + comment);
-            fieldValues.put(fieldEnum, value);
-          }
-        }
-
-        System.out.println("config props defined and processed for " + type + ":  " + propCount );
-      }
-      catch (Exception ex) {
-        System.out.println("ExportDataBuilder.setKnown ERROR:  " + ex);
-      }
-
-      return fieldValues;
-    }
   }
 
 
@@ -1281,7 +1224,7 @@ public class BB2RIFExporter implements Flushable {
    * Defines the fields used in the beneficiary file. Note that order is significant, columns will
    * be written in the order specified.
    */
-  private enum BeneficiaryFields implements AbstractFields{
+  private enum BeneficiaryFields {
     DML_IND,
     BENE_ID,
     STATE_CODE,
@@ -1477,7 +1420,7 @@ public class BB2RIFExporter implements Flushable {
     CST_SHR_GRP_DEC_CD
   }
 
-  private enum BeneficiaryHistoryFields implements AbstractFields {
+  private enum BeneficiaryHistoryFields {
     DML_IND,
     BENE_ID,
     STATE_CODE,
@@ -1499,7 +1442,7 @@ public class BB2RIFExporter implements Flushable {
     MBI_NUM      
   }
   
-  private enum OutpatientFields implements AbstractFields {
+  private enum OutpatientFields {
     DML_IND,
     BENE_ID,
     CLM_ID,
@@ -1734,7 +1677,7 @@ public class BB2RIFExporter implements Flushable {
     RNDRNG_PHYSN_NPI
   }
 
-  private enum InpatientFields implements AbstractFields {
+  private enum InpatientFields {
     DML_IND,
     BENE_ID,
     CLM_ID,
@@ -2090,7 +2033,7 @@ public class BB2RIFExporter implements Flushable {
       InpatientFields.PRCDR_DT25 }
   };
 
-  private enum CarrierFields implements AbstractFields {
+  private enum CarrierFields {
     DML_IND,
     BENE_ID,
     CLM_ID,

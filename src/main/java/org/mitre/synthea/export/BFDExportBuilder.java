@@ -5,18 +5,19 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.function.Function;
+
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
-
 /**
  * Export configuration class for BFD
  */
-public class BFDExportConfig {
+public class BFDExportBuilder {
 
   enum ExportConfigType {
     BENEFICIARY,
@@ -53,8 +54,8 @@ public class BFDExportConfig {
   /** constructor
    *  @param configFilePath path to the configuration TSV file
    */
-  public BFDExportConfig( String configFilePath ) {
-    this.configFile = new File( configFilePath );
+  public BFDExportBuilder() {
+    this.configFile = new File( "src/main/resources/exporters/cms_field_values.tsv" );
     this.initConfigs();
   }
 
@@ -102,6 +103,47 @@ public class BFDExportConfig {
     }
   }
 
+  /** Sets the known field values based on exporter config TSV file
+     * @param type output type (one of the ExportConfigType types)
+     * @param fieldValues reference to a HashMap of field values in each of the exportXXXXX() functions
+     * @param getCellValueFunc reference to Function that retrieves the string value relevant to the current output type from the config file
+     * @param getFieldEnumFunc reference to Function that retrieves the enum relevant to the current output type
+     * @return
+     */
+  public HashMap setKnown( ExportConfigType type, HashMap fieldValues, Function<BFDExportConfigEntry, String> getCellValueFunc, Function<String, Enum> getFieldEnumFunc ) {
+    fieldValues.clear();
+    List<BFDExportConfigEntry> configs = this.getConfigItemsByType(type);
+    try {
+      // System.out.println("^^^^^"+type+"^^^^^"+configs.get(0));
+      int propCount = 0;
+      for ( BFDExportConfigEntry prop: configs ) {
+        String cell = getCellValueFunc.apply( prop );
+        // System.out.println("*****"+cell);
+        if ( !cell.isEmpty() ) {
+          propCount++;
+          String value = cell;
+          String comment = null;
+          int commentStart = cell.indexOf("(");
+          if ( commentStart >= 0 ) {
+            value = cell.substring(0, commentStart - 1);
+            comment = cell.substring(commentStart + 1, cell.length()-1);
+          }
+          Enum fieldEnum = getFieldEnumFunc.apply(prop.getField());
+          // System.out.println("     field enum"+fieldEnum);
+          // System.out.println("     value: " + value);
+          // System.out.println("     comment: " + comment);
+          fieldValues.put(fieldEnum, value);
+        }
+      }
+      System.out.println("config props defined and processed for " + type + ":  " + propCount );
+    }
+    catch (Exception ex) {
+      System.out.println("ExportDataBuilder.setKnown ERROR:  " + ex);
+    }
+
+    return fieldValues;
+  }
+
   /** returns all the config items */
   public List<BFDExportConfigEntry> getAllConfigs() {
     return this.allConfigs;
@@ -126,6 +168,5 @@ public class BFDExportConfig {
       default: return null;
     }
   }
-
 }
 
