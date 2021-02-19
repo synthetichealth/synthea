@@ -32,7 +32,7 @@ IME_OP_CLM_VAL_AMT			0
 DSH_OP_CLM_VAL_AMT			0			
 REV_CNTR_NDC_QTY			0			
 CARR_CLM_ENTRY_CD					1	
-CLM_DISP_CD					1	
+CLM_DISP_CD					01	
 CARR_CLM_PMT_DNL_CD					1 (1=paid to physician)	
 NCH_CLM_BENE_PMT_AMT					0	
 LINE_NUM					1	
@@ -43,8 +43,8 @@ LINE_PLACE_OF_SRVC_CD					11 (11=office)
 LINE_BENE_PMT_AMT					0	
 LINE_BENE_PRMRY_PYR_PD_AMT					0	
 CARR_LINE_ANSTHSA_UNIT_CNT					0	
-SRVC_PRVDR_ID_QLFYR_CD						1 (undefined)
-PRSCRBR_ID_QLFYR_CD						1 (undefined)
+SRVC_PRVDR_ID_QLFYR_CD						01 (undefined)
+PRSCRBR_ID_QLFYR_CD						01 (undefined)
 PLAN_PBP_REC_NUM						999
 CMPND_CD						"0 (0=not specified, 1=not compound, 2=compound)"
 DRUG_CVRG_STUS_CD						C

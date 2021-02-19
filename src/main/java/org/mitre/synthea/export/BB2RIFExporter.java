@@ -165,9 +165,9 @@ public class BB2RIFExporter implements Flushable {
     carrier = new SynchronizedBBLineWriter(carrierFile);
     carrier.writeHeader(CarrierFields.class);
 
-    //    File prescriptionFile = outputDirectory.resolve("prescription.csv").toFile();
-    //    prescription = new SynchronizedBBLineWriter(prescriptionFile);
-    //    prescription.writeHeader(PrescriptionFields.class);
+    File prescriptionFile = outputDirectory.resolve("prescription.csv").toFile();
+    prescription = new SynchronizedBBLineWriter(prescriptionFile);
+    prescription.writeHeader(PrescriptionFields.class);
   }
   
   /**
@@ -182,8 +182,8 @@ public class BB2RIFExporter implements Flushable {
     exportBeneficiaryHistory(person, stopTime, useConfig);
     exportInpatient(person, stopTime, useConfig);
     exportOutpatient(person, stopTime, useConfig );
-    // exportCarrier(person, stopTime, useConfig );
-    //    exportPrescription(person, stopTime, useConfig);
+    exportCarrier(person, stopTime, useConfig );
+    exportPrescription(person, stopTime, useConfig);
   }
   
   /**
@@ -674,7 +674,7 @@ public class BB2RIFExporter implements Flushable {
         continue;
       }
 
-      if ( useConfig ) {        
+      if ( useConfig ) {
         Function<ExportConfigEntry, String> getCellValueFunc = prop -> prop.getCarrier(); // gets output specific cell from configs
         Function<String, AbstractFields> getFieldEnumFunc = field -> CarrierFields.valueOf(field);  // gets output specific enums
         this.outputBuilder.setKnown(ExportConfigType.CARRIER, fieldValues, getCellValueFunc, getFieldEnumFunc);
@@ -686,7 +686,7 @@ public class BB2RIFExporter implements Flushable {
         fieldValues.put(CarrierFields.NCH_NEAR_LINE_REC_IDENT_CD, "O"); // O=physician
         fieldValues.put(CarrierFields.NCH_CLM_TYPE_CD, "71"); // local carrier, non-DME
         fieldValues.put(CarrierFields.CARR_CLM_ENTRY_CD, "1");
-        fieldValues.put(CarrierFields.CLM_DISP_CD, "01"); //asdf
+        fieldValues.put(CarrierFields.CLM_DISP_CD, "01");
         fieldValues.put(CarrierFields.CARR_CLM_PMT_DNL_CD, "1"); // 1=paid to physician
         fieldValues.put(CarrierFields.NCH_CLM_BENE_PMT_AMT, "0");
         fieldValues.put(CarrierFields.LINE_NUM, "1");
@@ -697,7 +697,6 @@ public class BB2RIFExporter implements Flushable {
         fieldValues.put(CarrierFields.LINE_BENE_PMT_AMT, "0");
         fieldValues.put(CarrierFields.LINE_BENE_PRMRY_PYR_PD_AMT, "0");
         fieldValues.put(CarrierFields.CARR_LINE_ANSTHSA_UNIT_CNT, "0");
-
       }
 
       // The REQUIRED fields
@@ -760,9 +759,10 @@ public class BB2RIFExporter implements Flushable {
    * Export prescription claims details for a single person.
    * @param person the person to export
    * @param stopTime end time of simulation
+   * @param useConfig flag to use ExportConfig; use false to use original code, true to use ExportConfig and ExportBuilder
    * @throws IOException if something goes wrong
    */
-  private void exportPrescription(Person person, long stopTime) throws IOException {
+  private void exportPrescription(Person person, long stopTime, boolean useConfig) throws IOException {
     HashMap<PrescriptionFields, String> fieldValues = new HashMap<>();
     HashMap<String, Integer> fillNum = new HashMap<>();
     double costs = 0;
@@ -774,17 +774,34 @@ public class BB2RIFExporter implements Flushable {
         int pdeId = this.pdeId.incrementAndGet();
         int claimGroupId = this.claimGroupId.incrementAndGet();
 
-        fieldValues.clear();
+        if ( useConfig ) {        
+          Function<ExportConfigEntry, String> getCellValueFunc = prop -> prop.getPrescription(); // gets output specific cell from configs
+          Function<String, AbstractFields> getFieldEnumFunc = field -> PrescriptionFields.valueOf(field);  // gets output specific enums
+          this.outputBuilder.setKnown(ExportConfigType.PRESCRIPTION, fieldValues, getCellValueFunc, getFieldEnumFunc);
+        }
+        else {
+          fieldValues.clear();
+          fieldValues.put(PrescriptionFields.DML_IND, "INSERT");
+          fieldValues.put(PrescriptionFields.FINAL_ACTION, "F");
+          fieldValues.put(PrescriptionFields.SRVC_PRVDR_ID_QLFYR_CD, "01"); // undefined
+          fieldValues.put(PrescriptionFields.PRSCRBR_ID_QLFYR_CD, "01"); // undefined
+          fieldValues.put(PrescriptionFields.PLAN_PBP_REC_NUM, "999");
+          // 0=not specified, 1=not compound, 2=compound
+          fieldValues.put(PrescriptionFields.CMPND_CD, "0");
+          fieldValues.put(PrescriptionFields.DRUG_CVRG_STUS_CD, "C");
+          fieldValues.put(PrescriptionFields.OTHR_TROOP_AMT, "0");
+          fieldValues.put(PrescriptionFields.LICS_AMT, "0");
+          fieldValues.put(PrescriptionFields.PLRO_AMT, "0");
+          fieldValues.put(PrescriptionFields.RPTD_GAP_DSCNT_NUM, "0");
+
+        }
+
         // The REQUIRED fields
-        fieldValues.put(PrescriptionFields.DML_IND, "INSERT");
         fieldValues.put(PrescriptionFields.PDE_ID, "" + pdeId);
         fieldValues.put(PrescriptionFields.CLM_GRP_ID, "" + claimGroupId);
-        fieldValues.put(PrescriptionFields.FINAL_ACTION, "F");
         fieldValues.put(PrescriptionFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
         fieldValues.put(PrescriptionFields.SRVC_DT, bb2DateFromTimestamp(encounter.start));
-        fieldValues.put(PrescriptionFields.SRVC_PRVDR_ID_QLFYR_CD, "01"); // undefined
         fieldValues.put(PrescriptionFields.SRVC_PRVDR_ID, encounter.provider.id);
-        fieldValues.put(PrescriptionFields.PRSCRBR_ID_QLFYR_CD, "01"); // undefined
         fieldValues.put(PrescriptionFields.PRSCRBR_ID,
             "" + (9_999_999_999L - encounter.clinician.identifier));
         fieldValues.put(PrescriptionFields.RX_SRVC_RFRNC_NUM, "" + pdeId);
@@ -795,9 +812,6 @@ public class BB2RIFExporter implements Flushable {
             ("R" + Math.abs(
                 UUID.fromString(medication.claim.payer.uuid)
                 .getMostSignificantBits())).substring(0, 5));
-        fieldValues.put(PrescriptionFields.PLAN_PBP_REC_NUM, "999");
-        // 0=not specified, 1=not compound, 2=compound
-        fieldValues.put(PrescriptionFields.CMPND_CD, "0");
         fieldValues.put(PrescriptionFields.DAW_PROD_SLCTN_CD, "" + (int) person.rand(0, 9));
         fieldValues.put(PrescriptionFields.QTY_DSPNSD_NUM, "" + getQuantity(medication, stopTime));
         fieldValues.put(PrescriptionFields.DAYS_SUPLY_NUM, "" + getDays(medication, stopTime));
@@ -807,7 +821,6 @@ public class BB2RIFExporter implements Flushable {
         }
         fillNum.put(medication.codes.get(0).code, fill);
         fieldValues.put(PrescriptionFields.FILL_NUM, "" + fill);
-        fieldValues.put(PrescriptionFields.DRUG_CVRG_STUS_CD, "C");
         int year = Utilities.getYear(medication.start);
         if (year != costYear) {
           costYear = year;
@@ -824,17 +837,13 @@ public class BB2RIFExporter implements Flushable {
         }
         fieldValues.put(PrescriptionFields.PTNT_PAY_AMT, 
                 String.format("%.2f", medication.claim.getPatientCost()));
-        fieldValues.put(PrescriptionFields.OTHR_TROOP_AMT, "0");
-        fieldValues.put(PrescriptionFields.LICS_AMT, "0");
-        fieldValues.put(PrescriptionFields.PLRO_AMT, "0");
         fieldValues.put(PrescriptionFields.CVRD_D_PLAN_PD_AMT,
             String.format("%.2f", medication.claim.getCoveredCost()));
         fieldValues.put(PrescriptionFields.NCVRD_PLAN_PD_AMT,
             String.format("%.2f", medication.claim.getPatientCost()));
         fieldValues.put(PrescriptionFields.TOT_RX_CST_AMT,
             String.format("%.2f", medication.claim.getTotalClaimCost()));
-        fieldValues.put(PrescriptionFields.RPTD_GAP_DSCNT_NUM, "0");
-        fieldValues.put(PrescriptionFields.PHRMCY_SRVC_TYPE_CD, "0" + (int) person.rand(1, 8));
+        fieldValues.put(PrescriptionFields.PHRMCY_SRVC_TYPE_CD, "0" + (int) person.rand(1, 8)); // @todo hkong will udpate this
         // 00=not specified, 01=home, 02=SNF, 03=long-term, 11=hospice, 14=homeless
         if (person.attributes.containsKey("homeless")
             && ((Boolean) person.attributes.get("homeless") == true)) {
@@ -859,7 +868,7 @@ public class BB2RIFExporter implements Flushable {
     inpatient.flush();
     outpatient.flush();
     carrier.flush();
-    //    prescription.flush();
+    prescription.flush();
   }
 
 
@@ -890,12 +899,12 @@ public class BB2RIFExporter implements Flushable {
       fieldValues.clear();
       List<ExportConfigEntry> configs = this.exportConfig.getConfigItemsByType(type);
       try {
-        // System.out.println("^^^^^"+configs.get(0));
+        // System.out.println("^^^^^"+type+"^^^^^"+configs.get(0));
         int propCount = 0;
         int fixedValuePropsProcessed = 0;
         for ( ExportConfigEntry prop: configs ) {
           String cell = getCellValueFunc.apply( prop );
-          System.out.println("*****"+cell);
+          // System.out.println("*****"+cell);
           if ( !cell.isEmpty() ) {
             propCount++;
             fixedValuePropsProcessed ++;
@@ -907,15 +916,14 @@ public class BB2RIFExporter implements Flushable {
               comment = cell.substring(commentStart + 1, cell.length()-1);
             }
             AbstractFields fieldEnum = getFieldEnumFunc.apply(prop.getField());
-            System.out.println("     field enum"+fieldEnum);
-            System.out.println("     value: " + value);
-            System.out.println("     comment: " + comment);
+            // System.out.println("     field enum"+fieldEnum);
+            // System.out.println("     value: " + value);
+            // System.out.println("     comment: " + comment);
             fieldValues.put(fieldEnum, value);
           }
         }
 
-        System.out.println("props defined:" + propCount );
-        System.out.println("fixed value props processed:" + fixedValuePropsProcessed );
+        System.out.println("config props defined and processed for " + type + ":  " + propCount );
       }
       catch (Exception ex) {
         System.out.println("ExportDataBuilder.setKnown ERROR:  " + ex);

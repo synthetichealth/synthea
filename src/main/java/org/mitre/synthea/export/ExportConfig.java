@@ -29,7 +29,7 @@ public class ExportConfig {
     // MEDICARE_BENEFICIARY_ID,
     OUTPATIENT,
     // PDE,
-    // PRESCRIPTION,
+    PRESCRIPTION,
     // SNF,
   }
   
@@ -37,18 +37,18 @@ public class ExportConfig {
   private File configFile;
   private List<ExportConfigEntry> allConfigs = null;
   
-  private List<ExportConfigEntry> beneficiaryConfigs = new ArrayList();
-  private List<ExportConfigEntry> beneficiaryHistoryConfigs = new ArrayList();
-  private List<ExportConfigEntry> carrierConfigs = new ArrayList();
-  // private List<ExportConfigEntry> dmeConfigs = new ArrayList();
-  private List<ExportConfigEntry> inpatientConfigs = new ArrayList();
-  // private List<ExportConfigEntry> hhaConfigs = new ArrayList();
-  // private List<ExportConfigEntry> hospiceConfigs = new ArrayList();
-  // private List<ExportConfigEntry> medicareBeneficiaryIdConfigs = new ArrayList();
-  private List<ExportConfigEntry> outpatientConfigs = new ArrayList();
-  // private List<ExportConfigEntry> pdeConfigs = new ArrayList();
-  // private List<ExportConfigEntry> prescriptionConfigs = new ArrayList();
-  // private List<ExportConfigEntry> snfConfigs = new ArrayList();
+  private List<ExportConfigEntry> beneficiaryConfigs = new ArrayList<ExportConfigEntry>();
+  private List<ExportConfigEntry> beneficiaryHistoryConfigs = new ArrayList<ExportConfigEntry>();
+  private List<ExportConfigEntry> carrierConfigs = new ArrayList<ExportConfigEntry>();
+  // private List<ExportConfigEntry> dmeConfigs = new ArrayList<ExportConfigEntry>();
+  private List<ExportConfigEntry> inpatientConfigs = new ArrayList<ExportConfigEntry>();
+  // private List<ExportConfigEntry> hhaConfigs = new ArrayList<ExportConfigEntry>();
+  // private List<ExportConfigEntry> hospiceConfigs = new ArrayList<ExportConfigEntry>();
+  // private List<ExportConfigEntry> medicareBeneficiaryIdConfigs = new ArrayList<ExportConfigEntry>();
+  private List<ExportConfigEntry> outpatientConfigs = new ArrayList<ExportConfigEntry>();
+  // private List<ExportConfigEntry> pdeConfigs = new ArrayList<ExportConfigEntry>();
+  private List<ExportConfigEntry> prescriptionConfigs = new ArrayList<ExportConfigEntry>();
+  // private List<ExportConfigEntry> snfConfigs = new ArrayList<ExportConfigEntry>();
   
   /** constructor
    *  @param configFilePath path to the configuration TSV file
@@ -65,7 +65,7 @@ public class ExportConfig {
     try {
       System.out.println("reading from " + this.configFile.getAbsolutePath() );
       Reader reader = new BufferedReader(new FileReader(this.configFile));
-      CsvToBean<ExportConfigEntry> csvReader = new CsvToBeanBuilder(reader)
+      CsvToBean<ExportConfigEntry> csvReader = new CsvToBeanBuilder<ExportConfigEntry>(reader)
         .withType(ExportConfigEntry.class)
         .withSeparator('\t')
         .withIgnoreLeadingWhiteSpace(true)
@@ -90,6 +90,9 @@ public class ExportConfig {
         if ( !prop.getOutpatient().isEmpty() ) {
           this.outpatientConfigs.add(prop);
         }
+        if ( !prop.getPrescription().isEmpty() ) {
+          this.prescriptionConfigs.add(prop);
+        }
       } 
       return this.allConfigs;
     }
@@ -113,11 +116,13 @@ public class ExportConfig {
       case BENEFICIARY_HISTORY:
         return this.beneficiaryHistoryConfigs;
       case CARRIER:
-        return this.beneficiaryHistoryConfigs;
+        return this.carrierConfigs;
       case INPATIENT: 
         return this.inpatientConfigs;
       case OUTPATIENT: 
-        return this.inpatientConfigs;
+        return this.outpatientConfigs;
+      case PRESCRIPTION: 
+        return this.prescriptionConfigs;
       default: return null;
     }
   }
