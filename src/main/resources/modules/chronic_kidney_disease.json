@@ -1,0 +1,441 @@
+{
+  "name": "Chronic Kidney Disease",
+  "remarks": [],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Initial_Kidney_Health"
+    },
+    "Initial_Kidney_Health": {
+      "type": "SetAttribute",
+      "attribute": "ckd",
+      "value": 0,
+      "direct_transition": "Guard_for_Htn_or_DM"
+    },
+    "Guard_for_Htn_or_DM": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Or",
+        "conditions": [
+          {
+            "condition_type": "Attribute",
+            "attribute": "hypertension",
+            "operator": "is not nil"
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "diabetes",
+            "operator": "is not nil"
+          }
+        ]
+      },
+      "direct_transition": "Nephropathy_Progression"
+    },
+    "Nephropathy_Progression": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "remarks": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4727808/",
+        "There are 5 defined stages of kidney disease; stage 5 is End-stage where dialysis is necessary",
+        "Prevalence of Nephropathy is 34.5% - http://link.springer.com/chapter/10.1007%2F978-1-4939-0793-9_2",
+        "Prevalence of microalbuminuria is ~ 28.8% - https://www.ncbi.nlm.nih.gov/pubmed/11877563",
+        "Prevalence of End stage renal disease is ~ .78% - ",
+        "https://www.cdc.gov/diabetes/pdfs/data/2014-report-estimates-of-diabetes-and-its-burden-in-the-united-states.pdf"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "veteran",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": "==",
+                "value": 0
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.99,
+              "transition": "Nephropathy_Progression"
+            },
+            {
+              "distribution": 0.01,
+              "transition": "Set_CKD_1 Damage"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "distribution": 0.9982,
+              "transition": "Nephropathy_Progression"
+            },
+            {
+              "distribution": 0.0018,
+              "transition": "Set_CKD_1 Damage"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 1
+          },
+          "distributions": [
+            {
+              "distribution": 0.9865,
+              "transition": "Set_CKD_1 Damage"
+            },
+            {
+              "distribution": 0.0135,
+              "transition": "Set_CKD_2 Damage"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 2
+          },
+          "distributions": [
+            {
+              "distribution": 0.994,
+              "transition": "Set_CKD_2 Damage"
+            },
+            {
+              "distribution": 0.006,
+              "transition": "Set_CKD_3 Damage"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 3
+          },
+          "distributions": [
+            {
+              "distribution": 0.9994,
+              "transition": "Set_CKD_3 Damage"
+            },
+            {
+              "distribution": 0.0006,
+              "transition": "Set_CKD_4 Damage"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "distribution": 0.9994,
+              "transition": "Set_CKD_4 Damage"
+            },
+            {
+              "distribution": 0.0006,
+              "transition": "Expected_Lifespan_for_ESRD"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 5
+          },
+          "distributions": [],
+          "transition": "Expected_Lifespan_for_ESRD"
+        }
+      ]
+    },
+    "Set_Nephropathy": {
+      "type": "SetAttribute",
+      "attribute": "nephropathy",
+      "value": true,
+      "direct_transition": "CKD1_Symptom_1"
+    },
+    "Set_Microalbuminuria": {
+      "type": "SetAttribute",
+      "attribute": "microalbuminuria",
+      "value": true,
+      "direct_transition": "CKD2_Symptom_1"
+    },
+    "Set_Proteinuria": {
+      "type": "SetAttribute",
+      "attribute": "proteinuria",
+      "value": true,
+      "direct_transition": "CKD3_Symptom_1"
+    },
+    "Expected_Lifespan_for_ESRD": {
+      "type": "Death",
+      "range": {
+        "low": 4,
+        "high": 10,
+        "unit": "years"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "46177005",
+          "display": "End stage renal disease (disorder)"
+        }
+      ],
+      "remarks": [
+        "Life expectency depends on many factors, but for patients > 40 it's generally less than 10 years with dialysis",
+        "http://link.springer.com/article/10.1007/s00467-016-3383-8 (Table 2"
+      ],
+      "direct_transition": "Set_CKD_5 Damage"
+    },
+    "Loop_back_to_Start": {
+      "type": "Simple",
+      "direct_transition": "Nephropathy_Progression"
+    },
+    "Set_CKD_1 Damage": {
+      "type": "SetAttribute",
+      "attribute": "ckd",
+      "direct_transition": "Set_Nephropathy",
+      "value": 1
+    },
+    "Set_CKD_2 Damage": {
+      "type": "SetAttribute",
+      "attribute": "ckd",
+      "direct_transition": "Set_Microalbuminuria",
+      "value": 2
+    },
+    "Set_CKD_3 Damage": {
+      "type": "SetAttribute",
+      "attribute": "ckd",
+      "value": 3,
+      "direct_transition": "Set_Proteinuria"
+    },
+    "Set_CKD_4 Damage": {
+      "type": "SetAttribute",
+      "attribute": "ckd",
+      "value": 4,
+      "direct_transition": "CKD4_Symptom_1"
+    },
+    "Set_CKD_5 Damage": {
+      "type": "SetAttribute",
+      "attribute": "ckd",
+      "direct_transition": "CKD5_Symptom_1",
+      "value": 5
+    },
+    "CKD1_Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Hunger",
+      "range": {
+        "low": 1,
+        "high": 100
+      },
+      "direct_transition": "CKD1_Symptom_2"
+    },
+    "CKD2_Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Hunger",
+      "range": {
+        "low": 20,
+        "high": 100
+      },
+      "direct_transition": "CKD2_Symptom_2"
+    },
+    "CKD2_Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "range": {
+        "low": 20,
+        "high": 100
+      },
+      "direct_transition": "CKD2_Symptom_3"
+    },
+    "CKD2_Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Frequent Urination",
+      "range": {
+        "low": 20,
+        "high": 100
+      },
+      "direct_transition": "CKD2_Symptom_4"
+    },
+    "CKD2_Symptom_4": {
+      "type": "Symptom",
+      "symptom": "Thirst",
+      "range": {
+        "low": 20,
+        "high": 100
+      },
+      "direct_transition": "Loop_back_to_Start"
+    },
+    "CKD1_Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "range": {
+        "low": 1,
+        "high": 100
+      },
+      "direct_transition": "CKD1_Symptom_3"
+    },
+    "CKD1_Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Frequent Urination",
+      "range": {
+        "low": 1,
+        "high": 100
+      },
+      "direct_transition": "CKD1_Symptom_4"
+    },
+    "CKD1_Symptom_4": {
+      "type": "Symptom",
+      "symptom": "Thirst",
+      "range": {
+        "low": 1,
+        "high": 100
+      },
+      "direct_transition": "Loop_back_to_Start"
+    },
+    "CKD3_Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Hunger",
+      "range": {
+        "low": 40,
+        "high": 100
+      },
+      "direct_transition": "CKD3_Symptom_2"
+    },
+    "CKD3_Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "range": {
+        "low": 40,
+        "high": 100
+      },
+      "direct_transition": "CKD3_Symptom_3"
+    },
+    "CKD3_Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Frequent Urination",
+      "range": {
+        "low": 40,
+        "high": 100
+      },
+      "direct_transition": "CKD3_Symptom_4"
+    },
+    "CKD3_Symptom_4": {
+      "type": "Symptom",
+      "symptom": "Thirst",
+      "range": {
+        "low": 40,
+        "high": 100
+      },
+      "direct_transition": "Loop_back_to_Start"
+    },
+    "CKD5_Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Hunger",
+      "range": {
+        "low": 50,
+        "high": 100
+      },
+      "remarks": [
+        "Without intervention, 20-40 percent of patients with type 2 diabetes/microalbuminuria, will evolve to macroalbuminuria.",
+        "Shlipak, Michael. 'Clinical Evidence Handbook: Diabetic Nephropathy: Preventing Progression - American Family Physician'. www.aafp.org."
+      ],
+      "direct_transition": "CKD5_Symptom_2"
+    },
+    "CKD5_Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "range": {
+        "low": 50,
+        "high": 100
+      },
+      "direct_transition": "CKD5_Symptom_3"
+    },
+    "CKD5_Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Frequent Urination",
+      "range": {
+        "low": 50,
+        "high": 100
+      },
+      "direct_transition": "CKD5_Symptom_4"
+    },
+    "CKD5_Symptom_4": {
+      "type": "Symptom",
+      "symptom": "Thirst",
+      "range": {
+        "low": 50,
+        "high": 100
+      },
+      "direct_transition": "Loop_back_to_Start"
+    },
+    "CKD4_Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Hunger",
+      "cause": "",
+      "direct_transition": "CKD4_Symptom_2",
+      "range": {
+        "low": 45,
+        "high": 2
+      }
+    },
+    "CKD4_Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "cause": "",
+      "direct_transition": "CKD4_Symptom_3",
+      "range": {
+        "low": 45,
+        "high": 100
+      }
+    },
+    "CKD4_Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Frequent Urination",
+      "cause": "",
+      "direct_transition": "CKD4_Symptom_4",
+      "range": {
+        "low": 45,
+        "high": 100
+      }
+    },
+    "CKD4_Symptom_4": {
+      "type": "Symptom",
+      "symptom": "Thirst",
+      "cause": "",
+      "direct_transition": "Loop_back_to_Start",
+      "range": {
+        "low": 45,
+        "high": 100
+      }
+    }
+  },
+  "gmf_version": 1
+}
