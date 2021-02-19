@@ -56,6 +56,7 @@ public class BB2RIFExporter implements Flushable {
   private List<LinkedHashMap<String, String>> carrierLookup;
   private CodeMapper conditionCodeMapper;
   private CodeMapper medicationCodeMapper;
+  private CodeMapper drgCodeMapper;
 
   private StateCodeMapper locationMapper;
 
@@ -97,6 +98,7 @@ public class BB2RIFExporter implements Flushable {
     }
     conditionCodeMapper = new CodeMapper("condition_code_map.json");
     medicationCodeMapper = new CodeMapper("medication_code_map.json");
+    drgCodeMapper = new CodeMapper("drg_code_map.json");
     locationMapper = new StateCodeMapper();
     try {
       prepareOutputFiles();
@@ -537,8 +539,11 @@ public class BB2RIFExporter implements Flushable {
         // If the encounter has a recorded reason, enter the mapped
         // values into the principle diagnoses code.
         if (conditionCodeMapper.canMap(encounter.reason.code)) {
-          fieldValues.put(InpatientFields.PRNCPAL_DGNS_CD, conditionCodeMapper.getMapped(
-                  encounter.reason.code, person));
+          String icdCode = conditionCodeMapper.getMapped(encounter.reason.code, person);
+          fieldValues.put(InpatientFields.PRNCPAL_DGNS_CD, icdCode);
+          if (drgCodeMapper.canMap(icdCode)) {
+            fieldValues.put(InpatientFields.CLM_DRG_CD, drgCodeMapper.getMapped(icdCode, person));
+          }
         }
       }
       // Use the active condition diagnoses to enter mapped values
