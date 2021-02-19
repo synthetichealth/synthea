@@ -1,0 +1,55 @@
+field	beneficiary	beneficiary_history	inpatient	outpatient	carrier	prescription
+HMO_MO_CNT	0					
+DUAL_MO_CNT	0					
+DML_IND	INSERT	INSERT	INSERT	INSERT	INSERT	INSERT
+FINAL_ACTION			F (F or V)	F	F (F or V)	F
+NCH_NEAR_LINE_REC_IDENT_CD			V (V = inpatient)	W (W=outpatient)	O (O=physician)	
+NCH_CLM_TYPE_CD			60 (Always 60 for inpatient claims)	40 (40=outpatient)	"71 (local carrier, non-DME)"	
+CLAIM_QUERY_CODE			"3 (1=Interim, 3=Final, 5=Debit)"	"3 (1=Interim, 3=Final, 5=Debit)"		
+CLM_FAC_TYPE_CD			"1 (1=Hospital, 2=SNF, 7=Dialysis)"	"1 (1=Hospital, 2=SNF, 7=Dialysis)"		
+CLM_SRVC_CLSFCTN_TYPE_CD			1 (depends on value of CLM_FAC_TYPE_CD)	3 (depends on value of CLM_FAC_TYPE_CD)		
+CLM_FREQ_CD			"1 (1=Admit-Discharge, 9=Final)"	"1 (1=Admit-Discharge, 9=Final)"		
+NCH_BENE_BLOOD_DDCTBL_LBLTY_AM			0	0		
+NCH_PROFNL_CMPNT_CHRG_AMT			4 (fixed $ amount?)	4 (fixed $ amount?)		
+CLM_LINE_NUM			1	1		
+REV_CNTR			"0001 (total charge, lots of alternatives)"	"0001 (total charge, lots of alternatives)"		
+REV_CNTR_UNIT_CNT			0	0		
+REV_CNTR_RATE_AMT			0	0		
+CLM_PASS_THRU_PER_DIEM_AMT			10 (fixed $ amount?)			
+CLM_NON_UTLZTN_DAYS_CNT			0			
+NCH_BLOOD_PNTS_FRNSHD_QTY			0			
+CLM_TOT_PPS_CPTL_AMT			0			
+CLM_PPS_CPTL_FSP_AMT			0			
+CLM_PPS_CPTL_OUTLIER_AMT			0			
+CLM_PPS_CPTL_DSPRPRTNT_SHR_AMT			0			
+CLM_PPS_CPTL_IME_AMT			0			
+CLM_PPS_CPTL_EXCPTN_AMT			0			
+CLM_PPS_OLD_CPTL_HLD_HRMLS_AMT			0			
+CLM_PPS_CPTL_DRG_WT_NUM			0			
+BENE_LRD_USED_CNT			0			
+NCH_DRG_OUTLIER_APRVD_PMT_AMT			0			
+IME_OP_CLM_VAL_AMT			0			
+DSH_OP_CLM_VAL_AMT			0			
+REV_CNTR_NDC_QTY			0			
+CARR_CLM_ENTRY_CD					1	
+CLM_DISP_CD					1	
+CARR_CLM_PMT_DNL_CD					1 (1=paid to physician)	
+NCH_CLM_BENE_PMT_AMT					0	
+LINE_NUM					1	
+CARR_LINE_PRVDR_TYPE_CD					0	
+CARR_LINE_RDCD_PMT_PHYS_ASTN_C					0	
+LINE_CMS_TYPE_SRVC_CD					1	
+LINE_PLACE_OF_SRVC_CD					11 (11=office)	
+LINE_BENE_PMT_AMT					0	
+LINE_BENE_PRMRY_PYR_PD_AMT					0	
+CARR_LINE_ANSTHSA_UNIT_CNT					0	
+SRVC_PRVDR_ID_QLFYR_CD						1 (undefined)
+PRSCRBR_ID_QLFYR_CD						1 (undefined)
+PLAN_PBP_REC_NUM						999
+CMPND_CD						"0 (0=not specified, 1=not compound, 2=compound)"
+DRUG_CVRG_STUS_CD						C
+OTHR_TROOP_AMT						0
+LICS_AMT						0
+PLRO_AMT						0
+RPTD_GAP_DSCNT_NUM						0
+PHRMCY_SRVC_TYPE_CD						"01,02,03,04,05,06,07,08 (random value between 01 and 08)"

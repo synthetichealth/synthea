@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.function.Function;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.mitre.synthea.export.ExportConfig.ExportConfigType;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
@@ -55,6 +57,7 @@ public class BB2RIFExporter implements Flushable {
   private HashMap<String,List<List<String>>> map;
 
   private StateCodeMapper locationMapper;
+  private ExportDataBuilder outputBuilder;
 
   private static final String BB2_BENE_ID = "BB2_BENE_ID";
   private static final String BB2_HIC_ID = "BB2_HIC_ID";
@@ -110,6 +113,7 @@ public class BB2RIFExporter implements Flushable {
       // and if these do throw ioexceptions there's nothing we can do anyway
       throw new RuntimeException(e);
     }
+    outputBuilder = new ExportDataBuilder();  // builder that uses the exporter TSV config files
   }
   
   /**
@@ -145,22 +149,22 @@ public class BB2RIFExporter implements Flushable {
     beneficiary = new SynchronizedBBLineWriter(beneficiaryFile);
     beneficiary.writeHeader(BeneficiaryFields.class);
 
-    //    File beneficiaryHistoryFile = outputDirectory.resolve("beneficiary_history.csv").toFile();
-    //    beneficiaryHistory = new SynchronizedBBLineWriter(beneficiaryHistoryFile);
-    //    beneficiaryHistory.writeHeader(BeneficiaryHistoryFields.class);
-    //
-    //    File outpatientFile = outputDirectory.resolve("outpatient.csv").toFile();
-    //    outpatient = new SynchronizedBBLineWriter(outpatientFile);
-    //    outpatient.writeHeader(OutpatientFields.class);
+    File beneficiaryHistoryFile = outputDirectory.resolve("beneficiary_history.csv").toFile();
+    beneficiaryHistory = new SynchronizedBBLineWriter(beneficiaryHistoryFile);
+    beneficiaryHistory.writeHeader(BeneficiaryHistoryFields.class);
+
+    File outpatientFile = outputDirectory.resolve("outpatient.csv").toFile();
+    outpatient = new SynchronizedBBLineWriter(outpatientFile);
+    outpatient.writeHeader(OutpatientFields.class);
 
     File inpatientFile = outputDirectory.resolve("inpatient.csv").toFile();
     inpatient = new SynchronizedBBLineWriter(inpatientFile);
     inpatient.writeHeader(InpatientFields.class);
 
-    //    File carrierFile = outputDirectory.resolve("carrier.csv").toFile();
-    //    carrier = new SynchronizedBBLineWriter(carrierFile);
-    //    carrier.writeHeader(CarrierFields.class);
-    //
+    File carrierFile = outputDirectory.resolve("carrier.csv").toFile();
+    carrier = new SynchronizedBBLineWriter(carrierFile);
+    carrier.writeHeader(CarrierFields.class);
+
     //    File prescriptionFile = outputDirectory.resolve("prescription.csv").toFile();
     //    prescription = new SynchronizedBBLineWriter(prescriptionFile);
     //    prescription.writeHeader(PrescriptionFields.class);
@@ -173,35 +177,47 @@ public class BB2RIFExporter implements Flushable {
    * @throws IOException if something goes wrong
    */
   public void export(Person person, long stopTime) throws IOException {
-    exportBeneficiary(person, stopTime);
-    //    exportBeneficiaryHistory(person, stopTime);
-    //    exportOutpatient(person, stopTime);
-    exportInpatient(person, stopTime);
-    //    exportCarrier(person, stopTime);
-    //    exportPrescription(person, stopTime);
+    boolean useConfig = true;
+    exportBeneficiary(person, stopTime, useConfig);
+    exportBeneficiaryHistory(person, stopTime, useConfig);
+    exportInpatient(person, stopTime, useConfig);
+    exportOutpatient(person, stopTime, useConfig );
+    // exportCarrier(person, stopTime, useConfig );
+    //    exportPrescription(person, stopTime, useConfig);
   }
   
   /**
    * Export a beneficiary details for single person.
    * @param person the person to export
    * @param stopTime end time of simulation
+   * @param useConfig flag to use ExportConfig; use false to use original code, true to use ExportConfig and ExportBuilder
    * @throws IOException if something goes wrong
    */
-  private void exportBeneficiary(Person person, long stopTime) throws IOException {
+  private void exportBeneficiary(Person person, long stopTime, boolean useConfig) throws IOException {
     HashMap<BeneficiaryFields, String> fieldValues = new HashMap<>();
+
+    if ( useConfig ) {        
+      Function<ExportConfigEntry, String> getCellValueFunc = prop -> prop.getBeneficiary(); // gets output specific cell from configs
+      Function<String, AbstractFields> getFieldEnumFunc = field -> BeneficiaryFields.valueOf(field);  // gets output specific enums
+      this.outputBuilder.setKnown(ExportConfigType.BENEFICIARY, fieldValues, getCellValueFunc, getFieldEnumFunc);
+    }
+    else {
+      fieldValues.clear();
+      fieldValues.put(BeneficiaryFields.DML_IND, "INSERT");
+      fieldValues.put(BeneficiaryFields.HMO_MO_CNT, "0");
+      fieldValues.put(BeneficiaryFields.DUAL_MO_CNT, "0");
+    }
+
     // Optional fields that must be zero
     fieldValues.put(BeneficiaryFields.RFRNC_YR, String.valueOf(getYear(stopTime)));
     fieldValues.put(BeneficiaryFields.A_MO_CNT, String.valueOf(getMonth(stopTime)));
     fieldValues.put(BeneficiaryFields.B_MO_CNT, String.valueOf(getMonth(stopTime)));
     fieldValues.put(BeneficiaryFields.BUYIN_MO_CNT, String.valueOf(getMonth(stopTime)));
-    fieldValues.put(BeneficiaryFields.HMO_MO_CNT, "0");
     fieldValues.put(BeneficiaryFields.RDS_MO_CNT, String.valueOf(getMonth(stopTime)));
     fieldValues.put(BeneficiaryFields.AGE, "0");
-    fieldValues.put(BeneficiaryFields.DUAL_MO_CNT, "0");
     fieldValues.put(BeneficiaryFields.PLAN_CVRG_MO_CNT, String.valueOf(getMonth(stopTime)));
 
     // Now put in the real data, some of which might overwrite the above
-    fieldValues.put(BeneficiaryFields.DML_IND, "INSERT");
     String personId = (String)person.attributes.get(Person.ID);
     String beneIdStr = Integer.toString(beneId.decrementAndGet());
     person.attributes.put(BB2_BENE_ID, beneIdStr);
@@ -253,11 +269,21 @@ public class BB2RIFExporter implements Flushable {
    * was called first to set up various ID on person
    * @param person the person to export
    * @param stopTime end time of simulation
+   * @param useConfig flag to use ExportConfig; use false to use original code, true to use ExportConfig and ExportBuilder
    * @throws IOException if something goes wrong
    */
-  private void exportBeneficiaryHistory(Person person, long stopTime) throws IOException {
+  private void exportBeneficiaryHistory(Person person, long stopTime, boolean useConfig) throws IOException {
     HashMap<BeneficiaryHistoryFields, String> fieldValues = new HashMap<>();
-    fieldValues.put(BeneficiaryHistoryFields.DML_IND, "INSERT");
+
+    if ( useConfig ) {        
+      Function<ExportConfigEntry, String> getCellValueFunc = prop -> prop.getBeneficiary_history(); // gets output specific cell from configs
+      Function<String, AbstractFields> getFieldEnumFunc = field -> BeneficiaryHistoryFields.valueOf(field);  // gets output specific enums
+      this.outputBuilder.setKnown(ExportConfigType.BENEFICIARY_HISTORY, fieldValues, getCellValueFunc, getFieldEnumFunc);
+    }
+    else {
+      fieldValues.clear();
+      fieldValues.put(BeneficiaryHistoryFields.DML_IND, "INSERT");
+    }
     String beneIdStr = (String)person.attributes.get(BB2_BENE_ID);
     fieldValues.put(BeneficiaryHistoryFields.BENE_ID, beneIdStr);
     String hicId = (String)person.attributes.get(BB2_HIC_ID);
@@ -316,9 +342,10 @@ public class BB2RIFExporter implements Flushable {
    * Export outpatient claims details for a single person.
    * @param person the person to export
    * @param stopTime end time of simulation
+   * @param useConfig flag to use ExportConfig; use false to use original code, true to use ExportConfig and ExportBuilder
    * @throws IOException if something goes wrong
    */
-  private void exportOutpatient(Person person, long stopTime) throws IOException {
+  private void exportOutpatient(Person person, long stopTime, boolean useConfig ) throws IOException {
     HashMap<OutpatientFields, String> fieldValues = new HashMap<>();
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
@@ -334,24 +361,38 @@ public class BB2RIFExporter implements Flushable {
         continue;
       }
 
-      fieldValues.clear();
+      if ( useConfig ) {        
+        Function<ExportConfigEntry, String> getCellValueFunc = prop -> prop.getOutpatient(); // gets output specific cell from configs
+        Function<String, AbstractFields> getFieldEnumFunc = field -> OutpatientFields.valueOf(field);  // gets output specific enums
+        this.outputBuilder.setKnown(ExportConfigType.OUTPATIENT, fieldValues, getCellValueFunc, getFieldEnumFunc);
+      }
+      else {
+        fieldValues.clear();
+        fieldValues.put(OutpatientFields.DML_IND, "INSERT");
+        fieldValues.put(OutpatientFields.FINAL_ACTION, "F");
+        fieldValues.put(OutpatientFields.NCH_NEAR_LINE_REC_IDENT_CD, "W"); // W=outpatient
+        fieldValues.put(OutpatientFields.NCH_CLM_TYPE_CD, "40"); // 40=outpatient
+        fieldValues.put(OutpatientFields.CLAIM_QUERY_CODE, "3"); // 1=Interim, 3=Final, 5=Debit
+        fieldValues.put(OutpatientFields.CLM_FAC_TYPE_CD, "1"); // 1=Hospital, 2=SNF, 7=Dialysis
+        fieldValues.put(OutpatientFields.CLM_SRVC_CLSFCTN_TYPE_CD, "3"); // depends on value of above
+        fieldValues.put(OutpatientFields.CLM_FREQ_CD, "1"); // 1=Admit-Discharge, 9=Final
+        fieldValues.put(OutpatientFields.NCH_BENE_BLOOD_DDCTBL_LBLTY_AM, "0");
+        fieldValues.put(OutpatientFields.NCH_PROFNL_CMPNT_CHRG_AMT, "4"); // fixed $ amount?
+        fieldValues.put(OutpatientFields.CLM_LINE_NUM, "1");
+        fieldValues.put(OutpatientFields.REV_CNTR, "0001"); // total charge, lots of alternatives
+        fieldValues.put(OutpatientFields.REV_CNTR_UNIT_CNT, "0");
+        fieldValues.put(OutpatientFields.REV_CNTR_RATE_AMT, "0");
+      }
+
       // The REQUIRED fields
-      fieldValues.put(OutpatientFields.DML_IND, "INSERT");
       fieldValues.put(OutpatientFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
       fieldValues.put(OutpatientFields.CLM_ID, "" + claimId);
       fieldValues.put(OutpatientFields.CLM_GRP_ID, "" + claimGroupId);
-      fieldValues.put(OutpatientFields.FINAL_ACTION, "F");
-      fieldValues.put(OutpatientFields.NCH_NEAR_LINE_REC_IDENT_CD, "W"); // W=outpatient
-      fieldValues.put(OutpatientFields.NCH_CLM_TYPE_CD, "40"); // 40=outpatient
       fieldValues.put(OutpatientFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(OutpatientFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(OutpatientFields.NCH_WKLY_PROC_DT,
           bb2DateFromTimestamp(nextFriday(encounter.stop)));
-      fieldValues.put(OutpatientFields.CLAIM_QUERY_CODE, "3"); // 1=Interim, 3=Final, 5=Debit
       fieldValues.put(OutpatientFields.PRVDR_NUM, encounter.provider.id);
-      fieldValues.put(OutpatientFields.CLM_FAC_TYPE_CD, "1"); // 1=Hospital, 2=SNF, 7=Dialysis
-      fieldValues.put(OutpatientFields.CLM_SRVC_CLSFCTN_TYPE_CD, "3"); // depends on value of above
-      fieldValues.put(OutpatientFields.CLM_FREQ_CD, "1"); // 1=Admit-Discharge, 9=Final
       fieldValues.put(OutpatientFields.CLM_PMT_AMT, String.format("%.2f",
               encounter.claim.getTotalClaimCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
@@ -381,8 +422,6 @@ public class BB2RIFExporter implements Flushable {
       // fieldValues.put(OutpatientFields.CLM_PASS_THRU_PER_DIEM_AMT, null);
       // fieldValues.put(OutpatientFields.NCH_BENE_IP_DDCTBL_AMT, null);
       // fieldValues.put(OutpatientFields.NCH_BENE_PTA_COINSRNC_LBLTY_AM, null);
-      fieldValues.put(OutpatientFields.NCH_BENE_BLOOD_DDCTBL_LBLTY_AM, "0");
-      fieldValues.put(OutpatientFields.NCH_PROFNL_CMPNT_CHRG_AMT, "4"); // fixed $ amount?
       // TODO required in the mapping, but not in the Enum
       // fieldValues.put(OutpatientFields.NCH_IP_NCVRD_CHRG_AMT, null);
       // fieldValues.put(OutpatientFields.NCH_IP_TOT_DDCTN_AMT, null);
@@ -391,10 +430,6 @@ public class BB2RIFExporter implements Flushable {
       // fieldValues.put(OutpatientFields.CLM_NON_UTLZTN_DAYS_CNT, null);
       // fieldValues.put(OutpatientFields.NCH_BLOOD_PNTS_FRNSHD_QTY, null);
       // fieldValues.put(OutpatientFields.CLM_DRG_OUTLIER_STAY_CD, null);
-      fieldValues.put(OutpatientFields.CLM_LINE_NUM, "1");
-      fieldValues.put(OutpatientFields.REV_CNTR, "0001"); // total charge, lots of alternatives
-      fieldValues.put(OutpatientFields.REV_CNTR_UNIT_CNT, "0");
-      fieldValues.put(OutpatientFields.REV_CNTR_RATE_AMT, "0");
       fieldValues.put(OutpatientFields.REV_CNTR_TOT_CHRG_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
       fieldValues.put(OutpatientFields.REV_CNTR_NCVRD_CHRG_AMT,
@@ -408,9 +443,11 @@ public class BB2RIFExporter implements Flushable {
    * Export inpatient claims details for a single person.
    * @param person the person to export
    * @param stopTime end time of simulation
+   * @param useConfig flag to use ExportConfig; use false to use original code, true to use ExportConfig and ExportBuilder
    * @throws IOException if something goes wrong
    */
-  private void exportInpatient(Person person, long stopTime) throws IOException {
+  private void exportInpatient(Person person, long stopTime, boolean useConfig ) throws IOException {
+    System.out.println("----- ----- exportInpatient ----- -----");
     HashMap<InpatientFields, String> fieldValues = new HashMap<>();
 
     HealthRecord.Encounter previous = null;
@@ -430,24 +467,56 @@ public class BB2RIFExporter implements Flushable {
         continue;
       }
 
-      fieldValues.clear();
+      if ( useConfig ) {        
+        Function<ExportConfigEntry, String> getCellValueFunc = prop -> prop.getInpatient(); // gets output specific cell from configs
+        Function<String, AbstractFields> getFieldEnumFunc = field -> InpatientFields.valueOf(field);  // gets output specific enums
+        this.outputBuilder.setKnown(ExportConfigType.INPATIENT, fieldValues, getCellValueFunc, getFieldEnumFunc);
+      }
+      else {
+        fieldValues.clear();
+        fieldValues.put(InpatientFields.DML_IND, "INSERT");
+        fieldValues.put(InpatientFields.FINAL_ACTION, "F"); // F or V
+        fieldValues.put(InpatientFields.NCH_NEAR_LINE_REC_IDENT_CD, "V"); // V = inpatient
+        fieldValues.put(InpatientFields.NCH_CLM_TYPE_CD, "60"); // Always 60 for inpatient claims
+        fieldValues.put(InpatientFields.CLAIM_QUERY_CODE, "3"); // 1=Interim, 3=Final, 5=Debit
+        fieldValues.put(InpatientFields.CLM_FAC_TYPE_CD, "1"); // 1=Hospital, 2=SNF, 7=Dialysis
+        fieldValues.put(InpatientFields.CLM_SRVC_CLSFCTN_TYPE_CD, "1"); // depends on value of above
+        fieldValues.put(InpatientFields.CLM_FREQ_CD, "1"); // 1=Admit-Discharge, 9=Final
+        fieldValues.put(InpatientFields.CLM_PASS_THRU_PER_DIEM_AMT, "10"); // fixed $ amount?
+        fieldValues.put(InpatientFields.NCH_BENE_BLOOD_DDCTBL_LBLTY_AM, "0");
+        fieldValues.put(InpatientFields.NCH_PROFNL_CMPNT_CHRG_AMT, "4"); // fixed $ amount?
+        fieldValues.put(InpatientFields.CLM_NON_UTLZTN_DAYS_CNT, "0");
+        fieldValues.put(InpatientFields.NCH_BLOOD_PNTS_FRNSHD_QTY, "0");
+        fieldValues.put(InpatientFields.CLM_LINE_NUM, "1");
+        fieldValues.put(InpatientFields.REV_CNTR, "0001"); // total charge, lots of alternatives
+        fieldValues.put(InpatientFields.REV_CNTR_UNIT_CNT, "0");
+        fieldValues.put(InpatientFields.REV_CNTR_RATE_AMT, "0");
+
+        fieldValues.put(InpatientFields.CLM_TOT_PPS_CPTL_AMT, "0");
+        fieldValues.put(InpatientFields.CLM_PPS_CPTL_FSP_AMT, "0");
+        fieldValues.put(InpatientFields.CLM_PPS_CPTL_OUTLIER_AMT, "0");
+        fieldValues.put(InpatientFields.CLM_PPS_CPTL_DSPRPRTNT_SHR_AMT, "0");
+        fieldValues.put(InpatientFields.CLM_PPS_CPTL_IME_AMT, "0");
+        fieldValues.put(InpatientFields.CLM_PPS_CPTL_EXCPTN_AMT, "0");
+        fieldValues.put(InpatientFields.CLM_PPS_OLD_CPTL_HLD_HRMLS_AMT, "0");
+        fieldValues.put(InpatientFields.CLM_PPS_CPTL_DRG_WT_NUM, "0");
+        fieldValues.put(InpatientFields.BENE_LRD_USED_CNT, "0");
+        fieldValues.put(InpatientFields.NCH_DRG_OUTLIER_APRVD_PMT_AMT, "0");
+        fieldValues.put(InpatientFields.IME_OP_CLM_VAL_AMT, "0");
+        fieldValues.put(InpatientFields.DSH_OP_CLM_VAL_AMT, "0");
+        fieldValues.put(InpatientFields.REV_CNTR_NDC_QTY, "0");
+    }
+      
       // The REQUIRED fields
-      fieldValues.put(InpatientFields.DML_IND, "INSERT");
+
       fieldValues.put(InpatientFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
       fieldValues.put(InpatientFields.CLM_ID, "" + claimId);
       fieldValues.put(InpatientFields.CLM_GRP_ID, "" + claimGroupId);
-      fieldValues.put(InpatientFields.FINAL_ACTION, "F"); // F or V
-      fieldValues.put(InpatientFields.NCH_NEAR_LINE_REC_IDENT_CD, "V"); // V = inpatient
-      fieldValues.put(InpatientFields.NCH_CLM_TYPE_CD, "60"); // Always 60 for inpatient claims
       fieldValues.put(InpatientFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(InpatientFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(InpatientFields.NCH_WKLY_PROC_DT,
           bb2DateFromTimestamp(nextFriday(encounter.stop)));
-      fieldValues.put(InpatientFields.CLAIM_QUERY_CODE, "3"); // 1=Interim, 3=Final, 5=Debit
       fieldValues.put(InpatientFields.PRVDR_NUM, encounter.provider.id);
-      fieldValues.put(InpatientFields.CLM_FAC_TYPE_CD, "1"); // 1=Hospital, 2=SNF, 7=Dialysis
-      fieldValues.put(InpatientFields.CLM_SRVC_CLSFCTN_TYPE_CD, "1"); // depends on value of above
-      fieldValues.put(InpatientFields.CLM_FREQ_CD, "1"); // 1=Admit-Discharge, 9=Final
       fieldValues.put(InpatientFields.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
@@ -480,13 +549,10 @@ public class BB2RIFExporter implements Flushable {
         field = "3"; // elective
       }
       fieldValues.put(InpatientFields.CLM_IP_ADMSN_TYPE_CD, field);
-      fieldValues.put(InpatientFields.CLM_PASS_THRU_PER_DIEM_AMT, "10"); // fixed $ amount?
       fieldValues.put(InpatientFields.NCH_BENE_IP_DDCTBL_AMT,
           String.format("%.2f", encounter.claim.getDeductiblePaid()));
       fieldValues.put(InpatientFields.NCH_BENE_PTA_COINSRNC_LBLTY_AM,
           String.format("%.2f", encounter.claim.getCoinsurancePaid()));
-      fieldValues.put(InpatientFields.NCH_BENE_BLOOD_DDCTBL_LBLTY_AM, "0");
-      fieldValues.put(InpatientFields.NCH_PROFNL_CMPNT_CHRG_AMT, "4"); // fixed $ amount?
       fieldValues.put(InpatientFields.NCH_IP_NCVRD_CHRG_AMT,
           String.format("%.2f", encounter.claim.getPatientCost()));
       fieldValues.put(InpatientFields.NCH_IP_TOT_DDCTN_AMT,
@@ -499,8 +565,6 @@ public class BB2RIFExporter implements Flushable {
         field = "0";
       }
       fieldValues.put(InpatientFields.BENE_TOT_COINSRNC_DAYS_CNT, field);
-      fieldValues.put(InpatientFields.CLM_NON_UTLZTN_DAYS_CNT, "0");
-      fieldValues.put(InpatientFields.NCH_BLOOD_PNTS_FRNSHD_QTY, "0");
       if (days > 60) {
         field = "1"; // days outlier
       } else if (encounter.claim.getTotalClaimCost() > 100_000) {
@@ -509,10 +573,6 @@ public class BB2RIFExporter implements Flushable {
         field = "0"; // no outlier
       }
       fieldValues.put(InpatientFields.CLM_DRG_OUTLIER_STAY_CD, field);
-      fieldValues.put(InpatientFields.CLM_LINE_NUM, "1");
-      fieldValues.put(InpatientFields.REV_CNTR, "0001"); // total charge, lots of alternatives
-      fieldValues.put(InpatientFields.REV_CNTR_UNIT_CNT, "0");
-      fieldValues.put(InpatientFields.REV_CNTR_RATE_AMT, "0");
       fieldValues.put(InpatientFields.REV_CNTR_TOT_CHRG_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
       fieldValues.put(InpatientFields.REV_CNTR_NCVRD_CHRG_AMT,
@@ -520,19 +580,6 @@ public class BB2RIFExporter implements Flushable {
 
       // OPTIONAL FIELDS
       // Optional numeric fields apparently need to be filled with zeroes.
-      fieldValues.put(InpatientFields.CLM_TOT_PPS_CPTL_AMT, "0");
-      fieldValues.put(InpatientFields.CLM_PPS_CPTL_FSP_AMT, "0");
-      fieldValues.put(InpatientFields.CLM_PPS_CPTL_OUTLIER_AMT, "0");
-      fieldValues.put(InpatientFields.CLM_PPS_CPTL_DSPRPRTNT_SHR_AMT, "0");
-      fieldValues.put(InpatientFields.CLM_PPS_CPTL_IME_AMT, "0");
-      fieldValues.put(InpatientFields.CLM_PPS_CPTL_EXCPTN_AMT, "0");
-      fieldValues.put(InpatientFields.CLM_PPS_OLD_CPTL_HLD_HRMLS_AMT, "0");
-      fieldValues.put(InpatientFields.CLM_PPS_CPTL_DRG_WT_NUM, "0");
-      fieldValues.put(InpatientFields.BENE_LRD_USED_CNT, "0");
-      fieldValues.put(InpatientFields.NCH_DRG_OUTLIER_APRVD_PMT_AMT, "0");
-      fieldValues.put(InpatientFields.IME_OP_CLM_VAL_AMT, "0");
-      fieldValues.put(InpatientFields.DSH_OP_CLM_VAL_AMT, "0");
-      fieldValues.put(InpatientFields.REV_CNTR_NDC_QTY, "0");
       if (encounter.reason != null) {
         // If the encounter has a recorded reason, enter the mapped
         // values into the principle diagnoses code.
@@ -601,9 +648,10 @@ public class BB2RIFExporter implements Flushable {
    * Export carrier claims details for a single person.
    * @param person the person to export
    * @param stopTime end time of simulation
+   * @param useConfig flag to use ExportConfig; use false to use original code, true to use ExportConfig and ExportBuilder
    * @throws IOException if something goes wrong
    */
-  private void exportCarrier(Person person, long stopTime) throws IOException {
+  private void exportCarrier(Person person, long stopTime, boolean useConfig) throws IOException {
     HashMap<CarrierFields, String> fieldValues = new HashMap<>();
 
     HealthRecord.Encounter previous = null;
@@ -626,24 +674,42 @@ public class BB2RIFExporter implements Flushable {
         continue;
       }
 
-      fieldValues.clear();
+      if ( useConfig ) {        
+        Function<ExportConfigEntry, String> getCellValueFunc = prop -> prop.getCarrier(); // gets output specific cell from configs
+        Function<String, AbstractFields> getFieldEnumFunc = field -> CarrierFields.valueOf(field);  // gets output specific enums
+        this.outputBuilder.setKnown(ExportConfigType.CARRIER, fieldValues, getCellValueFunc, getFieldEnumFunc);
+      }
+      else {
+        fieldValues.clear();
+        fieldValues.put(CarrierFields.DML_IND, "INSERT");
+        fieldValues.put(CarrierFields.FINAL_ACTION, "F"); // F or V
+        fieldValues.put(CarrierFields.NCH_NEAR_LINE_REC_IDENT_CD, "O"); // O=physician
+        fieldValues.put(CarrierFields.NCH_CLM_TYPE_CD, "71"); // local carrier, non-DME
+        fieldValues.put(CarrierFields.CARR_CLM_ENTRY_CD, "1");
+        fieldValues.put(CarrierFields.CLM_DISP_CD, "01"); //asdf
+        fieldValues.put(CarrierFields.CARR_CLM_PMT_DNL_CD, "1"); // 1=paid to physician
+        fieldValues.put(CarrierFields.NCH_CLM_BENE_PMT_AMT, "0");
+        fieldValues.put(CarrierFields.LINE_NUM, "1");
+        fieldValues.put(CarrierFields.CARR_LINE_PRVDR_TYPE_CD, "0");
+        fieldValues.put(CarrierFields.CARR_LINE_RDCD_PMT_PHYS_ASTN_C, "0");
+        fieldValues.put(CarrierFields.LINE_CMS_TYPE_SRVC_CD, "1");
+        fieldValues.put(CarrierFields.LINE_PLACE_OF_SRVC_CD, "11"); // 11=office  
+        fieldValues.put(CarrierFields.LINE_BENE_PMT_AMT, "0");
+        fieldValues.put(CarrierFields.LINE_BENE_PRMRY_PYR_PD_AMT, "0");
+        fieldValues.put(CarrierFields.CARR_LINE_ANSTHSA_UNIT_CNT, "0");
+
+      }
+
       // The REQUIRED fields
-      fieldValues.put(CarrierFields.DML_IND, "INSERT");
       fieldValues.put(CarrierFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
       fieldValues.put(CarrierFields.CLM_ID, "" + claimId);
       fieldValues.put(CarrierFields.CLM_GRP_ID, "" + claimGroupId);
-      fieldValues.put(CarrierFields.FINAL_ACTION, "F"); // F or V
-      fieldValues.put(CarrierFields.NCH_NEAR_LINE_REC_IDENT_CD, "O"); // O=physician
-      fieldValues.put(CarrierFields.NCH_CLM_TYPE_CD, "71"); // local carrier, non-DME
       fieldValues.put(CarrierFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(CarrierFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(CarrierFields.NCH_WKLY_PROC_DT,
           bb2DateFromTimestamp(nextFriday(encounter.stop)));
-      fieldValues.put(CarrierFields.CARR_CLM_ENTRY_CD, "1");
-      fieldValues.put(CarrierFields.CLM_DISP_CD, "01");
       fieldValues.put(CarrierFields.CARR_NUM,
           getCarrier(encounter.provider.state, CarrierFields.CARR_NUM));
-      fieldValues.put(CarrierFields.CARR_CLM_PMT_DNL_CD, "1"); // 1=paid to physician
       fieldValues.put(CarrierFields.CLM_PMT_AMT, 
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
@@ -654,7 +720,6 @@ public class BB2RIFExporter implements Flushable {
       }
       fieldValues.put(CarrierFields.NCH_CLM_PRVDR_PMT_AMT,
           String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(CarrierFields.NCH_CLM_BENE_PMT_AMT, "0");
       fieldValues.put(CarrierFields.NCH_CARR_CLM_SBMTD_CHRG_AMT,
           String.format("%.2f", encounter.claim.getTotalClaimCost()));
       fieldValues.put(CarrierFields.NCH_CARR_CLM_ALOWD_AMT,
@@ -662,25 +727,18 @@ public class BB2RIFExporter implements Flushable {
       fieldValues.put(CarrierFields.CARR_CLM_CASH_DDCTBL_APLD_AMT,
           String.format("%.2f", encounter.claim.getDeductiblePaid()));
       fieldValues.put(CarrierFields.CARR_CLM_RFRNG_PIN_NUM, encounter.provider.id);
-      fieldValues.put(CarrierFields.LINE_NUM, "1");
       fieldValues.put(CarrierFields.CARR_PRFRNG_PIN_NUM, encounter.provider.id);
-      fieldValues.put(CarrierFields.CARR_LINE_PRVDR_TYPE_CD, "0");
       fieldValues.put(CarrierFields.TAX_NUM,
           "" + encounter.clinician.attributes.get(Person.IDENTIFIER_SSN));
-      fieldValues.put(CarrierFields.CARR_LINE_RDCD_PMT_PHYS_ASTN_C, "0");
       fieldValues.put(CarrierFields.LINE_SRVC_CNT, "" + encounter.claim.items.size());
-      fieldValues.put(CarrierFields.LINE_CMS_TYPE_SRVC_CD, "1");
-      fieldValues.put(CarrierFields.LINE_PLACE_OF_SRVC_CD, "11"); // 11=office
       fieldValues.put(CarrierFields.CARR_LINE_PRCNG_LCLTY_CD,
           getCarrier(encounter.provider.state, CarrierFields.CARR_LINE_PRCNG_LCLTY_CD));
       fieldValues.put(CarrierFields.LINE_NCH_PMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
-      fieldValues.put(CarrierFields.LINE_BENE_PMT_AMT, "0");
       fieldValues.put(CarrierFields.LINE_PRVDR_PMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
       fieldValues.put(CarrierFields.LINE_BENE_PTB_DDCTBL_AMT,
           String.format("%.2f", encounter.claim.getDeductiblePaid()));
-      fieldValues.put(CarrierFields.LINE_BENE_PRMRY_PYR_PD_AMT, "0");
       fieldValues.put(CarrierFields.LINE_COINSRNC_AMT,
           String.format("%.2f", encounter.claim.getCoinsurancePaid()));
       fieldValues.put(CarrierFields.LINE_SBMTD_CHRG_AMT,
@@ -693,7 +751,6 @@ public class BB2RIFExporter implements Flushable {
 
       fieldValues.put(CarrierFields.LINE_HCT_HGB_RSLT_NUM,
           "" + latestHemoglobin);
-      fieldValues.put(CarrierFields.CARR_LINE_ANSTHSA_UNIT_CNT, "0");
 
       carrier.writeValues(CarrierFields.class, fieldValues);
     }
@@ -798,12 +855,76 @@ public class BB2RIFExporter implements Flushable {
   @Override
   public void flush() throws IOException {
     beneficiary.flush();
-    //    beneficiaryHistory.flush();
+    beneficiaryHistory.flush();
     inpatient.flush();
-    //    outpatient.flush();
-    //    carrier.flush();
+    outpatient.flush();
+    carrier.flush();
     //    prescription.flush();
   }
+
+
+  public interface GetEnumValueInterface {
+    public int getEnumValue( String field );
+  }
+
+
+  /**
+   * Exporter Data Builder
+   */
+  public class ExportDataBuilder {
+    private ExportConfig exportConfig = null;
+
+    /** constructor */
+    public ExportDataBuilder() {
+      this.exportConfig = new ExportConfig( "src/main/resources/exporters/cms_field_values.tsv" );
+    }
+
+    /** Sets the known field values based on exporter config TSV file
+     * @param type output type (one of the ExportConfigType types)
+     * @param fieldValues reference to a HashMap of field values in each of the exportXXXXX() functions
+     * @param getCellValueFunc reference to Function that retrieves the string value relevant to the current output type from the config file
+     * @param getFieldEnumFunc reference to Function that retrieves the enum relevant to the current output type
+     * @return
+     */
+    HashMap setKnown( ExportConfig.ExportConfigType type, HashMap fieldValues, Function<ExportConfigEntry, String> getCellValueFunc, Function<String, AbstractFields> getFieldEnumFunc ) {
+      fieldValues.clear();
+      List<ExportConfigEntry> configs = this.exportConfig.getConfigItemsByType(type);
+      try {
+        // System.out.println("^^^^^"+configs.get(0));
+        int propCount = 0;
+        int fixedValuePropsProcessed = 0;
+        for ( ExportConfigEntry prop: configs ) {
+          String cell = getCellValueFunc.apply( prop );
+          System.out.println("*****"+cell);
+          if ( !cell.isEmpty() ) {
+            propCount++;
+            fixedValuePropsProcessed ++;
+            String value = cell;
+            String comment = null;
+            int commentStart = cell.indexOf("(");
+            if ( commentStart >= 0 ) {
+              value = cell.substring(0, commentStart - 1);
+              comment = cell.substring(commentStart + 1, cell.length()-1);
+            }
+            AbstractFields fieldEnum = getFieldEnumFunc.apply(prop.getField());
+            System.out.println("     field enum"+fieldEnum);
+            System.out.println("     value: " + value);
+            System.out.println("     comment: " + comment);
+            fieldValues.put(fieldEnum, value);
+          }
+        }
+
+        System.out.println("props defined:" + propCount );
+        System.out.println("fixed value props processed:" + fixedValuePropsProcessed );
+      }
+      catch (Exception ex) {
+        System.out.println("ExportDataBuilder.setKnown ERROR:  " + ex);
+      }
+
+      return fieldValues;
+    }
+  }
+
 
   /**
    * Get the BB2 race code. BB2 uses a single code to represent race and ethnicity, we assume
@@ -1146,11 +1267,13 @@ public class BB2RIFExporter implements Flushable {
     }
   }
 
+  interface AbstractFields {}
+
   /**
    * Defines the fields used in the beneficiary file. Note that order is significant, columns will
    * be written in the order specified.
    */
-  private enum BeneficiaryFields {
+  private enum BeneficiaryFields implements AbstractFields{
     DML_IND,
     BENE_ID,
     STATE_CODE,
@@ -1345,8 +1468,8 @@ public class BB2RIFExporter implements Flushable {
     CST_SHR_GRP_NOV_CD,
     CST_SHR_GRP_DEC_CD
   }
-  
-  private enum BeneficiaryHistoryFields {
+
+  private enum BeneficiaryHistoryFields implements AbstractFields {
     DML_IND,
     BENE_ID,
     STATE_CODE,
@@ -1368,7 +1491,7 @@ public class BB2RIFExporter implements Flushable {
     MBI_NUM      
   }
   
-  private enum OutpatientFields {
+  private enum OutpatientFields implements AbstractFields {
     DML_IND,
     BENE_ID,
     CLM_ID,
@@ -1602,8 +1725,8 @@ public class BB2RIFExporter implements Flushable {
     RNDRNG_PHYSN_UPIN,
     RNDRNG_PHYSN_NPI
   }
-  
-  private enum InpatientFields {
+
+  private enum InpatientFields implements AbstractFields {
     DML_IND,
     BENE_ID,
     CLM_ID,
@@ -1959,7 +2082,7 @@ public class BB2RIFExporter implements Flushable {
       InpatientFields.PRCDR_DT25 }
   };
 
-  private enum CarrierFields {
+  private enum CarrierFields implements AbstractFields {
     DML_IND,
     BENE_ID,
     CLM_ID,
@@ -2060,7 +2183,7 @@ public class BB2RIFExporter implements Flushable {
     CARR_LINE_ANSTHSA_UNIT_CNT
   }
 
-  public enum PrescriptionFields {
+  public enum PrescriptionFields implements AbstractFields {
     DML_IND,
     PDE_ID,
     CLM_GRP_ID,

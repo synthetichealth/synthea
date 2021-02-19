@@ -29,5 +29,7 @@ src/main/resources/map.json
 .vscode/settings.json
 /build/
 
+# VS Code plugin files
+.history
 src/main/resources/map.json
 
