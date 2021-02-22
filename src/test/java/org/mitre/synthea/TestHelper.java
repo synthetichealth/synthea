@@ -88,7 +88,6 @@ public abstract class TestHelper {
    * Ensures that unit tests do not pollute the output folders.
    */
   public static void exportOff() {
-    Config.set("generate.database_type", "none"); // ensure we don't write to a file-based DB
     Config.set("exporter.use_uuid_filenames", "false");
     Config.set("exporter.fhir.use_shr_extensions", "false");
     Config.set("exporter.subfolders_by_id_substring", "false");

@@ -422,28 +422,6 @@ public abstract class Exporter {
     }
     Config.set("exporter.fhir.bulk_data", bulk);
 
-    if (Config.getAsBoolean("exporter.cost_access_outcomes_report")) {
-      ReportExporter.export(generator);
-    }
-
-    if (Config.getAsBoolean("exporter.prevalence_report")) {
-      try {
-        PrevalenceReport.export(generator);
-      } catch (Exception e) {
-        System.err.println("Prevalence report generation failed!");
-        e.printStackTrace();
-      }
-    }
-
-    if (Config.getAsBoolean("exporter.custom_report")) {
-      try {
-        CustomSqlReport.export(generator);
-      } catch (Exception e) {
-        System.err.println("Custom report generation failed!");
-        e.printStackTrace();
-      }
-    }
-
     if (Config.getAsBoolean("exporter.cdw.export")) {
       CDWExporter.getInstance().writeFactTables();
     }
