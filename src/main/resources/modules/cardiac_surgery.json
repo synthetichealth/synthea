@@ -378,10 +378,14 @@
     "Postop ICU and Ward": {
       "type": "CallSubmodule",
       "submodule": "heart/cabg/postop",
-      "direct_transition": "Terminal"
+      "direct_transition": "End Operation Encounter"
     },
     "Deceased": {
       "type": "Death",
+      "direct_transition": "Terminal"
+    },
+    "End Operation Encounter": {
+      "type": "EncounterEnd",
       "direct_transition": "Terminal"
     }
   }
