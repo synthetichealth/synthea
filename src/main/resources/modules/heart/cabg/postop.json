@@ -73,7 +73,7 @@
     },
     "Prolonged Recovery": {
       "type": "SetAttribute",
-      "attribute": "cabg_prolonged_los",
+      "attribute": "cabg_icu_los",
       "direct_transition": "Ventilation Check",
       "range": {
         "low": 6,
