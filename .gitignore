@@ -31,3 +31,6 @@ src/main/resources/drg_code_map.json
 .vscode/launch.json
 .vscode/settings.json
 /build/
+
+# VS Code plugin files
+.history
