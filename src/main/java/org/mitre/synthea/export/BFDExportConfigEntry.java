@@ -1,25 +1,40 @@
 package org.mitre.synthea.export;
 
-import java.math.BigDecimal;
-import java.io.Reader;
+/**
+ * This class represents a single line in the export configuration TSV file. It
+ * contains one property for all export specifications that has a specification
+ * (i.e., not NULL or empty). Implementation Note: the names of the properties
+ * MUST be exactly the same as the heading in the TSV file.
+ */
 
-/** A single line in the export configuration TSV file, containing the full properties for a specification 
- *  Implementation Note: the names of the properties MUST be exactly the same as the heading in the TSV file
-*/
 public class BFDExportConfigEntry {
+  private int lineNum; // the line that the config appears in in the TSV file
   private String field;
   private String beneficiary;
-  private String beneficiary_history;  
+  private String beneficiaryHistory;
+  private String dme;
   private String inpatient;
   private String outpatient;
   private String carrier;
   private String prescription;
 
-  /** trims any newlines, tabs, spaces from value 
-   *  @param value the string to evaluate for newlines, tabs, etc.
-  */
-  public String trimAllWhitespace( String value ) {
+  static int sNextLineNum = 1; // starts from offset due headers, etc.
+
+  /**
+   * Trims any newlines, tabs, spaces from value.
+   * 
+   * @param value the string to evaluate for newlines, tabs, etc.
+   */
+  public String trimAllWhitespace(String value) {
     return value.trim();
+  }
+
+  public int getLineNum() {
+    return this.lineNum;
+  }
+
+  public void setlineNum(int lineNum) {
+    this.lineNum = lineNum;
   }
 
   public String getField() {
@@ -38,12 +53,20 @@ public class BFDExportConfigEntry {
     this.beneficiary = trimAllWhitespace(beneficiary);
   }
 
-  public String getBeneficiary_history() {
-    return this.beneficiary_history;
+  public String getbeneficiaryHistory() {
+    return this.beneficiaryHistory;
   }
 
-  public void setBeneficiary_history(String beneficiary_history) {
-    this.beneficiary_history = trimAllWhitespace(beneficiary_history);
+  public void setbeneficiaryHistory(String beneficiaryHistory) {
+    this.beneficiaryHistory = trimAllWhitespace(beneficiaryHistory);
+  }
+
+  public String getDme() {
+    return dme;
+  }
+
+  public void setDme(String dme) {
+    this.dme = dme;
   }
 
   public String getInpatient() {
@@ -81,14 +104,15 @@ public class BFDExportConfigEntry {
 
   @Override
   public String toString() {
-    return "{" +
-      " field='" + getField() + "'" +
-      ", beneficiary='" + getBeneficiary() + "'" +
-      ", beneficiary_history='" + getBeneficiary_history() + "'" +
-      ", inpatient='" + getInpatient() + "'" +
-      ", outpatient='" + getOutpatient() + "'" +
-      ", carrier='" + getCarrier() + "'" +
-      ", prescription='" + getPrescription() + "'" +
-      "}";
+    return "{"
+      + " lineNum=" + getLineNum()
+      + " field='" + getField() + "'"
+      + ", beneficiary='" + getBeneficiary() + "'"
+      + ", beneficiaryHistory='" + getbeneficiaryHistory() + "'"
+      + ", inpatient='" + getInpatient() + "'"
+      + ", outpatient='" + getOutpatient() + "'"
+      + ", carrier='" + getCarrier() + "'"
+      + ", prescription='" + getPrescription() + "'"
+      + "}";
   }
 }
