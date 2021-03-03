@@ -277,7 +277,7 @@ public class CSVExporter {
     careplans.write(NEWLINE);
     observations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,VALUE,UNITS,TYPE");
     observations.write(NEWLINE);
-    procedures.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,"
+    procedures.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,"
         + "REASONCODE,REASONDESCRIPTION");
     procedures.write(NEWLINE);
     immunizations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,BASE_COST");
@@ -787,10 +787,14 @@ public class CSVExporter {
    */
   private void procedure(String personID, String encounterID,
       Procedure procedure) throws IOException {
-    // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
+    // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
     s.append(iso8601Timestamp(procedure.start)).append(',');
+    if (procedure.stop != 0L) {
+      s.append(iso8601Timestamp(procedure.stop));
+    }
+    s.append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
     // CODE
