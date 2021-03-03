@@ -2,6 +2,7 @@ package org.mitre.synthea.export;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedWriter;
@@ -93,8 +94,7 @@ public class BB2RIFExporter implements Flushable {
   private CodeMapper conditionCodeMapper;
   private CodeMapper medicationCodeMapper;
   private CodeMapper drgCodeMapper;
-  
-  // private List<LinkedHashMap<String, String>> carrierLookup;
+  private CodeMapper dmeCodeMapper;
 
   private StateCodeMapper locationMapper;
   private BFDExportBuilder outputBuilder;
@@ -128,6 +128,7 @@ public class BB2RIFExporter implements Flushable {
     conditionCodeMapper = new CodeMapper("condition_code_map.json");
     medicationCodeMapper = new CodeMapper("medication_code_map.json");
     drgCodeMapper = new CodeMapper("drg_code_map.json");
+    dmeCodeMapper = new CodeMapper("dme_code_map.json");
     locationMapper = new StateCodeMapper();
     try {
       prepareOutputFiles();
@@ -531,10 +532,10 @@ public class BB2RIFExporter implements Flushable {
         // If the encounter has a recorded reason, enter the mapped
         // values into the principle diagnoses code.
         if (conditionCodeMapper.canMap(encounter.reason.code)) {
-          String icdCode = conditionCodeMapper.getMapped(encounter.reason.code, person);
+          String icdCode = conditionCodeMapper.map(encounter.reason.code, person);
           fieldValues.put(InpatientFields.PRNCPAL_DGNS_CD, icdCode);
           if (drgCodeMapper.canMap(icdCode)) {
-            fieldValues.put(InpatientFields.CLM_DRG_CD, drgCodeMapper.getMapped(icdCode, person));
+            fieldValues.put(InpatientFields.CLM_DRG_CD, drgCodeMapper.map(icdCode, person));
           }
         }
       }
@@ -545,7 +546,7 @@ public class BB2RIFExporter implements Flushable {
         for (String key : person.record.present.keySet()) {
           if (person.record.conditionActive(key)) {
             if (conditionCodeMapper.canMap(key)) {
-              diagnoses.add(conditionCodeMapper.getMapped(key, person));
+              diagnoses.add(conditionCodeMapper.map(key, person));
             }
           }
         }
@@ -564,7 +565,7 @@ public class BB2RIFExporter implements Flushable {
           for (HealthRecord.Code code : procedure.codes) {
             if (conditionCodeMapper.canMap(code.code)) {
               mappableProcedures.add(procedure);
-              mappedCodes.add(conditionCodeMapper.getMapped(code.code, person));
+              mappedCodes.add(conditionCodeMapper.map(code.code, person));
               break;
             }
           }
@@ -697,7 +698,7 @@ public class BB2RIFExporter implements Flushable {
             "" + (9_999_999_999L - encounter.clinician.identifier));
         fieldValues.put(PrescriptionFields.RX_SRVC_RFRNC_NUM, "" + pdeId);
         fieldValues.put(PrescriptionFields.PROD_SRVC_ID, 
-                medicationCodeMapper.getMapped(medication.codes.get(0).code, person));
+                medicationCodeMapper.map(medication.codes.get(0).code, person));
         // H=hmo, R=ppo, S=stand-alone, E=employer direct, X=limited income
         fieldValues.put(PrescriptionFields.PLAN_CNTRCT_REC_ID,
             ("R" + Math.abs(
@@ -2213,21 +2214,44 @@ public class BB2RIFExporter implements Flushable {
     return SingletonHolder.instance;
   }
   
+  /**
+   * Utility class for dealing with code mapping configuration files.
+   */
   static class CodeMapper {
-    private HashMap<String, List<List<String>>> map;
+    private HashMap<String, List<Map<String, String>>> map;
     
+    /**
+     * Create a new CodeMapper for the supplied JSON string.
+     * @param jsonMap a stringified JSON mapping file. Expects the following format:
+     * <pre>
+     * {
+     *   "synthea_code": [ # each synthea code will be mapped to one of the codes in this array
+     *     {
+     *       "code": "BFD_code",
+     *       "description": "Description of code", # optional
+     *       "other field": "value of other field" # optional additional fields
+     *     }
+     *   ]
+     * }
+     * </pre>
+     */
     public CodeMapper(String jsonMap) {
       try {
         String json = Utilities.readResource(jsonMap);
         Gson g = new Gson();
-        Type type = new TypeToken<HashMap<String,List<List<String>>>>(){}.getType();
+        Type type = new TypeToken<HashMap<String,List<Map<String, String>>>>(){}.getType();
         map = g.fromJson(json, type);
-      } catch (Exception e) {
+      } catch (JsonSyntaxException | IOException e) {
         System.out.println("BB2Exporter is running without " + jsonMap);
         // No worries. The optional mapping file is not present.
       }      
     }
     
+    /**
+     * Determines whether this mapper has an entry for the supplied code.
+     * @param codeToMap the Synthea code to look for
+     * @return true if the Synthea code can be mapped to BFD, false if not
+     */
     public boolean canMap(String codeToMap) {
       if (map == null) {
         return false;
@@ -2235,13 +2259,31 @@ public class BB2RIFExporter implements Flushable {
       return map.containsKey(codeToMap);
     }
     
-    public String getMapped(String codeToMap, RandomNumberGenerator rand) {
+    /**
+     * Get one of the BFD codes for the supplied Synthea code. Equivalent to
+     * {@code map(codeToMap, "code", rand)}.
+     * @param codeToMap the Synthea code to look for
+     * @param rand a source of random numbers used to pick one of the list of BFD codes
+     * @return the BFD code or null if the code can't be mapped
+     */
+    public String map(String codeToMap, RandomNumberGenerator rand) {
+      return map(codeToMap, "code", rand);
+    }
+
+    /**
+     * Get one of the BFD codes for the supplied Synthea code.
+     * @param codeToMap the Synthea code to look for
+     * @param bfdCodeType the type of BFD code to map to
+     * @param rand a source of random numbers used to pick one of the list of BFD codes
+     * @return the BFD code or null if the code can't be mapped
+     */
+    public String map(String codeToMap, String bfdCodeType, RandomNumberGenerator rand) {
       if (!canMap(codeToMap)) {
         return null;
       }
-      List<List<String>> options = map.get(codeToMap);
+      List<Map<String, String>> options = map.get(codeToMap);
       int choice = rand.randInt(options.size());
-      return options.get(choice).get(0);
+      return options.get(choice).get(bfdCodeType);
     }
   }
 

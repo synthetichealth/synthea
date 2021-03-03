@@ -52,6 +52,48 @@ public class CostsTest {
     assertTrue(cost >= (minCost * adjFactor));
   }
 
+  @Test public void testDeviceCostByKnownCode() {
+    Code code = new Code("SNOMED","363753007","Crutches");
+    double minCost = 66.96;
+    double maxCost = 66.96;
+    
+    Entry fakeDevice = person.record.deviceImplant(time, code.display);
+    fakeDevice.codes.add(code);
+    
+    double cost = Costs.determineCostOfEntry(fakeDevice, person);
+    // at this point person has no state set, so there won't be a geographic factor applied
+    
+    assertTrue(cost <= maxCost);
+    assertTrue(cost >= minCost);
+
+    person.attributes.put(Person.STATE, "Massachusetts");
+    double adjFactor = 1.0333;
+    cost = Costs.determineCostOfEntry(fakeDevice, person);
+    assertTrue(cost <= (maxCost * adjFactor));
+    assertTrue(cost >= (minCost * adjFactor));
+  }
+
+  @Test public void testSupplyCostByKnownCode() {
+    Code code = new Code("SNOMED","337388004","Blood glucose testing strips");
+    double minCost = 8.32;
+    double maxCost = 8.32;
+    
+    Entry fakeSupply = person.record.useSupply(time, code, 1);
+    fakeSupply.codes.add(code);
+    
+    double cost = Costs.determineCostOfEntry(fakeSupply, person);
+    // at this point person has no state set, so there won't be a geographic factor applied
+    
+    assertTrue(cost <= maxCost);
+    assertTrue(cost >= minCost);
+
+    person.attributes.put(Person.STATE, "Massachusetts");
+    double adjFactor = 1.0333;
+    cost = Costs.determineCostOfEntry(fakeSupply, person);
+    assertTrue(cost <= (maxCost * adjFactor));
+    assertTrue(cost >= (minCost * adjFactor));
+  }
+
   @Test public void testUpdatedCostsbyKnownCode() {
     // These tests test some costs added in the August 2020 Costs Update.
 
