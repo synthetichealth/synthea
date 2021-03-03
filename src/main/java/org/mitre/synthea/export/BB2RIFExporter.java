@@ -2241,7 +2241,7 @@ public class BB2RIFExporter implements Flushable {
         Gson g = new Gson();
         Type type = new TypeToken<HashMap<String,List<Map<String, String>>>>(){}.getType();
         map = g.fromJson(json, type);
-      } catch (JsonSyntaxException | IOException e) {
+      } catch (JsonSyntaxException | IOException | IllegalArgumentException e) {
         System.out.println("BB2Exporter is running without " + jsonMap);
         // No worries. The optional mapping file is not present.
       }      
