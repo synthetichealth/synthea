@@ -284,9 +284,9 @@ public abstract class Transition implements Serializable {
           // do nothing, we already have it
         } else {
           if (!person.attributes.containsKey(currentAttribute)) {
-        	throw new RuntimeException("LOOKUP TABLE ERROR: Attribute '"
-        		+ currentAttribute + "' in CSV table '" + this.lookupTableName
-        		+ "' does not exist as one of this person's attributes.");
+            throw new RuntimeException("LOOKUP TABLE ERROR: Attribute '"
+                + currentAttribute + "' in CSV table '" + this.lookupTableName
+                + "' does not exist as one of this person's attributes.");
           }
           String personsAttribute
               = person.attributes.get(currentAttribute).toString();
