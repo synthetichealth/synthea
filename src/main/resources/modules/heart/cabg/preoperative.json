@@ -429,7 +429,7 @@
       "observations": [
         {
           "category": "laboratory",
-          "unit": "",
+          "unit": "{presence}",
           "codes": [
             {
               "system": "LOINC",
@@ -443,7 +443,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "",
+          "unit": "{presence}",
           "codes": [
             {
               "system": "LOINC",
@@ -457,7 +457,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "",
+          "unit": "{presence}",
           "codes": [
             {
               "system": "LOINC",
@@ -471,7 +471,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "[urine specific gravity]",
+          "unit": "{SG}",
           "codes": [
             {
               "system": "LOINC",
@@ -501,7 +501,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "",
+          "unit": "{presence}",
           "codes": [
             {
               "system": "LOINC",
@@ -515,7 +515,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "",
+          "unit": "{presence}",
           "codes": [
             {
               "system": "LOINC",
@@ -529,7 +529,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "",
+          "unit": "{presence}",
           "codes": [
             {
               "system": "LOINC",
@@ -543,7 +543,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "",
+          "unit": "{presence}",
           "codes": [
             {
               "system": "LOINC",
@@ -575,7 +575,7 @@
       "observations": [
         {
           "category": "laboratory",
-          "unit": "",
+          "unit": "{presence}",
           "codes": [
             {
               "system": "LOINC",
@@ -589,7 +589,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "",
+          "unit": "{presence}",
           "codes": [
             {
               "system": "LOINC",
@@ -603,7 +603,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "",
+          "unit": "{presence}",
           "codes": [
             {
               "system": "LOINC",
@@ -617,7 +617,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "[urine specific gravity]",
+          "unit": "{SG}",
           "codes": [
             {
               "system": "LOINC",
@@ -647,7 +647,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "",
+          "unit": "{presence}",
           "codes": [
             {
               "system": "LOINC",
@@ -661,7 +661,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "",
+          "unit": "{presence}",
           "codes": [
             {
               "system": "LOINC",
@@ -675,7 +675,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "",
+          "unit": "{presence}",
           "codes": [
             {
               "system": "LOINC",
@@ -689,7 +689,7 @@
         },
         {
           "category": "laboratory",
-          "unit": "",
+          "unit": "{presence}",
           "codes": [
             {
               "system": "LOINC",

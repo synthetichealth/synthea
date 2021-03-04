@@ -587,35 +587,37 @@
     },
     "PT/INR": {
       "type": "Observation",
-      "category": "vital-signs",
-      "unit": "",
+      "category": "laboratory",
+      "unit": "{INR}",
       "codes": [
         {
           "system": "LOINC",
-          "code": "1234",
-          "display": "LOINC Code"
+          "code": "6301-6",
+          "display": "INR in Platelet poor plasma by Coagulation assay"
         }
       ],
-      "exact": {
-        "quantity": 1
-      },
-      "direct_transition": "PTT"
+      "direct_transition": "PTT",
+      "range": {
+        "low": 0.9,
+        "high": 1.2
+      }
     },
     "PTT": {
       "type": "Observation",
-      "category": "vital-signs",
-      "unit": "",
+      "category": "laboratory",
+      "unit": "s",
       "codes": [
         {
           "system": "LOINC",
-          "code": "1234",
-          "display": "LOINC Code"
+          "code": "3173-2",
+          "display": "aPTT in Blood by Coagulation assay"
         }
       ],
-      "exact": {
-        "quantity": 1
-      },
-      "direct_transition": "Troponin-I"
+      "direct_transition": "Troponin-I",
+      "range": {
+        "low": 25,
+        "high": 35
+      }
     },
     "Troponin-I": {
       "type": "Observation",
