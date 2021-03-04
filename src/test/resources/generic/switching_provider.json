@@ -36,7 +36,7 @@
     "Very Hungry": {
       "type": "Observation",
       "category": "survey",
-      "unit": "",
+      "unit": "{hunger-scale}",
       "codes": [
         {
           "system": "LOINC",
@@ -53,7 +53,7 @@
     "Not Hungry": {
       "type": "Observation",
       "category": "survey",
-      "unit": "",
+      "unit": "{hunger-scale}",
       "codes": [
         {
           "system": "LOINC",

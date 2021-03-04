@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.math.ode.DerivativeException;
 import org.mitre.synthea.engine.Components.Attachment;
@@ -1603,6 +1605,26 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
+      validate(module, name);
+    }
+
+    protected void validate(Module module, String name) {
+      if (exact != null || range != null) {
+        // units are required
+        if (unit == null || unit.isEmpty()) {
+          throw new RuntimeException(
+              "Observations with numeric quantities must contain units matching pattern [^\\s]+: "
+          + "Module \"" + module.name + "\": State \"" + name + "\": Unit missing or empty");
+        }
+
+        String regex = "[^\\s]+";
+        if (!Pattern.matches(regex, unit)) {
+          throw new RuntimeException(
+              "Observations with numeric quantities must contain units matching pattern [^\\s]+: "
+          + "Module \"" + module.name + "\": State \"" + name + "\": Unit \"" + unit + "\"");
+        }
+      }
+
       if (distribution != null && !distribution.validate()) {
         throw new IllegalStateException(
             String.format("State %s contains an invalid distribution", this.name));
@@ -1686,6 +1708,14 @@ public abstract class State implements Cloneable, Serializable {
   private abstract static class ObservationGroup extends State {
     protected List<Code> codes;
     protected List<Observation> observations;
+
+    @Override
+    protected void initialize(Module module, String name, JsonObject definition) {
+      super.initialize(module, name, definition);
+      for (Observation observation : observations) {
+        observation.validate(module, name);
+      }
+    }
 
     public ObservationGroup clone() {
       ObservationGroup clone = (ObservationGroup) super.clone();

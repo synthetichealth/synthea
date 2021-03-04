@@ -435,7 +435,7 @@
     "Low_MAP": {
       "type": "Observation",
       "category": "vital-signs",
-      "unit": "",
+      "unit": "mm[Hg]",
       "codes": [
         {
           "system": "LOINC",
@@ -452,7 +452,7 @@
     "Normal_MAP": {
       "type": "Observation",
       "category": "vital-signs",
-      "unit": "",
+      "unit": "mm[Hg]",
       "codes": [
         {
           "system": "LOINC",
