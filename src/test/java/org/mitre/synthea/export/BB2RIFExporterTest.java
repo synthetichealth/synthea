@@ -16,9 +16,9 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.export.BB2RIFExporter.CodeMapper;
 import org.mitre.synthea.export.BB2RIFExporter.DMEFields;
 import org.mitre.synthea.export.BFDExportBuilder.ExportConfigType;
-// import org.mitre.synthea.export.BB2RIFExporter.CodeMapper;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -155,20 +155,20 @@ public class BB2RIFExporterTest {
   }
 
   
-  // @Test
-  // public void testCodeMapper() {
-  //   try {
-  //     String json = Utilities.readResource("condition_code_map.json");
-  //     Exporter.ExporterRuntimeOptions exportOpts = new Exporter.ExporterRuntimeOptions();
-  //     Generator.GeneratorOptions generatorOpts = new Generator.GeneratorOptions();
-  //     generatorOpts.population = 1;
-  //     Generator generator = new Generator(generatorOpts, exportOpts);
-  //     CodeMapper mapper = new CodeMapper("condition_code_map.json");
-  //     assertTrue(mapper.canMap("10509002"));
-  //     assertEquals("J20.9", mapper.getMapped("10509002", generator));
-  //     assertFalse(mapper.canMap("not a code"));
-  //   } catch (IOException | IllegalArgumentException e) {
-  //     // No worries. The optional mapping file is not present.
-  //   }
-  // }
+  @Test
+  public void testCodeMapper() {
+    try {
+      String json = Utilities.readResource("condition_code_map.json");
+      Exporter.ExporterRuntimeOptions exportOpts = new Exporter.ExporterRuntimeOptions();
+      Generator.GeneratorOptions generatorOpts = new Generator.GeneratorOptions();
+      generatorOpts.population = 1;
+      Generator generator = new Generator(generatorOpts, exportOpts);
+      CodeMapper mapper = new CodeMapper("condition_code_map.json");
+      assertTrue(mapper.canMap("10509002"));
+      assertEquals("J20.9", mapper.getMapped("10509002", generator));
+      assertFalse(mapper.canMap("not a code"));
+    } catch (IOException | IllegalArgumentException e) {
+      // No worries. The optional mapping file is not present.
+    }
+  }
 }
