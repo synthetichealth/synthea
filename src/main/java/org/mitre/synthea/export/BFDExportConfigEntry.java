@@ -20,15 +20,6 @@ public class BFDExportConfigEntry {
 
   static int sNextLineNum = 1; // starts from offset due headers, etc.
 
-  /**
-   * Trims any newlines, tabs, spaces from value.
-   * 
-   * @param value the string to evaluate for newlines, tabs, etc.
-   */
-  public String trimAllWhitespace(String value) {
-    return value.trim();
-  }
-
   public int getLineNum() {
     return this.lineNum;
   }
@@ -42,7 +33,7 @@ public class BFDExportConfigEntry {
   }
 
   public void setField(String field) {
-    this.field = trimAllWhitespace(field);
+    this.field = field.trim();
   }
 
   public String getBeneficiary() {
@@ -50,7 +41,7 @@ public class BFDExportConfigEntry {
   }
 
   public void setBeneficiary(String beneficiary) {
-    this.beneficiary = trimAllWhitespace(beneficiary);
+    this.beneficiary = beneficiary.trim();
   }
 
   public String getbeneficiaryHistory() {
@@ -58,7 +49,7 @@ public class BFDExportConfigEntry {
   }
 
   public void setbeneficiaryHistory(String beneficiaryHistory) {
-    this.beneficiaryHistory = trimAllWhitespace(beneficiaryHistory);
+    this.beneficiaryHistory = beneficiaryHistory.trim();
   }
 
   public String getDme() {
@@ -74,7 +65,7 @@ public class BFDExportConfigEntry {
   }
 
   public void setInpatient(String inpatient) {
-    this.inpatient = trimAllWhitespace(inpatient);
+    this.inpatient = inpatient.trim();
   }
 
   public String getOutpatient() {
@@ -82,7 +73,7 @@ public class BFDExportConfigEntry {
   }
 
   public void setOutpatient(String outpatient) {
-    this.outpatient = trimAllWhitespace(outpatient);
+    this.outpatient = outpatient.trim();
   }
 
   public String getCarrier() {
@@ -90,7 +81,7 @@ public class BFDExportConfigEntry {
   }
 
   public void setCarrier(String carrier) {
-    this.carrier = trimAllWhitespace(carrier);
+    this.carrier = carrier.trim();
   }
 
   public String getPrescription() {
@@ -98,7 +89,7 @@ public class BFDExportConfigEntry {
   }
 
   public void setPrescription(String prescription) {
-    this.prescription = trimAllWhitespace(prescription);
+    this.prescription = prescription.trim();
   }
 
 
