@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -24,6 +25,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.export.BFDExportBuilder.ExportConfigType;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
@@ -90,6 +92,10 @@ public class BB2RIFExporter implements Flushable {
   private AtomicInteger claimGroupId; // per encounter
   private AtomicInteger pdeId; // per medication claim
 
+  private CodeMapper conditionCodeMapper;
+  private CodeMapper medicationCodeMapper;
+  private CodeMapper drgCodeMapper;
+  
   // private List<LinkedHashMap<String, String>> carrierLookup;
   private HashMap<String,List<List<String>>> map;
 
@@ -141,6 +147,9 @@ public class BB2RIFExporter implements Flushable {
       System.out.println("BB2Exporter is running without a map.");
       // No worries. The optional map is not present.
     }
+    conditionCodeMapper = new CodeMapper("condition_code_map.json");
+    medicationCodeMapper = new CodeMapper("medication_code_map.json");
+    drgCodeMapper = new CodeMapper("drg_code_map.json");
     locationMapper = new StateCodeMapper();
     try {
       prepareOutputFiles();
@@ -346,7 +355,9 @@ public class BB2RIFExporter implements Flushable {
    * @return the year as a four figure value, e.g. 1971
    */
   private static int getYear(long time) {
-    return 1900 + new Date(time).getYear();
+    Calendar cal = Calendar.getInstance();
+    cal.setTimeInMillis(time);
+    return cal.get(Calendar.YEAR);
   }
 
   /**
@@ -355,7 +366,9 @@ public class BB2RIFExporter implements Flushable {
    * @return the month of the year
    */
   private static int getMonth(long time) {
-    return 1 + new Date(time).getMonth();
+    Calendar cal = Calendar.getInstance();
+    cal.setTimeInMillis(time);
+    return 1 + cal.get(Calendar.MONTH);
   }
   
   /**
@@ -539,24 +552,22 @@ public class BB2RIFExporter implements Flushable {
       if (encounter.reason != null) {
         // If the encounter has a recorded reason, enter the mapped
         // values into the principle diagnoses code.
-        if (map != null && map.containsKey(encounter.reason.code)) {
-          List<List<String>> options = map.get(encounter.reason.code);
-          int choice = person.randInt(options.size());
-          String code = options.get(choice).get(0);
-          fieldValues.put(InpatientFields.PRNCPAL_DGNS_CD, code);
+        if (conditionCodeMapper.canMap(encounter.reason.code)) {
+          String icdCode = conditionCodeMapper.getMapped(encounter.reason.code, person);
+          fieldValues.put(InpatientFields.PRNCPAL_DGNS_CD, icdCode);
+          if (drgCodeMapper.canMap(icdCode)) {
+            fieldValues.put(InpatientFields.CLM_DRG_CD, drgCodeMapper.getMapped(icdCode, person));
+          }
         }
       }
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
-      if (map != null && person.record.present != null && !person.record.present.isEmpty()) {
+      if (person.record.present != null && !person.record.present.isEmpty()) {
         List<String> diagnoses = new ArrayList<String>();
         for (String key : person.record.present.keySet()) {
           if (person.record.conditionActive(key)) {
-            if (map.containsKey(key)) {
-              List<List<String>> options = map.get(key);
-              int choice = person.randInt(options.size());
-              String code = options.get(choice).get(0);
-              diagnoses.add(code);
+            if (conditionCodeMapper.canMap(key)) {
+              diagnoses.add(conditionCodeMapper.getMapped(key, person));
             }
           }
         }
@@ -573,12 +584,9 @@ public class BB2RIFExporter implements Flushable {
         List<String> mappedCodes = new ArrayList<String>();
         for (HealthRecord.Procedure procedure : encounter.procedures) {
           for (HealthRecord.Code code : procedure.codes) {
-            if (map.containsKey(code.code)) {
+            if (conditionCodeMapper.canMap(code.code)) {
               mappableProcedures.add(procedure);
-              List<List<String>> options = map.get(code.code);
-              int choice = person.randInt(options.size());
-              String mappedCode = options.get(choice).get(0);
-              mappedCodes.add(mappedCode);
+              mappedCodes.add(conditionCodeMapper.getMapped(code.code, person));
               break;
             }
           }
@@ -598,6 +606,7 @@ public class BB2RIFExporter implements Flushable {
 
       inpatient.writeValues(InpatientFields.class, fieldValues);
     }
+    
   }
 
   /**
@@ -689,6 +698,10 @@ public class BB2RIFExporter implements Flushable {
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       // System.out.printf("    num medication: %d\n", encounter.medications.size());
       for (Medication medication : encounter.medications) {
+        if (!medicationCodeMapper.canMap(medication.codes.get(0).code)) {
+          continue; // skip codes that can't be mapped to NDC
+        }
+
         int pdeId = this.pdeId.incrementAndGet();
         int claimGroupId = this.claimGroupId.incrementAndGet();
 
@@ -705,6 +718,8 @@ public class BB2RIFExporter implements Flushable {
         fieldValues.put(PrescriptionFields.PRSCRBR_ID,
             "" + (9_999_999_999L - encounter.clinician.identifier));
         fieldValues.put(PrescriptionFields.RX_SRVC_RFRNC_NUM, "" + pdeId);
+        fieldValues.put(PrescriptionFields.PROD_SRVC_ID, 
+                medicationCodeMapper.getMapped(medication.codes.get(0).code, person));
         // TODO this should be an NDC code, not RxNorm
         fieldValues.put(PrescriptionFields.PROD_SRVC_ID, medication.codes.get(0).code);
         // H=hmo, R=ppo, S=stand-alone, E=employer direct, X=limited income
@@ -2230,6 +2245,38 @@ public class BB2RIFExporter implements Flushable {
    */
   public static BB2RIFExporter getInstance() {
     return SingletonHolder.instance;
+  }
+  
+  static class CodeMapper {
+    private HashMap<String, List<List<String>>> map;
+    
+    public CodeMapper(String jsonMap) {
+      try {
+        String json = Utilities.readResource(jsonMap);
+        Gson g = new Gson();
+        Type type = new TypeToken<HashMap<String,List<List<String>>>>(){}.getType();
+        map = g.fromJson(json, type);
+      } catch (Exception e) {
+        System.out.println("BB2Exporter is running without " + jsonMap);
+        // No worries. The optional mapping file is not present.
+      }      
+    }
+    
+    public boolean canMap(String codeToMap) {
+      if (map == null) {
+        return false;
+      }
+      return map.containsKey(codeToMap);
+    }
+    
+    public String getMapped(String codeToMap, RandomNumberGenerator rand) {
+      if (!canMap(codeToMap)) {
+        return null;
+      }
+      List<List<String>> options = map.get(codeToMap);
+      int choice = rand.randInt(options.size());
+      return options.get(choice).get(0);
+    }
   }
 
   /**
