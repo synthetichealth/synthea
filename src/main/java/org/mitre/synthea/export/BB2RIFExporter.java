@@ -1,7 +1,5 @@
 package org.mitre.synthea.export;
 
-import static org.mitre.synthea.export.ExportHelper.nextFriday;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -97,7 +95,6 @@ public class BB2RIFExporter implements Flushable {
   private CodeMapper drgCodeMapper;
   
   // private List<LinkedHashMap<String, String>> carrierLookup;
-  private HashMap<String,List<List<String>>> map;
 
   private StateCodeMapper locationMapper;
   private BFDExportBuilder outputBuilder;
@@ -138,15 +135,6 @@ public class BB2RIFExporter implements Flushable {
     // } catch (IOException e) {
     //   throw new RuntimeException(e);
     // }
-    try {
-      String json = Utilities.readResource("map.json");
-      Gson g = new Gson();
-      Type type = new TypeToken<HashMap<String,List<List<String>>>>(){}.getType();
-      map = g.fromJson(json, type);
-    } catch (Exception e) {
-      System.out.println("BB2Exporter is running without a map.");
-      // No worries. The optional map is not present.
-    }
     conditionCodeMapper = new CodeMapper("condition_code_map.json");
     medicationCodeMapper = new CodeMapper("medication_code_map.json");
     drgCodeMapper = new CodeMapper("drg_code_map.json");
@@ -159,7 +147,7 @@ public class BB2RIFExporter implements Flushable {
       // and if these do throw ioexceptions there's nothing we can do anyway
       throw new RuntimeException(e);
     }
-    outputBuilder = new BFDExportBuilder(this);  // builder that uses the exporter TSV config files
+    outputBuilder = new BFDExportBuilder(locationMapper);
   }
   
   /**
@@ -275,7 +263,7 @@ public class BB2RIFExporter implements Flushable {
             getBB2SexCode((String)person.attributes.get(Person.GENDER)));
     String zipCode = (String)person.attributes.get(Person.ZIP);
     fieldValues.put(BeneficiaryFields.BENE_COUNTY_CD,
-            (String)locationMapper.zipToCountyCode(zipCode));
+            locationMapper.zipToCountyCode(zipCode));
     fieldValues.put(BeneficiaryFields.STATE_CODE,
             locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
     fieldValues.put(BeneficiaryFields.BENE_ZIP_CD,
@@ -333,7 +321,7 @@ public class BB2RIFExporter implements Flushable {
     fieldValues.put(BeneficiaryHistoryFields.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
     String zipCode = (String)person.attributes.get(Person.ZIP);
     fieldValues.put(BeneficiaryHistoryFields.BENE_COUNTY_CD,
-            (String)locationMapper.zipToCountyCode(zipCode));
+            locationMapper.zipToCountyCode(zipCode));
     fieldValues.put(BeneficiaryHistoryFields.STATE_CODE,
             locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
     fieldValues.put(BeneficiaryHistoryFields.BENE_ZIP_CD,
@@ -431,12 +419,12 @@ public class BB2RIFExporter implements Flushable {
       fieldValues.put(OutpatientFields.PTNT_DSCHRG_STUS_CD, field);
       fieldValues.put(OutpatientFields.CLM_TOT_CHRG_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
+      // MJH - I think all of the fields below are inpatient only, not outpatient
       // TODO required in the mapping, but not in the Enum
       // fieldValues.put(OutpatientFields.CLM_IP_ADMSN_TYPE_CD, null);
       // fieldValues.put(OutpatientFields.CLM_PASS_THRU_PER_DIEM_AMT, null);
       // fieldValues.put(OutpatientFields.NCH_BENE_IP_DDCTBL_AMT, null);
       // fieldValues.put(OutpatientFields.NCH_BENE_PTA_COINSRNC_LBLTY_AM, null);
-      // TODO required in the mapping, but not in the Enum
       // fieldValues.put(OutpatientFields.NCH_IP_NCVRD_CHRG_AMT, null);
       // fieldValues.put(OutpatientFields.NCH_IP_TOT_DDCTN_AMT, null);
       // fieldValues.put(OutpatientFields.CLM_UTLZTN_DAY_CNT, null);
@@ -579,7 +567,7 @@ public class BB2RIFExporter implements Flushable {
         }
       }
       // Use the procedures in this encounter to enter mapped values
-      if (map != null && !encounter.procedures.isEmpty()) {
+      if (!encounter.procedures.isEmpty()) {
         List<HealthRecord.Procedure> mappableProcedures = new ArrayList<HealthRecord.Procedure>();
         List<String> mappedCodes = new ArrayList<String>();
         for (HealthRecord.Procedure procedure : encounter.procedures) {
@@ -720,8 +708,6 @@ public class BB2RIFExporter implements Flushable {
         fieldValues.put(PrescriptionFields.RX_SRVC_RFRNC_NUM, "" + pdeId);
         fieldValues.put(PrescriptionFields.PROD_SRVC_ID, 
                 medicationCodeMapper.getMapped(medication.codes.get(0).code, person));
-        // TODO this should be an NDC code, not RxNorm
-        fieldValues.put(PrescriptionFields.PROD_SRVC_ID, medication.codes.get(0).code);
         // H=hmo, R=ppo, S=stand-alone, E=employer direct, X=limited income
         fieldValues.put(PrescriptionFields.PLAN_CNTRCT_REC_ID,
             ("R" + Math.abs(
