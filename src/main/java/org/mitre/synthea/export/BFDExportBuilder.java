@@ -18,10 +18,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Random;
 
 import org.mitre.synthea.export.BB2RIFExporter.StateCodeMapper;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -72,7 +72,6 @@ public class BFDExportBuilder {
 
   private URL configUrl;
 
-  private Random rand = new Random();
   private StateCodeMapper locationMapper = null;
 
   private List<LinkedHashMap<String, String>> carrierLookup;
@@ -89,11 +88,9 @@ public class BFDExportBuilder {
   private List<BFDExportConfigEntry> prescriptionConfigs = new ArrayList<BFDExportConfigEntry>();
   
   /** Constructor. */
-  public BFDExportBuilder(BB2RIFExporter exporter) {
+  public BFDExportBuilder(StateCodeMapper locationMapper) {
     String filepath = Config.get("exporter.bfd.default_config_file");
-    if (exporter != null) {
-      locationMapper = exporter.new StateCodeMapper();
-    }
+    this.locationMapper = locationMapper;
     this.configUrl = Resources.getResource(filepath);
     this.initConfigs();
   }
@@ -260,7 +257,8 @@ public class BFDExportBuilder {
    *  @param useFirst boolean to always use the first value in the distribution string;
    *                  useful for testing
   */
-  private String evalConfigDistribution(String expression, boolean useFirst) {
+  private String evalConfigDistribution(String expression, boolean useFirst,
+          RandomNumberGenerator rand) {
     // must be done after expression has removed things like comments and functions
     String retval = expression;
     if (expression.contains(",")) {
@@ -269,7 +267,7 @@ public class BFDExportBuilder {
         retval = values.get(0);
       } else {
         // System.out.println("flat distribution:"+expression);
-        int index = this.rand.nextInt(values.size());
+        int index = rand.randInt(values.size());
         retval = values.get(index);
       }
     }
@@ -471,7 +469,7 @@ public class BFDExportBuilder {
         // System.out.println("*****"+cell);
         if (!cell.isEmpty()) {
           String value = evalConfig(cell, prop, type, encounter, device, person);
-          value = evalConfigDistribution(value, this.testing);
+          value = evalConfigDistribution(value, this.testing, person);
           if (!value.startsWith("?")) {
             processedCount++;
           }
