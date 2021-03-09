@@ -2,6 +2,8 @@ package org.mitre.synthea.export;
 
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.DataTypeException;
+import ca.uhn.hl7v2.model.GenericGroup;
+import ca.uhn.hl7v2.model.Group;
 import ca.uhn.hl7v2.model.v251.datatype.CE;
 import ca.uhn.hl7v2.model.v251.datatype.CWE;
 import ca.uhn.hl7v2.model.v251.datatype.CX;
@@ -16,12 +18,14 @@ import ca.uhn.hl7v2.model.v251.datatype.XPN;
 import ca.uhn.hl7v2.model.v251.datatype.XTN;
 import ca.uhn.hl7v2.model.v251.group.ADT_A01_INSURANCE;
 import ca.uhn.hl7v2.model.v251.group.ADT_A01_PROCEDURE;
+import ca.uhn.hl7v2.model.v251.group.ORM_O01_ORDER;
 import ca.uhn.hl7v2.model.v251.message.ADT_A01;
 import ca.uhn.hl7v2.model.v251.segment.AL1;
 import ca.uhn.hl7v2.model.v251.segment.DG1;
 import ca.uhn.hl7v2.model.v251.segment.EVN;
 import ca.uhn.hl7v2.model.v251.segment.IN1;
 import ca.uhn.hl7v2.model.v251.segment.MSH;
+import ca.uhn.hl7v2.model.v251.segment.OBR;
 import ca.uhn.hl7v2.model.v251.segment.OBX;
 import ca.uhn.hl7v2.model.v251.segment.PD1;
 import ca.uhn.hl7v2.model.v251.segment.PID;
@@ -71,9 +75,6 @@ public class HL7V2Exporter {
     }
 
     public String export(Person person, long time) {
-        // create a super encounter... this makes it easier to access
-        // all the Allergies (for example) in the export templates,
-        // instead of having to iterate through all the encounters.
         Encounter superEncounter = person.record.new Encounter(time, "super");
         for (Encounter encounter : person.record.encounters) {
             if (encounter.start <= time) {
@@ -91,10 +92,8 @@ public class HL7V2Exporter {
             }
         }
 
-        // The export templates fill in the record by accessing the attributes
-        // of the Person, so we add a few attributes just for the purposes of export.
         person.attributes.put("UUID", UUID.randomUUID().toString());
-        person.attributes.put("ehr_encounters", person.record.encounters);
+        person.attributes.put("ehr_encounters", person.record.encounters);        
         person.attributes.put("ehr_observations", superEncounter.observations);
         person.attributes.put("ehr_reports", superEncounter.reports);
         person.attributes.put("ehr_conditions", superEncounter.conditions);
@@ -189,7 +188,6 @@ public class HL7V2Exporter {
         PID pid = adt.getPID();
         pid.getPid1_SetIDPID().setValue("1");
         Map<String, Object> pattrs = person.attributes;
-//        System.out.println("\tGenerating PID: " + pattrs.get("name"));
 
         XPN patientName = pid.insertPatientName(0);
         patientName.getFamilyName().getSurname().setValue(getStrAttr(pattrs, "last_name"));
@@ -253,9 +251,8 @@ public class HL7V2Exporter {
     }
 
     private void processEncounters(Person person) throws DataTypeException, HL7Exception {
-        List<HealthRecord.Encounter> encounters = (List<HealthRecord.Encounter>) person.attributes.get("ehr_encounters");
+        List<HealthRecord.Encounter> encounters = (List<HealthRecord.Encounter>) person.record.encounters;
         Encounter e = encounters.get(0);
-//        System.out.println("\tGenerating PV1: " + e.name);   
         PV1 pv1 = adt.getPV1();
         pv1.getPv11_SetIDPV1().setValue("1");
         IS eClass = pv1.getPv12_PatientClass();
@@ -333,15 +330,13 @@ public class HL7V2Exporter {
         Integer ac = 0;
         List<String> seenAllergenCodes = new ArrayList();
         for (Entry entry : allergies) {
-//            System.out.println("\tGenerating AL1: " + entry.name);
             AL1 a = new AL1(adt, adt.getModelClassFactory());
             a.getAl11_SetIDAL1().setValue(String.valueOf(ac + 1));
             if (entry.codes != null && entry.codes.size() > 0) {
                 Code c = entry.codes.get(0);
                 if (seenAllergenCodes.contains(c.code)) {
-//                    System.out.println("\t\tSkipping Dup Allergy:" + c.display);
+                    //Skip it
                 } else {
-//                    System.out.println("\t\tAdding Allergy:" + c.display);
                     seenAllergenCodes.add(c.code);
                     a.getAl12_AllergenTypeCode().getCe1_Identifier().setValue(c.code);
                     a.getAl12_AllergenTypeCode().getCe2_Text().setValue(c.display);
@@ -360,14 +355,12 @@ public class HL7V2Exporter {
         Integer pc = 0;
         List<String> seenConditionCode = new ArrayList();
         for (Entry entry : conditions) {
-//            System.out.println("\tGenerating PRB: " + entry.name);
             PRB p = new PRB(adt, adt.getModelClassFactory());
             if (entry.codes != null && entry.codes.size() > 0 && StringUtils.containsIgnoreCase(entry.codes.get(0).display, "finding")) {
                 Code c = entry.codes.get(0);
                 if (seenConditionCode.contains(c.code)) {
-//                    System.out.println("\t\tSkipping Dup Diag:" + c.display);
+                    //Skip it
                 } else {
-//                    System.out.println("\t\tAdding Diag:" + c.display);
                     seenConditionCode.add(c.code);
                     p.getProblemID().getCe1_Identifier().setValue(c.code);
                     p.getProblemID().getCe2_Text().setValue(c.display);
@@ -391,15 +384,13 @@ public class HL7V2Exporter {
         Integer dc = 0;
         List<String> seenConditionCode = new ArrayList();
         for (Entry entry : conditions) {
-//            System.out.println("\tGenerating DG1: " + entry.name);
             DG1 d = new DG1(adt, adt.getModelClassFactory());
             if (entry.codes != null && entry.codes.size() > 0 && !StringUtils.containsIgnoreCase(entry.codes.get(0).display, "finding")) {
                 d.getDg11_SetIDDG1().setValue(String.valueOf(dc + 1));
                 Code c = entry.codes.get(0);
                 if (seenConditionCode.contains(c.code)) {
-//                    System.out.println("\t\tSkipping Dup Diag:" + c.display);
+                    //Skip it
                 } else {
-//                    System.out.println("\t\tAdding Diag:" + c.display);
                     seenConditionCode.add(c.code);
                     d.getDiagnosisCodeDG1().getCe1_Identifier().setValue(c.code);
                     d.getDiagnosisCodeDG1().getCe2_Text().setValue(c.display);
@@ -423,14 +414,12 @@ public class HL7V2Exporter {
         Integer mc = 0;
         List<String> seenMedCodes = new ArrayList();
         for (HealthRecord.Medication med : meds.values()) {
-//            System.out.println("\tGenerating RXE: " + med.name);
             RXE m = new RXE(adt, adt.getModelClassFactory());
             if (med.codes != null && med.codes.size() > 0) {
                 Code medCode = med.codes.get(0);
                 if (seenMedCodes.contains(medCode.code)) {
-//                    System.out.println("\t\tSkipping Dup Med Code:" + medCode.display);
+                    //Skip it
                 } else {
-//                    System.out.println("\t\tAdding Med Code:" + medCode.display);
                     seenMedCodes.add(medCode.code);
                     m.getGiveCode().getCe1_Identifier().setValue(medCode.code);
                     m.getGiveCode().getCe2_Text().setValue(medCode.display);
@@ -438,7 +427,6 @@ public class HL7V2Exporter {
                     if (med.reasons != null && med.reasons.size() > 0) {
                         Integer rc = 0;
                         for (Code medReasonCode : med.reasons) {
-//                            System.out.println("\t\tAdding Med Reason Code:" + medReasonCode.toString());
                             CE g = m.insertGiveIndication(rc);
                             g.getCe1_Identifier().setValue(medReasonCode.code);
                             g.getCe2_Text().setValue(medReasonCode.display);
@@ -477,15 +465,13 @@ public class HL7V2Exporter {
         Integer pc = 0;
         for (Entry gEntry : procs) {
             HealthRecord.Procedure entry = (HealthRecord.Procedure) gEntry;
-//            System.out.println("\tGenerating PR1: " + entry.name);
             ADT_A01_PROCEDURE p = new ADT_A01_PROCEDURE(adt, adt.getModelClassFactory());
             if (entry.codes != null && entry.codes.size() > 0) {
                 p.getPR1().getPr11_SetIDPR1().setValue(String.valueOf(pc + 1));
                 Code procCode = entry.codes.get(0);
                 if (seenProcCodes.contains(procCode.code)) {
-//                    System.out.println("\t\tSkipping Dup Procedure Code:" + procCode.display);
+                    //Skip it
                 } else {
-//                    System.out.println("\t\tAdding Procedure Code:" + procCode.display);
                     seenProcCodes.add(procCode.code);
                     p.getPR1().getProcedureCode().getCe1_Identifier().setValue(procCode.code);
                     p.getPR1().getProcedureCode().getCe2_Text().setValue(procCode.display);
@@ -493,7 +479,6 @@ public class HL7V2Exporter {
 
                     if (entry.reasons != null && entry.reasons.size() > 0) {
                         Code procAssocDiagCode = entry.reasons.get(0);
-//                        System.out.println("\t\tAdding Assoc Diag Code:" + procAssocDiagCode.toString());
                         p.getPR1().getAssociatedDiagnosisCode().getCe1_Identifier().setValue(procAssocDiagCode.code);
                         p.getPR1().getAssociatedDiagnosisCode().getCe2_Text().setValue(procAssocDiagCode.display);
                         p.getPR1().getAssociatedDiagnosisCode().getCe2_Text().setValue(procAssocDiagCode.system);
@@ -511,37 +496,52 @@ public class HL7V2Exporter {
         List<HealthRecord.Encounter> encounters = (List<HealthRecord.Encounter>) person.attributes.get("ehr_encounters");
         AtomicInteger ox = new AtomicInteger(1);
         List<String> seenVitalCodes = new ArrayList();
+        Group g = new GenericGroup(adt, "Vitals", adt.getModelClassFactory());
+        createObservationGroup(g, "Vitals", "8716-3", "LN");
         for (Encounter encounter : encounters) {
             if (encounter.observations.size() > 0) {
                 for (Observation obs : encounter.observations) {
                     if (obs.observations != null && obs.observations.size() > 0) {
                         for (Observation subObs : obs.observations) {
-                            addObservation(subObs, ox, seenVitalCodes);
+                            if (subObs.category!=null && subObs.category.startsWith("vital")) {
+                                addObservation(g, subObs, ox, seenVitalCodes);
+                            }
                         }
                     } else {
-                        addObservation(obs, ox, seenVitalCodes);
+                        if (obs.category!=null && obs.category.startsWith("vital")) {                        
+                            addObservation(g, obs, ox, seenVitalCodes);
+                        }
                     }
                 }
             }
         }
     }
 
-    private void addObservation(Observation obs, AtomicInteger ox, List<String> seenVitalCodes) throws DataTypeException, HL7Exception {
-        if (obs.codes != null && obs.codes.size() > 0) {
-//            System.out.println("\tGenerating OBX: " + obs.toString());            
-            OBX v = new OBX(adt, adt.getModelClassFactory());
-            v.getObx1_SetIDOBX().setValue(ox.toString());
+    private OBR createObservationGroup(Group vitalGroup, String name, String code, String codeSystem) throws DataTypeException, HL7Exception {
+        OBR v = new OBR(vitalGroup, adt.getModelClassFactory());
+        v.getObr1_SetIDOBR().setValue("1");
+        v.getObr2_PlacerOrderNumber();
+        v.getObr3_FillerOrderNumber();
+        v.getObr4_UniversalServiceIdentifier().getCe1_Identifier().setValue(code);
+        v.getObr4_UniversalServiceIdentifier().getCe2_Text().setValue(name);        
+        v.getObr4_UniversalServiceIdentifier().getCe3_NameOfCodingSystem().setValue(codeSystem);
+        return v;
+    }
+    
+    private void addObservation(Group vitalGroup, Observation obs, AtomicInteger setIdCounter, List<String> seenVitalCodes) throws DataTypeException, HL7Exception {
+        if (obs.codes != null && obs.codes.size() > 0) {         
+            OBX v = new OBX(vitalGroup, adt.getModelClassFactory());
+            
+            v.getObx1_SetIDOBX().setValue(setIdCounter.toString());
 
             Code obscode = obs.codes.get(0);
             //Checking to see if we've already added one of these.  If so, let's keep it simple and stop. 
-            if (seenVitalCodes.contains(obscode.code)) {
-//                System.out.println("\t\tSkipping redundant Observation Code:" + obscode.display);                
+            if (seenVitalCodes.contains(obscode.code)) {            
                 return;
             }
             //Otherwise, track that we're adding one
             seenVitalCodes.add(obscode.code);
 
-//            System.out.println("\t\tAdding Observation Code:" + obscode.display);
             v.getObx3_ObservationIdentifier().getCe1_Identifier().setValue(obscode.code);
             v.getObx3_ObservationIdentifier().getCe2_Text().setValue(obscode.display);
             v.getObx3_ObservationIdentifier().getCe3_NameOfCodingSystem().setValue(obscode.system);
@@ -581,9 +581,8 @@ public class HL7V2Exporter {
             v.getDateTimeOfTheObservation().getTime().setValue(new Date(obs.start));
             //Add it to the  list of observations
             //To preserve order of the OBX's, use 'custom'
-            customSegs.put(String.format("OBX.%s", ox.get()), v.encode());
-//            adt.insertOBX(v, 0);
-            ox.incrementAndGet();
+            customSegs.put(String.format("OBX.%s", setIdCounter.get()), v.encode());
+            setIdCounter.incrementAndGet();
         }
     }
 
