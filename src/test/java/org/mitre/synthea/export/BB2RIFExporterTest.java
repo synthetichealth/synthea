@@ -22,8 +22,14 @@ import org.mitre.synthea.export.BFDExportBuilder.ExportConfigType;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Device;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 
 public class BB2RIFExporterTest {
   /**
@@ -90,20 +96,66 @@ public class BB2RIFExporterTest {
     assertTrue(inpatientFile.exists() && inpatientFile.isFile());
     // TODO: more meaningful testing of contents (e.g. count of inpatient claims)
 
-    //    File outpatientFile = expectedExportFolder.toPath().resolve("outpatient.csv").toFile();
-    //    assertTrue(outpatientFile.exists() && outpatientFile.isFile());
-    //    // TODO: more meaningful testing of contents (e.g. count of outpatient claims)
-    //
-    //    File carrierFile = expectedExportFolder.toPath().resolve("carrier.csv").toFile();
-    //    assertTrue(carrierFile.exists() && carrierFile.isFile());
-    //    // TODO: more meaningful testing of contents
-    //
-    //    File beneficiaryHistoryFile = expectedExportFolder.toPath()
-    //            .resolve("beneficiary_history.csv").toFile();
-    //    assertTrue(beneficiaryHistoryFile.exists() && beneficiaryHistoryFile.isFile());
-    //    // TODO: more meaningful testing of contents
+    File outpatientFile = expectedExportFolder.toPath().resolve("outpatient.csv").toFile();
+    assertTrue(outpatientFile.exists() && outpatientFile.isFile());
+    // TODO: more meaningful testing of contents (e.g. count of outpatient claims)
+
+    File carrierFile = expectedExportFolder.toPath().resolve("carrier.csv").toFile();
+    assertTrue(carrierFile.exists() && carrierFile.isFile());
+    // TODO: more meaningful testing of contents
+
+    File beneficiaryHistoryFile = expectedExportFolder.toPath()
+            .resolve("beneficiary_history.csv").toFile();
+    assertTrue(beneficiaryHistoryFile.exists() && beneficiaryHistoryFile.isFile());
+    // TODO: more meaningful testing of contents
+
+    File dmeFile = expectedExportFolder.toPath().resolve("dme.csv").toFile();
+    assertTrue(dmeFile.exists() && dmeFile.isFile());
+    // TODO: more meaningful testing of contents
   }
 
+
+  @Test
+  public void testBFDExportBuilder_DME_Fixed() throws Exception {
+    BFDExportBuilder builder = new BFDExportBuilder(null);
+    ExportConfigType type = ExportConfigType.DME;
+    
+    // test lookupCarrier()
+    assertEquals("Expected", 
+            builder.lookupCarrier("MA", type, "CARR_NUM"), "31143");
+    assertEquals("Expected", 
+            builder.lookupCarrier("Massachusetts", type, "CARR_NUM"), "31143");
+
+    // verify config items
+    List<BFDExportConfigEntry> dmeConfigs = builder.getConfigItemsByType(type);
+    assertEquals("Expected DME configs to have its first definition in row 4", 
+          dmeConfigs.get(0).getLineNum(), 4);
+    assertEquals("Expected DME configs to have 'DML_IND' defined)", 
+          dmeConfigs.get(0).getField(), "DML_IND");
+
+    // verify setFromConfig()
+    Person person = new Person(System.currentTimeMillis());
+    person.attributes.put(Person.STATE, "Massachusetts");
+    Payer.loadNoInsurance();
+    Payer noInsurance = Payer.noInsurance;
+    long time = 0L;
+    person.setPayerAtTime(time, noInsurance);
+    Code code = new Code("SNOMED","363753007","Crutches");
+    Encounter enc = person.record.encounterStart(time, HealthRecord.EncounterType.WELLNESS);
+    enc.provider = new Provider();
+    enc.provider.state = "Massachusetts";
+    Device dev = person.record.deviceImplant(time, code.display);
+    dev.codes.add(code);
+    
+    HashMap<DMEFields, String> fieldValues = new HashMap<>();
+    builder.setFromConfig(type, fieldValues, enc, dev, person);
+    // testing direct text replacement with comments
+    assertEquals("'NCH_CLM_TYPE_CD' should be replaced with specific value",
+        fieldValues.get(DMEFields.NCH_CLM_TYPE_CD),"82");
+    // testing macro replacement
+    assertEquals("'CARR_NUM' should be replaced by a macro",  
+        fieldValues.get(DMEFields.CARR_NUM),"31143");
+  }
 
   @Test
   public void testBFDExportBuilder_DME() throws Exception {
@@ -154,7 +206,6 @@ public class BB2RIFExporterTest {
     assertTrue(dmeFile.exists() && dmeFile.isFile());
   }
 
-  
   @Test
   public void testCodeMapper() {
     try {

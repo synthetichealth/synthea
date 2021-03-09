@@ -326,7 +326,7 @@ public class BFDExportBuilder {
 
   /** Returns the expression in prop corresponding to the type. */
   private String  getExpressionByType(BFDExportConfigEntry prop, ExportConfigType type) 
-        throws Exception {
+        throws IllegalArgumentException {
     String cell = "";
     switch (type) {
       case BENEFICIARY:
@@ -351,7 +351,8 @@ public class BFDExportBuilder {
         cell = prop.getPrescription();
         break;
       default:
-        throw new Exception("No expression found for " + type + " in row " + prop.getField());
+        throw new IllegalArgumentException("No expression found for " + type + " in row "
+                + prop.getField());
     }
     return cell;
   }
@@ -434,10 +435,10 @@ public class BFDExportBuilder {
                                 Person person) {
     fieldValues.clear();
     List<BFDExportConfigEntry> configs = this.getConfigItemsByType(type);
-    try {
-      int processedCount = 0;
-      for (BFDExportConfigEntry prop: configs) {
-        String cell = getExpressionByType(prop, type);
+    int processedCount = 0;
+    for (BFDExportConfigEntry prop: configs) {
+      String cell = getExpressionByType(prop, type);
+      try {
         // System.out.println("*****"+cell);
         if (!cell.isEmpty()) {
           String value = evalConfig(cell, prop, type, encounter, device, person);
@@ -448,12 +449,15 @@ public class BFDExportBuilder {
           Enum fieldEnum = getEnumValueByType(prop, type);
           fieldValues.put(fieldEnum, value);
         }
+      } catch (Exception ex) {
+        System.out.printf(
+                "ExportDataBuilder.setFromConfig"
+                + "ERROR while processing %s for %s (cell value %s):  %s\n",
+                prop.getField(), type.toString(), cell, ex);
       }
-      System.out.printf("  config processed/total for %s:  %d/%d\n", 
-            type, processedCount, configs.size());
-    } catch (Exception ex) {
-      System.out.println("ExportDataBuilder.setFromConfig ERROR while processing :  " + ex);
     }
+    System.out.printf("  config processed/total for %s:  %d/%d\n", 
+          type, processedCount, configs.size());
     return fieldValues;
   }
 
