@@ -39,13 +39,8 @@ public class BFDExportBuilder {
     CARRIER,
     DME,
     INPATIENT,
-    // HHA,
-    // HOSPICE,
-    // MEDICARE_BENEFICIARY_ID,
     OUTPATIENT,
-    // PDE,
     PRESCRIPTION,
-    // SNF,
   }
 
   private static final String BB2_BENE_ID = "BB2_BENE_ID";
@@ -193,9 +188,6 @@ public class BFDExportBuilder {
         case "[device_startTimestamp]":
           retval = bb2DateFromTimestamp(device.start);
           break;
-        // case "[device_stopTimestamp]":
-        //   retval = bb2DateFromTimestamp(device.stop);
-        //   break;
         case "[encounter_claimCoinsurancePaid]":
           retval = String.format("%.2f", encounter.claim.getCoinsurancePaid());
           break;
@@ -352,22 +344,12 @@ public class BFDExportBuilder {
       case INPATIENT:
         cell = prop.getInpatient();
         break;
-      // case HHA:
-      //   break;
-      // case HOSPICE:
-      //   break;
-      // case MEDICARE_BENEFICIARY_ID:
-      //   break;
       case OUTPATIENT:
         cell = prop.getOutpatient();
         break;
-      // case PDE:
-      //   break;
       case PRESCRIPTION:
         cell = prop.getPrescription();
         break;
-      // case SNF:
-      //   break;
       default:
         throw new Exception("No expression found for " + type + " in row " + prop.getField());
     }
@@ -394,22 +376,12 @@ public class BFDExportBuilder {
       case INPATIENT:
         fieldEnum = BB2RIFExporter.InpatientFields.valueOf(prop.getField());
         break;
-      // case HHA:
-      //   break;
-      // case HOSPICE:
-      //   break;
-      // case MEDICARE_BENEFICIARY_ID:
-      //   break;
       case OUTPATIENT:
         fieldEnum = BB2RIFExporter.OutpatientFields.valueOf(prop.getField());
         break;
-      // case PDE:
-      //   break;
       case PRESCRIPTION:
         fieldEnum = BB2RIFExporter.PrescriptionFields.valueOf(prop.getField());
         break;
-      // case SNF:
-      //   break;
       default:
         throw new Exception("Unknown field '" + prop.getField() + "' specfied for " + type);
     }
@@ -484,13 +456,6 @@ public class BFDExportBuilder {
     }
     return fieldValues;
   }
-
-  /** Validates to make sure that everything in the config is set in the exporter.
-   *  This includes those with `Coded`, to verify that it indeed is set */
-  // public boolean validateUsingConfig(ExportConfigType type, HashMap fieldValues) {
-  //   boolean retval = true;
-  //   return retval;
-  // }
 
   /** returns all the config items. */
   public List<BFDExportConfigEntry> getAllConfigs() {
