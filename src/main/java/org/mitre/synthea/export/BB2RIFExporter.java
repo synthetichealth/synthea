@@ -125,16 +125,6 @@ public class BB2RIFExporter implements Flushable {
     claimId = new AtomicInteger();
     claimGroupId = new AtomicInteger();
     pdeId = new AtomicInteger();
-    // now done in BFDExportBuilder
-    // try {
-    //   String csv = Utilities.readResource("payers/carriers.csv");
-    //   if (csv.startsWith("\uFEFF")) {
-    //     csv = csv.substring(1); // Removes BOM.
-    //   }
-    //   carrierLookup = SimpleCSV.parse(csv);
-    // } catch (IOException e) {
-    //   throw new RuntimeException(e);
-    // }
     conditionCodeMapper = new CodeMapper("condition_code_map.json");
     medicationCodeMapper = new CodeMapper("medication_code_map.json");
     drgCodeMapper = new CodeMapper("drg_code_map.json");
@@ -845,16 +835,6 @@ public class BB2RIFExporter implements Flushable {
       return bbRaceCode;
     }
   }
-
-  // generalized and moved to BFDExportBuilder
-  // private String getCarrier(String state, CarrierFields column) {
-  //   for (LinkedHashMap<String, String> row : carrierLookup) {
-  //     if (row.get("STATE").equals(state) || row.get("STATE_CODE").equals(state)) {
-  //       return row.get(column.toString());
-  //     }
-  //   }
-  //   return "0";
-  // }
 
   private int getQuantity(Medication medication, long stopTime) {
     double amountPerDay = 1;
