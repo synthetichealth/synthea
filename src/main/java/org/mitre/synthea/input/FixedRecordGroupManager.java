@@ -31,35 +31,21 @@ public class FixedRecordGroupManager {
   }
 
   /**
-   * Creates the record groups based on the imported records.
+   * Returns the population size of the imported households and fixed records.
+   * 
+   * @return int The population size.
    */
-  // public void createRecordGroups() {
-  // this.recordGroups = new HashMap<Integer, FixedRecordGroup>();
-  // // Initialize with the seed records.
-  // for (FixedRecord seedRecord : seedRecords) {
-  // this.recordGroups.put(Integer.parseInt(seedRecord.recordId),
-  // new FixedRecordGroup(seedRecord));
-  // }
-  // // Populate the seeded record groups with variant records.
-  // for (FixedRecord variantRecord : variantRecords) {
-  // if (!this.recordGroups.containsKey(Integer.parseInt(variantRecord.seedID))) {
-  // throw new RuntimeException("ERROR: Variant record seed ID " +
-  // variantRecord.seedID
-  // + " does not exist in seed records.");
-  // }
-  // this.recordGroups.get(Integer.parseInt(variantRecord.seedID))
-  // .addVariantRecord(variantRecord);
-  // }
-  // // Set the date ranges of the fixed records.
-  // for (FixedRecordGroup recordGroup : this.recordGroups.values()) {
-  // recordGroup.setVariantRecordYearRanges();
-  // }
-  // }
-
   public int getPopulationSize() {
     return this.householdsMap.values().stream().mapToInt(h -> h.householdSize()).sum();
   }
 
+  /**
+   * Gets the record group for the given household id and household role.
+   * 
+   * @param householdId   The Id of the household to check in.
+   * @param householdRole The role of the person in the household to check for.
+   * @return FixedRecordGroup The FixedRecordGroup from the given inputs.
+   */
   public FixedRecordGroup getRecordGroup(String householdId, String householdRole) {
     return this.householdsMap.get(householdId).getRecordGroupFor(householdRole);
   }
@@ -71,15 +57,13 @@ public class FixedRecordGroupManager {
    * @return the fixed record manager.
    */
   public static FixedRecordGroupManager importFixedDemographicsFile(File filePath) {
-
     Gson gson = new Gson();
     Type jsonType = new TypeToken<List<Household>>() {
     }.getType();
     FixedRecordGroupManager fixedRecordGroupManager = new FixedRecordGroupManager();
     try {
       System.out.println("Loading fixed patient demographic records and households file: " + filePath);
-      fixedRecordGroupManager.householdsList
-          = gson.fromJson(new FileReader(filePath), jsonType);
+      fixedRecordGroupManager.householdsList = gson.fromJson(new FileReader(filePath), jsonType);
     } catch (FileNotFoundException e) {
       throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
     }
@@ -87,6 +71,10 @@ public class FixedRecordGroupManager {
     return fixedRecordGroupManager;
   }
 
+  /**
+   * Initializes the households for the manager based on the list of imported
+   * households.
+   */
   private void initializeHouseholds() {
     for (Household household : this.householdsList) {
       String householdId = household.getHouseholdId();
@@ -94,6 +82,21 @@ public class FixedRecordGroupManager {
     }
   }
 
+  /**
+   * Checks to update each household's memebers' current fixed record groups.
+   * 
+   * @param currentYear
+   */
+  public void checkToUpdateHouseholdAddresses(int currentYear) {
+    this.householdsMap.values().forEach(h -> h.updateCurrentFixedRecordGroup(currentYear));
+  }
+
+  /**
+   * Returns the record group at the given index.
+   * 
+   * @param index The index of the record group to find.
+   * @return FixedRecordGroup The FixedRecordGroup at that index.
+   */
   public FixedRecordGroup getNextRecordGroup(int index) {
     List<FixedRecordGroup> fullRecordGroupList = new ArrayList<FixedRecordGroup>();
 
@@ -109,3 +112,31 @@ public class FixedRecordGroupManager {
     return this.householdsMap.get(householdId);
   }
 }
+
+// OLD METHODS
+
+/**
+ * Creates the record groups based on the imported records.
+ */
+// public void createRecordGroups() {
+// this.recordGroups = new HashMap<Integer, FixedRecordGroup>();
+// // Initialize with the seed records.
+// for (FixedRecord seedRecord : seedRecords) {
+// this.recordGroups.put(Integer.parseInt(seedRecord.recordId),
+// new FixedRecordGroup(seedRecord));
+// }
+// // Populate the seeded record groups with variant records.
+// for (FixedRecord variantRecord : variantRecords) {
+// if (!this.recordGroups.containsKey(Integer.parseInt(variantRecord.seedID))) {
+// throw new RuntimeException("ERROR: Variant record seed ID " +
+// variantRecord.seedID
+// + " does not exist in seed records.");
+// }
+// this.recordGroups.get(Integer.parseInt(variantRecord.seedID))
+// .addVariantRecord(variantRecord);
+// }
+// // Set the date ranges of the fixed records.
+// for (FixedRecordGroup recordGroup : this.recordGroups.values()) {
+// recordGroup.setVariantRecordYearRanges();
+// }
+// }

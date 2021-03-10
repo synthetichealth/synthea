@@ -547,7 +547,7 @@ public class Generator implements RandomNumberGenerator {
    */
   public void setFixedDemographics(Person person) {
     FixedRecordGroup frg = ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP));
-    frg.updateCurrentRecord(Utilities.getYear(person.lastUpdated));
+    frg.updateCurrentVariantRecord(Utilities.getYear(person.lastUpdated));
     person.attributes.putAll(frg.getCurrentRecord().getFixedRecordAttributes());
     // Reset person's default records after attributes have been reset.
     person.initializeDefaultHealthRecords();
@@ -608,7 +608,8 @@ public class Generator implements RandomNumberGenerator {
     // Check if the person's fixed record has been updated, meaning that their
     // health record, provider, and address should also update.
     FixedRecordGroup frg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
-    if (frg.updateCurrentRecord(Utilities.getYear(time))) {
+    // if (frg.updateCurrentRecord(Utilities.getYear(time))) {
+    if (frg.hasJustBeenUpdated()){
       // Pull the newly updated fixedRecord.
       FixedRecord fr = frg.getCurrentRecord();
       fr.overwriteAddress(person, this);
