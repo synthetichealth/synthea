@@ -1,17 +1,11 @@
 package org.mitre.synthea.engine;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -310,7 +304,9 @@ public class Generator implements RandomNumberGenerator {
     // Import the fixed patient demographics records file, if a file path is given.
     if (this.options.fixedRecordPath != null) {
       // Import household demogarphics.
-      importFixedDemographicsFile();
+      this.fixedRecordGroupManager = FixedRecordGroupManager.importFixedDemographicsFile(this.options.fixedRecordPath);
+      // Update the population size based on number of people.
+      this.options.population = this.fixedRecordGroupManager.getPopulationSize();
       // We'll be using the FixedRecord names, so no numbers should be appended to them.
       Config.set("generate.append_numbers_to_person_names", "false");
       // Since we're using FixedRecords, split records must be true.
@@ -391,30 +387,6 @@ public class Generator implements RandomNumberGenerator {
       metrics.printStats(totalGeneratedPopulation.get(), Module.getModules(getModulePredicate()));
     }
   }
-
-  /**
-   * Imports the fixed demographics records file when using fixed patient
-   * demographics.
-   * 
-   * @return the fixed record manager.
-   */
-  public FixedRecordGroupManager importFixedDemographicsFile() {
-    
-    Gson gson = new Gson();
-    Type jsonType = new TypeToken<FixedRecordGroupManager>() {}.getType();
-
-    try {
-      System.out.println("Loading fixed patient demographic records file: "
-          + this.options.fixedRecordPath);
-      this.fixedRecordGroupManager
-          = gson.fromJson(new FileReader(this.options.fixedRecordPath), jsonType);
-    } catch (FileNotFoundException e) {
-      throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
-    }
-    this.fixedRecordGroupManager.createRecordGroups();
-    this.options.population = this.fixedRecordGroupManager.getPopulationSize();
-    return this.fixedRecordGroupManager;
-  }
   
   /**
    * Generate a completely random Person. The returned person will be alive at the end of the
@@ -457,7 +429,7 @@ public class Generator implements RandomNumberGenerator {
 
       if (this.fixedRecordGroupManager != null) {
         // Get the Demographic attributes
-        FixedRecordGroup recordGroup = this.fixedRecordGroupManager.getRecordGroup(index);
+        FixedRecordGroup recordGroup = this.fixedRecordGroupManager.getNextRecordGroup(index);
         demoAttributes = pickFixedDemographics(recordGroup, random);        
       } else {
         // Standard random demographics.
@@ -580,16 +552,12 @@ public class Generator implements RandomNumberGenerator {
     // Reset person's default records after attributes have been reset.
     person.initializeDefaultHealthRecords();
     person.attributes.put(Person.BIRTHDATE, frg.getSeedBirthdate());
-    // Add the person to their household if they have one.
+    // Add the person to their household.
     Household personHousehold = (Household) person.attributes.get(Person.HOUSEHOLD);
     // Because people are sometimes re-simulated, we must make sure they
     // have not already been added to the household.
     if (!personHousehold.includesPerson(person)) {
-      if (person.ageInDecimalYears(System.currentTimeMillis()) > 18) {
-        personHousehold.addAdult(person);
-      } else {
-        personHousehold.addChild(person);
-      }
+      personHousehold.addMember(person, frg.getHouseholdRole());
     }
   }
 
@@ -800,17 +768,20 @@ public class Generator implements RandomNumberGenerator {
     }
     demoAttributes.put(Person.GENDER, g);
 
-    if (this.fixedRecordGroupManager != null) {
-      if (this.households == null) {
-        this.households = new HashMap<Integer, Household>();
-      }
-      // Generate the person's household based on the ID if it does not yet exist.
-      int householdId = Integer.parseInt(seedRecord.householdId);
-      if (this.households.get(householdId) == null) {
-        this.households.put(householdId, new Household(householdId));
-      }
-      demoAttributes.put(Person.HOUSEHOLD, this.households.get(householdId));
-    }
+    // TODO - I don't think we need this household creation anymore, it should be handled by the FixedRecordGroupManager.
+    // if (this.fixedRecordGroupManager != null) {
+    //   if (this.households == null) {
+    //     this.households = new HashMap<Integer, Household>();
+    //   }
+    //   // Generate the person's household based on the ID if it does not yet exist.
+    //   int householdId = Integer.parseInt(seedRecord.householdId);
+    //   if (this.households.get(householdId) == null) {
+    //     this.households.put(householdId, new Household(householdId));
+    //   }
+    //   demoAttributes.put(Person.HOUSEHOLD, this.households.get(householdId));
+    // }
+
+    demoAttributes.put(Person.HOUSEHOLD, this.fixedRecordGroupManager.getHousehold(recordGroup.getHouseholdId()));
    
     demoAttributes.put(Person.RECORD_GROUP, recordGroup);
 

@@ -984,4 +984,13 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public Point2D.Double getLonLat() {
     return (Point2D.Double) attributes.get(Person.COORDINATE);
   }
+
+  @Override
+  public boolean equals(Object o){
+    if(!(o instanceof Person)){
+      return false;
+    }
+    Person other = (Person) o;
+    return this.attributes.get(Person.ID).equals(other.attributes.get(Person.ID));
+  }
 }

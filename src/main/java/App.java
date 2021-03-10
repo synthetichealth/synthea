@@ -204,7 +204,6 @@ public class App {
         validArgs = false;
       }
     }
-    
     if (validArgs && validateConfig(options)) {
       Generator generator = new Generator(options);
       generator.run();

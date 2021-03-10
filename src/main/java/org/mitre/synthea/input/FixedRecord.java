@@ -18,10 +18,10 @@ import org.mitre.synthea.world.geography.Demographics;
 
 public class FixedRecord {
 
-  @SerializedName(value = "RECORD_ID")
+  @SerializedName(value = "record_id")
   public String recordId;
 
-  @SerializedName(value = "SEED_ID")
+  @SerializedName(value = "seed_id")
   public String seedID;
 
   @SerializedName(value = "GN")
@@ -48,10 +48,10 @@ public class FixedRecord {
   @SerializedName(value = "PHONE_NUMBER")
   public String phoneNumber;
 
-  @SerializedName(value = "ADDRESS_1")
+  @SerializedName(value = "ADDRESS1")
   public String addressLineOne;
 
-  @SerializedName(value = "ADDRESS_2")
+  @SerializedName(value = "ADDRESS2")
   public String addressLineTwo;
 
   @SerializedName(value = "ADDRESS_CITY")
@@ -72,16 +72,16 @@ public class FixedRecord {
   @SerializedName(value = "CONTACT_SN")
   public String contactLastName;
 
-  @SerializedName(value = "CONTACT_EMAIL")
+  @SerializedName(value = "PARENT1_EMAIL")
   public String contactEmail;
 
-  @SerializedName(value = "ADDRESS_ACTIVE_START")
-  public int addressStartDate;
+  @SerializedName(value = "ADDRESS_SEQUENCE")
+  public int addressSequence;
 
-  @SerializedName(value = "HOUSEHOLD_ID")
+  @SerializedName(value = "hh_id")
   public String householdId;
 
-  @SerializedName(value = "HOUSEHOLD_STATUS")
+  @SerializedName(value = "hh_status")
   public String householdRole;
 
   // Attributes map
@@ -113,7 +113,7 @@ public class FixedRecord {
     }
     return this.city;
   }
-
+  
   /**
    * Converts the birth year of the record into a birthdate.
    */
