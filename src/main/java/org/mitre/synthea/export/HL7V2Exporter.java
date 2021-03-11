@@ -2,8 +2,6 @@ package org.mitre.synthea.export;
 
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.DataTypeException;
-import ca.uhn.hl7v2.model.GenericGroup;
-import ca.uhn.hl7v2.model.Group;
 import ca.uhn.hl7v2.model.v251.datatype.CE;
 import ca.uhn.hl7v2.model.v251.datatype.CWE;
 import ca.uhn.hl7v2.model.v251.datatype.CX;
@@ -16,10 +14,9 @@ import ca.uhn.hl7v2.model.v251.datatype.XCN;
 import ca.uhn.hl7v2.model.v251.datatype.XON;
 import ca.uhn.hl7v2.model.v251.datatype.XPN;
 import ca.uhn.hl7v2.model.v251.datatype.XTN;
-import ca.uhn.hl7v2.model.v251.group.ADT_A01_INSURANCE;
-import ca.uhn.hl7v2.model.v251.group.ADT_A01_PROCEDURE;
-import ca.uhn.hl7v2.model.v251.group.ORM_O01_ORDER;
-import ca.uhn.hl7v2.model.v251.message.ADT_A01;
+import ca.uhn.hl7v2.model.v251.group.ADT_A03_INSURANCE;
+import ca.uhn.hl7v2.model.v251.group.ADT_A03_PROCEDURE;
+import ca.uhn.hl7v2.model.v251.message.ADT_A03;
 import ca.uhn.hl7v2.model.v251.segment.AL1;
 import ca.uhn.hl7v2.model.v251.segment.DG1;
 import ca.uhn.hl7v2.model.v251.segment.EVN;
@@ -44,9 +41,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Payer;
@@ -58,6 +55,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
+import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.mitre.synthea.world.concepts.RaceAndEthnicity;
 
 public class HL7V2Exporter {
@@ -67,8 +65,8 @@ public class HL7V2Exporter {
     private static final String MSG_TYPE = "ADT";
     private static final String MSG_EVENT_TYPE = "A01";
 
-    private ADT_A01 adt;
-    private TreeMap<String, String> customSegs = new TreeMap();
+    private ADT_A03 adt;
+    private List<String> customSegs = new ArrayList();
 
     public static HL7V2Exporter getInstance() {
         return new HL7V2Exporter();
@@ -93,7 +91,7 @@ public class HL7V2Exporter {
         }
 
         person.attributes.put("UUID", UUID.randomUUID().toString());
-        person.attributes.put("ehr_encounters", person.record.encounters);        
+        person.attributes.put("ehr_encounters", person.record.encounters);
         person.attributes.put("ehr_observations", superEncounter.observations);
         person.attributes.put("ehr_reports", superEncounter.reports);
         person.attributes.put("ehr_conditions", superEncounter.conditions);
@@ -111,8 +109,9 @@ public class HL7V2Exporter {
         final StringBuilder msgContent = new StringBuilder();
         try {
             String curDT = getCurrentTimeStamp();
-            adt = new ADT_A01();
+            adt = new ADT_A03();
             adt.initQuickstart(MSG_TYPE, MSG_EVENT_TYPE, "P");
+
             generateMSH(curDT);
             generateSFT();
             generateEVN(curDT);
@@ -124,13 +123,17 @@ public class HL7V2Exporter {
             processMedications(person);
             processProcedures(person);
             processVitals(person);
+            processReports(person);
+
             String rawMsg = adt.encode();
+
             //Fix the end-of-segment default HAPI uses
             rawMsg = rawMsg.replace("\r", "\n");
+
             msgContent.append(rawMsg);
+
             //Add any non-standard segments that HAPI doesn't like
-            customSegs.forEach((k, seg) -> {
-//                System.out.println(String.format("\tAdding Custom Seg: '%s'-%s", k, seg));
+            customSegs.forEach((seg) -> {
                 msgContent.append(seg);
                 msgContent.append("\n");
             });
@@ -301,8 +304,10 @@ public class HL7V2Exporter {
 
         Payer payer = person.getPayerAtAge(person.ageInYears(e.start));
         if (payer != null) {
-            ADT_A01_INSURANCE adtInsurance = adt.getINSURANCE();
+            ADT_A03_INSURANCE adtInsurance = adt.getINSURANCE();
+
             IN1 in1 = adtInsurance.getIN1();
+
             in1.getIn11_SetIDIN1().setValue("1");
             in1.getIn12_InsurancePlanID().getCe1_Identifier().setValue(String.valueOf(payer.uuid.hashCode()));
             XON insComp = in1.insertInsuranceCompanyName(0);
@@ -370,7 +375,7 @@ public class HL7V2Exporter {
                     if (entry.start > 0) {
                         p.getProblemDateOfOnset().getTs1_Time().setValue(new Date(entry.start));
                     }
-                    customSegs.put(String.format("PRB.%s", pc++), p.encode());
+                    customSegs.add(p.encode());
                 }
             }
         }
@@ -450,7 +455,7 @@ public class HL7V2Exporter {
 
                     }
 
-                    customSegs.put(String.format("RXE.%s", mc++), m.encode());
+                    customSegs.add(m.encode());
                 }
             }
         }
@@ -465,7 +470,7 @@ public class HL7V2Exporter {
         Integer pc = 0;
         for (Entry gEntry : procs) {
             HealthRecord.Procedure entry = (HealthRecord.Procedure) gEntry;
-            ADT_A01_PROCEDURE p = new ADT_A01_PROCEDURE(adt, adt.getModelClassFactory());
+            ADT_A03_PROCEDURE p = new ADT_A03_PROCEDURE(adt, adt.getModelClassFactory());
             if (entry.codes != null && entry.codes.size() > 0) {
                 p.getPR1().getPr11_SetIDPR1().setValue(String.valueOf(pc + 1));
                 Code procCode = entry.codes.get(0);
@@ -496,20 +501,21 @@ public class HL7V2Exporter {
         List<HealthRecord.Encounter> encounters = (List<HealthRecord.Encounter>) person.attributes.get("ehr_encounters");
         AtomicInteger ox = new AtomicInteger(1);
         List<String> seenVitalCodes = new ArrayList();
-        Group g = new GenericGroup(adt, "Vitals", adt.getModelClassFactory());
-        createObservationGroup(g, "Vitals", "8716-3", "LN");
+
+        OBR obr = createObservationGroup("", "", "Vitals", "8716-3", "LN");
+        customSegs.add(obr.encode());
         for (Encounter encounter : encounters) {
             if (encounter.observations.size() > 0) {
                 for (Observation obs : encounter.observations) {
                     if (obs.observations != null && obs.observations.size() > 0) {
                         for (Observation subObs : obs.observations) {
-                            if (subObs.category!=null && subObs.category.startsWith("vital")) {
-                                addObservation(g, subObs, ox, seenVitalCodes);
+                            if (subObs.category != null && subObs.category.startsWith("vital")) {
+                                addObservation(subObs, ox, seenVitalCodes);
                             }
                         }
                     } else {
-                        if (obs.category!=null && obs.category.startsWith("vital")) {                        
-                            addObservation(g, obs, ox, seenVitalCodes);
+                        if (obs.category != null && obs.category.startsWith("vital")) {
+                            addObservation(obs, ox, seenVitalCodes);
                         }
                     }
                 }
@@ -517,26 +523,58 @@ public class HL7V2Exporter {
         }
     }
 
-    private OBR createObservationGroup(Group vitalGroup, String name, String code, String codeSystem) throws DataTypeException, HL7Exception {
-        OBR v = new OBR(vitalGroup, adt.getModelClassFactory());
+    private void processReports(Person person) throws DataTypeException, HL7Exception {
+        List<Report> reports = (List<Report>) person.attributes.get("ehr_reports");
+        if (reports == null || reports.isEmpty()) {
+            return;
+        }
+        int maxRpts = 3;
+        for (Report r : reports) {
+            Code rc = r.codes.get(0);
+            OBR obr = createObservationGroup(null, null, rc);
+            customSegs.add(obr.encode());
+            List<String> seenCodes = new ArrayList();
+            AtomicInteger ox = new AtomicInteger(1);
+            for (Observation o : r.observations) {
+                addObservation(o, ox, seenCodes);
+            }
+            maxRpts--;
+            if (maxRpts==0) {
+                break;
+            }
+        }
+    }
+
+    private OBR createObservationGroup(String placer, String filler, String name, String code, String codeSystem) throws DataTypeException, HL7Exception {
+        return createObservationGroup(placer, filler, new Code(codeSystem, code, name));
+    }
+
+    private OBR createObservationGroup(String placer, String filler, Code code) throws DataTypeException, HL7Exception {
+        OBR v = new OBR(adt, adt.getModelClassFactory());
         v.getObr1_SetIDOBR().setValue("1");
-        v.getObr2_PlacerOrderNumber();
-        v.getObr3_FillerOrderNumber();
-        v.getObr4_UniversalServiceIdentifier().getCe1_Identifier().setValue(code);
-        v.getObr4_UniversalServiceIdentifier().getCe2_Text().setValue(name);        
-        v.getObr4_UniversalServiceIdentifier().getCe3_NameOfCodingSystem().setValue(codeSystem);
+        if (placer==null) {
+            placer = RandomStringUtils.random(5, false, true);
+        }
+        if (filler==null) {
+            filler = RandomStringUtils.random(5, false, true);
+        }        
+        v.getObr2_PlacerOrderNumber().getEi1_EntityIdentifier().setValue(placer);
+        v.getObr3_FillerOrderNumber().getEi1_EntityIdentifier().setValue(filler);;
+        v.getObr4_UniversalServiceIdentifier().getCe1_Identifier().setValue(code.code);
+        v.getObr4_UniversalServiceIdentifier().getCe2_Text().setValue(code.display);
+        v.getObr4_UniversalServiceIdentifier().getCe3_NameOfCodingSystem().setValue(code.system);
         return v;
     }
-    
-    private void addObservation(Group vitalGroup, Observation obs, AtomicInteger setIdCounter, List<String> seenVitalCodes) throws DataTypeException, HL7Exception {
-        if (obs.codes != null && obs.codes.size() > 0) {         
-            OBX v = new OBX(vitalGroup, adt.getModelClassFactory());
-            
+
+    private void addObservation(Observation obs, AtomicInteger setIdCounter, List<String> seenVitalCodes) throws DataTypeException, HL7Exception {
+        if (obs.codes != null && obs.codes.size() > 0) {
+            OBX v = new OBX(adt, adt.getModelClassFactory());
+
             v.getObx1_SetIDOBX().setValue(setIdCounter.toString());
 
             Code obscode = obs.codes.get(0);
             //Checking to see if we've already added one of these.  If so, let's keep it simple and stop. 
-            if (seenVitalCodes.contains(obscode.code)) {            
+            if (seenVitalCodes.contains(obscode.code)) {
                 return;
             }
             //Otherwise, track that we're adding one
@@ -556,8 +594,8 @@ public class HL7V2Exporter {
             if (obs.value instanceof Double) {
                 NM nm = new NM(adt);
                 //Fix Values that are some crazy number of digits of precision or scientific notation e.g. 3.777961337608282E-4
-                obs.value = new BigDecimal((Double)obs.value).round(new MathContext(8));
-                
+                obs.value = new BigDecimal((Double) obs.value).round(new MathContext(8));
+
                 nm.parse(obs.value.toString());
                 v.getObx5_ObservationValue()[0].setData(nm);
                 v.getObx2_ValueType().setValue("NM");
@@ -581,7 +619,7 @@ public class HL7V2Exporter {
             v.getDateTimeOfTheObservation().getTime().setValue(new Date(obs.start));
             //Add it to the  list of observations
             //To preserve order of the OBX's, use 'custom'
-            customSegs.put(String.format("OBX.%s", setIdCounter.get()), v.encode());
+            customSegs.add(v.encode());
             setIdCounter.incrementAndGet();
         }
     }
