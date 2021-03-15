@@ -180,4 +180,13 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup>{
     }
     return this.variantRecords.get(this.currentVariantRecord);
   }
+
+  @Override
+  public boolean equals(Object o){
+    if(!(o instanceof FixedRecordGroup)){
+      return false;
+    }
+    FixedRecordGroup that = (FixedRecordGroup) o;
+    return (this.seedRecord.equals(that.seedRecord));
+  }
 }

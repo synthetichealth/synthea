@@ -72,7 +72,7 @@ public class FixedRecord {
   @SerializedName(value = "CONTACT_SN")
   public String contactLastName;
 
-  @SerializedName(value = "PARENT1_EMAIL")
+  @SerializedName(value = "EMAIL")
   public String contactEmail;
 
   @SerializedName(value = "ADDRESS_SEQUENCE")
@@ -196,5 +196,14 @@ public class FixedRecord {
         .of(new String[][] { { Person.FIRST_NAME, this.firstName }, { Person.LAST_NAME, this.lastName },
             { Person.NAME, this.firstName + " " + this.lastName }, })
         .collect(Collectors.toMap(data -> data[0], data -> data[1]));
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if(!(o instanceof FixedRecord)){
+      return false;
+    }
+    FixedRecord that = (FixedRecord) o;
+    return this.recordId.equals(that.recordId);
   }
 }

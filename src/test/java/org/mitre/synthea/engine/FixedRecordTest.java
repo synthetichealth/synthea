@@ -51,6 +51,7 @@ public class FixedRecordTest {
   public static final String HH_STATUS = "hh_status";
   public static final String PHONE_CODE = "phone_code";
   public static final String PHONE_NUMBER = "phone_number";
+  public static final String ADDRESS_SEQUENCE = "address_sequence";
   public static final String ADDRESS_1 = "address_1";
   public static final String ADDRESS_2 = "address_2";
   public static final String CITY = "city";
@@ -114,32 +115,44 @@ public class FixedRecordTest {
 
   @Test
   public void checkFixedDemographicsImport() {
-    // Hard-coded checks for the first person's (Jane Doe) seed record and initial attributes.
-    FixedRecordGroup janeDoeRecordGroup = generator.fixedRecordGroupManager.getNextRecordGroup(0);
-    Map<String, String> testAttributes = Stream.of(new String[][] {
-      {RECORD_ID, "1"},
-      {HH_ID, "1"},
-      {HH_STATUS, "adult"},
-      {FIRST_NAME, "Jane"},
-      {LAST_NAME, "Doe"},
-      {NAME, "Jane Doe"},
-      {BIRTH_YEAR, "1984"},
-      {BIRTH_MONTH, "3"},
-      {BIRTH_DAY_OF_MONTH, "12"},
-      {GENDER, "F"},
-      {PHONE_CODE, "405"},
-      {PHONE_NUMBER, "8762965"},
-      {ADDRESS_1, "13 Strawberry Lane"},
-      {CITY, "Eureka"},
-      {STATE, "California"},
-      {ZIP, "34513"},
-      {CONTACT_EMAIL, "jane-doe@something.com"}
-    }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
-    testRecordAttributes(janeDoeRecordGroup.seedRecord, testAttributes);
 
+    // Household with Lara Kayla Henderson and Chistopher Patrick Ahmann
+    org.mitre.synthea.input.Household household = Generator.fixedRecordGroupManager.getHousehold("3879063");
+
+    // Lara is this role and is the oldest member of the household, thus she should have an instance of every seed record, fixed record group, and address change.
+    Person lara = household.getMember("single_1");
+
+    FixedRecordGroup laraOnlyRecordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(lara);
+
+    // Lara's final record group should be equivilant to the one in her attributes.
+    assertEquals(laraOnlyRecordGroup, lara.attributes.get(Person.RECORD_GROUP));
+
+    // Hard-coded checks for both of jane's record groups.
+    Map<String, String> testAttributes = Stream.of(new String[][] {
+      {RECORD_ID, "19001"},
+      {HH_ID, "3879063"},
+      {HH_STATUS, "single_1"},
+      {FIRST_NAME, "Lara Kayla"},
+      {LAST_NAME, "Henderson"},
+      {NAME, "Lara Kayla Henderson"},
+      {BIRTH_YEAR, "1980"},
+      {BIRTH_MONTH, "03"},
+      {BIRTH_DAY_OF_MONTH, "11"},
+      {GENDER, "F"},
+      {PHONE_CODE, "303"},
+      {PHONE_NUMBER, "6377789"},
+      {ADDRESS_1, "11071 Lone Pnes"},
+      {ADDRESS_2, ""},
+      {CITY, "Littleton"},
+      {STATE, "Colorado"},
+      {ZIP, "80125-9291"},
+      {ADDRESS_SEQUENCE, "0"},
+      {CONTACT_EMAIL, "lkh1@something.com"}
+    }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
+    testRecordAttributes(laraOnlyRecordGroup.seedRecord, testAttributes); 
     // Check that the rest of the population's initial attributes match their seed record.
     for (int i = 0; i < generator.options.population; i++) {
-      FixedRecordGroup recordGroup = generator.fixedRecordGroupManager.getNextRecordGroup(i);
+      FixedRecordGroup recordGroup = Generator.fixedRecordGroupManager.getNextRecordGroup(i);
       FixedRecord seedRecord = recordGroup.seedRecord;
       Map<String, Object> demoAttributes
           = generator.pickFixedDemographics(recordGroup, new Random(i));
