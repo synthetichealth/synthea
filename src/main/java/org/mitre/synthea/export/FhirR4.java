@@ -417,7 +417,7 @@ public class FhirR4 {
     if (person.attributes.get(Person.HOUSEHOLD) != null) {
       patientResource.addIdentifier()
           .setSystem("http://mitre.org/household_id")
-          .setValue(String.valueOf(((Household) person.attributes.get(Person.HOUSEHOLD)).id));
+          .setValue(String.valueOf((String) person.attributes.get(Person.HOUSEHOLD)));
     }
 
     if (person.attributes.get(Person.CONTACT_EMAIL) != null) {

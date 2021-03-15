@@ -30,7 +30,6 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.input.FixedRecord;
 import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.input.FixedRecordGroupManager;
-import org.mitre.synthea.input.Household;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider; 
@@ -235,8 +234,8 @@ public class FixedRecordTest {
   @Test
   public void checkFixedDemographicsVariantAttributes() {
     // Test that the correct number of people were imported from the fixed records file.
-    assertEquals(7, generator.internalStore.size());
-    assertEquals(7, fixedRecordGroupManager.getPopulationSize());
+    assertEquals(12, generator.internalStore.size());
+    assertEquals(12, fixedRecordGroupManager.getPopulationSize());
 
     /* Test that the correct number of records were imported for each person. */
     // 0. Jane Doe

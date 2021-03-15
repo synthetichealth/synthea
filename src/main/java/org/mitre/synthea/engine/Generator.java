@@ -547,18 +547,14 @@ public class Generator implements RandomNumberGenerator {
    */
   public void setFixedDemographics(Person person) {
     FixedRecordGroup frg = ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP));
-    frg.updateCurrentVariantRecord(Utilities.getYear(person.lastUpdated));
+    // frg.updateCurrentVariantRecord(Utilities.getYear(person.lastUpdated));
     person.attributes.putAll(frg.getCurrentRecord().getFixedRecordAttributes());
     // Reset person's default records after attributes have been reset.
     person.initializeDefaultHealthRecords();
     person.attributes.put(Person.BIRTHDATE, frg.getSeedBirthdate());
     // Add the person to their household.
-    Household personHousehold = (Household) person.attributes.get(Person.HOUSEHOLD);
-    // Because people are sometimes re-simulated, we must make sure they
-    // have not already been added to the household.
-    if (!personHousehold.includesPerson(person)) {
-      personHousehold.addMember(person, frg.getHouseholdRole());
-    }
+    this.fixedRecordGroupManager.addPersonToHousehold(person, frg.getHouseholdRole());
+    // Household personHousehold = (Household) person.attributes.get(Person.HOUSEHOLD);
   }
 
   /**
@@ -573,9 +569,9 @@ public class Generator implements RandomNumberGenerator {
     long time = person.lastUpdated;
     while (person.alive(time) && time < stop) {
 
-      // If fixed Patient Demographics are being used then check to update the current fixedrecord.
+      // If fixed patient demographics are in use then check to update the person's current fixed record.
       if (person.attributes.get(Person.RECORD_GROUP) != null) {
-        updateFixedDemographicRecord(person, time);
+        this.fixedRecordGroupManager.updateFixedDemographicRecord(person, time, this);
       }
 
       // Process Health Insurance.
@@ -598,33 +594,6 @@ public class Generator implements RandomNumberGenerator {
     }
 
     DeathModule.process(person, time);
-  }
-
-  /**
-   * Updates the person's address information from their Fixed Record that matches the current year.
-   * @param person The person to use
-   */
-  public void updateFixedDemographicRecord(Person person, long time) {
-    // Check if the person's fixed record has been updated, meaning that their
-    // health record, provider, and address should also update.
-    FixedRecordGroup frg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
-    // if (frg.updateCurrentRecord(Utilities.getYear(time))) {
-    if (frg.hasJustBeenUpdated()){
-      // Pull the newly updated fixedRecord.
-      FixedRecord fr = frg.getCurrentRecord();
-      fr.overwriteAddress(person, this);
-      person.attributes.putAll(fr.getFixedRecordAttributes());
-      /*
-       * Force update the person's provider based on their new record.
-       * This is required so that a new health record is made for the start date
-       * of the fixed record which impacts the provider, care location, timing, and
-       * any change of address.
-       */
-      person.forceNewProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(time));
-      person.record = person.getHealthRecord(person.getProvider(
-          HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()),
-          System.currentTimeMillis());
-    }
   }
 
   /**
@@ -782,8 +751,9 @@ public class Generator implements RandomNumberGenerator {
     //   demoAttributes.put(Person.HOUSEHOLD, this.households.get(householdId));
     // }
 
-    demoAttributes.put(Person.HOUSEHOLD, this.fixedRecordGroupManager.getHousehold(recordGroup.getHouseholdId()));
-   
+    // demoAttributes.put(Person.HOUSEHOLD, this.fixedRecordGroupManager.getHousehold(recordGroup.getHouseholdId()));
+    demoAttributes.put(Person.HOUSEHOLD, recordGroup.getHouseholdId());
+
     demoAttributes.put(Person.RECORD_GROUP, recordGroup);
 
     demoAttributes.putAll(seedRecord.getFixedRecordAttributes());

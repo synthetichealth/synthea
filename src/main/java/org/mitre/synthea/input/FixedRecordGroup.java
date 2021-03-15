@@ -176,10 +176,10 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup>{
    * Sets the current variant record.
    * @param year
    */
-  public void updateCurrentVariantRecord(int year) {
-    // TODO - make this actually set the current variant record.
-    this.currentVariantRecord = 0;
-  }
+  // public void updateCurrentVariantRecord(int year) {
+  //   // TODO - make this actually set the current variant record.
+  //   this.currentVariantRecord = 0;
+  // }
 
 }
 

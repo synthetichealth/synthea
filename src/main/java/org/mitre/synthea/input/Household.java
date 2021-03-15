@@ -274,4 +274,8 @@ public class Household {
     return this.fixedRecordGroups.values().size();
   }
 
+public boolean updateSeedRecord(Person person, String householdRole) {
+  return false;
+}
+
 }

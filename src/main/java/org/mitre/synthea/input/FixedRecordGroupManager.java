@@ -3,6 +3,12 @@ package org.mitre.synthea.input;
 import com.google.gson.Gson;
 
 import com.google.gson.reflect.TypeToken;
+
+import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
+
 import java.lang.reflect.Type;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -110,6 +116,48 @@ public class FixedRecordGroupManager {
 
   public Household getHousehold(String householdId) {
     return this.householdsMap.get(householdId);
+  }
+
+  /**
+   * Updates the person's address information from their Fixed Record that matches
+   * the current year.
+   * 
+   * @param person    The person to use.
+   * @param time      The time to update the records at.
+   * @param generator The generator used to extract the new address location.
+   */
+  public void updateFixedDemographicRecord(Person person, long time, Generator generator) {
+    // Check if the person's fixed record has been updated, meaning that their
+    // health record, provider, and address should also update.
+    FixedRecordGroup frg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
+
+    // if (frg.updateCurrentRecord(Utilities.getYear(time))) {
+    if (frg.hasJustBeenUpdated()) {
+      // Pull the newly updated fixedRecord.
+      // FixedRecord fr = frg.getCurrentRecord();
+      FixedRecord fr = frg.seedRecord;
+      fr.overwriteAddress(person, generator);
+      person.attributes.putAll(fr.getFixedRecordAttributes());
+      /*
+       * Force update the person's provider based on their new record. This is
+       * required so that a new health record is made for the start date of the fixed
+       * record which impacts the provider, care location, timing, and any change of
+       * address.
+       */
+      person.forceNewProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(time));
+      person.record = person.getHealthRecord(
+          person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()),
+          System.currentTimeMillis());
+    }
+  }
+
+  public void addPersonToHousehold(Person person, String householdRole) {
+    // Because people are sometimes re-simulated, we must make sure they
+    // have not already been added to the household.
+    Household personHousehold = this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD));
+    if (!personHousehold.includesPerson(person)) {
+      personHousehold.addMember(person, householdRole);
+    }
   }
 }
 
