@@ -16,20 +16,17 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.export.BB2RIFExporter.BeneficiaryFields;
+import org.mitre.synthea.export.BB2RIFExporter.CarrierFields;
 import org.mitre.synthea.export.BB2RIFExporter.CodeMapper;
 import org.mitre.synthea.export.BB2RIFExporter.DMEFields;
-import org.mitre.synthea.export.BFDExportBuilder.ExportConfigType;
+import org.mitre.synthea.export.BB2RIFExporter.InpatientFields;
+import org.mitre.synthea.export.BB2RIFExporter.StaticFieldConfig;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.Provider;
-import org.mitre.synthea.world.concepts.Costs;
-import org.mitre.synthea.world.concepts.HealthRecord;
-import org.mitre.synthea.world.concepts.HealthRecord.Code;
-import org.mitre.synthea.world.concepts.HealthRecord.Device;
-import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 
 public class BB2RIFExporterTest {
   /**
@@ -114,98 +111,6 @@ public class BB2RIFExporterTest {
     // TODO: more meaningful testing of contents
   }
 
-
-  @Test
-  public void testBFDExportBuilder_DME_Fixed() throws Exception {
-    BFDExportBuilder builder = new BFDExportBuilder(null);
-    ExportConfigType type = ExportConfigType.DME;
-    
-    // test lookupCarrier()
-    assertEquals("Expected", 
-            builder.lookupCarrier("MA", type, "CARR_NUM"), "31143");
-    assertEquals("Expected", 
-            builder.lookupCarrier("Massachusetts", type, "CARR_NUM"), "31143");
-
-    // verify config items
-    List<BFDExportConfigEntry> dmeConfigs = builder.getConfigItemsByType(type);
-    assertEquals("Expected DME configs to have its first definition in row 4", 
-          dmeConfigs.get(0).getLineNum(), 4);
-    assertEquals("Expected DME configs to have 'DML_IND' defined)", 
-          dmeConfigs.get(0).getField(), "DML_IND");
-
-    // verify setFromConfig()
-    Person person = new Person(System.currentTimeMillis());
-    person.attributes.put(Person.STATE, "Massachusetts");
-    Payer.loadNoInsurance();
-    Payer noInsurance = Payer.noInsurance;
-    long time = 0L;
-    person.setPayerAtTime(time, noInsurance);
-    Code code = new Code("SNOMED","363753007","Crutches");
-    Encounter enc = person.record.encounterStart(time, HealthRecord.EncounterType.WELLNESS);
-    enc.provider = new Provider();
-    enc.provider.state = "Massachusetts";
-    Device dev = person.record.deviceImplant(time, code.display);
-    dev.codes.add(code);
-    
-    HashMap<DMEFields, String> fieldValues = new HashMap<>();
-    builder.setFromConfig(type, fieldValues, enc, dev, person);
-    // testing direct text replacement with comments
-    assertEquals("'NCH_CLM_TYPE_CD' should be replaced with specific value",
-        fieldValues.get(DMEFields.NCH_CLM_TYPE_CD),"82");
-    // testing macro replacement
-    assertEquals("'CARR_NUM' should be replaced by a macro",  
-        fieldValues.get(DMEFields.CARR_NUM),"31143");
-  }
-
-  @Test
-  public void testBFDExportBuilder_DME() throws Exception {
-    BFDExportBuilder builder = new BFDExportBuilder(null);
-    ExportConfigType type = ExportConfigType.DME;
-    
-    // test lookupCarrier()
-    assertEquals("Expected", 
-            builder.lookupCarrier("MA", type, "CARR_NUM"), "31143");
-    assertEquals("Expected", 
-            builder.lookupCarrier("Massachusetts", type, "CARR_NUM"), "31143");
-
-    // verify config items
-    List<BFDExportConfigEntry> dmeConfigs = builder.getConfigItemsByType(ExportConfigType.DME);
-    assertEquals("Expected DME configs to have its first definition in row 4", 
-          dmeConfigs.get(0).getLineNum(), 4);
-    assertEquals("Expected DME configs to have 'DML_IND' defined)", 
-          dmeConfigs.get(0).getField(), "DML_IND");
-
-    // verify setFromConfig()
-    int numberOfPeople = 1;
-    Exporter.ExporterRuntimeOptions exportOpts = new Exporter.ExporterRuntimeOptions();
-    Generator.GeneratorOptions generatorOpts = new Generator.GeneratorOptions();
-    generatorOpts.population = numberOfPeople;
-    generatorOpts.seed = 12345;
-    Generator generator = new Generator(generatorOpts, exportOpts);
-    generator.options.overflow = false;
-    
-    Person person = generator.generatePerson(0);
-    HashMap<DMEFields, String> fieldValues = new HashMap<>();
-    for (HealthRecord.Encounter encounter : person.record.encounters) {
-      for (HealthRecord.Device device : encounter.devices) {
-        builder.setFromConfig(type, fieldValues, encounter, device, person);
-        // testing direct text replacement with comments
-        assertEquals("'NCH_CLM_TYPE_CD' should be replaced with specific value",
-            fieldValues.get(BB2RIFExporter.DMEFields.NCH_CLM_TYPE_CD),"82");
-        // testing macro replacement
-        assertEquals("'CARR_NUM' should be replaced by a macro",  
-            fieldValues.get(BB2RIFExporter.DMEFields.CARR_NUM),"31143");
-      }
-    }
-    
-    // verify exported file
-    Exporter.runPostCompletionExports(generator, exportOpts);
-    Exporter.flushFlushables();
-    File expectedExportFolder = exportDir.toPath().resolve("bfd").toFile();
-    File dmeFile = expectedExportFolder.toPath().resolve("dme.csv").toFile();
-    assertTrue(dmeFile.exists() && dmeFile.isFile());
-  }
-
   @Test
   public void testCodeMapper() {
     try {
@@ -221,5 +126,27 @@ public class BB2RIFExporterTest {
     } catch (IOException | IllegalArgumentException e) {
       // No worries. The optional mapping file is not present.
     }
+  }
+  
+  @Test
+  public void testStaticFieldConfig() throws IOException, NoSuchMethodException {
+    RandomNumberGenerator rand = new Person(System.currentTimeMillis());
+    
+    assertEquals("foo", StaticFieldConfig.processCell("foo", rand));
+    String randomVal = StaticFieldConfig.processCell("1, 2, 3", rand);
+    assertTrue(randomVal.equalsIgnoreCase("1") || randomVal.equalsIgnoreCase("2")
+            || randomVal.equalsIgnoreCase("3"));
+    
+    StaticFieldConfig config = new StaticFieldConfig();
+    assertEquals("INSERT", config.getValue("DML_IND", InpatientFields.class));
+    assertEquals("82 (DMEPOS)", config.getValue("NCH_CLM_TYPE_CD", DMEFields.class));
+    assertEquals("71 (local carrier, non-DME)",
+            config.getValue("NCH_CLM_TYPE_CD", CarrierFields.class));
+    
+    HashMap<BeneficiaryFields, String> values = new HashMap<>();
+    config.setValues(values, BeneficiaryFields.class, rand);
+    assertEquals("INSERT", values.get(BeneficiaryFields.DML_IND));
+    String sexIdent = values.get(BeneficiaryFields.BENE_SEX_IDENT_CD);
+    assertTrue(sexIdent.equals("1") || sexIdent.equals("2"));
   }
 }
