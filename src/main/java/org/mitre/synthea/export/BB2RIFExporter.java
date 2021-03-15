@@ -267,8 +267,8 @@ public class BB2RIFExporter implements Flushable {
                     (String)person.attributes.get(Person.RACE)));
     fieldValues.put(BeneficiaryFields.BENE_SRNM_NAME, 
             (String)person.attributes.get(Person.LAST_NAME));
-    fieldValues.put(BeneficiaryFields.BENE_GVN_NAME,
-            (String)person.attributes.get(Person.FIRST_NAME));
+    String givenName = (String)person.attributes.get(Person.FIRST_NAME);
+    fieldValues.put(BeneficiaryFields.BENE_GVN_NAME, trimToLength(givenName, 15));
     long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
     fieldValues.put(BeneficiaryFields.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
     fieldValues.put(BeneficiaryFields.RFRNC_YR, String.valueOf(getYear(stopTime)));
@@ -281,6 +281,13 @@ public class BB2RIFExporter implements Flushable {
     fieldValues.put(BeneficiaryFields.BENE_PTA_TRMNTN_CD, terminationCode);
     fieldValues.put(BeneficiaryFields.BENE_PTB_TRMNTN_CD, terminationCode);
     beneficiary.writeValues(BeneficiaryFields.class, fieldValues);
+  }
+  
+  private String trimToLength(String str, int maxLength) {
+    if (str.length() > maxLength) {
+      str = str.substring(0, maxLength);
+    }
+    return str;
   }
   
   private String getBB2SexCode(String sex) {
@@ -563,7 +570,7 @@ public class BB2RIFExporter implements Flushable {
         // If the encounter has a recorded reason, enter the mapped
         // values into the principle diagnoses code.
         if (conditionCodeMapper.canMap(encounter.reason.code)) {
-          String icdCode = conditionCodeMapper.map(encounter.reason.code, person);
+          String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
           fieldValues.put(InpatientFields.PRNCPAL_DGNS_CD, icdCode);
           if (drgCodeMapper.canMap(icdCode)) {
             fieldValues.put(InpatientFields.CLM_DRG_CD, drgCodeMapper.map(icdCode, person));
@@ -577,12 +584,13 @@ public class BB2RIFExporter implements Flushable {
         for (String key : person.record.present.keySet()) {
           if (person.record.conditionActive(key)) {
             if (conditionCodeMapper.canMap(key)) {
-              diagnoses.add(conditionCodeMapper.map(key, person));
+              diagnoses.add(conditionCodeMapper.map(key, person, true));
             }
           }
         }
         if (!diagnoses.isEmpty()) {
-          for (int i = 0; i < diagnoses.size(); i++) {
+          int smallest = Math.min(diagnoses.size(), inpatientDxFields.length);
+          for (int i = 0; i < smallest; i++) {
             InpatientFields dxField = inpatientDxFields[i];
             fieldValues.put(dxField, diagnoses.get(i));
           }
@@ -596,13 +604,14 @@ public class BB2RIFExporter implements Flushable {
           for (HealthRecord.Code code : procedure.codes) {
             if (conditionCodeMapper.canMap(code.code)) {
               mappableProcedures.add(procedure);
-              mappedCodes.add(conditionCodeMapper.map(code.code, person));
+              mappedCodes.add(conditionCodeMapper.map(code.code, person, true));
               break;
             }
           }
         }
         if (!mappableProcedures.isEmpty()) {
-          for (int i = 0; i < mappableProcedures.size(); i++) {
+          int smallest = Math.min(mappableProcedures.size(), inpatientPxFields.length);
+          for (int i = 0; i < smallest; i++) {
             InpatientFields[] pxField = inpatientPxFields[i];
             fieldValues.put(pxField[0], mappedCodes.get(i));
             fieldValues.put(pxField[1], "0"); // 0=ICD10
@@ -1943,6 +1952,9 @@ public class BB2RIFExporter implements Flushable {
     PRCDR_DT25,
     IME_OP_CLM_VAL_AMT,
     DSH_OP_CLM_VAL_AMT,
+    CLM_UNCOMPD_CARE_PMT_AMT,
+    FI_DOC_CLM_CNTL_NUM,
+    FI_ORIG_CLM_CNTL_NUM,
     CLM_LINE_NUM,
     REV_CNTR,
     HCPCS_CD,
@@ -2358,6 +2370,18 @@ public class BB2RIFExporter implements Flushable {
     }
 
     /**
+     * Get one of the BFD codes for the supplied Synthea code. Equivalent to
+     * {@code map(codeToMap, "code", rand)}.
+     * @param codeToMap the Synthea code to look for
+     * @param rand a source of random numbers used to pick one of the list of BFD codes
+     * @param stripDots whether to remove dots in codes (e.g. J39.45 -> J3945)
+     * @return the BFD code or null if the code can't be mapped
+     */
+    public String map(String codeToMap, RandomNumberGenerator rand, boolean stripDots) {
+      return map(codeToMap, "code", rand, stripDots);
+    }
+
+    /**
      * Get one of the BFD codes for the supplied Synthea code.
      * @param codeToMap the Synthea code to look for
      * @param bfdCodeType the type of BFD code to map to
@@ -2365,12 +2389,30 @@ public class BB2RIFExporter implements Flushable {
      * @return the BFD code or null if the code can't be mapped
      */
     public String map(String codeToMap, String bfdCodeType, RandomNumberGenerator rand) {
+      return map(codeToMap, bfdCodeType, rand, false);
+    }
+
+    /**
+     * Get one of the BFD codes for the supplied Synthea code.
+     * @param codeToMap the Synthea code to look for
+     * @param bfdCodeType the type of BFD code to map to
+     * @param rand a source of random numbers used to pick one of the list of BFD codes
+     * @param stripDots whether to remove dots in codes (e.g. J39.45 -> J3945)
+     * @return the BFD code or null if the code can't be mapped
+     */
+    public String map(String codeToMap, String bfdCodeType, RandomNumberGenerator rand,
+            boolean stripDots) {
       if (!canMap(codeToMap)) {
         return null;
       }
       List<Map<String, String>> options = map.get(codeToMap);
       int choice = rand.randInt(options.size());
-      return options.get(choice).get(bfdCodeType);
+      String code = options.get(choice).get(bfdCodeType);
+      if (stripDots) {
+        return code.replaceAll(".", "");
+      } else {
+        return code;
+      }
     }
   }
 
