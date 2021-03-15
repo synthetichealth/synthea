@@ -27,31 +27,30 @@ public class Household {
   private List<Integer> addressYears;
   // The currrent address sequence.
   private int currentAddressSequence;
-
-  // The id of the household, corresponding to the household IDs of the input
-  // records.
-  public String id;
   // The Map of household members where the key is the peron's household role
   // (married_1, marride_2, child_1)
   private Map<String, Person> members;
+  // Household id
+  private String id;
+  // Randomizer for this household.
+  private Random random;
 
   /**
-   * Household Constructor.
-   * 
-   * @param id the household id.
+   * Constructor for a household.
    */
-  // public Household(int id) {
-  // this.id = id;
-  // this.members = new HashMap<String, Person>();
-  // // this.addressHistory = new HouseholdAddressHistory();
-  // }
-
   public Household() {
     this.members = new HashMap<String, Person>();
     this.currentAddressSequence = 0;
   }
 
-  public boolean updateCurrentFixedRecordGroup(int currentYear) {
+  /**
+   * Updates the current fixed records of the memebers of this household based on
+   * the current year.
+   * 
+   * @param currentYear The current year to update for.
+   * @return Whether the fixed record groups were updated.
+   */
+  public boolean updateCurrentFixedRecordGroups(int currentYear) {
     // If it is time for the new seed records and their new addresses to start, then
     // update each person with their new seed records and force a new
     // provider(health record) for them.
@@ -67,28 +66,31 @@ public class Household {
       // sequence.
       this.currentAddressSequence = currentIndex;
       for (String role : this.members.keySet()) {
-        this.members.get(role).attributes.put(Person.RECORD_GROUP,
-            this.fixedRecordGroups.get(role).get(this.currentAddressSequence));
+        this.setMemberRecordGroup(role);
       }
       return true;
     }
     return false;
   }
 
-  public Household initializeHousehold() {
+  private void setMemberRecordGroup(String role) {
+    this.members.get(role).attributes.put(Person.RECORD_GROUP,
+        this.fixedRecordGroups.get(role).get(this.currentAddressSequence));
+  }
 
+  /**
+   * Initializes this household with a set seed.
+   * 
+   * @param seed The seed to initialize the household with.
+   * @return The initialized household.
+   */
+  public Household initializeHousehold(long seed) {
     this.id = this.seedRecords.get(0).householdId;
-
+    this.random = new Random(seed);
     // The list of addresses this household will have.
     List<String> addresses = new ArrayList<String>();
 
-    // Determine how many seed records per person. This determines how many time
-    // splits there should be, so that each seed record spends some amount of time
-    // as the primary seed record.
-
-    // Populate the fixed record groups with the newly created initialized fixed
-    // record groups for
-    // each seed record.
+    // Populate and create the fixed record groups with each seed record.
     for (FixedRecord seedRecord : this.seedRecords) {
       if (!this.fixedRecordGroups.containsKey(seedRecord.householdRole)) {
         this.fixedRecordGroups.put(seedRecord.householdRole, new ArrayList<FixedRecordGroup>());
@@ -102,12 +104,12 @@ public class Household {
     }
 
     // Once the FixedRecordGroups are initialized, we need to sort each person's
-    // list of FixedRecordGroups by their ADDRESS_SEQUENCE.
+    // list of FixedRecordGroups. This sorting is done by their ADDRESS_SEQUENCE.
     for (String key : this.fixedRecordGroups.keySet()) {
       this.fixedRecordGroups.put(key, this.fixedRecordGroups.get(key).stream().sorted().collect(Collectors.toList()));
     }
 
-    // Go through the variant records and assign them to their relevant
+    // Iterate through the variant records and assign them to their relevant
     // FixedRecordGroups.
     for (FixedRecord variant : this.variantRecords) {
       for (FixedRecordGroup frg : this.fixedRecordGroups.get(variant.householdRole)) {
@@ -116,58 +118,35 @@ public class Household {
         }
       }
     }
-    // Now, every seed record for every person should have their own set of
-    // corresponding variant records.
 
-    // This tells us how many seed records per person there are and how many address
-    // changes need to be accounted for.
-    int fixedRecordGroupsPerPerson = this.fixedRecordGroups.values().iterator().next().size();
-    String fixedRecordGroupFirstPerson = this.fixedRecordGroups.values().iterator().next().get(0).getSeedId();
-    // A hosuehold of single people can have different addressses.
-    // if (numberOfAddresses != fixedRecordGroupsPerPerson) {
-    // throw new RuntimeException(
-    // "The number of addresses MUST be equal to the number of fixed record groups
-    // (equivalent to seed records) per person. Number of addresses: "
-    // + numberOfAddresses + ", number of fixed record groups (seed records) per
-    // person: " + fixedRecordGroupsPerPerson + ". Seed Record in question: " +
-    // fixedRecordGroupFirstPerson);
-    // }
+    // Set the range of address years corresponding to each address change.
+    this.addressYears = this.getListOfYearsFor();
 
-    // Now we need the oldest person in the household so we can randomly distribute
-    // the seed records and addresses over their lifespan. Then, assign an order
-    // based on ADDRESS_SEQUENCE.
+    return this;
+  }
 
-    // Get a list of ints with start years that will correspond with new address
-    // sequences of fixed record groups for each member of the household.
+  /**
+   * Now we need the oldest person in the household so we can randomly distribute
+   * the seed records and addresses over their lifespan. Then, assign an order
+   * based on ADDRESS_SEQUENCE. Get a list of ints with start years that will
+   * correspond with new address sequences of fixed record groups for each member
+   * of the household.
+   */
+  private List<Integer> getListOfYearsFor() {
     int householdStartYear = this.getBirthYearOfOldestMember();
     int currentYear = 2020; // TODO - should not be hardcoded, need to get current year.
     int rangeOfYears = currentYear - householdStartYear;
-    addressYears = new ArrayList<Integer>();
+    List<Integer> addressYearRanges = new ArrayList<Integer>();
     int numberOfAddresses = this.fixedRecordGroups.values().iterator().next().size();
-    Random r = new Random(); // TODO - Random should be based on a seed.
     for (int i = 0; i < numberOfAddresses; i++) {
-      addressYears.add(r.nextInt(rangeOfYears) + householdStartYear);
+      addressYearRanges.add(this.random().nextInt(rangeOfYears) + householdStartYear);
     }
-    // The years to switch fixed record groups due to a new ADDRESS_SEQUENCE are now
-    // sorted.
-    addressYears = addressYears.stream().sorted().collect(Collectors.toList());
+    addressYearRanges = addressYearRanges.stream().sorted().collect(Collectors.toList());
+    return addressYearRanges;
+  }
 
-    // Populate the address map with a addressStartYear - address key-value pair.
-    // for (String address : addresses) {
-    // boolean validAddressYear = false;
-    // while (!validAddressYear) {
-    // int addressStartYear = r.nextInt(currentYear - householdStartYear) +
-    // householdStartYear;
-    // if (!addressMap.containsKey(addressStartYear)) {
-    // addressMap.put(addressStartYear, address);
-    // validAddressYear = true;
-    // }
-    // }
-    // }
-
-    // this.addressHistory = new HouseholdAddressHistory(addressMap);
-
-    return this;
+  private Random random() {
+    return this.random;
   }
 
   /**
@@ -194,30 +173,7 @@ public class Household {
    * @return
    */
   public FixedRecordGroup getRecordGroupFor(String householdRole) {
-    return this.fixedRecordGroups.get(householdRole).get(this.currentFixedRecordGroupIndex());
-  }
-
-  /**
-   * Returns the current index of the current active fixed record groups.
-   * 
-   * @return
-   */
-  private int currentFixedRecordGroupIndex() {
-    // TODO - actual implementation
-    return 0;
-  }
-
-  private class HouseholdAddressHistory {
-
-    private final Map<Integer, String> addressMap;
-
-    public HouseholdAddressHistory(Map<Integer, String> addressMap) {
-      this.addressMap = addressMap;
-    }
-
-    public String getAddressAt(int year) {
-      return this.addressMap.get(year);
-    }
+    return this.fixedRecordGroups.get(householdRole).get(this.currentAddressSequence);
   }
 
   /**
@@ -266,16 +222,57 @@ public class Household {
     return this.members.get(householdRole);
   }
 
+  /**
+   * Returns the household id of this household.
+   * 
+   * @return
+   */
   public String getHouseholdId() {
-    return this.seedRecords.get(0).householdId;
+    return this.id;
   }
 
+  /**
+   * Returns the size of this household.
+   * 
+   * @return
+   */
   public int householdSize() {
     return this.fixedRecordGroups.values().size();
   }
 
-public boolean updateSeedRecord(Person person, String householdRole) {
-  return false;
-}
+  /**
+   * Updates the variant record for the given person.
+   * 
+   * @param person The person whose variant records need updating.
+   */
+  public FixedRecord updatePersonVariantRecord(Person person) {
+    String householdRole = this.getHouseholdRoleFor(person);
+    FixedRecord fr = this.getRecordGroupFor(householdRole).updateCurrentVariantRecord();
+    // TODO - should putting all the attributes in the person happen elsewhere so as
+    // to maintain the correct values for valud cities and other malformed fixed
+    // record data that the seed will have?
+    person.attributes.putAll(fr.getFixedRecordAttributes());
+    return fr;
+  }
 
+  /**
+   * Gets the household role of the given person,
+   * 
+   * @param person The person to get the role for.
+   * @return The role of the person.
+   */
+  private String getHouseholdRoleFor(Person person) {
+    List<String> householdRoles = this.members.entrySet().stream().filter(entry -> person.equals(entry.getValue()))
+        .map(Map.Entry::getKey).collect(Collectors.toList());
+    if (householdRoles.isEmpty()) {
+      throw new RuntimeException("No household roles found for the given person.");
+    } else if (householdRoles.size() > 1) {
+      throw new RuntimeException("There are more than 1 household roles corresponding to the given person.");
+    }
+    return householdRoles.get(0);
+  }
+
+  public FixedRecordGroup getRecordGroupFor(Person person) {
+    return this.getRecordGroupFor(this.getHouseholdRoleFor(person));
+  }
 }

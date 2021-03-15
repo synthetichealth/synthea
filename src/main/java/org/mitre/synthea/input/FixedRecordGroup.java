@@ -3,21 +3,21 @@ package org.mitre.synthea.input;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mitre.synthea.helpers.Utilities;
-
 /**
  * A grouping of FixedRecords that represents a single individual. FixedRecords
  * provide demographic information and the grouping can be used to capture
  * variation that may happen across different provider health records.
  */
 public class FixedRecordGroup implements Comparable<FixedRecordGroup>{
+  // The seed record of this record group from which the variants are created.
   public FixedRecord seedRecord;
+  // The list of variant records for this record group.
   public List<FixedRecord> variantRecords;
+  // The current variant record of this group. Updates be incrementing and is the index of the variantRecords to use.
   public int currentVariantRecord;
-
-  public int addressStartDate;
-
+  // The sequence place of this fixed record group.
   private final int fixedRecordGroupSequencePlace;
+  // Whether this fixed record group has been updated and used yet.
   private boolean hasBeenUpdated;
 
   /**
@@ -30,8 +30,7 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup>{
     this.variantRecords = new ArrayList<FixedRecord>();
     this.currentVariantRecord = 0;
     this.fixedRecordGroupSequencePlace = seedRecord.addressSequence;
-    this.hasBeenUpdated = true;
-    // this.currentVariantRecord = this.getEarliestRecord();
+    this.hasBeenUpdated = false;
   }
 
   /**
@@ -116,9 +115,6 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup>{
    * @return the index of the current record.
    */
   public FixedRecord getCurrentRecord() {
-    if (this.currentVariantRecord == -1) {
-      throw new RuntimeException("Current year's record must be updated and set before accessing it.");
-    }
     return this.variantRecords.get(this.currentVariantRecord);
   }
 
@@ -151,13 +147,14 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup>{
     return this.seedRecord.householdId;
   }
 
+  @Override
   public String toString(){
     return this.seedRecord.recordId;
   }
 
   @Override
-  public int compareTo(FixedRecordGroup o) {
-    return Integer.compare(this.fixedRecordGroupSequencePlace, o.fixedRecordGroupSequencePlace);
+  public int compareTo(FixedRecordGroup other) {
+    return Integer.compare(this.fixedRecordGroupSequencePlace, other.fixedRecordGroupSequencePlace);
   }
 
   /**
@@ -173,61 +170,14 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup>{
   }
 
   /**
-   * Sets the current variant record.
-   * @param year
+   * Iterates to the next variant record in the record group.
+   * @return The current variant record the record group was updated to.
    */
-  // public void updateCurrentVariantRecord(int year) {
-  //   // TODO - make this actually set the current variant record.
-  //   this.currentVariantRecord = 0;
-  // }
-
+  public FixedRecord updateCurrentVariantRecord() {
+    this.currentVariantRecord++;
+    if(this.currentVariantRecord >= this.variantRecords.size()) {
+      this.currentVariantRecord = 0;
+    }
+    return this.variantRecords.get(this.currentVariantRecord);
+  }
 }
-
-// OLD METHODS
-
-  /**
-   * Returns the index of the earlist FixedRecord in the RecordGroup.
-   * 
-   * @return Earliest FixedRecord index.
-   */
-  // private int getEarliestRecord() {
-  //   int currentEarliest = 0;
-  //   for (int i = 0; i < variantRecords.size(); i++) {
-  //     if (this.variantRecords.get(i).addressStartDate < this.variantRecords.get(currentEarliest).addressStartDate) {
-  //       currentEarliest = i;
-  //     }
-  //   }
-  //   return currentEarliest;
-  // }
-
-    /**
-   * Sets the year ranges of the variant records in the record group.
-   */
-  // public void setVariantRecordYearRanges() {
-  //   for (int i = 0; i < variantRecords.size(); i++) {
-  //     int nextAddressStartDate = this.getNextAddressStartDate(this.variantRecords.get(i).addressStartDate);
-  //     this.variantRecords.get(i).addressEndDate = nextAddressStartDate - 1;
-  //   }
-  // }
-
-  /**
-   * Returns the next address start date.
-   * 
-   * @return the date of the next address start.
-   */
-  // private int getNextAddressStartDate(int currentAddressStartDate) {
-  //   // Create a list of the address start dates after the given date.
-  //   List<Integer> addressStartDates = new ArrayList<Integer>();
-  //   for (int i = 0; i < variantRecords.size(); i++) {
-  //     if (this.variantRecords.get(i).addressStartDate > currentAddressStartDate) {
-  //       addressStartDates.add(this.variantRecords.get(i).addressStartDate);
-  //     }
-  //   }
-  //   // If there are no address start dates, this is the last date. return the
-  //   // current year + 5.
-  //   if (addressStartDates.size() == 0) {
-  //     return Utilities.getYear(System.currentTimeMillis()) + 5;
-  //   }
-  //   // Return the smallest address start date.
-  //   return addressStartDates.stream().min((i, j) -> i.compareTo(j)).get();
-  // }

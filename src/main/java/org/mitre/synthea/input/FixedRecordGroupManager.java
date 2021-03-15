@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * A grouping of FixedRecords that represents a single individual. FixedRecords
@@ -73,28 +74,32 @@ public class FixedRecordGroupManager {
     } catch (FileNotFoundException e) {
       throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
     }
-    fixedRecordGroupManager.initializeHouseholds();
+    long householdsSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+    fixedRecordGroupManager.initializeHouseholds(householdsSeed);
     return fixedRecordGroupManager;
   }
 
   /**
    * Initializes the households for the manager based on the list of imported
    * households.
+   * 
+   * @param householdsSeed The seed to initialize the households with.
    */
-  private void initializeHouseholds() {
+  private void initializeHouseholds(long householdsSeed) {
     for (Household household : this.householdsList) {
-      String householdId = household.getHouseholdId();
-      this.householdsMap.put(householdId, household.initializeHousehold());
+      String householdId = household.seedRecords.get(0).householdId;
+      this.householdsMap.put(householdId, household.initializeHousehold(householdsSeed));
     }
   }
 
   /**
-   * Checks to update each household's memebers' current fixed record groups.
+   * Checks to update the household of this person's fixed record group based on
+   * address sequences.
    * 
    * @param currentYear
    */
-  public void checkToUpdateHouseholdAddresses(int currentYear) {
-    this.householdsMap.values().forEach(h -> h.updateCurrentFixedRecordGroup(currentYear));
+  public void checkToUpdateHouseholdAddresses(Person person, int currentYear) {
+    this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD)).updateCurrentFixedRecordGroups(currentYear);
   }
 
   /**
@@ -127,6 +132,7 @@ public class FixedRecordGroupManager {
    * @param generator The generator used to extract the new address location.
    */
   public void updateFixedDemographicRecord(Person person, long time, Generator generator) {
+
     // Check if the person's fixed record has been updated, meaning that their
     // health record, provider, and address should also update.
     FixedRecordGroup frg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
@@ -134,15 +140,14 @@ public class FixedRecordGroupManager {
     // if (frg.updateCurrentRecord(Utilities.getYear(time))) {
     if (frg.hasJustBeenUpdated()) {
       // Pull the newly updated fixedRecord.
-      // FixedRecord fr = frg.getCurrentRecord();
-      FixedRecord fr = frg.seedRecord;
+      FixedRecord fr = frg.getCurrentRecord();
       fr.overwriteAddress(person, generator);
       person.attributes.putAll(fr.getFixedRecordAttributes());
       /*
-       * Force update the person's provider based on their new record. This is
-       * required so that a new health record is made for the start date of the fixed
-       * record which impacts the provider, care location, timing, and any change of
-       * address.
+       * Force update the person's provider based on their new seed record. and fixed
+       * record group. This is required so that a new health record is made for the
+       * start date of the new primary seed record which impacts the provider, care
+       * location, timing, and any change of address.
        */
       person.forceNewProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(time));
       person.record = person.getHealthRecord(
@@ -151,6 +156,9 @@ public class FixedRecordGroupManager {
     }
   }
 
+  /**
+   * Adds the given person with the given household role to their household.
+   */
   public void addPersonToHousehold(Person person, String householdRole) {
     // Because people are sometimes re-simulated, we must make sure they
     // have not already been added to the household.
@@ -159,32 +167,18 @@ public class FixedRecordGroupManager {
       personHousehold.addMember(person, householdRole);
     }
   }
+
+  /**
+   * Updates the given person's current variant record.
+   * 
+   * @param person
+   */
+  public void updatePersonVariantRecord(Person person) {
+    Household household = this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD));
+    household.updatePersonVariantRecord(person);
+  }
+
+  public FixedRecordGroup getRecordGroupFor(Person person) {
+    return this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD)).getRecordGroupFor(person);
+  }
 }
-
-// OLD METHODS
-
-/**
- * Creates the record groups based on the imported records.
- */
-// public void createRecordGroups() {
-// this.recordGroups = new HashMap<Integer, FixedRecordGroup>();
-// // Initialize with the seed records.
-// for (FixedRecord seedRecord : seedRecords) {
-// this.recordGroups.put(Integer.parseInt(seedRecord.recordId),
-// new FixedRecordGroup(seedRecord));
-// }
-// // Populate the seeded record groups with variant records.
-// for (FixedRecord variantRecord : variantRecords) {
-// if (!this.recordGroups.containsKey(Integer.parseInt(variantRecord.seedID))) {
-// throw new RuntimeException("ERROR: Variant record seed ID " +
-// variantRecord.seedID
-// + " does not exist in seed records.");
-// }
-// this.recordGroups.get(Integer.parseInt(variantRecord.seedID))
-// .addVariantRecord(variantRecord);
-// }
-// // Set the date ranges of the fixed records.
-// for (FixedRecordGroup recordGroup : this.recordGroups.values()) {
-// recordGroup.setVariantRecordYearRanges();
-// }
-// }

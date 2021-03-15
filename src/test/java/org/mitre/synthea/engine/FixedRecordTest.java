@@ -230,6 +230,77 @@ public class FixedRecordTest {
       }
     }
   }
+
+  // @Test
+  // public void checkFixedDemographicsExport() {
+  //   // Check each patient from the fixed record input file.
+  //   for (int personIndex = 0; personIndex < generator.options.population; personIndex++) {
+  //     Person currentPerson = generator.internalStore.get(personIndex);
+  //     // Check that patients' exported FHIR resource attributes match their FixedRecords.
+  //     for (HealthRecord healthRecord : currentPerson.records.values()) {
+
+  //       // Convert the current record to exported FHIR.
+  //       currentPerson.record = healthRecord;
+  //       String fhirJson = FhirR4.convertToFHIRJson(currentPerson, System.currentTimeMillis());
+  //       FhirContext ctx = FhirContext.forR4();
+  //       IParser parser = ctx.newJsonParser().setPrettyPrint(true);
+  //       Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
+
+  //       // Match the current record with the FixedRecord that matches its record id.
+  //       FixedRecord currentFixedRecord = getRecordMatch(currentPerson);
+  //       // Check that a record group was found. Very detailed error message for debugging purposes.
+  //       assertNotNull("Did not find a record match for "
+  //           + currentPerson.attributes.get(Person.NAME) + " with record id " + currentPerson.record
+  //           .demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID) + ". Person has "
+  //           + ((FixedRecordGroup) currentPerson.attributes.get(Person.RECORD_GROUP)).variantRecords
+  //           .size() + " imported fixed records in their fixed record group with record ids "
+  //           + (((FixedRecordGroup) currentPerson.attributes.get(Person.RECORD_GROUP)))
+  //           .variantRecords.stream().map(variantRecord -> variantRecord.recordId).collect(
+  //           Collectors.toList()) + ". Person's health records have ids " + currentPerson.records
+  //           .values().stream().map(record -> record.demographicsAtRecordCreation.get
+  //           (Person.IDENTIFIER_RECORD_ID)).collect(Collectors.toList()), currentFixedRecord);
+  //       assertEquals(currentFixedRecord.recordId, healthRecord.demographicsAtRecordCreation.get(
+  //           Person.IDENTIFIER_RECORD_ID));
+
+  //       // First element of bundle is the patient resource.
+  //       Patient patient = ((Patient) bundle.getEntry().get(0).getResource());
+  //       // Birthdate parsing
+  //       long millis = patient.getBirthDate().getTime();
+  //       Calendar c = Calendar.getInstance();
+  //       c.setTimeInMillis(millis);
+  //       // Phone number parsing
+  //       String[] phoneNumber = patient.getTelecomFirstRep().getValue().split("-");
+  //       Map<String, String> testAttributes = Stream.of(new String[][] {
+  //         {RECORD_ID, patient.getIdentifier().get(patient.getIdentifier().size() - 2).getValue()},
+  //         {FIRST_NAME, patient.getNameFirstRep().getGivenAsSingleString()},
+  //         {LAST_NAME, patient.getNameFirstRep().getFamily()},
+  //         {NAME, patient.getNameFirstRep().getNameAsSingleString().replace("Mr. ", "")
+  //             .replace("Ms. ", "").replace("Mrs. " ,"").replace(" PhD", "").replace(" JD","")
+  //             .replace(" MD", "")},
+  //         {BIRTH_YEAR, Integer.toString(c.get(Calendar.YEAR))},
+  //         {BIRTH_MONTH, Integer.toString(c.get(Calendar.MONTH) + 1)},
+  //         {BIRTH_DAY_OF_MONTH, Integer.toString(c.get(Calendar.DAY_OF_MONTH))},
+  //         {GENDER, patient.getGender().getDisplay().substring(0,1)},
+  //         {PHONE_CODE, phoneNumber[0]},
+  //         {PHONE_NUMBER, phoneNumber[1]},
+  //         {ADDRESS_1, patient.getAddressFirstRep().getLine().get(0).toString()},
+  //         {CITY, patient.getAddressFirstRep().getCity()},
+  //         {STATE, patient.getAddressFirstRep().getState()},
+  //         {CONTACT_EMAIL, patient.getContact().get(0).getTelecom().get(0).getValue()},
+  //         {ZIP, patient.getAddressFirstRep().getPostalCode()},
+  //       }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
+  //       // Only Children have a contact person.
+  //       if (patient.getContact().get(0).getName() != null) {
+  //         testAttributes.put(CONTACT_LAST_NAME, patient.getContact().get(0).getName().getFamily());
+  //         testAttributes.put(CONTACT_FIRST_NAME,
+  //             patient.getContact().get(0).getName().getGivenAsSingleString());
+  //       }
+  //       assertNotNull("Person's variant records should have a seed id; seed records do not.",
+  //           currentFixedRecord.seedID);
+  //       testRecordAttributes(currentFixedRecord, testAttributes);
+  //     }
+  //   }
+  // }
     
   @Test
   public void checkFixedDemographicsVariantAttributes() {

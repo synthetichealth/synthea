@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import org.mitre.synthea.engine.ExpressedConditionRecord;
 import org.mitre.synthea.engine.ExpressedSymptom;
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
@@ -638,6 +639,9 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public Provider getProvider(EncounterType type, long time) {
     String key = PREFERREDYPROVIDER + type;
     if (!attributes.containsKey(key)) {
+      if(this.attributes.get(Person.HOUSEHOLD) != null) {
+        Generator.fixedRecordGroupManager.updatePersonVariantRecord(this);
+      }
       setProvider(type, time);
     }
     return (Provider) attributes.get(key);

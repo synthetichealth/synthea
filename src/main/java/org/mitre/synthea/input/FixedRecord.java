@@ -85,16 +85,19 @@ public class FixedRecord {
   public String householdRole;
 
   // Attributes map
-  @Expose(serialize = false, deserialize = true) private transient Map<String, Object> attributes;
+  @Expose(serialize = false, deserialize = true)
+  private transient Map<String, Object> attributes;
 
-  // The end date that this record is valid. To be set based on other records in the record group.
+  // The end date that this record is valid. To be set based on other records in
+  // the record group.
   public int addressEndDate;
 
   /**
    * Constructor
    */
-  public FixedRecord(){
-    this.attributes = null;
+  public FixedRecord() {
+    this.attributes = new HashMap<String, Object>();
+    ;
   }
 
   /**
@@ -113,7 +116,7 @@ public class FixedRecord {
     }
     return this.city;
   }
-  
+
   /**
    * Converts the birth year of the record into a birthdate.
    */
@@ -132,8 +135,7 @@ public class FixedRecord {
    * @return the attribute Map associated with this FixedRecord.
    */
   public Map<String, Object> getFixedRecordAttributes() {
-    if (this.attributes == null) {
-      this.attributes = new HashMap<String, Object>();
+    if (this.attributes.isEmpty()) {
       this.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
       this.attributes.putAll(this.getNameAttributes());
       this.attributes.put(Person.TELECOM, this.phoneAreaCode + "-" + this.phoneNumber);
@@ -174,11 +176,12 @@ public class FixedRecord {
     if (this.getCity() != null) {
       person.attributes.put(Person.CITY, this.getCity());
     } else {
-      person.attributes.put(Person.CITY, ((FixedRecordGroup)
-          person.attributes.get(Person.RECORD_GROUP)).getSeedCity());
+      FixedRecordGroup frg = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
+      person.attributes.put(Person.CITY, frg.getSeedCity());
     }
     person.attributes.put(Person.ZIP, this.zipcode);
-    // Fix the person's safe city in case it is invalid and update their location point.
+    // Fix the person's safe city in case it is invalid and update their location
+    // point.
     generator.location.assignPoint(person, (String) person.attributes.get(Person.CITY));
     // Return a boolean indicating whether the address was changed.
     return !oldCity.equals(person.attributes.get(Person.CITY))
@@ -189,10 +192,9 @@ public class FixedRecord {
    * Returns the name attributes of the current fixed record.
    */
   private Map<String, Object> getNameAttributes() {
-    return Stream.of(new String[][] {
-      {Person.FIRST_NAME, this.firstName},
-      {Person.LAST_NAME, this.lastName},
-      {Person.NAME, this.firstName + " " + this.lastName},
-    }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
+    return Stream
+        .of(new String[][] { { Person.FIRST_NAME, this.firstName }, { Person.LAST_NAME, this.lastName },
+            { Person.NAME, this.firstName + " " + this.lastName }, })
+        .collect(Collectors.toMap(data -> data[0], data -> data[1]));
   }
 }

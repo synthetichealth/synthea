@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
@@ -141,8 +142,8 @@ public final class EncounterModule extends Module {
     int year = Utilities.getYear(time);
 
     // Make sure the person's attributes are set to their current fixedRecord, if applicable.
-    if (person.attributes.get(Person.RECORD_GROUP) != null) {
-      FixedRecordGroup frg = ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP));
+    if (person.attributes.get(Person.HOUSEHOLD) != null) {
+      FixedRecordGroup frg = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
       person.attributes.putAll(frg.getCurrentRecord().getFixedRecordAttributes());
     }
 
@@ -150,8 +151,8 @@ public final class EncounterModule extends Module {
     Encounter encounter = person.encounterStart(time, type);
 
     // Fix the person's birthdate in case their fixed record caused an invalid one.
-    if (person.attributes.get(Person.RECORD_GROUP) != null) {
-      FixedRecordGroup frg = ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP));
+    if (person.attributes.get(Person.HOUSEHOLD) != null) {
+      FixedRecordGroup frg = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
       person.attributes.put(Person.BIRTHDATE, frg.getSeedBirthdate());
     }
     
