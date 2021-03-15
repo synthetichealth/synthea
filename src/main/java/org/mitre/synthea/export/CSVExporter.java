@@ -551,6 +551,8 @@ public class CSVExporter {
     imagingStudies.flush();
     devices.flush();
     supplies.flush();
+    claims.flush();
+    claimsTransactions.flush();
   }
 
   /**

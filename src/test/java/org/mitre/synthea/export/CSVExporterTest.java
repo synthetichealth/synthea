@@ -29,7 +29,7 @@ public class CSVExporterTest {
   
   private static File exportDir;
 
-  private static final int NUMBER_OF_FILES = 16;
+  private static final int NUMBER_OF_FILES = 18;
 
   /**
    * Global setup for export tests.
