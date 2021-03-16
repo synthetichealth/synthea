@@ -163,6 +163,9 @@ public class FixedRecord {
         this.attributes.put(Person.CONTACT_FAMILY_NAME, this.contactLastName);
       }
       this.attributes.put(Person.CONTACT_EMAIL, this.contactEmail);
+      if(this.contactEmail == null){
+        this.attributes.put(Person.CONTACT_EMAIL, "");
+      }
     }
     return this.attributes;
   }

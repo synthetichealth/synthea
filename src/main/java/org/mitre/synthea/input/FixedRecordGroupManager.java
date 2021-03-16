@@ -181,4 +181,13 @@ public class FixedRecordGroupManager {
   public FixedRecordGroup getRecordGroupFor(Person person) {
     return this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD)).getRecordGroupFor(person);
   }
+
+  /**
+   * Returns the number of hosueholds in the fixed record group.
+   * 
+   * @return
+   */
+  public int numberOfHouseholds() {
+    return this.householdsMap.values().size();
+  }
 }

@@ -172,7 +172,7 @@ public class Household {
    * @param householdRole
    * @return
    */
-  public FixedRecordGroup getRecordGroupFor(String householdRole) {
+  public FixedRecordGroup  getRecordGroupFor(String householdRole) {
     return this.fixedRecordGroups.get(householdRole).get(this.currentAddressSequence);
   }
 

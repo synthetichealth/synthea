@@ -73,8 +73,6 @@ public class Generator implements RandomNumberGenerator {
 
   // Fixed Record Mana
   public static FixedRecordGroupManager fixedRecordGroupManager;
-  // Households
-  public Map<Integer, Household> households;
 
   /**
    * Used only for testing and debugging. Populate this field to keep track of all patients
