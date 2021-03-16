@@ -83,6 +83,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String IDENTIFIER_PASSPORT = "identifier_passport";
   public static final String IDENTIFIER_SITE = "identifier_site";
   public static final String IDENTIFIER_RECORD_ID = "identifier_record_id";
+  public static final String IDENTIFIER_SEED_ID = "identifier_seed_id";
   public static final String CONTACT_FAMILY_NAME = "contact_family_name";
   public static final String CONTACT_GIVEN_NAME = "contact_given_name";
   public static final String CONTACT_EMAIL = "contact_email";

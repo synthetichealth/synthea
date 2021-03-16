@@ -30,7 +30,7 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup>{
     this.variantRecords = new ArrayList<FixedRecord>();
     this.currentVariantRecord = 0;
     this.fixedRecordGroupSequencePlace = seedRecord.addressSequence;
-    this.hasBeenUpdated = false;
+    this.hasBeenUpdated = true;
   }
 
   /**
