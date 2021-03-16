@@ -414,7 +414,7 @@ public class FhirR4 {
           .setSystem("http://mitre.org/record_id")
           .setValue(String.valueOf((person.attributes.get(Person.IDENTIFIER_RECORD_ID))));
       patientResource.addIdentifier()
-          .setSystem("http://mitre.org/record_id")
+          .setSystem("http://mitre.org/seed_record_id")
           .setValue(String.valueOf((person.attributes.get(Person.IDENTIFIER_SEED_ID))));
       patientResource.addIdentifier()
           .setSystem("http://mitre.org/household_id")

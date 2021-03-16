@@ -137,7 +137,11 @@ public class FixedRecord {
   public Map<String, Object> getFixedRecordAttributes() {
     if (this.attributes.isEmpty()) {
       this.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
-      this.attributes.put(Person.IDENTIFIER_SEED_ID, this.recordId);
+      if(this.seedID == null){
+        this.attributes.put(Person.IDENTIFIER_SEED_ID, "ERROR:_THIS_IS_THE_SEED_RECORD");
+      } else {
+        this.attributes.put(Person.IDENTIFIER_SEED_ID, this.seedID);
+      }
       this.attributes.putAll(this.getNameAttributes());
       this.attributes.put(Person.TELECOM, this.phoneAreaCode + "-" + this.phoneNumber);
       String g = this.gender;
