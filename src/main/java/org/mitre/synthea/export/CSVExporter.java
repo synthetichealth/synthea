@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -452,6 +453,8 @@ public class CSVExporter {
 
       String encounterID = encounter(person, personID, encounter);
       String payerID = encounter.claim.payer.uuid;
+
+      claim(person, encounter.claim, encounter, encounterID);
 
       for (HealthRecord.Entry condition : encounter.conditions) {
         /* condition to ignore codes other then retrieved from terminology url */
@@ -1252,14 +1255,100 @@ public class CSVExporter {
    * @param claim The claim to be exported.
    * @throws IOException if any IO error occurs.
    */
-  private void claim(Claim claim) throws IOException {
+  private void claim(RandomNumberGenerator rand, Claim claim, Encounter encounter,
+      String encounterID) throws IOException {
     // Id,PATIENTID,PROVIDERID,PRIMARYPATIENTINSURANCEID,SECONDARYPATIENTINSURANCEID,
     // DEPARTMENTID,PATIENTDEPARTMENTID,DIAGNOSIS1,DIAGNOSIS2,DIAGNOSIS3,DIAGNOSIS4,
     // DIAGNOSIS5,DIAGNOSIS6,DIAGNOSIS7,DIAGNOSIS8,REFERRINGPROVIDERID,APPOINTMENTID,
     // CURRENTILLNESSDATE,SERVICEDATE,SUPERVISINGPROVIDERID,STATUS1,STATUS2,STATUSP,
     // OUTSTANDING1,OUTSTANDING2,OUTSTANDINGP,LASTBILLEDDATE1,LASTBILLEDDATE2,LASTBILLEDDATEP,
     // HEALTHCARECLAIMTYPEID1,HEALTHCARECLAIMTYPEID2
+
+    // Institutional or Professional?
+    boolean institutional = true;
+    if (encounter.provider != null) {
+      institutional = encounter.provider.institutional;
+    }
+
     StringBuilder s = new StringBuilder();
+    // Claim Id. Should be a number.
+    s.append(rand.randUUID().toString()).append(',');
+    s.append(claim.person.attributes.get(Person.ID)).append(',');
+    // Organization provider, should not be null.
+    if (encounter.provider != null) {
+      s.append(encounter.provider.getResourceID()).append(',');
+    } else {
+      s.append(',');
+    }
+    // PRIMARYPATIENTINSURANCEID
+    if (encounter.claim.payer != null) {
+      s.append(claim.payer.getResourceID()).append(',');
+    } else {
+      s.append(',');
+    }
+    // TODO SECONDARYPATIENTINSURANCEID (0 default)
+    s.append("0,");
+    // TODO DEPARTMENTID
+    s.append("11").append(',');
+    s.append("11").append(',');
+    // Diagnosis codes
+    int dCode = 0;
+    String[] diagnosisCodes = new String[8];
+    if (encounter.reason != null) {
+      diagnosisCodes[dCode] = encounter.reason.code;
+      dCode++;
+    }
+    Iterator<HealthRecord.Entry> items = encounter.conditions.iterator();
+    while ((dCode < 8) && items.hasNext()) {
+      Entry item = items.next();
+      diagnosisCodes[dCode] = item.codes.get(0).code;
+      dCode++;
+    }
+    for (String diagnosisCode : diagnosisCodes) {
+      if (diagnosisCode != null && !diagnosisCode.isEmpty()) {
+        s.append(diagnosisCode).append(',');
+      } else {
+        s.append(',');
+      }
+    }
+    // TODO REFERRINGPROVIDERID
+    s.append(',');
+    // APPOINTMENTID
+    s.append(encounterID).append(',');
+    // TODO CURRENTILLNESSDATE
+    s.append(iso8601Timestamp(encounter.start)).append(',');
+    // SERVICEDATE
+    s.append(iso8601Timestamp(encounter.start)).append(',');
+    // SUPERVISINGPROVIDERID
+    if (encounter.clinician != null) {
+      s.append(encounter.clinician.getResourceID()).append(',');
+    } else {
+      s.append(',');
+    }
+    // TODO STATUS1,STATUS2,STATUSP,
+    s.append(',').append(',').append(',');
+    // OUTSTANDING1
+    s.append(String.format(Locale.US, "%.2f", encounter.claim.getCoveredCost())).append(',');
+    // TODO OUTSTANDING2
+    s.append(',');
+    // OUTSTANDINGP
+    double pCost = claim.getTotalClaimCost() - claim.getCoveredCost();
+    s.append(String.format(Locale.US, "%.2f", pCost)).append(',');
+    // LASTBILLEDDATE1
+    s.append(iso8601Timestamp(encounter.start)).append(',');
+    // TODO LASTBILLEDDATE2
+    s.append(',');
+    // LASTBILLEDDATEP
+    s.append(iso8601Timestamp(encounter.start)).append(',');
+    // HEALTHCARECLAIMTYPEID1
+    if (institutional) {
+      s.append('2');
+    } else {
+      s.append('1');
+    }
+    s.append(',');
+    // HEALTHCARECLAIMTYPEID2
+    s.append('0');
     s.append(NEWLINE);
     write(s.toString(), claims);
   }
