@@ -57,25 +57,15 @@ public class Household {
     int currentIndex = this.currentAddressSequence;
     for (int i = 0; i < this.addressYears.size(); i++) {
       if (currentYear >= this.addressYears.get(i)
-          && (i + 1 < this.addressYears.size() || currentYear < this.addressYears.get(i))) {
+          && (i + 1 >= this.addressYears.size() || currentYear < this.addressYears.get(i + 1))) {
         currentIndex = i;
       }
     }
     if (currentIndex != this.currentAddressSequence) {
-      // Here, we need to update each person's fixed records to the next one in their
-      // sequence.
       this.currentAddressSequence = currentIndex;
-      for (String role : this.members.keySet()) {
-        this.setMemberRecordGroup(role);
-      }
       return true;
     }
     return false;
-  }
-
-  private void setMemberRecordGroup(String role) {
-    this.members.get(role).attributes.put(Person.RECORD_GROUP,
-        this.fixedRecordGroups.get(role).get(this.currentAddressSequence));
   }
 
   /**
@@ -97,7 +87,7 @@ public class Household {
       }
       // Create a new FixedRecordGroup for this seed record.
       this.fixedRecordGroups.get(seedRecord.householdRole).add(new FixedRecordGroup(seedRecord));
-      // Add the new addres to the address list, if it isn't already in there.
+      // Add the new address to the address list, if it isn't already in there.
       if (!addresses.contains(seedRecord.addressLineOne + seedRecord.city)) {
         addresses.add(seedRecord.addressLineOne + seedRecord.city);
       }
@@ -172,7 +162,7 @@ public class Household {
    * @param householdRole
    * @return
    */
-  public FixedRecordGroup  getRecordGroupFor(String householdRole) {
+  public FixedRecordGroup getRecordGroupFor(String householdRole) {
     return this.fixedRecordGroups.get(householdRole).get(this.currentAddressSequence);
   }
 
@@ -248,7 +238,7 @@ public class Household {
   public FixedRecord updatePersonVariantRecord(Person person) {
     String householdRole = this.getHouseholdRoleFor(person);
     FixedRecord fr = this.getRecordGroupFor(householdRole).updateCurrentVariantRecord();
-    // TODO - should putting all the attributes in the person happen elsewhere so as
+    // TODO - should be putting all the attributes in the person elsewhere so as
     // to maintain the correct values for valud cities and other malformed fixed
     // record data that the seed will have?
     person.attributes.putAll(fr.getFixedRecordAttributes());
@@ -274,5 +264,9 @@ public class Household {
 
   public FixedRecordGroup getRecordGroupFor(Person person) {
     return this.getRecordGroupFor(this.getHouseholdRoleFor(person));
+  }
+
+  public List<FixedRecordGroup> getAllRecordGroupsFor(Person person) {
+    return this.fixedRecordGroups.get(this.getHouseholdRoleFor(person));
   }
 }

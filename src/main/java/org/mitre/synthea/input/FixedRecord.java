@@ -137,7 +137,7 @@ public class FixedRecord {
   public Map<String, Object> getFixedRecordAttributes() {
     if (this.attributes.isEmpty()) {
       this.attributes.put(Person.IDENTIFIER_RECORD_ID, this.recordId);
-      if(this.seedID == null){
+      if (this.seedID == null) {
         this.attributes.put(Person.IDENTIFIER_SEED_ID, "ERROR:_THIS_IS_THE_SEED_RECORD");
       } else {
         this.attributes.put(Person.IDENTIFIER_SEED_ID, this.seedID);
@@ -154,7 +154,7 @@ public class FixedRecord {
       if (this.getCity() != null) {
         this.attributes.put(Person.CITY, this.getCity());
       } else {
-        this.attributes.put(Person.CITY, this.city);
+        this.attributes.put(Person.CITY, "");
       }
       this.attributes.put(Person.ADDRESS, this.addressLineOne);
       this.attributes.put(Person.ZIP, this.zipcode);
@@ -163,9 +163,11 @@ public class FixedRecord {
         this.attributes.put(Person.CONTACT_FAMILY_NAME, this.contactLastName);
       }
       this.attributes.put(Person.CONTACT_EMAIL, this.contactEmail);
-      if(this.contactEmail == null){
+      if (this.contactEmail == null) {
         this.attributes.put(Person.CONTACT_EMAIL, "");
       }
+
+      this.attributes.put(Person.HOUSEHOLD_ROLE, this.householdRole);
     }
     return this.attributes;
   }
@@ -208,10 +210,24 @@ public class FixedRecord {
 
   @Override
   public boolean equals(Object o) {
-    if(!(o instanceof FixedRecord)){
+    if (!(o instanceof FixedRecord)) {
       return false;
     }
     FixedRecord that = (FixedRecord) o;
     return this.recordId.equals(that.recordId);
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    if (this.seedID == null) {
+      // This is a seed record.
+      sb.append("Seed Record: [").append(this.recordId).append("]");
+    } else {
+      // This is a fixed record.
+      sb.append("Variant Record: [").append("Record ID: ").append(this.recordId).append(", Seed ID:")
+          .append(this.seedID).append("]");
+    }
+    return sb.toString();
   }
 }

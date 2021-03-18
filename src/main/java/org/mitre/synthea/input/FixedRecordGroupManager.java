@@ -135,14 +135,13 @@ public class FixedRecordGroupManager {
 
     // Check if the person's fixed record has been updated, meaning that their
     // health record, provider, and address should also update.
-    FixedRecordGroup frg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
+    FixedRecordGroup frg = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
 
     // if (frg.updateCurrentRecord(Utilities.getYear(time))) {
     if (frg.hasJustBeenUpdated()) {
       // Pull the newly updated fixedRecord.
-      FixedRecord fr = frg.getCurrentRecord();
-      fr.overwriteAddress(person, generator);
-      person.attributes.putAll(fr.getFixedRecordAttributes());
+      frg.overwriteAddressWithCurrentRecord(person, generator);
+      person.attributes.putAll(frg.getCurrentFixedRecordAttributes());
       /*
        * Force update the person's provider based on their new seed record. and fixed
        * record group. This is required so that a new health record is made for the
@@ -150,9 +149,12 @@ public class FixedRecordGroupManager {
        * location, timing, and any change of address.
        */
       person.forceNewProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(time));
+      // Create a new health record with the person's new variant record attributes.
       person.record = person.getHealthRecord(
           person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()),
           System.currentTimeMillis());
+      // Reset the person's attributes to the seed record ones (because that's their true attributes).
+      person.attributes.putAll(frg.getSeedRecordAttributes());
     }
   }
 
@@ -189,5 +191,9 @@ public class FixedRecordGroupManager {
    */
   public int numberOfHouseholds() {
     return this.householdsMap.values().size();
+  }
+
+  public List<FixedRecordGroup> getAllRecordGroupsFor(Person person) {
+    return this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD)).getAllRecordGroupsFor(person);
   }
 }

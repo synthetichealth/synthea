@@ -99,6 +99,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String LINK_ID = "link_id";
   private static final String DEDUCTIBLE = "deductible";
   private static final String LAST_MONTH_PAID = "last_month_paid";
+  public static final String HOUSEHOLD_ROLE = "household_role";
 
   private final Random random;
   public final long seed;
@@ -992,10 +993,17 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   @Override
   public boolean equals(Object o){
-    if(!(o instanceof Person)){
-      return false;
+    if(o == null){
+      throw new NullPointerException("Tried to check equality on a person with a null given object.");
     }
-    Person other = (Person) o;
-    return this.attributes.get(Person.ID).equals(other.attributes.get(Person.ID));
+    if(o == this){
+      return true;
+    }
+    return false;
+    // if(!(o instanceof Person)){
+    //   return false;
+    // }
+    // Person other = (Person) o;
+    // return this.attributes.get(Person.ID).equals(other.attributes.get(Person.ID));
   }
 }

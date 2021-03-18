@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.hl7.fhir.r4.model.Patient;
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
@@ -178,8 +179,8 @@ public final class LifecycleModule extends Module {
     attributes.put(Person.ADDRESS, fakeAddress(hasStreetAddress2, person));
 
     // If using FixedRecords, overwrite the person's attributes with the seed record attributes.
-    if (person.attributes.get(Person.RECORD_GROUP) != null) {
-      FixedRecordGroup recordGroup = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
+    if (person.attributes.get(Person.HOUSEHOLD) != null) {
+      FixedRecordGroup recordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
       attributes.putAll(recordGroup.seedRecord.getFixedRecordAttributes());
     }
 

@@ -522,11 +522,13 @@ public class Generator implements RandomNumberGenerator {
     person.attributes.put(Person.LOCATION, location);
     person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
 
+    fixedRecordGroupManager.addPersonToHousehold(person, (String) person.attributes.get(Person.HOUSEHOLD_ROLE));
+
     LifecycleModule.birth(person, person.lastUpdated);
 
     // Initialize the person to their fixed record attributes if used.
     if (person.attributes.get(Person.HOUSEHOLD) != null) {
-      setFixedDemographics(person);
+      this.setFixedDemographics(person);
     }
 
     person.currentModules = Module.getModules(modulePredicate);
@@ -543,13 +545,12 @@ public class Generator implements RandomNumberGenerator {
    * @param person the person whose demographics are to be set.
    */
   public void setFixedDemographics(Person person) {
-    FixedRecordGroup frg = ((FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP));
+    FixedRecordGroup frg = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
     person.attributes.putAll(frg.getCurrentRecord().getFixedRecordAttributes());
     // Reset person's default records after attributes have been reset.
     person.initializeDefaultHealthRecords();
     person.attributes.put(Person.BIRTHDATE, frg.getSeedBirthdate());
     // Add the person to their household.
-    fixedRecordGroupManager.addPersonToHousehold(person, frg.getHouseholdRole());
   }
 
   /**
@@ -738,8 +739,6 @@ public class Generator implements RandomNumberGenerator {
 
     demoAttributes.put(Person.HOUSEHOLD, recordGroup.getHouseholdId());
 
-    demoAttributes.put(Person.RECORD_GROUP, recordGroup);
-
     demoAttributes.putAll(seedRecord.getFixedRecordAttributes());
 
     return demoAttributes;
@@ -770,7 +769,7 @@ public class Generator implements RandomNumberGenerator {
 
     if (person.attributes.get(Person.HOUSEHOLD) != null) {
       // Set the person's attributes to their seed record to ensure console display is correct.
-      FixedRecordGroup frg = this.fixedRecordGroupManager.getRecordGroupFor(person);
+      FixedRecordGroup frg = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
       person.attributes.putAll(frg.seedRecord.getFixedRecordAttributes());
     }
     

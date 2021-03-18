@@ -126,8 +126,9 @@ public class FixedRecordTest {
 
     FixedRecordGroup laraOnlyRecordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(lara);
 
-    // Lara's final record group should be equivilant to the one in her attributes.
-    assertEquals(laraOnlyRecordGroup, lara.attributes.get(Person.RECORD_GROUP));
+    // Lara's final record group should be equivilant to her final one (which
+    // happens to be here first and only one).
+    assertEquals(laraOnlyRecordGroup, "19001");
 
     // Hard-coded checks for both of jane's record groups.
     Map<String, String> testAttributes = Stream.of(new String[][] { { RECORD_ID, "19001" }, { HH_ID, "3879063" },
@@ -145,7 +146,7 @@ public class FixedRecordTest {
       FixedRecord seedRecord = recordGroup.seedRecord;
       Map<String, Object> demoAttributes = generator.pickFixedDemographics(recordGroup, new Random(i));
       assertEquals("Seed Record in person and fixed record group do not match.", seedRecord,
-          ((FixedRecordGroup) demoAttributes.get(Person.RECORD_GROUP)).seedRecord);
+          Generator.fixedRecordGroupManager.getRecordGroupFor(generator.internalStore.get(i)).seedRecord);
       assertEquals(demoAttributes.get(Person.FIRST_NAME), (seedRecord.firstName));
       assertEquals(demoAttributes.get(Person.LAST_NAME), (seedRecord.lastName));
       assertEquals(demoAttributes.get(Person.NAME), (seedRecord.firstName + " " + seedRecord.lastName));
@@ -179,17 +180,16 @@ public class FixedRecordTest {
         FixedRecord currentFixedRecord = getRecordMatch(currentPerson);
         // Check that a record group was found. Very detailed error message for
         // debugging purposes.
-        assertNotNull(
-            "Did not find a record match for " + currentPerson.attributes.get(Person.NAME) + " with record id "
-                + currentPerson.record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID) + ". Person has "
-                + ((FixedRecordGroup) currentPerson.attributes.get(Person.RECORD_GROUP)).variantRecords.size()
-                + " imported fixed records in their fixed record group with record ids "
-                + (((FixedRecordGroup) currentPerson.attributes.get(Person.RECORD_GROUP))).variantRecords.stream()
-                    .map(variantRecord -> variantRecord.recordId).collect(Collectors.toList())
-                + ". Person's health records have ids "
-                + currentPerson.records.values().stream()
-                    .map(record -> record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID))
-                    .collect(Collectors.toList()),
+        assertNotNull("Did not find a record match for " + currentPerson.attributes.get(Person.NAME)
+            + " with record id " + currentPerson.record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID)
+            + ". Person has " + Generator.fixedRecordGroupManager.getRecordGroupFor(currentPerson).variantRecords.size()
+            + " imported fixed records in their fixed record group with record ids "
+            + Generator.fixedRecordGroupManager.getAllRecordGroupsFor(currentPerson).stream()
+                .map(frg -> frg.variantRecords).collect(Collectors.toList())
+            + ". Person's health records have ids "
+            + currentPerson.records.values().stream()
+                .map(record -> record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID))
+                .collect(Collectors.toList()),
             currentFixedRecord);
         assertEquals(currentFixedRecord.recordId,
             healthRecord.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID));
@@ -247,7 +247,7 @@ public class FixedRecordTest {
     /* Test that the correct number of records were imported for each person. */
     // 0. Jane Doe
     Person janeDoe = generator.internalStore.get(0);
-    FixedRecordGroup janeDoeRecordGroup = (FixedRecordGroup) janeDoe.attributes.get(Person.RECORD_GROUP);
+    FixedRecordGroup janeDoeRecordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(janeDoe);
     // Make sure the person has the correct number of variant fixed records.
     assertEquals(janeDoeRecordGroup.variantRecords.size(), 3);
     assertTrue(janeDoeRecordGroup.variantRecords.stream().anyMatch(record -> record.recordId.equals("101")));
@@ -293,49 +293,51 @@ public class FixedRecordTest {
     testRecordAttributes(janeDoeRecordGroup.variantRecords.get(2), testAttributes);
     // 1. John Doe
     Person johnDoe = generator.internalStore.get(1);
-    FixedRecordGroup johnDoeRecordGroup = (FixedRecordGroup) johnDoe.attributes.get(Person.RECORD_GROUP);
+    FixedRecordGroup johnDoeRecordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(johnDoe);
     // Make sure the person has the correct number of records.
     assertEquals(johnDoeRecordGroup.variantRecords.size(), 3);
     assertTrue("Records: " + johnDoe.records.size(), johnDoe.records.size() >= 3);
     // 2. Robert Doe
     Person robertDoe = generator.internalStore.get(2);
-    FixedRecordGroup robertDoeRecordGroup = (FixedRecordGroup) robertDoe.attributes.get(Person.RECORD_GROUP);
+    FixedRecordGroup robertDoeRecordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(robertDoe);
     // Make sure the person has the correct number of records.
     assertEquals(robertDoeRecordGroup.variantRecords.size(), 2);
     assertTrue("Records: " + robertDoe.records.size(), robertDoe.records.size() >= 2);
     // 3. Sally Doe
     Person sallyDoe = generator.internalStore.get(3);
-    FixedRecordGroup sallyDoeRecordGroup = (FixedRecordGroup) sallyDoe.attributes.get(Person.RECORD_GROUP);
+    FixedRecordGroup sallyDoeRecordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(sallyDoe);
     // Make sure the person has the correct number of records.
     assertEquals(sallyDoeRecordGroup.variantRecords.size(), 2);
     assertTrue("Records: " + sallyDoe.records.size(), sallyDoe.records.size() >= 2);
     // 4. Kate Smith
     Person kateSmith = generator.internalStore.get(4);
-    FixedRecordGroup kateSmithRecordGroup = (FixedRecordGroup) kateSmith.attributes.get(Person.RECORD_GROUP);
+    FixedRecordGroup kateSmithRecordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(kateSmith);
     // Make sure the person has the correct number of records.
     assertEquals(kateSmithRecordGroup.variantRecords.size(), 2);
     assertTrue("Records: " + kateSmith.records.size(), kateSmith.records.size() >= 2);
     // 5. Frank Smith
     Person frankSmith = generator.internalStore.get(5);
-    FixedRecordGroup frankSmithRecordGroup = (FixedRecordGroup) frankSmith.attributes.get(Person.RECORD_GROUP);
+    FixedRecordGroup frankSmithRecordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(frankSmith);
     // Make sure the person has the correct number of records.
     assertEquals(frankSmithRecordGroup.variantRecords.size(), 3);
     assertTrue("Records: " + frankSmith.records.size(), frankSmith.records.size() >= 3);
     // 6. William Smith
     Person williamSmith = generator.internalStore.get(6);
-    FixedRecordGroup williamSmithRecordGroup = (FixedRecordGroup) williamSmith.attributes.get(Person.RECORD_GROUP);
+    FixedRecordGroup williamSmithRecordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(williamSmith);
     // Make sure the person has the correct number of records.
     assertEquals(williamSmithRecordGroup.variantRecords.size(), 1);
     assertTrue("Records: " + williamSmith.records.size(), williamSmith.records.size() >= 1);
   }
 
   private FixedRecord getRecordMatch(Person person) {
-    FixedRecordGroup recordGroup = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
+    List<FixedRecordGroup> allRecordGroups = Generator.fixedRecordGroupManager.getAllRecordGroupsFor(person);
 
-    String currentRecordId = (String) person.record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID);
-    for (FixedRecord currentRecord : recordGroup.variantRecords) {
-      if (currentRecord.recordId.equals(currentRecordId)) {
-        return currentRecord;
+    for (FixedRecordGroup recordGroup : allRecordGroups) {
+      String currentRecordId = (String) person.record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID);
+      for (FixedRecord currentRecord : recordGroup.variantRecords) {
+        if (currentRecord.recordId.equals(currentRecordId)) {
+          return currentRecord;
+        }
       }
     }
     // If we reach here, there was no matching record id.
@@ -343,22 +345,85 @@ public class FixedRecordTest {
   }
 
   @Test
-  public void checkSeedHistory(){
+  public void checkSeedHistory() {
 
-    Person ritaNoble = Generator.fixedRecordGroupManager.getHousehold("59").getMember("married_1");
+    Person currentPerson = Generator.fixedRecordGroupManager.getHousehold("59").getMember("married_1");
 
-    // The variant records from the first time period should be based on the variants from the first fixed record group and seed record.
+    // The variant records from the first time period should be based on the
+    // variants from the first fixed record group and seed record.
 
-    // Pull all the exported health records.
+    // Pull all the exported health records and match them to their variant records.
+    List<Bundle> exportedHealthRecords = new ArrayList<Bundle>();
+    List<FixedRecord> variantRecords = new ArrayList<FixedRecord>();
 
-    // Match each exported health record to a local variant record.
+    Map<Integer, List<Bundle>> sequenceHealthRecordPairs = new HashMap<Integer, List<Bundle>>();
 
-    // Make sure that there is at least one variant record for each of the fixed record groups (4 for rita noble).
+    for (HealthRecord healthRecord : currentPerson.records.values()) {
 
-    // Sort the variants and their paired exported records by date.
+      // Convert the current record to exported FHIR.
+      currentPerson.record = healthRecord;
+      String fhirJson = FhirR4.convertToFHIRJson(currentPerson, System.currentTimeMillis());
+      FhirContext ctx = FhirContext.forR4();
+      IParser parser = ctx.newJsonParser().setPrettyPrint(true);
+      Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
 
-    // Make sure that each variant is from a correctly chronological fixed record group.
+      // Match the current record with the FixedRecord that matches its record id.
+      FixedRecord vr = getRecordMatch(currentPerson);
 
+      assertNotNull("Did not find a record match for " + currentPerson.attributes.get(Person.NAME) + " with record id "
+          + currentPerson.record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID) + ". Person has "
+          + Generator.fixedRecordGroupManager.getRecordGroupFor(currentPerson).variantRecords.size()
+          + " imported fixed records in their fixed record group with record ids "
+          + Generator.fixedRecordGroupManager
+              .getAllRecordGroupsFor(currentPerson).stream().map(frg -> frg.variantRecords).collect(Collectors.toList())
+          + ". Person's health records have ids "
+          + currentPerson.records.values().stream()
+              .map(record -> record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID))
+              .collect(Collectors.toList()),
+          vr);
+
+      variantRecords.add(vr);
+      exportedHealthRecords.add(bundle);
+
+      // Add to bundle-pair matching.
+      int variantSequence = vr.addressSequence;
+      if (!sequenceHealthRecordPairs.containsKey(variantSequence)) {
+        sequenceHealthRecordPairs.put(variantSequence, new ArrayList<Bundle>());
+      }
+      sequenceHealthRecordPairs.get(variantSequence).add(bundle);
+
+      Patient patient = ((Patient) bundle.getEntry().get(0).getResource());
+
+      System.out.println(patient.dateTimeValue());
+
+    }
+
+    // Make sure that there is at least one variant record for each of the fixed
+    // record groups (4 for rita noble). She is the oldest in the household (tied
+    // with Justin) so each seed record should have a presence.
+    // Rita's Seed IDs (in order): 1: 19489272, 2: 19489274, 3: 19489276, 4:
+    // 19489278
+    List<Integer> seedIds = new ArrayList<Integer>();
+    seedIds.add(19489272);
+    seedIds.add(19489274);
+    seedIds.add(19489276);
+    seedIds.add(19489278);
+    for (int id : seedIds) {
+      int seedIdMatches = 0;
+      for (FixedRecord vr : variantRecords) {
+        if (id == Integer.valueOf(vr.seedID)) {
+          seedIdMatches++;
+        }
+      }
+      assertTrue("Seed id " + id + " does not have any matches in the person's variant records.", seedIdMatches > 0);
+    }
+
+    // Make sure that each variant is from a correctly chronological fixed record
+    // group.
+    for (int currentSequence : sequenceHealthRecordPairs.keySet().stream().sorted().collect(Collectors.toList())) {
+      // System.out.println((
+      // sequenceHealthRecordPairs.get(currentSequence).get(0).getEntry().get(1).getResource().getPeriod().getStart()));
+    }
 
   }
 
@@ -451,13 +516,16 @@ public class FixedRecordTest {
     Person ritaNoble = Generator.fixedRecordGroupManager.getHousehold("59").getMember("married_1");
     Person justinNoble = Generator.fixedRecordGroupManager.getHousehold("59").getMember("married_2");
 
-    // This only accounts for the final record group that each person has, not their first one.
-    assertEquals(Generator.fixedRecordGroupManager.getRecordGroupFor(ritaNoble), ritaNoble.attributes.get(Person.RECORD_GROUP));
-    assertEquals(Generator.fixedRecordGroupManager.getRecordGroupFor(justinNoble), justinNoble.attributes.get(Person.RECORD_GROUP));
+    // This only accounts for the final record group that each person has, not their
+    // first one.
+    assertEquals(Generator.fixedRecordGroupManager.getRecordGroupFor(ritaNoble), "19489278");
+    assertEquals(Generator.fixedRecordGroupManager.getRecordGroupFor(justinNoble), "19489279");
 
     // Check that the record groups are the right people by checking the seed id.
-    assertEquals("19489278", ((FixedRecordGroup) ritaNoble.attributes.get(Person.RECORD_GROUP)).getSeedId());
-    assertEquals("19489279", ((FixedRecordGroup) justinNoble.attributes.get(Person.RECORD_GROUP)).getSeedId());
+    assertEquals("19489278",
+        ((FixedRecordGroup) Generator.fixedRecordGroupManager.getRecordGroupFor(ritaNoble)).getSeedId());
+    assertEquals("19489279",
+        ((FixedRecordGroup) Generator.fixedRecordGroupManager.getRecordGroupFor(justinNoble)).getSeedId());
   }
 
   @Test

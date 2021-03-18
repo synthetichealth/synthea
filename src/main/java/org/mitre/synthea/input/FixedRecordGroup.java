@@ -2,18 +2,23 @@ package org.mitre.synthea.input;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.world.agents.Person;
 
 /**
  * A grouping of FixedRecords that represents a single individual. FixedRecords
  * provide demographic information and the grouping can be used to capture
  * variation that may happen across different provider health records.
  */
-public class FixedRecordGroup implements Comparable<FixedRecordGroup>{
+public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
   // The seed record of this record group from which the variants are created.
   public FixedRecord seedRecord;
   // The list of variant records for this record group.
   public List<FixedRecord> variantRecords;
-  // The current variant record of this group. Updates be incrementing and is the index of the variantRecords to use.
+  // The current variant record of this group. Updates be incrementing and is the
+  // index of the variantRecords to use.
   public int currentVariantRecord;
   // The sequence place of this fixed record group.
   private final int fixedRecordGroupSequencePlace;
@@ -28,7 +33,7 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup>{
   public FixedRecordGroup(FixedRecord seedRecord) {
     this.seedRecord = seedRecord;
     this.variantRecords = new ArrayList<FixedRecord>();
-    this.currentVariantRecord = 0;
+    this.currentVariantRecord = 0;  // This should be random number to allow for lots of variations between simulations.
     this.fixedRecordGroupSequencePlace = seedRecord.addressSequence;
     this.hasBeenUpdated = true;
   }
@@ -93,20 +98,21 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup>{
    * @return FixedRecord that meets the daterange of the given year.
    */
   // public boolean updateCurrentRecord(int currentYear) {
-  //   for (int i = 0; i < variantRecords.size(); i++) {
-  //     FixedRecord currentRecord = variantRecords.get(i);
-  //     // Check if the the current year falls within the current record date range.
-  //     // if (currentRecord.addressStartDate <= currentYear && currentYear <= currentRecord.addressEndDate) {
-  //       if (i != this.currentVariantRecord) {
-  //         // The record has changed.
-  //         this.currentVariantRecord = i;
-  //         return true;
-  //       } else {
-  //         return false;
-  //       }
-  //     // }
-  //   }
-  //   return false;
+  // for (int i = 0; i < variantRecords.size(); i++) {
+  // FixedRecord currentRecord = variantRecords.get(i);
+  // // Check if the the current year falls within the current record date range.
+  // // if (currentRecord.addressStartDate <= currentYear && currentYear <=
+  // currentRecord.addressEndDate) {
+  // if (i != this.currentVariantRecord) {
+  // // The record has changed.
+  // this.currentVariantRecord = i;
+  // return true;
+  // } else {
+  // return false;
+  // }
+  // // }
+  // }
+  // return false;
   // }
 
   /**
@@ -129,6 +135,7 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup>{
 
   /**
    * Gets the seed id of this fixed record group.
+   * 
    * @return
    */
   public String getSeedId() {
@@ -137,6 +144,7 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup>{
 
   /**
    * Gets the household role of this fixed record group.
+   * 
    * @return
    */
   public String getHouseholdRole() {
@@ -148,7 +156,7 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup>{
   }
 
   @Override
-  public String toString(){
+  public String toString() {
     return this.seedRecord.recordId;
   }
 
@@ -159,10 +167,11 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup>{
 
   /**
    * Returns whether this fixed record group has just been updated.
+   * 
    * @return
    */
   public boolean hasJustBeenUpdated() {
-    if(this.hasBeenUpdated){
+    if (this.hasBeenUpdated) {
       this.hasBeenUpdated = false;
       return true;
     }
@@ -171,22 +180,35 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup>{
 
   /**
    * Iterates to the next variant record in the record group.
+   * 
    * @return The current variant record the record group was updated to.
    */
   public FixedRecord updateCurrentVariantRecord() {
     this.currentVariantRecord++;
-    if(this.currentVariantRecord >= this.variantRecords.size()) {
+    if (this.currentVariantRecord >= this.variantRecords.size()) {
       this.currentVariantRecord = 0;
     }
     return this.variantRecords.get(this.currentVariantRecord);
   }
 
   @Override
-  public boolean equals(Object o){
-    if(!(o instanceof FixedRecordGroup)){
+  public boolean equals(Object o) {
+    if (!(o instanceof FixedRecordGroup)) {
       return false;
     }
     FixedRecordGroup that = (FixedRecordGroup) o;
     return (this.seedRecord.equals(that.seedRecord));
+  }
+
+  public boolean overwriteAddressWithCurrentRecord(Person person, Generator generator) {
+    return this.getCurrentRecord().overwriteAddress(person, generator);
+  }
+
+  public Map<? extends String, ? extends Object> getCurrentFixedRecordAttributes() {
+    return this.getCurrentRecord().getFixedRecordAttributes();
+  }
+
+  public Map<? extends String, ? extends Object> getSeedRecordAttributes() {
+    return this.seedRecord.getFixedRecordAttributes();
   }
 }
