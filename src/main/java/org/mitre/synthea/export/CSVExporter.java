@@ -1281,28 +1281,28 @@ public class CSVExporter {
       s.append(',');
     }
     // PRIMARYPATIENTINSURANCEID
-    if (encounter.claim.payer != null) {
-      s.append(claim.payer.getResourceID()).append(',');
+    if (encounter.claim.payer == null || encounter.claim.payer == Payer.noInsurance) {
+      s.append("0,"); // 0 == No Insurance
     } else {
-      s.append(',');
+      s.append(claim.payer.getResourceID()).append(',');
     }
-    // TODO SECONDARYPATIENTINSURANCEID (0 default)
+    // TODO SECONDARYPATIENTINSURANCEID (0 default if none)
     s.append("0,");
     // TODO DEPARTMENTID
     s.append("11").append(',');
     s.append("11").append(',');
     // Diagnosis codes
-    int dCode = 0;
+    int dxCode = 0;
     String[] diagnosisCodes = new String[8];
     if (encounter.reason != null) {
-      diagnosisCodes[dCode] = encounter.reason.code;
-      dCode++;
+      diagnosisCodes[dxCode] = encounter.reason.code;
+      dxCode++;
     }
     Iterator<HealthRecord.Entry> items = encounter.conditions.iterator();
-    while ((dCode < 8) && items.hasNext()) {
+    while ((dxCode < 8) && items.hasNext()) {
       Entry item = items.next();
-      diagnosisCodes[dCode] = item.codes.get(0).code;
-      dCode++;
+      diagnosisCodes[dxCode] = item.codes.get(0).code;
+      dxCode++;
     }
     for (String diagnosisCode : diagnosisCodes) {
       if (diagnosisCode != null && !diagnosisCode.isEmpty()) {
@@ -1325,15 +1325,19 @@ public class CSVExporter {
     } else {
       s.append(',');
     }
-    // TODO STATUS1,STATUS2,STATUSP,
-    s.append(',').append(',').append(',');
+    // TODO STATUS1 for Payer1
+    s.append("CLOSED,");
+    // TODO STATUS2 for Payer2
+    s.append(',');
+    // STATUSP for Patient as Payer
+    s.append("CLOSED,");
     // OUTSTANDING1
     s.append(String.format(Locale.US, "%.2f", encounter.claim.getCoveredCost())).append(',');
     // TODO OUTSTANDING2
     s.append(',');
     // OUTSTANDINGP
-    double pCost = claim.getTotalClaimCost() - claim.getCoveredCost();
-    s.append(String.format(Locale.US, "%.2f", pCost)).append(',');
+    double patientCost = claim.getTotalClaimCost() - claim.getCoveredCost();
+    s.append(String.format(Locale.US, "%.2f", patientCost)).append(',');
     // LASTBILLEDDATE1
     s.append(iso8601Timestamp(encounter.start)).append(',');
     // TODO LASTBILLEDDATE2
