@@ -1272,7 +1272,9 @@ public class CSVExporter {
 
     StringBuilder s = new StringBuilder();
     // Claim Id. Should be a number.
-    s.append(rand.randUUID().toString()).append(',');
+    String claimId = rand.randUUID().toString();
+    s.append(claimId).append(',');
+    // PATIENTID
     s.append(claim.person.attributes.get(Person.ID)).append(',');
     // Organization provider, should not be null.
     if (encounter.provider != null) {
@@ -1299,7 +1301,7 @@ public class CSVExporter {
       dxCode++;
     }
     Iterator<HealthRecord.Entry> items = encounter.conditions.iterator();
-    while ((dxCode < 8) && items.hasNext()) {
+    while ((dxCode < diagnosisCodes.length) && items.hasNext()) {
       Entry item = items.next();
       diagnosisCodes[dxCode] = item.codes.get(0).code;
       dxCode++;
@@ -1355,6 +1357,12 @@ public class CSVExporter {
     s.append('0');
     s.append(NEWLINE);
     write(s.toString(), claims);
+
+    claimTransaction(rand, claim, claimId, encounter, encounterID, claim.mainEntry, 1);
+    for (int i = 0; i < claim.items.size(); i++) {
+      Entry entry = claim.items.get(i);
+      claimTransaction(rand, claim, claimId, encounter, encounterID, entry, i + 1);
+    }
   }
 
   /**
@@ -1363,13 +1371,100 @@ public class CSVExporter {
    * @param payer The claim to be exported.
    * @throws IOException if any IO error occurs.
    */
-  private void claimTransaction(Claim claim) throws IOException {
+  private void claimTransaction(RandomNumberGenerator rand, Claim claim, String claimID,
+      Encounter encounter, String encounterID, Entry entry, int charge) throws IOException {
     // ID,CLAIMID,CHARGEID,PATIENTID,TYPE,AMOUNT,METHOD,FROMDATE,TODATE,
     // PLACEOFSERVICE,PROCEDURECODE,MODIFIER1,MODIFIER2,DIAGNOSISREF1,DIAGNOSISREF2,
     // DIAGNOSISREF3,DIAGNOSISREF4,UNITS,DEPARTMENTID,NOTES,UNITAMOUNT,TRANSFEROUTID,
     // TRANSFERTYPE,PAYMENTS,ADJUSTMENTS,TRANSFERS,OUTSTANDING,APPOINTMENTID,LINENOTE,
     // PATIENTINSURANCEID,FEESCHEDULEID,PROVIDERID,SUPERVISINGPROVIDERID
     StringBuilder s = new StringBuilder();
+    // ID
+    s.append(rand.randUUID().toString()).append(',');
+    // CLAIMID
+    s.append(claimID).append(',');
+    // CHARGEID
+    s.append(charge).append(',');
+    // PATIENTID
+    s.append(claim.person.attributes.get(Person.ID)).append(',');
+    // TYPE: CHARGE, PAYMENT, ADJUSTMENT, TRANSFERIN, TRANSFEROUT
+    s.append("CHARGE").append(',');
+    // AMOUNT TODO multiple by units
+    s.append(String.format(Locale.US, "%.2f", entry.getCost())).append(',');
+    // METHOD
+    String[] methods = { "CASH", "CHECK", "COPAY", "SYSTEM", "CC", "ECHECK" };
+    s.append(methods[rand.randInt(methods.length)]).append(',');
+    // FROMDATE
+    s.append(iso8601Timestamp(entry.start)).append(',');
+    // TODATE
+    s.append(iso8601Timestamp(entry.stop)).append(',');
+    // TODO PLACEOFSERVICE
+    s.append("11").append(',');
+    // PROCEDURECODE
+    s.append(entry.codes.get(0).code).append(',');
+    // MODIFIER1
+    s.append(',');
+    // MODIFIER2
+    s.append(',');
+    // DIAGNOSISREF1, DIAGNOSISREF2, DIAGNOSISREF3, DIAGNOSISREF4
+    // Diagnosis codes
+    int dxCode = 0;
+    String[] diagnosisCodes = new String[4];
+    if (encounter.reason != null) {
+      diagnosisCodes[dxCode] = encounter.reason.code;
+      dxCode++;
+    }
+    Iterator<HealthRecord.Entry> items = encounter.conditions.iterator();
+    while ((dxCode < diagnosisCodes.length) && items.hasNext()) {
+      Entry item = items.next();
+      diagnosisCodes[dxCode] = item.codes.get(0).code;
+      dxCode++;
+    }
+    for (String diagnosisCode : diagnosisCodes) {
+      if (diagnosisCode != null && !diagnosisCode.isEmpty()) {
+        s.append(diagnosisCode).append(',');
+      } else {
+        s.append(',');
+      }
+    }
+    // TODO UNITS
+    s.append("1").append(',');
+    // TODO DEPARTMENTID
+    s.append("11").append(',');
+    // NOTES
+    s.append(clean(entry.codes.get(0).display)).append(',');
+    // UNITAMOUNT
+    s.append(String.format(Locale.US, "%.2f", entry.getCost())).append(',');
+    // TODO TRANSFEROUTID
+    s.append(',');
+    // TRANSFERTYPE. 1=primary insurance, 2=secondary, p==patient
+    s.append('1').append(',');
+    // PAYMENTS
+    s.append(String.format(Locale.US, "%.2f", entry.getCost())).append(',');
+    // ADJUSTMENTS
+    s.append("0").append(',');
+    // TRANSFERS
+    s.append("0").append(',');
+    // OUTSTANDING
+    s.append("0").append(',');
+    // APPOINTMENTID
+    s.append(encounterID).append(',');
+    // LINENOTE
+    s.append(',');
+    // PATIENTINSURANCEID
+    s.append(claim.person.attributes.get(Person.ID)).append(',');
+    // TODO FEESCHEDULEID
+    s.append("1").append(',');
+    // PROVIDERID
+    if (encounter.provider != null) {
+      s.append(encounter.provider.getResourceID()).append(',');
+    } else {
+      s.append(',');
+    }
+    // SUPERVISINGPROVIDERID
+    if (encounter.clinician != null) {
+      s.append(encounter.clinician.getResourceID());
+    }
     s.append(NEWLINE);
     write(s.toString(), claimsTransactions);
   }

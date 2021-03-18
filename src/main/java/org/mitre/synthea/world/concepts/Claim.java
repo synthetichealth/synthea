@@ -12,7 +12,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 
 public class Claim implements Serializable {
 
-  private Entry mainEntry;
+  public Entry mainEntry;
   // The Entries have the actual cost, so the claim has the amount that the payer covered.
   private double coveredCost;
   public Payer payer;
