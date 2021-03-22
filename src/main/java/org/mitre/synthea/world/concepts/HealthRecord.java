@@ -494,7 +494,7 @@ public class HealthRecord implements Serializable {
     public List<Observation> observations;
     public List<Report> reports;
     public List<Entry> conditions;
-    public List<Entry> allergies;
+    public List<Allergy> allergies;
     public List<Procedure> procedures;
     public List<Immunization> immunizations;
     public List<Medication> medications;
@@ -534,7 +534,7 @@ public class HealthRecord implements Serializable {
       observations = new ArrayList<Observation>();
       reports = new ArrayList<Report>();
       conditions = new ArrayList<Entry>();
-      allergies = new ArrayList<Entry>();
+      allergies = new ArrayList<Allergy>();
       procedures = new ArrayList<Procedure>();
       immunizations = new ArrayList<Immunization>();
       medications = new ArrayList<Medication>();
@@ -603,6 +603,21 @@ public class HealthRecord implements Serializable {
           return record.encounters.get(index - 1);
         }
       }
+    }
+  }
+
+  public class Allergy extends Entry {
+    public String allergyType;
+    public String category;
+
+    /**
+     * Constructor for Entry.
+     *
+     * @param start
+     * @param type
+     */
+    public Allergy(long start, String type) {
+      super(start, type);
     }
   }
   
@@ -828,13 +843,13 @@ public class HealthRecord implements Serializable {
    * @param primaryCode the type of allergy.
    * @return the existing or new allergy entry.
    */
-  public Entry allergyStart(long time, String primaryCode) {
+  public Allergy allergyStart(long time, String primaryCode) {
     if (!present.containsKey(primaryCode)) {
-      Entry allergy = new Entry(time, primaryCode);
+      Allergy allergy = new Allergy(time, primaryCode);
       currentEncounter(time).allergies.add(allergy);
       present.put(primaryCode, allergy);
     }
-    return present.get(primaryCode);
+    return (Allergy) present.get(primaryCode);
   }
 
   /**

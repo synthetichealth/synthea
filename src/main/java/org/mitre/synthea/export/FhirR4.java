@@ -270,7 +270,7 @@ public class FhirR4 {
         condition(person, personEntry, bundle, encounterEntry, condition);
       }
 
-      for (HealthRecord.Entry allergy : encounter.allergies) {
+      for (HealthRecord.Allergy allergy : encounter.allergies) {
         allergy(person, personEntry, bundle, encounterEntry, allergy);
       }
 
@@ -1442,7 +1442,7 @@ public class FhirR4 {
    */
   private static BundleEntryComponent allergy(RandomNumberGenerator rand,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
-          HealthRecord.Entry allergy) {
+          HealthRecord.Allergy allergy) {
 
     AllergyIntolerance allergyResource = new AllergyIntolerance();
     allergyResource.setRecordedDate(new Date(allergy.start));
@@ -1458,9 +1458,31 @@ public class FhirR4 {
       status.getCodingFirstRep().setCode("inactive");
     }
 
-    allergyResource.setType(AllergyIntoleranceType.ALLERGY);
-    AllergyIntoleranceCategory category = AllergyIntoleranceCategory.FOOD;
-    allergyResource.addCategory(category); // TODO: allergy categories in GMF
+    if (allergy.allergyType == null || allergy.allergyType.equalsIgnoreCase("allergy"))
+    {
+      allergyResource.setType(AllergyIntoleranceType.ALLERGY);
+    } else {
+      allergyResource.setType(AllergyIntoleranceType.INTOLERANCE);
+    }
+    AllergyIntoleranceCategory category = null;
+    if (allergy.category != null) {
+      switch (allergy.category) {
+        case "food":
+          category = AllergyIntoleranceCategory.FOOD;
+          break;
+        case "medication":
+          category = AllergyIntoleranceCategory.MEDICATION;
+          break;
+        case "environment":
+          category = AllergyIntoleranceCategory.ENVIRONMENT;
+          break;
+        case "biologic":
+          category = AllergyIntoleranceCategory.BIOLOGIC;
+          break;
+      }
+    }
+    allergyResource.addCategory(category);
+
     allergyResource.setCriticality(AllergyIntoleranceCriticality.LOW);
 
     CodeableConcept verification = new CodeableConcept();

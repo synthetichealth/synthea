@@ -42,13 +42,14 @@
     },
     "Penicillin_Allergy_Onset": {
       "type": "AllergyOnset",
+      "allergyType": "allergy",
+      "category": "medication",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
         {
           "system": "RxNorm",
           "code": 7984,
-          "display": "Penicillin V",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "Penicillin V"
         }
       ],
       "direct_transition": "Aspirin_Allergy_Intolerance"
@@ -73,13 +74,14 @@
     },
     "Aspirin_Allergy_Onset": {
       "type": "AllergyOnset",
+      "allergyType": "allergy",
+      "category": "drug",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
         {
           "system": "RxNorm",
           "code": 1191,
-          "display": "Aspirin",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "Aspirin"
         }
       ],
       "direct_transition": "NSAID_Allergy"
@@ -121,26 +123,28 @@
     },
     "Onset_Ibuprofen_Allergy": {
       "type": "AllergyOnset",
+      "allergyType": "allergy",
+      "category": "medication",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
         {
           "system": "RxNorm",
           "code": "5640",
-          "display": "Ibuprofen",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "Ibuprofen"
         }
       ],
       "direct_transition": "Sulfa_Drug_Allergy"
     },
     "Onset_Sulfa_Drug_Allergy": {
       "type": "AllergyOnset",
+      "allergyType": "allergy",
+      "category": "medication",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
         {
           "system": "RxNorm",
           "code": "10831",
-          "display": "Sulfamethoxazole / Trimethoprim",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "Sulfamethoxazole / Trimethoprim"
         }
       ],
       "direct_transition": "Cephalosporin_Allergy"
@@ -163,73 +167,64 @@
     },
     "Onset_Cephalosporin_Allergy": {
       "type": "AllergyOnset",
+      "allergyType": "allergy",
+      "category": "medication",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
         {
           "system": "RxNorm",
           "code": "25037",
-          "display": "cefdinir",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "cefdinir"
         },
         {
           "system": "RxNorm",
           "code": "25033",
-          "display": "Cefixime",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "Cefixime"
         },
         {
           "system": "RxNorm",
           "code": "20489",
-          "display": "cefpodoxime",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "cefpodoxime"
         },
         {
           "system": "RxNorm",
           "code": "2191",
-          "display": "Ceftazidime",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "Ceftazidime"
         },
         {
           "system": "RxNorm",
           "code": "2193",
-          "display": "Ceftriaxone",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "Ceftriaxone"
         },
         {
           "system": "RxNorm",
           "code": "2180",
-          "display": "Cefazolin",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "Cefazolin"
         },
         {
           "system": "RxNorm",
           "code": "2231",
-          "display": "Cephalexin",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "Cephalexin"
         },
         {
           "system": "RxNorm",
           "code": "2176",
-          "display": "Cefaclor",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "Cefaclor"
         },
         {
           "system": "RxNorm",
           "code": "20481",
-          "display": "cefepime",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "cefepime"
         },
         {
           "system": "RxNorm",
           "code": "2189",
-          "display": "Cefoxitin",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "Cefoxitin"
         },
         {
           "system": "RxNorm",
           "code": "2194",
-          "display": "Cefuroxime",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "Cefuroxime"
         }
       ],
       "direct_transition": "ACE_Inhibitor_Intolerance"
@@ -253,43 +248,39 @@
     },
     "Onset_ACE_Inhibitor_Intolerance": {
       "type": "AllergyOnset",
-      "target_encounter": "",
+      "allergyType": "intolerance",
+      "category": "medication",
+      "target_encounter": "Allergist_Initial_Visit",
       "codes": [
         {
           "system": "RxNorm",
           "code": "29046",
-          "display": "Lisinopril",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "Lisinopril"
         },
         {
           "system": "RxNorm",
           "code": "1998",
-          "display": "Captopril",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "Captopril"
         },
         {
           "system": "RxNorm",
           "code": "3827",
-          "display": "Enalapril",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "Enalapril"
         },
         {
           "system": "RxNorm",
           "code": "18867",
-          "display": "benazepril",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "benazepril"
         },
         {
           "system": "RxNorm",
           "code": "35208",
-          "display": "quinapril",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "quinapril"
         },
         {
           "system": "RxNorm",
           "code": "35296",
-          "display": "Ramipril",
-          "value_set": "http://hl7.org/fhir/us/core/ValueSet/us-core-allergy-substance"
+          "display": "Ramipril"
         }
       ],
       "direct_transition": "Terminal"

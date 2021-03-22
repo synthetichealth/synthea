@@ -1105,12 +1105,18 @@ public abstract class State implements Cloneable, Serializable {
    * then the allergy will only be diagnosed when that future encounter occurs.
    */
   public static class AllergyOnset extends OnsetState {
+    private String allergyType;
+    private String category;
+
     @Override
     public void diagnose(Person person, long time) {
       String primaryCode = codes.get(0).code;
       entry = person.record.allergyStart(time, primaryCode);
       entry.name = this.name;
       entry.codes.addAll(codes);
+      HealthRecord.Allergy allergy = (HealthRecord.Allergy) entry;
+      allergy.allergyType = allergyType;
+      allergy.category = category;
 
       if (assignToAttribute != null) {
         person.attributes.put(assignToAttribute, entry);

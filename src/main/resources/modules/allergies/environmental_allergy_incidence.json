@@ -54,6 +54,8 @@
     },
     "Tree_Pollen_Allergy": {
       "type": "AllergyOnset",
+      "allergyType": "allergy",
+      "category": "environment",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
         {
@@ -109,6 +111,8 @@
     },
     "Grass_Pollen_Allergy": {
       "type": "AllergyOnset",
+      "allergyType": "allergy",
+      "category": "environment",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
         {
@@ -160,6 +164,8 @@
     },
     "Pet_Dander_Allergy": {
       "type": "AllergyOnset",
+      "allergyType": "allergy",
+      "category": "environment",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
         {
@@ -213,6 +219,8 @@
     },
     "Dust_Mite_Allergy": {
       "type": "AllergyOnset",
+      "allergyType": "allergy",
+      "category": "environment",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
         {
@@ -262,6 +270,8 @@
     },
     "Mold_Allergy": {
       "type": "AllergyOnset",
+      "allergyType": "allergy",
+      "category": "environment",
       "remarks": [
         "Note the British spelling of 'mold'."
       ],
@@ -352,7 +362,7 @@
             },
             {
               "distribution": 0.67,
-              "transition": "Allergy_Incidence_Terminal"
+              "transition": "Environmental_Allergy_Incidence_Terminal"
             }
           ]
         },
@@ -372,6 +382,8 @@
     },
     "Latex_Allergy": {
       "type": "AllergyOnset",
+      "allergyType": "allergy",
+      "category": "environment",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
         {
