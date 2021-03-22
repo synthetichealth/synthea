@@ -33,7 +33,10 @@ public class FixedRecordGroupManager {
   // the houshold object
   private Map<String, Household> householdsMap;
 
-  public FixedRecordGroupManager() {
+  /**
+   * Constructor for Fixed Record Group Manager.
+   */
+  private FixedRecordGroupManager() {
     this.householdsMap = new HashMap<String, Household>();
   }
 
@@ -61,7 +64,7 @@ public class FixedRecordGroupManager {
    * Imports the fixed demographics records file when using fixed patient
    * demographics.
    * 
-   * @return the fixed record manager.
+   * @return The newly created fixed record manager.
    */
   public static FixedRecordGroupManager importFixedDemographicsFile(File filePath) {
     Gson gson = new Gson();
@@ -119,6 +122,12 @@ public class FixedRecordGroupManager {
     return fullRecordGroupList.get(index);
   }
 
+  /**
+   * Returns the Household object with the given id.
+   * 
+   * @param householdId The household id.
+   * @return The Household object with the given id.
+   */
   public Household getHousehold(String householdId) {
     return this.householdsMap.get(householdId);
   }
@@ -137,24 +146,31 @@ public class FixedRecordGroupManager {
     // health record, provider, and address should also update.
     FixedRecordGroup frg = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
 
-    // if (frg.updateCurrentRecord(Utilities.getYear(time))) {
+    // If the person's fixed record group has just been updated, then force a new
+    // encounter provider with a new variant record corresponding to the new seed
+    // record.
     if (frg.hasJustBeenUpdated()) {
-      // Pull the newly updated fixedRecord.
-      frg.overwriteAddressWithCurrentRecord(person, generator);
-      person.attributes.putAll(frg.getCurrentFixedRecordAttributes());
+      // Overwrite the person's address information with the new current variant
+      // record of the new fixed record group.
+      frg.overwriteAddressWithCurrentVariantRecord(person, generator);
+      // Overwrite the person's biographical information with the new current variant
+      // record of the new fixed record group.
+      person.attributes.putAll(frg.getCurentVariantRecordAttributes());
       /*
        * Force update the person's provider based on their new seed record. and fixed
        * record group. This is required so that a new health record is made for the
-       * start date of the new primary seed record which impacts the provider, care
-       * location, timing, and any change of address.
+       * start date of the new primary seed record and fixed record group which
+       * impacts the provider, care location, timing, and any change of address.
        */
       person.forceNewProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(time));
       // Create a new health record with the person's new variant record attributes.
       person.record = person.getHealthRecord(
           person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()),
           System.currentTimeMillis());
-      // Reset the person's attributes to the seed record ones (because that's their true attributes).
+      // Reset the person's attributes to the seed record ones (because that's their
+      // true attributes).
       person.attributes.putAll(frg.getSeedRecordAttributes());
+      frg.overwriteAddressWithSeedRecord(person, generator);
     }
   }
 
@@ -173,11 +189,12 @@ public class FixedRecordGroupManager {
   /**
    * Updates the given person's current variant record.
    * 
-   * @param person
+   * @param person The person whose current variant record to update.
+   * @return The newly updated to variant record.
    */
-  public void updatePersonVariantRecord(Person person) {
+  public FixedRecord updatePersonVariantRecord(Person person) {
     Household household = this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD));
-    household.updatePersonVariantRecord(person);
+    return household.updatePersonVariantRecord(person);
   }
 
   public FixedRecordGroup getRecordGroupFor(Person person) {
@@ -187,12 +204,18 @@ public class FixedRecordGroupManager {
   /**
    * Returns the number of hosueholds in the fixed record group.
    * 
-   * @return
+   * @return The number of hosueholds in the fixed record group.
    */
   public int numberOfHouseholds() {
     return this.householdsMap.values().size();
   }
 
+  /**
+   * Returns all of the fixed record groups for the given person.
+   * 
+   * @param person The person to get all fixed record groups for.
+   * @return All of the fixed record groups for the given person.
+   */
   public List<FixedRecordGroup> getAllRecordGroupsFor(Person person) {
     return this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD)).getAllRecordGroupsFor(person);
   }

@@ -8,18 +8,23 @@ import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.world.agents.Person;
 
 /**
- * A grouping of FixedRecords that represents a single individual. FixedRecords
- * provide demographic information and the grouping can be used to capture
- * variation that may happen across different provider health records.
+ * A grouping of FixedRecords that represents an individual's seed record and
+ * potential variant records at a certain sequence of time. The seed record is
+ * the ground truth during the person's time with this fixed record group while
+ * the variants represent variants that can be used as biographical and
+ * demographic information at a given time. This fixed record group also tracks
+ * the current variant record for the person to use when creating new health
+ * records from their demographics.
  */
 public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
+  
   // The seed record of this record group from which the variants are created.
-  public FixedRecord seedRecord;
+  public final FixedRecord seedRecord;
   // The list of variant records for this record group.
-  public List<FixedRecord> variantRecords;
-  // The current variant record of this group. Updates be incrementing and is the
+  public final List<FixedRecord> variantRecords;
+  // The current variant record of this group. Updates by incrementing and is the
   // index of the variantRecords to use.
-  public int currentVariantRecord;
+  private int currentVariantRecord;
   // The sequence place of this fixed record group.
   private final int fixedRecordGroupSequencePlace;
   // Whether this fixed record group has been updated and used yet.
@@ -28,12 +33,15 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
   /**
    * Create the FixedRecordGroup for a person based on a seed record.
    * 
-   * @param seedRecord the seed record of the person.
+   * @param seedRecord the seed record of the person for this fixed record group
+   *                   sequence.
    */
   public FixedRecordGroup(FixedRecord seedRecord) {
     this.seedRecord = seedRecord;
     this.variantRecords = new ArrayList<FixedRecord>();
-    this.currentVariantRecord = 0;  // This should be random number to allow for lots of variations between simulations.
+    // This should be random number to allow for lots of variations between
+    // simulations.
+    this.currentVariantRecord = 0;
     this.fixedRecordGroupSequencePlace = seedRecord.addressSequence;
     this.hasBeenUpdated = true;
   }
@@ -41,7 +49,7 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
   /**
    * Adds a variant record to the record group.
    * 
-   * @param variantRecord the record to be added.
+   * @param variantRecord the variant record to be added.
    */
   void addVariantRecord(FixedRecord variantRecord) {
     this.variantRecords.add(variantRecord);
@@ -151,18 +159,13 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
     return this.seedRecord.householdRole;
   }
 
+  /**
+   * Returns the household id of this fixed record group.
+   * 
+   * @return The household id of this fixed record group.
+   */
   public String getHouseholdId() {
     return this.seedRecord.householdId;
-  }
-
-  @Override
-  public String toString() {
-    return this.seedRecord.recordId;
-  }
-
-  @Override
-  public int compareTo(FixedRecordGroup other) {
-    return Integer.compare(this.fixedRecordGroupSequencePlace, other.fixedRecordGroupSequencePlace);
   }
 
   /**
@@ -191,6 +194,48 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
     return this.variantRecords.get(this.currentVariantRecord);
   }
 
+  /**
+   * Overwrites the given person's address with this fixed record group's current
+   * variant record address information.
+   * 
+   * @param person    The person whose address to overwrite.
+   * @param generator The generator to use to extract a valid city.
+   * @return boolean Whether the address was changed.
+   */
+  public boolean overwriteAddressWithCurrentVariantRecord(Person person, Generator generator) {
+    return this.getCurrentRecord().overwriteAddress(person, generator);
+  }
+
+  /**
+   * Returns the current variant record attributes of this fixed record group.
+   * 
+   * @return The current variant record attributes of this fixed record group.
+   */
+  public Map<? extends String, ? extends Object> getCurentVariantRecordAttributes() {
+    return this.getCurrentRecord().getFixedRecordAttributes();
+  }
+
+  /**
+   * Returns the seed record attributes of this fixed record group.
+   * 
+   * @return The seed record attributes of this fixed record group.
+   */
+  public Map<? extends String, ? extends Object> getSeedRecordAttributes() {
+    return this.seedRecord.getFixedRecordAttributes();
+  }
+
+  /**
+   * Overwrites the given person's address with this fixed record group's seed
+   * record address information.
+   * 
+   * @param person    The person whose address to overwrite.
+   * @param generator The generator to use to extract a valid city.
+   * @return boolean Whether the address was changed.
+   */
+  public boolean overwriteAddressWithSeedRecord(Person person, Generator generator) {
+    return this.seedRecord.overwriteAddress(person, generator);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof FixedRecordGroup)) {
@@ -200,15 +245,18 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
     return (this.seedRecord.equals(that.seedRecord));
   }
 
-  public boolean overwriteAddressWithCurrentRecord(Person person, Generator generator) {
-    return this.getCurrentRecord().overwriteAddress(person, generator);
+  @Override
+  public int hashCode() {
+    return this.seedRecord.hashCode();
   }
 
-  public Map<? extends String, ? extends Object> getCurrentFixedRecordAttributes() {
-    return this.getCurrentRecord().getFixedRecordAttributes();
+  @Override
+  public String toString() {
+    return "Fixed Record Group with Seed Id: [" + this.seedRecord.recordId + "]";
   }
 
-  public Map<? extends String, ? extends Object> getSeedRecordAttributes() {
-    return this.seedRecord.getFixedRecordAttributes();
+  @Override
+  public int compareTo(FixedRecordGroup other) {
+    return Integer.compare(this.fixedRecordGroupSequencePlace, other.fixedRecordGroupSequencePlace);
   }
 }

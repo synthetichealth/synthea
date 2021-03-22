@@ -29,6 +29,7 @@ import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
+import org.mitre.synthea.input.FixedRecord;
 import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -641,9 +642,6 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public Provider getProvider(EncounterType type, long time) {
     String key = PREFERREDYPROVIDER + type;
     if (!attributes.containsKey(key)) {
-      if(this.attributes.get(Person.HOUSEHOLD) != null) {
-        Generator.fixedRecordGroupManager.updatePersonVariantRecord(this);
-      }
       setProvider(type, time);
     }
     return (Provider) attributes.get(key);
@@ -655,6 +653,11 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public void setProvider(EncounterType type, Provider provider) {
     if (provider == null) {
       throw new RuntimeException("Unable to find provider: " + type);
+    }
+    if(this.attributes.get(Person.HOUSEHOLD) != null) {
+      // Set to a new variant record because there is a new provider.
+      FixedRecord vr = Generator.fixedRecordGroupManager.updatePersonVariantRecord(this);
+      this.attributes.putAll(vr.getFixedRecordAttributes());
     }
     String key = PREFERREDYPROVIDER + type;
     attributes.put(key, provider);

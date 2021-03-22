@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -215,6 +216,11 @@ public class FixedRecord {
     }
     FixedRecord that = (FixedRecord) o;
     return this.recordId.equals(that.recordId);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(this.seedID);
   }
 
   @Override
