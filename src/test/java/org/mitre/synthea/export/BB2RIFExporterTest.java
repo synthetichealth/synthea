@@ -116,7 +116,7 @@ public class BB2RIFExporterTest {
     // these tests depend on the presence of the code map file and will not be run in CI
     try {
       Utilities.readResource("condition_code_map.json");
-    } catch (IOException e) {
+    } catch (IOException | IllegalArgumentException e) {
       return;
     }
     Exporter.ExporterRuntimeOptions exportOpts = new Exporter.ExporterRuntimeOptions();
