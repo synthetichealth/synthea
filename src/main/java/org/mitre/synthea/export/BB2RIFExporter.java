@@ -471,8 +471,6 @@ public class BB2RIFExporter implements Flushable {
         throws IOException {
     HashMap<InpatientFields, String> fieldValues = new HashMap<>();
 
-    HealthRecord.Encounter previous = null;
-    boolean previousInpatient = false;
     boolean previousEmergency = false;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
@@ -482,8 +480,6 @@ public class BB2RIFExporter implements Flushable {
       int claimGroupId = this.claimGroupId.incrementAndGet();
 
       if (!(isInpatient || isEmergency)) {
-        previous = encounter;
-        previousInpatient = false;
         previousEmergency = false;
         continue;
       }
@@ -572,6 +568,7 @@ public class BB2RIFExporter implements Flushable {
         if (conditionCodeMapper.canMap(encounter.reason.code)) {
           String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
           fieldValues.put(InpatientFields.PRNCPAL_DGNS_CD, icdCode);
+          fieldValues.put(InpatientFields.ADMTG_DGNS_CD, icdCode);
           if (drgCodeMapper.canMap(icdCode)) {
             fieldValues.put(InpatientFields.CLM_DRG_CD, drgCodeMapper.map(icdCode, person));
           }
@@ -579,33 +576,39 @@ public class BB2RIFExporter implements Flushable {
       }
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
+      boolean noDiagnoses = false;
       if (person.record.present != null && !person.record.present.isEmpty()) {
-        List<String> diagnoses = new ArrayList<String>();
+        List<String> mappedDiagnosisCodes = new ArrayList<>();
         for (String key : person.record.present.keySet()) {
           if (person.record.conditionActive(key)) {
             if (conditionCodeMapper.canMap(key)) {
-              diagnoses.add(conditionCodeMapper.map(key, person, true));
+              mappedDiagnosisCodes.add(conditionCodeMapper.map(key, person, true));
             }
           }
         }
-        if (!diagnoses.isEmpty()) {
-          int smallest = Math.min(diagnoses.size(), inpatientDxFields.length);
+        if (!mappedDiagnosisCodes.isEmpty()) {
+          int smallest = Math.min(mappedDiagnosisCodes.size(), inpatientDxFields.length);
           for (int i = 0; i < smallest; i++) {
-            InpatientFields dxField = inpatientDxFields[i];
-            fieldValues.put(dxField, diagnoses.get(i));
+            InpatientFields[] dxField = inpatientDxFields[i];
+            fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+            fieldValues.put(dxField[1], "0"); // 0=ICD10
+            fieldValues.put(dxField[2], "Y");
           }
+        } else {
+          noDiagnoses = true;
         }
       }
       // Use the procedures in this encounter to enter mapped values
+      boolean noProcedures = false;
       if (!encounter.procedures.isEmpty()) {
-        List<HealthRecord.Procedure> mappableProcedures = new ArrayList<HealthRecord.Procedure>();
-        List<String> mappedCodes = new ArrayList<String>();
+        List<HealthRecord.Procedure> mappableProcedures = new ArrayList<>();
+        List<String> mappedProcedureCodes = new ArrayList<>();
         for (HealthRecord.Procedure procedure : encounter.procedures) {
           for (HealthRecord.Code code : procedure.codes) {
             if (conditionCodeMapper.canMap(code.code)) {
               mappableProcedures.add(procedure);
-              mappedCodes.add(conditionCodeMapper.map(code.code, person, true));
-              break;
+              mappedProcedureCodes.add(conditionCodeMapper.map(code.code, person, true));
+              break; // take the first mappable code for each procedure
             }
           }
         }
@@ -613,14 +616,17 @@ public class BB2RIFExporter implements Flushable {
           int smallest = Math.min(mappableProcedures.size(), inpatientPxFields.length);
           for (int i = 0; i < smallest; i++) {
             InpatientFields[] pxField = inpatientPxFields[i];
-            fieldValues.put(pxField[0], mappedCodes.get(i));
+            fieldValues.put(pxField[0], mappedProcedureCodes.get(i));
             fieldValues.put(pxField[1], "0"); // 0=ICD10
             fieldValues.put(pxField[2], bb2DateFromTimestamp(mappableProcedures.get(i).start));
           }
+        } else {
+          noProcedures = true;
         }
       }
-      previous = encounter;
-      previousInpatient = isInpatient;
+      if (noDiagnoses && noProcedures) {
+        continue; // skip this encounter
+      }
       previousEmergency = isEmergency;
 
       inpatient.writeValues(InpatientFields.class, fieldValues);
@@ -1969,32 +1975,57 @@ public class BB2RIFExporter implements Flushable {
     RNDRNG_PHYSN_NPI
   }
 
-  private InpatientFields[] inpatientDxFields = {
-    InpatientFields.ICD_DGNS_CD1,
-    InpatientFields.ICD_DGNS_CD2,
-    InpatientFields.ICD_DGNS_CD3,
-    InpatientFields.ICD_DGNS_CD4,
-    InpatientFields.ICD_DGNS_CD5,
-    InpatientFields.ICD_DGNS_CD6,
-    InpatientFields.ICD_DGNS_CD7,
-    InpatientFields.ICD_DGNS_CD8,
-    InpatientFields.ICD_DGNS_CD9,
-    InpatientFields.ICD_DGNS_CD10,
-    InpatientFields.ICD_DGNS_CD11,
-    InpatientFields.ICD_DGNS_CD12,
-    InpatientFields.ICD_DGNS_CD13,
-    InpatientFields.ICD_DGNS_CD14,
-    InpatientFields.ICD_DGNS_CD15,
-    InpatientFields.ICD_DGNS_CD16,
-    InpatientFields.ICD_DGNS_CD17,
-    InpatientFields.ICD_DGNS_CD18,
-    InpatientFields.ICD_DGNS_CD19,
-    InpatientFields.ICD_DGNS_CD20,
-    InpatientFields.ICD_DGNS_CD21,
-    InpatientFields.ICD_DGNS_CD22,
-    InpatientFields.ICD_DGNS_CD23,
-    InpatientFields.ICD_DGNS_CD24,
-    InpatientFields.ICD_DGNS_CD25
+  private InpatientFields[][] inpatientDxFields = {
+    { InpatientFields.ICD_DGNS_CD1, InpatientFields.ICD_DGNS_VRSN_CD1,
+      InpatientFields.CLM_POA_IND_SW1 },
+    { InpatientFields.ICD_DGNS_CD2, InpatientFields.ICD_DGNS_VRSN_CD2,
+      InpatientFields.CLM_POA_IND_SW2 },
+    { InpatientFields.ICD_DGNS_CD3, InpatientFields.ICD_DGNS_VRSN_CD3,
+      InpatientFields.CLM_POA_IND_SW3 },
+    { InpatientFields.ICD_DGNS_CD4, InpatientFields.ICD_DGNS_VRSN_CD4,
+      InpatientFields.CLM_POA_IND_SW4 },
+    { InpatientFields.ICD_DGNS_CD5, InpatientFields.ICD_DGNS_VRSN_CD5,
+      InpatientFields.CLM_POA_IND_SW5 },
+    { InpatientFields.ICD_DGNS_CD6, InpatientFields.ICD_DGNS_VRSN_CD6,
+      InpatientFields.CLM_POA_IND_SW6 },
+    { InpatientFields.ICD_DGNS_CD7, InpatientFields.ICD_DGNS_VRSN_CD7,
+      InpatientFields.CLM_POA_IND_SW7 },
+    { InpatientFields.ICD_DGNS_CD8, InpatientFields.ICD_DGNS_VRSN_CD8,
+      InpatientFields.CLM_POA_IND_SW8 },
+    { InpatientFields.ICD_DGNS_CD9, InpatientFields.ICD_DGNS_VRSN_CD9,
+      InpatientFields.CLM_POA_IND_SW9 },
+    { InpatientFields.ICD_DGNS_CD10, InpatientFields.ICD_DGNS_VRSN_CD10,
+      InpatientFields.CLM_POA_IND_SW10 },
+    { InpatientFields.ICD_DGNS_CD11, InpatientFields.ICD_DGNS_VRSN_CD11,
+      InpatientFields.CLM_POA_IND_SW11 },
+    { InpatientFields.ICD_DGNS_CD12, InpatientFields.ICD_DGNS_VRSN_CD12,
+      InpatientFields.CLM_POA_IND_SW12 },
+    { InpatientFields.ICD_DGNS_CD13, InpatientFields.ICD_DGNS_VRSN_CD13,
+      InpatientFields.CLM_POA_IND_SW13 },
+    { InpatientFields.ICD_DGNS_CD14, InpatientFields.ICD_DGNS_VRSN_CD14,
+      InpatientFields.CLM_POA_IND_SW14 },
+    { InpatientFields.ICD_DGNS_CD15, InpatientFields.ICD_DGNS_VRSN_CD15,
+      InpatientFields.CLM_POA_IND_SW15 },
+    { InpatientFields.ICD_DGNS_CD16, InpatientFields.ICD_DGNS_VRSN_CD16,
+      InpatientFields.CLM_POA_IND_SW16 },
+    { InpatientFields.ICD_DGNS_CD17, InpatientFields.ICD_DGNS_VRSN_CD17,
+      InpatientFields.CLM_POA_IND_SW17 },
+    { InpatientFields.ICD_DGNS_CD18, InpatientFields.ICD_DGNS_VRSN_CD18,
+      InpatientFields.CLM_POA_IND_SW18 },
+    { InpatientFields.ICD_DGNS_CD19, InpatientFields.ICD_DGNS_VRSN_CD19,
+      InpatientFields.CLM_POA_IND_SW19 },
+    { InpatientFields.ICD_DGNS_CD20, InpatientFields.ICD_DGNS_VRSN_CD20,
+      InpatientFields.CLM_POA_IND_SW20 },
+    { InpatientFields.ICD_DGNS_CD21, InpatientFields.ICD_DGNS_VRSN_CD21,
+      InpatientFields.CLM_POA_IND_SW21 },
+    { InpatientFields.ICD_DGNS_CD22, InpatientFields.ICD_DGNS_VRSN_CD22,
+      InpatientFields.CLM_POA_IND_SW22 },
+    { InpatientFields.ICD_DGNS_CD23, InpatientFields.ICD_DGNS_VRSN_CD23,
+      InpatientFields.CLM_POA_IND_SW23 },
+    { InpatientFields.ICD_DGNS_CD24, InpatientFields.ICD_DGNS_VRSN_CD24,
+      InpatientFields.CLM_POA_IND_SW24 },
+    { InpatientFields.ICD_DGNS_CD25, InpatientFields.ICD_DGNS_VRSN_CD25,
+      InpatientFields.CLM_POA_IND_SW25 }
   };
 
   private InpatientFields[][] inpatientPxFields = {
@@ -2409,7 +2440,7 @@ public class BB2RIFExporter implements Flushable {
       int choice = rand.randInt(options.size());
       String code = options.get(choice).get(bfdCodeType);
       if (stripDots) {
-        return code.replaceAll(".", "");
+        return code.replaceAll("\\.", "");
       } else {
         return code;
       }

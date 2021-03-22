@@ -113,19 +113,14 @@ public class BB2RIFExporterTest {
 
   @Test
   public void testCodeMapper() {
-    try {
-      String json = Utilities.readResource("condition_code_map.json");
-      Exporter.ExporterRuntimeOptions exportOpts = new Exporter.ExporterRuntimeOptions();
-      Generator.GeneratorOptions generatorOpts = new Generator.GeneratorOptions();
-      generatorOpts.population = 1;
-      Generator generator = new Generator(generatorOpts, exportOpts);
-      CodeMapper mapper = new CodeMapper("condition_code_map.json");
-      assertTrue(mapper.canMap("10509002"));
-      assertEquals("J20.9", mapper.map("10509002", generator));
-      assertFalse(mapper.canMap("not a code"));
-    } catch (IOException | IllegalArgumentException e) {
-      // No worries. The optional mapping file is not present.
-    }
+    Exporter.ExporterRuntimeOptions exportOpts = new Exporter.ExporterRuntimeOptions();
+    Generator.GeneratorOptions generatorOpts = new Generator.GeneratorOptions();
+    Generator generator = new Generator(generatorOpts, exportOpts);
+    CodeMapper mapper = new CodeMapper("condition_code_map.json");
+    assertTrue(mapper.canMap("10509002"));
+    assertEquals("J20.9", mapper.map("10509002", generator));
+    assertEquals("J209", mapper.map("10509002", generator, true));
+    assertFalse(mapper.canMap("not a code"));
   }
   
   @Test
