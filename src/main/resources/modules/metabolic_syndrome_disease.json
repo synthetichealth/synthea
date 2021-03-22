@@ -112,28 +112,22 @@
       "direct_transition": "Onset_Prediabetes"
     },
     "Eventual_Diabetes": {
-      "type": "Delay",
-      "range": {
-        "low": 0,
-        "high": 30,
-        "unit": "years"
-      },
+      "type": "SetAttribute",
+      "attribute": "time_until_diabetes_onset",
+      "direct_transition": "Already_age_18",
       "remarks": [
         "we assume that diabetes and prediabetes generally onset between the ages of 18-55",
         "this tracks a little lower so that we can diagnose prediabetes early and then diabetes later",
         "there is little info on how many patients with prediabetes progress to diabetes",
         "so we assume that 38% of patients with diabetes had a prediabetes diagnosis"
       ],
-      "distributed_transition": [
-        {
-          "distribution": 0.38,
-          "transition": "Onset_Prediabetes_Towards_Diabetes"
-        },
-        {
-          "distribution": 0.62,
-          "transition": "Delay_before_Diabetes"
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 55,
+          "standardDeviation": 15
         }
-      ]
+      }
     },
     "Onset_Prediabetes": {
       "type": "SetAttribute",
@@ -148,19 +142,6 @@
       "type": "SetAttribute",
       "attribute": "prediabetes",
       "value": true,
-      "direct_transition": "Delay_before_Diabetes"
-    },
-    "Delay_before_Diabetes": {
-      "type": "Delay",
-      "range": {
-        "low": 0,
-        "high": 7,
-        "unit": "years"
-      },
-      "remarks": [
-        "we assume that diabetes and prediabetes generally onset between the ages of 18-55",
-        "at this point we are between 18-48, so we wait 0-7 years"
-      ],
       "direct_transition": "Onset_Diabetes"
     },
     "Onset_Diabetes": {
@@ -599,7 +580,7 @@
           },
           "distributions": [
             {
-              "distribution": 0.083,
+              "distribution": 0.25,
               "transition": "Eventual_Diabetes",
               "remarks": [
                 "0.065 * 1.278"
@@ -613,7 +594,7 @@
               ]
             },
             {
-              "distribution": 0.467,
+              "distribution": 0.3,
               "transition": "No_Diabetes"
             }
           ]
@@ -625,7 +606,7 @@
           },
           "distributions": [
             {
-              "distribution": 0.1815,
+              "distribution": 0.25,
               "transition": "Eventual_Diabetes",
               "remarks": [
                 "0.142 * 1.278"
@@ -639,7 +620,7 @@
               ]
             },
             {
-              "distribution": 0.3685,
+              "distribution": 0.3,
               "transition": "No_Diabetes"
             }
           ]
@@ -651,7 +632,7 @@
           },
           "distributions": [
             {
-              "distribution": 0.1636,
+              "distribution": 0.25,
               "transition": "Eventual_Diabetes",
               "remarks": [
                 "0.128 * 1.278"
@@ -665,7 +646,7 @@
               ]
             },
             {
-              "distribution": 0.3864,
+              "distribution": 0.3,
               "transition": "No_Diabetes"
             }
           ]
@@ -677,7 +658,7 @@
           },
           "distributions": [
             {
-              "distribution": 0.2045,
+              "distribution": 0.25,
               "transition": "Eventual_Diabetes",
               "remarks": [
                 "0.16 * 1.278"
@@ -691,7 +672,7 @@
               ]
             },
             {
-              "distribution": 0.3455,
+              "distribution": 0.3,
               "transition": "No_Diabetes"
             }
           ]
@@ -703,7 +684,7 @@
           },
           "distributions": [
             {
-              "distribution": 0.1828,
+              "distribution": 0.25,
               "transition": "Eventual_Diabetes",
               "remarks": [
                 "0.143 * 1.278"
@@ -717,7 +698,7 @@
               ]
             },
             {
-              "distribution": 0.4572,
+              "distribution": 0.39,
               "transition": "No_Diabetes"
             }
           ]
@@ -728,7 +709,7 @@
           ],
           "distributions": [
             {
-              "distribution": 0.1022,
+              "distribution": 0.25,
               "transition": "Eventual_Diabetes",
               "remarks": [
                 "0.08 * 1.278"
@@ -742,7 +723,7 @@
               ]
             },
             {
-              "distribution": 0.4478,
+              "distribution": 0.3,
               "transition": "No_Diabetes"
             }
           ]
@@ -763,6 +744,71 @@
         {
           "transition": "No_Diabetes",
           "distribution": 0.3
+        }
+      ]
+    },
+    "Onset_Prediabetes_2": {
+      "type": "SetAttribute",
+      "attribute": "prediabetes",
+      "direct_transition": "Delay_Another_Year",
+      "value": true
+    },
+    "Countdown to Diabetes": {
+      "type": "Counter",
+      "attribute": "time_until_diabetes_onset",
+      "action": "decrement",
+      "distributed_transition": [
+        {
+          "transition": "Onset_Prediabetes_2",
+          "distribution": 0.05
+        },
+        {
+          "transition": "Delay_Another_Year",
+          "distribution": 0.95
+        }
+      ]
+    },
+    "Already_age_18": {
+      "type": "Counter",
+      "attribute": "time_until_diabetes_onset",
+      "action": "decrement",
+      "conditional_transition": [
+        {
+          "transition": "Onset_Prediabetes_Towards_Diabetes",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "time_until_diabetes_onset",
+            "operator": "<=",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Countdown to Diabetes"
+        }
+      ],
+      "amount": 18
+    },
+    "Delay_Another_Year": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "conditional_transition": [
+        {
+          "transition": "Onset_Prediabetes_Towards_Diabetes",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "time_until_diabetes_onset",
+            "operator": "<=",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Countdown to Diabetes"
         }
       ]
     }
