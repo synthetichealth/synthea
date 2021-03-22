@@ -113,6 +113,12 @@ public class BB2RIFExporterTest {
 
   @Test
   public void testCodeMapper() {
+    // these tests depend on the presence of the code map file and will not be run in CI
+    try {
+      Utilities.readResource("condition_code_map.json");
+    } catch (IOException e) {
+      return;
+    }
     Exporter.ExporterRuntimeOptions exportOpts = new Exporter.ExporterRuntimeOptions();
     Generator.GeneratorOptions generatorOpts = new Generator.GeneratorOptions();
     Generator generator = new Generator(generatorOpts, exportOpts);
