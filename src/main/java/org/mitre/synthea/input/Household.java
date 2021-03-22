@@ -35,12 +35,15 @@ public class Household {
   // Randomizer for this household.
   private Random random;
 
+  private int yearLastUpdated;
+
   /**
    * Constructor for a household.
    */
   public Household() {
     this.members = new HashMap<String, Person>();
     this.currentAddressSequence = 0;
+    this.yearLastUpdated = 0;
   }
 
   /**
@@ -51,6 +54,13 @@ public class Household {
    * @return Whether the fixed record groups were updated.
    */
   public boolean updateCurrentFixedRecordGroups(int currentYear) {
+
+    // If the household has already updated for this year, then just return false.
+    if (currentYear == this.yearLastUpdated) {
+      return false;
+    }
+
+    this.yearLastUpdated = currentYear;
     // If it is time for the new seed records and their new addresses to start, then
     // update each person with their new seed records and force a new
     // provider(health record) for them.
@@ -146,8 +156,8 @@ public class Household {
    */
   private int getBirthYearOfOldestMember() {
     int earliestYear = 9999; // TODO - initial earliest year should not be hardcoded.
-    for (List<FixedRecordGroup> frg : this.fixedRecordGroups.values()) {
-      int thisBirthYear = Integer.parseInt(frg.get(0).seedRecord.birthYear);
+    for (List<FixedRecordGroup> frgs : this.fixedRecordGroups.values()) {
+      int thisBirthYear = frgs.get(0).getSeedBirthYear();
       if (thisBirthYear < earliestYear) {
         earliestYear = thisBirthYear;
       }

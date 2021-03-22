@@ -7,10 +7,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.hl7.fhir.r4.model.Patient;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
@@ -22,7 +20,6 @@ import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.input.FixedRecord;
 import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.modules.BloodPressureValueGenerator.SysDias;
 import org.mitre.synthea.world.agents.Person;
@@ -181,7 +178,7 @@ public final class LifecycleModule extends Module {
     // If using FixedRecords, overwrite the person's attributes with the seed record attributes.
     if (person.attributes.get(Person.HOUSEHOLD) != null) {
       FixedRecordGroup recordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
-      attributes.putAll(recordGroup.seedRecord.getFixedRecordAttributes());
+      attributes.putAll(recordGroup.getSeedRecordAttributes());
     }
 
     String ssn = "999-" + ((person.randInt(99 - 10 + 1) + 10)) + "-"

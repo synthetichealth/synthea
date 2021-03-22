@@ -10,6 +10,8 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -86,9 +88,6 @@ public class FixedRecordTest {
     go.state = "Colorado"; // Examples are based on California.
     go.population = 100; // Should be overwritten by number of patients in input file.
     go.overflow = false; // Prevent deceased patients from increasing the population size.
-    // Prevent extraneous modules from being laoded to improve test speed.
-    go.enabledModules = new ArrayList<String>();
-    go.enabledModules.add("");
     generator = new Generator(go);
     generator.internalStore = new LinkedList<>(); // Allows us to access patients within generator.
     // Run the simulation.
@@ -112,9 +111,10 @@ public class FixedRecordTest {
     // Household with Lara Kayla Henderson and Chistopher Patrick Ahmann
     org.mitre.synthea.input.Household household = Generator.fixedRecordGroupManager.getHousehold("3879063");
 
-    // Lara is this role and is the oldest member of the household, thus she should
+    // Lara is the single_1 role and is the oldest member of the household, thus she
+    // should
     // have an instance of every seed record, fixed record group, and address
-    // change.
+    // change. In this case, there is only one.
     Person laraKayla = household.getMember("single_1");
 
     FixedRecordGroup laraOnlyRecordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(laraKayla);
@@ -131,23 +131,23 @@ public class FixedRecordTest {
         { ADDRESS_2, "" }, { CITY, "Littleton" }, { STATE, "Colorado" }, { ZIP, "80125-9291" },
         { ADDRESS_SEQUENCE, "0" }, { CONTACT_EMAIL, "lkh1@something.com" } })
         .collect(Collectors.toMap(data -> data[0], data -> data[1]));
-    testRecordAttributes(laraOnlyRecordGroup.seedRecord, testAttributes);
+    testRecordAttributes(laraOnlyRecordGroup.getSeedRecordAttributes(), testAttributes);
     // Check that the rest of the population's initial attributes match their seed
     // record.
     for (int i = 0; i < generator.options.population; i++) {
       FixedRecordGroup recordGroup = Generator.fixedRecordGroupManager.getNextRecordGroup(i);
-      FixedRecord seedRecord = recordGroup.seedRecord;
-      Map<String, Object> demoAttributes = generator.pickFixedDemographics(recordGroup, new Random(i));
-      assertEquals(demoAttributes.get(Person.FIRST_NAME), (seedRecord.firstName));
-      assertEquals(demoAttributes.get(Person.LAST_NAME), (seedRecord.lastName));
-      assertEquals(demoAttributes.get(Person.NAME), (seedRecord.firstName + " " + seedRecord.lastName));
-      assertEquals(demoAttributes.get(Person.BIRTHDATE), (seedRecord.getBirthDate()));
-      assertEquals(demoAttributes.get(Person.GENDER), (seedRecord.gender));
-      assertEquals(demoAttributes.get(Person.TELECOM), (seedRecord.phoneAreaCode + "-" + seedRecord.phoneNumber));
-      assertEquals(demoAttributes.get(Person.ADDRESS), (seedRecord.addressLineOne));
-      assertEquals(demoAttributes.get(Person.STATE), (seedRecord.state));
-      assertEquals(demoAttributes.get(Person.CITY), (seedRecord.city));
-      assertEquals(demoAttributes.get(Person.ZIP), (seedRecord.zipcode));
+      Map<String, Object> seedAttributes = recordGroup.getSeedRecordAttributes();
+      Map<String, Object> pickedAttributes = generator.pickFixedDemographics(recordGroup, new Random(i));
+      assertEquals(pickedAttributes.get(Person.FIRST_NAME), seedAttributes.get(Person.FIRST_NAME));
+      assertEquals(pickedAttributes.get(Person.LAST_NAME), seedAttributes.get(Person.LAST_NAME));
+      assertEquals(pickedAttributes.get(Person.NAME), seedAttributes.get(Person.NAME));
+      assertEquals(pickedAttributes.get(Person.BIRTHDATE), seedAttributes.get(Person.BIRTHDATE));
+      assertEquals(pickedAttributes.get(Person.GENDER), seedAttributes.get(Person.GENDER));
+      assertEquals(pickedAttributes.get(Person.TELECOM), seedAttributes.get(Person.TELECOM));
+      assertEquals(pickedAttributes.get(Person.ADDRESS), seedAttributes.get(Person.ADDRESS));
+      assertEquals(pickedAttributes.get(Person.STATE), seedAttributes.get(Person.STATE));
+      assertEquals(pickedAttributes.get(Person.CITY), seedAttributes.get(Person.CITY));
+      assertEquals(pickedAttributes.get(Person.ZIP), seedAttributes.get(Person.ZIP));
     }
   }
 
@@ -205,7 +205,7 @@ public class FixedRecordTest {
         }
         assertNotNull("Person's variant records should have a seed id; seed records do not.",
             currentFixedRecord.seedID);
-        testRecordAttributes(currentFixedRecord, fhirExportAttributes);
+        testRecordAttributes(currentFixedRecord.getFixedRecordAttributes(), fhirExportAttributes);
       }
     }
   }
@@ -240,7 +240,7 @@ public class FixedRecordTest {
         { CONTACT_EMAIL, "lkh2@something.com" } }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
     assertNotNull("Person's variant records should have a seed id; seed records do not.",
         laraKaylaRecordGroup.variantRecords.get(0).seedID);
-    testRecordAttributes(laraKaylaRecordGroup.variantRecords.get(0), testAttributes);
+    testRecordAttributes(laraKaylaRecordGroup.variantRecords.get(0).getFixedRecordAttributes(), testAttributes);
     // Test Jane Doe's VariantRecord 2.
     testAttributes = Stream.of(new String[][] { { SEED_ID, "1" }, { RECORD_ID, "19003" }, { HH_ID, "3879063" },
         { HH_STATUS, "single_1" }, { FIRST_NAME, "Lara Kayla E|ise" }, { LAST_NAME, "LNU" },
@@ -250,7 +250,7 @@ public class FixedRecordTest {
         { CONTACT_EMAIL, "lkh3@something.com" } }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
     assertNotNull("Person's variant records should have a seed id; seed records do not.",
         laraKaylaRecordGroup.variantRecords.get(1).seedID);
-    testRecordAttributes(laraKaylaRecordGroup.variantRecords.get(1), testAttributes);
+    testRecordAttributes(laraKaylaRecordGroup.variantRecords.get(1).getFixedRecordAttributes(), testAttributes);
 
     // Christopher Patrick
     Person chrisPat = Generator.fixedRecordGroupManager.getHousehold("3879063").getMember("single_2");
@@ -311,24 +311,49 @@ public class FixedRecordTest {
   public void checkSeedHistory() {
     // The variant records from the first time period should be based on the
     // variants from the first fixed record group and seed record.
-    Person currentPerson = Generator.fixedRecordGroupManager.getHousehold("59").getMember("married_1");
 
+    // Rita Noble
+    Person ritaNoble = Generator.fixedRecordGroupManager.getHousehold("59").getMember("married_1");
+    List<Integer> seedIds = new ArrayList<Integer>();
+    seedIds.add(19489272);  // Rita Sequence 1
+    seedIds.add(19489274);  // Rita Sequence 2
+    seedIds.add(19489276);  // Rita Sequence 3
+    seedIds.add(19489278);  // Rita Sequence 4
+    this.testThatSeedsArePresent(ritaNoble, seedIds);
+
+    // Justin Noble - since the other household member (rita noble) is the same age, both should have all 4 of their seed ids present.
+    Person justinNoble = Generator.fixedRecordGroupManager.getHousehold("59").getMember("married_2");
+    seedIds = new ArrayList<Integer>();
+    seedIds.add(19489273);  // Justin Sequence 1
+    seedIds.add(19489275);  // Justin Sequence 2
+    seedIds.add(19489277);  // Justin Sequence 3
+    seedIds.add(19489279);  // Justin Sequence 4
+    this.testThatSeedsArePresent(justinNoble, seedIds);
+
+  }
+
+  /**
+   * Checks that the given list of seed Ids are present in the given person's exported fhir health records.
+   * @param person  The person to check fhir records of.
+   * @param seedIds The seed ids to check for.
+   */
+  private void testThatSeedsArePresent(Person person, List<Integer> seedIds) {
     // Pull all the exported health records and match them to their variant records.
     List<Bundle> exportedHealthRecords = new ArrayList<Bundle>();
     List<FixedRecord> variantRecords = new ArrayList<FixedRecord>();
 
     Map<Integer, List<Bundle>> sequenceHealthRecordPairs = new HashMap<Integer, List<Bundle>>();
 
-    for (HealthRecord healthRecord : currentPerson.records.values()) {
+    for (HealthRecord healthRecord : person.records.values()) {
       // Convert the current record to exported FHIR.
-      currentPerson.record = healthRecord;
-      String fhirJson = FhirR4.convertToFHIRJson(currentPerson, System.currentTimeMillis());
+      person.record = healthRecord;
+      String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
       FhirContext ctx = FhirContext.forR4();
       IParser parser = ctx.newJsonParser().setPrettyPrint(true);
       Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
 
       // Match the current record with the FixedRecord that matches its record id.
-      FixedRecord vr = getRecordMatch(currentPerson);
+      FixedRecord vr = getRecordMatch(person);
       variantRecords.add(vr);
       exportedHealthRecords.add(bundle);
 
@@ -341,20 +366,12 @@ public class FixedRecordTest {
 
       Patient patient = ((Patient) bundle.getEntry().get(0).getResource());
 
-      System.out.println("FHIR Patient date-time-value: " + patient.dateTimeValue());
-
+      System.out.println("FHIR Patient date-time-value: " + patient.getNameFirstRep().getGivenAsSingleString() + " - "
+          + patient.dateTimeValue());
     }
 
     // Make sure that there is at least one variant record for each of the fixed
-    // record groups (4 for rita noble). She is the oldest in the household (tied
-    // with Justin) so each seed record should have a presence.
-    // Rita's Seed IDs (in order): 1: 19489272, 2: 19489274, 3: 19489276, 4:
-    // 19489278
-    List<Integer> seedIds = new ArrayList<Integer>();
-    seedIds.add(19489272);
-    seedIds.add(19489274);
-    seedIds.add(19489276);
-    seedIds.add(19489278);
+    // record groups, given as the input seedIds.
     for (int id : seedIds) {
       int seedIdMatches = 0;
       for (FixedRecord vr : variantRecords) {
@@ -363,7 +380,7 @@ public class FixedRecordTest {
         }
       }
       System.out.println("Seed Matches: " + seedIdMatches);
-      assertTrue("Seed id " + id + " does not have any matches in the person's variant records.", seedIdMatches > 0);
+      assertTrue("Seed id " + id + " does not have any matches in " + person.attributes.get(Person.NAME) + "'s' health records.", seedIdMatches > 0);
     }
 
     // Make sure that each variant is from a correctly chronological fixed record
@@ -372,7 +389,6 @@ public class FixedRecordTest {
       // System.out.println((
       // sequenceHealthRecordPairs.get(currentSequence).get(0).getEntry().get(1).getResource().getPeriod().getStart()));
     }
-
   }
 
   /**
@@ -380,33 +396,33 @@ public class FixedRecordTest {
    * attributes map.
    * 
    * @param fixedRecord    The fixed record to test against.
-   * @param testAttribtues The attributes to test for.
+   * @param testAttributes The attributes to test for.
    */
-  private void testRecordAttributes(FixedRecord fixedRecord, Map<String, String> testAttribtues) {
-    assertEquals(fixedRecord.recordId, testAttribtues.get(RECORD_ID));
+  private void testRecordAttributes(Map<String, Object> recordAttributes, Map<String, String> testAttributes) {
+    assertEquals(recordAttributes.get(Person.IDENTIFIER_RECORD_ID), testAttributes.get(RECORD_ID));
     assertEquals(
-        "Expected: <" + fixedRecord.firstName + "> but was: <" + testAttribtues.get(FIRST_NAME)
-            + ">. Fixed record id is: " + fixedRecord.recordId + ".",
-        fixedRecord.firstName, testAttribtues.get(FIRST_NAME));
-    assertEquals(fixedRecord.lastName, testAttribtues.get(LAST_NAME));
-    assertEquals(fixedRecord.firstName + " " + fixedRecord.lastName, testAttribtues.get(NAME));
-    assertEquals(fixedRecord.birthYear, testAttribtues.get(BIRTH_YEAR));
-    assertTrue(fixedRecord.birthMonth.equals(testAttribtues.get(BIRTH_MONTH))
-        || fixedRecord.birthMonth.equals("0" + testAttribtues.get(BIRTH_MONTH)));
-    assertTrue(fixedRecord.birthDayOfMonth.equals(testAttribtues.get(BIRTH_DAY_OF_MONTH))
-        || fixedRecord.birthDayOfMonth.equals("0" + testAttribtues.get(BIRTH_DAY_OF_MONTH)));
-    assertEquals(fixedRecord.gender, testAttribtues.get(GENDER));
-    assertEquals(fixedRecord.phoneAreaCode, testAttribtues.get(PHONE_CODE));
-    assertEquals(fixedRecord.phoneNumber, testAttribtues.get(PHONE_NUMBER));
-    assertEquals(fixedRecord.addressLineOne, testAttribtues.get(ADDRESS_1));
-    // assertEquals(fixedRecord.addressLineTwo, testAttribtues.get(ADDRESS_2));
-    assertEquals(fixedRecord.getFixedRecordAttributes().get(Person.CITY), testAttribtues.get(CITY));
-    assertEquals(fixedRecord.zipcode, testAttribtues.get(ZIP));
-    // assertEquals(fixedRecord.contactEmail, testAttribtues.get(CONTACT_EMAIL));
-    if (fixedRecord.contactFirstName != null) {
+        "Expected: <" + recordAttributes.get(Person.NAME) + "> but was: <" + testAttributes.get(NAME)
+            + ">. Fixed record id is: " + recordAttributes.get(Person.IDENTIFIER_RECORD_ID) + ".",
+        recordAttributes.get(Person.NAME), testAttributes.get(NAME));
+    assertEquals(recordAttributes.get(Person.FIRST_NAME), testAttributes.get(FIRST_NAME));
+    assertEquals(recordAttributes.get(Person.LAST_NAME), testAttributes.get(LAST_NAME));
+    long testBirthDate = LocalDateTime
+        .of(Integer.parseInt(testAttributes.get(BIRTH_YEAR)), Integer.parseInt(testAttributes.get(BIRTH_MONTH)),
+            Integer.parseInt(testAttributes.get(BIRTH_DAY_OF_MONTH)), 12, 0)
+        .toInstant(ZoneOffset.UTC).toEpochMilli();
+    assertEquals(recordAttributes.get(Person.BIRTHDATE), testBirthDate);
+    assertEquals(recordAttributes.get(Person.GENDER), testAttributes.get(GENDER));
+    assertEquals(recordAttributes.get(Person.TELECOM),
+        testAttributes.get(PHONE_CODE) + "-" + testAttributes.get(PHONE_NUMBER));
+    assertEquals(recordAttributes.get(Person.ADDRESS), testAttributes.get(ADDRESS_1));
+    // assertEquals(fixedRecord.addressLineTwo, testAttributes.get(ADDRESS_2));
+    assertEquals(recordAttributes.get(Person.CITY), testAttributes.get(CITY));
+    assertEquals(recordAttributes.get(Person.ZIP), testAttributes.get(ZIP));
+    // assertEquals(fixedRecord.contactEmail, testAttributes.get(CONTACT_EMAIL));
+    if (recordAttributes.get(Person.CONTACT_GIVEN_NAME) != null) {
       // Only children have a contact person (in the fixed record test file).
-      assertEquals(fixedRecord.contactFirstName, testAttribtues.get(CONTACT_FIRST_NAME));
-      assertEquals(fixedRecord.contactLastName, testAttribtues.get(CONTACT_LAST_NAME));
+      assertEquals(recordAttributes.get(Person.CONTACT_GIVEN_NAME), testAttributes.get(CONTACT_FIRST_NAME));
+      assertEquals(recordAttributes.get(Person.CONTACT_FAMILY_NAME), testAttributes.get(CONTACT_LAST_NAME));
     }
   }
 
@@ -419,9 +435,12 @@ public class FixedRecordTest {
     Person ritaNoble = Generator.fixedRecordGroupManager.getHousehold("59").getMember("married_1");
     Person justinNoble = Generator.fixedRecordGroupManager.getHousehold("59").getMember("married_2");
 
-    // This only accounts for the final record group that each person has, not any of their initial 3.
-    assertEquals(Generator.fixedRecordGroupManager.getRecordGroupFor(ritaNoble).toString(), "Fixed Record Group with Seed Id: [19489278]");
-    assertEquals(Generator.fixedRecordGroupManager.getRecordGroupFor(justinNoble).toString(), "Fixed Record Group with Seed Id: [19489279]");
+    // This only accounts for the final record group that each person has, not any
+    // of their initial 3.
+    assertEquals(Generator.fixedRecordGroupManager.getRecordGroupFor(ritaNoble).toString(),
+        "Fixed Record Group with Seed Id: [19489278]");
+    assertEquals(Generator.fixedRecordGroupManager.getRecordGroupFor(justinNoble).toString(),
+        "Fixed Record Group with Seed Id: [19489279]");
 
     // Check that the record groups are correct by checking the seed id.
     assertEquals("19489278",

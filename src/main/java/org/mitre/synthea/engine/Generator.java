@@ -720,26 +720,18 @@ public class Generator implements RandomNumberGenerator {
    * @param random Random object.
    */
   public Map<String, Object> pickFixedDemographics(FixedRecordGroup recordGroup, Random random) {
-    FixedRecord seedRecord = recordGroup.seedRecord;
+    Map<String, Object> demoAttributes = recordGroup.getSeedRecordAttributes();
     this.location = new Location(
-      seedRecord.state,
-      seedRecord.getCity());
+      (String) demoAttributes.get(Person.STATE),
+      (String) demoAttributes.get(Person.CITY));
     Demographics city = this.location.randomCity(random);
     // Pick the rest of the demographics based on the location of the fixed record.
-    Map<String, Object> demoAttributes = pickDemographics(random, city);
+    demoAttributes = this.pickDemographics(random, city);
 
     // Overwrite the person's attributes with the FixedRecord.
-    demoAttributes.put(Person.BIRTHDATE, seedRecord.getBirthDate());
     demoAttributes.put(Person.BIRTH_CITY, city.city);
-    String g = seedRecord.gender;
-    if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
-      g = "F";
-    }
-    demoAttributes.put(Person.GENDER, g);
-
     demoAttributes.put(Person.HOUSEHOLD, recordGroup.getHouseholdId());
-
-    demoAttributes.putAll(seedRecord.getFixedRecordAttributes());
+    demoAttributes.putAll(recordGroup.getSeedRecordAttributes());
 
     return demoAttributes;
   }
@@ -770,7 +762,7 @@ public class Generator implements RandomNumberGenerator {
     if (person.attributes.get(Person.HOUSEHOLD) != null) {
       // Set the person's attributes to their seed record to ensure console display is correct.
       FixedRecordGroup frg = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
-      person.attributes.putAll(frg.seedRecord.getFixedRecordAttributes());
+      person.attributes.putAll(frg.getSeedRecordAttributes());
     }
     
     if (database != null) {

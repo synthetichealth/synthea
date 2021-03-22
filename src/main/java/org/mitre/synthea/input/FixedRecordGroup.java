@@ -17,9 +17,9 @@ import org.mitre.synthea.world.agents.Person;
  * records from their demographics.
  */
 public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
-  
+
   // The seed record of this record group from which the variants are created.
-  public final FixedRecord seedRecord;
+  private final FixedRecord seedRecord;
   // The list of variant records for this record group.
   public final List<FixedRecord> variantRecords;
   // The current variant record of this group. Updates by incrementing and is the
@@ -211,7 +211,7 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
    * 
    * @return The current variant record attributes of this fixed record group.
    */
-  public Map<? extends String, ? extends Object> getCurentVariantRecordAttributes() {
+  public Map<String, Object> getCurentVariantRecordAttributes() {
     return this.getCurrentRecord().getFixedRecordAttributes();
   }
 
@@ -220,7 +220,7 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
    * 
    * @return The seed record attributes of this fixed record group.
    */
-  public Map<? extends String, ? extends Object> getSeedRecordAttributes() {
+  public Map<String, Object> getSeedRecordAttributes() {
     return this.seedRecord.getFixedRecordAttributes();
   }
 
@@ -258,5 +258,12 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
   @Override
   public int compareTo(FixedRecordGroup other) {
     return Integer.compare(this.fixedRecordGroupSequencePlace, other.fixedRecordGroupSequencePlace);
+  }
+
+  /**
+   * Returns the birth year of this fixed record group.
+   */
+  public int getSeedBirthYear() {
+    return Integer.parseInt(this.seedRecord.birthYear);
   }
 }
