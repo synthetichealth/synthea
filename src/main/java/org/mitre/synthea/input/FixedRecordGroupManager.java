@@ -156,6 +156,7 @@ public class FixedRecordGroupManager {
       // Overwrite the person's biographical information with the new current variant
       // record of the new fixed record group.
       person.attributes.putAll(frg.getCurentVariantRecordAttributes());
+      
       /*
        * Force update the person's provider based on their new seed record. and fixed
        * record group. This is required so that a new health record is made for the

@@ -38,6 +38,11 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
+// FULL SURVIVAL AND NULL CITIES SEED AND LOTS OF SEED RECORD MATCHES:
+// 1616465189989
+
+// ANOTHER FULL SURVIVAL SEED: 1616466036087
+
 public class FixedRecordTest {
 
   /* String Constants */
@@ -85,9 +90,10 @@ public class FixedRecordTest {
     // Create a generator with the preset fixed demographics test file.
     GeneratorOptions go = new GeneratorOptions();
     go.fixedRecordPath = new File("./src/test/resources/fixed_demographics/households_fixed_demographics_test.json");
-    go.state = "Colorado"; // Examples are based on California.
+    go.state = "Colorado"; // Examples are based on Colorado.
     go.population = 100; // Should be overwritten by number of patients in input file.
     go.overflow = false; // Prevent deceased patients from increasing the population size.
+    // go.seed = 1616465189989L;
     generator = new Generator(go);
     generator.internalStore = new LinkedList<>(); // Allows us to access patients within generator.
     // Run the simulation.
@@ -154,7 +160,7 @@ public class FixedRecordTest {
   @Test
   public void checkFixedDemographicsFhirExport() {
     // Check each patient from the fixed record input file.
-    for (int personIndex = 0; personIndex < generator.options.population; personIndex++) {
+    for (int personIndex = 0; personIndex < generator.internalStore.size(); personIndex++) {
       Person currentPerson = generator.internalStore.get(personIndex);
       // Check that each of the patients' exported FHIR resource attributes match a
       // variant record in the input file.
@@ -214,8 +220,8 @@ public class FixedRecordTest {
   public void checkFixedDemographicsVariantAttributes() {
     // Test that the correct number of people were imported from the fixed records
     // file.
-    assertEquals(14, generator.internalStore.size());
     assertEquals(14, Generator.fixedRecordGroupManager.getPopulationSize());
+    assertEquals(14, generator.internalStore.size());
 
     /* Test that the correct number of records were imported for each person. */
     // Lara Kayla Henderson
@@ -288,8 +294,14 @@ public class FixedRecordTest {
     for (FixedRecordGroup recordGroup : allRecordGroups) {
       String currentRecordId = (String) person.record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID);
       for (FixedRecord currentRecord : recordGroup.variantRecords) {
-        if (currentRecord.recordId.equals(currentRecordId)) {
-          return currentRecord;
+        try {
+          if (currentRecord.recordId.equals(currentRecordId)) {
+            return currentRecord;
+          }
+        } catch (Exception e) {
+          fail("There was an exception for [currentRecord: " + currentRecord + "], [With recordId: "
+              + currentRecord.recordId + "], [And currentRecordId: " + currentRecordId + "]\nException:"
+              + e.getStackTrace().toString());
         }
       }
     }
@@ -314,26 +326,33 @@ public class FixedRecordTest {
 
     // Rita Noble
     Person ritaNoble = Generator.fixedRecordGroupManager.getHousehold("59").getMember("married_1");
-    List<Integer> seedIds = new ArrayList<Integer>();
-    seedIds.add(19489272);  // Rita Sequence 1
-    seedIds.add(19489274);  // Rita Sequence 2
-    seedIds.add(19489276);  // Rita Sequence 3
-    seedIds.add(19489278);  // Rita Sequence 4
-    this.testThatSeedsArePresent(ritaNoble, seedIds);
+    List<Integer> ritaSeedIds = new ArrayList<Integer>();
+    // assertEquals(ritaNoble.attributes.get(Person.IDENTIFIER_RECORD_ID),
+    // 19489278);
+    ritaSeedIds.add(19489272); // Rita Sequence 1
+    ritaSeedIds.add(19489274); // Rita Sequence 2
+    ritaSeedIds.add(19489276); // Rita Sequence 3
+    ritaSeedIds.add(19489278); // Rita Sequence 4
+    this.testThatSeedsArePresent(ritaNoble, ritaSeedIds);
 
-    // Justin Noble - since the other household member (rita noble) is the same age, both should have all 4 of their seed ids present.
+    // Justin Noble - since the other household member (rita noble) is the same age,
+    // both should have all 4 of their seed ids present.
     Person justinNoble = Generator.fixedRecordGroupManager.getHousehold("59").getMember("married_2");
-    seedIds = new ArrayList<Integer>();
-    seedIds.add(19489273);  // Justin Sequence 1
-    seedIds.add(19489275);  // Justin Sequence 2
-    seedIds.add(19489277);  // Justin Sequence 3
-    seedIds.add(19489279);  // Justin Sequence 4
-    this.testThatSeedsArePresent(justinNoble, seedIds);
+    // assertEquals(justinNoble.attributes.get(Person.IDENTIFIER_RECORD_ID),
+    // 19489279);
+    List<Integer> justinSeedIds = new ArrayList<Integer>();
+    justinSeedIds.add(19489273); // Justin Sequence 1
+    justinSeedIds.add(19489275); // Justin Sequence 2
+    justinSeedIds.add(19489277); // Justin Sequence 3
+    justinSeedIds.add(19489279); // Justin Sequence 4
+    this.testThatSeedsArePresent(justinNoble, justinSeedIds);
 
   }
 
   /**
-   * Checks that the given list of seed Ids are present in the given person's exported fhir health records.
+   * Checks that the given list of seed Ids are present in the given person's
+   * exported fhir health records.
+   * 
    * @param person  The person to check fhir records of.
    * @param seedIds The seed ids to check for.
    */
@@ -380,7 +399,8 @@ public class FixedRecordTest {
         }
       }
       System.out.println("Seed Matches: " + seedIdMatches);
-      assertTrue("Seed id " + id + " does not have any matches in " + person.attributes.get(Person.NAME) + "'s' health records.", seedIdMatches > 0);
+      assertTrue("Seed id " + id + " does not have any matches in " + person.attributes.get(Person.NAME)
+          + "'s' health records.", seedIdMatches > 0);
     }
 
     // Make sure that each variant is from a correctly chronological fixed record
@@ -416,7 +436,10 @@ public class FixedRecordTest {
         testAttributes.get(PHONE_CODE) + "-" + testAttributes.get(PHONE_NUMBER));
     assertEquals(recordAttributes.get(Person.ADDRESS), testAttributes.get(ADDRESS_1));
     // assertEquals(fixedRecord.addressLineTwo, testAttributes.get(ADDRESS_2));
-    assertEquals(recordAttributes.get(Person.CITY), testAttributes.get(CITY));
+    assertEquals(
+        "Failure for person " + recordAttributes.get(Person.NAME) + " and record id "
+            + recordAttributes.get(Person.IDENTIFIER_RECORD_ID) + ".",
+        recordAttributes.get(Person.CITY), testAttributes.get(CITY));
     assertEquals(recordAttributes.get(Person.ZIP), testAttributes.get(ZIP));
     // assertEquals(fixedRecord.contactEmail, testAttributes.get(CONTACT_EMAIL));
     if (recordAttributes.get(Person.CONTACT_GIVEN_NAME) != null) {

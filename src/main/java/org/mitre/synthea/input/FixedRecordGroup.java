@@ -77,12 +77,13 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
    * @return String safe city name
    */
   public String getSeedCity() {
-    String safeCity = seedRecord.getCity();
-    if (safeCity != null) {
-      return safeCity;
+    // String safeCity = seedRecord.getValidCity(this);
+    String safeCity = seedRecord.city;
+    if (safeCity == null || safeCity == "") {
+      throw new RuntimeException("ERROR: No valid city for " + seedRecord.firstName + " " + seedRecord.lastName
+      + "'s seed record id " + seedRecord.recordId + ".");
     }
-    throw new RuntimeException("ERROR: No valid city for " + seedRecord.firstName + " " + seedRecord.lastName
-        + "'s seed record id " + seedRecord.recordId + ".");
+    return safeCity;
   }
 
   /**
@@ -92,36 +93,8 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
    * @return String safe city name
    */
   public String getSafeCurrentCity() {
-    String city = getCurrentRecord().getCity();
-    if (city != null) {
-      return city;
-    }
-    return this.getSeedCity();
+    return this.getCurrentRecord().getValidCity(this);
   }
-
-  /**
-   * Returns a FixedRecord which has a recordDates range that includes the given
-   * year.
-   * 
-   * @return FixedRecord that meets the daterange of the given year.
-   */
-  // public boolean updateCurrentRecord(int currentYear) {
-  // for (int i = 0; i < variantRecords.size(); i++) {
-  // FixedRecord currentRecord = variantRecords.get(i);
-  // // Check if the the current year falls within the current record date range.
-  // // if (currentRecord.addressStartDate <= currentYear && currentYear <=
-  // currentRecord.addressEndDate) {
-  // if (i != this.currentVariantRecord) {
-  // // The record has changed.
-  // this.currentVariantRecord = i;
-  // return true;
-  // } else {
-  // return false;
-  // }
-  // // }
-  // }
-  // return false;
-  // }
 
   /**
    * Returns the index of the earlist FixedRecord in the RecordGroup.

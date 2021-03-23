@@ -104,17 +104,21 @@ public class FixedRecord {
   /**
    * Returns the city of this fixedRecord if it is a valid city.
    */
-  public String getCity() {
+  public String getValidCity(FixedRecordGroup frg) {
+    if (this.city != null && this.city.length() > 1) {
+      this.city = this.city.substring(0, 1).toUpperCase() + this.city.substring(1).toLowerCase();
+    }
     try {
       // If the the current city/state combo is not in the Demographics file, return
-      // null.
+      // the safe seed city of the frg.
       if (Demographics.load(this.state).row(this.state).values().stream()
           .noneMatch(d -> d.city.equalsIgnoreCase(this.city))) {
-        return null;
+        return frg.getSeedCity();
       }
     } catch (IOException e) {
       e.printStackTrace();
     }
+    // Otherwise it's a safe city that can be returned.
     return this.city;
   }
 
@@ -152,10 +156,9 @@ public class FixedRecord {
       this.attributes.put(Person.GENDER, g);
       this.attributes.put(Person.BIRTHDATE, this.getBirthDate());
       this.attributes.put(Person.STATE, this.state);
-      if (this.getCity() != null) {
-        this.attributes.put(Person.CITY, this.getCity());
-      } else {
-        this.attributes.put(Person.CITY, "");
+      this.attributes.put(Person.CITY, this.city);
+      if (this.city == null) {
+        this.attributes.put(Person.CITY, "none");
       }
       this.attributes.put(Person.ADDRESS, this.addressLineOne);
       this.attributes.put(Person.ZIP, this.zipcode);
@@ -184,12 +187,7 @@ public class FixedRecord {
     String oldAddress = (String) person.attributes.get(Person.ADDRESS);
     person.attributes.put(Person.ADDRESS, this.addressLineOne);
     person.attributes.put(Person.STATE, this.state);
-    if (this.getCity() != null) {
-      person.attributes.put(Person.CITY, this.getCity());
-    } else {
-      FixedRecordGroup frg = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
-      person.attributes.put(Person.CITY, frg.getSeedCity());
-    }
+    person.attributes.put(Person.CITY, this.getValidCity(Generator.fixedRecordGroupManager.getRecordGroupFor(person)));
     person.attributes.put(Person.ZIP, this.zipcode);
     // Fix the person's safe city in case it is invalid and update their location
     // point.
