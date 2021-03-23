@@ -38,11 +38,6 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
-// FULL SURVIVAL AND NULL CITIES SEED AND LOTS OF SEED RECORD MATCHES:
-// 1616465189989
-
-// ANOTHER FULL SURVIVAL SEED: 1616466036087
-
 public class FixedRecordTest {
 
   /* String Constants */

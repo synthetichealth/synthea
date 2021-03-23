@@ -73,9 +73,7 @@ public class Household {
       }
     }
     if (currentIndex != this.currentAddressSequences.get(householdRole)) {
-      System.out.println("current address sequence updated for " + person.attributes.get(Person.NAME) + " with prior sequence: " + this.currentAddressSequences.get(householdRole));
       this.currentAddressSequences.put(householdRole, currentIndex);
-      System.out.println("And post sequence: " + this.currentAddressSequences.get(householdRole));
       return true;
     }
     return false;
@@ -119,6 +117,13 @@ public class Household {
         if (frg.getSeedId().equals(variant.seedID)) {
           frg.addVariantRecord(variant);
         }
+      }
+    }
+
+    // Iterate through each fixed record group and set their random initial variant records.
+    for (List<FixedRecordGroup> frgs : this.fixedRecordGroups.values()) {
+      for(FixedRecordGroup frg : frgs){
+        frg.setInitialVariantRecord(this.random);
       }
     }
 

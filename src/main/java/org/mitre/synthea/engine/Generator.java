@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.editors.GrowthDataErrorsEditor;
 import org.mitre.synthea.export.CDWExporter;
@@ -32,10 +31,8 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.input.FixedRecord;
 import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.input.FixedRecordGroupManager;
-import org.mitre.synthea.input.Household;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.HealthInsuranceModule;
@@ -515,7 +512,6 @@ public class Generator implements RandomNumberGenerator {
 
     if (!isAlive && onlyAlivePatients) {
       // if patient is not alive and the criteria is alive patients new patient is needed
-      System.out.println("NOT ALIVE:" + person.attributes.get(Person.NAME));
       return false;
     }
 

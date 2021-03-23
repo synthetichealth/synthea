@@ -3,6 +3,7 @@ package org.mitre.synthea.input;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.world.agents.Person;
@@ -37,9 +38,6 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
   public FixedRecordGroup(FixedRecord seedRecord) {
     this.seedRecord = seedRecord;
     this.variantRecords = new ArrayList<FixedRecord>();
-    // This should be random number to allow for lots of variations between
-    // simulations.
-    this.currentVariantRecord = 0;
     this.fixedRecordGroupSequencePlace = seedRecord.addressSequence;
   }
 
@@ -222,5 +220,15 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
    */
   public int getSeedBirthYear() {
     return Integer.parseInt(this.seedRecord.birthYear);
+  }
+
+  /**
+   * Sets the initial variant record index of this fixed record gropu using the
+   * given random.
+   * 
+   * @param random
+   */
+  public void setInitialVariantRecord(Random random) {
+    this.currentVariantRecord = random.nextInt(this.variantRecords.size());
   }
 }
