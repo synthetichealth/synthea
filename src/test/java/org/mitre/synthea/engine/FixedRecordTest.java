@@ -322,8 +322,7 @@ public class FixedRecordTest {
     // Rita Noble
     Person ritaNoble = Generator.fixedRecordGroupManager.getHousehold("59").getMember("married_1");
     List<Integer> ritaSeedIds = new ArrayList<Integer>();
-    // assertEquals(ritaNoble.attributes.get(Person.IDENTIFIER_RECORD_ID),
-    // 19489278);
+    // assertEquals(19489278, ritaNoble.attributes.get(Person.IDENTIFIER_RECORD_ID));
     ritaSeedIds.add(19489272); // Rita Sequence 1
     ritaSeedIds.add(19489274); // Rita Sequence 2
     ritaSeedIds.add(19489276); // Rita Sequence 3
@@ -333,8 +332,7 @@ public class FixedRecordTest {
     // Justin Noble - since the other household member (rita noble) is the same age,
     // both should have all 4 of their seed ids present.
     Person justinNoble = Generator.fixedRecordGroupManager.getHousehold("59").getMember("married_2");
-    // assertEquals(justinNoble.attributes.get(Person.IDENTIFIER_RECORD_ID),
-    // 19489279);
+    // assertEquals(19489279, justinNoble.attributes.get(Person.IDENTIFIER_RECORD_ID));
     List<Integer> justinSeedIds = new ArrayList<Integer>();
     justinSeedIds.add(19489273); // Justin Sequence 1
     justinSeedIds.add(19489275); // Justin Sequence 2
@@ -501,79 +499,4 @@ public class FixedRecordTest {
     String thirdUuid = person.record.provider.uuid;
     assertFalse(providerIds.stream().anyMatch(uuid -> uuid.equals(thirdUuid)));
   }
-
-  @Test
-  public void variantRecordCityIsInvalid() {
-    // // Set the current fixed record to the 2015 variant record of the first
-    // person (Jane Doe).
-    // fixedRecordGroupManager.getRecordGroup(0).updateCurrentRecord(1984);
-    // assertTrue(fixedRecordGroupManager.getRecordGroup(0).updateCurrentRecord(2015));
-    // // Jane Doe's 2015 variant record has an invalid city, so the safe city is
-    // the seed city.
-    // String validCity =
-    // fixedRecordGroupManager.getRecordGroup(0).getSafeCurrentCity();
-    // String invalidCity =
-    // fixedRecordGroupManager.getRecordGroup(0).getCurrentRecord().city;
-    // assertEquals("Eureka", validCity);
-    // assertEquals("INVALID_CITY_NAME", invalidCity);
-    // assertEquals(validCity,
-    // fixedRecordGroupManager.getRecordGroup(0).getSeedCity());
-    // assertEquals(validCity,
-    // fixedRecordGroupManager.getRecordGroup(0).seedRecord.getCity());
-    // // If a fixed record has an invalid city, getSafeCity should return null.
-    // assertEquals(null,
-    // fixedRecordGroupManager.getRecordGroup(0).getCurrentRecord().getCity());
-  }
 }
-
-// @Test
-// public void checkAddressHistory() {
-// // Check that the correct address returns for the given years.
-// FixedRecordGroup frg = fixedRecordGroupManager.getNextRecordGroup(0);
-// // 1984 Address
-// frg.updateCurrentRecord(1984);
-// FixedRecord currentRecord = frg.getCurrentRecord();
-// assertEquals(currentRecord.addressLineOne, "56 Fetter Lane");
-// assertEquals(currentRecord.city, "San Francisco");
-// assertEquals(currentRecord.state, "California");
-// assertEquals(currentRecord.addressStartDate, 1984);
-// assertEquals(currentRecord.addressEndDate, 1998);
-// // 1999 Address
-// frg.updateCurrentRecord(1999);
-// currentRecord = frg.getCurrentRecord();
-// assertEquals(currentRecord.addressLineOne, "fetter lane");
-// assertEquals(currentRecord.city, "San Francisco");
-// assertEquals(currentRecord.state, "California");
-// assertEquals(currentRecord.addressStartDate, 1999);
-// assertEquals(currentRecord.addressEndDate, 2001);
-// // 2002 Address
-// frg.updateCurrentRecord(2002);
-// currentRecord = frg.getCurrentRecord();
-// assertEquals(currentRecord.addressLineOne, "13 strawberry ln.");
-// assertEquals(currentRecord.city, "INVALID_CITY_NAME");
-// assertEquals(currentRecord.state, "California");
-// assertEquals(currentRecord.addressStartDate, 2002);
-// // 1998 Address
-// frg.updateCurrentRecord(1998);
-// currentRecord = frg.getCurrentRecord();
-// assertEquals(currentRecord.addressLineOne, "56 Fetter Lane");
-// assertEquals(currentRecord.city, "San Francisco");
-// assertEquals(currentRecord.state, "California");
-// assertEquals(currentRecord.addressStartDate, 1984);
-// assertEquals(currentRecord.addressEndDate, 1998);
-// // 2001 Address
-// frg.updateCurrentRecord(2001);
-// currentRecord = frg.getCurrentRecord();
-// assertEquals(currentRecord.addressLineOne, "fetter lane");
-// assertEquals(currentRecord.city, "San Francisco");
-// assertEquals(currentRecord.state, "California");
-// assertEquals(currentRecord.addressStartDate, 1999);
-// assertEquals(currentRecord.addressEndDate, 2001);
-// // 2020 Address
-// frg.updateCurrentRecord(2020);
-// currentRecord = frg.getCurrentRecord();
-// assertEquals(currentRecord.addressLineOne, "13 strawberry ln.");
-// assertEquals(currentRecord.city, "INVALID_CITY_NAME");
-// assertEquals(currentRecord.state, "California");
-// assertEquals(currentRecord.addressStartDate, 2002);
-// }
