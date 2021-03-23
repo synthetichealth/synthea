@@ -479,8 +479,7 @@ public class Generator implements RandomNumberGenerator {
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
         Exporter.export(person, finishTime, exporterRuntimeOptions);
-      } while ((!isAlive && !onlyDeadPatients && this.options.overflow)
-          || (isAlive && onlyDeadPatients));
+      } while (!patientMeetsCriteria(isAlive, person));
       // if the patient is alive and we want only dead ones => loop & try again
       //  (and dont even export, see above)
       // if the patient is dead and we only want dead ones => done
@@ -494,6 +493,40 @@ public class Generator implements RandomNumberGenerator {
     }
     return person;
   }
+
+  /**
+   * Determines if a patient meets the requested criteria.
+   * If a patient does not meet the criteria the process will be repeated so a new one is generated
+   * @param isAlive Whether the patient is alive at end of simulation.
+   * @param providerCount Number of providers in the patient's record
+   * @param providerMinimum Minimum number of providers required
+   * @return true if patient meets criteria, false otherwise
+   */
+  public boolean patientMeetsCriteria(boolean isAlive, Person person) {
+    if (!isAlive && !onlyDeadPatients && this.options.overflow) { 
+      // if patient is not alive and the criteria isn't dead patients new patient is needed
+      return false;
+    }
+
+    if (isAlive && onlyDeadPatients) {
+      // if patient is alive and the criteria is dead patients new patient is needed
+      return false;
+    }
+
+    if (!isAlive && onlyAlivePatients) {
+      // if patient is not alive and the criteria is alive patients new patient is needed
+      System.out.println("NOT ALIVE:" + person.attributes.get(Person.NAME));
+      return false;
+    }
+
+    // if (providerCount < providerMinimum) {
+    //   // if provider count less than provider min new patient is needed
+    //   return false;
+    // }
+
+    return true;
+  }
+
 
   /**
    * Update person record to stop time, record the entry and export record.
@@ -568,9 +601,10 @@ public class Generator implements RandomNumberGenerator {
       // If fixed patient demographics are in use then check to update the person's current fixed record.
       if (person.attributes.get(Person.HOUSEHOLD) != null) {
         // Check to update each hoseuhold's address and the curren fixed record groups and seed records for each memeber.
-        fixedRecordGroupManager.checkToUpdateHouseholdAddresses(person, Utilities.getYear(time));
-        // Check to update this person's variant record.
-        fixedRecordGroupManager.updateFixedDemographicRecord(person, time, this);
+        if(fixedRecordGroupManager.checkToUpdateHouseholdAddressFor(person, Utilities.getYear(time))){
+          // Check to update this person's variant record.
+          fixedRecordGroupManager.updateFixedDemographicRecord(person, time, this);
+        }
       }
 
       // Process Health Insurance.
@@ -784,7 +818,7 @@ public class Generator implements RandomNumberGenerator {
     if (person.attributes.get(Person.HOUSEHOLD) != null) {
       // Reset the person's attributes to their current demographics.
       FixedRecordGroup frg = fixedRecordGroupManager.getRecordGroupFor(person);
-      person.attributes.putAll(frg.getCurrentRecord().getFixedRecordAttributes());
+      person.attributes.putAll(frg.getCurentVariantRecordAttributes());
     }
 
     String key = isAlive ? "alive" : "dead";

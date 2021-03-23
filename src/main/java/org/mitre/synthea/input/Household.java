@@ -26,7 +26,9 @@ public class Household {
   // The list of years in order to correspond with each address sequence update.
   private List<Integer> addressYears;
   // The currrent address sequence.
-  private int currentAddressSequence;
+  // private int currentAddressSequence;
+  // The current addresss sequences for each person. String: HouseholdRole, Int: CurrentAddressSequence.
+  private final Map<String, Integer> currentAddressSequences;
   // The Map of household members where the key is the peron's household role
   // (married_1, marride_2, child_1)
   private Map<String, Person> members;
@@ -35,15 +37,12 @@ public class Household {
   // Randomizer for this household.
   private Random random;
 
-  private int yearLastUpdated;
-
   /**
    * Constructor for a household.
    */
   public Household() {
     this.members = new HashMap<String, Person>();
-    this.currentAddressSequence = 0;
-    this.yearLastUpdated = 0;
+    this.currentAddressSequences = new HashMap<String, Integer>();
   }
 
   /**
@@ -53,26 +52,30 @@ public class Household {
    * @param currentYear The current year to update for.
    * @return Whether the fixed record groups were updated.
    */
-  public boolean updateCurrentFixedRecordGroups(int currentYear) {
+  public boolean updateCurrentFixedRecordGroupFor(int currentYear, Person person) {
+
+    String householdRole = this.getHouseholdRoleFor(person);
 
     // If the household has already updated for this year, then just return false.
-    if (currentYear == this.yearLastUpdated) {
-      return false;
-    }
+    // if (currentYear == this.yearLastUpdated) {
+    //   return false;
+    // }
 
-    this.yearLastUpdated = currentYear;
+    // this.yearLastUpdated = currentYear;
     // If it is time for the new seed records and their new addresses to start, then
     // update each person with their new seed records and force a new
     // provider(health record) for them.
-    int currentIndex = this.currentAddressSequence;
+    int currentIndex = this.currentAddressSequences.get(householdRole);
     for (int i = 0; i < this.addressYears.size(); i++) {
       if (currentYear >= this.addressYears.get(i)
           && (i + 1 >= this.addressYears.size() || currentYear < this.addressYears.get(i + 1))) {
         currentIndex = i;
       }
     }
-    if (currentIndex != this.currentAddressSequence) {
-      this.currentAddressSequence = currentIndex;
+    if (currentIndex != this.currentAddressSequences.get(householdRole)) {
+      System.out.println("current address sequence updated for " + person.attributes.get(Person.NAME) + " with prior sequence: " + this.currentAddressSequences.get(householdRole));
+      this.currentAddressSequences.put(householdRole, currentIndex);
+      System.out.println("And post sequence: " + this.currentAddressSequences.get(householdRole));
       return true;
     }
     return false;
@@ -173,7 +176,7 @@ public class Household {
    * @return
    */
   public FixedRecordGroup getRecordGroupFor(String householdRole) {
-    return this.fixedRecordGroups.get(householdRole).get(this.currentAddressSequence);
+    return this.fixedRecordGroups.get(householdRole).get(this.currentAddressSequences.get(householdRole));
   }
 
   /**
@@ -210,6 +213,10 @@ public class Household {
    */
   public void addMember(Person person, String householdRole) {
     this.members.put(householdRole, person);
+
+    // Reset the current address sequence for this person.
+    this.currentAddressSequences.put(householdRole, 0);
+
   }
 
   /**
@@ -265,9 +272,11 @@ public class Household {
     List<String> householdRoles = this.members.entrySet().stream().filter(entry -> person.equals(entry.getValue()))
         .map(Map.Entry::getKey).collect(Collectors.toList());
     if (householdRoles.isEmpty()) {
-      throw new RuntimeException("No household roles found for the given person.");
+      throw new RuntimeException(
+          "No household roles found for the given person: " + person.attributes.get(Person.NAME) + ".");
     } else if (householdRoles.size() > 1) {
-      throw new RuntimeException("There are more than 1 household roles corresponding to the given person.");
+      throw new RuntimeException("There are more than 1 household roles corresponding to the given person: "
+          + person.attributes.get(Person.NAME) + ".");
     }
     return householdRoles.get(0);
   }

@@ -27,8 +27,6 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
   private int currentVariantRecord;
   // The sequence place of this fixed record group.
   private final int fixedRecordGroupSequencePlace;
-  // Whether this fixed record group has been updated and used yet.
-  private boolean hasBeenUpdated;
 
   /**
    * Create the FixedRecordGroup for a person based on a seed record.
@@ -43,7 +41,6 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
     // simulations.
     this.currentVariantRecord = 0;
     this.fixedRecordGroupSequencePlace = seedRecord.addressSequence;
-    this.hasBeenUpdated = true;
   }
 
   /**
@@ -81,7 +78,7 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
     String safeCity = seedRecord.city;
     if (safeCity == null || safeCity == "") {
       throw new RuntimeException("ERROR: No valid city for " + seedRecord.firstName + " " + seedRecord.lastName
-      + "'s seed record id " + seedRecord.recordId + ".");
+          + "'s seed record id " + seedRecord.recordId + ".");
     }
     return safeCity;
   }
@@ -139,19 +136,6 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
    */
   public String getHouseholdId() {
     return this.seedRecord.householdId;
-  }
-
-  /**
-   * Returns whether this fixed record group has just been updated.
-   * 
-   * @return
-   */
-  public boolean hasJustBeenUpdated() {
-    if (this.hasBeenUpdated) {
-      this.hasBeenUpdated = false;
-      return true;
-    }
-    return false;
   }
 
   /**

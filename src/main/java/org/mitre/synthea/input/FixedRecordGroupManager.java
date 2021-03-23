@@ -72,13 +72,15 @@ public class FixedRecordGroupManager {
     }.getType();
     FixedRecordGroupManager fixedRecordGroupManager = new FixedRecordGroupManager();
     try {
-      System.out.println("Loading fixed patient demographic records and households file: " + filePath);
+      System.out.println("Loading fixed patient demographic records and households file <" + filePath + ">");
       fixedRecordGroupManager.householdsList = gson.fromJson(new FileReader(filePath), jsonType);
     } catch (FileNotFoundException e) {
       throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
     }
     long householdsSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
     fixedRecordGroupManager.initializeHouseholds(householdsSeed);
+    System.out.println(
+        "Fixed patient demographic records and households file <" + filePath + "> loaded and households initialized!");
     return fixedRecordGroupManager;
   }
 
@@ -101,8 +103,8 @@ public class FixedRecordGroupManager {
    * 
    * @param currentYear
    */
-  public void checkToUpdateHouseholdAddresses(Person person, int currentYear) {
-    this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD)).updateCurrentFixedRecordGroups(currentYear);
+  public boolean checkToUpdateHouseholdAddressFor(Person person, int currentYear) {
+    return this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD)).updateCurrentFixedRecordGroupFor(currentYear, person);
   }
 
   /**
@@ -149,14 +151,17 @@ public class FixedRecordGroupManager {
     // If the person's fixed record group has just been updated, then force a new
     // encounter provider with a new variant record corresponding to the new seed
     // record.
-    if (frg.hasJustBeenUpdated()) {
+    // if (frg.hasJustBeenUpdated()) {
+
+      System.out.println(person.attributes.get(Person.NAME) + " frg has just been updated. _ " + frg.getHouseholdRole() + " _ " +  frg.getSeedId());
+
       // Overwrite the person's address information with the new current variant
       // record of the new fixed record group.
       frg.overwriteAddressWithCurrentVariantRecord(person, generator);
       // Overwrite the person's biographical information with the new current variant
       // record of the new fixed record group.
       person.attributes.putAll(frg.getCurentVariantRecordAttributes());
-      
+
       /*
        * Force update the person's provider based on their new seed record. and fixed
        * record group. This is required so that a new health record is made for the
@@ -172,7 +177,7 @@ public class FixedRecordGroupManager {
       // true attributes).
       person.attributes.putAll(frg.getSeedRecordAttributes());
       frg.overwriteAddressWithSeedRecord(person, generator);
-    }
+    // }
   }
 
   /**
@@ -182,9 +187,9 @@ public class FixedRecordGroupManager {
     // Because people are sometimes re-simulated, we must make sure they
     // have not already been added to the household.
     Household personHousehold = this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD));
-    if (!personHousehold.includesPerson(person)) {
-      personHousehold.addMember(person, householdRole);
-    }
+    // if (!personHousehold.includesPerson(person)) {
+    personHousehold.addMember(person, householdRole);
+    // }
   }
 
   /**
