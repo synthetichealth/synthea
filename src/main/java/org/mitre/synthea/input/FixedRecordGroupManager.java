@@ -26,7 +26,7 @@ import java.util.UUID;
  */
 public class FixedRecordGroupManager {
 
-  // Imported households.
+  // Initial imported households - only to be used for the importing.
   public List<Household> householdsList;
 
   // Map to track households by their ID. String is the household id, Household is
@@ -57,7 +57,7 @@ public class FixedRecordGroupManager {
    * @return FixedRecordGroup The FixedRecordGroup from the given inputs.
    */
   public FixedRecordGroup getRecordGroup(String householdId, String householdRole) {
-    return this.householdsMap.get(householdId).getRecordGroupFor(householdRole);
+    return this.householdsMap.get(householdId).getCurrentRecordGroupFor(householdRole);
   }
 
   /**
@@ -67,6 +67,7 @@ public class FixedRecordGroupManager {
    * @return The newly created fixed record manager.
    */
   public static FixedRecordGroupManager importFixedDemographicsFile(File filePath) {
+    // Import using Gson.
     Gson gson = new Gson();
     Type jsonType = new TypeToken<List<Household>>() {
     }.getType();
@@ -77,6 +78,7 @@ public class FixedRecordGroupManager {
     } catch (FileNotFoundException e) {
       throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
     }
+    // Initialize each imported household using the seed value.
     long householdsSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
     fixedRecordGroupManager.initializeHouseholds(householdsSeed);
     System.out.println(
@@ -91,10 +93,14 @@ public class FixedRecordGroupManager {
    * @param householdsSeed The seed to initialize the households with.
    */
   private void initializeHouseholds(long householdsSeed) {
+    // Iterate through each household and initialize it.
     for (Household household : this.householdsList) {
       String householdId = household.seedRecords.get(0).householdId;
       this.householdsMap.put(householdId, household.initializeHousehold(householdsSeed));
     }
+    // Now that we're done with the initial imported households list, set it to null
+    // to ensure no accidental access.
+    this.householdsList = null;
   }
 
   /**
@@ -116,7 +122,8 @@ public class FixedRecordGroupManager {
    */
   public FixedRecordGroup getNextRecordGroup(int index) {
     List<FixedRecordGroup> fullRecordGroupList = new ArrayList<FixedRecordGroup>();
-
+    // Iterate trough the households and create a list of fixed record groups, one
+    // for each person, and return the element at the desired index.
     for (Household hh : this.householdsMap.values()) {
       for (FixedRecordGroup frg : hh.getInitialFixedRecordGroupForEachMember()) {
         fullRecordGroupList.add(frg);
@@ -145,10 +152,7 @@ public class FixedRecordGroupManager {
    */
   public void updateFixedDemographicRecord(Person person, long time, Generator generator) {
 
-    FixedRecordGroup frg = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
-    // Overwrite the person's address information with the new current variant
-    // record of the new fixed record group.
-    // frg.overwriteAddressWithCurrentVariantRecord(person, generator);
+    FixedRecordGroup frg = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person);
     // Overwrite the person's biographical information with the new current variant
     // record of the new fixed record group.
     person.attributes.putAll(frg.getCurentVariantRecordAttributes());
@@ -163,22 +167,24 @@ public class FixedRecordGroupManager {
     person.record = person.getHealthRecord(
         person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()),
         System.currentTimeMillis());
-    // Reset the person's attributes to the seed record ones (because that's their
-    // true attributes).
+    // Reset the person's attributes to the seed record ones, since their the true
+    // attributes.
     person.attributes.putAll(frg.getSeedRecordAttributes());
     frg.overwriteAddressWithSeedRecord(person, generator);
   }
 
   /**
-   * Adds the given person with the given household role to their household.
+   * Adds the given person with the given household role to their household. If
+   * someone with the same household role is added, they will overwrite the
+   * previous person. This is used for resimulating patients who died.
+   * 
+   * @param person        The person to add to the household.
+   * @param householdRole The person's household role.
+   * 
    */
   public void addPersonToHousehold(Person person, String householdRole) {
-    // Because people are sometimes re-simulated, we must make sure they
-    // have not already been added to the household.
     Household personHousehold = this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD));
-    // if (!personHousehold.includesPerson(person)) {
     personHousehold.addMember(person, householdRole);
-    // }
   }
 
   /**
@@ -192,8 +198,14 @@ public class FixedRecordGroupManager {
     return household.updatePersonVariantRecord(person);
   }
 
-  public FixedRecordGroup getRecordGroupFor(Person person) {
-    return this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD)).getRecordGroupFor(person);
+  /**
+   * Returns the current fixed record group for the given person.
+   * 
+   * @param person
+   * @return
+   */
+  public FixedRecordGroup getCurrentRecordGroupFor(Person person) {
+    return this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD)).getCurrentRecordGroupFor(person);
   }
 
   /**

@@ -118,7 +118,7 @@ public class FixedRecordTest {
     // change. In this case, there is only one.
     Person laraKayla = household.getMember("single_1");
 
-    FixedRecordGroup laraOnlyRecordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(laraKayla);
+    FixedRecordGroup laraOnlyRecordGroup = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(laraKayla);
 
     // Lara's final record group should be equivilant to her final one (which
     // happens to be here first and only one).
@@ -221,7 +221,7 @@ public class FixedRecordTest {
     /* Test that the correct number of records were imported for each person. */
     // Lara Kayla Henderson
     Person laraKayla = Generator.fixedRecordGroupManager.getHousehold("3879063").getMember("single_1");
-    FixedRecordGroup laraKaylaRecordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(laraKayla);
+    FixedRecordGroup laraKaylaRecordGroup = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(laraKayla);
     assertEquals(laraKaylaRecordGroup, Generator.fixedRecordGroupManager.getRecordGroup("3879063", "single_1"));
     // Make sure the person has the correct number of variant fixed records.
     assertEquals(laraKaylaRecordGroup.variantRecords.size(), 2);
@@ -255,7 +255,7 @@ public class FixedRecordTest {
 
     // Christopher Patrick
     Person chrisPat = Generator.fixedRecordGroupManager.getHousehold("3879063").getMember("single_2");
-    FixedRecordGroup chrisPatRecordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(chrisPat);
+    FixedRecordGroup chrisPatRecordGroup = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(chrisPat);
     assertEquals(chrisPatRecordGroup, Generator.fixedRecordGroupManager.getRecordGroup("3879063", "single_2"));
     // Make sure the person has the correct number of records.
     assertEquals(chrisPatRecordGroup.variantRecords.size(), 2);
@@ -263,7 +263,7 @@ public class FixedRecordTest {
 
     // Rita Noble
     Person ritaNoble = Generator.fixedRecordGroupManager.getHousehold("59").getMember("married_1");
-    FixedRecordGroup ritaNobleRecordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(ritaNoble);
+    FixedRecordGroup ritaNobleRecordGroup = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(ritaNoble);
     assertEquals(ritaNobleRecordGroup, Generator.fixedRecordGroupManager.getRecordGroup("59", "married_1"));
     // Make sure the person has the correct number of records.
     assertEquals(ritaNobleRecordGroup.variantRecords.size(), 63);
@@ -271,7 +271,7 @@ public class FixedRecordTest {
 
     // Justin Noble
     Person justinNoble = Generator.fixedRecordGroupManager.getHousehold("59").getMember("married_2");
-    FixedRecordGroup justinNobleRecordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(justinNoble);
+    FixedRecordGroup justinNobleRecordGroup = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(justinNoble);
     assertEquals(justinNobleRecordGroup, Generator.fixedRecordGroupManager.getRecordGroup("59", "married_2"));
     // Make sure the person has the correct number of records.
     assertEquals(justinNobleRecordGroup.variantRecords.size(), 62);
@@ -303,7 +303,7 @@ public class FixedRecordTest {
     // If we reach here, there was no matching record id.
     fail("Did not find a record match for " + person.attributes.get(Person.NAME) + " with record id "
         + person.record.demographicsAtRecordCreation.get(Person.IDENTIFIER_RECORD_ID) + ". Person has "
-        + Generator.fixedRecordGroupManager.getRecordGroupFor(person).variantRecords.size()
+        + Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person).variantRecords.size()
         + " imported fixed records in their fixed record group with record ids "
         + Generator.fixedRecordGroupManager
             .getAllRecordGroupsFor(person).stream().map(frg -> frg.variantRecords).collect(Collectors.toList())
@@ -453,16 +453,16 @@ public class FixedRecordTest {
 
     // This only accounts for the final record group that each person has, not any
     // of their initial 3.
-    assertEquals(Generator.fixedRecordGroupManager.getRecordGroupFor(ritaNoble).toString(),
+    assertEquals(Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(ritaNoble).toString(),
         "Fixed Record Group with Seed Id: [19489278]");
-    assertEquals(Generator.fixedRecordGroupManager.getRecordGroupFor(justinNoble).toString(),
+    assertEquals(Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(justinNoble).toString(),
         "Fixed Record Group with Seed Id: [19489279]");
 
     // Check that the record groups are correct by checking the seed id.
     assertEquals("19489278",
-        ((FixedRecordGroup) Generator.fixedRecordGroupManager.getRecordGroupFor(ritaNoble)).getSeedId());
+        ((FixedRecordGroup) Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(ritaNoble)).getSeedId());
     assertEquals("19489279",
-        ((FixedRecordGroup) Generator.fixedRecordGroupManager.getRecordGroupFor(justinNoble)).getSeedId());
+        ((FixedRecordGroup) Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(justinNoble)).getSeedId());
   }
 
   @Test

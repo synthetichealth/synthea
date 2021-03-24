@@ -216,11 +216,11 @@ public class FixedRecord {
     } else {
       person.attributes.put(Person.STATE, this.state);
     }
-    person.attributes.put(Person.CITY, this.getValidCity(Generator.fixedRecordGroupManager.getRecordGroupFor(person)));
+    person.attributes.put(Person.CITY, this.getValidCity(Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person)));
     person.attributes.put(Person.ZIP, this.zipcode);
     // Fix the person's safe city in case it is invalid and update their location
     // point.
-    generator.location.assignPoint(person, Generator.fixedRecordGroupManager.getRecordGroupFor(person).getSeedCity());
+    generator.location.assignPoint(person, Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person).getSeedCity());
     // Return a boolean indicating whether the address was changed.
     return !oldCity.equals(person.attributes.get(Person.CITY))
         && !oldAddress.equals(person.attributes.get(Person.ADDRESS));

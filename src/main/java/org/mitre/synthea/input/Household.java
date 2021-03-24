@@ -12,6 +12,10 @@ import com.google.gson.annotations.SerializedName;
 
 import org.mitre.synthea.world.agents.Person;
 
+/**
+ * A class the desribes and maintains a household, its members, and its seed
+ * records, variant records, and record groups.
+ */
 public class Household {
 
   @SerializedName(value = "seed_records")
@@ -20,18 +24,17 @@ public class Household {
   @SerializedName(value = "variants")
   public List<FixedRecord> variantRecords;
 
-  // The Map of household members' FixedRecordGroups where the key is the peron's
-  // household role (married_1, marride_2, child_1) and the value is their list of
-  // FixedRecordGroups - which will update over time.
+  // The Map of household members' FixedRecordGroups where the key is the person's
+  // household role and the value is their list of FixedRecordGroups - which will
+  // update over time.
   private Map<String, List<FixedRecordGroup>> fixedRecordGroups = new HashMap<String, List<FixedRecordGroup>>();
   // The list of years in order to correspond with each address sequence update.
   private List<Integer> addressYears;
-  // The currrent address sequence.
-  // private int currentAddressSequence;
-  // The current addresss sequences for each person. String: HouseholdRole, Int: CurrentAddressSequence.
+  // The current addresss sequences for each person. String: HouseholdRole, Int:
+  // CurrentAddressSequence.
   private final Map<String, Integer> currentAddressSequences;
-  // The Map of household members where the key is the peron's household role
-  // (married_1, marride_2, child_1)
+  // The Map of household members where the key is the person's household role,
+  // the value is the person themselves.
   private Map<String, Person> members;
   // Household id
   private String id;
@@ -47,22 +50,15 @@ public class Household {
   }
 
   /**
-   * Updates the current fixed records of the memebers of this household based on
-   * the current year.
+   * Updates the current fixed records of the given person of this household based
+   * on the current year.
    * 
    * @param currentYear The current year to update for.
-   * @return Whether the fixed record groups were updated.
+   * @return Whether the fixed record group for this person was updated.
    */
   public boolean updateCurrentFixedRecordGroupFor(int currentYear, Person person) {
 
     String householdRole = this.getHouseholdRoleFor(person);
-
-    // If the household has already updated for this year, then just return false.
-    // if (currentYear == this.yearLastUpdated) {
-    //   return false;
-    // }
-
-    // this.yearLastUpdated = currentYear;
     // If it is time for the new seed records and their new addresses to start, then
     // update each person with their new seed records and force a new
     // provider(health record) for them.
@@ -74,9 +70,12 @@ public class Household {
       }
     }
     if (currentIndex != this.currentAddressSequences.get(householdRole)) {
+      // The fixed record group was updated, set the new record group sequence and
+      // return true.
       this.currentAddressSequences.put(householdRole, currentIndex);
       return true;
     }
+    // If we reach here, no fixed record goudp were updated so return false.
     return false;
   }
 
@@ -121,9 +120,10 @@ public class Household {
       }
     }
 
-    // Iterate through each fixed record group and set their random initial variant records.
+    // Iterate through each fixed record group and set their random initial variant
+    // records.
     for (List<FixedRecordGroup> frgs : this.fixedRecordGroups.values()) {
-      for(FixedRecordGroup frg : frgs){
+      for (FixedRecordGroup frg : frgs) {
         frg.setInitialVariantRecord(this.random);
       }
     }
@@ -181,7 +181,7 @@ public class Household {
    * @param householdRole
    * @return
    */
-  public FixedRecordGroup getRecordGroupFor(String householdRole) {
+  public FixedRecordGroup getCurrentRecordGroupFor(String householdRole) {
     return this.fixedRecordGroups.get(householdRole).get(this.currentAddressSequences.get(householdRole));
   }
 
@@ -260,7 +260,7 @@ public class Household {
    */
   public FixedRecord updatePersonVariantRecord(Person person) {
     String householdRole = this.getHouseholdRoleFor(person);
-    FixedRecord fr = this.getRecordGroupFor(householdRole).updateCurrentVariantRecord();
+    FixedRecord fr = this.getCurrentRecordGroupFor(householdRole).updateCurrentVariantRecord();
     // TODO - should be putting all the attributes in the person elsewhere so as
     // to maintain the correct values for valud cities and other malformed fixed
     // record data that the seed will have?
@@ -287,10 +287,20 @@ public class Household {
     return householdRoles.get(0);
   }
 
-  public FixedRecordGroup getRecordGroupFor(Person person) {
-    return this.getRecordGroupFor(this.getHouseholdRoleFor(person));
+  /**
+   * Returns the current fixed record group of the given person.
+   * @param person
+   * @return
+   */
+  public FixedRecordGroup getCurrentRecordGroupFor(Person person) {
+    return this.getCurrentRecordGroupFor(this.getHouseholdRoleFor(person));
   }
 
+  /**
+   * Returns all of the fixed record groups associated with the given person.
+   * @param person
+   * @return
+   */
   public List<FixedRecordGroup> getAllRecordGroupsFor(Person person) {
     return this.fixedRecordGroups.get(this.getHouseholdRoleFor(person));
   }

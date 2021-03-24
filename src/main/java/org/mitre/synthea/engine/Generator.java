@@ -553,12 +553,15 @@ public class Generator implements RandomNumberGenerator {
     person.attributes.put(Person.LOCATION, this.location);
     person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
 
-    fixedRecordGroupManager.addPersonToHousehold(person, (String) person.attributes.get(Person.HOUSEHOLD_ROLE));
+    if(Generator.fixedRecordGroupManager != null){
+      // Add the person to their household.
+      fixedRecordGroupManager.addPersonToHousehold(person, (String) person.attributes.get(Person.HOUSEHOLD_ROLE));
+    }
 
     LifecycleModule.birth(person, person.lastUpdated);
 
-    // Initialize the person to their fixed record attributes if used.
-    if (person.attributes.get(Person.HOUSEHOLD) != null) {
+    if (Generator.fixedRecordGroupManager != null) {
+      // Initialize the person to their fixed record attributes if used.
       this.setFixedDemographics(person);
     }
 
@@ -576,7 +579,7 @@ public class Generator implements RandomNumberGenerator {
    * @param person the person whose demographics are to be set.
    */
   public void setFixedDemographics(Person person) {
-    FixedRecordGroup frg = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
+    FixedRecordGroup frg = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person);
     person.attributes.putAll(frg.getCurrentRecord().getFixedRecordAttributes());
     // Reset person's default records after attributes have been reset.
     person.initializeDefaultHealthRecords();
@@ -795,7 +798,7 @@ public class Generator implements RandomNumberGenerator {
 
     if (person.attributes.get(Person.HOUSEHOLD) != null) {
       // Set the person's attributes to their seed record to ensure console display is correct.
-      FixedRecordGroup frg = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
+      FixedRecordGroup frg = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person);
       person.attributes.putAll(frg.getSeedRecordAttributes());
     }
     
@@ -817,7 +820,7 @@ public class Generator implements RandomNumberGenerator {
 
     if (person.attributes.get(Person.HOUSEHOLD) != null) {
       // Reset the person's attributes to their current demographics.
-      FixedRecordGroup frg = fixedRecordGroupManager.getRecordGroupFor(person);
+      FixedRecordGroup frg = fixedRecordGroupManager.getCurrentRecordGroupFor(person);
       person.attributes.putAll(frg.getCurentVariantRecordAttributes());
     }
 

@@ -143,7 +143,7 @@ public final class EncounterModule extends Module {
 
     // Make sure the person's attributes are set to their current fixedRecord, if applicable.
     if (person.attributes.get(Person.HOUSEHOLD) != null) {
-      FixedRecordGroup frg = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
+      FixedRecordGroup frg = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person);
       person.attributes.putAll(frg.getCurrentRecord().getFixedRecordAttributes());
     }
 
@@ -152,7 +152,7 @@ public final class EncounterModule extends Module {
 
     // Fix the person's seed attributes in case their fixed record caused an invalid fields for simulation.
     if (person.attributes.get(Person.HOUSEHOLD) != null) {
-      FixedRecordGroup frg = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
+      FixedRecordGroup frg = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person);
       person.attributes.putAll(frg.getSeedRecordAttributes());
     }
     

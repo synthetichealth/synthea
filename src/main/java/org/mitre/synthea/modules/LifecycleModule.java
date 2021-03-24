@@ -177,7 +177,7 @@ public final class LifecycleModule extends Module {
 
     // If using FixedRecords, overwrite the person's attributes with the seed record attributes.
     if (person.attributes.get(Person.HOUSEHOLD) != null) {
-      FixedRecordGroup recordGroup = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
+      FixedRecordGroup recordGroup = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person);
       attributes.putAll(recordGroup.getSeedRecordAttributes());
     }
 

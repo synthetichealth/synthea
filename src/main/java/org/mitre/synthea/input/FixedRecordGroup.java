@@ -74,23 +74,12 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
    * @return String safe city name
    */
   public String getSeedCity() {
-    // String safeCity = seedRecord.getValidCity(this);
     String safeCity = seedRecord.city;
     if (safeCity == null || safeCity == "") {
       throw new RuntimeException("ERROR: No valid seed city for " + seedRecord.firstName + " " + seedRecord.lastName
           + " with seed record id " + seedRecord.recordId + ".");
     }
-
-    // if (safeCity != null && safeCity.length() > 1) {
-    // safeCity = safeCity.substring(0, 1).toUpperCase() +
-    // safeCity.substring(1).toLowerCase();
-    // }
-
     safeCity = WordUtils.capitalize(safeCity.toLowerCase());
-    if(safeCity.equals("Fuquay-varina")){
-      safeCity = "FuquayVarina";
-    }
-    System.out.println(safeCity);
     return safeCity;
   }
 
@@ -104,18 +93,7 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
     if (STATE_MAP.containsKey(rawState)) {
       return STATE_MAP.get(rawState);
     }
-
     return rawState;
-  }
-
-  /**
-   * Returns the current year's record city. If it is an invalid city, returns the
-   * seed's city.
-   * 
-   * @return String safe city name
-   */
-  public String getSafeCurrentCity() {
-    return this.getCurrentRecord().getValidCity(this);
   }
 
   /**
@@ -177,18 +155,6 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
   }
 
   /**
-   * Overwrites the given person's address with this fixed record group's current
-   * variant record address information.
-   * 
-   * @param person    The person whose address to overwrite.
-   * @param generator The generator to use to extract a valid city.
-   * @return boolean Whether the address was changed.
-   */
-  public boolean overwriteAddressWithCurrentVariantRecord(Person person, Generator generator) {
-    return this.getCurrentRecord().overwriteAddress(person, generator);
-  }
-
-  /**
    * Returns the current variant record attributes of this fixed record group.
    * 
    * @return The current variant record attributes of this fixed record group.
@@ -218,6 +184,27 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
     return this.seedRecord.overwriteAddress(person, generator);
   }
 
+  /**
+   * Returns the birth year of this fixed record group.
+   */
+  public int getSeedBirthYear() {
+    return Integer.parseInt(this.seedRecord.birthYear);
+  }
+
+  /**
+   * Sets the initial variant record index of this fixed record gropu using the
+   * given random.
+   * 
+   * @param random
+   */
+  public void setInitialVariantRecord(Random random) {
+    if (this.variantRecords.size() < 1) {
+      throw new RuntimeException("Trying to set the initial variant record with " + this.variantRecords.size()
+          + " variant records. Seed ID: " + this.seedRecord.recordId + ".");
+    }
+    this.currentVariantRecord = random.nextInt(this.variantRecords.size());
+  }
+
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof FixedRecordGroup)) {
@@ -243,26 +230,8 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
   }
 
   /**
-   * Returns the birth year of this fixed record group.
+   * Map of the conversion from state abbreviations to full names.
    */
-  public int getSeedBirthYear() {
-    return Integer.parseInt(this.seedRecord.birthYear);
-  }
-
-  /**
-   * Sets the initial variant record index of this fixed record gropu using the
-   * given random.
-   * 
-   * @param random
-   */
-  public void setInitialVariantRecord(Random random) {
-    if (this.variantRecords.size() < 1) {
-      throw new RuntimeException("Trying to set the initial variant record with " + this.variantRecords.size()
-          + " variant records. Seed ID: " + this.seedRecord.recordId + ".");
-    }
-    this.currentVariantRecord = random.nextInt(this.variantRecords.size());
-  }
-
   public static final Map<String, String> STATE_MAP;
   static {
     STATE_MAP = new HashMap<String, String>();
