@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.WordUtils;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.geography.Demographics;
@@ -98,21 +99,21 @@ public class FixedRecord {
    */
   public FixedRecord() {
     this.attributes = new HashMap<String, Object>();
-    ;
   }
 
   /**
    * Returns the city of this fixedRecord if it is a valid city.
    */
   public String getValidCity(FixedRecordGroup frg) {
-    if (this.city != null && this.city.length() > 1) {
-      this.city = this.city.substring(0, 1).toUpperCase() + this.city.substring(1).toLowerCase();
+    if(this.city == null){
+      return frg.getSeedCity();
     }
+    String tempCity = WordUtils.capitalize(this.city.toLowerCase());
     try {
       // If the the current city/state combo is not in the Demographics file, return
       // the safe seed city of the frg.
       if (Demographics.load(this.state).row(this.state).values().stream()
-          .noneMatch(d -> d.city.equalsIgnoreCase(this.city))) {
+          .noneMatch(d -> d.city.equalsIgnoreCase(tempCity))) {
         return frg.getSeedCity();
       }
     } catch (IOException e) {
@@ -148,19 +149,37 @@ public class FixedRecord {
         this.attributes.put(Person.IDENTIFIER_SEED_ID, this.seedID);
       }
       this.attributes.putAll(this.getNameAttributes());
+      if(this.phoneAreaCode == null){
+        this.phoneAreaCode = "";
+      }
+      if(this.phoneNumber == null){
+        this.phoneNumber = "";
+      }
       this.attributes.put(Person.TELECOM, this.phoneAreaCode + "-" + this.phoneNumber);
       String g = this.gender;
-      if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
+      if(this.gender == null && this.seedID == null){
+        throw new RuntimeException("Input gender is null for seed record " + this.recordId + ".");
+      }
+      if (g == null ||g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
         g = "UNK";
       }
       this.attributes.put(Person.GENDER, g);
       this.attributes.put(Person.BIRTHDATE, this.getBirthDate());
+      if(this.state == null){
+        this.state = "";
+      }
       this.attributes.put(Person.STATE, this.state);
-      this.attributes.put(Person.CITY, this.city);
       if (this.city == null) {
-        this.attributes.put(Person.CITY, "none");
+        this.city = "none";
+      }
+      this.attributes.put(Person.CITY, this.city);
+      if (this.addressLineOne == null) {
+        this.addressLineOne = "";
       }
       this.attributes.put(Person.ADDRESS, this.addressLineOne);
+      if (this.zipcode == null) {
+        this.zipcode = "";
+      }
       this.attributes.put(Person.ZIP, this.zipcode);
       if (this.contactLastName != null) {
         this.attributes.put(Person.CONTACT_GIVEN_NAME, this.contactFirstName);
@@ -170,7 +189,9 @@ public class FixedRecord {
       if (this.contactEmail == null) {
         this.attributes.put(Person.CONTACT_EMAIL, "");
       }
-
+      if (this.householdRole == null) {
+        throw new RuntimeException("Household roles cannot be null.");
+      }
       this.attributes.put(Person.HOUSEHOLD_ROLE, this.householdRole);
     }
     return this.attributes;
@@ -186,12 +207,20 @@ public class FixedRecord {
     String oldCity = (String) person.attributes.get(Person.CITY);
     String oldAddress = (String) person.attributes.get(Person.ADDRESS);
     person.attributes.put(Person.ADDRESS, this.addressLineOne);
-    person.attributes.put(Person.STATE, this.state);
+    if(this.state == null && this.seedID != null){
+      // If this is a seed record and there's a null state, we got a problem.
+      throw new RuntimeException("Cannot have a null state for seed record. Seed Record ID: " + this.seedID);
+    } else if(state == null){
+      person.attributes.put(Person.STATE, "");
+
+    } else {
+      person.attributes.put(Person.STATE, this.state);
+    }
     person.attributes.put(Person.CITY, this.getValidCity(Generator.fixedRecordGroupManager.getRecordGroupFor(person)));
     person.attributes.put(Person.ZIP, this.zipcode);
     // Fix the person's safe city in case it is invalid and update their location
     // point.
-    generator.location.assignPoint(person, (String) person.attributes.get(Person.CITY));
+    generator.location.assignPoint(person, Generator.fixedRecordGroupManager.getRecordGroupFor(person).getSeedCity());
     // Return a boolean indicating whether the address was changed.
     return !oldCity.equals(person.attributes.get(Person.CITY))
         && !oldAddress.equals(person.attributes.get(Person.ADDRESS));
@@ -201,6 +230,11 @@ public class FixedRecord {
    * Returns the name attributes of the current fixed record.
    */
   private Map<String, Object> getNameAttributes() {
+    if(this.firstName == null){
+      this.firstName = "";
+    } if(this.lastName== null){
+      this.lastName = "";
+    }
     return Stream
         .of(new String[][] { { Person.FIRST_NAME, this.firstName }, { Person.LAST_NAME, this.lastName },
             { Person.NAME, this.firstName + " " + this.lastName }, })

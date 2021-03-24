@@ -548,7 +548,7 @@ public class Generator implements RandomNumberGenerator {
     Person person = new Person(personSeed);
     person.populationSeed = this.options.seed;
     person.attributes.putAll(demoAttributes);
-    person.attributes.put(Person.LOCATION, location);
+    person.attributes.put(Person.LOCATION, this.location);
     person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
 
     fixedRecordGroupManager.addPersonToHousehold(person, (String) person.attributes.get(Person.HOUSEHOLD_ROLE));
@@ -631,7 +631,7 @@ public class Generator implements RandomNumberGenerator {
    */
   public Map<String, Object> randomDemographics(Random random) {
     Demographics city = location.randomCity(random);
-    Map<String, Object> demoAttributes = pickDemographics(random, city);
+    Map<String, Object> demoAttributes = this.pickDemographics(random, city);
     return demoAttributes;
   }
 
@@ -750,15 +750,17 @@ public class Generator implements RandomNumberGenerator {
    * @param random Random object.
    */
   public Map<String, Object> pickFixedDemographics(FixedRecordGroup recordGroup, Random random) {
-    Map<String, Object> demoAttributes = recordGroup.getSeedRecordAttributes();
     this.location = new Location(
-      (String) demoAttributes.get(Person.STATE),
-      (String) demoAttributes.get(Person.CITY));
-    Demographics city = this.location.randomCity(random);
-    // Pick the rest of the demographics based on the location of the fixed record.
-    demoAttributes = this.pickDemographics(random, city);
+      recordGroup.getSeedState(),
+      recordGroup.getSeedCity());
 
-    // Overwrite the person's attributes with the FixedRecord.
+    Demographics city = this.location.randomCity(random);
+
+
+    // Pick the rest of the demographics based on the location of the fixed record.
+    Map<String, Object> demoAttributes = recordGroup.getSeedRecordAttributes();
+    demoAttributes = this.pickDemographics(random, city);
+    // Overwrite the person's attributes with the seed of the fixed record group.
     demoAttributes.put(Person.BIRTH_CITY, city.city);
     demoAttributes.put(Person.HOUSEHOLD, recordGroup.getHouseholdId());
     demoAttributes.putAll(recordGroup.getSeedRecordAttributes());

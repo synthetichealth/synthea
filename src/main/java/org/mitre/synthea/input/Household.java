@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import com.google.gson.annotations.SerializedName;
@@ -41,7 +42,7 @@ public class Household {
    * Constructor for a household.
    */
   public Household() {
-    this.members = new HashMap<String, Person>();
+    this.members = new ConcurrentHashMap<String, Person>();
     this.currentAddressSequences = new HashMap<String, Integer>();
   }
 

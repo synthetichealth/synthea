@@ -148,7 +148,7 @@ public class FixedRecordGroupManager {
     FixedRecordGroup frg = Generator.fixedRecordGroupManager.getRecordGroupFor(person);
     // Overwrite the person's address information with the new current variant
     // record of the new fixed record group.
-    frg.overwriteAddressWithCurrentVariantRecord(person, generator);
+    // frg.overwriteAddressWithCurrentVariantRecord(person, generator);
     // Overwrite the person's biographical information with the new current variant
     // record of the new fixed record group.
     person.attributes.putAll(frg.getCurentVariantRecordAttributes());
