@@ -475,7 +475,9 @@ public class Generator implements RandomNumberGenerator {
 
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
-        Exporter.export(person, finishTime, exporterRuntimeOptions);
+        if(isAlive){  // THIS IS HERE ONLY FOR FIXED DEMOGRAPHICS TO ENSURE DEAD RECORDS ARE NOT EXPORTED.
+          Exporter.export(person, finishTime, exporterRuntimeOptions);
+        }
       } while (!patientMeetsCriteria(isAlive, person));
       // if the patient is alive and we want only dead ones => loop & try again
       //  (and dont even export, see above)
