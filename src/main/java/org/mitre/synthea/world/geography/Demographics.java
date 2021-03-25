@@ -449,10 +449,25 @@ public class Demographics implements Comparable<Demographics>, Serializable {
     d.gender.put("male", Double.parseDouble(line.get("TOT_MALE")));
     d.gender.put("female", Double.parseDouble(line.get("TOT_FEMALE")));
 
+    double percentageTotal = 0;
     d.race = new HashMap<String, Double>();
     for (String race : CSV_RACES) {
       double percentage = Double.parseDouble(line.get(race));
       d.race.put(race.toLowerCase(), percentage);
+      percentageTotal += percentage;
+    }
+    if (percentageTotal < 1.0) {
+      // Account for Hawaiian and Pacific Islanders
+      // and mixed race responses, and responses
+      // that chose not to answer the race question.
+      double percentageRemainder = (1.0 - percentageTotal);
+      double hawaiian = 0.5 * percentageRemainder;
+      double other = percentageRemainder - hawaiian;
+      d.race.put("hawaiian", hawaiian);
+      d.race.put("other", other);
+    } else {
+      d.race.put("hawaiian", 0.0);
+      d.race.put("other", 0.0);
     }
 
     d.income = new HashMap<String, Double>();
