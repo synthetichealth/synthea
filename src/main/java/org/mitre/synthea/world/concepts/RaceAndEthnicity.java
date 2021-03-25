@@ -13,7 +13,7 @@ public class RaceAndEthnicity {
   private static Map<String, String> createCDCRaceLookup() {
     Map<String, String> result = new HashMap<String, String>();
     result.put("white", "2106-3"); // white
-    result.put("hispanic", "2106-3"); // white
+    result.put("hispanic", "2106-3"); // hispanic
     result.put("black", "2054-5"); // black
     result.put("asian", "2028-9"); // asian
     result.put("native", "1002-5"); // american indian or alaska native
