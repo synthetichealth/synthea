@@ -42,7 +42,7 @@
     },
     "Penicillin_Allergy_Onset": {
       "type": "AllergyOnset",
-      "allergyType": "allergy",
+      "allergy_type": "allergy",
       "category": "medication",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
@@ -74,7 +74,7 @@
     },
     "Aspirin_Allergy_Onset": {
       "type": "AllergyOnset",
-      "allergyType": "allergy",
+      "allergy_type": "allergy",
       "category": "drug",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
@@ -123,7 +123,7 @@
     },
     "Onset_Ibuprofen_Allergy": {
       "type": "AllergyOnset",
-      "allergyType": "allergy",
+      "allergy_type": "allergy",
       "category": "medication",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
@@ -137,7 +137,7 @@
     },
     "Onset_Sulfa_Drug_Allergy": {
       "type": "AllergyOnset",
-      "allergyType": "allergy",
+      "allergy_type": "allergy",
       "category": "medication",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
@@ -167,7 +167,7 @@
     },
     "Onset_Cephalosporin_Allergy": {
       "type": "AllergyOnset",
-      "allergyType": "allergy",
+      "allergy_type": "allergy",
       "category": "medication",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
@@ -248,7 +248,7 @@
     },
     "Onset_ACE_Inhibitor_Intolerance": {
       "type": "AllergyOnset",
-      "allergyType": "intolerance",
+      "allergy_type": "intolerance",
       "category": "medication",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [

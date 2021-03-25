@@ -52,7 +52,7 @@
     },
     "Peanut_Allergy": {
       "type": "AllergyOnset",
-      "allergyType": "allergy",
+      "allergy_type": "allergy",
       "category": "food",
       "target_encounter": "Allergist_Initial_Visit",
       "assign_to_attribute": "food_allergy",
@@ -108,7 +108,7 @@
     },
     "TreeNut_Allergy": {
       "type": "AllergyOnset",
-      "allergyType": "allergy",
+      "allergy_type": "allergy",
       "category": "food",
       "target_encounter": "Allergist_Initial_Visit",
       "assign_to_attribute": "food_allergy",
@@ -164,7 +164,7 @@
     },
     "Fish_Allergy": {
       "type": "AllergyOnset",
-      "allergyType": "allergy",
+      "allergy_type": "allergy",
       "category": "food",
       "target_encounter": "Allergist_Initial_Visit",
       "assign_to_attribute": "food_allergy",
@@ -220,7 +220,7 @@
     },
     "Shellfish_Allergy": {
       "type": "AllergyOnset",
-      "allergyType": "allergy",
+      "allergy_type": "allergy",
       "category": "food",
       "target_encounter": "Allergist_Initial_Visit",
       "assign_to_attribute": "food_allergy",
@@ -281,7 +281,7 @@
     },
     "Wheat_Allergy": {
       "type": "AllergyOnset",
-      "allergyType": "allergy",
+      "allergy_type": "allergy",
       "category": "food",
       "target_encounter": "Allergist_Initial_Visit",
       "assign_to_attribute": "food_allergy",
@@ -340,7 +340,7 @@
     },
     "Eggs_Allergy": {
       "type": "AllergyOnset",
-      "allergyType": "allergy",
+      "allergy_type": "allergy",
       "category": "food",
       "target_encounter": "Allergist_Initial_Visit",
       "assign_to_attribute": "food_allergy",
@@ -396,7 +396,7 @@
     },
     "Soy_Allergy": {
       "type": "AllergyOnset",
-      "allergyType": "allergy",
+      "allergy_type": "allergy",
       "category": "food",
       "target_encounter": "Allergist_Initial_Visit",
       "assign_to_attribute": "food_allergy",
@@ -454,7 +454,7 @@
     },
     "Dairy_Allergy": {
       "type": "AllergyOnset",
-      "allergyType": "allergy",
+      "allergy_type": "allergy",
       "category": "food",
       "target_encounter": "Allergist_Initial_Visit",
       "assign_to_attribute": "food_allergy",

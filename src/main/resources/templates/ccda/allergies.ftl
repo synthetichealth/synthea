@@ -31,7 +31,36 @@
             <effectiveTime>
               <low value="${entry.start?number_to_date?string["yyyyMMddHHmmss"]}"/>
             </effectiveTime>
-            <value xsi:type="CD" code="419199007" displayName="Allergy to substance" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+            <#switch entry.allergyType!>
+              <#case "allergy">
+                <#switch entry.category!>
+                  <#case "food">
+                    <value xsi:type="CD" code="414285001" displayName="Allergy to food" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+                    <#break>
+                  <#case "medication">
+                    <value xsi:type="CD" code="416098002" displayName="Allergy to drug" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+                    <#break>
+                  <#-- There is no value in the valueset for allergy to environment. Everything gets put in here-->
+                  <#default>
+                    <value xsi:type="CD" code="419199007" displayName="Allergy to substance" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+                </#switch>
+                <#break>
+              <#case "intolerance">
+                <#switch entry.category!>
+                  <#case "food">
+                    <value xsi:type="CD" code="235719002" displayName="Intolerance to food" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+                    <#break>
+                  <#case "medication">
+                    <value xsi:type="CD" code="59037007" displayName="Intolerance to drug" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+                    <#break>
+                  <#-- There is no value in the valueset for intolerance to environment. Everything gets put in here-->
+                  <#default>
+                    <value xsi:type="CD" code="418038007" displayName="Propensity to adverse reactions to substance" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+                </#switch>
+                <#break>
+              <#default>
+              <value xsi:type="CD" code="419199007" displayName="Allergy to substance" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+            </#switch>
             <participant typeCode="CSM">
               <participantRole classCode="MANU">
                 <playingEntity classCode="MMAT">
