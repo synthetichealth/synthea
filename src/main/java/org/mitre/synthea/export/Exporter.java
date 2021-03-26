@@ -1,6 +1,5 @@
 package org.mitre.synthea.export;
 
-import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 
 import java.io.File;
@@ -454,6 +453,15 @@ public class Exporter {
         CustomSqlReport.export(generator);
       } catch (Exception e) {
         System.err.println("Custom report generation failed!");
+        e.printStackTrace();
+      }
+    }
+
+    if (Config.getAsBoolean("exporter.bfd.export")) {
+      try {
+        BB2RIFExporter exporter = BB2RIFExporter.getInstance();
+        exporter.exportNPIs();
+      } catch (IOException e) {
         e.printStackTrace();
       }
     }

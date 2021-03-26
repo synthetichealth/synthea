@@ -847,8 +847,7 @@ public class FhirR4 {
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource().fhirType().equals("Practitioner")) {
         Practitioner doc = (Practitioner) entry.getResource();
-        if (doc.getIdentifierFirstRep().getValue()
-              .equals("" + (9_999_999_999L - clinician.identifier))) {
+        if (doc.getIdentifierFirstRep().getValue().equals(clinician.npi)) {
           return entry.getFullUrl();
         }
       }
@@ -2843,10 +2842,9 @@ public class FhirR4 {
           "http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner");
       practitionerResource.setMeta(meta);
     }
-    String practitionerNPI = Long.toString(9_999_999_999L - clinician.identifier);
     practitionerResource.addIdentifier()
             .setSystem("http://hl7.org/fhir/sid/us-npi")
-            .setValue(practitionerNPI);
+            .setValue(clinician.npi);
     practitionerResource.setActive(true);
     practitionerResource.addName().setFamily(
         (String) clinician.attributes.get(Clinician.LAST_NAME))
@@ -2892,7 +2890,7 @@ public class FhirR4 {
       practitionerRole.setPractitioner(new Reference()
           .setIdentifier(new Identifier()
                   .setSystem("http://hl7.org/fhir/sid/us-npi")
-                  .setValue(practitionerNPI))
+                  .setValue(clinician.npi))
           .setDisplay(practitionerResource.getNameFirstRep().getNameAsSingleString()));
       practitionerRole.setOrganization(new Reference()
           .setIdentifier(new Identifier()
