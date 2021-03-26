@@ -464,6 +464,15 @@ public class Exporter {
     }
     Config.set("exporter.fhir.bulk_data", bulk);
 
+    if (Config.getAsBoolean("exporter.bfd.export")) {
+      try {
+        BB2RIFExporter exporter = BB2RIFExporter.getInstance();
+        exporter.exportNPIs();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
     if (Config.getAsBoolean("exporter.cdw.export")) {
       CDWExporter.getInstance().writeFactTables();
     }

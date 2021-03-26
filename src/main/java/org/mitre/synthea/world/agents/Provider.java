@@ -70,6 +70,7 @@ public class Provider implements QuadTreeElement, Serializable {
   public String uuid;
   private String locationUuid;
   public String id;
+  public String npi;
   public String name;
   private Location location;
   public String address;
@@ -553,6 +554,11 @@ public class Provider implements QuadTreeElement, Serializable {
     Provider d = new Provider();
     // using remove instead of get here so that we can iterate over the remaining keys later
     d.id = line.remove("id");
+    try {
+      d.npi = Long.toString(8_888_888_888L - Long.parseLong(d.id));
+    } catch (Exception e) {
+      d.npi = Long.toString(8_888_888_888L - loaded);
+    }
     d.name = line.remove("name");
     if (d.name == null || d.name.isEmpty()) {
       d.name = d.id;

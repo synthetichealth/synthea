@@ -39,6 +39,7 @@ public class Clinician implements Serializable, QuadTreeElement {
   public final Random random;
   public final long identifier;
   public final String uuid;
+  public final String npi;
   public Map<String, Object> attributes;
   private ArrayList<String> servicesProvided;
   private Provider organization;
@@ -59,6 +60,7 @@ public class Clinician implements Serializable, QuadTreeElement {
     this.uuid = UUID.nameUUIDFromBytes(base.getBytes()).toString();
     this.random = clinicianRand;
     this.identifier = identifier;
+    this.npi = Long.toString(9_999_999_999L - this.identifier);
     this.organization = organization;
     attributes = new ConcurrentHashMap<String, Object>();
     servicesProvided = new ArrayList<String>();

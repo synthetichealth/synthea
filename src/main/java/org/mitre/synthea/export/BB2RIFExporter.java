@@ -1,5 +1,6 @@
 package org.mitre.synthea.export;
 
+import com.google.common.collect.Table;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -31,8 +32,10 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.Provider.ProviderType;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Device;
@@ -80,6 +83,7 @@ public class BB2RIFExporter implements Flushable {
   private SynchronizedBBLineWriter carrier;
   private SynchronizedBBLineWriter prescription;
   private SynchronizedBBLineWriter dme;
+  private SynchronizedBBLineWriter npi;
 
   private AtomicInteger beneId; // per patient identifier
   private AtomicInteger claimId; // per claim per encounter
@@ -171,7 +175,9 @@ public class BB2RIFExporter implements Flushable {
     if (dme != null) {
       dme.close();
     }
-
+    if (npi != null) {
+      npi.close();
+    }
 
     // Initialize output files
     File output = Exporter.getOutputFolder("bfd", null);
@@ -206,8 +212,59 @@ public class BB2RIFExporter implements Flushable {
     dme = new SynchronizedBBLineWriter(dmeFile);
     dme.writeHeader(DMEFields.class);
 
+    File npiFile = outputDirectory.resolve("npi.tsv").toFile();
+    npi = new SynchronizedBBLineWriter(npiFile, "\t");
+    npi.writeHeader(NPIFields.class);
   }
-  
+
+  /**
+   * Export NPI file with synthetic providers.
+   * @throws IOException if something goes horribly wrong.
+   */
+  public void exportNPIs() throws IOException {
+    HashMap<NPIFields, String> fieldValues = new HashMap<>();
+
+    for (Provider h : Provider.getProviderList()) {
+
+      // filter - exports only those organizations in use
+      Table<Integer, String, AtomicInteger> utilization = h.getUtilization();
+      int totalEncounters = utilization.column(Provider.ENCOUNTERS).values().stream()
+          .mapToInt(ai -> ai.get()).sum();
+
+      if (totalEncounters > 0) {
+        // export organization
+        fieldValues.clear();
+        fieldValues.put(NPIFields.NPI, h.npi);
+        fieldValues.put(NPIFields.ENTITY_TYPE_CODE, "2");
+        fieldValues.put(NPIFields.EIN, "<UNAVAIL>");
+        fieldValues.put(NPIFields.ORG_NAME, h.name);
+        npi.writeValues(NPIFields.class, fieldValues);
+
+        Map<String, ArrayList<Clinician>> clinicians = h.clinicianMap;
+        for (String specialty : clinicians.keySet()) {
+          ArrayList<Clinician> docs = clinicians.get(specialty);
+          for (Clinician doc : docs) {
+            if (doc.getEncounterCount() > 0) {
+              // export each doc
+              Map<String,Object> attributes = doc.getAttributes();
+              fieldValues.clear();
+              fieldValues.put(NPIFields.NPI, doc.npi);
+              fieldValues.put(NPIFields.ENTITY_TYPE_CODE, "1");
+              fieldValues.put(NPIFields.LAST_NAME,
+                  attributes.get(Clinician.LAST_NAME).toString());
+              fieldValues.put(NPIFields.FIRST_NAME,
+                  attributes.get(Clinician.FIRST_NAME).toString());
+              fieldValues.put(NPIFields.PREFIX,
+                  attributes.get(Clinician.NAME_PREFIX).toString());
+              fieldValues.put(NPIFields.CREDENTIALS, "M.D.");
+              npi.writeValues(NPIFields.class, fieldValues);
+            }
+          }
+        }
+      }
+    }
+  }
+
   /**
    * Export a single person.
    * @param person the person to export
@@ -891,6 +948,7 @@ public class BB2RIFExporter implements Flushable {
     carrier.flush();
     prescription.flush();
     dme.flush();
+    npi.flush();
   }
 
 
@@ -2324,6 +2382,20 @@ public class BB2RIFExporter implements Flushable {
     LINE_NDC_CD
   }
 
+  public enum NPIFields {
+    NPI,
+    ENTITY_TYPE_CODE,
+    REPLACEMENT_NPI,
+    EIN,
+    ORG_NAME,
+    LAST_NAME,
+    FIRST_NAME,
+    MIDDLE_NAME,
+    PREFIX,
+    SUFFIX,
+    CREDENTIALS
+  }
+
   /**
    * Thread safe singleton pattern adopted from
    * https://stackoverflow.com/questions/7048198/thread-safe-singletons-in-java
@@ -2452,7 +2524,7 @@ public class BB2RIFExporter implements Flushable {
    */
   private static class SynchronizedBBLineWriter extends BufferedWriter {
     
-    private static final String BB_FIELD_SEPARATOR = "|";
+    private String bbFieldSeparator = "|";
     
     /**
      * Construct a new instance.
@@ -2462,7 +2534,17 @@ public class BB2RIFExporter implements Flushable {
     public SynchronizedBBLineWriter(File file) throws IOException {
       super(new FileWriter(file));
     }
-    
+
+    /**
+     * Construct a new instance.
+     * @param file the file to write to
+     * @throws IOException if something goes wrong
+     */
+    public SynchronizedBBLineWriter(File file, String separator) throws IOException {
+      super(new FileWriter(file));
+      this.bbFieldSeparator = separator;
+    }
+
     /**
      * Write a line of output consisting of one or more fields separated by '|' and terminated with
      * a system new line.
@@ -2470,7 +2552,7 @@ public class BB2RIFExporter implements Flushable {
      * @throws IOException if something goes wrong
      */
     private void writeLine(String... fields) throws IOException {
-      String line = String.join(BB_FIELD_SEPARATOR, fields);
+      String line = String.join(bbFieldSeparator, fields);
       synchronized (lock) {
         write(line);
         newLine();
