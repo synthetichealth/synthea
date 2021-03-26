@@ -769,7 +769,7 @@ public class FhirStu3 {
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource().fhirType().equals("Practitioner")) {
         Practitioner doc = (Practitioner) entry.getResource();
-        if (doc.getIdentifierFirstRep().getValue().equals("" + clinician.identifier)) {
+        if (doc.getIdentifierFirstRep().getValue().equals(clinician.npi)) {
           return entry.getFullUrl();
         }
       }
@@ -1457,11 +1457,17 @@ public class FhirStu3 {
         .setAmount(payment));
 
     // Hardcoded
+    String npi = "9999999999";
+    if (encounter.clinician != null) {
+      npi = encounter.clinician.npi;
+    } else if (encounter.provider != null) {
+      npi = encounter.provider.npi;
+    }
     List<Reference> recipientList = new ArrayList<>();
     recipientList.add(new Reference()
         .setIdentifier(new Identifier()
         .setSystem("http://hl7.org/fhir/sid/us-npi")
-        .setValue("99999999")));
+        .setValue(npi)));
     eob.addContained(new ReferralRequest()
         .setStatus(ReferralRequest.ReferralRequestStatus.COMPLETED)
         .setIntent(ReferralRequest.ReferralCategory.ORDER)
@@ -1470,7 +1476,7 @@ public class FhirStu3 {
             .setAgent(new Reference()
                 .setIdentifier(new Identifier()
                     .setSystem("http://hl7.org/fhir/sid/us-npi")
-                    .setValue("99999999"))))
+                    .setValue(npi))))
         .setRecipient(recipientList)
         .setId("1"));
 
@@ -1494,8 +1500,7 @@ public class FhirStu3 {
             // .setReference(findProviderUrl(provider, bundle))
             .setIdentifier(new Identifier()
                 .setSystem("http://hl7.org/fhir/sid/us-npi")
-                // providers don't have an npi
-                .setValue("99999999")))
+                .setValue(npi)))
         .setRole(new CodeableConcept().addCoding(new Coding()
             .setCode("primary")
             .setSystem("http://hl7.org/fhir/claimcareteamrole")
@@ -2455,7 +2460,7 @@ public class FhirStu3 {
 
     practitionerResource.addIdentifier()
             .setSystem("http://hl7.org/fhir/sid/us-npi")
-            .setValue("" + (9_999_999_999L - clinician.identifier));
+            .setValue(clinician.npi);
     practitionerResource.setActive(true);
     practitionerResource.addName().setFamily(
         (String) clinician.attributes.get(Clinician.LAST_NAME))
