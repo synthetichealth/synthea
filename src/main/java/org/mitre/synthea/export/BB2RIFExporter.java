@@ -555,8 +555,9 @@ public class BB2RIFExporter implements Flushable {
       fieldValues.put(InpatientFields.NCH_WKLY_PROC_DT,
               bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
       fieldValues.put(InpatientFields.PRVDR_NUM, encounter.provider.id);
-      fieldValues.put(InpatientFields.AT_PHYSN_NPI, encounter.provider.id);
+      fieldValues.put(InpatientFields.AT_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(InpatientFields.AT_PHYSN_UPIN, encounter.provider.id);
+      fieldValues.put(InpatientFields.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(InpatientFields.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
