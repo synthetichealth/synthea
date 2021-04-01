@@ -36,7 +36,8 @@
         {
           "transition": "Ear_Infection_Antibiotic_Terminal"
         }
-      ]
+      ],
+      "name": "Initial"
     },
     "Prescribe_Ear_Infection_Antibiotic": {
       "type": "Simple",
@@ -159,7 +160,8 @@
             }
           ]
         }
-      ]
+      ],
+      "name": "Prescribe_Ear_Infection_Antibiotic"
     },
     "Prescribe_Penicillin": {
       "type": "MedicationOrder",
@@ -173,7 +175,8 @@
         {
           "system": "RxNorm",
           "code": "105078",
-          "display": "Penicillin G 375 MG/ML Injectable Solution"
+          "display": "Penicillin G 375 MG/ML Injectable Solution",
+          "value_set": ""
         }
       ],
       "prescription": {
@@ -195,7 +198,8 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
+      "name": "Prescribe_Penicillin"
     },
     "Prescribe_Ampicillin": {
       "type": "MedicationOrder",
@@ -209,7 +213,8 @@
         {
           "system": "RxNorm",
           "code": "789980",
-          "display": "Ampicillin 100 MG/ML Injectable Solution"
+          "display": "Ampicillin 100 MG/ML Injectable Solution",
+          "value_set": ""
         }
       ],
       "prescription": {
@@ -231,7 +236,8 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
+      "name": "Prescribe_Ampicillin"
     },
     "Prescribe_Doxycycline": {
       "type": "Simple",
@@ -252,7 +258,8 @@
         {
           "transition": "Adult_Doxycycline"
         }
-      ]
+      ],
+      "name": "Prescribe_Doxycycline"
     },
     "Pediatric_Doxycycline": {
       "type": "MedicationOrder",
@@ -261,7 +268,8 @@
         {
           "system": "RxNorm",
           "code": "1652673",
-          "display": "Doxycycline Monohydrate 50 MG Oral Tablet"
+          "display": "Doxycycline Monohydrate 50 MG Oral Tablet",
+          "value_set": ""
         }
       ],
       "prescription": {
@@ -288,7 +296,8 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
+      "name": "Pediatric_Doxycycline"
     },
     "Adult_Doxycycline": {
       "type": "MedicationOrder",
@@ -297,7 +306,8 @@
         {
           "system": "RxNorm",
           "code": "1650142",
-          "display": "Doxycycline Monohydrate 100 MG Oral Tablet"
+          "display": "Doxycycline Monohydrate 100 MG Oral Tablet",
+          "value_set": ""
         }
       ],
       "prescription": {
@@ -324,22 +334,24 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
+      "name": "Adult_Doxycycline"
     },
     "Prescribe_Amoxicillin": {
       "type": "Simple",
+      "name": "Prescribe_Amoxicillin",
       "conditional_transition": [
         {
+          "transition": "Pediatric_Allergy_Check",
           "condition": {
             "condition_type": "Age",
-            "operator": "<",
+            "operator": ">",
             "quantity": 12,
             "unit": "years"
-          },
-          "transition": "Pediatric_Amoxicillin"
+          }
         },
         {
-          "transition": "Adult_Amoxicillin"
+          "transition": "Adult_Allergy_Check"
         }
       ]
     },
@@ -350,7 +362,8 @@
         {
           "system": "RxNorm",
           "code": "308182",
-          "display": "Amoxicillin 250 MG Oral Capsule"
+          "display": "Amoxicillin 250 MG Oral Capsule",
+          "value_set": ""
         }
       ],
       "prescription": {
@@ -372,7 +385,8 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
+      "name": "Pediatric_Amoxicillin"
     },
     "Adult_Amoxicillin": {
       "type": "MedicationOrder",
@@ -381,7 +395,8 @@
         {
           "system": "RxNorm",
           "code": "308192",
-          "display": "Amoxicillin 500 MG Oral Tablet"
+          "display": "Amoxicillin 500 MG Oral Tablet",
+          "value_set": ""
         }
       ],
       "prescription": {
@@ -403,7 +418,8 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
+      "name": "Adult_Amoxicillin"
     },
     "Prescribe_Cefaclor": {
       "type": "Simple",
@@ -420,7 +436,8 @@
         {
           "transition": "Adult_Cefaclor"
         }
-      ]
+      ],
+      "name": "Prescribe_Cefaclor"
     },
     "Pediatric_Cefaclor": {
       "type": "MedicationOrder",
@@ -429,7 +446,8 @@
         {
           "system": "RxNorm",
           "code": "309045",
-          "display": "Cefaclor 250 MG Oral Capsule"
+          "display": "Cefaclor 250 MG Oral Capsule",
+          "value_set": ""
         }
       ],
       "prescription": {
@@ -451,7 +469,8 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
+      "name": "Pediatric_Cefaclor"
     },
     "Adult_Cefaclor": {
       "type": "MedicationOrder",
@@ -460,7 +479,8 @@
         {
           "system": "RxNorm",
           "code": "309043",
-          "display": "12 HR Cefaclor 500 MG Extended Release Oral Tablet"
+          "display": "12 HR Cefaclor 500 MG Extended Release Oral Tablet",
+          "value_set": ""
         }
       ],
       "prescription": {
@@ -482,7 +502,8 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
+      "name": "Adult_Cefaclor"
     },
     "Prescribe_Cefuroxime": {
       "type": "MedicationOrder",
@@ -494,7 +515,8 @@
         {
           "system": "RxNorm",
           "code": "309097",
-          "display": "Cefuroxime 250 MG Oral Tablet"
+          "display": "Cefuroxime 250 MG Oral Tablet",
+          "value_set": ""
         }
       ],
       "prescription": {
@@ -516,11 +538,85 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
+      "name": "Prescribe_Cefuroxime"
     },
     "Ear_Infection_Antibiotic_Terminal": {
-      "type": "Terminal"
+      "type": "Terminal",
+      "name": "Ear_Infection_Antibiotic_Terminal"
+    },
+    "Pediatric_Allergy_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "7984",
+                "display": "Penicillin V"
+              }
+            ]
+          },
+          "transition": "Pediatric_Cefdinir"
+        },
+        {
+          "transition": "Pediatric_Amoxicillin"
+        }
+      ],
+      "name": "Pediatric_Allergy_Check"
+    },
+    "Adult_Allergy_Check": {
+      "type": "Simple",
+      "name": "Adult_Allergy_Check",
+      "conditional_transition": [
+        {
+          "transition": "Adult_Azithromycin",
+          "condition": {
+            "condition_type": "Active Allergy",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "7984",
+                "display": "Penicillin V"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Adult_Amoxicillin"
+        }
+      ]
+    },
+    "Pediatric_Cefdinir": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 200346,
+          "display": "Cefdinir",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
+      "name": "Pediatric_Cefdinir",
+      "assign_to_attribute": "antibiotic_prescription"
+    },
+    "Adult_Azithromycin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 141962,
+          "display": "Azithromycin 250 MG Oral Capsule",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
+      "name": "Adult_Azithromycin",
+      "assign_to_attribute": "antibiotic_prescription"
     }
   },
-  "gmf_version": 1
+  "gmf_version": 2
 }
