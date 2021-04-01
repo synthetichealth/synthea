@@ -402,6 +402,23 @@ public class LogicTest {
   }
 
   @Test
+  public void test_allergy_condition() {
+    person.record = new HealthRecord(person);
+    assertFalse(doTest("penicillinAllergyTest"));
+
+    HealthRecord.Code penicillinCode = new HealthRecord.Code("RxNorm", "7984",
+        "Penicillin V");
+
+    person.record.allergyStart(time, penicillinCode.code);
+    assertTrue(doTest("penicillinAllergyTest"));
+
+    time += Utilities.convertTime("years", 10);
+
+    person.record.allergyEnd(time, penicillinCode.code);
+    assertFalse(doTest("penicillinAllergyTest"));
+  }
+
+  @Test
   public void test_careplan_condition() {
 
     HealthRecord.Code diabetesCode = new HealthRecord.Code("SNOMED-CT", "698360004",
