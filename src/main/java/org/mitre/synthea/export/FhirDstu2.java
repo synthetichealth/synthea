@@ -924,7 +924,7 @@ public class FhirDstu2 {
     if (value == null) {
       return null;
 
-    } else if (value instanceof Condition) {
+    } else if (value instanceof HealthRecord.Entry) {
       Code conditionCode = ((HealthRecord.Entry) value).codes.get(0);
       return mapCodeToCodeableConcept(conditionCode, SNOMED_URI);
 
