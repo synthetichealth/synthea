@@ -1,0 +1,221 @@
+{
+  "name": "intensive_treatment_arm",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Randomization Visit"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Randomization Visit": {
+      "type": "SetAttribute",
+      "attribute": "trial_arm",
+      "direct_transition": "Create Visit Schedule",
+      "value": "intensive"
+    },
+    "Assign_Initial_Meds": {
+      "type": "Simple",
+      "direct_transition": "Delay until next visit"
+    },
+    "Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "Reset_see_monthly"
+    },
+    "Titrate or Add Therapy": {
+      "type": "CallSubmodule",
+      "submodule": "ChooseNextTherapy",
+      "conditional_transition": [
+        {
+          "transition": "Titrate",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "htn_trial_next_action",
+            "operator": "==",
+            "value": "titrate"
+          }
+        },
+        {
+          "transition": "Add Therapy"
+        }
+      ]
+    },
+    "SBP high": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "DBG_gte_90 with high SBP",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Diastolic Blood Pressure",
+            "operator": ">=",
+            "value": 90
+          }
+        },
+        {
+          "transition": "Reset_DBP_90_check_2"
+        }
+      ]
+    },
+    "DBP high": {
+      "type": "Simple",
+      "direct_transition": "Titrate or Add Therapy"
+    },
+    "DBP gte 90": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "DBP high",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "dbp_gte_90",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Set_DBP_90_flag"
+        }
+      ]
+    },
+    "Reset_DBP_90_check": {
+      "type": "SetAttribute",
+      "attribute": "dbp_gte_90",
+      "value": false,
+      "direct_transition": "Loop back to top"
+    },
+    "Set_DBP_90_flag": {
+      "type": "SetAttribute",
+      "attribute": "dbp_gte_90",
+      "direct_transition": "Loop back to top",
+      "value": true
+    },
+    "See Participant Monthly": {
+      "type": "SetAttribute",
+      "attribute": "see_participant_monthly",
+      "value": true,
+      "conditional_transition": [
+        {
+          "transition": "Add Therapy",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "milestone_visit",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Titrate or Add Therapy"
+        }
+      ]
+    },
+    "Add Therapy": {
+      "type": "Simple",
+      "direct_transition": "Loop back to top"
+    },
+    "Titrate": {
+      "type": "Simple",
+      "direct_transition": "Loop back to top"
+    },
+    "Delay until next visit": {
+      "type": "CallSubmodule",
+      "submodule": "DelayUntilNextVisit",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "trial_complete",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Encounter"
+        }
+      ]
+    },
+    "Loop back to top": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay until next visit"
+    },
+    "Create Visit Schedule": {
+      "type": "CallSubmodule",
+      "submodule": "CreateVisitSchedule",
+      "direct_transition": "Assign_Initial_Meds"
+    },
+    "Check_SBP": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "SBP high",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": ">=",
+            "value": 120
+          }
+        },
+        {
+          "transition": "Check_DBP"
+        }
+      ]
+    },
+    "Check_DBP": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "DBP high",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Diastolic Blood Pressure",
+            "operator": ">=",
+            "value": 100
+          }
+        },
+        {
+          "transition": "DBP gte 90",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Diastolic Blood Pressure",
+            "operator": ">=",
+            "value": 90
+          }
+        },
+        {
+          "transition": "Reset_DBP_90_check"
+        }
+      ]
+    },
+    "Reset_see_monthly": {
+      "type": "SetAttribute",
+      "attribute": "see_participant_monthly",
+      "direct_transition": "Check_SBP"
+    },
+    "DBG_gte_90 with high SBP": {
+      "type": "SetAttribute",
+      "attribute": "dbp_gte_90",
+      "direct_transition": "See Participant Monthly",
+      "value": true
+    },
+    "Reset_DBP_90_check_2": {
+      "type": "SetAttribute",
+      "attribute": "dbp_gte_90",
+      "value": false,
+      "direct_transition": "See Participant Monthly"
+    }
+  },
+  "gmf_version": 2
+}

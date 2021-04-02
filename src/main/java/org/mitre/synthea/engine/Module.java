@@ -39,6 +39,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
 import org.mitre.synthea.modules.EncounterModule;
+import org.mitre.synthea.modules.HypertensionTrial;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.modules.PerformCABG;
 import org.mitre.synthea.modules.QualityOfLifeModule;
@@ -74,6 +75,8 @@ public class Module implements Cloneable, Serializable {
     retVal.put("Quality Of Life", new ModuleSupplier(new QualityOfLifeModule()));
     retVal.put("Weight Loss", new ModuleSupplier(new WeightLossModule()));
     retVal.put("PerformCABG", new ModuleSupplier(new PerformCABG()));
+
+    HypertensionTrial.registerModules(retVal);
 
     Properties moduleOverrides = getModuleOverrides();
 

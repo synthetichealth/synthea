@@ -26,45 +26,7 @@
         "quantity": 18,
         "unit": "years"
       },
-      "direct_transition": "Chance_to_Onset_Hypertension"
-    },
-    "Chance_to_Onset_Hypertension": {
-      "type": "Simple",
-      "remarks": [
-        "probability: 0.296 # (1.0==100%) http://www.cdc.gov/MMWr/preview/mmwrhtml/su6203a24.htm#Tab"
-      ],
       "conditional_transition": [
-        {
-          "transition": "Veteran",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "veteran",
-            "operator": "is not nil"
-          }
-        },
-        {
-          "transition": "Non_Veteran",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "veteran",
-            "operator": "is nil"
-          }
-        }
-      ]
-    },
-    "Onset_Hypertension": {
-      "type": "SetAttribute",
-      "attribute": "hypertension",
-      "value": true,
-      "conditional_transition": [
-        {
-          "transition": "Non_Veteran_Diabetes_Prevalence",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "veteran",
-            "operator": "is nil"
-          }
-        },
         {
           "transition": "Veteran_Diabetes_Prevalence",
           "condition": {
@@ -72,30 +34,9 @@
             "attribute": "veteran",
             "operator": "is not nil"
           }
-        }
-      ]
-    },
-    "No_Hypertension": {
-      "type": "SetAttribute",
-      "attribute": "hypertension",
-      "value": false,
-      "conditional_transition": [
-        {
-          "transition": "Non_Veteran_Diabetes_Prevalence",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "veteran",
-            "operator": "is nil"
-          }
         },
         {
-          "transition": "Veteran_Diabetes_Prevalence",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "veteran",
-            "operator": "is not nil",
-            "value": 0
-          }
+          "transition": "Non_Veteran_Diabetes_Prevalence"
         }
       ]
     },
@@ -530,32 +471,6 @@
     "Loop_back_to_Start": {
       "type": "Simple",
       "direct_transition": "Diabetes_Progression"
-    },
-    "Veteran": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Onset_Hypertension",
-          "distribution": 0.306
-        },
-        {
-          "transition": "No_Hypertension",
-          "distribution": 0.694
-        }
-      ]
-    },
-    "Non_Veteran": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Onset_Hypertension",
-          "distribution": 0.296
-        },
-        {
-          "transition": "No_Hypertension",
-          "distribution": 0.704
-        }
-      ]
     },
     "Non_Veteran_Diabetes_Prevalence": {
       "type": "Simple",

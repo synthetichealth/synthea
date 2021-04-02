@@ -1,0 +1,319 @@
+{
+  "name": "standard_treatment_arm",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Randomization visit"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Randomization visit": {
+      "type": "SetAttribute",
+      "attribute": "trial_arm",
+      "direct_transition": "Create Visit Schedule",
+      "value": "standard"
+    },
+    "Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "Reset See Monthly"
+    },
+    "Assign initial meds": {
+      "type": "Simple",
+      "direct_transition": "Delay until next visit"
+    },
+    "Delay until next visit": {
+      "type": "CallSubmodule",
+      "submodule": "DelayUntilNextVisit",
+      "conditional_transition": [
+        {
+          "transition": "Encounter",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 0,
+            "unit": "years"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Titrate or add therapy": {
+      "type": "CallSubmodule",
+      "submodule": "ChooseNextTherapy",
+      "conditional_transition": [
+        {
+          "transition": "Titrate",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "htn_trial_next_action",
+            "operator": "==",
+            "value": "titrate"
+          }
+        },
+        {
+          "transition": "Add Therapy"
+        }
+      ]
+    },
+    "Step Down": {
+      "type": "CallSubmodule",
+      "submodule": "StepDownTherapy",
+      "direct_transition": "Loop back"
+    },
+    "Loop back": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay until next visit"
+    },
+    "Check_SBP": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set SBP gte 160",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": ">=",
+            "value": 160
+          }
+        },
+        {
+          "transition": "SBT gte 140",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": ">=",
+            "value": 140
+          }
+        },
+        {
+          "transition": "Reset SBP gte 140"
+        }
+      ]
+    },
+    "Check_DBP": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set DBP gte 100",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Diastolic Blood Pressure",
+            "operator": ">=",
+            "value": 100
+          }
+        },
+        {
+          "transition": "DBP gte 90",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Diastolic Blood Pressure",
+            "operator": ">=",
+            "value": 90
+          }
+        },
+        {
+          "transition": "Reset DBP gte 90"
+        }
+      ]
+    },
+    "Check_Low_SBP": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set SBP lt 130",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": "<",
+            "value": 130
+          }
+        },
+        {
+          "transition": "SBP lt 135",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": "<",
+            "value": 135
+          }
+        },
+        {
+          "transition": "Reset SBP lt 135"
+        }
+      ]
+    },
+    "Low SBP": {
+      "type": "Simple",
+      "direct_transition": "Step Down"
+    },
+    "High SBP": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set DBP gte 100",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Diastolic Blood Pressure",
+            "operator": ">=",
+            "value": 90
+          }
+        },
+        {
+          "transition": "Reset_DBP_gte_90 with high SBP"
+        }
+      ]
+    },
+    "High DBP": {
+      "type": "Simple",
+      "direct_transition": "Titrate or add therapy"
+    },
+    "SBT gte 140": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "High SBP",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "sbp_gte_140",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Set SBP gte 140"
+        }
+      ]
+    },
+    "Set SBP gte 140": {
+      "type": "SetAttribute",
+      "attribute": "sbp_gte_140",
+      "direct_transition": "Check_DBP",
+      "value": true
+    },
+    "DBP gte 90": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "High DBP",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "dbp_gte_90",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Set DBP gte 90"
+        }
+      ]
+    },
+    "Reset DBP gte 90": {
+      "type": "SetAttribute",
+      "attribute": "dbp_gte_90",
+      "direct_transition": "Check_Low_SBP"
+    },
+    "Set DBP gte 90": {
+      "type": "SetAttribute",
+      "attribute": "dbp_gte_90",
+      "direct_transition": "Check_Low_SBP",
+      "value": true
+    },
+    "Set SBP lt 135": {
+      "type": "SetAttribute",
+      "attribute": "sbp_lt_135",
+      "direct_transition": "Loop back",
+      "value": true
+    },
+    "Reset SBP lt 135": {
+      "type": "SetAttribute",
+      "attribute": "sbp_lt_135",
+      "direct_transition": "Loop back"
+    },
+    "Set SBP gte 160": {
+      "type": "SetAttribute",
+      "attribute": "sbp_gte_140",
+      "direct_transition": "See Participant Monthly",
+      "value": true
+    },
+    "Set DBP gte 100": {
+      "type": "SetAttribute",
+      "attribute": "dbp_gte_90",
+      "direct_transition": "High DBP",
+      "value": true
+    },
+    "Reset SBP gte 140": {
+      "type": "SetAttribute",
+      "attribute": "sbp_gte_140",
+      "direct_transition": "Check_DBP",
+      "value": false
+    },
+    "Set SBP lt 130": {
+      "type": "SetAttribute",
+      "attribute": "sbp_lt_135",
+      "direct_transition": "Low SBP",
+      "value": true
+    },
+    "SBP lt 135": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Low SBP",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "sbp_lt_135",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Set SBP lt 135"
+        }
+      ]
+    },
+    "See Participant Monthly": {
+      "type": "SetAttribute",
+      "attribute": "see_participant_monthly",
+      "direct_transition": "High SBP",
+      "value": true
+    },
+    "Create Visit Schedule": {
+      "type": "CallSubmodule",
+      "submodule": "CreateVisitSchedule",
+      "direct_transition": "Assign initial meds"
+    },
+    "Titrate": {
+      "type": "Simple",
+      "direct_transition": "Loop back"
+    },
+    "Add Therapy": {
+      "type": "Simple",
+      "direct_transition": "Loop back"
+    },
+    "Reset See Monthly": {
+      "type": "SetAttribute",
+      "attribute": "see_participant_monthly",
+      "direct_transition": "Check_SBP"
+    },
+    "Reset_DBP_gte_90 with high SBP": {
+      "type": "SetAttribute",
+      "attribute": "dbp_gte_90",
+      "direct_transition": "Titrate or add therapy"
+    }
+  },
+  "gmf_version": 2
+}

@@ -32,7 +32,7 @@
       "remarks": [
         "Initial impl == direct translation of ruby module"
       ],
-      "direct_transition": "Wellness_Encounter"
+      "direct_transition": "Age_Guard"
     },
     "Diagnose_Hypertension": {
       "type": "ConditionOnset",
@@ -694,20 +694,19 @@
         {
           "transition": "Diagnose_Hypertension",
           "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "hypertension",
-                "operator": "==",
-                "value": true
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "hypertension_dx",
-                "operator": "is nil"
-              }
-            ]
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": ">",
+            "value": 160
+          }
+        },
+        {
+          "transition": "End_First_Encounter",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": ">",
+            "value": 140
           }
         },
         {
@@ -722,6 +721,107 @@
     "Drop Outs": {
       "type": "Simple",
       "direct_transition": "Terminal"
+    },
+    "End_First_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Next_Encounter"
+    },
+    "Next_Encounter": {
+      "type": "Encounter",
+      "reason": "",
+      "wellness": true,
+      "conditional_transition": [
+        {
+          "transition": "Diagnose_Hypertension",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": ">",
+            "value": 140
+          }
+        },
+        {
+          "transition": "Loop_Back"
+        }
+      ]
+    },
+    "Loop_Back": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wellness_Encounter"
+    },
+    "Age_Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 18,
+        "unit": "years",
+        "value": 0
+      },
+      "direct_transition": "Set_Yearly_Risk"
+    },
+    "Set_Yearly_Risk": {
+      "type": "SetAttribute",
+      "attribute": "risk_of_hypertension",
+      "direct_transition": "Chance_of_Hypertension",
+      "value": 0.05,
+      "remarks": [
+        "TODO: set different risk for race/gender combos"
+      ]
+    },
+    "Chance_of_Hypertension": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Wellness_Encounter",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Onset_Hypertension",
+              "distribution": {
+                "attribute": "risk_of_hypertension",
+                "default": 0.05
+              }
+            },
+            {
+              "transition": "Wait_till_next_year",
+              "distribution": 0.95
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "Use the risk set above, but also check if some other module may have set hypertension == true"
+      ]
+    },
+    "Wait_till_next_year": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Chance_of_Hypertension"
+    },
+    "Onset_Hypertension": {
+      "type": "SetAttribute",
+      "attribute": "hypertension",
+      "direct_transition": "Wellness_Encounter",
+      "value": true
     }
   },
   "gmf_version": 1
