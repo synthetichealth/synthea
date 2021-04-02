@@ -823,6 +823,19 @@ public class HealthRecord implements Serializable {
   }
 
   /**
+   * Get the onset time for any entry that is currently present in the healthrecord.
+   * @param code The clinical code for the entry.
+   * @return The onset time or null if not present.
+   */
+  public Long presentOnset(String code) {
+    Long onset = null;
+    if (present.containsKey(code)) {
+      onset = present.get(code).start;
+    }
+    return onset;
+  }
+
+  /**
    * Return the current allergy of the specified type or create a new one if none exists.
    * @param time the start time of the new allergy if one is created.
    * @param primaryCode the type of allergy.

@@ -15,6 +15,8 @@ public class Claim implements Serializable {
   public Entry mainEntry;
   // The Entries have the actual cost, so the claim has the amount that the payer covered.
   private double coveredCost;
+  private double patientCopay;
+  private double costToPatient;
   public Payer payer;
   public Person person;
   public List<Entry> items;
@@ -59,8 +61,8 @@ public class Claim implements Serializable {
   public void assignCosts() {
 
     double totalCost = this.getTotalClaimCost();
-    double patientCopay = payer.determineCopay(mainEntry);
-    double costToPatient = 0.0;
+    this.patientCopay = payer.determineCopay(mainEntry);
+    this.costToPatient = 0.0;
     double costToPayer = 0.0;
 
     // Determine who covers the care and assign the costs accordingly.
@@ -117,6 +119,20 @@ public class Claim implements Serializable {
    */
   public double getCoveredCost() {
     return this.coveredCost;
+  }
+
+  /**
+   * Returns the copayment cost covered by the Patient.
+   */
+  public double getCopayment() {
+    return this.patientCopay;
+  }
+
+  /**
+   * Returns the cost that the Patient covered for this claim, including copay.
+   */
+  public double getUncoveredCost() {
+    return this.costToPatient;
   }
 
   /**

@@ -43,6 +43,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Device;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
@@ -1250,6 +1251,30 @@ public class CSVExporter {
   }
 
   /**
+   * Return a department code for the claim.
+   * @param encounter The encounter being billed.
+   * @param patient The patient.
+   * @return The department code.
+   */
+  private String claimDepartmentCode(Encounter encounter, Person patient) {
+    String dept = "99";
+    if (encounter.type != null) {
+      EncounterType type = EncounterType.fromString(encounter.type);
+      if (type != null) {
+        dept = "" + type.ordinal();
+        if (type == EncounterType.WELLNESS) {
+          if (patient.ageInYears(encounter.start) < 18) {
+            dept = "10"; // pediatric
+          } else {
+            dept = "20"; // adult primary
+          }
+        }
+      }
+    }
+    return dept;
+  }
+
+  /**
    * Write a single claim to claims.csv.
    *
    * @param claim The claim to be exported.
@@ -1290,21 +1315,31 @@ public class CSVExporter {
     }
     // TODO SECONDARYPATIENTINSURANCEID (0 default if none)
     s.append("0,");
-    // TODO DEPARTMENTID
-    s.append("11").append(',');
-    s.append("11").append(',');
-    // Diagnosis codes
+    // DEPARTMENTID
+    String departmentId = claimDepartmentCode(encounter, claim.person);
+    s.append(departmentId).append(',');
+    s.append(departmentId).append(',');
+    // Diagnosis codes and illness onset
     int dxCode = 0;
+    Long[] onset = new Long[8];
     String[] diagnosisCodes = new String[8];
     if (encounter.reason != null) {
       diagnosisCodes[dxCode] = encounter.reason.code;
+      onset[dxCode] = claim.person.record.presentOnset(diagnosisCodes[dxCode]);
       dxCode++;
     }
     Iterator<HealthRecord.Entry> items = encounter.conditions.iterator();
     while ((dxCode < diagnosisCodes.length) && items.hasNext()) {
       Entry item = items.next();
       diagnosisCodes[dxCode] = item.codes.get(0).code;
+      onset[dxCode] = claim.person.record.presentOnset(diagnosisCodes[dxCode]);
       dxCode++;
+    }
+    if (dxCode == 0) {
+      // There must be a diagnosis code, if there aren't any (e.g. wellness visit
+      // where nothing is wrong) then add the encounter code.
+      diagnosisCodes[dxCode] = encounter.codes.get(0).code;
+      onset[dxCode] = claim.person.record.presentOnset(diagnosisCodes[dxCode]);
     }
     for (String diagnosisCode : diagnosisCodes) {
       if (diagnosisCode != null && !diagnosisCode.isEmpty()) {
@@ -1313,12 +1348,18 @@ public class CSVExporter {
         s.append(',');
       }
     }
+    Long onsetIllness = encounter.start;
+    for (Long time : onset) {
+      if (time != null && time < onsetIllness) {
+        onsetIllness = time;
+      }
+    }
     // TODO REFERRINGPROVIDERID
     s.append(',');
     // APPOINTMENTID
     s.append(encounterID).append(',');
-    // TODO CURRENTILLNESSDATE
-    s.append(iso8601Timestamp(encounter.start)).append(',');
+    // CURRENTILLNESSDATE
+    s.append(iso8601Timestamp(onsetIllness)).append(',');
     // SERVICEDATE
     s.append(iso8601Timestamp(encounter.start)).append(',');
     // SUPERVISINGPROVIDERID
@@ -1358,115 +1399,276 @@ public class CSVExporter {
     s.append(NEWLINE);
     write(s.toString(), claims);
 
-    claimTransaction(rand, claim, claimId, encounter, encounterID, claim.mainEntry, 1);
-    for (int i = 0; i < claim.items.size(); i++) {
-      Entry entry = claim.items.get(i);
-      claimTransaction(rand, claim, claimId, encounter, encounterID, entry, i + 1);
+    // Main Claim
+    simulateClaimProcess(rand, claim, claimId, encounter, encounterID, claim.mainEntry,
+        diagnosisCodes, departmentId, true);
+
+    // Each Entry...
+//    for (int i = 0; i < claim.items.size(); i++) {
+//      Entry entry = claim.items.get(i);
+//      simulateClaimProcess(rand, claim, claimId, encounter, encounterID, entry,
+//          diagnosisCodes, departmentId, false);
+//    }
+  }
+
+  private void simulateClaimProcess(RandomNumberGenerator rand, Claim claim, String claimId,
+      Encounter encounter, String encounterId, Entry entry, String[] diagnosisCodes,
+      String departmentId, boolean mainEntry) throws IOException {
+    int chargeId = 0;
+    // CHARGE
+    ClaimTransaction t = new ClaimTransaction(encounter, encounterId,
+        claim, claimId, chargeId, claim.mainEntry, rand);
+    t.type = ClaimTransactionType.CHARGE;
+    t.departmentId = departmentId;
+    t.diagnosisCodes = diagnosisCodes;
+    write(t.toString(), claimsTransactions);
+    chargeId++;
+
+    if (mainEntry) {
+      if (claim.getCopayment() > 0) {
+        // COPAY
+        t = new ClaimTransaction(encounter, encounterId,
+            claim, claimId, chargeId, claim.mainEntry, rand);
+        t.type = ClaimTransactionType.PAYMENT;
+        t.method = PaymentMethod.COPAY;
+        t.payment = claim.getCopayment();
+        t.unpaid = claim.getTotalClaimCost() - claim.getCopayment();
+        t.departmentId = departmentId;
+        t.diagnosisCodes = diagnosisCodes;
+        write(t.toString(), claimsTransactions);
+        chargeId++;
+      }
+    }
+    double remainder = (claim.getUncoveredCost() - claim.getCopayment());
+
+    if (claim.getCoveredCost() > 0) {
+      if (claim.payer.getCoinsurance() > 0) {
+        // ADJUSTMENT
+      }
+      // PAYMENT
+      t = new ClaimTransaction(encounter, encounterId,
+          claim, claimId, chargeId, claim.mainEntry, rand);
+      t.type = ClaimTransactionType.PAYMENT;
+      t.method = PaymentMethod.ECHECK;
+      t.payment = claim.getCoveredCost();
+      t.unpaid = remainder;
+      t.departmentId = departmentId;
+      t.diagnosisCodes = diagnosisCodes;
+      write(t.toString(), claimsTransactions);
+      chargeId++;
+    }
+
+    if (remainder > 0) {
+      if (claim.payer != Payer.noInsurance) {
+        // TRANSFEROUT
+        t = new ClaimTransaction(encounter, encounterId,
+            claim, claimId, chargeId, claim.mainEntry, rand);
+        t.type = ClaimTransactionType.TRANSFEROUT;
+        t.transferType = "1"; // primary insurance
+        t.transferId = "" + (chargeId + 1);
+        t.amount = remainder;
+        t.departmentId = departmentId;
+        t.diagnosisCodes = diagnosisCodes;
+        write(t.toString(), claimsTransactions);
+        chargeId++;
+
+        // TRANSFERIN
+        t = new ClaimTransaction(encounter, encounterId,
+            claim, claimId, chargeId, claim.mainEntry, rand);
+        t.type = ClaimTransactionType.TRANSFERIN;
+        t.transferType = "p"; // patient
+        t.amount = remainder;
+        t.departmentId = departmentId;
+        t.diagnosisCodes = diagnosisCodes;
+        write(t.toString(), claimsTransactions);
+        chargeId++;
+      }
+      // PAYMENT
+      t = new ClaimTransaction(encounter, encounterId,
+          claim, claimId, chargeId, claim.mainEntry, rand);
+      t.type = ClaimTransactionType.PAYMENT;
+      String[] opts = { PaymentMethod.CASH.toString(),
+          PaymentMethod.CHECK.toString(),
+          PaymentMethod.CC.toString()};
+      t.method = PaymentMethod.valueOf(rand.rand(opts));
+      t.payment = remainder;
+      t.departmentId = departmentId;
+      t.diagnosisCodes = diagnosisCodes;
+      write(t.toString(), claimsTransactions);
+      chargeId++;
     }
   }
 
-  /**
-   * Write a single claim transaction to claims_transactions.csv.
-   *
-   * @param payer The claim to be exported.
-   * @throws IOException if any IO error occurs.
-   */
-  private void claimTransaction(RandomNumberGenerator rand, Claim claim, String claimID,
-      Encounter encounter, String encounterID, Entry entry, int charge) throws IOException {
-    // ID,CLAIMID,CHARGEID,PATIENTID,TYPE,AMOUNT,METHOD,FROMDATE,TODATE,
-    // PLACEOFSERVICE,PROCEDURECODE,MODIFIER1,MODIFIER2,DIAGNOSISREF1,DIAGNOSISREF2,
-    // DIAGNOSISREF3,DIAGNOSISREF4,UNITS,DEPARTMENTID,NOTES,UNITAMOUNT,TRANSFEROUTID,
-    // TRANSFERTYPE,PAYMENTS,ADJUSTMENTS,TRANSFERS,OUTSTANDING,APPOINTMENTID,LINENOTE,
-    // PATIENTINSURANCEID,FEESCHEDULEID,PROVIDERID,SUPERVISINGPROVIDERID
-    StringBuilder s = new StringBuilder();
-    // ID
-    s.append(rand.randUUID().toString()).append(',');
-    // CLAIMID
-    s.append(claimID).append(',');
-    // CHARGEID
-    s.append(charge).append(',');
-    // PATIENTID
-    s.append(claim.person.attributes.get(Person.ID)).append(',');
-    // TYPE: CHARGE, PAYMENT, ADJUSTMENT, TRANSFERIN, TRANSFEROUT
-    s.append("CHARGE").append(',');
-    // AMOUNT TODO multiple by units
-    s.append(String.format(Locale.US, "%.2f", entry.getCost())).append(',');
-    // METHOD
-    String[] methods = { "CASH", "CHECK", "COPAY", "SYSTEM", "CC", "ECHECK" };
-    s.append(methods[rand.randInt(methods.length)]).append(',');
-    // FROMDATE
-    s.append(iso8601Timestamp(entry.start)).append(',');
-    // TODATE
-    s.append(iso8601Timestamp(entry.stop)).append(',');
-    // TODO PLACEOFSERVICE
-    s.append("11").append(',');
-    // PROCEDURECODE
-    s.append(entry.codes.get(0).code).append(',');
-    // MODIFIER1
-    s.append(',');
-    // MODIFIER2
-    s.append(',');
-    // DIAGNOSISREF1, DIAGNOSISREF2, DIAGNOSISREF3, DIAGNOSISREF4
-    // Diagnosis codes
-    int dxCode = 0;
-    String[] diagnosisCodes = new String[4];
-    if (encounter.reason != null) {
-      diagnosisCodes[dxCode] = encounter.reason.code;
-      dxCode++;
-    }
-    Iterator<HealthRecord.Entry> items = encounter.conditions.iterator();
-    while ((dxCode < diagnosisCodes.length) && items.hasNext()) {
-      Entry item = items.next();
-      diagnosisCodes[dxCode] = item.codes.get(0).code;
-      dxCode++;
-    }
-    for (String diagnosisCode : diagnosisCodes) {
-      if (diagnosisCode != null && !diagnosisCode.isEmpty()) {
-        s.append(diagnosisCode).append(',');
-      } else {
-        s.append(',');
+  public enum ClaimTransactionType {
+    CHARGE, PAYMENT, ADJUSTMENT, TRANSFERIN, TRANSFEROUT;
+  }
+
+  public enum PaymentMethod {
+    CASH, CHECK, COPAY, SYSTEM, CC, ECHECK;
+  }
+
+  public class ClaimTransaction {
+    String id;
+    String encounterId;
+    String claimId;
+    String chargeId;
+    String transferId;
+    String transferType;
+    String patientId;
+    ClaimTransactionType type;
+    Double amount;
+    Integer units;
+    Double unitAmount;
+    Double payment;
+    Double unpaid;
+    PaymentMethod method;
+    long start;
+    long stop;
+    String organizationId;
+    String departmentId;
+    String clinicianId;
+    String procedureCode;
+    String procedureDisplay;
+    String[] diagnosisCodes;
+    String notes;
+
+    /**
+     * Create a new ClaimTransaction.
+     * @param encounter The Encounter.
+     * @param encounterId The Encounter ID.
+     * @param claim The Claim.
+     * @param claimId The Claim ID.
+     * @param chargeId The Charge ID.
+     * @param entry The entry for the transactions.
+     * @param rand A random number generator.
+     */
+    public ClaimTransaction(Encounter encounter, String encounterId, Claim claim, String claimId,
+        int chargeId, Entry entry, RandomNumberGenerator rand) {
+      this.id = rand.randUUID().toString();
+      this.encounterId = encounterId;
+      this.claimId = claimId;
+      this.chargeId = "" + chargeId;
+      this.patientId = (String) claim.person.attributes.get(Person.ID);
+      this.amount = entry.getCost().doubleValue();
+      this.units = 1;
+      this.unitAmount = this.amount;
+      this.start = entry.start;
+      this.stop = entry.stop;
+      if (encounter.provider != null) {
+        this.organizationId = encounter.provider.getResourceID();
       }
+      if (encounter.clinician != null) {
+        this.clinicianId = encounter.clinician.getResourceID();
+      }
+      this.procedureCode = clean(entry.codes.get(0).code);
+      this.procedureDisplay = clean(entry.codes.get(0).display);
     }
-    // TODO UNITS
-    s.append("1").append(',');
-    // TODO DEPARTMENTID
-    s.append("11").append(',');
-    // NOTES
-    s.append(clean(entry.codes.get(0).display)).append(',');
-    // UNITAMOUNT
-    s.append(String.format(Locale.US, "%.2f", entry.getCost())).append(',');
-    // TODO TRANSFEROUTID
-    s.append(',');
-    // TRANSFERTYPE. 1=primary insurance, 2=secondary, p==patient
-    s.append('1').append(',');
-    // PAYMENTS
-    s.append(String.format(Locale.US, "%.2f", entry.getCost())).append(',');
-    // ADJUSTMENTS
-    s.append("0").append(',');
-    // TRANSFERS
-    s.append("0").append(',');
-    // OUTSTANDING
-    s.append("0").append(',');
-    // APPOINTMENTID
-    s.append(encounterID).append(',');
-    // LINENOTE
-    s.append(',');
-    // PATIENTINSURANCEID
-    s.append(claim.person.attributes.get(Person.ID)).append(',');
-    // TODO FEESCHEDULEID
-    s.append("1").append(',');
-    // PROVIDERID
-    if (encounter.provider != null) {
-      s.append(encounter.provider.getResourceID()).append(',');
-    } else {
+
+    public String toString() {
+      // ID,CLAIMID,CHARGEID,PATIENTID,TYPE,AMOUNT,METHOD,FROMDATE,TODATE,
+      // PLACEOFSERVICE,PROCEDURECODE,MODIFIER1,MODIFIER2,DIAGNOSISREF1,DIAGNOSISREF2,
+      // DIAGNOSISREF3,DIAGNOSISREF4,UNITS,DEPARTMENTID,NOTES,UNITAMOUNT,TRANSFEROUTID,
+      // TRANSFERTYPE,PAYMENTS,ADJUSTMENTS,TRANSFERS,OUTSTANDING,APPOINTMENTID,LINENOTE,
+      // PATIENTINSURANCEID,FEESCHEDULEID,PROVIDERID,SUPERVISINGPROVIDERID
+      StringBuilder s = new StringBuilder();
+      // ID
+      s.append(id).append(',');
+      // CLAIMID
+      s.append(claimId).append(',');
+      // CHARGEID
+      s.append(chargeId).append(',');
+      // PATIENTID
+      s.append(patientId).append(',');
+      // TYPE: CHARGE, PAYMENT, ADJUSTMENT, TRANSFERIN, TRANSFEROUT
+      s.append(type.toString()).append(',');
+      // AMOUNT
+      if (type == ClaimTransactionType.CHARGE || type == ClaimTransactionType.TRANSFERIN) {
+        s.append(String.format(Locale.US, "%.2f", amount));
+      }
       s.append(',');
+      // METHOD
+      if (type == ClaimTransactionType.PAYMENT || type == ClaimTransactionType.ADJUSTMENT) {
+        s.append(method);
+      }
+      s.append(',');
+      // FROMDATE
+      s.append(iso8601Timestamp(start)).append(',');
+      // TODATE
+      s.append(iso8601Timestamp(stop)).append(',');
+      // PLACEOFSERVICE
+      s.append(organizationId).append(',');
+      // PROCEDURECODE
+      s.append(procedureCode).append(',');
+      // MODIFIER1
+      s.append(',');
+      // MODIFIER2
+      s.append(',');
+      // DIAGNOSISREF1, DIAGNOSISREF2, DIAGNOSISREF3, DIAGNOSISREF4
+      // Diagnosis codes
+      for (int i = 0; i < 4; i++) {
+        String diagnosisCode = diagnosisCodes[i];
+        if (diagnosisCode != null && !diagnosisCode.isEmpty()) {
+          s.append(diagnosisCode).append(',');
+        } else {
+          s.append(',');
+        }
+      }
+      // UNITS
+      if (units != null) {
+        s.append(units);
+      }
+      s.append(',');
+      // DEPARTMENTID
+      s.append(departmentId).append(',');
+      // NOTES
+      s.append(clean(procedureDisplay)).append(',');
+      // UNITAMOUNT
+      if (unitAmount != null) {
+        s.append(String.format(Locale.US, "%.2f", unitAmount));
+      }
+      s.append(',');
+      // TRANSFEROUTID
+      if (type == ClaimTransactionType.TRANSFERIN && transferId != null) {
+        s.append(transferId);
+      }
+      s.append(',');
+      // TRANSFERTYPE. 1=primary insurance, 2=secondary, p==patient
+      if (type == ClaimTransactionType.TRANSFEROUT || type == ClaimTransactionType.TRANSFERIN) {
+        s.append(transferType);
+      }
+      s.append(',');
+      // PAYMENTS
+      if (payment != null) {
+        s.append(String.format(Locale.US, "%.2f", payment));
+      }
+      s.append(',');
+      // ADJUSTMENTS
+      s.append("0").append(',');
+      // TRANSFERS
+      if (type == ClaimTransactionType.TRANSFERIN || type == ClaimTransactionType.TRANSFEROUT) {
+        s.append(String.format(Locale.US, "%.2f", amount));
+      }
+      s.append(',');
+      // OUTSTANDING
+      if (unpaid != null) {
+        s.append(String.format(Locale.US, "%.2f", unpaid));
+      }
+      s.append(',');
+      // APPOINTMENTID
+      s.append(encounterId).append(',');
+      // LINENOTE
+      s.append(',');
+      // PATIENTINSURANCEID
+      s.append(patientId).append(',');
+      // TODO FEESCHEDULEID
+      s.append("1").append(',');
+      // PROVIDERID
+      s.append(organizationId).append(',');
+      // SUPERVISINGPROVIDERID
+      s.append(clinicianId);
+      s.append(NEWLINE);
+      return s.toString();
     }
-    // SUPERVISINGPROVIDERID
-    if (encounter.clinician != null) {
-      s.append(encounter.clinician.getResourceID());
-    }
-    s.append(NEWLINE);
-    write(s.toString(), claimsTransactions);
   }
 
   /**
