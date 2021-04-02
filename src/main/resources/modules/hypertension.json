@@ -761,12 +761,43 @@
       "direct_transition": "Set_Yearly_Risk"
     },
     "Set_Yearly_Risk": {
-      "type": "SetAttribute",
-      "attribute": "risk_of_hypertension",
-      "direct_transition": "Chance_of_Hypertension",
-      "value": 0.05,
+      "type": "Simple",
       "remarks": [
-        "TODO: set different risk for race/gender combos"
+        "By age 55 years, cumulative incidence of hypertension was 75.5% in black men, 75.7% in black women, 54.5% in white men, and 40.0% in white women -- https://www.ahajournals.org/doi/full/10.1161/JAHA.117.007988",
+        "",
+        "",
+        "Cumulative Incidence  = 1 - e(-IR x D)",
+        "e^(-IRxD) = 1 - CI",
+        "-IR x D = ln(1-CI)",
+        "IR = -ln(1-CI)/D",
+        "",
+        "Assuming 0% at age 18, and per the chart the increase is roughly linear, use the following yearly incidence rates:",
+        "",
+        "",
+        "black men - 3.8%",
+        "black women - 3.8%",
+        "white men - 2.1%",
+        "white women - 1.4%",
+        "others - 2.5% (just a value in the middle, no source)"
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Black",
+          "condition": {
+            "condition_type": "Race",
+            "race": "Black"
+          }
+        },
+        {
+          "transition": "White",
+          "condition": {
+            "condition_type": "Race",
+            "race": "White"
+          }
+        },
+        {
+          "transition": "Others"
+        }
       ]
     },
     "Chance_of_Hypertension": {
@@ -822,6 +853,66 @@
       "attribute": "hypertension",
       "direct_transition": "Wellness_Encounter",
       "value": true
+    },
+    "Black": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Black_Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Black_Male"
+        }
+      ]
+    },
+    "White": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "White_Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "White_Male"
+        }
+      ]
+    },
+    "Others": {
+      "type": "SetAttribute",
+      "attribute": "risk_of_hypertension",
+      "direct_transition": "Chance_of_Hypertension",
+      "value": 0.025
+    },
+    "Black_Female": {
+      "type": "SetAttribute",
+      "attribute": "risk_of_hypertension",
+      "direct_transition": "Chance_of_Hypertension",
+      "value": 0.038
+    },
+    "Black_Male": {
+      "type": "SetAttribute",
+      "attribute": "risk_of_hypertension",
+      "direct_transition": "Chance_of_Hypertension",
+      "value": 0.038
+    },
+    "White_Male": {
+      "type": "SetAttribute",
+      "attribute": "risk_of_hypertension",
+      "direct_transition": "Chance_of_Hypertension",
+      "value": 0.021
+    },
+    "White_Female": {
+      "type": "SetAttribute",
+      "attribute": "risk_of_hypertension",
+      "direct_transition": "Chance_of_Hypertension",
+      "value": 0.014
     }
   },
   "gmf_version": 1
