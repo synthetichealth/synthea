@@ -466,9 +466,9 @@ public class BB2RIFExporter implements Flushable {
       fieldValues.put(OutpatientFields.NCH_WKLY_PROC_DT,
               bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
       fieldValues.put(OutpatientFields.PRVDR_NUM, encounter.provider.id);
-      fieldValues.put(OutpatientFields.AT_PHYSN_NPI, encounter.provider.id);
-      fieldValues.put(OutpatientFields.AT_PHYSN_UPIN, encounter.provider.id);
-      fieldValues.put(OutpatientFields.OP_PHYSN_NPI, encounter.provider.id);
+      fieldValues.put(OutpatientFields.AT_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(OutpatientFields.ORG_NPI_NUM, encounter.provider.npi);
+      fieldValues.put(OutpatientFields.OP_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(OutpatientFields.CLM_PMT_AMT, String.format("%.2f",
               encounter.claim.getTotalClaimCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
@@ -514,6 +514,59 @@ public class BB2RIFExporter implements Flushable {
       fieldValues.put(OutpatientFields.REV_CNTR_RDCD_COINSRNC_AMT,
               String.format("%.2f", encounter.claim.getCoinsurancePaid()));
 
+      // Use the active condition diagnoses to enter mapped values
+      // into the diagnoses codes.
+      boolean noDiagnoses = false;
+      if (person.record.present != null && !person.record.present.isEmpty()) {
+        List<String> mappedDiagnosisCodes = new ArrayList<>();
+        for (String key : person.record.present.keySet()) {
+          if (person.record.conditionActive(key)) {
+            if (conditionCodeMapper.canMap(key)) {
+              mappedDiagnosisCodes.add(conditionCodeMapper.map(key, person, true));
+            }
+          }
+        }
+        if (!mappedDiagnosisCodes.isEmpty()) {
+          int smallest = Math.min(mappedDiagnosisCodes.size(), outpatientDxFields.length);
+          for (int i = 0; i < smallest; i++) {
+            OutpatientFields[] dxField = outpatientDxFields[i];
+            fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+            fieldValues.put(dxField[1], "0"); // 0=ICD10
+          }
+        } else {
+          noDiagnoses = true;
+        }
+      }
+      // Use the procedures in this encounter to enter mapped values
+      boolean noProcedures = false;
+      if (!encounter.procedures.isEmpty()) {
+        List<HealthRecord.Procedure> mappableProcedures = new ArrayList<>();
+        List<String> mappedProcedureCodes = new ArrayList<>();
+        for (HealthRecord.Procedure procedure : encounter.procedures) {
+          for (HealthRecord.Code code : procedure.codes) {
+            if (conditionCodeMapper.canMap(code.code)) {
+              mappableProcedures.add(procedure);
+              mappedProcedureCodes.add(conditionCodeMapper.map(code.code, person, true));
+              break; // take the first mappable code for each procedure
+            }
+          }
+        }
+        if (!mappableProcedures.isEmpty()) {
+          int smallest = Math.min(mappableProcedures.size(), outpatientPxFields.length);
+          for (int i = 0; i < smallest; i++) {
+            OutpatientFields[] pxField = outpatientPxFields[i];
+            fieldValues.put(pxField[0], mappedProcedureCodes.get(i));
+            fieldValues.put(pxField[1], "0"); // 0=ICD10
+            fieldValues.put(pxField[2], bb2DateFromTimestamp(mappableProcedures.get(i).start));
+          }
+        } else {
+          noProcedures = true;
+        }
+      }
+      if (noDiagnoses && noProcedures) {
+        continue; // skip this encounter
+      }
+
       outpatient.writeValues(OutpatientFields.class, fieldValues);
     }
   }
@@ -556,7 +609,6 @@ public class BB2RIFExporter implements Flushable {
               bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
       fieldValues.put(InpatientFields.PRVDR_NUM, encounter.provider.id);
       fieldValues.put(InpatientFields.AT_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(InpatientFields.AT_PHYSN_UPIN, encounter.provider.id);
       fieldValues.put(InpatientFields.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(InpatientFields.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
@@ -1718,6 +1770,8 @@ public class BB2RIFExporter implements Flushable {
     NCH_BENE_PTB_COINSRNC_AMT,
     CLM_OP_PRVDR_PMT_AMT,
     CLM_OP_BENE_PMT_AMT,
+    FI_DOC_CLM_CNTL_NUM,
+    FI_ORIG_CLM_CNTL_NUM,
     CLM_LINE_NUM,
     REV_CNTR,
     REV_CNTR_DT,
@@ -2138,6 +2192,87 @@ public class BB2RIFExporter implements Flushable {
       InpatientFields.PRCDR_DT24 },
     { InpatientFields.ICD_PRCDR_CD25, InpatientFields.ICD_PRCDR_VRSN_CD25,
       InpatientFields.PRCDR_DT25 }
+  };
+
+  private OutpatientFields[][] outpatientDxFields = {
+    { OutpatientFields.ICD_DGNS_CD1, OutpatientFields.ICD_DGNS_VRSN_CD1 },
+    { OutpatientFields.ICD_DGNS_CD2, OutpatientFields.ICD_DGNS_VRSN_CD2 },
+    { OutpatientFields.ICD_DGNS_CD3, OutpatientFields.ICD_DGNS_VRSN_CD3 },
+    { OutpatientFields.ICD_DGNS_CD4, OutpatientFields.ICD_DGNS_VRSN_CD4 },
+    { OutpatientFields.ICD_DGNS_CD5, OutpatientFields.ICD_DGNS_VRSN_CD5 },
+    { OutpatientFields.ICD_DGNS_CD6, OutpatientFields.ICD_DGNS_VRSN_CD6 },
+    { OutpatientFields.ICD_DGNS_CD7, OutpatientFields.ICD_DGNS_VRSN_CD7 },
+    { OutpatientFields.ICD_DGNS_CD8, OutpatientFields.ICD_DGNS_VRSN_CD8 },
+    { OutpatientFields.ICD_DGNS_CD9, OutpatientFields.ICD_DGNS_VRSN_CD9 },
+    { OutpatientFields.ICD_DGNS_CD10, OutpatientFields.ICD_DGNS_VRSN_CD10 },
+    { OutpatientFields.ICD_DGNS_CD11, OutpatientFields.ICD_DGNS_VRSN_CD11 },
+    { OutpatientFields.ICD_DGNS_CD12, OutpatientFields.ICD_DGNS_VRSN_CD12 },
+    { OutpatientFields.ICD_DGNS_CD13, OutpatientFields.ICD_DGNS_VRSN_CD13 },
+    { OutpatientFields.ICD_DGNS_CD14, OutpatientFields.ICD_DGNS_VRSN_CD14 },
+    { OutpatientFields.ICD_DGNS_CD15, OutpatientFields.ICD_DGNS_VRSN_CD15 },
+    { OutpatientFields.ICD_DGNS_CD16, OutpatientFields.ICD_DGNS_VRSN_CD16 },
+    { OutpatientFields.ICD_DGNS_CD17, OutpatientFields.ICD_DGNS_VRSN_CD17 },
+    { OutpatientFields.ICD_DGNS_CD18, OutpatientFields.ICD_DGNS_VRSN_CD18 },
+    { OutpatientFields.ICD_DGNS_CD19, OutpatientFields.ICD_DGNS_VRSN_CD19 },
+    { OutpatientFields.ICD_DGNS_CD20, OutpatientFields.ICD_DGNS_VRSN_CD20 },
+    { OutpatientFields.ICD_DGNS_CD21, OutpatientFields.ICD_DGNS_VRSN_CD21 },
+    { OutpatientFields.ICD_DGNS_CD22, OutpatientFields.ICD_DGNS_VRSN_CD22 },
+    { OutpatientFields.ICD_DGNS_CD23, OutpatientFields.ICD_DGNS_VRSN_CD23 },
+    { OutpatientFields.ICD_DGNS_CD24, OutpatientFields.ICD_DGNS_VRSN_CD24 },
+    { OutpatientFields.ICD_DGNS_CD25, OutpatientFields.ICD_DGNS_VRSN_CD25 }
+  };
+
+  private OutpatientFields[][] outpatientPxFields = {
+    { OutpatientFields.ICD_PRCDR_CD1, OutpatientFields.ICD_PRCDR_VRSN_CD1,
+      OutpatientFields.PRCDR_DT1 },
+    { OutpatientFields.ICD_PRCDR_CD2, OutpatientFields.ICD_PRCDR_VRSN_CD2,
+      OutpatientFields.PRCDR_DT2 },
+    { OutpatientFields.ICD_PRCDR_CD3, OutpatientFields.ICD_PRCDR_VRSN_CD3,
+      OutpatientFields.PRCDR_DT3 },
+    { OutpatientFields.ICD_PRCDR_CD4, OutpatientFields.ICD_PRCDR_VRSN_CD4,
+      OutpatientFields.PRCDR_DT4 },
+    { OutpatientFields.ICD_PRCDR_CD5, OutpatientFields.ICD_PRCDR_VRSN_CD5,
+      OutpatientFields.PRCDR_DT5 },
+    { OutpatientFields.ICD_PRCDR_CD6, OutpatientFields.ICD_PRCDR_VRSN_CD6,
+      OutpatientFields.PRCDR_DT6 },
+    { OutpatientFields.ICD_PRCDR_CD7, OutpatientFields.ICD_PRCDR_VRSN_CD7,
+      OutpatientFields.PRCDR_DT7 },
+    { OutpatientFields.ICD_PRCDR_CD8, OutpatientFields.ICD_PRCDR_VRSN_CD8,
+      OutpatientFields.PRCDR_DT8 },
+    { OutpatientFields.ICD_PRCDR_CD9, OutpatientFields.ICD_PRCDR_VRSN_CD9,
+      OutpatientFields.PRCDR_DT9 },
+    { OutpatientFields.ICD_PRCDR_CD10, OutpatientFields.ICD_PRCDR_VRSN_CD10,
+      OutpatientFields.PRCDR_DT10 },
+    { OutpatientFields.ICD_PRCDR_CD11, OutpatientFields.ICD_PRCDR_VRSN_CD11,
+      OutpatientFields.PRCDR_DT11 },
+    { OutpatientFields.ICD_PRCDR_CD12, OutpatientFields.ICD_PRCDR_VRSN_CD12,
+      OutpatientFields.PRCDR_DT12 },
+    { OutpatientFields.ICD_PRCDR_CD13, OutpatientFields.ICD_PRCDR_VRSN_CD13,
+      OutpatientFields.PRCDR_DT13 },
+    { OutpatientFields.ICD_PRCDR_CD14, OutpatientFields.ICD_PRCDR_VRSN_CD14,
+      OutpatientFields.PRCDR_DT14 },
+    { OutpatientFields.ICD_PRCDR_CD15, OutpatientFields.ICD_PRCDR_VRSN_CD15,
+      OutpatientFields.PRCDR_DT15 },
+    { OutpatientFields.ICD_PRCDR_CD16, OutpatientFields.ICD_PRCDR_VRSN_CD16,
+      OutpatientFields.PRCDR_DT16 },
+    { OutpatientFields.ICD_PRCDR_CD17, OutpatientFields.ICD_PRCDR_VRSN_CD17,
+      OutpatientFields.PRCDR_DT17 },
+    { OutpatientFields.ICD_PRCDR_CD18, OutpatientFields.ICD_PRCDR_VRSN_CD18,
+      OutpatientFields.PRCDR_DT18 },
+    { OutpatientFields.ICD_PRCDR_CD19, OutpatientFields.ICD_PRCDR_VRSN_CD19,
+      OutpatientFields.PRCDR_DT19 },
+    { OutpatientFields.ICD_PRCDR_CD20, OutpatientFields.ICD_PRCDR_VRSN_CD20,
+      OutpatientFields.PRCDR_DT20 },
+    { OutpatientFields.ICD_PRCDR_CD21, OutpatientFields.ICD_PRCDR_VRSN_CD21,
+      OutpatientFields.PRCDR_DT21 },
+    { OutpatientFields.ICD_PRCDR_CD22, OutpatientFields.ICD_PRCDR_VRSN_CD22,
+      OutpatientFields.PRCDR_DT22 },
+    { OutpatientFields.ICD_PRCDR_CD23, OutpatientFields.ICD_PRCDR_VRSN_CD23,
+      OutpatientFields.PRCDR_DT23 },
+    { OutpatientFields.ICD_PRCDR_CD24, OutpatientFields.ICD_PRCDR_VRSN_CD24,
+      OutpatientFields.PRCDR_DT24 },
+    { OutpatientFields.ICD_PRCDR_CD25, OutpatientFields.ICD_PRCDR_VRSN_CD25,
+      OutpatientFields.PRCDR_DT25 }
   };
 
   /* package access */
