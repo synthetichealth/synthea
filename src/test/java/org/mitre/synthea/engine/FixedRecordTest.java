@@ -88,7 +88,6 @@ public class FixedRecordTest {
     go.state = "Colorado"; // Examples are based on Colorado.
     go.population = 100; // Should be overwritten by number of patients in input file.
     go.overflow = false; // Prevent deceased patients from increasing the population size.
-    // go.seed = 1616465189989L;
     generator = new Generator(go);
     generator.internalStore = new LinkedList<>(); // Allows us to access patients within generator.
     // Run the simulation.

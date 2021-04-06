@@ -189,7 +189,6 @@ public final class LifecycleModule extends Module {
     Location location = (Location) attributes.get(Person.LOCATION);
     if (location != null) {
       // should never happen in practice, but can happen in unit tests
-      System.out.println("HELLOOOOOOO");
       location.assignPoint(person, city);
       person.attributes.put(Person.ZIP, location.getZipCode(city, person));
       String[] birthPlace;

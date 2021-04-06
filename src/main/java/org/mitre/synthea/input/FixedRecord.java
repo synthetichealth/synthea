@@ -105,7 +105,7 @@ public class FixedRecord {
    * Returns the city of this fixedRecord if it is a valid city.
    */
   public String getValidCity(FixedRecordGroup frg) {
-    if(this.city == null){
+    if (this.city == null) {
       return frg.getSeedCity();
     }
     String tempCity = WordUtils.capitalize(this.city.toLowerCase());
@@ -129,8 +129,16 @@ public class FixedRecord {
   public long getBirthDate() {
     String birthYear = this.birthYear;
 
-    long bd = LocalDateTime.of(Integer.parseInt(birthYear), Integer.parseInt(this.birthMonth),
-        Integer.parseInt(this.birthDayOfMonth), 12, 0).toInstant(ZoneOffset.UTC).toEpochMilli();
+    long bd = 0L;
+    try {
+      bd = LocalDateTime.of(Integer.parseInt(birthYear), Integer.parseInt(this.birthMonth),
+          Integer.parseInt(this.birthDayOfMonth), 12, 0).toInstant(ZoneOffset.UTC).toEpochMilli();
+    } catch (Exception e) {
+      if (this.seedID == null) {
+        throw new RuntimeException("Seed record with id " + this.recordId + " cannot have an invalid birthdate.");
+      }
+      bd = 0L;
+    }
 
     return bd;
   }
@@ -149,23 +157,23 @@ public class FixedRecord {
         this.attributes.put(Person.IDENTIFIER_SEED_ID, this.seedID);
       }
       this.attributes.putAll(this.getNameAttributes());
-      if(this.phoneAreaCode == null){
+      if (this.phoneAreaCode == null) {
         this.phoneAreaCode = "";
       }
-      if(this.phoneNumber == null){
+      if (this.phoneNumber == null) {
         this.phoneNumber = "";
       }
       this.attributes.put(Person.TELECOM, this.phoneAreaCode + "-" + this.phoneNumber);
       String g = this.gender;
-      if(this.gender == null && this.seedID == null){
+      if (this.gender == null && this.seedID == null) {
         throw new RuntimeException("Input gender is null for seed record " + this.recordId + ".");
       }
-      if (g == null ||g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
+      if (g == null || g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
         g = "UNK";
       }
       this.attributes.put(Person.GENDER, g);
       this.attributes.put(Person.BIRTHDATE, this.getBirthDate());
-      if(this.state == null){
+      if (this.state == null) {
         this.state = "";
       }
       this.attributes.put(Person.STATE, this.state);
@@ -207,20 +215,22 @@ public class FixedRecord {
     String oldCity = (String) person.attributes.get(Person.CITY);
     String oldAddress = (String) person.attributes.get(Person.ADDRESS);
     person.attributes.put(Person.ADDRESS, this.addressLineOne);
-    if(this.state == null && this.seedID != null){
+    if (this.state == null && this.seedID != null) {
       // If this is a seed record and there's a null state, we got a problem.
       throw new RuntimeException("Cannot have a null state for seed record. Seed Record ID: " + this.seedID);
-    } else if(state == null){
+    } else if (state == null) {
       person.attributes.put(Person.STATE, "");
 
     } else {
       person.attributes.put(Person.STATE, this.state);
     }
-    person.attributes.put(Person.CITY, this.getValidCity(Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person)));
+    person.attributes.put(Person.CITY,
+        this.getValidCity(Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person)));
     person.attributes.put(Person.ZIP, this.zipcode);
     // Fix the person's safe city in case it is invalid and update their location
     // point.
-    generator.location.assignPoint(person, Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person).getSeedCity());
+    generator.location.assignPoint(person,
+        Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person).getSeedCity());
     // Return a boolean indicating whether the address was changed.
     return !oldCity.equals(person.attributes.get(Person.CITY))
         && !oldAddress.equals(person.attributes.get(Person.ADDRESS));
@@ -230,9 +240,10 @@ public class FixedRecord {
    * Returns the name attributes of the current fixed record.
    */
   private Map<String, Object> getNameAttributes() {
-    if(this.firstName == null){
+    if (this.firstName == null) {
       this.firstName = "";
-    } if(this.lastName== null){
+    }
+    if (this.lastName == null) {
       this.lastName = "";
     }
     return Stream

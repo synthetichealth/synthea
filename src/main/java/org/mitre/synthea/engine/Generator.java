@@ -558,10 +558,16 @@ public class Generator implements RandomNumberGenerator {
       fixedRecordGroupManager.addPersonToHousehold(person, (String) person.attributes.get(Person.HOUSEHOLD_ROLE));
     }
 
+    if (Generator.fixedRecordGroupManager != null) {
+      // Initialize the person to their fixed record attributes if used.
+      this.setFixedDemographics(person);
+      person.lastUpdated = (long) person.attributes.get(Person.BIRTHDATE);
+    }
+
     LifecycleModule.birth(person, person.lastUpdated);
 
     if (Generator.fixedRecordGroupManager != null) {
-      // Initialize the person to their fixed record attributes if used.
+      // Re-Initialize the person to their fixed record attributes if used.
       this.setFixedDemographics(person);
     }
 

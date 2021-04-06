@@ -148,7 +148,11 @@ public class Household {
     List<Integer> addressYearRanges = new ArrayList<Integer>();
     int numberOfAddresses = this.fixedRecordGroups.values().iterator().next().size();
     for (int i = 0; i < numberOfAddresses; i++) {
-      addressYearRanges.add(this.random().nextInt(rangeOfYears) + householdStartYear);
+      int newYear = this.random().nextInt(rangeOfYears) + householdStartYear + 1;
+      while(addressYearRanges.contains(newYear)){
+        newYear = this.random().nextInt(rangeOfYears) + householdStartYear + 1;
+      }
+      addressYearRanges.add(newYear);
     }
     addressYearRanges = addressYearRanges.stream().sorted().collect(Collectors.toList());
     return addressYearRanges;
