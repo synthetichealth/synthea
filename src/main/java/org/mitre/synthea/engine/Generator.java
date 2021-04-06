@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.mitre.synthea.datastore.DataStore;
 import org.mitre.synthea.editors.GrowthDataErrorsEditor;
 import org.mitre.synthea.export.CDWExporter;
 import org.mitre.synthea.export.Exporter;
@@ -454,7 +453,7 @@ public class Generator implements RandomNumberGenerator {
           // This if-statement prevents dead patients from being exported during fixed demographics runs.
           Exporter.export(person, finishTime, exporterRuntimeOptions);
         }
-      } while (!patientMeetsCriteria(isAlive, providerCount, providerMinimum));
+      } while (!patientMeetsCriteria(isAlive));
       //repeat while patient doesn't meet criteria
       // if the patient is alive and we want only dead ones => loop & try again
       //  (and dont even export, see above)
@@ -474,11 +473,9 @@ public class Generator implements RandomNumberGenerator {
    * Determines if a patient meets the requested criteria.
    * If a patient does not meet the criteria the process will be repeated so a new one is generated
    * @param isAlive Whether the patient is alive at end of simulation.
-   * @param providerCount Number of providers in the patient's record
-   * @param providerMinimum Minimum number of providers required
    * @return true if patient meets criteria, false otherwise
    */
-  public boolean patientMeetsCriteria(boolean isAlive, int providerCount, int providerMinimum) {
+  public boolean patientMeetsCriteria(boolean isAlive) {
     if (!isAlive && !onlyDeadPatients && this.options.overflow) { 
       // if patient is not alive and the criteria isn't dead patients new patient is needed
       return false;
@@ -491,11 +488,6 @@ public class Generator implements RandomNumberGenerator {
 
     if (!isAlive && onlyAlivePatients) {
       // if patient is not alive and the criteria is alive patients new patient is needed
-      return false;
-    }
-
-    if (providerCount < providerMinimum) {
-      // if provider count less than provider min new patient is needed
       return false;
     }
 
