@@ -278,7 +278,8 @@ public class Generator implements RandomNumberGenerator {
     // Import the fixed patient demographics records file, if a file path is given.
     if (this.options.fixedRecordPath != null) {
       // Import household demogarphics.
-      fixedRecordGroupManager = FixedRecordGroupManager.importFixedDemographicsFile(this.options.fixedRecordPath);
+      fixedRecordGroupManager
+          = FixedRecordGroupManager.importFixedDemographicsFile(this.options.fixedRecordPath);
       // Update the population size based on number of people.
       this.options.population = fixedRecordGroupManager.getPopulationSize();
       // We'll be using the FixedRecord names, so no numbers should be appended to them.
@@ -452,8 +453,9 @@ public class Generator implements RandomNumberGenerator {
 
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
-        if(this.fixedRecordGroupManager == null || isAlive){
-          // This if-statement prevents dead patients from being exported during fixed demographics runs.
+        if (Generator.fixedRecordGroupManager == null || isAlive) {
+          // This if-statement prevents dead patients from being exported during
+          // fixed demographics runs.
           Exporter.export(person, finishTime, exporterRuntimeOptions);
         }
       } while (!patientMeetsCriteria(isAlive));
@@ -524,9 +526,10 @@ public class Generator implements RandomNumberGenerator {
     person.attributes.put(Person.LOCATION, this.location);
     person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
 
-    if(Generator.fixedRecordGroupManager != null){
+    if (Generator.fixedRecordGroupManager != null) {
       // Add the person to their household.
-      fixedRecordGroupManager.addPersonToHousehold(person, (String) person.attributes.get(Person.HOUSEHOLD_ROLE));
+      fixedRecordGroupManager.addPersonToHousehold(person,
+          (String) person.attributes.get(Person.HOUSEHOLD_ROLE));
     }
 
     if (Generator.fixedRecordGroupManager != null) {
@@ -576,10 +579,12 @@ public class Generator implements RandomNumberGenerator {
     long time = person.lastUpdated;
     while (person.alive(time) && time < stop) {
 
-      // If fixed patient demographics are in use then check to update the person's current fixed record.
+      // If fixed demographics are in use then check to update the person's current fixed record.
       if (person.attributes.get(Person.HOUSEHOLD) != null) {
-        // Check to update each hoseuhold's address and the curren fixed record groups and seed records for each memeber.
-        if(fixedRecordGroupManager.checkToUpdateHouseholdAddressFor(person, Utilities.getYear(time))){
+        // Check to update each household's address and the current
+        // fixed record groups and seed records for each member.
+        if (fixedRecordGroupManager
+            .checkToUpdateHouseholdAddressFor(person, Utilities.getYear(time))) {
           // Check to update this person's variant record.
           fixedRecordGroupManager.updateFixedDemographicRecord(person, time, this);
         }

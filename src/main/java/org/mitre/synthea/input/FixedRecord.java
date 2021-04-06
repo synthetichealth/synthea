@@ -95,7 +95,7 @@ public class FixedRecord {
   public int addressEndDate;
 
   /**
-   * Constructor
+   * Default constructor.
    */
   public FixedRecord() {
     this.attributes = new HashMap<String, Object>();
@@ -135,7 +135,8 @@ public class FixedRecord {
           Integer.parseInt(this.birthDayOfMonth), 12, 0).toInstant(ZoneOffset.UTC).toEpochMilli();
     } catch (Exception e) {
       if (this.seedID == null) {
-        throw new RuntimeException("Seed record with id " + this.recordId + " cannot have an invalid birthdate.");
+        throw new RuntimeException("Seed record with id " + this.recordId
+            + " cannot have an invalid birthdate.");
       }
       bd = 0L;
     }
@@ -217,7 +218,8 @@ public class FixedRecord {
     person.attributes.put(Person.ADDRESS, this.addressLineOne);
     if (this.state == null && this.seedID != null) {
       // If this is a seed record and there's a null state, we got a problem.
-      throw new RuntimeException("Cannot have a null state for seed record. Seed Record ID: " + this.seedID);
+      throw new RuntimeException("Cannot have a null state for seed record. Seed Record ID: "
+          + this.seedID);
     } else if (state == null) {
       person.attributes.put(Person.STATE, "");
 
@@ -247,7 +249,8 @@ public class FixedRecord {
       this.lastName = "";
     }
     return Stream
-        .of(new String[][] { { Person.FIRST_NAME, this.firstName }, { Person.LAST_NAME, this.lastName },
+        .of(new String[][] { { Person.FIRST_NAME, this.firstName },
+            { Person.LAST_NAME, this.lastName },
             { Person.NAME, this.firstName + " " + this.lastName }, })
         .collect(Collectors.toMap(data -> data[0], data -> data[1]));
   }
@@ -274,8 +277,8 @@ public class FixedRecord {
       sb.append("Seed Record: [").append(this.recordId).append("]");
     } else {
       // This is a fixed record.
-      sb.append("Variant Record: [").append("Record ID: ").append(this.recordId).append(", Seed ID:")
-          .append(this.seedID).append("]");
+      sb.append("Variant Record: [").append("Record ID: ").append(this.recordId)
+          .append(", Seed ID:").append(this.seedID).append("]");
     }
     return sb.toString();
   }

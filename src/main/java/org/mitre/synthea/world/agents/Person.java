@@ -654,7 +654,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     if (provider == null) {
       throw new RuntimeException("Unable to find provider: " + type);
     }
-    if(this.attributes.get(Person.HOUSEHOLD) != null) {
+    if (this.attributes.get(Person.HOUSEHOLD) != null) {
       // Set to a new variant record because there is a new provider.
       FixedRecord vr = Generator.fixedRecordGroupManager.updatePersonVariantRecord(this);
       this.attributes.putAll(vr.getFixedRecordAttributes());
@@ -993,20 +993,5 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public Point2D.Double getLonLat() {
     return (Point2D.Double) attributes.get(Person.COORDINATE);
   }
-
-  @Override
-  public boolean equals(Object o){
-    if(o == null){
-      throw new NullPointerException("Tried to check equality on a person with a null given object.");
-    }
-    if(o == this){
-      return true;
-    }
-    return false;
-    // if(!(o instanceof Person)){
-    //   return false;
-    // }
-    // Person other = (Person) o;
-    // return this.attributes.get(Person.ID).equals(other.attributes.get(Person.ID));
-  }
+  
 }

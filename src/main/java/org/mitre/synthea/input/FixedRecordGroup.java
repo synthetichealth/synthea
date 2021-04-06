@@ -64,8 +64,8 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
         | java.lang.IllegalArgumentException dontcare) {
       // Do nothing if the current fixed record does not have a valid birthdate.
     }
-    throw new RuntimeException("No valid birthdate for: " + this.seedRecord.firstName + " " + this.seedRecord.lastName
-        + "'s seed record id " + seedRecord.recordId + ".");
+    throw new RuntimeException("No valid birthdate for: " + this.seedRecord.firstName + " "
+        + this.seedRecord.lastName + "'s seed record id " + seedRecord.recordId + ".");
   }
 
   /**
@@ -76,8 +76,8 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
   public String getSeedCity() {
     String safeCity = seedRecord.city;
     if (safeCity == null || safeCity == "") {
-      throw new RuntimeException("ERROR: No valid seed city for " + seedRecord.firstName + " " + seedRecord.lastName
-          + " with seed record id " + seedRecord.recordId + ".");
+      throw new RuntimeException("ERROR: No valid seed city for " + seedRecord.firstName + " "
+          + seedRecord.lastName + " with seed record id " + seedRecord.recordId + ".");
     }
     safeCity = WordUtils.capitalize(safeCity.toLowerCase());
     return safeCity;
@@ -195,12 +195,13 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
    * Sets the initial variant record index of this fixed record gropu using the
    * given random.
    * 
-   * @param random
+   * @param random  The random ojbect to use.
    */
   public void setInitialVariantRecord(Random random) {
     if (this.variantRecords.size() < 1) {
-      throw new RuntimeException("Trying to set the initial variant record with " + this.variantRecords.size()
-          + " variant records. Seed ID: " + this.seedRecord.recordId + ".");
+      throw new RuntimeException("Trying to set the initial variant record with "
+          + this.variantRecords.size() + " variant records. Seed ID: "
+          + this.seedRecord.recordId + ".");
     }
     this.currentVariantRecord = random.nextInt(this.variantRecords.size());
   }
@@ -232,76 +233,78 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
   /**
    * Map of the conversion from state abbreviations to full names.
    */
-  public static final Map<String, String> STATE_MAP;
-  static {
-    STATE_MAP = new HashMap<String, String>();
-    STATE_MAP.put("AL", "Alabama");
-    STATE_MAP.put("AK", "Alaska");
-    STATE_MAP.put("AB", "Alberta");
-    STATE_MAP.put("AZ", "Arizona");
-    STATE_MAP.put("AR", "Arkansas");
-    STATE_MAP.put("BC", "British Columbia");
-    STATE_MAP.put("CA", "California");
-    STATE_MAP.put("CO", "Colorado");
-    STATE_MAP.put("CT", "Connecticut");
-    STATE_MAP.put("DE", "Delaware");
-    STATE_MAP.put("DC", "District Of Columbia");
-    STATE_MAP.put("FL", "Florida");
-    STATE_MAP.put("GA", "Georgia");
-    STATE_MAP.put("GU", "Guam");
-    STATE_MAP.put("HI", "Hawaii");
-    STATE_MAP.put("ID", "Idaho");
-    STATE_MAP.put("IL", "Illinois");
-    STATE_MAP.put("IN", "Indiana");
-    STATE_MAP.put("IA", "Iowa");
-    STATE_MAP.put("KS", "Kansas");
-    STATE_MAP.put("KY", "Kentucky");
-    STATE_MAP.put("LA", "Louisiana");
-    STATE_MAP.put("ME", "Maine");
-    STATE_MAP.put("MB", "Manitoba");
-    STATE_MAP.put("MD", "Maryland");
-    STATE_MAP.put("MA", "Massachusetts");
-    STATE_MAP.put("MI", "Michigan");
-    STATE_MAP.put("MN", "Minnesota");
-    STATE_MAP.put("MS", "Mississippi");
-    STATE_MAP.put("MO", "Missouri");
-    STATE_MAP.put("MT", "Montana");
-    STATE_MAP.put("NE", "Nebraska");
-    STATE_MAP.put("NV", "Nevada");
-    STATE_MAP.put("NB", "New Brunswick");
-    STATE_MAP.put("NH", "New Hampshire");
-    STATE_MAP.put("NJ", "New Jersey");
-    STATE_MAP.put("NM", "New Mexico");
-    STATE_MAP.put("NY", "New York");
-    STATE_MAP.put("NF", "Newfoundland");
-    STATE_MAP.put("NC", "North Carolina");
-    STATE_MAP.put("ND", "North Dakota");
-    STATE_MAP.put("NT", "Northwest Territories");
-    STATE_MAP.put("NS", "Nova Scotia");
-    STATE_MAP.put("NU", "Nunavut");
-    STATE_MAP.put("OH", "Ohio");
-    STATE_MAP.put("OK", "Oklahoma");
-    STATE_MAP.put("ON", "Ontario");
-    STATE_MAP.put("OR", "Oregon");
-    STATE_MAP.put("PA", "Pennsylvania");
-    STATE_MAP.put("PE", "Prince Edward Island");
-    STATE_MAP.put("PR", "Puerto Rico");
-    STATE_MAP.put("QC", "Quebec");
-    STATE_MAP.put("RI", "Rhode Island");
-    STATE_MAP.put("SK", "Saskatchewan");
-    STATE_MAP.put("SC", "South Carolina");
-    STATE_MAP.put("SD", "South Dakota");
-    STATE_MAP.put("TN", "Tennessee");
-    STATE_MAP.put("TX", "Texas");
-    STATE_MAP.put("UT", "Utah");
-    STATE_MAP.put("VT", "Vermont");
-    STATE_MAP.put("VI", "Virgin Islands");
-    STATE_MAP.put("VA", "Virginia");
-    STATE_MAP.put("WA", "Washington");
-    STATE_MAP.put("WV", "West Virginia");
-    STATE_MAP.put("WI", "Wisconsin");
-    STATE_MAP.put("WY", "Wyoming");
-    STATE_MAP.put("YT", "Yukon Territory");
+  public static final Map<String, String> STATE_MAP = initializeStateMap();
+
+  private static Map<String, String> initializeStateMap() {
+    Map<String, String> stateMap = new HashMap<String, String>();
+    stateMap.put("AL", "Alabama");
+    stateMap.put("AK", "Alaska");
+    stateMap.put("AB", "Alberta");
+    stateMap.put("AZ", "Arizona");
+    stateMap.put("AR", "Arkansas");
+    stateMap.put("BC", "British Columbia");
+    stateMap.put("CA", "California");
+    stateMap.put("CO", "Colorado");
+    stateMap.put("CT", "Connecticut");
+    stateMap.put("DE", "Delaware");
+    stateMap.put("DC", "District Of Columbia");
+    stateMap.put("FL", "Florida");
+    stateMap.put("GA", "Georgia");
+    stateMap.put("GU", "Guam");
+    stateMap.put("HI", "Hawaii");
+    stateMap.put("ID", "Idaho");
+    stateMap.put("IL", "Illinois");
+    stateMap.put("IN", "Indiana");
+    stateMap.put("IA", "Iowa");
+    stateMap.put("KS", "Kansas");
+    stateMap.put("KY", "Kentucky");
+    stateMap.put("LA", "Louisiana");
+    stateMap.put("ME", "Maine");
+    stateMap.put("MB", "Manitoba");
+    stateMap.put("MD", "Maryland");
+    stateMap.put("MA", "Massachusetts");
+    stateMap.put("MI", "Michigan");
+    stateMap.put("MN", "Minnesota");
+    stateMap.put("MS", "Mississippi");
+    stateMap.put("MO", "Missouri");
+    stateMap.put("MT", "Montana");
+    stateMap.put("NE", "Nebraska");
+    stateMap.put("NV", "Nevada");
+    stateMap.put("NB", "New Brunswick");
+    stateMap.put("NH", "New Hampshire");
+    stateMap.put("NJ", "New Jersey");
+    stateMap.put("NM", "New Mexico");
+    stateMap.put("NY", "New York");
+    stateMap.put("NF", "Newfoundland");
+    stateMap.put("NC", "North Carolina");
+    stateMap.put("ND", "North Dakota");
+    stateMap.put("NT", "Northwest Territories");
+    stateMap.put("NS", "Nova Scotia");
+    stateMap.put("NU", "Nunavut");
+    stateMap.put("OH", "Ohio");
+    stateMap.put("OK", "Oklahoma");
+    stateMap.put("ON", "Ontario");
+    stateMap.put("OR", "Oregon");
+    stateMap.put("PA", "Pennsylvania");
+    stateMap.put("PE", "Prince Edward Island");
+    stateMap.put("PR", "Puerto Rico");
+    stateMap.put("QC", "Quebec");
+    stateMap.put("RI", "Rhode Island");
+    stateMap.put("SK", "Saskatchewan");
+    stateMap.put("SC", "South Carolina");
+    stateMap.put("SD", "South Dakota");
+    stateMap.put("TN", "Tennessee");
+    stateMap.put("TX", "Texas");
+    stateMap.put("UT", "Utah");
+    stateMap.put("VT", "Vermont");
+    stateMap.put("VI", "Virgin Islands");
+    stateMap.put("VA", "Virginia");
+    stateMap.put("WA", "Washington");
+    stateMap.put("WV", "West Virginia");
+    stateMap.put("WI", "Wisconsin");
+    stateMap.put("WY", "Wyoming");
+    stateMap.put("YT", "Yukon Territory");
+    return stateMap;
   }
 
 }

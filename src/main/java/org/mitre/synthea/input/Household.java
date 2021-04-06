@@ -1,5 +1,9 @@
 package org.mitre.synthea.input;
 
+import com.google.gson.annotations.SerializedName;
+
+import org.mitre.synthea.world.agents.Person;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,10 +11,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
-import com.google.gson.annotations.SerializedName;
-
-import org.mitre.synthea.world.agents.Person;
 
 /**
  * A class the desribes and maintains a household, its members, and its seed
@@ -27,7 +27,8 @@ public class Household {
   // The Map of household members' FixedRecordGroups where the key is the person's
   // household role and the value is their list of FixedRecordGroups - which will
   // update over time.
-  private Map<String, List<FixedRecordGroup>> fixedRecordGroups = new HashMap<String, List<FixedRecordGroup>>();
+  private Map<String, List<FixedRecordGroup>> fixedRecordGroups
+      = new HashMap<String, List<FixedRecordGroup>>();
   // The list of years in order to correspond with each address sequence update.
   private List<Integer> addressYears;
   // The current addresss sequences for each person. String: HouseholdRole, Int:
@@ -107,7 +108,8 @@ public class Household {
     // Once the FixedRecordGroups are initialized, we need to sort each person's
     // list of FixedRecordGroups. This sorting is done by their ADDRESS_SEQUENCE.
     for (String key : this.fixedRecordGroups.keySet()) {
-      this.fixedRecordGroups.put(key, this.fixedRecordGroups.get(key).stream().sorted().collect(Collectors.toList()));
+      this.fixedRecordGroups.put(key, this.fixedRecordGroups.get(key).stream()
+          .sorted().collect(Collectors.toList()));
     }
 
     // Iterate through the variant records and assign them to their relevant
@@ -182,11 +184,12 @@ public class Household {
    * Gets the current record group for the person in this houshehold with the
    * given household role.
    * 
-   * @param householdRole
+   * @param householdRole The household role to get the current record group for.
    * @return
    */
   public FixedRecordGroup getCurrentRecordGroupFor(String householdRole) {
-    return this.fixedRecordGroups.get(householdRole).get(this.currentAddressSequences.get(householdRole));
+    return this.fixedRecordGroups.get(householdRole).get(this.currentAddressSequences
+        .get(householdRole));
   }
 
   /**
@@ -209,7 +212,7 @@ public class Household {
   /**
    * Returns whether this household contains the given person.
    * 
-   * @param person
+   * @param person the person to check for.
    * @return
    */
   public boolean includesPerson(Person person) {
@@ -219,7 +222,7 @@ public class Household {
   /**
    * Adds the given member to the household.
    * 
-   * @param person
+   * @param person the person to add.
    */
   public void addMember(Person person, String householdRole) {
     this.members.put(householdRole, person);
@@ -232,7 +235,7 @@ public class Household {
   /**
    * Returns the member with the given household role in this household.
    * 
-   * @param householdRole
+   * @param householdRole The person whose household role to get.
    * @return
    */
   public Person getMember(String householdRole) {
@@ -273,27 +276,30 @@ public class Household {
   }
 
   /**
-   * Gets the household role of the given person,
+   * Gets the household role of the given person.
    * 
    * @param person The person to get the role for.
    * @return The role of the person.
    */
   private String getHouseholdRoleFor(Person person) {
-    List<String> householdRoles = this.members.entrySet().stream().filter(entry -> person.equals(entry.getValue()))
+    List<String> householdRoles = this.members.entrySet().stream()
+        .filter(entry -> person.equals(entry.getValue()))
         .map(Map.Entry::getKey).collect(Collectors.toList());
     if (householdRoles.isEmpty()) {
       throw new RuntimeException(
-          "No household roles found for the given person: " + person.attributes.get(Person.NAME) + ".");
-    } else if (householdRoles.size() > 1) {
-      throw new RuntimeException("There are more than 1 household roles corresponding to the given person: "
+          "No household roles found for the given person: "
           + person.attributes.get(Person.NAME) + ".");
+    } else if (householdRoles.size() > 1) {
+      throw new RuntimeException("There are more than 1 household roles corresponding to the "
+          + "given person: " + person.attributes.get(Person.NAME) + ".");
     }
     return householdRoles.get(0);
   }
 
   /**
    * Returns the current fixed record group of the given person.
-   * @param person
+   * 
+   * @param person  The person to get the current record group for.
    * @return
    */
   public FixedRecordGroup getCurrentRecordGroupFor(Person person) {

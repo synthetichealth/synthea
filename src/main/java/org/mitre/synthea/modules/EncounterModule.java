@@ -150,7 +150,7 @@ public final class EncounterModule extends Module {
     // create the encounter
     Encounter encounter = person.encounterStart(time, type);
 
-    // Fix the person's seed attributes in case their fixed record caused an invalid fields for simulation.
+    // Fix the person's seed attributes in case their fixed record causes invalid fields.
     if (person.attributes.get(Person.HOUSEHOLD) != null) {
       FixedRecordGroup frg = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person);
       person.attributes.putAll(frg.getSeedRecordAttributes());

@@ -152,14 +152,6 @@ public class PediatricGrowthTrajectory implements Serializable {
     String sex = (String) person.attributes.get(Person.GENDER);
     int nextRoundedYear = (int) Math.floor(nextAgeYear);
     YearInformation yi = PediatricGrowthTrajectory.yearCorrelations.get(Integer.toString(nextRoundedYear));
-    if(yi == null){
-      if(nextRoundedYear < 1){
-        yi = PediatricGrowthTrajectory.yearCorrelations.get("1");
-        System.out.println("PEDIATRIC_GROWTH:158 - Year correlation for person " + person.attributes.get(Person.NAME) + " at time " + time + " at age " + person.ageInYears(time) + " with birthdate " + person.attributes.get(Person.BIRTHDATE) +  "does not exist.");
-      } else {
-        throw new NullPointerException("Year correlation for person " + person.attributes.get(Person.NAME) + " at time " + time + " at age " + person.ageInYears(time) + " with nextRoundedYear " + nextRoundedYear + " with birthdate " + person.attributes.get(Person.BIRTHDATE) +" trajectory " +  this.trajectory.get(0).timeInSimulation + "does not exist.");
-      }
-    }
     double sigma = sigma(sex, age);
     Point lastPoint = this.tail();
     double currentBMI = lastPoint.bmi;

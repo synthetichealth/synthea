@@ -4,20 +4,20 @@ import com.google.gson.Gson;
 
 import com.google.gson.reflect.TypeToken;
 
-import org.mitre.synthea.engine.Generator;
-import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.HealthRecord;
-
-import java.lang.reflect.Type;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
 
 /**
  * A grouping of FixedRecords that represents a single individual. FixedRecords
@@ -73,7 +73,8 @@ public class FixedRecordGroupManager {
     }.getType();
     FixedRecordGroupManager fixedRecordGroupManager = new FixedRecordGroupManager();
     try {
-      System.out.println("Loading fixed patient demographic records and households file <" + filePath + ">");
+      System.out.println("Loading fixed patient demographic records and households file <"
+          + filePath + ">");
       fixedRecordGroupManager.householdsList = gson.fromJson(new FileReader(filePath), jsonType);
     } catch (FileNotFoundException e) {
       throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
@@ -82,7 +83,8 @@ public class FixedRecordGroupManager {
     long householdsSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
     fixedRecordGroupManager.initializeHouseholds(householdsSeed);
     System.out.println(
-        "Fixed patient demographic records and households file <" + filePath + "> loaded and households initialized!");
+        "Fixed patient demographic records and households file <" + filePath
+        + "> loaded and households initialized!");
     return fixedRecordGroupManager;
   }
 
@@ -107,11 +109,11 @@ public class FixedRecordGroupManager {
    * Checks to update the household of this person's fixed record group based on
    * address sequences.
    * 
-   * @param currentYear
+   * @param currentYear The year to check for address updating.
    */
   public boolean checkToUpdateHouseholdAddressFor(Person person, int currentYear) {
-    return this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD)).updateCurrentFixedRecordGroupFor(currentYear,
-        person);
+    return this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD))
+        .updateCurrentFixedRecordGroupFor(currentYear, person);
   }
 
   /**
@@ -201,11 +203,12 @@ public class FixedRecordGroupManager {
   /**
    * Returns the current fixed record group for the given person.
    * 
-   * @param person
+   * @param person  The person to get the current record group for.
    * @return
    */
   public FixedRecordGroup getCurrentRecordGroupFor(Person person) {
-    return this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD)).getCurrentRecordGroupFor(person);
+    return this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD))
+        .getCurrentRecordGroupFor(person);
   }
 
   /**
@@ -224,6 +227,7 @@ public class FixedRecordGroupManager {
    * @return All of the fixed record groups for the given person.
    */
   public List<FixedRecordGroup> getAllRecordGroupsFor(Person person) {
-    return this.householdsMap.get(person.attributes.get(Person.HOUSEHOLD)).getAllRecordGroupsFor(person);
+    return this.householdsMap
+        .get(person.attributes.get(Person.HOUSEHOLD)).getAllRecordGroupsFor(person);
   }
 }
