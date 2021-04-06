@@ -287,6 +287,9 @@ public class Generator implements RandomNumberGenerator {
       Config.set("exporter.split_records", "true");
       // We want every person to survive the simulation.
       Config.set("generate.only_alive_patients", "true");
+      Config.set("generate.only_dead_patients", "false");
+      // We want full years of history.
+      Config.set("exporter.years_of_history", "0");
     }
 
     ExecutorService threadPool = Executors.newFixedThreadPool(8);

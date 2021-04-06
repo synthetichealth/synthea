@@ -76,10 +76,6 @@ public class FixedRecordTest {
 @BeforeClass
   public static void setup() {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "California");
-    Config.set("generate.only_dead_patients", "false");
-    Config.set("exporter.split_records", "true");
-    Config.set("generate.append_numbers_to_person_names", "false");
-    Config.set("generate.only_alive_patients", "true");
     Provider.clear();
     Payer.clear();
     // Create a generator with the preset fixed demographics test file.
@@ -99,10 +95,12 @@ public class FixedRecordTest {
    */
   @AfterClass
   public static void resetConfig() {
-    Generator.DEFAULT_STATE = Config.get("test_state.default", "California");
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.split_records", "false");
     Config.set("generate.append_numbers_to_person_names", "true");
     Config.set("generate.only_alive_patients", "false");
+    Config.set("generate.only_dead_patients", "false");
+    Config.set("exporter.years_of_history", "10");
   }
 
   @Test
@@ -397,10 +395,10 @@ public class FixedRecordTest {
 
     // Make sure that each variant is from a correctly chronological fixed record
     // group.
-    for (int currentSequence : sequenceHealthRecordPairs.keySet().stream().sorted().collect(Collectors.toList())) {
+    // for (int currentSequence : sequenceHealthRecordPairs.keySet().stream().sorted().collect(Collectors.toList())) {
       // System.out.println((
       // sequenceHealthRecordPairs.get(currentSequence).get(0).getEntry().get(1).getResource().getPeriod().getStart()));
-    }
+    // }
   }
 
   /**
