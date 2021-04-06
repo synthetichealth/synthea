@@ -51,7 +51,6 @@ import org.mitre.synthea.world.geography.Location;
  */
 public class Generator implements RandomNumberGenerator {
 
-  public DataStore database;
   public GeneratorOptions options;
   private Random random;
   public long timestep;
@@ -183,24 +182,6 @@ public class Generator implements RandomNumberGenerator {
   }
 
   private void init() {
-    String dbType = Config.get("generate.database_type");
-
-    switch (dbType) {
-      case "in-memory":
-        this.database = new DataStore(false);
-        break;
-      case "file":
-        this.database = new DataStore(true);
-        break;
-      case "none":
-        this.database = null;
-        break;
-      default:
-        throw new IllegalArgumentException(
-          "Unexpected value for config setting generate.database_type: '" + dbType
-          + "' . Valid values are file, in-memory, or none.");
-    }
-
     if (options.state == null) {
       options.state = DEFAULT_STATE;
     }
@@ -353,12 +334,6 @@ public class Generator implements RandomNumberGenerator {
       threadPool.shutdownNow();
     }
 
-    // have to store providers at the end to correctly capture utilization #s
-    // TODO - de-dup hospitals if using a file-based database?
-    if (database != null) {
-      database.store(Provider.getProviderList());
-    }
-
     // Save a snapshot of the generated population using Java Serialization
     if (options.updatedPopulationSnapshotPath != null) {
       FileOutputStream fos = null;
@@ -475,10 +450,12 @@ public class Generator implements RandomNumberGenerator {
 
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
-        if(isAlive){  // THIS IS HERE ONLY FOR FIXED DEMOGRAPHICS TO ENSURE DEAD RECORDS ARE NOT EXPORTED.
+        if(this.fixedRecordGroupManager == null || isAlive){
+          // This if-statement prevents dead patients from being exported during fixed demographics runs.
           Exporter.export(person, finishTime, exporterRuntimeOptions);
         }
-      } while (!patientMeetsCriteria(isAlive, person));
+      } while (!patientMeetsCriteria(isAlive, providerCount, providerMinimum));
+      //repeat while patient doesn't meet criteria
       // if the patient is alive and we want only dead ones => loop & try again
       //  (and dont even export, see above)
       // if the patient is dead and we only want dead ones => done
@@ -492,7 +469,7 @@ public class Generator implements RandomNumberGenerator {
     }
     return person;
   }
-
+  
   /**
    * Determines if a patient meets the requested criteria.
    * If a patient does not meet the criteria the process will be repeated so a new one is generated
@@ -501,7 +478,7 @@ public class Generator implements RandomNumberGenerator {
    * @param providerMinimum Minimum number of providers required
    * @return true if patient meets criteria, false otherwise
    */
-  public boolean patientMeetsCriteria(boolean isAlive, Person person) {
+  public boolean patientMeetsCriteria(boolean isAlive, int providerCount, int providerMinimum) {
     if (!isAlive && !onlyDeadPatients && this.options.overflow) { 
       // if patient is not alive and the criteria isn't dead patients new patient is needed
       return false;
@@ -517,14 +494,13 @@ public class Generator implements RandomNumberGenerator {
       return false;
     }
 
-    // if (providerCount < providerMinimum) {
-    //   // if provider count less than provider min new patient is needed
-    //   return false;
-    // }
+    if (providerCount < providerMinimum) {
+      // if provider count less than provider min new patient is needed
+      return false;
+    }
 
     return true;
   }
-
 
   /**
    * Update person record to stop time, record the entry and export record.
@@ -806,10 +782,6 @@ public class Generator implements RandomNumberGenerator {
       // Set the person's attributes to their seed record to ensure console display is correct.
       FixedRecordGroup frg = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person);
       person.attributes.putAll(frg.getSeedRecordAttributes());
-    }
-    
-    if (database != null) {
-      database.store(person);
     }
 
     if (internalStore != null) {

@@ -1,0 +1,99 @@
+{
+  "name": "GMF 2.0",
+  "gmf_version": 2.0,
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "2_Second_Delay"
+    },
+    "2_Second_Delay": {
+      "type": "Delay",
+      "unit": "seconds",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 2
+        }
+      },
+      "direct_transition": "VitalSign"
+    },
+    "VitalSign" : {
+      "type" : "VitalSign",
+      "vital_sign" : "Systolic Blood Pressure",
+      "distribution" : {
+        "kind" : "UNIFORM",
+        "parameters": {
+          "low": 110,
+          "high": 130
+        }
+      },
+      "unit" : "mm[Hg]",
+      "direct_transition" : "Observation"
+    },
+    "Observation" : {
+      "type" : "Observation",
+      "category" : "procedure",
+      "codes" : [
+        {
+          "system" : "LOINC",
+          "code" : "2089-1",
+          "display" : "Cholesterol in LDL"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 140,
+          "standardDeviation": 15
+        }
+      },
+      "unit": "mg/dL",
+      "direct_transition" : "Set_Attribute_1"
+    },
+    "Set_Attribute_1": {
+      "type": "SetAttribute",
+      "attribute" : "Favorite Number",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 2
+        }
+      },
+      "direct_transition": "Appendectomy"
+    },
+    "Appendectomy": {
+      "type": "Procedure",
+      "target_encounter": "Inpatient_Encounter",
+      "codes": [{
+        "system": "SNOMED-CT",
+        "code": "6025007",
+        "display": "Laparoscopic appendectomy"
+      }],
+      "unit": "minutes",
+      "distribution" : {
+        "kind": "UNIFORM",
+        "parameters": {
+          "low": 45,
+          "high" : 60
+        }
+      },
+      "assign_to_attribute" : "Most Recent Surgery",
+      "direct_transition": "SymptomOnset"
+    },
+    "SymptomOnset" : {
+      "type" : "Symptom",
+      "symptom" : "Chest Pain",
+      "distribution" : {
+        "kind": "UNIFORM",
+        "parameters": {
+          "low" : 1,
+          "high" : 10
+        }
+      },
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

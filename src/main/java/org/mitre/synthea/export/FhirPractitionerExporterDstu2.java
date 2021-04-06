@@ -1,6 +1,5 @@
 package org.mitre.synthea.export;
 
-import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.api.ExtensionDt;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
@@ -27,8 +26,6 @@ import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Provider;
 
 public abstract class FhirPractitionerExporterDstu2 {
-
-  private static final FhirContext FHIR_CTX = FhirContext.forDstu2();
 
   private static final String EXTENSION_URI = 
       "http://synthetichealth.github.io/synthea/utilization-encounters-extension";
@@ -68,7 +65,7 @@ public abstract class FhirPractitionerExporterDstu2 {
         }
       }
 
-      String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true)
+      String bundleJson = FhirDstu2.getContext().newJsonParser().setPrettyPrint(true)
           .encodeResourceToString(bundle);
 
       // get output folder

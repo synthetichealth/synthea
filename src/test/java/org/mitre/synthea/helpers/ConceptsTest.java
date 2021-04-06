@@ -56,7 +56,7 @@ public class ConceptsTest {
     Path modulePath = modulesFolder.resolve("example_module.json");
     
     JsonReader reader = new JsonReader(new FileReader(modulePath.toString()));
-    JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
+    JsonObject module = JsonParser.parseReader(reader).getAsJsonObject();
     
     // example_module has 4 codes:
     List<Code> codes = new ArrayList<Code>();
@@ -79,7 +79,7 @@ public class ConceptsTest {
     Path modulePath = modulesFolder.resolve("condition_onset.json");
     
     JsonReader reader = new JsonReader(new FileReader(modulePath.toString()));
-    JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
+    JsonObject module = JsonParser.parseReader(reader).getAsJsonObject();
     JsonObject state = module.getAsJsonObject("states").getAsJsonObject("Appendicitis");
     
     Concepts.inventoryState(concepts, state, module.get("name").getAsString());

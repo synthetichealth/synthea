@@ -21,7 +21,6 @@ import org.mitre.synthea.helpers.RandomNumberGenerator;
 
 public abstract class FhirGroupExporterR4 {
 
-  private static final FhirContext FHIR_CTX = FhirContext.forR4();
   private static final List<String> patientList = new ArrayList<String>();
 
   /**
@@ -81,12 +80,12 @@ public abstract class FhirGroupExporterR4 {
       String groupJson = null;
 
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
-        IParser parser = FHIR_CTX.newJsonParser().setPrettyPrint(false);
+        IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(false);
         groupJson = parser.encodeResourceToString(group);
         String filename = group.getResourceType().toString() + ".ndjson";
         outFilePath = f.toPath().resolve(filename);
       } else {
-        IParser parser = FHIR_CTX.newJsonParser().setPrettyPrint(true);
+        IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(true);
         groupJson = parser.encodeResourceToString(group);
         outFilePath = f.toPath().resolve("groupInformation" + stop + ".json");
       }

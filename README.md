@@ -1,4 +1,4 @@
-# Synthea<sup>TM</sup> Patient Generator [![Build Status](https://travis-ci.org/synthetichealth/synthea.svg?branch=master)](https://travis-ci.org/synthetichealth/synthea) [![codecov](https://codecov.io/gh/synthetichealth/synthea/branch/master/graph/badge.svg)](https://codecov.io/gh/synthetichealth/synthea)
+# Synthea<sup>TM</sup> Patient Generator ![Build Status](https://github.com/synthetichealth/synthea/workflows/.github/workflows/ci-build-test.yml/badge.svg?branch=master) [![codecov](https://codecov.io/gh/synthetichealth/synthea/branch/master/graph/badge.svg)](https://codecov.io/gh/synthetichealth/synthea)
 
 Synthea<sup>TM</sup> is a Synthetic Patient Population Simulator. The goal is to output synthetic, realistic (but not real), patient data and associated health records in a variety of formats.
 
@@ -66,7 +66,6 @@ For example:
  - `run_synthea -p 1000`
  - `run_synthea -s 987 Washington Seattle`
  - `run_synthea -s 21 -p 100 Utah "Salt Lake City"`
- - `run_synthea -m metabolic*`
 
 Some settings can be changed in `./src/main/resources/synthea.properties`.
 
@@ -87,7 +86,7 @@ Generate a list of concepts (used in the records) or attributes (variables on ea
 
 # License
 
-Copyright 2017-2020 The MITRE Corporation
+Copyright 2017-2021 The MITRE Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

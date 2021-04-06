@@ -54,7 +54,7 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class Module implements Cloneable, Serializable {
 
-  public static final Double GMF_VERSION = 1.0;
+  public static final Double GMF_VERSION = 2.0;
 
   private static final Configuration JSON_PATH_CONFIG = Configuration.builder()
       .jsonProvider(new GsonJsonProvider())
@@ -189,8 +189,7 @@ public class Module implements Cloneable, Serializable {
     if (overrides != null) {
       jsonString = applyOverrides(jsonString, overrides, path.getFileName().toString());
     }
-    JsonParser parser = new JsonParser();
-    JsonObject object = parser.parse(jsonString).getAsJsonObject();
+    JsonObject object = JsonParser.parseString(jsonString).getAsJsonObject();
     return new Module(object, submodule);
   }
 

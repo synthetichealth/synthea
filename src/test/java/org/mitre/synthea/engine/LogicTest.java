@@ -69,7 +69,7 @@ public class LogicTest {
     Path modulesFolder = Paths.get("src/test/resources/generic");
     Path logicFile = modulesFolder.resolve("logic.json");
     JsonReader reader = new JsonReader(new FileReader(logicFile.toString()));
-    tests = new JsonParser().parse(reader).getAsJsonObject();
+    tests = JsonParser.parseReader(reader).getAsJsonObject();
     reader.close();
   }
 

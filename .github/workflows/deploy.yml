@@ -1,0 +1,94 @@
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+
+      - name: Gradle cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-jdk8-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-jdk8
+            
+      - name: Create Artifacts
+        run: |
+          ./gradlew uberJar javadoc graphviz
+          mkdir -p output/build/javadoc
+          mv build/docs/javadoc/* output/build/javadoc
+      
+      - name: Delete Previous master-branch-latest Tag
+        uses: dev-drprasad/delete-tag-and-release@v0.1.2
+        with:
+          delete_release: true
+          tag_name: master-branch-latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Create Release
+        id: create_release 
+        # note id is referenced below in Deploy uberJar
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: master-branch-latest
+          draft: false
+          prerelease: true
+                
+      - name: Deploy UberJar
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          # This pulls from the CREATE RELEASE step above, referencing its ID to get its outputs object, which include a `upload_url` 
+          asset_path: build/libs/synthea-with-dependencies.jar
+          asset_name: synthea-with-dependencies.jar
+          asset_content_type: application/java-archive
+        
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3 
+        # note: watch for v4 to be released
+        with: 
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          keep_files: true
+          # do not create a .nojekyll file
+          enable_jekyll: true
+          publish_dir: ./output
+          user_name: 'Jason Walonoski'
+          user_email: 'jwalonoski@mitre.org'
+          commit_message: rebuild graphs, javadoc and binary distribution at
+          # note the commit SHA is appended automatically
+
+      - name: Slack Notification on Failure
+        uses: 8398a7/action-slack@v3
+        if: failure()
+        with:
+          status: custom
+          job_name: Deploy
+          author_name: Deploy Workflow
+          fields: workflow,commit,repo,author,took
+          # see https://action-slack.netlify.app/usecase/02-custom for custom payload info
+          custom_payload: |
+            {
+              attachments: [{
+                color: 'danger',
+                text: `${process.env.AS_WORKFLOW} -- (${process.env.AS_COMMIT}) of ${process.env.AS_REPO}@master by ${process.env.AS_AUTHOR} ${{ job.status }} in ${process.env.AS_TOOK}`,
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

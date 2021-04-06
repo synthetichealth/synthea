@@ -23,7 +23,6 @@ import org.hl7.fhir.dstu3.model.Media;
 import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.dstu3.model.Quantity;
 import org.hl7.fhir.dstu3.model.SampledData;
-import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -100,7 +99,7 @@ public class FHIRSTU3ExporterTest {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
 
-    FhirContext ctx = FhirContext.forDstu3();
+    FhirContext ctx = FhirStu3.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
 
     FhirValidator validator = ctx.newValidator();
@@ -128,79 +127,80 @@ public class FHIRSTU3ExporterTest {
         validationErrors.add(
             "JSON contains unconverted references to 'SNOMED-CT' (should be URIs)");
       }
-      // Now validate the resource...
-      IBaseResource resource = ctx.newJsonParser().parseResource(fhirJson);
-      ValidationResult result = validator.validateWithResult(resource);
-      if (!result.isSuccessful()) {
-        // If the validation failed, let's crack open the Bundle and validate
-        // each individual entry.resource to get context-sensitive error
-        // messages...
-        Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
-        for (BundleEntryComponent entry : bundle.getEntry()) {
-          ValidationResult eresult = validator.validateWithResult(entry.getResource());
-          if (!eresult.isSuccessful()) {
-            for (SingleValidationMessage emessage : eresult.getMessages()) {
-              boolean valid = false;
-              if (emessage.getMessage().contains("@ Observation obs-7")) {
-                /*
-                 * The obs-7 invariant basically says that Observations should have values, unless
-                 * they are made of components. This test replaces an invalid XPath expression
-                 * that was causing correct instances to fail validation.
-                 */
-                valid = validateObs7((Observation) entry.getResource());
-              } else if (emessage.getMessage().contains("@ Condition con-4")) {
-                /*
-                 * The con-4 invariant says "If condition is abated, then clinicalStatus must be
-                 * either inactive, resolved, or remission" which is very clear and sensical.
-                 * However, the XPath expression does not evaluate correctly for valid instances,
-                 * so we must manually validate.
-                 */
-                valid = validateCon4((Condition) entry.getResource());
-              } else if (emessage.getMessage().contains("@ MedicationRequest mps-1")) {
-                /*
-                 * The mps-1 invariant says MedicationRequest.requester.onBehalfOf can only be
-                 * specified if MedicationRequest.requester.agent is practitioner or device.
-                 * But the invariant is poorly written and does not correctly handle references
-                 * starting with "urn:uuid"
-                 */
-                valid = true; // ignore this error
-              } else if (emessage.getMessage().contains(
-                  "per-1: If present, start SHALL have a lower value than end")) {
-                /*
-                 * The per-1 invariant does not account for daylight savings time... so, if the
-                 * daylight savings switch happens between the start and end, the validation
-                 * fails, even if it is valid.
-                 */
-                valid = true; // ignore this error
-              }
+      // let's crack open the Bundle and validate
+      // each individual entry.resource to get context-sensitive error
+      // messages...
+      Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
+      for (BundleEntryComponent entry : bundle.getEntry()) {
+        ValidationResult eresult = validator.validateWithResult(entry.getResource());
+        if (!eresult.isSuccessful()) {
+          for (SingleValidationMessage emessage : eresult.getMessages()) {
+            boolean valid = false;
+            if (emessage.getMessage().contains("@ Observation obs-7")) {
+              /*
+               * The obs-7 invariant basically says that Observations should have values, unless
+               * they are made of components. This test replaces an invalid XPath expression
+               * that was causing correct instances to fail validation.
+               */
+              valid = validateObs7((Observation) entry.getResource());
+            } else if (emessage.getMessage().contains("@ Condition con-4")) {
+              /*
+               * The con-4 invariant says "If condition is abated, then clinicalStatus must be
+               * either inactive, resolved, or remission" which is very clear and sensical.
+               * However, the XPath expression does not evaluate correctly for valid instances,
+               * so we must manually validate.
+               */
+              valid = validateCon4((Condition) entry.getResource());
+            } else if (emessage.getMessage().contains("@ MedicationRequest mps-1")) {
+              /*
+               * The mps-1 invariant says MedicationRequest.requester.onBehalfOf can only be
+               * specified if MedicationRequest.requester.agent is practitioner or device.
+               * But the invariant is poorly written and does not correctly handle references
+               * starting with "urn:uuid"
+               */
+              valid = true; // ignore this error
+            } else if (emessage.getMessage().contains(
+                "per-1: If present, start SHALL have a lower value than end")) {
+              /*
+               * The per-1 invariant does not account for daylight savings time... so, if the
+               * daylight savings switch happens between the start and end, the validation
+               * fails, even if it is valid.
+               */
+              valid = true; // ignore this error
+            }
 
-              if (!valid) {
-                System.out.println(parser.encodeResourceToString(entry.getResource()));
-                System.out.println("ERROR: " + emessage.getMessage());
-                validationErrors.add(emessage.getMessage());
-              }
+            if (!valid) {
+              System.out.println(parser.encodeResourceToString(entry.getResource()));
+              System.out.println("ERROR: " + emessage.getMessage());
+              validationErrors.add(emessage.getMessage());
             }
           }
-          // Check ExplanationOfBenefit Resources against BlueButton
-          if (entry.getResource().fhirType().equals("ExplanationOfBenefit")) {
-            ValidationResult bbResult = validationResources.validateSTU3(entry.getResource());
+        }
+        // Check ExplanationOfBenefit Resources against BlueButton
+        if (entry.getResource().fhirType().equals("ExplanationOfBenefit")) {
+          ValidationResult bbResult = validationResources.validateSTU3(entry.getResource());
 
-            for (SingleValidationMessage message : bbResult.getMessages()) {
-              if (message.getSeverity() == ResultSeverityEnum.ERROR) {
-                if (!(message.getMessage().contains(
-                    "Element 'ExplanationOfBenefit.id': minimum required = 1, but only found 0")
-                    || message.getMessage().contains("Could not verify slice for profile"))) {
-                  // For some reason the validator is not detecting the IDs on the resources,
-                  // even though they appear to be present while debugging and during normal
-                  // operations.
-                  System.out.println(message.getSeverity() + ": " + message.getMessage());
-                  Assert.fail(message.getSeverity() + ": " + message.getMessage());
-                }
+          for (SingleValidationMessage message : bbResult.getMessages()) {
+            if (message.getMessage().contains("extension https://bluebutton.cms.gov/assets")) {
+              /*
+               * The instance validator complains about the BlueButton extensions, ignore
+               */
+              continue;
+            } else if (message.getSeverity() == ResultSeverityEnum.ERROR) {
+              if (!(message.getMessage().contains(
+                  "Element 'ExplanationOfBenefit.id': minimum required = 1, but only found 0")
+                  || message.getMessage().contains("Could not verify slice for profile"))) {
+                // For some reason the validator is not detecting the IDs on the resources,
+                // even though they appear to be present while debugging and during normal
+                // operations.
+                System.out.println(message.getSeverity() + ": " + message.getMessage());
+                Assert.fail(message.getSeverity() + ": " + message.getMessage());
               }
             }
           }
         }
       }
+
       int y = validationErrors.size();
       if (x != y) {
         Exporter.export(person, System.currentTimeMillis());
@@ -282,7 +282,7 @@ public class FHIRSTU3ExporterTest {
     assertTrue(sampleObs.process(person, time));
     person.history.add(sampleObs);
     
-    FhirContext ctx = FhirContext.forDstu3();
+    FhirContext ctx = FhirStu3.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirStu3.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
@@ -348,7 +348,7 @@ public class FHIRSTU3ExporterTest {
     assertTrue(urlState.process(person, time));
     person.history.add(urlState);
     
-    FhirContext ctx = FhirContext.forDstu3();
+    FhirContext ctx = FhirStu3.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirStu3.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);

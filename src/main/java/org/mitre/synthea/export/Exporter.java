@@ -172,7 +172,7 @@ public abstract class Exporter {
       File outDirectory = getOutputFolder("fhir_stu3", person);
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
         org.hl7.fhir.dstu3.model.Bundle bundle = FhirStu3.convertToFHIR(person, stopTime);
-        IParser parser = FhirContext.forDstu3().newJsonParser().setPrettyPrint(false);
+        IParser parser = FhirStu3.getContext().newJsonParser().setPrettyPrint(false);
         for (org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           String filename = entry.getResource().getResourceType().toString() + ".ndjson";
           Path outFilePath = outDirectory.toPath().resolve(filename);
@@ -189,7 +189,7 @@ public abstract class Exporter {
       File outDirectory = getOutputFolder("fhir_dstu2", person);
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
         ca.uhn.fhir.model.dstu2.resource.Bundle bundle = FhirDstu2.convertToFHIR(person, stopTime);
-        IParser parser = FhirContext.forDstu2().newJsonParser().setPrettyPrint(false);
+        IParser parser = FhirDstu2.getContext().newJsonParser().setPrettyPrint(false);
         for (ca.uhn.fhir.model.dstu2.resource.Bundle.Entry entry : bundle.getEntry()) {
           String filename = entry.getResource().getResourceName() + ".ndjson";
           Path outFilePath = outDirectory.toPath().resolve(filename);
@@ -206,7 +206,7 @@ public abstract class Exporter {
       File outDirectory = getOutputFolder("fhir", person);
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
         org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
-        IParser parser = FhirContext.forR4().newJsonParser().setPrettyPrint(false);
+        IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(false);
         for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           String filename = entry.getResource().getResourceType().toString() + ".ndjson";
           Path outFilePath = outDirectory.toPath().resolve(filename);
@@ -360,6 +360,7 @@ public abstract class Exporter {
       for (Pair<Person, Long> entry: deferredExports) {
         export(entry.getLeft(), entry.getRight(), nonDeferredOptions);
       }
+      deferredExports.clear();
     }
     
     String bulk = Config.get("exporter.fhir.bulk_data");
@@ -408,28 +409,6 @@ public abstract class Exporter {
       e.printStackTrace();
     }
     Config.set("exporter.fhir.bulk_data", bulk);
-
-    if (Config.getAsBoolean("exporter.cost_access_outcomes_report")) {
-      ReportExporter.export(generator);
-    }
-
-    if (Config.getAsBoolean("exporter.prevalence_report")) {
-      try {
-        PrevalenceReport.export(generator);
-      } catch (Exception e) {
-        System.err.println("Prevalence report generation failed!");
-        e.printStackTrace();
-      }
-    }
-
-    if (Config.getAsBoolean("exporter.custom_report")) {
-      try {
-        CustomSqlReport.export(generator);
-      } catch (Exception e) {
-        System.err.println("Custom report generation failed!");
-        e.printStackTrace();
-      }
-    }
 
     if (Config.getAsBoolean("exporter.cdw.export")) {
       CDWExporter.getInstance().writeFactTables();

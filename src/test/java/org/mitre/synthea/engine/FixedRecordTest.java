@@ -73,7 +73,7 @@ public class FixedRecordTest {
    * 
    * @throws Exception on test configuration loading errors.
    */
-  @BeforeClass
+@BeforeClass
   public static void setup() {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "California");
     Config.set("generate.only_dead_patients", "false");

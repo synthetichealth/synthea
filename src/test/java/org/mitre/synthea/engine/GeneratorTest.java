@@ -71,17 +71,6 @@ public class GeneratorTest {
   }
 
   @Test
-  public void testGenerateWithDatabase() throws Exception {
-    int numberOfPeople = 1;
-    Config.set("generate.database_type", "in-memory");
-    Generator generator = new Generator(numberOfPeople, 0L, 1L);
-    Config.set("generate.database_type", "none");
-    assertNotNull(generator.database);
-    generator.run();
-    assertEquals(numberOfPeople, generator.stats.get("alive").longValue());
-  }
-
-  @Test
   public void testGenerateWithMetrics() throws Exception {
     int numberOfPeople = 1;
     Config.set("generate.track_detailed_transition_metrics", "true");

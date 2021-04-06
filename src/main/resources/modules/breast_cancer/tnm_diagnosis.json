@@ -566,7 +566,7 @@
     "No Regional Lymph Node Metastasis": {
       "type": "Observation",
       "category": "imaging",
-      "unit": "#",
+      "unit": "{#}",
       "codes": [
         {
           "system": "LOINC",
@@ -592,7 +592,7 @@
     "Micrometastasis in 1 - 3 Lymph Nodes": {
       "type": "Observation",
       "category": "imaging",
-      "unit": "#",
+      "unit": "{#}",
       "codes": [
         {
           "system": "LOINC",
@@ -613,7 +613,7 @@
     "Macrometastases in 4 - 9 Lymph Nodes": {
       "type": "Observation",
       "category": "imaging",
-      "unit": "#",
+      "unit": "{#}",
       "codes": [
         {
           "system": "LOINC",
@@ -634,7 +634,7 @@
     "Macrometastases in 10+ Lymph Nodes": {
       "type": "Observation",
       "category": "imaging",
-      "unit": "#",
+      "unit": "{#}",
       "codes": [
         {
           "system": "LOINC",

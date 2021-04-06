@@ -219,6 +219,10 @@ public class FhirStu3 {
 
     return mappingTable;
   }
+  
+  public static FhirContext getContext() {
+    return FHIR_CTX;
+  }
 
   /**
    * Convert the given Person into a FHIR Bundle, containing the Patient and the
@@ -967,14 +971,6 @@ public class FhirStu3 {
     ExplanationOfBenefit eob = new ExplanationOfBenefit();
     org.hl7.fhir.dstu3.model.Encounter encounterResource =
         (org.hl7.fhir.dstu3.model.Encounter) encounterEntry.getResource();
-
-    Meta meta = new Meta();
-    if (inpatient) {
-      meta.addProfile("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-inpatient-claim");
-    }  else if (outpatient) {
-      meta.addProfile("https://bluebutton.cms.gov/assets/ig/StructureDefinition-bluebutton-outpatient-claim");
-    }
-    eob.setMeta(meta);
 
     // First add the extensions
     // will have to deal with different claim types (e.g. inpatient vs outpatient)
@@ -2197,6 +2193,11 @@ public class FhirStu3 {
     imagingStudyResource.setUid("urn:oid:" + imagingStudy.dicomUid);
     imagingStudyResource.setPatient(new Reference(personEntry.getFullUrl()));
     imagingStudyResource.setContext(new Reference(encounterEntry.getFullUrl()));
+
+    if (! imagingStudy.codes.isEmpty()) {
+      imagingStudyResource.addProcedureCode(
+              mapCodeToCodeableConcept(imagingStudy.codes.get(0), SNOMED_URI));
+    }
 
     Date startDate = new Date(imagingStudy.start);
     imagingStudyResource.setStarted(startDate);

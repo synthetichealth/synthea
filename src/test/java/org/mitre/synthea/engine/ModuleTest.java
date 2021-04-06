@@ -194,14 +194,30 @@ public class ModuleTest {
           "resources", "future_module", "module_from_the_future.json"))
           .stream()
           .collect(Collectors.joining("\n"));
-      JsonParser parser = new JsonParser();
-      JsonObject object = parser.parse(jsonString).getAsJsonObject();
+      JsonObject object = JsonParser.parseString(jsonString).getAsJsonObject();
       new Module(object, false);
       // Should never get here
       fail("Didn't throw exception when loading module with version from the future");
     } catch (IllegalStateException ise) {
       assertTrue(ise.getMessage()
           .startsWith("Allergies... FROM THE FUTURE!!!! Module specifies GMF version"));
+    }
+  }
+
+  @Test
+  public void rejectModulesWithBadDistributions() throws Exception {
+    try {
+      String jsonString = Files.readAllLines(Paths.get("src", "test",
+          "resources", "busted_distribution", "module_with_bad_distribution.json"))
+          .stream()
+          .collect(Collectors.joining("\n"));
+      JsonParser parser = new JsonParser();
+      JsonObject object = parser.parse(jsonString).getAsJsonObject();
+      new Module(object, false);
+      // Should never get here
+      fail("Didn't throw exception when loading module with version from the future");
+    } catch (IllegalStateException ise) {
+      assertTrue(ise.getMessage().startsWith("State 2_Second_Delay contains an invalid distribution"));
     }
   }
 
@@ -270,8 +286,7 @@ public class ModuleTest {
       try {
         FileReader fileReader = new FileReader(t.toString());
         JsonReader reader = new JsonReader(fileReader);
-        JsonParser parser = new JsonParser();
-        JsonObject object = parser.parse(reader).getAsJsonObject();
+        JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
         JsonObject states = object.getAsJsonObject("states");
         for (String stateName : states.keySet()) {
           JsonObject state = states.getAsJsonObject(stateName);
