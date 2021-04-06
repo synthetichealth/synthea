@@ -1364,7 +1364,20 @@ public class FhirR4 {
     eob.setPayment(new ExplanationOfBenefit.PaymentComponent()
         .setAmount(payment));
 
-    return newEntry(person, bundle,eob);
+    // Reference informationReference = new Reference(item.fullUrl);
+    ExplanationOfBenefit.SupportingInformationComponent informationComponent =
+        new ExplanationOfBenefit.SupportingInformationComponent();
+    informationComponent.setSequence(1);
+    informationComponent.setTiming(new DateType(encounterResource.getPeriod().getEnd()));
+    // informationComponent.setValue(informationReference);
+    CodeableConcept category = new CodeableConcept();
+    category.getCodingFirstRep()
+        .setSystem("http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBSupportingInfoType")
+        .setCode("clmrecvddate");
+    informationComponent.setCategory(category);
+    eob.addSupportingInfo(informationComponent);
+
+    return newEntry(person, bundle, eob);
   }
 
   /**

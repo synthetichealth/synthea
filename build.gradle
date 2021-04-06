@@ -41,11 +41,11 @@ dependencies {
   // This dependency is found on compile classpath of this component and consumers.
   implementation 'com.google.code.gson:gson:2.8.6'
   implementation 'com.jayway.jsonpath:json-path:2.4.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:5.2.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:5.2.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:5.2.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:5.2.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-client:5.2.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:5.3.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:5.3.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:5.3.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:5.3.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-client:5.3.0'
   // C-CDA export uses Apache FreeMarker templates
   implementation 'org.freemarker:freemarker:2.3.26-incubating'
 
@@ -99,8 +99,8 @@ dependencies {
   testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:5.2.0'
   testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:5.2.0'
   testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:5.2.0'
-  testImplementation 'com.helger:ph-schematron:5.0.4'
-  testImplementation 'com.helger:ph-commons:9.1.1'
+  testImplementation 'com.helger:ph-schematron:5.6.3'
+  testImplementation 'com.helger:ph-commons:9.5.5'
 }
 
 // Provide more descriptive test failure output
