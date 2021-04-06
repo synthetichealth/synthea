@@ -1,0 +1,413 @@
+---
+layout: default
+title: home
+---
+<section id="home">
+    <div class="container centered">
+        <div class="row">
+            <h1>Synthetic Patient Generation</h1>
+            <h2>Realistic Health Data</h2>
+            <h2>No Cost, No Restrictions</h2>
+        </div>
+    </div>
+</section>
+<section id="about">
+    <div class="buffer" id="about-landing"></div>
+    <div class="container">
+       <div class="row">
+            <div class="section-heading">
+                <h2>SYNTHEA EMPOWERS <br class="rwd-break"> DATA-DRIVEN HEALTH IT</h2>
+                <img class="syn-logo" src="{{site.baseurl}}/assets/img/logo/synthea_sprites-1-print-trans.png" alt="Synthea Logo">
+                <p class="description">
+                    Synthea<sup>TM</sup> is an open-source, synthetic patient generator that models the medical history of synthetic patients. Our mission is to provide high-quality, synthetic, realistic but not real, patient data and associated health records covering every aspect of healthcare. The resulting data is free from cost, privacy, and security restrictions, enabling research with Health IT data that is otherwise legally or practically unavailable.
+                </p>
+            </div>
+            <div class="section-content">
+                <div class="row eq-h-row">
+                    <div class="col-sm-4">
+                        <div class="panel eq-h-sm">
+                            <div class="panel-heading" style="text-align: center">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <i class="fa fa-fw fa-book fa-5x" aria-hidden="true"></i>
+                                        <h2>Academic <br class='rwd-break'>Research</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <p>
+                                    The models used to generate synthetic patients are informed by numerous academic publications. Our synthetic populations provide insight into the validity of this research and encourage future studies in population health.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="panel eq-h-sm">
+                            <div class="panel-heading" style="text-align: center">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <i class="fa fa-fw fa-medkit fa-5x" aria-hidden="true"></i>
+                                        <h2>Health IT <br class='rwd-break'>Industry</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <p>
+                                    Synthetic data establishes a risk-free environment for Health IT development and experimentation. This includes the evaluation of new treatment models, care management systems, clinical decision support, and more.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="panel eq-h-sm">
+                            <div class="panel-heading" style="text-align: center">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <i class="fa fa-fw fa-balance-scale fa-5x" aria-hidden="true"></i>
+                                        <h2>Policy <br class='rwd-break'>Formation</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <p>
+                                    The effects of healthcare policy can be simulated, quickly and repeatably, in a synthetic population. Using this iterative approach, Synthea can guide policy with patient models at the state and county level that are free from privacy restrictions.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="technology">
+    <div class="buffer" id="technology-landing"></div>
+    <div class="section-heading">
+        <h1>The Technology Behind <br class='rwd-break'> Patient Simulation</h1>
+    </div>
+    <div class="section-content container-fluid" style="padding: 30px 0px">
+        <div class="row panel panel-default eq-h-row">
+            <div class="container">
+                <div class="col-md-6">
+                    <div class="text-card eq-h-md">
+                        <h2>Generic Module Framework</h2>
+                        <h3>Modeling the Progression and Treatment of Disease</h3>
+                        <p>
+                            Synthea’s Generic Module Framework (GMF) enables the modeling of various diseases and conditions that contribute to the medical history of synthetic patients. Each patient is simulated independently from birth to present day. Their diseases, conditions and medical care are defined by one or more generic modules.
+                        </p>
+                        <p>
+                            Each module models events that could occur in a real patient’s life,  describing a progression of states and the transitions between them. These modules are informed by clinicians and real-world statistics collected by the CDC, NIH, and other research sources. Synthea started with modules for  the top ten reasons patients visit their primary care physician and the top ten conditions that result in years of life lost. Check out our <a href="https://github.com/synthetichealth/synthea/tree/gh-pages/graphviz" onclick="trackOutboundLink('https://github.com/synthetichealth/synthea/tree/gh-pages/graphviz'); return false;">full gallery of modules</a> to see what we've added since.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="img-card img-gmf eq-h-md">
+                        <img 
+                            src="{{site.baseurl}}/assets/img/food-allergies.png" 
+                            alt="The food allergy module used in Synthea's generic module framework" 
+                            class="clickable-img eq-h-md visible-xl-block visible-lg-block visible-md-block hidden-sm hidden-xs visible-xxs"  
+                            data-toggle="modal" 
+                            data-target="#allergiesModal"
+                        >
+                        <img 
+                            src="{{site.baseurl}}/assets/img/ear-infection.png" 
+                            alt="The ear infection module used in Synthea's generic module framework" 
+                            class="clickable-img eq-h-md visible-sm-block visible-xs-block hidden-xxs" 
+                            data-toggle="modal" 
+                            data-target="#earinfectionModal"
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="patient-data" class="row panel panel-default content-colored eq-h-row">
+            <div class="container">
+                <div class="col-md-6 hidden-sm hidden-xs">
+                    <div class="img-card img-data eq-h-md">
+                        <img src="{{site.baseurl}}/assets/img/guy_poly2.jpg" alt="Visual representation of a synthetic patient" class="eq-h-md">
+                        <div class="btn-group btn-group-justified btn-group-raised">
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_r4_sep2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_r4_sep2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR R4</a>  
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_stu3_sep2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_stu3_sep2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR STU3</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_dstu2_sep2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_dstu2_sep2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR DSTU2</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_ccda_sep2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_ccda_sep2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>CCDA</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_csv_apr2020.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_csv_apr2020.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>CSV</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-card eq-h-md">
+                        <h2>Patient Data</h2>
+                        <h3>Modern Healthcare and Research Data Standards</h3>
+                        <p>
+                            For each synthetic patient, Synthea data contains a complete medical history, including medications, allergies, medical encounters, and social determinants of health. This data can be used without concern for legal or privacy restrictions. To support developers, clinicians and researchers alike, Synthea data is exported in a variety of data standards, including <a href="http://hl7.org/fhir/" onclick="trackOutboundLink('http://hl7.org/fhir/'); return false;">HL7 FHIR®</a>, <a href="https://www.healthit.gov/policy-researchers-implementers/consolidated-cda-overview" onclick="trackOutboundLink('https://www.healthit.gov/policy-researchers-implementers/consolidated-cda-overview'); return false;">C-CDA</a> and CSV.
+                        </p>
+                        <p>
+                            Use the buttons <span class="hidden-sm hidden-xs">to the left</span><span class="hidden-xl hidden-lg hidden-md">below</span> to download over a thousand sample patients in the available formats. You can also <a href="https://github.com/synthetichealth/synthea/wiki/Basic-Setup-and-Running" onclick="trackOutboundLink('https://github.com/synthetichealth/synthea/wiki/Basic-Setup-and-Running'); return false;">build the project yourself</a> to generate your own patients. For help or more information, <a href="mailto:synthea-list@groups.mitre.org">contact us</a>!
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 visible-sm visible-xs hidden-xxs">
+                    <div class="img-card img-data eq-h-md">
+                        <img src="{{site.baseurl}}/assets/img/guy_poly2.jpg" alt="Visual representation of a synthetic patient" class="eq-h-md">
+                        <div class="btn-group btn-group-justified btn-group-raised">
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_r4_sep2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_r4_sep2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR R4</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_stu3_sep2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_stu3_sep2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR STU3</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_dstu2_sep2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_dstu2_sep2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR DSTU2</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_ccda_sep2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_ccda_sep2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>CCDA</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_csv_apr2020.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_csv_apr2020.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>CSV</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 visible-xxs">
+                    <div class="img-card img-data eq-h-md">
+                        <img src="{{site.baseurl}}/assets/img/guy_poly2.jpg" alt="Visual representation of a synthetic patient" class="eq-h-md">
+                        <div class=" btn-group btn-group-vertical btn-group-raised">
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_r4_sep2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_r4_sep2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR R4</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_stu3_sep2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_stu3_sep2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR STU3</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_dstu2_sep2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_fhir_dstu2_sep2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>FHIR DSTU2</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_ccda_sep2019.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_ccda_sep2019.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>CCDA</a>
+                          <a href="https://storage.googleapis.com/synthea-public/synthea_sample_data_csv_apr2020.zip" onclick="trackOutboundLink('https://storage.googleapis.com/synthea-public/synthea_sample_data_csv_apr2020.zip'); return false;" class="btn "><i class="fa fa-lg fa-download" aria-hidden="true" title="Download:"></i><span class="sr-only">Download:</span>CSV</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row panel panel-default eq-h-row">
+            <div class="container">
+                <div class="col-md-6">
+                    <div class="text-card eq-h-md">
+                        <h2>Empowering Health IT</h2>
+                        <h3>Cutting Edge Research and Developement</h3>
+                        <p>With a virtually limitless supply of synthetic patients, Synthea provides the foundational health data that researchers, clinicians, policy makers and software developers need to architect the next generation of Health IT solutions.</p>
+                        <p>Award-winning <a href='https://synthea.mitre.org' onclick="trackOutboundLink('https://synthea.mitre.org'); return false;">SyntheticMass</a>, is one of the applications already enabled by Synthea patient data. SyntheticMass provides users API access to patient data on city, town, and individual level, providing a sandbox to empower Health IT innovators to explore new healthcare solutions.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="img-card img-rd eq-h-md">
+                        <img 
+                            src="{{site.baseurl}}/assets/img/syntheticmass_map.jpg" 
+                            alt="An image of SyntheticMass, an API made possible through Synthea's data." 
+                            class="eq-h-md"
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="open-source">
+    <div class="buffer" id="open-source-landing"></div>
+    <div class="section-heading">
+        <h1>Open-Source Collaboration</h1>
+    </div>
+    <div class="section-content container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="panel collab-panel">
+                    <div class="panel-heading" style="text-align: center">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h2>Synthea<sup>TM</sup></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p>
+                                    Synthea<sup>TM</sup> is driven by a global community of developers, academics and healthcare experts. For those with clinical or domain expertise, visit <a href="https://github.com/synthetichealth/synthea/wiki/Contributing" onclick="trackOutboundLink('https://github.com/synthetichealth/synthea/wiki/Contributing'); return false;">our contribution page</a> to see a list of modules that need professional review. Developers can visit Synthea's <a href="https://github.com/synthetichealth/synthea" onclick="trackOutboundLink('https://github.com/synthetichealth/synthea'); return false;">GitHub page</a> to learn how to build and contribute to the project. Have any feedback on the current Synthea implementation? <a href="https://github.com/synthetichealth/synthea/issues/new" onclick="trackOutboundLink('https://github.com/synthetichealth/synthea/issues/new'); return false;">Create an issue</a> on our github page, or <a href="mailto:synthea-list@groups.mitre.org">send us an email</a>.
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="jobs-body">
+                                    <div class="row">
+                                        <a class="col-xs-6 col-xxs-8 col-xxs-push-1 job-logo" href="https://github.com/synthetichealth/synthea" onclick="trackOutboundLink('https://github.com/synthetichealth/synthea'); return false;">
+
+                                            <i class="fa fa-4x fa-github"></i>
+                                            <br>
+                                            <p>Collaborate on GitHub</p>
+                                        </a>
+                                        <a class="col-xs-6 col-xxs-8 col-xxs-push-1 job-logo" href="mailto:synthea-list@groups.mitre.org">
+                                            <i class="fa fa-4x fa-envelope"></i>
+                                            <br>
+                                            <p>Give us your feedback</p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="panel collab-panel">
+                    <div class="panel-heading" style="text-align: center">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h2>The Standard Health Record Collaborative</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p>
+                                    Synthea was started at The MITRE Corporation as part of the <a href="http://standardhealthrecord.org/" onclick="trackOutboundLink('http://standardhealthrecord.org/'); return false;">Standard Health Record Collaborative (SHRC)</a>, an open-source, health data interoperability effort. The Collaborative's focus is to develop a Standard Health Record (SHR) and the technological infrastructure that drives health innovation. Check out the <a href="https://www.standardhealthrecord.org/shr/" onclick="trackOutboundLink('https://www.standardhealthrecord.org/shr/'); return false;">SHR Specification Viewer</a> to provide feedback on the current iteration of the SHR.
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="jobs-body">
+                                    <div class="row">
+                                        <a class="col-xs-4 col-xxs-8 col-xxs-push-1 job-logo" href="https://github.com/synthetichealth/synthea" onclick="trackOutboundLink('https://github.com/synthetichealth/synthea'); return false;">
+                                            <img class="shr-logo fa-fw" src='{{site.baseurl}}/assets/img/logo/synthea_sprites-1-print-trans.png' alt='Synthea Logo'>
+                                            <br>
+                                            <p>Synthea</p>
+                                        </a>
+                                        <a class="col-xs-4 col-xxs-8 col-xxs-push-1 job-logo" href="https://github.com/standardhealth/standardhealth.github.io" onclick="trackOutboundLink('https://github.com/standardhealth/standardhealth.github.io'); return false;">
+                                            <img class="shr-logo fa-fw" src='{{site.baseurl}}/assets/img/shr_brand_logo.png' alt='The Standard Health Record Logo'>
+                                            <br>
+                                            <p>Standard Health Record</p>
+                                        </a>
+                                        <a class="col-xs-4 col-xxs-8 col-xxs-push-1 job-logo" href="https://synthea.mitre.org" onclick="trackOutboundLink('https://synthea.mitre.org'); return false;">
+                                            <img class="shr-logo fa-fw" src='{{site.baseurl}}/assets/img/syn-mass-logo.png' alt='Synthea Logo'>
+                                            <br>
+                                            <p>Synthetic Mass</p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="panel collab-panel">
+                    <div class="panel-heading" style="text-align: center">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h2>The MITRE Corporation</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p>
+                                    The <a href="http://www.mitre.org/" onclick="trackOutboundLink('http://www.mitre.org/'); return false;">MITRE Corporation</a> is a not-for-profit company working in the public interest, operating multiple Federally Funded Research and Development Centers (FFRDCs). MITRE cannot compete for anything except the right to operate FFRDCs. This lack of commercial conflicts of interest forms the basis for MITRE’s objectivity and subsequent ability to inform critical government and industry initiatives.
+                                </p>
+                                <p>
+                                    MITRE has been involved in the creation and growth of many open-source projects including Synthea and other Health IT initiatives. To learn more, visit the <a href="http://mitre.github.io/" onclick="trackOutboundLink('http://mitre.github.io/'); return false;">MITRE Open-Source Project Page</a> for a list of the projects that you can contribute to, and check the contact section below for other opportunities at MITRE.
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="jobs-body eq-h-row">
+                                    <a class="col-xs-4 col-xxs-8 col-xxs-push-1 job-logo eq-h-xs" href="https://www.mitre.org/careers/job-openings/search?op=Search&page=0&pages=0&target=careers%2Fjob-openings%2Fsearch&20134=Information+Technology" onclick="trackOutboundLink('https://www.mitre.org/careers/job-openings/search?op=Search&page=0&pages=0&target=careers%2Fjob-openings%2Fsearch&20134=Information+Technology'); return false;">
+                                        <i class="fa fa-4x fa-fw fa-terminal" aria-label="Software Engineering and IT Jobs"></i>
+                                        <br class='rwd-break'>
+                                        <p>Software &amp; IT</p>
+                                    </a>
+                                    <a class="col-xs-4 col-xxs-8 col-xxs-push-1 job-logo eq-h-xs" href="https://www.mitre.org/careers/job-openings/search?op=Search&page=0&pages=0&target=careers%2Fjob-openings%2Fsearch&20134=Health%2FHealthcare" onclick="trackOutboundLink('https://www.mitre.org/careers/job-openings/search?op=Search&page=0&pages=0&target=careers%2Fjob-openings%2Fsearch&20134=Health%2FHealthcare'); return false;">
+                                        <i class="fa fa-4x fa-fw fa-medkit" aria-label="Healthcare Jobs"></i>
+                                        <br class='rwd-break'>
+                                        <p>Healthcare</p>
+                                    </a>
+                                   <a class="col-xs-4 col-xxs-8 col-xxs-push-1 job-logo eq-h-xs" href="https://www.mitre.org/careers/job-openings/search?op=Search&page=0&pages=0&target=careers%2Fjob-openings%2Fsearch&20134=Engineering" onclick="trackOutboundLink('https://www.mitre.org/careers/job-openings/search?op=Search&page=0&pages=0&target=careers%2Fjob-openings%2Fsearch&20134=Engineering'); return false;">
+                                        <i class="fa fa-4x fa-fw fa-cogs" aria-label="Engineering Jobs"></i>
+                                        <br class='rwd-break'>
+                                        <p>Engineering</p>
+                                    </a>
+                                </div>
+                                <div class="jobs-body">
+                                    <a class="col-xs-4 col-xxs-8 col-xxs-push-1 job-logo eq-h-xs" href="https://www.mitre.org/careers/student-programs">
+                                        <i class="fa fa-4x fa-fw fa-graduation-cap" aria-label="Student Jobs and Interships" onclick="trackOutboundLink('https://www.mitre.org/careers/student-programs'); return false;"></i>
+                                        <br class='rwd-break'>
+                                        <p>Student Programs</p>
+                                    </a>
+                                    <a class="col-xs-4 col-xxs-8 col-xxs-push-1 job-logo eq-h-xs" href="https://www.mitre.org/careers/job-openings/search?op=Search&page=0&pages=0&target=careers%2Fjob-openings%2Fsearch&20134=Cyber+Security" onclick="trackOutboundLink('https://www.mitre.org/careers/job-openings/search?op=Search&page=0&pages=0&target=careers%2Fjob-openings%2Fsearch&20134=Cyber+Security'); return false;">
+                                        <i class="fa fa-4x fa-fw fa-lock" aria-label="Cyber Security Jobs"></i>
+                                        <br class='rwd-break'>
+                                        <p>Cyber Security</p>
+                                    </a>
+                                    <a class="col-xs-4 col-xxs-8 col-xxs-push-1 job-logo eq-h-xs" href="http://mitre.github.io/" onclick="trackOutboundLink('http://mitre.github.io/'); return false;">
+                                        <i class="fa fa-4x fa-fw fa-github" aria-label="Open-Source Projects"></i>
+                                        <br class='rwd-break'>
+                                        <p>Open-Source Projects</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="contact">
+    <div class="buffer" id="contact-landing"></div>
+    <div class="section-heading">
+        <h1>Contact Us</h1>
+    </div>
+    <div class="section-content container">
+        <div class="row eq-h-row">
+            <div class="col-sm-4 col-xs-6 col-xxs-12 eq-h-xs">
+                <a href="https://www.google.com/maps?q=The+MITRE+Corporation+202+Burlington+Road+Bedford,+MA+01730-1420" onclick="trackOutboundLink('https://www.google.com/maps?q=The+MITRE+Corporation+202+Burlington+Road+Bedford,+MA+01730-1420'); return false;" class="fa-stack fa-4x" aria-label="See the MITRE Corporation on Google Maps">
+                  <i class="fa fa-circle fa-stack-2x" aria-hidden='true'></i>
+                  <i class="fa fa-map-marker fa-stack-1x fa-inverse" aria-hidden='true'></i>
+                </a>
+                <div class="contact-description">
+                    <h3>Meet with Us</h3>
+                    <p>
+                        <a href="https://www.google.com/maps?q=The+MITRE+Corporation+202+Burlington+Road+Bedford,+MA+01730-1420" onclick="trackOutboundLink('https://www.google.com/maps?q=The+MITRE+Corporation+202+Burlington+Road+Bedford,+MA+01730-1420'); return false;">
+                            The MITRE Corporation<br>
+                            202 Burlington Road<br>
+                            Bedford, MA 01730-1420
+                        </a>
+                    </p>
+                </div>
+            </div>
+            <div class="col-sm-4 col-xs-6 col-xxs-12 eq-h-xs">
+                <a href='tel:7812712000' class="fa-stack fa-4x" aria-label="Call the MITRE Corporation">
+                  <i class="fa fa-circle fa-stack-2x" aria-hidden='true'></i>
+                  <i class="fa fa-phone fa-stack-1x fa-inverse" aria-hidden='true'></i>
+                </a>
+                <div class="contact-description">
+                    <h3>Talk to Us</h3>
+                    <p>
+                        <a href="tel:7812712000">(781)-271-2000</a>
+                    </p>
+                </div>
+            </div>
+            <div class="col-sm-4 col-xs-12 col-xxs-12 eq-h-xs">
+                <a href="mailto:synthea-list@groups.mitre.org" class="fa-stack fa-4x" aria-label="Email the Synthea team">
+                  <i class="fa fa-circle fa-stack-2x" aria-hidden='true'></i>
+                  <i class="fa fa-users fa-stack-1x fa-inverse" aria-hidden='true'></i>
+                </a>
+                <div class="contact-description">
+                    <h3>Email Synthea Team</h3>
+                    <p>
+                        <a href="mailto:synthea-list@groups.mitre.org" style="white-space:nowrap">
+                            synthea-list@groups.mitre.org
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="allergiesModal" class="modal fade" tabindex="-1" style="display: none;">
+  <div class="modal-dialog gmf-dialog">
+    <img class="modal-content" src="{{site.baseurl}}/assets/img/food-allergies.png" alt="An example of one of Synthea's generic modules." style="max-width: 100%">
+  </div>
+</div>
+
+<div id="earinfectionModal" class="modal fade" tabindex="-1" style="display: none;">
+  <div class="modal-dialog gmf-dialog">
+    <img class="modal-content" src="{{site.baseurl}}/assets/img/ear-infection.png" alt="An example of one of Synthea's generic modules." style="max-width: 100%">
+  </div>
+</div>

@@ -1,0 +1,46 @@
+/*************/
+/* SCSS Vars */    
+/*************/
+$base-font-size: 24px;
+$xxl-font-size:  $base-font-size * 2.15; /* ~54px*/
+$xl-font-size:   $base-font-size * 1.77; /* ~44px*/
+$lg-font-size:   $base-font-size * 1.46; /* ~36px*/
+$md-font-size:   $base-font-size * 1.23; /* ~30px*/
+/* base-font-size */
+$sm-font-size:   $base-font-size * 0.84; /* ~20px*/
+$p-sm-font-size: $base-font-size * 0.77; /* ~18px*/
+$xs-font-size:   $base-font-size * 0.70; /* ~17px */   
+$ft-link-size:   $base-font-size * 0.62; /* ~15px*/
+$xxs-font-size:  $base-font-size * 0.5;
+
+$clr-grey: #dddddd;
+// Cool grey 
+$clr-light-grey:#f9f9f9;
+$clr-light-grey-b: #f1f1f1;
+//  Warm Dark Tope
+// $clr-light-grey: rgb(234, 226, 212);
+
+// Warm Lightest Tope
+// $clr-light-grey: rgb(255, 253, 249);
+// $clr-light-grey: rgb(255, 251, 244);
+// $clr-light-grey-b: #f5f1ea; 
+// $clr-light-grey-2b: #ebe8e1;
+$clr-white: #ffffff;
+
+/*$clr-white: rgb(244, 239, 228);*/
+$clr-white-hvr: rgba(255, 255, 255, 0.901961);
+$clr-black: #000;
+$clr-primary: #295677;
+$clr-sndry: #803333;
+$clr-dark-primary: #052A45;
+// $clr-sndry: #F5A623;
+// $clr-light-primary: #7FC1DD;
+
+$logo-main: 210px;      // width
+$logo-scrolled: 170px;  // ""
+$logo-main-sm: 50px;    // ""
+$logo-scrolled-sm: 50px;// ""
+
+$footer-h-four: 157px;
+
+$footer-h-three: 115px;

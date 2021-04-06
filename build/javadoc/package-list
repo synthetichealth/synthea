@@ -1,0 +1,13 @@
+
+org.mitre.synthea.editors
+org.mitre.synthea.engine
+org.mitre.synthea.export
+org.mitre.synthea.helpers
+org.mitre.synthea.helpers.physiology
+org.mitre.synthea.input
+org.mitre.synthea.modules
+org.mitre.synthea.world.agents
+org.mitre.synthea.world.agents.behaviors
+org.mitre.synthea.world.concepts
+org.mitre.synthea.world.geography
+org.mitre.synthea.world.geography.quadtree
