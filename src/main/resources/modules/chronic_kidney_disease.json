@@ -83,11 +83,11 @@
           },
           "distributions": [
             {
-              "distribution": 0.9982,
+              "distribution": 0.9992,
               "transition": "Nephropathy_Progression"
             },
             {
-              "distribution": 0.0018,
+              "distribution": 0.0008,
               "transition": "Set_CKD_1 Damage"
             }
           ]
