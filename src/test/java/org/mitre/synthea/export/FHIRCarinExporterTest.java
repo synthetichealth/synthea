@@ -43,7 +43,7 @@ import org.mockito.Mockito;
 /**
  * Uses HAPI FHIR project to validate FHIR export. http://hapifhir.io/doc_validation.html
  */
-public class FHIRR4ExporterTest {
+public class FHIRCarinExporterTest {
   private boolean physStateEnabled;
   
   /**
@@ -73,31 +73,31 @@ public class FHIRR4ExporterTest {
   @Test
   public void testDecimalRounding() {
     Integer i = 123456;
-    Object v = FhirR4.mapValueToFHIRType(i,"fake");
+    Object v = FhirCarin.mapValueToFHIRType(i,"fake");
     assertTrue(v instanceof Quantity);
     Quantity q = (Quantity)v;
     assertTrue(q.getValue().compareTo(BigDecimal.valueOf(123460)) == 0);
 
     Double d = 0.000123456;
-    v = FhirR4.mapValueToFHIRType(d, "fake");
+    v = FhirCarin.mapValueToFHIRType(d, "fake");
     assertTrue(v instanceof Quantity);
     q = (Quantity)v;
     assertTrue(q.getValue().compareTo(BigDecimal.valueOf(0.00012346)) == 0);
 
     d = 0.00012345678901234;
-    v = FhirR4.mapValueToFHIRType(d, "fake");
+    v = FhirCarin.mapValueToFHIRType(d, "fake");
     assertTrue(v instanceof Quantity);
     q = (Quantity)v;
     assertTrue(q.getValue().compareTo(BigDecimal.valueOf(0.00012346)) == 0);
   }
 
   @Test
-  public void testFHIRR4Export() throws Exception {
+  public void testFHIRCarinExport() throws Exception {
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
 
-    FhirContext ctx = FhirR4.getContext();
+    FhirContext ctx = FhirCarin.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     ValidationResources validator = new ValidationResources();
     List<String> validationErrors = new ArrayList<String>();
@@ -111,10 +111,10 @@ public class FHIRR4ExporterTest {
       int x = validationErrors.size();
       TestHelper.exportOff();
       Person person = generator.generatePerson(i);
-      FhirR4.TRANSACTION_BUNDLE = person.randBoolean();
-      FhirR4.USE_US_CORE_IG = person.randBoolean();
-      FhirR4.USE_SHR_EXTENSIONS = false;
-      String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
+      FhirCarin.TRANSACTION_BUNDLE = person.randBoolean();
+      FhirCarin.USE_US_CORE_IG = person.randBoolean();
+      FhirCarin.USE_SHR_EXTENSIONS = false;
+      String fhirJson = FhirCarin.convertToFHIRJson(person, System.currentTimeMillis());
       // Check that the fhirJSON doesn't contain unresolved SNOMED-CT strings
       // (these should have been converted into URIs)
       if (fhirJson.contains("SNOMED-CT")) {
@@ -182,6 +182,12 @@ public class FHIRR4ExporterTest {
                * reports these as errors
                */
               valid = true; // ignore this error
+            } else if (
+                emessage.getMessage().contains("Unknown Code System 'http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBSupportingInfoType'")) {
+              /*
+               * The CARIN IG invariant
+               */
+              valid = true; // ignore this error
             }
             if (!valid) {
               System.out.println(parser.encodeResourceToString(entry.getResource()));
@@ -246,9 +252,9 @@ public class FHIRR4ExporterTest {
     assertTrue(sampleObs.process(person, time));
     person.history.add(sampleObs);
     
-    FhirContext ctx = FhirR4.getContext();
+    FhirContext ctx = FhirCarin.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
-    String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
+    String fhirJson = FhirCarin.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
     
     for (BundleEntryComponent entry : bundle.getEntry()) {
@@ -312,9 +318,9 @@ public class FHIRR4ExporterTest {
     assertTrue(urlState.process(person, time));
     person.history.add(urlState);
     
-    FhirContext ctx = FhirR4.getContext();
+    FhirContext ctx = FhirCarin.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
-    String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
+    String fhirJson = FhirCarin.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
     
     for (BundleEntryComponent entry : bundle.getEntry()) {

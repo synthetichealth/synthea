@@ -40,6 +40,7 @@ public abstract class Exporter {
   public enum SupportedFhirVersion {
     DSTU2,
     STU3,
+    CARIN,
     R4
   }
   
@@ -214,6 +215,24 @@ public abstract class Exporter {
         writeNewFile(outFilePath, bundleJson);
       }
     }
+    if (Config.getAsBoolean("exporter.fhir_carin.export")) {
+      File outDirectory = getOutputFolder("fhir_carin", person);
+      if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
+        org.hl7.fhir.r4.model.Bundle bundle = FhirCarin.convertToFHIR(person, stopTime);
+        IParser parser = FhirCarin.getContext().newJsonParser().setPrettyPrint(false);
+        for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+          String filename = entry.getResource().getResourceType().toString() + ".ndjson";
+          Path outFilePath = outDirectory.toPath().resolve(filename);
+          String entryJson = parser.encodeResourceToString(entry.getResource());
+          appendToFile(outFilePath, entryJson);
+        }
+      } else {
+        String bundleJson = FhirCarin.convertToFHIRJson(person, stopTime);
+        Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
+        writeNewFile(outFilePath, bundleJson);
+      }
+      FhirGroupExporterCarin.addPatient((String) person.attributes.get(Person.ID));
+    }
     if (Config.getAsBoolean("exporter.fhir.export")) {
       File outDirectory = getOutputFolder("fhir", person);
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
@@ -302,6 +321,9 @@ public abstract class Exporter {
           case STU3:
             options.recordQueue.put(FhirStu3.convertToFHIRJson(person, stopTime));
             break;
+          case CARIN:
+            options.recordQueue.put(FhirCarin.convertToFHIRJson(person, stopTime));
+            break;
           default:
             options.recordQueue.put(FhirR4.convertToFHIRJson(person, stopTime));
             break;
@@ -387,6 +409,12 @@ public abstract class Exporter {
     Config.set("exporter.fhir.bulk_data", "false");
     try {
       HospitalExporterR4.export(generator, generator.stop);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    try {
+      FhirPractitionerExporterCarin.export(generator, generator.stop);
     } catch (Exception e) {
       e.printStackTrace();
     }

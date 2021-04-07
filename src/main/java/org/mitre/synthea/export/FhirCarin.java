@@ -154,7 +154,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.mitre.synthea.world.geography.Location;
 
-public class FhirR4 {
+public class FhirCarin {
   // HAPI FHIR warns that the context creation is expensive, and should be performed
   // per-application, not per-record
   private static final FhirContext FHIR_CTX = FhirContext.forR4();
@@ -1363,6 +1363,19 @@ public class FhirR4 {
         .setCurrency("USD");
     eob.setPayment(new ExplanationOfBenefit.PaymentComponent()
         .setAmount(payment));
+
+    // Reference informationReference = new Reference(item.fullUrl);
+    ExplanationOfBenefit.SupportingInformationComponent informationComponent =
+        new ExplanationOfBenefit.SupportingInformationComponent();
+    informationComponent.setSequence(1);
+    informationComponent.setTiming(new DateType(encounterResource.getPeriod().getEnd()));
+    // informationComponent.setValue(informationReference);
+    CodeableConcept category = new CodeableConcept();
+    category.getCodingFirstRep()
+        .setSystem("http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBSupportingInfoType")
+        .setCode("clmrecvddate");
+    informationComponent.setCategory(category);
+    eob.addSupportingInfo(informationComponent);
 
     return newEntry(person, bundle, eob);
   }
