@@ -2,8 +2,6 @@ package org.mitre.synthea.input;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.mitre.synthea.world.agents.Person;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +9,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
+import org.mitre.synthea.world.agents.Person;
 
 /**
  * A class the desribes and maintains a household, its members, and its seed
@@ -108,8 +108,8 @@ public class Household {
     // Once the FixedRecordGroups are initialized, we need to sort each person's
     // list of FixedRecordGroups. This sorting is done by their ADDRESS_SEQUENCE.
     for (String key : this.fixedRecordGroups.keySet()) {
-      this.fixedRecordGroups.put(key, this.fixedRecordGroups.get(key).stream()
-          .sorted().collect(Collectors.toList()));
+      this.fixedRecordGroups.put(key, this.fixedRecordGroups.get(key)
+          .stream().sorted().collect(Collectors.toList()));
     }
 
     // Iterate through the variant records and assign them to their relevant
@@ -151,7 +151,7 @@ public class Household {
     int numberOfAddresses = this.fixedRecordGroups.values().iterator().next().size();
     for (int i = 0; i < numberOfAddresses; i++) {
       int newYear = this.random().nextInt(rangeOfYears) + householdStartYear + 1;
-      while(addressYearRanges.contains(newYear)){
+      while (addressYearRanges.contains(newYear)) {
         newYear = this.random().nextInt(rangeOfYears) + householdStartYear + 1;
       }
       addressYearRanges.add(newYear);
@@ -188,8 +188,18 @@ public class Household {
    * @return
    */
   public FixedRecordGroup getCurrentRecordGroupFor(String householdRole) {
-    return this.fixedRecordGroups.get(householdRole).get(this.currentAddressSequences
-        .get(householdRole));
+    return this.fixedRecordGroups.get(householdRole)
+        .get(this.currentAddressSequences.get(householdRole));
+  }
+
+  /**
+   * Returns the current fixed record group of the given person.
+   * 
+   * @param person The person to get the current record group for.
+   * @return
+   */
+  public FixedRecordGroup getCurrentRecordGroupFor(Person person) {
+    return this.getCurrentRecordGroupFor(this.getHouseholdRoleFor(person));
   }
 
   /**
@@ -199,13 +209,10 @@ public class Household {
    * @return
    */
   public List<FixedRecordGroup> getInitialFixedRecordGroupForEachMember() {
-
     List<FixedRecordGroup> initialFixedRecordGroups = new ArrayList<FixedRecordGroup>();
-
     for (List<FixedRecordGroup> frgList : this.fixedRecordGroups.values()) {
       initialFixedRecordGroups.add(frgList.get(0));
     }
-
     return initialFixedRecordGroups;
   }
 
@@ -268,9 +275,6 @@ public class Household {
   public FixedRecord updatePersonVariantRecord(Person person) {
     String householdRole = this.getHouseholdRoleFor(person);
     FixedRecord fr = this.getCurrentRecordGroupFor(householdRole).updateCurrentVariantRecord();
-    // TODO - should be putting all the attributes in the person elsewhere so as
-    // to maintain the correct values for valud cities and other malformed fixed
-    // record data that the seed will have?
     person.attributes.putAll(fr.getFixedRecordAttributes());
     return fr;
   }
@@ -297,19 +301,10 @@ public class Household {
   }
 
   /**
-   * Returns the current fixed record group of the given person.
-   * 
-   * @param person  The person to get the current record group for.
-   * @return
-   */
-  public FixedRecordGroup getCurrentRecordGroupFor(Person person) {
-    return this.getCurrentRecordGroupFor(this.getHouseholdRoleFor(person));
-  }
-
-  /**
    * Returns all of the fixed record groups associated with the given person.
-   * @param person
-   * @return
+   * 
+   * @param person  The person to get all record groups for.
+   * @return  The list of the person's record groups.
    */
   public List<FixedRecordGroup> getAllRecordGroupsFor(Person person) {
     return this.fixedRecordGroups.get(this.getHouseholdRoleFor(person));

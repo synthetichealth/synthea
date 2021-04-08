@@ -64,7 +64,8 @@ public class Location implements Serializable {
 
       if (city != null 
           && demographics.values().stream().noneMatch(d -> d.city.equalsIgnoreCase(city))) {
-        throw new Exception("The city " + city + " was not found in the demographics file for state " + state + ".");
+        throw new Exception("The city " + city
+            + " was not found in the demographics file for state " + state + ".");
       }
 
       long runningPopulation = 0;
@@ -321,9 +322,10 @@ public class Location implements Serializable {
     if (zipsForCity == null) {
       // If there are no zips for this city, try again with "Town" appended.
       zipsForCity = zipCodes.get(cityName + " Town");
-      if(zipsForCity == null){
+      if (zipsForCity == null) { 
         // If there are still no zips, then this is an unknown city. Throw a detailed exception.
-        throw new RuntimeException("No zip codes found for the city " + cityName + " in state " + this.state + ".");
+        throw new RuntimeException("No zip codes found for the city "
+            + cityName + " in state " + this.state + ".");
       }
     }
     
