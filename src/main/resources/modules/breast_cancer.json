@@ -2093,7 +2093,22 @@
         "high": 5,
         "unit": "years"
       },
-      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options"
+      "distributed_transition": [
+        {
+          "transition": "Will Use Hospice",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Sit-Down with Oncologist to Discuss Treatment Options",
+          "distribution": 0.7
+        }
+      ]
+    },
+    "Will Use Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice",
+      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options",
+      "value": true
     }
   },
   "gmf_version": 1
