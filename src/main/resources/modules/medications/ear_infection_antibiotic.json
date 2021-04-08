@@ -550,7 +550,7 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Active Condition",
+            "condition_type": "Active Allergy",
             "codes": [
               {
                 "system": "RxNorm",
