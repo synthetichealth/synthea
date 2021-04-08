@@ -136,6 +136,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.input.Household;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
@@ -259,6 +260,10 @@ public class FhirR4 {
       bundle.setType(BundleType.TRANSACTION);
     } else {
       bundle.setType(BundleType.COLLECTION);
+    }
+
+    if (person.attributes.get(Person.HOUSEHOLD) != null) {
+      person.attributes.putAll(person.record.demographicsAtRecordCreation);
     }
 
     BundleEntryComponent personEntry = basicInfo(person, bundle, stopTime);
@@ -406,6 +411,19 @@ public class FhirR4 {
           .setType(mapCodeToCodeableConcept(passportCode, "http://terminology.hl7.org/CodeSystem/v2-0203"))
           .setSystem(SHR_EXT + "passportNumber")
           .setValue((String) person.attributes.get(Person.IDENTIFIER_PASSPORT));
+    }
+
+    
+    if (person.attributes.get(Person.HOUSEHOLD) != null) {
+      patientResource.addIdentifier()
+          .setSystem("http://mitre.org/record_id")
+          .setValue(String.valueOf((person.attributes.get(Person.IDENTIFIER_RECORD_ID))));
+      patientResource.addIdentifier()
+          .setSystem("http://mitre.org/seed_record_id")
+          .setValue(String.valueOf((person.attributes.get(Person.IDENTIFIER_SEED_ID))));
+      patientResource.addIdentifier()
+          .setSystem("http://mitre.org/household_id")
+          .setValue(String.valueOf((String) person.attributes.get(Person.HOUSEHOLD)));
     }
 
     if (person.attributes.get(Person.CONTACT_EMAIL) != null) {

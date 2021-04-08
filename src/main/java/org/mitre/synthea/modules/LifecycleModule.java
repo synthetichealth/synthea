@@ -7,10 +7,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.hl7.fhir.r4.model.Patient;
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
@@ -21,7 +20,6 @@ import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.input.FixedRecord;
 import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.modules.BloodPressureValueGenerator.SysDias;
 import org.mitre.synthea.world.agents.Person;
@@ -177,11 +175,11 @@ public final class LifecycleModule extends Module {
     boolean hasStreetAddress2 = person.rand() < 0.5;
     attributes.put(Person.ADDRESS, fakeAddress(hasStreetAddress2, person));
 
-    // If using FixedRecords, overwrite the person's attributes with the FixedRecord attributes.
-    if (person.attributes.get(Person.RECORD_GROUP) != null) {
-      FixedRecordGroup recordGroup = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
-      FixedRecord fr = recordGroup.records.get(0);
-      attributes.putAll(fr.getFixedRecordAttributes());
+    // If using FixedRecords, overwrite the person's attributes with the seed record attributes.
+    if (person.attributes.get(Person.HOUSEHOLD) != null) {
+      FixedRecordGroup recordGroup
+          = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person);
+      attributes.putAll(recordGroup.getSeedRecordAttributes());
     }
 
     String ssn = "999-" + ((person.randInt(99 - 10 + 1) + 10)) + "-"

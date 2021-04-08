@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.text.WordUtils;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
@@ -63,7 +64,8 @@ public class Location implements Serializable {
 
       if (city != null 
           && demographics.values().stream().noneMatch(d -> d.city.equalsIgnoreCase(city))) {
-        throw new Exception("The city " + city + " was not found in the demographics file.");
+        throw new Exception("The city " + city
+            + " was not found in the demographics file for state " + state + ".");
       }
 
       long runningPopulation = 0;
@@ -318,7 +320,13 @@ public class Location implements Serializable {
     zipsForCity = zipCodes.get(cityName);
 
     if (zipsForCity == null) {
+      // If there are no zips for this city, try again with " Town" appended.
       zipsForCity = zipCodes.get(cityName + " Town");
+      if (zipsForCity == null) { 
+        // If there are still no zips, then this is an unknown city. Throw a detailed exception.
+        throw new RuntimeException("No zip codes found for the city "
+            + cityName + " in state " + this.state + ".");
+      }
     }
     
     Place place;

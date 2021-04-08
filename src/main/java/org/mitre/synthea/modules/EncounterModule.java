@@ -4,10 +4,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
@@ -138,8 +140,22 @@ public final class EncounterModule extends Module {
       String specialty, Code code) {
     // what year is it?
     int year = Utilities.getYear(time);
+
+    // Make sure the person's attributes are set to their current fixedRecord, if applicable.
+    if (person.attributes.get(Person.HOUSEHOLD) != null) {
+      FixedRecordGroup frg = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person);
+      person.attributes.putAll(frg.getCurrentRecord().getFixedRecordAttributes());
+    }
+
     // create the encounter
     Encounter encounter = person.encounterStart(time, type);
+
+    // Fix the person's seed attributes in case their fixed record causes invalid fields.
+    if (person.attributes.get(Person.HOUSEHOLD) != null) {
+      FixedRecordGroup frg = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person);
+      person.attributes.putAll(frg.getSeedRecordAttributes());
+    }
+    
     if (code != null) {
       encounter.codes.add(code);
     }

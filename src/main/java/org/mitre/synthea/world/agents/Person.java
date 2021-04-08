@@ -17,9 +17,11 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.mitre.synthea.engine.ExpressedConditionRecord;
 import org.mitre.synthea.engine.ExpressedSymptom;
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
@@ -27,6 +29,7 @@ import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
+import org.mitre.synthea.input.FixedRecord;
 import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -81,6 +84,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String IDENTIFIER_PASSPORT = "identifier_passport";
   public static final String IDENTIFIER_SITE = "identifier_site";
   public static final String IDENTIFIER_RECORD_ID = "identifier_record_id";
+  public static final String IDENTIFIER_SEED_ID = "identifier_seed_id";
   public static final String CONTACT_FAMILY_NAME = "contact_family_name";
   public static final String CONTACT_GIVEN_NAME = "contact_given_name";
   public static final String CONTACT_EMAIL = "contact_email";
@@ -92,9 +96,11 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String GROWTH_TRAJECTORY = "growth_trajectory";
   public static final String CURRENT_WEIGHT_LENGTH_PERCENTILE = "current_weight_length_percentile";
   public static final String RECORD_GROUP = "record_group";
+  public static final String HOUSEHOLD = "household";
   public static final String LINK_ID = "link_id";
   private static final String DEDUCTIBLE = "deductible";
   private static final String LAST_MONTH_PAID = "last_month_paid";
+  public static final String HOUSEHOLD_ROLE = "household_role";
 
   private final Random random;
   public final long seed;
@@ -157,23 +163,29 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     onsetConditionRecord = new ExpressedConditionRecord(this);
     /* Chronic Medications which will be renewed at each Wellness Encounter */
     chronicMedications = new ConcurrentHashMap<String, HealthRecord.Medication>();
-    hasMultipleRecords =
-        Config.getAsBoolean("exporter.split_records", false);
+    hasMultipleRecords = Config.getAsBoolean("exporter.split_records", false);
     if (hasMultipleRecords) {
       records = new ConcurrentHashMap<String, HealthRecord>();
     }
-    defaultRecord = new HealthRecord(this);
-    lossOfCareEnabled =
-        Config.getAsBoolean("generate.payers.loss_of_care", false);
-    if (lossOfCareEnabled) {
-      lossOfCareRecord = new HealthRecord(this);
-    }
-    record = defaultRecord;
+    this.initializeDefaultHealthRecords();
     // 128 because it's a nice power of 2, and nobody will reach that age
     payerHistory = new Payer[128];
     payerOwnerHistory = new String[128];
     annualHealthExpenses = new HashMap<Integer, Double>();
     annualHealthCoverage = new HashMap<Integer, Double>();
+  }
+
+  /**
+   * Initializes person's default health records. May need to be called if attributes
+   * change due to fixed demographics.
+   */
+  public void initializeDefaultHealthRecords() {
+    this.defaultRecord = new HealthRecord(this);
+    this.record = this.defaultRecord;
+    this.lossOfCareEnabled = Config.getAsBoolean("generate.payers.loss_of_care", false);
+    if (this.lossOfCareEnabled) {
+      this.lossOfCareRecord = new HealthRecord(this);
+    }
   }
 
   /**
@@ -530,7 +542,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * @param provider the provider of the encounter
    * @param time the current time (To determine person's current income and payer)
    */
-  private synchronized HealthRecord getHealthRecord(Provider provider, long time) {
+  public synchronized HealthRecord getHealthRecord(Provider provider, long time) {
 
     // If the person has no more income at this time, then operate on the UncoveredHealthRecord.
     // Note: If person has no more income then they can no longer afford copays/premiums/etc.
@@ -542,9 +554,11 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     HealthRecord returnValue = this.defaultRecord;
     if (hasMultipleRecords) {
       String key = provider.getResourceID();
+      // Check If the given provider does not have a health record for this person.
       if (!records.containsKey(key)) {
         HealthRecord record = null;
         if (this.record != null && this.record.provider == null) {
+          // If the active healthrecord does not have a provider, assign it as the active record.
           record = this.record;
         } else {
           record = new HealthRecord(this);
@@ -640,6 +654,11 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     if (provider == null) {
       throw new RuntimeException("Unable to find provider: " + type);
     }
+    if (this.attributes.get(Person.HOUSEHOLD) != null) {
+      // Set to a new variant record because there is a new provider.
+      FixedRecord vr = Generator.fixedRecordGroupManager.updatePersonVariantRecord(this);
+      this.attributes.putAll(vr.getFixedRecordAttributes());
+    }
     String key = PREFERREDYPROVIDER + type;
     attributes.put(key, provider);
   }
@@ -650,6 +669,15 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public void setProvider(EncounterType type, long time) {
     Provider provider = Provider.findService(this, type, time);
+    setProvider(type, provider);
+  }
+
+  /**
+   * Force find a new provider that does not already have a healthrecord for the person.
+   */
+  public void forceNewProvider(EncounterType type, long time) {
+    Provider provider = Provider.findServiceNewProvider(this, type, time, this.records.values()
+        .stream().map(record -> record.provider.uuid).collect(Collectors.toList()));
     setProvider(type, provider);
   }
 
@@ -954,7 +982,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   @Override
   public double getX() {
-    return getLonLat().getX();
+    return getLonLat().getX(); 
   }
 
   @Override
@@ -965,4 +993,5 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public Point2D.Double getLonLat() {
     return (Point2D.Double) attributes.get(Person.COORDINATE);
   }
+  
 }
