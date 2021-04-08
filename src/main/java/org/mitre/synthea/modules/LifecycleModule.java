@@ -7,10 +7,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.hl7.fhir.r4.model.Patient;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
@@ -45,6 +43,7 @@ public final class LifecycleModule extends Module {
       loadWeightForLengthChart();
   private static final String AGE = "AGE";
   private static final String AGE_MONTHS = "AGE_MONTHS";
+  public static final String DAYS_UNTIL_DEATH = "days_until_death";
   public static final String QUIT_SMOKING_PROBABILITY = "quit smoking probability";
   public static final String QUIT_SMOKING_AGE = "quit smoking age";
   public static final String QUIT_ALCOHOLISM_PROBABILITY = "quit alcoholism probability";
@@ -911,6 +910,13 @@ public final class LifecycleModule extends Module {
     if (ENABLE_DEATH_BY_LOSS_OF_CARE && deathFromLossOfCare(person)) {
       person.recordDeath(time, LOSS_OF_CARE);
     }
+
+    if (person.attributes.containsKey(Person.DEATHDATE)) {
+      Long deathDate = (Long) person.attributes.get(Person.DEATHDATE);
+      long diff = deathDate - time;
+      long days = TimeUnit.MILLISECONDS.toDays(diff);
+      person.attributes.put(DAYS_UNTIL_DEATH, Long.valueOf(days));
+    }
   }
 
   protected static double likelihoodOfDeath(int age) {
@@ -1181,6 +1187,7 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, QUIT_SMOKING_PROBABILITY, true, false, null);
     Attributes.inventory(attributes, m, Person.RACE, true, false, null);
     Attributes.inventory(attributes, m, Person.SMOKER, true, false, "Boolean");
+    Attributes.inventory(attributes, m, Person.DEATHDATE, true, false, null);
     // Write
     Attributes.inventory(attributes, m, "pregnant", false, true, "Boolean");
     Attributes.inventory(attributes, m, "probability_of_fall_injury", false, true, "1.0");
@@ -1223,5 +1230,6 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, QUIT_ALCOHOLISM_PROBABILITY, false, true, "1.0");
     Attributes.inventory(attributes, m, QUIT_SMOKING_AGE, false, true, "Numeric");
     Attributes.inventory(attributes, m, QUIT_SMOKING_PROBABILITY, false, true, "1.0");
+    Attributes.inventory(attributes, m, DAYS_UNTIL_DEATH, false, true, "42");
   }
 }

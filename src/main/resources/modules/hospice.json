@@ -1,0 +1,126 @@
+{
+  "name": "hospice",
+  "remarks": [
+    "Simplified hospice module with a daily routine of hospice care and medication administration until the patient expires."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait for the End"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Hospice Encounter": {
+      "type": "Encounter",
+      "direct_transition": "Begin Day",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 305336008,
+          "display": "Admission to hospice (procedure)"
+        }
+      ],
+      "encounter_class": "hospice"
+    },
+    "Begin Day": {
+      "type": "Simple",
+      "direct_transition": "Hospice Care"
+    },
+    "Hospice Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 385763009,
+          "display": "Hospice care (regime/therapy)"
+        }
+      ],
+      "range": {
+        "high": 60,
+        "low": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Medication Administration"
+    },
+    "Medication Administration": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 370773004,
+          "display": "Administration of prescribed medications and solutions (procedure)"
+        }
+      ],
+      "range": {
+        "high": 10,
+        "low": 5,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Day"
+    },
+    "End Day": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Died in Hospice",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "days_until_death",
+            "operator": "<",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Begin Day"
+        }
+      ]
+    },
+    "Died in Hospice": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 876882001,
+          "display": "Died in hospice (finding)"
+        }
+      ],
+      "direct_transition": "Discharged"
+    },
+    "Discharged": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": 41,
+        "display": "Expired (i.e. died) in a medical facility; e.g., hospital, SNF, ICF, or free standing hospice"
+      }
+    },
+    "Wait for the End": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "And",
+        "conditions": [
+          {
+            "condition_type": "Attribute",
+            "attribute": "days_until_death",
+            "operator": "<",
+            "value": 30
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "hospice",
+            "operator": "is not nil"
+          }
+        ]
+      },
+      "direct_transition": "Hospice Encounter"
+    }
+  },
+  "gmf_version": 1
+}

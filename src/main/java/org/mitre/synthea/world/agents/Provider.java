@@ -65,6 +65,8 @@ public class Provider implements QuadTreeElement, Serializable {
   public static final String PROVIDER_SELECTION_BEHAVIOR =
       Config.get("generate.providers.selection_behavior", "nearest").toLowerCase();
   private static IProviderFinder providerFinder = buildProviderFinder();
+  public static final Boolean USE_HOSPITAL_AS_DEFAULT =
+      Config.getAsBoolean("generate.providers.default_to_hospital_on_failure", true);
 
   public Map<String, Object> attributes;
   public String uuid;
@@ -341,13 +343,37 @@ public class Provider implements QuadTreeElement, Serializable {
         String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
         loadProviders(location, urgentcareFile,
             ProviderType.URGENT, servicesProvided, clinicianSeed);
-      
+
         statesLoaded.add(location.state);
         statesLoaded.add(Location.getAbbreviation(location.state));
         statesLoaded.add(Location.getStateName(location.state));
       } catch (IOException e) {
         System.err.println("ERROR: unable to load providers for state: " + location.state);
         e.printStackTrace();
+      }
+
+      // Additional types of optional facilities
+      try {
+        Set<EncounterType> servicesProvided = new HashSet<EncounterType>();
+        servicesProvided.clear();
+        servicesProvided.add(EncounterType.HOME);
+        String homeHealthFile = Config.get("generate.providers.homehealth.default_file");
+        loadProviders(location, homeHealthFile,
+            ProviderType.HOME_HEALTH, servicesProvided, clinicianSeed);
+
+        servicesProvided.clear();
+        servicesProvided.add(EncounterType.HOSPICE);
+        String hospiceFile = Config.get("generate.providers.hospice.default_file");
+        loadProviders(location, hospiceFile,
+            ProviderType.HOSPICE, servicesProvided, clinicianSeed);
+
+        servicesProvided.clear();
+        servicesProvided.add(EncounterType.SNF);
+        String nursingFile = Config.get("generate.providers.nursing.default_file");
+        loadProviders(location, nursingFile,
+            ProviderType.NURSING, servicesProvided, clinicianSeed);
+      } catch (IOException e) {
+        System.err.println("WARNING: unable to load optional providers in: " + location.state);
       }
     }
   }

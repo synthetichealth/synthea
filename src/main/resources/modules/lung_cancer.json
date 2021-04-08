@@ -423,7 +423,7 @@
           "distribution": 0.77
         },
         {
-          "transition": "Schedule Follow Up III",
+          "transition": "Check For Hospice",
           "distribution": 0.23
         }
       ],
@@ -2540,7 +2540,7 @@
     "Anemia_Submodule": {
       "type": "CallSubmodule",
       "submodule": "anemia/anemia_sub",
-      "direct_transition": "Schedule Follow Up III"
+      "direct_transition": "Check For Hospice"
     },
     "Check_Anemia_Exist": {
       "type": "Simple",
@@ -2554,9 +2554,28 @@
           }
         },
         {
-          "transition": "Schedule Follow Up III"
+          "transition": "Check For Hospice"
         }
       ]
+    },
+    "Check For Hospice": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Will Use Hospice",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Schedule Follow Up III",
+          "distribution": 0.7
+        }
+      ]
+    },
+    "Will Use Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice",
+      "direct_transition": "Schedule Follow Up III",
+      "value": true
     }
   },
   "gmf_version": 1
