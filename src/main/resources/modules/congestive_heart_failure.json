@@ -1829,7 +1829,7 @@
     },
     "Stage D Hospice": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
+      "encounter_class": "hospice",
       "reason": "chf",
       "codes": [
         {
