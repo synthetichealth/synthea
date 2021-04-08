@@ -317,10 +317,10 @@ public class Location implements Serializable {
       int size = zipCodes.keySet().size();
       cityName = (String) zipCodes.keySet().toArray()[person.randInt(size)];
     }
-    zipsForCity = zipCodes.get(WordUtils.capitalize(cityName.toLowerCase()));
+    zipsForCity = zipCodes.get(cityName);
 
     if (zipsForCity == null) {
-      // If there are no zips for this city, try again with "Town" appended.
+      // If there are no zips for this city, try again with " Town" appended.
       zipsForCity = zipCodes.get(cityName + " Town");
       if (zipsForCity == null) { 
         // If there are still no zips, then this is an unknown city. Throw a detailed exception.
