@@ -640,6 +640,10 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public void setProvider(EncounterType type, long time) {
     Provider provider = Provider.findService(this, type, time);
+    if (provider == null && Provider.USE_HOSPITAL_AS_DEFAULT) {
+      // Default to Hospital
+      provider = Provider.findService(this, EncounterType.INPATIENT, time);
+    }
     setProvider(type, provider);
   }
 
