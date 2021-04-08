@@ -182,12 +182,6 @@ public class FHIRCarinExporterTest {
                * reports these as errors
                */
               valid = true; // ignore this error
-            } else if (
-                emessage.getMessage().contains("Unknown Code System 'http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBSupportingInfoType'")) {
-              /*
-               * The CARIN IG invariant
-               */
-              valid = true; // ignore this error
             }
             if (!valid) {
               System.out.println(parser.encodeResourceToString(entry.getResource()));

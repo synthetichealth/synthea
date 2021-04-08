@@ -1371,9 +1371,11 @@ public class FhirCarin {
     informationComponent.setTiming(new DateType(encounterResource.getPeriod().getEnd()));
     // informationComponent.setValue(informationReference);
     CodeableConcept category = new CodeableConcept();
-    category.getCodingFirstRep()
+    category.getCoding()
+      .add(new Coding()
         .setSystem("http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBSupportingInfoType")
-        .setCode("clmrecvddate");
+        .setCode("clmrecvddate")
+    );
     informationComponent.setCategory(category);
     eob.addSupportingInfo(informationComponent);
 

@@ -1,0 +1,126 @@
+{
+    "resourceType": "CodeSystem",
+    "id": "C4BBSupportingInfoType",
+    "text": {
+      "status": "generated",
+      "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>This code system http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBSupportingInfoType defines the following codes:</p><table class=\"codes\"><tr><td style=\"white-space:nowrap\"><b>Code</b></td><td><b>Display</b></td><td><b>Definition</b></td></tr><tr><td style=\"white-space:nowrap\">admissionperiod<a name=\"C4BBSupportingInfoType-admissionperiod\"> </a></td><td>Admission Period</td><td>Dates corresponding with the admission and discharge of the beneficiary to a facility</td></tr><tr><td style=\"white-space:nowrap\">pointoforigin<a name=\"C4BBSupportingInfoType-pointoforigin\"> </a></td><td>Point Of Origin</td><td>UB-04 Source of Admission (FL-15) identifies the place where the patient was identified as needing admission to a facility.</td></tr><tr><td style=\"white-space:nowrap\">admtype<a name=\"C4BBSupportingInfoType-admtype\"> </a></td><td>Admission Type</td><td>UB-04 Priority of the admission (FL-14) indicates, for example, an admission type of elective indicates that the patient's condition permitted time for medical services to be scheduled.</td></tr><tr><td style=\"white-space:nowrap\">billingnetworkcontractingstatus<a name=\"C4BBSupportingInfoType-billingnetworkcontractingstatus\"> </a></td><td>Billing Network Contracting Status</td><td>Indicates that the Billing Provider has a contract with the Payer as of the effective date of service or admission.</td></tr><tr><td style=\"white-space:nowrap\">brandgenericcode<a name=\"C4BBSupportingInfoType-brandgenericcode\"> </a></td><td>Brand Generic Code</td><td>NCPDP code indicating whether the plan adjudicated the claim as a brand or generic drug.</td></tr><tr><td style=\"white-space:nowrap\">clmrecvddate<a name=\"C4BBSupportingInfoType-clmrecvddate\"> </a></td><td>Claim Received Date</td><td>Date the claim was received by the payer.</td></tr><tr><td style=\"white-space:nowrap\">compoundcode<a name=\"C4BBSupportingInfoType-compoundcode\"> </a></td><td>Compound Code</td><td>NCPDP code indicating whether or not the prescription is a compound.</td></tr><tr><td style=\"white-space:nowrap\">dawcode<a name=\"C4BBSupportingInfoType-dawcode\"> </a></td><td>DAW (Dispense As Written) Code</td><td>NCPDP code indicating the prescriber's instruction regarding substitution of generic equivalents or order to dispense the specific prescribed medication.</td></tr><tr><td style=\"white-space:nowrap\">dayssupply<a name=\"C4BBSupportingInfoType-dayssupply\"> </a></td><td>Days Supply</td><td>NCPDP value indicating the Number of days supply of medication dispensed by the pharmacy.</td></tr><tr><td style=\"white-space:nowrap\">discharge-status<a name=\"C4BBSupportingInfoType-discharge-status\"> </a></td><td>Discharge Status</td><td>UB-04 Discharge Status (FL-17) indicates the patientâ€™s status as of the discharge date for a facility stay.</td></tr><tr><td style=\"white-space:nowrap\">drg<a name=\"C4BBSupportingInfoType-drg\"> </a></td><td>DRG</td><td>DRG (Diagnosis Related Group), including the code system, the DRG version and the code value</td></tr><tr><td style=\"white-space:nowrap\">performingnetworkcontractingstatus<a name=\"C4BBSupportingInfoType-performingnetworkcontractingstatus\"> </a></td><td>Performing Network Contracting Status</td><td>Indicates that the Performing Provider has a contract with the Payer as of the effective date of service or admission.</td></tr><tr><td style=\"white-space:nowrap\">refillnum<a name=\"C4BBSupportingInfoType-refillnum\"> </a></td><td>Refill Number</td><td>NCPDP value indicating the number fill of the current dispensed supply (0, 1, 2, etc.)</td></tr><tr><td style=\"white-space:nowrap\">rxorigincode<a name=\"C4BBSupportingInfoType-rxorigincode\"> </a></td><td>Rx Origin Code</td><td>NCPDP code indicating whether the prescription was transmitted as an electronic prescription, by phone, by fax, or as a written paper copy.</td></tr><tr><td style=\"white-space:nowrap\">servicefacility<a name=\"C4BBSupportingInfoType-servicefacility\"> </a></td><td>Service Facility</td><td>The facility where the service occurred.  Examples include hospitals, nursing homes, laboratories or homeless shelters.</td></tr><tr><td style=\"white-space:nowrap\">typeofbill<a name=\"C4BBSupportingInfoType-typeofbill\"> </a></td><td>Type of Bill</td><td>UB-04 Type of Bill (FL-04) provides specific information for payer purposes.</td></tr></table></div>"
+    },
+    "url": "http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBSupportingInfoType",
+    "version": "1.0.0",
+    "name": "C4BBSupportingInfoType",
+    "title": "C4BB Supporting Info Type",
+    "status": "active",
+    "date": "2020-11-23T17:26:16+00:00",
+    "publisher": "HL7 Financial Management Working Group",
+    "contact": [
+      {
+        "name": "HL7 Financial Management Working Group",
+        "telecom": [
+          {
+            "system": "url",
+            "value": "http://www.hl7.org/Special/committees/fm/index.cfm"
+          },
+          {
+            "system": "email",
+            "value": "fm@lists.HL7.org"
+          }
+        ]
+      }
+    ],
+    "description": "Claim Information Category - Used as the discriminator for supportingInfo",
+    "jurisdiction": [
+      {
+        "coding": [
+          {
+            "system": "urn:iso:std:iso:3166",
+            "code": "US"
+          }
+        ]
+      }
+    ],
+    "copyright": "This CodeSystem is not copyrighted.",
+    "content": "complete",
+    "count": 16,
+    "concept": [
+      {
+        "code": "admissionperiod",
+        "display": "Admission Period",
+        "definition": "Dates corresponding with the admission and discharge of the beneficiary to a facility"
+      },
+      {
+        "code": "pointoforigin",
+        "display": "Point Of Origin",
+        "definition": "UB-04 Source of Admission (FL-15) identifies the place where the patient was identified as needing admission to a facility."
+      },
+      {
+        "code": "admtype",
+        "display": "Admission Type",
+        "definition": "UB-04 Priority of the admission (FL-14) indicates, for example, an admission type of elective indicates that the patient's condition permitted time for medical services to be scheduled."
+      },
+      {
+        "code": "billingnetworkcontractingstatus",
+        "display": "Billing Network Contracting Status",
+        "definition": "Indicates that the Billing Provider has a contract with the Payer as of the effective date of service or admission."
+      },
+      {
+        "code": "brandgenericcode",
+        "display": "Brand Generic Code",
+        "definition": "NCPDP code indicating whether the plan adjudicated the claim as a brand or generic drug."
+      },
+      {
+        "code": "clmrecvddate",
+        "display": "Claim Received Date",
+        "definition": "Date the claim was received by the payer."
+      },
+      {
+        "code": "compoundcode",
+        "display": "Compound Code",
+        "definition": "NCPDP code indicating whether or not the prescription is a compound."
+      },
+      {
+        "code": "dawcode",
+        "display": "DAW (Dispense As Written) Code",
+        "definition": "NCPDP code indicating the prescriber's instruction regarding substitution of generic equivalents or order to dispense the specific prescribed medication."
+      },
+      {
+        "code": "dayssupply",
+        "display": "Days Supply",
+        "definition": "NCPDP value indicating the Number of days supply of medication dispensed by the pharmacy."
+      },
+      {
+        "code": "discharge-status",
+        "display": "Discharge Status",
+        "definition": "UB-04 Discharge Status (FL-17) indicates the patientâ€™s status as of the discharge date for a facility stay."
+      },
+      {
+        "code": "drg",
+        "display": "DRG",
+        "definition": "DRG (Diagnosis Related Group), including the code system, the DRG version and the code value"
+      },
+      {
+        "code": "performingnetworkcontractingstatus",
+        "display": "Performing Network Contracting Status",
+        "definition": "Indicates that the Performing Provider has a contract with the Payer as of the effective date of service or admission."
+      },
+      {
+        "code": "refillnum",
+        "display": "Refill Number",
+        "definition": "NCPDP value indicating the number fill of the current dispensed supply (0, 1, 2, etc.)"
+      },
+      {
+        "code": "rxorigincode",
+        "display": "Rx Origin Code",
+        "definition": "NCPDP code indicating whether the prescription was transmitted as an electronic prescription, by phone, by fax, or as a written paper copy."
+      },
+      {
+        "code": "servicefacility",
+        "display": "Service Facility",
+        "definition": "The facility where the service occurred.  Examples include hospitals, nursing homes, laboratories or homeless shelters."
+      },
+      {
+        "code": "typeofbill",
+        "display": "Type of Bill",
+        "definition": "UB-04 Type of Bill (FL-04) provides specific information for payer purposes."
+      }
+    ]
+  }
