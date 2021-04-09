@@ -424,8 +424,11 @@ public abstract class Logic implements Serializable {
     protected String referencedByAttribute;
 
     abstract boolean checkCode(Person person, HealthRecord.Code code);
+
     abstract boolean checkAttribute(Person person, HealthRecord.Entry entry);
+
     abstract HealthRecord.Entry findItemWhenMultipleRecords(Person person, HealthRecord.Code code);
+
     abstract void addItemWhenDataIsDuplicated(Person person, long time, HealthRecord.Entry entry);
 
     @Override
@@ -448,7 +451,8 @@ public abstract class Logic implements Serializable {
         return false;
       } else if (this.referencedByAttribute != null) {
         if (person.attributes.containsKey(this.referencedByAttribute)) {
-          return checkAttribute(person, (HealthRecord.Entry) person.attributes.get(this.referencedByAttribute));
+          return checkAttribute(person,
+              (HealthRecord.Entry) person.attributes.get(this.referencedByAttribute));
         } else {
           return false;
         }

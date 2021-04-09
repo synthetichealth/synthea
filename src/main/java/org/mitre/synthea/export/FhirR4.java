@@ -1458,8 +1458,8 @@ public class FhirR4 {
       status.getCodingFirstRep().setCode("inactive");
     }
 
-    if (allergy.allergyType == null || allergy.allergyType.equalsIgnoreCase("allergy"))
-    {
+    if (allergy.allergyType == null
+        || allergy.allergyType.equalsIgnoreCase("allergy")) {
       allergyResource.setType(AllergyIntoleranceType.ALLERGY);
     } else {
       allergyResource.setType(AllergyIntoleranceType.INTOLERANCE);
@@ -1479,6 +1479,8 @@ public class FhirR4 {
         case "biologic":
           category = AllergyIntoleranceCategory.BIOLOGIC;
           break;
+        default:
+          category = AllergyIntoleranceCategory.MEDICATION;
       }
     }
     allergyResource.addCategory(category);

@@ -613,8 +613,8 @@ public class HealthRecord implements Serializable {
     /**
      * Constructor for Entry.
      *
-     * @param start
-     * @param type
+     * @param start Time when the allergy starts
+     * @param type Substance that the person is allergic or intolerant to
      */
     public Allergy(long start, String type) {
       super(start, type);
