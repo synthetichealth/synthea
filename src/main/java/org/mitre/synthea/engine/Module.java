@@ -40,6 +40,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.modules.PerformCABG;
 import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.modules.WeightLossModule;
 import org.mitre.synthea.world.agents.Person;
@@ -72,6 +73,7 @@ public class Module implements Cloneable, Serializable {
     retVal.put("Cardiovascular Disease", new ModuleSupplier(new CardiovascularDiseaseModule()));
     retVal.put("Quality Of Life", new ModuleSupplier(new QualityOfLifeModule()));
     retVal.put("Weight Loss", new ModuleSupplier(new WeightLossModule()));
+    retVal.put("PerformCABG", new ModuleSupplier(new PerformCABG()));
 
     Properties moduleOverrides = getModuleOverrides();
 
