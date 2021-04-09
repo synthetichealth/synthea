@@ -10,6 +10,7 @@ import org.mitre.synthea.engine.Module.ModuleSupplier;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.VitalSign;
 
 public class HypertensionTrial {
 
@@ -32,10 +33,30 @@ public class HypertensionTrial {
       return this;
     }
 
+    public static final String ADD_THERAPY = "add_therapy";
+    public static final String TITRATE = "titrate";
+    
+    public static final double TITRATION_RATIO = 0.7; // 70% of the time, titrate rather than adding new class
+    
     @Override
     public boolean process(Person person, long time) {      
-      // output: htn_trial_next_action = "titrate" or class to add
+      // output: 
+      // htn_trial_next_action = "titrate" or "add_therapy"
+      // htn_trial_next_action_code = code for titrating or adding
       
+    	
+      // note: some repetition of logic here from what's in the module
+      // there may be opportunities to de-dup, but I like having the detail in the module
+      
+      String trialArm = (String)person.attributes.get("trial_arm");
+      boolean milepost = (boolean) person.attributes.getOrDefault("milestone_visit", false);
+      
+      double sbp = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time);
+      double dbp = person.getVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, time);
+     
+      boolean dbpGte90 = (boolean)person.attributes.getOrDefault("dbp_gte_90", false);
+      boolean sbpGte140 = (boolean)person.attributes.getOrDefault("sbp_gte_140", false);
+      boolean sbpLt135 = (boolean)person.attributes.getOrDefault("sbp_lt_135", false);
       
       AtomicInteger titrationCounter = (AtomicInteger)person.attributes.get("titration_counter");
       if (titrationCounter == null) {
@@ -43,14 +64,129 @@ public class HypertensionTrial {
         person.attributes.put("titration_counter", titrationCounter);
       }
       
+      int drugCount = countDrugs(person);
       
-      String nextAction = "titrate";
+      String nextAction;
+      String nextActionCode = null;
+      
+      if (trialArm.equals("intensive")) {
+        if (sbp >= 120) {
+          if (milepost) {
+            // Add therapy not in use
+            // see participant monthly, handled in module
+            nextAction = ADD_THERAPY;
+            nextActionCode = findTherapyNotInUse(person);
+            
+          } else {
+            // Titrate or add therapy not in use
+            // see participant monthly, handled in module
+            
+            if (drugCount == titrationCounter.get() || person.rand() > TITRATION_RATIO) {
+              nextAction = ADD_THERAPY;
+              nextActionCode = findTherapyNotInUse(person);
+            } else {
+              nextAction = TITRATE;
+              nextActionCode = "TODO";
+            }
+
+          }
+        } else if (dbp >= 100 || (dbp >= 90 && dbpGte90)) {
+          // titrate or add therapy not in use
+          
+          if (drugCount == titrationCounter.get() || person.rand() > TITRATION_RATIO) {
+            nextAction = ADD_THERAPY;
+            nextActionCode = findTherapyNotInUse(person);
+          } else {
+            nextAction = TITRATE;
+            nextActionCode = "TODO";
+          }
+          
+        } else {
+          // why did the module get called?
+          throw new IllegalStateException("ChooseNextTherapy module called for patient that doesn't need it!");
+        }
+      } else {
+        if (sbp >= 160 || (sbp >= 140 && sbpGte140)) {
+          // titrate or add therapy not in use
+          // schedule 1 month visit, not currently implemented
+          
+          if (drugCount == titrationCounter.get() || person.rand() > TITRATION_RATIO) {
+            nextAction = ADD_THERAPY;
+            nextActionCode = findTherapyNotInUse(person);
+          } else {
+            nextAction = TITRATE;
+            nextActionCode = "TODO";
+          }
+          
+        } else if (dbp >= 100 || (dbp >= 90 && dbpGte90)) {
+          // titrate or add therapy not in use
+          
+          if (drugCount == titrationCounter.get() || person.rand() > TITRATION_RATIO) {
+            nextAction = ADD_THERAPY;
+            nextActionCode = findTherapyNotInUse(person);
+          } else {
+            nextAction = TITRATE;
+            nextActionCode = "TODO";
+          }
+          
+        } else if (sbp < 130 || (sbp < 135 && sbpLt135)) {
+          // step down
+          throw new IllegalStateException("ChooseNextTherapy module called for patient that needs StepDown");
+        } else {
+          // why did the module get called at all?
+          throw new IllegalStateException("ChooseNextTherapy module called for patient that doesn't need it!");
+        }
+      }
       
       person.attributes.put("htn_trial_next_action", nextAction);
-      
+      person.attributes.put("htn_trial_next_action_code", nextActionCode);
       
       return true; // submodule is complete
     }
+    
+    private static final String[][] DRUG_HIERARCHY = {
+        { "chlorthalidone", "furosemide", "spironolactone", "triamterene/hctz", "amiloride" }, // diuretics
+        { "lisinopril" }, // ace inhibitor
+        {}, // angiotensin receptor blocker
+        {}, // calcium channel blocker
+        {}, // beta blocker
+        {}, // vasodilators
+        {}, // alpha 2 agonist
+        {}, // alpha blocker
+        {}, // potassium supplement
+    };
+    
+    public static int countDrugs(Person person) {
+      int count = 0;
+      for (String[] drugClass : DRUG_HIERARCHY) {
+        for (String drug : drugClass) {
+          if (person.record.medicationActive(drug)) {
+            count++;
+          }
+        }
+      }
+      
+      return count;
+    }
+    
+    public static String findTherapyNotInUse(Person person) {
+      String nextDrug = null;
+      for (String[] drugClass : DRUG_HIERARCHY) {
+        // TODO: shuffle the class
+        for (String drug : drugClass) {
+          if (person.record.medicationActive(drug)) {
+            break; // break out of drug class, the person has one in this class already
+          }
+          nextDrug = drug;
+          break;
+        }
+        if (nextDrug != null) break;
+      }
+      
+      return nextDrug;
+    }
+    
+
   }
   
   
