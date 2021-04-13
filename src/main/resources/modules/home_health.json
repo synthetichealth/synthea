@@ -1,0 +1,137 @@
+{
+  "name": "Home Health",
+  "remarks": [
+    "Simplified Home Health Care module with a daily routine of physical therapy and Activities of Daily Living (ADL) for less than 21 days (Medicare limit)."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait Until Home Health"
+    },
+    "Wait Until Home Health": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "And",
+        "conditions": [
+          {
+            "condition_type": "Attribute",
+            "attribute": "home_health",
+            "operator": "is not nil"
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "home_health",
+            "operator": "==",
+            "value": true
+          }
+        ]
+      },
+      "conditional_transition": [
+        {
+          "transition": "Home Health Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "home_health_days",
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Determine Visits"
+        }
+      ]
+    },
+    "Determine Visits": {
+      "type": "SetAttribute",
+      "attribute": "home_health_days",
+      "direct_transition": "Home Health Encounter",
+      "range": {
+        "high": 21,
+        "low": 7
+      }
+    },
+    "Home Health Encounter": {
+      "type": "Encounter",
+      "encounter_class": "home",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 439708006,
+          "display": "Home visit (procedure)"
+        }
+      ],
+      "direct_transition": "Physical Therapy"
+    },
+    "Physical Therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 91251008,
+          "display": "Physical therapy procedure (regime/therapy)"
+        }
+      ],
+      "range": {
+        "high": 60,
+        "low": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "Activities of Daily Living"
+    },
+    "Activities of Daily Living": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183345007,
+          "display": "Daily living activity therapy (regime/therapy)"
+        }
+      ],
+      "range": {
+        "high": 120,
+        "low": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "End Encounter"
+    },
+    "End Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Every Other Day"
+    },
+    "Count Visit": {
+      "type": "Counter",
+      "attribute": "home_health_days",
+      "action": "decrement",
+      "amount": 2,
+      "conditional_transition": [
+        {
+          "transition": "Home Health Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "home_health_days",
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "End Home Health Visits"
+        }
+      ]
+    },
+    "Every Other Day": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 2,
+        "unit": "days"
+      },
+      "direct_transition": "Count Visit"
+    },
+    "End Home Health Visits": {
+      "type": "SetAttribute",
+      "attribute": "home_health",
+      "direct_transition": "Wait Until Home Health",
+      "value": false
+    }
+  },
+  "gmf_version": 1
+}
