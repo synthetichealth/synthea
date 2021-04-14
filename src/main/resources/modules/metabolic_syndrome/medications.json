@@ -1,0 +1,389 @@
+{
+  "name": "medications",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Monotherapy"
+    },
+    "Monotherapy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes_severity",
+                "operator": ">=",
+                "value": 2
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Medication",
+                  "codes": [
+                    {
+                      "system": "RxNorm",
+                      "code": "860975",
+                      "display": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Prescribe_Metformin"
+        },
+        {
+          "transition": "Bitherapy"
+        }
+      ]
+    },
+    "Prescribe_Metformin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "860975",
+          "display": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
+        }
+      ],
+      "reason": "Diagnose_Diabetes",
+      "direct_transition": "Bitherapy",
+      "chronic": true
+    },
+    "Bitherapy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes_severity",
+                "operator": ">=",
+                "value": 3
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Medication",
+                  "codes": [
+                    {
+                      "system": "RxNorm",
+                      "code": "897122",
+                      "display": "3 ML liraglutide 6 MG/ML Pen Injector"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Prescribe_Liraglutide"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes_severity",
+                "operator": "<",
+                "value": 3
+              },
+              {
+                "condition_type": "Active Medication",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": "897122",
+                    "display": "3 ML liraglutide 6 MG/ML Pen Injector"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Liraglutide"
+        },
+        {
+          "transition": "Tritherapy"
+        }
+      ]
+    },
+    "Prescribe_Liraglutide": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "897122",
+          "display": "3 ML liraglutide 6 MG/ML Pen Injector"
+        }
+      ],
+      "reason": "Diagnose_Diabetes",
+      "direct_transition": "Tritherapy",
+      "chronic": true
+    },
+    "End_Liraglutide": {
+      "type": "MedicationEnd",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "897122",
+          "display": "3 ML liraglutide 6 MG/ML Pen Injector"
+        }
+      ],
+      "direct_transition": "Tritherapy"
+    },
+    "Tritherapy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes_severity",
+                "operator": ">=",
+                "value": 4
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Medication",
+                  "codes": [
+                    {
+                      "system": "RxNorm",
+                      "code": "1373463",
+                      "display": "canagliflozin 100 MG Oral Tablet"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Prescribe_Canagliflozin"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes_severity",
+                "operator": "<",
+                "value": 4
+              },
+              {
+                "condition_type": "Active Medication",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": "1373463",
+                    "display": "canagliflozin 100 MG Oral Tablet"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Canagliflozin"
+        },
+        {
+          "transition": "Insulin"
+        }
+      ]
+    },
+    "Prescribe_Canagliflozin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1373463",
+          "display": "canagliflozin 100 MG Oral Tablet"
+        }
+      ],
+      "reason": "Diagnose_Diabetes",
+      "direct_transition": "Insulin"
+    },
+    "End_Canagliflozin": {
+      "type": "MedicationEnd",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1373463",
+          "display": "canagliflozin 100 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Insulin"
+    },
+    "Insulin": {
+      "type": "Simple",
+      "remarks": [
+        "around a third of patients with type 2 diabetes are on insulin ",
+        "30.8% (17.8% only insulin and 13.0% insulin and other med)",
+        "https://www.cdc.gov/diabetes/statistics/meduse/fig2.htm",
+        "coincidentally around a third of patients have nephropathy",
+        "for simplicity we'll make this a 1-1 relationship so that nephropathy --> insulin"
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "127013003",
+                "display": "Diabetic renal disease (disorder)"
+              }
+            ]
+          },
+          "transition": "Prescribe_Insulin"
+        },
+        {
+          "transition": "End_Insulin"
+        }
+      ]
+    },
+    "Prescribe_Insulin": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "106892",
+                "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
+              }
+            ]
+          },
+          "remarks": [
+            "they have basal so stop it and change towards prandial"
+          ],
+          "transition": "End_Basal_Insulin_Towards_Prandial"
+        },
+        {
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "865098",
+                "display": "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
+              }
+            ]
+          },
+          "remarks": [
+            "they have prandial so do nothing"
+          ],
+          "transition": "Terminal"
+        },
+        {
+          "remarks": [
+            "prescribe basal the first time around"
+          ],
+          "transition": "Prescribe_Basal_Insulin"
+        }
+      ]
+    },
+    "Prescribe_Basal_Insulin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "106892",
+          "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
+        }
+      ],
+      "reason": "Diagnose_Diabetes",
+      "direct_transition": "Terminal",
+      "chronic": true
+    },
+    "End_Basal_Insulin_Towards_Prandial": {
+      "type": "MedicationEnd",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "106892",
+          "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
+        }
+      ],
+      "direct_transition": "Prescribe_Prandial_Insulin"
+    },
+    "Prescribe_Prandial_Insulin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "865098",
+          "display": "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
+        }
+      ],
+      "reason": "Diagnose_Diabetes",
+      "direct_transition": "Terminal",
+      "chronic": true
+    },
+    "End_Insulin": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "106892",
+                "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
+              }
+            ]
+          },
+          "transition": "End_Basal_Insulin"
+        },
+        {
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "865098",
+                "display": "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
+              }
+            ]
+          },
+          "transition": "End_Prandial_Insulin"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "End_Basal_Insulin": {
+      "type": "MedicationEnd",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "106892",
+          "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "End_Prandial_Insulin": {
+      "type": "MedicationEnd",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "865098",
+          "display": "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
