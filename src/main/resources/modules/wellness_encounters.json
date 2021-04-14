@@ -70,27 +70,66 @@
         {
           "transition": "Record_BMI_Percentile",
           "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Age",
-                "operator": ">=",
-                "quantity": 2,
-                "unit": "years"
-              },
-              {
-                "condition_type": "Age",
-                "operator": "<",
-                "quantity": 20,
-                "unit": "years"
-              }
-            ]
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 20,
+            "unit": "years"
+          }
+        },
+        {
+          "transition": "Obese_Check"
+        }
+      ]
+    },
+    "Obese_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Severe Obesity",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "BMI",
+            "operator": ">=",
+            "value": 40
+          }
+        },
+        {
+          "transition": "Obesity",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "BMI",
+            "operator": ">=",
+            "value": 30
           }
         },
         {
           "transition": "Record_BP"
         }
       ]
+    },
+    "Obesity": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 162864005,
+          "display": "Body mass index 30+ - obesity (finding)"
+        }
+      ],
+      "direct_transition": "Record_BP",
+      "assign_to_attribute": "obesity"
+    },
+    "Severe Obesity": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "obesity",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 408512008,
+          "display": "Body mass index 40+ - severely obese (finding)"
+        }
+      ],
+      "direct_transition": "Record_BP"
     },
     "Record_BP": {
       "type": "MultiObservation",

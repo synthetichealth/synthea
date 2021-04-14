@@ -36,7 +36,7 @@
           "transition": "Record_HA1C"
         },
         {
-          "transition": "Obese_Check"
+          "transition": "End_Wellness_Encounter"
         }
       ]
     },
@@ -2275,58 +2275,6 @@
       ],
       "direct_transition": "Record_MetabolicPanel_4",
       "assign_to_attribute": "dialysis_reason"
-    },
-    "Obese_Check": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Severe Obesity",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "BMI",
-            "operator": ">=",
-            "value": 40
-          }
-        },
-        {
-          "transition": "Obesity",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "BMI",
-            "operator": ">=",
-            "value": 30
-          }
-        },
-        {
-          "transition": "End_Wellness_Encounter"
-        }
-      ]
-    },
-    "Obesity": {
-      "type": "ConditionOnset",
-      "target_encounter": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 162864005,
-          "display": "Body mass index 30+ - obesity (finding)"
-        }
-      ],
-      "direct_transition": "End_Wellness_Encounter",
-      "assign_to_attribute": "obesity"
-    },
-    "Severe Obesity": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "obesity",
-      "target_encounter": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 408512008,
-          "display": "Body mass index 40+ - severely obese (finding)"
-        }
-      ],
-      "direct_transition": "End_Wellness_Encounter"
     },
     "Record_MetabolicPanel": {
       "type": "DiagnosticReport",
