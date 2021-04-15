@@ -1,8 +1,5 @@
 {
   "name": "Stable Ischemic Heart Disease",
-  "remarks": [
-    "A blank module"
-  ],
   "states": {
     "Initial": {
       "type": "Initial",
@@ -156,20 +153,20 @@
           }
         },
         {
-          "transition": "Start_Amlodipine",
-          "condition": {
-            "condition_type": "Date",
-            "operator": ">=",
-            "year": 1994,
-            "value": 0
-          }
-        },
-        {
           "transition": "Start_Simvastatin",
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
             "year": 1991,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Start_Metoprolol",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1978,
             "value": 0
           }
         },
@@ -198,15 +195,15 @@
           "display": "Simvastatin 20 MG Oral Tablet"
         }
       ],
-      "direct_transition": "Start_Amlodipine"
+      "direct_transition": "Start_Metoprolol"
     },
-    "Start_Amlodipine": {
+    "Start_Metoprolol": {
       "type": "MedicationOrder",
       "codes": [
         {
           "system": "RxNorm",
-          "code": 197361,
-          "display": "Amlodipine 5 MG Oral Tablet"
+          "code": 866412,
+          "display": "24 HR metoprolol succinate 100 MG Extended Release Oral Tablet"
         }
       ],
       "direct_transition": "Start_Nitroglycerin"
@@ -241,5 +238,6 @@
       },
       "direct_transition": "Diagnosis_Encounter"
     }
-  }
+  },
+  "gmf_version": 2
 }
