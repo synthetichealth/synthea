@@ -38,7 +38,8 @@
         {
           "transition": "OTC_Pain_Reliever_Terminal"
         }
-      ]
+      ],
+      "name": "Initial"
     },
     "Prescribe_OTC_Pain_Reliever": {
       "type": "Simple",
@@ -127,7 +128,8 @@
             }
           ]
         }
-      ]
+      ],
+      "name": "Prescribe_OTC_Pain_Reliever"
     },
     "Prescribe_Aspirin": {
       "type": "MedicationOrder",
@@ -140,13 +142,15 @@
         {
           "system": "RxNorm",
           "code": "243670",
-          "display": "Aspirin 81 MG Oral Tablet"
+          "display": "Aspirin 81 MG Oral Tablet",
+          "value_set": ""
         }
       ],
       "prescription": {
         "as_needed": true
       },
-      "direct_transition": "OTC_Pain_Reliever_Terminal"
+      "direct_transition": "OTC_Pain_Reliever_Terminal",
+      "name": "Prescribe_Aspirin"
     },
     "Prescribe_Acetaminophen": {
       "type": "Simple",
@@ -163,7 +167,8 @@
         {
           "transition": "Adult_Acetaminophen"
         }
-      ]
+      ],
+      "name": "Prescribe_Acetaminophen"
     },
     "Pediatric_Acetaminophen": {
       "type": "MedicationOrder",
@@ -172,13 +177,15 @@
         {
           "system": "RxNorm",
           "code": "313820",
-          "display": "Acetaminophen 160 MG Chewable Tablet"
+          "display": "Acetaminophen 160 MG Chewable Tablet",
+          "value_set": ""
         }
       ],
       "prescription": {
         "as_needed": true
       },
-      "direct_transition": "OTC_Pain_Reliever_Terminal"
+      "direct_transition": "OTC_Pain_Reliever_Terminal",
+      "name": "Pediatric_Acetaminophen"
     },
     "Adult_Acetaminophen": {
       "type": "MedicationOrder",
@@ -187,30 +194,53 @@
         {
           "system": "RxNorm",
           "code": "313782",
-          "display": "Acetaminophen 325 MG Oral Tablet"
+          "display": "Acetaminophen 325 MG Oral Tablet",
+          "value_set": ""
         }
       ],
       "prescription": {
         "as_needed": true
       },
-      "direct_transition": "OTC_Pain_Reliever_Terminal"
+      "direct_transition": "OTC_Pain_Reliever_Terminal",
+      "name": "Adult_Acetaminophen"
     },
     "Prescribe_Ibuprofen": {
       "type": "Simple",
       "conditional_transition": [
         {
+          "transition": "Prescribe_Acetaminophen",
+          "condition": {
+            "condition_type": "Active Allergy",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "5640",
+                "display": "Ibuprofen"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Pediatric_Ibuprofen",
           "condition": {
             "condition_type": "Age",
             "operator": "<",
             "quantity": 12,
             "unit": "years"
-          },
-          "transition": "Pediatric_Ibuprofen"
+          }
         },
         {
-          "transition": "Adult_Ibuprofen"
+          "transition": "Adult_Ibuprofen",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 12,
+            "unit": "years",
+            "value": 0
+          }
         }
-      ]
+      ],
+      "name": "Prescribe_Ibuprofen"
     },
     "Pediatric_Ibuprofen": {
       "type": "MedicationOrder",
@@ -219,13 +249,15 @@
         {
           "system": "RxNorm",
           "code": "198405",
-          "display": "Ibuprofen 100 MG Oral Tablet"
+          "display": "Ibuprofen 100 MG Oral Tablet",
+          "value_set": ""
         }
       ],
       "prescription": {
         "as_needed": true
       },
-      "direct_transition": "OTC_Pain_Reliever_Terminal"
+      "direct_transition": "OTC_Pain_Reliever_Terminal",
+      "name": "Pediatric_Ibuprofen"
     },
     "Adult_Ibuprofen": {
       "type": "MedicationOrder",
@@ -234,13 +266,15 @@
         {
           "system": "RxNorm",
           "code": "310965",
-          "display": "Ibuprofen 200 MG Oral Tablet"
+          "display": "Ibuprofen 200 MG Oral Tablet",
+          "value_set": ""
         }
       ],
       "prescription": {
         "as_needed": true
       },
-      "direct_transition": "OTC_Pain_Reliever_Terminal"
+      "direct_transition": "OTC_Pain_Reliever_Terminal",
+      "name": "Adult_Ibuprofen"
     },
     "Prescribe_Naproxen_Sodium": {
       "type": "Simple",
@@ -275,7 +309,8 @@
             }
           ]
         }
-      ]
+      ],
+      "name": "Prescribe_Naproxen_Sodium"
     },
     "Naproxen_Sodium": {
       "type": "MedicationOrder",
@@ -284,17 +319,20 @@
         {
           "system": "RxNorm",
           "code": "849574",
-          "display": "Naproxen sodium 220 MG Oral Tablet"
+          "display": "Naproxen sodium 220 MG Oral Tablet",
+          "value_set": ""
         }
       ],
       "prescription": {
         "as_needed": true
       },
-      "direct_transition": "OTC_Pain_Reliever_Terminal"
+      "direct_transition": "OTC_Pain_Reliever_Terminal",
+      "name": "Naproxen_Sodium"
     },
     "OTC_Pain_Reliever_Terminal": {
-      "type": "Terminal"
+      "type": "Terminal",
+      "name": "OTC_Pain_Reliever_Terminal"
     }
   },
-  "gmf_version": 1
+  "gmf_version": 2
 }
