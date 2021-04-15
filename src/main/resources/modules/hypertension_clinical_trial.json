@@ -720,7 +720,7 @@
             "condition_type": "Attribute",
             "attribute": "framingham_cvd",
             "operator": ">=",
-            "value": 0.15
+            "value": 15
           }
         },
         {
