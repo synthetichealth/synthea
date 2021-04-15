@@ -1,7 +1,19 @@
 {
   "name": "care_score",
   "remarks": [
-    "Set a CARE Score."
+    "This submodule of Cardiac Surgery sets a Cardiac Anesthesia Risk Evaluation (CARE) score for each patient and a schedule priority based on their CARE score.",
+    "",
+    "CARE scores range 1 - 5 with E denoting an emergency— defined as \"surgery as soon as diagnosis is made and operating room is available.\"",
+    "",
+    "Priority: Refers to a patient’s priority for surgery based upon their clinical status and triage. Priority levels are defined as follows: ",
+    "• Priority 1 = Surgery performed within 0-48 hours; the patient has no delay in surgery and/or is actively undergoing resuscitation or extracorporeal membrane oxygenation to sustain life.",
+    "• Priority 2 = Surgery performed within <=14 days, often during the same hospitalization to minimize risk of further clinical deterioration.",
+    "• Priority 3 = Surgery performed within <=42 days; the patient’s clinical condition is stable over days or weeks prior to the operation, but the procedure should preferentially not be deferred if needed due to increased risk of poor outcome.",
+    "• Priority 4 = Surgery performed within > 42 days; the patient’s clinical condition is stable over days or weeks prior to the operation, but the procedure could be deferred if needed without increased risk of poor outcome.",
+    "",
+    "",
+    "",
+    " "
   ],
   "states": {
     "Initial": {
@@ -300,7 +312,7 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": "99999-0",
+          "code": "X9999-0",
           "display": "CARE Score"
         }
       ],
@@ -312,7 +324,7 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "99999-1",
+              "code": "X9999-1",
               "display": "CARE Score Value"
             }
           ],
@@ -324,7 +336,7 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "99999-2",
+              "code": "X9999-2",
               "display": "CARE Score E"
             }
           ],
@@ -362,5 +374,6 @@
       "direct_transition": "Record Score",
       "value": 1
     }
-  }
+  },
+  "gmf_version": 2
 }

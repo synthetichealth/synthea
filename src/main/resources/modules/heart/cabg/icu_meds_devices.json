@@ -1,7 +1,7 @@
 {
   "name": "icu_meds_devices",
   "remarks": [
-    "Post operation ICU devices and medications."
+    "This submodule of Cardiac Surgery models ICU Medications and Devices. "
   ],
   "states": {
     "Initial": {
@@ -1132,5 +1132,6 @@
       },
       "direct_transition": "Device"
     }
-  }
+  },
+  "gmf_version": 2
 }

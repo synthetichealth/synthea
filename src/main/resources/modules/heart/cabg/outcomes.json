@@ -1,7 +1,20 @@
 {
   "name": "outcomes",
   "remarks": [
-    "Determine CABG Outcomes."
+    "This submodule of Cardiac Surgery determines CABG Outcomes using the Cardiac Anesthesia Risk Evaluation (CARE) score, a simple risk classification for patients for outcome prediction in cardiac surgery. The CARE Score has been shown in the literature to have good calibration in predicting outcomes when compared with more robust multifactorial risk scores, such as the EuroSCORE.",
+    "",
+    "CARE score range 1 - 5 with E denoting an emergency— defined as \"surgery as soon as diagnosis is made and operating room is available.\"",
+    "",
+    "In alignment with the CARE Score, morbidity state definitions are follows: ",
+    "• Heart_Failure: includes low cardiac output, hypotension, or both treated with intra-aortic balloon pump, and/or intravenous inotropes or vasopressors for more than 24 h; malignant arrhythmia (asystole and ventricular tachycardia or fibrillation) requiring cardiopulmonary resuscitation, antiarrhythmia therapy, or automatic cardiodefibrillator implantation",
+    "• Respiratory Failure: prolonged mechanical ventilation, tracheostomy, and/or reintubation",
+    "• Focal Brain injury: focal brain injury with permanent functional deficit (i.e., stroke) and irreversible encephalopathy",
+    "• Acute_Kidney_Injury: acute renal failure requiring dialysis",
+    "• Sepsis and/or Septic_Shock: infection with positive blood cultures and/or deep sternal or leg wound infection requiring intravenous antibiotics, surgical debridement, or both.",
+    "",
+    "References:",
+    "• Dupuis JY et al. The Cardiac Anesthesia Risk Evaluation Score. A clinically Useful Predictor of Mortality and Morbidity after Cardiac Surgery. Anesthesiology: The Journal of the American Society of Anesthesiologists. 2001 Feb 1;94(2):194-204. ",
+    "• Tran DT,  Dupuis JY,  Mesana T,  Ruel M,  Nathan HJ. Comparison of the EuroSCORE and Cardiac Anesthesia Risk Evaluation (CARE) score for risk-adjusted mortality analysis in cardiac surgery, Eur J Cardiothorac Surg, 2012, vol. 41 (pg. 307-313)10.1016/j.ejcts.2011.06.015"
   ],
   "states": {
     "Initial": {
@@ -479,8 +492,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "84114007",
-          "display": "Heart failure (disorder)"
+          "code": 233816003,
+          "display": "Postoperative cardiac complication (disorder)"
         }
       ],
       "target_encounter": "CABG_Postop",
@@ -491,8 +504,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "40095003",
-          "display": "Injury of kidney (disorder)"
+          "code": 275408006,
+          "display": "Postoperative renal failure (disorder)"
         }
       ],
       "target_encounter": "CABG_Postop",
@@ -504,8 +517,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "76571007",
-          "display": "Septic shock (disorder)"
+          "code": 213256002,
+          "display": "Postoperative septic shock (disorder)"
         }
       ],
       "target_encounter": "CABG_Postop",
@@ -553,13 +566,14 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 65710008,
-          "display": "Acute respiratory failure (disorder)"
+          "code": 309775007,
+          "display": "Postprocedural respiratory failure (disorder)"
         }
       ],
       "target_encounter": "CABG_Postop",
       "direct_transition": "Check Prolonged LOS",
       "assign_to_attribute": "Ventilator Reason"
     }
-  }
+  },
+  "gmf_version": 2
 }

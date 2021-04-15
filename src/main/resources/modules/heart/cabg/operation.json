@@ -1,7 +1,14 @@
 {
   "name": "operation",
   "remarks": [
-    "CABG operation."
+    "This submodule of Cardiac Surgery models the CABG Operation.",
+    " ",
+    "On pump = Conventional CABG procedure performed with the use of cardiopulmonary bypass (CBP) and median sternotomy.",
+    "",
+    "Off-pump = CABG procedure performed without use of cardiopulmonary bypass (CBG); is inclusive of procedures with median sternotomy and procedures without median sternotomy (e.g., minimally invasive, robotic).",
+    "",
+    "This submodule does not model intraoperative conversion from off‐pump to on‐pump CABG.",
+    ""
   ],
   "states": {
     "Initial": {
@@ -105,161 +112,14 @@
         "high": 30,
         "unit": "minutes"
       },
-      "complex_transition": [
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "care_score_e",
-                "operator": "==",
-                "value": true
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "care_score",
-                "operator": "==",
-                "value": 5
-              }
-            ]
-          },
-          "distributions": [],
-          "transition": "On Pump"
+          "transition": "On Pump",
+          "distribution": 0.7
         },
         {
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "care_score_e",
-                "operator": "==",
-                "value": true
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "care_score",
-                "operator": "==",
-                "value": 4
-              }
-            ]
-          },
-          "distributions": [],
-          "transition": "On Pump"
-        },
-        {
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "care_score_e",
-                "operator": "==",
-                "value": true
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "care_score",
-                "operator": "==",
-                "value": 3
-              }
-            ]
-          },
-          "distributions": [
-            {
-              "transition": "On Pump",
-              "distribution": 0.947
-            },
-            {
-              "transition": "Off Pump",
-              "distribution": 0.053
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_score",
-            "operator": "==",
-            "value": 5
-          },
-          "distributions": [
-            {
-              "transition": "On Pump",
-              "distribution": 0.8
-            },
-            {
-              "transition": "Off Pump",
-              "distribution": 0.2
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_score",
-            "operator": "==",
-            "value": 4
-          },
-          "distributions": [
-            {
-              "transition": "On Pump",
-              "distribution": 0.946
-            },
-            {
-              "transition": "Off Pump",
-              "distribution": 0.054
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_score",
-            "operator": "==",
-            "value": 3
-          },
-          "distributions": [
-            {
-              "transition": "On Pump",
-              "distribution": 0.988
-            },
-            {
-              "transition": "Off Pump",
-              "distribution": 0.012
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_score",
-            "operator": "==",
-            "value": 2
-          },
-          "distributions": [
-            {
-              "transition": "On Pump",
-              "distribution": 0.991
-            },
-            {
-              "transition": "Off Pump",
-              "distribution": 0.009
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "transition": "On Pump",
-              "distribution": 0.987
-            },
-            {
-              "transition": "Off Pump",
-              "distribution": 0.013
-            }
-          ]
+          "transition": "Off Pump",
+          "distribution": 0.3
         }
       ]
     },
@@ -363,7 +223,7 @@
           },
           "distributions": [
             {
-              "transition": "CPB",
+              "transition": "CPB_2",
               "distribution": 0.083
             },
             {
@@ -381,7 +241,7 @@
           },
           "distributions": [
             {
-              "transition": "CPB",
+              "transition": "CPB_2",
               "distribution": 0.054
             },
             {
@@ -393,7 +253,7 @@
         {
           "distributions": [
             {
-              "transition": "CPB",
+              "transition": "CPB_2",
               "distribution": 0.003
             },
             {
@@ -477,6 +337,23 @@
       "type": "CallSubmodule",
       "submodule": "heart/cabg/or_intraop",
       "direct_transition": "History_of_CABG"
+    },
+    "CPB_2": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 63697000,
+          "display": "Cardiopulmonary bypass operation (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "End CPB"
     }
-  }
+  },
+  "gmf_version": 2
 }

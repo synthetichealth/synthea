@@ -1,7 +1,22 @@
 {
   "name": "or_labs_meds",
   "remarks": [
-    "OR Labs and Meds. CPB meds not included."
+    "This submodule of Cardiac Surgery models common Labs, Medications, and Blood Components during the CABG Operation. ",
+    "",
+    "Represented labs include: ",
+    "• Activated clotting time ",
+    "• Arterial blood gas ",
+    "• Venous blood gas",
+    "• Magnesium",
+    "• Gas and Carbon monoxide and Electrolytes panel - Arterial blood, which includes sodium, potassium, chloride, ionized calcium, glucose, hemoglobin, and lactate.",
+    "",
+    "Represented meds and blood components include: ",
+    "• Cefazolin, consistent with Society of Thoracic Surgeons antibiotic prophylaxis recommendations. ",
+    "• Heparin",
+    "• Protamine",
+    "• Insulin- called with insulin_or_blood submodule",
+    "• Blood (pRBCs)- called with insulin_or_blood submodule",
+    ""
   ],
   "states": {
     "Initial": {
@@ -268,5 +283,6 @@
       "submodule": "heart/cabg/insulin_or_blood",
       "direct_transition": "Terminal"
     }
-  }
+  },
+  "gmf_version": 2
 }

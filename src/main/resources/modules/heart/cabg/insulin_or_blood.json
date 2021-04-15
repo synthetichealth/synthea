@@ -1,8 +1,5 @@
 {
   "name": "insulin_or_blood",
-  "remarks": [
-    "Diabetes need insulin and anemics need blood."
-  ],
   "states": {
     "Initial": {
       "type": "Initial",
@@ -275,7 +272,7 @@
       "type": "SupplyList",
       "supplies": [
         {
-          "quantity": 2,
+          "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
             "code": 431069006,
@@ -288,5 +285,14 @@
     "Terminal": {
       "type": "Terminal"
     }
-  }
+  },
+  "gmf_version": 2,
+  "remarks": [
+    "This submodule of Cardiac Surgery models the administration of Insulin and Blood Products during the CABG Operation. ",
+    "",
+    "The following assumptions apply: ",
+    "• If a patient has diabetes, they receive insulin. ",
+    "• Anemia check = check for Hgb <= 7. Probabilities for subsequent need for transfusion are informed by CARE scores. ",
+    ""
+  ]
 }

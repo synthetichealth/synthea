@@ -1,8 +1,5 @@
 {
   "name": "or_intraop",
-  "remarks": [
-    "CABG device implantation and intraop medications."
-  ],
   "states": {
     "Initial": {
       "type": "Initial",
@@ -1724,5 +1721,9 @@
       "direct_transition": "Less_Pressor_5",
       "administration": true
     }
-  }
+  },
+  "gmf_version": 2,
+  "remarks": [
+    "This submodule of Cardiac Surgery models the administration of Pressor Medications and Device Implantation during the CABG Operation."
+  ]
 }

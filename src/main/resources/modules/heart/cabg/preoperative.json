@@ -1,10 +1,9 @@
 {
   "name": "preoperative",
   "remarks": [
-    "Preoperative Testing. Depends on priority of patient and time available.",
+    "This submodule of Cardiac Surgery models Preoperative Testing. The tests completed depend on the schedule priority of the patient and time available before surgery. Labs and imaging are as follows: ",
     "",
-    "# Priority 1+",
-    "Labs:",
+    "# Priority 1+ =  Common Labs",
     "- CBC",
     "- CMP",
     "- Magnesium",
@@ -14,25 +13,23 @@
     "- ABG",
     "- Type and Cross",
     "",
-    "# Priority 2+",
-    "Labs:",
+    "# Priority 2+ = All Priority 1 labs +",
     "- Troponin",
     "- TSH",
     "- A1c",
     "- UA",
     "- NtPro-BNP if Heart Failure",
-    "Imaging:",
     "- ECG",
     "- CXR",
     "- Transthoracic echo",
     "- PFTS if COPD",
-    "- Carotid doppler if PAD, CVD",
-    "- Head CT if CVD",
+    "- Carotid doppler if Peripheral artery disease and/or h/o stroke",
+    "- Head CT if h/o stroke",
     "",
-    "# Priority 3+",
-    "Labs:",
+    "# Priority 3+ = All Priority 1 and 2 Labs/Images +",
     "- Lipid Panel",
-    "Telephone Follow-Up every 2 weeks"
+    "",
+    ""
   ],
   "states": {
     "Initial": {
@@ -259,8 +256,8 @@
         }
       ],
       "duration": {
-        "low": 40,
-        "high": 50,
+        "low": 5,
+        "high": 10,
         "unit": "minutes"
       },
       "direct_transition": "Chest_X_Ray"
@@ -725,5 +722,6 @@
       "submodule": "heart/cabg/labs_common",
       "direct_transition": "TODO Blood Type and Cross"
     }
-  }
+  },
+  "gmf_version": 2
 }

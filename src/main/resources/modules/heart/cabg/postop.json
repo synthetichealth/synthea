@@ -1,7 +1,7 @@
 {
   "name": "postop",
   "remarks": [
-    "CABG Postoperative, ICU, and Ward."
+    "This submodule of Cardiac Surgery models Postoperative ICU and Ward Care."
   ],
   "states": {
     "Initial": {
@@ -43,7 +43,7 @@
       "direct_transition": "Ventilation Check",
       "range": {
         "low": 1,
-        "high": 5
+        "high": 6
       }
     },
     "Discharge": {
@@ -76,7 +76,7 @@
       "attribute": "cabg_icu_los",
       "direct_transition": "Ventilation Check",
       "range": {
-        "low": 6,
+        "low": 7,
         "high": 10
       }
     },
@@ -407,5 +407,6 @@
         "unit": "days"
       }
     }
-  }
+  },
+  "gmf_version": 2
 }

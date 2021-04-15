@@ -1,7 +1,21 @@
 {
   "name": "referral",
   "remarks": [
-    "CABG Referral."
+    "This submodule of Cardiac Surgery models Referral Pathways.",
+    "",
+    "The high-level flow is as follows: ",
+    "Patients have an encounter for a cardiac problem wherein they are referred to cardiology for coronary angiography. Coronary angiography is performed with post-procedural care. As a result of abnormal angiography, patients are either: ",
+    "a. Referred to the Cardiac Surgery Service (i.e., accepted for CABG surgery);",
+    "b. Referred back to the Cardiology Service (i.e., for medical or percutaneous coronary intervention management); or",
+    "c. Referred to a Service, a small joint cardiology/cardiac surgery team or large multidisciplinary heart team, with final referral to the appropriate service (cardiology vs cardiac surgery).",
+    "",
+    "Subsequently, all CABG accepted patients are referred for either outpatient preoperative evaluation or immediate surgical admission, with the care path and wait time until surgery determined by the patient’s Priority.",
+    "",
+    "In the Surgery pathway: ",
+    "Referral to Surgery = Cardiac Surgery referral",
+    "End_Referral_Consultation = Cardiac Surgery acceptance",
+    "",
+    "Note: referral pathways may vary significantly based on the institution. "
   ],
   "states": {
     "Initial": {
@@ -31,23 +45,6 @@
     "End Referral Consultation": {
       "type": "EncounterEnd",
       "direct_transition": "Wait for Appointment"
-    },
-    "Referral Procedure 2": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 183557002,
-          "display": "Referral to cardiothoracic surgeon (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 30,
-        "high": 60,
-        "unit": "minutes"
-      },
-      "direct_transition": "Preoperative Testing",
-      "reason": "Abnormal Findings"
     },
     "CABG Surgery": {
       "type": "Encounter",
@@ -269,7 +266,7 @@
           "display": "Cardiovascular operative procedure (procedure)"
         }
       ],
-      "direct_transition": "Referral Procedure 2"
+      "direct_transition": "Scheduling Procedure "
     },
     "Preoperative Outpatient": {
       "type": "Encounter",
@@ -282,7 +279,7 @@
           "display": "Follow-up encounter (procedure)"
         }
       ],
-      "direct_transition": "Referral Procedure 2"
+      "direct_transition": "Scheduling Procedure "
     },
     "Preoperative Testing": {
       "type": "CallSubmodule",
@@ -440,6 +437,24 @@
         }
       ],
       "reason": "Select Condition/Enter Attribute"
+    },
+    "Scheduling Procedure ": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 410538000,
+          "display": "Scheduling (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Preoperative Testing",
+      "reason": "Abnormal Findings"
     }
-  }
+  },
+  "gmf_version": 2
 }
