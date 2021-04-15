@@ -263,6 +263,12 @@ public class FhirCarin {
 
     BundleEntryComponent personEntry = basicInfo(person, bundle, stopTime);
 
+    for (Payer payer : person.payerHistory) {
+      if (payer != null) {
+        coverage(person, personEntry, bundle, payer);
+      }
+    }
+
     for (Encounter encounter : person.record.encounters) {
       BundleEntryComponent encounterEntry = encounter(person, personEntry, bundle, encounter);
 
@@ -666,6 +672,32 @@ public class FhirCarin {
 
     return newEntry(bundle, patientResource, (String) person.attributes.get(Person.ID));
   }
+
+  /**
+   * Map the given Encounter into a FHIR Encounter resource, and add it to the given Bundle.
+   *
+   * @param personEntry Entry for the Person
+   * @param bundle      The Bundle to add to
+   * @param encounter   The current Encounter
+   * @return The added Entry
+   */
+  private static BundleEntryComponent coverage(Person person, BundleEntryComponent personEntry,
+                                                Bundle bundle, Payer payer) {
+                                                  
+    org.hl7.fhir.r4.model.Coverage coverageResource = new org.hl7.fhir.r4.model.Coverage();
+
+    Identifier payerIdentifier = new Identifier()
+      .setSystem(SYNTHEA_IDENTIFIER)
+      .setValue(payer.getResourceID());
+    coverageResource.addIdentifier(payerIdentifier);
+    coverageResource.setStatus(CoverageStatus.ACTIVE);
+
+    coverageResource.setBeneficiary(new Reference(personEntry.getFullUrl()));
+    coverageResource.addPayor(new Reference().setDisplay(payer.getName()));
+    BundleEntryComponent entry = newEntry(person, bundle, coverageResource);
+    return entry;
+  }
+
   
   /**
    * Map the given Encounter into a FHIR Encounter resource, and add it to the given Bundle.
@@ -792,6 +824,26 @@ public class FhirCarin {
           .setValue(encounterResource.getId());
     }
     return entry;
+  }
+
+  /**
+   * Find the payer entry in this bundle, and return the associated "fullUrl" attribute.
+   *
+   * @param payer A given payer.
+   * @param bundle   The current bundle being generated.
+   * @return Coverage.fullUrl if found, otherwise null.
+   */
+  private static String findCoverageUrl(Payer payer, Bundle bundle) {
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      if (entry.getResource().fhirType().equals("Coverage")) {
+        Organization org = (Organization) entry.getResource();
+        if (org.getIdentifierFirstRep().getValue() != null
+            && org.getIdentifierFirstRep().getValue().equals(payer.getResourceID())) {
+          return entry.getFullUrl();
+        }
+      }
+    }
+    return null;
   }
 
   /**
@@ -1153,17 +1205,17 @@ public class FhirCarin {
 
     // Get the insurance info at the time that the encounter occurred.
     Payer payer = encounter.claim.payer;
-    Coverage coverage = new Coverage();
-    coverage.setId("coverage");
-    coverage.setStatus(CoverageStatus.ACTIVE);
-    coverage.setType(new CodeableConcept().setText(payer.getName()));
-    coverage.setBeneficiary(new Reference(personEntry.getFullUrl()));
-    coverage.addPayor(new Reference().setDisplay(payer.getName()));
-    eob.addContained(coverage);
+
     ExplanationOfBenefit.InsuranceComponent insuranceComponent =
         new ExplanationOfBenefit.InsuranceComponent();
+
+    String payerFullUrl = TRANSACTION_BUNDLE
+      ? ExportHelper.buildFhirSearchUrl("Coverage",
+        payer.getResourceID())
+      : findCoverageUrl(payer, bundle);
+
     insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference("#coverage").setDisplay(payer.getName()));
+    insuranceComponent.setCoverage(new Reference().setReference(payerFullUrl).setDisplay(payer.getName()));
     eob.addInsurance(insuranceComponent);
     eob.setInsurer(new Reference().setDisplay(payer.getName()));
 
