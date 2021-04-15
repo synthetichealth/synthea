@@ -1,0 +1,169 @@
+{
+  "name": "Skilled Nursing Facility",
+  "remarks": [
+    "Simplified Skilled Nursing Facility module with a regular routine of physical therapy, occupational therapy, social services, medication administration, and dietary counseling."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check for LOS"
+    },
+    "Determine LOS": {
+      "type": "SetAttribute",
+      "attribute": "snf_days",
+      "direct_transition": "SNF Admission",
+      "range": {
+        "high": 30,
+        "low": 1
+      }
+    },
+    "SNF Admission": {
+      "type": "Encounter",
+      "encounter_class": "snf",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 305340004,
+          "display": "Admission to long stay hospital (procedure)"
+        }
+      ],
+      "direct_transition": "Begin_Day"
+    },
+    "Begin_Day": {
+      "type": "Simple",
+      "direct_transition": "Medication_Administration"
+    },
+    "Medication_Administration": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 370773004,
+          "display": "Administration of prescribed medications and solutions (procedure)"
+        }
+      ],
+      "range": {
+        "high": 10,
+        "low": 5,
+        "unit": "minutes"
+      },
+      "direct_transition": "Physical_Therapy"
+    },
+    "Physical_Therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 91251008,
+          "display": "Physical therapy procedure (regime/therapy)"
+        }
+      ],
+      "range": {
+        "high": 60,
+        "low": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "Activities_of_Daily_Living"
+    },
+    "Activities_of_Daily_Living": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183345007,
+          "display": "Daily living activity therapy (regime/therapy)"
+        }
+      ],
+      "range": {
+        "high": 120,
+        "low": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Dietary Counseling"
+    },
+    "Dietary Counseling": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "441301000124100",
+          "display": "Counseling about nutrition using social support strategy (procedure)"
+        }
+      ],
+      "range": {
+        "high": 60,
+        "low": 20,
+        "unit": "minutes"
+      },
+      "direct_transition": "Daily"
+    },
+    "Daily": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Count_Visit"
+    },
+    "Count_Visit": {
+      "type": "Counter",
+      "attribute": "snf_days",
+      "action": "decrement",
+      "amount": 1,
+      "conditional_transition": [
+        {
+          "transition": "Begin_Day",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "snf_days",
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "End_Encounter"
+        }
+      ]
+    },
+    "End_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": 1,
+        "display": "Discharged to home care or self care (routine discharge)"
+      }
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Check for LOS": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Determine LOS",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "snf_days",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "snf_days",
+                "operator": "<=",
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "transition": "SNF Admission"
+        }
+      ]
+    }
+  },
+  "gmf_version": 1
+}

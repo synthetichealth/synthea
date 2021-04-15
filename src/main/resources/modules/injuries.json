@@ -524,7 +524,7 @@
     },
     "End_Spinal_Injury_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Spinal_Treatment_Period"
+      "direct_transition": "SNF_0"
     },
     "Spinal_Treatment_Period": {
       "type": "Delay",
@@ -694,7 +694,7 @@
     },
     "End_Gunshot_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Gunshot_Wound_Healing_Period"
+      "direct_transition": "SNF"
     },
     "Gunshot_Wound_Healing_Period": {
       "type": "Delay",
@@ -968,7 +968,7 @@
     },
     "End_Whiplash_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Whiplash_Recovery_Period"
+      "direct_transition": "SNF_1"
     },
     "Whiplash_Recovery_Period": {
       "type": "Delay",
@@ -1615,7 +1615,20 @@
     },
     "End_Broken_Bone_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Broken_Bone_Recovery_Period"
+      "conditional_transition": [
+        {
+          "transition": "SNF_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "osteoporosis",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Broken_Bone_Recovery_Period"
+        }
+      ]
     },
     "Broken_Bone_Recovery_Period": {
       "type": "Delay",
@@ -1884,7 +1897,7 @@
     },
     "End_Burn_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Burn_Recovery_Period"
+      "direct_transition": "SNF_4"
     },
     "Burn_Recovery_Period": {
       "type": "Delay",
@@ -2193,8 +2206,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "91251008",
-          "display": "Physical therapy procedure"
+          "code": 773513001,
+          "display": "Physiotherapy care plan (record artifact)"
         }
       ],
       "activities": [
@@ -2322,8 +2335,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "91251008",
-          "display": "Physical therapy procedure"
+          "code": 773513001,
+          "display": "Physiotherapy care plan (record artifact)"
         }
       ],
       "activities": [
@@ -2460,7 +2473,7 @@
     },
     "End_Knee_Injury_Encounter_II": {
       "type": "EncounterEnd",
-      "direct_transition": "Knee_Injury_Recovery_Period"
+      "direct_transition": "SNF_3"
     },
     "Knee_Injury_Recovery_Period": {
       "type": "Delay",
@@ -2522,8 +2535,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "91251008",
-          "display": "Physical therapy procedure"
+          "code": 773513001,
+          "display": "Physiotherapy care plan (record artifact)"
         }
       ],
       "activities": [
@@ -2766,6 +2779,36 @@
           "display": "Crutches (physical object)"
         }
       ]
+    },
+    "SNF_0": {
+      "type": "CallSubmodule",
+      "submodule": "snf/skilled_nursing_facility",
+      "direct_transition": "Spinal_Treatment_Period"
+    },
+    "SNF": {
+      "type": "CallSubmodule",
+      "submodule": "snf/skilled_nursing_facility",
+      "direct_transition": "Gunshot_Wound_Healing_Period"
+    },
+    "SNF_1": {
+      "type": "CallSubmodule",
+      "submodule": "snf/skilled_nursing_facility",
+      "direct_transition": "Whiplash_Recovery_Period"
+    },
+    "SNF_2": {
+      "type": "CallSubmodule",
+      "submodule": "snf/skilled_nursing_facility",
+      "direct_transition": "Broken_Bone_Recovery_Period"
+    },
+    "SNF_3": {
+      "type": "CallSubmodule",
+      "submodule": "snf/skilled_nursing_facility",
+      "direct_transition": "Knee_Injury_Recovery_Period"
+    },
+    "SNF_4": {
+      "type": "CallSubmodule",
+      "submodule": "snf/skilled_nursing_facility",
+      "direct_transition": "Burn_Recovery_Period"
     }
   },
   "gmf_version": 1
