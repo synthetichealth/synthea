@@ -260,12 +260,14 @@ public class FHIRSTU3ExporterTest {
     person.setProvider(EncounterType.INPATIENT, mock);
 
     Long time = System.currentTimeMillis();
-    long birthTime = time - Utilities.convertTime("years", 35);
+    int age = 35;
+    long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
 
     Payer.loadNoInsurance();
-    for (int i = 0; i < person.payerHistory.length; i++) {
-      person.setPayerAtAge(i, Payer.noInsurance);
+    for (int i = 0; i < age; i++) {
+      long yearTime = time - Utilities.convertTime("years", i);
+      person.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
     }
     
     Module module = TestHelper.getFixture("observation.json");
@@ -322,12 +324,14 @@ public class FHIRSTU3ExporterTest {
     person.setProvider(EncounterType.INPATIENT, mock);
 
     Long time = System.currentTimeMillis();
-    long birthTime = time - Utilities.convertTime("years", 35);
+    int age = 35;
+    long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
 
     Payer.loadNoInsurance();
-    for (int i = 0; i < person.payerHistory.length; i++) {
-      person.setPayerAtAge(i, Payer.noInsurance);
+    for (int i = 0; i < age; i++) {
+      long yearTime = time - Utilities.convertTime("years", i);
+      person.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
     }
     
     Module module = TestHelper.getFixture("observation.json");

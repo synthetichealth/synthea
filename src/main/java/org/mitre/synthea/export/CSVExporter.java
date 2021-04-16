@@ -38,6 +38,8 @@ import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Claim;
+import org.mitre.synthea.world.concepts.CoverageRecord;
+import org.mitre.synthea.world.concepts.CoverageRecord.Plan;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -411,33 +413,12 @@ public class CSVExporter {
    * @throws IOException if any IO errors occur.
    */
   private void exportPayerTransitions(Person person, long stopTime) throws IOException {
-
-    // The current year starts with the year of the person's birth.
-    int currentYear = Utilities.getYear((long) person.attributes.get(Person.BIRTHDATE));
-
-    String previousPayerID = person.getPayerHistory()[0].getResourceID();
-    String previousOwnership = "Guardian";
-    int startYear = currentYear;
-
-    for (int personAge = 0; personAge < 128; personAge++) {
-      Payer currentPayer = person.getPayerAtAge(personAge);
-      String currentOwnership = person.getPayerOwnershipAtAge(personAge);
-      if (currentPayer == null) {
-        return;
+    for (CoverageRecord.Plan plan : person.coverage.getPlanHistory()) {
+      if (plan.start <= stopTime) {
+        payerTransition(person, plan);
       }
-      // Only write a new line if these conditions are met to export for year ranges of payers.
-      if (!currentPayer.getResourceID().equals(previousPayerID)
-          || !currentOwnership.equals(previousOwnership)
-          || Utilities.convertCalendarYearsToTime(currentYear) >= stopTime
-          || !person.alive(Utilities.convertCalendarYearsToTime(currentYear + 1))) {
-        payerTransition(person, currentPayer, startYear, currentYear);
-        previousPayerID = currentPayer.getResourceID();
-        previousOwnership = currentOwnership;
-        startYear = currentYear + 1;
-        payerTransitions.flush();
-      }
-      currentYear++;
     }
+    payerTransitions.flush();
   }
 
   /**
@@ -485,6 +466,7 @@ public class CSVExporter {
 
       for (Medication medication : encounter.medications) {
         medication(personID, encounterID, payerID, medication, time);
+        claim(person, medication.claim, encounter, encounterID);
       }
 
       for (HealthRecord.Entry immunization : encounter.immunizations) {
@@ -614,9 +596,9 @@ public class CSVExporter {
     // LAT,LON
     s.append(',').append(person.getY()).append(',').append(person.getX()).append(',');
     // HEALTHCARE_EXPENSES
-    s.append(person.getHealthcareExpenses()).append(',');
+    s.append(person.coverage.getTotalExpenses()).append(',');
     // HEALTHCARE_COVERAGE
-    s.append(person.getHealthcareCoverage());
+    s.append(person.coverage.getTotalCoverage());
     // QALYS
     // s.append(person.attributes.get("most-recent-qaly")).append(',');
     // DALYS
@@ -1226,26 +1208,23 @@ public class CSVExporter {
    * Write a single range of unchanged payer history to payer_transitions.csv
    *
    * @param person The person whose payer history to write.
-   * @param payer The payer of the person's current range of payer history.
-   * @param startYear The first year of this payer history.
-   * @param endYear The final year of this payer history.
+   * @param plan The plan
    * @throws IOException if any IO error occurs
    */
-  private void payerTransition(Person person, Payer payer, int startYear, int endYear)
-      throws IOException {
+  private void payerTransition(Person person, Plan plan) throws IOException {
     // PATIENT_ID,START_YEAR,END_YEAR,PAYER_ID,OWNERSHIP
 
     StringBuilder s = new StringBuilder();
     // PATIENT_ID
     s.append(person.attributes.get(Person.ID)).append(",");
     // START_YEAR
-    s.append(startYear).append(',');
+    s.append(iso8601Timestamp(plan.start)).append(',');
     // END_YEAR
-    s.append(endYear).append(',');
+    s.append(iso8601Timestamp(plan.stop)).append(',');
     // PAYER_ID
-    s.append(payer.getResourceID()).append(',');
+    s.append(plan.payer.getResourceID()).append(',');
     // OWNERSHIP
-    s.append(person.getPayerOwnershipAtTime(Utilities.convertCalendarYearsToTime(startYear)));
+    s.append(plan.owner);
     s.append(NEWLINE);
     write(s.toString(), payerTransitions);
   }
@@ -1382,11 +1361,11 @@ public class CSVExporter {
     double patientCost = claim.getTotalClaimCost() - claim.getCoveredCost();
     s.append(String.format(Locale.US, "%.2f", patientCost)).append(',');
     // LASTBILLEDDATE1
-    s.append(iso8601Timestamp(encounter.start)).append(',');
+    s.append(iso8601Timestamp(encounter.stop)).append(',');
     // TODO LASTBILLEDDATE2
     s.append(',');
     // LASTBILLEDDATEP
-    s.append(iso8601Timestamp(encounter.start)).append(',');
+    s.append(iso8601Timestamp(encounter.stop)).append(',');
     // HEALTHCARECLAIMTYPEID1
     if (institutional) {
       s.append('2');
@@ -1404,53 +1383,61 @@ public class CSVExporter {
         diagnosisCodes, departmentId, true);
 
     // Each Entry...
-//    for (int i = 0; i < claim.items.size(); i++) {
-//      Entry entry = claim.items.get(i);
-//      simulateClaimProcess(rand, claim, claimId, encounter, encounterID, entry,
-//          diagnosisCodes, departmentId, false);
-//    }
+    for (int i = 0; i < claim.items.size(); i++) {
+      Claim.ClaimEntry claimEntry = claim.items.get(i);
+      Entry entry = claimEntry.entry;
+      if ((entry instanceof HealthRecord.Procedure)
+          || (entry instanceof HealthRecord.Immunization)
+          || (entry instanceof HealthRecord.Medication)) {
+        simulateClaimProcess(rand, claim, claimId, encounter, encounterID, claimEntry,
+            diagnosisCodes, departmentId, false);
+      }
+    }
   }
 
   private void simulateClaimProcess(RandomNumberGenerator rand, Claim claim, String claimId,
-      Encounter encounter, String encounterId, Entry entry, String[] diagnosisCodes,
-      String departmentId, boolean mainEntry) throws IOException {
+      Encounter encounter, String encounterId, Claim.ClaimEntry claimEntry,
+      String[] diagnosisCodes, String departmentId, boolean mainEntry) throws IOException {
     int chargeId = 0;
     // CHARGE
     ClaimTransaction t = new ClaimTransaction(encounter, encounterId,
-        claim, claimId, chargeId, claim.mainEntry, rand);
+        claim, claimId, chargeId, claimEntry, rand);
     t.type = ClaimTransactionType.CHARGE;
+    t.setAmount(claimEntry.cost);
     t.departmentId = departmentId;
     t.diagnosisCodes = diagnosisCodes;
     write(t.toString(), claimsTransactions);
     chargeId++;
 
+    double remainder = claimEntry.cost;
     if (mainEntry) {
-      if (claim.getCopayment() > 0) {
+      if (claimEntry.copay > 0) {
         // COPAY
+        remainder -= claimEntry.copay;
         t = new ClaimTransaction(encounter, encounterId,
-            claim, claimId, chargeId, claim.mainEntry, rand);
+            claim, claimId, chargeId, claimEntry, rand);
         t.type = ClaimTransactionType.PAYMENT;
         t.method = PaymentMethod.COPAY;
-        t.payment = claim.getCopayment();
-        t.unpaid = claim.getTotalClaimCost() - claim.getCopayment();
+        t.payment = claimEntry.copay;
+        t.unpaid = remainder;
         t.departmentId = departmentId;
         t.diagnosisCodes = diagnosisCodes;
         write(t.toString(), claimsTransactions);
         chargeId++;
       }
     }
-    double remainder = (claim.getUncoveredCost() - claim.getCopayment());
 
-    if (claim.getCoveredCost() > 0) {
-      if (claim.payer.getCoinsurance() > 0) {
-        // ADJUSTMENT
-      }
-      // PAYMENT
+    // TODO ADJUSTMENTS
+
+    double payerAmount = (claimEntry.payer + claimEntry.coinsurance);
+    if (payerAmount > 0) {
+      // PAYMENT FROM INSURANCE
+      remainder -= payerAmount;
       t = new ClaimTransaction(encounter, encounterId,
-          claim, claimId, chargeId, claim.mainEntry, rand);
+          claim, claimId, chargeId, claimEntry, rand);
       t.type = ClaimTransactionType.PAYMENT;
       t.method = PaymentMethod.ECHECK;
-      t.payment = claim.getCoveredCost();
+      t.payment = payerAmount;
       t.unpaid = remainder;
       t.departmentId = departmentId;
       t.diagnosisCodes = diagnosisCodes;
@@ -1462,11 +1449,10 @@ public class CSVExporter {
       if (claim.payer != Payer.noInsurance) {
         // TRANSFEROUT
         t = new ClaimTransaction(encounter, encounterId,
-            claim, claimId, chargeId, claim.mainEntry, rand);
+            claim, claimId, chargeId, claimEntry, rand);
         t.type = ClaimTransactionType.TRANSFEROUT;
         t.transferType = "1"; // primary insurance
-        t.transferId = "" + (chargeId + 1);
-        t.amount = remainder;
+        t.setAmount(remainder);
         t.departmentId = departmentId;
         t.diagnosisCodes = diagnosisCodes;
         write(t.toString(), claimsTransactions);
@@ -1474,10 +1460,11 @@ public class CSVExporter {
 
         // TRANSFERIN
         t = new ClaimTransaction(encounter, encounterId,
-            claim, claimId, chargeId, claim.mainEntry, rand);
+            claim, claimId, chargeId, claimEntry, rand);
         t.type = ClaimTransactionType.TRANSFERIN;
         t.transferType = "p"; // patient
-        t.amount = remainder;
+        t.transferId = "" + (chargeId - 1);
+        t.setAmount(remainder);
         t.departmentId = departmentId;
         t.diagnosisCodes = diagnosisCodes;
         write(t.toString(), claimsTransactions);
@@ -1485,13 +1472,14 @@ public class CSVExporter {
       }
       // PAYMENT
       t = new ClaimTransaction(encounter, encounterId,
-          claim, claimId, chargeId, claim.mainEntry, rand);
+          claim, claimId, chargeId, claimEntry, rand);
       t.type = ClaimTransactionType.PAYMENT;
       String[] opts = { PaymentMethod.CASH.toString(),
           PaymentMethod.CHECK.toString(),
           PaymentMethod.CC.toString()};
       t.method = PaymentMethod.valueOf(rand.rand(opts));
       t.payment = remainder;
+      t.unpaid = 0.0;
       t.departmentId = departmentId;
       t.diagnosisCodes = diagnosisCodes;
       write(t.toString(), claimsTransactions);
@@ -1539,31 +1527,37 @@ public class CSVExporter {
      * @param claim The Claim.
      * @param claimId The Claim ID.
      * @param chargeId The Charge ID.
-     * @param entry The entry for the transactions.
+     * @param claimEntry The entry for the transactions.
      * @param rand A random number generator.
      */
     public ClaimTransaction(Encounter encounter, String encounterId, Claim claim, String claimId,
-        int chargeId, Entry entry, RandomNumberGenerator rand) {
+        int chargeId, Claim.ClaimEntry claimEntry, RandomNumberGenerator rand) {
       this.id = rand.randUUID().toString();
       this.encounterId = encounterId;
       this.claimId = claimId;
       this.chargeId = "" + chargeId;
       this.patientId = (String) claim.person.attributes.get(Person.ID);
-      this.amount = entry.getCost().doubleValue();
       this.units = 1;
-      this.unitAmount = this.amount;
-      this.start = entry.start;
-      this.stop = entry.stop;
+      this.start = claimEntry.entry.start;
+      this.stop = claimEntry.entry.stop;
       if (encounter.provider != null) {
         this.organizationId = encounter.provider.getResourceID();
       }
       if (encounter.clinician != null) {
         this.clinicianId = encounter.clinician.getResourceID();
       }
-      this.procedureCode = clean(entry.codes.get(0).code);
-      this.procedureDisplay = clean(entry.codes.get(0).display);
+      this.procedureCode = clean(claimEntry.entry.codes.get(0).code);
+      this.procedureDisplay = clean(claimEntry.entry.codes.get(0).display);
     }
 
+    public void setAmount(double amount) {
+      this.amount = amount;
+      this.unitAmount = amount;
+    }
+
+    /**
+     * Convert this ClaimTransaction into a CSV row.
+     */
     public String toString() {
       // ID,CLAIMID,CHARGEID,PATIENTID,TYPE,AMOUNT,METHOD,FROMDATE,TODATE,
       // PLACEOFSERVICE,PROCEDURECODE,MODIFIER1,MODIFIER2,DIAGNOSISREF1,DIAGNOSISREF2,

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -101,7 +102,6 @@ public class PayerTest {
 
   @Test
   public void incrementCustomers() {
-
     Person firstPerson = new Person(0L);
     firstPerson.attributes.put(Person.ID, UUID.randomUUID().toString());
     // Payer has firstPerson customer from the ages of 0 - 11.
@@ -127,17 +127,16 @@ public class PayerTest {
    */
   private void setPayerForYears(Person person, int startAge, int endAge) {
     for (int i = startAge; i <= endAge; i++) {
-      if (person.getPayerAtAge(i) == null) {
-        person.setPayerAtAge(i, testPrivatePayer1);
-        testPrivatePayer1.incrementCustomers(person);
-      }
+      long time = Utilities.convertTime("years", i);
+      person.coverage.setPayerAtTime(time, testPrivatePayer1);
+      testPrivatePayer1.incrementCustomers(person);
     }
   }
 
   @Test
   public void incrementEncounters() {
     person = new Person(0L);
-    person.setPayerAtTime(0L, testPrivatePayer1);
+    person.coverage.setPayerAtTime(0L, testPrivatePayer1);
     HealthRecord healthRecord = new HealthRecord(person);
 
     Code code = new Code("SNOMED-CT","705129","Fake Code");
@@ -159,8 +158,7 @@ public class PayerTest {
   }
 
   @Test
-  public void recieveMedicare() {
-
+  public void receiveMedicare() {
     long birthTime = 0L;
     long olderThanSixtyFiveTime = birthTime + Utilities.convertTime("years", 66);
 
@@ -177,12 +175,12 @@ public class PayerTest {
     qolsByYear.put(Utilities.getYear(olderThanSixtyFiveTime) - 1, 1.0);
     person.attributes.put(QualityOfLifeModule.QOLS, qolsByYear);
     // Their previous payer must not be null to prevent nullPointerExceptions.
-    person.setPayerAtTime(olderThanSixtyFiveTime
+    person.coverage.setPayerAtTime(olderThanSixtyFiveTime
         - Utilities.convertTime("years", 1), testPrivatePayer1);
     // At time olderThanSixtyFiveTime, the person is 65 and qualifies for Medicare.
     healthInsuranceModule.process(person, olderThanSixtyFiveTime);
-    assertEquals("Medicare", person.getPayerAtTime(olderThanSixtyFiveTime).getName());
-    assertTrue(person.getPayerAtTime(olderThanSixtyFiveTime)
+    assertEquals("Medicare", person.coverage.getPayerAtTime(olderThanSixtyFiveTime).getName());
+    assertTrue(person.coverage.getPayerAtTime(olderThanSixtyFiveTime)
         .accepts(person, olderThanSixtyFiveTime));
 
     /* ESRD */
@@ -194,12 +192,11 @@ public class PayerTest {
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
     healthInsuranceModule.process(person, 0L);
-    assertEquals("Medicare", person.getPayerAtTime(0L).getName());
+    assertEquals("Medicare", person.coverage.getPayerAtTime(0L).getName());
   }
 
   @Test
-  public void recieveMedicaid() {
-
+  public void receiveMedicaid() {
     /* Pregnancy */
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
@@ -209,9 +206,8 @@ public class PayerTest {
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
     healthInsuranceModule.process(person, 0L);
-    assertEquals("Medicaid", person.getPayerAtTime(0L).getName());
-    assertTrue(person.getPayerAtTime(0L).accepts(person, 0L));
-
+    assertEquals("Medicaid", person.coverage.getPayerAtTime(0L).getName());
+    assertTrue(person.coverage.getPayerAtTime(0L).accepts(person, 0L));
 
     /* Poverty Level */
     person = new Person(0L);
@@ -222,7 +218,7 @@ public class PayerTest {
     // Below Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel - 1);
     healthInsuranceModule.process(person, 0L);
-    assertEquals("Medicaid", person.getPayerAtTime(0L).getName());
+    assertEquals("Medicaid", person.coverage.getPayerAtTime(0L).getName());
 
     /* Blindness */
     person = new Person(0L);
@@ -233,12 +229,11 @@ public class PayerTest {
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
     healthInsuranceModule.process(person, 0L);
-    assertEquals("Medicaid", person.getPayerAtTime(0L).getName());
+    assertEquals("Medicaid", person.coverage.getPayerAtTime(0L).getName());
   }
 
   @Test
-  public void recieveDualEligible() {
-
+  public void receiveDualEligible() {
     long birthTime = 0L;
     long olderThanSixtyFiveTime = birthTime + Utilities.convertTime("years", 66);
 
@@ -254,18 +249,18 @@ public class PayerTest {
     qolsByYear.put(Utilities.getYear(olderThanSixtyFiveTime) - 1, 1.0);
     person.attributes.put(QualityOfLifeModule.QOLS, qolsByYear);
     // Their previous payer must not be null to prevent nullPointerExceptions.
-    person.setPayerAtTime(olderThanSixtyFiveTime
+    person.coverage.setPayerAtTime(olderThanSixtyFiveTime
         - Utilities.convertTime("years", 1), testPrivatePayer1);
     // At time olderThanSixtyFiveTime, the person is 65 and qualifies for Medicare.
     healthInsuranceModule.process(person, olderThanSixtyFiveTime);
-    assertEquals("Dual Eligible", person.getPayerAtTime(olderThanSixtyFiveTime).getName());
-    assertTrue(person.getPayerAtTime(olderThanSixtyFiveTime)
+    assertEquals("Dual Eligible",
+        person.coverage.getPayerAtTime(olderThanSixtyFiveTime).getName());
+    assertTrue(person.coverage.getPayerAtTime(olderThanSixtyFiveTime)
         .accepts(person, olderThanSixtyFiveTime));
   }
 
   @Test
-  public void recieveNoInsurance() {
-
+  public void receiveNoInsurance() {
     /* Person is poorer than can afford the test insurance */
     double monthlyPremium = testPrivatePayer1.getMonthlyPremium();
     double deductible = testPrivatePayer1.getDeductible();
@@ -284,55 +279,45 @@ public class PayerTest {
         Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
 
     healthInsuranceModule.process(person, 0L);
-    assertEquals("NO_INSURANCE", person.getPayerAtTime(0L).getName());
+    assertEquals("NO_INSURANCE", person.coverage.getPayerAtTime(0L).getName());
   }
 
   @Test
-  public void recievePrivateInsurance() {
-
+  public void receivePrivateInsurance() {
     /* First Test: Post 2006 Mandate */
+    long time = mandateTime + 10000;
     person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, mandateTime + 10000);
+    person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     // Barely above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel + 100);
-    healthInsuranceModule.process(person, mandateTime + 10000);
-    assertNotEquals("NO_INSURANCE", person.getPayerAtTime(0L).getName());
+    healthInsuranceModule.process(person, time);
+    assertNotEquals("NO_INSURANCE", person.coverage.getPayerAtTime(time).getName());
 
     /* Second Test: Wealthy Enough to Purchase Private */
+    time = mandateTime - 10000;
     person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, mandateTime - 10000);
+    person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
-    healthInsuranceModule.process(person, mandateTime - 10000);
-    assertNotEquals("NO_INSURANCE", person.getPayerAtTime(0L).getName());
-  }
-
-  @Test(expected = RuntimeException.class)
-  public void overwriteInsurance() {
-
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
-    person.setPayerAtTime(0L, testPrivatePayer1);
-    person.setPayerAtTime(0L, testPrivatePayer1);
+    healthInsuranceModule.process(person, time);
+    assertNotEquals("NO_INSURANCE", person.coverage.getPayerAtTime(time).getName());
   }
 
   @Test
-  public void payerAtAge() {
-
+  public void overwriteInsurance() {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    person.setPayerAtTime(2100000000000L, testPrivatePayer1);
-    // At 2100000000000L, a person born at 0L is 66.
-    assertEquals(person.getPayerAtTime(2100000000000L), person.getPayerAtAge(66));
+    person.coverage.setPayerAtTime(0L, testPrivatePayer1);
+    person.coverage.setPayerAtTime(0L, testPrivatePayer1);
+    assertEquals(2, person.coverage.getPlanHistory().size());
   }
 
   @Test
   public void loadGovernmentPayers() {
-
     assertTrue(Payer.getGovernmentPayer("Medicare")
         != null && Payer.getGovernmentPayer("Medicaid") != null);
 
@@ -364,32 +349,33 @@ public class PayerTest {
 
   @Test
   public void monthlyPremiumPayment() {
-
     person = new Person(0L);
     // Give person an income to prevent null pointer.
+    person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.INCOME, 100000);
+    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.ID, UUID.randomUUID().toString());
     // Predetermine person's Payer.
-    setPayerForYears(person, 0, 64);
+    setPayerForYears(person, 0, 65);
     // Pay premium for 65 years.
+    long time = 0L;
     for (int year = 0; year <= 64; year++) {
       for (int month = 0; month < 24; month++) {
         // Person checks to pay twice a month. Only needs to pay once a month.
-        healthInsuranceModule.process(person, Utilities.convertCalendarYearsToTime(year)
-            + Utilities.convertTime("months", month / 2));
+        time += (Utilities.convertTime("years", 1) / 24);
+        healthInsuranceModule.process(person, time);
       }
     }
     int totalMonthlyPremiumsOwed = (int) (testPrivatePayer1.getMonthlyPremium() * 12 * 65);
     // The payer's revenue should equal the total monthly premiums.
     assertEquals(totalMonthlyPremiumsOwed, testPrivatePayer1.getRevenue(), 0.001);
     // The person's health care expenses should equal the total monthly premiums.
-    assertEquals(totalMonthlyPremiumsOwed, person.getHealthcareExpenses(), 0.001);
+    assertEquals(totalMonthlyPremiumsOwed, person.coverage.getTotalExpenses(), 0.001);
   }
 
   @Test(expected = RuntimeException.class)
   public void monthlyPremiumPaymentToNullPayer() {
-
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.ID, UUID.randomUUID().toString());
@@ -398,31 +384,32 @@ public class PayerTest {
   
   @Test
   public void costsCoveredByPayer() {
-
     long time = 0L;
-
     Costs.loadCostData();
     person = new Person(time);
-    person.setPayerAtTime(time, testPrivatePayer1);
+    person.coverage.setPayerAtTime(time, testPrivatePayer1);
     Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
     Encounter fakeEncounter = person.record.encounterStart(time, EncounterType.WELLNESS);
     fakeEncounter.codes.add(code);
     fakeEncounter.provider = new Provider();
     double totalCost = fakeEncounter.getCost().doubleValue();
     person.record.encounterEnd(0L, EncounterType.WELLNESS);
-    // The total cost should equal the Cost to the Payer summed with the Payer's copay amount.
-    assertEquals(totalCost, testPrivatePayer1.getAmountCovered()
-        + testPrivatePayer1.determineCopay(fakeEncounter), 0.001);
-    // The total cost should equal the Payer's uncovered costs plus the Payer's covered costs.
-    assertEquals(totalCost, testPrivatePayer1.getAmountCovered()
-        + testPrivatePayer1.getAmountUncovered(), 0.001);
+    // check the copays match
+    assertEquals(testPrivatePayer1.getDeductible(), fakeEncounter.claim.totals.deductible, 0.001);
+    // check that totals match
+    assertEquals(totalCost, fakeEncounter.claim.totals.cost, 0.001);
+    double result = fakeEncounter.claim.totals.coinsurance
+        + fakeEncounter.claim.totals.copay
+        + fakeEncounter.claim.totals.deductible
+        + fakeEncounter.claim.totals.payer
+        + fakeEncounter.claim.totals.pocket;
+    assertEquals(totalCost, result, 0.001);
     // The total coverage by the payer should equal the person's covered costs.
-    assertEquals(person.getHealthcareCoverage(), testPrivatePayer1.getAmountCovered(), 0.001);
+    assertEquals(person.coverage.getTotalCoverage(), testPrivatePayer1.getAmountCovered(), 0.001);
   }
 
   @Test
   public void copayBeforeAndAfterMandate() {
-
     Costs.loadCostData();
     final long beforeMandateTime = mandateTime - 100;
     final long afterMandateTime = mandateTime + 100;
@@ -431,7 +418,7 @@ public class PayerTest {
 
     /* Before Mandate */
 
-    person.setPayerAtTime(beforeMandateTime, testPrivatePayer1);
+    person.coverage.setPayerAtTime(beforeMandateTime, testPrivatePayer1);
     Encounter wellnessBeforeMandate =
         person.record.encounterStart(beforeMandateTime, EncounterType.WELLNESS);
     wellnessBeforeMandate.codes.add(code);
@@ -469,11 +456,10 @@ public class PayerTest {
 
   @Test
   public void costsUncoveredByNoInsurance() {
-
     Costs.loadCostData();
     Payer.loadNoInsurance();
     person = new Person(0L);
-    person.setPayerAtTime(0L, Payer.noInsurance);
+    person.coverage.setPayerAtTime(0L, Payer.noInsurance);
     Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
     Encounter fakeEncounter = person.record.encounterStart(0L, EncounterType.WELLNESS);
     fakeEncounter.codes.add(code);
@@ -485,12 +471,12 @@ public class PayerTest {
     // The No Insurance's uncovered costs should equal the total cost.
     assertEquals(totalCost, Payer.noInsurance.getAmountUncovered(), 0.001);
     // The person's expenses shoudl equal the total cost.
-    assertEquals(totalCost, person.getHealthcareExpenses(), 0.001);
+    assertEquals(totalCost, person.coverage.getTotalExpenses(), 0.001);
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void determineCoveredCostWithNullPayer() {
-
+    // Default to No Insurance
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
     HealthRecord healthRecord = new HealthRecord(person);
@@ -503,26 +489,34 @@ public class PayerTest {
   public void payerCoversEncounter() {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    person.setPayerAtAge(0, testPrivatePayer1);
+    person.coverage.setPayerAtTime(0L, testPrivatePayer1);
     HealthRecord healthRecord = new HealthRecord(person);
     Encounter encounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
     encounter.provider = new Provider();
     encounter.codes.add(new Code("SNOMED-CT","705129","Fake SNOMED for null entry"));
     assertTrue(testPrivatePayer1.coversService(encounter.type));
     healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
-    // Person's coverage should equal the cost of the encounter minus the copay.
-    assertEquals(person.getHealthcareCoverage(), encounter.getCost().doubleValue()
-        - testPrivatePayer1.determineCopay(encounter), 0.001);
+    // Person's coverage should equal the cost of the encounter
+    double coverage = encounter.claim.totals.coinsurance + encounter.claim.totals.payer;
+    assertEquals(person.coverage.getTotalCoverage(), coverage, 0.001);
+    double result = encounter.claim.totals.coinsurance
+        + encounter.claim.totals.copay
+        + encounter.claim.totals.deductible
+        + encounter.claim.totals.payer
+        + encounter.claim.totals.pocket;
+    assertEquals(encounter.getCost().doubleValue(), result, 0.001);
     // Person's expenses should equal the copay.
-    assertEquals(person.getHealthcareExpenses(),
-        testPrivatePayer1.determineCopay(encounter), 0.001);
+    double expenses = encounter.claim.totals.copay
+        + encounter.claim.totals.deductible
+        + encounter.claim.totals.pocket;
+    assertEquals(person.coverage.getTotalExpenses(), expenses, 0.001);
   }
 
   @Test
   public void payerDoesNotCoverEncounter() {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    person.setPayerAtAge(0, testPrivatePayer2);
+    person.coverage.setPayerAtTime(0L, testPrivatePayer2);
     HealthRecord healthRecord = new HealthRecord(person);
     Encounter encounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
     encounter.provider = new Provider();
@@ -530,9 +524,9 @@ public class PayerTest {
     assertFalse(testPrivatePayer2.coversService(encounter.type));
     healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
     // Person's coverage should equal $0.0.
-    assertEquals(0.0, person.getHealthcareCoverage(), 0.001);
+    assertEquals(0.0, person.coverage.getTotalCoverage(), 0.001);
     // Person's expenses should equal the total cost of the encounter.
-    assertEquals(person.getHealthcareExpenses(), encounter.getCost().doubleValue(), 0.001);
+    assertEquals(person.coverage.getTotalExpenses(), encounter.getCost().doubleValue(), 0.001);
   }
 
   @Test
@@ -568,9 +562,10 @@ public class PayerTest {
     person.attributes.put(QualityOfLifeModule.QOLS, new HashMap<Integer, Double>());
 
     // Get private insurance for 55 years.
-    for (int year = 0; year <= 55; year++) {
-      ((Map<Integer, Double>)
-          person.attributes.get(QualityOfLifeModule.QOLS)).put(2000 + year, 1.0);
+    Map<Integer, Double> qols =
+        (Map<Integer, Double>) person.attributes.get(QualityOfLifeModule.QOLS);
+    for (int year = 0; year < 55; year++) {
+      qols.put(2000 + year, 1.0);
       long currentTime = startTime + Utilities.convertTime("years", year);
       healthInsuranceModule.process(person, currentTime);
     }

@@ -80,13 +80,15 @@ public class StateTest {
     person.setProvider(EncounterType.EMERGENCY, mock);
     person.setProvider(EncounterType.INPATIENT, mock);
 
+    int age = 35;
     time = System.currentTimeMillis();
-    long birthTime = time - Utilities.convertTime("years", 35);
+    long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
 
     Payer.loadNoInsurance();
-    for (int i = 0; i < person.payerHistory.length; i++) {
-      person.setPayerAtAge(i, Payer.noInsurance);
+    for (int i = 0; i < age; i++) {
+      long yearTime = time - Utilities.convertTime("years", i);
+      person.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
     }
     
     // Ensure Physiology state is enabled by default
@@ -713,7 +715,7 @@ public class StateTest {
     assertTrue(obsValue < 400);
   }
 
-    @Test
+  @Test
   public void observation() throws Exception {
     Module module = TestHelper.getFixture("observation.json");
 

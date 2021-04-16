@@ -980,7 +980,8 @@ public class FhirR4 {
     int procedureSequence = 1;
     int informationSequence = 1;
 
-    for (HealthRecord.Entry item : claim.items) {
+    for (Claim.ClaimEntry claimEntry : claim.items) {
+      HealthRecord.Entry item = claimEntry.entry;
       if (Costs.hasCost(item)) {
         // update claimItems list
         Code primaryCode = item.codes.get(0);

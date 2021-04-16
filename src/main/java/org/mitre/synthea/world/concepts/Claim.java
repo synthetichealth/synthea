@@ -6,20 +6,53 @@ import java.util.List;
 
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.CoverageRecord.Plan;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 
 public class Claim implements Serializable {
+  private static final long serialVersionUID = -3565704321813987656L;
 
-  public Entry mainEntry;
-  // The Entries have the actual cost, so the claim has the amount that the payer covered.
-  private double coveredCost;
-  private double patientCopay;
-  private double costToPatient;
+  public class ClaimEntry implements Serializable {
+    private static final long serialVersionUID = 1871121895630816723L;
+    public Entry entry;
+    /** total cost of the entry. */
+    public double cost;
+    /** copay paid by patient. */
+    public double copay;
+    /** deductible paid by patient. */
+    public double deductible;
+    /** coinsurance paid by payer. */
+    public double coinsurance;
+    /** otherwise paid by payer. */
+    public double payer;
+    /** otherwise paid by patient out of pocket. */
+    public double pocket;
+
+    public ClaimEntry(Entry entry) {
+      this.entry = entry;
+    }
+
+    /**
+     * Add the costs from the other entry to this one.
+     * @param other the other claim entry.
+     */
+    public void addCosts(ClaimEntry other) {
+      this.cost += other.cost;
+      this.copay += other.copay;
+      this.deductible += other.deductible;
+      this.coinsurance += other.coinsurance;
+      this.payer += other.payer;
+      this.pocket += other.pocket;
+    }
+  }
+
   public Payer payer;
   public Person person;
-  public List<Entry> items;
+  public ClaimEntry mainEntry;
+  public List<ClaimEntry> items;
+  public ClaimEntry totals;
 
   /**
    * Constructor of a Claim for an Entry.
@@ -27,7 +60,7 @@ public class Claim implements Serializable {
   public Claim(Entry entry, Person person) {
     // Set the Entry.
     if ((entry instanceof Encounter) || (entry instanceof Medication)) {
-      this.mainEntry = entry;
+      this.mainEntry = new ClaimEntry(entry);
     } else {
       throw new RuntimeException(
           "A Claim can only be made with entry types Encounter or Medication.");
@@ -35,129 +68,111 @@ public class Claim implements Serializable {
     // Set the Person.
     this.person = person;
     // Set the Payer.
-    this.payer = this.person.getPayerAtTime(entry.start);
+    this.payer = this.person.coverage.getPayerAtTime(entry.start);
     if (this.payer == null) {
       // This can rarely occur when an death certification encounter
       // occurs on the birthday or immediately afterwards before a new
       // insurance plan is selected.
-      this.payer = this.person.getPreviousPayerAtTime(entry.start);
+      this.payer = this.person.coverage.getLastPayer();
     }
     if (this.payer == null) {
       this.payer = Payer.noInsurance;
     }
-    this.items = new ArrayList<Entry>();
+    this.items = new ArrayList<ClaimEntry>();
+    this.totals = new ClaimEntry(entry);
   }
 
   /**
    * Adds non-explicit costs to the Claim. (Procedures/Immunizations/etc).
    */
   public void addLineItem(Entry entry) {
-    this.items.add(entry);
+    ClaimEntry claimEntry = new ClaimEntry(entry);
+    this.items.add(claimEntry);
   }
 
   /**
-   * Assigns the costs of the claim to the patient and payer.
+   * Assign costs between the payer and patient.
    */
   public void assignCosts() {
-
-    double totalCost = this.getTotalClaimCost();
-    this.patientCopay = payer.determineCopay(mainEntry);
-    this.costToPatient = 0.0;
-    double costToPayer = 0.0;
-
-    // Determine who covers the care and assign the costs accordingly.
-    if (this.payer.coversCare(mainEntry)) {
-      // Person's Payer covers their care.
-      costToPatient = totalCost > patientCopay ? patientCopay : totalCost;
-      costToPayer = totalCost > patientCopay ? totalCost - patientCopay : 0.0;
-      this.payerCoversEntry(mainEntry);
-    }  else {
-      // Payer will not cover the care.
-      this.payerDoesNotCoverEntry(mainEntry);
-      costToPatient = totalCost;
+    Plan plan = person.coverage.getPlanAtTime(mainEntry.entry.start);
+    if (plan == null) {
+      plan = person.coverage.getLastPlan();
     }
-
-    // Update Person's Expenses and Coverage.
-    this.person.addExpense(costToPatient, mainEntry.start);
-    this.person.addCoverage(costToPayer, mainEntry.start);
-    // Update Payer's Covered and Uncovered Costs.
-    this.payer.addCoveredCost(costToPayer);
-    this.payer.addUncoveredCost(costToPatient);
-    // Update the Provider's Revenue if this is an encounter.
-    if (mainEntry instanceof Encounter) {
-      Encounter e = (Encounter) mainEntry;
-      e.provider.addRevenue(totalCost);
+    if (plan == null) {
+      person.coverage.setPayerAtTime(mainEntry.entry.start,
+          Payer.noInsurance);
+      plan = person.coverage.getLastPlan();
     }
-    // Update the Claim.
-    this.coveredCost = costToPayer;
+    assignCosts(mainEntry, plan);
+    totals = new ClaimEntry(mainEntry.entry);
+    totals.addCosts(mainEntry);
+    for (ClaimEntry item : items) {
+      assignCosts(item, plan);
+      totals.addCosts(item);
+    }
+    plan.totalExpenses += (totals.copay + totals.deductible + totals.pocket);
+    plan.totalCoverage += (totals.coinsurance + totals.payer);
+    plan.payer.addCoveredCost(totals.coinsurance);
+    plan.payer.addCoveredCost(totals.payer);
+    plan.payer.addUncoveredCost(totals.copay);
+    plan.payer.addUncoveredCost(totals.deductible);
+    plan.payer.addUncoveredCost(totals.pocket);
   }
 
-  /**
-   * Returns the additional costs from any immunzations/procedures tied to the encounter.
-   */
-  private double getLineItemCosts() {
-    double additionalCosts = 0.0;
-    // Sum line-item entry costs.
-    for (Entry entry : this.items) {
-      additionalCosts += entry.getCost().doubleValue();
+  private void assignCosts(ClaimEntry claimEntry, Plan plan) {
+    claimEntry.cost = claimEntry.entry.getCost().doubleValue();
+    double remaining = claimEntry.cost;
+    if (payer.coversCare(claimEntry.entry)) {
+      payer.incrementCoveredEntries(claimEntry.entry);
+      // Apply copay to Encounters and Medication claims only
+      if ((claimEntry.entry instanceof HealthRecord.Encounter)
+          || (claimEntry.entry instanceof HealthRecord.Medication)) {
+        claimEntry.copay = payer.determineCopay(claimEntry.entry);
+        remaining -= claimEntry.copay;
+      }
+      // Check if the patient has remaining deductible
+      if (remaining > 0 && plan.remainingDeductible > 0) {
+        if (plan.remainingDeductible >= remaining) {
+          claimEntry.deductible = remaining;
+        } else {
+          claimEntry.deductible = plan.remainingDeductible;
+        }
+        remaining -= claimEntry.deductible;
+        plan.remainingDeductible -= claimEntry.deductible;
+      }
+      if (remaining > 0) {
+        // Check if the patient has coinsurance
+        double coinsurance = payer.getCoinsurance();
+        if (coinsurance > 0) {
+          // Payer amount
+          claimEntry.coinsurance = (coinsurance * remaining);
+          remaining -= claimEntry.coinsurance;
+          // Patient amount
+          claimEntry.pocket = remaining;
+        } else {
+          // Payer amount
+          claimEntry.payer = remaining;
+          remaining -= claimEntry.payer;
+        }
+      }
+    } else {
+      payer.incrementUncoveredEntries(claimEntry.entry);
+      // Payer does not cover care
+      claimEntry.pocket = remaining;
     }
-    return additionalCosts;
   }
 
   /**
    * Returns the total cost of the Claim, including immunizations/procedures tied to the encounter.
    */
   public double getTotalClaimCost() {
-    double totalCost = 0.0;
-    totalCost += this.getLineItemCosts();
-    totalCost = mainEntry.getCost().doubleValue();
-    return totalCost;
+    return this.totals.cost;
   }
 
   /**
    * Returns the total cost that the Payer covered for this claim.
    */
   public double getCoveredCost() {
-    return this.coveredCost;
-  }
-
-  /**
-   * Returns the copayment cost covered by the Patient.
-   */
-  public double getCopayment() {
-    return this.patientCopay;
-  }
-
-  /**
-   * Returns the cost that the Patient covered for this claim, including copay.
-   */
-  public double getUncoveredCost() {
-    return this.costToPatient;
-  }
-
-  /**
-   * Increments the covered entry utilization of the payer.
-   */
-  private void payerCoversEntry(Entry entry) {
-    // Payer covers the entry.
-    this.payer.incrementCoveredEntries(entry);
-    // Payer covers the line items.
-    for (Entry lineItemEntry : this.items) {
-      this.payer.incrementCoveredEntries(lineItemEntry);
-    }
-  }
-
-  /**
-   * Increments the uncovered entry utilization of the payer.
-   */
-  private void payerDoesNotCoverEntry(Entry entry) {
-    // Payer does not cover the entry.
-    this.payer.incrementUncoveredEntries(entry);
-    // Payer does not cover the line items.
-    for (Entry lineItemEntry : this.items) {
-      this.payer.incrementUncoveredEntries(lineItemEntry);
-    }
-    // Results in adding to NO_INSURANCE's costs uncovered, but not their utilization.
-    this.payer = Payer.noInsurance;
+    return (this.totals.coinsurance + this.totals.payer);
   }
 }

@@ -144,7 +144,8 @@ public class HealthRecord implements Serializable {
      */
     void determineCost() {
       this.cost = BigDecimal.valueOf(Costs.determineCostOfEntry(this, this.record.person));
-      this.cost = this.cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
+      // truncate to 2 decimal places
+      this.cost = this.cost.setScale(2, RoundingMode.DOWN);
     }
 
     /**

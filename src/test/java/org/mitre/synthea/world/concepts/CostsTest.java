@@ -27,7 +27,7 @@ public class CostsTest {
     Payer.loadNoInsurance();
     noInsurance = Payer.noInsurance;
     time = 0L;
-    person.setPayerAtTime(time, noInsurance);
+    person.coverage.setPayerAtTime(time, noInsurance);
   }
   
   @Test public void testCostByKnownCode() {

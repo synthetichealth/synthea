@@ -54,18 +54,17 @@ public class HealthInsuranceModule extends Module {
     // If the payerHistory at the current age is null, they must get insurance for the new year.
     // Note: This means the person will check to change insurance yearly, just after their
     // birthday.
-    if (person.getPayerAtTime(time) == null) {
+    Payer payerAtTime = person.coverage.getPayerAtTime(time);
+    if (payerAtTime == null) {
       // Update their last payer with person's QOLS for that year.
-      if (person.getPreviousPayerAtTime(time) != null) {
-        person.getPreviousPayerAtTime(time).addQols(
-            person.getQolsForYear(Utilities.getYear(time) - 1));
+      Payer lastPayer = person.coverage.getLastPayer();
+      if (lastPayer != null) {
+        lastPayer.addQols(person.getQolsForYear(Utilities.getYear(time) - 1));
       }
       // Determine the insurance for this person at this time.
       Payer newPayer = determineInsurance(person, time);
       // Set this new payer at the current time for the person.
-      person.setPayerAtTime(time, newPayer);
-      // Reset the person's yearly deductible.
-      person.resetDeductible(time);
+      person.coverage.setPayerAtTime(time, newPayer);
       // Update the new Payer's customer statistics.
       newPayer.incrementCustomers(person);
     }
@@ -90,6 +89,8 @@ public class HealthInsuranceModule extends Module {
     Payer medicaid = Payer.getGovernmentPayer(MEDICAID);
     Payer dualPayer = Payer.getGovernmentPayer(DUAL_ELIGIBLE);
 
+    Payer payerAtTime = person.coverage.getPayerAtTime(time);
+
     // If Medicare/Medicaid will accept this person, then it takes priority.
     if (medicare != null && medicaid != null
         && medicare.accepts(person, time)
@@ -99,11 +100,10 @@ public class HealthInsuranceModule extends Module {
       return medicare;
     } else if (medicaid != null && medicaid.accepts(person, time)) {
       return medicaid;
-    } else if (person.getPreviousPayerAtTime(time) != null
-        && IPayerFinder.meetsBasicRequirements(
-        person.getPreviousPayerAtTime(time), person, null, time)) {
+    } else if (payerAtTime != null
+        && IPayerFinder.meetsBasicRequirements(payerAtTime, person, null, time)) {
       // People will keep their previous year's insurance if they can.
-      return person.getPreviousPayerAtTime(time);
+      return payerAtTime;
     } else {
       // Randomly choose one of the remaining private payers.
       // Returns no_insurance if a person cannot afford any of them.

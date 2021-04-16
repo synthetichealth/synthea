@@ -552,7 +552,7 @@ public class Payer implements Serializable {
   }
 
   /**
-   * Increments encounter utiilization for a given year and encounter type.
+   * Increments encounter utilization for a given year and encounter type.
    * 
    * @param year the year of the encounter to add
    * @param key the key (the encounter type and whether it was covered/uncovered)

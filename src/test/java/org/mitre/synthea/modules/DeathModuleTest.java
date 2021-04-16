@@ -45,7 +45,7 @@ public class DeathModuleTest {
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
     Payer.loadNoInsurance();
-    person.setPayerAtTime(time, Payer.noInsurance);
+    person.coverage.setPayerAtTime(time, Payer.noInsurance);
   }
 
   @Test

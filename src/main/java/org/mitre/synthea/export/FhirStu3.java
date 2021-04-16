@@ -851,7 +851,8 @@ public class FhirStu3 {
     int procedureSequence = 1;
     int informationSequence = 1;
 
-    for (HealthRecord.Entry item : claim.items) {
+    for (Claim.ClaimEntry claimEntry : claim.items) {
+      HealthRecord.Entry item = claimEntry.entry;
       if (Costs.hasCost(item)) {
         // update claimItems list
         ItemComponent claimItem = new ItemComponent(new PositiveIntType(itemSequence));
