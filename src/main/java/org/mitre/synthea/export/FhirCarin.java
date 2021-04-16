@@ -836,9 +836,9 @@ public class FhirCarin {
   private static String findCoverageUrl(Payer payer, Bundle bundle) {
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource().fhirType().equals("Coverage")) {
-        Organization org = (Organization) entry.getResource();
-        if (org.getIdentifierFirstRep().getValue() != null
-            && org.getIdentifierFirstRep().getValue().equals(payer.getResourceID())) {
+        Coverage coverage = (Coverage) entry.getResource();
+        if (coverage.getIdentifierFirstRep().getValue() != null
+            && coverage.getIdentifierFirstRep().getValue().equals(payer.getResourceID())) {
           return entry.getFullUrl();
         }
       }
