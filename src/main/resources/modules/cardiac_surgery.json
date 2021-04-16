@@ -258,19 +258,7 @@
           }
         ]
       },
-      "conditional_transition": [
-        {
-          "transition": "Reason",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "cardiac_surgery_reason",
-            "operator": "is nil"
-          }
-        },
-        {
-          "transition": "Cardiac Encounter"
-        }
-      ]
+      "direct_transition": "Call CABG Sequence"
     },
     "Block Pediatric Patients": {
       "type": "Guard",
@@ -282,134 +270,9 @@
       },
       "direct_transition": "Wait Until High Risk"
     },
-    "CABG": {
-      "type": "SetAttribute",
-      "attribute": "cardiac_surgery",
-      "value": "cabg",
-      "direct_transition": "Assign CARE Score"
-    },
-    "Assign CARE Score": {
+    "Call CABG Sequence": {
       "type": "CallSubmodule",
-      "submodule": "heart/care_score",
-      "direct_transition": "Set Outcomes"
-    },
-    "Set Outcomes": {
-      "type": "CallSubmodule",
-      "submodule": "heart/cabg/outcomes",
-      "direct_transition": "Referral_Procedure"
-    },
-    "Cardiac Encounter": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "cardiac_surgery_reason",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem (procedure)"
-        }
-      ],
-      "direct_transition": "CABG"
-    },
-    "Referral_Procedure": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 183519002,
-          "display": "Referral to cardiology service (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 30,
-        "high": 60,
-        "unit": "minutes"
-      },
-      "reason": "cardiac_surgery_reason",
-      "direct_transition": "End Cardiac Encounter"
-    },
-    "End Cardiac Encounter": {
-      "type": "EncounterEnd",
-      "conditional_transition": [
-        {
-          "transition": "Urgent",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_score_e",
-            "operator": "==",
-            "value": true
-          }
-        },
-        {
-          "transition": "Non Urgent"
-        }
-      ]
-    },
-    "Urgent": {
-      "type": "Delay",
-      "direct_transition": "Referral and Preoperative Testing",
-      "range": {
-        "low": 1,
-        "high": 48,
-        "unit": "hours"
-      }
-    },
-    "Non Urgent": {
-      "type": "Delay",
-      "direct_transition": "Referral and Preoperative Testing",
-      "range": {
-        "low": 1,
-        "high": 7,
-        "unit": "days"
-      }
-    },
-    "Reason": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "cardiac_surgery_reason",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 399211009,
-          "display": "History of myocardial infarction (situation)"
-        }
-      ],
-      "direct_transition": "Cardiac Encounter",
-      "target_encounter": "Cardiac Encounter"
-    },
-    "Operation": {
-      "type": "CallSubmodule",
-      "submodule": "heart/cabg/operation",
-      "conditional_transition": [
-        {
-          "transition": "Deceased",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "cabg_mortality",
-            "operator": "==",
-            "value": true
-          }
-        },
-        {
-          "transition": "Postop ICU and Ward"
-        }
-      ]
-    },
-    "Referral and Preoperative Testing": {
-      "type": "CallSubmodule",
-      "submodule": "heart/cabg/referral",
-      "direct_transition": "Operation"
-    },
-    "Postop ICU and Ward": {
-      "type": "CallSubmodule",
-      "submodule": "heart/cabg/postop",
-      "direct_transition": "End Operation Encounter"
-    },
-    "Deceased": {
-      "type": "Death",
-      "direct_transition": "Terminal"
-    },
-    "End Operation Encounter": {
-      "type": "EncounterEnd",
+      "submodule": "heart/cabg_sequence",
       "direct_transition": "Terminal"
     }
   },
