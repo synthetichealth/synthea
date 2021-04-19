@@ -52,6 +52,7 @@ import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointUse;
 import org.hl7.fhir.r4.model.Coverage;
+import org.hl7.fhir.r4.model.Coverage.ClassComponent;
 import org.hl7.fhir.r4.model.Coverage.CoverageStatus;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DateType;
@@ -693,7 +694,20 @@ public class FhirCarin {
     coverageResource.setStatus(CoverageStatus.ACTIVE);
 
     coverageResource.setBeneficiary(new Reference(personEntry.getFullUrl()));
+    coverageResource.setSubscriber(new Reference(personEntry.getFullUrl()));
+    coverageResource.setSubscriberId(personEntry.getId());
     coverageResource.addPayor(new Reference().setDisplay(payer.getName()));
+    coverageResource.setRelationship(mapCodeToCodeableConcept(
+      new Code("http://hl7.org/fhir/R4/codesystem-subscriber-relationship.html",
+          "self", "Self"), null));
+
+    coverageResource.addClass_(
+      new ClassComponent()
+        .setType(mapCodeToCodeableConcept(
+          new Code("http://terminology.hl7.org/2.0.0/CodeSystem-coverage-class.html",
+              "plan", "Plan"), null))
+    );
+
     BundleEntryComponent entry = newEntry(person, bundle, coverageResource);
     return entry;
   }
