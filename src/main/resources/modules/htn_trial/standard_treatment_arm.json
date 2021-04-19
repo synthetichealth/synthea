@@ -39,16 +39,16 @@
       "submodule": "DelayUntilNextVisit",
       "conditional_transition": [
         {
-          "transition": "Encounter",
+          "transition": "Terminal",
           "condition": {
-            "condition_type": "Age",
-            "operator": ">",
-            "quantity": 0,
-            "unit": "years"
+            "condition_type": "Attribute",
+            "attribute": "trial_complete",
+            "operator": "==",
+            "value": true
           }
         },
         {
-          "transition": "Terminal"
+          "transition": "Encounter"
         }
       ]
     },

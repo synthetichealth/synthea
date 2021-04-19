@@ -871,6 +871,19 @@ public class HealthRecord implements Serializable {
   }
 
   /**
+   * Checks whether the specified allergy is active.
+   * Note that this functionality already exited in the conditionActive method, but adding
+   * this method makes the intention of the caller more clear. This is method simply calls
+   * conditionActive and returns the result.
+   *
+   * @param type The type of allergy to look for
+   * @return true if there is an active allergy for the type
+   */
+  public boolean allergyActive(String type) {
+    return conditionActive(type);
+  }
+  
+  /**
    * Create a new procedure of the specified type.
    * @param time the time of the procedure.
    * @param type the type of the procedure.

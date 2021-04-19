@@ -1009,7 +1009,20 @@
     },
     "End Screening Visit": {
       "type": "EncounterEnd",
-      "direct_transition": "Terminal"
+      "conditional_transition": [
+        {
+          "transition": "Call_Intensive_Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "htn_trial_treatment_arm",
+            "operator": "==",
+            "value": "intensive"
+          }
+        },
+        {
+          "transition": "Call_Standard_Submodule"
+        }
+      ]
     },
     "Initialize Exclusion Criterion ESRD": {
       "type": "SetAttribute",
@@ -1377,6 +1390,17 @@
         "high": 50,
         "unit": "years"
       }
+    },
+    "Call_Intensive_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "htn_trial/intensive_treatment_arm",
+      "direct_transition": "Terminal"
+    },
+    "Call_Standard_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "htn_trial/standard_treatment_arm",
+      "direct_transition": "Terminal"
     }
-  }
+  },
+  "gmf_version": 2
 }

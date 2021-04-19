@@ -606,5 +606,6 @@
       ],
       "direct_transition": "Admit_to_Inpatient"
     }
-  }
+  },
+  "gmf_version": 2
 }

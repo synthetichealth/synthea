@@ -1,12 +1,15 @@
 package org.mitre.synthea.modules;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.Module.ModuleSupplier;
+import org.mitre.synthea.export.ExportHelper;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -20,6 +23,8 @@ public class HypertensionTrial {
     
     modules.put("CreateVisitSchedule", new ModuleSupplier(new CreateVisitSchedule()));
     modules.put("DelayUntilNextVisit", new ModuleSupplier(new DelayUntilNextVisit()));
+    
+    modules.put("StepDownTherapy", new ModuleSupplier(new StepDownTherapy()));
 
   }
 
@@ -36,7 +41,7 @@ public class HypertensionTrial {
     public static final String ADD_THERAPY = "add_therapy";
     public static final String TITRATE = "titrate";
     
-    public static final double TITRATION_RATIO = 0.7; // 70% of the time, titrate rather than adding new class
+    public static final double TITRATION_RATIO = 0.7; // 70% of the time, titrate every time rather than adding new class
     
     @Override
     public boolean process(Person person, long time) {      
@@ -75,7 +80,6 @@ public class HypertensionTrial {
             // Add therapy not in use
             // see participant monthly, handled in module
             nextAction = ADD_THERAPY;
-            nextActionCode = findTherapyNotInUse(person);
             
           } else {
             // Titrate or add therapy not in use
@@ -83,10 +87,8 @@ public class HypertensionTrial {
             
             if (drugCount == titrationCounter.get() || person.rand() > TITRATION_RATIO) {
               nextAction = ADD_THERAPY;
-              nextActionCode = findTherapyNotInUse(person);
             } else {
               nextAction = TITRATE;
-              nextActionCode = "TODO";
             }
 
           }
@@ -95,10 +97,8 @@ public class HypertensionTrial {
           
           if (drugCount == titrationCounter.get() || person.rand() > TITRATION_RATIO) {
             nextAction = ADD_THERAPY;
-            nextActionCode = findTherapyNotInUse(person);
           } else {
             nextAction = TITRATE;
-            nextActionCode = "TODO";
           }
           
         } else {
@@ -112,10 +112,8 @@ public class HypertensionTrial {
           
           if (drugCount == titrationCounter.get() || person.rand() > TITRATION_RATIO) {
             nextAction = ADD_THERAPY;
-            nextActionCode = findTherapyNotInUse(person);
           } else {
             nextAction = TITRATE;
-            nextActionCode = "TODO";
           }
           
         } else if (dbp >= 100 || (dbp >= 90 && dbpGte90)) {
@@ -123,10 +121,8 @@ public class HypertensionTrial {
           
           if (drugCount == titrationCounter.get() || person.rand() > TITRATION_RATIO) {
             nextAction = ADD_THERAPY;
-            nextActionCode = findTherapyNotInUse(person);
           } else {
             nextAction = TITRATE;
-            nextActionCode = "TODO";
           }
           
         } else if (sbp < 130 || (sbp < 135 && sbpLt135)) {
@@ -138,6 +134,26 @@ public class HypertensionTrial {
         }
       }
       
+      if (nextAction == ADD_THERAPY) {
+        nextActionCode = findTherapyNotInUse(person);
+
+     // TEMPORARY - add the medication here for quick debugging
+        
+        HealthRecord.Medication temp = person.record.medicationStart(time, nextActionCode, false);
+        temp.codes.add(new HealthRecord.Code("RxNorm", nextActionCode, nextActionCode));
+        
+        
+      } else if (nextAction == TITRATE) {
+        nextActionCode = findNonTitratedDrug(person);
+        markTitrated(nextActionCode, person);
+        titrationCounter.incrementAndGet();
+
+      } else {
+        throw new IllegalStateException("nextAction set to something unexpected");
+      }
+      
+ 
+      
       person.attributes.put("htn_trial_next_action", nextAction);
       person.attributes.put("htn_trial_next_action_code", nextActionCode);
       
@@ -147,13 +163,13 @@ public class HypertensionTrial {
     private static final String[][] DRUG_HIERARCHY = {
         { "chlorthalidone", "furosemide", "spironolactone", "triamterene/hctz", "amiloride" }, // diuretics
         { "lisinopril" }, // ace inhibitor
-        {}, // angiotensin receptor blocker
-        {}, // calcium channel blocker
-        {}, // beta blocker
-        {}, // vasodilators
-        {}, // alpha 2 agonist
-        {}, // alpha blocker
-        {}, // potassium supplement
+        {"losartan", "azilsartan","azilsartan/chlorthalidone"}, // angiotensin receptor blocker
+        {"diltiazem", "amlodipine"}, // calcium channel blocker
+        {"metoprolol tartrate", "atenolol", "atenolol/chlorthalidone"}, // beta blocker
+        {"hydrazine", "minoxidil"}, // vasodilators
+        {"guanfacine"}, // alpha 2 agonist
+        {"doxazosin"}, // alpha blocker
+        {"kcl tablets", "kcl oral"}, // potassium supplement
     };
     
     public static int countDrugs(Person person) {
@@ -177,18 +193,93 @@ public class HypertensionTrial {
           if (person.record.medicationActive(drug)) {
             break; // break out of drug class, the person has one in this class already
           }
+          
+          // note: allergyActive copy-pasted from Andy's WIP branch
+          if (person.record.allergyActive(drug)) {
+            continue;
+          }
+          
           nextDrug = drug;
           break;
         }
         if (nextDrug != null) break;
       }
       
+      if (nextDrug == null) {
+        System.err.println("could not find new therapy not in use, note patient is on " + countDrugs(person) + " meds");
+        nextDrug = ""; // just to prevent NPEs later
+      }
+      
       return nextDrug;
     }
     
-
+    public static String findNonTitratedDrug(Person person) {
+      String nonTitratedDrug = null;
+      
+      for (String[] drugClass : DRUG_HIERARCHY) {
+        // TODO: shuffle the class
+        for (String drug : drugClass) {
+          if (person.record.medicationActive(drug) && !isTitrated(drug, person)) {
+            nonTitratedDrug = drug;
+            break;
+          }
+          
+          if (nonTitratedDrug != null) break;
+        }
+      }
+      
+      if (nonTitratedDrug == null) {
+        
+        
+        for (String[] drugClass : DRUG_HIERARCHY) {
+          // TODO: shuffle the class
+          for (String drug : drugClass) {
+            System.out.println(person.seed + " - " + drug + ": active:" + person.record.medicationActive(drug));
+            System.out.println(person.seed + " - " + drug + ": titrated:" + isTitrated(drug, person));
+              
+          }
+        }
+        
+        throw new IllegalStateException("could not find nontitrated drug, note patient is on " + countDrugs(person) + " meds, titration count: " + person.attributes.get("titration_counter"));
+      }
+      
+      return nonTitratedDrug;
+    }
+    
+    public static boolean isTitrated(String drug, Person person) {
+      Set<String> titratedDrugs = (Set<String>)person.attributes.get("titrated_drugs");
+      if (titratedDrugs == null || titratedDrugs.isEmpty()) return false;
+      
+      return titratedDrugs.contains(drug);
+    }
+    
+    public static void markTitrated(String drug, Person person) {
+      Set<String> titratedDrugs = (Set<String>)person.attributes.get("titrated_drugs");
+      if (titratedDrugs == null) {
+        titratedDrugs = new HashSet<>();
+        person.attributes.put("titrated_drugs", titratedDrugs);
+      }
+      titratedDrugs.add(drug);
+    }
+    
   }
   
+  
+  public static class StepDownTherapy extends Module {
+    public StepDownTherapy() {
+      this.name = "StepDownTherapy";
+      this.submodule = true;
+    }
+
+    public Module clone() {
+      return this;
+    }
+    
+    public boolean process(Person person, long time) {
+//      System.out.println("stepdowntherapy - " + person.seed + " - " + ExportHelper.iso8601Timestamp(time));
+      return true; // TODO
+    }
+  }
   
   public static class CreateVisitSchedule extends Module {
     public CreateVisitSchedule() {
@@ -249,7 +340,7 @@ public class HypertensionTrial {
 
     @Override
     public boolean process(Person person, long time) {
-      
+
       // attributes we may care about
       // trial_arm (String, "standard"/"intensive") is input
       // see_participant_monthly (boolean) is input
@@ -258,10 +349,17 @@ public class HypertensionTrial {
       
       boolean seeParticipantMonthly = (boolean) person.attributes.getOrDefault("see_participant_monthly", false);
       
-      
       List<Long> visitSchedule = (ArrayList<Long>)person.attributes.get("htn_trial_visit_schedule");
       
-      visitSchedule.removeIf(visit -> visit < time); // remove all visits already completed
+      
+      if (visitSchedule.isEmpty()) {
+        person.attributes.put("trial_complete", true);
+        return true;
+      }
+      
+//      System.out.println(person.seed + " waiting till next visit, curr: " + ExportHelper.iso8601Timestamp(time));
+      
+//      visitSchedule.removeIf(visit -> visit < time); // remove all visits already completed
       
       long nextEncounter;
       
@@ -281,22 +379,42 @@ public class HypertensionTrial {
         nextEncounter = previousEncounter.start + Utilities.convertTime("months", 1);
         boolean milestone = isMilestoneVisit(time, visitSchedule);
         person.attributes.put("milestone_visit", milestone);
-      } else {
-        // wait until the next milestone
-
-        // if there is no next milestone, flag that and exit immediately
         
-        if (visitSchedule.isEmpty()) {
-          person.attributes.put("trial_complete", true);
+//        System.out.println(person.seed + "'s next visit is 1 month: " + ExportHelper.iso8601Timestamp(nextEncounter));
+
+        
+        if (milestone && time >= nextEncounter) {
+//          System.out.println(person.seed + " removing index 0");
+
+          visitSchedule.remove(0);
           return true;
         }
         
+        return (time >= nextEncounter);
+        
+      } else {
+        // wait until the next milestone        
+
+  
         
         person.attributes.put("milestone_visit", true);
         nextEncounter = visitSchedule.get(0);
+        
+//        System.out.println(person.seed + "'s next visit is mlestone: " + ExportHelper.iso8601Timestamp(nextEncounter));
+
+        
+        if (time >= nextEncounter) {
+//          System.out.println(person.seed + " removing index 0");
+
+          visitSchedule.remove(0); // remove the current visit once it starts
+          return true;
+        }
+        
+        return false;
       }
 
-      return (time <= nextEncounter);
+//      System.out.println("time: " + ExportHelper.iso8601Timestamp(time) + ", nextEncounter: " + ExportHelper.iso8601Timestamp(nextEncounter))
+      
       // note return options here, see State$CallSubmodule
       // if we return true, the submodule completed and processing continues to the next state
       // if we return false, the submodule did not complete (like with a Delay) and will re-process the next timestep.
