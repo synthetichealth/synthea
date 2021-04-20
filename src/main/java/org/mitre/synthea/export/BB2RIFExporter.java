@@ -806,7 +806,7 @@ public class BB2RIFExporter implements Flushable {
       fieldValues.put(CarrierFields.CARR_CLM_RFRNG_PIN_NUM, encounter.provider.id);
       fieldValues.put(CarrierFields.CARR_PRFRNG_PIN_NUM, encounter.provider.id);
       fieldValues.put(CarrierFields.TAX_NUM,
-              "" + encounter.clinician.attributes.get(Person.IDENTIFIER_SSN));
+              bb2TaxId((String)encounter.clinician.attributes.get(Person.IDENTIFIER_SSN)));
       fieldValues.put(CarrierFields.LINE_SRVC_CNT, "" + encounter.claim.items.size());
       fieldValues.put(CarrierFields.CARR_LINE_PRCNG_LCLTY_CD,
               getCarrier(encounter.provider.state, CarrierFields.CARR_LINE_PRCNG_LCLTY_CD));
@@ -830,6 +830,14 @@ public class BB2RIFExporter implements Flushable {
               "" + latestHemoglobin);
 
       carrier.writeValues(CarrierFields.class, fieldValues);
+    }
+  }
+  
+  private static String bb2TaxId(String ssn) {
+    if (ssn != null) {
+      return ssn.replaceAll("-", "");
+    } else {
+      return "";
     }
   }
   
@@ -971,7 +979,7 @@ public class BB2RIFExporter implements Flushable {
         fieldValues.put(DMEFields.PRVDR_STATE_CD,
                 locationMapper.getStateCode(encounter.provider.state));
         fieldValues.put(DMEFields.TAX_NUM,
-                (String) encounter.clinician.attributes.get(Person.IDENTIFIER_SSN));
+                bb2TaxId((String)encounter.clinician.attributes.get(Person.IDENTIFIER_SSN)));
         fieldValues.put(DMEFields.DMERC_LINE_PRCNG_STATE_CD,
                 locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
         fieldValues.put(DMEFields.LINE_1ST_EXPNS_DT, bb2DateFromTimestamp(encounter.start));
@@ -2331,6 +2339,7 @@ public class BB2RIFExporter implements Flushable {
     ICD_DGNS_CD12,
     ICD_DGNS_VRSN_CD12,
     CLM_CLNCL_TRIL_NUM,
+    CARR_CLM_CNTL_NUM,
     LINE_NUM,
     CARR_PRFRNG_PIN_NUM,
     PRF_PHYSN_UPIN,
