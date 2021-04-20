@@ -1,9 +1,16 @@
 package org.mitre.synthea.modules;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
+import org.mitre.synthea.engine.Distribution;
+import org.mitre.synthea.engine.Distribution.Kind;
 import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
@@ -27,6 +34,71 @@ public class PerformCABG extends Module {
   private static final Code CABG = new Code("SNOMED-CT", "232717009", "Coronary artery bypass grafting (procedure)");
   private static final Code EMERGENCY_CABG = new Code("SNOMED-CT", "414088005", "Emergency coronary artery bypass graft (procedure)");
   
+  private static List<Clinician> cabgSurgeons = loadCabgSurgeons();
+  
+  private static List<Clinician> loadCabgSurgeons() {
+    try {
+    String cabgSurgeonsCsv = Utilities.readResource("cabg_surgeons.csv");
+    List<LinkedHashMap<String,String>> surgeons = SimpleCSV.parse(cabgSurgeonsCsv);
+    
+    // only keep "CABG" code lines
+    surgeons.removeIf(s -> !s.get("surgery_group_label").equals("CABG"));
+    
+    
+    Provider provider = Provider.getProviderList().get(0);
+    
+    Random clinicianRand = new Random(-1);
+
+    ArrayList<Clinician> clinicianList = new ArrayList<>();
+    
+    int id = 0;
+    for (LinkedHashMap<String,String> surgeon : surgeons) {
+      Clinician clin = new Clinician(-1, clinicianRand, id++, provider);
+      clin.attributes.putAll(surgeon);
+      
+      clin.attributes.put(Clinician.SPECIALTY, "CABG");
+
+      
+      String surgeonCode = (String)surgeon.get("surgeon_code_final");
+
+      clin.attributes.put(Clinician.FIRST_NAME, surgeonCode);
+      clin.attributes.put(Clinician.LAST_NAME, surgeonCode);
+      clin.attributes.put(Clinician.NAME, surgeonCode);
+      clin.attributes.put(Clinician.NAME_PREFIX, "Dr.");
+      
+      clin.attributes.put(Clinician.GENDER, clinicianRand.nextBoolean() ? "F" : "M");
+      
+      clin.attributes.put(Person.ADDRESS, provider.address);
+      clin.attributes.put(Person.CITY, provider.city);
+      clin.attributes.put(Person.STATE, provider.state);
+      clin.attributes.put(Person.ZIP, provider.zip);
+      clin.attributes.put(Person.COORDINATE, provider.getLonLat());
+      
+      clinicianList.add(clin);
+    }
+    
+    provider.clinicianMap.put("CABG", clinicianList);
+    
+    return clinicianList;
+    
+    } catch (Exception e) {
+      throw new Error(e);
+    }
+  }
+  
+  private static Distribution NOISE = buildNoise();
+  
+  private static Distribution buildNoise() {
+    Distribution d = new Distribution();
+    
+    d.kind = Kind.GAUSSIAN;
+    
+    d.parameters = new HashMap<>();
+    d.parameters.put("standardDeviation", 35.0);
+    d.parameters.put("mean", -10.0);
+    
+    return d;
+  }
   
   @Override
   public boolean process(Person person, long time) {
@@ -35,10 +107,7 @@ public class PerformCABG extends Module {
     if (person.attributes.containsKey("cabg_stop_time") ) {
       stopTime = (long) person.attributes.get("cabg_stop_time");
     } else {
-      // calculate it here
-  
-      Provider location = null;
-      Clinician surgeon = null; // pick one
+      Clinician surgeon = cabgSurgeons.get(person.randInt(cabgSurgeons.size()));
       
       stopTime = time + getCabgDuration(person, surgeon, time);
       
@@ -55,6 +124,11 @@ public class PerformCABG extends Module {
       
       cabg.stop = stopTime;
       cabg.clinician = surgeon;
+      
+      surgeon.incrementEncounters();
+      
+      // hack this clinician back onto the record?
+      person.record.currentEncounter(stopTime).clinician = surgeon;
       
       String reason = "Abnormal Findings";
       
@@ -78,10 +152,9 @@ public class PerformCABG extends Module {
     // if we return false, the submodule did not complete (like with a Delay) and will re-process the next timestep.
     return (time < stopTime);
   }
-  
-  
-  public static final long MAX_DURATION = Utilities.convertTime("minutes", 90);
-  public static final long MIN_DURATION = Utilities.convertTime("minutes", 15);
+
+  public static final long MAX_DURATION = Utilities.convertTime("minutes", 926);
+  public static final long MIN_DURATION = Utilities.convertTime("minutes", 45);
 
   // commented out for now - probably easier to just manually code these than make it generic
 //  private static final Map<String,Double> COEFFICIENTS;
@@ -170,7 +243,7 @@ Operative_priority.4,-60.55,category
       duration += M_COEFFICIENT;
     }
     
-    boolean cardiacRedo = person.randBoolean(); // TODO
+    boolean cardiacRedo = person.record.present.containsKey(EMERGENCY_CABG.code) || person.record.present.containsKey(CABG.code);
     if (cardiacRedo) {
       duration += REDO_TRUE_COEFFICIENT;
     } else {
@@ -186,7 +259,7 @@ Operative_priority.4,-60.55,category
     }
     
     if (!CARE_SCORE_COEFFICIENTS.containsKey(careScoreString)) {
-      System.out.println("Failed to find " + careScoreString);
+      throw new IllegalStateException("Failed to find " + careScoreString);
     }
     
     duration += CARE_SCORE_COEFFICIENTS.get(careScoreString);
@@ -194,12 +267,14 @@ Operative_priority.4,-60.55,category
     duration += OPER_PRIORITY_COEFFICIENTS[(int)person.attributes.get("care_priority_level")];
     
     
-
-    // TODO: clinician stuff
-//    surgeon.attributes.get("mean_time");
-//    surgeon.attributes.get("n_surgeries");
+    // these are ints but all have a trailing .0 in the CSV
+    int surgeon_n_surgeries = (int)Double.parseDouble((String)surgeon.attributes.get("n_surgeries"));
+    double surgeon_mean_time = Double.parseDouble((String)surgeon.attributes.get("mean"));
     
-    
+    duration += (surgeon_mean_time_COEFFICIENT * surgeon_mean_time);
+    duration += (n_surgeries_COEFFICIENT * surgeon_n_surgeries);
+   
+    duration += NOISE.generate(person);
     
     long durationInMs = Utilities.convertTime("minutes", duration);
     
