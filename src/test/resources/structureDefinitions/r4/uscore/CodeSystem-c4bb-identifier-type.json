@@ -1,0 +1,76 @@
+{
+    "resourceType": "CodeSystem",
+    "id": "C4BBIdentifierType",
+    "text": {
+      "status": "generated",
+      "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>This code system http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBIdentifierType defines the following codes:</p><table class=\"codes\"><tr><td style=\"white-space:nowrap\"><b>Code</b></td><td><b>Display</b></td><td><b>Definition</b></td></tr><tr><td style=\"white-space:nowrap\">npi<a name=\"C4BBIdentifierType-npi\"> </a></td><td>National Provider Identifier</td><td>National Provider Identifier</td></tr><tr><td style=\"white-space:nowrap\">payerid<a name=\"C4BBIdentifierType-payerid\"> </a></td><td>Payer ID</td><td>Payer ID</td></tr><tr><td style=\"white-space:nowrap\">naiccode<a name=\"C4BBIdentifierType-naiccode\"> </a></td><td>NAIC Code</td><td>NAIC Code</td></tr><tr><td style=\"white-space:nowrap\">pat<a name=\"C4BBIdentifierType-pat\"> </a></td><td>Patient Account Number</td><td>Patient Account Number</td></tr><tr><td style=\"white-space:nowrap\">um<a name=\"C4BBIdentifierType-um\"> </a></td><td>Unique Member ID</td><td>Indicates that the patient identifier is a unique member identifier assigned by a payer across all lines of business</td></tr><tr><td style=\"white-space:nowrap\">uc<a name=\"C4BBIdentifierType-uc\"> </a></td><td>Unique Claim ID</td><td>Indicates that the claim identifier is that assigned by a payer for a claim received from a provider or subscriber</td></tr></table></div>"
+    },
+    "url": "http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBIdentifierType",
+    "version": "1.0.0",
+    "name": "C4BBIdentifierType",
+    "title": "C4BB Identifier Type",
+    "status": "active",
+    "date": "2020-11-23T16:49:10+00:00",
+    "publisher": "HL7 Financial Management Working Group",
+    "contact": [
+      {
+        "name": "HL7 Financial Management Working Group",
+        "telecom": [
+          {
+            "system": "url",
+            "value": "http://www.hl7.org/Special/committees/fm/index.cfm"
+          },
+          {
+            "system": "email",
+            "value": "fm@lists.HL7.org"
+          }
+        ]
+      }
+    ],
+    "description": "Identifier Type codes that extend those defined in http://terminology.hl7.org/CodeSystem/v2-0203 to define the type of identifier payers and providers assign to claims and patients",
+    "jurisdiction": [
+      {
+        "coding": [
+          {
+            "system": "urn:iso:std:iso:3166",
+            "code": "US"
+          }
+        ]
+      }
+    ],
+    "copyright": "This CodeSystem is not copyrighted.",
+    "content": "complete",
+    "count": 6,
+    "concept": [
+      {
+        "code": "npi",
+        "display": "National Provider Identifier",
+        "definition": "National Provider Identifier"
+      },
+      {
+        "code": "payerid",
+        "display": "Payer ID",
+        "definition": "Payer ID"
+      },
+      {
+        "code": "naiccode",
+        "display": "NAIC Code",
+        "definition": "NAIC Code"
+      },
+      {
+        "code": "pat",
+        "display": "Patient Account Number",
+        "definition": "Patient Account Number"
+      },
+      {
+        "code": "um",
+        "display": "Unique Member ID",
+        "definition": "Indicates that the patient identifier is a unique member identifier assigned by a payer across all lines of business"
+      },
+      {
+        "code": "uc",
+        "display": "Unique Claim ID",
+        "definition": "Indicates that the claim identifier is that assigned by a payer for a claim received from a provider or subscriber"
+      }
+    ]
+  }

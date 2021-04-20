@@ -698,13 +698,14 @@ public class FhirCarin {
     coverageResource.setSubscriberId(personEntry.getId());
     coverageResource.addPayor(new Reference().setDisplay(payer.getName()));
     coverageResource.setRelationship(mapCodeToCodeableConcept(
-      new Code("http://hl7.org/fhir/R4/codesystem-subscriber-relationship.html",
+      new Code("http://terminology.hl7.org/CodeSystem/subscriber-relationship",
           "self", "Self"), null));
 
     coverageResource.addClass_(
       new ClassComponent()
+        .setValue(payer.getName())
         .setType(mapCodeToCodeableConcept(
-          new Code("http://terminology.hl7.org/2.0.0/CodeSystem-coverage-class.html",
+          new Code("http://terminology.hl7.org/2.0.0/CodeSystem-coverage-class",
               "plan", "Plan"), null))
     );
 
@@ -2804,7 +2805,7 @@ public class FhirCarin {
         .setValue("urn:uuid" + provider.getResourceID())
         .setType(
           mapCodeToCodeableConcept(
-            new Code("http://build.fhir.org/ig/HL7/carin-bb/CodeSystem-C4BBIdentifierType.html",
+            new Code("http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBIdentifierType",
                 "payerid", "Payer ID"), null));
     List<CodeableConcept> organizationType = new ArrayList<CodeableConcept>();
     organizationType.add(
@@ -2935,7 +2936,11 @@ public class FhirCarin {
     String practitionerNPI = Long.toString(9_999_999_999L - clinician.identifier);
     practitionerResource.addIdentifier()
             .setSystem("http://hl7.org/fhir/sid/us-npi")
-            .setValue(practitionerNPI);
+            .setValue(practitionerNPI)
+            .setType(
+              mapCodeToCodeableConcept(
+                new Code("http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBIdentifierType",
+                    "npi", "NPI"), null));
     practitionerResource.setActive(true);
     practitionerResource.addName().setFamily(
         (String) clinician.attributes.get(Clinician.LAST_NAME))
