@@ -2797,7 +2797,15 @@ public class FhirCarin {
           .setSystem("urn:ietf:rfc:3986")
           .setValue("urn:uuid" + provider.getResourceID());
       organizationResource.addContact().setName(new HumanName().setText("Synthetic Provider"));
-    }
+    } 
+    
+    organizationResource.addIdentifier()
+        .setSystem("urn:ietf:rfc:3986")
+        .setValue("urn:uuid" + provider.getResourceID())
+        .setType(
+          mapCodeToCodeableConcept(
+            new Code("http://build.fhir.org/ig/HL7/carin-bb/CodeSystem-C4BBIdentifierType.html",
+                "payerid", "Payer ID"), null));
     List<CodeableConcept> organizationType = new ArrayList<CodeableConcept>();
     organizationType.add(
         mapCodeToCodeableConcept(

@@ -412,6 +412,12 @@ public abstract class Exporter {
     } catch (Exception e) {
       e.printStackTrace();
     }
+    
+    try {
+      HospitalExporterCarin.export(generator, generator.stop);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     try {
       FhirPractitionerExporterCarin.export(generator, generator.stop);

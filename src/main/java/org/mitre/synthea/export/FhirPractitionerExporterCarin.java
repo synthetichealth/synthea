@@ -54,7 +54,7 @@ public abstract class FhirPractitionerExporterCarin {
             ArrayList<Clinician> docs = clinicians.get(specialty);
             for (Clinician doc : docs) {
               if (doc.getEncounterCount() > 0) {
-                BundleEntryComponent entry = FhirR4.practitioner(rand, bundle, doc);
+                BundleEntryComponent entry = FhirCarin.practitioner(rand, bundle, doc);
                 Practitioner practitioner = (Practitioner) entry.getResource();
                 practitioner.addExtension()
                   .setUrl(EXTENSION_URI)
@@ -65,12 +65,12 @@ public abstract class FhirPractitionerExporterCarin {
         }
       }
 
-      String bundleJson = FhirR4.getContext().newJsonParser().setPrettyPrint(true)
+      String bundleJson = FhirCarin.getContext().newJsonParser().setPrettyPrint(true)
           .encodeResourceToString(bundle);
 
       // get output folder
       List<String> folders = new ArrayList<>();
-      folders.add("fhir");
+      folders.add("fhir_carin");
       String baseDirectory = Config.get("exporter.baseDirectory");
       File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
       f.mkdirs();
