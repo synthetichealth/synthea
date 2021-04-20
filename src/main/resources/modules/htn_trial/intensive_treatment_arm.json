@@ -126,8 +126,47 @@
       "direct_transition": "Loop back to top"
     },
     "Titrate": {
-      "type": "Simple",
-      "direct_transition": "Loop back to top"
+      "type": "MultiObservation",
+      "category": "therapy",
+      "number_of_observations": 0,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "70006-2",
+          "display": "Medication management note"
+        }
+      ],
+      "direct_transition": "Loop back to top",
+      "observations": [
+        {
+          "category": "therapy",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "93341-6",
+              "display": "Medication recommendation"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 494716691000132100,
+            "display": "Medication titrated (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "18816-9",
+              "display": "Medication name + identifier"
+            }
+          ],
+          "attribute": "htn_trial_next_action_code"
+        }
+      ]
     },
     "Delay until next visit": {
       "type": "CallSubmodule",
