@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.output.NullOutputStream;
@@ -151,6 +152,11 @@ public class CSVExporter {
   private static final String NEWLINE = System.lineSeparator();
 
   /**
+   * Thread-safe monotonically increasing transactionId.
+   */
+  private AtomicLong transactionId;
+
+  /**
    * Constructor for the CSVExporter - initialize the specified files and store
    * the writers in fields.
    */
@@ -252,6 +258,8 @@ public class CSVExporter {
       // and if these do throw ioexceptions there's nothing we can do anyway
       throw new RuntimeException(e);
     }
+
+    this.transactionId = new AtomicLong();
   }
 
   /**
@@ -436,7 +444,7 @@ public class CSVExporter {
       String encounterID = encounter(person, personID, encounter);
       String payerID = encounter.claim.payer.uuid;
 
-      claim(person, encounter.claim, encounter, encounterID);
+      claim(person, encounter.claim, encounter, encounterID, time);
 
       for (HealthRecord.Entry condition : encounter.conditions) {
         /* condition to ignore codes other then retrieved from terminology url */
@@ -466,7 +474,7 @@ public class CSVExporter {
 
       for (Medication medication : encounter.medications) {
         medication(personID, encounterID, payerID, medication, time);
-        claim(person, medication.claim, encounter, encounterID);
+        claim(person, medication.claim, encounter, encounterID, time);
       }
 
       for (HealthRecord.Entry immunization : encounter.immunizations) {
@@ -1260,7 +1268,7 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs.
    */
   private void claim(RandomNumberGenerator rand, Claim claim, Encounter encounter,
-      String encounterID) throws IOException {
+      String encounterID, long time) throws IOException {
     // Id,PATIENTID,PROVIDERID,PRIMARYPATIENTINSURANCEID,SECONDARYPATIENTINSURANCEID,
     // DEPARTMENTID,PATIENTDEPARTMENTID,DIAGNOSIS1,DIAGNOSIS2,DIAGNOSIS3,DIAGNOSIS4,
     // DIAGNOSIS5,DIAGNOSIS6,DIAGNOSIS7,DIAGNOSIS8,REFERRINGPROVIDERID,APPOINTMENTID,
@@ -1328,9 +1336,9 @@ public class CSVExporter {
       }
     }
     Long onsetIllness = encounter.start;
-    for (Long time : onset) {
-      if (time != null && time < onsetIllness) {
-        onsetIllness = time;
+    for (Long onsetTime : onset) {
+      if (onsetTime != null && onsetTime < onsetIllness) {
+        onsetIllness = onsetTime;
       }
     }
     // TODO REFERRINGPROVIDERID
@@ -1347,25 +1355,48 @@ public class CSVExporter {
     } else {
       s.append(',');
     }
-    // TODO STATUS1 for Payer1
-    s.append("CLOSED,");
-    // TODO STATUS2 for Payer2
-    s.append(',');
-    // STATUSP for Patient as Payer
-    s.append("CLOSED,");
-    // OUTSTANDING1
-    s.append(String.format(Locale.US, "%.2f", encounter.claim.getCoveredCost())).append(',');
-    // TODO OUTSTANDING2
-    s.append(',');
-    // OUTSTANDINGP
-    double patientCost = claim.getTotalClaimCost() - claim.getCoveredCost();
-    s.append(String.format(Locale.US, "%.2f", patientCost)).append(',');
-    // LASTBILLEDDATE1
-    s.append(iso8601Timestamp(encounter.stop)).append(',');
-    // TODO LASTBILLEDDATE2
-    s.append(',');
-    // LASTBILLEDDATEP
-    s.append(iso8601Timestamp(encounter.stop)).append(',');
+    if (time > encounter.stop) {
+      // TODO STATUS1 for Payer1
+      s.append("CLOSED,");
+      // TODO STATUS2 for Payer2
+      s.append(',');
+      // TODO STATUSP for Patient as Payer
+      s.append("CLOSED,");
+      // OUTSTANDING1
+      s.append("0").append(',');
+      // TODO OUTSTANDING2
+      s.append(',');
+      // OUTSTANDINGP
+      s.append("0").append(',');
+      // LASTBILLEDDATE1
+      s.append(iso8601Timestamp(encounter.stop)).append(',');
+      // TODO LASTBILLEDDATE2
+      s.append(',');
+      // LASTBILLEDDATEP
+      s.append(iso8601Timestamp(encounter.stop)).append(',');
+
+    } else {
+      // TODO STATUS1 for Payer1
+      s.append("BILLED,");
+      // TODO STATUS2 for Payer2
+      s.append(',');
+      // TODO STATUSP for Patient as Payer
+      s.append("BILLED,");
+      // OUTSTANDING1 (TODO this should be the outstanding payer balance)
+      s.append(String.format(Locale.US, "%.2f", encounter.claim.getCoveredCost())).append(',');
+      // TODO OUTSTANDING2
+      s.append(',');
+      // OUTSTANDINGP (TODO this should be the outstanding patient balance)
+      double patientCost = claim.getTotalClaimCost() - claim.getCoveredCost();
+      s.append(String.format(Locale.US, "%.2f", patientCost)).append(',');
+      // LASTBILLEDDATE1
+      s.append(iso8601Timestamp(encounter.start)).append(',');
+      // TODO LASTBILLEDDATE2
+      s.append(',');
+      // LASTBILLEDDATEP
+      s.append(iso8601Timestamp(encounter.start)).append(',');
+    }
+
     // HEALTHCARECLAIMTYPEID1
     if (institutional) {
       s.append('2');
@@ -1398,7 +1429,7 @@ public class CSVExporter {
   private void simulateClaimProcess(RandomNumberGenerator rand, Claim claim, String claimId,
       Encounter encounter, String encounterId, Claim.ClaimEntry claimEntry,
       String[] diagnosisCodes, String departmentId, boolean mainEntry) throws IOException {
-    int chargeId = 0;
+    long chargeId = transactionId.getAndIncrement();
     // CHARGE
     ClaimTransaction t = new ClaimTransaction(encounter, encounterId,
         claim, claimId, chargeId, claimEntry, rand);
@@ -1406,14 +1437,22 @@ public class CSVExporter {
     t.setAmount(claimEntry.cost);
     t.departmentId = departmentId;
     t.diagnosisCodes = diagnosisCodes;
+    if (claim.payer == Payer.noInsurance) {
+      t.transferType = "p";
+    } else {
+      t.transferType = "1";
+    }
     write(t.toString(), claimsTransactions);
-    chargeId++;
+    chargeId = transactionId.getAndIncrement();
 
     double remainder = claimEntry.cost;
     if (mainEntry) {
       if (claimEntry.copay > 0) {
         // COPAY
         remainder -= claimEntry.copay;
+        if (remainder < 0) {
+          remainder = 0; // If the cost of the copay is greater than the medication cost.
+        }
         t = new ClaimTransaction(encounter, encounterId,
             claim, claimId, chargeId, claimEntry, rand);
         t.type = ClaimTransactionType.PAYMENT;
@@ -1423,7 +1462,7 @@ public class CSVExporter {
         t.departmentId = departmentId;
         t.diagnosisCodes = diagnosisCodes;
         write(t.toString(), claimsTransactions);
-        chargeId++;
+        chargeId = transactionId.getAndIncrement();
       }
     }
 
@@ -1442,7 +1481,7 @@ public class CSVExporter {
       t.departmentId = departmentId;
       t.diagnosisCodes = diagnosisCodes;
       write(t.toString(), claimsTransactions);
-      chargeId++;
+      chargeId = transactionId.getAndIncrement();
     }
 
     if (remainder > 0) {
@@ -1451,24 +1490,26 @@ public class CSVExporter {
         t = new ClaimTransaction(encounter, encounterId,
             claim, claimId, chargeId, claimEntry, rand);
         t.type = ClaimTransactionType.TRANSFEROUT;
-        t.transferType = "1"; // primary insurance
-        t.setAmount(remainder);
+        t.amount = remainder;
+        t.unpaid = remainder;
         t.departmentId = departmentId;
         t.diagnosisCodes = diagnosisCodes;
         write(t.toString(), claimsTransactions);
-        chargeId++;
+        long transferOut = chargeId;
+        chargeId = transactionId.getAndIncrement();
 
         // TRANSFERIN
         t = new ClaimTransaction(encounter, encounterId,
             claim, claimId, chargeId, claimEntry, rand);
         t.type = ClaimTransactionType.TRANSFERIN;
-        t.transferType = "p"; // patient
-        t.transferId = "" + (chargeId - 1);
-        t.setAmount(remainder);
+        t.transferType = "p"; // patient ("2" if secondary insurance)
+        t.transferId = transferOut;
+        t.amount = remainder;
+        t.unpaid = remainder;
         t.departmentId = departmentId;
         t.diagnosisCodes = diagnosisCodes;
         write(t.toString(), claimsTransactions);
-        chargeId++;
+        chargeId = transactionId.getAndIncrement();
       }
       // PAYMENT
       t = new ClaimTransaction(encounter, encounterId,
@@ -1483,7 +1524,7 @@ public class CSVExporter {
       t.departmentId = departmentId;
       t.diagnosisCodes = diagnosisCodes;
       write(t.toString(), claimsTransactions);
-      chargeId++;
+      chargeId = transactionId.getAndIncrement();
     }
   }
 
@@ -1499,8 +1540,8 @@ public class CSVExporter {
     String id;
     String encounterId;
     String claimId;
-    String chargeId;
-    String transferId;
+    long chargeId;
+    long transferId;
     String transferType;
     String patientId;
     ClaimTransactionType type;
@@ -1508,6 +1549,7 @@ public class CSVExporter {
     Integer units;
     Double unitAmount;
     Double payment;
+    Double adjustment;
     Double unpaid;
     PaymentMethod method;
     long start;
@@ -1531,11 +1573,11 @@ public class CSVExporter {
      * @param rand A random number generator.
      */
     public ClaimTransaction(Encounter encounter, String encounterId, Claim claim, String claimId,
-        int chargeId, Claim.ClaimEntry claimEntry, RandomNumberGenerator rand) {
+        long chargeId, Claim.ClaimEntry claimEntry, RandomNumberGenerator rand) {
       this.id = rand.randUUID().toString();
       this.encounterId = encounterId;
       this.claimId = claimId;
-      this.chargeId = "" + chargeId;
+      this.chargeId = chargeId;
       this.patientId = (String) claim.person.attributes.get(Person.ID);
       this.units = 1;
       this.start = claimEntry.entry.start;
@@ -1622,12 +1664,12 @@ public class CSVExporter {
       }
       s.append(',');
       // TRANSFEROUTID
-      if (type == ClaimTransactionType.TRANSFERIN && transferId != null) {
+      if (type == ClaimTransactionType.TRANSFERIN) {
         s.append(transferId);
       }
       s.append(',');
       // TRANSFERTYPE. 1=primary insurance, 2=secondary, p==patient
-      if (type == ClaimTransactionType.TRANSFEROUT || type == ClaimTransactionType.TRANSFERIN) {
+      if (type == ClaimTransactionType.CHARGE || type == ClaimTransactionType.TRANSFERIN) {
         s.append(transferType);
       }
       s.append(',');
@@ -1637,7 +1679,10 @@ public class CSVExporter {
       }
       s.append(',');
       // ADJUSTMENTS
-      s.append("0").append(',');
+      if (adjustment != null) {
+        s.append(String.format(Locale.US, "%.2f", adjustment));
+      }
+      s.append(',');
       // TRANSFERS
       if (type == ClaimTransactionType.TRANSFERIN || type == ClaimTransactionType.TRANSFEROUT) {
         s.append(String.format(Locale.US, "%.2f", amount));
