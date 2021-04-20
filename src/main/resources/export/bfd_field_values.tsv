@@ -621,3 +621,4 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 619	UPDT_TS	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 620	UPDT_USER_ID	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 621	V_DOD_SW		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+622	CARR_CLM_CNTL_NUM	N/A	N/A	N/A	N/A	N/A		N/A	N/A	N/A	N/A	TRUE	
