@@ -7,10 +7,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.hl7.fhir.r4.model.Patient;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
@@ -18,7 +16,6 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.PhysiologyValueGenerator;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleCSV;
-import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.input.FixedRecord;
@@ -34,6 +31,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.Names;
 import org.mitre.synthea.world.concepts.PediatricGrowthTrajectory;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
@@ -57,7 +55,6 @@ public final class LifecycleModule extends Module {
 
   private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
 
-  private static SimpleYML names = loadNames();
 
   public LifecycleModule() {
     this.name = "Lifecycle";
@@ -70,18 +67,6 @@ public final class LifecycleModule extends Module {
       return SimpleCSV.parse(data);
     } catch (Exception e) {
       System.err.println("ERROR: unable to load csv: " + filename);
-      e.printStackTrace();
-      throw new ExceptionInInitializerError(e);
-    }
-  }
-
-  private static SimpleYML loadNames() {
-    String filename = "names.yml";
-    try {
-      String namesData = Utilities.readResource(filename);
-      return new SimpleYML(namesData);
-    } catch (Exception e) {
-      System.err.println("ERROR: unable to load yml: " + filename);
       e.printStackTrace();
       throw new ExceptionInInitializerError(e);
     }
@@ -139,27 +124,27 @@ public final class LifecycleModule extends Module {
     attributes.put(Person.BIRTHDATE, time);
     String gender = (String) attributes.get(Person.GENDER);
     String language = (String) attributes.get(Person.FIRST_LANGUAGE);
-    String firstName = fakeFirstName(gender, language, person);
-    String lastName = fakeLastName(language, person);
+    String firstName = Names.fakeFirstName(gender, language, person);
+    String lastName = Names.fakeLastName(language, person);
     if (appendNumbersToNames) {
-      firstName = addHash(firstName);
-      lastName = addHash(lastName);
+      firstName = Names.addHash(firstName);
+      lastName = Names.addHash(lastName);
     }
     attributes.put(Person.FIRST_NAME, firstName);
     attributes.put(Person.LAST_NAME, lastName);
     attributes.put(Person.NAME, firstName + " " + lastName);
 
-    String motherFirstName = fakeFirstName("F", language, person);
-    String motherLastName = fakeLastName(language, person);
+    String motherFirstName = Names.fakeFirstName("F", language, person);
+    String motherLastName = Names.fakeLastName(language, person);
     if (appendNumbersToNames) {
-      motherFirstName = addHash(motherFirstName);
-      motherLastName = addHash(motherLastName);
+      motherFirstName = Names.addHash(motherFirstName);
+      motherLastName = Names.addHash(motherLastName);
     }
     attributes.put(Person.NAME_MOTHER, motherFirstName + " " + motherLastName);
     
-    String fatherFirstName = fakeFirstName("M", language, person);
+    String fatherFirstName = Names.fakeFirstName("M", language, person);
     if (appendNumbersToNames) {
-      fatherFirstName = addHash(fatherFirstName);
+      fatherFirstName = Names.addHash(fatherFirstName);
     }
     // this is anglocentric where the baby gets the father's last name
     attributes.put(Person.NAME_FATHER, fatherFirstName + " " + lastName);
@@ -175,7 +160,7 @@ public final class LifecycleModule extends Module {
     attributes.put(Person.TELECOM, phoneNumber);
 
     boolean hasStreetAddress2 = person.rand() < 0.5;
-    attributes.put(Person.ADDRESS, fakeAddress(hasStreetAddress2, person));
+    attributes.put(Person.ADDRESS, Names.fakeAddress(hasStreetAddress2, person));
 
     // If using FixedRecords, overwrite the person's attributes with the FixedRecord attributes.
     if (person.attributes.get(Person.RECORD_GROUP) != null) {
@@ -273,86 +258,6 @@ public final class LifecycleModule extends Module {
   }
 
   /**
-   * Generate a first name appropriate for a given gender and language.
-   * @param gender Gender of the name, "M" or "F"
-   * @param language Origin language of the name, "english", "spanish"
-   * @param person person to generate a name for.
-   * @return First name.
-   */
-  @SuppressWarnings("unchecked")
-  public static String fakeFirstName(String gender, String language, Person person) {
-    List<String> choices;
-    if ("spanish".equalsIgnoreCase(language)) {
-      choices = (List<String>) names.get("spanish." + gender);
-    } else {
-      choices = (List<String>) names.get("english." + gender);
-    }
-    // pick a random item from the list
-    return choices.get(person.randInt(choices.size()));
-  }
-
-  /**
-   * Generate a surname appropriate for a given language.
-   * @param language Origin language of the name, "english", "spanish"
-   * @param person person to generate a name for.
-   * @return Surname or Family Name.
-   */
-  @SuppressWarnings("unchecked")
-  public static String fakeLastName(String language, Person person) {
-    List<String> choices;
-    if ("spanish".equalsIgnoreCase(language)) {
-      choices = (List<String>) names.get("spanish.family");
-    } else {
-      choices = (List<String>) names.get("english.family");
-    }
-    // pick a random item from the list
-    return choices.get(person.randInt(choices.size()));
-  }
-
-  /**
-   * Generate a Street Address.
-   * @param includeLine2 Whether or not the address should have a second line,
-   *     which can take the form of an apartment, unit, or suite number.
-   * @param person person to generate an address for.
-   * @return First name.
-   */
-  @SuppressWarnings("unchecked")
-  public static String fakeAddress(boolean includeLine2, Person person) {
-    int number = person.randInt(1000) + 100;
-    List<String> n = (List<String>)names.get("english.family");
-    // for now just use family names as the street name.
-    // could expand with a few more but probably not worth it
-    String streetName = n.get(person.randInt(n.size()));
-    List<String> a = (List<String>)names.get("street.type");
-    String streetType = a.get(person.randInt(a.size()));
-    
-    if (includeLine2) {
-      int addtlNum = person.randInt(100);
-      List<String> s = (List<String>)names.get("street.secondary");
-      String addtlType = s.get(person.randInt(s.size()));
-      return number + " " + streetName + " " + streetType + " " + addtlType + " " + addtlNum;
-    } else {
-      return number + " " + streetName + " " + streetType;
-    }
-  }
-
-  /**
-   * Adds a 1- to 3-digit hashcode to the end of the name.
-   * @param name Person's name
-   * @return The name with a hash appended, ex "John123" or "Smith22"
-   */
-  public static String addHash(String name) {
-    // note that this value should be deterministic
-    // It cannot be a random number. It needs to be a hash value or something deterministic.
-    // We do not want John10 and John52 -- we want all the Johns to have the SAME numbers. e.g. All
-    // people named John become John52
-    // Why? Because we do not know how using systems will index names. Say a user of an system
-    // loaded with Synthea data wants to find all the people named John Smith. This will be easier
-    // if John Smith always resolves to John52 Smith32 and not [John52 Smith32, John10 Smith22, ...]
-    return name + Integer.toString(Math.abs(name.hashCode() % 1000));
-  }
-
-  /**
    * Age the patient.
    *
    * @return whether or not the patient should grow
@@ -416,9 +321,9 @@ public final class LifecycleModule extends Module {
               person.attributes.put(Person.MAIDEN_NAME, person.attributes.get(Person.LAST_NAME));
               String firstName = ((String) person.attributes.get(Person.FIRST_NAME));
               String language = (String) person.attributes.get(Person.FIRST_LANGUAGE);
-              String newLastName = fakeLastName(language, person);
+              String newLastName = Names.fakeLastName(language, person);
               if (appendNumbersToNames) {
-                newLastName = addHash(newLastName);
+                newLastName = Names.addHash(newLastName);
               }
               person.attributes.put(Person.LAST_NAME, newLastName);
               person.attributes.put(Person.NAME, firstName + " " + newLastName);

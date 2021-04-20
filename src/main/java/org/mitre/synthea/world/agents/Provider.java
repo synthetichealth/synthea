@@ -31,6 +31,7 @@ import org.mitre.synthea.world.agents.behaviors.ProviderFinderQuality;
 import org.mitre.synthea.world.agents.behaviors.ProviderFinderRandom;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.Names;
 import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
 import org.mitre.synthea.world.geography.quadtree.QuadTree;
@@ -61,6 +62,9 @@ public class Provider implements QuadTreeElement, Serializable {
       Config.get("generate.providers.selection_behavior", "nearest").toLowerCase();
   private static IProviderFinder providerFinder = buildProviderFinder();
 
+  public static final boolean appendNumbersToNames =
+      Config.getAsBoolean("generate.append_numbers_to_person_names", false);
+  
   public Map<String, Object> attributes;
   public String uuid;
   private String locationUuid;
@@ -473,12 +477,12 @@ public class Provider implements QuadTreeElement, Serializable {
       clinician.attributes.put(Person.ZIP, provider.zip);
       clinician.attributes.put(Person.COORDINATE, provider.coordinates);
 
-      String firstName = LifecycleModule.fakeFirstName(gender, language, doc);
-      String lastName = LifecycleModule.fakeLastName(language, doc);
+      String firstName = Names.fakeFirstName(gender, language, doc);
+      String lastName = Names.fakeLastName(language, doc);
 
-      if (LifecycleModule.appendNumbersToNames) {
-        firstName = LifecycleModule.addHash(firstName);
-        lastName = LifecycleModule.addHash(lastName);
+      if (appendNumbersToNames) {
+        firstName = Names.addHash(firstName);
+        lastName = Names.addHash(lastName);
       }
       clinician.attributes.put(Clinician.FIRST_NAME, firstName);
       clinician.attributes.put(Clinician.LAST_NAME, lastName);
