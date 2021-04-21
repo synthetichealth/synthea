@@ -309,6 +309,7 @@ public class BB2RIFExporter implements Flushable {
     String hicId = personId.split("-")[0]; // first segment of UUID
     person.attributes.put(BB2_HIC_ID, hicId);
     fieldValues.put(BeneficiaryFields.BENE_CRNT_HIC_NUM, hicId);
+    fieldValues.put(BeneficiaryFields.MBI_NUM, hicId); // TODO: need better MBI NUM
     fieldValues.put(BeneficiaryFields.BENE_SEX_IDENT_CD,
             getBB2SexCode((String)person.attributes.get(Person.GENDER)));
     String zipCode = (String)person.attributes.get(Person.ZIP);
@@ -375,6 +376,7 @@ public class BB2RIFExporter implements Flushable {
     fieldValues.put(BeneficiaryHistoryFields.BENE_ID, beneIdStr);
     String hicId = (String)person.attributes.get(BB2_HIC_ID);
     fieldValues.put(BeneficiaryHistoryFields.BENE_CRNT_HIC_NUM, hicId);
+    fieldValues.put(BeneficiaryHistoryFields.MBI_NUM, hicId);
     fieldValues.put(BeneficiaryHistoryFields.BENE_SEX_IDENT_CD,
             getBB2SexCode((String)person.attributes.get(Person.GENDER)));
     long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
@@ -1578,7 +1580,9 @@ public class BB2RIFExporter implements Flushable {
     BENE_SRNM_NAME,
     BENE_GVN_NAME,
     BENE_MDL_NAME,
-    MBI_NUM      
+    MBI_NUM,
+    EFCTV_BGN_DT,
+    EFCTV_END_DT
   }
   
   enum OutpatientFields {
