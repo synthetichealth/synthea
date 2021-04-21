@@ -960,41 +960,46 @@ public class BB2RIFExporter implements Flushable {
       }
 
       for (Device device : encounter.devices) {
-        fieldValues.clear();
-        staticFieldConfig.setValues(fieldValues, DMEFields.class, person);
-        
-        // complex fields that could not easily be set using cms_field_values.tsv
-        fieldValues.put(DMEFields.CLM_ID, "" + claimId);
-        fieldValues.put(DMEFields.CLM_GRP_ID, "" + claimGroupId);
-        fieldValues.put(DMEFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
-        fieldValues.put(DMEFields.LINE_HCT_HGB_RSLT_NUM, "" + latestHemoglobin);
-        fieldValues.put(DMEFields.CARR_NUM,
-                getCarrier(encounter.provider.state, CarrierFields.CARR_NUM));
-        fieldValues.put(DMEFields.CLM_FROM_DT, bb2DateFromTimestamp(device.start));
-        fieldValues.put(DMEFields.CLM_THRU_DT, bb2DateFromTimestamp(device.start));
-        fieldValues.put(DMEFields.LINE_BENE_PTB_DDCTBL_AMT,
-                String.format("%.2f", encounter.claim.getDeductiblePaid()));
-        fieldValues.put(DMEFields.LINE_COINSRNC_AMT,
-                String.format("%.2f", encounter.claim.getCoinsurancePaid()));
-        fieldValues.put(DMEFields.NCH_WKLY_PROC_DT,
-                bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-        fieldValues.put(DMEFields.PRVDR_STATE_CD,
-                locationMapper.getStateCode(encounter.provider.state));
-        fieldValues.put(DMEFields.TAX_NUM,
-                bb2TaxId((String)encounter.clinician.attributes.get(Person.IDENTIFIER_SSN)));
-        fieldValues.put(DMEFields.DMERC_LINE_PRCNG_STATE_CD,
-                locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
-        fieldValues.put(DMEFields.LINE_1ST_EXPNS_DT, bb2DateFromTimestamp(encounter.start));
-        fieldValues.put(DMEFields.LINE_LAST_EXPNS_DT, bb2DateFromTimestamp(encounter.stop));
-        fieldValues.put(DMEFields.HCPCS_CD,
-                dmeCodeMapper.map(device.codes.get(0).code, person));
-        fieldValues.put(DMEFields.LINE_CMS_TYPE_SRVC_CD,
-                dmeCodeMapper.map(device.codes.get(0).code,
-                        DMEFields.LINE_CMS_TYPE_SRVC_CD.toString().toLowerCase(),
-                        person));
+        if (dmeCodeMapper.canMap(device.codes.get(0).code)) {
+          fieldValues.clear();
+          staticFieldConfig.setValues(fieldValues, DMEFields.class, person);
 
-        // write out field values
-        dme.writeValues(DMEFields.class, fieldValues);
+          // complex fields that could not easily be set using cms_field_values.tsv
+          fieldValues.put(DMEFields.CLM_ID, "" + claimId);
+          fieldValues.put(DMEFields.CLM_GRP_ID, "" + claimGroupId);
+          fieldValues.put(DMEFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
+          fieldValues.put(DMEFields.LINE_HCT_HGB_RSLT_NUM, "" + latestHemoglobin);
+          fieldValues.put(DMEFields.CARR_NUM,
+                  getCarrier(encounter.provider.state, CarrierFields.CARR_NUM));
+          fieldValues.put(DMEFields.CLM_FROM_DT, bb2DateFromTimestamp(device.start));
+          fieldValues.put(DMEFields.CLM_THRU_DT, bb2DateFromTimestamp(device.start));
+          fieldValues.put(DMEFields.LINE_BENE_PTB_DDCTBL_AMT,
+                  String.format("%.2f", encounter.claim.getDeductiblePaid()));
+          fieldValues.put(DMEFields.LINE_COINSRNC_AMT,
+                  String.format("%.2f", encounter.claim.getCoinsurancePaid()));
+          fieldValues.put(DMEFields.NCH_WKLY_PROC_DT,
+                  bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
+          fieldValues.put(DMEFields.PRVDR_STATE_CD,
+                  locationMapper.getStateCode(encounter.provider.state));
+          fieldValues.put(DMEFields.TAX_NUM,
+                  bb2TaxId((String)encounter.clinician.attributes.get(Person.IDENTIFIER_SSN)));
+          fieldValues.put(DMEFields.DMERC_LINE_PRCNG_STATE_CD,
+                  locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
+          fieldValues.put(DMEFields.LINE_1ST_EXPNS_DT, bb2DateFromTimestamp(encounter.start));
+          fieldValues.put(DMEFields.LINE_LAST_EXPNS_DT, bb2DateFromTimestamp(encounter.stop));
+          fieldValues.put(DMEFields.HCPCS_CD,
+                  dmeCodeMapper.map(device.codes.get(0).code, person));
+          fieldValues.put(DMEFields.LINE_CMS_TYPE_SRVC_CD,
+                  dmeCodeMapper.map(device.codes.get(0).code,
+                          DMEFields.LINE_CMS_TYPE_SRVC_CD.toString().toLowerCase(),
+                          person));
+
+          // write out field values
+          dme.writeValues(DMEFields.class, fieldValues);
+        } else {
+          // TODO remove this prior to PR merge
+          System.err.println(" *** Possibly Missing DME Code: " + device.codes.get(0).code + " " + device.codes.get(0).display);
+        }
       }
     }
   }
