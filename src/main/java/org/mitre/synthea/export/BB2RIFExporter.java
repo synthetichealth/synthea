@@ -2484,6 +2484,7 @@ public class BB2RIFExporter implements Flushable {
     RFR_PHYSN_UPIN,
     RFR_PHYSN_NPI,
     CLM_CLNCL_TRIL_NUM,
+    CARR_CLM_CNTL_NUM,
     LINE_NUM,
     TAX_NUM,
     PRVDR_SPCLTY,

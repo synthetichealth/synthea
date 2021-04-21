@@ -37,7 +37,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 35	CARR_CLM_ENTRY_CD	N/A	N/A	N/A	N/A	1	N/A	1	N/A	N/A	N/A	FALSE	
 36	CARR_CLM_HCPCS_YR_CD	N/A	N/A	N/A	N/A	1 (2021)	N/A	1 (1 = 2021)	N/A	N/A	N/A	TRUE	
 37	CARR_CLM_PMT_DNL_CD	N/A	N/A	N/A	N/A	1 (1=paid to physician)	N/A	1 (1=paid to physician)	N/A	N/A	N/A	FALSE	
-38	CARR_CLM_PRMRY_PYR_PD_AMT	N/A	N/A	N/A	N/A	(Sum of LINE_PRVDR_PMT_AMT)	N/A	(Sum of LINE_PRVDR_PMT_AMT)	N/A	N/A	N/A	FALSE	
+38	CARR_CLM_PRMRY_PYR_PD_AMT	N/A	N/A	N/A	N/A	Coded	N/A	(Sum of LINE_PRVDR_PMT_AMT)	N/A	N/A	N/A	FALSE	
 39	CARR_CLM_PRVDR_ASGNMT_IND_SW	N/A	N/A	N/A	N/A	A (assigned)	N/A	A (assigned)	N/A	N/A	N/A	TRUE/FALSE	
 40	CARR_CLM_RFRNG_PIN_NUM	N/A	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	FALSE	
 41	CARR_LINE_ANSTHSA_UNIT_CNT	N/A	N/A	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	FALSE	
@@ -407,7 +407,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 405	NCH_CARR_CLM_ALOWD_AMT	N/A	N/A	N/A	N/A	Coded	N/A	(Sum of LINE_ALOWD_CHRG_AMT)	N/A	N/A	N/A	FALSE	
 406	NCH_CARR_CLM_SBMTD_CHRG_AMT	N/A	N/A	N/A	N/A	Coded	N/A	(Sum of  LINE_SBMTD_CHRG_AMT)	N/A	N/A	N/A	FALSE	
 407	NCH_CLM_BENE_PMT_AMT	N/A	N/A	N/A	N/A	0	N/A	0	N/A	N/A	N/A	FALSE	
-408	NCH_CLM_PRVDR_PMT_AMT	N/A	N/A	N/A	N/A	Coded	N/A	(Sum of LINE_PRVDR_PMT_AMT_	N/A	N/A	N/A	FALSE	
+408	NCH_CLM_PRVDR_PMT_AMT	N/A	N/A	N/A	N/A	Coded	N/A	(Sum of LINE_PRVDR_PMT_AMT)	N/A	N/A	N/A	FALSE	
 409	NCH_CLM_TYPE_CD	N/A	N/A	60 (Always 60 for inpatient claims)	40 (40=outpatient)	"71 (local carrier, non-DME)"	N/A	82 (DMEPOS)				FALSE	
 410	NCH_DRG_OUTLIER_APRVD_PMT_AMT	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 411	NCH_IP_NCVRD_CHRG_AMT	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A		FALSE	
@@ -621,4 +621,4 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 619	UPDT_TS	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 620	UPDT_USER_ID	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 621	V_DOD_SW		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-622	CARR_CLM_CNTL_NUM	N/A	N/A	N/A	N/A	N/A		N/A	N/A	N/A	N/A	TRUE	
+622	CARR_CLM_CNTL_NUM	N/A	N/A	N/A	N/A		N/A		N/A	N/A	N/A	TRUE	
