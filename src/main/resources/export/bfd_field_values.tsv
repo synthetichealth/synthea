@@ -357,7 +357,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 355	MBI_EFCTV_BGN_DT	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 356	MBI_EFCTV_END_DT	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 357	MBI_END_RSN_CD	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-358	MBI_NUM			N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Missing in codebook
+358	MBI_NUM	Coded	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Missing in codebook
 359	MBI_SQNC_NUM	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 360	MDCR_ENTLMT_BUYIN_10_IND		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 361	MDCR_ENTLMT_BUYIN_11_IND		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
