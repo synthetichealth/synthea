@@ -689,13 +689,17 @@ public class FhirCarin {
 
     Identifier payerIdentifier = new Identifier()
       .setSystem(SYNTHEA_IDENTIFIER)
-      .setValue(payer.getResourceID());
+      .setValue(payer.getResourceID())
+      .setType(
+        mapCodeToCodeableConcept(
+          new Code("http://terminology.hl7.org/CodeSystem/v2-0203",
+              "MB", "MB"), null));;
     coverageResource.addIdentifier(payerIdentifier);
     coverageResource.setStatus(CoverageStatus.ACTIVE);
 
     coverageResource.setBeneficiary(new Reference(personEntry.getFullUrl()));
     coverageResource.setSubscriber(new Reference(personEntry.getFullUrl()));
-    coverageResource.setSubscriberId(personEntry.getId());
+    coverageResource.setSubscriberId((String) person.attributes.get(Person.IDENTIFIER_SSN));
     coverageResource.addPayor(new Reference().setDisplay(payer.getName()));
     coverageResource.setRelationship(mapCodeToCodeableConcept(
       new Code("http://terminology.hl7.org/CodeSystem/subscriber-relationship",
@@ -1431,13 +1435,11 @@ public class FhirCarin {
     eob.setPayment(new ExplanationOfBenefit.PaymentComponent()
         .setAmount(payment));
 
-    // Reference informationReference = new Reference(item.fullUrl);
     ExplanationOfBenefit.SupportingInformationComponent informationComponent =
         new ExplanationOfBenefit.SupportingInformationComponent();
+    CodeableConcept category = new CodeableConcept();
     informationComponent.setSequence(1);
     informationComponent.setTiming(new DateType(encounterResource.getPeriod().getEnd()));
-    // informationComponent.setValue(informationReference);
-    CodeableConcept category = new CodeableConcept();
     category.getCoding()
       .add(new Coding()
         .setSystem("http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBSupportingInfoType")
