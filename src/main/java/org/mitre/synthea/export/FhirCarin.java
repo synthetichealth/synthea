@@ -697,7 +697,7 @@ public class FhirCarin {
     coverageResource.addIdentifier(payerIdentifier);
     coverageResource.setStatus(CoverageStatus.ACTIVE);
 
-    coverageResource.setBeneficiary(new Reference(personEntry.getFullUrl()));
+    coverageResource.setBeneficiary(new Reference(personEntry.getIdBase()));
     coverageResource.setSubscriber(new Reference(personEntry.getFullUrl()));
     coverageResource.setSubscriberId((String) person.attributes.get(Person.IDENTIFIER_SSN));
     coverageResource.addPayor(new Reference().setDisplay(payer.getName()));
@@ -780,41 +780,30 @@ public class FhirCarin {
       provider = person.getProvider(EncounterType.WELLNESS, encounter.start);
     }
     
-    if (TRANSACTION_BUNDLE) {
-      encounterResource.setServiceProvider(new Reference(
-              ExportHelper.buildFhirSearchUrl("Organization", provider.getResourceID())));
+    String providerFullUrl = findProviderUrl(provider, bundle);
+    if (providerFullUrl != null) {
+      encounterResource.setServiceProvider(new Reference(providerFullUrl));
     } else {
-      String providerFullUrl = findProviderUrl(provider, bundle);
-      if (providerFullUrl != null) {
-        encounterResource.setServiceProvider(new Reference(providerFullUrl));
-      } else {
-        BundleEntryComponent providerOrganization = provider(person, bundle, provider);
-        encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
-      }
+      BundleEntryComponent providerOrganization = provider(person, bundle, provider);
+      encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
     }
     encounterResource.getServiceProvider().setDisplay(provider.name);
     if (USE_US_CORE_IG) {
-      String referenceUrl = TRANSACTION_BUNDLE
-              ? ExportHelper.buildFhirSearchUrl("Location", provider.getResourceLocationID())
-              : findLocationUrl(provider, bundle);
+      String referenceUrl = findLocationUrl(provider, bundle);
       encounterResource.addLocation().setLocation(new Reference()
           .setReference(referenceUrl)
           .setDisplay(provider.name));
     }
 
     if (encounter.clinician != null) {
-      if (TRANSACTION_BUNDLE) {
-        encounterResource.addParticipant().setIndividual(new Reference(
-                ExportHelper.buildFhirNpiSearchUrl(encounter.clinician)));
+
+      String practitionerFullUrl = findPractitioner(encounter.clinician, bundle);
+      if (practitionerFullUrl != null) {
+        encounterResource.addParticipant().setIndividual(new Reference(practitionerFullUrl));
       } else {
-        String practitionerFullUrl = findPractitioner(encounter.clinician, bundle);
-        if (practitionerFullUrl != null) {
-          encounterResource.addParticipant().setIndividual(new Reference(practitionerFullUrl));
-        } else {
-          BundleEntryComponent practitioner = practitioner(person, bundle, encounter.clinician);
-          encounterResource.addParticipant().setIndividual(
-                  new Reference(practitioner.getFullUrl()));
-        }
+        BundleEntryComponent practitioner = practitioner(person, bundle, encounter.clinician);
+        encounterResource.addParticipant().setIndividual(
+                new Reference(practitioner.getFullUrl()));
       }
       encounterResource.getParticipantFirstRep().getIndividual()
           .setDisplay(encounter.clinician.getFullname());
@@ -1188,9 +1177,7 @@ public class FhirCarin {
         .setDisplay("Primary Care Practitioner"));
     if (encounter.clinician != null) {
       // This is what should happen if BlueButton 2.0 wasn't needlessly restrictive
-      String practitionerFullUrl = TRANSACTION_BUNDLE
-              ? ExportHelper.buildFhirNpiSearchUrl(encounter.clinician)
-              : findPractitioner(encounter.clinician, bundle);
+      String practitionerFullUrl = findPractitioner(encounter.clinician, bundle);
       eob.setProvider(new Reference(practitionerFullUrl));
       eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
           .setSequence(1)
@@ -1199,10 +1186,7 @@ public class FhirCarin {
       referral.setRequester(new Reference(practitionerFullUrl));
       referral.addPerformer(new Reference(practitionerFullUrl));
     } else if (encounter.provider != null) {
-      String providerUrl = TRANSACTION_BUNDLE
-              ? ExportHelper.buildFhirSearchUrl("Location",
-                      encounter.provider.getResourceLocationID())
-              : findProviderUrl(encounter.provider, bundle);
+      String providerUrl = findProviderUrl(encounter.provider, bundle);
       eob.setProvider(new Reference(providerUrl));
       eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
           .setSequence(1)
@@ -1228,10 +1212,7 @@ public class FhirCarin {
     ExplanationOfBenefit.InsuranceComponent insuranceComponent =
         new ExplanationOfBenefit.InsuranceComponent();
 
-    String payerFullUrl = TRANSACTION_BUNDLE
-      ? ExportHelper.buildFhirSearchUrl("Coverage",
-        payer.getResourceID())
-      : findCoverageUrl(payer, bundle);
+    String payerFullUrl = findCoverageUrl(payer, bundle);
 
     insuranceComponent.setFocal(true);
     insuranceComponent.setCoverage(new Reference().setReference(payerFullUrl).setDisplay(payer.getName()));
@@ -1906,17 +1887,12 @@ public class FhirCarin {
     if (clinician != null) {
       clinicianDisplay = clinician.getFullname();
     }
-    String practitionerFullUrl = TRANSACTION_BUNDLE
-            ? ExportHelper.buildFhirNpiSearchUrl(clinician)
-            : findPractitioner(clinician, bundle);
+    String practitionerFullUrl = findPractitioner(clinician, bundle);
     Provider providerOrganization = person.record.provider;
     if (providerOrganization == null) {
       providerOrganization = person.getProvider(EncounterType.WELLNESS, stopTime);
     }
-    String organizationFullUrl = TRANSACTION_BUNDLE
-            ? ExportHelper.buildFhirSearchUrl("Organization",
-                    providerOrganization.getResourceID())
-            : findProviderUrl(providerOrganization, bundle);
+    String organizationFullUrl = findProviderUrl(providerOrganization, bundle);
 
     // Provenance Author...
     ProvenanceAgentComponent agent = provenance.addAgent();
@@ -3157,10 +3133,11 @@ public class FhirCarin {
    * @return "[resourceType]/" or "urn:uuid:"
    */
   protected static String getUrlPrefix(String resourceType) {
-    if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
+    // For Carin always use resource type and id
+    // if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
       return resourceType + "/";
-    } else {
-      return "urn:uuid:";
-    }
+    // } else {
+    //   return "urn:uuid:";
+    // }
   }
 }
