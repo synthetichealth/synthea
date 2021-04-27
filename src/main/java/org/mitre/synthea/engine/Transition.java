@@ -283,13 +283,13 @@ public abstract class Transition implements Serializable {
         } else if (currentAttribute.equalsIgnoreCase("time")) {
           // do nothing, we already have it
         } else {
-          String personsAttribute
-              = (String) person.attributes.get(currentAttribute.toLowerCase());
-          if (personsAttribute == null) {
-            throw new RuntimeException("LOOKUP TABLE ERROR: Attribute '"
-                + currentAttribute + "' in CSV table '" + this.lookupTableName
-                + "' does not exist as one of this person's attributes.");
+          if (!person.attributes.containsKey(currentAttribute)) {
+        	throw new RuntimeException("LOOKUP TABLE ERROR: Attribute '"
+        		+ currentAttribute + "' in CSV table '" + this.lookupTableName
+        		+ "' does not exist as one of this person's attributes.");
           }
+          String personsAttribute
+              = person.attributes.get(currentAttribute).toString();
           personsAttributes.add(personsAttribute);
         }
       }
