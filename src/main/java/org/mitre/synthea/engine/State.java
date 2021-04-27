@@ -251,7 +251,10 @@ public abstract class State implements Cloneable, Serializable {
 
       if (completed) {
         // add the history from the submodule to this module's history, at the front
-        moduleHistory.addAll(0, person.history);
+        if (moduleHistory != person.history) {
+          // if the submodule is a java module, it didn't create its own history
+          moduleHistory.addAll(0, person.history);
+        }
         // clear the submodule history
         person.attributes.remove(submod.name);
         // reset person.history to this module's history
