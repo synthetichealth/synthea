@@ -1011,16 +1011,16 @@
       "type": "EncounterEnd",
       "conditional_transition": [
         {
-          "transition": "Call_Intensive_Submodule",
+          "transition": "Call_Submodules",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "htn_trial_treatment_arm",
+            "attribute": "htn_trial_eligibility",
             "operator": "==",
-            "value": "intensive"
+            "value": true
           }
         },
         {
-          "transition": "Call_Standard_Submodule"
+          "transition": "Terminal"
         }
       ]
     },
@@ -1400,6 +1400,23 @@
       "type": "CallSubmodule",
       "submodule": "htn_trial/standard_treatment_arm",
       "direct_transition": "Terminal"
+    },
+    "Call_Submodules": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Call_Intensive_Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "htn_trial_treatment_arm",
+            "operator": "==",
+            "value": "intensive"
+          }
+        },
+        {
+          "transition": "Call_Standard_Submodule"
+        }
+      ]
     }
   },
   "gmf_version": 2
