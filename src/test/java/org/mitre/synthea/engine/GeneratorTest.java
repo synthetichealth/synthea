@@ -344,4 +344,21 @@ public class GeneratorTest {
       generator.updatePerson(p);
     }
   }
+  
+  @Test
+  public void testKeepPatientsModule() throws Exception {
+    Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
+    opts.population = 5;
+    opts.minAge = 35;
+    opts.maxAge = 75;
+    opts.ageSpecified = true;
+    opts.keepPatientsModulePath = new File("src/test/resources/keep_patients_module/keep.json");
+    // keep module checks that patients have attribute diabetes == true
+    
+    Generator generator = new Generator(opts);
+    for (int i = 0; i < opts.population; i++) {
+      Person p = generator.generatePerson(i);
+      assertTrue((Boolean)p.attributes.get("diabetes"));
+    }
+  }
 }

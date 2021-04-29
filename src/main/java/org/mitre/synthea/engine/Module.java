@@ -180,7 +180,16 @@ public class Module implements Cloneable, Serializable {
     return loadFile(path, submodule, overrides, false);
   }
 
-  private static Module loadFile(Path path, boolean submodule, Properties overrides,
+  /**
+   * Loads the module defined from the file at the given path.
+   *
+   * @param path Path to the module file
+   * @param submodule whether or not this module is a submodule
+   * @param overrides module overrides to apply
+   * @param localFiles true if the file is external to the src/main/resources folder
+   * @return the loaded Module
+   */
+  public static Module loadFile(Path path, boolean submodule, Properties overrides,
           boolean localFiles) throws Exception {
     System.out.format("Loading %s %s\n", submodule ? "submodule" : "module", path.toString());
     String jsonString = localFiles
