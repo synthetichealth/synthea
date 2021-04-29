@@ -83,6 +83,9 @@ public class BB2RIFExporter implements Flushable {
   private SynchronizedBBLineWriter carrier;
   private SynchronizedBBLineWriter prescription;
   private SynchronizedBBLineWriter dme;
+  private SynchronizedBBLineWriter home;
+  private SynchronizedBBLineWriter hospice;
+  private SynchronizedBBLineWriter snf;
   private SynchronizedBBLineWriter npi;
 
   private AtomicInteger beneId; // per patient identifier
@@ -175,6 +178,15 @@ public class BB2RIFExporter implements Flushable {
     if (dme != null) {
       dme.close();
     }
+    if (home != null) {
+      home.close();
+    }
+    if (hospice != null) {
+      hospice.close();
+    }
+    if (snf != null) {
+      snf.close();
+    }
     if (npi != null) {
       npi.close();
     }
@@ -211,6 +223,18 @@ public class BB2RIFExporter implements Flushable {
     File dmeFile = outputDirectory.resolve("dme.csv").toFile();
     dme = new SynchronizedBBLineWriter(dmeFile);
     dme.writeHeader(DMEFields.class);
+
+    File homeFile = outputDirectory.resolve("home.csv").toFile();
+    home = new SynchronizedBBLineWriter(homeFile);
+    home.writeHeader(HHAFields.class);
+
+    File hospiceFile = outputDirectory.resolve("hospice.csv").toFile();
+    hospice = new SynchronizedBBLineWriter(hospiceFile);
+    hospice.writeHeader(HospiceFields.class);
+
+    File snfFile = outputDirectory.resolve("snf.csv").toFile();
+    snf = new SynchronizedBBLineWriter(snfFile);
+    snf.writeHeader(SNFFields.class);
 
     File npiFile = outputDirectory.resolve("npi.tsv").toFile();
     npi = new SynchronizedBBLineWriter(npiFile, "\t");
@@ -279,6 +303,9 @@ public class BB2RIFExporter implements Flushable {
     exportCarrier(person, stopTime);
     exportPrescription(person, stopTime);
     exportDME(person, stopTime);
+    exportHome(person, stopTime);
+    exportHospice(person, stopTime);
+    exportSNF(person, stopTime);
   }
   
   /**
@@ -292,7 +319,7 @@ public class BB2RIFExporter implements Flushable {
     HashMap<BeneficiaryFields, String> fieldValues = new HashMap<>();
     staticFieldConfig.setValues(fieldValues, BeneficiaryFields.class, person);
 
-    // Optional fields that must be zero
+    // Optional fields that must be zero (if not present)
     fieldValues.put(BeneficiaryFields.RFRNC_YR, String.valueOf(getYear(stopTime)));
     fieldValues.put(BeneficiaryFields.A_MO_CNT, String.valueOf(getMonth(stopTime)));
     fieldValues.put(BeneficiaryFields.B_MO_CNT, String.valueOf(getMonth(stopTime)));
@@ -1005,6 +1032,128 @@ public class BB2RIFExporter implements Flushable {
   }
 
   /**
+   * Export Home Health Agency visits for a single person.
+   * @param person the person to export
+   * @param stopTime end time of simulation
+   * @throws IOException if something goes wrong
+   */
+  private void exportHome(Person person, long stopTime) throws IOException {
+    HashMap<HHAFields, String> fieldValues = new HashMap<>();
+    for (HealthRecord.Encounter encounter : person.record.encounters) {
+      if (!encounter.type.equals(EncounterType.HOME.toString())) {
+        continue;
+      }
+
+      fieldValues.clear();
+      staticFieldConfig.setValues(fieldValues, HHAFields.class, person);
+
+      home.writeValues(HHAFields.class, fieldValues);
+    }
+  }
+
+  /**
+   * Export Home Health Agency visits for a single person.
+   * @param person the person to export
+   * @param stopTime end time of simulation
+   * @throws IOException if something goes wrong
+   */
+  private void exportHospice(Person person, long stopTime) throws IOException {
+    HashMap<HospiceFields, String> fieldValues = new HashMap<>();
+    for (HealthRecord.Encounter encounter : person.record.encounters) {
+      if (!encounter.type.equals(EncounterType.HOSPICE.toString())) {
+        continue;
+      }
+
+      fieldValues.clear();
+      staticFieldConfig.setValues(fieldValues, HospiceFields.class, person);
+
+      hospice.writeValues(HospiceFields.class, fieldValues);
+    }
+  }
+
+  /**
+   * Export Home Health Agency visits for a single person.
+   * @param person the person to export
+   * @param stopTime end time of simulation
+   * @throws IOException if something goes wrong
+   */
+  private void exportSNF(Person person, long stopTime) throws IOException {
+    HashMap<SNFFields, String> fieldValues = new HashMap<>();
+    boolean previousEmergency, previousUrgent;
+
+    for (HealthRecord.Encounter encounter : person.record.encounters) {
+      previousEmergency = encounter.type.equals(EncounterType.EMERGENCY.toString());
+      previousUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
+
+      if (!encounter.type.equals(EncounterType.SNF.toString())) {
+        continue;
+      }
+      int claimId = this.claimId.incrementAndGet();
+      int claimGroupId = this.claimGroupId.incrementAndGet();
+
+      fieldValues.clear();
+      staticFieldConfig.setValues(fieldValues, SNFFields.class, person);
+
+      // The REQUIRED Fields
+      fieldValues.put(SNFFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
+      fieldValues.put(SNFFields.CLM_ID, "" + claimId);
+      fieldValues.put(SNFFields.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(SNFFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(SNFFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(SNFFields.NCH_WKLY_PROC_DT,
+          bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
+      fieldValues.put(SNFFields.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(SNFFields.CLM_PMT_AMT,
+          String.format("%.2f", encounter.claim.getTotalClaimCost()));
+      if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
+        fieldValues.put(SNFFields.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
+      } else {
+        fieldValues.put(SNFFields.NCH_PRMRY_PYR_CLM_PD_AMT,
+            String.format("%.2f", encounter.claim.getCoveredCost()));
+      }
+      fieldValues.put(SNFFields.PRVDR_STATE_CD,
+          locationMapper.getStateCode(encounter.provider.state));
+      fieldValues.put(SNFFields.CLM_TOT_CHRG_AMT,
+          String.format("%.2f", encounter.claim.getTotalClaimCost()));
+      if (previousEmergency) {
+        fieldValues.put(SNFFields.CLM_IP_ADMSN_TYPE_CD, "1");
+      } else if (previousUrgent) {
+        fieldValues.put(SNFFields.CLM_IP_ADMSN_TYPE_CD, "2");
+      } else {
+        fieldValues.put(SNFFields.CLM_IP_ADMSN_TYPE_CD, "3");
+      }
+      fieldValues.put(SNFFields.NCH_BENE_IP_DDCTBL_AMT,
+          String.format("%.2f", encounter.claim.getDeductiblePaid()));
+      fieldValues.put(SNFFields.NCH_BENE_PTA_COINSRNC_LBLTY_AM,
+          String.format("%.2f", encounter.claim.getCoinsurancePaid()));
+      fieldValues.put(SNFFields.NCH_IP_NCVRD_CHRG_AMT,
+          String.format("%.2f", encounter.claim.getPatientCost()));
+      fieldValues.put(SNFFields.NCH_IP_TOT_DDCTN_AMT,
+          String.format("%.2f", encounter.claim.getDeductiblePaid()
+              + encounter.claim.getCoinsurancePaid()));
+      int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
+      if (days <= 0) {
+        days = 1;
+      }
+      fieldValues.put(SNFFields.CLM_UTLZTN_DAY_CNT, "" + days);
+      int coinDays = days -  21; // first 21 days no coinsurance
+      if (coinDays < 0) {
+        coinDays = 0;
+      }
+      fieldValues.put(SNFFields.BENE_TOT_COINSRNC_DAYS_CNT, "" + coinDays);
+      fieldValues.put(SNFFields.REV_CNTR_UNIT_CNT, "" + days);
+      fieldValues.put(SNFFields.REV_CNTR_RATE_AMT,
+          String.format("%.2f", (encounter.claim.getTotalClaimCost() / days)));
+      fieldValues.put(SNFFields.REV_CNTR_TOT_CHRG_AMT,
+          String.format("%.2f", encounter.claim.getTotalClaimCost()));
+      fieldValues.put(SNFFields.REV_CNTR_NCVRD_CHRG_AMT,
+          String.format("%.2f", encounter.claim.getPatientCost()));
+
+      snf.writeValues(SNFFields.class, fieldValues);
+    }
+  }
+
+  /**
    * Flush contents of any buffered streams to disk.
    * @throws IOException if something goes wrong
    */
@@ -1017,6 +1166,9 @@ public class BB2RIFExporter implements Flushable {
     carrier.flush();
     prescription.flush();
     dme.flush();
+    home.flush();
+    hospice.flush();
+    snf.flush();
     npi.flush();
   }
 
