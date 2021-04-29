@@ -428,7 +428,6 @@ public class Generator implements RandomNumberGenerator {
   public Person generatePerson(int index, long personSeed) {
 
     Person person = null;
-    long finishTime;
     
     try {
       boolean isAlive = true;
@@ -454,7 +453,7 @@ public class Generator implements RandomNumberGenerator {
 
       do {
         person = createPerson(personSeed, demoAttributes);
-        finishTime = person.lastUpdated + timestep;
+        long finishTime = person.lastUpdated + timestep;
 
         isAlive = person.alive(finishTime);
         providerCount = person.providerCount();
@@ -464,10 +463,6 @@ public class Generator implements RandomNumberGenerator {
 
         if (!patientMeetsCriteria) {
           // rotate the seed so the next attempt gets a consistent but different one
-          System.out.println("no match " + tryNumber++);
-          if (tryNumber > 100) {
-            System.out.println(demoAttributes);
-          }
           personSeed = randomForDemographics.nextLong();
           continue;
           // skip the other stuff if the patient doesn't meet our goals
