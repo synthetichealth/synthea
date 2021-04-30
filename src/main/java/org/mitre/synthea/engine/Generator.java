@@ -430,7 +430,6 @@ public class Generator implements RandomNumberGenerator {
     Person person = null;
     
     try {
-      boolean isAlive = true;
       int tryNumber = 0; // Number of tries to create these demographics
       Random randomForDemographics = new Random(personSeed);
 
@@ -440,26 +439,16 @@ public class Generator implements RandomNumberGenerator {
         demoAttributes = pickFixedDemographics(index, random);
       }
 
-      int providerCount = 0;
-      int providerMinimum = 1;
-
-      if (this.recordGroups != null) {
-        // If fixed records are used, there must be 1 provider for each of this person's records.
-        FixedRecordGroup recordGroup = this.recordGroups.get(index);
-        providerMinimum = recordGroup.count;
-      }
-      
       boolean patientMeetsCriteria;
 
       do {
         person = createPerson(personSeed, demoAttributes);
         long finishTime = person.lastUpdated + timestep;
 
-        isAlive = person.alive(finishTime);
-        providerCount = person.providerCount();
+        boolean isAlive = person.alive(finishTime);
 
         patientMeetsCriteria = 
-            patientMeetsCriteria(person, finishTime, isAlive, providerCount, providerMinimum);
+            patientMeetsCriteria(person, finishTime, index, isAlive);
 
         if (!patientMeetsCriteria) {
           // rotate the seed so the next attempt gets a consistent but different one
@@ -516,13 +505,11 @@ public class Generator implements RandomNumberGenerator {
    * If a patient does not meet the criteria the process will be repeated so a new one is generated
    * @param person the patient to check if we want to export them
    * @param finishTime the time simulation finished
+   * @param index Target index in the whole set of people to generate 
    * @param isAlive Whether the patient is alive at end of simulation.
-   * @param providerCount Number of providers in the patient's record
-   * @param providerMinimum Minimum number of providers required
    * @return true if patient meets criteria, false otherwise
    */
-  public boolean patientMeetsCriteria(Person person, long finishTime, boolean isAlive,
-      int providerCount, int providerMinimum) {
+  public boolean patientMeetsCriteria(Person person, long finishTime, int index, boolean isAlive) {
     if (!isAlive && !onlyDeadPatients && this.options.overflow) { 
       // if patient is not alive and the criteria isn't dead patients new patient is needed
       return false;
@@ -538,25 +525,22 @@ public class Generator implements RandomNumberGenerator {
       return false;
     }
 
+    int providerCount = person.providerCount();
+    int providerMinimum = 1;
+
+    if (this.recordGroups != null) {
+      // If fixed records are used, there must be 1 provider for each of this person's records.
+      FixedRecordGroup recordGroup = this.recordGroups.get(index);
+      providerMinimum = recordGroup.count;
+    }
+
     if (providerCount < providerMinimum) {
       // if provider count less than provider min new patient is needed
       return false;
     }
 
     if (this.keepPatientsModule != null) {
-      Module keep = this.keepPatientsModule;
-      // note Module.process doesn't run for dead patients, it exits early
-      // so we fake it a bit here
-      person.history = new LinkedList<State>();
-      person.history.add(keep.getState("Initial").clone());
-      State current = person.history.get(0);
-      String nextStateName = null;
-      while (current.run(person, finishTime)) {
-        nextStateName = current.transition(person, finishTime);
-        current = keep.getState(nextStateName).clone();
-        person.history.add(0, current);
-      }
-    
+      this.keepPatientsModule.process(person, finishTime, false);
       State terminal = person.history.get(0);
       return terminal.name.equals("Keep");
     }
