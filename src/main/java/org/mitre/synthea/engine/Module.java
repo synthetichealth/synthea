@@ -376,7 +376,7 @@ public class Module implements Cloneable, Serializable {
           return true;
         }
         // This must be a delay state that expired between cycles, so temporarily rewind time
-        if (process(person, exited)) {
+        if (process(person, exited, terminateOnDeath)) {
           // if the patient died during the delay, stop
           if (terminateOnDeath) {
             return true;
