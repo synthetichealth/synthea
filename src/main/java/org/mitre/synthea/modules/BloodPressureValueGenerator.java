@@ -1,5 +1,8 @@
 package org.mitre.synthea.modules;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.world.agents.Person;
@@ -163,40 +166,51 @@ public class BloodPressureValueGenerator extends ValueGenerator {
       startValue = endValue;
     }
   }
-
+  
   private double calculateMean(Person person, long time) {
     // TODO: Take additional factors into consideration: age + gender
     boolean hypertension = (Boolean) person.attributes.getOrDefault("hypertension", false);
-    boolean bloodPressureControlled =
-        (Boolean) person.attributes.getOrDefault("blood_pressure_controlled", false);
+    boolean severe = (Boolean) person.attributes.getOrDefault("hypertension_severe", false);
+    
+//    boolean bloodPressureControlled =
+//        (Boolean) person.attributes.getOrDefault("blood_pressure_controlled", false);
 
+    double baseline;
+    
     if (sysDias == SysDias.SYSTOLIC) {
       if (hypertension) {
-        if (!bloodPressureControlled) {
-          double severe = person.rand();
-          if (severe <= 0.75) {
-            // this skews the distribution to be more on the lower side of the range
-            return person.rand(HYPERTENSIVE_SYS_BP_RANGE[0], HYPERTENSIVE_SYS_BP_RANGE[1]);
-          } else {
-            // this leaves fewer people at the upper end of the spectrum
-            return person.rand(HYPERTENSIVE_SYS_BP_RANGE[1], HYPERTENSIVE_SYS_BP_RANGE[2]);
-          }
+        if (severe) {
+          // this leaves fewer people at the upper end of the spectrum
+          baseline = person.rand(HYPERTENSIVE_SYS_BP_RANGE[1], HYPERTENSIVE_SYS_BP_RANGE[2]);
+
         } else {
-          return person.rand(NORMAL_SYS_BP_RANGE);
+          // this skews the distribution to be more on the lower side of the range
+          baseline = person.rand(HYPERTENSIVE_SYS_BP_RANGE[0], HYPERTENSIVE_SYS_BP_RANGE[1]);
         }
       } else {
-        return person.rand(NORMAL_SYS_BP_RANGE);
+        baseline = person.rand(NORMAL_SYS_BP_RANGE);
       }
     } else {
       if (hypertension) {
-        if (!bloodPressureControlled) {
-          return person.rand(HYPERTENSIVE_DIA_BP_RANGE);
-        } else {
-          return person.rand(NORMAL_DIA_BP_RANGE);
-        }
+        baseline = person.rand(HYPERTENSIVE_DIA_BP_RANGE);
       } else {
-        return person.rand(NORMAL_DIA_BP_RANGE);
+        baseline = person.rand(NORMAL_DIA_BP_RANGE);
       }
     }
+    
+    double drugImpactDelta = 0.0;
+    // see also LifecycleModule.calculateVitalSigns
+    
+    for (Map.Entry<String, Double> e : HypertensionTrial.HTN_DRUG_IMPACTS.entrySet()) {
+      String medicationCode = e.getKey();
+      double impact = e.getValue();
+      if (person.record.medicationActive(medicationCode)) {
+        // impacts are negative, so add them
+        drugImpactDelta += impact;
+      }
+    }
+    
+    
+    return baseline + drugImpactDelta;
   }
 }

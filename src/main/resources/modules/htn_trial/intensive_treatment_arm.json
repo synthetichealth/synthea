@@ -241,7 +241,7 @@
     "Reset_see_monthly": {
       "type": "SetAttribute",
       "attribute": "see_participant_monthly",
-      "direct_transition": "Check_SBP"
+      "direct_transition": "Record_BP"
     },
     "DBG_gte_90 with high SBP": {
       "type": "SetAttribute",
@@ -254,6 +254,44 @@
       "attribute": "dbp_gte_90",
       "value": false,
       "direct_transition": "See Participant Monthly"
+    },
+    "Record_BP": {
+      "type": "MultiObservation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85354-9",
+          "display": "Blood Pressure"
+        }
+      ],
+      "observations": [
+        {
+          "category": "vital-signs",
+          "vital_sign": "Systolic Blood Pressure",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8480-6",
+              "display": "Systolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]"
+        },
+        {
+          "category": "vital-signs",
+          "vital_sign": "Diastolic Blood Pressure",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8462-4",
+              "display": "Diastolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]"
+        }
+      ],
+      "direct_transition": "Check_SBP"
     }
   },
   "gmf_version": 2
