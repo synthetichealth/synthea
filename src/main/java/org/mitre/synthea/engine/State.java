@@ -873,60 +873,60 @@ public abstract class State implements Cloneable, Serializable {
     }
 
     private void renewChronicMedicationsAtWellness(Person person, long time) {
-      // note that this code has some child codes for various different reasons,
-      // eg "medical aim achieved", "ineffective", "avoid interaction", "side effect", etc
-      Code expiredCode = new Code("SNOMED-CT", "182840001", 
-          "Drug treatment stopped - medical advice");
-
-      // We keep track of the meds we renewed to add them to the chronic list later
-      // as we can't modify the list of chronic meds while iterating.
-      List<Medication> renewedMedications =
-          new ArrayList<Medication>(person.chronicMedications.values().size());
-
-      // Go through each chronic medication and "reorder"
-      for (Medication chronicMedication : person.chronicMedications.values()) {
-        // RxNorm code
-        String primaryCode = chronicMedication.type;
-
-        // Removes from Chronic List as well; but won't affect iterator.
-        person.record.medicationEnd(time, primaryCode, expiredCode);
-
-        // IMPORTANT: 3rd par is false to prevent modification of chronic meds
-        // list as we iterate over it According to the documentation, the
-        // results of modifying the array (x remove) are undefined
-        Medication medication = person.record.medicationStart(time, primaryCode,
-            false);
-
-        // Copy over the characteristics from old medication to new medication
-        medication.name = chronicMedication.name;
-        medication.codes.addAll(chronicMedication.codes);
-        medication.reasons.addAll(chronicMedication.reasons);
-        medication.prescriptionDetails = chronicMedication.prescriptionDetails;
-        medication.administration = chronicMedication.administration;
-        // NB: The next one isn't present. Normally done by
-        // person.record.medicationStart, but we are avoiding modifying the
-        // chronic meds list until we are done iterating
-        medication.chronic = true;
-
-        // increment number of prescriptions prescribed by respective hospital
-        Provider medicationProvider = person.getCurrentProvider(module.name);
-        if (medicationProvider == null) {
-          // no provider associated with encounter or medication order
-          medicationProvider = person.getProvider(EncounterType.WELLNESS, time);
-        }
-        int year = Utilities.getYear(time);
-        medicationProvider.incrementPrescriptions(year);
-
-        renewedMedications.add(medication);
-      }
-
-      // Reinitialize the chronic meds list with the meds we just created
-      // Perhaps not technically necessary, as we can just keep the old ones
-      // around, but this is safer.
-      person.chronicMedications.clear();
-      for (Medication renewedMedication : renewedMedications) {
-        person.chronicMedications.put(renewedMedication.type, renewedMedication);
-      }
+//      // note that this code has some child codes for various different reasons,
+//      // eg "medical aim achieved", "ineffective", "avoid interaction", "side effect", etc
+//      Code expiredCode = new Code("SNOMED-CT", "182840001", 
+//          "Drug treatment stopped - medical advice");
+//
+//      // We keep track of the meds we renewed to add them to the chronic list later
+//      // as we can't modify the list of chronic meds while iterating.
+//      List<Medication> renewedMedications =
+//          new ArrayList<Medication>(person.chronicMedications.values().size());
+//
+//      // Go through each chronic medication and "reorder"
+//      for (Medication chronicMedication : person.chronicMedications.values()) {
+//        // RxNorm code
+//        String primaryCode = chronicMedication.type;
+//
+//        // Removes from Chronic List as well; but won't affect iterator.
+//        person.record.medicationEnd(time, primaryCode, expiredCode);
+//
+//        // IMPORTANT: 3rd par is false to prevent modification of chronic meds
+//        // list as we iterate over it According to the documentation, the
+//        // results of modifying the array (x remove) are undefined
+//        Medication medication = person.record.medicationStart(time, primaryCode,
+//            false);
+//
+//        // Copy over the characteristics from old medication to new medication
+//        medication.name = chronicMedication.name;
+//        medication.codes.addAll(chronicMedication.codes);
+//        medication.reasons.addAll(chronicMedication.reasons);
+//        medication.prescriptionDetails = chronicMedication.prescriptionDetails;
+//        medication.administration = chronicMedication.administration;
+//        // NB: The next one isn't present. Normally done by
+//        // person.record.medicationStart, but we are avoiding modifying the
+//        // chronic meds list until we are done iterating
+//        medication.chronic = true;
+//
+//        // increment number of prescriptions prescribed by respective hospital
+//        Provider medicationProvider = person.getCurrentProvider(module.name);
+//        if (medicationProvider == null) {
+//          // no provider associated with encounter or medication order
+//          medicationProvider = person.getProvider(EncounterType.WELLNESS, time);
+//        }
+//        int year = Utilities.getYear(time);
+//        medicationProvider.incrementPrescriptions(year);
+//
+//        renewedMedications.add(medication);
+//      }
+//
+//      // Reinitialize the chronic meds list with the meds we just created
+//      // Perhaps not technically necessary, as we can just keep the old ones
+//      // around, but this is safer.
+//      person.chronicMedications.clear();
+//      for (Medication renewedMedication : renewedMedications) {
+//        person.chronicMedications.put(renewedMedication.type, renewedMedication);
+//      }
 
     }
 
