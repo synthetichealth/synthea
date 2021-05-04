@@ -1039,13 +1039,54 @@ public class BB2RIFExporter implements Flushable {
    */
   private void exportHome(Person person, long stopTime) throws IOException {
     HashMap<HHAFields, String> fieldValues = new HashMap<>();
+    int homeVisits = 0;
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       if (!encounter.type.equals(EncounterType.HOME.toString())) {
         continue;
       }
 
+      homeVisits += 1;
+      int claimId = this.claimId.incrementAndGet();
+      int claimGroupId = this.claimGroupId.incrementAndGet();
+
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, HHAFields.class, person);
+
+      // The REQUIRED fields
+      fieldValues.put(HHAFields.BENE_ID,  (String) person.attributes.get(BB2_BENE_ID));
+      fieldValues.put(HHAFields.CLM_ID, "" + claimId);
+      fieldValues.put(HHAFields.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(HHAFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(HHAFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(HHAFields.NCH_WKLY_PROC_DT,
+          bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
+      fieldValues.put(HHAFields.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(HHAFields.CLM_PMT_AMT,
+          String.format("%.2f", encounter.claim.getCoveredCost()));
+      if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
+        fieldValues.put(HHAFields.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
+      } else {
+        fieldValues.put(HHAFields.NCH_PRMRY_PYR_CLM_PD_AMT,
+            String.format("%.2f", encounter.claim.getCoveredCost()));
+      }
+      fieldValues.put(HHAFields.PRVDR_STATE_CD,
+          locationMapper.getStateCode(encounter.provider.state));
+      fieldValues.put(HHAFields.CLM_TOT_CHRG_AMT,
+          String.format("%.2f", encounter.claim.getTotalClaimCost()));
+      fieldValues.put(HHAFields.CLM_HHA_TOT_VISIT_CNT, "" + homeVisits);
+      int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
+      if (days <= 0) {
+        days = 1;
+      }
+      fieldValues.put(HHAFields.REV_CNTR_UNIT_CNT, "" + days);
+      fieldValues.put(HHAFields.REV_CNTR_RATE_AMT,
+          String.format("%.2f", (encounter.claim.getTotalClaimCost() / days)));
+      fieldValues.put(HHAFields.REV_CNTR_PMT_AMT_AMT,
+          String.format("%.2f", encounter.claim.getCoveredCost()));
+      fieldValues.put(HHAFields.REV_CNTR_TOT_CHRG_AMT,
+          String.format("%.2f", encounter.claim.getTotalClaimCost()));
+      fieldValues.put(HHAFields.REV_CNTR_NCVRD_CHRG_AMT,
+          String.format("%.2f", encounter.claim.getPatientCost()));
 
       home.writeValues(HHAFields.class, fieldValues);
     }
@@ -1104,7 +1145,7 @@ public class BB2RIFExporter implements Flushable {
           bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
       fieldValues.put(SNFFields.PRVDR_NUM, encounter.provider.id);
       fieldValues.put(SNFFields.CLM_PMT_AMT,
-          String.format("%.2f", encounter.claim.getTotalClaimCost()));
+          String.format("%.2f", encounter.claim.getCoveredCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
         fieldValues.put(SNFFields.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
@@ -3504,16 +3545,19 @@ public class BB2RIFExporter implements Flushable {
       // Iterate over all of the rows in the TSV
       for (LinkedHashMap<String, String> row: config) {
         String cellContents = stripComments(row.get(columnName));
+        String value = null;
         if (cellContents.equalsIgnoreCase("N/A")
-                || cellContents.equalsIgnoreCase("Coded")
-                || cellContents.equalsIgnoreCase("[Blank]")) {
-          continue; // Skip fields that aren't used are required to be blank or are hand-coded
+            || cellContents.equalsIgnoreCase("Coded")) {
+          continue; // Skip fields that aren't used or are hand-coded
+        } else if (cellContents.equalsIgnoreCase("[Blank]")) {
+          value = " "; // Literally blank
         } else if (isMacro(cellContents)) {
           continue; // Skip unsupported macro's in the TSV
         } else if (cellContents.isEmpty()) {
           continue; // Skip empty cells
+        } else {
+          value = processCell(cellContents, rand);
         }
-        String value = processCell(cellContents, rand);
         try {
           E enumVal = (E)valueOf.invoke(null, row.get("Field"));
           values.put(enumVal, value);
