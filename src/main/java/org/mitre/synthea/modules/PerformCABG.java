@@ -150,7 +150,15 @@ public class PerformCABG extends Module {
     // note return options here, see State$CallSubmodule
     // if we return true, the submodule completed and processing continues to the next state
     // if we return false, the submodule did not complete (like with a Delay) and will re-process the next timestep.
-    return (time < stopTime);
+    if (time >= stopTime) {
+      // remove the stop time so that a second processing can go through correctly
+      person.attributes.remove("cabg_stop_time");
+      
+      person.history.get(0).exited = stopTime; // HACK for ensuring rewind time works. it will get overwritten later
+      return true;
+    } else {
+      return false;
+    }
   }
 
   public static final long MAX_DURATION = Utilities.convertTime("minutes", 926);
