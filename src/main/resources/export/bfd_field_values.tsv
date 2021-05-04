@@ -68,24 +68,24 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 66	CLM_E_POA_IND_SW7	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 67	CLM_E_POA_IND_SW8	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 68	CLM_E_POA_IND_SW9	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-69	CLM_FAC_TYPE_CD	N/A	N/A	"1 (1=Hospital, 2=SNF, 7=Dialysis)"	"1 (1=Hospital, 2=SNF, 7=Dialysis)"	N/A	N/A	N/A			2 (2=SNF)	FALSE	
-70	CLM_FREQ_CD	N/A	N/A	"1 (1=Admit-Discharge, 9=Final)"	"1 (1=Admit-Discharge, 9=Final)"	N/A	N/A	N/A			"1 (1=Admit-Discharge, 9=Final)"	FALSE	
-71	CLM_FROM_DT	N/A	N/A	Coded	Coded	Coded	N/A	Coded			Coded	FALSE	
-72	CLM_GRP_ID	N/A	N/A	Coded	Coded	Coded	Coded	Coded			Coded	FALSE	
+69	CLM_FAC_TYPE_CD	N/A	N/A	"1 (1=Hospital, 2=SNF, 7=Dialysis)"	"1 (1=Hospital, 2=SNF, 7=Dialysis)"	N/A	N/A	N/A	3 (3=HHA)		2 (2=SNF)	FALSE	
+70	CLM_FREQ_CD	N/A	N/A	"1 (1=Admit-Discharge, 9=Final)"	"1 (1=Admit-Discharge, 9=Final)"	N/A	N/A	N/A	"1,9 (1=Admit-Dischage, 9=Final)"		"1,9 (1=Admit-Discharge, 9=Final)"	FALSE	
+71	CLM_FROM_DT	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded		Coded	FALSE	
+72	CLM_GRP_ID	N/A	N/A	Coded	Coded	Coded	Coded	Coded	Coded		Coded	FALSE	
 73	CLM_HHA_LUPA_IND_CD	N/A	N/A	N/A	N/A	N/A	N/A	N/A		N/A	N/A	TRUE	
 74	CLM_HHA_RFRL_CD	N/A	N/A	N/A	N/A	N/A	N/A	N/A		N/A	N/A	TRUE	
-75	CLM_HHA_TOT_VISIT_CNT	N/A	N/A	N/A	N/A	N/A	N/A	N/A		N/A	N/A	FALSE	
+75	CLM_HHA_TOT_VISIT_CNT	N/A	N/A	N/A	N/A	N/A	N/A	N/A	Coded	N/A	N/A	FALSE	
 76	CLM_HOSPC_START_DT_ID	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A		N/A	TRUE	
-77	CLM_ID	N/A	N/A	Coded	Coded	Coded	N/A	Coded			Coded	FALSE	
+77	CLM_ID	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded		Coded	FALSE	
 78	CLM_IP_ADMSN_TYPE_CD	N/A	N/A	"1,2,3"	N/A	N/A	N/A	N/A	N/A	N/A	Coded	FALSE	
-79	CLM_LINE_NUM	N/A	N/A	1	1	N/A	N/A	N/A			1	FALSE	
+79	CLM_LINE_NUM	N/A	N/A	1	1	N/A	N/A	N/A	1		1	FALSE	
 80	CLM_MCO_PD_SW	N/A	N/A	0 (0 = No managed care organization (MCO) payment)	0 (0 = No managed care organization (MCO) payment)	N/A	N/A	N/A	N/A	N/A		TRUE	
 81	CLM_MDCR_NON_PMT_RSN_CD	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A				TRUE	
 82	CLM_NON_UTLZTN_DAYS_CNT	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A	0	FALSE	
 83	CLM_OP_BENE_PMT_AMT	N/A	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
 84	CLM_OP_PRVDR_PMT_AMT	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
 85	CLM_PASS_THRU_PER_DIEM_AMT	N/A	N/A	10 (fixed $ amount?)	N/A	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
-86	CLM_PMT_AMT	N/A	N/A	Coded	Coded	Coded	N/A	(Mapped from SNOMED)			Coded	FALSE	
+86	CLM_PMT_AMT	N/A	N/A	Coded	Coded	Coded	N/A	(Mapped from SNOMED)	Coded		Coded	FALSE	
 87	CLM_POA_IND_SW1	N/A	N/A	Coded (N = diagnosis not present on admission)	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 88	CLM_POA_IND_SW10	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 89	CLM_POA_IND_SW11	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
@@ -117,11 +117,11 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 115	CLM_PPS_CPTL_FSP_AMT	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A		TRUE	
 116	CLM_PPS_CPTL_IME_AMT	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A		TRUE	
 117	CLM_PPS_CPTL_OUTLIER_AMT	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A		TRUE	
-118	CLM_PPS_IND_CD	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A		N/A	[Blank]	TRUE/FALSE	
+118	CLM_PPS_IND_CD	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	[Blank]	N/A	[Blank]	TRUE/FALSE	
 119	CLM_PPS_OLD_CPTL_HLD_HRMLS_AMT	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A		TRUE	
 120	CLM_SRC_IP_ADMSN_CD	N/A	N/A	"1,2,4,5"	N/A	N/A	N/A	N/A	N/A	N/A		TRUE	
-121	CLM_SRVC_CLSFCTN_TYPE_CD	N/A	N/A	1 (depends on value of CLM_FAC_TYPE_CD)	3 (depends on value of CLM_FAC_TYPE_CD)	N/A	N/A	N/A			1 (depends on value of CLM_FAC_TYPE_CD)	FALSE	
-122	CLM_THRU_DT	N/A	N/A	Coded	Coded	Coded	N/A	Coded			Coded	FALSE	
+121	CLM_SRVC_CLSFCTN_TYPE_CD	N/A	N/A	1 (depends on value of CLM_FAC_TYPE_CD)	3 (depends on value of CLM_FAC_TYPE_CD)	N/A	N/A	N/A	3 (depends on value of CLM_FAC_TYPE_CD)		1 (depends on value of CLM_FAC_TYPE_CD)	FALSE	
+122	CLM_THRU_DT	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded		Coded	FALSE	
 123	CLM_TOT_CHRG_AMT	N/A	N/A	Coded	Coded	N/A	N/A	N/A			Coded	FALSE	
 124	CLM_TOT_PPS_CPTL_AMT	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 125	CLM_UTLZTN_DAY_CNT	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A		Coded	FALSE	
@@ -160,7 +160,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 158	EFIVEPCT	[Blank]	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 159	ENRL_SRC	CME	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 160	FILL_NUM	N/A	N/A	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	FALSE	
-161	FINAL_ACTION	N/A	N/A	F (F or V)	F	F (F or V)	F	F			F (F or N)	FALSE	
+161	FINAL_ACTION	N/A	N/A	F (F or V)	F	F (F or V)	F	F	F (F or N)		F (F or N)	FALSE	
 162	FIPS_STATE_CNTY_APR_CD		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	NOT PRESENT IN DATA DICTIONARY
 163	FIPS_STATE_CNTY_AUG_CD		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	NOT PRESENT IN DATA DICTIONARY
 164	FIPS_STATE_CNTY_DEC_CD		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	NOT PRESENT IN DATA DICTIONARY
@@ -408,20 +408,20 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 406	NCH_CARR_CLM_SBMTD_CHRG_AMT	N/A	N/A	N/A	N/A	Coded	N/A	(Sum of  LINE_SBMTD_CHRG_AMT)	N/A	N/A	N/A	FALSE	
 407	NCH_CLM_BENE_PMT_AMT	N/A	N/A	N/A	N/A	0	N/A	0	N/A	N/A	N/A	FALSE	
 408	NCH_CLM_PRVDR_PMT_AMT	N/A	N/A	N/A	N/A	Coded	N/A	(Sum of LINE_PRVDR_PMT_AMT)	N/A	N/A	N/A	FALSE	
-409	NCH_CLM_TYPE_CD	N/A	N/A	60 (Always 60 for inpatient claims)	40 (40=outpatient)	"71 (local carrier, non-DME)"	N/A	82 (DMEPOS)			"20 (20 = non swing bed, 30 = swing bed)"	FALSE	
+409	NCH_CLM_TYPE_CD	N/A	N/A	60 (Always 60 for inpatient claims)	40 (40=outpatient)	"71 (local carrier, non-DME)"	N/A	82 (DMEPOS)	10 (HHA)		"20 (20 = non swing bed, 30 = swing bed)"	FALSE	
 410	NCH_DRG_OUTLIER_APRVD_PMT_AMT	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 411	NCH_IP_NCVRD_CHRG_AMT	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	Coded	FALSE	
 412	NCH_IP_TOT_DDCTN_AMT	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	Coded	FALSE	
-413	NCH_NEAR_LINE_REC_IDENT_CD	N/A	N/A	V (V = inpatient)	W (W=outpatient)	O (O=physician)	N/A	M (DMEPOS)			V (V = SNF)	FALSE	
-414	NCH_PRMRY_PYR_CD	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A				TRUE	
-415	NCH_PRMRY_PYR_CLM_PD_AMT	N/A	N/A	Coded	Coded	N/A	N/A	N/A			Coded	FALSE	
+413	NCH_NEAR_LINE_REC_IDENT_CD	N/A	N/A	V (V = inpatient)	W (W=outpatient)	O (O=physician)	N/A	M (DMEPOS)	"V,W,U (V=part A, W=part B, U=part A and B)"		V (V = SNF)	FALSE	
+414	NCH_PRMRY_PYR_CD	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]		[Blank]	TRUE	
+415	NCH_PRMRY_PYR_CLM_PD_AMT	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded		Coded	FALSE	
 416	NCH_PROFNL_CMPNT_CHRG_AMT	N/A	N/A	4 (fixed $ amount?)	4 (fixed $ amount?)	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
 417	NCH_PTNT_STATUS_IND_CD	N/A	N/A		N/A	N/A	N/A	N/A	N/A			TRUE	
 418	NCH_QLFYD_STAY_FROM_DT	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A		TRUE	
 419	NCH_QLFYD_STAY_THRU_DT	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A		TRUE	
 420	NCH_VRFD_NCVRD_STAY_FROM_DT	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A		TRUE	
 421	NCH_VRFD_NCVRD_STAY_THRU_DT	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A		TRUE	
-422	NCH_WKLY_PROC_DT	N/A	N/A	Coded	Coded	Coded	N/A	Coded			Coded	FALSE	
+422	NCH_WKLY_PROC_DT	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded		Coded	FALSE	
 423	NCVRD_PLAN_PD_AMT	N/A	N/A	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	FALSE	
 424	NSTD_FRMT_CD	N/A	N/A	N/A	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	TRUE	
 425	OP_PHYSN_NPI	N/A	N/A	[Blank]	Coded	N/A	N/A	N/A	N/A	N/A		TRUE	
@@ -472,7 +472,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 470	PRSCRBR_ID_QLFYR_CD	N/A	N/A	N/A	N/A	N/A	01 (NPI)	N/A	N/A	N/A	N/A	FALSE	
 471	PRTCPTNG_IND_CD	N/A	N/A	N/A	N/A		N/A		N/A	N/A	N/A	TRUE	
 472	PRVDR_NPI	N/A	N/A	N/A	N/A	N/A	N/A		N/A	N/A	N/A	TRUE	
-473	PRVDR_NUM	N/A	N/A	Coded	Coded	N/A	N/A	N/A			Coded	TRUE/FALSE	
+473	PRVDR_NUM	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded		Coded	TRUE/FALSE	
 474	PRVDR_SPCLTY	N/A	N/A	N/A	N/A		N/A		N/A	N/A	N/A	TRUE	
 475	PRVDR_STATE_CD	N/A	N/A	Coded	Coded	N/A	N/A	Coded			Coded	TRUE/FALSE	
 476	PRVDR_ZIP	N/A	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	TRUE	
@@ -548,7 +548,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 546	PTD_SGMT_NOV_ID		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 547	PTD_SGMT_OCT_ID		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 548	PTD_SGMT_SEPT_ID		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-549	PTNT_DSCHRG_STUS_CD	N/A	N/A	Coded	N/A	N/A	N/A	N/A			"81,85,86,87,88,89,90,91,92,93,94,95"	TRUE/FALSE	
+549	PTNT_DSCHRG_STUS_CD	N/A	N/A	Coded	N/A	N/A	N/A	N/A	81		"81,85,86,87,88,89,90,91,92,93,94,95"	TRUE/FALSE	
 550	PTNT_PAY_AMT	N/A	N/A	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	FALSE	
 551	PTNT_RSDNC_CD	N/A	N/A	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	FALSE	
 552	QTY_DSPNSD_NUM	N/A	N/A	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	FALSE	
@@ -565,7 +565,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 563	RDS_NOV_IND		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 564	RDS_OCT_IND		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 565	RDS_SEPT_IND		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-566	REV_CNTR	N/A	N/A	"0001 (total charge, lots of alternatives)"	"0001 (total charge, lots of alternatives)"	N/A	N/A	N/A			"0001,0022 (0001=total charge, 0022=SNF under PPS)"	FALSE	
+566	REV_CNTR	N/A	N/A	"0001 (total charge, lots of alternatives)"	"0001 (total charge, lots of alternatives)"	N/A	N/A	N/A	"0001 (total charge, lots of alternatives)"		"0001,0022 (0001=total charge, 0022=SNF under PPS)"	FALSE	
 567	REV_CNTR_1ST_ANSI_CD	N/A	N/A	N/A		N/A	N/A	N/A		N/A	N/A	TRUE	
 568	REV_CNTR_1ST_MSP_PD_AMT	N/A	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
 569	REV_CNTR_2ND_ANSI_CD	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
@@ -581,20 +581,20 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 579	REV_CNTR_DSCNT_IND_CD	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 580	REV_CNTR_DT	N/A	N/A	N/A		N/A	N/A	N/A			N/A	TRUE	
 581	REV_CNTR_IDE_NDC_UPC_NUM	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-582	REV_CNTR_NCVRD_CHRG_AMT	N/A	N/A	Coded	Coded	N/A	N/A	N/A			Coded	TRUE/FALSE	
+582	REV_CNTR_NCVRD_CHRG_AMT	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded		Coded	TRUE/FALSE	
 583	REV_CNTR_NDC_QTY	N/A	N/A	0	0	N/A	N/A	N/A				TRUE	
 584	REV_CNTR_NDC_QTY_QLFR_CD	N/A	N/A			N/A	N/A	N/A				TRUE	
 585	REV_CNTR_OTAF_PMT_CD	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 586	REV_CNTR_PACKG_IND_CD	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-587	REV_CNTR_PMT_AMT_AMT	N/A	N/A	N/A	Coded	N/A	N/A	N/A			N/A	FALSE	
+587	REV_CNTR_PMT_AMT_AMT	N/A	N/A	N/A	Coded	N/A	N/A	N/A	Coded		N/A	FALSE	
 588	REV_CNTR_PMT_MTHD_IND_CD	N/A	N/A	N/A		N/A	N/A	N/A		N/A	N/A	TRUE	
 589	REV_CNTR_PRVDR_PMT_AMT	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A		N/A	FALSE	
 590	REV_CNTR_PTNT_RSPNSBLTY_PMT	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
-591	REV_CNTR_RATE_AMT	N/A	N/A	0	0	N/A	N/A	N/A			Coded	FALSE	
+591	REV_CNTR_RATE_AMT	N/A	N/A	0	0	N/A	N/A	N/A	Coded		Coded	FALSE	
 592	REV_CNTR_RDCD_COINSRNC_AMT	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
 593	REV_CNTR_STUS_IND_CD	N/A	N/A	N/A		N/A	N/A	N/A		N/A	N/A	TRUE	
-594	REV_CNTR_TOT_CHRG_AMT	N/A	N/A	Coded	Coded	N/A	N/A	N/A			Coded	FALSE	
-595	REV_CNTR_UNIT_CNT	N/A	N/A	0	0	N/A	N/A	N/A			Coded	FALSE	
+594	REV_CNTR_TOT_CHRG_AMT	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded		Coded	FALSE	
+595	REV_CNTR_UNIT_CNT	N/A	N/A	0	0	N/A	N/A	N/A	Coded		Coded	FALSE	
 596	RFRNC_YR	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 597	RFR_PHYSN_NPI	N/A	N/A	N/A	N/A		N/A		N/A	N/A	N/A	TRUE	
 598	RFR_PHYSN_UPIN	N/A	N/A	N/A	N/A		N/A		N/A	N/A	N/A	TRUE	
