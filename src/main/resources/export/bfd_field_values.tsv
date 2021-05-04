@@ -592,7 +592,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 590	REV_CNTR_PTNT_RSPNSBLTY_PMT	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
 591	REV_CNTR_RATE_AMT	N/A	N/A	0	0	N/A	N/A	N/A	Coded		Coded	FALSE	
 592	REV_CNTR_RDCD_COINSRNC_AMT	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
-593	REV_CNTR_STUS_IND_CD	N/A	N/A	N/A		N/A	N/A	N/A		N/A	N/A	TRUE	
+593	REV_CNTR_STUS_IND_CD	N/A	N/A	N/A		N/A	N/A	N/A	4 (4=paid at reasonable cost)	N/A	N/A	TRUE	
 594	REV_CNTR_TOT_CHRG_AMT	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded		Coded	FALSE	
 595	REV_CNTR_UNIT_CNT	N/A	N/A	0	0	N/A	N/A	N/A	Coded		Coded	FALSE	
 596	RFRNC_YR	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
