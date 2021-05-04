@@ -213,6 +213,11 @@ public final class CardiovascularDiseaseModule extends Module {
     
     double monthlyRisk = Utilities.convertRiskToTimestep(framinghamRisk, tenYearsInMS, oneMonthInMS);
     person.attributes.put("mi_risk", monthlyRisk);
+    // drives the myocardial_infarction module
+    
+    person.attributes.put("ihd_risk", monthlyRisk * 5);
+    // drives the stable_ischemic_heart_disease module
+    // multiply by 5 to account for the relative prevalence of the various outcomes
   }
   
  
@@ -228,6 +233,11 @@ public final class CardiovascularDiseaseModule extends Module {
     
     double monthlyRisk = Utilities.convertRiskToTimestep(ascvdRisk, tenYearsInMS, oneMonthInMS);
     person.attributes.put("mi_risk", monthlyRisk);
+    // drives the myocardial_infarction module
+    
+    person.attributes.put("ihd_risk", monthlyRisk * 5);
+    // drives the stable_ischemic_heart_disease module
+    // multiply by 5 to account for the relative prevalence of the various outcomes
   }
 
 

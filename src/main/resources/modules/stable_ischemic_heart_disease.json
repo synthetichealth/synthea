@@ -30,7 +30,7 @@
     },
     "IHD_Start": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
+      "assign_to_attribute": "cardiac_surgery_reason",
       "target_encounter": "Diagnosis_Encounter",
       "codes": [
         {
