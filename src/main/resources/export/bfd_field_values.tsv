@@ -16,7 +16,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 14	BENE_ESRD_IND			N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 15	BENE_GVN_NAME	Coded	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE/FALSE	
 16	BENE_HOSPC_PRD_CNT	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A		N/A	TRUE	
-17	BENE_ID	Coded	Coded	Coded	Coded	Coded	Coded	Coded		Coded	Coded	TRUE/FALSE	
+17	BENE_ID	Coded	Coded	Coded	Coded	Coded	Coded	Coded	Coded	Coded	Coded	TRUE/FALSE	
 18	BENE_IDENT_CD	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 19	BENE_LRD_USED_CNT	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 20	BENE_MBI_ID	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
@@ -122,7 +122,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 120	CLM_SRC_IP_ADMSN_CD	N/A	N/A	"1,2,4,5"	N/A	N/A	N/A	N/A	N/A	N/A		TRUE	
 121	CLM_SRVC_CLSFCTN_TYPE_CD	N/A	N/A	1 (depends on value of CLM_FAC_TYPE_CD)	3 (depends on value of CLM_FAC_TYPE_CD)	N/A	N/A	N/A	3 (depends on value of CLM_FAC_TYPE_CD)	1 (depends on value of CLM_FAC_TYPE_CD)	1 (depends on value of CLM_FAC_TYPE_CD)	FALSE	
 122	CLM_THRU_DT	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	FALSE	
-123	CLM_TOT_CHRG_AMT	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded	Coded	FALSE	
+123	CLM_TOT_CHRG_AMT	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	FALSE	
 124	CLM_TOT_PPS_CPTL_AMT	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 125	CLM_UTLZTN_DAY_CNT	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	Coded	Coded	FALSE	
 126	CMPND_CD	N/A	N/A	N/A	N/A	N/A	0 (TODO: map from Rxnorm)	N/A	N/A	N/A	N/A	FALSE	
@@ -474,7 +474,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 472	PRVDR_NPI	N/A	N/A	N/A	N/A	N/A	N/A		N/A	N/A	N/A	TRUE	
 473	PRVDR_NUM	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE/FALSE	
 474	PRVDR_SPCLTY	N/A	N/A	N/A	N/A		N/A		N/A	N/A	N/A	TRUE	
-475	PRVDR_STATE_CD	N/A	N/A	Coded	Coded	N/A	N/A	Coded		Coded	Coded	TRUE/FALSE	
+475	PRVDR_STATE_CD	N/A	N/A	Coded	Coded	N/A	N/A	Coded	Coded	Coded	Coded	TRUE/FALSE	
 476	PRVDR_ZIP	N/A	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	TRUE	
 477	PTC_CNTRCT_APR_ID		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 478	PTC_CNTRCT_AUG_ID		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
