@@ -1105,8 +1105,101 @@ public class BB2RIFExporter implements Flushable {
         continue;
       }
 
+      int claimId = this.claimId.incrementAndGet();
+      int claimGroupId = this.claimGroupId.incrementAndGet();
+
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, HospiceFields.class, person);
+
+      fieldValues.put(HospiceFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
+      fieldValues.put(HospiceFields.CLM_ID, "" + claimId);
+      fieldValues.put(HospiceFields.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(HospiceFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(HospiceFields.CLM_HOSPC_START_DT_ID, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(HospiceFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(HospiceFields.NCH_WKLY_PROC_DT,
+              bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
+      fieldValues.put(HospiceFields.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(HospiceFields.AT_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(HospiceFields.ORG_NPI_NUM, encounter.provider.npi);
+      fieldValues.put(HospiceFields.CLM_PMT_AMT,
+              String.format("%.2f", encounter.claim.getTotalClaimCost()));
+      if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
+        fieldValues.put(HospiceFields.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
+      } else {
+        fieldValues.put(HospiceFields.NCH_PRMRY_PYR_CLM_PD_AMT,
+                String.format("%.2f", encounter.claim.getCoveredCost()));
+      }
+      fieldValues.put(HospiceFields.PRVDR_STATE_CD,
+              locationMapper.getStateCode(encounter.provider.state));
+      // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
+      String field = null;
+      if (encounter.ended) {
+        field = "1"; // TODO 2=transfer if the next encounter is also inpatient
+      } else {
+        field = "30"; // the patient is still here
+      }
+      if (!person.alive(encounter.stop)) {
+        field = "20"; // the patient died before the encounter ended
+      }
+      fieldValues.put(HospiceFields.PTNT_DSCHRG_STUS_CD, field);
+      fieldValues.put(HospiceFields.CLM_TOT_CHRG_AMT,
+              String.format("%.2f", encounter.claim.getTotalClaimCost()));
+      fieldValues.put(HospiceFields.REV_CNTR_TOT_CHRG_AMT,
+          String.format("%.2f", encounter.claim.getCoveredCost()));
+      fieldValues.put(HospiceFields.REV_CNTR_NCVRD_CHRG_AMT,
+          String.format("%.2f", encounter.claim.getPatientCost()));
+      fieldValues.put(HospiceFields.REV_CNTR_PMT_AMT_AMT,
+          String.format("%.2f", encounter.claim.getCoveredCost()));
+
+      if (encounter.reason != null) {
+        // If the encounter has a recorded reason, enter the mapped
+        // values into the principle diagnoses code.
+        if (conditionCodeMapper.canMap(encounter.reason.code)) {
+          String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
+          fieldValues.put(HospiceFields.PRNCPAL_DGNS_CD, icdCode);
+        }
+      }
+      
+      // Use the active condition diagnoses to enter mapped values
+      // into the diagnoses codes.
+      boolean noDiagnoses = false;
+      if (person.record.present != null && !person.record.present.isEmpty()) {
+        List<String> mappedDiagnosisCodes = new ArrayList<>();
+        for (String key : person.record.present.keySet()) {
+          if (person.record.conditionActive(key)) {
+            if (conditionCodeMapper.canMap(key)) {
+              mappedDiagnosisCodes.add(conditionCodeMapper.map(key, person, true));
+            }
+          }
+        }
+        if (!mappedDiagnosisCodes.isEmpty()) {
+          int smallest = Math.min(mappedDiagnosisCodes.size(), hospiceDxFields.length);
+          for (int i = 0; i < smallest; i++) {
+            HospiceFields[] dxField = hospiceDxFields[i];
+            fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+            fieldValues.put(dxField[1], "0"); // 0=ICD10
+          }
+        } else {
+          noDiagnoses = true;
+        }
+      }
+      if (noDiagnoses) {
+        continue; // skip this encounter
+      }
+
+      int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
+      if (days <= 0) {
+        days = 1;
+      }
+      fieldValues.put(HospiceFields.CLM_UTLZTN_DAY_CNT, "" + days);
+      int coinDays = days -  21; // first 21 days no coinsurance
+      if (coinDays < 0) {
+        coinDays = 0;
+      }
+      fieldValues.put(HospiceFields.REV_CNTR_UNIT_CNT, "" + days);
+      fieldValues.put(HospiceFields.REV_CNTR_RATE_AMT,
+          String.format("%.2f", (encounter.claim.getTotalClaimCost() / days)));
 
       hospice.writeValues(HospiceFields.class, fieldValues);
     }
@@ -3011,6 +3104,34 @@ public class BB2RIFExporter implements Flushable {
     RNDRNG_PHYSN_NPI
   }
   
+  private HospiceFields[][] hospiceDxFields = {
+    { HospiceFields.ICD_DGNS_CD1, HospiceFields.ICD_DGNS_VRSN_CD1 },
+    { HospiceFields.ICD_DGNS_CD2, HospiceFields.ICD_DGNS_VRSN_CD2 },
+    { HospiceFields.ICD_DGNS_CD3, HospiceFields.ICD_DGNS_VRSN_CD3 },
+    { HospiceFields.ICD_DGNS_CD4, HospiceFields.ICD_DGNS_VRSN_CD4 },
+    { HospiceFields.ICD_DGNS_CD5, HospiceFields.ICD_DGNS_VRSN_CD5 },
+    { HospiceFields.ICD_DGNS_CD6, HospiceFields.ICD_DGNS_VRSN_CD6 },
+    { HospiceFields.ICD_DGNS_CD7, HospiceFields.ICD_DGNS_VRSN_CD7 },
+    { HospiceFields.ICD_DGNS_CD8, HospiceFields.ICD_DGNS_VRSN_CD8 },
+    { HospiceFields.ICD_DGNS_CD9, HospiceFields.ICD_DGNS_VRSN_CD9 },
+    { HospiceFields.ICD_DGNS_CD10, HospiceFields.ICD_DGNS_VRSN_CD10 },
+    { HospiceFields.ICD_DGNS_CD11, HospiceFields.ICD_DGNS_VRSN_CD11 },
+    { HospiceFields.ICD_DGNS_CD12, HospiceFields.ICD_DGNS_VRSN_CD12 },
+    { HospiceFields.ICD_DGNS_CD13, HospiceFields.ICD_DGNS_VRSN_CD13 },
+    { HospiceFields.ICD_DGNS_CD14, HospiceFields.ICD_DGNS_VRSN_CD14 },
+    { HospiceFields.ICD_DGNS_CD15, HospiceFields.ICD_DGNS_VRSN_CD15 },
+    { HospiceFields.ICD_DGNS_CD16, HospiceFields.ICD_DGNS_VRSN_CD16 },
+    { HospiceFields.ICD_DGNS_CD17, HospiceFields.ICD_DGNS_VRSN_CD17 },
+    { HospiceFields.ICD_DGNS_CD18, HospiceFields.ICD_DGNS_VRSN_CD18 },
+    { HospiceFields.ICD_DGNS_CD19, HospiceFields.ICD_DGNS_VRSN_CD19 },
+    { HospiceFields.ICD_DGNS_CD20, HospiceFields.ICD_DGNS_VRSN_CD20 },
+    { HospiceFields.ICD_DGNS_CD21, HospiceFields.ICD_DGNS_VRSN_CD21 },
+    { HospiceFields.ICD_DGNS_CD22, HospiceFields.ICD_DGNS_VRSN_CD22 },
+    { HospiceFields.ICD_DGNS_CD23, HospiceFields.ICD_DGNS_VRSN_CD23 },
+    { HospiceFields.ICD_DGNS_CD24, HospiceFields.ICD_DGNS_VRSN_CD24 },
+    { HospiceFields.ICD_DGNS_CD25, HospiceFields.ICD_DGNS_VRSN_CD25 }
+  };
+
   public enum SNFFields {
     DML_IND,
     BENE_ID,
