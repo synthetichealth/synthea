@@ -257,7 +257,8 @@ public abstract class State implements Cloneable, Serializable {
       if (completed) {
         // keep track of when the submodule exited, in case it was "rewinding time" when it completed
         if (person.history.get(0).exited == null) {
-          // temporary hack. figure out why we need this for the unit tests
+          // this happens when the patient dies in the submodule, so processing is going to stop anyway
+          // but just to be safe and not crash, we'll assume we exited at the current timestep
           this.submoduleExited = time;
         } else {
           this.submoduleExited = person.history.get(0).exited;
