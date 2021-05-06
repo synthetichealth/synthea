@@ -49,8 +49,6 @@ public final class LifecycleModule extends Module {
   public static final String QUIT_ALCOHOLISM_AGE = "quit alcoholism age";
   public static final String ADHERENCE_PROBABILITY = "adherence probability";
 
-  public static final boolean appendNumbersToNames =
-      Config.getAsBoolean("generate.append_numbers_to_person_names", false);
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
   private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
@@ -126,26 +124,15 @@ public final class LifecycleModule extends Module {
     String language = (String) attributes.get(Person.FIRST_LANGUAGE);
     String firstName = Names.fakeFirstName(gender, language, person);
     String lastName = Names.fakeLastName(language, person);
-    if (appendNumbersToNames) {
-      firstName = Names.addHash(firstName);
-      lastName = Names.addHash(lastName);
-    }
     attributes.put(Person.FIRST_NAME, firstName);
     attributes.put(Person.LAST_NAME, lastName);
     attributes.put(Person.NAME, firstName + " " + lastName);
 
     String motherFirstName = Names.fakeFirstName("F", language, person);
     String motherLastName = Names.fakeLastName(language, person);
-    if (appendNumbersToNames) {
-      motherFirstName = Names.addHash(motherFirstName);
-      motherLastName = Names.addHash(motherLastName);
-    }
     attributes.put(Person.NAME_MOTHER, motherFirstName + " " + motherLastName);
     
     String fatherFirstName = Names.fakeFirstName("M", language, person);
-    if (appendNumbersToNames) {
-      fatherFirstName = Names.addHash(fatherFirstName);
-    }
     // this is anglocentric where the baby gets the father's last name
     attributes.put(Person.NAME_FATHER, fatherFirstName + " " + lastName);
 
@@ -322,9 +309,6 @@ public final class LifecycleModule extends Module {
               String firstName = ((String) person.attributes.get(Person.FIRST_NAME));
               String language = (String) person.attributes.get(Person.FIRST_LANGUAGE);
               String newLastName = Names.fakeLastName(language, person);
-              if (appendNumbersToNames) {
-                newLastName = Names.addHash(newLastName);
-              }
               person.attributes.put(Person.LAST_NAME, newLastName);
               person.attributes.put(Person.NAME, firstName + " " + newLastName);
             }

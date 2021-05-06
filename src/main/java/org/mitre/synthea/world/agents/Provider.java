@@ -24,7 +24,6 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.behaviors.IProviderFinder;
 import org.mitre.synthea.world.agents.behaviors.ProviderFinderNearest;
 import org.mitre.synthea.world.agents.behaviors.ProviderFinderQuality;
@@ -61,9 +60,6 @@ public class Provider implements QuadTreeElement, Serializable {
   public static final String PROVIDER_SELECTION_BEHAVIOR =
       Config.get("generate.providers.selection_behavior", "nearest").toLowerCase();
   private static IProviderFinder providerFinder = buildProviderFinder();
-
-  public static final boolean appendNumbersToNames =
-      Config.getAsBoolean("generate.append_numbers_to_person_names", false);
   
   public Map<String, Object> attributes;
   public String uuid;
@@ -479,11 +475,6 @@ public class Provider implements QuadTreeElement, Serializable {
 
       String firstName = Names.fakeFirstName(gender, language, doc);
       String lastName = Names.fakeLastName(language, doc);
-
-      if (appendNumbersToNames) {
-        firstName = Names.addHash(firstName);
-        lastName = Names.addHash(lastName);
-      }
       clinician.attributes.put(Clinician.FIRST_NAME, firstName);
       clinician.attributes.put(Clinician.LAST_NAME, lastName);
       clinician.attributes.put(Clinician.NAME, firstName + " " + lastName);

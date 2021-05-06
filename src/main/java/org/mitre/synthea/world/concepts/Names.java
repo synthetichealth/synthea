@@ -2,6 +2,7 @@ package org.mitre.synthea.world.concepts;
 
 import java.util.List;
 
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -22,8 +23,13 @@ public class Names {
     }
   }
   
+  public static final boolean appendNumbersToNames =
+      Config.getAsBoolean("generate.append_numbers_to_person_names", false);
+  
   /**
    * Generate a first name appropriate for a given gender and language.
+   * If `generate.append_numbers_to_person_names` == true, 
+   * then numbers will be appended automatically.
    * @param gender Gender of the name, "M" or "F"
    * @param language Origin language of the name, "english", "spanish"
    * @param person person to generate a name for.
@@ -38,11 +44,19 @@ public class Names {
       choices = (List<String>) names.get("english." + gender);
     }
     // pick a random item from the list
-    return choices.get(person.randInt(choices.size()));
+    String name = choices.get(person.randInt(choices.size()));
+
+    if (appendNumbersToNames) {
+      name = addHash(name);
+    }
+
+    return name;
   }
 
   /**
    * Generate a surname appropriate for a given language.
+   * If `generate.append_numbers_to_person_names` == true, 
+   * then numbers will be appended automatically.
    * @param language Origin language of the name, "english", "spanish"
    * @param person person to generate a name for.
    * @return Surname or Family Name.
@@ -56,7 +70,13 @@ public class Names {
       choices = (List<String>) names.get("english.family");
     }
     // pick a random item from the list
-    return choices.get(person.randInt(choices.size()));
+    String name = choices.get(person.randInt(choices.size()));
+
+    if (appendNumbersToNames) {
+      name = addHash(name);
+    }
+
+    return name;
   }
 
   /**
