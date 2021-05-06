@@ -71,6 +71,7 @@ public class Generator implements RandomNumberGenerator {
   private boolean onlyDeadPatients;
   private boolean onlyVeterans;
   private Module keepPatientsModule;
+  private Long maxAttemptsToKeepPatient;
   public TransitionMetrics metrics;
   public static String DEFAULT_STATE = "Massachusetts";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
@@ -214,6 +215,18 @@ public class Generator implements RandomNumberGenerator {
       Config.set("generate.only_alive_patients", "false");
       this.onlyDeadPatients = false;
       this.onlyAlivePatients = false;
+    }
+
+    try {
+      this.maxAttemptsToKeepPatient = Long.parseLong(
+        Config.get("generate.max_attempts_to_keep_patient", "1000"));
+
+      if (this.maxAttemptsToKeepPatient == 0) {
+        // set it to null to make the check more clear
+        this.maxAttemptsToKeepPatient = null;
+      }
+    } catch (Exception e) {
+      this.maxAttemptsToKeepPatient = null;
     }
 
     this.onlyVeterans = Config.getAsBoolean("generate.veteran_population_override");
@@ -442,6 +455,7 @@ public class Generator implements RandomNumberGenerator {
       boolean patientMeetsCriteria;
 
       do {
+        tryNumber++;
         person = createPerson(personSeed, demoAttributes);
         long finishTime = person.lastUpdated + timestep;
 
@@ -451,6 +465,25 @@ public class Generator implements RandomNumberGenerator {
             patientMeetsCriteria(person, finishTime, index, isAlive);
 
         if (!patientMeetsCriteria) {
+          if (this.maxAttemptsToKeepPatient != null
+              && tryNumber >= this.maxAttemptsToKeepPatient) {
+            // we've tried and failed to produce a patient that meets the criteria
+            // throw an exception to halt processing in this slot
+            String msg = "Failed to produce a matching patient after " 
+                + tryNumber + " attempts. "
+                + "Ensure that it is possible for all "
+                + "requested demographics to meet the criteria. "
+                + "(e.g., make sure there is no age restriction "
+                + "that conflicts with a requested condition, "
+                + "such as limiting age to 0-18 and requiring "
+                + "all patients have a condition that only onsets after 55.) "
+                + "If you are confident that the constraints"
+                + " are possible to satisfy but rare, "
+                + "consider increasing the value in config setting "
+                + "`generate.max_attempts_to_keep_patient`";
+            throw new RuntimeException(msg);
+          }
+
           // rotate the seed so the next attempt gets a consistent but different one
           personSeed = randomForDemographics.nextLong();
           continue;
@@ -461,7 +494,6 @@ public class Generator implements RandomNumberGenerator {
 
         recordPerson(person, index);
 
-        tryNumber++;
         if (!isAlive) {
           // rotate the seed so the next attempt gets a consistent but different one
           personSeed = randomForDemographics.nextLong();
