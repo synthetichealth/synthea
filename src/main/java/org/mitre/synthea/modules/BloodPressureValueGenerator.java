@@ -40,6 +40,12 @@ public class BloodPressureValueGenerator extends ValueGenerator {
   private static final int RING_ENTRIES = 10;
   private final TrendingValueGenerator[] ringBuffer = new TrendingValueGenerator[RING_ENTRIES];
   private int ringIndex = 0;
+  
+  // simple 1-value cache, so that we get consistent results when called with the same timestamp
+  // note that consistency is not guaranteed if we go time A -> time B -> time A across different modules.
+  // in that case we need a bigger cache
+  private Double cachedValue;
+  private long cacheTime;
 
   private SysDias sysDias;
 
@@ -50,9 +56,17 @@ public class BloodPressureValueGenerator extends ValueGenerator {
 
   @Override
   public double getValue(long time) {
+    if (cacheTime == time && cachedValue != null) {
+      return cachedValue;
+    }
+    
     // TODO: BP is circadian. Model change over time of day.
     final TrendingValueGenerator trendingValueGenerator = getTrendingValueGenerator(time, true);
-    return trendingValueGenerator.getValue(time);
+    double value = trendingValueGenerator.getValue(time);
+    
+    cachedValue = value;
+    cacheTime = time;
+    return value;
   }
 
 
