@@ -606,9 +606,14 @@ public class HealthRecord implements Serializable {
     }
   }
 
+  public enum ReactionSeverity {
+    MILD, MODERATE, SEVERE
+  }
+
   public class Allergy extends Entry {
     public String allergyType;
     public String category;
+    public HashMap<String, ReactionSeverity> reactions;
 
     /**
      * Constructor for Entry.
