@@ -1,0 +1,54 @@
+{
+  "name": "must_have_cabg",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Keep",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 232717009,
+                    "display": "Coronary artery bypass grafting (procedure)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 414088005,
+                    "display": "Emergency coronary artery bypass graft (procedure)"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ],
+      "remarks": [
+        "This approach uses a trick of how Synthea health records and logic work. When a patient has an active condition, the code and HealthRecord.entry are added to a map called \"present\". When the condition ends, they are removed from the map. The \"Active Condition\" logic checks for the existence of the given code in that map. The trick here is that procedures are also added to that \"present\" map, and are never removed, so we can use an \"Active Condition\" to check if the procedure code is in that map, and get around the fact that there's no \"Procedure Performed\" logic."
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Keep": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}
