@@ -462,8 +462,8 @@ public class Generator implements RandomNumberGenerator {
 
         boolean isAlive = person.alive(finishTime);
 
-        patientMeetsCriteria = 
-            patientMeetsCriteria(person, finishTime, index, isAlive);
+        CriteriaCheck check = checkCriteria(person, finishTime, index, isAlive);
+        patientMeetsCriteria = check.meetsCriteria();
 
         if (!patientMeetsCriteria) {
           if (this.maxAttemptsToKeepPatient != null
@@ -485,11 +485,9 @@ public class Generator implements RandomNumberGenerator {
             throw new RuntimeException(msg);
           }
 
-          boolean mustSkipExport = !(!isAlive && !onlyDeadPatients && this.options.overflow);
-          // this should be false for any clauses in patientMeetsCriteria below
+          // this should be false for any clauses in checkCriteria below
           // when we want to export this patient, but keep trying to produce one meeting criteria
-
-          if (mustSkipExport) {
+          if (!check.exportAnyway()) {
             // rotate the seed so the next attempt gets a consistent but different one
             personSeed = randomForDemographics.nextLong();
             continue;
@@ -540,31 +538,58 @@ public class Generator implements RandomNumberGenerator {
   }
   
   /**
+   * Helper class to keep track of patient criteria.
+   * Caches results in booleans so different combinations are quick to check
+   */
+  private static class CriteriaCheck {
+    // see checkCriteria below for notes on these flags
+    // reminder that java booleans default to false if unset
+    private boolean rejectDeadButOverflow;
+    private boolean isAliveButDeadRequired;
+    private boolean isDeadButAliveRequired;
+    private boolean insufficientProviders;
+    private boolean failedKeepModule;
+
+    private boolean meetsCriteria() {
+      // if any of the flags are true, the patient does not meet criteria
+      return !(rejectDeadButOverflow
+        || isAliveButDeadRequired
+        || isDeadButAliveRequired
+        || insufficientProviders
+        || failedKeepModule);
+    }
+
+    private boolean exportAnyway() {
+      // export anyway if rejectDeadButOverflow is the only one that is true
+      // (ie. if all the other flags are false)
+      return !isAliveButDeadRequired
+        && !isDeadButAliveRequired
+        && !insufficientProviders
+        && !failedKeepModule;
+    }
+  }
+
+  /**
    * Determines if a patient meets the requested criteria.
    * If a patient does not meet the criteria the process will be repeated so a new one is generated
    * @param person the patient to check if we want to export them
    * @param finishTime the time simulation finished
    * @param index Target index in the whole set of people to generate 
    * @param isAlive Whether the patient is alive at end of simulation.
-   * @return true if patient meets criteria, false otherwise
+   * @return CriteriaCheck to determine if the patient should be exported/re-simulated
    */
-  public boolean patientMeetsCriteria(Person person, long finishTime, int index, boolean isAlive) {
-    // IMPORTANT - make sure this list is aligned with the mustSkipExport check above
-    if (!isAlive && !onlyDeadPatients && this.options.overflow) { 
-      // if patient is not alive and the criteria isn't dead patients new patient is needed
-      // however in this one case we still want to export the patient
-      return false;
-    }
+  public CriteriaCheck checkCriteria(Person person, long finishTime, int index, boolean isAlive) {
+    CriteriaCheck check = new CriteriaCheck();
 
-    if (isAlive && onlyDeadPatients) {
-      // if patient is alive and the criteria is dead patients new patient is needed
-      return false;
-    }
+    check.rejectDeadButOverflow = !isAlive && !onlyDeadPatients && this.options.overflow;
+    // if patient is not alive and the criteria isn't dead patients new patient is needed
+    // however in this one case we still want to export the patient
 
-    if (!isAlive && onlyAlivePatients) {
-      // if patient is not alive and the criteria is alive patients new patient is needed
-      return false;
-    }
+    check.isAliveButDeadRequired = isAlive && onlyDeadPatients;
+    // if patient is alive and the criteria is dead patients new patient is needed
+
+    check.isDeadButAliveRequired = !isAlive && onlyAlivePatients;
+    // if patient is not alive and the criteria is alive patients new patient is needed
 
     int providerCount = person.providerCount();
     int providerMinimum = 1;
@@ -575,18 +600,19 @@ public class Generator implements RandomNumberGenerator {
       providerMinimum = recordGroup.count;
     }
 
-    if (providerCount < providerMinimum) {
-      // if provider count less than provider min new patient is needed
-      return false;
-    }
+    check.insufficientProviders = providerCount < providerMinimum;
+    // if provider count less than provider min new patient is needed
 
     if (this.keepPatientsModule != null) {
-      this.keepPatientsModule.process(person, finishTime, false);
-      State terminal = person.history.get(0);
-      return terminal.name.equals("Keep");
+      // this one might be slow to process, so only do it if the other things are true
+      if (!check.isAliveButDeadRequired && !check.isDeadButAliveRequired) {
+        this.keepPatientsModule.process(person, finishTime, false);
+        State terminal = person.history.get(0);
+        check.failedKeepModule = !terminal.name.equals("Keep");
+      }
     }
 
-    return true;
+    return check;
   }
 
   /**
