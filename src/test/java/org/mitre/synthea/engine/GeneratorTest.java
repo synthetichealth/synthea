@@ -96,6 +96,8 @@ public class GeneratorTest {
     Config.set("generate.only_dead_patients", "true");
     int numberOfPeople = 2;
     Generator generator = new Generator(numberOfPeople);
+    generator.options.ageSpecified = true;
+    generator.options.minAge = 50; // specify a high age to increase exposure to modules that cause death
     generator.run();
     assertEquals(0, generator.stats.get("alive").longValue());
     assertEquals(numberOfPeople, generator.stats.get("dead").longValue());

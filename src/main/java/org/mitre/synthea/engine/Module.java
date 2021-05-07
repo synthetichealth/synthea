@@ -364,7 +364,7 @@ public class Module implements Cloneable, Serializable {
     // looping until module is finished,
     // probably more than one state
     String nextStateName = null;
-    while (current.run(person, time)) {
+    while (current.run(person, time, terminateOnDeath)) {
       Long exited = current.exited;      
       nextStateName = current.transition(person, time);
       // System.out.println(" Transitioning to " + nextStateName);

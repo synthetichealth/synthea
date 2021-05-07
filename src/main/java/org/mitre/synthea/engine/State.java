@@ -163,16 +163,20 @@ public abstract class State implements Cloneable, Serializable {
 
   /**
    * Run the state. This processes the state, setting entered and exit times.
+   * This will terminate immediately if the patient is dead and `terminateOnDeath` is true.
    *
    * @param person
    *          the person being simulated
    * @param time
    *          the date within the simulated world
+   * @param terminateOnDeath
+   *          whether to terminate immediately and not process the state if the patient is dead
+   *          (has no effect on patients that are alive)
    * @return `true` if processing should continue to the next state, `false` if the processing
    *         should halt for this time step.
    */
-  public boolean run(Person person, long time) {
-    if (!person.alive(time)) {
+  public boolean run(Person person, long time, boolean terminateOnDeath) {
+    if (terminateOnDeath && !person.alive(time)) {
       return false;
     }
     if (this.entered == null) {
