@@ -1374,22 +1374,23 @@
     "Wait for Age 50": {
       "type": "Guard",
       "allow": {
-        "condition_type": "Age",
-        "operator": ">=",
-        "quantity": 50,
-        "unit": "years",
-        "value": 0
+        "condition_type": "And",
+        "conditions": [
+          {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 50,
+            "unit": "years",
+            "value": 0
+          },
+          {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 2010
+          }
+        ]
       },
-      "direct_transition": "Random Delay After Patient Turns 50"
-    },
-    "Random Delay After Patient Turns 50": {
-      "type": "Delay",
-      "direct_transition": "Screening_Visit",
-      "range": {
-        "low": 0,
-        "high": 50,
-        "unit": "years"
-      }
+      "direct_transition": "Screening_Visit"
     },
     "Call_Intensive_Submodule": {
       "type": "CallSubmodule",
