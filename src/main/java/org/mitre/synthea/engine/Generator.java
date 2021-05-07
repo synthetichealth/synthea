@@ -234,15 +234,6 @@ public class Generator implements RandomNumberGenerator {
     this.stats = Collections.synchronizedMap(new HashMap<String, AtomicInteger>());
     this.modulePredicate = getModulePredicate();
 
-    if (options.keepPatientsModulePath != null) {
-      try {
-        Path path = options.keepPatientsModulePath.toPath().toAbsolutePath();
-        this.keepPatientsModule = Module.loadFile(path, false, null, true);
-      } catch (Exception e) {
-        throw new ExceptionInInitializerError(e);
-      }
-    }
-
     stats.put("alive", new AtomicInteger(0));
     stats.put("dead", new AtomicInteger(0));
 
@@ -260,6 +251,16 @@ public class Generator implements RandomNumberGenerator {
     }
     List<String> coreModuleNames = getModuleNames(Module.getModules(path -> false));
     List<String> moduleNames = getModuleNames(Module.getModules(modulePredicate)); 
+
+    if (options.keepPatientsModulePath != null) {
+      try {
+        Path path = options.keepPatientsModulePath.toPath().toAbsolutePath();
+        this.keepPatientsModule = Module.loadFile(path, false, null, true);
+      } catch (Exception e) {
+        throw new ExceptionInInitializerError(e);
+      }
+    }
+
     Costs.loadCostData(); // ensure cost data loads early
     
     String locationName;
@@ -484,12 +485,18 @@ public class Generator implements RandomNumberGenerator {
             throw new RuntimeException(msg);
           }
 
-          // rotate the seed so the next attempt gets a consistent but different one
-          personSeed = randomForDemographics.nextLong();
-          continue;
-          // skip the other stuff if the patient doesn't meet our goals
-          // note that this skips ahead to the while check
-          // also note, this may run forever if the requested criteria are impossible to meet
+          boolean mustSkipExport = !(!isAlive && !onlyDeadPatients && this.options.overflow);
+          // this should be false for any clauses in patientMeetsCriteria below
+          // when we want to export this patient, but keep trying to produce one meeting criteria
+
+          if (mustSkipExport) {
+            // rotate the seed so the next attempt gets a consistent but different one
+            personSeed = randomForDemographics.nextLong();
+            continue;
+            // skip the other stuff if the patient doesn't meet our goals
+            // note that this skips ahead to the while check
+            // also note, this may run forever if the requested criteria are impossible to meet
+          }
         }
 
         recordPerson(person, index);
@@ -542,8 +549,10 @@ public class Generator implements RandomNumberGenerator {
    * @return true if patient meets criteria, false otherwise
    */
   public boolean patientMeetsCriteria(Person person, long finishTime, int index, boolean isAlive) {
+    // IMPORTANT - make sure this list is aligned with the mustSkipExport check above
     if (!isAlive && !onlyDeadPatients && this.options.overflow) { 
       // if patient is not alive and the criteria isn't dead patients new patient is needed
+      // however in this one case we still want to export the patient
       return false;
     }
 
