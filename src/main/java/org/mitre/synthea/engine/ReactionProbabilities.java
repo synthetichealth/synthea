@@ -5,18 +5,26 @@ import org.apache.commons.math3.util.Pair;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
-import java.util.HashMap;
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ReactionProbabilities {
+public class ReactionProbabilities implements Serializable {
   private static final String SEVERE = "severe";
   private static final String MODERATE = "moderate";
   private static final String MILD = "mild";
   // Used in the case that the reaction does not happen for the individual
   private static final String NONE = "none";
 
-  private class SeverityProbability {
+  public HealthRecord.Code getReaction() {
+    return reaction;
+  }
+
+  public void setReaction(HealthRecord.Code reaction) {
+    this.reaction = reaction;
+  }
+
+  public static class SeverityProbability implements Serializable {
     private String level;
     private float value;
 
@@ -42,58 +50,52 @@ public class ReactionProbabilities {
     }
   }
 
-  private HashMap<String, List<SeverityProbability>> possibleReactions;
-  private HashMap<String, EnumeratedDistribution<String>> reactionSeverityDistributions;
+  private HealthRecord.Code reaction;
+  private List<SeverityProbability> possibleSeverities;
+  private EnumeratedDistribution<String> severityDistribution;
 
-  public ReactionProbabilities(HashMap<String, List<SeverityProbability>> possibleReactions) {
-    this.possibleReactions = possibleReactions;
+
+  public ReactionProbabilities(HealthRecord.Code code, List<SeverityProbability> possibleReactions) {
+    this.reaction = code;
+    this.possibleSeverities = possibleReactions;
   }
 
   public boolean isPopulated() {
-    return !this.possibleReactions.isEmpty();
+    return !this.possibleSeverities.isEmpty();
   }
 
   public void buildReactionDistributions() {
     if (!this.validate()) {
       throw new IllegalStateException("Invalid distribution values specified");
     }
-    this.reactionSeverityDistributions = new HashMap();
-    this.possibleReactions.forEach((condition, spList) -> {
-      List probPairs = spList.stream()
-          .map(sp -> new Pair(sp.getLevel(), sp.getValue()))
+    List probPairs = this.possibleSeverities.stream()
+          .map(sp -> new Pair(sp.getLevel(), (double) sp.getValue()))
           .collect(Collectors.toList());
-      this.reactionSeverityDistributions.put(condition,
-          new EnumeratedDistribution<String>(probPairs));
-    });
+    this.severityDistribution = new EnumeratedDistribution<String>(probPairs);
   }
 
   public boolean validate() {
-    return possibleReactions.values().stream().anyMatch(spList -> {
-      return spList.stream()
-          .mapToDouble(severityProbability -> severityProbability.getValue()).sum() > 1;
-    });
+    return possibleSeverities.stream().mapToDouble(sp -> sp.getValue()).sum() <= 1;
   }
 
-  public HashMap<String, HealthRecord.ReactionSeverity> generateReactions(Person person) {
-    HashMap<String, HealthRecord.ReactionSeverity> reactions = new HashMap();
-    this.reactionSeverityDistributions.forEach((condition, distribution) -> {
-      distribution.reseedRandomGenerator(person.seed);
-      String severity = distribution.sample();
-      switch (severity) {
-        case SEVERE:
-          reactions.put(condition, HealthRecord.ReactionSeverity.SEVERE);
-          break;
-        case MODERATE:
-          reactions.put(condition, HealthRecord.ReactionSeverity.MODERATE);
-          break;
-        case MILD:
-          reactions.put(condition, HealthRecord.ReactionSeverity.MILD);
-          break;
-        case NONE:
-          // do nothing
-          break;
-      }
-    });
-    return reactions;
+  public HealthRecord.ReactionSeverity generateSeverity(Person person) {
+    if (this.isPopulated() && this.severityDistribution == null) {
+      this.buildReactionDistributions();
+    }
+    this.severityDistribution.reseedRandomGenerator(person.seed);
+    String severity = this.severityDistribution.sample();
+    switch (severity) {
+      case SEVERE:
+        return HealthRecord.ReactionSeverity.SEVERE;
+      case MODERATE:
+        return HealthRecord.ReactionSeverity.MODERATE;
+      case MILD:
+        return HealthRecord.ReactionSeverity.MILD;
+      case NONE:
+        // do nothing
+        return null;
+    }
+    //should never get here
+    return null;
   }
 }

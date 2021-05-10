@@ -1107,7 +1107,7 @@ public abstract class State implements Cloneable, Serializable {
   public static class AllergyOnset extends OnsetState {
     private String allergyType;
     private String category;
-    private ReactionProbabilities reactions;
+    private List<ReactionProbabilities> reactions;
 
     @Override
     public void diagnose(Person person, long time) {
@@ -1123,8 +1123,15 @@ public abstract class State implements Cloneable, Serializable {
         person.attributes.put(assignToAttribute, entry);
       }
 
-      if (this.reactions != null && this.reactions.isPopulated()) {
-        allergy.reactions = this.reactions.generateReactions(person);
+      if (this.reactions != null && !this.reactions.isEmpty()) {
+        HashMap<Code, HealthRecord.ReactionSeverity> reactions = new HashMap();
+        this.reactions.forEach(rp -> {
+          HealthRecord.ReactionSeverity rs = rp.generateSeverity(person);
+          if (rs != null) {
+            reactions.put(rp.getReaction(), rs);
+          }
+        });
+        allergy.reactions = reactions;
       }
 
       diagnosed = true;

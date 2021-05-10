@@ -613,7 +613,7 @@ public class HealthRecord implements Serializable {
   public class Allergy extends Entry {
     public String allergyType;
     public String category;
-    public HashMap<String, ReactionSeverity> reactions;
+    public HashMap<Code, ReactionSeverity> reactions;
 
     /**
      * Constructor for Entry.

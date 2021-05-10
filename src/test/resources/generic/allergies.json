@@ -15,7 +15,23 @@
                 "display": "Allergy to eggs"
             }],
             "target_encounter": "Dr_Visit",
-            "direct_transition": "Dr_Visit"
+            "direct_transition": "Dr_Visit",
+            "reactions": [
+                {
+                    "reaction": {"system":  "SNOMED-CT", "code": "21626009", "display":  "Allergic skin rash"},
+                    "possible_severities": [
+                        {"level":  "moderate", "value":  0.25},
+                        {"level":  "mild", "value":  0.75}
+                    ]
+                },
+                {
+                    "reaction": {"system":  "SNOMED-CT", "code": "91941002", "display":  "Food anaphylaxis"},
+                    "possible_severities": [
+                        {"level":  "severe", "value":  0.01},
+                        {"level":  "none", "value":  0.98}
+                    ]
+                }
+            ]
         },
         "Dr_Visit": {
             "type": "Encounter",
