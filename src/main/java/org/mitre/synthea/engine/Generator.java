@@ -530,10 +530,6 @@ public class Generator implements RandomNumberGenerator {
       // Add the person to their household.
       fixedRecordGroupManager.addPersonToHousehold(person,
           (String) person.attributes.get(Person.HOUSEHOLD_ROLE));
-    }
-
-    if (Generator.fixedRecordGroupManager != null) {
-      // Initialize the person to their fixed record attributes if used.
       this.setFixedDemographics(person);
       person.lastUpdated = (long) person.attributes.get(Person.BIRTHDATE);
     }
@@ -564,7 +560,6 @@ public class Generator implements RandomNumberGenerator {
     // Reset person's default records after attributes have been reset.
     person.initializeDefaultHealthRecords();
     person.attributes.put(Person.BIRTHDATE, frg.getSeedBirthdate());
-    // Add the person to their household.
   }
 
   /**

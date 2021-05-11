@@ -75,7 +75,6 @@ public class FixedRecordTest {
    */
   @BeforeClass
   public static void setup() {
-    Generator.DEFAULT_STATE = Config.get("test_state.default", "California");
     Provider.clear();
     Payer.clear();
     // Create a generator with the preset fixed demographics test file.
@@ -96,7 +95,6 @@ public class FixedRecordTest {
    */
   @AfterClass
   public static void resetConfig() {
-    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.split_records", "false");
     Config.set("generate.append_numbers_to_person_names", "true");
     Config.set("generate.only_alive_patients", "false");

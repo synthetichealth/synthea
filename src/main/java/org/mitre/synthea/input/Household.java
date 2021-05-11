@@ -114,13 +114,19 @@ public class Household {
 
     // Iterate through the variant records and assign them to their relevant
     // FixedRecordGroups.
+    System.out.println("Variant records: " + this.variantRecords);
     for (FixedRecord variant : this.variantRecords) {
+      System.out.println("Check 1: " + variant + variant.householdRole);
       for (FixedRecordGroup frg : this.fixedRecordGroups.get(variant.householdRole)) {
+        System.out.println("Check 2: " + variant.householdRole + variant.seedID);
         if (frg.getSeedId().equals(variant.seedID)) {
+          System.out.println("Check 3: " + variant);
           frg.addVariantRecord(variant);
         }
       }
     }
+
+    System.out.println("DONE ADDING VARIANTS");
 
     // Iterate through each fixed record group and set their random initial variant
     // records.
@@ -148,6 +154,8 @@ public class Household {
     int currentYear = 2020; // TODO - should not be hardcoded, need to get current year.
     int rangeOfYears = currentYear - householdStartYear;
     List<Integer> addressYearRanges = new ArrayList<Integer>();
+    // There will be a random number of addresses from 1 - number of seeds.
+    // int numberOfAddresses = this.random.nextInt(this.fixedRecordGroups.values().iterator().next().size()) + 1;
     int numberOfAddresses = this.fixedRecordGroups.values().iterator().next().size();
     for (int i = 0; i < numberOfAddresses; i++) {
       int newYear = this.random().nextInt(rangeOfYears) + householdStartYear + 1;
@@ -170,7 +178,7 @@ public class Household {
    * @return int The earliest birth year of this household.
    */
   private int getBirthYearOfOldestMember() {
-    int earliestYear = 9999; // TODO - initial earliest year should not be hardcoded.
+    int earliestYear = 99999;
     for (List<FixedRecordGroup> frgs : this.fixedRecordGroups.values()) {
       int thisBirthYear = frgs.get(0).getSeedBirthYear();
       if (thisBirthYear < earliestYear) {
@@ -233,10 +241,8 @@ public class Household {
    */
   public void addMember(Person person, String householdRole) {
     this.members.put(householdRole, person);
-
     // Reset the current address sequence for this person.
     this.currentAddressSequences.put(householdRole, 0);
-
   }
 
   /**

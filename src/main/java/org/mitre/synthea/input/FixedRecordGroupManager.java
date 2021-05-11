@@ -98,6 +98,7 @@ public class FixedRecordGroupManager {
     // Iterate through each household and initialize it.
     for (Household household : this.householdsList) {
       String householdId = household.seedRecords.get(0).householdId;
+      System.out.println("Household ID: " + householdId);
       this.householdsMap.put(householdId, household.initializeHousehold(householdsSeed));
     }
     // Now that we're done with the initial imported households list, set it to null
