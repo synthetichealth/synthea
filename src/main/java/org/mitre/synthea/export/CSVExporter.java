@@ -1644,7 +1644,7 @@ public class CSVExporter {
       for (int i = 0; i < 4; i++) {
         String diagnosisCode = diagnosisCodes[i];
         if (diagnosisCode != null && !diagnosisCode.isEmpty()) {
-          s.append(diagnosisCode).append(',');
+          s.append(i+1).append(','); // don't write the code, write the reference number
         } else {
           s.append(',');
         }
