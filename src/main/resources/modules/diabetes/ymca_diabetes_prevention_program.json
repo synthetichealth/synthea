@@ -31,22 +31,22 @@
                 "conditions": [
                   {
                     "condition_type": "Vital Sign",
-                    "vital_sign": "bmi",
+                    "vital_sign": "BMI",
                     "operator": ">=",
-                    "value": 0
+                    "value": 25
                   },
                   {
                     "condition_type": "And",
                     "conditions": [
                       {
-                        "condition_type": "Attribute",
-                        "attribute": "a1c",
+                        "condition_type": "Vital Sign",
+                        "vital_sign": "Blood Glucose",
                         "operator": ">=",
                         "value": 5.7
                       },
                       {
-                        "condition_type": "Attribute",
-                        "attribute": "a1c",
+                        "condition_type": "Vital Sign",
+                        "vital_sign": "Blood Glucose",
                         "operator": "<=",
                         "value": 6.4
                       }
@@ -97,11 +97,14 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
+          "code": 718361005,
+          "display": "Weight management program (regime/therapy) - YMCA"
         }
       ],
-      "direct_transition": "Delay_1_Hour"
+      "direct_transition": "Delay_1_Hour",
+      "remarks": [
+        "https://snomedbrowser.com/Codes/Details/718361005"
+      ]
     },
     "Set_Perfect_Visit_Adherence": {
       "type": "SetAttribute",
@@ -252,7 +255,7 @@
     "Wait_For_Wellness_Encounter": {
       "type": "Encounter",
       "reason": "",
-      "direct_transition": "Set_A1C_To_Normal_Level",
+      "direct_transition": "Record_Normal_A1C",
       "wellness": true
     },
     "End_Wellness": {
@@ -260,11 +263,27 @@
       "direct_transition": "Terminal"
     },
     "Trigger_2%_Weight_Loss_Trajectory": {
-      "type": "Simple",
+      "type": "SetAttribute",
+      "attribute": "target_weight_loss",
       "direct_transition": "Successful_YMCA_Diabetes_Program",
       "remarks": [
         "Because triggering weight loss is a multi-year process, we'll start it now because we know this person will have perfect adherence to the YMCA Diabetes Prevention Program."
-      ]
+      ],
+      "value": 2
+    },
+    "Record_Normal_A1C": {
+      "type": "Observation",
+      "vital_sign": "Blood Glucose",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "4548-4",
+          "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+        }
+      ],
+      "unit": "%",
+      "direct_transition": "End_Wellness"
     }
   },
   "gmf_version": 2

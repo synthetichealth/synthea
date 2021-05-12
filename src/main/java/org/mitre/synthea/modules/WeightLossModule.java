@@ -363,7 +363,14 @@ public final class WeightLossModule extends Module {
     person.attributes.put(WEIGHT_LOSS_ADHERENCE, stickToPlan);
     if (stickToPlan) {
       if (person.ageInYears(time) >= 20) {
-        double percentWeightLoss = person.rand(minLoss, maxLoss);
+        double minLossPercentage = minLoss;
+        double maxLossPercentage = maxLoss;
+        if (person.attributes.get(Person.TARGET_WEIGHT_LOSS) != null) {
+          double targetWeightLoss = (double) person.attributes.get(Person.TARGET_WEIGHT_LOSS);
+          minLossPercentage = targetWeightLoss;
+          maxLossPercentage = targetWeightLoss;
+        }
+        double percentWeightLoss = person.rand(minLossPercentage, maxLossPercentage);
         person.attributes.put(WEIGHT_LOSS_PERCENTAGE, percentWeightLoss);
       } else {
         double bmiPercentileChange = person.rand() * maxPedPercentileChange;
