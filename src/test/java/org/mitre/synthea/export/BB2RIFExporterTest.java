@@ -21,6 +21,7 @@ import org.mitre.synthea.export.BB2RIFExporter.CarrierFields;
 import org.mitre.synthea.export.BB2RIFExporter.CodeMapper;
 import org.mitre.synthea.export.BB2RIFExporter.DMEFields;
 import org.mitre.synthea.export.BB2RIFExporter.InpatientFields;
+import org.mitre.synthea.export.BB2RIFExporter.MBI;
 import org.mitre.synthea.export.BB2RIFExporter.StaticFieldConfig;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
@@ -127,6 +128,22 @@ public class BB2RIFExporterTest {
     assertEquals("J20.9", mapper.map("10509002", generator));
     assertEquals("J209", mapper.map("10509002", generator, true));
     assertFalse(mapper.canMap("not a code"));
+  }
+  
+  @Test
+  public void testMBI() {
+    MBI mbi = new MBI(MBI.MIN_MBI);
+    assertEquals("1S00A00AA00", mbi.toString());
+    mbi = new MBI(MBI.MAX_MBI);
+    assertEquals("9SY9YY9YY99", mbi.toString());
+    mbi = MBI.parse("1S00A00AA00");
+    assertEquals("1S00A00AA00", mbi.toString());
+    mbi = MBI.parse("1S00-A00-AA00");
+    assertEquals("1S00A00AA00", mbi.toString());
+    mbi = MBI.parse("9SY9YY9YY99");
+    assertEquals("9SY9YY9YY99", mbi.toString());
+    mbi = MBI.parse("9SY9-YY9-YY99");
+    assertEquals("9SY9YY9YY99", mbi.toString());
   }
   
   @Test

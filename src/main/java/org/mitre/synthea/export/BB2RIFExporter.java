@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
@@ -92,6 +94,7 @@ public class BB2RIFExporter implements Flushable {
   private AtomicInteger claimId; // per claim per encounter
   private AtomicInteger claimGroupId; // per encounter
   private AtomicInteger pdeId; // per medication claim
+  private AtomicReference<MBI> mbi;
 
   private List<LinkedHashMap<String, String>> carrierLookup;
   private CodeMapper conditionCodeMapper;
@@ -104,6 +107,7 @@ public class BB2RIFExporter implements Flushable {
 
   private static final String BB2_BENE_ID = "BB2_BENE_ID";
   private static final String BB2_HIC_ID = "BB2_HIC_ID";
+  private static final String BB2_MBI = "BB2_MBI";
   
   /**
    * Day-Month-Year date format.
@@ -128,6 +132,8 @@ public class BB2RIFExporter implements Flushable {
     claimId = new AtomicInteger();
     claimGroupId = new AtomicInteger();
     pdeId = new AtomicInteger();
+    String mbiStartStr = Config.get("exporter.bfd.mbi_start", "1S00-A00-AA00");
+    mbi = new AtomicReference<>(MBI.parse(mbiStartStr));
     conditionCodeMapper = new CodeMapper("condition_code_map.json");
     medicationCodeMapper = new CodeMapper("medication_code_map.json");
     drgCodeMapper = new CodeMapper("drg_code_map.json");
@@ -336,7 +342,9 @@ public class BB2RIFExporter implements Flushable {
     String hicId = personId.split("-")[0]; // first segment of UUID
     person.attributes.put(BB2_HIC_ID, hicId);
     fieldValues.put(BeneficiaryFields.BENE_CRNT_HIC_NUM, hicId);
-    fieldValues.put(BeneficiaryFields.MBI_NUM, hicId); // TODO: need better MBI NUM
+    String mbiStr = mbi.getAndUpdate((v) -> v.nextMBI()).toString();
+    fieldValues.put(BeneficiaryFields.MBI_NUM, mbiStr);
+    person.attributes.put(BB2_MBI, mbiStr);
     fieldValues.put(BeneficiaryFields.BENE_SEX_IDENT_CD,
             getBB2SexCode((String)person.attributes.get(Person.GENDER)));
     String zipCode = (String)person.attributes.get(Person.ZIP);
@@ -403,7 +411,8 @@ public class BB2RIFExporter implements Flushable {
     fieldValues.put(BeneficiaryHistoryFields.BENE_ID, beneIdStr);
     String hicId = (String)person.attributes.get(BB2_HIC_ID);
     fieldValues.put(BeneficiaryHistoryFields.BENE_CRNT_HIC_NUM, hicId);
-    fieldValues.put(BeneficiaryHistoryFields.MBI_NUM, hicId);
+    String mbiStr = (String)person.attributes.get(BB2_MBI);
+    fieldValues.put(BeneficiaryHistoryFields.MBI_NUM, mbiStr);
     fieldValues.put(BeneficiaryHistoryFields.BENE_SEX_IDENT_CD,
             getBB2SexCode((String)person.attributes.get(Person.GENDER)));
     long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
@@ -1025,7 +1034,8 @@ public class BB2RIFExporter implements Flushable {
           dme.writeValues(DMEFields.class, fieldValues);
         } else {
           // TODO remove this prior to PR merge
-          System.err.println(" *** Possibly Missing DME Code: " + device.codes.get(0).code + " " + device.codes.get(0).display);
+          System.err.println(" *** Possibly Missing DME Code: " + device.codes.get(0).code
+                  + " " + device.codes.get(0).display);
         }
       }
     }
@@ -1213,7 +1223,8 @@ public class BB2RIFExporter implements Flushable {
    */
   private void exportSNF(Person person, long stopTime) throws IOException {
     HashMap<SNFFields, String> fieldValues = new HashMap<>();
-    boolean previousEmergency, previousUrgent;
+    boolean previousEmergency;
+    boolean previousUrgent;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       previousEmergency = encounter.type.equals(EncounterType.EMERGENCY.toString());
@@ -3723,4 +3734,121 @@ public class BB2RIFExporter implements Flushable {
     }
   }
   
+  /**
+   * Utility class for working with CMS MBIs.
+   * Note that this class fixes the value of character position 2 to be 'S' and will fail to
+   * parse MBIs that do not conform to this restriction.
+   * 
+   * @see <a href="https://www.cms.gov/Medicare/New-Medicare-Card/Understanding-the-MBI-with-Format.pdf">
+   * https://www.cms.gov/Medicare/New-Medicare-Card/Understanding-the-MBI-with-Format.pdf</a>
+   */
+  static class MBI {
+
+    private static final char[] NUM = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    private static final char[] NON_ZERO_NUM = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    private static final char[] ALPHA = {
+      'A', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'U', 'V',
+      'W', 'X', 'Y'
+    };
+    private static final char[] ALPHA_NUM = {
+      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 
+      'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'U', 'V', 'W', 'X', 'Y'
+    };
+    private static final int[] MULTIPLIER = {10, 10, 20, 20, 10, 30, 20, 10, 30, 1, 9};
+    private static final char[] FIXED = {'S'};
+    private static final Map<Integer, char[]> LOOKUP_MAP = Collections.unmodifiableMap(
+        new HashMap<Integer, char[]>() {
+          { 
+            put(1, FIXED);
+            put(9, NON_ZERO_NUM);
+            put(10, NUM);
+            put(20, ALPHA);
+            put(30, ALPHA_NUM);
+          }
+        }
+    );
+    public static final long MIN_MBI = 0;
+    public static final long MAX_MBI = 647999999999L;
+    
+    long value;
+    
+    public MBI(long value) {
+      if (value < MIN_MBI || value > MAX_MBI) {
+        throw new IllegalArgumentException(String.format("MBI out of range (%d - %d)", MIN_MBI,
+                MAX_MBI));
+      }
+      this.value = value;
+    }
+    
+    public static MBI parse(String mbiStr) {
+      mbiStr = mbiStr.replaceAll("-", "").toUpperCase();
+      if (mbiStr.length() != 11) {
+        throw new IllegalArgumentException(String.format("Invalid MBI (%s)", mbiStr));
+      }
+      long v = 0;
+      for (int i = 0; i < 11; i++) {
+        int multiplier = MULTIPLIER[10 - i];
+        v = v * multiplier;
+        char c = mbiStr.charAt(i);
+        char[] range = LOOKUP_MAP.get(multiplier);
+        int index = indexOf(range, c);
+        if (index == -1) {
+          throw new IllegalArgumentException(String.format(
+                  "Unexpected character (%c) at position %d in %s", c, i, mbiStr));
+        }
+        v += index;
+      }
+      return new MBI(v);
+    }
+    
+    private static int indexOf(char[] arr, char v) {
+      for (int i = 0; i < arr.length; i++) {
+        if (arr[i] == v) {
+          return i;
+        }
+      }
+      return -1;
+    }
+    
+    public MBI nextMBI() {
+      return new MBI(this.value + 1);
+    }
+    
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder();
+      long v = this.value;
+      for (int i = 0; i < 11; i++) {
+        long p = v % MULTIPLIER[i];
+        sb.insert(0, LOOKUP_MAP.get(MULTIPLIER[i])[(int)p]);
+        v = v / MULTIPLIER[i];
+      }
+      return sb.toString();
+    }
+
+    @Override
+    public int hashCode() {
+      int hash = 5;
+      hash = 53 * hash + (int) (this.value ^ (this.value >>> 32));
+      return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      final MBI other = (MBI) obj;
+      if (this.value != other.value) {
+        return false;
+      }
+      return true;
+    }    
+  }
 }
