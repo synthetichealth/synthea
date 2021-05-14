@@ -580,6 +580,10 @@
 <dd>
 <div class="block">POJO configuration for a chart series with data from a Person object.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.html#checkCriteria-org.mitre.synthea.world.agents.Person-long-int-boolean-">checkCriteria(Person, long, int, boolean)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a></dt>
+<dd>
+<div class="block">Determines if a patient meets the requested criteria.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#checkToPayMonthlyPremium-long-">checkToPayMonthlyPremium(long)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>
 <div class="block">Checks if the person has paid their monthly premium.</div>
@@ -3196,6 +3200,10 @@
 </a>
 <h2 class="title">K</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.GeneratorOptions.html#keepPatientsModulePath">keepPatientsModulePath</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.GeneratorOptions.html" title="class in org.mitre.synthea.engine">Generator.GeneratorOptions</a></dt>
+<dd>
+<div class="block">Path to a module defining which patients should be kept and exported.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Distribution.html#kind">kind</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Distribution.html" title="class in org.mitre.synthea.engine">Distribution</a></dt>
 <dd>&nbsp;</dd>
 </dl>
@@ -3280,8 +3288,10 @@
 <dd>
 <div class="block">Load the NHANES samples from resources into an EnumeratedDistribution.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Module.html#loadFile-java.nio.file.Path-java.nio.file.Path-java.util.Properties-">loadFile(Path, Path, Properties)</a></span> - Static method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></dt>
-<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Module.html#loadFile-java.nio.file.Path-boolean-java.util.Properties-boolean-">loadFile(Path, boolean, Properties, boolean)</a></span> - Static method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></dt>
+<dd>
+<div class="block">Loads the module defined from the file at the given path.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Payer.html#loadNoInsurance--">loadNoInsurance()</a></span> - Static method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a></dt>
 <dd>
 <div class="block">Loads the noInsurance Payer.</div>
@@ -3900,10 +3910,6 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html#PATHOLOGY">PATHOLOGY</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html" title="class in org.mitre.synthea.world.concepts">ClinicianSpecialty</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.html#patientMeetsCriteria-boolean-int-int-">patientMeetsCriteria(boolean, int, int)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a></dt>
-<dd>
-<div class="block">Determines if a patient meets the requested criteria.</div>
-</dd>
 <dt><a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents"><span class="typeNameLink">Payer</span></a> - Class in <a href="org/mitre/synthea/world/agents/package-summary.html">org.mitre.synthea.world.agents</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#payer">payer</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
@@ -4183,6 +4189,10 @@
 <div class="block">Perform the operation on the HealthRecord.Encounter(s).</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Module.html#process-org.mitre.synthea.world.agents.Person-long-">process(Person, long)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></dt>
+<dd>
+<div class="block">Process this Module with the given Person at the specified time within the simulation.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Module.html#process-org.mitre.synthea.world.agents.Person-long-boolean-">process(Person, long, boolean)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></dt>
 <dd>
 <div class="block">Process this Module with the given Person at the specified time within the simulation.</div>
 </dd>
@@ -4709,7 +4719,7 @@
 <div class="block">Solves the model at each time step for the specified duration using the provided inputs
  as initial parameters.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.html#run-org.mitre.synthea.world.agents.Person-long-">run(Person, long)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.html" title="class in org.mitre.synthea.engine">State</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.html#run-org.mitre.synthea.world.agents.Person-long-boolean-">run(Person, long, boolean)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.html" title="class in org.mitre.synthea.engine">State</a></dt>
 <dd>
 <div class="block">Run the state.</div>
 </dd>

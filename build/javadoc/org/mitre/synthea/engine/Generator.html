@@ -244,6 +244,15 @@ implements <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>org.mitre.synthea.engine.Generator.CriteriaCheck</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#checkCriteria-org.mitre.synthea.world.agents.Person-long-int-boolean-">checkCriteria</a></span>(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
+             long&nbsp;finishTime,
+             int&nbsp;index,
+             boolean&nbsp;isAlive)</code>
+<div class="block">Determines if a patient meets the requested criteria.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#createPerson-long-java.util.Map-">createPerson</a></span>(long&nbsp;personSeed,
             java.util.Map&lt;java.lang.String,java.lang.Object&gt;&nbsp;demoAttributes)</code>
@@ -251,32 +260,24 @@ implements <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.
  they die, whichever comes sooner.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#generatePerson-int-">generatePerson</a></span>(int&nbsp;index)</code>
 <div class="block">Generate a completely random Person.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#generatePerson-int-long-">generatePerson</a></span>(int&nbsp;index,
               long&nbsp;personSeed)</code>
 <div class="block">Generate a random Person, from the given seed.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../../../../org/mitre/synthea/input/FixedRecordGroup.html" title="class in org.mitre.synthea.input">FixedRecordGroup</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#importFixedPatientDemographicsFile--">importFixedPatientDemographicsFile</a></span>()</code>
 <div class="block">Imports the fixed demographics records file when using fixed patient
  demographics.</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#patientMeetsCriteria-boolean-int-int-">patientMeetsCriteria</a></span>(boolean&nbsp;isAlive,
-                    int&nbsp;providerCount,
-                    int&nbsp;providerMinimum)</code>
-<div class="block">Determines if a patient meets the requested criteria.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
@@ -611,24 +612,26 @@ implements <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.
 </dl>
 </li>
 </ul>
-<a name="patientMeetsCriteria-boolean-int-int-">
+<a name="checkCriteria-org.mitre.synthea.world.agents.Person-long-int-boolean-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>patientMeetsCriteria</h4>
-<pre>public&nbsp;boolean&nbsp;patientMeetsCriteria(boolean&nbsp;isAlive,
-                                    int&nbsp;providerCount,
-                                    int&nbsp;providerMinimum)</pre>
+<h4>checkCriteria</h4>
+<pre>public&nbsp;org.mitre.synthea.engine.Generator.CriteriaCheck&nbsp;checkCriteria(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
+                                                                      long&nbsp;finishTime,
+                                                                      int&nbsp;index,
+                                                                      boolean&nbsp;isAlive)</pre>
 <div class="block">Determines if a patient meets the requested criteria.
  If a patient does not meet the criteria the process will be repeated so a new one is generated</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - the patient to check if we want to export them</dd>
+<dd><code>finishTime</code> - the time simulation finished</dd>
+<dd><code>index</code> - Target index in the whole set of people to generate</dd>
 <dd><code>isAlive</code> - Whether the patient is alive at end of simulation.</dd>
-<dd><code>providerCount</code> - Number of providers in the patient's record</dd>
-<dd><code>providerMinimum</code> - Minimum number of providers required</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>true if patient meets criteria, false otherwise</dd>
+<dd>CriteriaCheck to determine if the patient should be exported/re-simulated</dd>
 </dl>
 </li>
 </ul>

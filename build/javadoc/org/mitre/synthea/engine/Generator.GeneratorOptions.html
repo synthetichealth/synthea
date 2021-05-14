@@ -169,48 +169,54 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.io.File</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#keepPatientsModulePath">keepPatientsModulePath</a></span></code>
+<div class="block">Path to a module defining which patients should be kept and exported.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>java.io.File</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#localModuleDir">localModuleDir</a></span></code>
 <div class="block">When Synthea is used as a standalone library, this directory holds
  any locally created modules.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#maxAge">maxAge</a></span></code>
 <div class="block">Maximum age of people to be generated.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#minAge">minAge</a></span></code>
 <div class="block">Minimum age of people to be generated.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#overflow">overflow</a></span></code>
 <div class="block">Population as exclusively live persons or including deceased.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#population">population</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#referenceTime">referenceTime</a></span></code>
 <div class="block">Reference Time when to start Synthea.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#seed">seed</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#state">state</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.io.File</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#updatedPopulationSnapshotPath">updatedPopulationSnapshotPath</a></span></code>
 <div class="block">File used to store a population snapshot.</div>
@@ -417,6 +423,16 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;int daysToTravelForward</pre>
 <div class="block">Time period in days to evolve the population loaded from initialPopulationSnapshotPath. A
   value of -1 will evolve the population to the current system time.</div>
+</li>
+</ul>
+<a name="keepPatientsModulePath">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>keepPatientsModulePath</h4>
+<pre>public&nbsp;java.io.File keepPatientsModulePath</pre>
+<div class="block">Path to a module defining which patients should be kept and exported.</div>
 </li>
 </ul>
 <a name="referenceTime">

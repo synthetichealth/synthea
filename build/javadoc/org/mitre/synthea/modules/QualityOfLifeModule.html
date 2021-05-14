@@ -261,7 +261,7 @@ extends <a href="../../../../org/mitre/synthea/engine/Module.html" title="class 
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.mitre.synthea.engine.<a href="../../../../org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></h3>
-<code><a href="../../../../org/mitre/synthea/engine/Module.html#addModules-java.io.File-">addModules</a>, <a href="../../../../org/mitre/synthea/engine/Module.html#getModuleByPath-java.lang.String-">getModuleByPath</a>, <a href="../../../../org/mitre/synthea/engine/Module.html#getModuleNames--">getModuleNames</a>, <a href="../../../../org/mitre/synthea/engine/Module.html#getModules--">getModules</a>, <a href="../../../../org/mitre/synthea/engine/Module.html#getModules-java.util.function.Predicate-">getModules</a>, <a href="../../../../org/mitre/synthea/engine/Module.html#getState-java.lang.String-">getState</a>, <a href="../../../../org/mitre/synthea/engine/Module.html#getStateNames--">getStateNames</a>, <a href="../../../../org/mitre/synthea/engine/Module.html#loadFile-java.nio.file.Path-java.nio.file.Path-java.util.Properties-">loadFile</a></code></li>
+<code><a href="../../../../org/mitre/synthea/engine/Module.html#addModules-java.io.File-">addModules</a>, <a href="../../../../org/mitre/synthea/engine/Module.html#getModuleByPath-java.lang.String-">getModuleByPath</a>, <a href="../../../../org/mitre/synthea/engine/Module.html#getModuleNames--">getModuleNames</a>, <a href="../../../../org/mitre/synthea/engine/Module.html#getModules--">getModules</a>, <a href="../../../../org/mitre/synthea/engine/Module.html#getModules-java.util.function.Predicate-">getModules</a>, <a href="../../../../org/mitre/synthea/engine/Module.html#getState-java.lang.String-">getState</a>, <a href="../../../../org/mitre/synthea/engine/Module.html#getStateNames--">getStateNames</a>, <a href="../../../../org/mitre/synthea/engine/Module.html#loadFile-java.nio.file.Path-boolean-java.util.Properties-boolean-">loadFile</a>, <a href="../../../../org/mitre/synthea/engine/Module.html#process-org.mitre.synthea.world.agents.Person-long-boolean-">process</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -372,7 +372,8 @@ extends <a href="../../../../org/mitre/synthea/engine/Module.html" title="class 
 <pre>public&nbsp;boolean&nbsp;process(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                        long&nbsp;time)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../org/mitre/synthea/engine/Module.html#process-org.mitre.synthea.world.agents.Person-long-">Module</a></code></span></div>
-<div class="block">Process this Module with the given Person at the specified time within the simulation.</div>
+<div class="block">Process this Module with the given Person at the specified time within the simulation.
+ Processing will complete if the person dies.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="../../../../org/mitre/synthea/engine/Module.html#process-org.mitre.synthea.world.agents.Person-long-">process</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></code></dd>
