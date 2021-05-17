@@ -3,8 +3,10 @@ package org.mitre.synthea.modules;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.mitre.synthea.engine.Components.Range;
 import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.ValueGenerator;
+import org.mitre.synthea.modules.HypertensionTrial.TitrationDirection;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
 
@@ -181,6 +183,31 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     }
   }
   
+  /**
+   * Helper function to ensure a person has a consistent impact from a drug
+   * @param person
+   * @param time
+   * @param drug
+   * @param impactRange
+   * @return
+   */
+  private static double getDrugImpact(Person person, long time, String drug, Range<Double> impactRange) {
+    Map<String, Double> personalDrugImpacts = (Map<String, Double>)person.attributes.get("htn_drug_impacts");
+    if (personalDrugImpacts == null) {
+      personalDrugImpacts = new HashMap<>();
+      person.attributes.put("htn_drug_impacts", personalDrugImpacts);
+    }
+    
+    if (personalDrugImpacts.containsKey(drug)) return personalDrugImpacts.get(drug);
+    
+    // note these are intentionally flipped. "max impact" == lower number, since these are negative
+    double impact = person.rand(impactRange.high, impactRange.low);
+    
+    personalDrugImpacts.put(drug, impact);
+    
+    return impact;
+  }
+  
   private double calculateMean(Person person, long time) {
     // TODO: Take additional factors into consideration: age + gender
     boolean hypertension = (Boolean) person.attributes.getOrDefault("hypertension", false);
@@ -215,11 +242,21 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     double drugImpactDelta = 0.0;
     // see also LifecycleModule.calculateVitalSigns
     
-    for (Map.Entry<String, Double> e : HypertensionTrial.HTN_DRUG_IMPACTS.entrySet()) {
+    for (Map.Entry<String, Range<Double>> e : HypertensionTrial.HTN_DRUG_IMPACTS.entrySet()) {
       String medicationCode = e.getKey();
-      double impact = e.getValue();
+      Range<Double> impactRange = e.getValue();
       if (person.record.medicationActive(medicationCode)) {
-        // impacts are negative, so add them
+        double impact;
+        HypertensionTrial.TitrationDirection titration = HypertensionTrial.getTitrated(medicationCode, person);
+        if (titration == null) {
+          impact = getDrugImpact(person, time, medicationCode, impactRange);
+        } else if (titration.equals(HypertensionTrial.TitrationDirection.UP)) {
+          impact = impactRange.high;
+        } else {
+          impact = impactRange.low;
+        }
+        
+        // impacts are negative, so add them (ie, don't subtract them)
         drugImpactDelta += impact;
       }
     }

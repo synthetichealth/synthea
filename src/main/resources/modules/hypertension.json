@@ -851,8 +851,17 @@
     "Onset_Hypertension": {
       "type": "SetAttribute",
       "attribute": "hypertension",
-      "direct_transition": "Wellness_Encounter",
-      "value": true
+      "value": true,
+      "distributed_transition": [
+        {
+          "transition": "Onset_Severe_Hypertension",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Wellness_Encounter",
+          "distribution": 0.75
+        }
+      ]
     },
     "Black": {
       "type": "Simple",
@@ -913,6 +922,12 @@
       "attribute": "risk_of_hypertension",
       "direct_transition": "Chance_of_Hypertension",
       "value": 0.014
+    },
+    "Onset_Severe_Hypertension": {
+      "type": "SetAttribute",
+      "attribute": "hypertension_severe",
+      "direct_transition": "Wellness_Encounter",
+      "value": true
     }
   },
   "gmf_version": 1

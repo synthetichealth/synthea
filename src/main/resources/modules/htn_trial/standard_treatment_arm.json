@@ -73,7 +73,20 @@
     "Step Down": {
       "type": "CallSubmodule",
       "submodule": "StepDownTherapy",
-      "direct_transition": "Loop back"
+      "conditional_transition": [
+        {
+          "transition": "Down-Titrate",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "htn_trial_next_action",
+            "operator": "==",
+            "value": "titrate"
+          }
+        },
+        {
+          "transition": "Stop Medication"
+        }
+      ]
     },
     "Loop back": {
       "type": "EncounterEnd",
@@ -390,6 +403,54 @@
         }
       ],
       "direct_transition": "Check_SBP"
+    },
+    "Down-Titrate": {
+      "type": "MultiObservation",
+      "category": "therapy",
+      "number_of_observations": 0,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "70006-2",
+          "display": "Medication management note"
+        }
+      ],
+      "observations": [
+        {
+          "category": "therapy",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "93341-6",
+              "display": "Medication recommendation"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 182879007,
+            "display": "Medication decreased (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "18816-9",
+              "display": "Medication name + identifier"
+            }
+          ],
+          "attribute": "htn_trial_next_action_code"
+        }
+      ],
+      "direct_transition": "Loop back"
+    },
+    "Stop Medication": {
+      "type": "MedicationEnd",
+      "direct_transition": "Loop back",
+      "referenced_by_attribute": "htn_trial_next_action_code"
     }
   },
   "gmf_version": 2

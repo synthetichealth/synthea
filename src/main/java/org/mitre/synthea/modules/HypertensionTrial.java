@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.mitre.synthea.engine.Components.Range;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.Module.ModuleSupplier;
 import org.mitre.synthea.export.ExportHelper;
@@ -37,19 +38,20 @@ public class HypertensionTrial {
     String klass;
     String name;
     HealthRecord.Code code;
-    double impact;
+    double impactMin;
+    double impactMax;
     HealthRecord.Code ingredient;
     boolean prescribable;
   }
   
-  public static final LinkedHashMap<String,Set<Drug>> HTN_TRIAL_FORMULARY;
+  public static final LinkedHashMap<String, Set<Drug>> HTN_TRIAL_FORMULARY;
   
-  public static final Map<String,Double> HTN_DRUG_IMPACTS;
+  public static final Map<String, Range<Double>> HTN_DRUG_IMPACTS;
   
   static{
     try {
       LinkedHashMap<String,Set<Drug>> formulary = new LinkedHashMap<>();
-      Map<String,Double> drugImpacts = new HashMap<>();
+      Map<String, Range<Double>> drugImpacts = new HashMap<>();
       
       String csv = Utilities.readResource("htn_trial_drugs.csv");
       
@@ -63,7 +65,12 @@ public class HypertensionTrial {
         }
         
         String code = line.get("RxNorm");
-        double impact = Double.parseDouble(line.get("Impact"));
+        double impactMin = Double.parseDouble(line.get("Impact Minimum"));
+        double impactMax = Double.parseDouble(line.get("Impact Maximum"));
+
+        Range<Double> impact = new Range<>();
+        impact.low = impactMin;
+        impact.high = impactMax;
         
         drugImpacts.put(code, impact);
         
@@ -72,7 +79,8 @@ public class HypertensionTrial {
         drug.klass = klass;
         drug.name = line.get("Simple Name");
         drug.code = new HealthRecord.Code("RxNorm", code, line.get("Display"));
-        drug.impact = impact;
+        drug.impactMin = impactMin;
+        drug.impactMax = impactMax;
         drug.ingredient = null; // TODO maybe
         drug.prescribable = Boolean.parseBoolean(line.get("Prescribable")); // allow medications used elsewhere in synthea to have impacts, without letting them be prescribed here
         
@@ -87,7 +95,129 @@ public class HypertensionTrial {
     }
   }
   
+  public static int countDrugs(Person person) {
+    int count = 0;
+    for (Set<Drug> drugClass : HTN_TRIAL_FORMULARY.values()) {
+      for (Drug drug : drugClass) {
+        if (person.record.medicationActive(drug.code.code)) {
+          count++;
+        }
+      }
+    }
+    
+    return count;
+  }
+  
+  public static Drug findTherapyNotInUse(Person person) {
+    Drug nextDrug = null;
+    for (Set<Drug> drugClass : HTN_TRIAL_FORMULARY.values()) {
+      for (Drug drug : drugClass) {
+        if (person.record.medicationActive(drug.code.code)) {
+          break; // break out of drug class, the person has one in this class already
+        }
+        
+        if (!drug.prescribable) {
+          continue;
+        }
+        
+        // note: allergyActive copy-pasted from Andy's WIP branch
+        if (drug.ingredient != null && person.record.allergyActive(drug.ingredient.code)) {
+          continue;
+        }
+        
+        nextDrug = drug;
+        break;
+      }
+      if (nextDrug != null) break;
+    }
+    
+    if (nextDrug == null) {
+      System.err.println("could not find new therapy not in use, note patient is on " + countDrugs(person) + " meds");
+    }
+    
+    return nextDrug;
+  }
+  
+  
+  public static HealthRecord.Medication findTherapyToEnd(Person person) {
+    for (Set<Drug> drugClass : HTN_TRIAL_FORMULARY.values()) {
+      for (Drug drug : drugClass) {
+        if (!drug.prescribable) {
+          continue;
+        }
+        
+        if (person.record.medicationActive(drug.code.code)) {
+          return (HealthRecord.Medication) person.record.present.get(drug.code.code);
+        }
+      }
+    }
+    throw new IllegalStateException("could not find a therapy to end");
+  }
+  
+  public static Drug findNonTitratedDrug(Person person, TitrationDirection direction) {
+    Drug nonTitratedDrug = null;
+    
+    for (Set<Drug> drugClass : HTN_TRIAL_FORMULARY.values()) {
+      for (Drug drug : drugClass) {
+        if (person.record.medicationActive(drug.code.code) && !isTitrated(drug, person, direction)) {
+          nonTitratedDrug = drug;
+          break;
+        }
+        
+        if (nonTitratedDrug != null) break;
+      }
+    }
+    
+    if (nonTitratedDrug == null && direction == TitrationDirection.UP) {
+      
+      
+      for (Set<Drug> drugClass : HTN_TRIAL_FORMULARY.values()) {
+        for (Drug drug : drugClass) {
+          System.out.println(person.seed + " - " + drug.code.display + ": active:" + person.record.medicationActive(drug.code.code));
+          System.out.println(person.seed + " - " + drug.code.display + ": titrated:" + getTitrated(drug.code.code, person));
+            
+        }
+      }
+      
+      throw new IllegalStateException("could not find nontitrated drug for "+direction+", note patient is on " + countDrugs(person) + " meds, titration count: " + person.attributes.get("titration_counter"));
+    }
+    
+    return nonTitratedDrug;
+  }
+  
+  public static enum TitrationDirection { UP, DOWN };
+  
+  public static boolean isTitrated(Drug drug, Person person, TitrationDirection direction) {
+    Map<String, TitrationDirection> titratedDrugs = (Map<String, TitrationDirection>)person.attributes.get("titrated_drugs");
+    if (titratedDrugs == null || titratedDrugs.isEmpty()) return false;
+    
+    String key = drug.code.code;
+    
+    return titratedDrugs.containsKey(key) && titratedDrugs.get(key).equals(direction);
+  }
+  
+  public static TitrationDirection getTitrated(String drug, Person person) {
+    Map<String, TitrationDirection> titratedDrugs = (Map<String, TitrationDirection>)person.attributes.get("titrated_drugs");
+    if (titratedDrugs == null || titratedDrugs.isEmpty()) return null;
+    
+    return titratedDrugs.get(drug);
+  }
+  
+  public static void markTitrated(Drug drug, Person person, TitrationDirection direction) {
+    Map<String, TitrationDirection> titratedDrugs = (Map<String, TitrationDirection>) person.attributes.get("titrated_drugs");
+    if (titratedDrugs == null) {
+      titratedDrugs = new HashMap<>();
+      person.attributes.put("titrated_drugs", titratedDrugs);
+    }
+    
+    String key = drug.code.code;
+    
+    titratedDrugs.put(key, direction);
+  }
 
+  public static final String ADD_THERAPY = "add_therapy";
+  public static final String TITRATE = "titrate";
+  
   public static class ChooseNextTherapy extends Module {
     public ChooseNextTherapy() {
       this.name = "ChooseNextTherapy";
@@ -98,8 +228,7 @@ public class HypertensionTrial {
       return this;
     }
 
-    public static final String ADD_THERAPY = "add_therapy";
-    public static final String TITRATE = "titrate";
+
     
     public static final double TITRATION_RATIO = 0.7; // 70% of the time, titrate every time rather than adding new class
     
@@ -204,8 +333,8 @@ public class HypertensionTrial {
         
         
       } else if (nextAction == TITRATE) {
-        nextActionCode = findNonTitratedDrug(person);
-        markTitrated(nextActionCode, person);
+        nextActionCode = findNonTitratedDrug(person, TitrationDirection.UP);
+        markTitrated(nextActionCode, person, TitrationDirection.UP);
         titrationCounter.incrementAndGet();
 
       } else {
@@ -232,95 +361,6 @@ public class HypertensionTrial {
 //        {"kcl tablets", "kcl oral"}, // potassium supplement
 //    };
     
-    public static int countDrugs(Person person) {
-      int count = 0;
-      for (Set<Drug> drugClass : HTN_TRIAL_FORMULARY.values()) {
-        for (Drug drug : drugClass) {
-          if (person.record.medicationActive(drug.code.code)) {
-            count++;
-          }
-        }
-      }
-      
-      return count;
-    }
-    
-    public static Drug findTherapyNotInUse(Person person) {
-      Drug nextDrug = null;
-      for (Set<Drug> drugClass : HTN_TRIAL_FORMULARY.values()) {
-        for (Drug drug : drugClass) {
-          if (person.record.medicationActive(drug.code.code)) {
-            break; // break out of drug class, the person has one in this class already
-          }
-          
-          if (!drug.prescribable) {
-            continue;
-          }
-          
-          // note: allergyActive copy-pasted from Andy's WIP branch
-          if (drug.ingredient != null && person.record.allergyActive(drug.ingredient.code)) {
-            continue;
-          }
-          
-          nextDrug = drug;
-          break;
-        }
-        if (nextDrug != null) break;
-      }
-      
-      if (nextDrug == null) {
-        System.err.println("could not find new therapy not in use, note patient is on " + countDrugs(person) + " meds");
-      }
-      
-      return nextDrug;
-    }
-    
-    public static Drug findNonTitratedDrug(Person person) {
-      Drug nonTitratedDrug = null;
-      
-      for (Set<Drug> drugClass : HTN_TRIAL_FORMULARY.values()) {
-        for (Drug drug : drugClass) {
-          if (person.record.medicationActive(drug.code.code) && !isTitrated(drug, person)) {
-            nonTitratedDrug = drug;
-            break;
-          }
-          
-          if (nonTitratedDrug != null) break;
-        }
-      }
-      
-      if (nonTitratedDrug == null) {
-        
-        
-        for (Set<Drug> drugClass : HTN_TRIAL_FORMULARY.values()) {
-          for (Drug drug : drugClass) {
-            System.out.println(person.seed + " - " + drug + ": active:" + person.record.medicationActive(drug.code.code));
-            System.out.println(person.seed + " - " + drug + ": titrated:" + isTitrated(drug, person));
-              
-          }
-        }
-        
-        throw new IllegalStateException("could not find nontitrated drug, note patient is on " + countDrugs(person) + " meds, titration count: " + person.attributes.get("titration_counter"));
-      }
-      
-      return nonTitratedDrug;
-    }
-    
-    public static boolean isTitrated(Drug drug, Person person) {
-      Set<Drug> titratedDrugs = (Set<Drug>)person.attributes.get("titrated_drugs");
-      if (titratedDrugs == null || titratedDrugs.isEmpty()) return false;
-      
-      return titratedDrugs.contains(drug);
-    }
-    
-    public static void markTitrated(Drug drug, Person person) {
-      Set<Drug> titratedDrugs = (Set<Drug>)person.attributes.get("titrated_drugs");
-      if (titratedDrugs == null) {
-        titratedDrugs = new HashSet<>();
-        person.attributes.put("titrated_drugs", titratedDrugs);
-      }
-      titratedDrugs.add(drug);
-    }
     
   }
   
@@ -335,9 +375,20 @@ public class HypertensionTrial {
       return this;
     }
     
+    
     public boolean process(Person person, long time) {
-//      System.out.println("stepdowntherapy - " + person.seed + " - " + ExportHelper.iso8601Timestamp(time));
-      return true; // TODO
+      Drug drugToToTitrateDown = findNonTitratedDrug(person, TitrationDirection.DOWN);
+      if (drugToToTitrateDown == null) {
+        HealthRecord.Medication medToEnd = findTherapyToEnd(person);
+        person.attributes.put("htn_trial_next_action", "end drug");
+        person.attributes.put("htn_trial_next_action_code", medToEnd);
+        return true;
+      } else {
+        markTitrated(drugToToTitrateDown, person, TitrationDirection.DOWN);
+        person.attributes.put("htn_trial_next_action", TITRATE);
+        person.attributes.put("htn_trial_next_action_code", drugToToTitrateDown.code);
+        return true; 
+      }
     }
   }
   
