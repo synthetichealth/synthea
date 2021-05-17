@@ -1,0 +1,2554 @@
+{
+  "name": "SDoH HRSN",
+  "remarks": [
+    "Social Determinants of Health (SDoH) Health Related Social Needs (HRSN) screening."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Assessment"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 710824005,
+          "display": "Assessment of health and social care needs (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Q1"
+    },
+    "PRAPARE": {
+      "type": "MultiObservation",
+      "category": "survey",
+      "number_of_observations": 0,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "93025-5",
+          "display": "Protocol for Responding to and Assessing Patients' Assets, Risks, and Experiences [PRAPARE]"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "56051-6",
+              "display": "Are you Hispanic or Latino?"
+            }
+          ],
+          "attribute": "prapare_a1"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "32624-9",
+              "display": "Which race(s) are you?"
+            }
+          ],
+          "attribute": "prapare_a2"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "93035-4",
+              "display": "At any point in the past 2 years, has season or migrant farm work been your or your family's main source of income?"
+            }
+          ],
+          "attribute": "prapare_a3"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "93034-7",
+              "display": "Have you been discharged from the armed forces of the United States?"
+            }
+          ],
+          "attribute": "prapare_a4"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "54899-0",
+              "display": "What language are you most comfortable speaking?"
+            }
+          ],
+          "attribute": "prapare_a5"
+        },
+        {
+          "category": "survey",
+          "unit": "{#}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "63512-8",
+              "display": "How many family members, including yourself, do you currently live with?"
+            }
+          ],
+          "attribute": "household_size"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "71802-3",
+              "display": "What is your housing situation today?"
+            }
+          ],
+          "attribute": "prapare_a7"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "93033-9",
+              "display": "Are you worried about losing your housing?"
+            }
+          ],
+          "attribute": "prapare_a8"
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "56799-0",
+              "display": "What address do you live at?"
+            }
+          ],
+          "attribute": "address"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "82589-3",
+              "display": "What is the highest level of school that you have finished?"
+            }
+          ],
+          "attribute": "prapare_a10"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "67875-5",
+              "display": "What is your current work situation?"
+            }
+          ],
+          "attribute": "prapare_a11"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "76437-3",
+              "display": "What is your main insurance?"
+            }
+          ],
+          "attribute": "prapare_a12"
+        },
+        {
+          "category": "survey",
+          "unit": "/a",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "63586-2",
+              "display": "During the past year, what was the total combined income for you and the family members you live with? This information will help us determine if you are eligible for any benefits."
+            }
+          ],
+          "attribute": "income"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "93031-3",
+              "display": "In the past year, have you or any family members you live with been unable to get any of the following when it was really needed?"
+            }
+          ],
+          "attribute": "prapare_a14"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "93030-5",
+              "display": "Has lack of transportation kept you from medical appointments, meetings, work, or from getting things needed for daily living?"
+            }
+          ],
+          "attribute": "prapare_a15"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "93029-7",
+              "display": "How often do you see or talk to people that you care about and feel close to (For example: talking to friends on the phone, visiting friends or family, going to church or club meetings)?"
+            }
+          ],
+          "attribute": "prapare_a16"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "93038-8",
+              "display": "Stress is when someone feels tense, nervous, anxious or can't sleep at night because their mind is troubled. How stressed are you?"
+            }
+          ],
+          "attribute": "prapare_a17"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "93028-9",
+              "display": "In the past year, have you spent more than 2 nights in a row in a jail, prison, detention center, or juvenile correctional facility?"
+            }
+          ],
+          "attribute": "prapare_a18"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "93027-1",
+              "display": "Are you a refugee?"
+            }
+          ],
+          "attribute": "prapare_a19"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "93026-3",
+              "display": "Do you feel physically and emotionally safe where you currently live?"
+            }
+          ],
+          "attribute": "prapare_a20"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "76501-6",
+              "display": "In the past year, have you been afraid of your partner or ex-partner?"
+            }
+          ],
+          "attribute": "prapare_a21"
+        }
+      ]
+    },
+    "Q1": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Race",
+            "race": "Hispanic"
+          },
+          "distributions": [],
+          "transition": "A1_Yes"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "A1_No",
+              "distribution": 0.995
+            },
+            {
+              "transition": "A1_NotAnswer",
+              "distribution": 0.005
+            }
+          ]
+        }
+      ]
+    },
+    "A1_Yes": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a1",
+      "direct_transition": "Q2",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA33-6",
+        "display": "Yes"
+      }
+    },
+    "A1_No": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a1",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA32-8",
+        "display": "No"
+      },
+      "direct_transition": "Q2"
+    },
+    "A1_NotAnswer": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a1",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30122-8",
+        "display": "I choose not to answer this question"
+      },
+      "direct_transition": "Q2"
+    },
+    "Q2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A2_NotAnswer",
+          "distribution": 0.005
+        },
+        {
+          "transition": "Q2A",
+          "distribution": 0.995
+        }
+      ]
+    },
+    "Q3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Q3Y",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "income",
+            "operator": "<=",
+            "value": 25000
+          }
+        },
+        {
+          "transition": "Q3N"
+        }
+      ]
+    },
+    "A2_Asian": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a2",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA6156-9",
+        "display": "Asian"
+      },
+      "direct_transition": "Q3"
+    },
+    "A2_Hawaiian": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a2",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA14045-1",
+        "display": "Native Hawaiian"
+      },
+      "direct_transition": "Q3"
+    },
+    "A2_PacificIslander": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a2",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30187-1",
+        "display": "Pacific Islander"
+      },
+      "direct_transition": "Q3"
+    },
+    "A2_Black": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a2",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA14042-8",
+        "display": "Black/African American"
+      },
+      "direct_transition": "Q3"
+    },
+    "A2_White": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a2",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA4457-3",
+        "display": "White"
+      },
+      "direct_transition": "Q3"
+    },
+    "A2_NativeAmerican": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a2",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA4-4",
+        "display": "American Indian/Alaskan Native"
+      },
+      "direct_transition": "Q3"
+    },
+    "A2_Other": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a2",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA46-8",
+        "display": "Other, Please write"
+      },
+      "direct_transition": "Q3"
+    },
+    "A2_NotAnswer": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a2",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30122-8",
+        "display": "I choose not to answer this question"
+      },
+      "direct_transition": "Q3"
+    },
+    "Q2A": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "A2_Asian",
+          "condition": {
+            "condition_type": "Race",
+            "race": "Asian"
+          }
+        },
+        {
+          "transition": "A2_Black",
+          "condition": {
+            "condition_type": "Race",
+            "race": "Black"
+          }
+        },
+        {
+          "transition": "A2_White",
+          "condition": {
+            "condition_type": "Race",
+            "race": "White"
+          }
+        },
+        {
+          "transition": "A2_Hawaiian",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "state",
+                "operator": "==",
+                "value": "Hawaii"
+              },
+              {
+                "condition_type": "Race",
+                "race": "Hawaiian"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "A2_PacificIslander",
+          "condition": {
+            "condition_type": "Race",
+            "race": "Hawaiian"
+          }
+        },
+        {
+          "transition": "A2_NativeAmerican",
+          "condition": {
+            "condition_type": "Race",
+            "race": "Native"
+          }
+        },
+        {
+          "transition": "A2_Other"
+        }
+      ]
+    },
+    "Q4": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "A4_Yes",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "veteran",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Q4N"
+        }
+      ]
+    },
+    "A3_Yes": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a3",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA33-6",
+        "display": "Yes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Social Migrant",
+          "distribution": 0.00174
+        },
+        {
+          "transition": "Q4",
+          "distribution": 0.9982599999999999
+        }
+      ]
+    },
+    "A3_No": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a3",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA32-8",
+        "display": "No"
+      },
+      "direct_transition": "End Migrant"
+    },
+    "A3_NotAnswer": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a3",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30122-8",
+        "display": "I choose not to answer this question"
+      },
+      "direct_transition": "Q4"
+    },
+    "Q3N": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A3_No",
+          "distribution": 0.995
+        },
+        {
+          "transition": "A3_NotAnswer",
+          "distribution": 0.005
+        }
+      ]
+    },
+    "Q3Y": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 17,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "A3_Yes",
+              "distribution": 0.03
+            },
+            {
+              "transition": "Q3N",
+              "distribution": 0.97
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 19,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "A3_Yes",
+              "distribution": 0.04
+            },
+            {
+              "transition": "Q3N",
+              "distribution": 0.96
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 24,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "A3_Yes",
+              "distribution": 0.11
+            },
+            {
+              "transition": "Q3N",
+              "distribution": 0.89
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 34,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "A3_Yes",
+              "distribution": 0.26
+            },
+            {
+              "transition": "Q3N",
+              "distribution": 0.74
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 44,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "A3_Yes",
+              "distribution": 0.23
+            },
+            {
+              "transition": "Q3N",
+              "distribution": 0.77
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 54,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "A3_Yes",
+              "distribution": 0.19
+            },
+            {
+              "transition": "Q3N",
+              "distribution": 0.81
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 64,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "A3_Yes",
+              "distribution": 0.11
+            },
+            {
+              "transition": "Q3N",
+              "distribution": 0.89
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "A3_Yes",
+              "distribution": 0.04
+            },
+            {
+              "transition": "Q3N",
+              "distribution": 0.96
+            }
+          ]
+        }
+      ]
+    },
+    "Social Migrant": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 160701002,
+          "display": "Social migrant (finding)"
+        }
+      ],
+      "direct_transition": "Q4"
+    },
+    "End Migrant": {
+      "type": "ConditionEnd",
+      "direct_transition": "Q4",
+      "condition_onset": "Social Migrant"
+    },
+    "Q5": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "A5_NotAnswer",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "first_language",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "A5_English",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "first_language",
+            "operator": "==",
+            "value": "english"
+          }
+        },
+        {
+          "transition": "A5_Other"
+        }
+      ]
+    },
+    "A4_Yes": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a4",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA33-6",
+        "display": "Yes"
+      },
+      "direct_transition": "Veteran"
+    },
+    "A4_No": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a4",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA32-8",
+        "display": "No"
+      },
+      "direct_transition": "Q5"
+    },
+    "A4_NotAnswer": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a4",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30122-8",
+        "display": "I choose not to answer this question"
+      },
+      "direct_transition": "Q5"
+    },
+    "Q4N": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A4_NotAnswer",
+          "distribution": 0.005
+        },
+        {
+          "transition": "A4_No",
+          "distribution": 0.995
+        }
+      ]
+    },
+    "Veteran": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 224355006,
+          "display": "Served in armed forces (finding)"
+        }
+      ],
+      "direct_transition": "Q5"
+    },
+    "Q6": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Household_Size",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "household_size",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Q7"
+        }
+      ]
+    },
+    "A5_English": {
+      "type": "SetAttribute",
+      "attribute": "prepare_a5",
+      "direct_transition": "Q6",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA43-5",
+        "display": "English"
+      }
+    },
+    "A5_Other": {
+      "type": "SetAttribute",
+      "attribute": "prepare_a5",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30188-9",
+        "display": "Language other than English"
+      },
+      "direct_transition": "Q6"
+    },
+    "A5_NotAnswer": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a5",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30122-8",
+        "display": "I choose not to answer this question"
+      },
+      "direct_transition": "Q6"
+    },
+    "Q7": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "homeless",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "A7_Homeless"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "A7_NotAnswer",
+              "distribution": 0.005
+            },
+            {
+              "transition": "A7_NotHomeless",
+              "distribution": 0.995
+            }
+          ]
+        }
+      ]
+    },
+    "Household_Size": {
+      "type": "SetAttribute",
+      "attribute": "household_size",
+      "direct_transition": "Q7",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 8,
+          "low": 1
+        }
+      }
+    },
+    "Q8": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "severe_housing_cost_burden",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "A8_Yes"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "A8_NotAnswer",
+              "distribution": 0.005
+            },
+            {
+              "transition": "A8_No",
+              "distribution": 0.995
+            }
+          ]
+        }
+      ]
+    },
+    "A7_Homeless": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a7",
+      "direct_transition": "Homeless",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30190-5",
+        "display": "I do not have housing"
+      }
+    },
+    "A7_NotHomeless": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a7",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30189-7",
+        "display": "I have housing"
+      },
+      "direct_transition": "Not Homeless"
+    },
+    "A7_NotAnswer": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a7",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30122-8",
+        "display": "I choose not to answer this question"
+      },
+      "direct_transition": "Q8"
+    },
+    "Homeless": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 32911000,
+          "display": "Homeless (finding)"
+        }
+      ],
+      "direct_transition": "Q8"
+    },
+    "Not Homeless": {
+      "type": "ConditionEnd",
+      "direct_transition": "Q8",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 32911000,
+          "display": "Homeless (finding)"
+        }
+      ]
+    },
+    "A8_Yes": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a8",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA33-6",
+        "display": "Yes"
+      },
+      "direct_transition": "Housing Issue"
+    },
+    "A8_No": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a8",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA32-8",
+        "display": "No"
+      },
+      "direct_transition": "End Housing Issue"
+    },
+    "A8_NotAnswer": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a8",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30122-8",
+        "display": "I choose not to answer this question"
+      },
+      "direct_transition": "Q10"
+    },
+    "Housing Issue": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 105531004,
+          "display": "Housing unsatisfactory (finding)"
+        }
+      ],
+      "direct_transition": "Q10"
+    },
+    "End Housing Issue": {
+      "type": "ConditionEnd",
+      "direct_transition": "Q10",
+      "condition_onset": "Housing Issue"
+    },
+    "Q10": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Q10A",
+          "distribution": 0.995
+        },
+        {
+          "transition": "A10_NotAnswer",
+          "distribution": 0.005
+        }
+      ]
+    },
+    "Q11": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "A11A",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "income",
+                "operator": "<=",
+                "value": 5000
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "unemployed",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Q11B"
+        }
+      ]
+    },
+    "A10_NotAnswer": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a10",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30122-8",
+        "display": "I choose not to answer this question"
+      },
+      "direct_transition": "Q11"
+    },
+    "A10C": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a10",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30193-9",
+        "display": "More than high school"
+      },
+      "direct_transition": "Education_Onset_2"
+    },
+    "A10B": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a10",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30192-1",
+        "display": "High school diploma or GED"
+      },
+      "direct_transition": "Education_Onset"
+    },
+    "A10A": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a10",
+      "direct_transition": "Education Onset",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30191-3",
+        "display": "Less than high school degree"
+      }
+    },
+    "Q10A": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "A10A",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "education",
+            "operator": "==",
+            "value": "less_than_hs"
+          }
+        },
+        {
+          "transition": "A10B",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "education",
+            "operator": "==",
+            "value": "hs_degree"
+          }
+        },
+        {
+          "transition": "A10C"
+        }
+      ]
+    },
+    "Education Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "education_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 224295006,
+          "display": "Only received primary school education (finding)"
+        }
+      ],
+      "direct_transition": "Q11"
+    },
+    "Education_Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "education_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 5251000175109,
+          "display": "Received certificate of high school equivalency (finding)"
+        }
+      ],
+      "direct_transition": "Q11"
+    },
+    "Education_Onset_2": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "education_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 224299000,
+          "display": "Received higher education (finding)"
+        }
+      ],
+      "direct_transition": "Q11"
+    },
+    "Q12": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "A12_NotAnswer",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "insurance_status",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "A12_None",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "insurance_status",
+            "operator": "==",
+            "value": "none"
+          }
+        },
+        {
+          "transition": "A12_Medicaid",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "insurance_status",
+            "operator": "==",
+            "value": "medicaid"
+          }
+        },
+        {
+          "transition": "A12_Medicare",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "insurance_status",
+            "operator": "==",
+            "value": "medicare"
+          }
+        },
+        {
+          "transition": "A12_Private",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "insurance_status",
+            "operator": "==",
+            "value": "private"
+          }
+        },
+        {
+          "transition": "A12_NotAnswer"
+        }
+      ]
+    },
+    "A11A": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a11",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA17956-6",
+        "display": "Unemployed (finding)"
+      },
+      "direct_transition": "Unemployed"
+    },
+    "Q11B": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "End Unemployment",
+          "distribution": 0.995
+        },
+        {
+          "transition": "A11_NotAnswer",
+          "distribution": 0.005
+        }
+      ]
+    },
+    "Unemployed": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "employment_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 73438004,
+          "display": "Unemployed (finding)"
+        }
+      ],
+      "direct_transition": "Q12"
+    },
+    "A11_NotAnswer": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a11",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30122-8",
+        "display": "I choose not to answer this question"
+      },
+      "direct_transition": "Q12"
+    },
+    "End Unemployment": {
+      "type": "ConditionEnd",
+      "distributed_transition": [
+        {
+          "transition": "A11B",
+          "distribution": 0.7
+        },
+        {
+          "transition": "A11C",
+          "distribution": 0.2
+        },
+        {
+          "transition": "A11D",
+          "distribution": 0.1
+        }
+      ],
+      "referenced_by_attribute": "employment_condition"
+    },
+    "A11B": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a11",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30136-8",
+        "display": "Full-time work"
+      },
+      "direct_transition": "Employed Full Time"
+    },
+    "A11C": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a11",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30138-4",
+        "display": "Part-time or temporary work"
+      },
+      "direct_transition": "Employed Part Time"
+    },
+    "A11D": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a11",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30137-6",
+        "display": "Otherwise unemployed but not seeking work"
+      },
+      "direct_transition": "Employed Not"
+    },
+    "Employed Full Time": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "employment_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 160903007,
+          "display": "Full-time employment (finding)"
+        }
+      ],
+      "direct_transition": "Q12"
+    },
+    "Employed Part Time": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "employment_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 160904001,
+          "display": "Part-time employment (finding)"
+        }
+      ],
+      "direct_transition": "Q12"
+    },
+    "Employed Not": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "employment_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 741062008,
+          "display": "Not in labor force (finding)"
+        }
+      ],
+      "direct_transition": "Q12"
+    },
+    "A12_NotAnswer": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a12",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30122-8",
+        "display": "I choose not to answer this question"
+      },
+      "direct_transition": "Q14"
+    },
+    "A12_None": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a12",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30194-7",
+        "display": "None/uninsured"
+      },
+      "direct_transition": "Q14"
+    },
+    "A12_Medicaid": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a12",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30194-7",
+        "display": "Medicaid"
+      },
+      "direct_transition": "Q14"
+    },
+    "A12_Medicare": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a12",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA15652-3",
+        "display": "Medicare"
+      },
+      "direct_transition": "Q14"
+    },
+    "A12_Private": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a12",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA6350-8",
+        "display": "Private insurance"
+      },
+      "direct_transition": "Q14"
+    },
+    "Q14": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "A14_NotAnswer",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "food_insecurity",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "poverty_ratio",
+                "operator": "is nil"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Q14A"
+        }
+      ]
+    },
+    "Q15": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "vehicle_access",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "vehicle_access",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "A15_No"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "A15_YesA",
+              "distribution": 0.5
+            },
+            {
+              "transition": "A15_YesB",
+              "distribution": 0.5
+            }
+          ]
+        }
+      ]
+    },
+    "A14_NotAnswer": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a14",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30122-8",
+        "display": "I choose not to answer this question"
+      },
+      "direct_transition": "Q15"
+    },
+    "Q14A": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A14_NotAnswer",
+          "distribution": 0.01
+        },
+        {
+          "transition": "Q14B",
+          "distribution": 0.99
+        }
+      ]
+    },
+    "Q14B": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "A14_Food",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "food_insecurity",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Q14C"
+        }
+      ]
+    },
+    "A14_Food": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a14",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30125-1",
+        "display": "Food"
+      },
+      "direct_transition": "Q15"
+    },
+    "A14_Clothing": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a14",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30126-9",
+        "display": "Clothing"
+      },
+      "direct_transition": "Q15"
+    },
+    "A14_Utilities": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a14",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30124-4",
+        "display": "Utilities"
+      },
+      "direct_transition": "Q15"
+    },
+    "A14_Childcare": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a14",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30127-7",
+        "display": "Childcare"
+      },
+      "direct_transition": "Q15"
+    },
+    "A14_Medicine": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a14",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30128-5",
+        "display": "Medicine or Any Health Care"
+      },
+      "direct_transition": "Q15"
+    },
+    "A14_Phone": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a14",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30129-3",
+        "display": "Phone"
+      },
+      "direct_transition": "Q15"
+    },
+    "A14_Other": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a14",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA46-8",
+        "display": "Other, Please write"
+      },
+      "direct_transition": "Q15"
+    },
+    "Q14C": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Q14_Half",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "poverty_ratio",
+            "operator": "<",
+            "value": 0.5
+          }
+        },
+        {
+          "transition": "Q14_LessThanOne",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "poverty_ratio",
+            "operator": "<",
+            "value": 1
+          }
+        },
+        {
+          "transition": "Q14_LessThanTwo",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "poverty_ratio",
+            "operator": "<",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Q14_LessThanFive",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "poverty_ratio",
+            "operator": "<",
+            "value": 5
+          }
+        },
+        {
+          "transition": "Q14_FiveOrHigher"
+        }
+      ]
+    },
+    "Q14_Half": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A14_Medicine",
+          "distribution": 0.227
+        },
+        {
+          "transition": "Q14_Half_Food?",
+          "distribution": 0.7729999999999999
+        }
+      ]
+    },
+    "Q14_LessThanOne": {
+      "type": "Simple",
+      "direct_transition": "Q14_LessThanOne_Meds?"
+    },
+    "Q14_LessThanTwo": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A14_Medicine",
+          "distribution": 0.196
+        },
+        {
+          "transition": "Q14_LessThanTwo_Food?",
+          "distribution": 0.804
+        }
+      ]
+    },
+    "Q14_LessThanFive": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A14_Medicine",
+          "distribution": 0.11
+        },
+        {
+          "transition": "Q14_LessThanFive_Food?",
+          "distribution": 0.89
+        }
+      ]
+    },
+    "Q14_FiveOrHigher": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A14_Medicine",
+          "distribution": 0.043
+        },
+        {
+          "transition": "Q14_FiveOrHigher_Food?",
+          "distribution": 0.9570000000000001
+        }
+      ]
+    },
+    "Q14_Durables": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A14_Childcare",
+          "distribution": 0.25
+        },
+        {
+          "transition": "A14_Phone",
+          "distribution": 0.25
+        },
+        {
+          "transition": "A14_Other",
+          "distribution": 0.25
+        },
+        {
+          "transition": "A14_Clothing",
+          "distribution": 0.25
+        }
+      ]
+    },
+    "Q14_LessThanOne_Meds?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A14_Medicine",
+          "distribution": 0.227
+        },
+        {
+          "transition": "Q14_LessThanOne_Food?",
+          "distribution": 0.7729999999999999
+        }
+      ]
+    },
+    "Q14_LessThanOne_Food?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A14_Food",
+          "distribution": 0.271
+        },
+        {
+          "transition": "Q14_LessThanOne_Utils?",
+          "distribution": 0.7290000000000001
+        }
+      ]
+    },
+    "Q14_LessThanOne_Utils?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A14_Utilities",
+          "distribution": 0.325
+        },
+        {
+          "transition": "Q14_LessThanOne_Durables?",
+          "distribution": 0.675
+        }
+      ]
+    },
+    "Q14_LessThanOne_Durables?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Q14_Durables",
+          "distribution": 0.325
+        },
+        {
+          "transition": "A14_NotAnswer",
+          "distribution": 0.675
+        }
+      ]
+    },
+    "Q14_LessThanTwo_Food?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A14_Food",
+          "distribution": 0.185
+        },
+        {
+          "transition": "Q14_LessThanTwo_Utils?",
+          "distribution": 0.815
+        }
+      ]
+    },
+    "Q14_LessThanTwo_Utils?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A14_Utilities",
+          "distribution": 0.223
+        },
+        {
+          "transition": "Q14_LessThanTwo_Durables?",
+          "distribution": 0.777
+        }
+      ]
+    },
+    "Q14_LessThanTwo_Durables?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Q14_Durables",
+          "distribution": 0.216
+        },
+        {
+          "transition": "A14_NotAnswer",
+          "distribution": 0.784
+        }
+      ]
+    },
+    "Q14_Half_Food?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A14_Food",
+          "distribution": 0.266
+        },
+        {
+          "transition": "Q14_Half_Utils?",
+          "distribution": 0.734
+        }
+      ]
+    },
+    "Q14_Half_Utils?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A14_Utilities",
+          "distribution": 0.328
+        },
+        {
+          "transition": "Q14_Half_Durables?",
+          "distribution": 0.6719999999999999
+        }
+      ]
+    },
+    "Q14_Half_Durables?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Q14_Durables",
+          "distribution": 0.311
+        },
+        {
+          "transition": "A14_NotAnswer",
+          "distribution": 0.6890000000000001
+        }
+      ]
+    },
+    "Q14_LessThanFive_Food?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A14_Food",
+          "distribution": 0.084
+        },
+        {
+          "transition": "Q14_LessThanFive_Utils?",
+          "distribution": 0.916
+        }
+      ]
+    },
+    "Q14_LessThanFive_Utils?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A14_Utilities",
+          "distribution": 0.124
+        },
+        {
+          "transition": "Q14_LessThanFive_Durables?",
+          "distribution": 0.876
+        }
+      ]
+    },
+    "Q14_LessThanFive_Durables?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Q14_Durables",
+          "distribution": 0.088
+        },
+        {
+          "transition": "A14_NotAnswer",
+          "distribution": 0.912
+        }
+      ]
+    },
+    "Q14_FiveOrHigher_Food?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A14_Food",
+          "distribution": 0.027
+        },
+        {
+          "transition": "Q14_FiveOrHigher_Utils?",
+          "distribution": 0.9730000000000001
+        }
+      ]
+    },
+    "Q14_FiveOrHigher_Utils?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A14_Utilities",
+          "distribution": 0.04
+        },
+        {
+          "transition": "Q14_FiveOrHigher_Durables?",
+          "distribution": 0.96
+        }
+      ]
+    },
+    "Q14_FiveOrHigher_Durables?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Q14_Durables",
+          "distribution": 0.037
+        },
+        {
+          "transition": "A14_NotAnswer",
+          "distribution": 0.9630000000000001
+        }
+      ]
+    },
+    "Q16": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Q16M",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "marital_status",
+            "operator": "==",
+            "value": "M"
+          }
+        },
+        {
+          "transition": "Q16O"
+        }
+      ]
+    },
+    "A15_YesA": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a15",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30133-5",
+        "display": "Yes, it has kept me from medical appointments or from getting my medications"
+      },
+      "direct_transition": "No Transport Access"
+    },
+    "A15_YesB": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a15",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30134-3",
+        "display": "Yes, it has kept me from non-medical meetings, appointments, work, or from getting things that I need"
+      },
+      "direct_transition": "Transport Problem"
+    },
+    "A15_No": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a15",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA32-8",
+        "display": "No"
+      },
+      "direct_transition": "Q16"
+    },
+    "Transport Problem": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 266934004,
+          "display": "Transport problems (finding)"
+        }
+      ],
+      "direct_transition": "Q16"
+    },
+    "No Transport Access": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 713458007,
+          "display": "Lack of access to transportation (finding)"
+        }
+      ],
+      "direct_transition": "Q16"
+    },
+    "Q17": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A17_NotAtAll",
+          "distribution": 0.418
+        },
+        {
+          "transition": "A17_LittleBit",
+          "distribution": 0.262
+        },
+        {
+          "transition": "A17_Somewhat",
+          "distribution": 0.1846
+        },
+        {
+          "transition": "A17_QuiteBit",
+          "distribution": 0.0793
+        },
+        {
+          "transition": "A17_VeryMuch",
+          "distribution": 0.0481
+        },
+        {
+          "transition": "A17_NotAnswer",
+          "distribution": 0.008000000000000007
+        }
+      ]
+    },
+    "Q16M": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A16_LessThanOne",
+          "distribution": 0.065
+        },
+        {
+          "transition": "A16_OneOrTwo",
+          "distribution": 0.065
+        },
+        {
+          "transition": "A16_ThreeToFive",
+          "distribution": 0.4325
+        },
+        {
+          "transition": "A16_FiveOrMore",
+          "distribution": 0.4325
+        },
+        {
+          "transition": "A16_NotAnswer",
+          "distribution": 0.005
+        }
+      ]
+    },
+    "Q16O": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A16_LessThanOne",
+          "distribution": 0.165
+        },
+        {
+          "transition": "A16_OneOrTwo",
+          "distribution": 0.165
+        },
+        {
+          "transition": "A16_ThreeToFive",
+          "distribution": 0.3325
+        },
+        {
+          "transition": "A16_FiveOrMore",
+          "distribution": 0.3325
+        },
+        {
+          "transition": "A16_NotAnswer",
+          "distribution": 0.005
+        }
+      ]
+    },
+    "A16_LessThanOne": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a16",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA27722-0",
+        "display": "Less than once a week"
+      },
+      "direct_transition": "Isolation"
+    },
+    "A16_OneOrTwo": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a16",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30130-1",
+        "display": "1 or 2 times a week"
+      },
+      "direct_transition": "Limited Contact"
+    },
+    "A16_ThreeToFive": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a16",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30131-9",
+        "display": "3 to 5 times a week"
+      },
+      "direct_transition": "End Isolation"
+    },
+    "A16_FiveOrMore": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a16",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30132-7",
+        "display": "5 or more times a week"
+      },
+      "direct_transition": "End Isolation"
+    },
+    "A16_NotAnswer": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a16",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30122-8",
+        "display": "I choose not to answer this question"
+      },
+      "direct_transition": "Q17"
+    },
+    "Isolation": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "social_isolation",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 422650009,
+          "display": "Social isolation (finding)"
+        }
+      ],
+      "direct_transition": "Q17"
+    },
+    "Limited Contact": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "social_isolation",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 423315002,
+          "display": "Limited social contact (finding)"
+        }
+      ],
+      "direct_transition": "Q17"
+    },
+    "End Isolation": {
+      "type": "ConditionEnd",
+      "direct_transition": "Q17",
+      "referenced_by_attribute": "social_isolation"
+    },
+    "Q18": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "criminal_record",
+            "operator": "is not nil"
+          },
+          "distributions": [],
+          "transition": "A18_Yes"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "A18_NotAnswer",
+              "distribution": 0.005
+            },
+            {
+              "transition": "A18_Yes",
+              "distribution": 0.011
+            },
+            {
+              "transition": "A18_No",
+              "distribution": 0.984
+            }
+          ]
+        }
+      ]
+    },
+    "A17_NotAnswer": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a17",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30122-8",
+        "display": "I choose not to answer this question"
+      },
+      "direct_transition": "Q18"
+    },
+    "A17_NotAtAll": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a17",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA6568-5",
+        "display": "Not at all"
+      },
+      "direct_transition": "End Stress"
+    },
+    "A17_LittleBit": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a17",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA13863-8",
+        "display": "A little bit"
+      },
+      "direct_transition": "Stress"
+    },
+    "A17_Somewhat": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a17",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA13909-9",
+        "display": "Somewhat"
+      },
+      "direct_transition": "Stress"
+    },
+    "A17_QuiteBit": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a17",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA13902-4",
+        "display": "Quite a bit"
+      },
+      "direct_transition": "Stress"
+    },
+    "A17_VeryMuch": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a17",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA13914-9",
+        "display": "Very much"
+      },
+      "direct_transition": "Stress"
+    },
+    "Stress": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 73595000,
+          "display": "Stress (finding)"
+        }
+      ],
+      "direct_transition": "Q18"
+    },
+    "End Stress": {
+      "type": "ConditionEnd",
+      "direct_transition": "Q18",
+      "condition_onset": "Stress"
+    },
+    "Q19": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "refugee",
+            "operator": "is not nil"
+          },
+          "distributions": [],
+          "transition": "A19_Yes"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "A19_NotAnswer",
+              "distribution": 0.005
+            },
+            {
+              "transition": "A19_Yes",
+              "distribution": 0.00011
+            },
+            {
+              "transition": "A19_No",
+              "distribution": 0.99489
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "birth_country",
+            "operator": "==",
+            "value": "US"
+          }
+        },
+        {
+          "distributions": [
+            {
+              "transition": "A19_NotAnswer",
+              "distribution": 0.005
+            },
+            {
+              "transition": "A19_Yes",
+              "distribution": 0.05
+            },
+            {
+              "transition": "A19_No",
+              "distribution": 0.9450000000000001
+            }
+          ]
+        }
+      ]
+    },
+    "A18_NotAnswer": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a18",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30122-8",
+        "display": "I choose not to answer this question"
+      },
+      "direct_transition": "Q19"
+    },
+    "A18_No": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a18",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA32-8",
+        "display": "No"
+      },
+      "direct_transition": "Q19"
+    },
+    "A18_Yes": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a18",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA33-6",
+        "display": "Yes"
+      },
+      "direct_transition": "Smooth Criminal"
+    },
+    "Smooth Criminal": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "criminal_record",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 266948004,
+          "display": "Has a criminal record (finding)"
+        }
+      ],
+      "direct_transition": "Q19"
+    },
+    "Q20": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "A20_NotAnswer",
+          "distribution": 0.0023
+        },
+        {
+          "transition": "A20_Unsure",
+          "distribution": 0.0078
+        },
+        {
+          "transition": "A20_No",
+          "distribution": 0.0534
+        },
+        {
+          "transition": "A20_Yes",
+          "distribution": 0.9365000000000001
+        }
+      ]
+    },
+    "A19_NotAnswer": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a19",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30122-8",
+        "display": "I choose not to answer this question"
+      },
+      "direct_transition": "Q20"
+    },
+    "A19_No": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a19",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA32-8",
+        "display": "No"
+      },
+      "direct_transition": "Q20"
+    },
+    "A19_Yes": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a19",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA33-6",
+        "display": "Yes"
+      },
+      "direct_transition": "Refugee"
+    },
+    "Refugee": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "refugee",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 446654005,
+          "display": "Refugee (person)"
+        }
+      ],
+      "direct_transition": "Q20"
+    },
+    "Q21": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "A21_Yes",
+              "distribution": 0.055
+            },
+            {
+              "transition": "A21_No",
+              "distribution": 0.9450000000000001
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "A21_Yes",
+              "distribution": 0.052
+            },
+            {
+              "transition": "A21_No",
+              "distribution": 0.948
+            }
+          ]
+        }
+      ]
+    },
+    "A20_NotAnswer": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a20",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30122-8",
+        "display": "I choose not to answer this question"
+      },
+      "direct_transition": "Q21"
+    },
+    "A20_No": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a20",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA32-8",
+        "display": "No"
+      },
+      "direct_transition": "Violence"
+    },
+    "A20_Yes": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a20",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA33-6",
+        "display": "Yes"
+      },
+      "direct_transition": "End Violence"
+    },
+    "A20_Unsure": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a20",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA14072-5",
+        "display": "Unsure"
+      },
+      "direct_transition": "Q21"
+    },
+    "Violence": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 424393004,
+          "display": "Reports of violence in the environment (finding)"
+        }
+      ],
+      "direct_transition": "Q21"
+    },
+    "End Violence": {
+      "type": "ConditionEnd",
+      "direct_transition": "Q21",
+      "condition_onset": "Violence"
+    },
+    "End Q": {
+      "type": "Simple",
+      "direct_transition": "PRAPARE"
+    },
+    "A21_Yes": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a21",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA33-6",
+        "display": "Yes"
+      },
+      "direct_transition": "Partner Violence"
+    },
+    "A21_No": {
+      "type": "SetAttribute",
+      "attribute": "prapare_a21",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA32-8",
+        "display": "No"
+      },
+      "direct_transition": "End Partner Violence"
+    },
+    "Partner Violence": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 706893006,
+          "display": "Victim of intimate partner abuse (finding)"
+        }
+      ],
+      "direct_transition": "End Q"
+    },
+    "End Partner Violence": {
+      "type": "ConditionEnd",
+      "direct_transition": "End Q",
+      "condition_onset": "Partner Violence"
+    }
+  },
+  "gmf_version": 2
+}

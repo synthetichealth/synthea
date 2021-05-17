@@ -476,7 +476,7 @@
         "code": 449868002,
         "display": "Current every day smoker"
       },
-      "direct_transition": "End_Of_Wellness_Encounter"
+      "direct_transition": "SDoH Check"
     },
     "Record_Former_Smoker": {
       "type": "Observation",
@@ -489,7 +489,7 @@
           "display": "Tobacco smoking status NHIS"
         }
       ],
-      "direct_transition": "End_Of_Wellness_Encounter",
+      "direct_transition": "SDoH Check",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 8517006,
@@ -507,7 +507,7 @@
           "display": "Tobacco smoking status NHIS"
         }
       ],
-      "direct_transition": "End_Of_Wellness_Encounter",
+      "direct_transition": "SDoH Check",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 266919005,
@@ -852,6 +852,29 @@
     "End_Of_Wellness_Encounter": {
       "type": "EncounterEnd",
       "direct_transition": "Wellness_Encounter"
+    },
+    "PRAPARE": {
+      "type": "CallSubmodule",
+      "submodule": "encounter/sdoh_hrsn",
+      "direct_transition": "End_Of_Wellness_Encounter"
+    },
+    "SDoH Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "PRAPARE",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 18,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "End_Of_Wellness_Encounter"
+        }
+      ]
     }
   },
   "gmf_version": 1
