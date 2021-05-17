@@ -856,7 +856,7 @@
     },
     "A5_English": {
       "type": "SetAttribute",
-      "attribute": "prepare_a5",
+      "attribute": "prapare_a5",
       "direct_transition": "Q6",
       "value_code": {
         "system": "LOINC",
@@ -866,7 +866,7 @@
     },
     "A5_Other": {
       "type": "SetAttribute",
-      "attribute": "prepare_a5",
+      "attribute": "prapare_a5",
       "value_code": {
         "system": "LOINC",
         "code": "LA30188-9",
