@@ -1,0 +1,223 @@
+{
+  "name": "Adverse_Childhood_Experiences_Module",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Delay_Before_Abuse_Records",
+      "remarks": [
+        "Source: https://www.cdc.gov/violenceprevention/aces/ace-brfss.html",
+        "",
+        "Many states are collecting information about Adverse Childhood Experiences (ACEs) through the Behavioral Risk Factor Surveillance System (BRFSS). The BRFSS is an annual, state-based, random-digit-dial telephone survey that collects data from non-institutionalized U.S. adults regarding health conditions and risk factors. Since 2009, 48 states plus the District of Columbia have included ACE questions for at least one year on their survey."
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Emotional_Abuse": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 313217007,
+          "display": "History of emotional abuse (situation)"
+        }
+      ],
+      "direct_transition": "Check_For_Physical_Abuse",
+      "remarks": [
+        "Source: https://browser.ihtsdotools.org/?perspective=full&conceptId1=313217007&edition=MAIN/2021-01-31&release=&languages=en"
+      ]
+    },
+    "No_Emotional_Abuse": {
+      "type": "Simple",
+      "direct_transition": "Check_For_Physical_Abuse"
+    },
+    "Check_For_Emotional_Abuse": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Emotional_Abuse",
+              "distribution": 0.339
+            },
+            {
+              "transition": "No_Emotional_Abuse",
+              "distribution": 0.661
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Emotional_Abuse",
+              "distribution": 0.349
+            },
+            {
+              "transition": "No_Emotional_Abuse",
+              "distribution": 0.651
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "Source: https://www.cdc.gov/violenceprevention/aces/ace-brfss.html"
+      ]
+    },
+    "Wait_For_Wellness": {
+      "type": "Encounter",
+      "reason": "",
+      "direct_transition": "Check_For_Emotional_Abuse",
+      "wellness": true
+    },
+    "Check_For_Physical_Abuse": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Physical_Abuse",
+              "distribution": 0.175
+            },
+            {
+              "transition": "No_Physical_Abuse",
+              "distribution": 0.825
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Physical_Abuse",
+              "distribution": 0.184
+            },
+            {
+              "transition": "No_Physical_Abuse",
+              "distribution": 0.8160000000000001
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "Source: https://www.cdc.gov/violenceprevention/aces/ace-brfss.html"
+      ]
+    },
+    "Physical_Abuse": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 313215004,
+          "display": "History of physical abuse (situation)"
+        }
+      ],
+      "direct_transition": "Check_For_Sexual_Abuse",
+      "remarks": [
+        "Source: https://browser.ihtsdotools.org/?perspective=full&conceptId1=313215004&edition=MAIN/2021-01-31&release=&languages=en"
+      ]
+    },
+    "No_Physical_Abuse": {
+      "type": "Simple",
+      "direct_transition": "Check_For_Sexual_Abuse"
+    },
+    "Check_For_Sexual_Abuse": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Sexual_Abuse",
+              "distribution": 0.163
+            },
+            {
+              "transition": "No_Sexual_Abuse",
+              "distribution": 0.837
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Sexual_Abuse",
+              "distribution": 0.067
+            },
+            {
+              "transition": "No_Sexual_Abuse",
+              "distribution": 0.933
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "Source: https://www.cdc.gov/violenceprevention/aces/ace-brfss.html"
+      ]
+    },
+    "Sexual_Abuse": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 313216003,
+          "display": "History of sexual abuse (situation)"
+        }
+      ],
+      "direct_transition": "End_Wellness_Encounter",
+      "remarks": [
+        "Source: https://browser.ihtsdotools.org/?perspective=full&conceptId1=313216003&edition=MAIN/2021-01-31&release=&languages=en"
+      ]
+    },
+    "No_Sexual_Abuse": {
+      "type": "Simple",
+      "direct_transition": "End_Wellness_Encounter"
+    },
+    "End_Wellness_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Trigger_Weight_Gain_From_Childhood_Abuse"
+    },
+    "Delay_Before_Abuse_Records": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 18,
+          "low": 6
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Wait_For_Wellness"
+    },
+    "Trigger_Weight_Gain_From_Childhood_Abuse": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}
