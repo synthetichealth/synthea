@@ -234,11 +234,11 @@
           "transition": "Using_Withdrawal"
         },
         {
-          "distribution": 0.117,
+          "distribution": 0.0,
           "transition": "Using_IUD"
         },
         {
-          "distribution": 0.00,
+          "distribution": 0.117,
           "transition": "Using_Implant"
         },
         {
