@@ -283,6 +283,36 @@
           "display": "Allergy to mould"
         }
       ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "21626009", "display":  "Allergic skin rash"},
+          "possible_severities": [
+            {"level":  "mild", "value":  0.292},
+            {"level":  "none", "value":  0.70}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "76067001", "display":  "Sneezing"},
+          "possible_severities": [
+            {"level":  "mild", "value":  0.139},
+            {"level":  "none", "value":  0.86}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "267101005", "display":  "Nose running"},
+          "possible_severities": [
+            {"level":  "mild", "value":  0.183},
+            {"level":  "none", "value":  0.81}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "56018004", "display":  "Wheezing"},
+          "possible_severities": [
+            {"level":  "mild", "value":  0.075},
+            {"level":  "none", "value":  0.92}
+          ]
+        }
+      ],
       "direct_transition": "Chance_of_Bee_Allergy"
     },
     "Chance_of_Bee_Allergy": {
@@ -334,6 +364,22 @@
           "system": "SNOMED-CT",
           "code": "424213003",
           "display": "Allergy to bee venom"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "241931004", "display":  "Bee sting-induced anaphylaxis"},
+          "possible_severities": [
+            {"level":  "severe", "value":  0.75},
+            {"level":  "none", "value":  0.25}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Hives"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.50},
+            {"level":  "none", "value":  0.50}
+          ]
         }
       ],
       "direct_transition": "Chance_of_Latex_Allergy"

@@ -1497,6 +1497,27 @@ public class FhirR4 {
     Code code = allergy.codes.get(0);
     allergyResource.setCode(mapCodeToCodeableConcept(code, SNOMED_URI));
 
+    if (allergy.reactions != null) {
+      allergy.reactions.keySet().stream().forEach(manifestation -> {
+        AllergyIntolerance.AllergyIntoleranceReactionComponent reactionComponent =
+            new AllergyIntolerance.AllergyIntoleranceReactionComponent();
+        reactionComponent.addManifestation(mapCodeToCodeableConcept(manifestation, SNOMED_URI));
+        HealthRecord.ReactionSeverity severity = allergy.reactions.get(manifestation);
+        switch (severity) {
+          case MILD:
+            reactionComponent.setSeverity(AllergyIntolerance.AllergyIntoleranceSeverity.MILD);
+            break;
+          case MODERATE:
+            reactionComponent.setSeverity(AllergyIntolerance.AllergyIntoleranceSeverity.MODERATE);
+            break;
+          case SEVERE:
+            reactionComponent.setSeverity(AllergyIntolerance.AllergyIntoleranceSeverity.SEVERE);
+            break;
+        }
+        allergyResource.addReaction(reactionComponent);
+      });
+    }
+
     if (USE_US_CORE_IG) {
       Meta meta = new Meta();
       meta.addProfile(

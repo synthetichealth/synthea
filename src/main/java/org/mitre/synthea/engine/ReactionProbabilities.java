@@ -1,14 +1,18 @@
 package org.mitre.synthea.engine;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.apache.commons.math3.util.Pair;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.stream.Collectors;
-
+/**
+ * ReactionProbabilities is a structure to capture the kind and severity of reaction for a
+ * given AllergyIntolerance.
+ */
 public class ReactionProbabilities implements Serializable {
   private static final String SEVERE = "severe";
   private static final String MODERATE = "moderate";
@@ -55,7 +59,8 @@ public class ReactionProbabilities implements Serializable {
   private EnumeratedDistribution<String> severityDistribution;
 
 
-  public ReactionProbabilities(HealthRecord.Code code, List<SeverityProbability> possibleReactions) {
+  public ReactionProbabilities(HealthRecord.Code code,
+                               List<SeverityProbability> possibleReactions) {
     this.reaction = code;
     this.possibleSeverities = possibleReactions;
   }
