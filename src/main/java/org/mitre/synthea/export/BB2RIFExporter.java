@@ -129,10 +129,10 @@ public class BB2RIFExporter implements Flushable {
    * Create the output folder and files. Write headers to each file.
    */
   private BB2RIFExporter() {
-    beneId = new AtomicInteger();
-    claimId = new AtomicInteger();
-    claimGroupId = new AtomicInteger();
-    pdeId = new AtomicInteger();
+    beneId = new AtomicInteger(Config.getAsInteger("exporter.bfd.bene_id_start", -1));
+    claimId = new AtomicInteger(Config.getAsInteger("exporter.bfd.clm_id_start", -1));
+    claimGroupId = new AtomicInteger(Config.getAsInteger("exporter.bfd.clm_grp_id_start", -1));
+    pdeId = new AtomicInteger(Config.getAsInteger("exporter.bfd.pde_id_start", -1));
     String mbiStartStr = Config.get("exporter.bfd.mbi_start", "1S00-A00-AA00");
     mbi = new AtomicReference<>(MBI.parse(mbiStartStr));
     String hicnStartStr = Config.get("exporter.bfd.hicn_start", "T00000000A");
@@ -339,7 +339,7 @@ public class BB2RIFExporter implements Flushable {
 
     // Now put in the real data, some of which might overwrite the above
     String personId = (String)person.attributes.get(Person.ID);
-    String beneIdStr = Integer.toString(beneId.decrementAndGet());
+    String beneIdStr = Integer.toString(beneId.getAndDecrement());
     person.attributes.put(BB2_BENE_ID, beneIdStr);
     fieldValues.put(BeneficiaryFields.BENE_ID, beneIdStr);
     String hicId = hicn.getAndUpdate((v) -> v.next()).toString();
@@ -489,8 +489,8 @@ public class BB2RIFExporter implements Flushable {
       boolean isUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
       boolean isWellness = encounter.type.equals(EncounterType.WELLNESS.toString());
       boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
-      int claimId = this.claimId.incrementAndGet();
-      int claimGroupId = this.claimGroupId.incrementAndGet();
+      int claimId = this.claimId.getAndDecrement();
+      int claimGroupId = this.claimGroupId.getAndDecrement();
 
       if (isPrimary || !(isAmbulatory || isOutpatient || isUrgent || isWellness)) {
         continue;
@@ -627,8 +627,8 @@ public class BB2RIFExporter implements Flushable {
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       boolean isInpatient = encounter.type.equals(EncounterType.INPATIENT.toString());
       boolean isEmergency = encounter.type.equals(EncounterType.EMERGENCY.toString());
-      int claimId = this.claimId.incrementAndGet();
-      int claimGroupId = this.claimGroupId.incrementAndGet();
+      int claimId = this.claimId.getAndDecrement();
+      int claimGroupId = this.claimGroupId.getAndDecrement();
 
       if (!(isInpatient || isEmergency)) {
         previousEmergency = false;
@@ -800,8 +800,8 @@ public class BB2RIFExporter implements Flushable {
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
 
-      int claimId = this.claimId.incrementAndGet();
-      int claimGroupId = this.claimGroupId.incrementAndGet();
+      int claimId = this.claimId.getAndDecrement();
+      int claimGroupId = this.claimGroupId.getAndDecrement();
 
       for (HealthRecord.Observation observation : encounter.observations) {
         if (observation.containsCode("718-7", "http://loinc.org")) {
@@ -910,8 +910,8 @@ public class BB2RIFExporter implements Flushable {
           continue; // skip codes that can't be mapped to NDC
         }
 
-        int pdeId = this.pdeId.incrementAndGet();
-        int claimGroupId = this.claimGroupId.incrementAndGet();
+        int pdeId = this.pdeId.getAndDecrement();
+        int claimGroupId = this.claimGroupId.getAndDecrement();
 
         fieldValues.clear();
         staticFieldConfig.setValues(fieldValues, PrescriptionFields.class, person);
@@ -989,8 +989,8 @@ public class BB2RIFExporter implements Flushable {
     HashMap<DMEFields, String> fieldValues = new HashMap<>();
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      int claimId = this.claimId.incrementAndGet();
-      int claimGroupId = this.claimGroupId.incrementAndGet();
+      int claimId = this.claimId.getAndDecrement();
+      int claimGroupId = this.claimGroupId.getAndDecrement();
       double latestHemoglobin = 0;
       for (HealthRecord.Observation observation : encounter.observations) {
         if (observation.containsCode("718-7", "http://loinc.org")) {
@@ -1059,8 +1059,8 @@ public class BB2RIFExporter implements Flushable {
       }
 
       homeVisits += 1;
-      int claimId = this.claimId.incrementAndGet();
-      int claimGroupId = this.claimGroupId.incrementAndGet();
+      int claimId = this.claimId.getAndDecrement();
+      int claimGroupId = this.claimGroupId.getAndDecrement();
 
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, HHAFields.class, person);
@@ -1118,8 +1118,8 @@ public class BB2RIFExporter implements Flushable {
         continue;
       }
 
-      int claimId = this.claimId.incrementAndGet();
-      int claimGroupId = this.claimGroupId.incrementAndGet();
+      int claimId = this.claimId.getAndDecrement();
+      int claimGroupId = this.claimGroupId.getAndDecrement();
 
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, HospiceFields.class, person);
@@ -1236,8 +1236,8 @@ public class BB2RIFExporter implements Flushable {
       if (!encounter.type.equals(EncounterType.SNF.toString())) {
         continue;
       }
-      int claimId = this.claimId.incrementAndGet();
-      int claimGroupId = this.claimGroupId.incrementAndGet();
+      int claimId = this.claimId.getAndDecrement();
+      int claimGroupId = this.claimGroupId.getAndDecrement();
 
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, SNFFields.class, person);

@@ -81,6 +81,31 @@ public abstract class Config {
   }
 
   /**
+   * Get a named property as an int value.
+   *
+   * @param key property name
+   * @return value for the property, or null if not found
+   */
+  public static int getAsInteger(String key) {
+    return Integer.parseInt(get(key));
+  }
+
+  /**
+   * Get a named property as an int, or the default value if not found.
+   *
+   * @param key          property name
+   * @param defaultValue value to return if the property is not found in the list
+   * @return value for the property, or defaultValue if not found
+   */
+  public static int getAsInteger(String key, int defaultValue) {
+    if (properties.containsKey(key)) {
+      return getAsInteger(key);
+    } else {
+      return defaultValue;
+    }
+  }
+
+  /**
    * Manually set a property.
    *
    * @param key   property name
