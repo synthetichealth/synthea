@@ -95,6 +95,7 @@ public class BB2RIFExporter implements Flushable {
   private AtomicInteger claimGroupId; // per encounter
   private AtomicInteger pdeId; // per medication claim
   private AtomicReference<MBI> mbi;
+  private AtomicReference<HICN> hicn;
 
   private List<LinkedHashMap<String, String>> carrierLookup;
   private CodeMapper conditionCodeMapper;
@@ -134,6 +135,8 @@ public class BB2RIFExporter implements Flushable {
     pdeId = new AtomicInteger();
     String mbiStartStr = Config.get("exporter.bfd.mbi_start", "1S00-A00-AA00");
     mbi = new AtomicReference<>(MBI.parse(mbiStartStr));
+    String hicnStartStr = Config.get("exporter.bfd.hicn_start", "T00000000A");
+    hicn = new AtomicReference<>(HICN.parse(hicnStartStr));
     conditionCodeMapper = new CodeMapper("condition_code_map.json");
     medicationCodeMapper = new CodeMapper("medication_code_map.json");
     drgCodeMapper = new CodeMapper("drg_code_map.json");
@@ -339,10 +342,10 @@ public class BB2RIFExporter implements Flushable {
     String beneIdStr = Integer.toString(beneId.decrementAndGet());
     person.attributes.put(BB2_BENE_ID, beneIdStr);
     fieldValues.put(BeneficiaryFields.BENE_ID, beneIdStr);
-    String hicId = personId.split("-")[0]; // first segment of UUID
+    String hicId = hicn.getAndUpdate((v) -> v.next()).toString();
     person.attributes.put(BB2_HIC_ID, hicId);
     fieldValues.put(BeneficiaryFields.BENE_CRNT_HIC_NUM, hicId);
-    String mbiStr = mbi.getAndUpdate((v) -> v.nextMBI()).toString();
+    String mbiStr = mbi.getAndUpdate((v) -> v.next()).toString();
     fieldValues.put(BeneficiaryFields.MBI_NUM, mbiStr);
     person.attributes.put(BB2_MBI, mbiStr);
     fieldValues.put(BeneficiaryFields.BENE_SEX_IDENT_CD,
@@ -3742,63 +3745,110 @@ public class BB2RIFExporter implements Flushable {
    * @see <a href="https://www.cms.gov/Medicare/New-Medicare-Card/Understanding-the-MBI-with-Format.pdf">
    * https://www.cms.gov/Medicare/New-Medicare-Card/Understanding-the-MBI-with-Format.pdf</a>
    */
-  static class MBI {
+  static class MBI extends FixedLengthIdentifier {
 
-    private static final char[] NUM = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
-    private static final char[] NON_ZERO_NUM = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
-    private static final char[] ALPHA = {
+    private static final char[] FIXED = {'S'};
+    private static final char[][] MBI_FORMAT = {NON_ZERO_NUMERIC, FIXED, ALPHA_NUMERIC, NUMERIC,
+      ALPHA, ALPHA_NUMERIC, NUMERIC, ALPHA, ALPHA, NUMERIC, NUMERIC};
+    static final long MIN_MBI = 0;
+    static final long MAX_MBI = maxValue(MBI_FORMAT);
+    
+    public MBI(long value) {
+      super(value, MBI_FORMAT);
+    }
+    
+    static MBI parse(String str) {
+      return new MBI(parse(str, MBI_FORMAT));
+    }
+    
+    public MBI next() {
+      return new MBI(value + 1);
+    }
+  }
+  
+  /**
+   * Utility class for working with CMS HICNs.
+   * Note that this class fixes the value of character position 1 to be 'T' and character position
+   * 10 to be 'A' - it will fail to parse HICNs that do not conform to this restriction.
+   * 
+   * @see <a href="https://github.com/CMSgov/beneficiary-fhir-data/blob/master/apps/bfd-model/bfd-model-rif-samples/dev/design-sample-data-sets.md">
+   * https://github.com/CMSgov/beneficiary-fhir-data/blob/master/apps/bfd-model/bfd-model-rif-samples/dev/design-sample-data-sets.md</a>
+   */
+  static class HICN extends FixedLengthIdentifier {
+
+    private static final char[] START = {'T'};
+    private static final char[] END = {'A'};
+    private static final char[][] HICN_FORMAT = {START, NUMERIC, NUMERIC, NUMERIC, NUMERIC,
+      NUMERIC, NUMERIC, NUMERIC, NUMERIC, END};
+    static final long MIN_HICN = 0;
+    static final long MAX_HICN = maxValue(HICN_FORMAT);
+    
+    public HICN(long value) {
+      super(value, HICN_FORMAT);
+    }
+    
+    static HICN parse(String str) {
+      return new HICN(parse(str, HICN_FORMAT));
+    }
+    
+    public HICN next() {
+      return new HICN(value + 1);
+    }
+  }
+  
+  private static class FixedLengthIdentifier {
+
+    static final char[] NUMERIC = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    static final char[] NON_ZERO_NUMERIC = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    static final char[] ALPHA = {
       'A', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'U', 'V',
       'W', 'X', 'Y'
     };
-    private static final char[] ALPHA_NUM = {
+    static final char[] ALPHA_NUMERIC = {
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 
       'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'U', 'V', 'W', 'X', 'Y'
     };
-    private static final int[] MULTIPLIER = {10, 10, 20, 20, 10, 30, 20, 10, 30, 1, 9};
-    private static final char[] FIXED = {'S'};
-    private static final Map<Integer, char[]> LOOKUP_MAP = Collections.unmodifiableMap(
-        new HashMap<Integer, char[]>() {
-          { 
-            put(1, FIXED);
-            put(9, NON_ZERO_NUM);
-            put(10, NUM);
-            put(20, ALPHA);
-            put(30, ALPHA_NUM);
-          }
-        }
-    );
-    public static final long MIN_MBI = 0;
-    public static final long MAX_MBI = 647999999999L;
     
+    private final char[][] format;    
     long value;
     
-    public MBI(long value) {
-      if (value < MIN_MBI || value > MAX_MBI) {
-        throw new IllegalArgumentException(String.format("MBI out of range (%d - %d)", MIN_MBI,
-                MAX_MBI));
+    public FixedLengthIdentifier(long value, char[][] format) {
+      this.format = format;
+      if (value < 0 || value > maxValue(format)) {
+        throw new IllegalArgumentException(String.format("Value (%d) out of range (%d - %d)",
+                value, 0, maxValue(format)));
       }
       this.value = value;
     }
     
-    public static MBI parse(String mbiStr) {
-      mbiStr = mbiStr.replaceAll("-", "").toUpperCase();
-      if (mbiStr.length() != 11) {
-        throw new IllegalArgumentException(String.format("Invalid MBI (%s)", mbiStr));
+    protected static long parse(String str, char[][] format) {
+      str = str.replaceAll("-", "").toUpperCase();
+      if (str.length() != format.length) {
+        throw new IllegalArgumentException(String.format(
+                "Invalid format (%s), must be %d characters", str, format.length));
       }
       long v = 0;
-      for (int i = 0; i < 11; i++) {
-        int multiplier = MULTIPLIER[10 - i];
+      for (int i = 0; i < format.length; i++) {
+        int multiplier = format[i].length;
         v = v * multiplier;
-        char c = mbiStr.charAt(i);
-        char[] range = LOOKUP_MAP.get(multiplier);
+        char c = str.charAt(i);
+        char[] range = format[i];
         int index = indexOf(range, c);
         if (index == -1) {
           throw new IllegalArgumentException(String.format(
-                  "Unexpected character (%c) at position %d in %s", c, i, mbiStr));
+                  "Unexpected character (%c) at position %d in %s", c, i, str));
         }
         v += index;
       }
-      return new MBI(v);
+      return v;
+    }
+    
+    protected static long maxValue(char[][] format) {
+      long max = 1;
+      for (char[] range : format) {
+        max = max * range.length;
+      }
+      return max - 1;
     }
     
     private static int indexOf(char[] arr, char v) {
@@ -3810,18 +3860,15 @@ public class BB2RIFExporter implements Flushable {
       return -1;
     }
     
-    public MBI nextMBI() {
-      return new MBI(this.value + 1);
-    }
-    
     @Override
     public String toString() {
       StringBuilder sb = new StringBuilder();
       long v = this.value;
-      for (int i = 0; i < 11; i++) {
-        long p = v % MULTIPLIER[i];
-        sb.insert(0, LOOKUP_MAP.get(MULTIPLIER[i])[(int)p]);
-        v = v / MULTIPLIER[i];
+      for (int i = 0; i < format.length; i++) {
+        char[] range = format[format.length - i - 1];
+        long p = v % range.length;
+        sb.insert(0, range[(int)p]);
+        v = v / range.length;
       }
       return sb.toString();
     }
@@ -3844,7 +3891,7 @@ public class BB2RIFExporter implements Flushable {
       if (getClass() != obj.getClass()) {
         return false;
       }
-      final MBI other = (MBI) obj;
+      final FixedLengthIdentifier other = (FixedLengthIdentifier) obj;
       if (this.value != other.value) {
         return false;
       }
