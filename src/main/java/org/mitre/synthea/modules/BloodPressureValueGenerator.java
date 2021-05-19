@@ -246,14 +246,15 @@ public class BloodPressureValueGenerator extends ValueGenerator {
       String medicationCode = e.getKey();
       Range<Double> impactRange = e.getValue();
       if (person.record.medicationActive(medicationCode)) {
-        double impact;
+        double impact = getDrugImpact(person, time, medicationCode, impactRange);
         HypertensionTrial.TitrationDirection titration = HypertensionTrial.getTitrated(medicationCode, person);
-        if (titration == null) {
-          impact = getDrugImpact(person, time, medicationCode, impactRange);
-        } else if (titration.equals(HypertensionTrial.TitrationDirection.UP)) {
-          impact = impactRange.high;
-        } else {
-          impact = impactRange.low;
+        if (titration != null) {
+          if (titration.equals(HypertensionTrial.TitrationDirection.UP)) {
+            impact = impactRange.high;
+          } else {
+            // down titrate = cut it in half? TODO: figure out the right approach here
+            impact = impact / 2;
+          }
         }
         
         // impacts are negative, so add them (ie, don't subtract them)
