@@ -20,6 +20,7 @@ import org.mitre.synthea.export.BB2RIFExporter.BeneficiaryFields;
 import org.mitre.synthea.export.BB2RIFExporter.CarrierFields;
 import org.mitre.synthea.export.BB2RIFExporter.CodeMapper;
 import org.mitre.synthea.export.BB2RIFExporter.DMEFields;
+import org.mitre.synthea.export.BB2RIFExporter.HICN;
 import org.mitre.synthea.export.BB2RIFExporter.InpatientFields;
 import org.mitre.synthea.export.BB2RIFExporter.MBI;
 import org.mitre.synthea.export.BB2RIFExporter.StaticFieldConfig;
@@ -144,6 +145,18 @@ public class BB2RIFExporterTest {
     assertEquals("9SY9YY9YY99", mbi.toString());
     mbi = MBI.parse("9SY9-YY9-YY99");
     assertEquals("9SY9YY9YY99", mbi.toString());
+  }
+  
+  @Test
+  public void testHICN() {
+    HICN hicn = new HICN(HICN.MIN_HICN);
+    assertEquals("T00000000A", hicn.toString());
+    hicn = new HICN(HICN.MAX_HICN);
+    assertEquals("T99999999A", hicn.toString());
+    hicn = HICN.parse("T01001001A");
+    assertEquals("T01001001A", hicn.toString());
+    hicn = HICN.parse("T99999999A");
+    assertEquals("T99999999A", hicn.toString());
   }
   
   @Test
