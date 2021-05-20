@@ -1,6 +1,7 @@
 package org.mitre.synthea.modules;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -44,6 +45,11 @@ public class PerformCABG extends Module {
     // only keep "CABG" code lines
     surgeons.removeIf(s -> !s.get("surgery_group_label").equals("CABG"));
     
+    if (Provider.getProviderList().isEmpty()) {
+      // hack to prevent a crash is the test suite, if this module gets instantiated before providers load.
+      // this should never happen when creating a real population
+      return Collections.emptyList();
+    }
     
     Provider provider = Provider.getProviderList().get(0);
     
