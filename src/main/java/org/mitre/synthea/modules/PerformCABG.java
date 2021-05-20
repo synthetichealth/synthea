@@ -130,7 +130,7 @@ public class PerformCABG extends Module {
       // hack this clinician back onto the record?
       person.record.currentEncounter(stopTime).clinician = surgeon;
       
-      String reason = "Abnormal Findings";
+      String reason = "cardiac_surgery_reason";
       
       // below copied from Procedure State to make this easier
       if (person.attributes.containsKey(reason)) {

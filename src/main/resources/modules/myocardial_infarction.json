@@ -44,7 +44,7 @@
     "Death": {
       "type": "Death",
       "direct_transition": "Terminal",
-      "referenced_by_attribute": "acs_variant"
+      "referenced_by_attribute": "cardiac_surgery_reason"
     },
     "Chance_of_MI": {
       "type": "Delay",

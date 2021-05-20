@@ -55,7 +55,7 @@
     },
     "NSTEMI": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "acs_variant",
+      "assign_to_attribute": "cardiac_surgery_reason",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -67,7 +67,7 @@
     },
     "Unstable_Angina": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "acs_variant",
+      "assign_to_attribute": "cardiac_surgery_reason",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -92,7 +92,7 @@
         "unit": "minutes"
       },
       "direct_transition": "Hospital_Admission",
-      "reason": "acs_variant"
+      "reason": "cardiac_surgery_reason"
     },
     "Ischemia-Guided": {
       "type": "Simple",
@@ -112,7 +112,7 @@
         }
       ],
       "direct_transition": "Ticagrelor",
-      "reason": "acs_variant"
+      "reason": "cardiac_surgery_reason"
     },
     "Ticagrelor": {
       "type": "MedicationOrder",
@@ -124,7 +124,7 @@
         }
       ],
       "direct_transition": "Stress_Testing",
-      "reason": "acs_variant"
+      "reason": "cardiac_surgery_reason"
     },
     "Stress_Testing": {
       "type": "Procedure",
@@ -150,7 +150,7 @@
           "distribution": 0.7
         }
       ],
-      "reason": "acs_variant"
+      "reason": "cardiac_surgery_reason"
     },
     "Referral": {
       "type": "CallSubmodule",
@@ -172,12 +172,12 @@
         "unit": "minutes"
       },
       "direct_transition": "Terminal",
-      "reason": "acs_variant"
+      "reason": "cardiac_surgery_reason"
     },
     "Hospital_Admission": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason": "acs_variant",
+      "reason": "cardiac_surgery_reason",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -244,7 +244,7 @@
           "distribution": 0.1
         }
       ],
-      "reason": "acs_variant"
+      "reason": "cardiac_surgery_reason"
     },
     "CABG_Operation": {
       "type": "CallSubmodule",

@@ -171,7 +171,7 @@
     },
     "STEMI": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "acs_variant",
+      "assign_to_attribute": "cardiac_surgery_reason",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -192,7 +192,7 @@
     },
     "CABG_Operation1": {
       "type": "CallSubmodule",
-      "submodule": "heart/cabg/operation",
+      "submodule": "heart/cabg_sequence",
       "conditional_transition": [
         {
           "transition": "Deceased",
