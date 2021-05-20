@@ -308,40 +308,6 @@
       ],
       "direct_transition": "End_Visit"
     },
-    "Count_Visit": {
-      "type": "Counter",
-      "attribute": "home_health_days",
-      "action": "decrement",
-      "amount": 2,
-      "conditional_transition": [
-        {
-          "transition": "Follow-up_HH_Encounter",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "home_health_days",
-            "operator": ">",
-            "value": 0
-          }
-        },
-        {
-          "transition": "End_Home_Health_Visits"
-        }
-      ]
-    },
-    "Every_Other_Day": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 2,
-        "unit": "days"
-      },
-      "direct_transition": "Count_Visit"
-    },
-    "End_Home_Health_Visits": {
-      "type": "SetAttribute",
-      "attribute": "home_health",
-      "direct_transition": "Wait_Until_Home_Health",
-      "value": false
-    },
     "Terminal": {
       "type": "Terminal"
     }
