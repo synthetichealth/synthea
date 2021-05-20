@@ -607,7 +607,17 @@ public class HealthRecord implements Serializable {
   }
 
   public enum ReactionSeverity {
-    MILD, MODERATE, SEVERE
+    MILD("255604002", "Mild"),
+    MODERATE("6736007", "Moderate"),
+    SEVERE("24484000", "Severe");
+
+    public String code;
+    public String display;
+
+    ReactionSeverity(String code, String display) {
+      this.code = code;
+      this.display = display;
+    }
   }
 
   public class Allergy extends Entry {
