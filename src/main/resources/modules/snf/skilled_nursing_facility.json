@@ -8,46 +8,139 @@
       "type": "Initial",
       "direct_transition": "Check for LOS"
     },
-    "Determine LOS": {
-      "type": "SetAttribute",
-      "attribute": "snf_days",
-      "direct_transition": "SNF Admission",
-      "range": {
-        "high": 30,
-        "low": 1
-      }
-    },
     "SNF Admission": {
       "type": "Encounter",
       "encounter_class": "snf",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 305340004,
-          "display": "Admission to long stay hospital (procedure)"
+          "code": 449411000124106,
+          "display": "Admission to Skilled Nursing Facility"
+        }
+      ],
+      "direct_transition": "Determine_LOS"
+    },
+    "Determine_LOS": {
+      "type": "SetAttribute",
+      "attribute": "snf_days",
+      "distributed_transition": [
+        {
+            "distribution": 0.35,
+            "range": {
+                "high": 15,
+                "low": 1,
+                "unit": "days"
+            },
+            "transition": "SNF_1-15_Days"
+        },
+        {
+            "distribution": 0.34,
+            "range": {
+                "high": 30,
+                "low": 16,
+                "unit": "days"
+            },
+            "transition": "SNF_16-30_Days"
+        },
+        {
+            "distribution": 0.29,
+            "range": {
+                "high": 99,
+                "low": 31,
+                "unit": "days"
+            },
+            "transition": "SNF_31-99_Days"
+        },
+        {
+            "distribution": 0.02,
+            "range": {
+                "high": 100,
+                "low": 100,
+                "unit": "days"
+            },
+            "transition": "SNF_100_Days"
+        }
+      ]
+    },
+    "SNF_1-15_Days": {
+      "type": "Simple",
+      "direct_transition": "History_Physical_Exam"
+    },
+    "SNF_16-30_Days": {
+      "type": "Simple",
+      "direct_transition": "History_Physical_Exam"
+    },
+    "SNF_31-99_Days": {
+      "type": "Simple",
+      "direct_transition": "History_Physical_Exam"
+    },
+    "SNF_100_Days": {
+      "type": "Simple",
+      "direct_transition": "History_Physical_Exam"
+    },
+    "History_Physical_Exam": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 63332003,
+          "display": "History AND Physical Exmaination"
+        }
+      ],
+      "direct_transition": "Initial_Patient_Assessment"
+    },
+    "Initial_Patient_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 315639002,
+          "display": "Initial Patient Assessment"
+        }
+      ],
+      "direct_transition": "Development_of_Individualized_Care_Plan"
+    },
+    "Development_of_Individualized_Care_Plan": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 370789001,
+          "display": "Development of Indvidualized Plan of Care"
         }
       ],
       "direct_transition": "Begin_Day"
     },
     "Begin_Day": {
-      "type": "Simple",
-      "direct_transition": "Medication_Administration"
+      "type": "Counter",
+      "attribute": "snf_days",
+      "action": "decrement",
+      "amount": 1,
+      "direct_transition": "Nursing"
     },
-    "Medication_Administration": {
+    "Nursing":{
       "type": "Procedure",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 370773004,
-          "display": "Administration of prescribed medications and solutions (procedure)"
+          "code": 410401003,
+          "display": "Nursing: Nursing care/supplementary surveillance (regime/therapy)"
         }
       ],
-      "range": {
-        "high": 10,
-        "low": 5,
-        "unit": "minutes"
-      },
-      "direct_transition": "Physical_Therapy"
+      "direct_transition": "Physical_Therapy_Check"
+    },
+    "Physical_Therapy_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+            "distribution": 0.94,
+            "transition": "Physical_Therapy"
+        },
+        {
+          "distribution": 0.06,
+          "transition": "Occupational_Therapy_Check"
+        }
+      ]
     },
     "Physical_Therapy": {
       "type": "Procedure",
@@ -55,7 +148,7 @@
         {
           "system": "SNOMED-CT",
           "code": 91251008,
-          "display": "Physical therapy procedure (regime/therapy)"
+          "display": "Physical Therapy Procedure (regime/therapy)"
         }
       ],
       "range": {
@@ -63,53 +156,106 @@
         "low": 45,
         "unit": "minutes"
       },
-      "direct_transition": "Activities_of_Daily_Living"
+      "direct_transition": "Occupational_Therapy_Check"
     },
-    "Activities_of_Daily_Living": {
+    "Occupational_Therapy_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.94,
+          "transition": "Occupational_Therapy"
+        },
+        {
+          "distribution": 0.06,
+          "transition": "Speech_Language_Therapy_Check"
+        }
+      ]
+    },
+    "Occupational_Therapy": {
       "type": "Procedure",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 183345007,
-          "display": "Daily living activity therapy (regime/therapy)"
+          "code": 84478008,
+          "display": "Occupational Therapy(regime/therapy)"
         }
       ],
-      "range": {
-        "high": 120,
-        "low": 30,
-        "unit": "minutes"
-      },
-      "direct_transition": "Dietary Counseling"
+      "direct_transition": "Speech_Language_Therapy_Check"
     },
-    "Dietary Counseling": {
+    "Speech_Language_Therapy_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.43,
+          "transition": "Speech_Language_Therapy"
+        },
+        {
+          "distribution": 0.57,
+          "transition": "NTA_Check"
+        }
+      ]
+    },
+    "Speech_Language_Therapy": {
       "type": "Procedure",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "441301000124100",
-          "display": "Counseling about nutrition using social support strategy (procedure)"
+          "code": 311555007,
+          "display": "Speech and Language Therapy (regime/therapy)"
         }
       ],
-      "range": {
-        "high": 60,
-        "low": 20,
-        "unit": "minutes"
-      },
-      "direct_transition": "Daily"
+      "direct_transition": "NTA_Check"
     },
-    "Daily": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 1,
-        "unit": "days"
-      },
-      "direct_transition": "Count_Visit"
+    "NTA_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.75,
+          "transition": "Professional_Services_Care"
+        },
+        {
+          "distribution": 0.25,
+          "transition": "Status_Change_Check"
+        }
+      ]
     },
-    "Count_Visit": {
-      "type": "Counter",
-      "attribute": "snf_days",
-      "action": "decrement",
-      "amount": 1,
+    "Professional_Services_Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 409023009,
+          "display": "Professional/Ancillary Services Care (regime/therapy)"
+        }
+      ],
+      "direct_transition": "Status_Change_Check"
+    },
+    "Status_Change_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.01,
+          "transition": "Care_Regimes_Assessment"
+        },
+        {
+          "distribution": 0.99,
+          "transition": "End_Day"
+        }
+      ]
+    },
+    "Care_Regimes_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 392091000,
+          "display": "Care Regimes Assessment (procedure)"
+        }
+      ],
+      "direct_transition": "End_Day"
+    },
+    "End_Day": {
+      "type": "EncounterEnd",
       "conditional_transition": [
         {
           "transition": "Begin_Day",
@@ -118,21 +264,42 @@
             "attribute": "snf_days",
             "operator": ">",
             "value": 0
-          }
-        },
-        {
-          "transition": "End_Encounter"
         }
+      },
+      {
+        "transition": "Predischarge_Assessment"
+      }
       ]
     },
-    "End_Encounter": {
-      "type": "EncounterEnd",
-      "direct_transition": "Terminal",
-      "discharge_disposition": {
-        "system": "NUBC",
-        "code": 1,
-        "display": "Discharged to home care or self care (routine discharge)"
-      }
+    "Predischarge_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 225386006,
+          "display": "Pre-discharge Assessment (procedure)"
+        }
+      ],
+      "direct_transition": "Discharge_From_SNF"
+    },
+    "Discharge_From_SNF": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 449381000124108,
+          "display": "Discharge From Skilled Nursing Facility (procedure)"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Daily": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Count_Visit"
     },
     "Terminal": {
       "type": "Terminal"
