@@ -138,15 +138,11 @@
           ],
           "direct_transition": "Count_Visit"
       },
-      "Count_Visit": {
+      "Begin_Day": {
           "type": "Counter",
           "attribute": "hospice_days",
           "action": "decrement",
           "amount": 1,
-          "direct_transition": "Begin_Day"
-      },
-      "Begin_Day": {
-          "type": "Simple",
           "direct_transition": "Hospice_Care"
       },
       "Hospice_Care": {
@@ -163,22 +159,6 @@
               "low": 30,
               "unit": "minutes"
           },
-          "direct_transition": "Medication_Administration"
-      },
-      "Medication_Administration": {
-          "type": "Procedure",
-          "codes": [
-              {
-                  "system": "SNOMED-CT",
-                  "code": 370773004,
-                  "display": "Administration of prescribed medications and solutions (procedure)"
-              }
-          ],
-          "range": {
-              "high": 10,
-              "low": 5,
-              "unit": "minutes"
-          },
           "direct_transition": "End_Day"
       },
       "End_Day": {
@@ -193,7 +173,7 @@
                   "condition": {
                       "condition_type": "Attribute",
                       "attribute": "days_until_death",
-                      "operator": "<=",
+                      "operator": "<",
                       "value": 0
                   }
               },
