@@ -572,6 +572,7 @@ public class Generator implements RandomNumberGenerator {
     person.attributes.putAll(demoAttributes);
     person.attributes.put(Person.LOCATION, location);
     person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
+    location.setSocialDeterminants(person);
 
     LifecycleModule.birth(person, person.lastUpdated);
     person.currentModules = Module.getModules(modulePredicate);
