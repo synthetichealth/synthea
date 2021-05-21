@@ -200,7 +200,7 @@
     },
     "End_Wellness_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Trigger_Weight_Gain_From_Childhood_Abuse"
+      "direct_transition": "Delay_Weight_Gain_From_Childhood_Abuse"
     },
     "Delay_Before_Abuse_Records": {
       "type": "Delay",
@@ -214,9 +214,132 @@
       "unit": "years",
       "direct_transition": "Wait_For_Wellness"
     },
-    "Trigger_Weight_Gain_From_Childhood_Abuse": {
+    "Delay_Weight_Gain_From_Childhood_Abuse": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 20,
+          "low": 12
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Check_For_Physical_Abuse_Weight_Gain",
+      "remarks": [
+        "Link between ACES and obesity in Adulthood: https://pubmed.ncbi.nlm.nih.gov/12119573/",
+        "Note: I used kg weight increases because there was not a clear BMI target for all ACEs (specifically sexual abuse). ",
+        "Used the chart that details kg increases: https://www.nature.com/articles/0802038/tables/3",
+        "Made up the delay before weight gain ranges. Lower bound of 12 was chosen in case the person was 6 when reporting the ACE, so they will be at least 18 before gaining ACE related weight.",
+        "ACEs Adulthood Obesity Notes:",
+        "•\tPhysical Abuse:",
+        "o\t0.2 – 5.6 kg weight increase.",
+        "•\tVerbal/Emotional Abuse:",
+        "o\t0.4 – 3.8 weight increase.",
+        "•\tSexual Abuse:",
+        "o\t0.6 - 2.2 kg weight increase.",
+        ""
+      ]
+    },
+    "Check_For_Physical_Abuse_Weight_Gain": {
+      "type": "SetAttribute",
+      "attribute": "kilograms_to_gain",
+      "conditional_transition": [
+        {
+          "transition": "Trigger_Physical_Abuse_Weight_Gain",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 313215004,
+                "display": "History of physical abuse (situation)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Check_For_Emotional_Abuse_Weight_Gain"
+        }
+      ],
+      "value": 0,
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 0
+        }
+      }
+    },
+    "Trigger_Physical_Abuse_Weight_Gain": {
+      "type": "Counter",
+      "attribute": "killograms_to_gain",
+      "action": "increment",
+      "direct_transition": "Check_For_Emotional_Abuse_Weight_Gain",
+      "amount": 4,
+      "remarks": [
+        "Can't increment by a range, 4.0 is the median amount provided by the study."
+      ]
+    },
+    "Check_For_Emotional_Abuse_Weight_Gain": {
       "type": "Simple",
-      "direct_transition": "Terminal"
+      "conditional_transition": [
+        {
+          "transition": "Trigger_Emotional_Abuse_Weight_Gain",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 313217007,
+                "display": "History of emotional abuse (situation)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Check_For_Sexual_Abuse_Weight_Gain"
+        }
+      ]
+    },
+    "Trigger_Emotional_Abuse_Weight_Gain": {
+      "type": "Counter",
+      "attribute": "kilograms_to_gain",
+      "action": "increment",
+      "direct_transition": "Check_For_Sexual_Abuse_Weight_Gain",
+      "amount": 2.8,
+      "remarks": [
+        "Can't increment by a range, 2.8 is the median amount provided by the study."
+      ]
+    },
+    "Check_For_Sexual_Abuse_Weight_Gain": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Trigger_Sexual_Abuse_Weight_Gain",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 313216003,
+                "display": "History of sexual abuse (situation)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Trigger_Sexual_Abuse_Weight_Gain": {
+      "type": "Counter",
+      "attribute": "kilograms_to_gain",
+      "action": "increment",
+      "direct_transition": "Terminal",
+      "remarks": [
+        "Can't increment by a range, 1.4 is the median amount provided by the study."
+      ],
+      "amount": 1.4
     }
   },
   "gmf_version": 2
