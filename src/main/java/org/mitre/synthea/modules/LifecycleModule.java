@@ -550,7 +550,7 @@ public final class LifecycleModule extends Module {
         double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
         weight += adultWeightGain;
         // Update the weight they have yet to gain.
-        person.attributes.put(Person.KILOGRAMS_TO_GAIN, ((double) kgToGain) - adultWeightGain;
+        person.attributes.put(Person.KILOGRAMS_TO_GAIN, ((double) kgToGain) - adultWeightGain);
       }
     }
     return weight;

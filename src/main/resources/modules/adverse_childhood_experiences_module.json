@@ -261,7 +261,7 @@
           "transition": "Check_For_Emotional_Abuse_Weight_Gain"
         }
       ],
-      "value": 0,
+      "value": 0.0,
       "distribution": {
         "kind": "EXACT",
         "parameters": {
