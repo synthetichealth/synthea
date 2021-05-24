@@ -69,6 +69,10 @@ public class ReactionProbabilities implements Serializable {
     return !this.possibleSeverities.isEmpty();
   }
 
+  /**
+   * This will validate the reaction probabilities and generate the underlying objects used
+   * to get weighted samples of reaction severities.
+   */
   public void buildReactionDistributions() {
     if (!this.validate()) {
       throw new IllegalStateException("Invalid distribution values specified");
@@ -83,6 +87,13 @@ public class ReactionProbabilities implements Serializable {
     return possibleSeverities.stream().mapToDouble(sp -> sp.getValue()).sum() <= 1;
   }
 
+  /**
+   * Generate a severity for the reaction of an allergy or intolerance. This uses the passed in
+   * person for the random seed. There is a possibility that the reaction will not be selected
+   * for an individual. In that case, the method returns null.
+   * @param person used for random seed
+   * @return a ReactionSeverity value to indicate severity or null
+   */
   public HealthRecord.ReactionSeverity generateSeverity(Person person) {
     if (this.isPopulated() && this.severityDistribution == null) {
       this.buildReactionDistributions();
@@ -99,6 +110,8 @@ public class ReactionProbabilities implements Serializable {
       case NONE:
         // do nothing
         return null;
+      default:
+        // should never get here
     }
     //should never get here
     return null;

@@ -1513,6 +1513,8 @@ public class FhirR4 {
           case SEVERE:
             reactionComponent.setSeverity(AllergyIntolerance.AllergyIntoleranceSeverity.SEVERE);
             break;
+          default:
+            // do nothing
         }
         allergyResource.addReaction(reactionComponent);
       });
