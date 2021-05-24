@@ -607,9 +607,9 @@ public class HealthRecord implements Serializable {
   }
 
   public enum ReactionSeverity {
-    MILD("255604002", "Mild"),
+    SEVERE("24484000", "Severe"),
     MODERATE("6736007", "Moderate"),
-    SEVERE("24484000", "Severe");
+    MILD("255604002", "Mild");
 
     public String code;
     public String display;
