@@ -58,6 +58,27 @@
           }
         },
         {
+          "transition": "Start_YMCA_Diabetes_Program",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 18,
+                "unit": "years",
+                "value": 0
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "prediabetes",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
           "transition": "Not_Eligible"
         }
       ],
@@ -134,25 +155,25 @@
     "Set_2_Visits": {
       "type": "SetAttribute",
       "attribute": "ymca_program_visits_counter",
-      "direct_transition": "Unsuccessful_YMCA_Diabetes_Program_2",
+      "direct_transition": "Unsuccessful_YMCA_Diabetes_Program",
       "value": 2
     },
     "Set_3_Visits": {
       "type": "SetAttribute",
       "attribute": "ymca_program_visits_counter",
-      "direct_transition": "Unsuccessful_YMCA_Diabetes_Program_2",
+      "direct_transition": "Unsuccessful_YMCA_Diabetes_Program",
       "value": 3
     },
     "Set_4_Visits": {
       "type": "SetAttribute",
       "attribute": "ymca_program_visits_counter",
-      "direct_transition": "Unsuccessful_YMCA_Diabetes_Program_2",
+      "direct_transition": "Unsuccessful_YMCA_Diabetes_Program",
       "value": 4
     },
     "Set_1_Visit": {
       "type": "SetAttribute",
       "attribute": "ymca_program_visits_counter",
-      "direct_transition": "Unsuccessful_YMCA_Diabetes_Program_2",
+      "direct_transition": "Unsuccessful_YMCA_Diabetes_Program",
       "value": 1
     },
     "2_Week_Delay": {
@@ -188,12 +209,6 @@
         "Upon completion of the Program, the person's A1C Levels will be restored to normal.",
         "Normal Range: 4% - 5.7%"
       ]
-    },
-    "Unsuccessful_YMCA_Diabetes_Program_2": {
-      "type": "SetAttribute",
-      "attribute": "ymca_diabetes_program",
-      "value": "unsuccessful",
-      "direct_transition": "2_Week_Delay"
     },
     "Check_Success_Of_Program": {
       "type": "Simple",
@@ -280,6 +295,12 @@
       ],
       "unit": "%",
       "direct_transition": "End_Wellness"
+    },
+    "Unsuccessful_YMCA_Diabetes_Program": {
+      "type": "SetAttribute",
+      "attribute": "ymca_diabetes_program",
+      "value": "unsuccessful",
+      "direct_transition": "2_Week_Delay"
     }
   },
   "gmf_version": 2
