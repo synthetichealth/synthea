@@ -366,7 +366,7 @@ public final class WeightLossModule extends Module {
         double minLossPercentage = minLoss;
         double maxLossPercentage = maxLoss;
         if (person.attributes.get(Person.TARGET_WEIGHT_LOSS) != null) {
-          double targetWeightLoss = (double) person.attributes.get(Person.TARGET_WEIGHT_LOSS);
+          double targetWeightLoss = Double.valueOf((int)person.attributes.get(Person.TARGET_WEIGHT_LOSS));
           minLossPercentage = targetWeightLoss;
           maxLossPercentage = targetWeightLoss;
         }
