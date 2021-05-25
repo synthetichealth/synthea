@@ -87,6 +87,9 @@ public class Household {
    * @return The initialized household.
    */
   public Household initializeHousehold(long seed) {
+    if(this.seedRecords.size() == 0){
+      throw new RuntimeException("Household does not have any seed records. Variants include: " + this.variantRecords);
+    }
     this.id = this.seedRecords.get(0).householdId;
     this.random = new Random(seed);
     // The list of addresses this household will have.
@@ -114,19 +117,13 @@ public class Household {
 
     // Iterate through the variant records and assign them to their relevant
     // FixedRecordGroups.
-    System.out.println("Variant records: " + this.variantRecords);
     for (FixedRecord variant : this.variantRecords) {
-      System.out.println("Check 1: " + variant + variant.householdRole);
       for (FixedRecordGroup frg : this.fixedRecordGroups.get(variant.householdRole)) {
-        System.out.println("Check 2: " + variant.householdRole + variant.seedID);
         if (frg.getSeedId().equals(variant.seedID)) {
-          System.out.println("Check 3: " + variant);
           frg.addVariantRecord(variant);
         }
       }
     }
-
-    System.out.println("DONE ADDING VARIANTS");
 
     // Iterate through each fixed record group and set their random initial variant
     // records.
@@ -314,5 +311,10 @@ public class Household {
    */
   public List<FixedRecordGroup> getAllRecordGroupsFor(Person person) {
     return this.fixedRecordGroups.get(this.getHouseholdRoleFor(person));
+  }
+
+  @Override
+  public String toString(){
+    return "" + this.id;
   }
 }

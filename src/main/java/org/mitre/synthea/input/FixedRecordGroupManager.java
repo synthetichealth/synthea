@@ -27,7 +27,7 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 public class FixedRecordGroupManager {
 
   // Initial imported households - only to be used for the importing.
-  public List<Household> householdsList;
+  private List<Household> householdsList;
 
   // Map to track households by their ID. String is the household id, Household is
   // the houshold object
@@ -67,7 +67,7 @@ public class FixedRecordGroupManager {
    * @return The newly created fixed record manager.
    */
   public static FixedRecordGroupManager importFixedDemographicsFile(File filePath) {
-    // Import using Gson.
+    // Import households, seed records, and variant records using Gson.
     Gson gson = new Gson();
     Type jsonType = new TypeToken<List<Household>>() {
     }.getType();
@@ -79,7 +79,7 @@ public class FixedRecordGroupManager {
     } catch (FileNotFoundException e) {
       throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
     }
-    // Initialize each imported household using the seed value.
+    // Initialize each imported household.
     long householdsSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
     fixedRecordGroupManager.initializeHouseholds(householdsSeed);
     System.out.println(
@@ -97,9 +97,9 @@ public class FixedRecordGroupManager {
   private void initializeHouseholds(long householdsSeed) {
     // Iterate through each household and initialize it.
     for (Household household : this.householdsList) {
-      String householdId = household.seedRecords.get(0).householdId;
-      System.out.println("Household ID: " + householdId);
-      this.householdsMap.put(householdId, household.initializeHousehold(householdsSeed));
+      Household initializedHousehold = household.initializeHousehold(householdsSeed);
+      String householdId = initializedHousehold.getHouseholdId();
+      this.householdsMap.put(householdId, initializedHousehold);
     }
     // Now that we're done with the initial imported households list, set it to null
     // to ensure no accidental access.
