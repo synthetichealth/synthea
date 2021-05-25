@@ -736,11 +736,11 @@ public class CSVExporter {
     }
     Function<Map.Entry<HealthRecord.Code, HealthRecord.ReactionSeverity>, String> template =
         mapEntry -> {
-      StringBuilder reactionBuilder = new StringBuilder();
-      reactionBuilder.append(mapEntry.getKey().code).append(',');
-      reactionBuilder.append(mapEntry.getValue());
-      return reactionBuilder.toString();
-    };
+          StringBuilder reactionBuilder = new StringBuilder();
+          reactionBuilder.append(mapEntry.getKey().code).append(',');
+          reactionBuilder.append(mapEntry.getValue());
+          return reactionBuilder.toString();
+        };
 
     switch (reactionsSize) {
       case 0:
