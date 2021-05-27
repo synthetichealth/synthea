@@ -84,6 +84,36 @@
           "display": "Aspirin"
         }
       ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.19},
+            {"level":  "none", "value":  0.81}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "402387002", "display":  "Allergic angioedema (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.05},
+            {"level":  "none", "value":  0.95}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value":  0.028},
+            {"level":  "none", "value":  0.972}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "21522001", "display":  "Abdominal pain (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.32},
+            {"level":  "none", "value":  0.68}
+          ]
+        }
+      ],
       "direct_transition": "NSAID_Allergy"
     },
     "NSAID_Allergy": {
@@ -153,6 +183,36 @@
       "type": "Simple",
       "remarks": [
         "1% to 3% of individuals are allergic to cphalosporins. This module sets it fo 2% of people."
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value":  0.20},
+            {"level":  "none", "value":  0.80}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.20},
+            {"level":  "none", "value":  0.80}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "402387002", "display":  "Allergic angioedema (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.007},
+            {"level":  "none", "value":  0.993}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.20},
+            {"level":  "none", "value":  0.80}
+          ]
+        }
       ],
       "distributed_transition": [
         {
@@ -281,6 +341,50 @@
           "system": "RxNorm",
           "code": "35296",
           "display": "Ramipril"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "49727002", "display":  "Cough (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.20},
+            {"level":  "none", "value":  0.80}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "402387002", "display":  "Allergic angioedema (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.007},
+            {"level":  "none", "value":  0.993}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "404640003", "display":  "Dizziness (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value":  0.002},
+            {"level":  "none", "value":  0.998}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "236429004", "display":  "Acute drug-induced renal failure (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value":  0.008},
+            {"level":  "none", "value":  0.992}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "267036007", "display":  "Dyspnea (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.06},
+            {"level":  "none", "value":  0.94}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "237849008", "display":  "Drug-induced hyperkalemia (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.04},
+            {"level":  "none", "value":  0.96}
+          ]
         }
       ],
       "direct_transition": "Terminal"

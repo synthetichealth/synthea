@@ -347,8 +347,45 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "91930004",
-          "display": "Allergy to eggs"
+          "code": "102263004",
+          "display": "Eggs (edible) (substance)"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value":  0.09},
+            {"level":  "none", "value":  0.91}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.83},
+            {"level":  "none", "value":  0.17}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "402387002", "display":  "Allergic angioedema (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.12},
+            {"level":  "none", "value":  0.88}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.46},
+            {"level":  "none", "value":  0.54}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "300359004", "display":  "Finding of vomiting (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.05},
+            {"level":  "none", "value":  0.95}
+          ]
         }
       ],
       "direct_transition": "Chance_of_Soy_Allergy"

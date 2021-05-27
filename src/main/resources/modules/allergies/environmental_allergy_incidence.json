@@ -362,23 +362,23 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "424213003",
-          "display": "Allergy to bee venom"
+          "code": "288328004",
+          "display": "Bee venom (substance)"
         }
       ],
       "reactions": [
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "241931004", "display":  "Bee sting-induced anaphylaxis"},
+          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
           "possible_severities": [
-            {"level":  "severe", "value":  0.75},
-            {"level":  "none", "value":  0.25}
+            {"level":  "severe", "value":  0.03},
+            {"level":  "none", "value":  0.96}
           ]
         },
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Hives"},
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
           "possible_severities": [
-            {"level":  "moderate", "value":  0.50},
-            {"level":  "none", "value":  0.50}
+            {"level":  "moderate", "value":  0.264},
+            {"level":  "none", "value":  0.73}
           ]
         }
       ],

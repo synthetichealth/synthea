@@ -84,7 +84,8 @@ public class ReactionProbabilities implements Serializable {
   }
 
   public boolean validate() {
-    return possibleSeverities.stream().mapToDouble(sp -> sp.getValue()).sum() <= 1;
+    // less than 1.001 to deal with floating point rounding issues
+    return possibleSeverities.stream().mapToDouble(sp -> sp.getValue()).sum() <= 1.001;
   }
 
   /**
