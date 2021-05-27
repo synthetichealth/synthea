@@ -14,9 +14,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math.ode.DerivativeException;
 import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.engine.Components.Exact;
@@ -257,10 +256,13 @@ public abstract class State implements Cloneable, Serializable {
       boolean completed = submod.process(person, time);
 
       if (completed) {
-        // keep track of when the submodule exited, in case it was "rewinding time" when it completed
+        // keep track of when the submodule exited,
+        // in case it was "rewinding time" when it completed
         if (person.history.get(0).exited == null) {
-          // this happens when the patient dies in the submodule, so processing is going to stop anyway
-          // but just to be safe and not crash, we'll assume we exited at the current timestep
+          // this happens when the patient dies in the submodule,
+          // so processing is going to stop anyway
+          // but just to be safe and not crash,
+          // we'll assume we exited at the current timestep
           this.submoduleExited = time;
         } else {
           this.submoduleExited = person.history.get(0).exited;
@@ -1611,17 +1613,11 @@ public abstract class State implements Cloneable, Serializable {
     protected void validate(Module module, String name) {
       if (exact != null || range != null) {
         // units are required
-        if (unit == null || unit.isEmpty()) {
+        if (StringUtils.isBlank(unit)) {
           throw new RuntimeException(
-              "Observations with numeric quantities must contain units matching pattern [^\\s]+: "
-          + "Module \"" + module.name + "\": State \"" + name + "\": Unit missing or empty");
-        }
-
-        String regex = "[^\\s]+";
-        if (!Pattern.matches(regex, unit)) {
-          throw new RuntimeException(
-              "Observations with numeric quantities must contain units matching pattern [^\\s]+: "
-          + "Module \"" + module.name + "\": State \"" + name + "\": Unit \"" + unit + "\"");
+              "Observations with numeric quantities must contain non-blank units. "
+          + "Module \"" + module.name + "\": State \"" + name
+          + "\": Unit is missing, empty, or all whitespace");
         }
       }
 
