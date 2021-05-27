@@ -113,6 +113,7 @@ public class HypertensionTrial {
     for (Set<Drug> drugClass : HTN_TRIAL_FORMULARY.values()) {
       for (Drug drug : drugClass) {
         if (person.record.medicationActive(drug.code.code)) {
+          nextDrug = null; // ensure nothing from this class is picked
           break; // break out of drug class, the person has one in this class already
         }
         

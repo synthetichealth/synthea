@@ -93,7 +93,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
    * @return the maximum change per day.
    */
   private double maxChangePerDay() {
-    return 15.0;
+    return 5.0;
   }
 
   /**
