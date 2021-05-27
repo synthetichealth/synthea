@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":10,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":10,"i15":9,"i16":9,"i17":9};
+var methods = {"i0":9,"i1":9,"i2":10,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":10,"i11":9,"i12":9,"i13":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -160,38 +160,34 @@ extends <a href="../../../../org/mitre/synthea/engine/Module.html" title="class 
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#ADHERENCE_PROBABILITY">ADHERENCE_PROBABILITY</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>static boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#appendNumbersToNames">appendNumbersToNames</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
 <td class="colFirst"><code>protected static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#ENABLE_DEATH_BY_LOSS_OF_CARE">ENABLE_DEATH_BY_LOSS_OF_CARE</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#ENABLE_DEATH_BY_NATURAL_CAUSES">ENABLE_DEATH_BY_NATURAL_CAUSES</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#ENABLE_PHYSIOLOGY_GENERATORS">ENABLE_PHYSIOLOGY_GENERATORS</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static <a href="../../../../org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#LOSS_OF_CARE">LOSS_OF_CARE</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#QUIT_ALCOHOLISM_AGE">QUIT_ALCOHOLISM_AGE</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#QUIT_ALCOHOLISM_PROBABILITY">QUIT_ALCOHOLISM_PROBABILITY</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#QUIT_SMOKING_AGE">QUIT_SMOKING_AGE</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#QUIT_SMOKING_PROBABILITY">QUIT_SMOKING_PROBABILITY</a></span></code>&nbsp;</td>
 </tr>
@@ -235,12 +231,6 @@ extends <a href="../../../../org/mitre/synthea/engine/Module.html" title="class 
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#addHash-java.lang.String-">addHash</a></span>(java.lang.String&nbsp;name)</code>
-<div class="block">Adds a 1- to 3-digit hashcode to the end of the name.</div>
-</td>
-</tr>
-<tr id="i1" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#adherence-org.mitre.synthea.world.agents.Person-long-">adherence</a></span>(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
          long&nbsp;time)</code>
@@ -248,71 +238,49 @@ extends <a href="../../../../org/mitre/synthea/engine/Module.html" title="class 
  medication, careplans, whatever.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#birth-org.mitre.synthea.world.agents.Person-long-">birth</a></span>(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
      long&nbsp;time)</code>
 <div class="block">For unto us a child is born.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#clone--">clone</a></span>()</code>
 <div class="block">Clone this module.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>protected static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#death-org.mitre.synthea.world.agents.Person-long-">death</a></span>(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
      long&nbsp;time)</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#deathFromLossOfCare-org.mitre.synthea.world.agents.Person-">deathFromLossOfCare</a></span>(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code>
 <div class="block">Determines whether a person dies due to loss-of-care and lack of
  necessary treatment.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#fakeAddress-boolean-org.mitre.synthea.world.agents.Person-">fakeAddress</a></span>(boolean&nbsp;includeLine2,
-           <a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code>
-<div class="block">Generate a Street Address.</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#fakeFirstName-java.lang.String-java.lang.String-org.mitre.synthea.world.agents.Person-">fakeFirstName</a></span>(java.lang.String&nbsp;gender,
-             java.lang.String&nbsp;language,
-             <a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code>
-<div class="block">Generate a first name appropriate for a given gender and language.</div>
-</td>
-</tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#fakeLastName-java.lang.String-org.mitre.synthea.world.agents.Person-">fakeLastName</a></span>(java.lang.String&nbsp;language,
-            <a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code>
-<div class="block">Generate a surname appropriate for a given language.</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static java.util.Collection&lt;<a href="../../../../org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#getAllCodes--">getAllCodes</a></span>()</code>
 <div class="block">Get all of the Codes this module uses, for inventory purposes.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#inventoryAttributes-java.util.Map-">inventoryAttributes</a></span>(java.util.Map&lt;java.lang.String,<a href="../../../../org/mitre/synthea/helpers/Attributes.Inventory.html" title="class in org.mitre.synthea.helpers">Attributes.Inventory</a>&gt;&nbsp;attributes)</code>
 <div class="block">Populate the given attribute map with the list of attributes that this
  module reads/writes with example values when appropriate.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>protected static double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#likelihoodOfDeath-int-">likelihoodOfDeath</a></span>(int&nbsp;age)</code>&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#lookupGrowthChart-java.lang.String-java.lang.String-int-double-">lookupGrowthChart</a></span>(java.lang.String&nbsp;chartType,
                  java.lang.String&nbsp;gender,
@@ -322,7 +290,7 @@ extends <a href="../../../../org/mitre/synthea/engine/Module.html" title="class 
  values to calculate the intermediate values.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#percentileForBMI-double-java.lang.String-int-">percentileForBMI</a></span>(double&nbsp;bmi,
                 java.lang.String&nbsp;gender,
@@ -330,28 +298,28 @@ extends <a href="../../../../org/mitre/synthea/engine/Module.html" title="class 
 <div class="block">Look up the percentile that a given BMI falls into based on gender and age in months.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#process-org.mitre.synthea.world.agents.Person-long-">process</a></span>(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
        long&nbsp;time)</code>
 <div class="block">Process this Module with the given Person at the specified time within the simulation.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#quitAlcoholism-org.mitre.synthea.world.agents.Person-long-">quitAlcoholism</a></span>(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
               long&nbsp;time)</code>
 <div class="block">If the person is an alcoholic, there is a small chance they will quit.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#quitSmoking-org.mitre.synthea.world.agents.Person-long-">quitSmoking</a></span>(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
            long&nbsp;time)</code>
 <div class="block">If the person is a smoker, there is a small chance they will quit.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/modules/LifecycleModule.html#setCurrentWeightForLengthPercentile-org.mitre.synthea.world.agents.Person-long-">setCurrentWeightForLengthPercentile</a></span>(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                                    long&nbsp;time)</code>
@@ -451,15 +419,6 @@ extends <a href="../../../../org/mitre/synthea/engine/Module.html" title="class 
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.mitre.synthea.modules.LifecycleModule.ADHERENCE_PROBABILITY">Constant Field Values</a></dd>
 </dl>
-</li>
-</ul>
-<a name="appendNumbersToNames">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>appendNumbersToNames</h4>
-<pre>public static final&nbsp;boolean appendNumbersToNames</pre>
 </li>
 </ul>
 <a name="ENABLE_DEATH_BY_NATURAL_CAUSES">
@@ -573,79 +532,6 @@ extends <a href="../../../../org/mitre/synthea/engine/Module.html" title="class 
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>person</code> - The baby.</dd>
 <dd><code>time</code> - The time of birth.</dd>
-</dl>
-</li>
-</ul>
-<a name="fakeFirstName-java.lang.String-java.lang.String-org.mitre.synthea.world.agents.Person-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>fakeFirstName</h4>
-<pre>public static&nbsp;java.lang.String&nbsp;fakeFirstName(java.lang.String&nbsp;gender,
-                                             java.lang.String&nbsp;language,
-                                             <a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</pre>
-<div class="block">Generate a first name appropriate for a given gender and language.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>gender</code> - Gender of the name, "M" or "F"</dd>
-<dd><code>language</code> - Origin language of the name, "english", "spanish"</dd>
-<dd><code>person</code> - person to generate a name for.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>First name.</dd>
-</dl>
-</li>
-</ul>
-<a name="fakeLastName-java.lang.String-org.mitre.synthea.world.agents.Person-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>fakeLastName</h4>
-<pre>public static&nbsp;java.lang.String&nbsp;fakeLastName(java.lang.String&nbsp;language,
-                                            <a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</pre>
-<div class="block">Generate a surname appropriate for a given language.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>language</code> - Origin language of the name, "english", "spanish"</dd>
-<dd><code>person</code> - person to generate a name for.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>Surname or Family Name.</dd>
-</dl>
-</li>
-</ul>
-<a name="fakeAddress-boolean-org.mitre.synthea.world.agents.Person-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>fakeAddress</h4>
-<pre>public static&nbsp;java.lang.String&nbsp;fakeAddress(boolean&nbsp;includeLine2,
-                                           <a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</pre>
-<div class="block">Generate a Street Address.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>includeLine2</code> - Whether or not the address should have a second line,
-     which can take the form of an apartment, unit, or suite number.</dd>
-<dd><code>person</code> - person to generate an address for.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>First name.</dd>
-</dl>
-</li>
-</ul>
-<a name="addHash-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>addHash</h4>
-<pre>public static&nbsp;java.lang.String&nbsp;addHash(java.lang.String&nbsp;name)</pre>
-<div class="block">Adds a 1- to 3-digit hashcode to the end of the name.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>name</code> - Person's name</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The name with a hash appended, ex "John123" or "Smith22"</dd>
 </dl>
 </li>
 </ul>

@@ -129,7 +129,7 @@
 <div class="block">Adds a new key/fact combination to the table
  and returns the ID.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/LifecycleModule.html#addHash-java.lang.String-">addHash(String)</a></span> - Static method in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/LifecycleModule.html" title="class in org.mitre.synthea.modules">LifecycleModule</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Names.html#addHash-java.lang.String-">addHash(String)</a></span> - Static method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Names.html" title="class in org.mitre.synthea.world.concepts">Names</a></dt>
 <dd>
 <div class="block">Adds a 1- to 3-digit hashcode to the end of the name.</div>
 </dd>
@@ -320,7 +320,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="App.html#App--">App()</a></span> - Constructor for class <a href="App.html" title="class in &lt;Unnamed&gt;">App</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/LifecycleModule.html#appendNumbersToNames">appendNumbersToNames</a></span> - Static variable in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/LifecycleModule.html" title="class in org.mitre.synthea.modules">LifecycleModule</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Names.html#appendNumbersToNames">appendNumbersToNames</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Names.html" title="class in org.mitre.synthea.world.concepts">Names</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#assignCosts--">assignCosts()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
 <dd>
@@ -948,6 +948,10 @@
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Utilities.html#convertRiskToTimestep-double-double-">convertRiskToTimestep(double, double)</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Utilities.html" title="class in org.mitre.synthea.helpers">Utilities</a></dt>
 <dd>
 <div class="block">Calculates 1 - (1-risk)^(currTimeStepInMS/originalPeriodInMS).</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Utilities.html#convertRiskToTimestep-double-double-double-">convertRiskToTimestep(double, double, double)</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Utilities.html" title="class in org.mitre.synthea.helpers">Utilities</a></dt>
+<dd>
+<div class="block">Calculates 1 - (1-risk)^(newTimeStepInMS/originalPeriodInMS).</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Utilities.html#convertTime-java.lang.String-long-">convertTime(String, long)</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Utilities.html" title="class in org.mitre.synthea.helpers">Utilities</a></dt>
 <dd>
@@ -1609,15 +1613,15 @@
 <div class="block">Create a FactTable with an ID that starts at 1
  and increments with each new key/fact.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/LifecycleModule.html#fakeAddress-boolean-org.mitre.synthea.world.agents.Person-">fakeAddress(boolean, Person)</a></span> - Static method in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/LifecycleModule.html" title="class in org.mitre.synthea.modules">LifecycleModule</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Names.html#fakeAddress-boolean-org.mitre.synthea.world.agents.Person-">fakeAddress(boolean, Person)</a></span> - Static method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Names.html" title="class in org.mitre.synthea.world.concepts">Names</a></dt>
 <dd>
 <div class="block">Generate a Street Address.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/LifecycleModule.html#fakeFirstName-java.lang.String-java.lang.String-org.mitre.synthea.world.agents.Person-">fakeFirstName(String, String, Person)</a></span> - Static method in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/LifecycleModule.html" title="class in org.mitre.synthea.modules">LifecycleModule</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Names.html#fakeFirstName-java.lang.String-java.lang.String-org.mitre.synthea.world.agents.Person-">fakeFirstName(String, String, Person)</a></span> - Static method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Names.html" title="class in org.mitre.synthea.world.concepts">Names</a></dt>
 <dd>
 <div class="block">Generate a first name appropriate for a given gender and language.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/LifecycleModule.html#fakeLastName-java.lang.String-org.mitre.synthea.world.agents.Person-">fakeLastName(String, Person)</a></span> - Static method in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/LifecycleModule.html" title="class in org.mitre.synthea.modules">LifecycleModule</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Names.html#fakeLastName-java.lang.String-org.mitre.synthea.world.agents.Person-">fakeLastName(String, Person)</a></span> - Static method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Names.html" title="class in org.mitre.synthea.world.concepts">Names</a></dt>
 <dd>
 <div class="block">Generate a surname appropriate for a given language.</div>
 </dd>
@@ -3722,6 +3726,10 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Transition.NamedDistribution.html#NamedDistribution-java.util.Map-">NamedDistribution(Map&lt;String, ?&gt;)</a></span> - Constructor for class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Transition.NamedDistribution.html" title="class in org.mitre.synthea.engine">Transition.NamedDistribution</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/world/concepts/Names.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">Names</span></a> - Class in <a href="org/mitre/synthea/world/concepts/package-summary.html">org.mitre.synthea.world.concepts</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Names.html#Names--">Names()</a></span> - Constructor for class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Names.html" title="class in org.mitre.synthea.world.concepts">Names</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.html#NEAREST">NEAREST</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html#NEPHROLOGY">NEPHROLOGY</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html" title="class in org.mitre.synthea.world.concepts">ClinicianSpecialty</a></dt>
@@ -5629,6 +5637,8 @@
 <div class="block">Determine whether the Distribution has all of the information it needs to generate a sample
  value.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.Observation.html#validate-org.mitre.synthea.engine.Module-java.lang.String-">validate(Module, String)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.Observation.html" title="class in org.mitre.synthea.engine">State.Observation</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html#validate--">validate()</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html" title="class in org.mitre.synthea.helpers.physiology">PhysiologyGeneratorConfig</a></dt>
 <dd>
 <div class="block">Validates that all inputs are appropriate and within bounds.</div>

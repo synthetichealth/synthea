@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -227,44 +227,52 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i8" class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#convertRiskToTimestep-double-double-double-">convertRiskToTimestep</a></span>(double&nbsp;risk,
+                     double&nbsp;originalPeriodInMS,
+                     double&nbsp;newTimeStepInMS)</code>
+<div class="block">Calculates 1 - (1-risk)^(newTimeStepInMS/originalPeriodInMS).</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#convertTime-java.lang.String-double-">convertTime</a></span>(java.lang.String&nbsp;units,
            double&nbsp;value)</code>
 <div class="block">Convert a quantity of time in a specified units into milliseconds.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#convertTime-java.lang.String-long-">convertTime</a></span>(java.lang.String&nbsp;units,
            long&nbsp;value)</code>
 <div class="block">Convert a quantity of time in a specified units into milliseconds.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static com.google.gson.Gson</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#getGson--">getGson</a></span>()</code>
 <div class="block">Get a Gson object, preconfigured to load the GMF modules into classes.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#getMonth-long-">getMonth</a></span>(long&nbsp;time)</code>
 <div class="block">Get the month of a Unix timestamp.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>static int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#getYear-long-">getYear</a></span>(long&nbsp;time)</code>
 <div class="block">Get the year of a Unix timestamp.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>static java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#primitive-com.google.gson.JsonPrimitive-">primitive</a></span>(com.google.gson.JsonPrimitive&nbsp;p)</code>
 <div class="block">Converts a JsonPrimitive into a primitive Boolean, Double, or String.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#randomDicomUid-org.mitre.synthea.helpers.RandomNumberGenerator-long-int-int-">randomDicomUid</a></span>(<a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;random,
               long&nbsp;time,
@@ -273,26 +281,26 @@ extends java.lang.Object</pre>
 <div class="block">Generate a random DICOM UID to uniquely identify an ImagingStudy, Series, or Instance.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#readResource-java.lang.String-">readResource</a></span>(java.lang.String&nbsp;filename)</code>
 <div class="block">Read the entire contents of a file in resources into a String.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>static java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#strToObject-java.lang.Class-java.lang.String-">strToObject</a></span>(java.lang.Class&lt;?&gt;&nbsp;clazz,
            java.lang.String&nbsp;value)</code>
 <div class="block">Utility function to convert from string to a base Java object type.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#walkAllModules-java.util.function.BiConsumer-">walkAllModules</a></span>(java.util.function.BiConsumer&lt;java.nio.file.Path,java.nio.file.Path&gt;&nbsp;action)</code>
 <div class="block">Walk the directory structure of the modules, and apply the given function for every module.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#walkAllModules-java.nio.file.Path-java.util.function.Consumer-">walkAllModules</a></span>(java.nio.file.Path&nbsp;modulesPath,
               java.util.function.Consumer&lt;java.nio.file.Path&gt;&nbsp;action)</code>
@@ -449,6 +457,18 @@ extends java.lang.Object</pre>
 <pre>public static&nbsp;double&nbsp;convertRiskToTimestep(double&nbsp;risk,
                                            double&nbsp;originalPeriodInMS)</pre>
 <div class="block">Calculates 1 - (1-risk)^(currTimeStepInMS/originalPeriodInMS).</div>
+</li>
+</ul>
+<a name="convertRiskToTimestep-double-double-double-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>convertRiskToTimestep</h4>
+<pre>public static&nbsp;double&nbsp;convertRiskToTimestep(double&nbsp;risk,
+                                           double&nbsp;originalPeriodInMS,
+                                           double&nbsp;newTimeStepInMS)</pre>
+<div class="block">Calculates 1 - (1-risk)^(newTimeStepInMS/originalPeriodInMS).</div>
 </li>
 </ul>
 <a name="compare-java.lang.Object-java.lang.Object-java.lang.String-">
