@@ -279,6 +279,17 @@ public class Demographics implements Comparable<Demographics>, Serializable {
   }
 
   /**
+   * Return the poverty ratio.
+   * @param income Annual income.
+   * @return poverty ratio.
+   */
+  public double povertyRatio(int income) {
+    double poverty = Double
+        .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
+    return ((double) income) / poverty;
+  }
+
+  /**
    * Return a random education level based on statistics.
    */
   public String pickEducation(Random random) {

@@ -1459,14 +1459,14 @@
             "conditions": [
               {
                 "condition_type": "Attribute",
-                "attribute": "vehicle_access",
+                "attribute": "no_vehicle_access",
                 "operator": "is nil"
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "vehicle_access",
+                "attribute": "no_vehicle_access",
                 "operator": "==",
-                "value": true
+                "value": false
               }
             ]
           },

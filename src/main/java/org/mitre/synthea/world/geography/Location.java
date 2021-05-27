@@ -140,7 +140,7 @@ public class Location implements Serializable {
         Map<String, Double> sdoh = new HashMap<String, Double>();
         for (String attribute : line.keySet()) {
           Double probability = Double.parseDouble(line.get(attribute));
-          sdoh.put(attribute, probability);
+          sdoh.put(attribute.toLowerCase(), probability);
         }
 
         socialDeterminantsOfHealth.put(county, sdoh);
@@ -444,6 +444,11 @@ public class Location implements Serializable {
     }
   }
 
+  /**
+   * Set social determinants of health attributes on the patient, as defined
+   * by the optional social determinants of health county-level file.
+   * @param person The person to assign attributes.
+   */
   public void setSocialDeterminants(Person person) {
     String county = (String) person.attributes.get("county");
     if (county == null) {

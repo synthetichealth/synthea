@@ -704,6 +704,8 @@ public class Generator implements RandomNumberGenerator {
     demographicsOutput.put(Person.INCOME, income);
     double incomeLevel = city.incomeLevel(income);
     demographicsOutput.put(Person.INCOME_LEVEL, incomeLevel);
+    double povertyRatio = city.povertyRatio(income);
+    demographicsOutput.put(Person.POVERTY_RATIO, povertyRatio);
 
     double occupation = random.nextDouble();
     demographicsOutput.put(Person.OCCUPATION_LEVEL, occupation);
