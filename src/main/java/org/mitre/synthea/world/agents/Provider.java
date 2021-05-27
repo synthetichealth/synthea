@@ -24,13 +24,13 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.behaviors.IProviderFinder;
 import org.mitre.synthea.world.agents.behaviors.ProviderFinderNearest;
 import org.mitre.synthea.world.agents.behaviors.ProviderFinderQuality;
 import org.mitre.synthea.world.agents.behaviors.ProviderFinderRandom;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.Names;
 import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
 import org.mitre.synthea.world.geography.quadtree.QuadTree;
@@ -60,7 +60,7 @@ public class Provider implements QuadTreeElement, Serializable {
   public static final String PROVIDER_SELECTION_BEHAVIOR =
       Config.get("generate.providers.selection_behavior", "nearest").toLowerCase();
   private static IProviderFinder providerFinder = buildProviderFinder();
-
+  
   public Map<String, Object> attributes;
   public String uuid;
   private String locationUuid;
@@ -473,13 +473,8 @@ public class Provider implements QuadTreeElement, Serializable {
       clinician.attributes.put(Person.ZIP, provider.zip);
       clinician.attributes.put(Person.COORDINATE, provider.coordinates);
 
-      String firstName = LifecycleModule.fakeFirstName(gender, language, doc);
-      String lastName = LifecycleModule.fakeLastName(language, doc);
-
-      if (LifecycleModule.appendNumbersToNames) {
-        firstName = LifecycleModule.addHash(firstName);
-        lastName = LifecycleModule.addHash(lastName);
-      }
+      String firstName = Names.fakeFirstName(gender, language, doc);
+      String lastName = Names.fakeLastName(language, doc);
       clinician.attributes.put(Clinician.FIRST_NAME, firstName);
       clinician.attributes.put(Clinician.LAST_NAME, lastName);
       clinician.attributes.put(Clinician.NAME, firstName + " " + lastName);
