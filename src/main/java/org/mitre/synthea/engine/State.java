@@ -483,6 +483,10 @@ public abstract class State implements Cloneable, Serializable {
       if (this.next == null) {
         this.processOnce(person, time);
         this.next = this.endOfDelay(time, person);
+        if (this.next < time) {
+          // Don't allow a negative delay
+          this.next = time;
+        }
       }
 
       return ((time >= this.next) && person.alive(this.next));
