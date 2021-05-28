@@ -170,8 +170,45 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "232347008",
-          "display": "Dander (animal) allergy"
+          "code": "264287008",
+          "display": "Animal dander (substance)"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "49727002", "display":  "Cough (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.23},
+            {"level":  "none", "value":  0.77}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "267036007", "display":  "Dyspnea (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.2},
+            {"level":  "none", "value":  0.8}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.36},
+            {"level":  "none", "value":  0.64}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.53},
+            {"level":  "none", "value":  0.47}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "878820003", "display":  "Rhinoconjunctivitis (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.8},
+            {"level":  "none", "value":  0.19999999999999996}
+          ]
         }
       ],
       "direct_transition": "Chance_of_Dust_Mite_Allergy"
@@ -273,14 +310,14 @@
       "allergy_type": "allergy",
       "category": "environment",
       "remarks": [
-        "Note the British spelling of 'mold'."
+        "Back to the American English spelling of mold."
       ],
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "419474003",
-          "display": "Allergy to mould"
+          "code": "84489001",
+          "display": "Mold (organism)"
         }
       ],
       "reactions": [
@@ -434,8 +471,59 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "300916003",
-          "display": "Latex allergy"
+          "code": "111088007",
+          "display": "Latex (substance)"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "402387002", "display":  "Allergic angioedema (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.17},
+            {"level":  "none", "value":  0.83}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "267036007", "display":  "Dyspnea (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.1},
+            {"level":  "none", "value":  0.9}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.8},
+            {"level":  "none", "value":  0.19999999999999996}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value": 0.13},
+            {"level":  "none", "value":  0.87}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.06},
+            {"level":  "none", "value":  0.94}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "878820003", "display":  "Rhinoconjunctivitis (disorder)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.16},
+            {"level":  "none", "value":  0.84}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "418290006", "display":  "Itching (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.11},
+            {"level":  "none", "value":  0.89}
+          ]
         }
       ],
       "direct_transition": "Environmental_Allergy_Incidence_Terminal"
