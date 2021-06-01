@@ -60,8 +60,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "419263009",
-          "display": "Allergy to tree pollen"
+          "code": "782576004",
+          "display": "Tree pollen (substance)"
         }
       ],
       "direct_transition": "Chance_of_Grass_Pollen_Allergy"
@@ -117,8 +117,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "418689008",
-          "display": "Allergy to grass pollen"
+          "code": "256277009",
+          "display": "Grass pollen (substance)"
         }
       ],
       "direct_transition": "Chance_of_Pet_Dander_Allergy"
@@ -262,8 +262,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "232350006",
-          "display": "House dust mite allergy"
+          "code": "260147004",
+          "display": "House dust mite (organism)"
         }
       ],
       "direct_transition": "Chance_of_Mold_Allergy"
