@@ -1,0 +1,321 @@
+{
+  "name": "WIC",
+  "remarks": [
+    "Module to model participation in WIC",
+    "",
+    "Poverty Level based on 4 person household",
+    "",
+    "Food Insecurity rates based on https://www.ers.usda.gov/topics/food-nutrition-assistance/food-security-in-the-us/key-statistics-graphics/#householdtype",
+    "",
+    "WIC participation rate of 55% based on https://www.census.gov/library/visualizations/interactive/wic-eligibility-participation.html",
+    "",
+    ""
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait_Until_Adult"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Check_Poverty_Level": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "At_Or_Below_Poverty_Level",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "income",
+            "operator": "<=",
+            "value": 26500
+          }
+        },
+        {
+          "transition": "At_Or_Under_1_3",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "income",
+            "operator": "<=",
+            "value": 34450
+          }
+        },
+        {
+          "transition": "At_Or_Under_1_85",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "income",
+            "operator": "<=",
+            "value": 49025
+          }
+        },
+        {
+          "transition": "Above_1_85",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "income",
+            "operator": "<",
+            "value": 49025
+          }
+        }
+      ]
+    },
+    "Food_Insecurity_Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "food_insecure",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 733423003,
+          "display": "Food insecurity (finding)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Wait_For_Pregnancy",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Enroll_In_WIC": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "wic_eligible",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "WIC_Benefits",
+              "distribution": 0.55
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.45
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "At_Or_Below_Poverty_Level": {
+      "type": "SetAttribute",
+      "attribute": "wic_eligible",
+      "value": true,
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Food_Insecurity_Onset",
+              "distribution": 0.349
+            },
+            {
+              "transition": "Wait_For_Pregnancy",
+              "distribution": 0.651
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Food_Insecurity_Onset",
+              "distribution": 0.349
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.651
+            }
+          ]
+        }
+      ]
+    },
+    "At_Or_Under_1_3": {
+      "type": "SetAttribute",
+      "attribute": "wic_eligible",
+      "value": true,
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Food_Insecurity_Onset",
+              "distribution": 0.33
+            },
+            {
+              "transition": "Wait_For_Pregnancy",
+              "distribution": 0.67
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Food_Insecurity_Onset",
+              "distribution": 0.33
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.67
+            }
+          ]
+        }
+      ]
+    },
+    "At_Or_Under_1_85": {
+      "type": "SetAttribute",
+      "attribute": "wic_eligible",
+      "value": true,
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Food_Insecurity_Onset",
+              "distribution": 0.267
+            },
+            {
+              "transition": "Wait_For_Pregnancy",
+              "distribution": 0.733
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Food_Insecurity_Onset",
+              "distribution": 0.267
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.733
+            }
+          ]
+        }
+      ]
+    },
+    "Above_1_85": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Food_Insecurity_Onset",
+              "distribution": 0.051
+            },
+            {
+              "transition": "Wait_For_Pregnancy",
+              "distribution": 0.949
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Food_Insecurity_Onset",
+              "distribution": 0.051
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.949
+            }
+          ]
+        }
+      ]
+    },
+    "WIC_Benefits": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 733423003,
+                "display": "Food insecurity (finding)"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Wait_3_Months",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.8
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Wait_3_Months": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 3
+        }
+      },
+      "unit": "months",
+      "direct_transition": "End_Insecurity"
+    },
+    "End_Insecurity": {
+      "type": "ConditionEnd",
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "food_insecure"
+    },
+    "Wait_For_Pregnancy": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Attribute",
+        "attribute": "pregnant",
+        "operator": "==",
+        "value": true
+      },
+      "direct_transition": "Enroll_In_WIC"
+    },
+    "Wait_Until_Adult": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">",
+        "quantity": 18,
+        "unit": "years"
+      },
+      "direct_transition": "Check_Poverty_Level"
+    }
+  },
+  "gmf_version": 2
+}
