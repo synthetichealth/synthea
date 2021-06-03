@@ -1,7 +1,7 @@
 {
   "name": "Adverse_Childhood_Experiences_Module",
   "remarks": [
-    "A blank module"
+    "A module that models 3 Adverse Childhood Experiences and the adult weight gain that can occur from it."
   ],
   "states": {
     "Initial": {
@@ -234,7 +234,7 @@
         "•\tPhysical Abuse:",
         "o\t0.2 – 5.6 kg weight increase.",
         "•\tVerbal/Emotional Abuse:",
-        "o\t0.4 – 3.8 weight increase.",
+        "o\t0.4 – 3.8 kg weight increase.",
         "•\tSexual Abuse:",
         "o\t0.6 - 2.2 kg weight increase.",
         ""
