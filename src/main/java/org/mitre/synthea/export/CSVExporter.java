@@ -1289,8 +1289,8 @@ public class CSVExporter {
     // PATIENTID
     s.append(claim.person.attributes.get(Person.ID)).append(',');
     // Organization provider, should not be null.
-    if (encounter.provider != null) {
-      s.append(encounter.provider.getResourceID()).append(',');
+    if (encounter.clinician != null) {
+      s.append(encounter.clinician.getResourceID()).append(',');
     } else {
       s.append(',');
     }
