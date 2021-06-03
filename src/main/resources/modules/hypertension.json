@@ -61,54 +61,7 @@
     },
     "End_Hypertension_Followup_Encounter": {
       "type": "EncounterEnd",
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "blood_pressure_controlled",
-            "operator": "==",
-            "value": true
-          },
-          "distributions": [],
-          "transition": "Delay 2_Month"
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
-            "operator": "==",
-            "value": true
-          },
-          "distributions": [
-            {
-              "distribution": 0.643,
-              "transition": "Set_BP_Controlled_2"
-            },
-            {
-              "distribution": 0.357,
-              "transition": "Delay 2_Month"
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
-            "operator": "==",
-            "value": false
-          },
-          "distributions": [
-            {
-              "distribution": 0.53,
-              "transition": "Set_BP_Controlled_2"
-            },
-            {
-              "distribution": 0.47,
-              "transition": "Delay 2_Month"
-            }
-          ]
-        }
-      ]
+      "direct_transition": "Delay 2_Month"
     },
     "Hypertension_Followup_Encounter_2": {
       "type": "Encounter",
@@ -138,50 +91,7 @@
     },
     "End_Hypertension_Followup_Encounter_2": {
       "type": "EncounterEnd",
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "blood_pressure_controlled",
-            "operator": "==",
-            "value": true
-          },
-          "distributions": [],
-          "transition": "Delay_2_Month_2"
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
-            "operator": "==",
-            "value": true
-          },
-          "distributions": [],
-          "transition": "Delay_2_Month_2"
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
-            "operator": "==",
-            "value": false
-          },
-          "distributions": [
-            {
-              "distribution": 0.643,
-              "transition": "Set_BP_Controlled_3"
-            },
-            {
-              "distribution": 0.357,
-              "transition": "Delay_2_Month_2"
-            }
-          ]
-        },
-        {
-          "distributions": [],
-          "transition": "Delay_2_Month_2"
-        }
-      ]
+      "direct_transition": "Delay_2_Month_2"
     },
     "End_Hypertension_Followup_Encounter_3": {
       "type": "EncounterEnd",
@@ -329,44 +239,7 @@
     },
     "End_Wellness_Encounter": {
       "type": "EncounterEnd",
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
-            "operator": "==",
-            "value": true
-          },
-          "distributions": [
-            {
-              "transition": "Set_BP_Controlled",
-              "distribution": 0.342
-            },
-            {
-              "transition": "Delay_One_Month",
-              "distribution": 0.6579999999999999
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "transition": "Set_BP_Controlled",
-              "distribution": 0.363
-            },
-            {
-              "transition": "Delay_One_Month",
-              "distribution": 0.637
-            }
-          ],
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
-            "operator": "==",
-            "value": false
-          }
-        }
-      ]
+      "direct_transition": "Delay_One_Month"
     },
     "Delay_One_Month": {
       "type": "Delay",
@@ -462,10 +335,10 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "blood_pressure_controlled",
-            "operator": "==",
-            "value": false
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": ">",
+            "value": 140
           },
           "transition": "Prescribe_Medication_2"
         },
@@ -513,10 +386,10 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "blood_pressure_controlled",
-            "operator": "==",
-            "value": false
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": ">",
+            "value": 140
           },
           "transition": "Prescribe_Medication_3"
         },
@@ -565,10 +438,10 @@
         {
           "transition": "Referral To Hypertension Clinic",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "blood_pressure_controlled",
-            "operator": "==",
-            "value": false
+            "condition_type": "Vital Sign",
+            "vital_sign": "Systolic Blood Pressure",
+            "operator": ">",
+            "value": 140
           }
         },
         {
@@ -647,24 +520,6 @@
         "unit": "months"
       },
       "direct_transition": "Hypertension_Followup_Encounter_3"
-    },
-    "Set_BP_Controlled": {
-      "type": "SetAttribute",
-      "attribute": "blood_pressure_controlled",
-      "value": true,
-      "direct_transition": "Delay_One_Month"
-    },
-    "Set_BP_Controlled_2": {
-      "type": "SetAttribute",
-      "attribute": "blood_pressure_controlled",
-      "value": true,
-      "direct_transition": "Delay 2_Month"
-    },
-    "Set_BP_Controlled_3": {
-      "type": "SetAttribute",
-      "attribute": "blood_pressure_controlled",
-      "value": true,
-      "direct_transition": "Delay_2_Month_2"
     },
     "Excluded": {
       "type": "Simple",
