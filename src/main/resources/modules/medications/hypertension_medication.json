@@ -15,26 +15,7 @@
       "type": "SetAttribute",
       "attribute": "hypertension_medication_step",
       "value": 0,
-      "conditional_transition": [
-        {
-          "transition": "High BP",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": "<",
-            "value": 160
-          }
-        },
-        {
-          "transition": "Very High BP",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": ">=",
-            "value": 160
-          }
-        }
-      ]
+      "direct_transition": "Increase Step"
     },
     "Check Step": {
       "type": "Simple",
@@ -1083,18 +1064,6 @@
         }
       },
       "direct_transition": "Terminal"
-    },
-    "High BP": {
-      "type": "SetAttribute",
-      "attribute": "hypertension_severe",
-      "direct_transition": "Increase Step",
-      "value": false
-    },
-    "Very High BP": {
-      "type": "SetAttribute",
-      "attribute": "hypertension_severe",
-      "value": true,
-      "direct_transition": "Increase Step"
     }
   },
   "gmf_version": 1
