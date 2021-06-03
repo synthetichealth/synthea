@@ -54,6 +54,7 @@ public final class CardiovascularDiseaseModule extends Module {
 
     double framinghamCVD = Framingham.cvd10Year(person, time, false);
     person.attributes.put("framingham_cvd", framinghamCVD);
+    person.attributes.put("framingham_cvd_pct", 100.0 * framinghamCVD);
 
 //    onsetCoronaryHeartDisease(person, time);
 //    coronaryHeartDiseaseProgression(person, time);

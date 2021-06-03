@@ -66,7 +66,7 @@
     "Record_FHS_CVD_Risk": {
       "type": "Observation",
       "category": "exam",
-      "unit": "",
+      "unit": "%",
       "codes": [
         {
           "system": "LOINC",
@@ -74,7 +74,7 @@
           "display": "General cardiovascular disease 10Y risk [#] Framingham.D'Agostino"
         }
       ],
-      "attribute": "framingham_cvd",
+      "attribute": "framingham_cvd_pct",
       "direct_transition": "Check FHS CVD Risk"
     },
     "Record_LipidPanel": {
@@ -720,7 +720,7 @@
             "condition_type": "Attribute",
             "attribute": "framingham_cvd",
             "operator": ">=",
-            "value": 15
+            "value": 0.15
           }
         },
         {

@@ -287,10 +287,10 @@ public class Framingham {
     // restrict lower and upper bound of framingham score
     if (gender.equals("M")) {
       framinghamPoints = bound(framinghamPoints, 0, 17);
-      framinghamRisk = 100 * risk_chd_m.get(framinghamPoints);
+      framinghamRisk = risk_chd_m.get(framinghamPoints);
     } else {
       framinghamPoints = bound(framinghamPoints, 8, 25);
-      framinghamRisk = 100 * risk_chd_f.get(framinghamPoints);
+      framinghamRisk = risk_chd_f.get(framinghamPoints);
     }
     
     if (perTimestep) {
@@ -362,10 +362,10 @@ public class Framingham {
     // restrict lower and upper bound of framingham score
     if (gender.equals("M")) {
       framinghamPoints = bound(framinghamPoints, -3, 18);
-      framinghamRisk = 100 * risk_cvd_m.get(framinghamPoints);
+      framinghamRisk = risk_cvd_m.get(framinghamPoints);
     } else {
       framinghamPoints = bound(framinghamPoints, -2, 21);
-      framinghamRisk = 100 * risk_cvd_f.get(framinghamPoints);
+      framinghamRisk = risk_cvd_f.get(framinghamPoints);
     }
     
     if (perTimestep) {
@@ -415,7 +415,7 @@ public class Framingham {
 
     afScore = bound(afScore, 0, 10);
 
-    double afRisk = 100 * risk_af_table[afScore]; // 10-yr risk, %
+    double afRisk = risk_af_table[afScore]; // 10-yr risk
     
     if (perTimestep) {
       afRisk = Utilities.convertRiskToTimestep(afRisk, TEN_YEARS_IN_MS);
@@ -534,8 +534,6 @@ public class Framingham {
         strokeRisk = ten_year_stroke_risk[genderIndex][strokePoints];
       }
     }
-    //convert risk to percent
-    strokeRisk = strokeRisk * 100;
 
     if (perTimestep) {
       strokeRisk = Utilities.convertRiskToTimestep(strokeRisk, TEN_YEARS_IN_MS);
