@@ -280,7 +280,7 @@
       "remarks": [
         "Because triggering weight loss is a multi-year process, we'll start it now because we know this person will have perfect adherence to the YMCA Diabetes Prevention Program."
       ],
-      "value": 2.0
+      "value": 0.02
     },
     "Record_Normal_A1C": {
       "type": "Observation",
