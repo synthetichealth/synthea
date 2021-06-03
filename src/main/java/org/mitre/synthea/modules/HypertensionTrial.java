@@ -140,18 +140,27 @@ public class HypertensionTrial {
   }
   
   
-  public static HealthRecord.Medication findTherapyToEnd(Person person) {
+  public static Drug findTherapyToEnd(Person person) {
+    Drug nonPrescribableTherapyToEnd = null;
+    
     for (Set<Drug> drugClass : HTN_TRIAL_FORMULARY.values()) {
       for (Drug drug : drugClass) {
-        if (!drug.prescribable) {
-          continue;
-        }
+
         
         if (person.record.medicationActive(drug.code.code)) {
-          return (HealthRecord.Medication) person.record.present.get(drug.code.code);
+          if (!drug.prescribable) {
+            nonPrescribableTherapyToEnd = drug;
+            continue;
+          }
+          return drug;
         }
       }
     }
+    
+    if (nonPrescribableTherapyToEnd != null) {
+      return nonPrescribableTherapyToEnd;
+    }
+    
     throw new IllegalStateException("could not find a therapy to end");
   }
   
@@ -213,7 +222,11 @@ public class HypertensionTrial {
     
     String key = drug.code.code;
     
-    titratedDrugs.put(key, direction);
+    if (direction == null) {
+      titratedDrugs.remove(key);
+    } else {
+      titratedDrugs.put(key, direction);
+    }
   }
 
   public static final String ADD_THERAPY = "add_therapy";
@@ -378,17 +391,36 @@ public class HypertensionTrial {
     
     
     public boolean process(Person person, long time) {
-      Drug drugToToTitrateDown = findNonTitratedDrug(person, TitrationDirection.DOWN);
-      if (drugToToTitrateDown == null) {
-        HealthRecord.Medication medToEnd = findTherapyToEnd(person);
-        person.attributes.put("htn_trial_next_action", "end drug");
-        person.attributes.put("htn_trial_next_action_code", medToEnd);
+      double sbp = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time);
+     
+      boolean sbpLt135 = (boolean)person.attributes.getOrDefault("sbp_lt_135", false);
+      
+      if (sbp < 130 || (sbp < 135 && sbpLt135)) {
+        AtomicInteger titrationCounter = (AtomicInteger)person.attributes.get("titration_counter");
+
+        Drug drugToToTitrateDown = findNonTitratedDrug(person, TitrationDirection.DOWN);
+        if (drugToToTitrateDown == null) {
+          Drug drugToEnd = findTherapyToEnd(person);
+          if (isTitrated(drugToEnd, person, TitrationDirection.UP)) {
+            titrationCounter.decrementAndGet();
+          }
+          
+          HealthRecord.Medication medToEnd = (HealthRecord.Medication) person.record.present.get(drugToEnd.code.code);
+          person.attributes.put("htn_trial_next_action", "end drug");
+          person.attributes.put("htn_trial_next_action_code", medToEnd);
+        } else {
+          
+          if (isTitrated(drugToToTitrateDown, person, TitrationDirection.UP)) {
+            titrationCounter.decrementAndGet();
+          }
+          
+          markTitrated(drugToToTitrateDown, person, TitrationDirection.DOWN);
+          person.attributes.put("htn_trial_next_action", TITRATE);
+          person.attributes.put("htn_trial_next_action_code", drugToToTitrateDown.code);
+        }
         return true;
       } else {
-        markTitrated(drugToToTitrateDown, person, TitrationDirection.DOWN);
-        person.attributes.put("htn_trial_next_action", TITRATE);
-        person.attributes.put("htn_trial_next_action_code", drugToToTitrateDown.code);
-        return true; 
+        throw new IllegalStateException("stepdown called for patient that doesn't need it");
       }
     }
   }

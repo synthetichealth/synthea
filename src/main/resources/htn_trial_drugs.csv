@@ -1,25 +1,26 @@
-Class,Simple Name,RxNorm,Display,Impact Minimum,Impact Maximum,Available Strengths,Ingredient Code (Allergy),Prescribable,Notes
-Diuretic,Chlorthalidone,197499,chlorthalidone 25 MG Oral Tablet,-11.5,-16.29,25mg,,TRUE,
-Diuretic,Furosemide,313988,furosemide 40 MG Oral Tablet,-11.5,-16.29,20mg;40mg;80mg,,TRUE,
-Diuretic,Spironolactone,313096,spironolactone 25 MG Oral Tablet,-11.5,-16.29,25mg,,TRUE,
-Diuretic,Triamterene/HCTZ,310818,hydroCHLOROthiazide 50 MG / triamterene 75 MG Oral Tablet,-11.5,-16.29,75/50mg,,TRUE,
-Diuretic,Amiloride,977880,aMILoride hydrochloride 5 MG Oral Tablet,-11.5,-16.29,5mg,,TRUE,
-Diuretic,Amiloride/HCTZ,,,-11.5,-16.29,,,FALSE,
-Diuretic,HCTZ,310798,Hydrochlorothiazide 25 MG Oral Tablet,-11.5,-16.29,,,FALSE,used in existing htn module
-Ace Inhibitor,Lisinopril,314076,lisinopril 10 MG Oral Tablet,-11.5,-16.29,5mg;10mg;20mg;40mg,,TRUE,
-Ace Inhibitor,Lisinopril/HCTZ,,,-11.5,-16.29,,,FALSE,
-Angiotensin Receptor Blocker,Losartan,979492,losartan potassium 50 MG Oral Tablet,-11.5,-16.29,25mg;50mg;100mg,,TRUE,
-Angiotensin Receptor Blocker,Azilsartan,1091646,azilsartan medoxomil 40 MG Oral Tablet,-11.5,-16.29,40mg;90mg,,TRUE,
-Angiotensin Receptor Blocker,Azilsartan/chlorthalidone,1235144,azilsartan medoxomil 40 MG / chlorthalidone 12.5 MG Oral Tablet,-11.5,-16.29,40/12.5mg;40/25mg,,TRUE,
-Calcium Channel Blockers,Diltiazem,830877,24 HR dilTIAZem hydrochloride 180 MG Extended Release Oral Tablet,-11.5,-16.29,120mg;180mg;240mg;300mg,,TRUE,
-Calcium Channel Blockers,Amlodipine,197361,amLODIPine 5 MG Oral Tablet,-11.5,-16.29,2.5mg;5mg;10mg,,TRUE,used in sihd module
-Calcium Channel Blockers,Amlodipine,308136,amLODIPine 2.5 MG Oral Tablet,-11.5,-16.29,,,TRUE,used in existing htn module
-Beta Blockers,Metoprolol Tartrate,866514,metoprolol tartrate 50 MG Oral Tablet,-11.5,-16.29,25mg;50mg;100mg,,TRUE,
-Beta Blockers,Atenolol,197381,atenolol 50 MG Oral Tablet,-11.5,-16.29,25mg;50mg;100mg,,TRUE,
-Beta Blockers,Atenolol/Chlorthalidone,197383,atenolol 50 MG / chlorthalidone 25 MG Oral Tablet,-11.5,-16.29,50/25mg,,TRUE,
-Vasodilators,Hydralazine,905395,hydrALAZINE hydrochloride 50 MG Oral Tablet,-11.5,-16.29,25mg;50mg;100mg ,,TRUE,
-Vasodilators,Minoxidil,197987,minoxidil 2.5 MG Oral Tablet,-11.5,-16.29,2.5mg;10mg ,,TRUE,
-Alpha 2 Agonist,Guanfacine,197745,guanFACINE 1 MG Oral Tablet,-11.5,-16.29,1mg;2mg ,,TRUE,
-Alpha Blockers,Doxazosin,197626,doxazosin 2 MG Oral Tablet,-11.5,-16.29,1mg;2mg;4mg;8mg ,,TRUE,
-Potassium Supplements,KCL tablets,,,-11.5,-16.29,20mEq ,,TRUE,
-Potassium Supplements,KCL oral solution (10%),,,-11.5,-16.29,20mEq/15ml,,TRUE,
+Precise Class,Class,Simple Name,RxNorm,Display,Impact Minimum,Impact Maximum,Available Strengths,Ingredient Code (Allergy),Prescribable,Notes
+Diuretic,Diuretic,Chlorthalidone,197499,chlorthalidone 25 MG Oral Tablet,-11.5,-16.29,25mg,,TRUE,
+Diuretic,Diuretic,Furosemide,313988,furosemide 40 MG Oral Tablet,-11.5,-16.29,20mg;40mg;80mg,,TRUE,
+Diuretic,Diuretic,Spironolactone,313096,spironolactone 25 MG Oral Tablet,-11.5,-16.29,25mg,,TRUE,
+Diuretic,Diuretic,Triamterene/HCTZ,310818,hydroCHLOROthiazide 50 MG / triamterene 75 MG Oral Tablet,-11.5,-16.29,75/50mg,,TRUE,
+Diuretic,Diuretic,Amiloride,977880,aMILoride hydrochloride 5 MG Oral Tablet,-11.5,-16.29,5mg,,TRUE,
+Diuretic,Diuretic,Amiloride/HCTZ,,,-11.5,-16.29,,,FALSE,don't prescribe combos -- makes it more challenging to keep track
+Diuretic,Diuretic,HCTZ,310798,Hydrochlorothiazide 25 MG Oral Tablet,-11.5,-16.29,,,FALSE,used in existing htn module; prescribable false because restricted use
+Ace Inhibitor,ACE or ARB,Lisinopril,314076,lisinopril 10 MG Oral Tablet,-11.5,-16.29,5mg;10mg;20mg;40mg,,TRUE,
+Ace Inhibitor,ACE or ARB,Lisinopril/HCTZ,,,-11.5,-16.29,,,FALSE,don't prescribe combos -- makes it more challenging to keep track
+Angiotensin Receptor Blocker,ACE or ARB,Losartan,979492,losartan potassium 50 MG Oral Tablet,-11.5,-16.29,25mg;50mg;100mg,,TRUE,
+Angiotensin Receptor Blocker,ACE or ARB,Azilsartan,1091646,azilsartan medoxomil 40 MG Oral Tablet,-11.5,-16.29,40mg;90mg,,TRUE,
+Angiotensin Receptor Blocker,ACE or ARB,Azilsartan/chlorthalidone,1235144,azilsartan medoxomil 40 MG / chlorthalidone 12.5 MG Oral Tablet,-11.5,-16.29,40/12.5mg;40/25mg,,TRUE,
+Calcium Channel Blockers,Calcium Channel Blockers,Diltiazem,830877,24 HR dilTIAZem hydrochloride 180 MG Extended Release Oral Tablet,-11.5,-16.29,120mg;180mg;240mg;300mg,,TRUE,
+Calcium Channel Blockers,Calcium Channel Blockers,Amlodipine,197361,amLODIPine 5 MG Oral Tablet,-11.5,-16.29,2.5mg;5mg;10mg,,TRUE,
+Calcium Channel Blockers,Calcium Channel Blockers,Amlodipine,308136,amLODIPine 2.5 MG Oral Tablet,-11.5,-16.29,,,TRUE,used in existing htn module
+Beta Blockers,Beta Blockers,Metoprolol Tartrate,866514,metoprolol tartrate 50 MG Oral Tablet,-11.5,-16.29,25mg;50mg;100mg,,TRUE,
+Beta Blockers,Beta Blockers,Metoprolol ER,,,-11.5,-16.29,,,FALSE,used in sihd module; restricted use
+Beta Blockers,Beta Blockers,Atenolol,197381,atenolol 50 MG Oral Tablet,-11.5,-16.29,25mg;50mg;100mg,,TRUE,
+Beta Blockers,Beta Blockers,Atenolol/Chlorthalidone,197383,atenolol 50 MG / chlorthalidone 25 MG Oral Tablet,-11.5,-16.29,50/25mg,,FALSE,don't prescribe combos -- makes it more challenging to keep track
+Vasodilators,Vasodilators,Hydralazine,905395,hydrALAZINE hydrochloride 50 MG Oral Tablet,-11.5,-16.29,25mg;50mg;100mg ,,TRUE,
+Vasodilators,Vasodilators,Minoxidil,197987,minoxidil 2.5 MG Oral Tablet,-11.5,-16.29,2.5mg;10mg ,,TRUE,
+Alpha 2 Agonist,Alpha 2 Agonist,Guanfacine,197745,guanFACINE 1 MG Oral Tablet,-11.5,-16.29,1mg;2mg ,,TRUE,
+Alpha Blockers,Alpha Blockers,Doxazosin,197626,doxazosin 2 MG Oral Tablet,-11.5,-16.29,1mg;2mg;4mg;8mg ,,TRUE,
+Potassium Supplements,Potassium Supplements,KCL tablets,,,-11.5,-16.29,20mEq ,,TRUE,
+Potassium Supplements,Potassium Supplements,KCL oral solution (10%),,,-11.5,-16.29,20mEq/15ml,,TRUE,
