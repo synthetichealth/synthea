@@ -1,12 +1,16 @@
 package org.mitre.synthea.world.agents.behaviors;
 
+import java.io.Serializable;
+
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Claim.ClaimEntry;
 
 /**
  * Randomized payment adjustment strategy.
  */
-public class PayerAdjustmentRandom implements IPayerAdjustment {
+public class PayerAdjustmentRandom implements IPayerAdjustment, Serializable {
+
+  private static final long serialVersionUID = -5292509643177122361L;
 
   /** Maximum adjustment rate. */
   private double rate;

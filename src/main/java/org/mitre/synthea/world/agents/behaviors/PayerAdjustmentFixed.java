@@ -1,12 +1,16 @@
 package org.mitre.synthea.world.agents.behaviors;
 
+import java.io.Serializable;
+
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Claim.ClaimEntry;
 
 /**
  * Fixed payment adjustment strategy.
  */
-public class PayerAdjustmentFixed implements IPayerAdjustment {
+public class PayerAdjustmentFixed implements IPayerAdjustment, Serializable {
+
+  private static final long serialVersionUID = -1515831606680338099L;
 
   /** Fixed adjustment rate. */
   private double rate;
