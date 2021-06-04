@@ -18,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -26,7 +25,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -96,6 +94,7 @@ public class BB2RIFExporter implements Flushable {
   private AtomicInteger pdeId; // per medication claim
   private AtomicReference<MBI> mbi;
   private AtomicReference<HICN> hicn;
+  private final PartDContractID[] partDContractIDs;
 
   private List<LinkedHashMap<String, String>> carrierLookup;
   private CodeMapper conditionCodeMapper;
@@ -107,6 +106,7 @@ public class BB2RIFExporter implements Flushable {
   private StaticFieldConfig staticFieldConfig;
 
   private static final String BB2_BENE_ID = "BB2_BENE_ID";
+  private static final String BB2_PARTD_CONTRACTS = "BB2_PARTD_CONTRACTS";
   private static final String BB2_HIC_ID = "BB2_HIC_ID";
   private static final String BB2_MBI = "BB2_MBI";
   
@@ -137,6 +137,7 @@ public class BB2RIFExporter implements Flushable {
     mbi = new AtomicReference<>(MBI.parse(mbiStartStr));
     String hicnStartStr = Config.get("exporter.bfd.hicn_start", "T00000000A");
     hicn = new AtomicReference<>(HICN.parse(hicnStartStr));
+    partDContractIDs = initPartDContractIDs();
     conditionCodeMapper = new CodeMapper("condition_code_map.json");
     medicationCodeMapper = new CodeMapper("medication_code_map.json");
     drgCodeMapper = new CodeMapper("drg_code_map.json");
@@ -159,6 +160,18 @@ public class BB2RIFExporter implements Flushable {
       // and if these do throw ioexceptions there's nothing we can do anyway
       throw new RuntimeException(e);
     }
+  }
+  
+  private static PartDContractID[] initPartDContractIDs() {
+    int numContracts = Config.getAsInteger("exporter.bfd.partd_contract_count",1);
+    PartDContractID[] partDContractIDs = new PartDContractID[numContracts];
+    PartDContractID contractID = PartDContractID.parse(
+            Config.get("exporter.bfd.partd_contract_start", "Z0001"));
+    for (int i = 0; i < numContracts; i++) {
+      partDContractIDs[i] = contractID;
+      contractID = contractID.next();
+    }
+    return partDContractIDs;
   }
   
   /**
@@ -325,58 +338,91 @@ public class BB2RIFExporter implements Flushable {
    */
   private void exportBeneficiary(Person person, 
         long stopTime) throws IOException {
-    HashMap<BeneficiaryFields, String> fieldValues = new HashMap<>();
-    staticFieldConfig.setValues(fieldValues, BeneficiaryFields.class, person);
-
-    // Optional fields that must be zero (if not present)
-    fieldValues.put(BeneficiaryFields.RFRNC_YR, String.valueOf(getYear(stopTime)));
-    fieldValues.put(BeneficiaryFields.A_MO_CNT, String.valueOf(getMonth(stopTime)));
-    fieldValues.put(BeneficiaryFields.B_MO_CNT, String.valueOf(getMonth(stopTime)));
-    fieldValues.put(BeneficiaryFields.BUYIN_MO_CNT, String.valueOf(getMonth(stopTime)));
-    fieldValues.put(BeneficiaryFields.RDS_MO_CNT, String.valueOf(getMonth(stopTime)));
-    fieldValues.put(BeneficiaryFields.AGE, "0");
-    fieldValues.put(BeneficiaryFields.PLAN_CVRG_MO_CNT, String.valueOf(getMonth(stopTime)));
-
-    // Now put in the real data, some of which might overwrite the above
-    String personId = (String)person.attributes.get(Person.ID);
     String beneIdStr = Integer.toString(beneId.getAndDecrement());
     person.attributes.put(BB2_BENE_ID, beneIdStr);
-    fieldValues.put(BeneficiaryFields.BENE_ID, beneIdStr);
     String hicId = hicn.getAndUpdate((v) -> v.next()).toString();
     person.attributes.put(BB2_HIC_ID, hicId);
-    fieldValues.put(BeneficiaryFields.BENE_CRNT_HIC_NUM, hicId);
     String mbiStr = mbi.getAndUpdate((v) -> v.next()).toString();
-    fieldValues.put(BeneficiaryFields.MBI_NUM, mbiStr);
     person.attributes.put(BB2_MBI, mbiStr);
-    fieldValues.put(BeneficiaryFields.BENE_SEX_IDENT_CD,
-            getBB2SexCode((String)person.attributes.get(Person.GENDER)));
-    String zipCode = (String)person.attributes.get(Person.ZIP);
-    fieldValues.put(BeneficiaryFields.BENE_COUNTY_CD,
-            locationMapper.zipToCountyCode(zipCode));
-    fieldValues.put(BeneficiaryFields.STATE_CODE,
-            locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
-    fieldValues.put(BeneficiaryFields.BENE_ZIP_CD,
-            (String)person.attributes.get(Person.ZIP));
-    fieldValues.put(BeneficiaryFields.BENE_RACE_CD,
-            bb2RaceCode(
-                    (String)person.attributes.get(Person.ETHNICITY),
-                    (String)person.attributes.get(Person.RACE)));
-    fieldValues.put(BeneficiaryFields.BENE_SRNM_NAME, 
-            (String)person.attributes.get(Person.LAST_NAME));
-    String givenName = (String)person.attributes.get(Person.FIRST_NAME);
-    fieldValues.put(BeneficiaryFields.BENE_GVN_NAME, trimToLength(givenName, 15));
-    long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
-    fieldValues.put(BeneficiaryFields.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
-    fieldValues.put(BeneficiaryFields.RFRNC_YR, String.valueOf(getYear(stopTime)));
-    fieldValues.put(BeneficiaryFields.AGE, String.valueOf(ageAtEndOfYear(birthdate, stopTime)));
-    if (person.attributes.get(Person.DEATHDATE) != null) {
-      long deathDate = (long) person.attributes.get(Person.DEATHDATE);
-      fieldValues.put(BeneficiaryFields.DEATH_DT, bb2DateFromTimestamp(deathDate));      
+    long deathDate = person.attributes.get(Person.DEATHDATE) == null ? -1
+            : (long) person.attributes.get(Person.DEATHDATE);
+
+    // One entry for each year of history or until patient dies
+    int yearsOfHistory = Config.getAsInteger("exporter.years_of_history");
+    int endYear = getYear(stopTime);
+    if (deathDate != -1 && getYear(deathDate) < endYear) {
+      endYear = getYear(deathDate); // stop after year in which patient dies
     }
-    String terminationCode = (person.attributes.get(Person.DEATHDATE) == null) ? "0" : "1";
-    fieldValues.put(BeneficiaryFields.BENE_PTA_TRMNTN_CD, terminationCode);
-    fieldValues.put(BeneficiaryFields.BENE_PTB_TRMNTN_CD, terminationCode);
-    beneficiary.writeValues(BeneficiaryFields.class, fieldValues);
+    Map<Integer, PartDContractID> partDContracts = new HashMap<>();
+    for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
+      if (person.randInt(10) > 2) {
+        // 30% chance of not enrolling in Part D
+        // see https://www.kff.org/medicare/issue-brief/10-things-to-know-about-medicare-part-d-coverage-and-costs-in-2019/
+        PartDContractID partDContractID = partDContractIDs[person.randInt(partDContractIDs.length)];
+        partDContracts.put(year, partDContractID);
+      }
+    }
+    person.attributes.put(BB2_PARTD_CONTRACTS, partDContracts);
+    
+    // There's currently an issue where the beneficiary table has a primary key on BENE_ID that
+    // prevents the following line from working so fo now we just output the final year's
+    // information. Once the issue is sorted, revisit this to output information for multiple
+    // years.
+    // for (int year = endYear - yearsOfHistory; year <= endYear; year++) {    
+    for (int year = endYear; year <= endYear; year++) {    
+      HashMap<BeneficiaryFields, String> fieldValues = new HashMap<>();
+      staticFieldConfig.setValues(fieldValues, BeneficiaryFields.class, person);
+
+      fieldValues.put(BeneficiaryFields.RFRNC_YR, String.valueOf(year));
+      int monthCount = year == endYear ? getMonth(stopTime) : 12;
+      String monthCountStr = String.valueOf(monthCount);
+      fieldValues.put(BeneficiaryFields.A_MO_CNT, monthCountStr);
+      fieldValues.put(BeneficiaryFields.B_MO_CNT, monthCountStr);
+      fieldValues.put(BeneficiaryFields.BUYIN_MO_CNT, monthCountStr);
+      fieldValues.put(BeneficiaryFields.RDS_MO_CNT, monthCountStr);
+      fieldValues.put(BeneficiaryFields.PLAN_CVRG_MO_CNT, monthCountStr);
+      fieldValues.put(BeneficiaryFields.BENE_ID, beneIdStr);
+      fieldValues.put(BeneficiaryFields.BENE_CRNT_HIC_NUM, hicId);
+      fieldValues.put(BeneficiaryFields.MBI_NUM, mbiStr);
+      fieldValues.put(BeneficiaryFields.BENE_SEX_IDENT_CD,
+              getBB2SexCode((String)person.attributes.get(Person.GENDER)));
+      String zipCode = (String)person.attributes.get(Person.ZIP);
+      fieldValues.put(BeneficiaryFields.BENE_COUNTY_CD,
+              locationMapper.zipToCountyCode(zipCode));
+      fieldValues.put(BeneficiaryFields.STATE_CODE,
+              locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
+      fieldValues.put(BeneficiaryFields.BENE_ZIP_CD,
+              (String)person.attributes.get(Person.ZIP));
+      fieldValues.put(BeneficiaryFields.BENE_RACE_CD,
+              bb2RaceCode(
+                      (String)person.attributes.get(Person.ETHNICITY),
+                      (String)person.attributes.get(Person.RACE)));
+      fieldValues.put(BeneficiaryFields.BENE_SRNM_NAME, 
+              (String)person.attributes.get(Person.LAST_NAME));
+      String givenName = (String)person.attributes.get(Person.FIRST_NAME);
+      fieldValues.put(BeneficiaryFields.BENE_GVN_NAME, trimToLength(givenName, 15));
+      long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
+      fieldValues.put(BeneficiaryFields.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
+      fieldValues.put(BeneficiaryFields.AGE, String.valueOf(ageAtEndOfYear(birthdate, year)));
+      fieldValues.put(BeneficiaryFields.BENE_PTA_TRMNTN_CD, "0");
+      fieldValues.put(BeneficiaryFields.BENE_PTB_TRMNTN_CD, "0");
+      if (deathDate != -1) {
+        // only add death date for years when it was (presumably) known. E.g. If we are outputting
+        // record for 2005 and patient died in 2007 we don't include the death date.
+        if (getYear(deathDate) <= year) {
+          fieldValues.put(BeneficiaryFields.DEATH_DT, bb2DateFromTimestamp(deathDate));
+          fieldValues.put(BeneficiaryFields.BENE_PTA_TRMNTN_CD, "1");
+          fieldValues.put(BeneficiaryFields.BENE_PTB_TRMNTN_CD, "1");
+        }
+      }
+      PartDContractID partDContractID = partDContracts.get(year);
+      if (partDContractID != null) {
+        for (int i = 0; i < monthCount; i++) {
+          fieldValues.put(beneficiaryPartDContractFields[i], partDContractID.toString());
+        }
+      }
+      beneficiary.writeValues(BeneficiaryFields.class, fieldValues);
+    }
   }
   
   private String trimToLength(String str, int maxLength) {
@@ -464,13 +510,13 @@ public class BB2RIFExporter implements Flushable {
   }
   
   /**
-   * Calculate the age of a person at the end of the year of a reference point in time.
+   * Calculate the age of a person at the end of the given year.
    * @param birthdate a person's birthdate specified as number of milliseconds since the epoch
-   * @param stopTime a reference point in time specified as number of milliseconds since the epoch
+   * @param year the year
    * @return the person's age
    */
-  private static int ageAtEndOfYear(long birthdate, long stopTime) {
-    return getYear(stopTime) - getYear(birthdate);
+  private static int ageAtEndOfYear(long birthdate, int year) {
+    return year - getYear(birthdate);
   }
 
   /**
@@ -899,12 +945,18 @@ public class BB2RIFExporter implements Flushable {
    */
   private void exportPrescription(Person person, long stopTime) 
         throws IOException {
+    Map<Integer, PartDContractID> partDContracts = 
+            (Map<Integer, PartDContractID>) person.attributes.get(BB2_PARTD_CONTRACTS);
     HashMap<PrescriptionFields, String> fieldValues = new HashMap<>();
     HashMap<String, Integer> fillNum = new HashMap<>();
     double costs = 0;
     int costYear = 0;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
+      PartDContractID partDContractID = partDContracts.get(getYear(encounter.start));
+      if (partDContractID == null) {
+        continue; // skip medications if patient isn't enrolled in Part D
+      }
       for (Medication medication : encounter.medications) {
         if (!medicationCodeMapper.canMap(medication.codes.get(0).code)) {
           continue; // skip codes that can't be mapped to NDC
@@ -927,11 +979,14 @@ public class BB2RIFExporter implements Flushable {
         fieldValues.put(PrescriptionFields.RX_SRVC_RFRNC_NUM, "" + pdeId);
         fieldValues.put(PrescriptionFields.PROD_SRVC_ID, 
                 medicationCodeMapper.map(medication.codes.get(0).code, person));
+        // The following field was replaced by the PartD contract ID, leaving this here for now
+        // until this is validated
         // H=hmo, R=ppo, S=stand-alone, E=employer direct, X=limited income
-        fieldValues.put(PrescriptionFields.PLAN_CNTRCT_REC_ID,
-            ("R" + Math.abs(
-                UUID.fromString(medication.claim.payer.uuid)
-                .getMostSignificantBits())).substring(0, 5));
+        // fieldValues.put(PrescriptionFields.PLAN_CNTRCT_REC_ID,
+        //     ("R" + Math.abs(
+        //         UUID.fromString(medication.claim.payer.uuid)
+        //         .getMostSignificantBits())).substring(0, 5));
+        fieldValues.put(PrescriptionFields.PLAN_CNTRCT_REC_ID, partDContractID.toString());
         fieldValues.put(PrescriptionFields.DAW_PROD_SLCTN_CD, "" + (int) person.rand(0, 9));
         fieldValues.put(PrescriptionFields.QTY_DSPNSD_NUM, "" + getQuantity(medication, stopTime));
         fieldValues.put(PrescriptionFields.DAYS_SUPLY_NUM, "" + getDays(medication, stopTime));
@@ -1864,6 +1919,21 @@ public class BB2RIFExporter implements Flushable {
     EFCTV_END_DT,
     BENE_LINK_KEY
   }
+  
+  private final BeneficiaryFields[] beneficiaryPartDContractFields = {
+    BeneficiaryFields.PTD_CNTRCT_JAN_ID,
+    BeneficiaryFields.PTD_CNTRCT_FEB_ID,
+    BeneficiaryFields.PTD_CNTRCT_MAR_ID,
+    BeneficiaryFields.PTD_CNTRCT_APR_ID,
+    BeneficiaryFields.PTD_CNTRCT_MAY_ID,
+    BeneficiaryFields.PTD_CNTRCT_JUN_ID,
+    BeneficiaryFields.PTD_CNTRCT_JUL_ID,
+    BeneficiaryFields.PTD_CNTRCT_AUG_ID,
+    BeneficiaryFields.PTD_CNTRCT_SEPT_ID,
+    BeneficiaryFields.PTD_CNTRCT_OCT_ID,
+    BeneficiaryFields.PTD_CNTRCT_NOV_ID,
+    BeneficiaryFields.PTD_CNTRCT_DEC_ID
+  };
 
   /* package access */
   enum BeneficiaryHistoryFields {
@@ -3749,7 +3819,8 @@ public class BB2RIFExporter implements Flushable {
 
     private static final char[] FIXED = {'S'};
     private static final char[][] MBI_FORMAT = {NON_ZERO_NUMERIC, FIXED, ALPHA_NUMERIC, NUMERIC,
-      ALPHA, ALPHA_NUMERIC, NUMERIC, ALPHA, ALPHA, NUMERIC, NUMERIC};
+      NON_NUMERIC_LIKE_ALPHA, ALPHA_NUMERIC, NUMERIC, NON_NUMERIC_LIKE_ALPHA,
+      NON_NUMERIC_LIKE_ALPHA, NUMERIC, NUMERIC};
     static final long MIN_MBI = 0;
     static final long MAX_MBI = maxValue(MBI_FORMAT);
     
@@ -3763,6 +3834,29 @@ public class BB2RIFExporter implements Flushable {
     
     public MBI next() {
       return new MBI(value + 1);
+    }
+  }
+  
+  /**
+   * Utility class for working with CMS Part D Contract IDs.
+   */
+  static class PartDContractID extends FixedLengthIdentifier {
+
+    private static final char[][] PARTD_CONTRACT_FORMAT = {
+      ALPHA, NUMERIC, NUMERIC, NUMERIC, NUMERIC};
+    static final long MIN_PARTD_CONTRACT_ID = 0;
+    static final long MAX_PARTD_CONTRACT_ID = maxValue(PARTD_CONTRACT_FORMAT);
+    
+    public PartDContractID(long value) {
+      super(value, PARTD_CONTRACT_FORMAT);
+    }
+    
+    static PartDContractID parse(String str) {
+      return new PartDContractID(parse(str, PARTD_CONTRACT_FORMAT));
+    }
+    
+    public PartDContractID next() {
+      return new PartDContractID(value + 1);
     }
   }
   
@@ -3801,6 +3895,10 @@ public class BB2RIFExporter implements Flushable {
     static final char[] NUMERIC = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     static final char[] NON_ZERO_NUMERIC = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
     static final char[] ALPHA = {
+      'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+      'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+    };
+    static final char[] NON_NUMERIC_LIKE_ALPHA = {
       'A', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'U', 'V',
       'W', 'X', 'Y'
     };
