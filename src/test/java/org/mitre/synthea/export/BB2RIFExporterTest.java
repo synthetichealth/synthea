@@ -83,9 +83,10 @@ public class BB2RIFExporterTest {
     // the BB2 exporter doesn't use the SimpleCSV class to write the data,
     // so we can use it here for a level of validation
     List<LinkedHashMap<String, String>> rows = SimpleCSV.parse(csvData, '|');
-    assertEquals(
-            "Expected " + numberOfPeople + " rows in the beneficiary file, found " + rows.size(),
-            numberOfPeople, rows.size());
+    assertTrue(
+            "Expected at least " + numberOfPeople + " rows in the beneficiary file, found " + 
+                    rows.size(),
+            numberOfPeople <= rows.size());
     for (LinkedHashMap<String, String> row: rows) {
       assertTrue("Expected non-zero length surname", 
               row.containsKey("BENE_SRNM_NAME") && row.get("BENE_SRNM_NAME").length() > 0);
