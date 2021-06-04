@@ -1466,7 +1466,23 @@ public class CSVExporter {
       }
     }
 
-    // TODO ADJUSTMENTS
+    // ADJUSTMENTS
+    if (claimEntry.adjustment > 0) {
+      remainder -= claimEntry.adjustment;
+      if (remainder < 0) {
+        remainder = 0;
+      }
+      t = new ClaimTransaction(encounter, encounterId,
+          claim, claimId, chargeId, claimEntry, rand);
+      t.type = ClaimTransactionType.ADJUSTMENT;
+      t.method = PaymentMethod.SYSTEM;
+      t.adjustment = claimEntry.adjustment;
+      t.unpaid = remainder;
+      t.departmentId = departmentId;
+      t.diagnosisCodes = diagnosisCodes;
+      write(t.toString(), claimsTransactions);
+      chargeId = transactionId.getAndIncrement();
+    }
 
     double payerAmount = (claimEntry.payer + claimEntry.coinsurance);
     if (payerAmount > 0) {
@@ -1644,7 +1660,7 @@ public class CSVExporter {
       for (int i = 0; i < 4; i++) {
         String diagnosisCode = diagnosisCodes[i];
         if (diagnosisCode != null && !diagnosisCode.isEmpty()) {
-          s.append(i+1).append(','); // don't write the code, write the reference number
+          s.append(i + 1).append(','); // don't write the code, write the reference number
         } else {
           s.append(',');
         }

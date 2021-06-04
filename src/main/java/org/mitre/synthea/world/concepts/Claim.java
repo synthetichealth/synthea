@@ -23,6 +23,8 @@ public class Claim implements Serializable {
     public double copay;
     /** deductible paid by patient. */
     public double deductible;
+    /** amount the charge was decreased by payer adjustment. */
+    public double adjustment;
     /** coinsurance paid by payer. */
     public double coinsurance;
     /** otherwise paid by payer. */
@@ -42,6 +44,7 @@ public class Claim implements Serializable {
       this.cost += other.cost;
       this.copay += other.copay;
       this.deductible += other.deductible;
+      this.adjustment += other.adjustment;
       this.coinsurance += other.coinsurance;
       this.payer += other.payer;
       this.pocket += other.pocket;
@@ -139,6 +142,11 @@ public class Claim implements Serializable {
         }
         remaining -= claimEntry.deductible;
         plan.remainingDeductible -= claimEntry.deductible;
+      }
+      if (remaining > 0) {
+        // Check if the payer has an adjustment
+        double adjustment = payer.adjustClaim(claimEntry, person);
+        remaining -= adjustment;
       }
       if (remaining > 0) {
         // Check if the patient has coinsurance

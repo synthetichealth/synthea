@@ -25,9 +25,14 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
+import org.mitre.synthea.world.agents.behaviors.IPayerAdjustment;
 import org.mitre.synthea.world.agents.behaviors.IPayerFinder;
+import org.mitre.synthea.world.agents.behaviors.PayerAdjustmentFixed;
+import org.mitre.synthea.world.agents.behaviors.PayerAdjustmentNone;
+import org.mitre.synthea.world.agents.behaviors.PayerAdjustmentRandom;
 import org.mitre.synthea.world.agents.behaviors.PayerFinderBestRates;
 import org.mitre.synthea.world.agents.behaviors.PayerFinderRandom;
+import org.mitre.synthea.world.concepts.Claim.ClaimEntry;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -51,9 +56,15 @@ public class Payer implements Serializable {
 
   /* Payer Finder. */
   private static IPayerFinder payerFinder;
-  // Payer selction algorithm choices:
+  // Payer selection algorithm choices:
   private static final String RANDOM = "random";
   private static final String BESTRATE = "best_rate";
+
+  /* Payer Adjustment strategy. */
+  private IPayerAdjustment payerAdjustment;
+  // Payer adjustment algorithm choices:
+  private static final String NONE = "none";
+  private static final String FIXED = "fixed";
 
   /* Payer Attributes. */
   private final Map<String, Object> attributes;
@@ -199,6 +210,7 @@ public class Payer implements Serializable {
       if (payerStates.contains(abbreviation) || payerStates.contains("*")) {
 
         Payer parsedPayer = csvLineToPayer(row);
+        parsedPayer.payerAdjustment = buildPayerAdjustment();
 
         // Put the payer in their correct List/Map based on Government/Private.
         if (parsedPayer.ownership.equalsIgnoreCase("government")) {
@@ -258,6 +270,7 @@ public class Payer implements Serializable {
     noInsurance.defaultCoinsurance = 0.0;
     noInsurance.defaultCopay = 0.0;
     noInsurance.monthlyPremium = 0.0;
+    noInsurance.payerAdjustment = new PayerAdjustmentNone();
     // noInsurance does not cover any services.
     noInsurance.servicesCovered = new HashSet<String>();
     // noInsurance 'covers' all states.
@@ -279,9 +292,30 @@ public class Payer implements Serializable {
         finder = new PayerFinderRandom();
         break;
       default:
-        throw new RuntimeException("Not a valid Payer Selction Algorithm: " + behavior);
+        throw new RuntimeException("Not a valid Payer Selection Algorithm: " + behavior);
     }
     return finder;
+  }
+
+  private static IPayerAdjustment buildPayerAdjustment() {
+    IPayerAdjustment adjustment;
+    String behavior = Config.get("generate.payers.adjustment_behavior", "none").toLowerCase();
+    String rateString = Config.get("generate.payers.adjustment_rate", "0.05");
+    double rate = Double.parseDouble(rateString);
+    switch (behavior) {
+      case NONE:
+        adjustment = new PayerAdjustmentNone();
+        break;
+      case FIXED:
+        adjustment = new PayerAdjustmentFixed(rate);
+        break;
+      case RANDOM:
+        adjustment = new PayerAdjustmentRandom(rate);
+        break;
+      default:
+        adjustment = new PayerAdjustmentNone();
+    }
+    return adjustment;
   }
 
   /**
@@ -475,6 +509,18 @@ public class Payer implements Serializable {
       copay = 0.0;
     }
     return copay;
+  }
+
+  /**
+   * Determines whether or not this payer will adjust this claim, and by how
+   * much. This determination is based on the claim adjustment strategy configuration,
+   * which defaults to none.
+   * @param claimEntry The claim entry to be adjusted.
+   * @param person The person making the claim.
+   * @return The dollar amount the claim entry was adjusted.
+   */
+  public double adjustClaim(ClaimEntry claimEntry, Person person) {
+    return payerAdjustment.adjustClaim(claimEntry, person);
   }
 
   /**
