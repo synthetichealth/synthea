@@ -224,7 +224,7 @@
         }
       },
       "unit": "years",
-      "direct_transition": "Check_For_Physical_Abuse_Weight_Gain",
+      "direct_transition": "Check_For_Sexual_Abuse_Weight_Gain",
       "remarks": [
         "Link between ACES and obesity in Adulthood: https://pubmed.ncbi.nlm.nih.gov/12119573/",
         "Note: I used kg weight increases because there was not a clear BMI target for all ACEs (specifically sexual abuse). ",
@@ -258,10 +258,10 @@
           }
         },
         {
-          "transition": "Check_For_Emotional_Abuse_Weight_Gain"
+          "transition": "Terminal"
         }
       ],
-      "value": 0.0,
+      "value": 0,
       "distribution": {
         "kind": "EXACT",
         "parameters": {
@@ -270,14 +270,19 @@
       }
     },
     "Trigger_Physical_Abuse_Weight_Gain": {
-      "type": "Counter",
-      "attribute": "killograms_to_gain",
-      "action": "increment",
-      "direct_transition": "Check_For_Emotional_Abuse_Weight_Gain",
-      "amount": 4,
+      "type": "SetAttribute",
+      "attribute": "kilograms_to_gain",
+      "direct_transition": "Terminal",
       "remarks": [
         "Can't increment by a range, 4.0 is the median amount provided by the study."
-      ]
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 5.6,
+          "low": 0.2
+        }
+      }
     },
     "Check_For_Emotional_Abuse_Weight_Gain": {
       "type": "Simple",
@@ -296,19 +301,24 @@
           }
         },
         {
-          "transition": "Check_For_Sexual_Abuse_Weight_Gain"
+          "transition": "Check_For_Physical_Abuse_Weight_Gain"
         }
       ]
     },
     "Trigger_Emotional_Abuse_Weight_Gain": {
-      "type": "Counter",
+      "type": "SetAttribute",
       "attribute": "kilograms_to_gain",
-      "action": "increment",
-      "direct_transition": "Check_For_Sexual_Abuse_Weight_Gain",
-      "amount": 2.8,
+      "direct_transition": "Check_For_Physical_Abuse_Weight_Gain",
       "remarks": [
         "Can't increment by a range, 2.8 is the median amount provided by the study."
-      ]
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 3.8,
+          "low": 0.4
+        }
+      }
     },
     "Check_For_Sexual_Abuse_Weight_Gain": {
       "type": "Simple",
@@ -327,19 +337,24 @@
           }
         },
         {
-          "transition": "Terminal"
+          "transition": "Check_For_Emotional_Abuse_Weight_Gain"
         }
       ]
     },
     "Trigger_Sexual_Abuse_Weight_Gain": {
-      "type": "Counter",
+      "type": "SetAttribute",
       "attribute": "kilograms_to_gain",
-      "action": "increment",
-      "direct_transition": "Terminal",
+      "direct_transition": "Check_For_Emotional_Abuse_Weight_Gain",
       "remarks": [
         "Can't increment by a range, 1.4 is the median amount provided by the study."
       ],
-      "amount": 1.4
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 2.2,
+          "low": 0.6
+        }
+      }
     }
   },
   "gmf_version": 2

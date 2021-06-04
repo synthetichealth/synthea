@@ -545,13 +545,14 @@ public final class LifecycleModule extends Module {
       }
       // If the person needs to gain weight that's been triggered by a module:
       Object kgToGain = person.attributes.get(Person.KILOGRAMS_TO_GAIN);
-      if(kgToGain != null && ((double) kgToGain) > 0.0){
-        // We'll reuse the same adult weight gain used for standard adult weigt gain. This will result in about double weight gained per year.
+      if (kgToGain != null && ((double) kgToGain) > 0.0 && age > 20) {
+        // We'll reuse the same adult weight gain used for standard adult weight gain.
+        // This will result in about double weight gained per year until target kilograms to gain has been reached.
         double adultWeightGainKilos = person.rand(ADULT_WEIGHT_GAIN_RANGE);
-        // Convert kilograms to pounds, add it to the weight to gain.
-        weight += (adultWeightGainKilos * 2.2046);
+        weight += adultWeightGainKilos;
         // Update the weight they have yet to gain.
-        person.attributes.put(Person.KILOGRAMS_TO_GAIN, ((double) kgToGain) - adultWeightGainKilos);
+        kgToGain = ((double) kgToGain) - adultWeightGainKilos;
+        person.attributes.put(Person.KILOGRAMS_TO_GAIN, kgToGain);
       }
     }
     return weight;
