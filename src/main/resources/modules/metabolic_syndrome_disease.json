@@ -154,7 +154,7 @@
       "type": "SetAttribute",
       "attribute": "prediabetes",
       "value": true,
-      "direct_transition": "Attempt_YMCA_Diabetes_Prevention_Program"
+      "direct_transition": "Delay_before_Diabetes"
     },
     "Delay_before_Diabetes": {
       "type": "Delay",
@@ -1168,32 +1168,6 @@
         "low": 45,
         "high": 100
       }
-    },
-    "Attempt_YMCA_Diabetes_Prevention_Program": {
-      "type": "CallSubmodule",
-      "submodule": "diabetes/ymca_diabetes_prevention_program",
-      "conditional_transition": [
-        {
-          "transition": "YMCA_Diabetes_Program_Success",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "ymca_diabetes_program",
-            "operator": "==",
-            "value": "successful"
-          }
-        },
-        {
-          "transition": "YMCA_Diabetes_Program_Non-Success"
-        }
-      ]
-    },
-    "YMCA_Diabetes_Program_Success": {
-      "type": "Simple",
-      "direct_transition": "No_Diabetes"
-    },
-    "YMCA_Diabetes_Program_Non-Success": {
-      "type": "Simple",
-      "direct_transition": "Delay_before_Diabetes"
     }
   },
   "gmf_version": 1
