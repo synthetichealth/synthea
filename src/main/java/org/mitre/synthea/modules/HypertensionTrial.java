@@ -1,6 +1,7 @@
 package org.mitre.synthea.modules;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -143,12 +144,16 @@ public class HypertensionTrial {
   public static Drug findTherapyToEnd(Person person) {
     Drug nonPrescribableTherapyToEnd = null;
     
-    for (Set<Drug> drugClass : HTN_TRIAL_FORMULARY.values()) {
+    List<Set<Drug>> drugClasses = new ArrayList<>(HTN_TRIAL_FORMULARY.values());
+    // here we reverse the drug class orders, to try to make sure that
+    // we stop drugs in the opposite order they were added (think a LIFO stack)
+    Collections.reverse(drugClasses);
+    
+    for (Set<Drug> drugClass : drugClasses) {
       for (Drug drug : drugClass) {
-
         
         if (person.record.medicationActive(drug.code.code)) {
-          if (!drug.prescribable) {
+          if (!drug.prescribable && nonPrescribableTherapyToEnd == null) {
             nonPrescribableTherapyToEnd = drug;
             continue;
           }
@@ -161,7 +166,12 @@ public class HypertensionTrial {
       return nonPrescribableTherapyToEnd;
     }
     
-    throw new IllegalStateException("could not find a therapy to end");
+    boolean hypertension = (boolean) person.attributes.getOrDefault("hypertension", false);
+    
+    if (hypertension) {
+      System.err.println("patient with hypertension has low BP but not on any meds?");
+    }
+    return null;
   }
   
   public static Drug findNonTitratedDrug(Person person, TitrationDirection direction) {
@@ -401,6 +411,13 @@ public class HypertensionTrial {
         Drug drugToToTitrateDown = findNonTitratedDrug(person, TitrationDirection.DOWN);
         if (drugToToTitrateDown == null) {
           Drug drugToEnd = findTherapyToEnd(person);
+          
+          if (drugToEnd == null) {
+            person.attributes.remove("htn_trial_next_action");
+            person.attributes.remove("htn_trial_next_action_code");
+            return true;
+          }
+          
           if (isTitrated(drugToEnd, person, TitrationDirection.UP)) {
             titrationCounter.decrementAndGet();
           }

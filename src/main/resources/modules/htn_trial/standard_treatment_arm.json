@@ -75,6 +75,14 @@
       "submodule": "StepDownTherapy",
       "conditional_transition": [
         {
+          "transition": "Loop back",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "htn_trial_next_action",
+            "operator": "is nil"
+          }
+        },
+        {
           "transition": "Down-Titrate",
           "condition": {
             "condition_type": "Attribute",
