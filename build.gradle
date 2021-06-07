@@ -159,6 +159,7 @@ task uberJar(type: Jar) {
     archiveBaseName = 'synthea-with-dependencies'
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
+    duplicatesStrategy = 'warn'
 }
 
 task concepts(type: JavaExec) {
