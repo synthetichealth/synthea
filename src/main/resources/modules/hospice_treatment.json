@@ -1,0 +1,280 @@
+{
+  "name": "Hospice Treatment",
+  "remarks": [
+    "Simplified hospice module with a daily routine of hospice care and medication administration until the patient expires."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait for Hospice"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Hospice_Admission": {
+      "type": "Encounter",
+      "encounter_class": "hospice",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "305336008",
+          "display": "Admission to hospice (procedure)"
+        }
+      ],
+      "direct_transition": "Determine_LOS"
+    },
+    "Determine_LOS": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.26,
+          "transition": "LOS_1-7_Days"
+        },
+        {
+          "distribution": 0.35,
+          "transition": "LOS_8-60_Days"
+        },
+        {
+          "distribution": 0.07,
+          "transition": "LOS_61-90_Days"
+        },
+        {
+          "distribution": 0.11,
+          "transition": "LOS_91-180_Days"
+        },
+        {
+          "distribution": 0.21,
+          "transition": "LOS_181-240_Days"
+        }
+      ]
+    },
+    "LOS_1-7_Days": {
+      "type": "SetAttribute",
+      "attribute": "hospice_days",
+      "direct_transition": "Certification_Procedure",
+      "range": {
+        "high": 7,
+        "low": 1
+      }
+    },
+    "LOS_8-60_Days": {
+      "type": "SetAttribute",
+      "attribute": "hospice_days",
+      "direct_transition": "Certification_Procedure",
+      "range": {
+        "high": 60,
+        "low": 8
+      }
+    },
+    "LOS_61-90_Days": {
+      "type": "SetAttribute",
+      "attribute": "hospice_days",
+      "direct_transition": "Certification_Procedure",
+      "range": {
+        "high": 90,
+        "low": 61
+      }
+    },
+    "LOS_91-180_Days": {
+      "type": "SetAttribute",
+      "attribute": "hospice_days",
+      "direct_transition": "Certification_Procedure",
+      "range": {
+        "high": 180,
+        "low": 91
+      }
+    },
+    "LOS_181-240_Days": {
+      "type": "SetAttribute",
+      "attribute": "hospice_days",
+      "direct_transition": "Certification_Procedure",
+      "range": {
+        "high": 240,
+        "low": 181
+      }
+    },
+    "Certification_Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "310417005",
+          "display": "Certification procedure (procedure)"
+        }
+      ],
+      "direct_transition": "Notifications"
+    },
+    "Notifications": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185087000",
+          "display": "Notifications (procedure)"
+        }
+      ],
+      "direct_transition": "Initial_Patient_Assessment"
+    },
+    "Initial_Patient_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "315639002",
+          "display": "Initial patient assessment (procedure)"
+        }
+      ],
+      "direct_transition": "Individualized_Care_Plan"
+    },
+    "Individualized_Care_Plan": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "370789001",
+          "display": "Development of individualized plan of care (procedure)"
+        }
+      ],
+      "direct_transition": "Begin_Day"
+    },
+    "Begin_Day": {
+      "type": "Counter",
+      "attribute": "hospice_days",
+      "action": "decrement",
+      "amount": 1,
+      "direct_transition": "Hospice_Care"
+    },
+    "Hospice_Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "385763009",
+          "display": "Hospice care (regime/therapy)"
+        }
+      ],
+      "range": {
+        "high": 60,
+        "low": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Day"
+    },
+    "End_Day": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Alive Check",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hospice_days",
+            "operator": "<",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Begin_Day"
+        }
+      ]
+    },
+    "Patient_Discharge": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "58000006",
+          "display": "Patient discharge (procedure)"
+        }
+      ],
+      "direct_transition": "Discharged Alive"
+    },
+    "Died_in_Hospice": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "876882001",
+          "display": "Died in hospice (finding)"
+        }
+      ],
+      "direct_transition": "Discharged Dead"
+    },
+    "Alive Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Died_in_Hospice",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "days_until_death",
+            "operator": "<=",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Patient_Discharge"
+        }
+      ]
+    },
+    "Discharged Dead": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Delay",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "home_health_days",
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Patient_Discharge"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": 41,
+        "display": "Expired (i.e. died) in a medical facility; e.g., hospital, SNF, ICF, or free standing hospice"
+      }
+    },
+    "Discharged Alive": {
+      "type": "EncounterEnd",
+      "direct_transition": "Reset Hospice"
+    },
+    "Wait for Hospice": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Or",
+        "conditions": [
+          {
+            "condition_type": "Attribute",
+            "attribute": "hospice",
+            "operator": "==",
+            "value": true
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "days_until_death",
+            "operator": "<",
+            "value": 30
+          }
+        ]
+      },
+      "direct_transition": "Hospice_Admission"
+    },
+    "Reset Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice",
+      "direct_transition": "Wait for Hospice",
+      "value": false
+    }
+  },
+  "gmf_version": 1
+}
