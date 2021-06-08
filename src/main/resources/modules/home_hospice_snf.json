@@ -1,115 +1,33 @@
 {
-  "name": "Home Health",
+  "name": "Home Hospice SNF",
   "remarks": [
-    "Simplified Home Health Care module with a daily routine of physical therapy and Activities of Daily Living (ADL) for less than 21 days (Medicare limit)."
+    "Module that launches home health, hospice, or skilled nursing facility visits based on events or probability."
   ],
   "states": {
     "Initial": {
       "type": "Initial",
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Age",
-            "operator": "<",
-            "quantity": 65,
-            "unit": "years"
-          },
-          "distributions": [
-            {
-              "distribution": 0.083,
-              "transition": "Wait_for_the_End"
-            },
-            {
-              "distribution": 0.917,
-              "transition": "Terminal"
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Age",
-            "operator": "<",
-            "quantity": 75,
-            "unit": "years"
-          },
-          "distributions": [
-            {
-              "distribution": 0.053,
-              "transition": "Wait_for_the_End"
-            },
-            {
-              "distribution": 0.957,
-              "transition": "Terminal"
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Age",
-            "operator": "<",
-            "quantity": 85,
-            "unit": "years"
-          },
-          "distributions": [
-            {
-              "distribution": 0.106,
-              "transition": "Wait_for_the_End"
-            },
-            {
-              "distribution": 0.894,
-              "transition": "Terminal"
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Age",
-            "operator": ">=",
-            "quantity": 85,
-            "unit": "years"
-          },
-          "distributions": [
-            {
-              "distribution": 0.14,
-              "transition": "Wait_for_the_End"
-            },
-            {
-              "distribution": 0.86,
-              "transition": "Terminal"
-            }
-          ]
-        }
-      ]
+      "direct_transition": "Wait Until 65"
     },
-    "Wait_for_the_End": {
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Wait Until 65": {
       "type": "Guard",
       "allow": {
-        "condition_type": "And",
-        "conditions": [
-          {
-            "condition_type": "Attribute",
-            "attribute": "home_health",
-            "operator": "is not nil"
-          },
-          {
-            "condition_type": "Attribute",
-            "attribute": "home_health",
-            "operator": "==",
-            "value": true
-          },
-          {
-            "condition_type": "Attribute",
-            "attribute": "insurance_status",
-            "operator": "==",
-            "value": "medicare"
-          },
-          {
-            "condition_type": "Age",
-            "operator": ">=",
-            "quantity": 18,
-            "unit": "years"
-          },
-          {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 65,
+        "unit": "years",
+        "value": 0
+      },
+      "direct_transition": "Hospice Check"
+    },
+    "Check for Events": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Check for SNF",
+          "condition": {
             "condition_type": "Or",
             "conditions": [
               {
@@ -503,332 +421,420 @@
               }
             ]
           }
-        ]
-      },
-      "direct_transition": "Face_to_Face_Encounter"
-    },
-    "Face_to_Face_Encounter": {
-      "type": "Encounter",
-      "codes": [
+        },
         {
-          "system": "SNOMED-CT",
-          "code": "308335008",
-          "display": "Patient encounter procedure (procedure)"
+          "transition": "Check for Home Visits"
         }
-      ],
-      "direct_transition": "Referral_Home_Health_Care"
+      ]
     },
-    "Referral_Home_Health_Care": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "417511005",
-          "display": "Referral to home health care service (procedure)"
-        }
-      ],
-      "direct_transition": "End_Face_to_Face_Encounter"
-    },
-    "End_Face_to_Face_Encounter": {
-      "type": "EncounterEnd",
-      "direct_transition": "Referral_to_Visit_Delay"
-    },
-    "Referral_to_Visit_Delay": {
-      "type": "Delay",
-      "range": {
-        "low": 0,
-        "high": 48,
-        "unit": "hours"
-      },
-      "direct_transition": "Set_HH_LOS"
-    },
-    "Set_HH_LOS": {
+    "Initiate Home Health Visits": {
       "type": "SetAttribute",
-      "attribute": "home_health_days",
-      "direct_transition": "First_Home_Health_Encounter",
-      "range": {
-        "high": 30,
-        "low": 1
-      }
+      "attribute": "home_health",
+      "value": true,
+      "direct_transition": "Wait for Next Decade"
     },
-    "First_Home_Health_Encounter": {
-      "type": "Encounter",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "439708006",
-          "display": "Home visit (procedure)"
-        }
-      ],
-      "direct_transition": "Initial_Patient_Assessment"
-    },
-    "Initial_Patient_Assessment": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "315639002",
-          "display": "Initial patient assessment (procedure)"
-        }
-      ],
-      "direct_transition": "Comprehensive_Interview_Evaluation"
-    },
-    "Comprehensive_Interview_Evaluation": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "200619008",
-          "display": "Comprehensive interview and evaluation (procedure)"
-        }
-      ],
-      "direct_transition": "Development_Individualized_Care_Plan"
-    },
-    "Development_Individualized_Care_Plan": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "370789001",
-          "display": "Development of individualized plan of care (procedure)"
-        }
-      ],
-      "direct_transition": "Coordination_Care_Plan"
-    },
-    "Coordination_Care_Plan": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "711069006",
-          "display": "Coordination of care plan (procedure)"
-        }
-      ],
-      "direct_transition": "End_First_HH_Encounter"
-    },
-    "End_First_HH_Encounter": {
-      "type": "EncounterEnd",
-      "direct_transition": "Follow-up_HH_Encounter"
-    },
-    "Follow-up_HH_Encounter": {
-      "type": "Encounter",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "439708006",
-          "display": "Home visit (procedure)"
-        }
-      ],
-      "direct_transition": "Begin_Visit"
-    },
-    "Begin_Visit": {
-      "type": "Counter",
-      "attribute": "home_health_days",
-      "action": "decrement",
-      "amount": 1,
-      "direct_transition": "Check_Visit_Type"
-    },
-    "Check_Visit_Type": {
+    "Wait for Next Decade": {
       "type": "Simple",
-      "distributed_transition": [
+      "conditional_transition": [
         {
-          "distribution": 0.46,
-          "transition": "Therapy_Visit"
+          "transition": "Wait Until 75",
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 75,
+            "unit": "years",
+            "value": 0
+          }
         },
         {
-          "distribution": 0.54,
-          "transition": "Nursing_Visit"
+          "transition": "Wait Until 85",
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 85,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Terminal"
         }
       ]
     },
-    "Therapy_Visit": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "distribution": 0.74,
-          "transition": "Physical_Therapy"
-        },
-        {
-          "distribution": 0.18,
-          "transition": "Occupational_Therapy"
-        },
-        {
-          "distribution": 0.08,
-          "transition": "Speech_Language_Therapy"
-        }
-      ]
-    },
-    "Nursing_Visit": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "distribution": 0.85,
-          "transition": "Nursing_Care"
-        },
-        {
-          "distribution": 0.15,
-          "transition": "Aide_Visit"
-        }
-      ]
-    },
-    "Physical_Therapy": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "91251008",
-          "display": "Physical therapy procedure (regime/therapy)"
-        }
-      ],
-      "range": {
-        "high": 60,
-        "low": 45,
-        "unit": "minutes"
-      },
-      "direct_transition": "Check for End"
-    },
-    "Occupational_Therapy": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "84478008",
-          "display": "Occupational therapy (regime/therapy)"
-        }
-      ],
-      "direct_transition": "Check for End"
-    },
-    "Speech_Language_Therapy": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "311555007",
-          "display": "Speech and language therapy regime (regime/therapy"
-        }
-      ],
-      "direct_transition": "Check for End"
-    },
-    "Patient_Discharge": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "58000006",
-          "display": "Patient discharge (procedure)"
-        }
-      ],
-      "direct_transition": "Last Visit"
-    },
-    "Nursing_Care": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "410401003",
-          "display": "Nursing care/supplementary surveillance (regime/therapy)"
-        }
-      ],
-      "direct_transition": "Check for End"
-    },
-    "Aide_Visit": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "distribution": 0.95,
-          "transition": "Aide_HH_Service"
-        },
-        {
-          "distribution": 0.05,
-          "transition": "Social_Case_Work"
-        }
-      ]
-    },
-    "Aide_HH_Service": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "385781007",
-          "display": "Home health aide service (regime/therapy)"
-        }
-      ],
-      "direct_transition": "Check for End"
-    },
-    "Social_Case_Work": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "183418007",
-          "display": "Social case work (regime/therapy)"
-        }
-      ],
-      "direct_transition": "Check for End"
-    },
-    "Terminal": {
-      "type": "Terminal"
-    },
-    "Delay": {
+    "Random Delay": {
       "type": "Delay",
-      "exact": {
-        "quantity": 1,
-        "unit": "days"
+      "range": {
+        "high": 9,
+        "low": 0,
+        "unit": "years"
       },
-      "direct_transition": "Follow-up_HH_Encounter"
+      "direct_transition": "Initiate Home Health Visits"
     },
-    "Check for End": {
+    "Wait Until 75": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 75,
+        "unit": "years",
+        "value": 0
+      },
+      "direct_transition": "Hospice Check"
+    },
+    "Wait Until 85": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 85,
+        "unit": "years",
+        "value": 0
+      },
+      "direct_transition": "Hospice Check"
+    },
+    "Initiate SNF": {
+      "type": "CallSubmodule",
+      "submodule": "snf/skilled_nursing_facility",
+      "direct_transition": "Wait for Next Decade"
+    },
+    "Check for Home Visits": {
       "type": "Simple",
-      "conditional_transition": [
+      "complex_transition": [
         {
-          "transition": "Finish Day",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "home_health_days",
-            "operator": ">",
-            "value": 0
-          }
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 75,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.3,
+              "transition": "Random Delay"
+            },
+            {
+              "distribution": 0.7,
+              "transition": "Wait for Next Decade"
+            }
+          ]
         },
         {
-          "transition": "Patient_Discharge"
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 85,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.32,
+              "transition": "Random Delay"
+            },
+            {
+              "distribution": 0.68,
+              "transition": "Wait for Next Decade"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 85,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.24,
+              "transition": "Random Delay"
+            },
+            {
+              "distribution": 0.76,
+              "transition": "Wait for Next Decade"
+            }
+          ]
         }
       ]
     },
-    "Finish Day": {
-      "type": "EncounterEnd",
-      "conditional_transition": [
+    "Check for SNF": {
+      "type": "Simple",
+      "complex_transition": [
         {
-          "transition": "Delay",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "home_health_days",
-            "operator": ">",
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 75,
+            "unit": "years",
             "value": 0
-          }
+          },
+          "distributions": [
+            {
+              "transition": "Initiate SNF",
+              "distribution": 0.24
+            },
+            {
+              "transition": "Check for Home Visits",
+              "distribution": 0.76
+            }
+          ]
         },
         {
-          "transition": "Patient_Discharge"
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 85,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Initiate SNF",
+              "distribution": 0.33
+            },
+            {
+              "transition": "Check for Home Visits",
+              "distribution": 0.6699999999999999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 90,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Initiate SNF",
+              "distribution": 0.18
+            },
+            {
+              "transition": "Check for Home Visits",
+              "distribution": 0.82
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 90,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Initiate SNF",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Check for Home Visits",
+              "distribution": 0.85
+            }
+          ]
         }
-      ],
-      "direct_transition": "Delay"
+      ]
     },
-    "Last Visit": {
-      "type": "EncounterEnd",
+    "Hospice Check": {
+      "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Delay",
+          "transition": "Initiate Hospice",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "home_health_days",
-            "operator": ">",
-            "value": 0
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "55277-8",
+                    "display": "HIV Positive Status"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "26929004",
+                    "display": "Alzheimers"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "254837009",
+                    "display": "Breast Cancer"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "lung_cancer",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "126906006",
+                    "display": "Prostate Cancer"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "93761005",
+                    "display": "Colorectal Cancer Stage I"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "109838007",
+                    "display": "Colorectal Cancer Stage II"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "363406005",
+                    "display": "Colorectal Cancer Stage III"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "94260004",
+                    "display": "Colorectal Cancer Stage IV"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "88805009",
+                    "display": "Chronic Congestive Heart Failure"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 22298006,
+                    "display": "Myocardial Infarction"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "coronary_heart_disease",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 399211009,
+                    "display": "History of myocardial infarction (situation)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 110030002,
+                    "display": "Concussion injury of brain"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 190905008,
+                    "display": "Cystic Fibrosis"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 87433001,
+                    "display": "Pulmonary Emphysema"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 185086009,
+                    "display": "Chronic Obstructive Bronchitis"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 65710008,
+                    "display": "Acute respiratory failure (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": "is not nil"
+              }
+            ]
           }
         },
         {
-          "transition": "Patient_Discharge"
+          "transition": "Check for Events"
         }
-      ],
-      "direct_transition": "Terminal"
+      ]
+    },
+    "Initiate Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice",
+      "direct_transition": "Wait for Next Decade",
+      "value": true
     }
   },
   "gmf_version": 1
