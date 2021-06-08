@@ -1,0 +1,362 @@
+{
+  "name": "Home Health Treatment",
+  "remarks": [
+    "Simplified Home Health Care module with a daily routine of physical therapy and Activities of Daily Living (ADL) for less than 21 days (Medicare limit)."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait Until Home Health"
+    },
+    "Face_to_Face_Encounter": {
+      "type": "Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "308335008",
+          "display": "Patient encounter procedure (procedure)"
+        }
+      ],
+      "direct_transition": "Referral_Home_Health_Care",
+      "encounter_class": "urgentcare"
+    },
+    "Referral_Home_Health_Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "417511005",
+          "display": "Referral to home health care service (procedure)"
+        }
+      ],
+      "direct_transition": "End_Face_to_Face_Encounter"
+    },
+    "End_Face_to_Face_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Referral_to_Visit_Delay"
+    },
+    "Referral_to_Visit_Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 0,
+        "high": 48,
+        "unit": "hours"
+      },
+      "direct_transition": "Set_HH_LOS"
+    },
+    "Set_HH_LOS": {
+      "type": "SetAttribute",
+      "attribute": "home_health_days",
+      "direct_transition": "First_Home_Health_Encounter",
+      "range": {
+        "high": 30,
+        "low": 1
+      }
+    },
+    "First_Home_Health_Encounter": {
+      "type": "Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "439708006",
+          "display": "Home visit (procedure)"
+        }
+      ],
+      "direct_transition": "Initial_Patient_Assessment",
+      "encounter_class": "home"
+    },
+    "Initial_Patient_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "315639002",
+          "display": "Initial patient assessment (procedure)"
+        }
+      ],
+      "direct_transition": "Comprehensive_Interview_Evaluation"
+    },
+    "Comprehensive_Interview_Evaluation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "200619008",
+          "display": "Comprehensive interview and evaluation (procedure)"
+        }
+      ],
+      "direct_transition": "Development_Individualized_Care_Plan"
+    },
+    "Development_Individualized_Care_Plan": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "370789001",
+          "display": "Development of individualized plan of care (procedure)"
+        }
+      ],
+      "direct_transition": "Coordination_Care_Plan"
+    },
+    "Coordination_Care_Plan": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "711069006",
+          "display": "Coordination of care plan (procedure)"
+        }
+      ],
+      "direct_transition": "End_First_HH_Encounter"
+    },
+    "End_First_HH_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Follow-up_HH_Encounter"
+    },
+    "Follow-up_HH_Encounter": {
+      "type": "Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "439708006",
+          "display": "Home visit (procedure)"
+        }
+      ],
+      "direct_transition": "Begin_Visit",
+      "encounter_class": "home"
+    },
+    "Begin_Visit": {
+      "type": "Counter",
+      "attribute": "home_health_days",
+      "action": "decrement",
+      "amount": 1,
+      "direct_transition": "Check_Visit_Type"
+    },
+    "Check_Visit_Type": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.46,
+          "transition": "Therapy_Visit"
+        },
+        {
+          "distribution": 0.54,
+          "transition": "Nursing_Visit"
+        }
+      ]
+    },
+    "Therapy_Visit": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.74,
+          "transition": "Physical_Therapy"
+        },
+        {
+          "distribution": 0.18,
+          "transition": "Occupational_Therapy"
+        },
+        {
+          "distribution": 0.08,
+          "transition": "Speech_Language_Therapy"
+        }
+      ]
+    },
+    "Nursing_Visit": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.85,
+          "transition": "Nursing_Care"
+        },
+        {
+          "distribution": 0.15,
+          "transition": "Aide_Visit"
+        }
+      ]
+    },
+    "Physical_Therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91251008",
+          "display": "Physical therapy procedure (regime/therapy)"
+        }
+      ],
+      "range": {
+        "high": 60,
+        "low": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "Check for End"
+    },
+    "Occupational_Therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "84478008",
+          "display": "Occupational therapy (regime/therapy)"
+        }
+      ],
+      "direct_transition": "Check for End"
+    },
+    "Speech_Language_Therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "311555007",
+          "display": "Speech and language therapy regime (regime/therapy"
+        }
+      ],
+      "direct_transition": "Check for End"
+    },
+    "Patient_Discharge": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "58000006",
+          "display": "Patient discharge (procedure)"
+        }
+      ],
+      "direct_transition": "Last Visit"
+    },
+    "Nursing_Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "410401003",
+          "display": "Nursing care/supplementary surveillance (regime/therapy)"
+        }
+      ],
+      "direct_transition": "Check for End"
+    },
+    "Aide_Visit": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.95,
+          "transition": "Aide_HH_Service"
+        },
+        {
+          "distribution": 0.05,
+          "transition": "Social_Case_Work"
+        }
+      ]
+    },
+    "Aide_HH_Service": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "385781007",
+          "display": "Home health aide service (regime/therapy)"
+        }
+      ],
+      "direct_transition": "Check for End"
+    },
+    "Social_Case_Work": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183418007",
+          "display": "Social case work (regime/therapy)"
+        }
+      ],
+      "direct_transition": "Check for End"
+    },
+    "Delay": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Follow-up_HH_Encounter"
+    },
+    "Check for End": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Finish Day",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "home_health_days",
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Patient_Discharge"
+        }
+      ]
+    },
+    "Finish Day": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Delay",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "home_health_days",
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Patient_Discharge"
+        }
+      ],
+      "direct_transition": "Delay"
+    },
+    "Last Visit": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Delay",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "home_health_days",
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Patient_Discharge"
+        }
+      ],
+      "direct_transition": "Reset Home Health"
+    },
+    "Wait Until Home Health": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "And",
+        "conditions": [
+          {
+            "condition_type": "Attribute",
+            "attribute": "home_health",
+            "operator": "is not nil"
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "home_health",
+            "operator": "==",
+            "value": true
+          }
+        ]
+      },
+      "direct_transition": "Face_to_Face_Encounter"
+    },
+    "Reset Home Health": {
+      "type": "SetAttribute",
+      "attribute": "home_health",
+      "direct_transition": "Wait Until Home Health",
+      "value": false
+    }
+  },
+  "gmf_version": 1
+}
