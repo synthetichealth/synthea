@@ -6,7 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "complex_transition":[
+      "complex_transition": [
         {
           "condition": {
             "condition_type": "Age",
@@ -129,398 +129,398 @@
           },
           {
             "condition_type": "Or",
-              "conditions": [
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "91302008",
-                      "display": "Sepsis"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Attribute",
-                  "attribute": "covid19_bacterial_infection",
-                  "operator": "is not nil"
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "233604007",
-                      "display": "Pneumonia"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "38822007",
-                      "display": "Urinary Tract Infection"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "10509002",
-                      "display": "Acute Bronchitis"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Attribute",
-                  "attribute": "hypertension_severe",
-                  "operator": "==",
-                  "value": true
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "LOINC",
-                      "code": "55277-8",
-                      "display": "HIV Positive Status"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "26929004",
-                      "display": "Alzheimers"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "254837009",
-                      "display": "Breast Cancer"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Attribute",
-                  "attribute": "lung_cancer",
-                  "operator": "==",
-                  "value": true
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "126906006",
-                      "display": "Prostate Cancer"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "93761005",
-                      "display": "Colorectal Cancer Stage I"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "109838007",
-                      "display": "Colorectal Cancer Stage II"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "363406005",
-                      "display": "Colorectal Cancer Stage III"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "94260004",
-                      "display": "Colorectal Cancer Stage IV"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "88805009",
-                      "display": "Chronic Congestive Heart Failure"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "22298006",
-                      "display": "Myocardial Infarction"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Attribute",
-                  "attribute": "coronary_heart_disease",
-                  "operator": "==",
-                  "value": true
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "399211009",
-                      "display": "History of myocardial infarction"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "234466008",
-                      "display": "Acquired coagulation disorder"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Attribute",
-                  "attribute": "burn_injury",
-                  "operator": "is not nil"
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "1734006",
-                      "display": "Fracture of the vertebral column with spinal cord injury"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "58150001",
-                      "display": "Broken Clavicle"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "359817006",
-                      "display": "Closed Fracture of Hip"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "33737001",
-                      "display": "Fracture of Rib"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "16114001",
-                      "display": "Fracture of Ankle"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "65966004",
-                      "display": "Fracture of Forearm"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "263102004",
-                      "display": "Fracture Subluxation of Wrist"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "110030002",
-                      "display": "Concussion injury of brain"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Attribute",
-                  "attribute": "laceration_injury",
-                  "operator": "is not nil"
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "190905008",
-                      "display": "Cystic Fibrosis"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "87433001",
-                      "display": "Pulmonary Emphysema"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "185086009",
-                      "display": "Chronic Obstructive Bronchitis"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "65710008",
-                      "display": "Acute respiratory failure (disorder)"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Attribute",
-                  "attribute": "ckd",
-                  "operator": "is not nil"
-                },
-                {
-                  "condition_type": "Attribute",
-                  "attribute": "diabetes",
-                  "operator": "==",
-                  "value": true
-                },
-                {
-                  "condition_type": "Attribute",
-                  "attribute": "joint_replacement",
-                  "operator": "is not nil"
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "161622006",
-                      "display": "History of Lower Limb Amputation"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "429280009",
-                      "display": "History of Amputation of Foot"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "161621004",
-                      "display": "History of Upper Limb Amputation"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "698423002",
-                      "display": "History of Disarticulation at Wrist"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "200936003",
-                      "display": "Lupus erythematosus"
-                    }
-                  ]
-                },
-                {
-                  "condition_type": "Active Condition",
-                  "codes": [
-                    {
-                      "system": "SNOMED-CT",
-                      "code": "69896004",
-                      "display": "Rheumatoid arthritis"
-                    }
-                  ]
-                }
-              ]
-            }
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "91302008",
+                    "display": "Sepsis"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_bacterial_infection",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "233604007",
+                    "display": "Pneumonia"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "38822007",
+                    "display": "Urinary Tract Infection"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "10509002",
+                    "display": "Acute Bronchitis"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hypertension_severe",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "55277-8",
+                    "display": "HIV Positive Status"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "26929004",
+                    "display": "Alzheimers"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "254837009",
+                    "display": "Breast Cancer"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "lung_cancer",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "126906006",
+                    "display": "Prostate Cancer"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "93761005",
+                    "display": "Colorectal Cancer Stage I"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "109838007",
+                    "display": "Colorectal Cancer Stage II"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "363406005",
+                    "display": "Colorectal Cancer Stage III"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "94260004",
+                    "display": "Colorectal Cancer Stage IV"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "88805009",
+                    "display": "Chronic Congestive Heart Failure"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "22298006",
+                    "display": "Myocardial Infarction"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "coronary_heart_disease",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "399211009",
+                    "display": "History of myocardial infarction"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "234466008",
+                    "display": "Acquired coagulation disorder"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "burn_injury",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "1734006",
+                    "display": "Fracture of the vertebral column with spinal cord injury"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "58150001",
+                    "display": "Broken Clavicle"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "359817006",
+                    "display": "Closed Fracture of Hip"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "33737001",
+                    "display": "Fracture of Rib"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "16114001",
+                    "display": "Fracture of Ankle"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "65966004",
+                    "display": "Fracture of Forearm"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "263102004",
+                    "display": "Fracture Subluxation of Wrist"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "110030002",
+                    "display": "Concussion injury of brain"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "laceration_injury",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "190905008",
+                    "display": "Cystic Fibrosis"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "87433001",
+                    "display": "Pulmonary Emphysema"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "185086009",
+                    "display": "Chronic Obstructive Bronchitis"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "65710008",
+                    "display": "Acute respiratory failure (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "joint_replacement",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "161622006",
+                    "display": "History of Lower Limb Amputation"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "429280009",
+                    "display": "History of Amputation of Foot"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "161621004",
+                    "display": "History of Upper Limb Amputation"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "698423002",
+                    "display": "History of Disarticulation at Wrist"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "200936003",
+                    "display": "Lupus erythematosus"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "69896004",
+                    "display": "Rheumatoid arthritis"
+                  }
+                ]
+              }
+            ]
+          }
         ]
       },
       "direct_transition": "SNF_Admission"
@@ -532,67 +532,63 @@
         {
           "system": "SNOMED-CT",
           "code": "449411000124106",
-          "display": "Admission to Skilled Nursing Facility"
+          "display": "Admission to skilled nursing facility (procedure)"
         }
       ],
       "direct_transition": "Determine_LOS"
     },
     "Determine_LOS": {
-      "type": "SetAttribute",
-      "attribute": "snf_days",
+      "type": "Simple",
       "distributed_transition": [
         {
-            "distribution": 0.35,
-            "range": {
-                "high": 15,
-                "low": 1,
-                "unit": "days"
-            },
-            "transition": "SNF_1-15_Days"
+          "distribution": 0.35,
+          "transition": "SNF_1-15_Days"
         },
         {
-            "distribution": 0.34,
-            "range": {
-                "high": 30,
-                "low": 16,
-                "unit": "days"
-            },
-            "transition": "SNF_16-30_Days"
+          "distribution": 0.34,
+          "transition": "SNF_16-30_Days"
         },
         {
-            "distribution": 0.29,
-            "range": {
-                "high": 99,
-                "low": 31,
-                "unit": "days"
-            },
-            "transition": "SNF_31-99_Days"
+          "distribution": 0.29,
+          "transition": "SNF_31-99_Days"
         },
         {
-            "distribution": 0.02,
-            "range": {
-                "high": 100,
-                "low": 100,
-                "unit": "days"
-            },
-            "transition": "SNF_100_Days"
+          "distribution": 0.02,
+          "transition": "SNF_100_Days"
         }
       ]
     },
     "SNF_1-15_Days": {
-      "type": "Simple",
+      "type": "SetAttribute",
+      "attribute": "snf_days",
+      "range": {
+        "high": 15,
+        "low": 1
+      },
       "direct_transition": "History_Physical_Exam"
     },
     "SNF_16-30_Days": {
-      "type": "Simple",
+      "type": "SetAttribute",
+      "attribute": "snf_days",
+      "range": {
+        "high": 30,
+        "low": 16
+      },
       "direct_transition": "History_Physical_Exam"
     },
     "SNF_31-99_Days": {
-      "type": "Simple",
+      "type": "SetAttribute",
+      "attribute": "snf_days",
+      "range": {
+        "high": 99,
+        "low": 31
+      },
       "direct_transition": "History_Physical_Exam"
     },
     "SNF_100_Days": {
-      "type": "Simple",
+      "type": "SetAttribute",
+      "attribute": "snf_days",
+      "value": 100,
       "direct_transition": "History_Physical_Exam"
     },
     "History_Physical_Exam": {
@@ -601,7 +597,7 @@
         {
           "system": "SNOMED-CT",
           "code": "63332003",
-          "display": "History AND Physical Exmaination"
+          "display": "History AND physical examination (procedure)"
         }
       ],
       "direct_transition": "Initial_Patient_Assessment"
@@ -612,7 +608,7 @@
         {
           "system": "SNOMED-CT",
           "code": "315639002",
-          "display": "Initial Patient Assessment"
+          "display": "Initial patient assessment (procedure)"
         }
       ],
       "direct_transition": "Development_of_Individualized_Care_Plan"
@@ -623,7 +619,7 @@
         {
           "system": "SNOMED-CT",
           "code": "370789001",
-          "display": "Development of Indvidualized Plan of Care"
+          "display": "Development of individualized plan of care (procedure)"
         }
       ],
       "direct_transition": "Begin_Day"
@@ -635,13 +631,13 @@
       "amount": 1,
       "direct_transition": "Nursing"
     },
-    "Nursing":{
+    "Nursing": {
       "type": "Procedure",
       "codes": [
         {
           "system": "SNOMED-CT",
           "code": "410401003",
-          "display": "Nursing: Nursing care/supplementary surveillance (regime/therapy)"
+          "display": "Nursing care/supplementary surveillance (regime/therapy)"
         }
       ],
       "direct_transition": "Physical_Therapy_Check"
@@ -650,8 +646,8 @@
       "type": "Simple",
       "distributed_transition": [
         {
-            "distribution": 0.94,
-            "transition": "Physical_Therapy"
+          "distribution": 0.94,
+          "transition": "Physical_Therapy"
         },
         {
           "distribution": 0.06,
@@ -665,7 +661,7 @@
         {
           "system": "SNOMED-CT",
           "code": "91251008",
-          "display": "Physical Therapy Procedure (regime/therapy)"
+          "display": "Physical therapy procedure (regime/therapy)"
         }
       ],
       "range": {
@@ -694,7 +690,7 @@
         {
           "system": "SNOMED-CT",
           "code": "84478008",
-          "display": "Occupational Therapy(regime/therapy)"
+          "display": "Occupational therapy (regime/therapy)"
         }
       ],
       "direct_transition": "Speech_Language_Therapy_Check"
@@ -718,7 +714,7 @@
         {
           "system": "SNOMED-CT",
           "code": "311555007",
-          "display": "Speech and Language Therapy (regime/therapy)"
+          "display": "Speech and language therapy regime (regime/therapy"
         }
       ],
       "direct_transition": "NTA_Check"
@@ -742,7 +738,7 @@
         {
           "system": "SNOMED-CT",
           "code": "409023009",
-          "display": "Professional/Ancillary Services Care (regime/therapy)"
+          "display": "Professional / ancillary services care (regime/therapy)"
         }
       ],
       "direct_transition": "Status_Change_Check"
@@ -766,13 +762,13 @@
         {
           "system": "SNOMED-CT",
           "code": "392091000",
-          "display": "Care Regimes Assessment (procedure)"
+          "display": "Care regimes assessment (procedure)"
         }
       ],
       "direct_transition": "End_Day"
     },
     "End_Day": {
-      "type": "EncounterEnd",
+      "type": "Simple",
       "conditional_transition": [
         {
           "transition": "Begin_Day",
@@ -781,11 +777,11 @@
             "attribute": "snf_days",
             "operator": ">",
             "value": 0
+          }
+        },
+        {
+          "transition": "Predischarge_Assessment"
         }
-      },
-      {
-        "transition": "Predischarge_Assessment"
-      }
       ]
     },
     "Predischarge_Assessment": {
@@ -794,7 +790,7 @@
         {
           "system": "SNOMED-CT",
           "code": "225386006",
-          "display": "Pre-discharge Assessment (procedure)"
+          "display": "Pre-discharge assessment (procedure)"
         }
       ],
       "direct_transition": "Discharge_From_SNF"
@@ -805,13 +801,17 @@
         {
           "system": "SNOMED-CT",
           "code": "449381000124108",
-          "display": "Discharge From Skilled Nursing Facility (procedure)"
+          "display": "Discharge from skilled nursing facility (procedure)"
         }
       ],
-      "direct_transition": "Terminal"
+      "direct_transition": "End Encounter"
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "End Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
     }
   },
   "gmf_version": 1
