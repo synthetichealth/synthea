@@ -934,6 +934,7 @@ public class BB2RIFExporter implements Flushable {
         if (conditionCodeMapper.canMap(encounter.reason.code)) {
           String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
           fieldValues.put(CarrierFields.PRNCPAL_DGNS_CD, icdCode);
+          fieldValues.put(CarrierFields.LINE_ICD_DGNS_CD, icdCode);
         }
       }
 
@@ -958,6 +959,7 @@ public class BB2RIFExporter implements Flushable {
           }
           if (!fieldValues.containsKey(CarrierFields.PRNCPAL_DGNS_CD)) {
             fieldValues.put(CarrierFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+            fieldValues.put(CarrierFields.LINE_ICD_DGNS_CD, mappedDiagnosisCodes.get(0));
           }
         } else {
           noDiagnoses = true;
@@ -1146,6 +1148,7 @@ public class BB2RIFExporter implements Flushable {
             if (conditionCodeMapper.canMap(encounter.reason.code)) {
               String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
               fieldValues.put(DMEFields.PRNCPAL_DGNS_CD, icdCode);
+              fieldValues.put(DMEFields.LINE_ICD_DGNS_CD, icdCode);
             }
           }
 
@@ -1170,6 +1173,7 @@ public class BB2RIFExporter implements Flushable {
               }
               if (!fieldValues.containsKey(DMEFields.PRNCPAL_DGNS_CD)) {
                 fieldValues.put(DMEFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+                fieldValues.put(DMEFields.LINE_ICD_DGNS_CD, mappedDiagnosisCodes.get(0));
               }
             } else {
               noDiagnoses = true;
@@ -1523,7 +1527,35 @@ public class BB2RIFExporter implements Flushable {
           noDiagnoses = true;
         }
       }
-      if (noDiagnoses) {
+
+      // Use the procedures in this encounter to enter mapped values
+      boolean noProcedures = false;
+      if (!encounter.procedures.isEmpty()) {
+        List<HealthRecord.Procedure> mappableProcedures = new ArrayList<>();
+        List<String> mappedProcedureCodes = new ArrayList<>();
+        for (HealthRecord.Procedure procedure : encounter.procedures) {
+          for (HealthRecord.Code code : procedure.codes) {
+            if (conditionCodeMapper.canMap(code.code)) {
+              mappableProcedures.add(procedure);
+              mappedProcedureCodes.add(conditionCodeMapper.map(code.code, person, true));
+              break; // take the first mappable code for each procedure
+            }
+          }
+        }
+        if (!mappableProcedures.isEmpty()) {
+          int smallest = Math.min(mappableProcedures.size(), snfPxFields.length);
+          for (int i = 0; i < smallest; i++) {
+            SNFFields[] pxField = snfPxFields[i];
+            fieldValues.put(pxField[0], mappedProcedureCodes.get(i));
+            fieldValues.put(pxField[1], "0"); // 0=ICD10
+            fieldValues.put(pxField[2], bb2DateFromTimestamp(mappableProcedures.get(i).start));
+          }
+        } else {
+          noProcedures = true;
+        }
+      }
+
+      if (noDiagnoses && noProcedures) {
         continue; // skip this encounter
       }
 
@@ -3708,6 +3740,34 @@ public class BB2RIFExporter implements Flushable {
       { SNFFields.ICD_DGNS_CD23, SNFFields.ICD_DGNS_VRSN_CD23 },
       { SNFFields.ICD_DGNS_CD24, SNFFields.ICD_DGNS_VRSN_CD24 },
       { SNFFields.ICD_DGNS_CD25, SNFFields.ICD_DGNS_VRSN_CD25 }
+    };
+
+  private SNFFields[][] snfPxFields = {
+      { SNFFields.ICD_PRCDR_CD1, SNFFields.ICD_PRCDR_VRSN_CD1,  SNFFields.PRCDR_DT1 },
+      { SNFFields.ICD_PRCDR_CD2, SNFFields.ICD_PRCDR_VRSN_CD2, SNFFields.PRCDR_DT2 },
+      { SNFFields.ICD_PRCDR_CD3, SNFFields.ICD_PRCDR_VRSN_CD3, SNFFields.PRCDR_DT3 },
+      { SNFFields.ICD_PRCDR_CD4, SNFFields.ICD_PRCDR_VRSN_CD4, SNFFields.PRCDR_DT4 },
+      { SNFFields.ICD_PRCDR_CD5, SNFFields.ICD_PRCDR_VRSN_CD5, SNFFields.PRCDR_DT5 },
+      { SNFFields.ICD_PRCDR_CD6, SNFFields.ICD_PRCDR_VRSN_CD6, SNFFields.PRCDR_DT6 },
+      { SNFFields.ICD_PRCDR_CD7, SNFFields.ICD_PRCDR_VRSN_CD7, SNFFields.PRCDR_DT7 },
+      { SNFFields.ICD_PRCDR_CD8, SNFFields.ICD_PRCDR_VRSN_CD8, SNFFields.PRCDR_DT8 },
+      { SNFFields.ICD_PRCDR_CD9, SNFFields.ICD_PRCDR_VRSN_CD9, SNFFields.PRCDR_DT9 },
+      { SNFFields.ICD_PRCDR_CD10, SNFFields.ICD_PRCDR_VRSN_CD10, SNFFields.PRCDR_DT10 },
+      { SNFFields.ICD_PRCDR_CD11, SNFFields.ICD_PRCDR_VRSN_CD11, SNFFields.PRCDR_DT11 },
+      { SNFFields.ICD_PRCDR_CD12, SNFFields.ICD_PRCDR_VRSN_CD12, SNFFields.PRCDR_DT12 },
+      { SNFFields.ICD_PRCDR_CD13, SNFFields.ICD_PRCDR_VRSN_CD13, SNFFields.PRCDR_DT13 },
+      { SNFFields.ICD_PRCDR_CD14, SNFFields.ICD_PRCDR_VRSN_CD14, SNFFields.PRCDR_DT14 },
+      { SNFFields.ICD_PRCDR_CD15, SNFFields.ICD_PRCDR_VRSN_CD15, SNFFields.PRCDR_DT15 },
+      { SNFFields.ICD_PRCDR_CD16, SNFFields.ICD_PRCDR_VRSN_CD16, SNFFields.PRCDR_DT16 },
+      { SNFFields.ICD_PRCDR_CD17, SNFFields.ICD_PRCDR_VRSN_CD17, SNFFields.PRCDR_DT17 },
+      { SNFFields.ICD_PRCDR_CD18, SNFFields.ICD_PRCDR_VRSN_CD18, SNFFields.PRCDR_DT18 },
+      { SNFFields.ICD_PRCDR_CD19, SNFFields.ICD_PRCDR_VRSN_CD19, SNFFields.PRCDR_DT19 },
+      { SNFFields.ICD_PRCDR_CD20, SNFFields.ICD_PRCDR_VRSN_CD20, SNFFields.PRCDR_DT20 },
+      { SNFFields.ICD_PRCDR_CD21, SNFFields.ICD_PRCDR_VRSN_CD21, SNFFields.PRCDR_DT21 },
+      { SNFFields.ICD_PRCDR_CD22, SNFFields.ICD_PRCDR_VRSN_CD22, SNFFields.PRCDR_DT22 },
+      { SNFFields.ICD_PRCDR_CD23, SNFFields.ICD_PRCDR_VRSN_CD23, SNFFields.PRCDR_DT23 },
+      { SNFFields.ICD_PRCDR_CD24, SNFFields.ICD_PRCDR_VRSN_CD24, SNFFields.PRCDR_DT24 },
+      { SNFFields.ICD_PRCDR_CD25, SNFFields.ICD_PRCDR_VRSN_CD25, SNFFields.PRCDR_DT25 }
     };
 
   /**
