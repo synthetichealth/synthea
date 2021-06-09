@@ -262,7 +262,8 @@ public class CSVExporter {
   private void writeCSVHeaders() throws IOException {
     patients.write("Id,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,"
         + "PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,"
-        + "ADDRESS,CITY,STATE,COUNTY,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE");
+        + "ADDRESS,CITY,STATE,COUNTY,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE,"
+        + "CAUSE_OF_DEATH_CODE,CAUSE_OF_DEATH_DESCRIPTION");
     patients.write(NEWLINE);
     allergies.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION");
     allergies.write(NEWLINE);
@@ -538,6 +539,7 @@ public class CSVExporter {
     // Id,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,PREFIX,
     // FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,ADDRESS
     // CITY,STATE,COUNTY,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE
+    // CAUSE_OF_DEATH_CODE,CAUSE_OF_DEATH_DESCRIPTION
     String personID = (String) person.attributes.get(Person.ID);
 
     // check if we've already exported this patient demographic data yet,
@@ -583,7 +585,17 @@ public class CSVExporter {
     // HEALTHCARE_EXPENSES
     s.append(person.getHealthcareExpenses()).append(',');
     // HEALTHCARE_COVERAGE
-    s.append(person.getHealthcareCoverage());
+    s.append(person.getHealthcareCoverage()).append(',');
+    
+    // CAUSE_OF_DEATH_CODE,CAUSE_OF_DEATH_DESCRIPTION
+    if (!person.alive(time)) {
+      Code causeOfDeath = (Code) person.attributes.get(Person.CAUSE_OF_DEATH);
+      s.append(causeOfDeath.code).append(',').append(causeOfDeath.display);
+    } else {
+      s.append(',');
+    }
+    
+    
     // QALYS
     // s.append(person.attributes.get("most-recent-qaly")).append(',');
     // DALYS
