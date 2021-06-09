@@ -601,6 +601,14 @@ public class BB2RIFExporter implements Flushable {
       fieldValues.put(OutpatientFields.REV_CNTR_RDCD_COINSRNC_AMT,
               String.format("%.2f", encounter.claim.getCoinsurancePaid()));
 
+      if (encounter.reason != null) {
+        // If the encounter has a recorded reason, enter the mapped
+        // values into the principle diagnoses code.
+        if (conditionCodeMapper.canMap(encounter.reason.code)) {
+          String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
+          fieldValues.put(OutpatientFields.PRNCPAL_DGNS_CD, icdCode);
+        }
+      }
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
       boolean noDiagnoses = false;
@@ -619,6 +627,9 @@ public class BB2RIFExporter implements Flushable {
             OutpatientFields[] dxField = outpatientDxFields[i];
             fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
             fieldValues.put(dxField[1], "0"); // 0=ICD10
+          }
+          if (!fieldValues.containsKey(OutpatientFields.PRNCPAL_DGNS_CD)) {
+            fieldValues.put(OutpatientFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
           }
         } else {
           noDiagnoses = true;
@@ -916,6 +927,46 @@ public class BB2RIFExporter implements Flushable {
       fieldValues.put(CarrierFields.LINE_HCT_HGB_RSLT_NUM,
               "" + latestHemoglobin);
 
+      // OPTIONAL
+      if (encounter.reason != null) {
+        // If the encounter has a recorded reason, enter the mapped
+        // values into the principle diagnoses code.
+        if (conditionCodeMapper.canMap(encounter.reason.code)) {
+          String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
+          fieldValues.put(CarrierFields.PRNCPAL_DGNS_CD, icdCode);
+        }
+      }
+
+      // Use the active condition diagnoses to enter mapped values
+      // into the diagnoses codes.
+      boolean noDiagnoses = false;
+      if (person.record.present != null && !person.record.present.isEmpty()) {
+        List<String> mappedDiagnosisCodes = new ArrayList<>();
+        for (String key : person.record.present.keySet()) {
+          if (person.record.conditionActive(key)) {
+            if (conditionCodeMapper.canMap(key)) {
+              mappedDiagnosisCodes.add(conditionCodeMapper.map(key, person, true));
+            }
+          }
+        }
+        if (!mappedDiagnosisCodes.isEmpty()) {
+          int smallest = Math.min(mappedDiagnosisCodes.size(), carrierDxFields.length);
+          for (int i = 0; i < smallest; i++) {
+            CarrierFields[] dxField = carrierDxFields[i];
+            fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+            fieldValues.put(dxField[1], "0"); // 0=ICD10
+          }
+          if (!fieldValues.containsKey(CarrierFields.PRNCPAL_DGNS_CD)) {
+            fieldValues.put(CarrierFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+          }
+        } else {
+          noDiagnoses = true;
+        }
+      }
+      if (noDiagnoses) {
+        continue; // skip this encounter
+      }
+
       carrier.writeValues(CarrierFields.class, fieldValues);
     }
   }
@@ -1088,6 +1139,46 @@ public class BB2RIFExporter implements Flushable {
                           DMEFields.LINE_CMS_TYPE_SRVC_CD.toString().toLowerCase(),
                           person));
 
+          // OPTIONAL
+          if (encounter.reason != null) {
+            // If the encounter has a recorded reason, enter the mapped
+            // values into the principle diagnoses code.
+            if (conditionCodeMapper.canMap(encounter.reason.code)) {
+              String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
+              fieldValues.put(DMEFields.PRNCPAL_DGNS_CD, icdCode);
+            }
+          }
+
+          // Use the active condition diagnoses to enter mapped values
+          // into the diagnoses codes.
+          boolean noDiagnoses = false;
+          if (person.record.present != null && !person.record.present.isEmpty()) {
+            List<String> mappedDiagnosisCodes = new ArrayList<>();
+            for (String key : person.record.present.keySet()) {
+              if (person.record.conditionActive(key)) {
+                if (conditionCodeMapper.canMap(key)) {
+                  mappedDiagnosisCodes.add(conditionCodeMapper.map(key, person, true));
+                }
+              }
+            }
+            if (!mappedDiagnosisCodes.isEmpty()) {
+              int smallest = Math.min(mappedDiagnosisCodes.size(), dmeDxFields.length);
+              for (int i = 0; i < smallest; i++) {
+                DMEFields[] dxField = dmeDxFields[i];
+                fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+                fieldValues.put(dxField[1], "0"); // 0=ICD10
+              }
+              if (!fieldValues.containsKey(DMEFields.PRNCPAL_DGNS_CD)) {
+                fieldValues.put(DMEFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+              }
+            } else {
+              noDiagnoses = true;
+            }
+          }
+          if (noDiagnoses) {
+            continue; // skip this encounter
+          }
+
           // write out field values
           dme.writeValues(DMEFields.class, fieldValues);
         } else {
@@ -1155,6 +1246,45 @@ public class BB2RIFExporter implements Flushable {
           String.format("%.2f", encounter.claim.getTotalClaimCost()));
       fieldValues.put(HHAFields.REV_CNTR_NCVRD_CHRG_AMT,
           String.format("%.2f", encounter.claim.getPatientCost()));
+
+      if (encounter.reason != null) {
+        // If the encounter has a recorded reason, enter the mapped
+        // values into the principle diagnoses code.
+        if (conditionCodeMapper.canMap(encounter.reason.code)) {
+          String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
+          fieldValues.put(HHAFields.PRNCPAL_DGNS_CD, icdCode);
+        }
+      }
+
+      // Use the active condition diagnoses to enter mapped values
+      // into the diagnoses codes.
+      boolean noDiagnoses = false;
+      if (person.record.present != null && !person.record.present.isEmpty()) {
+        List<String> mappedDiagnosisCodes = new ArrayList<>();
+        for (String key : person.record.present.keySet()) {
+          if (person.record.conditionActive(key)) {
+            if (conditionCodeMapper.canMap(key)) {
+              mappedDiagnosisCodes.add(conditionCodeMapper.map(key, person, true));
+            }
+          }
+        }
+        if (!mappedDiagnosisCodes.isEmpty()) {
+          int smallest = Math.min(mappedDiagnosisCodes.size(), homeDxFields.length);
+          for (int i = 0; i < smallest; i++) {
+            HHAFields[] dxField = homeDxFields[i];
+            fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+            fieldValues.put(dxField[1], "0"); // 0=ICD10
+          }
+          if (!fieldValues.containsKey(HHAFields.PRNCPAL_DGNS_CD)) {
+            fieldValues.put(HHAFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+          }
+        } else {
+          noDiagnoses = true;
+        }
+      }
+      if (noDiagnoses) {
+        continue; // skip this encounter
+      }
 
       home.writeValues(HHAFields.class, fieldValues);
     }
@@ -1228,7 +1358,7 @@ public class BB2RIFExporter implements Flushable {
           fieldValues.put(HospiceFields.PRNCPAL_DGNS_CD, icdCode);
         }
       }
-      
+
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
       boolean noDiagnoses = false;
@@ -1247,6 +1377,9 @@ public class BB2RIFExporter implements Flushable {
             HospiceFields[] dxField = hospiceDxFields[i];
             fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
             fieldValues.put(dxField[1], "0"); // 0=ICD10
+          }
+          if (!fieldValues.containsKey(HospiceFields.PRNCPAL_DGNS_CD)) {
+            fieldValues.put(HospiceFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
           }
         } else {
           noDiagnoses = true;
@@ -1351,6 +1484,48 @@ public class BB2RIFExporter implements Flushable {
           String.format("%.2f", encounter.claim.getTotalClaimCost()));
       fieldValues.put(SNFFields.REV_CNTR_NCVRD_CHRG_AMT,
           String.format("%.2f", encounter.claim.getPatientCost()));
+
+      // OPTIONAL CODES
+      if (encounter.reason != null) {
+        // If the encounter has a recorded reason, enter the mapped
+        // values into the principle diagnoses code.
+        if (conditionCodeMapper.canMap(encounter.reason.code)) {
+          String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
+          fieldValues.put(SNFFields.PRNCPAL_DGNS_CD, icdCode);
+          fieldValues.put(SNFFields.ADMTG_DGNS_CD, icdCode);
+        }
+      }
+
+      // Use the active condition diagnoses to enter mapped values
+      // into the diagnoses codes.
+      boolean noDiagnoses = false;
+      if (person.record.present != null && !person.record.present.isEmpty()) {
+        List<String> mappedDiagnosisCodes = new ArrayList<>();
+        for (String key : person.record.present.keySet()) {
+          if (person.record.conditionActive(key)) {
+            if (conditionCodeMapper.canMap(key)) {
+              mappedDiagnosisCodes.add(conditionCodeMapper.map(key, person, true));
+            }
+          }
+        }
+        if (!mappedDiagnosisCodes.isEmpty()) {
+          int smallest = Math.min(mappedDiagnosisCodes.size(), snfDxFields.length);
+          for (int i = 0; i < smallest; i++) {
+            SNFFields[] dxField = snfDxFields[i];
+            fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+            fieldValues.put(dxField[1], "0"); // 0=ICD10
+          }
+          if (!fieldValues.containsKey(SNFFields.PRNCPAL_DGNS_CD)) {
+            fieldValues.put(SNFFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+            fieldValues.put(SNFFields.ADMTG_DGNS_CD, mappedDiagnosisCodes.get(0));
+          }
+        } else {
+          noDiagnoses = true;
+        }
+      }
+      if (noDiagnoses) {
+        continue; // skip this encounter
+      }
 
       snf.writeValues(SNFFields.class, fieldValues);
     }
@@ -2766,6 +2941,21 @@ public class BB2RIFExporter implements Flushable {
     CARR_LINE_ANSTHSA_UNIT_CNT
   }
 
+  private CarrierFields[][] carrierDxFields = {
+      { CarrierFields.ICD_DGNS_CD1, CarrierFields.ICD_DGNS_VRSN_CD1 },
+      { CarrierFields.ICD_DGNS_CD2, CarrierFields.ICD_DGNS_VRSN_CD2 },
+      { CarrierFields.ICD_DGNS_CD3, CarrierFields.ICD_DGNS_VRSN_CD3 },
+      { CarrierFields.ICD_DGNS_CD4, CarrierFields.ICD_DGNS_VRSN_CD4 },
+      { CarrierFields.ICD_DGNS_CD5, CarrierFields.ICD_DGNS_VRSN_CD5 },
+      { CarrierFields.ICD_DGNS_CD6, CarrierFields.ICD_DGNS_VRSN_CD6 },
+      { CarrierFields.ICD_DGNS_CD7, CarrierFields.ICD_DGNS_VRSN_CD7 },
+      { CarrierFields.ICD_DGNS_CD8, CarrierFields.ICD_DGNS_VRSN_CD8 },
+      { CarrierFields.ICD_DGNS_CD9, CarrierFields.ICD_DGNS_VRSN_CD9 },
+      { CarrierFields.ICD_DGNS_CD10, CarrierFields.ICD_DGNS_VRSN_CD10 },
+      { CarrierFields.ICD_DGNS_CD11, CarrierFields.ICD_DGNS_VRSN_CD11 },
+      { CarrierFields.ICD_DGNS_CD12, CarrierFields.ICD_DGNS_VRSN_CD12 }
+    };
+
   public enum PrescriptionFields {
     DML_IND,
     PDE_ID,
@@ -2907,6 +3097,21 @@ public class BB2RIFExporter implements Flushable {
     LINE_HCT_HGB_TYPE_CD,
     LINE_NDC_CD
   }
+
+  private DMEFields[][] dmeDxFields = {
+      { DMEFields.ICD_DGNS_CD1, DMEFields.ICD_DGNS_VRSN_CD1 },
+      { DMEFields.ICD_DGNS_CD2, DMEFields.ICD_DGNS_VRSN_CD2 },
+      { DMEFields.ICD_DGNS_CD3, DMEFields.ICD_DGNS_VRSN_CD3 },
+      { DMEFields.ICD_DGNS_CD4, DMEFields.ICD_DGNS_VRSN_CD4 },
+      { DMEFields.ICD_DGNS_CD5, DMEFields.ICD_DGNS_VRSN_CD5 },
+      { DMEFields.ICD_DGNS_CD6, DMEFields.ICD_DGNS_VRSN_CD6 },
+      { DMEFields.ICD_DGNS_CD7, DMEFields.ICD_DGNS_VRSN_CD7 },
+      { DMEFields.ICD_DGNS_CD8, DMEFields.ICD_DGNS_VRSN_CD8 },
+      { DMEFields.ICD_DGNS_CD9, DMEFields.ICD_DGNS_VRSN_CD9 },
+      { DMEFields.ICD_DGNS_CD10, DMEFields.ICD_DGNS_VRSN_CD10 },
+      { DMEFields.ICD_DGNS_CD11, DMEFields.ICD_DGNS_VRSN_CD11 },
+      { DMEFields.ICD_DGNS_CD12, DMEFields.ICD_DGNS_VRSN_CD12 }
+    };
 
   public enum NPIFields {
     NPI,
@@ -3055,7 +3260,35 @@ public class BB2RIFExporter implements Flushable {
     RNDRNG_PHYSN_UPIN,
     RNDRNG_PHYSN_NPI
   }
-  
+
+  private HHAFields[][] homeDxFields = {
+      { HHAFields.ICD_DGNS_CD1, HHAFields.ICD_DGNS_VRSN_CD1 },
+      { HHAFields.ICD_DGNS_CD2, HHAFields.ICD_DGNS_VRSN_CD2 },
+      { HHAFields.ICD_DGNS_CD3, HHAFields.ICD_DGNS_VRSN_CD3 },
+      { HHAFields.ICD_DGNS_CD4, HHAFields.ICD_DGNS_VRSN_CD4 },
+      { HHAFields.ICD_DGNS_CD5, HHAFields.ICD_DGNS_VRSN_CD5 },
+      { HHAFields.ICD_DGNS_CD6, HHAFields.ICD_DGNS_VRSN_CD6 },
+      { HHAFields.ICD_DGNS_CD7, HHAFields.ICD_DGNS_VRSN_CD7 },
+      { HHAFields.ICD_DGNS_CD8, HHAFields.ICD_DGNS_VRSN_CD8 },
+      { HHAFields.ICD_DGNS_CD9, HHAFields.ICD_DGNS_VRSN_CD9 },
+      { HHAFields.ICD_DGNS_CD10, HHAFields.ICD_DGNS_VRSN_CD10 },
+      { HHAFields.ICD_DGNS_CD11, HHAFields.ICD_DGNS_VRSN_CD11 },
+      { HHAFields.ICD_DGNS_CD12, HHAFields.ICD_DGNS_VRSN_CD12 },
+      { HHAFields.ICD_DGNS_CD13, HHAFields.ICD_DGNS_VRSN_CD13 },
+      { HHAFields.ICD_DGNS_CD14, HHAFields.ICD_DGNS_VRSN_CD14 },
+      { HHAFields.ICD_DGNS_CD15, HHAFields.ICD_DGNS_VRSN_CD15 },
+      { HHAFields.ICD_DGNS_CD16, HHAFields.ICD_DGNS_VRSN_CD16 },
+      { HHAFields.ICD_DGNS_CD17, HHAFields.ICD_DGNS_VRSN_CD17 },
+      { HHAFields.ICD_DGNS_CD18, HHAFields.ICD_DGNS_VRSN_CD18 },
+      { HHAFields.ICD_DGNS_CD19, HHAFields.ICD_DGNS_VRSN_CD19 },
+      { HHAFields.ICD_DGNS_CD20, HHAFields.ICD_DGNS_VRSN_CD20 },
+      { HHAFields.ICD_DGNS_CD21, HHAFields.ICD_DGNS_VRSN_CD21 },
+      { HHAFields.ICD_DGNS_CD22, HHAFields.ICD_DGNS_VRSN_CD22 },
+      { HHAFields.ICD_DGNS_CD23, HHAFields.ICD_DGNS_VRSN_CD23 },
+      { HHAFields.ICD_DGNS_CD24, HHAFields.ICD_DGNS_VRSN_CD24 },
+      { HHAFields.ICD_DGNS_CD25, HHAFields.ICD_DGNS_VRSN_CD25 }
+    };
+
   public enum HospiceFields {
     DML_IND,
     BENE_ID,
@@ -3448,6 +3681,34 @@ public class BB2RIFExporter implements Flushable {
     RNDRNG_PHYSN_UPIN,
     RNDRNG_PHYSN_NPI
   }
+
+  private SNFFields[][] snfDxFields = {
+      { SNFFields.ICD_DGNS_CD1, SNFFields.ICD_DGNS_VRSN_CD1 },
+      { SNFFields.ICD_DGNS_CD2, SNFFields.ICD_DGNS_VRSN_CD2 },
+      { SNFFields.ICD_DGNS_CD3, SNFFields.ICD_DGNS_VRSN_CD3 },
+      { SNFFields.ICD_DGNS_CD4, SNFFields.ICD_DGNS_VRSN_CD4 },
+      { SNFFields.ICD_DGNS_CD5, SNFFields.ICD_DGNS_VRSN_CD5 },
+      { SNFFields.ICD_DGNS_CD6, SNFFields.ICD_DGNS_VRSN_CD6 },
+      { SNFFields.ICD_DGNS_CD7, SNFFields.ICD_DGNS_VRSN_CD7 },
+      { SNFFields.ICD_DGNS_CD8, SNFFields.ICD_DGNS_VRSN_CD8 },
+      { SNFFields.ICD_DGNS_CD9, SNFFields.ICD_DGNS_VRSN_CD9 },
+      { SNFFields.ICD_DGNS_CD10, SNFFields.ICD_DGNS_VRSN_CD10 },
+      { SNFFields.ICD_DGNS_CD11, SNFFields.ICD_DGNS_VRSN_CD11 },
+      { SNFFields.ICD_DGNS_CD12, SNFFields.ICD_DGNS_VRSN_CD12 },
+      { SNFFields.ICD_DGNS_CD13, SNFFields.ICD_DGNS_VRSN_CD13 },
+      { SNFFields.ICD_DGNS_CD14, SNFFields.ICD_DGNS_VRSN_CD14 },
+      { SNFFields.ICD_DGNS_CD15, SNFFields.ICD_DGNS_VRSN_CD15 },
+      { SNFFields.ICD_DGNS_CD16, SNFFields.ICD_DGNS_VRSN_CD16 },
+      { SNFFields.ICD_DGNS_CD17, SNFFields.ICD_DGNS_VRSN_CD17 },
+      { SNFFields.ICD_DGNS_CD18, SNFFields.ICD_DGNS_VRSN_CD18 },
+      { SNFFields.ICD_DGNS_CD19, SNFFields.ICD_DGNS_VRSN_CD19 },
+      { SNFFields.ICD_DGNS_CD20, SNFFields.ICD_DGNS_VRSN_CD20 },
+      { SNFFields.ICD_DGNS_CD21, SNFFields.ICD_DGNS_VRSN_CD21 },
+      { SNFFields.ICD_DGNS_CD22, SNFFields.ICD_DGNS_VRSN_CD22 },
+      { SNFFields.ICD_DGNS_CD23, SNFFields.ICD_DGNS_VRSN_CD23 },
+      { SNFFields.ICD_DGNS_CD24, SNFFields.ICD_DGNS_VRSN_CD24 },
+      { SNFFields.ICD_DGNS_CD25, SNFFields.ICD_DGNS_VRSN_CD25 }
+    };
 
   /**
    * Thread safe singleton pattern adopted from

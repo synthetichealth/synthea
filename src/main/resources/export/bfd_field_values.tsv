@@ -1,7 +1,7 @@
 Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	OutpatientFields	CarrierFields	PrescriptionFields	DMEFields	HHAFields	HospiceFields	SNFFields	Optional	Comment
 0	ADJSTMT_DLTN_CD	N/A	N/A	N/A	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	TRUE	
-1	ADMTG_DGNS_CD	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A		TRUE	
-2	ADMTG_DGNS_VRSN_CD	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A		TRUE	
+1	ADMTG_DGNS_CD	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	Coded	TRUE	
+2	ADMTG_DGNS_VRSN_CD	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A	0	TRUE	
 3	AGE	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 4	AT_PHYSN_NPI	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
 5	AT_PHYSN_UPIN	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A				TRUE	
@@ -201,31 +201,31 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 199	HMO_9_IND		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 200	HMO_MO_CNT	0					N/A	N/A	N/A	N/A	N/A	TRUE	
 201	HPSA_SCRCTY_IND_CD	N/A	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	TRUE	
-202	ICD_DGNS_CD1	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-203	ICD_DGNS_CD10	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-204	ICD_DGNS_CD11	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-205	ICD_DGNS_CD12	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-206	ICD_DGNS_CD13	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-207	ICD_DGNS_CD14	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-208	ICD_DGNS_CD15	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-209	ICD_DGNS_CD16	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-210	ICD_DGNS_CD17	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-211	ICD_DGNS_CD18	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-212	ICD_DGNS_CD19	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-213	ICD_DGNS_CD2	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-214	ICD_DGNS_CD20	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-215	ICD_DGNS_CD21	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-216	ICD_DGNS_CD22	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-217	ICD_DGNS_CD23	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-218	ICD_DGNS_CD24	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-219	ICD_DGNS_CD25	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-220	ICD_DGNS_CD3	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-221	ICD_DGNS_CD4	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-222	ICD_DGNS_CD5	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-223	ICD_DGNS_CD6	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-224	ICD_DGNS_CD7	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-225	ICD_DGNS_CD8	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-226	ICD_DGNS_CD9	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
+202	ICD_DGNS_CD1	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+203	ICD_DGNS_CD10	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+204	ICD_DGNS_CD11	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+205	ICD_DGNS_CD12	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+206	ICD_DGNS_CD13	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+207	ICD_DGNS_CD14	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+208	ICD_DGNS_CD15	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+209	ICD_DGNS_CD16	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+210	ICD_DGNS_CD17	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+211	ICD_DGNS_CD18	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+212	ICD_DGNS_CD19	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+213	ICD_DGNS_CD2	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+214	ICD_DGNS_CD20	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+215	ICD_DGNS_CD21	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+216	ICD_DGNS_CD22	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+217	ICD_DGNS_CD23	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+218	ICD_DGNS_CD24	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+219	ICD_DGNS_CD25	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+220	ICD_DGNS_CD3	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+221	ICD_DGNS_CD4	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+222	ICD_DGNS_CD5	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+223	ICD_DGNS_CD6	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+224	ICD_DGNS_CD7	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+225	ICD_DGNS_CD8	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+226	ICD_DGNS_CD9	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
 227	ICD_DGNS_E_CD1	N/A	N/A			N/A	N/A	N/A				TRUE	
 228	ICD_DGNS_E_CD10	N/A	N/A			N/A	N/A	N/A				TRUE	
 229	ICD_DGNS_E_CD11	N/A	N/A			N/A	N/A	N/A				TRUE	
@@ -250,31 +250,31 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 248	ICD_DGNS_E_VRSN_CD7	N/A	N/A			N/A	N/A	N/A				TRUE	
 249	ICD_DGNS_E_VRSN_CD8	N/A	N/A			N/A	N/A	N/A				TRUE	
 250	ICD_DGNS_E_VRSN_CD9	N/A	N/A			N/A	N/A	N/A				TRUE	
-251	ICD_DGNS_VRSN_CD1	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-252	ICD_DGNS_VRSN_CD10	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-253	ICD_DGNS_VRSN_CD11	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-254	ICD_DGNS_VRSN_CD12	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-255	ICD_DGNS_VRSN_CD13	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-256	ICD_DGNS_VRSN_CD14	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-257	ICD_DGNS_VRSN_CD15	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-258	ICD_DGNS_VRSN_CD16	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-259	ICD_DGNS_VRSN_CD17	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-260	ICD_DGNS_VRSN_CD18	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-261	ICD_DGNS_VRSN_CD19	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-262	ICD_DGNS_VRSN_CD2	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-263	ICD_DGNS_VRSN_CD20	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-264	ICD_DGNS_VRSN_CD21	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-265	ICD_DGNS_VRSN_CD22	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-266	ICD_DGNS_VRSN_CD23	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-267	ICD_DGNS_VRSN_CD24	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-268	ICD_DGNS_VRSN_CD25	N/A	N/A	Coded	Coded	N/A	N/A	N/A		Coded		TRUE	
-269	ICD_DGNS_VRSN_CD3	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-270	ICD_DGNS_VRSN_CD4	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-271	ICD_DGNS_VRSN_CD5	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-272	ICD_DGNS_VRSN_CD6	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-273	ICD_DGNS_VRSN_CD7	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-274	ICD_DGNS_VRSN_CD8	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
-275	ICD_DGNS_VRSN_CD9	N/A	N/A	Coded	Coded		N/A			Coded		TRUE	
+251	ICD_DGNS_VRSN_CD1	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+252	ICD_DGNS_VRSN_CD10	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+253	ICD_DGNS_VRSN_CD11	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+254	ICD_DGNS_VRSN_CD12	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+255	ICD_DGNS_VRSN_CD13	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+256	ICD_DGNS_VRSN_CD14	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+257	ICD_DGNS_VRSN_CD15	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+258	ICD_DGNS_VRSN_CD16	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+259	ICD_DGNS_VRSN_CD17	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+260	ICD_DGNS_VRSN_CD18	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+261	ICD_DGNS_VRSN_CD19	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+262	ICD_DGNS_VRSN_CD2	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+263	ICD_DGNS_VRSN_CD20	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+264	ICD_DGNS_VRSN_CD21	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+265	ICD_DGNS_VRSN_CD22	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+266	ICD_DGNS_VRSN_CD23	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+267	ICD_DGNS_VRSN_CD24	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+268	ICD_DGNS_VRSN_CD25	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+269	ICD_DGNS_VRSN_CD3	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+270	ICD_DGNS_VRSN_CD4	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+271	ICD_DGNS_VRSN_CD5	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+272	ICD_DGNS_VRSN_CD6	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+273	ICD_DGNS_VRSN_CD7	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+274	ICD_DGNS_VRSN_CD8	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+275	ICD_DGNS_VRSN_CD9	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
 276	ICD_PRCDR_CD1	N/A	N/A	Coded	Coded	N/A	N/A	N/A	N/A	N/A		TRUE	
 277	ICD_PRCDR_CD10	N/A	N/A	Coded	Coded	N/A	N/A	N/A	N/A	N/A		TRUE	
 278	ICD_PRCDR_CD11	N/A	N/A	Coded	Coded	N/A	N/A	N/A	N/A	N/A		TRUE	
@@ -465,8 +465,8 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 463	PRCNG_EXCPTN_CD	N/A	N/A	N/A	N/A	N/A		N/A	N/A	N/A	N/A	TRUE	
 464	PRF_PHYSN_NPI	N/A	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	TRUE	
 465	PRF_PHYSN_UPIN	N/A	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	TRUE	
-466	PRNCPAL_DGNS_CD	N/A	N/A	Coded	(Use inpatient logic)		N/A			Coded		TRUE	
-467	PRNCPAL_DGNS_VRSN_CD	N/A	N/A	0	0		N/A					TRUE	
+466	PRNCPAL_DGNS_CD	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
+467	PRNCPAL_DGNS_VRSN_CD	N/A	N/A	0	0	0	N/A	0	0	0	0	TRUE	
 468	PROD_SRVC_ID	N/A	N/A	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	FALSE	
 469	PRSCRBR_ID	N/A	N/A	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	FALSE	
 470	PRSCRBR_ID_QLFYR_CD	N/A	N/A	N/A	N/A	N/A	01 (NPI)	N/A	N/A	N/A	N/A	FALSE	
