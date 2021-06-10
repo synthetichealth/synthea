@@ -590,7 +590,12 @@ public class CSVExporter {
     // CAUSE_OF_DEATH_CODE,CAUSE_OF_DEATH_DESCRIPTION
     if (!person.alive(time)) {
       Code causeOfDeath = (Code) person.attributes.get(Person.CAUSE_OF_DEATH);
-      s.append(causeOfDeath.code).append(',').append(causeOfDeath.display);
+      if (causeOfDeath != null) {
+        s.append(causeOfDeath.code).append(',').append(causeOfDeath.display);
+      } else {
+        // TODO: why?
+        s.append("00000,unknown");
+      }
     } else {
       s.append(',');
     }
