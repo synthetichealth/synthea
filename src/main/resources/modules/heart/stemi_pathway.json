@@ -179,16 +179,7 @@
           "display": "Acute ST segment elevation myocardial infarction (disorder)"
         }
       ],
-      "distributed_transition": [
-        {
-          "transition": "Admission_to_Hospital",
-          "distribution": 0.95
-        },
-        {
-          "transition": "Tenecteplase",
-          "distribution": 0.05
-        }
-      ]
+      "direct_transition": "Set_Chance_of_Death"
     },
     "CABG_Operation1": {
       "type": "CallSubmodule",
@@ -227,6 +218,22 @@
         }
       ],
       "direct_transition": "Pick_a_better_name_for_this"
+    },
+    "Set_Chance_of_Death": {
+      "type": "SetAttribute",
+      "attribute": "chance_of_mi_death",
+      "distributed_transition": [
+        {
+          "transition": "Admission_to_Hospital",
+          "distribution": 0.95
+        },
+        {
+          "transition": "Tenecteplase",
+          "distribution": 0.05
+        }
+      ],
+      "value": 0.052
     }
-  }
+  },
+  "gmf_version": 2
 }

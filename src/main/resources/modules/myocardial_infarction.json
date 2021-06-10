@@ -23,12 +23,15 @@
       ],
       "distributed_transition": [
         {
-          "transition": "End_Encounter",
-          "distribution": 0.5
+          "transition": "Death",
+          "distribution": {
+            "attribute": "chance_of_mi_death",
+            "default": 0.3
+          }
         },
         {
-          "transition": "Death",
-          "distribution": 0.5
+          "transition": "End_Encounter",
+          "distribution": 0.7
         }
       ]
     },
@@ -68,7 +71,16 @@
     },
     "Symptoms": {
       "type": "Simple",
-      "direct_transition": "Emergency_Encounter"
+      "distributed_transition": [
+        {
+          "transition": "Emergency_Encounter",
+          "distribution": 0.7999999999999999
+        },
+        {
+          "transition": "Pre-Hospital Death",
+          "distribution": 0.2
+        }
+      ]
     },
     "Cardiac_Assessment": {
       "type": "Procedure",
@@ -632,9 +644,16 @@
       ],
       "direct_transition": "NT-proBNP",
       "range": {
-        "low": 1,
-        "high": 2
-      }
+        "low": 0,
+        "high": 0.5
+      },
+      "remarks": [
+        "    Normal range: below 0.04 ng/ml",
+        "    Probable heart attack: above 0.40 ng/ml",
+        "https://testguide.labmed.uw.edu/public/view/TROPIG",
+        " ",
+        "Note this is used in the NSTEACS pathway to decide between NSTEMI and UA"
+      ]
     },
     "NT-proBNP": {
       "type": "Observation",
@@ -894,6 +913,19 @@
         }
       ],
       "direct_transition": "Magnesium"
+    },
+    "Pre-Hospital Death": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "remarks": ["assume for now all pre-hospital deaths are STEMI"],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 401303003,
+          "display": "Acute ST segment elevation myocardial infarction (disorder)"
+        }
+      ]
     }
-  }
+  },
+  "gmf_version": 2
 }

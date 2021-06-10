@@ -63,7 +63,7 @@
           "display": "Acute non-ST segment elevation myocardial infarction (disorder)"
         }
       ],
-      "direct_transition": "Risk_Assessment"
+      "direct_transition": "NSTEMI_Chance_of_Death"
     },
     "Unstable_Angina": {
       "type": "ConditionOnset",
@@ -75,7 +75,7 @@
           "display": "Preinfarction syndrome (disorder)"
         }
       ],
-      "direct_transition": "Risk_Assessment"
+      "direct_transition": "UA_Chance_of_Death"
     },
     "Risk_Assessment": {
       "type": "Procedure",
@@ -278,6 +278,19 @@
           "distribution": 0.1
         }
       ]
+    },
+    "NSTEMI_Chance_of_Death": {
+      "type": "SetAttribute",
+      "attribute": "chance_of_mi_death",
+      "direct_transition": "Risk_Assessment",
+      "value": 0.045
+    },
+    "UA_Chance_of_Death": {
+      "type": "SetAttribute",
+      "attribute": "chance_of_mi_death",
+      "direct_transition": "Risk_Assessment",
+      "value": 0.003
     }
-  }
+  },
+  "gmf_version": 2
 }
