@@ -46,9 +46,15 @@ public class PerformCABG extends Module {
     surgeons.removeIf(s -> !s.get("surgery_group_label").equals("CABG"));
     
     if (Provider.getProviderList().isEmpty()) {
-      // hack to prevent a crash is the test suite, if this module gets instantiated before providers load.
+      // awful hack to prevent a crash is the test suite, if this module gets instantiated before providers load.
       // this should never happen when creating a real population
-      return Collections.emptyList();
+      Provider dummyProvider = new Provider();
+      dummyProvider.address = "101 Fake St";
+      dummyProvider.city = "Boston";
+      dummyProvider.state = "MA";
+      dummyProvider.zip = "02110";
+      dummyProvider.getLonLat().setLocation(42, -71);
+      Provider.getProviderList().add(dummyProvider);
     }
     
     Provider provider = Provider.getProviderList().get(0);
