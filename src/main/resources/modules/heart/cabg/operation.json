@@ -36,14 +36,38 @@
       ]
     },
     "CABG": {
-      "type": "CallSubmodule",
-      "submodule": "PerformCABG",
-      "direct_transition": "Intraop_Devices_or_Meds"
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 232717009,
+          "display": "Coronary artery bypass grafting (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 120,
+        "unit": "minutes"
+      },
+      "direct_transition": "Intraop_Devices_or_Meds",
+      "reason": "Abnormal Findings"
     },
     "Emergency_CABG": {
-      "type": "CallSubmodule",
-      "submodule": "PerformCABG",
-      "direct_transition": "Intraop_Devices_or_Meds"
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 414088005,
+          "display": "Emergency coronary artery bypass graft (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 120,
+        "unit": "minutes"
+      },
+      "direct_transition": "Intraop_Devices_or_Meds",
+      "reason": "Abnormal Findings"
     },
     "History_of_CABG": {
       "type": "ConditionOnset",
@@ -298,13 +322,37 @@
       ]
     },
     "On Pump CABG": {
-      "type": "CallSubmodule",
-      "submodule": "PerformCABG",
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 232717009,
+          "display": "Coronary artery bypass grafting (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 120,
+        "unit": "minutes"
+      },
+      "reason": "Abnormal Findings",
       "direct_transition": "Intraop Devices or Meds"
     },
     "On Pump Emergency CABG": {
-      "type": "CallSubmodule",
-      "submodule": "PerformCABG",
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 414088005,
+          "display": "Emergency coronary artery bypass graft (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 120,
+        "unit": "minutes"
+      },
+      "reason": "Abnormal Findings",
       "direct_transition": "Intraop Devices or Meds"
     },
     "Surgery Documentation": {
