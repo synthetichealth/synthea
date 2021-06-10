@@ -10,6 +10,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -25,6 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -76,7 +78,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
  */
 public class BB2RIFExporter implements Flushable {
   
-  private SynchronizedBBLineWriter beneficiary;
+  private BeneficiaryWriters beneficiaryWriters;
   private SynchronizedBBLineWriter beneficiaryHistory;
   private SynchronizedBBLineWriter outpatient;
   private SynchronizedBBLineWriter inpatient;
@@ -87,6 +89,7 @@ public class BB2RIFExporter implements Flushable {
   private SynchronizedBBLineWriter hospice;
   private SynchronizedBBLineWriter snf;
   private SynchronizedBBLineWriter npi;
+  private Writer manifest;
 
   private AtomicInteger beneId; // per patient identifier
   private AtomicInteger claimId; // per claim per encounter
@@ -178,9 +181,9 @@ public class BB2RIFExporter implements Flushable {
    * Create the output folder and files. Write headers to each file.
    */
   final void prepareOutputFiles() throws IOException {
-    // Clean up any existing output files
-    if (beneficiary != null) {
-      beneficiary.close();
+    // Clean up any existing output writers
+    if (beneficiaryWriters != null) {
+      beneficiaryWriters.closeAll();
     }
     if (beneficiaryHistory != null) {
       beneficiaryHistory.close();
@@ -212,15 +215,16 @@ public class BB2RIFExporter implements Flushable {
     if (npi != null) {
       npi.close();
     }
+    if (manifest != null) {
+      manifest.close();
+    }
 
-    // Initialize output files
+    // Initialize output writers
     File output = Exporter.getOutputFolder("bfd", null);
     output.mkdirs();
     Path outputDirectory = output.toPath();
     
-    File beneficiaryFile = outputDirectory.resolve("beneficiary.csv").toFile();
-    beneficiary = new SynchronizedBBLineWriter(beneficiaryFile);
-    beneficiary.writeHeader(BeneficiaryFields.class);
+    beneficiaryWriters = new BeneficiaryWriters(outputDirectory);
 
     File beneficiaryHistoryFile = outputDirectory.resolve("beneficiary_history.csv").toFile();
     beneficiaryHistory = new SynchronizedBBLineWriter(beneficiaryHistoryFile);
@@ -261,10 +265,52 @@ public class BB2RIFExporter implements Flushable {
     File npiFile = outputDirectory.resolve("npi.tsv").toFile();
     npi = new SynchronizedBBLineWriter(npiFile, "\t");
     npi.writeHeader(NPIFields.class);
+
+    File manifestFile = outputDirectory.resolve("manifest.xml").toFile();
+    manifest = new BufferedWriter(new FileWriter(manifestFile));
+  }
+  
+  /**
+   * Export a manifest file that lists all of the other BFD files (except the NPI file
+   * which is special).
+   * @throws IOException if something goes wrong
+   */
+  public void exportManifest() throws IOException {
+    manifest.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+    manifest.write("<dataSetManifest xmlns=\"http://cms.hhs.gov/bluebutton/api/schema/ccw-rif/v9\"");
+    manifest.write(String.format(" timestamp=\"%s\" ", 
+             java.time.Instant.now()
+                     .atZone(java.time.ZoneId.of("Z"))
+                     .truncatedTo(java.time.temporal.ChronoUnit.SECONDS)
+                     .toString()));
+    manifest.write("sequenceId=\"0\">\n");
+    for (File file: beneficiaryWriters.getFiles()) {
+      manifest.write(String.format("  <entry name=\"%s\" type=\"BENEFICIARY\"/>\n",
+              file.getName()));
+    }
+    manifest.write(String.format("  <entry name=\"%s\" type=\"INPATIENT\"/>\n",
+            inpatient.getFile().getName()));
+    manifest.write(String.format("  <entry name=\"%s\" type=\"OUTPATIENT\"/>\n",
+            outpatient.getFile().getName()));
+    manifest.write(String.format("  <entry name=\"%s\" type=\"PDE\"/>\n",
+            prescription.getFile().getName()));
+    manifest.write(String.format("  <entry name=\"%s\" type=\"CARRIER\"/>\n",
+            carrier.getFile().getName()));
+    manifest.write(String.format("  <entry name=\"%s\" type=\"DME\"/>\n",
+            dme.getFile().getName()));
+    manifest.write(String.format("  <entry name=\"%s\" type=\"HHA\"/>\n",
+            home.getFile().getName()));
+    manifest.write(String.format("  <entry name=\"%s\" type=\"HOSPICE\"/>\n",
+            hospice.getFile().getName()));
+    manifest.write(String.format("  <entry name=\"%s\" type=\"SNF\"/>\n",
+            snf.getFile().getName()));
+    manifest.write(String.format("  <entry name=\"%s\" type=\"BENEFICIARY_HISTORY\"/>\n",
+            beneficiaryHistory.getFile().getName()));
+    manifest.write("</dataSetManifest>\n");
   }
 
   /**
-   * Export NPI file with synthetic providers.
+   * Export NPI writer with synthetic providers.
    * @throws IOException if something goes horribly wrong.
    */
   public void exportNPIs() throws IOException {
@@ -364,14 +410,14 @@ public class BB2RIFExporter implements Flushable {
     }
     person.attributes.put(BB2_PARTD_CONTRACTS, partDContracts);
     
-    // There's currently an issue where the beneficiary table has a primary key on BENE_ID that
-    // prevents the following line from working so fo now we just output the final year's
-    // information. Once the issue is sorted, revisit this to output information for multiple
-    // years.
-    // for (int year = endYear - yearsOfHistory; year <= endYear; year++) {    
-    for (int year = endYear; year <= endYear; year++) {    
+    for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
       HashMap<BeneficiaryFields, String> fieldValues = new HashMap<>();
       staticFieldConfig.setValues(fieldValues, BeneficiaryFields.class, person);
+      if (year > endYear - yearsOfHistory) {
+        // The first year output is set via staticFieldConfig to "INSERT", subsequent years
+        // need to be "UPDATE"
+        fieldValues.put(BeneficiaryFields.DML_IND, "UPDATE");
+      }
 
       fieldValues.put(BeneficiaryFields.RFRNC_YR, String.valueOf(year));
       int monthCount = year == endYear ? getMonth(stopTime) : 12;
@@ -421,7 +467,8 @@ public class BB2RIFExporter implements Flushable {
           fieldValues.put(beneficiaryPartDContractFields[i], partDContractID.toString());
         }
       }
-      beneficiary.writeValues(BeneficiaryFields.class, fieldValues);
+      
+      beneficiaryWriters.getWriter(year).writeValues(BeneficiaryFields.class, fieldValues);
     }
   }
   
@@ -1569,7 +1616,7 @@ public class BB2RIFExporter implements Flushable {
    */
   @Override
   public void flush() throws IOException {
-    beneficiary.flush();
+    beneficiaryWriters.flushAll();
     beneficiaryHistory.flush();
     inpatient.flush();
     outpatient.flush();
@@ -1580,6 +1627,7 @@ public class BB2RIFExporter implements Flushable {
     hospice.flush();
     snf.flush();
     npi.flush();
+    manifest.flush();
   }
 
 
@@ -2974,19 +3022,19 @@ public class BB2RIFExporter implements Flushable {
   }
 
   private CarrierFields[][] carrierDxFields = {
-      { CarrierFields.ICD_DGNS_CD1, CarrierFields.ICD_DGNS_VRSN_CD1 },
-      { CarrierFields.ICD_DGNS_CD2, CarrierFields.ICD_DGNS_VRSN_CD2 },
-      { CarrierFields.ICD_DGNS_CD3, CarrierFields.ICD_DGNS_VRSN_CD3 },
-      { CarrierFields.ICD_DGNS_CD4, CarrierFields.ICD_DGNS_VRSN_CD4 },
-      { CarrierFields.ICD_DGNS_CD5, CarrierFields.ICD_DGNS_VRSN_CD5 },
-      { CarrierFields.ICD_DGNS_CD6, CarrierFields.ICD_DGNS_VRSN_CD6 },
-      { CarrierFields.ICD_DGNS_CD7, CarrierFields.ICD_DGNS_VRSN_CD7 },
-      { CarrierFields.ICD_DGNS_CD8, CarrierFields.ICD_DGNS_VRSN_CD8 },
-      { CarrierFields.ICD_DGNS_CD9, CarrierFields.ICD_DGNS_VRSN_CD9 },
-      { CarrierFields.ICD_DGNS_CD10, CarrierFields.ICD_DGNS_VRSN_CD10 },
-      { CarrierFields.ICD_DGNS_CD11, CarrierFields.ICD_DGNS_VRSN_CD11 },
-      { CarrierFields.ICD_DGNS_CD12, CarrierFields.ICD_DGNS_VRSN_CD12 }
-    };
+    { CarrierFields.ICD_DGNS_CD1, CarrierFields.ICD_DGNS_VRSN_CD1 },
+    { CarrierFields.ICD_DGNS_CD2, CarrierFields.ICD_DGNS_VRSN_CD2 },
+    { CarrierFields.ICD_DGNS_CD3, CarrierFields.ICD_DGNS_VRSN_CD3 },
+    { CarrierFields.ICD_DGNS_CD4, CarrierFields.ICD_DGNS_VRSN_CD4 },
+    { CarrierFields.ICD_DGNS_CD5, CarrierFields.ICD_DGNS_VRSN_CD5 },
+    { CarrierFields.ICD_DGNS_CD6, CarrierFields.ICD_DGNS_VRSN_CD6 },
+    { CarrierFields.ICD_DGNS_CD7, CarrierFields.ICD_DGNS_VRSN_CD7 },
+    { CarrierFields.ICD_DGNS_CD8, CarrierFields.ICD_DGNS_VRSN_CD8 },
+    { CarrierFields.ICD_DGNS_CD9, CarrierFields.ICD_DGNS_VRSN_CD9 },
+    { CarrierFields.ICD_DGNS_CD10, CarrierFields.ICD_DGNS_VRSN_CD10 },
+    { CarrierFields.ICD_DGNS_CD11, CarrierFields.ICD_DGNS_VRSN_CD11 },
+    { CarrierFields.ICD_DGNS_CD12, CarrierFields.ICD_DGNS_VRSN_CD12 }
+  };
 
   public enum PrescriptionFields {
     DML_IND,
@@ -3131,19 +3179,19 @@ public class BB2RIFExporter implements Flushable {
   }
 
   private DMEFields[][] dmeDxFields = {
-      { DMEFields.ICD_DGNS_CD1, DMEFields.ICD_DGNS_VRSN_CD1 },
-      { DMEFields.ICD_DGNS_CD2, DMEFields.ICD_DGNS_VRSN_CD2 },
-      { DMEFields.ICD_DGNS_CD3, DMEFields.ICD_DGNS_VRSN_CD3 },
-      { DMEFields.ICD_DGNS_CD4, DMEFields.ICD_DGNS_VRSN_CD4 },
-      { DMEFields.ICD_DGNS_CD5, DMEFields.ICD_DGNS_VRSN_CD5 },
-      { DMEFields.ICD_DGNS_CD6, DMEFields.ICD_DGNS_VRSN_CD6 },
-      { DMEFields.ICD_DGNS_CD7, DMEFields.ICD_DGNS_VRSN_CD7 },
-      { DMEFields.ICD_DGNS_CD8, DMEFields.ICD_DGNS_VRSN_CD8 },
-      { DMEFields.ICD_DGNS_CD9, DMEFields.ICD_DGNS_VRSN_CD9 },
-      { DMEFields.ICD_DGNS_CD10, DMEFields.ICD_DGNS_VRSN_CD10 },
-      { DMEFields.ICD_DGNS_CD11, DMEFields.ICD_DGNS_VRSN_CD11 },
-      { DMEFields.ICD_DGNS_CD12, DMEFields.ICD_DGNS_VRSN_CD12 }
-    };
+    { DMEFields.ICD_DGNS_CD1, DMEFields.ICD_DGNS_VRSN_CD1 },
+    { DMEFields.ICD_DGNS_CD2, DMEFields.ICD_DGNS_VRSN_CD2 },
+    { DMEFields.ICD_DGNS_CD3, DMEFields.ICD_DGNS_VRSN_CD3 },
+    { DMEFields.ICD_DGNS_CD4, DMEFields.ICD_DGNS_VRSN_CD4 },
+    { DMEFields.ICD_DGNS_CD5, DMEFields.ICD_DGNS_VRSN_CD5 },
+    { DMEFields.ICD_DGNS_CD6, DMEFields.ICD_DGNS_VRSN_CD6 },
+    { DMEFields.ICD_DGNS_CD7, DMEFields.ICD_DGNS_VRSN_CD7 },
+    { DMEFields.ICD_DGNS_CD8, DMEFields.ICD_DGNS_VRSN_CD8 },
+    { DMEFields.ICD_DGNS_CD9, DMEFields.ICD_DGNS_VRSN_CD9 },
+    { DMEFields.ICD_DGNS_CD10, DMEFields.ICD_DGNS_VRSN_CD10 },
+    { DMEFields.ICD_DGNS_CD11, DMEFields.ICD_DGNS_VRSN_CD11 },
+    { DMEFields.ICD_DGNS_CD12, DMEFields.ICD_DGNS_VRSN_CD12 }
+  };
 
   public enum NPIFields {
     NPI,
@@ -3294,32 +3342,32 @@ public class BB2RIFExporter implements Flushable {
   }
 
   private HHAFields[][] homeDxFields = {
-      { HHAFields.ICD_DGNS_CD1, HHAFields.ICD_DGNS_VRSN_CD1 },
-      { HHAFields.ICD_DGNS_CD2, HHAFields.ICD_DGNS_VRSN_CD2 },
-      { HHAFields.ICD_DGNS_CD3, HHAFields.ICD_DGNS_VRSN_CD3 },
-      { HHAFields.ICD_DGNS_CD4, HHAFields.ICD_DGNS_VRSN_CD4 },
-      { HHAFields.ICD_DGNS_CD5, HHAFields.ICD_DGNS_VRSN_CD5 },
-      { HHAFields.ICD_DGNS_CD6, HHAFields.ICD_DGNS_VRSN_CD6 },
-      { HHAFields.ICD_DGNS_CD7, HHAFields.ICD_DGNS_VRSN_CD7 },
-      { HHAFields.ICD_DGNS_CD8, HHAFields.ICD_DGNS_VRSN_CD8 },
-      { HHAFields.ICD_DGNS_CD9, HHAFields.ICD_DGNS_VRSN_CD9 },
-      { HHAFields.ICD_DGNS_CD10, HHAFields.ICD_DGNS_VRSN_CD10 },
-      { HHAFields.ICD_DGNS_CD11, HHAFields.ICD_DGNS_VRSN_CD11 },
-      { HHAFields.ICD_DGNS_CD12, HHAFields.ICD_DGNS_VRSN_CD12 },
-      { HHAFields.ICD_DGNS_CD13, HHAFields.ICD_DGNS_VRSN_CD13 },
-      { HHAFields.ICD_DGNS_CD14, HHAFields.ICD_DGNS_VRSN_CD14 },
-      { HHAFields.ICD_DGNS_CD15, HHAFields.ICD_DGNS_VRSN_CD15 },
-      { HHAFields.ICD_DGNS_CD16, HHAFields.ICD_DGNS_VRSN_CD16 },
-      { HHAFields.ICD_DGNS_CD17, HHAFields.ICD_DGNS_VRSN_CD17 },
-      { HHAFields.ICD_DGNS_CD18, HHAFields.ICD_DGNS_VRSN_CD18 },
-      { HHAFields.ICD_DGNS_CD19, HHAFields.ICD_DGNS_VRSN_CD19 },
-      { HHAFields.ICD_DGNS_CD20, HHAFields.ICD_DGNS_VRSN_CD20 },
-      { HHAFields.ICD_DGNS_CD21, HHAFields.ICD_DGNS_VRSN_CD21 },
-      { HHAFields.ICD_DGNS_CD22, HHAFields.ICD_DGNS_VRSN_CD22 },
-      { HHAFields.ICD_DGNS_CD23, HHAFields.ICD_DGNS_VRSN_CD23 },
-      { HHAFields.ICD_DGNS_CD24, HHAFields.ICD_DGNS_VRSN_CD24 },
-      { HHAFields.ICD_DGNS_CD25, HHAFields.ICD_DGNS_VRSN_CD25 }
-    };
+    { HHAFields.ICD_DGNS_CD1, HHAFields.ICD_DGNS_VRSN_CD1 },
+    { HHAFields.ICD_DGNS_CD2, HHAFields.ICD_DGNS_VRSN_CD2 },
+    { HHAFields.ICD_DGNS_CD3, HHAFields.ICD_DGNS_VRSN_CD3 },
+    { HHAFields.ICD_DGNS_CD4, HHAFields.ICD_DGNS_VRSN_CD4 },
+    { HHAFields.ICD_DGNS_CD5, HHAFields.ICD_DGNS_VRSN_CD5 },
+    { HHAFields.ICD_DGNS_CD6, HHAFields.ICD_DGNS_VRSN_CD6 },
+    { HHAFields.ICD_DGNS_CD7, HHAFields.ICD_DGNS_VRSN_CD7 },
+    { HHAFields.ICD_DGNS_CD8, HHAFields.ICD_DGNS_VRSN_CD8 },
+    { HHAFields.ICD_DGNS_CD9, HHAFields.ICD_DGNS_VRSN_CD9 },
+    { HHAFields.ICD_DGNS_CD10, HHAFields.ICD_DGNS_VRSN_CD10 },
+    { HHAFields.ICD_DGNS_CD11, HHAFields.ICD_DGNS_VRSN_CD11 },
+    { HHAFields.ICD_DGNS_CD12, HHAFields.ICD_DGNS_VRSN_CD12 },
+    { HHAFields.ICD_DGNS_CD13, HHAFields.ICD_DGNS_VRSN_CD13 },
+    { HHAFields.ICD_DGNS_CD14, HHAFields.ICD_DGNS_VRSN_CD14 },
+    { HHAFields.ICD_DGNS_CD15, HHAFields.ICD_DGNS_VRSN_CD15 },
+    { HHAFields.ICD_DGNS_CD16, HHAFields.ICD_DGNS_VRSN_CD16 },
+    { HHAFields.ICD_DGNS_CD17, HHAFields.ICD_DGNS_VRSN_CD17 },
+    { HHAFields.ICD_DGNS_CD18, HHAFields.ICD_DGNS_VRSN_CD18 },
+    { HHAFields.ICD_DGNS_CD19, HHAFields.ICD_DGNS_VRSN_CD19 },
+    { HHAFields.ICD_DGNS_CD20, HHAFields.ICD_DGNS_VRSN_CD20 },
+    { HHAFields.ICD_DGNS_CD21, HHAFields.ICD_DGNS_VRSN_CD21 },
+    { HHAFields.ICD_DGNS_CD22, HHAFields.ICD_DGNS_VRSN_CD22 },
+    { HHAFields.ICD_DGNS_CD23, HHAFields.ICD_DGNS_VRSN_CD23 },
+    { HHAFields.ICD_DGNS_CD24, HHAFields.ICD_DGNS_VRSN_CD24 },
+    { HHAFields.ICD_DGNS_CD25, HHAFields.ICD_DGNS_VRSN_CD25 }
+  };
 
   public enum HospiceFields {
     DML_IND,
@@ -3715,60 +3763,60 @@ public class BB2RIFExporter implements Flushable {
   }
 
   private SNFFields[][] snfDxFields = {
-      { SNFFields.ICD_DGNS_CD1, SNFFields.ICD_DGNS_VRSN_CD1 },
-      { SNFFields.ICD_DGNS_CD2, SNFFields.ICD_DGNS_VRSN_CD2 },
-      { SNFFields.ICD_DGNS_CD3, SNFFields.ICD_DGNS_VRSN_CD3 },
-      { SNFFields.ICD_DGNS_CD4, SNFFields.ICD_DGNS_VRSN_CD4 },
-      { SNFFields.ICD_DGNS_CD5, SNFFields.ICD_DGNS_VRSN_CD5 },
-      { SNFFields.ICD_DGNS_CD6, SNFFields.ICD_DGNS_VRSN_CD6 },
-      { SNFFields.ICD_DGNS_CD7, SNFFields.ICD_DGNS_VRSN_CD7 },
-      { SNFFields.ICD_DGNS_CD8, SNFFields.ICD_DGNS_VRSN_CD8 },
-      { SNFFields.ICD_DGNS_CD9, SNFFields.ICD_DGNS_VRSN_CD9 },
-      { SNFFields.ICD_DGNS_CD10, SNFFields.ICD_DGNS_VRSN_CD10 },
-      { SNFFields.ICD_DGNS_CD11, SNFFields.ICD_DGNS_VRSN_CD11 },
-      { SNFFields.ICD_DGNS_CD12, SNFFields.ICD_DGNS_VRSN_CD12 },
-      { SNFFields.ICD_DGNS_CD13, SNFFields.ICD_DGNS_VRSN_CD13 },
-      { SNFFields.ICD_DGNS_CD14, SNFFields.ICD_DGNS_VRSN_CD14 },
-      { SNFFields.ICD_DGNS_CD15, SNFFields.ICD_DGNS_VRSN_CD15 },
-      { SNFFields.ICD_DGNS_CD16, SNFFields.ICD_DGNS_VRSN_CD16 },
-      { SNFFields.ICD_DGNS_CD17, SNFFields.ICD_DGNS_VRSN_CD17 },
-      { SNFFields.ICD_DGNS_CD18, SNFFields.ICD_DGNS_VRSN_CD18 },
-      { SNFFields.ICD_DGNS_CD19, SNFFields.ICD_DGNS_VRSN_CD19 },
-      { SNFFields.ICD_DGNS_CD20, SNFFields.ICD_DGNS_VRSN_CD20 },
-      { SNFFields.ICD_DGNS_CD21, SNFFields.ICD_DGNS_VRSN_CD21 },
-      { SNFFields.ICD_DGNS_CD22, SNFFields.ICD_DGNS_VRSN_CD22 },
-      { SNFFields.ICD_DGNS_CD23, SNFFields.ICD_DGNS_VRSN_CD23 },
-      { SNFFields.ICD_DGNS_CD24, SNFFields.ICD_DGNS_VRSN_CD24 },
-      { SNFFields.ICD_DGNS_CD25, SNFFields.ICD_DGNS_VRSN_CD25 }
-    };
+    { SNFFields.ICD_DGNS_CD1, SNFFields.ICD_DGNS_VRSN_CD1 },
+    { SNFFields.ICD_DGNS_CD2, SNFFields.ICD_DGNS_VRSN_CD2 },
+    { SNFFields.ICD_DGNS_CD3, SNFFields.ICD_DGNS_VRSN_CD3 },
+    { SNFFields.ICD_DGNS_CD4, SNFFields.ICD_DGNS_VRSN_CD4 },
+    { SNFFields.ICD_DGNS_CD5, SNFFields.ICD_DGNS_VRSN_CD5 },
+    { SNFFields.ICD_DGNS_CD6, SNFFields.ICD_DGNS_VRSN_CD6 },
+    { SNFFields.ICD_DGNS_CD7, SNFFields.ICD_DGNS_VRSN_CD7 },
+    { SNFFields.ICD_DGNS_CD8, SNFFields.ICD_DGNS_VRSN_CD8 },
+    { SNFFields.ICD_DGNS_CD9, SNFFields.ICD_DGNS_VRSN_CD9 },
+    { SNFFields.ICD_DGNS_CD10, SNFFields.ICD_DGNS_VRSN_CD10 },
+    { SNFFields.ICD_DGNS_CD11, SNFFields.ICD_DGNS_VRSN_CD11 },
+    { SNFFields.ICD_DGNS_CD12, SNFFields.ICD_DGNS_VRSN_CD12 },
+    { SNFFields.ICD_DGNS_CD13, SNFFields.ICD_DGNS_VRSN_CD13 },
+    { SNFFields.ICD_DGNS_CD14, SNFFields.ICD_DGNS_VRSN_CD14 },
+    { SNFFields.ICD_DGNS_CD15, SNFFields.ICD_DGNS_VRSN_CD15 },
+    { SNFFields.ICD_DGNS_CD16, SNFFields.ICD_DGNS_VRSN_CD16 },
+    { SNFFields.ICD_DGNS_CD17, SNFFields.ICD_DGNS_VRSN_CD17 },
+    { SNFFields.ICD_DGNS_CD18, SNFFields.ICD_DGNS_VRSN_CD18 },
+    { SNFFields.ICD_DGNS_CD19, SNFFields.ICD_DGNS_VRSN_CD19 },
+    { SNFFields.ICD_DGNS_CD20, SNFFields.ICD_DGNS_VRSN_CD20 },
+    { SNFFields.ICD_DGNS_CD21, SNFFields.ICD_DGNS_VRSN_CD21 },
+    { SNFFields.ICD_DGNS_CD22, SNFFields.ICD_DGNS_VRSN_CD22 },
+    { SNFFields.ICD_DGNS_CD23, SNFFields.ICD_DGNS_VRSN_CD23 },
+    { SNFFields.ICD_DGNS_CD24, SNFFields.ICD_DGNS_VRSN_CD24 },
+    { SNFFields.ICD_DGNS_CD25, SNFFields.ICD_DGNS_VRSN_CD25 }
+  };
 
   private SNFFields[][] snfPxFields = {
-      { SNFFields.ICD_PRCDR_CD1, SNFFields.ICD_PRCDR_VRSN_CD1,  SNFFields.PRCDR_DT1 },
-      { SNFFields.ICD_PRCDR_CD2, SNFFields.ICD_PRCDR_VRSN_CD2, SNFFields.PRCDR_DT2 },
-      { SNFFields.ICD_PRCDR_CD3, SNFFields.ICD_PRCDR_VRSN_CD3, SNFFields.PRCDR_DT3 },
-      { SNFFields.ICD_PRCDR_CD4, SNFFields.ICD_PRCDR_VRSN_CD4, SNFFields.PRCDR_DT4 },
-      { SNFFields.ICD_PRCDR_CD5, SNFFields.ICD_PRCDR_VRSN_CD5, SNFFields.PRCDR_DT5 },
-      { SNFFields.ICD_PRCDR_CD6, SNFFields.ICD_PRCDR_VRSN_CD6, SNFFields.PRCDR_DT6 },
-      { SNFFields.ICD_PRCDR_CD7, SNFFields.ICD_PRCDR_VRSN_CD7, SNFFields.PRCDR_DT7 },
-      { SNFFields.ICD_PRCDR_CD8, SNFFields.ICD_PRCDR_VRSN_CD8, SNFFields.PRCDR_DT8 },
-      { SNFFields.ICD_PRCDR_CD9, SNFFields.ICD_PRCDR_VRSN_CD9, SNFFields.PRCDR_DT9 },
-      { SNFFields.ICD_PRCDR_CD10, SNFFields.ICD_PRCDR_VRSN_CD10, SNFFields.PRCDR_DT10 },
-      { SNFFields.ICD_PRCDR_CD11, SNFFields.ICD_PRCDR_VRSN_CD11, SNFFields.PRCDR_DT11 },
-      { SNFFields.ICD_PRCDR_CD12, SNFFields.ICD_PRCDR_VRSN_CD12, SNFFields.PRCDR_DT12 },
-      { SNFFields.ICD_PRCDR_CD13, SNFFields.ICD_PRCDR_VRSN_CD13, SNFFields.PRCDR_DT13 },
-      { SNFFields.ICD_PRCDR_CD14, SNFFields.ICD_PRCDR_VRSN_CD14, SNFFields.PRCDR_DT14 },
-      { SNFFields.ICD_PRCDR_CD15, SNFFields.ICD_PRCDR_VRSN_CD15, SNFFields.PRCDR_DT15 },
-      { SNFFields.ICD_PRCDR_CD16, SNFFields.ICD_PRCDR_VRSN_CD16, SNFFields.PRCDR_DT16 },
-      { SNFFields.ICD_PRCDR_CD17, SNFFields.ICD_PRCDR_VRSN_CD17, SNFFields.PRCDR_DT17 },
-      { SNFFields.ICD_PRCDR_CD18, SNFFields.ICD_PRCDR_VRSN_CD18, SNFFields.PRCDR_DT18 },
-      { SNFFields.ICD_PRCDR_CD19, SNFFields.ICD_PRCDR_VRSN_CD19, SNFFields.PRCDR_DT19 },
-      { SNFFields.ICD_PRCDR_CD20, SNFFields.ICD_PRCDR_VRSN_CD20, SNFFields.PRCDR_DT20 },
-      { SNFFields.ICD_PRCDR_CD21, SNFFields.ICD_PRCDR_VRSN_CD21, SNFFields.PRCDR_DT21 },
-      { SNFFields.ICD_PRCDR_CD22, SNFFields.ICD_PRCDR_VRSN_CD22, SNFFields.PRCDR_DT22 },
-      { SNFFields.ICD_PRCDR_CD23, SNFFields.ICD_PRCDR_VRSN_CD23, SNFFields.PRCDR_DT23 },
-      { SNFFields.ICD_PRCDR_CD24, SNFFields.ICD_PRCDR_VRSN_CD24, SNFFields.PRCDR_DT24 },
-      { SNFFields.ICD_PRCDR_CD25, SNFFields.ICD_PRCDR_VRSN_CD25, SNFFields.PRCDR_DT25 }
-    };
+    { SNFFields.ICD_PRCDR_CD1, SNFFields.ICD_PRCDR_VRSN_CD1,  SNFFields.PRCDR_DT1 },
+    { SNFFields.ICD_PRCDR_CD2, SNFFields.ICD_PRCDR_VRSN_CD2, SNFFields.PRCDR_DT2 },
+    { SNFFields.ICD_PRCDR_CD3, SNFFields.ICD_PRCDR_VRSN_CD3, SNFFields.PRCDR_DT3 },
+    { SNFFields.ICD_PRCDR_CD4, SNFFields.ICD_PRCDR_VRSN_CD4, SNFFields.PRCDR_DT4 },
+    { SNFFields.ICD_PRCDR_CD5, SNFFields.ICD_PRCDR_VRSN_CD5, SNFFields.PRCDR_DT5 },
+    { SNFFields.ICD_PRCDR_CD6, SNFFields.ICD_PRCDR_VRSN_CD6, SNFFields.PRCDR_DT6 },
+    { SNFFields.ICD_PRCDR_CD7, SNFFields.ICD_PRCDR_VRSN_CD7, SNFFields.PRCDR_DT7 },
+    { SNFFields.ICD_PRCDR_CD8, SNFFields.ICD_PRCDR_VRSN_CD8, SNFFields.PRCDR_DT8 },
+    { SNFFields.ICD_PRCDR_CD9, SNFFields.ICD_PRCDR_VRSN_CD9, SNFFields.PRCDR_DT9 },
+    { SNFFields.ICD_PRCDR_CD10, SNFFields.ICD_PRCDR_VRSN_CD10, SNFFields.PRCDR_DT10 },
+    { SNFFields.ICD_PRCDR_CD11, SNFFields.ICD_PRCDR_VRSN_CD11, SNFFields.PRCDR_DT11 },
+    { SNFFields.ICD_PRCDR_CD12, SNFFields.ICD_PRCDR_VRSN_CD12, SNFFields.PRCDR_DT12 },
+    { SNFFields.ICD_PRCDR_CD13, SNFFields.ICD_PRCDR_VRSN_CD13, SNFFields.PRCDR_DT13 },
+    { SNFFields.ICD_PRCDR_CD14, SNFFields.ICD_PRCDR_VRSN_CD14, SNFFields.PRCDR_DT14 },
+    { SNFFields.ICD_PRCDR_CD15, SNFFields.ICD_PRCDR_VRSN_CD15, SNFFields.PRCDR_DT15 },
+    { SNFFields.ICD_PRCDR_CD16, SNFFields.ICD_PRCDR_VRSN_CD16, SNFFields.PRCDR_DT16 },
+    { SNFFields.ICD_PRCDR_CD17, SNFFields.ICD_PRCDR_VRSN_CD17, SNFFields.PRCDR_DT17 },
+    { SNFFields.ICD_PRCDR_CD18, SNFFields.ICD_PRCDR_VRSN_CD18, SNFFields.PRCDR_DT18 },
+    { SNFFields.ICD_PRCDR_CD19, SNFFields.ICD_PRCDR_VRSN_CD19, SNFFields.PRCDR_DT19 },
+    { SNFFields.ICD_PRCDR_CD20, SNFFields.ICD_PRCDR_VRSN_CD20, SNFFields.PRCDR_DT20 },
+    { SNFFields.ICD_PRCDR_CD21, SNFFields.ICD_PRCDR_VRSN_CD21, SNFFields.PRCDR_DT21 },
+    { SNFFields.ICD_PRCDR_CD22, SNFFields.ICD_PRCDR_VRSN_CD22, SNFFields.PRCDR_DT22 },
+    { SNFFields.ICD_PRCDR_CD23, SNFFields.ICD_PRCDR_VRSN_CD23, SNFFields.PRCDR_DT23 },
+    { SNFFields.ICD_PRCDR_CD24, SNFFields.ICD_PRCDR_VRSN_CD24, SNFFields.PRCDR_DT24 },
+    { SNFFields.ICD_PRCDR_CD25, SNFFields.ICD_PRCDR_VRSN_CD25, SNFFields.PRCDR_DT25 }
+  };
 
   /**
    * Thread safe singleton pattern adopted from
@@ -3791,15 +3839,15 @@ public class BB2RIFExporter implements Flushable {
   }
   
   /**
-   * Utility class for dealing with code mapping configuration files.
+   * Utility class for dealing with code mapping configuration writers.
    */
   static class CodeMapper {
     private HashMap<String, List<Map<String, String>>> map;
     
     /**
      * Create a new CodeMapper for the supplied JSON string.
-     * @param jsonMap a stringified JSON mapping file. Expects the following format:
-     * <pre>
+     * @param jsonMap a stringified JSON mapping writer. Expects the following format:
+ <pre>
      * {
      *   "synthea_code": [ # each synthea code will be mapped to one of the codes in this array
      *     {
@@ -3819,7 +3867,7 @@ public class BB2RIFExporter implements Flushable {
         map = g.fromJson(json, type);
       } catch (JsonSyntaxException | IOException | IllegalArgumentException e) {
         System.out.println("BB2Exporter is running without " + jsonMap);
-        // No worries. The optional mapping file is not present.
+        // No worries. The optional mapping writer is not present.
       }      
     }
     
@@ -3894,29 +3942,32 @@ public class BB2RIFExporter implements Flushable {
   }
 
   /**
-   * Utility class for writing to BB2 files.
+   * Utility class for writing to BB2 writers.
    */
   private static class SynchronizedBBLineWriter extends BufferedWriter {
     
     private String bbFieldSeparator = "|";
+    private File file;
     
     /**
      * Construct a new instance.
-     * @param file the file to write to
+     * @param file the writer to write to
      * @throws IOException if something goes wrong
      */
     public SynchronizedBBLineWriter(File file) throws IOException {
       super(new FileWriter(file));
+      this.file = file;
     }
 
     /**
      * Construct a new instance.
-     * @param file the file to write to
+     * @param file the writer to write to
      * @throws IOException if something goes wrong
      */
     public SynchronizedBBLineWriter(File file, String separator) throws IOException {
       super(new FileWriter(file));
       this.bbFieldSeparator = separator;
+      this.file = file;
     }
 
     /**
@@ -3934,7 +3985,7 @@ public class BB2RIFExporter implements Flushable {
     }
     
     /**
-     * Write a BB2 file header.
+     * Write a BB2 writer header.
      * @param enumClass the enumeration class whose members define the column names
      * @throws IOException if something goes wrong
      */
@@ -3945,7 +3996,7 @@ public class BB2RIFExporter implements Flushable {
     }
 
     /**
-     * Write a BB2 file line.
+     * Write a BB2 writer line.
      * @param enumClass the enumeration class whose members define the column names
      * @param fieldValues a sparse map of column names to values, missing values will result in
      *     empty values in the corresponding column
@@ -3958,18 +4009,26 @@ public class BB2RIFExporter implements Flushable {
       writeLine(fields);
     }
 
+    /**
+     * Get the file that this writer writes to.
+     * @return the file
+     */
+    public File getFile() {
+      return file;
+    }
+
   }
   
   /**
-   * Class to manage mapping values in the static BFD TSV file to the exported files.
+   * Class to manage mapping values in the static BFD TSV writer to the exported writers.
    */
   public static class StaticFieldConfig {
     List<LinkedHashMap<String, String>> config;
     Map<String, LinkedHashMap<String, String>> configMap;
     
     /**
-     * Default constructor that parses the TSV config file.
-     * @throws IOException if the file can't be read.
+     * Default constructor that parses the TSV config writer.
+     * @throws IOException if the writer can't be read.
      */
     public StaticFieldConfig() throws IOException {
       String tsv = Utilities.readResource(Config.get("exporter.bfd.config_file"));
@@ -4315,6 +4374,48 @@ public class BB2RIFExporter implements Flushable {
         return false;
       }
       return true;
-    }    
+    }
+  }
+  
+  private static class BeneficiaryWriters {
+    private final TreeMap<Integer, SynchronizedBBLineWriter> writers;
+    private final Path dir;
+    
+    public BeneficiaryWriters(Path dir) {
+      this.dir = dir;
+      this.writers = new TreeMap<>();
+    }
+    
+    public synchronized SynchronizedBBLineWriter getWriter(int year) throws IOException {
+      SynchronizedBBLineWriter writer = writers.get(year);
+      if (writer == null) {
+        File beneficiaryFile = dir.resolve(String.format("beneficiary_%d.csv", year)).toFile();
+        writer = new SynchronizedBBLineWriter(beneficiaryFile);
+        writers.put(year, writer);
+        writer.writeHeader(BeneficiaryFields.class);        
+      }
+      return writer;
+    }
+    
+    public synchronized List<File> getFiles() {
+      ArrayList<File> list = new ArrayList<>(writers.size());
+      writers.values().forEach(writer -> {
+        list.add(writer.getFile());
+      });
+      return list;
+    }
+    
+    public synchronized void flushAll() throws IOException {
+      for (int year: writers.keySet()) {
+        writers.get(year).flush();
+      }
+    }
+    
+    public synchronized void closeAll() throws IOException {
+      for (int year: writers.keySet()) {
+        writers.get(year).close();
+      }
+      writers.clear();
+    }
   }
 }

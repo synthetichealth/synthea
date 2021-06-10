@@ -6,10 +6,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -73,23 +77,31 @@ public class BB2RIFExporterTest {
 
     // if we get here we at least had no exceptions
 
-    File expectedExportFolder = exportDir.toPath().resolve("bfd").toFile();
+    Path expectedExportPath = exportDir.toPath().resolve("bfd");
+    File expectedExportFolder = expectedExportPath.toFile();
     assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
 
-    File beneficiaryFile = expectedExportFolder.toPath().resolve("beneficiary.csv").toFile();
-    assertTrue(beneficiaryFile.exists() && beneficiaryFile.isFile());
-    String csvData = new String(Files.readAllBytes(beneficiaryFile.toPath()));
+    PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**/beneficiary_*.csv");
+    List<File> beneFiles = Files.list(expectedExportPath)
+                .filter(Files::isRegularFile)
+                .filter((path) -> matcher.matches(path))
+                .map(Path::toFile)
+                .collect(Collectors.toList());
+    assertTrue("Expected at least one beneficiary file", beneFiles.size() > 0);
+    for (File beneficiaryFile: beneFiles) {
+      assertTrue(beneficiaryFile.exists() && beneficiaryFile.isFile());
+      String csvData = new String(Files.readAllBytes(beneficiaryFile.toPath()));
 
-    // the BB2 exporter doesn't use the SimpleCSV class to write the data,
-    // so we can use it here for a level of validation
-    List<LinkedHashMap<String, String>> rows = SimpleCSV.parse(csvData, '|');
-    assertTrue(
-            "Expected at least " + numberOfPeople + " rows in the beneficiary file, found " + 
-                    rows.size(),
-            numberOfPeople <= rows.size());
-    for (LinkedHashMap<String, String> row: rows) {
-      assertTrue("Expected non-zero length surname", 
-              row.containsKey("BENE_SRNM_NAME") && row.get("BENE_SRNM_NAME").length() > 0);
+      // the BB2 exporter doesn't use the SimpleCSV class to write the data,
+      // so we can use it here for a level of validation
+      List<LinkedHashMap<String, String>> rows = SimpleCSV.parse(csvData, '|');
+      assertTrue(
+              "Expected at least 1 row in the beneficiary file, found " + rows.size(),
+              rows.size() >= 1);
+      rows.forEach(row -> {
+        assertTrue("Expected non-zero length surname", 
+                row.containsKey("BENE_SRNM_NAME") && row.get("BENE_SRNM_NAME").length() > 0);
+      });
     }
     
     File inpatientFile = expectedExportFolder.toPath().resolve("inpatient.csv").toFile();
