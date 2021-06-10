@@ -131,8 +131,17 @@
         "high": 90,
         "unit": "minutes"
       },
-      "reason": "STEMI",
-      "direct_transition": "History_of_PCI"
+      "distributed_transition": [
+        {
+          "transition": "Referral_to_Cardiac_Surgery",
+          "distribution": 0.0104
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.9896
+        }
+      ],
+      "reason": "STEMI"
     },
     "Clopidogrel_Once": {
       "type": "MedicationOrder",
@@ -170,16 +179,7 @@
           "display": "Acute ST segment elevation myocardial infarction (disorder)"
         }
       ],
-      "distributed_transition": [
-        {
-          "transition": "Admission_to_Hospital",
-          "distribution": 0.95
-        },
-        {
-          "transition": "Tenecteplase",
-          "distribution": 0.05
-        }
-      ]
+      "direct_transition": "Set_Chance_of_Death"
     },
     "CABG_Operation1": {
       "type": "CallSubmodule",
@@ -219,26 +219,21 @@
       ],
       "direct_transition": "Pick_a_better_name_for_this"
     },
-    "History_of_PCI": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "pci_history",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 405741001,
-          "display": "History of percutaneous coronary intervention (situation)"
-        }
-      ],
+    "Set_Chance_of_Death": {
+      "type": "SetAttribute",
+      "attribute": "chance_of_mi_death",
       "distributed_transition": [
         {
-          "transition": "Referral_to_Cardiac_Surgery",
-          "distribution": 0.0104
+          "transition": "Admission_to_Hospital",
+          "distribution": 0.95
         },
         {
-          "transition": "Terminal",
-          "distribution": 0.9896
+          "transition": "Tenecteplase",
+          "distribution": 0.05
         }
-      ]
+      ],
+      "value": 0.052
     }
-  }
+  },
+  "gmf_version": 2
 }
