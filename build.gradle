@@ -36,7 +36,7 @@ jacoco {
 
 dependencies {
   // This dependency is found on compile classpath of this component and consumers.
-  implementation 'com.google.code.gson:gson:2.8.6'
+  implementation 'com.google.code.gson:gson:2.8.7'
   implementation 'com.jayway.jsonpath:json-path:2.4.0'
   implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:5.2.0'
   implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:5.2.0'
@@ -65,9 +65,9 @@ dependencies {
   implementation 'org.springframework:spring-web:5.2.7.RELEASE'
 
   // Java 9 no longer includes these APIs by default
-  implementation 'javax.xml.bind:jaxb-api:2.3.0'
-  implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.0'
-  implementation 'javax.activation:activation:1.1.1'
+  implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+  implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.2'
+  implementation 'javax.activation:javax.activation-api:1.2.0'
 
   // get rid of SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
   // if we switch to a real logging framework we may want to switch this
