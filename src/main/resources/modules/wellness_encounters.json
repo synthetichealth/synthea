@@ -856,7 +856,7 @@
     "PRAPARE": {
       "type": "CallSubmodule",
       "submodule": "encounter/sdoh_hrsn",
-      "direct_transition": "End_Of_Wellness_Encounter"
+      "direct_transition": "Anxiety Screening Check"
     },
     "SDoH Check": {
       "type": "Simple",
@@ -872,9 +872,99 @@
           }
         },
         {
-          "transition": "End_Of_Wellness_Encounter"
+          "transition": "Anxiety Screening Check"
         }
       ]
+    },
+    "Anxiety Screening": {
+      "type": "CallSubmodule",
+      "submodule": "encounter/anxiety_screening",
+      "direct_transition": "Fall Risk Screening Check"
+    },
+    "Fall Risk Screening": {
+      "type": "CallSubmodule",
+      "submodule": "encounter/fall_risk_screening",
+      "direct_transition": "HARK Screening Check"
+    },
+    "HARK Screening": {
+      "type": "CallSubmodule",
+      "submodule": "encounter/hark_screening",
+      "direct_transition": "Depression Screening Check"
+    },
+    "Depression Screening": {
+      "type": "CallSubmodule",
+      "submodule": "encounter/depression_screening",
+      "direct_transition": "Substance Use Screening Check"
+    },
+    "Anxiety Screening Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Anxiety Screening",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Fall Risk Screening Check",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Fall Risk Screening Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Fall Risk Screening",
+          "distribution": 0.7
+        },
+        {
+          "transition": "HARK Screening Check",
+          "distribution": 0.3
+        }
+      ]
+    },
+    "HARK Screening Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "HARK Screening",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Depression Screening Check",
+          "distribution": 0.7
+        }
+      ]
+    },
+    "Depression Screening Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Depression Screening",
+          "distribution": 0.8
+        },
+        {
+          "transition": "Substance Use Screening Check",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Substance Use Screening Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Substance Use Screening",
+          "distribution": 0.7
+        },
+        {
+          "transition": "End_Of_Wellness_Encounter",
+          "distribution": 0.3
+        }
+      ]
+    },
+    "Substance Use Screening": {
+      "type": "CallSubmodule",
+      "submodule": "encounter/substance_use_screening",
+      "direct_transition": "End_Of_Wellness_Encounter"
     }
   },
   "gmf_version": 1

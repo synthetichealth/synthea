@@ -713,7 +713,7 @@ public class StateTest {
     assertTrue(obsValue < 400);
   }
 
-    @Test
+  @Test
   public void observation() throws Exception {
     Module module = TestHelper.getFixture("observation.json");
 

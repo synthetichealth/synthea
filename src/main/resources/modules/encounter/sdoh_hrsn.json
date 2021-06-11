@@ -917,6 +917,7 @@
       "direct_transition": "Q7",
       "distribution": {
         "kind": "UNIFORM",
+        "round": true,
         "parameters": {
           "high": 8,
           "low": 1
@@ -1693,7 +1694,7 @@
         },
         {
           "transition": "Q14_FiveOrHigher_Food?",
-          "distribution": 0.9570000000000001
+          "distribution": 0.957
         }
       ]
     },
@@ -1727,7 +1728,7 @@
         },
         {
           "transition": "Q14_LessThanOne_Food?",
-          "distribution": 0.7729999999999999
+          "distribution": 0.773
         }
       ]
     },
@@ -1740,7 +1741,7 @@
         },
         {
           "transition": "Q14_LessThanOne_Utils?",
-          "distribution": 0.7290000000000001
+          "distribution": 0.729
         }
       ]
     },
@@ -1831,7 +1832,7 @@
         },
         {
           "transition": "Q14_Half_Durables?",
-          "distribution": 0.6719999999999999
+          "distribution": 0.672
         }
       ]
     },
@@ -1844,7 +1845,7 @@
         },
         {
           "transition": "A14_NotAnswer",
-          "distribution": 0.6890000000000001
+          "distribution": 0.689
         }
       ]
     },
@@ -1896,7 +1897,7 @@
         },
         {
           "transition": "Q14_FiveOrHigher_Utils?",
-          "distribution": 0.9730000000000001
+          "distribution": 0.973
         }
       ]
     },
@@ -1922,7 +1923,7 @@
         },
         {
           "transition": "A14_NotAnswer",
-          "distribution": 0.9630000000000001
+          "distribution": 0.963
         }
       ]
     },
@@ -2022,7 +2023,7 @@
         },
         {
           "transition": "A17_NotAnswer",
-          "distribution": 0.008000000000000007
+          "distribution": 0.008
         }
       ]
     },
@@ -2307,7 +2308,7 @@
             },
             {
               "transition": "A19_No",
-              "distribution": 0.9450000000000001
+              "distribution": 0.945
             }
           ]
         }
@@ -2372,7 +2373,7 @@
         },
         {
           "transition": "A20_Yes",
-          "distribution": 0.9365000000000001
+          "distribution": 0.9365
         }
       ]
     },
@@ -2433,7 +2434,7 @@
             },
             {
               "transition": "A21_No",
-              "distribution": 0.9450000000000001
+              "distribution": 0.945
             }
           ]
         },
