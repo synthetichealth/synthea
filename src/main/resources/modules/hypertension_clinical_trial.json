@@ -506,11 +506,11 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "htn_incl_crit_cvdrisk_fhs",
-              "display": "htn_incl_crit_cvdrisk_fhs"
+              "code": "htn_trial_incl_crit_cvdrisk_fhs",
+              "display": "htn_trial_incl_crit_cvdrisk_fhs"
             }
           ],
-          "attribute": "htn_incl_crit_cvdrisk_fhs"
+          "attribute": "htn_trial_incl_crit_cvdrisk_fhs"
         },
         {
           "category": "survey",
@@ -600,7 +600,7 @@
     },
     "Set Inclusion Criterion FHS CVD Risk": {
       "type": "SetAttribute",
-      "attribute": "htn_incl_crit_cvdrisk_fhs",
+      "attribute": "htn_trial_incl_crit_cvdrisk_fhs",
       "direct_transition": "Check for Cardiovascular Disease",
       "value": true
     },
@@ -630,7 +630,7 @@
     },
     "Intialize Inclusion Criterion CVD Risk - FHS CVD Risk": {
       "type": "SetAttribute",
-      "attribute": "htn_incl_crit_cvdrisk_fhs",
+      "attribute": "htn_trial_incl_crit_cvdrisk_fhs",
       "direct_transition": "Initialize Inclusion Criterion CVD",
       "value": false
     },

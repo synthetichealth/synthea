@@ -528,7 +528,7 @@ public class HypertensionTrial {
         HealthRecord.Encounter previousEncounter = null;
         
         for (HealthRecord.Encounter e : person.record.encounters) {
-          if (e.codes.get(0).code.equals("1234")) {
+          if (!e.codes.isEmpty() && e.codes.get(0).code.equals("1234")) {
             // TODO: pick the right code
             
             // assumes that encounters are always added sequentially, which they should be
