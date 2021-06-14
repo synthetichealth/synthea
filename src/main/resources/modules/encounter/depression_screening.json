@@ -141,7 +141,7 @@
           "low": 0
         }
       },
-      "direct_transition": "PHQ Results"
+      "direct_transition": "YA PHQ Results"
     },
     "PHQ2 Positive": {
       "type": "SetAttribute",
@@ -269,7 +269,7 @@
           "low": 3
         }
       },
-      "direct_transition": "PHQ Results"
+      "direct_transition": "Age Check"
     },
     "Positive": {
       "type": "SetAttribute",
@@ -282,9 +282,34 @@
           "low": 5
         }
       },
-      "direct_transition": "PHQ Results"
+      "direct_transition": "Age Check"
     },
-    "PHQ Results": {
+    "PHQ_Results": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "44249-1",
+          "display": "PHQ-9 quick depression assessment panel [Reported.PHQ]"
+        }
+      ],
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "44261-6",
+              "display": "Patient Health Questionnaire 9 item (PHQ-9) total score [Reported]"
+            }
+          ],
+          "attribute": "phqa_score"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "YA PHQ Results": {
       "type": "DiagnosticReport",
       "codes": [
         {
@@ -308,6 +333,24 @@
         }
       ],
       "direct_transition": "Terminal"
+    },
+    "Age Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "YA PHQ Results",
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "PHQ_Results"
+        }
+      ]
     }
   },
   "gmf_version": 2
