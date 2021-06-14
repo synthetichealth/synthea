@@ -1,0 +1,39 @@
+{
+  "name": "Atrial Fibrillation",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Chance_of_AFib"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Chance_of_AFib": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Diagnosis",
+          "distribution": {
+            "attribute": "atrial_fibrillation_risk",
+            "default": 0
+          }
+        },
+        {
+          "transition": "Chance_of_AFib",
+          "distribution": 1
+        }
+      ]
+    },
+    "Diagnosis": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
+    }
+  }
+}

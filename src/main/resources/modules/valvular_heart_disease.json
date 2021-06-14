@@ -1,0 +1,829 @@
+{
+  "name": "vhf",
+  "remarks": [
+    "Valvular Heart Disease (VHD) Progression model."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Initialize AS Risk"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Aortic Valve Stenosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "vhd_diagnosis",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 60573004,
+          "display": "Aortic valve stenosis (disorder)"
+        }
+      ],
+      "direct_transition": "Wait for Encounter"
+    },
+    "Aortic Valve Regurgitation": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "vhd_diagnosis",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 60234000,
+          "display": "Aortic valve regurgitation (disorder)"
+        }
+      ],
+      "direct_transition": "Wait for Encounter AVR"
+    },
+    "Mitral Valve Regurgitation": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "vhd_diagnosis",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 48724000,
+          "display": "Mitral valve regurgitation (disorder)"
+        }
+      ],
+      "direct_transition": "Wait_for_Encounter MVR"
+    },
+    "Tricuspid Valve Regurgitation": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "vhd_diagnosis",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 111287006,
+          "display": "Tricuspid valve regurgitation (disorder)"
+        }
+      ],
+      "direct_transition": "Wait_for_Encounter_TVR"
+    },
+    "Transthoracic Echo TVR": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 433236007,
+        "display": "Transthoracic echocardiography (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51185008,
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Ultrasound Multiframe Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.3.1",
+                "display": "Ultrasound Multiframe Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Placeholder for Other Valve Surgery"
+    },
+    "Transthoracic_Echo MVR": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 433236007,
+        "display": "Transthoracic echocardiography (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51185008,
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Ultrasound Multiframe Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.3.1",
+                "display": "Ultrasound Multiframe Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Placeholder for Mitral Clip"
+    },
+    "Placeholder for Mitral Clip": {
+      "type": "Simple",
+      "direct_transition": "End_Encounter_MVR"
+    },
+    "Transthoracic_Echo AVR": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 433236007,
+        "display": "Transthoracic echocardiography (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51185008,
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Ultrasound Multiframe Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.3.1",
+                "display": "Ultrasound Multiframe Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Placeholder for SAVR & CABG + AVR"
+    },
+    "Placeholder for SAVR & CABG + AVR": {
+      "type": "Simple",
+      "direct_transition": "End_Encounter AVR"
+    },
+    "Transthoracic_Echo AVS": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 433236007,
+        "display": "Transthoracic echocardiography (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51185008,
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Ultrasound Multiframe Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.3.1",
+                "display": "Ultrasound Multiframe Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "TAVR_Check_with_BAV",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "bicuspid_aortic_valve",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "TAVR Check"
+        }
+      ]
+    },
+    "TAVR Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 44,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Placeholder for TAVR",
+              "distribution": 0.005
+            },
+            {
+              "transition": "Redo TAVR Encounter",
+              "distribution": 0.995
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 54,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Placeholder for TAVR",
+              "distribution": 0.03
+            },
+            {
+              "transition": "Redo TAVR Encounter",
+              "distribution": 0.97
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 64,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Placeholder for TAVR",
+              "distribution": 0.25
+            },
+            {
+              "transition": "Redo TAVR Encounter",
+              "distribution": 0.75
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 74,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Placeholder for TAVR",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Redo TAVR Encounter",
+              "distribution": 0.5
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 84,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Placeholder for TAVR",
+              "distribution": 0.625
+            },
+            {
+              "transition": "Redo TAVR Encounter",
+              "distribution": 0.375
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Placeholder for TAVR",
+              "distribution": 0.75
+            },
+            {
+              "transition": "Redo TAVR Encounter",
+              "distribution": 0.25
+            }
+          ]
+        }
+      ]
+    },
+    "Placeholder for Other Valve Surgery": {
+      "type": "Simple",
+      "direct_transition": "End_Encounter_TVR"
+    },
+    "Wait for Encounter": {
+      "type": "Delay",
+      "direct_transition": "Echo Encounter",
+      "range": {
+        "low": 12,
+        "high": 24,
+        "unit": "months"
+      }
+    },
+    "Echo Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "vhd_diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Transthoracic_Echo AVS"
+    },
+    "Encounter AVR": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "vhd_diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Transthoracic_Echo AVR"
+    },
+    "Wait for Encounter AVR": {
+      "type": "Delay",
+      "range": {
+        "low": 12,
+        "high": 24,
+        "unit": "months"
+      },
+      "direct_transition": "Encounter AVR"
+    },
+    "End_Encounter AVR": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Wait_for_Encounter MVR": {
+      "type": "Delay",
+      "range": {
+        "low": 12,
+        "high": 24,
+        "unit": "months"
+      },
+      "direct_transition": "Encounter_MVR"
+    },
+    "Encounter_MVR": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "vhd_diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Transthoracic_Echo MVR"
+    },
+    "End_Encounter_MVR": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Wait_for_Encounter_TVR": {
+      "type": "Delay",
+      "range": {
+        "low": 12,
+        "high": 24,
+        "unit": "months"
+      },
+      "direct_transition": "Encounter_TVR"
+    },
+    "Encounter_TVR": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "vhd_diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Transthoracic Echo TVR"
+    },
+    "End_Encounter_TVR": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "TAVR_Check_with_BAV": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 44,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Placeholder for TAVR",
+              "distribution": 0.01
+            },
+            {
+              "transition": "Redo TAVR Encounter",
+              "distribution": 0.99
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 54,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Placeholder for TAVR",
+              "distribution": 0.06
+            },
+            {
+              "transition": "Redo TAVR Encounter",
+              "distribution": 0.94
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 64,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Placeholder for TAVR",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Redo TAVR Encounter",
+              "distribution": 0.5
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 74,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Placeholder for TAVR",
+              "distribution": 0.625
+            },
+            {
+              "transition": "Redo TAVR Encounter",
+              "distribution": 0.375
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Placeholder for TAVR",
+              "distribution": 0.75
+            },
+            {
+              "transition": "Redo TAVR Encounter",
+              "distribution": 0.25
+            }
+          ]
+        }
+      ]
+    },
+    "Placeholder for TAVR": {
+      "type": "Simple",
+      "direct_transition": "TAVR Surgery"
+    },
+    "Redo TAVR Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait for Encounter"
+    },
+    "Annual Check": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "direct_transition": "Congenital BAV Check"
+    },
+    "AS Risk": {
+      "type": "SetAttribute",
+      "attribute": "vhf_as_risk",
+      "direct_transition": "AR Risk",
+      "value": true
+    },
+    "AR Risk": {
+      "type": "SetAttribute",
+      "attribute": "vhf_ar_risk",
+      "value": true,
+      "direct_transition": "Check for AS Onset"
+    },
+    "MR Risk": {
+      "type": "SetAttribute",
+      "attribute": "vhf_mr_risk",
+      "value": true,
+      "direct_transition": "AS Risk"
+    },
+    "TR Risk": {
+      "type": "SetAttribute",
+      "attribute": "vhf_tr_risk",
+      "value": true,
+      "direct_transition": "MR Risk"
+    },
+    "Congenital BAV Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "AS Risk",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "smoking",
+                    "operator": "==",
+                    "value": true
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "smoker",
+                    "operator": "==",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "bicuspid_aortic_valve",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Risk Factor Check"
+        }
+      ]
+    },
+    "Risk Factor Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "MR Risk",
+          "condition": {
+            "condition_type": "At Least",
+            "minimum": 1,
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "399211009",
+                    "display": "History of myocardial infarction (situation)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 414545008,
+                    "display": "Ischemic heart disease (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "stroke_history",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "coronary_heart_disease",
+                "operator": "is not nil"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "TR Risk",
+          "condition": {
+            "condition_type": "At Least",
+            "minimum": 1,
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "congenital_heart_disease",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "atrial_fibrillation",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "lupus_careplan",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ra_careplan",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "69896004",
+                    "display": "Rheumatoid arthritis"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hypothyroidism",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "chf",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hypertension",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "Lung Cancer",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_condition",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "colorectal_cancer",
+                "operator": "is not nil"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Annual Check"
+        }
+      ]
+    },
+    "End_Encounter_TVAR": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "TAVR Surgery": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 725351001,
+          "display": "Transcatheter aortic valve replacement (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 90,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Encounter_TVAR",
+      "reason": "vhd_diagnosis"
+    },
+    "Check for AS Onset": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Aortic Valve Stenosis",
+          "default_probability": 0,
+          "lookup_table_name": "vhf_as.csv"
+        },
+        {
+          "transition": "Check for AR Onset",
+          "default_probability": 1,
+          "lookup_table_name": "vhf_as.csv"
+        }
+      ]
+    },
+    "Check for AR Onset": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Aortic Valve Regurgitation",
+          "default_probability": 0,
+          "lookup_table_name": "vhf_ar.csv"
+        },
+        {
+          "transition": "Check for MR Onset",
+          "default_probability": 1,
+          "lookup_table_name": "vhf_ar.csv"
+        }
+      ]
+    },
+    "Check for MR Onset": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Mitral Valve Regurgitation",
+          "default_probability": 0,
+          "lookup_table_name": "vhf_mr.csv"
+        },
+        {
+          "transition": "Check for TR Onset",
+          "default_probability": 1,
+          "lookup_table_name": "vhf_mr.csv"
+        }
+      ]
+    },
+    "Check for TR Onset": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Annual Check",
+          "default_probability": 1,
+          "lookup_table_name": "vhf_tr.csv"
+        },
+        {
+          "transition": "Tricuspid Valve Regurgitation",
+          "default_probability": 1,
+          "lookup_table_name": "vhf_tr.csv"
+        }
+      ]
+    },
+    "Initialize AS Risk": {
+      "type": "SetAttribute",
+      "attribute": "vhf_as_risk",
+      "direct_transition": "Initialize_AR_Risk",
+      "value": false
+    },
+    "Initialize_AR_Risk": {
+      "type": "SetAttribute",
+      "attribute": "vhf_ar_risk",
+      "value": false,
+      "direct_transition": "Initialize_MR_Risk"
+    },
+    "Initialize_MR_Risk": {
+      "type": "SetAttribute",
+      "attribute": "vhf_mr_risk",
+      "value": false,
+      "direct_transition": "Initialize_TR_Risk"
+    },
+    "Initialize_TR_Risk": {
+      "type": "SetAttribute",
+      "attribute": "vhf_tr_risk",
+      "value": false,
+      "direct_transition": "Annual Check"
+    }
+  }
+}

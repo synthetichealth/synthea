@@ -25,7 +25,7 @@
           <td>
           <#list entry.observations as obs>
           <#if obs.value??>
-          ${obs.codes[0].display} ${obs.value} ${obs.unit}
+          ${obs.codes[0].display} ${obs.value?c} ${obs.unit}
           </#if>
           </#list>
           </td>
