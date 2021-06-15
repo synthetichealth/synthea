@@ -29,6 +29,8 @@ public class Claim implements Serializable {
     public double coinsurance;
     /** otherwise paid by payer. */
     public double payer;
+    /** otherwise paid by secondary payer. */
+    public double secondaryPayer;
     /** otherwise paid by patient out of pocket. */
     public double pocket;
 
@@ -47,11 +49,13 @@ public class Claim implements Serializable {
       this.adjustment += other.adjustment;
       this.coinsurance += other.coinsurance;
       this.payer += other.payer;
+      this.secondaryPayer += other.secondaryPayer;
       this.pocket += other.pocket;
     }
   }
 
   public Payer payer;
+  public Payer secondaryPayer;
   public Person person;
   public ClaimEntry mainEntry;
   public List<ClaimEntry> items;
@@ -70,8 +74,12 @@ public class Claim implements Serializable {
     }
     // Set the Person.
     this.person = person;
-    // Set the Payer.
-    this.payer = this.person.coverage.getPayerAtTime(entry.start);
+    // Set the Payer(s)
+    Plan plan = this.person.coverage.getPlanAtTime(entry.start);
+    if (plan != null) {
+      this.payer = plan.payer;
+      this.secondaryPayer = plan.secondaryPayer;
+    }
     if (this.payer == null) {
       // This can rarely occur when an death certification encounter
       // occurs on the birthday or immediately afterwards before a new
@@ -114,12 +122,13 @@ public class Claim implements Serializable {
       totals.addCosts(item);
     }
     plan.totalExpenses += (totals.copay + totals.deductible + totals.pocket);
-    plan.totalCoverage += (totals.coinsurance + totals.payer);
+    plan.totalCoverage += (totals.coinsurance + totals.payer + totals.secondaryPayer);
     plan.payer.addCoveredCost(totals.coinsurance);
     plan.payer.addCoveredCost(totals.payer);
     plan.payer.addUncoveredCost(totals.copay);
     plan.payer.addUncoveredCost(totals.deductible);
     plan.payer.addUncoveredCost(totals.pocket);
+    plan.secondaryPayer.addCoveredCost(totals.secondaryPayer);
   }
 
   private void assignCosts(ClaimEntry claimEntry, Plan plan) {
@@ -152,16 +161,26 @@ public class Claim implements Serializable {
         // Check if the patient has coinsurance
         double coinsurance = payer.getCoinsurance();
         if (coinsurance > 0) {
-          // Payer amount
+          // Payer covers some
           claimEntry.coinsurance = (coinsurance * remaining);
           remaining -= claimEntry.coinsurance;
-          // Patient amount
-          claimEntry.pocket = remaining;
         } else {
-          // Payer amount
+          // Payer covers all
           claimEntry.payer = remaining;
           remaining -= claimEntry.payer;
         }
+      }
+      if (remaining > 0) {
+        // If secondary insurance, payer covers remainder, not patient.
+        if (Payer.noInsurance != plan.secondaryPayer) {
+          claimEntry.secondaryPayer = remaining;
+          remaining -= claimEntry.secondaryPayer;
+        }
+      }
+      if (remaining > 0) {
+        // Patient amount
+        claimEntry.pocket = remaining;
+        remaining -= claimEntry.pocket;
       }
     } else {
       payer.incrementUncoveredEntries(claimEntry.entry);

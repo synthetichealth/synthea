@@ -17,6 +17,7 @@ public class CoverageRecord implements Serializable {
     public long start;
     public long stop;
     public Payer payer;
+    public Payer secondaryPayer;
     public String owner;
     public Double totalExpenses;
     public Double totalCoverage;
@@ -67,12 +68,24 @@ public class CoverageRecord implements Serializable {
 
   /**
    * Sets the person's payer history at the given time to the given payer.
+   * Secondary insurance is not applicable.
    */
   public void setPayerAtTime(long time, Payer newPayer) {
+    this.setPayerAtTime(time, newPayer, Payer.noInsurance);
+  }
+
+  /**
+   * Sets the person's payer history at the given time to the given payer.
+   * @param time the current simulation time.
+   * @param newPayer the primary payer.
+   * @param secondaryPayer the secondary payer (for example, Medicare Supplemental Insurance).
+   */
+  public void setPayerAtTime(long time, Payer newPayer, Payer secondaryPayer) {
     if (!this.planHistory.isEmpty()) {
       this.planHistory.get(this.planHistory.size() - 1).stop = time;
     }
     Plan plan = new Plan(time, newPayer);
+    plan.secondaryPayer = secondaryPayer;
     plan.owner = determinePayerOwnership(time, newPayer);
     this.planHistory.add(plan);
   }

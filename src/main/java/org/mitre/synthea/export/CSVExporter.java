@@ -1288,7 +1288,7 @@ public class CSVExporter {
     s.append(claimId).append(',');
     // PATIENTID
     s.append(claim.person.attributes.get(Person.ID)).append(',');
-    // Organization provider, should not be null.
+    // Provider, should not be null.
     if (encounter.clinician != null) {
       s.append(encounter.clinician.getResourceID()).append(',');
     } else {
@@ -1300,8 +1300,13 @@ public class CSVExporter {
     } else {
       s.append(claim.payer.getResourceID()).append(',');
     }
-    // TODO SECONDARYPATIENTINSURANCEID (0 default if none)
-    s.append("0,");
+    // SECONDARYPATIENTINSURANCEID (0 default if none)
+    if (encounter.claim.secondaryPayer == null
+        || encounter.claim.secondaryPayer == Payer.noInsurance) {
+      s.append("0,");
+    } else {
+      s.append(claim.secondaryPayer.getResourceID()).append(',');
+    }
     // DEPARTMENTID
     String departmentId = claimDepartmentCode(encounter, claim.person);
     s.append(departmentId).append(',');
@@ -1356,56 +1361,89 @@ public class CSVExporter {
       s.append(',');
     }
     if (time > encounter.stop) {
-      // TODO STATUS1 for Payer1
+      // STATUS1 for Payer1
       s.append("CLOSED,");
-      // TODO STATUS2 for Payer2
-      s.append(',');
-      // TODO STATUSP for Patient as Payer
+      // STATUS2 for Payer2
+      if (claim.secondaryPayer != null && claim.secondaryPayer != Payer.noInsurance) {
+        s.append("CLOSED,");
+      } else {
+        s.append(',');
+      }
+      // STATUSP for Patient as Payer
       s.append("CLOSED,");
       // OUTSTANDING1
-      s.append("0").append(',');
-      // TODO OUTSTANDING2
-      s.append(',');
+      s.append("0,");
+      // OUTSTANDING2
+      if (claim.secondaryPayer != null && claim.secondaryPayer != Payer.noInsurance) {
+        s.append("0,");
+      } else {
+        s.append(',');
+      }
       // OUTSTANDINGP
-      s.append("0").append(',');
+      s.append("0,");
       // LASTBILLEDDATE1
       s.append(iso8601Timestamp(encounter.stop)).append(',');
-      // TODO LASTBILLEDDATE2
-      s.append(',');
+      // LASTBILLEDDATE2
+      if (claim.secondaryPayer != null && claim.secondaryPayer != Payer.noInsurance) {
+        s.append(iso8601Timestamp(encounter.stop)).append(',');
+      } else {
+        s.append(',');
+      }
       // LASTBILLEDDATEP
       s.append(iso8601Timestamp(encounter.stop)).append(',');
 
     } else {
-      // TODO STATUS1 for Payer1
+      // TODO this may not get triggered
+      // STATUS1 for Payer1
       s.append("BILLED,");
-      // TODO STATUS2 for Payer2
-      s.append(',');
-      // TODO STATUSP for Patient as Payer
+      // STATUS2 for Payer2
+      if (claim.secondaryPayer != null && claim.secondaryPayer != Payer.noInsurance) {
+        s.append("BILLED,");
+      } else {
+        s.append(',');
+      }
+      // STATUSP for Patient as Payer
       s.append("BILLED,");
       // OUTSTANDING1 (TODO this should be the outstanding payer balance)
       s.append(String.format(Locale.US, "%.2f", encounter.claim.getCoveredCost())).append(',');
-      // TODO OUTSTANDING2
-      s.append(',');
+      // OUTSTANDING2
+      if (claim.secondaryPayer != null && claim.secondaryPayer != Payer.noInsurance) {
+        // TODO this is not correct
+        s.append(String.format(Locale.US, "%.2f", encounter.claim.getCoveredCost())).append(',');
+      } else {
+        s.append(',');
+      }
       // OUTSTANDINGP (TODO this should be the outstanding patient balance)
       double patientCost = claim.getTotalClaimCost() - claim.getCoveredCost();
       s.append(String.format(Locale.US, "%.2f", patientCost)).append(',');
       // LASTBILLEDDATE1
       s.append(iso8601Timestamp(encounter.start)).append(',');
-      // TODO LASTBILLEDDATE2
-      s.append(',');
+      // LASTBILLEDDATE2
+      if (claim.secondaryPayer != null && claim.secondaryPayer != Payer.noInsurance) {
+        s.append(iso8601Timestamp(encounter.start)).append(',');
+      } else {
+        s.append(',');
+      }
       // LASTBILLEDDATEP
       s.append(iso8601Timestamp(encounter.start)).append(',');
     }
 
     // HEALTHCARECLAIMTYPEID1
     if (institutional) {
-      s.append('2');
+      s.append("2,");
     } else {
-      s.append('1');
+      s.append("1,");
     }
-    s.append(',');
     // HEALTHCARECLAIMTYPEID2
-    s.append('0');
+    if (claim.secondaryPayer != null && claim.secondaryPayer != Payer.noInsurance) {
+      if (institutional) {
+        s.append('2');
+      } else {
+        s.append('1');
+      }
+    } else {
+      s.append('0');
+    }
     s.append(NEWLINE);
     write(s.toString(), claims);
 
@@ -1500,6 +1538,49 @@ public class CSVExporter {
       chargeId = transactionId.getAndIncrement();
     }
 
+    double secondaryPayerAmount = claimEntry.secondaryPayer;
+    if (secondaryPayerAmount > 0) {
+      // TRANSFEROUT
+      t = new ClaimTransaction(encounter, encounterId,
+          claim, claimId, chargeId, claimEntry, rand);
+      t.type = ClaimTransactionType.TRANSFEROUT;
+      t.amount = remainder;
+      t.unpaid = remainder;
+      t.departmentId = departmentId;
+      t.diagnosisCodes = diagnosisCodes;
+      write(t.toString(), claimsTransactions);
+      long transferOut = chargeId;
+      chargeId = transactionId.getAndIncrement();
+
+      // TRANSFERIN
+      t = new ClaimTransaction(encounter, encounterId,
+          claim, claimId, chargeId, claimEntry, rand);
+      t.type = ClaimTransactionType.TRANSFERIN;
+      t.transferType = "2"; // "2" if secondary insurance
+      t.transferId = transferOut;
+      t.amount = remainder;
+      t.unpaid = remainder;
+      t.departmentId = departmentId;
+      t.diagnosisCodes = diagnosisCodes;
+      write(t.toString(), claimsTransactions);
+      chargeId = transactionId.getAndIncrement();
+
+      // PAYMENT FROM SECONDARY INSURANCE
+      remainder -= secondaryPayerAmount;
+
+      // PAYMENT
+      t = new ClaimTransaction(encounter, encounterId,
+          claim, claimId, chargeId, claimEntry, rand);
+      t.type = ClaimTransactionType.PAYMENT;
+      t.method = PaymentMethod.ECHECK;
+      t.payment = secondaryPayerAmount;
+      t.unpaid = remainder;
+      t.departmentId = departmentId;
+      t.diagnosisCodes = diagnosisCodes;
+      write(t.toString(), claimsTransactions);
+      chargeId = transactionId.getAndIncrement();
+    }
+
     if (remainder > 0) {
       if (claim.payer != Payer.noInsurance) {
         // TRANSFEROUT
@@ -1518,7 +1599,7 @@ public class CSVExporter {
         t = new ClaimTransaction(encounter, encounterId,
             claim, claimId, chargeId, claimEntry, rand);
         t.type = ClaimTransactionType.TRANSFERIN;
-        t.transferType = "p"; // patient ("2" if secondary insurance)
+        t.transferType = "p"; // patient
         t.transferId = transferOut;
         t.amount = remainder;
         t.unpaid = remainder;

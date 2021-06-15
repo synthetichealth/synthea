@@ -770,6 +770,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
       // Pay the payer.
       Plan plan = this.coverage.getPlanAtTime(time);
       plan.totalExpenses += (plan.payer.payMonthlyPremium());
+      // Pay secondary insurance, if applicable
+      plan.totalExpenses += (plan.secondaryPayer.payMonthlyPremium());
       // Update the last monthly premium paid.
       this.attributes.put(Person.LAST_MONTH_PAID, currentMonth);
       // Check if person has gone in debt. If yes, then they receive no insurance.

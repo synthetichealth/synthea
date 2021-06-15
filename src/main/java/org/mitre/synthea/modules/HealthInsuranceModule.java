@@ -63,10 +63,22 @@ public class HealthInsuranceModule extends Module {
       }
       // Determine the insurance for this person at this time.
       Payer newPayer = determineInsurance(person, time);
+      Payer secondaryPayer = Payer.noInsurance;
+
+      // If the payer is Medicare, they may buy supplemental insurance.
+      if (Payer.getGovernmentPayer(MEDICARE) == newPayer && (person.rand() <= 0.8)) {
+        // Buy supplemental insurance if it is affordable
+        secondaryPayer = Payer.findPayer(person, null, time);
+      }
+
       // Set this new payer at the current time for the person.
-      person.coverage.setPayerAtTime(time, newPayer);
+      person.coverage.setPayerAtTime(time, newPayer, secondaryPayer);
+
       // Update the new Payer's customer statistics.
       newPayer.incrementCustomers(person);
+      if (Payer.noInsurance != secondaryPayer) {
+        secondaryPayer.incrementCustomers(person);
+      }
     }
 
     // Checks if person has paid their premium this month. If not, they pay it.
