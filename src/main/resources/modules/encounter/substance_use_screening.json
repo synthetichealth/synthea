@@ -221,19 +221,6 @@
       "unit": "minutes",
       "direct_transition": "Terminal"
     },
-    "New_State_2": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "target_encounter": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
-        }
-      ],
-      "direct_transition": "New_State_2"
-    },
     "End Risky Activity": {
       "type": "ConditionEnd",
       "direct_transition": "Guidance",
