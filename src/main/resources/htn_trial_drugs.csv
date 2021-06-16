@@ -15,7 +15,7 @@ Calcium Channel Blockers,Calcium Channel Blockers,Diltiazem,830877,24 HR dilTIAZ
 Calcium Channel Blockers,Calcium Channel Blockers,Amlodipine,197361,amLODIPine 5 MG Oral Tablet,-11.5,-16.29,2.5mg;5mg;10mg,,TRUE,
 Calcium Channel Blockers,Calcium Channel Blockers,Amlodipine,308136,amLODIPine 2.5 MG Oral Tablet,-11.5,-16.29,,,TRUE,used in existing htn module
 Beta Blockers,Beta Blockers,Metoprolol Tartrate,866514,metoprolol tartrate 50 MG Oral Tablet,-11.5,-16.29,25mg;50mg;100mg,,TRUE,
-Beta Blockers,Beta Blockers,Metoprolol ER,,,-11.5,-16.29,,,FALSE,used in sihd module; restricted use
+Beta Blockers,Beta Blockers,Metoprolol ER,866412,24 HR metoprolol succinate 100 MG Extended Release Oral Tablet,-11.5,-16.29,,,FALSE,used in sihd module; restricted use
 Beta Blockers,Beta Blockers,Atenolol,197381,atenolol 50 MG Oral Tablet,-11.5,-16.29,25mg;50mg;100mg,,TRUE,
 Beta Blockers,Beta Blockers,Atenolol/Chlorthalidone,197383,atenolol 50 MG / chlorthalidone 25 MG Oral Tablet,-11.5,-16.29,50/25mg,,FALSE,don't prescribe combos -- makes it more challenging to keep track
 Vasodilators,Vasodilators,Hydralazine,905395,hydrALAZINE hydrochloride 50 MG Oral Tablet,-11.5,-16.29,25mg;50mg;100mg ,,TRUE,
