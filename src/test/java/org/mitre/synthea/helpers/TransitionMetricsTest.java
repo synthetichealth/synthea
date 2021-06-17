@@ -84,13 +84,13 @@ public class TransitionMetricsTest {
     assertEquals(3, dests.get("Age_Guard").get()); // they went here
     
     m = metrics.getMetric(example.name, "Pre_Examplitis");
-    assertEquals(1, m.entered.get());
+    assertEquals(2, m.entered.get());
     
     m = metrics.getMetric(example.name, "Terminal");
     assertEquals(3, m.entered.get());
     assertEquals(3, m.current.get());
   }
-  
+
   private long run(Person person, Module singleModule, long start) {
     long time = start;
     Payer.loadNoInsurance();
