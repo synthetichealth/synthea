@@ -354,56 +354,56 @@ public class StateTest {
     delay.entered = time;
     assertFalse(delay.process(person, time));
     assertFalse(delay.process(person, time + 1L * 1000));
-    assertFalse(delay.process(person, time + 2L * 1000));
-    assertTrue(delay.process(person, time + 10L * 1000));
+    assertFalse(delay.process(person, time - 1 + 2L * 1000));
+    assertTrue(delay.process(person, time + 1 + 10L * 1000));
 
     // Minutes
     delay = module.getState("2_To_10_Minute_Delay");
     delay.entered = time;
     assertFalse(delay.process(person, time));
     assertFalse(delay.process(person, time + 1L * 1000 * 60));
-    assertFalse(delay.process(person, time + 2L * 1000 * 60));
-    assertTrue(delay.process(person, time + 10L * 1000 * 60));
+    assertFalse(delay.process(person, time - 1 + 2L * 1000 * 60));
+    assertTrue(delay.process(person, time + 1 + 10L * 1000 * 60));
 
     // Hours
     delay = module.getState("2_To_10_Hour_Delay");
     delay.entered = time;
     assertFalse(delay.process(person, time));
     assertFalse(delay.process(person, time + 1L * 1000 * 60 * 60));
-    assertFalse(delay.process(person, time + 2L * 1000 * 60 * 60));
-    assertTrue(delay.process(person, time + 10L * 1000 * 60 * 60));
+    assertFalse(delay.process(person, time - 1 + 2L * 1000 * 60 * 60));
+    assertTrue(delay.process(person, time + 1 + 10L * 1000 * 60 * 60));
 
     // Days
     delay = module.getState("2_To_10_Day_Delay");
     delay.entered = time;
     assertFalse(delay.process(person, time));
     assertFalse(delay.process(person, time + 1L * 1000 * 60 * 60 * 24));
-    assertFalse(delay.process(person, time + 2L * 1000 * 60 * 60 * 24));
-    assertTrue(delay.process(person, time + 10L * 1000 * 60 * 60 * 24));
+    assertFalse(delay.process(person, time - 1 + 2L * 1000 * 60 * 60 * 24));
+    assertTrue(delay.process(person, time + 1 + 10L * 1000 * 60 * 60 * 24));
 
     // Weeks
     delay = module.getState("2_To_10_Week_Delay");
     delay.entered = time;
     assertFalse(delay.process(person, time));
     assertFalse(delay.process(person, time + 1L * 1000 * 60 * 60 * 24 * 7));
-    assertFalse(delay.process(person, time + 2L * 1000 * 60 * 60 * 24 * 7));
-    assertTrue(delay.process(person, time + 10L * 1000 * 60 * 60 * 24 * 7));
+    assertFalse(delay.process(person, time - 1 + 2L * 1000 * 60 * 60 * 24 * 7));
+    assertTrue(delay.process(person, time + 1 + 10L * 1000 * 60 * 60 * 24 * 7));
 
     // Months
     delay = module.getState("2_To_10_Month_Delay");
     delay.entered = time;
     assertFalse(delay.process(person, time));
     assertFalse(delay.process(person, time + 1L * 1000 * 60 * 60 * 24 * 30));
-    assertFalse(delay.process(person, time + 2L * 1000 * 60 * 60 * 24 * 30));
-    assertTrue(delay.process(person, time + 10L * 1000 * 60 * 60 * 24 * 30));
+    assertFalse(delay.process(person, time - 1 + 2L * 1000 * 60 * 60 * 24 * 30));
+    assertTrue(delay.process(person, time + 1 + 10L * 1000 * 60 * 60 * 24 * 30));
 
     // Years
     delay = module.getState("2_To_10_Year_Delay");
     delay.entered = time;
     assertFalse(delay.process(person, time));
     assertFalse(delay.process(person, time + 1L * 1000 * 60 * 60 * 24 * 365));
-    assertFalse(delay.process(person, time + 2L * 1000 * 60 * 60 * 24 * 365));
-    assertTrue(delay.process(person, time + 10L * 1000 * 60 * 60 * 24 * 365));
+    assertFalse(delay.process(person, time - 1 + 2L * 1000 * 60 * 60 * 24 * 365));
+    assertTrue(delay.process(person, time + 1 + 10L * 1000 * 60 * 60 * 24 * 365));
   }
 
   @Test
