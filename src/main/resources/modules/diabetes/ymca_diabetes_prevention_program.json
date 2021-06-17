@@ -15,67 +15,12 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Start_YMCA_Diabetes_Program",
+          "transition": "Wait_Until_20",
           "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Age",
-                "operator": ">=",
-                "quantity": 18,
-                "unit": "years",
-                "value": 0
-              },
-              {
-                "condition_type": "And",
-                "conditions": [
-                  {
-                    "condition_type": "Vital Sign",
-                    "vital_sign": "BMI",
-                    "operator": ">=",
-                    "value": 25
-                  },
-                  {
-                    "condition_type": "And",
-                    "conditions": [
-                      {
-                        "condition_type": "Vital Sign",
-                        "vital_sign": "Blood Glucose",
-                        "operator": ">=",
-                        "value": 5.7
-                      },
-                      {
-                        "condition_type": "Vital Sign",
-                        "vital_sign": "Blood Glucose",
-                        "operator": "<=",
-                        "value": 6.4
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "transition": "Start_YMCA_Diabetes_Program",
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Age",
-                "operator": ">=",
-                "quantity": 18,
-                "unit": "years",
-                "value": 0
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "prediabetes",
-                "operator": "==",
-                "value": true
-              }
-            ]
+            "condition_type": "Vital Sign",
+            "vital_sign": "BMI",
+            "operator": ">=",
+            "value": 25
           }
         },
         {
@@ -278,7 +223,8 @@
       "attribute": "target_weight_loss",
       "direct_transition": "Successful_YMCA_Diabetes_Program",
       "remarks": [
-        "Because triggering weight loss is a multi-year process, we'll start it now because we know this person will have perfect adherence to the YMCA Diabetes Prevention Program."
+        "Because triggering weight loss is a multi-year process, we'll start it now because we know this person will have perfect adherence to the YMCA Diabetes Prevention Program.",
+        "2% is the amount of weight loss that can be expected after successful YMCA completion. However, in practice, setting this target weight loss to 2% doesn't translate to an actual 2% in practice in Synthea. Instead, in Synthea.WeightLossModule.java, this 2% is overwritten by the default weight loss values which seem to equate to around 2% in practice."
       ],
       "value": 0.02
     },
@@ -301,6 +247,17 @@
       "attribute": "ymca_diabetes_program",
       "value": "unsuccessful",
       "direct_transition": "2_Week_Delay"
+    },
+    "Wait_Until_20": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 20,
+        "unit": "years",
+        "value": 0
+      },
+      "direct_transition": "Start_YMCA_Diabetes_Program"
     }
   },
   "gmf_version": 2

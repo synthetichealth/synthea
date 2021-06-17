@@ -362,7 +362,6 @@ public final class WeightLossModule extends Module {
     person.attributes.put(WEIGHT_MANAGEMENT_START, time);
     boolean stickToPlan = person.rand() <= adherence;
     if (person.attributes.get(Person.TARGET_WEIGHT_LOSS) != null) {
-      System.out.println("JIJIJIJIJIJIJIJI");
       stickToPlan = true;
     }
     person.attributes.put(WEIGHT_LOSS_ADHERENCE, stickToPlan);
@@ -371,10 +370,7 @@ public final class WeightLossModule extends Module {
         double minLossPercentage = minLoss;
         double maxLossPercentage = maxLoss;
         if (person.attributes.get(Person.TARGET_WEIGHT_LOSS) != null) {
-          double targetWeightLoss = (double) person.attributes.get(Person.TARGET_WEIGHT_LOSS);
-          minLossPercentage = targetWeightLoss;
-          maxLossPercentage = targetWeightLoss;
-          System.out.println(targetWeightLoss);
+          person.attributes.remove(Person.TARGET_WEIGHT_LOSS);
         }
         double percentWeightLoss = person.rand(minLossPercentage, maxLossPercentage);
         person.attributes.put(WEIGHT_LOSS_PERCENTAGE, percentWeightLoss);
