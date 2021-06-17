@@ -332,7 +332,8 @@ public class CSVExporter {
         + "COVERED_IMMUNIZATIONS,UNCOVERED_IMMUNIZATIONS,"
         + "UNIQUE_CUSTOMERS,QOLS_AVG,MEMBER_MONTHS");
     payers.write(NEWLINE);
-    payerTransitions.write("PATIENT,START_YEAR,END_YEAR,PAYER,OWNERSHIP");
+    payerTransitions.write("PATIENT,MEMBERID,START_YEAR,END_YEAR,PAYER,SECONDARY_PAYER,"
+        + "OWNERSHIP,OWNERNAME");
     payerTransitions.write(NEWLINE);
     claims.write("Id,PATIENTID,PROVIDERID,PRIMARYPATIENTINSURANCEID,SECONDARYPATIENTINSURANCEID,"
         + "DEPARTMENTID,PATIENTDEPARTMENTID,DIAGNOSIS1,DIAGNOSIS2,DIAGNOSIS3,DIAGNOSIS4,"
@@ -1220,19 +1221,36 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private void payerTransition(Person person, Plan plan) throws IOException {
-    // PATIENT_ID,START_YEAR,END_YEAR,PAYER_ID,OWNERSHIP
+    // PATIENT_ID,MEMBER_ID,START_YEAR,END_YEAR,PAYER_ID,SECONDARY_PAYER_ID,OWNERSHIP,OWNERNAME
 
     StringBuilder s = new StringBuilder();
     // PATIENT_ID
     s.append(person.attributes.get(Person.ID)).append(",");
+    // MEMBER_ID
+    if (plan.id != null) {
+      s.append(plan.id);
+    }
+    s.append(",");
     // START_YEAR
     s.append(iso8601Timestamp(plan.start)).append(',');
     // END_YEAR
     s.append(iso8601Timestamp(plan.stop)).append(',');
     // PAYER_ID
     s.append(plan.payer.getResourceID()).append(',');
+    // SECONDARY_PAYER_ID
+    if (plan.secondaryPayer != null && plan.secondaryPayer != Payer.noInsurance) {
+      s.append(plan.secondaryPayer.getResourceID());
+    }
+    s.append(',');
     // OWNERSHIP
-    s.append(plan.owner);
+    if (plan.owner != null) {
+      s.append(plan.owner);
+    }
+    s.append(',');
+    // OWNERNAME
+    if (plan.ownerName != null) {
+      s.append(plan.ownerName);
+    }
     s.append(NEWLINE);
     write(s.toString(), payerTransitions);
   }

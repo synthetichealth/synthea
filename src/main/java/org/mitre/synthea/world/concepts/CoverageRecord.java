@@ -14,11 +14,13 @@ public class CoverageRecord implements Serializable {
   public static class Plan implements Serializable {
     private static final long serialVersionUID = -547445624583743525L;
 
+    public String id;
     public long start;
     public long stop;
     public Payer payer;
     public Payer secondaryPayer;
     public String owner;
+    public String ownerName;
     public Double totalExpenses;
     public Double totalCoverage;
     public Double remainingDeductible;
@@ -86,7 +88,16 @@ public class CoverageRecord implements Serializable {
     }
     Plan plan = new Plan(time, newPayer);
     plan.secondaryPayer = secondaryPayer;
-    plan.owner = determinePayerOwnership(time, newPayer);
+    String[] ownership = determinePayerOwnership(time, newPayer);
+    plan.owner = ownership[0];
+    plan.ownerName = ownership[1];
+    if (ownership[0] == null) {
+      plan.id = null; // no insurance, no id.
+    } else if (ownership[2] != null) {
+      plan.id = ownership[2]; // use previous id.
+    } else {
+      plan.id = person.randUUID().toString(); // new id required.
+    }
     this.planHistory.add(plan);
   }
 
@@ -179,7 +190,8 @@ public class CoverageRecord implements Serializable {
   /**
    * Determines and returns what the ownership of the person's insurance at this age.
    */
-  private String determinePayerOwnership(long time, Payer payer) {
+  private String[] determinePayerOwnership(long time, Payer payer) {
+    String[] results = new String[3];
     // Keep previous year's ownership if payer is unchanged and person has not just turned 18.
     int age = this.person.ageInYears(time);
     Plan lastPlan = this.getLastPlan();
@@ -187,25 +199,53 @@ public class CoverageRecord implements Serializable {
         && lastPlan.payer != null
         && lastPlan.payer.equals(payer)
         && age != 18) {
-      return lastPlan.owner;
-    }
-    // No owner for no insurance.
-    if (payer.equals(Payer.noInsurance)) {
-      return "";
-    }
-    // Standard payer ownership check.
-    if (age < 18 && !payer.getName().equals("Medicaid")) {
+      results[0] = lastPlan.owner;
+      results[1] = lastPlan.ownerName;
+      results[2] = lastPlan.id;
+    } else if (payer.equals(Payer.noInsurance)) {
+      // No owner for no insurance.
+      results[0] = null;
+      results[1] = null;
+    } else if (age < 18 && !payer.getName().equals("Medicaid")) {
       // If a person is a minor, their Guardian owns their health plan unless it is Medicaid.
-      return "Guardian";
+      results[0] = "Guardian";
+      if (person.randBoolean()) {
+        results[1] = (String) person.attributes.get(Person.NAME_MOTHER);
+      } else {
+        results[1] = (String) person.attributes.get(Person.NAME_FATHER);
+      }
+    } else if (age < 18 && payer.getName().equals("Medicaid")) {
+      // If a person is a minor and is on Medicaid.
+      results[0] = "Self";
+      results[1] = (String) person.attributes.get(Person.NAME);
     } else if ((person.attributes.containsKey(Person.MARITAL_STATUS))
         && person.attributes.get(Person.MARITAL_STATUS).equals("M")) {
-      // TODO: ownership shouldn't be a coin toss every year
       // If a person is married, there is a 50% chance their spouse owns their insurance.
-      if (person.rand(0.0, 1.0) < .5) {
-        return "Spouse";
+      if (person.randBoolean()) {
+        results[0] = "Spouse";
+        if ("homosexual".equals(person.attributes.get(Person.SEXUAL_ORIENTATION))) {
+          if ("M".equals(person.attributes.get(Person.GENDER))) {
+            results[1] = "Mr. ";
+          } else {
+            results[1] = "Mrs. ";
+          }
+        } else {
+          if ("M".equals(person.attributes.get(Person.GENDER))) {
+            results[1] = "Mrs. ";
+          } else {
+            results[1] = "Mr. ";
+          }
+        }
+        results[1] += (String) person.attributes.get(Person.LAST_NAME);
+      } else {
+        results[0] = "Self";
+        results[1] = (String) person.attributes.get(Person.NAME);
       }
+    } else {
+      // If a person is unmarried and over 18, they own their insurance.
+      results[0] = "Self";
+      results[1] = (String) person.attributes.get(Person.NAME);
     }
-    // If a person is unmarried and over 18, they own their insurance.
-    return "Self";
+    return results;
   }
 }
