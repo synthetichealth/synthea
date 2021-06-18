@@ -328,7 +328,10 @@ public class FhirDstu2 {
       case "native":
         raceDisplay = "American Indian or Alaska Native";
         break;
-      default: // Other (Put Hawaiian and Pacific Islander here for now)
+      case "hawaiian":
+        raceDisplay = "Native Hawaiian or Other Pacific Islander";
+        break;
+      default:
         raceDisplay = "Other";
         break;
     }

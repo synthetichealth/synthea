@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.hl7.fhir.r4.model.Patient;
-
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleCSV;
@@ -208,6 +206,12 @@ public class Demographics implements Comparable<Demographics>, Serializable {
           // Alaska Native speak English less than well.
           // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005C&prodType=table
           return "english";
+        case "hawaiian":
+          // https://files.hawaii.gov/dbedt/economic/data_reports/Non_English_Speaking_Population_in_Hawaii_April_2016.pdf
+          RandomCollection<String> hawaiianLanguageUsage = new RandomCollection();
+          hawaiianLanguageUsage.add(0.891, "english");
+          hawaiianLanguageUsage.add(0.109, "hawaiian");
+          return hawaiianLanguageUsage.next(random);
         case "other":
           // 36% of people who report a race of something else speak English less than well
           // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005F&prodType=table
@@ -278,6 +282,17 @@ public class Demographics implements Comparable<Demographics>, Serializable {
     } else {
       return ((double) income - poverty) / (high - poverty);
     }
+  }
+
+  /**
+   * Return the poverty ratio.
+   * @param income Annual income.
+   * @return poverty ratio.
+   */
+  public double povertyRatio(int income) {
+    double poverty = Double
+        .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
+    return ((double) income) / poverty;
   }
 
   /**
@@ -449,10 +464,25 @@ public class Demographics implements Comparable<Demographics>, Serializable {
     d.gender.put("male", Double.parseDouble(line.get("TOT_MALE")));
     d.gender.put("female", Double.parseDouble(line.get("TOT_FEMALE")));
 
+    double percentageTotal = 0;
     d.race = new HashMap<String, Double>();
     for (String race : CSV_RACES) {
       double percentage = Double.parseDouble(line.get(race));
       d.race.put(race.toLowerCase(), percentage);
+      percentageTotal += percentage;
+    }
+    if (percentageTotal < 1.0) {
+      // Account for Hawaiian and Pacific Islanders
+      // and mixed race responses, and responses
+      // that chose not to answer the race question.
+      double percentageRemainder = (1.0 - percentageTotal);
+      double hawaiian = 0.5 * percentageRemainder;
+      double other = percentageRemainder - hawaiian;
+      d.race.put("hawaiian", hawaiian);
+      d.race.put("other", other);
+    } else {
+      d.race.put("hawaiian", 0.0);
+      d.race.put("other", 0.0);
     }
 
     d.income = new HashMap<String, Double>();

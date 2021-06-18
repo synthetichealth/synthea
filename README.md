@@ -66,7 +66,6 @@ For example:
  - `run_synthea -p 1000`
  - `run_synthea -s 987 Washington Seattle`
  - `run_synthea -s 21 -p 100 Utah "Salt Lake City"`
- - `run_synthea -m metabolic*`
 
 Some settings can be changed in `./src/main/resources/synthea.properties`.
 

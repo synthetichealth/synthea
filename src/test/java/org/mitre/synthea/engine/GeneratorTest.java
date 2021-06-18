@@ -96,6 +96,9 @@ public class GeneratorTest {
     Config.set("generate.only_dead_patients", "true");
     int numberOfPeople = 2;
     Generator generator = new Generator(numberOfPeople);
+    generator.options.ageSpecified = true;
+    generator.options.minAge = 50; // specify a high age to increase exposure
+    //                                to modules that cause death
     generator.run();
     assertEquals(0, generator.stats.get("alive").longValue());
     assertEquals(numberOfPeople, generator.stats.get("dead").longValue());
@@ -342,6 +345,23 @@ public class GeneratorTest {
     generator.stop = generator.stop + Utilities.convertTime("years", 10);
     for (Person p: people) {
       generator.updatePerson(p);
+    }
+  }
+  
+  @Test
+  public void testKeepPatientsModule() throws Exception {
+    Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
+    opts.population = 5;
+    opts.minAge = 35;
+    opts.maxAge = 75;
+    opts.ageSpecified = true;
+    opts.keepPatientsModulePath = new File("src/test/resources/keep_patients_module/keep.json");
+    // keep module checks that patients have attribute diabetes == true
+    
+    Generator generator = new Generator(opts);
+    for (int i = 0; i < opts.population; i++) {
+      Person p = generator.generatePerson(i);
+      assertTrue((Boolean)p.attributes.get("diabetes"));
     }
   }
 }

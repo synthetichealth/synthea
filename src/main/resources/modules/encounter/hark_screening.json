@@ -1,0 +1,173 @@
+{
+  "name": "hark_screening",
+  "remarks": [
+    "Basic HARK screening pathway."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check Eligibility"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Check Eligibility": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Conduct Screening for Domestic Abuse",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "pregnant",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 18,
+                "unit": "years",
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Conduct Screening for Domestic Abuse": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "866148006",
+          "display": "Screening for domestic abuse (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 45,
+          "low": 25
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Determine Results"
+    },
+    "Determine Results": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "High Score",
+              "distribution": 0.055
+            },
+            {
+              "transition": "Low Score",
+              "distribution": 0.945
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "High Score",
+              "distribution": 0.052
+            },
+            {
+              "transition": "Low Score",
+              "distribution": 0.948
+            }
+          ]
+        }
+      ]
+    },
+    "High Score": {
+      "type": "SetAttribute",
+      "attribute": "hark_screening_score",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 4,
+          "low": 1
+        }
+      },
+      "conditional_transition": [
+        {
+          "transition": "HARK Assessment",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Victim"
+          }
+        },
+        {
+          "transition": "Victim"
+        }
+      ]
+    },
+    "Low Score": {
+      "type": "SetAttribute",
+      "attribute": "hark_screening_score",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 0
+        }
+      },
+      "direct_transition": "HARK Assessment"
+    },
+    "Victim": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "706893006",
+          "display": "Victim of intimate partner abuse (finding)"
+        }
+      ],
+      "direct_transition": "HARK Assessment"
+    },
+    "HARK Assessment": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "76499-3",
+          "display": "Humiliation, Afraid, Rape, and Kick questionnaire [HARK]"
+        }
+      ],
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "76504-0",
+              "display": "Total score [HARK]"
+            }
+          ],
+          "attribute": "hark_screening_score"
+        }
+      ],
+      "direct_transition": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}

@@ -41,11 +41,10 @@ jobs:
       - name: Create Release
         id: create_release 
         # note id is referenced below in Deploy uberJar
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: master-branch-latest
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: master-branch-latest
           draft: false
           prerelease: true
                 
@@ -59,6 +58,17 @@ jobs:
           asset_path: build/libs/synthea-with-dependencies.jar
           asset_name: synthea-with-dependencies.jar
           asset_content_type: application/java-archive
+        
+        # it's necessary to add another "publish" after the upload, otherwise the release is always listed as "draft"
+        # see https://github.com/actions/upload-release-asset/issues/34
+      - name: Publish Release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          omitBodyDuringUpdate: true
+          replacesArtifacts: false
+          tag: master-branch-latest
+          token: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3 

@@ -27,6 +27,7 @@ public class HealthInsuranceModule extends Module {
       Config.get("generate.payers.insurance_companies.medicaid", "Medicaid");
   public static String DUAL_ELIGIBLE =
       Config.get("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
+  public static String INSURANCE_STATUS = "insurance_status";
 
   /**
    * HealthInsuranceModule constructor.
@@ -79,6 +80,20 @@ public class HealthInsuranceModule extends Module {
       if (Payer.noInsurance != secondaryPayer) {
         secondaryPayer.incrementCustomers(person);
       }
+
+      // Set insurance attribute for module access
+      String insuranceStatus = null;
+      if (newPayer == Payer.noInsurance) {
+        insuranceStatus = "none";
+      } else if (Payer.getGovernmentPayers().contains(newPayer)) {
+        insuranceStatus = "medicare"; // default to medicare when government payer
+        if (newPayer.getName().equalsIgnoreCase("Medicaid")) {
+          insuranceStatus = "medicaid";
+        }
+      } else {
+        insuranceStatus = "private";
+      }
+      person.attributes.put(INSURANCE_STATUS, insuranceStatus);
     }
 
     // Checks if person has paid their premium this month. If not, they pay it.

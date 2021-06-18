@@ -174,13 +174,16 @@ public class Module implements Cloneable, Serializable {
     return relativeFilePath;
   }
 
-  public static Module loadFile(Path path, Path modulesFolder, Properties overrides)
-         throws Exception {
-    boolean submodule = !path.getParent().equals(modulesFolder);
-    return loadFile(path, submodule, overrides, false);
-  }
-
-  private static Module loadFile(Path path, boolean submodule, Properties overrides,
+  /**
+   * Loads the module defined from the file at the given path.
+   *
+   * @param path Path to the module file
+   * @param submodule whether or not this module is a submodule
+   * @param overrides module overrides to apply
+   * @param localFiles true if the file is external to the src/main/resources folder
+   * @return the loaded Module
+   */
+  public static Module loadFile(Path path, boolean submodule, Properties overrides,
           boolean localFiles) throws Exception {
     System.out.format("Loading %s %s\n", submodule ? "submodule" : "module", path.toString());
     String jsonString = localFiles
@@ -315,6 +318,7 @@ public class Module implements Cloneable, Serializable {
 
   /**
    * Process this Module with the given Person at the specified time within the simulation.
+   * Processing will complete if the person dies.
    * 
    * @param person
    *          : the person being simulated
@@ -322,9 +326,24 @@ public class Module implements Cloneable, Serializable {
    *          : the date within the simulated world
    * @return completed : whether or not this Module completed.
    */
-  @SuppressWarnings("unchecked")
   public boolean process(Person person, long time) {
-    if (!person.alive(time)) {
+    return process(person, time, true);
+  }
+  
+  /**
+   * Process this Module with the given Person at the specified time within the simulation.
+   * 
+   * @param person
+   *          : the person being simulated
+   * @param time
+   *          : the date within the simulated world
+   * @param terminateOnDeath
+   *          : whether or not to terminate if the patient is dead
+   * @return completed : whether or not this Module completed.
+   */
+  @SuppressWarnings("unchecked")
+  public boolean process(Person person, long time, boolean terminateOnDeath) {
+    if (terminateOnDeath && !person.alive(time)) {
       return true;
     }
     person.history = null;
@@ -345,7 +364,7 @@ public class Module implements Cloneable, Serializable {
     // looping until module is finished,
     // probably more than one state
     String nextStateName = null;
-    while (current.run(person, time)) {
+    while (current.run(person, time, terminateOnDeath)) {
       Long exited = current.exited;      
       nextStateName = current.transition(person, time);
       // System.out.println(" Transitioning to " + nextStateName);
@@ -353,13 +372,15 @@ public class Module implements Cloneable, Serializable {
       person.history.add(0, current);
       if (exited != null && exited < time) {
         // stop if the patient died in the meantime...
-        if (!person.alive(exited)) {
+        if (terminateOnDeath && !person.alive(exited)) {
           return true;
         }
         // This must be a delay state that expired between cycles, so temporarily rewind time
-        if (process(person, exited)) {
+        if (process(person, exited, terminateOnDeath)) {
           // if the patient died during the delay, stop
-          return true;
+          if (terminateOnDeath) {
+            return true;
+          }
         }
         current = person.history.get(0);
       }

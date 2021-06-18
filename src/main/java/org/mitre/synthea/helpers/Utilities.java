@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Calendar;
+import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -139,7 +140,15 @@ public class Utilities {
   public static double convertRiskToTimestep(double risk, double originalPeriodInMS) {
     double currTimeStepInMS = Double.parseDouble(Config.get("generate.timestep"));
 
-    return 1 - Math.pow(1 - risk, currTimeStepInMS / originalPeriodInMS);
+    return convertRiskToTimestep(risk, originalPeriodInMS, currTimeStepInMS);
+  }
+  
+  /**
+   * Calculates 1 - (1-risk)^(newTimeStepInMS/originalPeriodInMS).
+   */
+  public static double convertRiskToTimestep(double risk, double originalPeriodInMS,
+      double newTimeStepInMS) {
+    return 1 - Math.pow(1 - risk, newTimeStepInMS / originalPeriodInMS);
   }
 
   /**
@@ -350,6 +359,8 @@ public class Utilities {
       .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
       .registerTypeAdapterFactory(InnerClassTypeAdapterFactory.of(Logic.class,"condition_type"))
       .registerTypeAdapterFactory(InnerClassTypeAdapterFactory.of(State.class, "type"))
+      // as of JDK16, GSON can no longer handle certain sdk classes
+      .registerTypeAdapter(Random.class, new SerializableTypeAdapter<Random>())
       .create();
   }
 

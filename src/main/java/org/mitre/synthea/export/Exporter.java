@@ -491,7 +491,14 @@ public abstract class Exporter {
       filterEntries(encounter.conditions, claimItems, cutoffDate, endTime, keepCondition);
 
       // allergies are essentially the same as conditions
-      filterEntries(encounter.allergies, claimItems, cutoffDate, endTime, keepCondition);
+      // But we need to redefine all of the predicates, because we are talking about Allergies as
+      // opposed to Entries... You would think that it would work... but generics are hard
+      Predicate<HealthRecord.Allergy> allergyActive = c -> record.allergyActive(c.type);
+      // or if the condition was active at any point since the cutoff date
+      Predicate<HealthRecord.Allergy> allergyActiveWithinCutoff =
+          c -> c.stop != 0L && c.stop > cutoffDate;
+      Predicate<HealthRecord.Allergy> keepAllergy = allergyActive.or(allergyActiveWithinCutoff);
+      filterEntries(encounter.allergies, claimItems, cutoffDate, endTime, keepAllergy);
 
       // some of the "future death" logic could potentially add a future-dated death certificate
       Predicate<Observation> isCauseOfDeath =

@@ -3,14 +3,14 @@ on: [push, pull_request]
 jobs:
   check_java_latest:
     runs-on: ubuntu-latest
-    name: Java 15
+    name: Java 16
     
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 15
+          java-version: 16
 
       - name: Gradle cache
         uses: actions/cache@v2
@@ -18,9 +18,9 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-jdk15-${{ hashFiles('**/*.gradle*') }}
+          key: ${{ runner.os }}-gradle-jdk16-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-jdk15
+            ${{ runner.os }}-gradle-jdk16
             
       - name: Compile with Gradle
         run: ./gradlew assemble
@@ -30,8 +30,8 @@ jobs:
         if: always()
         with:
           status: custom
-          job_name: Java 15
-          author_name: Java 15 Build
+          job_name: Java 16
+          author_name: Java 16 Build
           fields: workflow,commit,repo,author,took
           # see https://action-slack.netlify.app/usecase/02-custom for custom payload info
           custom_payload: |
