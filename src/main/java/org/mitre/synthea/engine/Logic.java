@@ -422,6 +422,45 @@ public abstract class Logic implements Serializable {
   private abstract static class ActiveLogic extends Logic {
     protected List<Code> codes;
     protected String referencedByAttribute;
+
+    abstract boolean checkCode(Person person, HealthRecord.Code code);
+
+    abstract boolean checkAttribute(Person person, HealthRecord.Entry entry);
+
+    abstract HealthRecord.Entry findItemWhenMultipleRecords(Person person, HealthRecord.Code code);
+
+    abstract void addItemWhenDataIsDuplicated(Person person, long time, HealthRecord.Entry entry);
+
+    @Override
+    public boolean test(Person person, long time) {
+      if (this.codes != null) {
+        for (Code code : this.codes) {
+          if (checkCode(person, code)) {
+            return true;
+          }
+          if (person.hasMultipleRecords) {
+            HealthRecord.Entry entry = findItemWhenMultipleRecords(person, code);
+            if (entry != null && entry.stop == 0L) {
+              if (Config.getAsBoolean("exporter.split_records.duplicate_data", false)) {
+                addItemWhenDataIsDuplicated(person, time, entry);
+              }
+              return true;
+            }
+          }
+        }
+        return false;
+      } else if (this.referencedByAttribute != null) {
+        if (person.attributes.containsKey(this.referencedByAttribute)) {
+          return checkAttribute(person,
+              (HealthRecord.Entry) person.attributes.get(this.referencedByAttribute));
+        } else {
+          return false;
+        }
+      }
+
+      throw new RuntimeException(String.format("%s logic must be specified by code or attribute",
+          this.getClass().getSimpleName()));
+    }
   }
 
   /**
@@ -435,36 +474,45 @@ public abstract class Logic implements Serializable {
    */
   public static class ActiveCondition extends ActiveLogic {
     @Override
-    public boolean test(Person person, long time) {
-      if (this.codes != null) {
-        for (Code code : this.codes) {
-          if (person.record.present.containsKey(code.code)) {
-            return true;
-          }
-          if (person.hasMultipleRecords) {
-            // If the condition is not in the current health record,
-            // then look in the module history.
-            HealthRecord.Entry condition = (HealthRecord.Entry)
-                findEntryFromHistory(person, HealthRecord.Entry.class, code);
-            if (condition != null && condition.stop == 0L) {
-              if (Config.getAsBoolean("exporter.split_records.duplicate_data", false)) {
-                person.record.currentEncounter(time).conditions.add(condition);
-              }
-              return true;
-            }
-          }
-        }
-        return false;
-      } else if (referencedByAttribute != null) {
-        if (person.attributes.containsKey(referencedByAttribute)) {
-          Entry diagnosis = (Entry) person.attributes.get(referencedByAttribute);
-          return person.record.present.containsKey(diagnosis.type);
-        } else {
-          return false;
-        }
-      }
+    boolean checkCode(Person person, Code code) {
+      return person.record.present.containsKey(code.code);
+    }
 
-      throw new RuntimeException("Active Condition logic must be specified by code or attribute");
+    @Override
+    boolean checkAttribute(Person person, Entry entry) {
+      return person.record.present.containsKey(entry.type);
+    }
+
+    @Override
+    Entry findItemWhenMultipleRecords(Person person, Code code) {
+      return findEntryFromHistory(person, HealthRecord.Entry.class, code);
+    }
+
+    @Override
+    void addItemWhenDataIsDuplicated(Person person, long time, Entry entry) {
+      person.record.currentEncounter(time).conditions.add(entry);
+    }
+  }
+
+  public static class ActiveAllergy extends ActiveLogic {
+    @Override
+    boolean checkCode(Person person, Code code) {
+      return person.record.present.containsKey(code.code);
+    }
+
+    @Override
+    boolean checkAttribute(Person person, Entry entry) {
+      return person.record.present.containsKey(entry.type);
+    }
+
+    @Override
+    Entry findItemWhenMultipleRecords(Person person, Code code) {
+      return findEntryFromHistory(person, HealthRecord.Allergy.class, code);
+    }
+
+    @Override
+    void addItemWhenDataIsDuplicated(Person person, long time, Entry entry) {
+      person.record.currentEncounter(time).allergies.add((HealthRecord.Allergy) entry);
     }
   }
 
@@ -474,36 +522,23 @@ public abstract class Logic implements Serializable {
    */
   public static class ActiveMedication extends ActiveLogic {
     @Override
-    public boolean test(Person person, long time) {
-      if (this.codes != null) {
-        for (Code code : this.codes) {
-          if (person.record.medicationActive(code.code)) {
-            return true;
-          }
-          if (person.hasMultipleRecords) {
-            // If the medication is not in the current health record,
-            // then look in the module history.
-            HealthRecord.Medication medication = (HealthRecord.Medication)
-                findEntryFromHistory(person, HealthRecord.Medication.class, code);
-            if (medication != null && medication.stop == 0L) {
-              if (Config.getAsBoolean("exporter.split_records.duplicate_data", false)) {
-                person.record.currentEncounter(time).medications.add(medication);
-              }
-              return true;
-            }
-          }
-        }
-        return false;
-      } else if (this.referencedByAttribute != null) {
-        if (person.attributes.containsKey(this.referencedByAttribute)) {
-          Medication medication = (Medication) person.attributes.get(this.referencedByAttribute);
-          return person.record.medicationActive(medication.type);
-        } else {
-          return false;
-        }
-      }
+    boolean checkCode(Person person, Code code) {
+      return person.record.medicationActive(code.code);
+    }
 
-      throw new RuntimeException("Active Medication logic must be specified by code or attribute");
+    @Override
+    boolean checkAttribute(Person person, Entry entry) {
+      return person.record.medicationActive(entry.type);
+    }
+
+    @Override
+    Entry findItemWhenMultipleRecords(Person person, Code code) {
+      return findEntryFromHistory(person, HealthRecord.Medication.class, code);
+    }
+
+    @Override
+    void addItemWhenDataIsDuplicated(Person person, long time, Entry entry) {
+      person.record.currentEncounter(time).medications.add((HealthRecord.Medication) entry);
     }
   }
 
@@ -513,36 +548,23 @@ public abstract class Logic implements Serializable {
    */
   public static class ActiveCarePlan extends ActiveLogic {
     @Override
-    public boolean test(Person person, long time) {
-      if (this.codes != null) {
-        for (Code code : this.codes) {
-          if (person.record.careplanActive(code.code)) {
-            return true;
-          }
-          if (person.hasMultipleRecords) {
-            // If the care plan is not in the current health record,
-            // then look in the module history.
-            HealthRecord.CarePlan carePlan = (HealthRecord.CarePlan)
-                findEntryFromHistory(person, HealthRecord.CarePlan.class, code);
-            if (carePlan != null && carePlan.stop == 0L) {
-              if (Config.getAsBoolean("exporter.split_records.duplicate_data", false)) {
-                person.record.currentEncounter(time).careplans.add(carePlan);
-              }
-              return true;
-            }
-          }
-        }
-        return false;
-      } else if (this.referencedByAttribute != null) {
-        if (person.attributes.containsKey(this.referencedByAttribute)) {
-          CarePlan carePlan = (CarePlan) person.attributes.get(this.referencedByAttribute);
-          return person.record.careplanActive(carePlan.type);
-        } else {
-          return false;
-        }
-      }
+    boolean checkCode(Person person, Code code) {
+      return person.record.careplanActive(code.code);
+    }
 
-      throw new RuntimeException("Active CarePlan logic must be specified by code or attribute");
+    @Override
+    boolean checkAttribute(Person person, Entry entry) {
+      return person.record.careplanActive(entry.type);
+    }
+
+    @Override
+    Entry findItemWhenMultipleRecords(Person person, Code code) {
+      return findEntryFromHistory(person, HealthRecord.CarePlan.class, code);
+    }
+
+    @Override
+    void addItemWhenDataIsDuplicated(Person person, long time, Entry entry) {
+      person.record.currentEncounter(time).careplans.add((HealthRecord.CarePlan) entry);
     }
   }
   

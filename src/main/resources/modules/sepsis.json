@@ -40,7 +40,24 @@
     },
     "Administer_Broad_Spectrum_Abx": {
       "type": "Simple",
-      "direct_transition": "Piperacillin_Tazobactam"
+      "conditional_transition": [
+        {
+          "transition": "Aztreonam",
+          "condition": {
+            "condition_type": "Active Allergy",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "7984",
+                "display": "Penicillin V"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Piperacillin_Tazobactam"
+        }
+      ]
     },
     "Age_Guard": {
       "type": "Guard",
@@ -605,6 +622,20 @@
         }
       ],
       "direct_transition": "Admit_to_Inpatient"
+    },
+    "Aztreonam": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1664986,
+          "display": "Aztreonam 2000 MG Injection"
+        }
+      ],
+      "direct_transition": "Vancomycin",
+      "administration": true,
+      "reason": "Sepsis"
     }
-  }
+  },
+  "gmf_version": 2
 }

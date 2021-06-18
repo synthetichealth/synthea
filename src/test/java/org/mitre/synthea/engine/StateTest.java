@@ -947,7 +947,6 @@ public class StateTest {
     Code code = enc.codes.get(0);
     assertEquals("50849002", code.code);
     assertEquals("Emergency Room Admission", code.display);
-
   }
 
   @Test
@@ -985,13 +984,26 @@ public class StateTest {
     State encounter = module.getState("Dr_Visit");
     assertTrue(encounter.process(person, time));
 
-    HealthRecord.Entry allergy = person.record.encounters.get(0).allergies.get(0);
+    HealthRecord.Allergy allergy = person.record.encounters.get(0).allergies.get(0);
     assertEquals(time, allergy.start);
     assertEquals(0L, allergy.stop);
 
     Code code = allergy.codes.get(0);
     assertEquals("91930004", code.code);
     assertEquals("Allergy to eggs", code.display);
+
+    assertTrue(allergy.reactions.size() >= 1 && allergy.reactions.size() < 3);
+    allergy.reactions.forEach((reaction, severity) -> {
+      String reactionCode = reaction.code;
+      assertTrue(reactionCode.equals("21626009") || reactionCode.equals("91941002"));
+      if (reactionCode.equals("21626009")) {
+        assertTrue(severity == HealthRecord.ReactionSeverity.MILD
+            || severity == HealthRecord.ReactionSeverity.MODERATE);
+      }
+      if (reactionCode.equals("91941002")) {
+        assertTrue(severity == HealthRecord.ReactionSeverity.SEVERE);
+      }
+    });
   }
 
   @Test

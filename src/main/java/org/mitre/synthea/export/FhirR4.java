@@ -270,7 +270,7 @@ public class FhirR4 {
         condition(person, personEntry, bundle, encounterEntry, condition);
       }
 
-      for (HealthRecord.Entry allergy : encounter.allergies) {
+      for (HealthRecord.Allergy allergy : encounter.allergies) {
         allergy(person, personEntry, bundle, encounterEntry, allergy);
       }
 
@@ -1445,7 +1445,7 @@ public class FhirR4 {
    */
   private static BundleEntryComponent allergy(RandomNumberGenerator rand,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
-          HealthRecord.Entry allergy) {
+          HealthRecord.Allergy allergy) {
 
     AllergyIntolerance allergyResource = new AllergyIntolerance();
     allergyResource.setRecordedDate(new Date(allergy.start));
@@ -1461,9 +1461,33 @@ public class FhirR4 {
       status.getCodingFirstRep().setCode("inactive");
     }
 
-    allergyResource.setType(AllergyIntoleranceType.ALLERGY);
-    AllergyIntoleranceCategory category = AllergyIntoleranceCategory.FOOD;
-    allergyResource.addCategory(category); // TODO: allergy categories in GMF
+    if (allergy.allergyType == null
+        || allergy.allergyType.equalsIgnoreCase("allergy")) {
+      allergyResource.setType(AllergyIntoleranceType.ALLERGY);
+    } else {
+      allergyResource.setType(AllergyIntoleranceType.INTOLERANCE);
+    }
+    AllergyIntoleranceCategory category = null;
+    if (allergy.category != null) {
+      switch (allergy.category) {
+        case "food":
+          category = AllergyIntoleranceCategory.FOOD;
+          break;
+        case "medication":
+          category = AllergyIntoleranceCategory.MEDICATION;
+          break;
+        case "environment":
+          category = AllergyIntoleranceCategory.ENVIRONMENT;
+          break;
+        case "biologic":
+          category = AllergyIntoleranceCategory.BIOLOGIC;
+          break;
+        default:
+          category = AllergyIntoleranceCategory.MEDICATION;
+      }
+    }
+    allergyResource.addCategory(category);
+
     allergyResource.setCriticality(AllergyIntoleranceCriticality.LOW);
 
     CodeableConcept verification = new CodeableConcept();
@@ -1475,6 +1499,29 @@ public class FhirR4 {
     allergyResource.setPatient(new Reference(personEntry.getFullUrl()));
     Code code = allergy.codes.get(0);
     allergyResource.setCode(mapCodeToCodeableConcept(code, SNOMED_URI));
+
+    if (allergy.reactions != null) {
+      allergy.reactions.keySet().stream().forEach(manifestation -> {
+        AllergyIntolerance.AllergyIntoleranceReactionComponent reactionComponent =
+            new AllergyIntolerance.AllergyIntoleranceReactionComponent();
+        reactionComponent.addManifestation(mapCodeToCodeableConcept(manifestation, SNOMED_URI));
+        HealthRecord.ReactionSeverity severity = allergy.reactions.get(manifestation);
+        switch (severity) {
+          case MILD:
+            reactionComponent.setSeverity(AllergyIntolerance.AllergyIntoleranceSeverity.MILD);
+            break;
+          case MODERATE:
+            reactionComponent.setSeverity(AllergyIntolerance.AllergyIntoleranceSeverity.MODERATE);
+            break;
+          case SEVERE:
+            reactionComponent.setSeverity(AllergyIntolerance.AllergyIntoleranceSeverity.SEVERE);
+            break;
+          default:
+            // do nothing
+        }
+        allergyResource.addReaction(reactionComponent);
+      });
+    }
 
     if (USE_US_CORE_IG) {
       Meta meta = new Meta();

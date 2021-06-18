@@ -1,6 +1,7 @@
 package org.mitre.synthea.export;
 
 import static org.mitre.synthea.export.ExportHelper.dateFromTimestamp;
+import static org.mitre.synthea.export.ExportHelper.getSystemFromURI;
 import static org.mitre.synthea.export.ExportHelper.iso8601Timestamp;
 
 import com.google.common.collect.Table;
@@ -18,11 +19,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.output.NullOutputStream;
@@ -264,7 +267,8 @@ public class CSVExporter {
         + "PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,"
         + "ADDRESS,CITY,STATE,COUNTY,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE");
     patients.write(NEWLINE);
-    allergies.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION");
+    allergies.write("START,STOP,PATIENT,ENCOUNTER,CODE,SYSTEM,DESCRIPTION,TYPE,CATEGORY,"
+        + "REACTION1,DESCRIPTION1,SEVERITY1,REACTION2,DESCRIPTION2,SEVERITY2");
     allergies.write(NEWLINE);
     medications.write(
         "START,STOP,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,PAYER_COVERAGE,DISPENSES,"
@@ -440,7 +444,7 @@ public class CSVExporter {
         }
       }
 
-      for (HealthRecord.Entry allergy : encounter.allergies) {
+      for (HealthRecord.Allergy allergy : encounter.allergies) {
         allergy(personID, encounterID, allergy);
       }
 
@@ -709,8 +713,11 @@ public class CSVExporter {
    * @param allergy     The allergy itself
    * @throws IOException if any IO error occurs
    */
-  private void allergy(String personID, String encounterID, Entry allergy) throws IOException {
-    // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION
+  private void allergy(String personID, String encounterID, HealthRecord.Allergy allergy)
+      throws IOException {
+    // START,STOP,PATIENT,ENCOUNTER,CODE,SYSTEM,DESCRIPTION,TYPE,CATEGORY
+    // REACTION1,DESCRIPTION1,SEVERITY1,
+    // REACTION2,DESCRIPTION2,SEVERITY2
     StringBuilder s = new StringBuilder();
 
     s.append(dateFromTimestamp(allergy.start)).append(',');
@@ -724,7 +731,40 @@ public class CSVExporter {
     Code coding = allergy.codes.get(0);
 
     s.append(coding.code).append(',');
-    s.append(clean(coding.display));
+    s.append(getSystemFromURI(coding.system)).append(',');
+    s.append(clean(coding.display)).append(',');
+    s.append(allergy.allergyType).append(',');
+    s.append(allergy.category).append(',');
+
+    int reactionsSize = 0;
+    if (allergy.reactions != null) {
+      reactionsSize = allergy.reactions.size();
+    }
+    Function<Map.Entry<HealthRecord.Code, HealthRecord.ReactionSeverity>, String> template =
+        mapEntry -> {
+          StringBuilder reactionBuilder = new StringBuilder();
+          reactionBuilder.append(mapEntry.getKey().code).append(',');
+          reactionBuilder.append(clean(mapEntry.getKey().display)).append(',');
+          reactionBuilder.append(mapEntry.getValue());
+          return reactionBuilder.toString();
+        };
+
+    switch (reactionsSize) {
+      case 0:
+        s.append(",,,,,");
+        break;
+      case 1:
+        s.append(allergy.reactions.entrySet().stream().map(template).collect(Collectors.joining()));
+        s.append(",,,");
+        break;
+      default:
+        //case where there are more than two reactions so we need to support by severity
+        s.append(allergy.reactions.entrySet().stream()
+            .sorted(Comparator.comparing(Map.Entry::getValue))
+            .limit(2)
+            .map(template)
+            .collect(Collectors.joining(",")));
+    }
 
     s.append(NEWLINE);
     write(s.toString(), allergies);
@@ -785,7 +825,6 @@ public class CSVExporter {
    *
    * @param personID    ID of the person on whom the procedure was performed.
    * @param encounterID ID of the encounter where the procedure was performed
-   * @param payerID      ID of the payer who covered the immunization.
    * @param procedure   The procedure itself
    * @throws IOException if any IO error occurs
    */
@@ -910,7 +949,6 @@ public class CSVExporter {
    *
    * @param personID     ID of the person on whom the immunization was performed.
    * @param encounterID  ID of the encounter where the immunization was performed.
-   * @param payerID      ID of the payer who covered the immunization.
    * @param immunization The immunization itself
    * @throws IOException if any IO error occurs
    */

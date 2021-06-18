@@ -211,8 +211,7 @@ public class ModuleTest {
           "resources", "busted_distribution", "module_with_bad_distribution.json"))
           .stream()
           .collect(Collectors.joining("\n"));
-      JsonParser parser = new JsonParser();
-      JsonObject object = parser.parse(jsonString).getAsJsonObject();
+      JsonObject object = JsonParser.parseString(jsonString).getAsJsonObject();
       new Module(object, false);
       // Should never get here
       fail("Didn't throw exception when loading module with version from the future");

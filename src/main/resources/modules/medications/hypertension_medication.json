@@ -193,7 +193,7 @@
               "transition": "HCTZ+"
             },
             {
-              "transition": "Lisinopril+",
+              "transition": "ACE_Allergy_Check+",
               "distribution": 0.33
             }
           ]
@@ -205,7 +205,7 @@
               "distribution": 0.6
             },
             {
-              "transition": "Lisinopril+",
+              "transition": "ACE_Allergy_Check+",
               "distribution": 0.3
             },
             {
@@ -238,7 +238,7 @@
             ]
           },
           "distributions": [],
-          "transition": "Lisinopril_2"
+          "transition": "ACE_Allergy_Check_2"
         },
         {
           "condition": {
@@ -258,7 +258,7 @@
             },
             {
               "distribution": 0.5,
-              "transition": "Lisinopril_2"
+              "transition": "ACE_Allergy_Check_2"
             }
           ]
         },
@@ -266,7 +266,7 @@
           "distributions": [
             {
               "distribution": 0.5,
-              "transition": "Lisinopril_2"
+              "transition": "ACE_Allergy_Check_2"
             },
             {
               "distribution": 0.5,
@@ -336,7 +336,7 @@
           }
         },
         {
-          "transition": "Lisinopril_3",
+          "transition": "ACE_Allergy_Check_3",
           "condition": {
             "condition_type": "And",
             "conditions": [
@@ -397,7 +397,7 @@
           }
         },
         {
-          "transition": "Lisinopril_3",
+          "transition": "ACE_Allergy_Check_3",
           "condition": {
             "condition_type": "And",
             "conditions": [
@@ -697,7 +697,7 @@
       "chronic": true,
       "assign_to_attribute": "hypertension_medication",
       "reason": "hypertension_dx",
-      "direct_transition": "Lisinopril_2"
+      "direct_transition": "ACE_Allergy_Check_2"
     },
     "Lisinopril+": {
       "type": "MedicationOrder",
@@ -878,12 +878,12 @@
             ]
           },
           "distributions": [],
-          "transition": "Lisinopril"
+          "transition": "ACE_Allergy_Check"
         },
         {
           "distributions": [
             {
-              "transition": "Lisinopril",
+              "transition": "ACE_Allergy_Check",
               "distribution": 0.5
             },
             {
@@ -936,7 +936,7 @@
           },
           "distributions": [
             {
-              "transition": "Lisinopril_2",
+              "transition": "ACE_Allergy_Check_2",
               "distribution": 0.5
             },
             {
@@ -958,7 +958,7 @@
           },
           "distributions": [
             {
-              "transition": "Lisinopril_2",
+              "transition": "ACE_Allergy_Check_2",
               "distribution": 0.5
             },
             {
@@ -1029,7 +1029,7 @@
           }
         },
         {
-          "transition": "Lisinopril_3",
+          "transition": "ACE_Allergy_Check_3",
           "condition": {
             "condition_type": "And",
             "conditions": [
@@ -1095,7 +1095,195 @@
       "attribute": "hypertension_severe",
       "value": true,
       "direct_transition": "Increase Step"
+    },
+    "ACE_Allergy_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Losartan",
+          "condition": {
+            "condition_type": "Active Allergy",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "29046",
+                "display": "Lisinopril"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Lisinopril"
+        }
+      ]
+    },
+    "Losartan": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 979485,
+          "display": "losartan potassium 25 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "chronic": true,
+      "reason": "hypertension_dx",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        }
+      },
+      "assign_to_attribute": "hypertension_medication"
+    },
+    "ACE_Allergy_Check_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Losartan 2",
+          "condition": {
+            "condition_type": "Active Allergy",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "29046",
+                "display": "Lisinopril"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Lisinopril_2"
+        }
+      ]
+    },
+    "Losartan 2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 979485,
+          "display": "losartan potassium 25 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "assign_to_attribute": "hypertension_medication_2",
+      "reason": "hypertension_dx",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        }
+      },
+      "chronic": true
+    },
+    "ACE_Allergy_Check_3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Losartan_3",
+          "condition": {
+            "condition_type": "Active Allergy",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "29046",
+                "display": "Lisinopril"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Lisinopril_3"
+        }
+      ]
+    },
+    "Losartan_3": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 979485,
+          "display": "losartan potassium 25 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "assign_to_attribute": "hypertension_medication_3",
+      "reason": "hypertension_dx",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        }
+      }
+    },
+    "ACE_Allergy_Check+": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Losartan+",
+          "condition": {
+            "condition_type": "Active Allergy",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "29046",
+                "display": "Lisinopril"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Lisinopril+"
+        }
+      ]
+    },
+    "Losartan+": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 979485,
+          "display": "losartan potassium 25 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Amlodipine_2",
+      "assign_to_attribute": "hypertension_medication",
+      "reason": "hypertension_dx",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        }
+      }
     }
   },
-  "gmf_version": 1
+  "gmf_version": 2
 }
