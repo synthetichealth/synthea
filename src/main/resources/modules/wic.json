@@ -85,7 +85,27 @@
       ]
     },
     "Enroll_In_WIC": {
-      "type": "Simple",
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 710925007,
+          "display": "Provision of food (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 464041000124106,
+          "display": "Referral to Child and Adult Care Food Program (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 0,
+          "low": 0
+        }
+      },
+      "unit": "minutes",
       "complex_transition": [
         {
           "condition": {
