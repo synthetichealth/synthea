@@ -206,6 +206,12 @@ public class Demographics implements Comparable<Demographics>, Serializable {
           // Alaska Native speak English less than well.
           // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005C&prodType=table
           return "english";
+        case "hawaiian":
+          // https://files.hawaii.gov/dbedt/economic/data_reports/Non_English_Speaking_Population_in_Hawaii_April_2016.pdf
+          RandomCollection<String> hawaiianLanguageUsage = new RandomCollection();
+          hawaiianLanguageUsage.add(0.891, "english");
+          hawaiianLanguageUsage.add(0.109, "hawaiian");
+          return hawaiianLanguageUsage.next(random);
         case "other":
           // 36% of people who report a race of something else speak English less than well
           // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005F&prodType=table
