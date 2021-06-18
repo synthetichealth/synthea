@@ -564,6 +564,11 @@
 </li>
 </ul>
 </li>
+<li class="blockList"><a name="org.mitre.synthea.engine.Logic.ActiveAllergy">
+<!--   -->
+</a>
+<h3>Class <a href="org/mitre/synthea/engine/Logic.ActiveAllergy.html" title="class in org.mitre.synthea.engine">org.mitre.synthea.engine.Logic.ActiveAllergy</a> extends org.mitre.synthea.engine.Logic.ActiveLogic implements Serializable</h3>
+</li>
 <li class="blockList"><a name="org.mitre.synthea.engine.Logic.ActiveCarePlan">
 <!--   -->
 </a>
@@ -911,6 +916,50 @@
 </li>
 </ul>
 </li>
+<li class="blockList"><a name="org.mitre.synthea.engine.ReactionProbabilities">
+<!--   -->
+</a>
+<h3>Class <a href="org/mitre/synthea/engine/ReactionProbabilities.html" title="class in org.mitre.synthea.engine">org.mitre.synthea.engine.ReactionProbabilities</a> extends java.lang.Object implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>reaction</h4>
+<pre><a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> reaction</pre>
+</li>
+<li class="blockList">
+<h4>possibleSeverities</h4>
+<pre>java.util.List&lt;E&gt; possibleSeverities</pre>
+</li>
+<li class="blockListLast">
+<h4>severityDistribution</h4>
+<pre>org.apache.commons.math3.distribution.EnumeratedDistribution&lt;T&gt; severityDistribution</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a name="org.mitre.synthea.engine.ReactionProbabilities.SeverityProbability">
+<!--   -->
+</a>
+<h3>Class <a href="org/mitre/synthea/engine/ReactionProbabilities.SeverityProbability.html" title="class in org.mitre.synthea.engine">org.mitre.synthea.engine.ReactionProbabilities.SeverityProbability</a> extends java.lang.Object implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>level</h4>
+<pre>java.lang.String level</pre>
+</li>
+<li class="blockListLast">
+<h4>value</h4>
+<pre>float value</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="blockList"><a name="org.mitre.synthea.engine.State">
 <!--   -->
 </a>
@@ -999,6 +1048,25 @@
 <!--   -->
 </a>
 <h3>Class <a href="org/mitre/synthea/engine/State.AllergyOnset.html" title="class in org.mitre.synthea.engine">org.mitre.synthea.engine.State.AllergyOnset</a> extends org.mitre.synthea.engine.State.OnsetState implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>allergyType</h4>
+<pre>java.lang.String allergyType</pre>
+</li>
+<li class="blockList">
+<h4>category</h4>
+<pre>java.lang.String category</pre>
+</li>
+<li class="blockListLast">
+<h4>reactions</h4>
+<pre>java.util.List&lt;E&gt; reactions</pre>
+</li>
+</ul>
+</li>
+</ul>
 </li>
 <li class="blockList"><a name="org.mitre.synthea.engine.State.CallSubmodule">
 <!--   -->
@@ -2915,6 +2983,30 @@
 <h4>death</h4>
 <pre>java.lang.Long death</pre>
 <div class="block">recorded death date/time.</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a name="org.mitre.synthea.world.concepts.HealthRecord.Allergy">
+<!--   -->
+</a>
+<h3>Class <a href="org/mitre/synthea/world/concepts/HealthRecord.Allergy.html" title="class in org.mitre.synthea.world.concepts">org.mitre.synthea.world.concepts.HealthRecord.Allergy</a> extends <a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a> implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>allergyType</h4>
+<pre>java.lang.String allergyType</pre>
+</li>
+<li class="blockList">
+<h4>category</h4>
+<pre>java.lang.String category</pre>
+</li>
+<li class="blockListLast">
+<h4>reactions</h4>
+<pre>java.util.HashMap&lt;K,V&gt; reactions</pre>
 </li>
 </ul>
 </li>

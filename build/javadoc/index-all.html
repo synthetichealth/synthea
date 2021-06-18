@@ -96,6 +96,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/EncounterModule.html#ACTIVE_WELLNESS_ENCOUNTER">ACTIVE_WELLNESS_ENCOUNTER</a></span> - Static variable in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/EncounterModule.html" title="class in org.mitre.synthea.modules">EncounterModule</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Logic.ActiveAllergy.html#ActiveAllergy--">ActiveAllergy()</a></span> - Constructor for class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Logic.ActiveAllergy.html" title="class in org.mitre.synthea.engine">Logic.ActiveAllergy</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Logic.ActiveCarePlan.html#ActiveCarePlan--">ActiveCarePlan()</a></span> - Constructor for class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Logic.ActiveCarePlan.html" title="class in org.mitre.synthea.engine">Logic.ActiveCarePlan</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Logic.ActiveCondition.html#ActiveCondition--">ActiveCondition()</a></span> - Constructor for class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Logic.ActiveCondition.html" title="class in org.mitre.synthea.engine">Logic.ActiveCondition</a></dt>
@@ -286,8 +288,16 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Encounter.html#allergies">allergies</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Allergy.html#Allergy-long-java.lang.String-">Allergy(long, String)</a></span> - Constructor for class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Allergy.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Allergy</a></dt>
+<dd>
+<div class="block">Constructor for Entry.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html#ALLERGY_IMMUNOLOGY">ALLERGY_IMMUNOLOGY</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html" title="class in org.mitre.synthea.world.concepts">ClinicianSpecialty</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.html#allergyActive-java.lang.String-">allergyActive(String)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.html" title="class in org.mitre.synthea.world.concepts">HealthRecord</a></dt>
+<dd>
+<div class="block">Checks whether the specified allergy is active.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.AllergyEnd.html#AllergyEnd--">AllergyEnd()</a></span> - Constructor for class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.AllergyEnd.html" title="class in org.mitre.synthea.engine">State.AllergyEnd</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.html#allergyEnd-long-java.lang.String-">allergyEnd(long, String)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.html" title="class in org.mitre.synthea.world.concepts">HealthRecord</a></dt>
@@ -304,6 +314,8 @@
 <dd>
 <div class="block">Return the current allergy of the specified type or create a new one if none exists.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Allergy.html#allergyType">allergyType</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Allergy.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Allergy</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Config.html#allPropertyNames--">allPropertyNames()</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Config.html" title="class in org.mitre.synthea.helpers">Config</a></dt>
 <dd>
 <div class="block">Get a set of the names for all properties in the config file.</div>
@@ -468,6 +480,11 @@
 <dd>
 <div class="block">Build a FHIR search url for the specified type of resource and identifier.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ReactionProbabilities.html#buildReactionDistributions--">buildReactionDistributions()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.html" title="class in org.mitre.synthea.engine">ReactionProbabilities</a></dt>
+<dd>
+<div class="block">This will validate the reaction probabilities and generate the underlying objects used
+ to get weighted samples of reaction severities.</div>
+</dd>
 </dl>
 <a name="I:C">
 <!--   -->
@@ -524,6 +541,8 @@
 <dd>
 <div class="block">Get the current care plan of the specified type or create a new one if none found.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Allergy.html#category">category</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Allergy.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Allergy</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Observation.html#category">category</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Observation.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Observation</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#CAUSE_OF_DEATH">CAUSE_OF_DEATH</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
@@ -799,6 +818,8 @@
 <div class="block">The code itself.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html#code--">code()</a></span> - Method in enum org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.EncounterType</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.ReactionSeverity.html#code">code</a></span> - Variable in enum org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.ReactionSeverity.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.ReactionSeverity</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomCodeGenerator.html#codeListCache">codeListCache</a></span> - Static variable in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomCodeGenerator.html" title="class in org.mitre.synthea.helpers">RandomCodeGenerator</a></dt>
 <dd>&nbsp;</dd>
@@ -1222,6 +1243,8 @@
 <dd>
 <div class="block">The human-readable description of the code.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.ReactionSeverity.html#display">display</a></span> - Variable in enum org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.ReactionSeverity.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.ReactionSeverity</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/quadtree/QuadTreeElement.html#distance-org.mitre.synthea.world.geography.quadtree.QuadTreeElement-">distance(QuadTreeElement)</a></span> - Method in interface org.mitre.synthea.world.geography.quadtree.<a href="org/mitre/synthea/world/geography/quadtree/QuadTreeElement.html" title="interface in org.mitre.synthea.world.geography.quadtree">QuadTreeElement</a></dt>
 <dd>
 <div class="block">Return the distance between this element and another.</div>
@@ -1820,6 +1843,10 @@
 <dd>
 <div class="block">Generate a random Person, from the given seed.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ReactionProbabilities.html#generateSeverity-org.mitre.synthea.world.agents.Person-">generateSeverity(Person)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.html" title="class in org.mitre.synthea.engine">ReactionProbabilities</a></dt>
+<dd>
+<div class="block">Generate a severity for the reaction of an allergy or intolerance.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Device.html#generateUDI-org.mitre.synthea.helpers.RandomNumberGenerator-">generateUDI(RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Device.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Device</a></dt>
 <dd>
 <div class="block">Set the human readable form of the UDI for this Person's device.</div>
@@ -2199,6 +2226,8 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html#getLeadTime--">getLeadTime()</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html" title="class in org.mitre.synthea.helpers.physiology">PhysiologyGeneratorConfig</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ReactionProbabilities.SeverityProbability.html#getLevel--">getLevel()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.SeverityProbability.html" title="class in org.mitre.synthea.engine">ReactionProbabilities.SeverityProbability</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Clinician.html#getLonLat--">getLonLat()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getLonLat--">getLonLat()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
@@ -2396,6 +2425,8 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getQolsForYear-int-">getQolsForYear(int)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ReactionProbabilities.html#getReaction--">getReaction()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.html" title="class in org.mitre.synthea.engine">ReactionProbabilities</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Clinician.html#getResourceID--">getResourceID()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a></dt>
 <dd>
 <div class="block">Get the Clinician's UUID.</div>
@@ -2492,6 +2523,10 @@
 <dd>
 <div class="block">Get active symptoms above some threshold.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/ExportHelper.html#getSystemFromURI-java.lang.String-">getSystemFromURI(String)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/ExportHelper.html" title="class in org.mitre.synthea.export">ExportHelper</a></dt>
+<dd>
+<div class="block">Translate the the official FHIR system URI (e.g.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/ExportHelper.html#getSystemURI-java.lang.String-">getSystemURI(String)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/ExportHelper.html" title="class in org.mitre.synthea.export">ExportHelper</a></dt>
 <dd>
 <div class="block">Translate the system name (e.g.</div>
@@ -2545,6 +2580,8 @@
 <div class="block">Pulls the first valid birthdate from the list of FixedRecords.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ExpressedSymptom.SymptomInfo.html#getValue--">getValue()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ExpressedSymptom.SymptomInfo.html" title="class in org.mitre.synthea.engine">ExpressedSymptom.SymptomInfo</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ReactionProbabilities.SeverityProbability.html#getValue--">getValue()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.SeverityProbability.html" title="class in org.mitre.synthea.engine">ReactionProbabilities.SeverityProbability</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ConstantValueGenerator.html#getValue-long-">getValue(long)</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ConstantValueGenerator.html" title="class in org.mitre.synthea.helpers">ConstantValueGenerator</a></dt>
 <dd>&nbsp;</dd>
@@ -2742,6 +2779,8 @@
 <dd>
 <div class="block">Construct a health record for the supplied person.</div>
 </dd>
+<dt><a href="org/mitre/synthea/world/concepts/HealthRecord.Allergy.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">HealthRecord.Allergy</span></a> - Class in <a href="org/mitre/synthea/world/concepts/package-summary.html">org.mitre.synthea.world.concepts</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/world/concepts/HealthRecord.CarePlan.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">HealthRecord.CarePlan</span></a> - Class in <a href="org/mitre/synthea/world/concepts/package-summary.html">org.mitre.synthea.world.concepts</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">HealthRecord.Code</span></a> - Class in <a href="org/mitre/synthea/world/concepts/package-summary.html">org.mitre.synthea.world.concepts</a></dt>
@@ -2780,6 +2819,8 @@
 <dt><a href="org/mitre/synthea/world/concepts/HealthRecord.Observation.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">HealthRecord.Observation</span></a> - Class in <a href="org/mitre/synthea/world/concepts/package-summary.html">org.mitre.synthea.world.concepts</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/world/concepts/HealthRecord.Procedure.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">HealthRecord.Procedure</span></a> - Class in <a href="org/mitre/synthea/world/concepts/package-summary.html">org.mitre.synthea.world.concepts</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/world/concepts/HealthRecord.ReactionSeverity.html" title="enum in org.mitre.synthea.world.concepts"><span class="typeNameLink">HealthRecord.ReactionSeverity</span></a> - Enum in <a href="org/mitre/synthea/world/concepts/package-summary.html">org.mitre.synthea.world.concepts</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/world/concepts/HealthRecord.Report.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">HealthRecord.Report</span></a> - Class in <a href="org/mitre/synthea/world/concepts/package-summary.html">org.mitre.synthea.world.concepts</a></dt>
 <dd>&nbsp;</dd>
@@ -3165,6 +3206,8 @@
 <dd>
 <div class="block">Get an iso8601 string for the given time stamp.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ReactionProbabilities.html#isPopulated--">isPopulated()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.html" title="class in org.mitre.synthea.engine">ReactionProbabilities</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/PreGenerator.PreGeneratorArg.html#isPrimitive--">isPrimitive()</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/PreGenerator.PreGeneratorArg.html" title="class in org.mitre.synthea.helpers.physiology">PreGenerator.PreGeneratorArg</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/Exporter.ExporterRuntimeOptions.html#isQueueEnabled--">isQueueEnabled()</a></span> - Method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/Exporter.ExporterRuntimeOptions.html" title="class in org.mitre.synthea.export">Exporter.ExporterRuntimeOptions</a></dt>
@@ -3341,6 +3384,8 @@
  expression.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Logic.html#Logic--">Logic()</a></span> - Constructor for class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Logic.html" title="class in org.mitre.synthea.engine">Logic</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/engine/Logic.ActiveAllergy.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">Logic.ActiveAllergy</span></a> - Class in <a href="org/mitre/synthea/engine/package-summary.html">org.mitre.synthea.engine</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/engine/Logic.ActiveCarePlan.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">Logic.ActiveCarePlan</span></a> - Class in <a href="org/mitre/synthea/engine/package-summary.html">org.mitre.synthea.engine</a></dt>
 <dd>
@@ -4601,6 +4646,17 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Components.RangeWithUnit.html#RangeWithUnit--">RangeWithUnit()</a></span> - Constructor for class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Components.RangeWithUnit.html" title="class in org.mitre.synthea.engine">Components.RangeWithUnit</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/engine/ReactionProbabilities.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">ReactionProbabilities</span></a> - Class in <a href="org/mitre/synthea/engine/package-summary.html">org.mitre.synthea.engine</a></dt>
+<dd>
+<div class="block">ReactionProbabilities is a structure to capture the kind and severity of reaction for a
+ given AllergyIntolerance.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ReactionProbabilities.html#ReactionProbabilities-org.mitre.synthea.world.concepts.HealthRecord.Code-java.util.List-">ReactionProbabilities(HealthRecord.Code, List&lt;ReactionProbabilities.SeverityProbability&gt;)</a></span> - Constructor for class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.html" title="class in org.mitre.synthea.engine">ReactionProbabilities</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/engine/ReactionProbabilities.SeverityProbability.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">ReactionProbabilities.SeverityProbability</span></a> - Class in <a href="org/mitre/synthea/engine/package-summary.html">org.mitre.synthea.engine</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Allergy.html#reactions">reactions</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Allergy.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Allergy</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Attributes.Inventory.html#read">read</a></span> - Variable in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Attributes.Inventory.html" title="class in org.mitre.synthea.helpers">Attributes.Inventory</a></dt>
 <dd>
 <div class="block">Key: Module Name, Values: State names that read this attribute.</div>
@@ -4875,6 +4931,8 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html#setLeadTime-double-">setLeadTime(double)</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html" title="class in org.mitre.synthea.helpers.physiology">PhysiologyGeneratorConfig</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ReactionProbabilities.SeverityProbability.html#setLevel-java.lang.String-">setLevel(String)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.SeverityProbability.html" title="class in org.mitre.synthea.engine">ReactionProbabilities.SeverityProbability</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/PhysiologySimulator.SimConfig.html#setModel-java.lang.String-">setModel(String)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/PhysiologySimulator.SimConfig.html" title="class in org.mitre.synthea.engine">PhysiologySimulator.SimConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html#setModel-java.lang.String-">setModel(String)</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html" title="class in org.mitre.synthea.helpers.physiology">PhysiologyGeneratorConfig</a></dt>
@@ -4926,6 +4984,8 @@
 <div class="block">Set the preferred provider for the specified encounter type to be the provider
  at the specified time.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ReactionProbabilities.html#setReaction-org.mitre.synthea.world.concepts.HealthRecord.Code-">setReaction(HealthRecord.Code)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.html" title="class in org.mitre.synthea.engine">ReactionProbabilities</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ChartRenderer.MultiTableChartConfig.html#setSeries-java.util.List-">setSeries(List&lt;ChartRenderer.MultiTableSeriesConfig&gt;)</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ChartRenderer.MultiTableChartConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.MultiTableChartConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ChartRenderer.PersonChartConfig.html#setSeries-java.util.List-">setSeries(List&lt;ChartRenderer.PersonSeriesConfig&gt;)</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ChartRenderer.PersonChartConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.PersonChartConfig</a></dt>
@@ -4969,6 +5029,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html#setUsePreGenerators-boolean-">setUsePreGenerators(boolean)</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html" title="class in org.mitre.synthea.helpers.physiology">PhysiologyGeneratorConfig</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ReactionProbabilities.SeverityProbability.html#setValue-float-">setValue(float)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.SeverityProbability.html" title="class in org.mitre.synthea.engine">ReactionProbabilities.SeverityProbability</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/PreGenerator.PreGeneratorArg.html#setValue-java.lang.String-">setValue(String)</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/PreGenerator.PreGeneratorArg.html" title="class in org.mitre.synthea.helpers.physiology">PreGenerator.PreGeneratorArg</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/TimeSeriesData.html#setValues-java.util.List-">setValues(List&lt;Double&gt;)</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/TimeSeriesData.html" title="class in org.mitre.synthea.helpers">TimeSeriesData</a></dt>
@@ -4982,6 +5044,8 @@
 <div class="block">Convenience function to set a vital sign to a constant value.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ChartRenderer.ChartConfig.html#setWidth-int-">setWidth(int)</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ChartRenderer.ChartConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.ChartConfig</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ReactionProbabilities.SeverityProbability.html#SeverityProbability-java.lang.String-float-">SeverityProbability(String, float)</a></span> - Constructor for class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.SeverityProbability.html" title="class in org.mitre.synthea.engine">ReactionProbabilities.SeverityProbability</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/NHANESSample.html#sex">sex</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/NHANESSample.html" title="class in org.mitre.synthea.world.concepts">NHANESSample</a></dt>
 <dd>&nbsp;</dd>
@@ -5342,12 +5406,6 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/Exporter.ExporterRuntimeOptions.html#terminologyService">terminologyService</a></span> - Variable in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/Exporter.ExporterRuntimeOptions.html" title="class in org.mitre.synthea.export">Exporter.ExporterRuntimeOptions</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Logic.ActiveCarePlan.html#test-org.mitre.synthea.world.agents.Person-long-">test(Person, long)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Logic.ActiveCarePlan.html" title="class in org.mitre.synthea.engine">Logic.ActiveCarePlan</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Logic.ActiveCondition.html#test-org.mitre.synthea.world.agents.Person-long-">test(Person, long)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Logic.ActiveCondition.html" title="class in org.mitre.synthea.engine">Logic.ActiveCondition</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Logic.ActiveMedication.html#test-org.mitre.synthea.world.agents.Person-long-">test(Person, long)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Logic.ActiveMedication.html" title="class in org.mitre.synthea.engine">Logic.ActiveMedication</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Logic.Age.html#test-org.mitre.synthea.world.agents.Person-long-">test(Person, long)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Logic.Age.html" title="class in org.mitre.synthea.engine">Logic.Age</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Logic.And.html#test-org.mitre.synthea.world.agents.Person-long-">test(Person, long)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Logic.And.html" title="class in org.mitre.synthea.engine">Logic.And</a></dt>
@@ -5659,6 +5717,8 @@
 <div class="block">Determine whether the Distribution has all of the information it needs to generate a sample
  value.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ReactionProbabilities.html#validate--">validate()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.html" title="class in org.mitre.synthea.engine">ReactionProbabilities</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.Observation.html#validate-org.mitre.synthea.engine.Module-java.lang.String-">validate(Module, String)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.Observation.html" title="class in org.mitre.synthea.engine">State.Observation</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html#validate--">validate()</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html" title="class in org.mitre.synthea.helpers.physiology">PhysiologyGeneratorConfig</a></dt>
@@ -5703,6 +5763,10 @@
 <dd>
 <div class="block">Returns the enum constant of this type with the specified name.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.ReactionSeverity.html#valueOf-java.lang.String-">valueOf(String)</a></span> - Static method in enum org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.ReactionSeverity.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.ReactionSeverity</a></dt>
+<dd>
+<div class="block">Returns the enum constant of this type with the specified name.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/VitalSign.html#valueOf-java.lang.String-">valueOf(String)</a></span> - Static method in enum org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a></dt>
 <dd>
 <div class="block">Returns the enum constant of this type with the specified name.</div>
@@ -5738,6 +5802,11 @@ the order they are declared.</div>
 the order they are declared.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html#values--">values()</a></span> - Static method in enum org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.EncounterType</a></dt>
+<dd>
+<div class="block">Returns an array containing the constants of this enum type, in
+the order they are declared.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.ReactionSeverity.html#values--">values()</a></span> - Static method in enum org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.ReactionSeverity.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.ReactionSeverity</a></dt>
 <dd>
 <div class="block">Returns an array containing the constants of this enum type, in
 the order they are declared.</div>

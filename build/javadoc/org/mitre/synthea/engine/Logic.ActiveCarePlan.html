@@ -17,12 +17,6 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
-var altColor = "altColor";
-var rowColor = "rowColor";
-var tableTab = "tableTab";
-var activeTableTab = "activeTableTab";
 </script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -47,7 +41,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/mitre/synthea/engine/Logic.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../org/mitre/synthea/engine/Logic.ActiveAllergy.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../org/mitre/synthea/engine/Logic.ActiveCondition.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -75,13 +69,13 @@ var activeTableTab = "activeTableTab";
 <li><a href="#nested.classes.inherited.from.class.org.mitre.synthea.engine.Logic">Nested</a>&nbsp;|&nbsp;</li>
 <li><a href="#fields.inherited.from.class.org.mitre.synthea.engine.Logic.ActiveLogic">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li><a href="#methods.inherited.from.class.org.mitre.synthea.engine.Logic.ActiveLogic">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip.navbar.top">
@@ -145,7 +139,7 @@ extends <a href="../../../../org/mitre/synthea/engine/Logic.html" title="class i
 <!--   -->
 </a>
 <h3>Nested classes/interfaces inherited from class&nbsp;org.mitre.synthea.engine.<a href="../../../../org/mitre/synthea/engine/Logic.html" title="class in org.mitre.synthea.engine">Logic</a></h3>
-<code><a href="../../../../org/mitre/synthea/engine/Logic.ActiveCarePlan.html" title="class in org.mitre.synthea.engine">Logic.ActiveCarePlan</a>, <a href="../../../../org/mitre/synthea/engine/Logic.ActiveCondition.html" title="class in org.mitre.synthea.engine">Logic.ActiveCondition</a>, <a href="../../../../org/mitre/synthea/engine/Logic.ActiveMedication.html" title="class in org.mitre.synthea.engine">Logic.ActiveMedication</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Age.html" title="class in org.mitre.synthea.engine">Logic.Age</a>, <a href="../../../../org/mitre/synthea/engine/Logic.And.html" title="class in org.mitre.synthea.engine">Logic.And</a>, <a href="../../../../org/mitre/synthea/engine/Logic.AtLeast.html" title="class in org.mitre.synthea.engine">Logic.AtLeast</a>, <a href="../../../../org/mitre/synthea/engine/Logic.AtMost.html" title="class in org.mitre.synthea.engine">Logic.AtMost</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Attribute.html" title="class in org.mitre.synthea.engine">Logic.Attribute</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Date.html" title="class in org.mitre.synthea.engine">Logic.Date</a>, <a href="../../../../org/mitre/synthea/engine/Logic.False.html" title="class in org.mitre.synthea.engine">Logic.False</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Gender.html" title="class in org.mitre.synthea.engine">Logic.Gender</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Not.html" title="class in org.mitre.synthea.engine">Logic.Not</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Observation.html" title="class in org.mitre.synthea.engine">Logic.Observation</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Or.html" title="class in org.mitre.synthea.engine">Logic.Or</a>, <a href="../../../../org/mitre/synthea/engine/Logic.PriorState.html" title="class in org.mitre.synthea.engine">Logic.PriorState</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Race.html" title="class in org.mitre.synthea.engine">Logic.Race</a>, <a href="../../../../org/mitre/synthea/engine/Logic.SocioeconomicStatus.html" title="class in org.mitre.synthea.engine">Logic.SocioeconomicStatus</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Symptom.html" title="class in org.mitre.synthea.engine">Logic.Symptom</a>, <a href="../../../../org/mitre/synthea/engine/Logic.True.html" title="class in org.mitre.synthea.engine">Logic.True</a>, <a href="../../../../org/mitre/synthea/engine/Logic.VitalSign.html" title="class in org.mitre.synthea.engine">Logic.VitalSign</a></code></li>
+<code><a href="../../../../org/mitre/synthea/engine/Logic.ActiveAllergy.html" title="class in org.mitre.synthea.engine">Logic.ActiveAllergy</a>, <a href="../../../../org/mitre/synthea/engine/Logic.ActiveCarePlan.html" title="class in org.mitre.synthea.engine">Logic.ActiveCarePlan</a>, <a href="../../../../org/mitre/synthea/engine/Logic.ActiveCondition.html" title="class in org.mitre.synthea.engine">Logic.ActiveCondition</a>, <a href="../../../../org/mitre/synthea/engine/Logic.ActiveMedication.html" title="class in org.mitre.synthea.engine">Logic.ActiveMedication</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Age.html" title="class in org.mitre.synthea.engine">Logic.Age</a>, <a href="../../../../org/mitre/synthea/engine/Logic.And.html" title="class in org.mitre.synthea.engine">Logic.And</a>, <a href="../../../../org/mitre/synthea/engine/Logic.AtLeast.html" title="class in org.mitre.synthea.engine">Logic.AtLeast</a>, <a href="../../../../org/mitre/synthea/engine/Logic.AtMost.html" title="class in org.mitre.synthea.engine">Logic.AtMost</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Attribute.html" title="class in org.mitre.synthea.engine">Logic.Attribute</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Date.html" title="class in org.mitre.synthea.engine">Logic.Date</a>, <a href="../../../../org/mitre/synthea/engine/Logic.False.html" title="class in org.mitre.synthea.engine">Logic.False</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Gender.html" title="class in org.mitre.synthea.engine">Logic.Gender</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Not.html" title="class in org.mitre.synthea.engine">Logic.Not</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Observation.html" title="class in org.mitre.synthea.engine">Logic.Observation</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Or.html" title="class in org.mitre.synthea.engine">Logic.Or</a>, <a href="../../../../org/mitre/synthea/engine/Logic.PriorState.html" title="class in org.mitre.synthea.engine">Logic.PriorState</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Race.html" title="class in org.mitre.synthea.engine">Logic.Race</a>, <a href="../../../../org/mitre/synthea/engine/Logic.SocioeconomicStatus.html" title="class in org.mitre.synthea.engine">Logic.SocioeconomicStatus</a>, <a href="../../../../org/mitre/synthea/engine/Logic.Symptom.html" title="class in org.mitre.synthea.engine">Logic.Symptom</a>, <a href="../../../../org/mitre/synthea/engine/Logic.True.html" title="class in org.mitre.synthea.engine">Logic.True</a>, <a href="../../../../org/mitre/synthea/engine/Logic.VitalSign.html" title="class in org.mitre.synthea.engine">Logic.VitalSign</a></code></li>
 </ul>
 </li>
 </ul>
@@ -187,20 +181,6 @@ extends <a href="../../../../org/mitre/synthea/engine/Logic.html" title="class i
 <!--   -->
 </a>
 <h3>Method Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Method and Description</th>
-</tr>
-<tr id="i0" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Logic.ActiveCarePlan.html#test-org.mitre.synthea.world.agents.Person-long-">test</a></span>(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
-    long&nbsp;time)</code>
-<div class="block">Test whether the logic is true for the given person at the given time.</div>
-</td>
-</tr>
-</table>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
@@ -233,35 +213,6 @@ extends <a href="../../../../org/mitre/synthea/engine/Logic.html" title="class i
 </ul>
 </li>
 </ul>
-<!-- ============ METHOD DETAIL ========== -->
-<ul class="blockList">
-<li class="blockList"><a name="method.detail">
-<!--   -->
-</a>
-<h3>Method Detail</h3>
-<a name="test-org.mitre.synthea.world.agents.Person-long-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>test</h4>
-<pre>public&nbsp;boolean&nbsp;test(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
-                    long&nbsp;time)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../org/mitre/synthea/engine/Logic.html#test-org.mitre.synthea.world.agents.Person-long-">Logic</a></code></span></div>
-<div class="block">Test whether the logic is true for the given person at the given time.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../org/mitre/synthea/engine/Logic.html#test-org.mitre.synthea.world.agents.Person-long-">test</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/mitre/synthea/engine/Logic.html" title="class in org.mitre.synthea.engine">Logic</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>person</code> - Person to execute logic against</dd>
-<dd><code>time</code> - Timestamp to execute logic against</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>boolean - whether or not the given condition is true or not</dd>
-</dl>
-</li>
-</ul>
-</li>
-</ul>
 </li>
 </ul>
 </div>
@@ -287,7 +238,7 @@ extends <a href="../../../../org/mitre/synthea/engine/Logic.html" title="class i
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/mitre/synthea/engine/Logic.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../org/mitre/synthea/engine/Logic.ActiveAllergy.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../org/mitre/synthea/engine/Logic.ActiveCondition.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -315,13 +266,13 @@ extends <a href="../../../../org/mitre/synthea/engine/Logic.html" title="class i
 <li><a href="#nested.classes.inherited.from.class.org.mitre.synthea.engine.Logic">Nested</a>&nbsp;|&nbsp;</li>
 <li><a href="#fields.inherited.from.class.org.mitre.synthea.engine.Logic.ActiveLogic">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li><a href="#methods.inherited.from.class.org.mitre.synthea.engine.Logic.ActiveLogic">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip.navbar.bottom">

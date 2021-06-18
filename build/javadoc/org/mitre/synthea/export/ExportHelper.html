@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -213,17 +213,23 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/export/ExportHelper.html#getSystemFromURI-java.lang.String-">getSystemFromURI</a></span>(java.lang.String&nbsp;uri)</code>
+<div class="block">Translate the the official FHIR system URI (e.g.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/export/ExportHelper.html#getSystemURI-java.lang.String-">getSystemURI</a></span>(java.lang.String&nbsp;system)</code>
 <div class="block">Translate the system name (e.g.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/export/ExportHelper.html#iso8601Timestamp-long-">iso8601Timestamp</a></span>(long&nbsp;time)</code>
 <div class="block">Get an iso8601 string for the given time stamp.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/export/ExportHelper.html#sampledDataToValueString-org.mitre.synthea.engine.Components.SampledData-">sampledDataToValueString</a></span>(<a href="../../../../org/mitre/synthea/engine/Components.SampledData.html" title="class in org.mitre.synthea.engine">Components.SampledData</a>&nbsp;sampledData)</code>
 <div class="block">Helper to translate all SampledData values into string form.</div>
@@ -405,6 +411,23 @@ extends java.lang.Object</pre>
 <dd><code>system</code> - SNOMED-CT, LOINC, RxNorm, CVX</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The FHIR system URI for the given system or the input if not found.</dd>
+</dl>
+</li>
+</ul>
+<a name="getSystemFromURI-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSystemFromURI</h4>
+<pre>public static&nbsp;java.lang.String&nbsp;getSystemFromURI(java.lang.String&nbsp;uri)</pre>
+<div class="block">Translate the the official FHIR system URI (e.g. http://snomed.info/sct)
+ into system name (e.g. SNOMED-CT).</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>uri</code> - http://snomed.info/sct, http://loinc.org, etc.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The internal short name used by Synthea, or "Unknown"</dd>
 </dl>
 </li>
 </ul>
