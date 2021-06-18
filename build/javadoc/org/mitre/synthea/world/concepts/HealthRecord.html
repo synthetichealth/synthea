@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -479,19 +479,25 @@ implements java.io.Serializable</pre>
 </td>
 </tr>
 <tr id="i27" class="rowColor">
+<td class="colFirst"><code>java.lang.Long</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.html#presentOnset-java.lang.String-">presentOnset</a></span>(java.lang.String&nbsp;code)</code>
+<div class="block">Get the onset time for any entry that is currently present in the healthrecord.</div>
+</td>
+</tr>
+<tr id="i28" class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Procedure.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Procedure</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.html#procedure-long-java.lang.String-">procedure</a></span>(long&nbsp;time,
          java.lang.String&nbsp;type)</code>
 <div class="block">Create a new procedure of the specified type.</div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.html#providerCount--">providerCount</a></span>()</code>
 <div class="block">Returns the number of providers associated with this healthrecord.</div>
 </td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Report.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Report</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.html#report-long-java.lang.String-int-">report</a></span>(long&nbsp;time,
       java.lang.String&nbsp;type,
@@ -501,19 +507,19 @@ implements java.io.Serializable</pre>
  report.</div>
 </td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.html#textSummary--">textSummary</a></span>()</code>
 <div class="block">Create a text summary of the health record containing counts of each time of entry.</div>
 </td>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.html#timeSinceLastWellnessEncounter-long-">timeSinceLastWellnessEncounter</a></span>(long&nbsp;time)</code>
 <div class="block">Return the time between the supplied time and the time of the last wellness encounter.</div>
 </td>
 </tr>
-<tr id="i32" class="altColor">
+<tr id="i33" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Supply.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Supply</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.html#useSupply-long-org.mitre.synthea.world.concepts.HealthRecord.Code-int-">useSupply</a></span>(long&nbsp;time,
          <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&nbsp;code,
@@ -843,6 +849,22 @@ implements java.io.Serializable</pre>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>true of the condition exists and does not have a specified stop time, false
      otherwise.</dd>
+</dl>
+</li>
+</ul>
+<a name="presentOnset-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>presentOnset</h4>
+<pre>public&nbsp;java.lang.Long&nbsp;presentOnset(java.lang.String&nbsp;code)</pre>
+<div class="block">Get the onset time for any entry that is currently present in the healthrecord.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>code</code> - The clinical code for the entry.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The onset time or null if not present.</dd>
 </dl>
 </li>
 </ul>

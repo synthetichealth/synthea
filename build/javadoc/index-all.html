@@ -110,9 +110,9 @@
 <dd>
 <div class="block">Add an object (result) to the collection with a given weight.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#addCoverage-double-long-">addCoverage(double, long)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html#addCosts-org.mitre.synthea.world.concepts.Claim.ClaimEntry-">addCosts(Claim.ClaimEntry)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></dt>
 <dd>
-<div class="block">Adds the given cost to the person's coverage.</div>
+<div class="block">Add the costs from the other entry to this one.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Payer.html#addCoveredCost-double-">addCoveredCost(double)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a></dt>
 <dd>
@@ -121,10 +121,6 @@
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#addCurrentProvider-java.lang.String-org.mitre.synthea.world.agents.Provider-">addCurrentProvider(String, Provider)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>
 <div class="block">Set the current provider to be the supplied provider.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#addExpense-double-long-">addExpense(double, long)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
-<dd>
-<div class="block">Adds the given cost to the person's expenses.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/FactTable.html#addFact-java.lang.String-java.lang.String-">addFact(String, String)</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/FactTable.html" title="class in org.mitre.synthea.helpers">FactTable</a></dt>
 <dd>
@@ -238,6 +234,25 @@
 <dd>
 <div class="block">Change the BMI vector to reflect successful management of weight.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/IPayerAdjustment.html#adjustClaim-org.mitre.synthea.world.concepts.Claim.ClaimEntry-org.mitre.synthea.world.agents.Person-">adjustClaim(Claim.ClaimEntry, Person)</a></span> - Method in interface org.mitre.synthea.world.agents.behaviors.<a href="org/mitre/synthea/world/agents/behaviors/IPayerAdjustment.html" title="interface in org.mitre.synthea.world.agents.behaviors">IPayerAdjustment</a></dt>
+<dd>
+<div class="block">Adjust the claim entry according to this adjustment strategy.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentFixed.html#adjustClaim-org.mitre.synthea.world.concepts.Claim.ClaimEntry-org.mitre.synthea.world.agents.Person-">adjustClaim(Claim.ClaimEntry, Person)</a></span> - Method in class org.mitre.synthea.world.agents.behaviors.<a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentFixed.html" title="class in org.mitre.synthea.world.agents.behaviors">PayerAdjustmentFixed</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentNone.html#adjustClaim-org.mitre.synthea.world.concepts.Claim.ClaimEntry-org.mitre.synthea.world.agents.Person-">adjustClaim(Claim.ClaimEntry, Person)</a></span> - Method in class org.mitre.synthea.world.agents.behaviors.<a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentNone.html" title="class in org.mitre.synthea.world.agents.behaviors">PayerAdjustmentNone</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentRandom.html#adjustClaim-org.mitre.synthea.world.concepts.Claim.ClaimEntry-org.mitre.synthea.world.agents.Person-">adjustClaim(Claim.ClaimEntry, Person)</a></span> - Method in class org.mitre.synthea.world.agents.behaviors.<a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentRandom.html" title="class in org.mitre.synthea.world.agents.behaviors">PayerAdjustmentRandom</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Payer.html#adjustClaim-org.mitre.synthea.world.concepts.Claim.ClaimEntry-org.mitre.synthea.world.agents.Person-">adjustClaim(Claim.ClaimEntry, Person)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a></dt>
+<dd>
+<div class="block">Determines whether or not this payer will adjust this claim, and by how
+ much.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html#adjustment">adjustment</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></dt>
+<dd>
+<div class="block">amount the charge was decreased by payer adjustment.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Medication.html#administration">administration</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Medication.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Medication</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/WeightLossModule.html#adultRegression-org.mitre.synthea.world.agents.Person-long-">adultRegression(Person, long)</a></span> - Method in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/WeightLossModule.html" title="class in org.mitre.synthea.modules">WeightLossModule</a></dt>
@@ -336,7 +351,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#assignCosts--">assignCosts()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
 <dd>
-<div class="block">Assigns the costs of the claim to the patient and payer.</div>
+<div class="block">Assign costs between the payer and patient.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Location.html#assignPoint-org.mitre.synthea.world.agents.Person-java.lang.String-">assignPoint(Person, String)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Location.html" title="class in org.mitre.synthea.world.geography">Location</a></dt>
 <dd>
@@ -651,6 +666,14 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Medication.html#claim">claim</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Medication.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Medication</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">Claim.ClaimEntry</span></a> - Class in <a href="org/mitre/synthea/world/concepts/package-summary.html">org.mitre.synthea.world.concepts</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html#ClaimEntry-org.mitre.synthea.world.concepts.HealthRecord.Entry-">ClaimEntry(HealthRecord.Entry)</a></span> - Constructor for class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/CSVExporter.ClaimTransaction.html#ClaimTransaction-org.mitre.synthea.world.concepts.HealthRecord.Encounter-java.lang.String-org.mitre.synthea.world.concepts.Claim-java.lang.String-long-org.mitre.synthea.world.concepts.Claim.ClaimEntry-org.mitre.synthea.helpers.RandomNumberGenerator-">ClaimTransaction(HealthRecord.Encounter, String, Claim, String, long, Claim.ClaimEntry, RandomNumberGenerator)</a></span> - Constructor for class org.mitre.synthea.export.<a href="org/mitre/synthea/export/CSVExporter.ClaimTransaction.html" title="class in org.mitre.synthea.export">CSVExporter.ClaimTransaction</a></dt>
+<dd>
+<div class="block">Create a new ClaimTransaction.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Payer.html#clear--">clear()</a></span> - Static method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a></dt>
 <dd>
 <div class="block">Clear the list of loaded and cached Payers.</div>
@@ -825,6 +848,10 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html#codes">codes</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html#coinsurance">coinsurance</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></dt>
+<dd>
+<div class="block">coinsurance paid by payer.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Utilities.html#compare-java.lang.Object-java.lang.Object-java.lang.String-">compare(Object, Object, String)</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Utilities.html" title="class in org.mitre.synthea.helpers">Utilities</a></dt>
 <dd>
 <div class="block">Compare two objects.</div>
@@ -1018,10 +1045,18 @@
 <dd>
 <div class="block">Coordinate of the place.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html#copay">copay</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></dt>
+<dd>
+<div class="block">copay paid by patient.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Module.ModuleSupplier.html#core">core</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Module.ModuleSupplier.html" title="class in org.mitre.synthea.engine">Module.ModuleSupplier</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/PediatricGrowthTrajectory.YearInformation.html#correlation">correlation</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/PediatricGrowthTrajectory.YearInformation.html" title="class in org.mitre.synthea.world.concepts">PediatricGrowthTrajectory.YearInformation</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html#cost">cost</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></dt>
+<dd>
+<div class="block">total cost of the entry.</div>
+</dd>
 <dt><a href="org/mitre/synthea/world/concepts/Costs.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">Costs</span></a> - Class in <a href="org/mitre/synthea/world/concepts/package-summary.html">org.mitre.synthea.world.concepts</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Costs.html#Costs--">Costs()</a></span> - Constructor for class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Costs.html" title="class in org.mitre.synthea.world.concepts">Costs</a></dt>
@@ -1033,6 +1068,18 @@
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/input/FixedRecord.html#country">country</a></span> - Variable in class org.mitre.synthea.input.<a href="org/mitre/synthea/input/FixedRecord.html" title="class in org.mitre.synthea.input">FixedRecord</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#county">county</a></span> - Variable in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#coverage">coverage</a></span> - Variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
+<dd>
+<div class="block">Record of insurance coverage.</div>
+</dd>
+<dt><a href="org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">CoverageRecord</span></a> - Class in <a href="org/mitre/synthea/world/concepts/package-summary.html">org.mitre.synthea.world.concepts</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.html#CoverageRecord-org.mitre.synthea.world.agents.Person-">CoverageRecord(Person)</a></span> - Constructor for class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord</a></dt>
+<dd>
+<div class="block">Create a new CoverageRecord for the given Person.</div>
+</dd>
+<dt><a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">CoverageRecord.Plan</span></a> - Class in <a href="org/mitre/synthea/world/concepts/package-summary.html">org.mitre.synthea.world.concepts</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Payer.html#coversCare-org.mitre.synthea.world.concepts.HealthRecord.Entry-">coversCare(HealthRecord.Entry)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a></dt>
 <dd>
@@ -1070,6 +1117,12 @@
 <div class="block">Researchers have requested a simple table-based format that could easily be
  imported into any database for analysis.</div>
 </dd>
+<dt><a href="org/mitre/synthea/export/CSVExporter.ClaimTransaction.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">CSVExporter.ClaimTransaction</span></a> - Class in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/CSVExporter.ClaimTransactionType.html" title="enum in org.mitre.synthea.export"><span class="typeNameLink">CSVExporter.ClaimTransactionType</span></a> - Enum in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/CSVExporter.PaymentMethod.html" title="enum in org.mitre.synthea.export"><span class="typeNameLink">CSVExporter.PaymentMethod</span></a> - Enum in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/TransitionMetrics.Metric.html#current">current</a></span> - Variable in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/TransitionMetrics.Metric.html" title="class in org.mitre.synthea.helpers">TransitionMetrics.Metric</a></dt>
 <dd>
 <div class="block">Number of people that are "currently" in that state.</div>
@@ -1148,6 +1201,10 @@
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Components.Range.html#decimals">decimals</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Components.Range.html" title="class in org.mitre.synthea.engine">Components.Range</a></dt>
 <dd>
 <div class="block">Decimal places for value within the range.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html#deductible">deductible</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></dt>
+<dd>
+<div class="block">deductible paid by patient.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/BirthStatistics.html#DEFAULT_HEIGHT">DEFAULT_HEIGHT</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/BirthStatistics.html" title="class in org.mitre.synthea.world.concepts">BirthStatistics</a></dt>
 <dd>
@@ -1401,6 +1458,8 @@
 <div class="block">Number of times the state was entered.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.html#entry">entry</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.html" title="class in org.mitre.synthea.engine">State</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html#entry">entry</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html#Entry-long-java.lang.String-">Entry(long, String)</a></span> - Constructor for class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></dt>
 <dd>
@@ -2164,14 +2223,6 @@
 <dd>
 <div class="block">Get a Gson object, preconfigured to load the GMF modules into classes.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getHealthcareCoverage--">getHealthcareCoverage()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
-<dd>
-<div class="block">Returns the total healthcare coverage for this person.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getHealthcareExpenses--">getHealthcareExpenses()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
-<dd>
-<div class="block">Returns the total healthcare expenses for this person.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ChartRenderer.ChartConfig.html#getHeight--">getHeight()</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ChartRenderer.ChartConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.ChartConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Payer.html#getImmunizationsCoveredCount--">getImmunizationsCoveredCount()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a></dt>
@@ -2217,6 +2268,14 @@
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ExpressedConditionRecord.OnsetCondition.html#getLastOnsetTime--">getLastOnsetTime()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ExpressedConditionRecord.OnsetCondition.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord.OnsetCondition</a></dt>
 <dd>
 <div class="block">Get the last recorded onset time.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.html#getLastPayer--">getLastPayer()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord</a></dt>
+<dd>
+<div class="block">Get the payer associated with the last plan.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.html#getLastPlan--">getLastPlan()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord</a></dt>
+<dd>
+<div class="block">Get the last plan.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ExpressedSymptom.SymptomSource.html#getLastUpdateTime--">getLastUpdateTime()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ExpressedSymptom.SymptomSource.html" title="class in org.mitre.synthea.engine">ExpressedSymptom.SymptomSource</a></dt>
 <dd>&nbsp;</dd>
@@ -2353,28 +2412,16 @@
 <dd>
 <div class="block">Returns a map of parameter names to their CQL types as provided to the constructor.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getPayerAtAge-int-">getPayerAtAge(int)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
-<dd>
-<div class="block">Returns the person's Payer at the given age.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getPayerAtTime-long-">getPayerAtTime(long)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.html#getPayerAtTime-long-">getPayerAtTime(long)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord</a></dt>
 <dd>
 <div class="block">Returns the person's Payer at the given time.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getPayerHistory--">getPayerHistory()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
-<dd>
-<div class="block">Returns the list of this person's Payer history.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getPayerOwnershipAtAge-int-">getPayerOwnershipAtAge(int)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
-<dd>
-<div class="block">Returns the owner of the peron's payer at the given age.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getPayerOwnershipAtTime-long-">getPayerOwnershipAtTime(long)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
-<dd>
-<div class="block">Returns the owner of the peron's payer at the given time.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/TimeSeriesData.html#getPeriod--">getPeriod()</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/TimeSeriesData.html" title="class in org.mitre.synthea.helpers">TimeSeriesData</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.html#getPerson--">getPerson()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord</a></dt>
+<dd>
+<div class="block">Get the person associated with this CoverageRecord.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html#getPersonAttributeDefaults--">getPersonAttributeDefaults()</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html" title="class in org.mitre.synthea.helpers.physiology">PhysiologyGeneratorConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ExpressionProcessor.html#getPersonValue-java.lang.String-org.mitre.synthea.world.agents.Person-long-">getPersonValue(String, Person, long)</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ExpressionProcessor.html" title="class in org.mitre.synthea.helpers">ExpressionProcessor</a></dt>
@@ -2385,18 +2432,22 @@
 <dd>
 <div class="block">Retrieve the desired value from a Person model.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.html#getPlanAtTime-long-">getPlanAtTime(long)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord</a></dt>
+<dd>
+<div class="block">Get the Plan active at a given time.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.html#getPlanHistory--">getPlanHistory()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord</a></dt>
+<dd>
+<div class="block">Get the plan history associated with this CoverageRecord.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.html#getPlanOwner-long-">getPlanOwner(long)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord</a></dt>
+<dd>
+<div class="block">Returns the owner of the person's payer at the given time.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Location.html#getPopulation-java.lang.String-">getPopulation(String)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Location.html" title="class in org.mitre.synthea.world.geography">Location</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/IoMapper.html#getPreGenerator--">getPreGenerator()</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/IoMapper.html" title="class in org.mitre.synthea.helpers.physiology">IoMapper</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getPreviousPayerAtAge-int-">getPreviousPayerAtAge(int)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
-<dd>
-<div class="block">Returns the person's last year's payer from the given time.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getPreviousPayerAtTime-long-">getPreviousPayerAtTime(long)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
-<dd>
-<div class="block">Returns the person's last year's payer from the given time.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Payer.html#getPrivatePayers--">getPrivatePayers()</a></span> - Static method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a></dt>
 <dd>
 <div class="block">Returns the list of all loaded private payers.</div>
@@ -2424,7 +2475,9 @@
 <div class="block">Returns the average of the payer's QOLS of customers over the number of years covered.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getQolsForYear-int-">getQolsForYear(int)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Returns the person's QOL at the given time.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ReactionProbabilities.html#getReaction--">getReaction()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.html" title="class in org.mitre.synthea.engine">ReactionProbabilities</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Clinician.html#getResourceID--">getResourceID()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a></dt>
@@ -2554,6 +2607,14 @@
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#getTotalClaimCost--">getTotalClaimCost()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
 <dd>
 <div class="block">Returns the total cost of the Claim, including immunizations/procedures tied to the encounter.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.html#getTotalCoverage--">getTotalCoverage()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord</a></dt>
+<dd>
+<div class="block">Returns the total healthcare coverage for this person.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.html#getTotalExpenses--">getTotalExpenses()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord</a></dt>
+<dd>
+<div class="block">Returns the total healthcare expenses for this person.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.html#getTransition--">getTransition()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.html" title="class in org.mitre.synthea.engine">State</a></dt>
 <dd>&nbsp;</dd>
@@ -2897,6 +2958,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.html#id">id</a></span> - Variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html#id">id</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord.Plan</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/NHANESSample.html#id">id</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/NHANESSample.html" title="class in org.mitre.synthea.world.concepts">NHANESSample</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#id">id</a></span> - Variable in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
@@ -3041,6 +3104,10 @@
 <dd>
 <div class="block">One or more imaging Instances that belong to this Series.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.html#institutional">institutional</a></span> - Variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></dt>
+<dd>
+<div class="block">institutional (e.g.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/HealthInsuranceModule.html#INSURANCE_STATUS">INSURANCE_STATUS</a></span> - Static variable in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/HealthInsuranceModule.html" title="class in org.mitre.synthea.modules">HealthInsuranceModule</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html#INTENSIVIST">INTENSIVIST</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html" title="class in org.mitre.synthea.world.concepts">ClinicianSpecialty</a></dt>
@@ -3174,6 +3241,10 @@
 </dd>
 <dt><a href="org/mitre/synthea/helpers/physiology/IoMapper.IoType.html" title="enum in org.mitre.synthea.helpers.physiology"><span class="typeNameLink">IoMapper.IoType</span></a> - Enum in <a href="org/mitre/synthea/helpers/physiology/package-summary.html">org.mitre.synthea.helpers.physiology</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/world/agents/behaviors/IPayerAdjustment.html" title="interface in org.mitre.synthea.world.agents.behaviors"><span class="typeNameLink">IPayerAdjustment</span></a> - Interface in <a href="org/mitre/synthea/world/agents/behaviors/package-summary.html">org.mitre.synthea.world.agents.behaviors</a></dt>
+<dd>
+<div class="block">Interface to abstract various claim adjustment strategies.</div>
+</dd>
 <dt><a href="org/mitre/synthea/world/agents/behaviors/IPayerFinder.html" title="interface in org.mitre.synthea.world.agents.behaviors"><span class="typeNameLink">IPayerFinder</span></a> - Interface in <a href="org/mitre/synthea/world/agents/behaviors/package-summary.html">org.mitre.synthea.world.agents.behaviors</a></dt>
 <dd>
 <div class="block">Find a particular provider by service.</div>
@@ -3353,7 +3424,7 @@
 <dd>
 <div class="block">Load into cache the list of providers for a state.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.html#loadProviders-org.mitre.synthea.world.geography.Location-java.lang.String-java.util.Set-long-">loadProviders(Location, String, Set&lt;HealthRecord.EncounterType&gt;, long)</a></span> - Static method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.html#loadProviders-org.mitre.synthea.world.geography.Location-java.lang.String-java.util.Set-boolean-long-">loadProviders(Location, String, Set&lt;HealthRecord.EncounterType&gt;, boolean, long)</a></span> - Static method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></dt>
 <dd>
 <div class="block">Read the providers from the given resource file, only importing the ones for the given state.</div>
 </dd>
@@ -3561,6 +3632,8 @@
 <dd>
 <div class="block">Main method, not to be invoked directly: should always be called via gradle task `overrides`.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#mainEntry">mainEntry</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/WeightLossModule.html#maintainBMIPercentile-org.mitre.synthea.world.agents.Person-long-">maintainBMIPercentile(Person, long)</a></span> - Method in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/WeightLossModule.html" title="class in org.mitre.synthea.modules">WeightLossModule</a></dt>
 <dd>
 <div class="block">For patients under 20 that have successful weight management and long term success, they will
@@ -3929,6 +4002,10 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/CPCDSExporter.html#overwrittenNPIs">overwrittenNPIs</a></span> - Variable in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/CPCDSExporter.html" title="class in org.mitre.synthea.export">CPCDSExporter</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html#owner">owner</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord.Plan</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html#ownerName">ownerName</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord.Plan</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.html#ownership">ownership</a></span> - Variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></dt>
 <dd>&nbsp;</dd>
 </dl>
@@ -3965,8 +4042,36 @@
 <dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents"><span class="typeNameLink">Payer</span></a> - Class in <a href="org/mitre/synthea/world/agents/package-summary.html">org.mitre.synthea.world.agents</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html#payer">payer</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></dt>
+<dd>
+<div class="block">otherwise paid by payer.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#payer">payer</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html#payer">payer</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord.Plan</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentFixed.html" title="class in org.mitre.synthea.world.agents.behaviors"><span class="typeNameLink">PayerAdjustmentFixed</span></a> - Class in <a href="org/mitre/synthea/world/agents/behaviors/package-summary.html">org.mitre.synthea.world.agents.behaviors</a></dt>
+<dd>
+<div class="block">Fixed payment adjustment strategy.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentFixed.html#PayerAdjustmentFixed-double-">PayerAdjustmentFixed(double)</a></span> - Constructor for class org.mitre.synthea.world.agents.behaviors.<a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentFixed.html" title="class in org.mitre.synthea.world.agents.behaviors">PayerAdjustmentFixed</a></dt>
+<dd>
+<div class="block">Create a new fixed payer adjustment.</div>
+</dd>
+<dt><a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentNone.html" title="class in org.mitre.synthea.world.agents.behaviors"><span class="typeNameLink">PayerAdjustmentNone</span></a> - Class in <a href="org/mitre/synthea/world/agents/behaviors/package-summary.html">org.mitre.synthea.world.agents.behaviors</a></dt>
+<dd>
+<div class="block">Default payer adjustment strategy -- no adjustment.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentNone.html#PayerAdjustmentNone--">PayerAdjustmentNone()</a></span> - Constructor for class org.mitre.synthea.world.agents.behaviors.<a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentNone.html" title="class in org.mitre.synthea.world.agents.behaviors">PayerAdjustmentNone</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentRandom.html" title="class in org.mitre.synthea.world.agents.behaviors"><span class="typeNameLink">PayerAdjustmentRandom</span></a> - Class in <a href="org/mitre/synthea/world/agents/behaviors/package-summary.html">org.mitre.synthea.world.agents.behaviors</a></dt>
+<dd>
+<div class="block">Randomized payment adjustment strategy.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentRandom.html#PayerAdjustmentRandom-double-">PayerAdjustmentRandom(double)</a></span> - Constructor for class org.mitre.synthea.world.agents.behaviors.<a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentRandom.html" title="class in org.mitre.synthea.world.agents.behaviors">PayerAdjustmentRandom</a></dt>
+<dd>
+<div class="block">Create a new random payer adjustment.</div>
+</dd>
 <dt><a href="org/mitre/synthea/world/agents/behaviors/PayerFinderBestRates.html" title="class in org.mitre.synthea.world.agents.behaviors"><span class="typeNameLink">PayerFinderBestRates</span></a> - Class in <a href="org/mitre/synthea/world/agents/behaviors/package-summary.html">org.mitre.synthea.world.agents.behaviors</a></dt>
 <dd>
 <div class="block">Find a particular provider by service.</div>
@@ -3979,10 +4084,6 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/PayerFinderRandom.html#PayerFinderRandom--">PayerFinderRandom()</a></span> - Constructor for class org.mitre.synthea.world.agents.behaviors.<a href="org/mitre/synthea/world/agents/behaviors/PayerFinderRandom.html" title="class in org.mitre.synthea.world.agents.behaviors">PayerFinderRandom</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#payerHistory">payerHistory</a></span> - Variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
-<dd>
-<div class="block">Person's Payer History.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Payer.html#payMonthlyPremium--">payMonthlyPremium()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a></dt>
 <dd>
 <div class="block">Pays the given premium to the Payer, increasing their revenue.</div>
@@ -4139,8 +4240,16 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/PlainBigDecimal.html#PlainBigDecimal-double-">PlainBigDecimal(double)</a></span> - Constructor for class org.mitre.synthea.export.<a href="org/mitre/synthea/export/PlainBigDecimal.html" title="class in org.mitre.synthea.export">PlainBigDecimal</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html#Plan-long-org.mitre.synthea.world.agents.Payer-">Plan(long, Payer)</a></span> - Constructor for class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord.Plan</a></dt>
+<dd>
+<div class="block">Create a new Plan with the given Payer.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html#PLASTIC_AND_RECONSTRUCTIVE_SURGERY">PLASTIC_AND_RECONSTRUCTIVE_SURGERY</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html" title="class in org.mitre.synthea.world.concepts">ClinicianSpecialty</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html#pocket">pocket</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></dt>
+<dd>
+<div class="block">otherwise paid by patient out of pocket.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html#PODIATRY">PODIATRY</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html" title="class in org.mitre.synthea.world.concepts">ClinicianSpecialty</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/PediatricGrowthTrajectory.Point.html#Point--">Point()</a></span> - Constructor for class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/PediatricGrowthTrajectory.Point.html" title="class in org.mitre.synthea.world.concepts">PediatricGrowthTrajectory.Point</a></dt>
@@ -4201,6 +4310,10 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.html#present">present</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.html" title="class in org.mitre.synthea.world.concepts">HealthRecord</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.html#presentOnset-java.lang.String-">presentOnset(String)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.html" title="class in org.mitre.synthea.world.concepts">HealthRecord</a></dt>
+<dd>
+<div class="block">Get the onset time for any entry that is currently present in the healthrecord.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html#PREVENTATIVE_MEDICINE">PREVENTATIVE_MEDICINE</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html" title="class in org.mitre.synthea.world.concepts">ClinicianSpecialty</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Encounter.html#previousEncounter--">previousEncounter()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a></dt>
@@ -4726,6 +4839,8 @@
 <dd>
 <div class="block">Add a HealthRecordEditor to be run during the simulation.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html#remainingDeductible">remainingDeductible</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord.Plan</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Logic.html#remarks">remarks</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Logic.html" title="class in org.mitre.synthea.engine">Logic</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Module.html#remarks">remarks</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></dt>
@@ -4756,10 +4871,6 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Encounter.html#reports">reports</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#resetDeductible-long-">resetDeductible(long)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
-<dd>
-<div class="block">Resets a person's deductible.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/HealthRecordEditors.html#resetEditors--">resetEditors()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/HealthRecordEditors.html" title="class in org.mitre.synthea.engine">HealthRecordEditors</a></dt>
 <dd>
 <div class="block">Remove all registered editors.</div>
@@ -4827,6 +4938,14 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Components.DateInput.html#second">second</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Components.DateInput.html" title="class in org.mitre.synthea.engine">Components.DateInput</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html#secondaryPayer">secondaryPayer</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></dt>
+<dd>
+<div class="block">otherwise paid by secondary payer.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#secondaryPayer">secondaryPayer</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html#secondaryPayer">secondaryPayer</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord.Plan</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.GeneratorOptions.html#seed">seed</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.GeneratorOptions.html" title="class in org.mitre.synthea.engine">Generator.GeneratorOptions</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#seed">seed</a></span> - Variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
@@ -4856,6 +4975,8 @@
 <dd>
 <div class="block">Manually set a property.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/CSVExporter.ClaimTransaction.html#setAmount-double-">setAmount(double)</a></span> - Method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/CSVExporter.ClaimTransaction.html" title="class in org.mitre.synthea.export">CSVExporter.ClaimTransaction</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/PreGenerator.html#setArgs-java.util.List-">setArgs(List&lt;PreGenerator.PreGeneratorArg&gt;)</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/PreGenerator.html" title="class in org.mitre.synthea.helpers.physiology">PreGenerator</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.SetAttribute.html#SetAttribute--">SetAttribute()</a></span> - Constructor for class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.SetAttribute.html" title="class in org.mitre.synthea.engine">State.SetAttribute</a></dt>
@@ -4959,11 +5080,11 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ChartRenderer.MultiTableSeriesConfig.html#setParam-java.lang.String-">setParam(String)</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ChartRenderer.MultiTableSeriesConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.MultiTableSeriesConfig</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#setPayerAtAge-int-org.mitre.synthea.world.agents.Payer-">setPayerAtAge(int, Payer)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.html#setPayerAtTime-long-org.mitre.synthea.world.agents.Payer-">setPayerAtTime(long, Payer)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord</a></dt>
 <dd>
-<div class="block">Sets the person's payer history at the given age to the given payer.</div>
+<div class="block">Sets the person's payer history at the given time to the given payer.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#setPayerAtTime-long-org.mitre.synthea.world.agents.Payer-">setPayerAtTime(long, Payer)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.html#setPayerAtTime-long-org.mitre.synthea.world.agents.Payer-org.mitre.synthea.world.agents.Payer-">setPayerAtTime(long, Payer, Payer)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord</a></dt>
 <dd>
 <div class="block">Sets the person's payer history at the given time to the given payer.</div>
 </dd>
@@ -5139,6 +5260,8 @@
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html#SPEECH_LANGUAGE_PATHOLOGIST">SPEECH_LANGUAGE_PATHOLOGIST</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html" title="class in org.mitre.synthea.world.concepts">ClinicianSpecialty</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html#SPORTS_MEDICINE">SPORTS_MEDICINE</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html" title="class in org.mitre.synthea.world.concepts">ClinicianSpecialty</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html#start">start</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord.Plan</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html#start">start</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></dt>
 <dd>&nbsp;</dd>
@@ -5321,6 +5444,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.html#stop">stop</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html#stop">stop</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord.Plan</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html#stop">stop</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.CarePlan.html#stopReason">stopReason</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.CarePlan.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.CarePlan</a></dt>
@@ -5488,6 +5613,10 @@
 <dd>
 <div class="block">Overrides the toString method for LookupTableKey.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/CSVExporter.ClaimTransaction.html#toString--">toString()</a></span> - Method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/CSVExporter.ClaimTransaction.html" title="class in org.mitre.synthea.export">CSVExporter.ClaimTransaction</a></dt>
+<dd>
+<div class="block">Convert this ClaimTransaction into a CSV row.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/PlainBigDecimal.html#toString--">toString()</a></span> - Method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/PlainBigDecimal.html" title="class in org.mitre.synthea.export">PlainBigDecimal</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/PhysiologyValueGenerator.html#toString--">toString()</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/PhysiologyValueGenerator.html" title="class in org.mitre.synthea.helpers">PhysiologyValueGenerator</a></dt>
@@ -5512,11 +5641,17 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/quadtree/QuadTree.html#toString--">toString()</a></span> - Method in class org.mitre.synthea.world.geography.quadtree.<a href="org/mitre/synthea/world/geography/quadtree/QuadTree.html" title="class in org.mitre.synthea.world.geography.quadtree">QuadTree</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html#totalCoverage">totalCoverage</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord.Plan</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html#totalExpenses">totalExpenses</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord.Plan</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/input/FixedRecord.html#totalOverwrite-org.mitre.synthea.world.agents.Person-">totalOverwrite(Person)</a></span> - Method in class org.mitre.synthea.input.<a href="org/mitre/synthea/input/FixedRecord.html" title="class in org.mitre.synthea.input">FixedRecord</a></dt>
 <dd>
 <div class="block">Completely overwrites the given person to have the demographic attributes in
  this FixedRecord.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#totals">totals</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/FhirDstu2.html#TRANSACTION_BUNDLE">TRANSACTION_BUNDLE</a></span> - Static variable in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirDstu2.html" title="class in org.mitre.synthea.export">FhirDstu2</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/FhirR4.html#TRANSACTION_BUNDLE">TRANSACTION_BUNDLE</a></span> - Static variable in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirR4.html" title="class in org.mitre.synthea.export">FhirR4</a></dt>
@@ -5739,6 +5874,14 @@
 <dd>
 <div class="block">Returns the enum constant of this type with the specified name.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/CSVExporter.ClaimTransactionType.html#valueOf-java.lang.String-">valueOf(String)</a></span> - Static method in enum org.mitre.synthea.export.<a href="org/mitre/synthea/export/CSVExporter.ClaimTransactionType.html" title="enum in org.mitre.synthea.export">CSVExporter.ClaimTransactionType</a></dt>
+<dd>
+<div class="block">Returns the enum constant of this type with the specified name.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/CSVExporter.PaymentMethod.html#valueOf-java.lang.String-">valueOf(String)</a></span> - Static method in enum org.mitre.synthea.export.<a href="org/mitre/synthea/export/CSVExporter.PaymentMethod.html" title="enum in org.mitre.synthea.export">CSVExporter.PaymentMethod</a></dt>
+<dd>
+<div class="block">Returns the enum constant of this type with the specified name.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/Exporter.SupportedFhirVersion.html#valueOf-java.lang.String-">valueOf(String)</a></span> - Static method in enum org.mitre.synthea.export.<a href="org/mitre/synthea/export/Exporter.SupportedFhirVersion.html" title="enum in org.mitre.synthea.export">Exporter.SupportedFhirVersion</a></dt>
 <dd>
 <div class="block">Returns the enum constant of this type with the specified name.</div>
@@ -5772,6 +5915,16 @@
 <div class="block">Returns the enum constant of this type with the specified name.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Distribution.Kind.html#values--">values()</a></span> - Static method in enum org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Distribution.Kind.html" title="enum in org.mitre.synthea.engine">Distribution.Kind</a></dt>
+<dd>
+<div class="block">Returns an array containing the constants of this enum type, in
+the order they are declared.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/CSVExporter.ClaimTransactionType.html#values--">values()</a></span> - Static method in enum org.mitre.synthea.export.<a href="org/mitre/synthea/export/CSVExporter.ClaimTransactionType.html" title="enum in org.mitre.synthea.export">CSVExporter.ClaimTransactionType</a></dt>
+<dd>
+<div class="block">Returns an array containing the constants of this enum type, in
+the order they are declared.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/CSVExporter.PaymentMethod.html#values--">values()</a></span> - Static method in enum org.mitre.synthea.export.<a href="org/mitre/synthea/export/CSVExporter.PaymentMethod.html" title="enum in org.mitre.synthea.export">CSVExporter.PaymentMethod</a></dt>
 <dd>
 <div class="block">Returns an array containing the constants of this enum type, in
 the order they are declared.</div>

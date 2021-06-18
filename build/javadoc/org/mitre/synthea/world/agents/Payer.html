@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":9,"i5":10,"i6":10,"i7":10,"i8":10,"i9":9,"i10":9,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":9,"i20":9,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":9,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":9,"i42":9,"i43":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":9,"i6":10,"i7":10,"i8":10,"i9":10,"i10":9,"i11":9,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":9,"i21":9,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":9,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":9,"i43":9,"i44":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -186,34 +186,42 @@ implements java.io.Serializable</pre>
 </td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#adjustClaim-org.mitre.synthea.world.concepts.Claim.ClaimEntry-org.mitre.synthea.world.agents.Person-">adjustClaim</a></span>(<a href="../../../../../org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a>&nbsp;claimEntry,
+           <a href="../../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code>
+<div class="block">Determines whether or not this payer will adjust this claim, and by how
+ much.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#clear--">clear</a></span>()</code>
 <div class="block">Clear the list of loaded and cached Payers.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#coversCare-org.mitre.synthea.world.concepts.HealthRecord.Entry-">coversCare</a></span>(<a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a>&nbsp;entry)</code>
 <div class="block">Returns whether or not this payer will cover the given entry.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#coversService-java.lang.String-">coversService</a></span>(java.lang.String&nbsp;service)</code>
 <div class="block">Returns whether the payer covers the given service.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#determineCopay-org.mitre.synthea.world.concepts.HealthRecord.Entry-">determineCopay</a></span>(<a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a>&nbsp;entry)</code>
 <div class="block">Determines the copay owed for this Payer based on the type of entry.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#equals-java.lang.Object-">equals</a></span>(java.lang.Object&nbsp;obj)</code>&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#findPayer-org.mitre.synthea.world.agents.Person-org.mitre.synthea.world.concepts.HealthRecord.EncounterType-long-">findPayer</a></span>(<a href="../../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
          <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.EncounterType</a>&nbsp;service,
@@ -221,203 +229,203 @@ implements java.io.Serializable</pre>
 <div class="block">Returns a Payer that the person can qualify for.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static java.util.List&lt;<a href="../../../../../org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getAllPayers--">getAllPayers</a></span>()</code>
 <div class="block">Returns a List of all loaded payers.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getAmountCovered--">getAmountCovered</a></span>()</code>
 <div class="block">Returns the amount of money the payer paid to providers.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getAmountUncovered--">getAmountUncovered</a></span>()</code>
 <div class="block">Returns the amount of money the payer did not cover.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.lang.Object&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getAttributes--">getAttributes</a></span>()</code>
 <div class="block">Returns the Map of the payer's second class attributes.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getCoinsurance--">getCoinsurance</a></span>()</code>
 <div class="block">Returns the Coinsurance of this payer.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getCustomerUtilization-org.mitre.synthea.world.agents.Person-">getCustomerUtilization</a></span>(<a href="../../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code>
 <div class="block">Returns the number of years the given customer was with this Payer.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getDeductible--">getDeductible</a></span>()</code>
 <div class="block">Returns the yearly deductible of this payer.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getEncountersCoveredCount--">getEncountersCoveredCount</a></span>()</code>
 <div class="block">Returns the number of encounters this payer paid for.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getEncountersUncoveredCount--">getEncountersUncoveredCount</a></span>()</code>
 <div class="block">Returns the number of encounters this payer did not cover for their customers.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getGovernmentPayer-java.lang.String-">getGovernmentPayer</a></span>(java.lang.String&nbsp;governmentPayerName)</code>
 <div class="block">Returns the government payer with the given name.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>static java.util.List&lt;<a href="../../../../../org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getGovernmentPayers--">getGovernmentPayers</a></span>()</code>
 <div class="block">Returns the List of all loaded government payers.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getImmunizationsCoveredCount--">getImmunizationsCoveredCount</a></span>()</code>
 <div class="block">Returns the number of immunizations this payer paid for.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getImmunizationsUncoveredCount--">getImmunizationsUncoveredCount</a></span>()</code>
 <div class="block">Returns the number of immunizations this payer did not cover for their customers.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getMedicationsCoveredCount--">getMedicationsCoveredCount</a></span>()</code>
 <div class="block">Returns the number of medications this payer paid for.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getMedicationsUncoveredCount--">getMedicationsUncoveredCount</a></span>()</code>
 <div class="block">Returns the number of medications this payer did not cover for their customers.</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getMonthlyPremium--">getMonthlyPremium</a></span>()</code>
 <div class="block">Returns the monthly premium of the payer.</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getName--">getName</a></span>()</code>
 <div class="block">Returns the name of the payer.</div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getNumYearsCovered--">getNumYearsCovered</a></span>()</code>
 <div class="block">Returns the total number of member years covered by this payer.</div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getOwnership--">getOwnership</a></span>()</code>
 <div class="block">Returns the ownserhip type of the payer (Government/Private).</div>
 </td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code>static java.util.List&lt;<a href="../../../../../org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getPrivatePayers--">getPrivatePayers</a></span>()</code>
 <div class="block">Returns the list of all loaded private payers.</div>
 </td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getProceduresCoveredCount--">getProceduresCoveredCount</a></span>()</code>
 <div class="block">Returns the number of procedures this payer paid for.</div>
 </td>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getProceduresUncoveredCount--">getProceduresUncoveredCount</a></span>()</code>
 <div class="block">Returns the number of procedures this payer did not cover for their customers.</div>
 </td>
 </tr>
-<tr id="i32" class="altColor">
+<tr id="i33" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getQolsAverage--">getQolsAverage</a></span>()</code>
 <div class="block">Returns the average of the payer's QOLS of customers over the number of years covered.</div>
 </td>
 </tr>
-<tr id="i33" class="rowColor">
+<tr id="i34" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getResourceID--">getResourceID</a></span>()</code>
 <div class="block">Returns the payer's unique ID.</div>
 </td>
 </tr>
-<tr id="i34" class="altColor">
+<tr id="i35" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getRevenue--">getRevenue</a></span>()</code>
 <div class="block">Returns the total amount of money recieved from patients.</div>
 </td>
 </tr>
-<tr id="i35" class="rowColor">
+<tr id="i36" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#getUniqueCustomers--">getUniqueCustomers</a></span>()</code>
 <div class="block">Returns the total number of unique customers of this payer.</div>
 </td>
 </tr>
-<tr id="i36" class="altColor">
+<tr id="i37" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#hashCode--">hashCode</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i37" class="rowColor">
+<tr id="i38" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#incrementCoveredEntries-org.mitre.synthea.world.concepts.HealthRecord.Entry-">incrementCoveredEntries</a></span>(<a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a>&nbsp;entry)</code>
 <div class="block">Increments the entries covered by this payer.</div>
 </td>
 </tr>
-<tr id="i38" class="altColor">
+<tr id="i39" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#incrementCustomers-org.mitre.synthea.world.agents.Person-">incrementCustomers</a></span>(<a href="../../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code>
 <div class="block">Increments the number of unique users.</div>
 </td>
 </tr>
-<tr id="i39" class="rowColor">
+<tr id="i40" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#incrementUncoveredEntries-org.mitre.synthea.world.concepts.HealthRecord.Entry-">incrementUncoveredEntries</a></span>(<a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a>&nbsp;entry)</code>
 <div class="block">Increments the entries not covered by this payer.</div>
 </td>
 </tr>
-<tr id="i40" class="altColor">
+<tr id="i41" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#isInNetwork-org.mitre.synthea.world.agents.Provider-">isInNetwork</a></span>(<a href="../../../../../org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a>&nbsp;provider)</code>
 <div class="block">Is the given Provider in this Payer's network?.</div>
 </td>
 </tr>
-<tr id="i41" class="rowColor">
+<tr id="i42" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#loadNoInsurance--">loadNoInsurance</a></span>()</code>
 <div class="block">Loads the noInsurance Payer.</div>
 </td>
 </tr>
-<tr id="i42" class="altColor">
+<tr id="i43" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#loadPayers-org.mitre.synthea.world.geography.Location-">loadPayers</a></span>(<a href="../../../../../org/mitre/synthea/world/geography/Location.html" title="class in org.mitre.synthea.world.geography">Location</a>&nbsp;location)</code>
 <div class="block">Load into cache the list of payers for a state.</div>
 </td>
 </tr>
-<tr id="i43" class="rowColor">
+<tr id="i44" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Payer.html#payMonthlyPremium--">payMonthlyPremium</a></span>()</code>
 <div class="block">Pays the given premium to the Payer, increasing their revenue.</div>
@@ -722,6 +730,26 @@ implements java.io.Serializable</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>entry</code> - the entry to calculate the copay for.</dd>
+</dl>
+</li>
+</ul>
+<a name="adjustClaim-org.mitre.synthea.world.concepts.Claim.ClaimEntry-org.mitre.synthea.world.agents.Person-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>adjustClaim</h4>
+<pre>public&nbsp;double&nbsp;adjustClaim(<a href="../../../../../org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a>&nbsp;claimEntry,
+                          <a href="../../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</pre>
+<div class="block">Determines whether or not this payer will adjust this claim, and by how
+ much. This determination is based on the claim adjustment strategy configuration,
+ which defaults to none.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>claimEntry</code> - The claim entry to be adjusted.</dd>
+<dd><code>person</code> - The person making the claim.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The dollar amount the claim entry was adjusted.</dd>
 </dl>
 </li>
 </ul>
