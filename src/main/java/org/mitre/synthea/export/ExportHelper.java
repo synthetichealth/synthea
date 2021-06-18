@@ -217,6 +217,29 @@ public abstract class ExportHelper {
     }
     return system;
   }
+
+  /**
+   * Translate the the official FHIR system URI (e.g. http://snomed.info/sct)
+   * into system name (e.g. SNOMED-CT).
+   * @param uri http://snomed.info/sct, http://loinc.org, etc.
+   * @return The internal short name used by Synthea, or "Unknown"
+   */
+  public static String getSystemFromURI(String uri) {
+    switch (uri) {
+      case SNOMED_URI:
+        return "SNOMED-CT";
+      case LOINC_URI:
+        return "LOINC";
+      case RXNORM_URI:
+        return "RxNorm";
+      case CVX_URI:
+        return "CVX";
+      case DICOM_DCM_URI:
+        return "DICOM-DCM";
+      default:
+        return "Unknown";
+    }
+  }
   
   /**
    * Build a FHIR search url for the specified type of resource and identifier. This method

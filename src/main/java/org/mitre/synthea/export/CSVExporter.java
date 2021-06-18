@@ -1,6 +1,7 @@
 package org.mitre.synthea.export;
 
 import static org.mitre.synthea.export.ExportHelper.dateFromTimestamp;
+import static org.mitre.synthea.export.ExportHelper.getSystemFromURI;
 import static org.mitre.synthea.export.ExportHelper.iso8601Timestamp;
 
 import com.google.common.collect.Table;
@@ -266,8 +267,8 @@ public class CSVExporter {
         + "PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,"
         + "ADDRESS,CITY,STATE,COUNTY,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE");
     patients.write(NEWLINE);
-    allergies.write("START,STOP,PATIENT,ENCOUNTER,CODE,"
-        + "DESCRIPTION,REACTION1,SEVERITY1,REACTION2,SEVERITY2");
+    allergies.write("START,STOP,PATIENT,ENCOUNTER,CODE,SYSTEM,DESCRIPTION,TYPE,CATEGORY,"
+        + "REACTION1,DESCRIPTION1,SEVERITY1,REACTION2,DESCRIPTION2,SEVERITY2");
     allergies.write(NEWLINE);
     medications.write(
         "START,STOP,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,PAYER_COVERAGE,DISPENSES,"
@@ -714,7 +715,9 @@ public class CSVExporter {
    */
   private void allergy(String personID, String encounterID, HealthRecord.Allergy allergy)
       throws IOException {
-    // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,REACTION1,SEVERITY1,REACTION2,SEVERITY2
+    // START,STOP,PATIENT,ENCOUNTER,CODE,SYSTEM,DESCRIPTION,TYPE,CATEGORY
+    // REACTION1,DESCRIPTION1,SEVERITY1,
+    // REACTION2,DESCRIPTION2,SEVERITY2
     StringBuilder s = new StringBuilder();
 
     s.append(dateFromTimestamp(allergy.start)).append(',');
@@ -728,7 +731,10 @@ public class CSVExporter {
     Code coding = allergy.codes.get(0);
 
     s.append(coding.code).append(',');
+    s.append(getSystemFromURI(coding.system)).append(',');
     s.append(clean(coding.display)).append(',');
+    s.append(allergy.allergyType).append(',');
+    s.append(allergy.category).append(',');
 
     int reactionsSize = 0;
     if (allergy.reactions != null) {
@@ -738,21 +744,18 @@ public class CSVExporter {
         mapEntry -> {
           StringBuilder reactionBuilder = new StringBuilder();
           reactionBuilder.append(mapEntry.getKey().code).append(',');
+          reactionBuilder.append(clean(mapEntry.getKey().display)).append(',');
           reactionBuilder.append(mapEntry.getValue());
           return reactionBuilder.toString();
         };
 
     switch (reactionsSize) {
       case 0:
-        s.append(",,,");
+        s.append(",,,,,");
         break;
       case 1:
         s.append(allergy.reactions.entrySet().stream().map(template).collect(Collectors.joining()));
-        s.append(",,");
-        break;
-      case 2:
-        s.append(allergy.reactions.entrySet().stream().map(template)
-            .collect(Collectors.joining(",")));
+        s.append(",,,");
         break;
       default:
         //case where there are more than two reactions so we need to support by severity
