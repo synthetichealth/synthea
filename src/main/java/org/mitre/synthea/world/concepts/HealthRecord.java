@@ -144,7 +144,8 @@ public class HealthRecord implements Serializable {
      */
     void determineCost() {
       this.cost = BigDecimal.valueOf(Costs.determineCostOfEntry(this, this.record.person));
-      this.cost = this.cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
+      // truncate to 2 decimal places
+      this.cost = this.cost.setScale(2, RoundingMode.DOWN);
     }
 
     /**
@@ -850,6 +851,19 @@ public class HealthRecord implements Serializable {
    */
   public boolean conditionActive(String type) {
     return present.containsKey(type) && present.get(type).stop == 0L;
+  }
+
+  /**
+   * Get the onset time for any entry that is currently present in the healthrecord.
+   * @param code The clinical code for the entry.
+   * @return The onset time or null if not present.
+   */
+  public Long presentOnset(String code) {
+    Long onset = null;
+    if (present.containsKey(code)) {
+      onset = present.get(code).start;
+    }
+    return onset;
   }
 
   /**

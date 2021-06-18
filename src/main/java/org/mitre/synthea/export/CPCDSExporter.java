@@ -465,7 +465,7 @@ public class CPCDSExporter {
       double memberReimbursement;
       double paymentAmount;
       double toProvider;
-      double deductible = encounter.claim.person.getHealthcareCoverage();
+      double deductible = encounter.claim.person.coverage.getTotalCoverage();
       double liability;
       double copay = 0.00;
 
@@ -542,7 +542,7 @@ public class CPCDSExporter {
         cond.append("").append(',');
         cond.append(cost).append(',');
         cond.append(cost).append(',');
-        cond.append(encounter.claim.person.getHealthcareCoverage()).append(',');
+        cond.append(encounter.claim.person.coverage.getTotalCoverage()).append(',');
         cond.append(cost).append(',');
         cond.append(0.00).append(',');
         cond.append(cost).append(',');
@@ -617,7 +617,7 @@ public class CPCDSExporter {
         proc.append("").append(',');
         proc.append(cost).append(',');
         proc.append(cost).append(',');
-        proc.append(encounter.claim.person.getHealthcareCoverage()).append(',');
+        proc.append(encounter.claim.person.coverage.getTotalCoverage()).append(',');
         proc.append(cost).append(',');
         proc.append(0.00).append(',');
         proc.append(cost).append(',');
@@ -792,7 +792,7 @@ public class CPCDSExporter {
                 ? 0 : cost.longValue() / (dailyDosage * daysSupply))).append(',');
         med.append(cost).append(',');
         med.append(cost).append(',');
-        med.append(encounter.claim.person.getHealthcareCoverage()).append(',');
+        med.append(encounter.claim.person.coverage.getTotalCoverage()).append(',');
         med.append(cost).append(',');
         med.append(0.00).append(',');
         med.append(cost).append(',');
@@ -860,7 +860,7 @@ public class CPCDSExporter {
         dev.append("").append(',');
         dev.append(cost).append(',');
         dev.append(cost).append(',');
-        dev.append(encounter.claim.person.getHealthcareCoverage()).append(',');
+        dev.append(encounter.claim.person.coverage.getTotalCoverage()).append(',');
         dev.append(cost).append(',');
         dev.append(0.00).append(',');
         dev.append(cost).append(',');

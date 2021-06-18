@@ -13,6 +13,8 @@ import java.time.ZoneOffset;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.Person;
 
 public abstract class TestHelper {
 

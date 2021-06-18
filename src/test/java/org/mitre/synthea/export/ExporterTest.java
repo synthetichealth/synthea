@@ -40,7 +40,8 @@ public class ExporterTest {
     endTime = time = System.currentTimeMillis();
     yearsToKeep = 5;
     patient = new Person(12345L);
-    patient.attributes.put(Person.BIRTHDATE, time - years(30));
+    int age = 30;
+    patient.attributes.put(Person.BIRTHDATE, time - years(age));
     // Give person an income to prevent null pointer.
     patient.attributes.put(Person.INCOME, 100000);
     TestHelper.loadTestProperties();
@@ -51,8 +52,9 @@ public class ExporterTest {
     record = patient.record;
     // Ensure Person's Payer is not null.
     Payer.loadNoInsurance();
-    for (int i = 0; i < patient.payerHistory.length; i++) {
-      patient.setPayerAtAge(i, Payer.noInsurance);
+    for (int i = 0; i < age; i++) {
+      long yearTime = time - years(i);
+      patient.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
     }
   }
 
@@ -252,7 +254,7 @@ public class ExporterTest {
     assertEquals(1, filtered.record.encounters.get(0).conditions.size());
     assertEquals("something_permanent", filtered.record.encounters.get(0).conditions.get(0).type);
     assertEquals(1, record.encounters.get(0).claim.items.size());
-    assertEquals("something_permanent", record.encounters.get(0).claim.items.get(0).type);
+    assertEquals("something_permanent", record.encounters.get(0).claim.items.get(0).entry.type);
   }
 
 }

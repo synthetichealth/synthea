@@ -13,7 +13,6 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -31,7 +30,6 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Generator.GeneratorOptions;
 import org.mitre.synthea.export.Exporter;
-import org.mitre.synthea.export.FhirR4;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.concepts.VitalSign;
 
@@ -121,7 +119,10 @@ public class PersonTest {
     if (original.hasMultipleRecords) {
       assertEquals(original.records.keySet(), rehydrated.records.keySet());
     }
-    assertTrue(Arrays.equals(original.payerHistory, rehydrated.payerHistory));
+    assertEquals(
+        original.coverage.getPlanHistory().size(),
+        rehydrated.coverage.getPlanHistory().size()
+    );
   }
 
   @Test
