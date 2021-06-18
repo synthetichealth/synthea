@@ -1,0 +1,357 @@
+{
+  "name": "depression screening",
+  "remarks": [
+    "A basic depression screening module."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check Eligibility"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Check Eligibility": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "At Least",
+            "minimum": 1,
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": "<",
+                "quantity": 12,
+                "unit": "years",
+                "value": 0
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "pregnant",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 370143000,
+                    "display": "Major depression disorder"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active CarePlan",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 183401008,
+                    "display": "Anti-suicide psychotherapy"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Depression Screening"
+        }
+      ]
+    },
+    "Depression Screening": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 171207006,
+          "display": "Depression screening (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 15,
+          "low": 10
+        }
+      },
+      "unit": "minutes",
+      "conditional_transition": [
+        {
+          "transition": "Young Adult",
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Adult"
+        }
+      ]
+    },
+    "Adult": {
+      "type": "Simple",
+      "direct_transition": "PHQ-2"
+    },
+    "Young Adult": {
+      "type": "Simple",
+      "direct_transition": "PHQ-9"
+    },
+    "PHQ-2": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 454711000124102,
+          "display": "Depression screening using Patient Health Questionnaire Two-Item score (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 20
+        }
+      },
+      "unit": "minutes",
+      "distributed_transition": [
+        {
+          "transition": "PHQ2 Positive",
+          "distribution": 0.06
+        },
+        {
+          "transition": "PHQ2 Negative",
+          "distribution": 0.94
+        }
+      ]
+    },
+    "YA Negative": {
+      "type": "SetAttribute",
+      "attribute": "phqa_score",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 4,
+          "low": 0
+        }
+      },
+      "direct_transition": "YA PHQ Results"
+    },
+    "PHQ2 Positive": {
+      "type": "SetAttribute",
+      "attribute": "phq2_score",
+      "direct_transition": "PHQ2 Results",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 6,
+          "low": 3
+        }
+      }
+    },
+    "PHQ2 Negative": {
+      "type": "SetAttribute",
+      "attribute": "phq2_score",
+      "direct_transition": "PHQ2 Results",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 2,
+          "low": 0
+        }
+      }
+    },
+    "PHQ2 Results": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "55757-9",
+          "display": "Patient Health Questionnaire 2 item (PHQ-2) [Reported]"
+        }
+      ],
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "55758-7",
+              "display": "Patient Health Questionnaire 2 item (PHQ-2) total score [Reported]"
+            }
+          ],
+          "attribute": "phq2_score"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "PHQ-9",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "phq2_score",
+            "operator": ">=",
+            "value": 3
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "PHQ-9": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 715252007,
+          "display": "Depression screening using Patient Health Questionnaire Nine Item score (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 20
+        }
+      },
+      "unit": "minutes",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Positive",
+              "distribution": 0.09
+            },
+            {
+              "transition": "YA Negative",
+              "distribution": 0.91
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Negative",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Positive",
+              "distribution": 0.8
+            }
+          ]
+        }
+      ]
+    },
+    "Negative": {
+      "type": "SetAttribute",
+      "attribute": "phqa_score",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 4,
+          "low": 3
+        }
+      },
+      "direct_transition": "Age Check"
+    },
+    "Positive": {
+      "type": "SetAttribute",
+      "attribute": "phqa_score",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 27,
+          "low": 5
+        }
+      },
+      "direct_transition": "Age Check"
+    },
+    "PHQ_Results": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "44249-1",
+          "display": "PHQ-9 quick depression assessment panel [Reported.PHQ]"
+        }
+      ],
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "44261-6",
+              "display": "Patient Health Questionnaire 9 item (PHQ-9) total score [Reported]"
+            }
+          ],
+          "attribute": "phqa_score"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "YA PHQ Results": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "89206-7",
+          "display": "Patient Health Questionnaire-9: Modified for Teens [Reported.PHQ.Teen]"
+        }
+      ],
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "89204-2",
+              "display": "Patient Health Questionnaire-9: Modified for Teens total score [Reported.PHQ.Teen]"
+            }
+          ],
+          "attribute": "phqa_score"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Age Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "YA PHQ Results",
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "PHQ_Results"
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}

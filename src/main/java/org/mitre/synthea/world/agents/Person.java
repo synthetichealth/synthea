@@ -70,6 +70,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String SOCIOECONOMIC_CATEGORY = "socioeconomic_category";
   public static final String INCOME = "income";
   public static final String INCOME_LEVEL = "income_level";
+  public static final String POVERTY_RATIO = "poverty_ratio";
   public static final String EDUCATION = "education";
   public static final String EDUCATION_LEVEL = "education_level";
   public static final String OCCUPATION_LEVEL = "occupation_level";

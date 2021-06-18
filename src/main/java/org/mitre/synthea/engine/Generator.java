@@ -639,6 +639,7 @@ public class Generator implements RandomNumberGenerator {
     person.attributes.putAll(demoAttributes);
     person.attributes.put(Person.LOCATION, location);
     person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
+    location.setSocialDeterminants(person);
 
     LifecycleModule.birth(person, person.lastUpdated);
     person.currentModules = Module.getModules(modulePredicate);
@@ -770,6 +771,8 @@ public class Generator implements RandomNumberGenerator {
     demographicsOutput.put(Person.INCOME, income);
     double incomeLevel = city.incomeLevel(income);
     demographicsOutput.put(Person.INCOME_LEVEL, incomeLevel);
+    double povertyRatio = city.povertyRatio(income);
+    demographicsOutput.put(Person.POVERTY_RATIO, povertyRatio);
 
     double occupation = random.nextDouble();
     demographicsOutput.put(Person.OCCUPATION_LEVEL, occupation);

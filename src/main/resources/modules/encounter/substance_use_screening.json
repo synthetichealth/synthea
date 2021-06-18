@@ -1,0 +1,826 @@
+{
+  "name": "substance use screening",
+  "remarks": [
+    "A basic substance use screening module."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check Eligibility"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Check Eligibility": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "At Least",
+            "minimum": 1,
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": "<",
+                "quantity": 12,
+                "unit": "years",
+                "value": 0
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "pregnant",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "opioid_addiction_careplan",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 5602001,
+                    "display": "Opioid abuse (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 7200002,
+                    "display": "Alcoholism"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Substance Use Screening"
+        }
+      ]
+    },
+    "Adult": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "AUDIT-C",
+          "distribution": 0.5
+        },
+        {
+          "transition": "DAST-10",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Young Adult": {
+      "type": "Simple",
+      "direct_transition": "CRAFFT"
+    },
+    "Negative": {
+      "type": "SetAttribute",
+      "attribute": "dast_score",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 2,
+          "low": 0
+        }
+      },
+      "direct_transition": "Cancel Drug Use"
+    },
+    "Positive": {
+      "type": "SetAttribute",
+      "attribute": "dast_score",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 10,
+          "low": 3
+        }
+      },
+      "direct_transition": "Drug Use"
+    },
+    "Substance Use Screening": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 428211000124100,
+          "display": "Assessment of substance use (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 15,
+          "low": 10
+        }
+      },
+      "unit": "minutes",
+      "conditional_transition": [
+        {
+          "transition": "Adult",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 18,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Young Adult"
+        }
+      ]
+    },
+    "CRAFFT": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 868187001,
+          "display": "Assessment using Car, Relax, Alone, Forget, Friends, Trouble Screening Test (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 10
+        }
+      },
+      "unit": "minutes",
+      "distributed_transition": [
+        {
+          "transition": "Risky Activity",
+          "distribution": 0.212
+        },
+        {
+          "transition": "End Risky Activity",
+          "distribution": 0.788
+        }
+      ]
+    },
+    "Risky Activity": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 160968000,
+          "display": "Risk activity involvement (finding)"
+        }
+      ],
+      "direct_transition": "Lecture"
+    },
+    "Lecture": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 370995009,
+          "display": "Health risks education (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 20,
+          "low": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Terminal",
+      "reason": "Risky Activity"
+    },
+    "Guidance": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 386516004,
+          "display": "Anticipatory guidance (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 15,
+          "low": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Terminal"
+    },
+    "End Risky Activity": {
+      "type": "ConditionEnd",
+      "direct_transition": "Guidance",
+      "condition_onset": "Risky Activity"
+    },
+    "AUDIT-C": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 763302001,
+          "display": "Assessment using Alcohol Use Disorders Identification Test - Consumption (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 20
+        }
+      },
+      "unit": "minutes",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 20,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Unhealthy",
+              "distribution": 0.065
+            },
+            {
+              "transition": "Healthy",
+              "distribution": 0.935
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 25,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Unhealthy",
+              "distribution": 0.111
+            },
+            {
+              "transition": "Healthy",
+              "distribution": 0.889
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 29,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Unhealthy",
+              "distribution": 0.096
+            },
+            {
+              "transition": "Healthy",
+              "distribution": 0.904
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 34,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Unhealthy",
+              "distribution": 0.077
+            },
+            {
+              "transition": "Healthy",
+              "distribution": 0.923
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 44,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Unhealthy",
+              "distribution": 0.062
+            },
+            {
+              "transition": "Healthy",
+              "distribution": 0.938
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 49,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Unhealthy",
+              "distribution": 0.055
+            },
+            {
+              "transition": "Healthy",
+              "distribution": 0.945
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 54,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Unhealthy",
+              "distribution": 0.046
+            },
+            {
+              "transition": "Healthy",
+              "distribution": 0.954
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 59,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Unhealthy",
+              "distribution": 0.048
+            },
+            {
+              "transition": "Healthy",
+              "distribution": 0.952
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 64,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Unhealthy",
+              "distribution": 0.044
+            },
+            {
+              "transition": "Healthy",
+              "distribution": 0.956
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Unhealthy",
+              "distribution": 0.02
+            },
+            {
+              "transition": "Healthy",
+              "distribution": 0.98
+            }
+          ]
+        }
+      ]
+    },
+    "DAST-10": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 713106006,
+          "display": "Screening for drug abuse (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 20
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Check"
+    },
+    "Unhealthy Male": {
+      "type": "SetAttribute",
+      "attribute": "auditc_score",
+      "direct_transition": "Drinking",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 12,
+          "low": 4
+        }
+      }
+    },
+    "Unhealthy Female": {
+      "type": "SetAttribute",
+      "attribute": "auditc_score",
+      "direct_transition": "Drinking",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 12,
+          "low": 3
+        }
+      }
+    },
+    "Healthy Male": {
+      "type": "SetAttribute",
+      "attribute": "auditc_score",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 3,
+          "low": 0
+        }
+      },
+      "direct_transition": "Cancel Drinking"
+    },
+    "Healthy Female": {
+      "type": "SetAttribute",
+      "attribute": "auditc_score",
+      "direct_transition": "Cancel Drinking",
+      "distribution": {
+        "round": true,
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 2,
+          "low": 0
+        }
+      }
+    },
+    "Unhealthy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Unhealthy Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Unhealthy Male"
+        }
+      ]
+    },
+    "Healthy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Healthy Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Healthy Male"
+        }
+      ]
+    },
+    "AUDIT-C Results": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72109-2",
+          "display": "Alcohol Use Disorder Identification Test - Consumption [AUDIT-C]"
+        }
+      ],
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "75626-2",
+              "display": "Total score [AUDIT-C]"
+            }
+          ],
+          "attribute": "auditc_score"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Cancel Drinking": {
+      "type": "ConditionEnd",
+      "direct_transition": "AUDIT-C Results",
+      "condition_onset": "Drinking"
+    },
+    "Drinking": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 10939881000119104,
+          "display": "Unhealthy alcohol drinking behavior (finding)"
+        }
+      ],
+      "direct_transition": "AUDIT-C Results"
+    },
+    "DAST-10 Results": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "82666-9",
+          "display": "Drug Abuse Screening Test-10 [DAST-10]"
+        }
+      ],
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "82667-7",
+              "display": "Total score [DAST-10]"
+            }
+          ],
+          "attribute": "dast_score"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 20,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Positive",
+              "distribution": 0.07
+            },
+            {
+              "distribution": 0.93,
+              "transition": "Negative"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Positive",
+              "distribution": 0.077
+            },
+            {
+              "transition": "Negative",
+              "distribution": 0.923
+            }
+          ],
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 25,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 29,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Positive",
+              "distribution": 0.061
+            },
+            {
+              "transition": "Negative",
+              "distribution": 0.939
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 34,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Positive",
+              "distribution": 0.044
+            },
+            {
+              "transition": "Negative",
+              "distribution": 0.956
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 39,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Positive",
+              "distribution": 0.039
+            },
+            {
+              "transition": "Negative",
+              "distribution": 0.961
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 44,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Positive",
+              "distribution": 0.023
+            },
+            {
+              "transition": "Negative",
+              "distribution": 0.977
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 49,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Positive",
+              "distribution": 0.018
+            },
+            {
+              "transition": "Negative",
+              "distribution": 0.982
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 54,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Positive",
+              "distribution": 0.019
+            },
+            {
+              "transition": "Negative",
+              "distribution": 0.981
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 59,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Positive",
+              "distribution": 0.013
+            },
+            {
+              "transition": "Negative",
+              "distribution": 0.987
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 64,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Positive",
+              "distribution": 0.014
+            },
+            {
+              "transition": "Negative",
+              "distribution": 0.986
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Positive",
+              "distribution": 0.004
+            },
+            {
+              "transition": "Negative",
+              "distribution": 0.996
+            }
+          ]
+        }
+      ]
+    },
+    "Drug Use": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 361055000,
+          "display": "Misuses drugs (finding)"
+        }
+      ],
+      "direct_transition": "DAST-10 Results"
+    },
+    "Cancel Drug Use": {
+      "type": "ConditionEnd",
+      "direct_transition": "DAST-10 Results",
+      "condition_onset": "Drug Use"
+    }
+  },
+  "gmf_version": 2
+}

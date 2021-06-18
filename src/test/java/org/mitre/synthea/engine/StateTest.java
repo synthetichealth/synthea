@@ -344,6 +344,38 @@ public class StateTest {
   }
 
   @Test
+  public void gausian_delay_never_negative() throws Exception {
+    Module module = TestHelper.getFixture("gaussian_distro_delay.json");
+
+    // Seconds
+    State delay = module.getState("1 Mean Delay");
+    for (int i = 0; i < 100; i++) {
+      State.Delay daClone = (State.Delay) delay.clone();
+      daClone.entered = time;
+      daClone.process(person, time);
+      assertTrue(daClone.next >= time);
+    }
+  }
+
+  @Test
+  public void gausian_delay_has_correct_mean() throws Exception {
+    Module module = TestHelper.getFixture("gaussian_distro_delay.json");
+
+    long acc = 0;
+    // Seconds
+    State delay = module.getState("10 Mean Delay");
+    for (int i = 0; i < 1000; i++) {
+      State.Delay daClone = (State.Delay) delay.clone();
+      daClone.entered = time;
+      daClone.process(person, time);
+      acc += (daClone.next - time);
+    }
+    long mean = acc / 1000;
+    assertTrue(mean > 9500);
+    assertTrue(mean < 10500);
+  }
+
+  @Test
   public void delay_passes_after_time_range() throws Exception {
     Module module = TestHelper.getFixture("delay.json");
 
