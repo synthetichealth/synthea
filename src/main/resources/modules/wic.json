@@ -54,7 +54,7 @@
           "condition": {
             "condition_type": "Attribute",
             "attribute": "income",
-            "operator": "<",
+            "operator": ">",
             "value": 49025
           }
         }
@@ -71,18 +71,7 @@
           "display": "Food insecurity (finding)"
         }
       ],
-      "conditional_transition": [
-        {
-          "transition": "Wait_For_Pregnancy",
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          }
-        },
-        {
-          "transition": "Terminal"
-        }
-      ]
+      "direct_transition": "Check_If_WIC_Eligible"
     },
     "Enroll_In_WIC": {
       "type": "Procedure",
@@ -106,197 +95,85 @@
         }
       },
       "unit": "minutes",
-      "complex_transition": [
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "wic_eligible",
-            "operator": "==",
-            "value": true
-          },
-          "distributions": [
-            {
-              "transition": "WIC_Benefits",
-              "distribution": 0.55
-            },
-            {
-              "transition": "Terminal",
-              "distribution": 0.45
-            }
-          ]
+          "transition": "WIC_Benefits",
+          "distribution": 0.55
         },
         {
-          "distributions": [],
-          "transition": "Terminal"
+          "transition": "Terminal",
+          "distribution": 0.44999999999999996
         }
       ]
     },
     "At_Or_Below_Poverty_Level": {
       "type": "SetAttribute",
-      "attribute": "wic_eligible",
+      "attribute": "wic_income_eligible",
       "value": true,
-      "complex_transition": [
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          },
-          "distributions": [
-            {
-              "transition": "Food_Insecurity_Onset",
-              "distribution": 0.349
-            },
-            {
-              "transition": "Wait_For_Pregnancy",
-              "distribution": 0.651
-            }
-          ]
+          "transition": "Food_Insecurity_Onset",
+          "distribution": 0.349
         },
         {
-          "distributions": [
-            {
-              "transition": "Food_Insecurity_Onset",
-              "distribution": 0.349
-            },
-            {
-              "transition": "Terminal",
-              "distribution": 0.651
-            }
-          ]
+          "transition": "Terminal",
+          "distribution": 0.651
         }
       ]
     },
     "At_Or_Under_1_3": {
       "type": "SetAttribute",
-      "attribute": "wic_eligible",
+      "attribute": "wic_income_eligible",
       "value": true,
-      "complex_transition": [
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          },
-          "distributions": [
-            {
-              "transition": "Food_Insecurity_Onset",
-              "distribution": 0.33
-            },
-            {
-              "transition": "Wait_For_Pregnancy",
-              "distribution": 0.67
-            }
-          ]
+          "transition": "Food_Insecurity_Onset",
+          "distribution": 0.33
         },
         {
-          "distributions": [
-            {
-              "transition": "Food_Insecurity_Onset",
-              "distribution": 0.33
-            },
-            {
-              "transition": "Terminal",
-              "distribution": 0.67
-            }
-          ]
+          "transition": "Terminal",
+          "distribution": 0.6699999999999999
         }
       ]
     },
     "At_Or_Under_1_85": {
       "type": "SetAttribute",
-      "attribute": "wic_eligible",
+      "attribute": "wic_income_eligible",
       "value": true,
-      "complex_transition": [
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          },
-          "distributions": [
-            {
-              "transition": "Food_Insecurity_Onset",
-              "distribution": 0.267
-            },
-            {
-              "transition": "Wait_For_Pregnancy",
-              "distribution": 0.733
-            }
-          ]
+          "transition": "Food_Insecurity_Onset",
+          "distribution": 0.267
         },
         {
-          "distributions": [
-            {
-              "transition": "Food_Insecurity_Onset",
-              "distribution": 0.267
-            },
-            {
-              "transition": "Terminal",
-              "distribution": 0.733
-            }
-          ]
+          "transition": "Terminal",
+          "distribution": 0.7330000000000001
         }
       ]
     },
     "Above_1_85": {
       "type": "Simple",
-      "complex_transition": [
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          },
-          "distributions": [
-            {
-              "transition": "Food_Insecurity_Onset",
-              "distribution": 0.051
-            },
-            {
-              "transition": "Wait_For_Pregnancy",
-              "distribution": 0.949
-            }
-          ]
+          "transition": "Food_Insecurity_Onset",
+          "distribution": 0.051
         },
         {
-          "distributions": [
-            {
-              "transition": "Food_Insecurity_Onset",
-              "distribution": 0.051
-            },
-            {
-              "transition": "Terminal",
-              "distribution": 0.949
-            }
-          ]
+          "transition": "Terminal",
+          "distribution": 0.9490000000000001
         }
       ]
     },
     "WIC_Benefits": {
       "type": "Simple",
-      "complex_transition": [
+      "distributed_transition": [
         {
-          "condition": {
-            "condition_type": "Active Condition",
-            "codes": [
-              {
-                "system": "SNOMED-CT",
-                "code": 733423003,
-                "display": "Food insecurity (finding)"
-              }
-            ]
-          },
-          "distributions": [
-            {
-              "transition": "Wait_3_Months",
-              "distribution": 0.2
-            },
-            {
-              "transition": "Terminal",
-              "distribution": 0.8
-            }
-          ]
+          "transition": "Wait_3_Months",
+          "distribution": 0.2
         },
         {
-          "distributions": [],
-          "transition": "Terminal"
+          "transition": "Terminal",
+          "distribution": 0.8
         }
       ]
     },
@@ -309,12 +186,7 @@
         }
       },
       "unit": "months",
-      "direct_transition": "End_Insecurity"
-    },
-    "End_Insecurity": {
-      "type": "ConditionEnd",
-      "direct_transition": "Terminal",
-      "referenced_by_attribute": "food_insecure"
+      "direct_transition": "End_Food_Insecurity"
     },
     "Wait_For_Pregnancy": {
       "type": "Guard",
@@ -335,6 +207,37 @@
         "unit": "years"
       },
       "direct_transition": "Check_Poverty_Level"
+    },
+    "Check_If_WIC_Eligible": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Wait_For_Pregnancy",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Gender",
+                "gender": "F"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "wic_income_eligible",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "End_Food_Insecurity": {
+      "type": "ConditionEnd",
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "food_insecure"
     }
   },
   "gmf_version": 2
