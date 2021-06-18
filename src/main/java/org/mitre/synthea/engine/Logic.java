@@ -458,7 +458,8 @@ public abstract class Logic implements Serializable {
         }
       }
 
-      throw new RuntimeException("Active CarePlan logic must be specified by code or attribute");
+      throw new RuntimeException(String.format("%s logic must be specified by code or attribute",
+          this.getClass().getSimpleName()));
     }
   }
 

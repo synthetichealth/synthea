@@ -20,6 +20,10 @@ public class ReactionProbabilities implements Serializable {
   // Used in the case that the reaction does not happen for the individual
   private static final String NONE = "none";
 
+  private HealthRecord.Code reaction;
+  private List<SeverityProbability> possibleSeverities;
+  private EnumeratedDistribution<String> severityDistribution;
+
   public HealthRecord.Code getReaction() {
     return reaction;
   }
@@ -53,11 +57,6 @@ public class ReactionProbabilities implements Serializable {
       this.value = value;
     }
   }
-
-  private HealthRecord.Code reaction;
-  private List<SeverityProbability> possibleSeverities;
-  private EnumeratedDistribution<String> severityDistribution;
-
 
   public ReactionProbabilities(HealthRecord.Code code,
                                List<SeverityProbability> possibleReactions) {
@@ -99,7 +98,7 @@ public class ReactionProbabilities implements Serializable {
     if (this.isPopulated() && this.severityDistribution == null) {
       this.buildReactionDistributions();
     }
-    this.severityDistribution.reseedRandomGenerator(person.seed);
+    this.severityDistribution.reseedRandomGenerator(person.randLong());
     String severity = this.severityDistribution.sample();
     switch (severity) {
       case SEVERE:
