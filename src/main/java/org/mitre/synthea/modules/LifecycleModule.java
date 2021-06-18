@@ -548,11 +548,11 @@ public final class LifecycleModule extends Module {
       if (kgToGain != null && ((double) kgToGain) > 0.0) {
         // We'll reuse the same adult weight gain used for standard adult weight gain.
         // This will result in about double weight gained per year until target kilograms to gain has been reached.
-        double adultWeightGainKilos = person.rand(ADULT_WEIGHT_GAIN_RANGE);
-        weight += adultWeightGainKilos;
+        double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
+        weight += adultWeightGain;
         // Update the weight they have yet to gain.
-        kgToGain = ((double) kgToGain) - adultWeightGainKilos;
-        person.attributes.put(Person.KILOGRAMS_TO_GAIN, kgToGain);
+        double remainingKgToGain = ((double) kgToGain) - adultWeightGain;
+        person.attributes.put(Person.KILOGRAMS_TO_GAIN, remainingKgToGain);
       }
     }
     return weight;

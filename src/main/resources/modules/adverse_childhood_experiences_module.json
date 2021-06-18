@@ -241,8 +241,7 @@
       ]
     },
     "Check_For_Physical_Abuse_Weight_Gain": {
-      "type": "SetAttribute",
-      "attribute": "kilograms_to_gain",
+      "type": "Simple",
       "conditional_transition": [
         {
           "transition": "Trigger_Physical_Abuse_Weight_Gain",
@@ -260,14 +259,7 @@
         {
           "transition": "Terminal"
         }
-      ],
-      "value": 0,
-      "distribution": {
-        "kind": "EXACT",
-        "parameters": {
-          "value": 0
-        }
-      }
+      ]
     },
     "Trigger_Physical_Abuse_Weight_Gain": {
       "type": "SetAttribute",
