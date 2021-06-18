@@ -61,10 +61,10 @@
             <value xsi:type="PQ" value="${obs.value}" <#if obs.unit?? && (obs.unit?length > 0)>unit="${obs.unit}"</#if>/>
             <#elseif obs.value?is_boolean>
             <value xsi:type="BL" value="${obs.value}" />
-            <#elseif entry.value?is_hash && entry.value.system?? && entry.value.code?? && entry.value.display??>
-            <value xsi:type="CD" codeSystem="<@lookup.oid_for_code_system system=entry.value.system/>" code="${entry.value.code}" displayName="${entry.value.display}" />
+            <#elseif obs.value?is_hash && obs.value.system?? && obs.value.code?? && obs.value.display??>
+            <value xsi:type="CD" codeSystem="<@lookup.oid_for_code_system system=obs.value.system/>" code="${obs.value.code}" displayName="${obs.value.display}" />
             <#elseif obs.value?is_string>
-            <value xsi:type="ST">${entry.value}</value>
+            <value xsi:type="ST">${obs.value}</value>
             </#if>
             <#else>
             <value xsi:type="PQ" nullFlavor="UNK"/>

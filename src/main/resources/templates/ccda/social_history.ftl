@@ -11,7 +11,7 @@
     <#list ehr_social_history as entry>
     <entry typeCode="DRIV">
       <observation classCode="OBS" moodCode="EVN">
-        <templateId root="2.16.840.1.113883.10.20.22.4.38"/>
+        <templateId root="2.16.840.1.113883.10.20.22.4.38" extension="2015-08-01"/>
         <!-- Social history observation template -->
         <id root="${UUID?api.toString()}"/>
         <@codes.code_section codes=entry.codes section="social_history" counter=entry?counter />

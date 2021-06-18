@@ -275,7 +275,7 @@ public class CSVExporter {
     careplans.write(
         "Id,START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,REASONCODE,REASONDESCRIPTION");
     careplans.write(NEWLINE);
-    observations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,VALUE,UNITS,TYPE");
+    observations.write("DATE,PATIENT,ENCOUNTER,CATEGORY,CODE,DESCRIPTION,VALUE,UNITS,TYPE");
     observations.write(NEWLINE);
     procedures.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,"
         + "REASONCODE,REASONDESCRIPTION");
@@ -754,12 +754,16 @@ public class CSVExporter {
       return;
     }
 
-    // DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,VALUE,UNITS
+    // DATE,PATIENT,ENCOUNTER,CATEGORY,CODE,DESCRIPTION,VALUE,UNITS
     StringBuilder s = new StringBuilder();
 
     s.append(iso8601Timestamp(observation.start)).append(',');
     s.append(personID).append(',');
     s.append(encounterID).append(',');
+    if (observation.category != null) {
+      s.append(observation.category);
+    }
+    s.append(',');
 
     Code coding = observation.codes.get(0);
 
@@ -768,7 +772,7 @@ public class CSVExporter {
 
     String value = ExportHelper.getObservationValue(observation);
     String type = ExportHelper.getObservationType(observation);
-    s.append(value).append(',');
+    s.append(clean(value)).append(',');
     s.append(observation.unit).append(',');
     s.append(type);
 

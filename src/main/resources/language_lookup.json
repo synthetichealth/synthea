@@ -79,6 +79,11 @@
     "system": "urn:ietf:bcp:47",
     "display": "Polish"
   },
+  "hawaiian": {
+    "code": "haw",
+    "system": "urn:ietf:bcp:47",
+    "display": "Hawaiian"
+  },
   "hindi": {
     "code": "hi",
     "system": "http://id.loc.gov/vocabulary/iso639-1",
