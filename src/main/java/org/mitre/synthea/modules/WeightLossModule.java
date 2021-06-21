@@ -389,6 +389,11 @@ public final class WeightLossModule extends Module {
    * weight management. This does not mean that they will adhere to the management plan.
    */
   public boolean willStartWeightManagement(Person person, long time) {
+    Object kgToGain = person.attributes.get(Person.KILOGRAMS_TO_GAIN);
+    if (kgToGain != null && ((double) kgToGain) > 0.0) {
+      // If the person should be gaining weight, they should not start weight loss.
+      return false;
+    }
     if (meetsWeightManagementThresholds(person, time)) {
       return person.rand() <= startWeightManagementProb;
     }
