@@ -133,7 +133,7 @@
     "Aspirin_Allergy_Onset": {
       "type": "AllergyOnset",
       "allergy_type": "allergy",
-      "category": "drug",
+      "category": "medication",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
         {

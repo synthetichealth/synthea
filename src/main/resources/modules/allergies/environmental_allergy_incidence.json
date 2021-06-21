@@ -395,6 +395,8 @@
     },
     "Bee_Allergy": {
       "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "environment",
       "target_encounter": "Allergist_Initial_Visit",
       "codes": [
         {
