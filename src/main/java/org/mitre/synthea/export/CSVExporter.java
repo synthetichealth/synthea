@@ -757,8 +757,14 @@ public class CSVExporter {
     s.append(coding.code).append(',');
     s.append(getSystemFromURI(coding.system)).append(',');
     s.append(clean(coding.display)).append(',');
-    s.append(allergy.allergyType).append(',');
-    s.append(allergy.category).append(',');
+    if (allergy.allergyType != null) {
+      s.append(allergy.allergyType);
+    }
+    s.append(',');
+    if (allergy.category != null) {
+      s.append(allergy.category);
+    }
+    s.append(',');
 
     int reactionsSize = 0;
     if (allergy.reactions != null) {
@@ -1701,6 +1707,7 @@ public class CSVExporter {
     long transferId;
     String transferType;
     String patientId;
+    String memberId;
     ClaimTransactionType type;
     Double amount;
     Integer units;
@@ -1736,6 +1743,10 @@ public class CSVExporter {
       this.claimId = claimId;
       this.chargeId = chargeId;
       this.patientId = (String) claim.person.attributes.get(Person.ID);
+      Plan plan = claim.person.coverage.getPlanAtTime(encounter.start);
+      if (plan != null) {
+        this.memberId = plan.id;
+      }
       this.units = 1;
       this.start = claimEntry.entry.start;
       this.stop = claimEntry.entry.stop;
@@ -1855,11 +1866,14 @@ public class CSVExporter {
       // LINENOTE
       s.append(',');
       // PATIENTINSURANCEID
-      s.append(patientId).append(',');
+      if (memberId != null) {
+        s.append(patientId);
+      }
+      s.append(',');
       // TODO FEESCHEDULEID
       s.append("1").append(',');
       // PROVIDERID
-      s.append(organizationId).append(',');
+      s.append(clinicianId).append(',');
       // SUPERVISINGPROVIDERID
       s.append(clinicianId);
       s.append(NEWLINE);
