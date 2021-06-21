@@ -14,7 +14,20 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Wait_Until_Adult"
+      "direct_transition": "Wait_Until_Adult",
+      "remarks": [
+        "1.\tWait until the person is 18 years old.",
+        "2.\tCheck that the person is income-eligible for WIC.",
+        "3.\tBased on their income brackets relative to the poverty level, assign them as food insecure. There is data and research detailing incidences of food insecurity relative to income level.",
+        "4.\tCheck that the person is potentially WIC-Eligible.",
+        "   a.\tThey must be income eligible.",
+        "   b.\tThey must be food insecure.",
+        "   c.\tThey must be female.",
+        "5.\tWait until pregnancy before WIC enrollment.",
+        "6.\tThere is a 55% chance they will enroll in WIC once pregnant.",
+        "7.\tThere is a 20% chance that WIC enrollees will have their food insecurity resolved.",
+        ""
+      ]
     },
     "Terminal": {
       "type": "Terminal"
@@ -95,16 +108,7 @@
         }
       },
       "unit": "minutes",
-      "distributed_transition": [
-        {
-          "transition": "WIC_Benefits",
-          "distribution": 0.55
-        },
-        {
-          "transition": "Terminal",
-          "distribution": 0.44999999999999996
-        }
-      ]
+      "direct_transition": "WIC_Benefits"
     },
     "At_Or_Below_Poverty_Level": {
       "type": "SetAttribute",
@@ -196,7 +200,16 @@
         "operator": "==",
         "value": true
       },
-      "direct_transition": "Enroll_In_WIC"
+      "distributed_transition": [
+        {
+          "transition": "Enroll_In_WIC",
+          "distribution": 0.55
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.44999999999999996
+        }
+      ]
     },
     "Wait_Until_Adult": {
       "type": "Guard",
