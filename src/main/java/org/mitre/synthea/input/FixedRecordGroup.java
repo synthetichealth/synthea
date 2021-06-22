@@ -169,7 +169,9 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
    * @return The seed record attributes of this fixed record group.
    */
   public Map<String, Object> getSeedRecordAttributes() {
-    return this.seedRecord.getFixedRecordAttributes();
+    Map<String, Object> seedAttributes = this.seedRecord.getFixedRecordAttributes();
+    seedAttributes.put(Person.CITY, this.getSeedCity());
+    return seedAttributes;
   }
 
   /**
@@ -236,6 +238,10 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
    */
   public static final Map<String, String> STATE_MAP = initializeStateMap();
 
+  /**
+   * Builds the state abbreviation to full names map.
+   * @return
+   */
   private static Map<String, String> initializeStateMap() {
     Map<String, String> stateMap = new HashMap<String, String>();
     stateMap.put("AL", "Alabama");

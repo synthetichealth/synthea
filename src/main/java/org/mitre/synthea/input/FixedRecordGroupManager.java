@@ -170,7 +170,7 @@ public class FixedRecordGroupManager {
     person.record = person.getHealthRecord(
         person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()),
         System.currentTimeMillis());
-    // Reset the person's attributes to the seed record ones, since their the true
+    // Reset the person's attributes to the seed record ones, since they are the true
     // attributes.
     person.attributes.putAll(frg.getSeedRecordAttributes());
     frg.overwriteAddressWithSeedRecord(person, generator);

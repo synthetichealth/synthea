@@ -400,7 +400,7 @@ public class Generator implements RandomNumberGenerator {
       Map<String, Object> demoAttributes;
 
       if (fixedRecordGroupManager != null) {
-        // Get the Demographic attributes
+        // Get the fixed demographic attributes for the this person.
         FixedRecordGroup recordGroup = fixedRecordGroupManager.getNextRecordGroup(index);
         demoAttributes = pickFixedDemographics(recordGroup, random);        
       } else {
@@ -743,9 +743,9 @@ public class Generator implements RandomNumberGenerator {
     Map<String, Object> demoAttributes = recordGroup.getSeedRecordAttributes();
     demoAttributes = this.pickDemographics(random, city);
     // Overwrite the person's attributes with the seed of the fixed record group.
+    demoAttributes.putAll(recordGroup.getSeedRecordAttributes());
     demoAttributes.put(Person.BIRTH_CITY, city.city);
     demoAttributes.put(Person.HOUSEHOLD, recordGroup.getHouseholdId());
-    demoAttributes.putAll(recordGroup.getSeedRecordAttributes());
 
     return demoAttributes;
   }

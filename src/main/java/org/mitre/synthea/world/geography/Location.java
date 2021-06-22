@@ -322,7 +322,7 @@ public class Location implements Serializable {
     if (zipsForCity == null) {
       // If there are no zips for this city, try again with " Town" appended.
       zipsForCity = zipCodes.get(cityName + " Town");
-      if (zipsForCity == null) { 
+      if (zipsForCity == null) {
         // If there are still no zips, then this is an unknown city. Throw a detailed exception.
         throw new RuntimeException("No zip codes found for the city "
             + cityName + " in state " + this.state + ".");
