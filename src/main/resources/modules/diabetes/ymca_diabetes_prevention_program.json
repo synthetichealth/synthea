@@ -220,13 +220,13 @@
     },
     "Trigger_2%_Weight_Loss_Trajectory": {
       "type": "SetAttribute",
-      "attribute": "target_weight_loss",
+      "attribute": "trigger_weight_loss",
       "direct_transition": "Successful_YMCA_Diabetes_Program",
       "remarks": [
         "Because triggering weight loss is a multi-year process, we'll start it now because we know this person will have perfect adherence to the YMCA Diabetes Prevention Program.",
         "2% is the amount of weight loss that can be expected after successful YMCA completion. However, in practice, setting this target weight loss to 2% doesn't translate to an actual 2% in practice in Synthea. Instead, in Synthea.WeightLossModule.java, this 2% is overwritten by the default weight loss values which seem to equate to around 2% in practice."
       ],
-      "value": 0.02
+      "value": true
     },
     "Record_Normal_A1C": {
       "type": "Observation",

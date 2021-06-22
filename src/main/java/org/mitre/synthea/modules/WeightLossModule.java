@@ -41,6 +41,7 @@ public final class WeightLossModule extends Module {
       = "weight_loss_bmi_percentile_change";
   public static final String LONG_TERM_WEIGHT_LOSS = "long_term_weight_loss";
   public static final String WEIGHT_LOSS_ADHERENCE = "weight_loss_adherence";
+  public static final String TRIGGER_WEIGHT_LOSS = "trigger_weight_loss";
 
   public static final int managementStartAge = (int) BiometricsConfig.get("min_age", 5);
   public static final double startWeightManagementProb =
@@ -179,7 +180,7 @@ public final class WeightLossModule extends Module {
     person.attributes.remove(WEIGHT_LOSS_BMI_PERCENTILE_CHANGE);
     person.attributes.remove(PRE_MANAGEMENT_WEIGHT);
     person.attributes.remove(LONG_TERM_WEIGHT_LOSS);
-    person.attributes.remove(Person.TARGET_WEIGHT_LOSS);
+    person.attributes.remove(TRIGGER_WEIGHT_LOSS);
     person.attributes.put(ACTIVE_WEIGHT_MANAGEMENT, false);
   }
 
@@ -361,26 +362,22 @@ public final class WeightLossModule extends Module {
     person.attributes.put(PRE_MANAGEMENT_WEIGHT, startWeight);
     person.attributes.put(WEIGHT_MANAGEMENT_START, time);
     boolean stickToPlan = person.rand() <= adherence;
-    if (person.attributes.get(Person.TARGET_WEIGHT_LOSS) != null) {
+    if (person.attributes.get(TRIGGER_WEIGHT_LOSS) != null) {
       stickToPlan = true;
     }
     person.attributes.put(WEIGHT_LOSS_ADHERENCE, stickToPlan);
     if (stickToPlan) {
       if (person.ageInYears(time) >= 20) {
-        double minLossPercentage = minLoss;
-        double maxLossPercentage = maxLoss;
-        if (person.attributes.get(Person.TARGET_WEIGHT_LOSS) != null) {
-          person.attributes.remove(Person.TARGET_WEIGHT_LOSS);
-        }
-        double percentWeightLoss = person.rand(minLossPercentage, maxLossPercentage);
+        double percentWeightLoss = person.rand(minLoss, maxLoss);
         person.attributes.put(WEIGHT_LOSS_PERCENTAGE, percentWeightLoss);
       } else {
         double bmiPercentileChange = person.rand() * maxPedPercentileChange;
         person.attributes.put(WEIGHT_LOSS_BMI_PERCENTILE_CHANGE, bmiPercentileChange);
       }
       boolean longTermSuccess = person.rand() <= maintenance;
-      if (person.attributes.get(Person.TARGET_WEIGHT_LOSS) != null) {
+      if (person.attributes.get(TRIGGER_WEIGHT_LOSS) != null) {
         longTermSuccess = true;
+        person.attributes.remove(TRIGGER_WEIGHT_LOSS);
       }
       person.attributes.put(LONG_TERM_WEIGHT_LOSS, longTermSuccess);
     } else {
@@ -394,7 +391,7 @@ public final class WeightLossModule extends Module {
    * weight management. This does not mean that they will adhere to the management plan.
    */
   public boolean willStartWeightManagement(Person person, long time) {
-    if (person.attributes.get(Person.TARGET_WEIGHT_LOSS) != null) {
+    if (person.attributes.get(TRIGGER_WEIGHT_LOSS) != null) {
       return true;
     }
     if (meetsWeightManagementThresholds(person, time)) {
