@@ -1,0 +1,264 @@
+{
+  "name": "YMCA_Diabetes_Prevention_Program",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Program_Eligibility"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Program_Eligibility": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Wait_Until_20",
+          "condition": {
+            "condition_type": "Vital Sign",
+            "vital_sign": "BMI",
+            "operator": ">=",
+            "value": 25
+          }
+        },
+        {
+          "transition": "Not_Eligible"
+        }
+      ],
+      "remarks": [
+        "A1C Prediabetes Levels Source: https://www.cdc.gov/diabetes/managing/managing-blood-sugar/a1c.html",
+        "This state checks that the person is eligible for the YMCA Diabetes Prevention Program. Eligibility Criteria are:",
+        "- 18 or older",
+        "- BMI >= 25",
+        "- Blood Test Confirming Prediatbetes (5.7 <= A1C <= 6.4)",
+        ""
+      ]
+    },
+    "Not_Eligible": {
+      "type": "SetAttribute",
+      "attribute": "ymca_diabetes_program",
+      "direct_transition": "Terminal",
+      "value": "unsuccessful"
+    },
+    "Start_YMCA_Diabetes_Program": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Set_Perfect_Visit_Adherence",
+          "distribution": 0.605
+        },
+        {
+          "transition": "Set_Minimal_Visit_Adherence",
+          "distribution": 0.395
+        }
+      ]
+    },
+    "YMCA_Diabetes_Program_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 718361005,
+          "display": "Weight management program (regime/therapy) - YMCA"
+        }
+      ],
+      "direct_transition": "Delay_1_Hour",
+      "remarks": [
+        "https://snomedbrowser.com/Codes/Details/718361005"
+      ]
+    },
+    "Set_Perfect_Visit_Adherence": {
+      "type": "SetAttribute",
+      "attribute": "ymca_program_visits_counter",
+      "direct_transition": "Trigger_2%_Weight_Loss_Trajectory",
+      "value": 25
+    },
+    "Set_Minimal_Visit_Adherence": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Set_1_Visit",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Set_2_Visits",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Set_3_Visits",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Set_4_Visits",
+          "distribution": 0.25
+        }
+      ]
+    },
+    "Set_2_Visits": {
+      "type": "SetAttribute",
+      "attribute": "ymca_program_visits_counter",
+      "direct_transition": "Unsuccessful_YMCA_Diabetes_Program",
+      "value": 2
+    },
+    "Set_3_Visits": {
+      "type": "SetAttribute",
+      "attribute": "ymca_program_visits_counter",
+      "direct_transition": "Unsuccessful_YMCA_Diabetes_Program",
+      "value": 3
+    },
+    "Set_4_Visits": {
+      "type": "SetAttribute",
+      "attribute": "ymca_program_visits_counter",
+      "direct_transition": "Unsuccessful_YMCA_Diabetes_Program",
+      "value": 4
+    },
+    "Set_1_Visit": {
+      "type": "SetAttribute",
+      "attribute": "ymca_program_visits_counter",
+      "direct_transition": "Unsuccessful_YMCA_Diabetes_Program",
+      "value": 1
+    },
+    "2_Week_Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 2
+        }
+      },
+      "unit": "weeks",
+      "direct_transition": "YMCA_Diabetes_Program_Encounter"
+    },
+    "End_YMCA_Diabetes_Program_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Decrement_Program_Encounters"
+    },
+    "Set_A1C_To_Normal_Level": {
+      "type": "VitalSign",
+      "vital_sign": "Blood Glucose",
+      "unit": "%",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 5.699999,
+          "low": 4
+        }
+      },
+      "direct_transition": "Wait_For_Wellness_Encounter",
+      "remarks": [
+        "Normal A1C Source:",
+        "https://www.cdc.gov/diabetes/managing/managing-blood-sugar/a1c.html",
+        "Upon completion of the Program, the person's A1C Levels will be restored to normal.",
+        "Normal Range: 4% - 5.7%"
+      ]
+    },
+    "Check_Success_Of_Program": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set_A1C_To_Normal_Level",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ymca_diabetes_program",
+            "operator": "==",
+            "value": "sucessful"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Successful_YMCA_Diabetes_Program": {
+      "type": "SetAttribute",
+      "attribute": "ymca_diabetes_program",
+      "direct_transition": "2_Week_Delay",
+      "value": "successful"
+    },
+    "Decrement_Program_Encounters": {
+      "type": "Counter",
+      "attribute": "ymca_program_visits_counter",
+      "action": "decrement",
+      "conditional_transition": [
+        {
+          "transition": "Check_Success_Of_Program",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ymca_program_visits_counter",
+            "operator": "<=",
+            "value": 0
+          }
+        },
+        {
+          "transition": "2_Week_Delay"
+        }
+      ]
+    },
+    "Delay_1_Hour": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "End_YMCA_Diabetes_Program_Encounter"
+    },
+    "Wait_For_Wellness_Encounter": {
+      "type": "Encounter",
+      "reason": "",
+      "direct_transition": "Record_Normal_A1C",
+      "wellness": true
+    },
+    "End_Wellness": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Trigger_2%_Weight_Loss_Trajectory": {
+      "type": "SetAttribute",
+      "attribute": "trigger_weight_loss",
+      "direct_transition": "Successful_YMCA_Diabetes_Program",
+      "remarks": [
+        "Because triggering weight loss is a multi-year process, we'll start it now because we know this person will have perfect adherence to the YMCA Diabetes Prevention Program.",
+        "2% is the amount of weight loss that can be expected after successful YMCA completion. However, in practice, setting this target weight loss to 2% doesn't translate to an actual 2% in practice in Synthea. Instead, in Synthea.WeightLossModule.java, this 2% is overwritten by the default weight loss values which seem to equate to around 2% in practice."
+      ],
+      "value": true
+    },
+    "Record_Normal_A1C": {
+      "type": "Observation",
+      "vital_sign": "Blood Glucose",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "4548-4",
+          "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+        }
+      ],
+      "unit": "%",
+      "direct_transition": "End_Wellness"
+    },
+    "Unsuccessful_YMCA_Diabetes_Program": {
+      "type": "SetAttribute",
+      "attribute": "ymca_diabetes_program",
+      "value": "unsuccessful",
+      "direct_transition": "2_Week_Delay"
+    },
+    "Wait_Until_20": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 20,
+        "unit": "years",
+        "value": 0
+      },
+      "direct_transition": "Start_YMCA_Diabetes_Program"
+    }
+  },
+  "gmf_version": 2
+}

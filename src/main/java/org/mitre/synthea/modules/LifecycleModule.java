@@ -422,6 +422,7 @@ public final class LifecycleModule extends Module {
       // If there is active weight management,
       // changing of weight will be handled by the WeightLossModule
       if (weightManagement != null && ! (boolean) weightManagement) {
+      // if (weightManagement == null || ! (boolean) weightManagement) { // Should it be like this instead?
         if (age <= ADULT_MAX_WEIGHT_AGE) {
           // getting older and fatter
           double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
