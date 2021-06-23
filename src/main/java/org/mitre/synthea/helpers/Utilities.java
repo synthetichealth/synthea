@@ -139,7 +139,15 @@ public class Utilities {
   public static double convertRiskToTimestep(double risk, double originalPeriodInMS) {
     double currTimeStepInMS = Double.parseDouble(Config.get("generate.timestep"));
 
-    return 1 - Math.pow(1 - risk, currTimeStepInMS / originalPeriodInMS);
+    return convertRiskToTimestep(risk, originalPeriodInMS, currTimeStepInMS);
+  }
+  
+  /**
+   * Calculates 1 - (1-risk)^(newTimeStepInMS/originalPeriodInMS).
+   */
+  public static double convertRiskToTimestep(double risk, double originalPeriodInMS,
+      double newTimeStepInMS) {
+    return 1 - Math.pow(1 - risk, newTimeStepInMS / originalPeriodInMS);
   }
 
   /**

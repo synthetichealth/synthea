@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math.ode.DerivativeException;
 import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.engine.Components.Exact;
@@ -163,16 +164,20 @@ public abstract class State implements Cloneable, Serializable {
 
   /**
    * Run the state. This processes the state, setting entered and exit times.
+   * This will terminate immediately if the patient is dead and `terminateOnDeath` is true.
    *
    * @param person
    *          the person being simulated
    * @param time
    *          the date within the simulated world
+   * @param terminateOnDeath
+   *          whether to terminate immediately and not process the state if the patient is dead
+   *          (has no effect on patients that are alive)
    * @return `true` if processing should continue to the next state, `false` if the processing
    *         should halt for this time step.
    */
-  public boolean run(Person person, long time) {
-    if (!person.alive(time)) {
+  public boolean run(Person person, long time, boolean terminateOnDeath) {
+    if (terminateOnDeath && !person.alive(time)) {
       return false;
     }
     if (this.entered == null) {
@@ -185,9 +190,13 @@ public abstract class State implements Cloneable, Serializable {
       // to indicate when the state actually completed.
       if (this instanceof Delayable) {
         this.exited = ((Delayable)this).next;
+      } else if (this instanceof CallSubmodule) {
+        this.exited = ((CallSubmodule)this).submoduleExited;
       } else {
         this.exited = time;
       }
+    } else if (this instanceof Terminal) {
+      this.exited = time;
     }
 
     return exit;
@@ -231,6 +240,7 @@ public abstract class State implements Cloneable, Serializable {
    */
   public static class CallSubmodule extends State {
     private String submodule;
+    private transient long submoduleExited;
 
     @Override
     public CallSubmodule clone() {
@@ -250,8 +260,23 @@ public abstract class State implements Cloneable, Serializable {
       boolean completed = submod.process(person, time);
 
       if (completed) {
+        // keep track of when the submodule exited,
+        // in case it was "rewinding time" when it completed
+        if (person.history.get(0).exited == null) {
+          // this happens when the patient dies in the submodule,
+          // so processing is going to stop anyway
+          // but just to be safe and not crash,
+          // we'll assume we exited at the current timestep
+          this.submoduleExited = time;
+        } else {
+          this.submoduleExited = person.history.get(0).exited;
+        }
+        
         // add the history from the submodule to this module's history, at the front
-        moduleHistory.addAll(0, person.history);
+        if (moduleHistory != person.history) {
+          // if the submodule is a java module, it didn't create its own history
+          moduleHistory.addAll(0, person.history);
+        }
         // clear the submodule history
         person.attributes.remove(submod.name);
         // reset person.history to this module's history
@@ -1586,6 +1611,20 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
+      validate(module, name);
+    }
+
+    protected void validate(Module module, String name) {
+      if (exact != null || range != null) {
+        // units are required
+        if (StringUtils.isBlank(unit)) {
+          throw new RuntimeException(
+              "Observations with numeric quantities must contain non-blank units. "
+          + "Module \"" + module.name + "\": State \"" + name
+          + "\": Unit is missing, empty, or all whitespace");
+        }
+      }
+
       if (distribution != null && !distribution.validate()) {
         throw new IllegalStateException(
             String.format("State %s contains an invalid distribution", this.name));
@@ -1669,6 +1708,14 @@ public abstract class State implements Cloneable, Serializable {
   private abstract static class ObservationGroup extends State {
     protected List<Code> codes;
     protected List<Observation> observations;
+
+    @Override
+    protected void initialize(Module module, String name, JsonObject definition) {
+      super.initialize(module, name, definition);
+      for (Observation observation : observations) {
+        observation.validate(module, name);
+      }
+    }
 
     public ObservationGroup clone() {
       ObservationGroup clone = (ObservationGroup) super.clone();

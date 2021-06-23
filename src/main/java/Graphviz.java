@@ -655,7 +655,7 @@ public class Graphviz {
             + valueString + NEWLINE;
       case "Vital Sign":
         return "Vital Sign " + logic.get("vital_sign").getAsString() + " \\"
-            + logic.get("operator").getAsString() + " " + logic.get("value").getAsString() + "}"
+            + logic.get("operator").getAsString() + " " + logic.get("value").getAsString()
             + NEWLINE;
       case "Active Condition":
         String cond = findReferencedType(logic);

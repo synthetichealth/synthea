@@ -262,7 +262,7 @@ public class CSVExporter {
   private void writeCSVHeaders() throws IOException {
     patients.write("Id,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,"
         + "PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,"
-        + "ADDRESS,CITY,STATE,COUNTY,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE");
+        + "ADDRESS,CITY,STATE,COUNTY,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE,INCOME");
     patients.write(NEWLINE);
     allergies.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION");
     allergies.write(NEWLINE);
@@ -573,7 +573,7 @@ public class CSVExporter {
         Person.CITY,
         Person.STATE,
         "county",
-        Person.ZIP
+        Person.ZIP,
     }) {
       String value = (String) person.attributes.getOrDefault(attribute, "");
       s.append(',').append(clean(value));
@@ -583,7 +583,9 @@ public class CSVExporter {
     // HEALTHCARE_EXPENSES
     s.append(person.getHealthcareExpenses()).append(',');
     // HEALTHCARE_COVERAGE
-    s.append(person.getHealthcareCoverage());
+    s.append(person.getHealthcareCoverage()).append(',');
+    // INCOME
+    s.append(person.attributes.get(Person.INCOME));
     // QALYS
     // s.append(person.attributes.get("most-recent-qaly")).append(',');
     // DALYS

@@ -32,6 +32,7 @@ public class App {
     System.out.println("         [-u updatedPopulationSnapshotPath]");
     System.out.println("         [-t updateTimePeriodInDays]");
     System.out.println("         [-f fixedRecordPath]");
+    System.out.println("         [-k keepMatchingPatientsPath]");
     System.out.println("         [--config* value]");
     System.out.println("          * any setting from src/main/resources/synthea.properties");
     System.out.println("Examples:");
@@ -174,6 +175,15 @@ public class App {
             } else {
               throw new FileNotFoundException(String.format(
                   "Specified fixed record file (%s) does not exist", value));
+            }
+          } else if (currArg.equals("-k")) {
+            String value = argsQ.poll();
+            File keepPatientsModule = new File(value);
+            if (keepPatientsModule.exists()) {
+              options.keepPatientsModulePath = keepPatientsModule;
+            } else {
+              throw new FileNotFoundException(String.format(
+                  "Specified keep-patients file (%s) does not exist", value));
             }
           } else if (currArg.startsWith("--")) {
             String configSetting;

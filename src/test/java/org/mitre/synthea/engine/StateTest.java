@@ -713,7 +713,7 @@ public class StateTest {
     assertTrue(obsValue < 400);
   }
 
-    @Test
+  @Test
   public void observation() throws Exception {
     Module module = TestHelper.getFixture("observation.json");
 
@@ -1828,58 +1828,121 @@ public class StateTest {
 
       assertEquals("Example_Condition", person.history.get(16).name);
       assertEquals("Recursive Calls Submodules Module", person.history.get(16).module.name);
-
+      long previousStateExited = person.history.get(17).exited;
+      long currentStateEntered = person.history.get(16).entered;
+      assertEquals(previousStateExited, currentStateEntered);
+      
       assertEquals("Call_Encounter_Submodule", person.history.get(15).name);
       assertEquals("Recursive Calls Submodules Module", person.history.get(15).module.name);
-
+      previousStateExited = person.history.get(16).exited;
+      currentStateEntered = person.history.get(15).entered;
+      assertEquals(previousStateExited, currentStateEntered);
 
       assertEquals("Initial", person.history.get(14).name);
       assertEquals("Encounter Submodule Module", person.history.get(14).module.name);
+      // the state being called by the submodule won't necessarily have this property
+      // because submodule.exited gets rewritten to whenever the terminal of the submodule exits
+      // ex. main.CallSubmodule: entered 1/1/2020, exited 12/31/2020
+      //     sub.Initial: entered 1/1/2020 exited 1/1/2020
+      //     sub.Delay: entered 1/1/2020 exited 12/31/2020
+      //     sub.Terminal: entered 12/31/2020 exited 12/31/2020
+      // previousStateExited = person.history.get(15).exited;
+      // currentStateEntered = person.history.get(14).entered;
+      // assertEquals(previousStateExited, currentStateEntered);
 
       assertEquals("Delay", person.history.get(13).name);
       assertEquals("Encounter Submodule Module", person.history.get(13).module.name);
+      previousStateExited = person.history.get(14).exited;
+      currentStateEntered = person.history.get(13).entered;
+      assertEquals(previousStateExited, currentStateEntered);
 
       assertEquals("Encounter_In_Submodule", person.history.get(12).name);
       assertEquals("Encounter Submodule Module", person.history.get(12).module.name);
+      previousStateExited = person.history.get(13).exited;
+      currentStateEntered = person.history.get(12).entered;
+      assertEquals(previousStateExited, currentStateEntered);
 
       assertEquals("Call_MedicationOrder_Submodule", person.history.get(11).name);
       assertEquals("Encounter Submodule Module", person.history.get(11).module.name);
+      previousStateExited = person.history.get(12).exited;
+      currentStateEntered = person.history.get(11).entered;
+      assertEquals(previousStateExited, currentStateEntered);
 
 
       assertEquals("Initial", person.history.get(10).name);
       assertEquals("Medication Submodule Module", person.history.get(10).module.name);
+      // previousStateExited = person.history.get(11).exited;
+      // currentStateEntered = person.history.get(10).entered;
+      // assertEquals(previousStateExited, currentStateEntered);
+      // see notes above for why this property doesn't hold
 
       assertEquals("Examplitis_Medication", person.history.get(9).name);
       assertEquals("Medication Submodule Module", person.history.get(9).module.name);
+      previousStateExited = person.history.get(10).exited;
+      currentStateEntered = person.history.get(9).entered;
+      assertEquals(previousStateExited, currentStateEntered);
 
       assertEquals("Delay_Yet_Again", person.history.get(8).name);
       assertEquals("Medication Submodule Module", person.history.get(8).module.name);
+      previousStateExited = person.history.get(9).exited;
+      currentStateEntered = person.history.get(8).entered;
+      assertEquals(previousStateExited, currentStateEntered);
 
       assertEquals("End_Medication", person.history.get(7).name);
       assertEquals("Medication Submodule Module", person.history.get(7).module.name);
+      previousStateExited = person.history.get(8).exited;
+      currentStateEntered = person.history.get(7).entered;
+      assertEquals(previousStateExited, currentStateEntered);
 
       assertEquals("Med_Terminal", person.history.get(6).name);
       assertEquals("Medication Submodule Module", person.history.get(6).module.name);
+      previousStateExited = person.history.get(7).exited;
+      currentStateEntered = person.history.get(6).entered;
+      assertEquals(previousStateExited, currentStateEntered);
 
 
       assertEquals("Call_MedicationOrder_Submodule", person.history.get(5).name);
       assertEquals("Encounter Submodule Module", person.history.get(5).module.name);
+      // previousStateExited = person.history.get(6).exited;
+      // currentStateEntered = person.history.get(5).entered;
+      // assertEquals(previousStateExited, currentStateEntered);
+      // note that this is the same state object at position 11 and 5
+      // even though it was only called once it shows up twice
+      // (before and after all of the submodule states)
+      // but the entered & exited times don't line up cleanly
 
       assertEquals("Delay_Some_More", person.history.get(4).name);
       assertEquals("Encounter Submodule Module", person.history.get(4).module.name);
+      previousStateExited = person.history.get(5).exited;
+      currentStateEntered = person.history.get(4).entered;
+      assertEquals(previousStateExited, currentStateEntered);
 
       assertEquals("Encounter_Terminal", person.history.get(3).name);
       assertEquals("Encounter Submodule Module", person.history.get(3).module.name);
+      previousStateExited = person.history.get(4).exited;
+      currentStateEntered = person.history.get(3).entered;
+      assertEquals(previousStateExited, currentStateEntered);
 
 
       assertEquals("Call_Encounter_Submodule", person.history.get(2).name);
       assertEquals("Recursive Calls Submodules Module", person.history.get(2).module.name);
+      // previousStateExited = person.history.get(3).exited;
+      // currentStateEntered = person.history.get(2).entered;
+      // assertEquals(previousStateExited, currentStateEntered);
+      // see note above, this is the same as position 15 
 
       assertEquals("End_Condition", person.history.get(1).name);
       assertEquals("Recursive Calls Submodules Module", person.history.get(1).module.name);
+      previousStateExited = person.history.get(2).exited;
+      currentStateEntered = person.history.get(1).entered;
+      assertEquals(previousStateExited, currentStateEntered);
 
       assertEquals("Terminal", person.history.get(0).name);
       assertEquals("Recursive Calls Submodules Module", person.history.get(0).module.name);
+      previousStateExited = person.history.get(1).exited;
+      currentStateEntered = person.history.get(0).entered;
+      assertEquals(previousStateExited, currentStateEntered);
+
     } finally {
       // always clean these up, to ensure they don't get seen by any other tests
       modules.remove("submodules/encounter_submodule");
