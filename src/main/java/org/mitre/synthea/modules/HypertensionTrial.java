@@ -112,9 +112,19 @@ public class HypertensionTrial {
   public static Drug findTherapyNotInUse(Person person) {
     Drug nextDrug = null;
     for (Set<Drug> drugClass : HTN_TRIAL_FORMULARY.values()) {
-      for (Drug drug : drugClass) {
+
+      // ensure nothing from this class is picked
+      if (drugClass.stream().anyMatch(drug -> person.record.medicationActive(drug.code.code))) {
+        continue;
+      }
+      
+      List<Drug> drugsInClass = new ArrayList<>(drugClass);
+      Collections.shuffle(drugsInClass);
+      
+      for (Drug drug : drugsInClass) {
+        // be super sure
         if (person.record.medicationActive(drug.code.code)) {
-          nextDrug = null; // ensure nothing from this class is picked
+          nextDrug = null; 
           break; // break out of drug class, the person has one in this class already
         }
         
@@ -241,6 +251,7 @@ public class HypertensionTrial {
 
   public static final String ADD_THERAPY = "add_therapy";
   public static final String TITRATE = "titrate";
+  public static final String SKIP = "skip";
   
   public static class ChooseNextTherapy extends Module {
     public ChooseNextTherapy() {
@@ -275,6 +286,7 @@ public class HypertensionTrial {
       boolean dbpGte90 = (boolean)person.attributes.getOrDefault("dbp_gte_90", false);
       boolean sbpGte140 = (boolean)person.attributes.getOrDefault("sbp_gte_140", false);
       boolean sbpLt135 = (boolean)person.attributes.getOrDefault("sbp_lt_135", false);
+      boolean sbpGt120 = (boolean)person.attributes.getOrDefault("sbp_gt_120", false);
       
       AtomicInteger titrationCounter = (AtomicInteger)person.attributes.get("titration_counter");
       if (titrationCounter == null) {
@@ -289,11 +301,14 @@ public class HypertensionTrial {
       
       if (trialArm.equals("intensive")) {
         if (sbp >= 120) {
-          if (milepost) {
+          
+          if (sbp <= 125 && !sbpGt120) {
+            nextAction = SKIP;
+          } else if (milepost) {
             // Add therapy not in use
             // see participant monthly, handled in module
             nextAction = ADD_THERAPY;
-            
+            person.attributes.put("sbp_gt_120", true);
           } else {
             // Titrate or add therapy not in use
             // see participant monthly, handled in module
@@ -303,6 +318,7 @@ public class HypertensionTrial {
             } else {
               nextAction = TITRATE;
             }
+            person.attributes.put("sbp_gt_120", true);
 
           }
         } else if (dbp >= 100 || (dbp >= 90 && dbpGte90)) {
@@ -313,7 +329,8 @@ public class HypertensionTrial {
           } else {
             nextAction = TITRATE;
           }
-          
+          person.attributes.put("sbp_gt_120", false);
+
         } else {
           // why did the module get called?
           throw new IllegalStateException("ChooseNextTherapy module called for patient that doesn't need it!");
@@ -361,14 +378,15 @@ public class HypertensionTrial {
         markTitrated(nextActionCode, person, TitrationDirection.UP);
         titrationCounter.incrementAndGet();
 
-      } else {
+      } else if (nextAction != SKIP){
         throw new IllegalStateException("nextAction set to something unexpected");
       }
       
  
       
       person.attributes.put("htn_trial_next_action", nextAction);
-      person.attributes.put("htn_trial_next_action_code", nextActionCode.code);
+      if (nextAction != SKIP)
+        person.attributes.put("htn_trial_next_action_code", nextActionCode.code);
       
       return true; // submodule is complete
     }

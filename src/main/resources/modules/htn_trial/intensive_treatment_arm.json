@@ -106,20 +106,7 @@
       "type": "SetAttribute",
       "attribute": "see_participant_monthly",
       "value": true,
-      "conditional_transition": [
-        {
-          "transition": "Add Therapy",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "milestone_visit",
-            "operator": "==",
-            "value": true
-          }
-        },
-        {
-          "transition": "Titrate or Add Therapy"
-        }
-      ]
+      "direct_transition": "Titrate or Add Therapy"
     },
     "Add Therapy": {
       "type": "Simple",
@@ -203,12 +190,12 @@
           "condition": {
             "condition_type": "Vital Sign",
             "vital_sign": "Systolic Blood Pressure",
-            "operator": ">=",
-            "value": 120
+            "operator": ">",
+            "value": 121
           }
         },
         {
-          "transition": "Check_DBP"
+          "transition": "sbp_gt_120 false"
         }
       ]
     },
@@ -292,6 +279,12 @@
         }
       ],
       "direct_transition": "Check_SBP"
+    },
+    "sbp_gt_120 false": {
+      "type": "SetAttribute",
+      "attribute": "sbp_gt_120",
+      "direct_transition": "Check_DBP",
+      "value": false
     }
   },
   "gmf_version": 2
