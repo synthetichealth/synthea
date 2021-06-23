@@ -134,26 +134,33 @@ public class Household {
     }
 
     // Set the range of address years corresponding to each address change.
-    this.addressYears = this.getListOfYearsFor();
+    // ADDRESS_SEQUENCE?
+    this.addressYears = this.getAddressYears();
 
     return this;
   }
 
   /**
-   * Now we need the oldest person in the household so we can randomly distribute
-   * the seed records and addresses over their lifespan. Then, assign an order
-   * based on ADDRESS_SEQUENCE. Get a list of ints with start years that will
-   * correspond with new address sequences of fixed record groups for each member
-   * of the household.
+   * Returns a random list of years that correspond to each time a new seed record starts for the household.
+   * @return List<Integer> The list of years with each year corresponding to a new start of the next seed record group.
    */
-  private List<Integer> getListOfYearsFor() {
+  private List<Integer> getAddressYears() {
+    // Get the birth year of the oldest household member as the start year.
     int householdStartYear = this.getBirthYearOfOldestMember();
     int currentYear = 2020; // TODO - should not be hardcoded, need to get current year.
     int rangeOfYears = currentYear - householdStartYear;
     List<Integer> addressYearRanges = new ArrayList<Integer>();
-    // There will be a random number of addresses from 1 - number of seeds.
-    // int numberOfAddresses = this.random.nextInt(this.fixedRecordGroups.values().iterator().next().size()) + 1;
-    int numberOfAddresses = this.fixedRecordGroups.values().iterator().next().size();
+    // Determine how many address years need to be generated.
+    boolean useAllSeeds = false;
+    int numberOfAddresses = 0;
+    if (useAllSeeds) {
+      // The fixed demographics and simulation will use every seed available with an address change for each.
+      numberOfAddresses = this.fixedRecordGroups.values().iterator().next().size();
+    } else {
+      // There will be a random number of addresses from 1 - total number of seeds.
+      numberOfAddresses = this.random.nextInt(this.fixedRecordGroups.values().iterator().next().size()) + 1;
+    }
+    // Create a list of years that correspond to the number of seed records desired.
     for (int i = 0; i < numberOfAddresses; i++) {
       int newYear = this.random().nextInt(rangeOfYears) + householdStartYear + 1;
       while (addressYearRanges.contains(newYear)) {
@@ -175,7 +182,7 @@ public class Household {
    * @return int The earliest birth year of this household.
    */
   private int getBirthYearOfOldestMember() {
-    int earliestYear = 99999;
+    int earliestYear = Integer.MAX_VALUE;
     for (List<FixedRecordGroup> frgs : this.fixedRecordGroups.values()) {
       int thisBirthYear = frgs.get(0).getSeedBirthYear();
       if (thisBirthYear < earliestYear) {

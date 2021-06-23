@@ -200,7 +200,6 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
    * @param random  The random ojbect to use.
    */
   public void setInitialVariantRecord(Random random) {
-    System.out.println("Seed: " + this.getSeedId());
     if (this.variantRecords.size() < 1) {
       throw new RuntimeException("Trying to set the initial variant record with "
           + this.variantRecords.size() + " variant records. Seed ID: "

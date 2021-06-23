@@ -285,7 +285,6 @@ public final class LifecycleModule extends Module {
     } else {
       choices = (List<String>) names.get("english." + gender);
     }
-    System.out.println(choices.size());
     // pick a random item from the list
     return choices.get(
         person.randInt(
