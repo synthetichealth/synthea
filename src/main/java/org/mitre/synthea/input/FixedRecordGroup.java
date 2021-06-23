@@ -79,7 +79,11 @@ public class FixedRecordGroup implements Comparable<FixedRecordGroup> {
       throw new RuntimeException("ERROR: No valid seed city for " + seedRecord.firstName + " "
           + seedRecord.lastName + " with seed record id " + seedRecord.recordId + ".");
     }
-    safeCity = WordUtils.capitalize(safeCity.toLowerCase());
+    safeCity = WordUtils.capitalizeFully(safeCity);
+    if (safeCity.contains("-")) {
+      String[] splitCityName = safeCity.split("-");
+      safeCity = WordUtils.capitalizeFully(splitCityName[0]) + "-" + WordUtils.capitalizeFully(splitCityName[1]);
+    }
     return safeCity;
   }
 

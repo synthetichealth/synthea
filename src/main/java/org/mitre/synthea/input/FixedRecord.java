@@ -108,7 +108,7 @@ public class FixedRecord {
     if (this.city == null) {
       return frg.getSeedCity();
     }
-    String tempCity = WordUtils.capitalize(this.city.toLowerCase());
+    String tempCity = WordUtils.capitalizeFully(this.city);
     try {
       // If the the current city/state combo is not in the Demographics file, return
       // the safe seed city of the frg.

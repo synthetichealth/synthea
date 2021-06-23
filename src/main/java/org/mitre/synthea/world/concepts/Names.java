@@ -2,6 +2,7 @@ package org.mitre.synthea.world.concepts;
 
 import java.util.List;
 
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.Utilities;
@@ -43,6 +44,12 @@ public class Names {
     } else {
       choices = (List<String>) names.get("english." + gender);
     }
+
+    // Temporary fix for name issue.
+    if(Generator.fixedRecordGroupManager != null){
+      return "";
+    }
+
     // pick a random item from the list
     String name = choices.get(person.randInt(choices.size()));
 
