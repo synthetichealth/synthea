@@ -543,6 +543,17 @@ public final class LifecycleModule extends Module {
           weight -= geriatricWeightLoss;
         }
       }
+      // If the person needs to gain weight that's been triggered by a module:
+      Object kgToGain = person.attributes.get(Person.KILOGRAMS_TO_GAIN);
+      if (kgToGain != null && ((double) kgToGain) > 0.0) {
+        // We'll reuse the same adult weight gain used for standard adult weight gain.
+        // This will result in about double weight gained per year until target kilograms to gain has been reached.
+        double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
+        weight += adultWeightGain;
+        // Update the weight they have yet to gain.
+        double remainingKgToGain = ((double) kgToGain) - adultWeightGain;
+        person.attributes.put(Person.KILOGRAMS_TO_GAIN, remainingKgToGain);
+      }
     }
     return weight;
   }

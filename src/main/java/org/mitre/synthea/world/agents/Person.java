@@ -101,6 +101,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   private static final String DEDUCTIBLE = "deductible";
   private static final String LAST_MONTH_PAID = "last_month_paid";
   public static final String HOUSEHOLD_ROLE = "household_role";
+  public static final String TARGET_WEIGHT_LOSS = "target_weight_loss";
+  public static final String KILOGRAMS_TO_GAIN = "kilograms_to_gain";
 
   private final Random random;
   public final long seed;
@@ -418,7 +420,13 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * Get a vital sign value.
    */
   public Double getVitalSign(VitalSign vitalSign, long time) {
-    ValueGenerator valueGenerator = vitalSigns.get(vitalSign);
+    ValueGenerator valueGenerator = null;
+    try{
+      valueGenerator = vitalSigns.get(vitalSign);
+    } catch (NullPointerException e){
+      System.out.println(vitalSign);
+      e.printStackTrace();
+    }
     if (valueGenerator == null) {
       throw new NullPointerException(
           "Vital sign '" + vitalSign + "' not set. Valid vital signs: " + vitalSigns.keySet());

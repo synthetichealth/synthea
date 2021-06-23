@@ -363,7 +363,14 @@ public final class WeightLossModule extends Module {
     person.attributes.put(WEIGHT_LOSS_ADHERENCE, stickToPlan);
     if (stickToPlan) {
       if (person.ageInYears(time) >= 20) {
-        double percentWeightLoss = person.rand(minLoss, maxLoss);
+        double minLossPercentage = minLoss;
+        double maxLossPercentage = maxLoss;
+        if (person.attributes.get(Person.TARGET_WEIGHT_LOSS) != null) {
+          double targetWeightLoss = (double) person.attributes.get(Person.TARGET_WEIGHT_LOSS);
+          minLossPercentage = targetWeightLoss;
+          maxLossPercentage = targetWeightLoss;
+        }
+        double percentWeightLoss = person.rand(minLossPercentage, maxLossPercentage);
         person.attributes.put(WEIGHT_LOSS_PERCENTAGE, percentWeightLoss);
       } else {
         double bmiPercentileChange = person.rand() * maxPedPercentileChange;
@@ -382,6 +389,11 @@ public final class WeightLossModule extends Module {
    * weight management. This does not mean that they will adhere to the management plan.
    */
   public boolean willStartWeightManagement(Person person, long time) {
+    Object kgToGain = person.attributes.get(Person.KILOGRAMS_TO_GAIN);
+    if (kgToGain != null && ((double) kgToGain) > 0.0) {
+      // If the person should be gaining weight, they should not start weight loss.
+      return false;
+    }
     if (meetsWeightManagementThresholds(person, time)) {
       return person.rand() <= startWeightManagementProb;
     }
