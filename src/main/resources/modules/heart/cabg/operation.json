@@ -24,10 +24,21 @@
         {
           "transition": "Emergency_CABG",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_score_e",
-            "operator": "==",
-            "value": true
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "operative_status",
+                "operator": "==",
+                "value": "emergent"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "operative_status",
+                "operator": "==",
+                "value": "emergent_salvage"
+              }
+            ]
           }
         },
         {
@@ -115,11 +126,11 @@
       "distributed_transition": [
         {
           "transition": "On Pump",
-          "distribution": 0.7
+          "distribution": 0.578
         },
         {
           "transition": "Off Pump",
-          "distribution": 0.3
+          "distribution": 0.422
         }
       ]
     },
@@ -209,60 +220,7 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "End CPB"
-    },
-    "End CPB": {
-      "type": "Simple",
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_score",
-            "operator": "==",
-            "value": 5
-          },
-          "distributions": [
-            {
-              "transition": "CPB_2",
-              "distribution": 0.083
-            },
-            {
-              "transition": "Vascular Cannula Removal",
-              "distribution": 0.917
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_score",
-            "operator": "==",
-            "value": 4
-          },
-          "distributions": [
-            {
-              "transition": "CPB_2",
-              "distribution": 0.054
-            },
-            {
-              "transition": "Vascular Cannula Removal",
-              "distribution": 0.946
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "transition": "CPB_2",
-              "distribution": 0.003
-            },
-            {
-              "transition": "Vascular Cannula Removal",
-              "distribution": 0.9970000000000001
-            }
-          ]
-        }
-      ]
+      "direct_transition": "Vascular Cannula Removal"
     },
     "Vascular Cannula Removal": {
       "type": "Procedure",
@@ -286,10 +244,21 @@
         {
           "transition": "On Pump Emergency CABG",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_score_e",
-            "operator": "==",
-            "value": true
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "operative_status",
+                "operator": "==",
+                "value": "emergent"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "operative_status",
+                "operator": "==",
+                "value": "emergent_salvage"
+              }
+            ]
           }
         },
         {
@@ -337,22 +306,6 @@
       "type": "CallSubmodule",
       "submodule": "heart/cabg/or_intraop",
       "direct_transition": "History_of_CABG"
-    },
-    "CPB_2": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 63697000,
-          "display": "Cardiopulmonary bypass operation (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 10,
-        "high": 30,
-        "unit": "minutes"
-      },
-      "direct_transition": "End CPB"
     }
   },
   "gmf_version": 2

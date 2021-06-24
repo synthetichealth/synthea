@@ -1,0 +1,141 @@
+{
+  "name": "operative_status",
+  "remarks": [
+    "Priority: Refers to a patient’s priority for surgery based upon their clinical status and triage. Priority levels are defined as follows: ",
+    "* Priority 1 = Surgery performed within 0-48 hours; the patient has no delay in surgery and/or is actively undergoing resuscitation or extracorporeal membrane oxygenation to sustain life.",
+    "* Priority 2 = Surgery performed within <=14 days, often during the same hospitalization to minimize risk of further clinical deterioration.",
+    "* Priority 3 = Surgery performed within <=42 days; the patient’s clinical condition is stable over days or weeks prior to the operation, but the procedure should preferentially not be deferred if needed due to increased risk of poor outcome.",
+    "* Priority 4 = Surgery performed within > 42 days; the patient’s clinical condition is stable over days or weeks prior to the operation, but the procedure could be deferred if needed without increased risk of poor outcome.",
+    "",
+    "",
+    "",
+    " "
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check Operative Status"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Priority 4": {
+      "type": "SetAttribute",
+      "attribute": "care_priority_level",
+      "value": 4,
+      "direct_transition": "Record Operative Status"
+    },
+    "Priority 2": {
+      "type": "SetAttribute",
+      "attribute": "care_priority_level",
+      "value": 2,
+      "direct_transition": "Record Operative Status"
+    },
+    "Priority 1": {
+      "type": "SetAttribute",
+      "attribute": "care_priority_level",
+      "value": 1,
+      "direct_transition": "Record Operative Status"
+    },
+    "Priority 3": {
+      "type": "SetAttribute",
+      "attribute": "care_priority_level",
+      "value": 3,
+      "direct_transition": "Record Operative Status"
+    },
+    "Check Operative Status": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Elective",
+          "distribution": 0.381471
+        },
+        {
+          "transition": "Emergent",
+          "distribution": 0.076294
+        },
+        {
+          "transition": "Emergent Salvage",
+          "distribution": 0.010899
+        },
+        {
+          "transition": "Urgent",
+          "distribution": 0.531336
+        }
+      ]
+    },
+    "Elective": {
+      "type": "SetAttribute",
+      "attribute": "operative_status",
+      "value": "elective",
+      "distributed_transition": [
+        {
+          "transition": "Priority 3",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Priority 4",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Emergent": {
+      "type": "SetAttribute",
+      "attribute": "operative_status",
+      "value": "emergent",
+      "direct_transition": "Priority 1"
+    },
+    "Emergent Salvage": {
+      "type": "SetAttribute",
+      "attribute": "operative_status",
+      "value": "emergent_salvage",
+      "direct_transition": "Priority 1"
+    },
+    "Urgent": {
+      "type": "SetAttribute",
+      "attribute": "operative_status",
+      "value": "urgent",
+      "direct_transition": "Priority 2"
+    },
+    "Record Operative Status": {
+      "type": "MultiObservation",
+      "category": "survey",
+      "number_of_observations": 0,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "X9999-0",
+          "display": "Operative Status"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "X9999-1",
+              "display": "Operative Status Value"
+            }
+          ],
+          "attribute": "operative_status"
+        },
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "X9999-2",
+              "display": "Priority Level"
+            }
+          ],
+          "attribute": "care_priority_level"
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}

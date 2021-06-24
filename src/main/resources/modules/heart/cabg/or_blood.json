@@ -1,0 +1,331 @@
+{
+  "name": "or_blood",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Anemia Check"
+    },
+    "Anemia Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia",
+            "operator": "is not nil"
+          },
+          "distributions": [],
+          "transition": "RBC"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "RBC",
+              "distribution": 0.095238
+            },
+            {
+              "transition": "Platelet Check",
+              "distribution": 0.9047620000000001
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "RBC",
+              "distribution": 0.047619
+            },
+            {
+              "transition": "Platelet Check",
+              "distribution": 0.952381
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "RBC",
+              "distribution": 0
+            },
+            {
+              "transition": "Platelet Check",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "RBC",
+              "distribution": 0.073504
+            },
+            {
+              "transition": "Platelet Check",
+              "distribution": 0.926496
+            }
+          ]
+        }
+      ]
+    },
+    "RBC": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 71493000,
+          "display": "Transfusion of packed red blood cells (procedure)"
+        }
+      ],
+      "direct_transition": "RBC Supply"
+    },
+    "RBC Supply": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 2,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 431069006,
+            "display": "Packed red blood cells (product)"
+          }
+        }
+      ],
+      "direct_transition": "Platelet Check"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Platelet Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Platelet Transfusion",
+              "distribution": 0.038095
+            },
+            {
+              "transition": "Plasma Check",
+              "distribution": 0.961905
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Platelet Transfusion",
+              "distribution": 0.02381
+            },
+            {
+              "transition": "Plasma Check",
+              "distribution": 0.97619
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Platelet Transfusion",
+              "distribution": 0
+            },
+            {
+              "transition": "Plasma Check",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Platelet Transfusion",
+              "distribution": 0.022222
+            },
+            {
+              "transition": "Plasma Check",
+              "distribution": 0.977778
+            }
+          ]
+        }
+      ]
+    },
+    "Plasma Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Plasma Transfusion",
+              "distribution": 0.035714
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.964286
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Plasma Transfusion",
+              "distribution": 0.02381
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.97619
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Plasma Transfusion",
+              "distribution": 0
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Plasma Transfusion",
+              "distribution": 0.034188
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.965812
+            }
+          ]
+        }
+      ]
+    },
+    "Platelet Transfusion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 12719002,
+          "display": "Platelet transfusion (procedure)"
+        }
+      ],
+      "direct_transition": "Platelet Supply"
+    },
+    "Platelet Supply": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 126261006,
+            "display": "Human platelets, pooled (product)"
+          }
+        }
+      ],
+      "direct_transition": "Plasma Check"
+    },
+    "Plasma Transfusion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 116861002,
+          "display": "Transfusion of fresh frozen plasma (procedure)"
+        }
+      ],
+      "direct_transition": "Plasma Supply"
+    },
+    "Plasma Supply": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 346447007,
+            "display": "Fresh frozen plasma (product)"
+          }
+        }
+      ],
+      "direct_transition": "Terminal"
+    }
+  },
+  "gmf_version": 2,
+  "remarks": [
+    "This submodule of Cardiac Surgery models the administration of Blood Products during the CABG Operation."
+  ]
+}

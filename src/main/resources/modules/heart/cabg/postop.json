@@ -21,30 +21,21 @@
           "display": "Patient transfer to intensive care unit (procedure)"
         }
       ],
+      "reason": "cabg_history",
       "conditional_transition": [
         {
-          "transition": "Prolonged Recovery",
+          "transition": "Reexploration procedure",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "cabg_prolonged_los",
+            "attribute": "cabg_reexploration_procedure",
             "operator": "==",
             "value": true
           }
         },
         {
-          "transition": "Recovery"
+          "transition": "cabg_icu_los set in outcomes"
         }
-      ],
-      "reason": "cabg_history"
-    },
-    "Recovery": {
-      "type": "SetAttribute",
-      "attribute": "cabg_icu_los",
-      "direct_transition": "Ventilation Check",
-      "range": {
-        "low": 1,
-        "high": 6
-      }
+      ]
     },
     "Discharge": {
       "type": "EncounterEnd",
@@ -70,15 +61,6 @@
     "Deceased": {
       "type": "Death",
       "direct_transition": "Terminal"
-    },
-    "Prolonged Recovery": {
-      "type": "SetAttribute",
-      "attribute": "cabg_icu_los",
-      "direct_transition": "Ventilation Check",
-      "range": {
-        "low": 7,
-        "high": 10
-      }
     },
     "Begin Day": {
       "type": "Counter",
@@ -195,7 +177,7 @@
       ],
       "conditional_transition": [
         {
-          "transition": "Prolonged Recovery",
+          "transition": "cabg_icu_los set in outcomes",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "cabg_prolonged_los",
@@ -203,9 +185,7 @@
             "value": true
           }
         },
-        {
-          "transition": "Recovery"
-        }
+        {}
       ],
       "direct_transition": "Education",
       "reason": "cabg_history"
@@ -310,17 +290,81 @@
         "high": 30,
         "unit": "minutes"
       },
-      "distributed_transition": [
+      "reason": "cabg_history",
+      "complex_transition": [
         {
-          "transition": "Discharge to Home",
-          "distribution": 0.8
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Discharge to Home",
+              "distribution": 0.85
+            },
+            {
+              "transition": "Discharge to Facility",
+              "distribution": 0.15
+            }
+          ]
         },
         {
-          "transition": "Discharge to Facility",
-          "distribution": 0.2
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Discharge to Home",
+              "distribution": 0.833333
+            },
+            {
+              "transition": "Discharge to Facility",
+              "distribution": 0.166667
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Discharge to Home",
+              "distribution": 0.916667
+            },
+            {
+              "transition": "Discharge to Facility",
+              "distribution": 0.083333
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Discharge to Home",
+              "distribution": 0.852991
+            },
+            {
+              "transition": "Discharge to Facility",
+              "distribution": 0.14700899999999995
+            }
+          ]
         }
-      ],
-      "reason": "cabg_history"
+      ]
     },
     "Readmission to Ward": {
       "type": "Delay",
@@ -378,7 +422,7 @@
           ]
         }
       ],
-      "direct_transition": "Insulin or Blood"
+      "direct_transition": "Blood"
     },
     "Half Day": {
       "type": "Delay",
@@ -393,11 +437,6 @@
       "submodule": "heart/cabg/labs_common",
       "direct_transition": "End Day"
     },
-    "Insulin or Blood": {
-      "type": "CallSubmodule",
-      "submodule": "heart/cabg/insulin_or_blood",
-      "direct_transition": "ICU Meds"
-    },
     "Dying After Discharge": {
       "type": "Death",
       "direct_transition": "Terminal",
@@ -406,6 +445,35 @@
         "high": 30,
         "unit": "days"
       }
+    },
+    "cabg_icu_los set in outcomes": {
+      "type": "Simple",
+      "direct_transition": "Ventilation Check"
+    },
+    "Reexploration procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 122460008,
+          "display": "Reexploration procedure (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 180,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "cabg_icu_los set in outcomes",
+      "reason": "cabg_history"
+    },
+    "Blood": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/postop_blood",
+      "direct_transition": "ICU Meds"
     }
   },
   "gmf_version": 2

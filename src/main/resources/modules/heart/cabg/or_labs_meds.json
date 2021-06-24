@@ -275,13 +275,62 @@
           "display": "25 ML protamine sulfate (USP) 10 MG/ML Injection"
         }
       ],
-      "direct_transition": "Insulin or Blood",
+      "direct_transition": "Blood",
       "administration": true
     },
-    "Insulin or Blood": {
-      "type": "CallSubmodule",
-      "submodule": "heart/cabg/insulin_or_blood",
+    "Insulin Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Insulin_Infusion_Px",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hyperglycemia",
+                "operator": "is not nil"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Insulin_Infusion_Px": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 180178009,
+          "display": "Continuous subcutaneous infusion of insulin (procedure)"
+        }
+      ],
+      "direct_transition": "Insulin_Infusion_Rx"
+    },
+    "Insulin_Infusion_Rx": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 311034,
+          "display": "insulin, regular, human 100 UNT/ML Injectable Solution"
+        }
+      ],
+      "administration": true,
       "direct_transition": "Terminal"
+    },
+    "Blood": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/or_blood",
+      "direct_transition": "Insulin Check"
     }
   },
   "gmf_version": 2

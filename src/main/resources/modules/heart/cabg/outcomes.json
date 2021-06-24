@@ -1,211 +1,167 @@
 {
   "name": "outcomes",
   "remarks": [
-    "This submodule of Cardiac Surgery determines CABG Outcomes using the Cardiac Anesthesia Risk Evaluation (CARE) score, a simple risk classification for patients for outcome prediction in cardiac surgery. The CARE Score has been shown in the literature to have good calibration in predicting outcomes when compared with more robust multifactorial risk scores, such as the EuroSCORE.",
-    "",
-    "CARE score range 1 - 5 with E denoting an emergency— defined as \"surgery as soon as diagnosis is made and operating room is available.\"",
-    "",
-    "In alignment with the CARE Score, morbidity state definitions are follows: ",
-    "• Heart_Failure: includes low cardiac output, hypotension, or both treated with intra-aortic balloon pump, and/or intravenous inotropes or vasopressors for more than 24 h; malignant arrhythmia (asystole and ventricular tachycardia or fibrillation) requiring cardiopulmonary resuscitation, antiarrhythmia therapy, or automatic cardiodefibrillator implantation",
-    "• Respiratory Failure: prolonged mechanical ventilation, tracheostomy, and/or reintubation",
-    "• Focal Brain injury: focal brain injury with permanent functional deficit (i.e., stroke) and irreversible encephalopathy",
-    "• Acute_Kidney_Injury: acute renal failure requiring dialysis",
-    "• Sepsis and/or Septic_Shock: infection with positive blood cultures and/or deep sternal or leg wound infection requiring intravenous antibiotics, surgical debridement, or both.",
-    "",
-    "References:",
-    "• Dupuis JY et al. The Cardiac Anesthesia Risk Evaluation Score. A clinically Useful Predictor of Mortality and Morbidity after Cardiac Surgery. Anesthesiology: The Journal of the American Society of Anesthesiologists. 2001 Feb 1;94(2):194-204. ",
-    "• Tran DT,  Dupuis JY,  Mesana T,  Ruel M,  Nathan HJ. Comparison of the EuroSCORE and Cardiac Anesthesia Risk Evaluation (CARE) score for risk-adjusted mortality analysis in cardiac surgery, Eur J Cardiothorac Surg, 2012, vol. 41 (pg. 307-313)10.1016/j.ejcts.2011.06.015"
+    "CABG outcomes based on operative status."
   ],
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Check CARE Score"
+      "direct_transition": "Check Mortality"
     },
     "Terminal": {
       "type": "Terminal"
     },
-    "Check CARE Score": {
+    "Check Mortality": {
       "type": "Simple",
-      "conditional_transition": [
+      "complex_transition": [
         {
-          "transition": "CARE Score 3E",
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "care_score_e",
-                "operator": "==",
-                "value": true
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "care_score",
-                "operator": "==",
-                "value": 3
-              }
-            ]
-          }
-        },
-        {
-          "transition": "CARE Score 4E",
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "care_score_e",
-                "operator": "==",
-                "value": true
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "care_score",
-                "operator": "==",
-                "value": 4
-              }
-            ]
-          }
-        },
-        {
-          "transition": "CARE Score 5E",
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "care_score_e",
-                "operator": "==",
-                "value": true
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "care_score",
-                "operator": "==",
-                "value": 5
-              }
-            ]
-          }
-        },
-        {
-          "transition": "CARE Score 1",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "care_score",
+            "attribute": "operative_status",
             "operator": "==",
-            "value": 1
-          }
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Mortality",
+              "distribution": 0.035714
+            },
+            {
+              "transition": "Check Infectious mediastinitis",
+              "distribution": 0.964286
+            }
+          ]
         },
         {
-          "transition": "CARE Score 2",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "care_score",
+            "attribute": "operative_status",
             "operator": "==",
-            "value": 2
-          }
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Mortality",
+              "distribution": 0.083333
+            },
+            {
+              "transition": "Check Infectious mediastinitis",
+              "distribution": 0.916667
+            }
+          ]
         },
         {
-          "transition": "CARE Score 3",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "care_score",
+            "attribute": "operative_status",
             "operator": "==",
-            "value": 3
-          }
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Mortality",
+              "distribution": 0
+            },
+            {
+              "transition": "Check Infectious mediastinitis",
+              "distribution": 1
+            }
+          ]
         },
         {
-          "transition": "CARE Score 4",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "care_score",
+            "attribute": "operative_status",
             "operator": "==",
-            "value": 4
-          }
-        },
-        {
-          "transition": "CARE Score 5",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_score",
-            "operator": "==",
-            "value": 5
-          }
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Mortality",
+              "distribution": 0.02735
+            },
+            {
+              "transition": "Check Infectious mediastinitis",
+              "distribution": 0.97265
+            }
+          ]
         }
       ]
     },
-    "CARE Score 1": {
+    "Check Infectious mediastinitis": {
       "type": "Simple",
-      "direct_transition": "Mortality 1"
-    },
-    "CARE Score 2": {
-      "type": "Simple",
-      "direct_transition": "Mortality_2"
-    },
-    "CARE Score 3": {
-      "type": "Simple",
-      "direct_transition": "Mortality_3"
-    },
-    "CARE Score 4": {
-      "type": "Simple",
-      "direct_transition": "Mortality_4"
-    },
-    "CARE Score 5": {
-      "type": "Simple",
-      "direct_transition": "Mortality_5"
-    },
-    "CARE Score 3E": {
-      "type": "Simple",
-      "direct_transition": "Mortality_3E"
-    },
-    "CARE Score 4E": {
-      "type": "Simple",
-      "direct_transition": "Mortality_4E"
-    },
-    "CARE Score 5E": {
-      "type": "Simple",
-      "direct_transition": "Mortality_5E"
-    },
-    "Mortality 1": {
-      "type": "SetAttribute",
-      "attribute": "cabg_mortality",
-      "range": {
-        "low": 0.003,
-        "high": 0.009
-      },
-      "direct_transition": "Morbidity 1"
-    },
-    "Morbidity 1": {
-      "type": "SetAttribute",
-      "attribute": "cabg_morbidity",
-      "range": {
-        "low": 0.043,
-        "high": 0.068
-      },
-      "direct_transition": "Prolonged LOS 1"
-    },
-    "Prolonged LOS 1": {
-      "type": "SetAttribute",
-      "attribute": "cabg_prolonged_los",
-      "range": {
-        "low": 0.022,
-        "high": 0.039
-      },
-      "direct_transition": "Check Mortality"
-    },
-    "Check Mortality": {
-      "type": "Simple",
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Mortality",
-          "distribution": {
-            "attribute": "cabg_mortality",
-            "default": 0.1
-          }
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Infectious mediastinitis",
+              "distribution": 0.009524
+            },
+            {
+              "transition": "Check Reexploration procedure",
+              "distribution": 0.990476
+            }
+          ]
         },
         {
-          "transition": "Unset Mortality",
-          "distribution": 0.9
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Infectious mediastinitis",
+              "distribution": 0.02381
+            },
+            {
+              "transition": "Check Reexploration procedure",
+              "distribution": 0.97619
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Infectious mediastinitis",
+              "distribution": 0.083333
+            },
+            {
+              "transition": "Check Reexploration procedure",
+              "distribution": 0.916667
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Infectious mediastinitis",
+              "distribution": 0.006838
+            },
+            {
+              "transition": "Check Reexploration procedure",
+              "distribution": 0.9931620000000001
+            }
+          ]
         }
       ]
     },
@@ -213,330 +169,683 @@
       "type": "SetAttribute",
       "attribute": "cabg_mortality",
       "value": true,
-      "direct_transition": "Check Morbidity"
+      "direct_transition": "Check Infectious mediastinitis"
     },
-    "Check Morbidity": {
+    "Check Reexploration procedure": {
       "type": "Simple",
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Set Morbidity",
-          "distribution": {
-            "attribute": "cabg_morbidity",
-            "default": 0.5
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Reexploration procedure",
+              "distribution": 0.016667
+            },
+            {
+              "transition": "Check_Postoperative myocardial infarction",
+              "distribution": 0.983333
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Reexploration procedure",
+              "distribution": 0.02381
+            },
+            {
+              "transition": "Check_Postoperative myocardial infarction",
+              "distribution": 0.97619
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Reexploration procedure",
+              "distribution": 0
+            },
+            {
+              "transition": "Check_Postoperative myocardial infarction",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Reexploration procedure",
+              "distribution": 0.017094
+            },
+            {
+              "transition": "Check_Postoperative myocardial infarction",
+              "distribution": 0.9829060000000001
+            }
+          ]
+        }
+      ]
+    },
+    "Check_Postoperative myocardial infarction": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative myocardial infarction",
+              "distribution": 0.002381
+            },
+            {
+              "transition": "Check_stroke",
+              "distribution": 0.997619
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative myocardial infarction",
+              "distribution": 0.011905
+            },
+            {
+              "transition": "Check_stroke",
+              "distribution": 0.988095
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative myocardial infarction",
+              "distribution": 0
+            },
+            {
+              "transition": "Check_stroke",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative myocardial infarction",
+              "distribution": 0.003419
+            },
+            {
+              "transition": "Check_stroke",
+              "distribution": 0.996581
+            }
+          ]
+        }
+      ]
+    },
+    "Check_stroke": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Stroke",
+              "distribution": 0.021429
+            },
+            {
+              "transition": "Check_Postoperative sepsis",
+              "distribution": 0.9785710000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Stroke",
+              "distribution": 0.047619
+            },
+            {
+              "transition": "Check_Postoperative sepsis",
+              "distribution": 0.952381
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Stroke",
+              "distribution": 0
+            },
+            {
+              "transition": "Check_Postoperative sepsis",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Stroke",
+              "distribution": 0.02906
+            },
+            {
+              "transition": "Check_Postoperative sepsis",
+              "distribution": 0.97094
+            }
+          ]
+        }
+      ]
+    },
+    "Check_Postoperative sepsis": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative sepsis",
+              "distribution": 0.021429
+            },
+            {
+              "transition": "Check_Postoperative renal failure",
+              "distribution": 0.9785710000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative sepsis",
+              "distribution": 0.047619
+            },
+            {
+              "transition": "Check_Postoperative renal failure",
+              "distribution": 0.952381
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative sepsis",
+              "distribution": 0.083333
+            },
+            {
+              "transition": "Check_Postoperative renal failure",
+              "distribution": 0.916667
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative sepsis",
+              "distribution": 0.02906
+            },
+            {
+              "transition": "Check_Postoperative renal failure",
+              "distribution": 0.97094
+            }
+          ]
+        }
+      ]
+    },
+    "Check_Postoperative renal failure": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative renal failure",
+              "distribution": 0.066667
+            },
+            {
+              "transition": "Check_Acute renal failure on dialysis",
+              "distribution": 0.933333
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative renal failure",
+              "distribution": 0.071429
+            },
+            {
+              "transition": "Check_Acute renal failure on dialysis",
+              "distribution": 0.928571
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative renal failure",
+              "distribution": 0.083333
+            },
+            {
+              "transition": "Check_Acute renal failure on dialysis",
+              "distribution": 0.916667
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative renal failure",
+              "distribution": 0.05812
+            },
+            {
+              "transition": "Check_Acute renal failure on dialysis",
+              "distribution": 0.94188
+            }
+          ]
+        }
+      ]
+    },
+    "Check_Acute renal failure on dialysis": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Acute renal failure on dialysis",
+              "distribution": 0.057143
+            },
+            {
+              "transition": "Check_Acute respiratory insufficiency",
+              "distribution": 0.9428570000000001
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Acute renal failure on dialysis",
+              "distribution": 0.071429
+            },
+            {
+              "transition": "Check_Acute respiratory insufficiency",
+              "distribution": 0.928571
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
           }
         },
         {
-          "distribution": 0.5,
-          "transition": "Unset Morbidity"
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Acute renal failure on dialysis",
+              "distribution": 0.083333
+            },
+            {
+              "transition": "Check_Acute respiratory insufficiency",
+              "distribution": 0.916667
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Acute renal failure on dialysis",
+              "distribution": 0.046154
+            },
+            {
+              "transition": "Check_Acute respiratory insufficiency",
+              "distribution": 0.953846
+            }
+          ]
         }
       ]
     },
-    "Set Morbidity": {
-      "type": "SetAttribute",
-      "attribute": "cabg_morbidity",
-      "value": true,
-      "distributed_transition": [
-        {
-          "transition": "Heart_Failure",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Respiratory Failure",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Focal Brain Injury",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Acute_Kidney_Injury",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Sepsis",
-          "distribution": 0.2
-        }
-      ]
-    },
-    "Check Prolonged LOS": {
+    "Check_Acute respiratory insufficiency": {
       "type": "Simple",
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Set Prolonged LOS",
-          "distribution": {
-            "attribute": "cabg_prolonged_los",
-            "default": 0.2
-          }
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Acute respiratory insufficiency",
+              "distribution": 0.104762
+            },
+            {
+              "transition": "Check LOS",
+              "distribution": 0.895238
+            }
+          ]
         },
         {
-          "transition": "Unset Prolonged LOS",
-          "distribution": 0.8
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Acute respiratory insufficiency",
+              "distribution": 0.178571
+            },
+            {
+              "transition": "Check LOS",
+              "distribution": 0.821429
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Acute respiratory insufficiency",
+              "distribution": 0
+            },
+            {
+              "transition": "Check LOS",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Acute respiratory insufficiency",
+              "distribution": 0.11453
+            },
+            {
+              "transition": "Check LOS",
+              "distribution": 0.88547
+            }
+          ]
         }
       ]
     },
-    "Set Prolonged LOS": {
-      "type": "SetAttribute",
-      "attribute": "cabg_prolonged_los",
-      "value": true,
-      "direct_transition": "Terminal"
+    "Check LOS": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Short Stay",
+              "distribution": 0.602381
+            },
+            {
+              "transition": "Medium Stay",
+              "distribution": 0.311905
+            },
+            {
+              "transition": "Long Stay",
+              "distribution": 0.08571399999999996
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Short Stay",
+              "distribution": 0.52381
+            },
+            {
+              "transition": "Medium Stay",
+              "distribution": 0.357143
+            },
+            {
+              "transition": "Long Stay",
+              "distribution": 0.11904700000000012
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Short Stay",
+              "distribution": 0.583333
+            },
+            {
+              "transition": "Medium Stay",
+              "distribution": 0.333333
+            },
+            {
+              "transition": "Long Stay",
+              "distribution": 0.08333400000000002
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Short Stay",
+              "distribution": 0.632479
+            },
+            {
+              "transition": "Medium Stay",
+              "distribution": 0.270085
+            },
+            {
+              "transition": "Long Stay",
+              "distribution": 0.09743600000000008
+            }
+          ]
+        }
+      ]
     },
-    "Unset Prolonged LOS": {
-      "type": "SetAttribute",
-      "attribute": "cabg_prolonged_los",
-      "value": false,
-      "direct_transition": "Terminal"
-    },
-    "Unset Mortality": {
-      "type": "SetAttribute",
-      "attribute": "cabg_mortality",
-      "value": false,
-      "direct_transition": "Check Morbidity"
-    },
-    "Mortality_2": {
-      "type": "SetAttribute",
-      "attribute": "cabg_mortality",
-      "range": {
-        "low": 0.007,
-        "high": 0.017
-      },
-      "direct_transition": "Morbidity_2"
-    },
-    "Mortality_3": {
-      "type": "SetAttribute",
-      "attribute": "cabg_mortality",
-      "range": {
-        "low": 0.016,
-        "high": 0.031
-      },
-      "direct_transition": "Morbidity_3"
-    },
-    "Mortality_4": {
-      "type": "SetAttribute",
-      "attribute": "cabg_mortality",
-      "range": {
-        "low": 0.069,
-        "high": 0.113
-      },
-      "direct_transition": "Morbidity_4"
-    },
-    "Mortality_3E": {
-      "type": "SetAttribute",
-      "attribute": "cabg_mortality",
-      "range": {
-        "low": 0.035,
-        "high": 0.057
-      },
-      "direct_transition": "Morbidity_3E"
-    },
-    "Mortality_5": {
-      "type": "SetAttribute",
-      "attribute": "cabg_mortality",
-      "range": {
-        "low": 0.208,
-        "high": 0.396
-      },
-      "direct_transition": "Morbidity_5"
-    },
-    "Mortality_4E": {
-      "type": "SetAttribute",
-      "attribute": "cabg_mortality",
-      "range": {
-        "low": 0.124,
-        "high": 0.221
-      },
-      "direct_transition": "Morbidity_4E"
-    },
-    "Mortality_5E": {
-      "type": "SetAttribute",
-      "attribute": "cabg_mortality",
-      "range": {
-        "low": 0.324,
-        "high": 0.605
-      },
-      "direct_transition": "Morbidity_5E"
-    },
-    "Morbidity_5E": {
-      "type": "SetAttribute",
-      "attribute": "cabg_morbidity",
-      "range": {
-        "low": 0.835,
-        "high": 0.925
-      },
-      "direct_transition": "Prolonged_LOS_5E"
-    },
-    "Morbidity_4E": {
-      "type": "SetAttribute",
-      "attribute": "cabg_morbidity",
-      "range": {
-        "low": 0.595,
-        "high": 0.716
-      },
-      "direct_transition": "Prolonged_LOS_4E"
-    },
-    "Morbidity_3E": {
-      "type": "SetAttribute",
-      "attribute": "cabg_morbidity",
-      "range": {
-        "low": 0.293,
-        "high": 0.35
-      },
-      "direct_transition": "Prolonged_LOS_3E"
-    },
-    "Morbidity_5": {
-      "type": "SetAttribute",
-      "attribute": "cabg_morbidity",
-      "range": {
-        "low": 0.732,
-        "high": 0.847
-      },
-      "direct_transition": "Prolonged_LOS_5"
-    },
-    "Morbidity_4": {
-      "type": "SetAttribute",
-      "attribute": "cabg_morbidity",
-      "range": {
-        "low": 0.441,
-        "high": 0.536
-      },
-      "direct_transition": "Prolonged_LOS_4"
-    },
-    "Morbidity_3": {
-      "type": "SetAttribute",
-      "attribute": "cabg_morbidity",
-      "range": {
-        "low": 0.172,
-        "high": 0.209
-      },
-      "direct_transition": "Prolonged_LOS_3"
-    },
-    "Morbidity_2": {
-      "type": "SetAttribute",
-      "attribute": "cabg_morbidity",
-      "range": {
-        "low": 0.089,
-        "high": 0.121
-      },
-      "direct_transition": "Prolonged_LOS_2"
-    },
-    "Prolonged_LOS_2": {
-      "type": "SetAttribute",
-      "attribute": "cabg_prolonged_los",
-      "range": {
-        "low": 0.042,
-        "high": 0.063
-      },
-      "direct_transition": "Check Mortality"
-    },
-    "Prolonged_LOS_5E": {
-      "type": "SetAttribute",
-      "attribute": "cabg_prolonged_los",
-      "range": {
-        "low": 0.525,
-        "high": 0.734
-      },
-      "direct_transition": "Check Mortality"
-    },
-    "Prolonged_LOS_4E": {
-      "type": "SetAttribute",
-      "attribute": "cabg_prolonged_los",
-      "range": {
-        "low": 0.293,
-        "high": 0.42
-      },
-      "direct_transition": "Check Mortality"
-    },
-    "Prolonged_LOS_3E": {
-      "type": "SetAttribute",
-      "attribute": "cabg_prolonged_los",
-      "range": {
-        "low": 0.128,
-        "high": 0.168
-      },
-      "direct_transition": "Check Mortality"
-    },
-    "Prolonged_LOS_5": {
-      "type": "SetAttribute",
-      "attribute": "cabg_prolonged_los",
-      "range": {
-        "low": 0.404,
-        "high": 0.585
-      },
-      "direct_transition": "Check Mortality"
-    },
-    "Prolonged_LOS_4": {
-      "type": "SetAttribute",
-      "attribute": "cabg_prolonged_los",
-      "range": {
-        "low": 0.201,
-        "high": 0.273
-      },
-      "direct_transition": "Check Mortality"
-    },
-    "Prolonged_LOS_3": {
-      "type": "SetAttribute",
-      "attribute": "cabg_prolonged_los",
-      "range": {
-        "low": 0.076,
-        "high": 0.102
-      },
-      "direct_transition": "Check Mortality"
-    },
-    "Unset Morbidity": {
-      "type": "SetAttribute",
-      "attribute": "cabg_morbidity",
-      "direct_transition": "Check Prolonged LOS",
-      "value": false
-    },
-    "Heart_Failure": {
+    "Infectious mediastinitis": {
       "type": "ConditionOnset",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 233816003,
-          "display": "Postoperative cardiac complication (disorder)"
+          "code": 312157006,
+          "display": "Infectious mediastinitis (disorder)"
         }
       ],
       "target_encounter": "CABG_Postop",
-      "direct_transition": "Check Prolonged LOS"
+      "direct_transition": "Check Reexploration procedure"
     },
-    "Acute_Kidney_Injury": {
+    "Reexploration procedure": {
+      "type": "SetAttribute",
+      "attribute": "cabg_reexploration_procedure",
+      "direct_transition": "Check_Postoperative myocardial infarction",
+      "value": true
+    },
+    "Postoperative myocardial infarction": {
       "type": "ConditionOnset",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 275408006,
-          "display": "Postoperative renal failure (disorder)"
+          "code": 129574000,
+          "display": "Postoperative myocardial infarction (disorder)"
         }
       ],
       "target_encounter": "CABG_Postop",
-      "direct_transition": "Check Prolonged LOS"
+      "direct_transition": "Check_stroke"
     },
-    "Septic_Shock": {
-      "assign_to_attribute": "Ventilator Reason",
+    "Stroke": {
       "type": "ConditionOnset",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 213256002,
-          "display": "Postoperative septic shock (disorder)"
+          "code": 457551000124104,
+          "display": "Acute cerebrovascular accident (disorder)"
         }
       ],
       "target_encounter": "CABG_Postop",
-      "direct_transition": "Check Prolonged LOS"
+      "direct_transition": "Check_Postoperative sepsis"
     },
-    "Focal Brain Injury": {
-      "type": "ConditionOnset",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 210038008,
-          "display": "Focal brain injury (disorder)"
-        }
-      ],
-      "target_encounter": "CABG_Postop",
-      "direct_transition": "Check Prolonged LOS"
-    },
-    "Sepsis": {
+    "Postoperative sepsis": {
       "type": "ConditionOnset",
       "codes": [
         {
@@ -546,33 +855,82 @@
         }
       ],
       "target_encounter": "CABG_Postop",
-      "conditional_transition": [
-        {
-          "transition": "Septic_Shock",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "cabg_mortality",
-            "operator": "==",
-            "value": true
-          }
-        },
-        {
-          "transition": "Check Prolonged LOS"
-        }
-      ]
+      "direct_transition": "Check_Postoperative renal failure"
     },
-    "Respiratory Failure": {
+    "Postoperative renal failure": {
       "type": "ConditionOnset",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 309775007,
-          "display": "Postprocedural respiratory failure (disorder)"
+          "code": 275408006,
+          "display": "Postoperative renal failure (disorder)"
         }
       ],
       "target_encounter": "CABG_Postop",
-      "direct_transition": "Check Prolonged LOS",
-      "assign_to_attribute": "Ventilator Reason"
+      "direct_transition": "Check_Acute renal failure on dialysis"
+    },
+    "Acute renal failure on dialysis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 129721000119106,
+          "display": "Acute renal failure on dialysis (disorder)"
+        }
+      ],
+      "target_encounter": "CABG_Postop",
+      "direct_transition": "Check_Acute respiratory insufficiency"
+    },
+    "Acute respiratory insufficiency": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 111282000,
+          "display": "Acute respiratory insufficiency (disorder)"
+        }
+      ],
+      "target_encounter": "CABG_Postop",
+      "direct_transition": "Check LOS"
+    },
+    "Short Stay": {
+      "type": "SetAttribute",
+      "attribute": "cabg_icu_los",
+      "direct_transition": "Terminal",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": false,
+        "parameters": {
+          "high": 2,
+          "low": 0
+        }
+      }
+    },
+    "Medium Stay": {
+      "type": "SetAttribute",
+      "attribute": "cabg_icu_los",
+      "direct_transition": "Terminal",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": false,
+        "parameters": {
+          "high": 7,
+          "low": 2
+        }
+      }
+    },
+    "Long Stay": {
+      "type": "SetAttribute",
+      "attribute": "cabg_icu_los",
+      "direct_transition": "Terminal",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": false,
+        "parameters": {
+          "high": 10,
+          "low": 7
+        }
+      }
     }
   },
   "gmf_version": 2

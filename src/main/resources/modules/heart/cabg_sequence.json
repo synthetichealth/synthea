@@ -5,19 +5,17 @@
     "",
     "The Cardiac Surgery Module reflects the care pathway for Coronary Artery Bypass Graft (CABG) Surgery. The module and associated submodules seek to balance clinical detail with the need to model patient flow through a hospital/health care system, with an emphasis on elective scheduling.",
     "",
-    "The following model assumptions apply:",
-    "CARE Score: Refers to the Cardiac Anesthesia Risk Evaluation (CARE) score, a simple risk classification for patients for outcome prediction in cardiac surgery. The CARE score was used to inform morbidity, mortality, and length of stay outcome probabilities. For more details regarding the probabilities and primary outcome definitions, we refer readers to Dupuis JY et al. The Cardiac Anesthesia Risk Evaluation Score. A clinically Useful Predictor of Mortality and Morbidity after Cardiac Surgery. Anesthesiology: The Journal of the American Society of Anesthesiologists. 2001 Feb 1;94(2):194-204.",
-    "",
     "Priority: Refers to a patient’s priority for surgery based upon their clinical status and triage. Priority levels are defined as follows: ",
-    "• Priority 1 = Surgery performed within 0-48 hours; the patient has no delay in surgery and/or is actively undergoing resuscitation or extracorporeal membrane oxygenation to sustain life.",
-    "• Priority 2 = Surgery performed within <=14 days, often during the same hospitalization to minimize risk of further clinical deterioration.",
-    "• Priority 3 = Surgery performed within <=42 days; the patient’s clinical condition is stable over days or weeks prior to the operation, but the procedure should preferentially not be deferred if needed due to increased risk of poor outcome.",
-    "• Priority 4 = Surgery performed within > 42 days; the patient’s clinical condition is stable over days or weeks prior to the operation, but the procedure could be deferred if needed without increased risk of poor outcome.",
+    "",
+    "* Priority 1 = Surgery performed within 0-48 hours; the patient has no delay in surgery and/or is actively undergoing resuscitation or extracorporeal membrane oxygenation to sustain life.",
+    "* Priority 2 = Surgery performed within <=14 days, often during the same hospitalization to minimize risk of further clinical deterioration.",
+    "* Priority 3 = Surgery performed within <=42 days; the patient’s clinical condition is stable over days or weeks prior to the operation, but the procedure should preferentially not be deferred if needed due to increased risk of poor outcome.",
+    "* Priority 4 = Surgery performed within > 42 days; the patient’s clinical condition is stable over days or weeks prior to the operation, but the procedure could be deferred if needed without increased risk of poor outcome.",
     "",
     "Referrals are defined as follows: ",
-    "• Referral to Cardiac surgery: defined as specified",
-    "• Referral to Cardiology: defined as specified",
-    "• Referral to Service: defined as joint cardiology/cardiac surgery review or referral to a multidisciplinary Heart Team.",
+    "* Referral to Cardiac surgery: defined as specified",
+    "* Referral to Cardiology: defined as specified",
+    "* Referral to Service: defined as joint cardiology/cardiac surgery review or referral to a multidisciplinary Heart Team.",
     "",
     "Additional details for the Cardiac Surgery Module are noted in each submodule, as appropriate.",
     "",
@@ -48,12 +46,7 @@
       "type": "SetAttribute",
       "attribute": "cardiac_surgery",
       "value": "cabg",
-      "direct_transition": "Assign CARE Score"
-    },
-    "Assign CARE Score": {
-      "type": "CallSubmodule",
-      "submodule": "heart/care_score",
-      "direct_transition": "Set Outcomes"
+      "direct_transition": "Assign Operative Status"
     },
     "Set Outcomes": {
       "type": "CallSubmodule",
@@ -97,9 +90,9 @@
           "transition": "Urgent",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "care_score_e",
+            "attribute": "operative_status",
             "operator": "==",
-            "value": true
+            "value": "emergent_salvage"
           }
         },
         {
@@ -176,6 +169,11 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Assign Operative Status": {
+      "type": "CallSubmodule",
+      "submodule": "heart/operative_status",
+      "direct_transition": "Set Outcomes"
     }
   },
   "gmf_version": 2

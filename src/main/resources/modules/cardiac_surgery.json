@@ -5,19 +5,16 @@
     "",
     "The Cardiac Surgery Module reflects the care pathway for Coronary Artery Bypass Graft (CABG) Surgery. The module and associated submodules seek to balance clinical detail with the need to model patient flow through a hospital/health care system, with an emphasis on elective scheduling.",
     "",
-    "The following model assumptions apply:",
-    "CARE Score: Refers to the Cardiac Anesthesia Risk Evaluation (CARE) score, a simple risk classification for patients for outcome prediction in cardiac surgery. The CARE score was used to inform morbidity, mortality, and length of stay outcome probabilities. For more details regarding the probabilities and primary outcome definitions, we refer readers to Dupuis JY et al. The Cardiac Anesthesia Risk Evaluation Score. A clinically Useful Predictor of Mortality and Morbidity after Cardiac Surgery. Anesthesiology: The Journal of the American Society of Anesthesiologists. 2001 Feb 1;94(2):194-204.",
-    "",
     "Priority: Refers to a patient’s priority for surgery based upon their clinical status and triage. Priority levels are defined as follows: ",
-    "• Priority 1 = Surgery performed within 0-48 hours; the patient has no delay in surgery and/or is actively undergoing resuscitation or extracorporeal membrane oxygenation to sustain life.",
-    "• Priority 2 = Surgery performed within <=14 days, often during the same hospitalization to minimize risk of further clinical deterioration.",
-    "• Priority 3 = Surgery performed within <=42 days; the patient’s clinical condition is stable over days or weeks prior to the operation, but the procedure should preferentially not be deferred if needed due to increased risk of poor outcome.",
-    "• Priority 4 = Surgery performed within > 42 days; the patient’s clinical condition is stable over days or weeks prior to the operation, but the procedure could be deferred if needed without increased risk of poor outcome.",
+    "* Priority 1 = Surgery performed within 0-48 hours; the patient has no delay in surgery and/or is actively undergoing resuscitation or extracorporeal membrane oxygenation to sustain life.",
+    "* Priority 2 = Surgery performed within <=14 days, often during the same hospitalization to minimize risk of further clinical deterioration.",
+    "* Priority 3 = Surgery performed within <=42 days; the patient’s clinical condition is stable over days or weeks prior to the operation, but the procedure should preferentially not be deferred if needed due to increased risk of poor outcome.",
+    "* Priority 4 = Surgery performed within > 42 days; the patient’s clinical condition is stable over days or weeks prior to the operation, but the procedure could be deferred if needed without increased risk of poor outcome.",
     "",
     "Referrals are defined as follows: ",
-    "• Referral to Cardiac surgery: defined as specified",
-    "• Referral to Cardiology: defined as specified",
-    "• Referral to Service: defined as joint cardiology/cardiac surgery review or referral to a multidisciplinary Heart Team.",
+    "* Referral to Cardiac surgery: defined as specified",
+    "* Referral to Cardiology: defined as specified",
+    "* Referral to Service: defined as joint cardiology/cardiac surgery review or referral to a multidisciplinary Heart Team.",
     "",
     "Additional details for the Cardiac Surgery Module are noted in each submodule, as appropriate.",
     "",
@@ -38,13 +35,80 @@
     "Wait Until High Risk": {
       "type": "Guard",
       "allow": {
-        "condition_type": "Or",
+        "condition_type": "At Least",
+        "minimum": 2,
         "conditions": [
+          {
+            "condition_type": "Attribute",
+            "attribute": "diabetes",
+            "operator": "==",
+            "value": true
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "hypertension",
+            "operator": "==",
+            "value": true
+          },
+          {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "smoker",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "smoking",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
           {
             "condition_type": "Attribute",
             "attribute": "atrial_fibrillation",
             "operator": "==",
             "value": true
+          },
+          {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 410429000,
+                "display": "Cardiac Arrest"
+              }
+            ]
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "stroke_history",
+            "operator": "==",
+            "value": true
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": ">=",
+            "value": 3
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "chf",
+            "operator": "is not nil"
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "copd_variant",
+            "operator": "is not nil"
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "coronary_heart_disease",
+            "operator": "is not nil"
           },
           {
             "condition_type": "Or",
@@ -54,205 +118,71 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 410429000,
-                    "display": "Cardiac Arrest"
+                    "code": 22298006,
+                    "display": "Myocardial Infarction"
                   }
                 ]
               },
               {
-                "condition_type": "Or",
-                "conditions": [
+                "condition_type": "Active Condition",
+                "codes": [
                   {
-                    "condition_type": "Attribute",
-                    "attribute": "stroke_history",
-                    "operator": "==",
-                    "value": true
-                  },
-                  {
-                    "condition_type": "Or",
-                    "conditions": [
-                      {
-                        "condition_type": "Attribute",
-                        "attribute": "ckd",
-                        "operator": ">=",
-                        "value": 3
-                      },
-                      {
-                        "condition_type": "Or",
-                        "conditions": [
-                          {
-                            "condition_type": "Attribute",
-                            "attribute": "chf",
-                            "operator": "is not nil"
-                          },
-                          {
-                            "condition_type": "Or",
-                            "conditions": [
-                              {
-                                "condition_type": "Attribute",
-                                "attribute": "copd_variant",
-                                "operator": "is not nil"
-                              },
-                              {
-                                "condition_type": "Or",
-                                "conditions": [
-                                  {
-                                    "condition_type": "Attribute",
-                                    "attribute": "hypertension",
-                                    "operator": "is not nil"
-                                  },
-                                  {
-                                    "condition_type": "Or",
-                                    "conditions": [
-                                      {
-                                        "condition_type": "Attribute",
-                                        "attribute": "smoking",
-                                        "operator": "==",
-                                        "value": true
-                                      },
-                                      {
-                                        "condition_type": "Or",
-                                        "conditions": [
-                                          {
-                                            "condition_type": "Attribute",
-                                            "attribute": "smoker",
-                                            "operator": "==",
-                                            "value": true
-                                          },
-                                          {
-                                            "condition_type": "Or",
-                                            "conditions": [
-                                              {
-                                                "condition_type": "Attribute",
-                                                "attribute": "coronary_heart_disease",
-                                                "operator": "is not nil"
-                                              },
-                                              {
-                                                "condition_type": "Or",
-                                                "conditions": [
-                                                  {
-                                                    "condition_type": "Attribute",
-                                                    "attribute": "diabetes",
-                                                    "operator": "is not nil"
-                                                  },
-                                                  {
-                                                    "condition_type": "Or",
-                                                    "conditions": [
-                                                      {
-                                                        "condition_type": "Attribute",
-                                                        "attribute": "metabolic_syndrome",
-                                                        "operator": "is not nil"
-                                                      },
-                                                      {
-                                                        "condition_type": "Or",
-                                                        "conditions": [
-                                                          {
-                                                            "condition_type": "Vital Sign",
-                                                            "vital_sign": "BMI",
-                                                            "operator": ">=",
-                                                            "value": 25
-                                                          },
-                                                          {
-                                                            "condition_type": "Or",
-                                                            "conditions": [
-                                                              {
-                                                                "condition_type": "Active Condition",
-                                                                "codes": [
-                                                                  {
-                                                                    "system": "SNOMED-CT",
-                                                                    "code": 22298006,
-                                                                    "display": "Myocardial Infarction"
-                                                                  }
-                                                                ]
-                                                              },
-                                                              {
-                                                                "condition_type": "Or",
-                                                                "conditions": [
-                                                                  {
-                                                                    "condition_type": "Active Condition",
-                                                                    "codes": [
-                                                                      {
-                                                                        "system": "SNOMED-CT",
-                                                                        "code": 27942005,
-                                                                        "display": "Shock (disorder)"
-                                                                      }
-                                                                    ]
-                                                                  },
-                                                                  {
-                                                                    "condition_type": "Or",
-                                                                    "conditions": [
-                                                                      {
-                                                                        "condition_type": "Active Condition",
-                                                                        "codes": [
-                                                                          {
-                                                                            "system": "SNOMED-CT",
-                                                                            "code": 55822004,
-                                                                            "display": "Hyperlipidemia"
-                                                                          }
-                                                                        ]
-                                                                      },
-                                                                      {
-                                                                        "condition_type": "Or",
-                                                                        "conditions": [
-                                                                          {
-                                                                            "condition_type": "And",
-                                                                            "conditions": [
-                                                                              {
-                                                                                "condition_type": "Gender",
-                                                                                "gender": "M"
-                                                                              },
-                                                                              {
-                                                                                "condition_type": "Age",
-                                                                                "operator": ">=",
-                                                                                "quantity": 55,
-                                                                                "unit": "years"
-                                                                              }
-                                                                            ]
-                                                                          },
-                                                                          {
-                                                                            "condition_type": "And",
-                                                                            "conditions": [
-                                                                              {
-                                                                                "condition_type": "Gender",
-                                                                                "gender": "F"
-                                                                              },
-                                                                              {
-                                                                                "condition_type": "Age",
-                                                                                "operator": ">=",
-                                                                                "quantity": 65,
-                                                                                "unit": "years"
-                                                                              }
-                                                                            ]
-                                                                          }
-                                                                        ]
-                                                                      }
-                                                                    ]
-                                                                  }
-                                                                ]
-                                                              }
-                                                            ]
-                                                          }
-                                                        ]
-                                                      }
-                                                    ]
-                                                  }
-                                                ]
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
+                    "system": "SNOMED-CT",
+                    "code": 399211009,
+                    "display": "History of myocardial infarction (situation)"
                   }
                 ]
+              }
+            ]
+          },
+
+          {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 27942005,
+                "display": "Shock (disorder)"
+              }
+            ]
+          },
+          {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 55822004,
+                "display": "Hyperlipidemia"
+              }
+            ]
+          },
+          {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Gender",
+                "gender": "M"
+              },
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 55,
+                "unit": "years"
+              }
+            ]
+          },
+          {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Gender",
+                "gender": "F"
+              },
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 65,
+                "unit": "years"
               }
             ]
           }
