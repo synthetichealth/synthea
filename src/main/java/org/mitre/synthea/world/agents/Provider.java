@@ -484,7 +484,7 @@ public class Provider implements QuadTreeElement, Serializable {
     for (int i = 0; i < numClinicians; i++) {
       Clinician clinician = null;
       clinician = generateClinician(clinicianSeed, clinicianRand,
-          Long.parseLong(loaded + "" + i), this);
+          Long.parseLong(loaded + "" + i));
       clinician.attributes.put(Clinician.SPECIALTY, specialty);
       clinicians.add(clinician);
     }
@@ -499,20 +499,20 @@ public class Provider implements QuadTreeElement, Serializable {
    * @return generated Clinician
    */
   private Clinician generateClinician(long clinicianSeed, Random clinicianRand,
-      long clinicianIdentifier, Provider provider) {
+      long clinicianIdentifier) {
     Clinician clinician = null;
     try {
       Person doc = new Person(clinicianIdentifier);
-      Demographics city = location.randomCity(doc);
+      Demographics cityDemographics = location.randomCity(doc);
       Map<String, Object> out = new HashMap<>();
 
-      String race = city.pickRace(clinicianRand);
+      String race = cityDemographics.pickRace(clinicianRand);
       out.put(Person.RACE, race);
-      String ethnicity = city.pickEthnicity(clinicianRand);
+      String ethnicity = cityDemographics.pickEthnicity(clinicianRand);
       out.put(Person.ETHNICITY, ethnicity);
-      String language = city.languageFromRaceAndEthnicity(race, ethnicity, clinicianRand);
+      String language = cityDemographics.languageFromRaceAndEthnicity(race, ethnicity, clinicianRand);
       out.put(Person.FIRST_LANGUAGE, language);
-      String gender = city.pickGender(clinicianRand);
+      String gender = cityDemographics.pickGender(clinicianRand);
       if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
         gender = "M";
       } else {
@@ -522,11 +522,11 @@ public class Provider implements QuadTreeElement, Serializable {
 
       clinician = new Clinician(clinicianSeed, clinicianRand, clinicianIdentifier, this);
       clinician.attributes.putAll(out);
-      clinician.attributes.put(Person.ADDRESS, provider.address);
-      clinician.attributes.put(Person.CITY, provider.city);
-      clinician.attributes.put(Person.STATE, provider.state);
-      clinician.attributes.put(Person.ZIP, provider.zip);
-      clinician.attributes.put(Person.COORDINATE, provider.coordinates);
+      clinician.attributes.put(Person.ADDRESS, address);
+      clinician.attributes.put(Person.CITY, city);
+      clinician.attributes.put(Person.STATE, state);
+      clinician.attributes.put(Person.ZIP, zip);
+      clinician.attributes.put(Person.COORDINATE, coordinates);
 
       String firstName = Names.fakeFirstName(gender, language, doc);
       String lastName = Names.fakeLastName(language, doc);
@@ -558,6 +558,55 @@ public class Provider implements QuadTreeElement, Serializable {
     doc.incrementEncounters();
     return doc;
   }
+  
+  private static String toProviderNPI(String idStr, long defaultId) {
+    long id = defaultId;
+    try {
+      id = Long.parseLong(idStr);
+    } catch (NumberFormatException e) {
+      // ignore, use default value instead
+    }
+    if (id > 888_888_888L) {
+      throw new IllegalArgumentException(
+              String.format("Supplied id (%d) is too big, max is %d", id, 888_888_888L));
+    }    
+    return toNPI(888_888_888L - id);
+  }
+  
+  /**
+   * Creates an NPI from a number by appending a check digit calculated according to:
+   * https://www.cms.gov/Regulations-and-Guidance/Administrative-Simplification/NationalProvIdentStand/Downloads/NPIcheckdigit.pdf
+   * @param id must be a 9 digit number otherwise throws an IllegalArgumentException
+   * @return the NPI as a String
+   */
+  static String toNPI(long id) {
+    if (id < 100_000_000L || id > 999_999_999L) {
+      throw new IllegalArgumentException(
+              String.format("Supplied identifier (%d) should be exactly 9 digits", id));
+    }
+    long checkDigit = 24;
+    long remainingDigits = id;
+    long npiWithoutCheckDigit = remainingDigits;
+    boolean even = true;
+    while (remainingDigits > 0) {
+      long digit = remainingDigits % 10;
+      if (even) {
+        digit = digit * 2;
+      }
+      checkDigit += digit % 10;
+      if (digit >= 10) {
+        checkDigit++;
+      }
+      remainingDigits /= 10;
+      even ^= true;
+    }
+    if ((checkDigit % 10) == 0) {
+      checkDigit = 0;
+    } else {
+      checkDigit = (((checkDigit / 10) + 1) * 10) - checkDigit; // e.g. 67 -> 70 - 67 -> 3
+    }
+    return Long.toString(npiWithoutCheckDigit * 10 + checkDigit);
+  }
 
   /**
    * Given a line of parsed CSV input, convert the data into a Provider.
@@ -568,11 +617,7 @@ public class Provider implements QuadTreeElement, Serializable {
     Provider d = new Provider();
     // using remove instead of get here so that we can iterate over the remaining keys later
     d.id = line.remove("id");
-    try {
-      d.npi = Long.toString(8_888_888_888L - Long.parseLong(d.id));
-    } catch (Exception e) {
-      d.npi = Long.toString(8_888_888_888L - loaded);
-    }
+    d.npi = toProviderNPI(d.id, loaded);
     d.name = line.remove("name");
     if (d.name == null || d.name.isEmpty()) {
       d.name = d.id;
