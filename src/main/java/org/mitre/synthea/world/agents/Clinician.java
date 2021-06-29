@@ -60,12 +60,20 @@ public class Clinician implements Serializable, QuadTreeElement {
     this.uuid = UUID.nameUUIDFromBytes(base.getBytes()).toString();
     this.random = clinicianRand;
     this.identifier = identifier;
-    this.npi = Long.toString(9_999_999_999L - this.identifier);
+    this.npi = toClinicianNPI(this.identifier);
     this.organization = organization;
     attributes = new ConcurrentHashMap<String, Object>();
     servicesProvided = new ArrayList<String>();
   }
-
+  
+  private static String toClinicianNPI(long id) {
+    if (id > 999_999_999L) {
+      throw new IllegalArgumentException(
+              String.format("Supplied id (%d) is too big, max is %d", id, 999_999_999L));
+    }    
+    return Provider.toNPI(999_999_999L - id);
+  }
+  
   /**
    * Get the Clinician's UUID.
    * @return UUID as String.
