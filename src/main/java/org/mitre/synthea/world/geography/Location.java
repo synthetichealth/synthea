@@ -123,7 +123,8 @@ public class Location implements Serializable {
 
     socialDeterminantsOfHealth = new HashMap<String, Map<String, Double>>();
     try {
-      filename = Config.get("generate.geography.sdoh.default_file");
+      filename = Config.get("generate.geography.sdoh.default_file",
+        "geography/sdoh.csv");
       String csv = Utilities.readResource(filename);
       List<? extends Map<String,String>> sdohList = SimpleCSV.parse(csv);
 
