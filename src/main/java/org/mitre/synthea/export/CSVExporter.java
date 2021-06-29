@@ -27,10 +27,12 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.output.NullOutputStream;
 import org.apache.commons.lang3.StringUtils;
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Payer;
@@ -419,6 +421,13 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   public void export(Person person, long time) throws IOException {
+
+    // Set the person's birthdate temporarily to the accurate seed record version of the birthdate.
+    long originalBirthDate = (long) person.attributes.get(Person.BIRTHDATE);
+    if (Generator.fixedRecordGroupManager != null) {
+      person.attributes.put(Person.BIRTHDATE, Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person).getSeedBirthdate());
+    }
+
     String personID = patient(person, time);
 
     for (Encounter encounter : person.record.encounters) {
@@ -524,6 +533,9 @@ public class CSVExporter {
     imagingStudies.flush();
     devices.flush();
     supplies.flush();
+
+    // Reset the person's birthdate to the variant version (to prevent contaminating the FHIR export).
+    person.attributes.put(Person.BIRTHDATE, originalBirthDate);
   }
 
   /**
@@ -650,10 +662,19 @@ public class CSVExporter {
       s.append(',');
     }
     // CODE
-    Code coding = encounter.codes.get(0);
-    s.append(coding.code).append(',');
-    // DESCRIPTION
-    s.append(clean(coding.display)).append(',');
+    Code coding = null;
+    try {
+      coding = encounter.codes.get(0);
+      // CODE
+      s.append(coding.code).append(',');
+      // DESCRIPTION
+      s.append(clean(coding.display)).append(',');
+    } catch(IndexOutOfBoundsException e) {
+      // Sometimes an encounter may not have a code. In this case, catch the error and add a bandaid.
+      System.out.println("Missing encounter code in CSV Exporter.");
+      s.append("INVALID_CODE").append(',');
+      s.append(clean("INVALID_CODE")).append(',');
+    }
     // BASE_ENCOUNTER_COST
     s.append(String.format(Locale.US, "%.2f", encounter.getCost())).append(',');
     // TOTAL_COST

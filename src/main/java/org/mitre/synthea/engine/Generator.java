@@ -842,6 +842,7 @@ public class Generator implements RandomNumberGenerator {
     // Overwrite the person's attributes with the seed of the fixed record group.
     demoAttributes.putAll(recordGroup.getSeedRecordAttributes());
     demoAttributes.put(Person.BIRTH_CITY, city.city);
+    demoAttributes.put(Person.BIRTHDATE, recordGroup.getSeedBirthdate());
     demoAttributes.put(Person.HOUSEHOLD, recordGroup.getHouseholdId());
 
     return demoAttributes;

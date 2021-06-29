@@ -362,8 +362,10 @@ public final class WeightLossModule extends Module {
     person.attributes.put(PRE_MANAGEMENT_WEIGHT, startWeight);
     person.attributes.put(WEIGHT_MANAGEMENT_START, time);
     boolean stickToPlan = person.rand() <= adherence;
+    boolean triggerWeightLoss = false;
     if (person.attributes.get(TRIGGER_WEIGHT_LOSS) != null) {
-      stickToPlan = true;
+      triggerWeightLoss = (boolean) person.attributes.get(TRIGGER_WEIGHT_LOSS);
+      stickToPlan = triggerWeightLoss;
     }
     person.attributes.put(WEIGHT_LOSS_ADHERENCE, stickToPlan);
     if (stickToPlan) {
@@ -375,9 +377,9 @@ public final class WeightLossModule extends Module {
         person.attributes.put(WEIGHT_LOSS_BMI_PERCENTILE_CHANGE, bmiPercentileChange);
       }
       boolean longTermSuccess = person.rand() <= maintenance;
-      if (person.attributes.get(TRIGGER_WEIGHT_LOSS) != null) {
+      if (triggerWeightLoss) {
         longTermSuccess = true;
-        person.attributes.remove(TRIGGER_WEIGHT_LOSS);
+        person.attributes.put(TRIGGER_WEIGHT_LOSS, false);
       }
       person.attributes.put(LONG_TERM_WEIGHT_LOSS, longTermSuccess);
     } else {
@@ -396,7 +398,7 @@ public final class WeightLossModule extends Module {
       // If the person should be gaining weight, they should not start weight loss.
       return false;
     }
-    if (person.attributes.get(TRIGGER_WEIGHT_LOSS) != null) {
+    if (person.attributes.get(TRIGGER_WEIGHT_LOSS) != null && ((boolean) person.attributes.get(TRIGGER_WEIGHT_LOSS))) {
       return true;
     }
     if (meetsWeightManagementThresholds(person, time)) {

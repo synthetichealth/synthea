@@ -66,7 +66,13 @@ public class Costs {
       return 0.0;
     }
 
-    String code = entry.codes.get(0).code;
+    String code = null;
+    if (entry.codes.size() > 0) {
+      // Sometimes, entry.codes can be an empty ArrayList causing an out-of-bounds error.
+      code = entry.codes.get(0).code;
+    } else {
+      System.out.println("No code found for entry in cost calculator.");
+    }
     // Retrieve the base cost based on the code.
     double baseCost;
     if (costs != null && costs.containsKey(code)) {
