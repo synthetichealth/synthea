@@ -2,7 +2,10 @@ package org.mitre.synthea.export;
 
 import ca.uhn.fhir.parser.IParser;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,6 +17,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Predicate;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -45,6 +49,9 @@ public abstract class Exporter {
   
   private static final List<Pair<Person, Long>> deferredExports = 
           Collections.synchronizedList(new LinkedList<>());
+
+  private static final ConcurrentHashMap<Path, PrintWriter> fileWriters = new ConcurrentHashMap<Path, PrintWriter>();
+  private static final int fileBufferSize = 4*1024*1024;
 
   /**
    * Runtime configuration of the record exporter.
@@ -332,20 +339,37 @@ public abstract class Exporter {
    * @param file Path to the new file.
    * @param contents The contents of the file.
    */
-  private static synchronized void appendToFile(Path file, String contents) {
-    try {
-      if (Files.notExists(file)) {
-        Files.createFile(file);
+  private static void appendToFile(Path file, String contents) {
+    PrintWriter writer = fileWriters.get(file);
+
+    if (writer == null) {
+      synchronized(fileWriters) {
+        writer = fileWriters.get(file);
+        if (writer == null) {
+          try {
+            writer = new PrintWriter(new BufferedWriter(new FileWriter(file.toFile(), true), fileBufferSize));
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+          fileWriters.put(file, writer);
+        }
       }
-    } catch (Exception e) {
-      // Ignore... multi-threaded race condition to create a file that didn't exist,
-      // but does now because one of the other exporter threads beat us to it.
     }
-    try {
-      Files.write(file, Collections.singleton(contents), StandardOpenOption.APPEND);
-    } catch (IOException e) {
-      e.printStackTrace();
+    
+    synchronized(writer) {
+      writer.println(contents);
     }
+  }
+
+  /**
+   * Flushes the data and closes all open files.
+   */
+  public static void closeOpenFiles() {
+    Iterator<PrintWriter> itr = fileWriters.values().iterator();
+    while(itr.hasNext()){    	
+      itr.next().close();
+    }
+    fileWriters.clear();
   }
 
   /**

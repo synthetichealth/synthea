@@ -347,7 +347,7 @@ public class Generator implements RandomNumberGenerator {
       for (int i = 0; i < this.options.population; i++) {
         final int index = i;
         final long seed = this.random.nextLong();
-        threadPool.submit(() -> generatePerson(index, seed));
+        threadPool.submit(() -> generatePerson(index, seed, false));
       }
     }
 
@@ -359,6 +359,8 @@ public class Generator implements RandomNumberGenerator {
     } catch (InterruptedException e) {
       System.out.println("Generator interrupted. Attempting to shut down associated thread pool.");
       threadPool.shutdownNow();
+    } finally {
+      Exporter.closeOpenFiles();
     }
 
     // Save a snapshot of the generated population using Java Serialization
@@ -440,6 +442,10 @@ public class Generator implements RandomNumberGenerator {
    * @return generated Person
    */
   public Person generatePerson(int index, long personSeed) {
+    return generatePerson(index, personSeed, true);
+  }
+
+  private Person generatePerson(int index, long personSeed, boolean closeFilesAfterExport) {
 
     Person person = null;
     
@@ -533,6 +539,10 @@ public class Generator implements RandomNumberGenerator {
       // lots of fhir things throw errors for some reason
       e.printStackTrace();
       throw e;
+    } finally {
+      if (closeFilesAfterExport) {
+        Exporter.closeOpenFiles();
+      }
     }
     return person;
   }
