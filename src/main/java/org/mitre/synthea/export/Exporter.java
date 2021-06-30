@@ -5,8 +5,8 @@ import ca.uhn.fhir.parser.IParser;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,8 +50,10 @@ public abstract class Exporter {
   private static final List<Pair<Person, Long>> deferredExports = 
           Collections.synchronizedList(new LinkedList<>());
 
-  private static final ConcurrentHashMap<Path, PrintWriter> fileWriters = new ConcurrentHashMap<Path, PrintWriter>();
-  private static final int fileBufferSize = 4*1024*1024;
+  private static final ConcurrentHashMap<Path, PrintWriter> fileWriters = 
+          new ConcurrentHashMap<Path, PrintWriter>();
+
+  private static final int fileBufferSize = 4 * 1024 * 1024;
 
   /**
    * Runtime configuration of the record exporter.
@@ -343,11 +345,13 @@ public abstract class Exporter {
     PrintWriter writer = fileWriters.get(file);
 
     if (writer == null) {
-      synchronized(fileWriters) {
+      synchronized (fileWriters) {
         writer = fileWriters.get(file);
         if (writer == null) {
           try {
-            writer = new PrintWriter(new BufferedWriter(new FileWriter(file.toFile(), true), fileBufferSize));
+            writer = new PrintWriter(
+              new BufferedWriter(new FileWriter(file.toFile(), true),fileBufferSize)
+            );
           } catch (IOException e) {
             e.printStackTrace();
           }
@@ -356,7 +360,7 @@ public abstract class Exporter {
       }
     }
     
-    synchronized(writer) {
+    synchronized (writer) {
       writer.println(contents);
     }
   }
@@ -364,9 +368,9 @@ public abstract class Exporter {
   /**
    * Flushes the data and closes all open files.
    */
-  public static void closeOpenFiles() {
+  private static void closeOpenFiles() {
     Iterator<PrintWriter> itr = fileWriters.values().iterator();
-    while(itr.hasNext()){    	
+    while (itr.hasNext()) {
       itr.next().close();
     }
     fileWriters.clear();
@@ -458,6 +462,8 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
+
+    closeOpenFiles();
   }
 
   /**

@@ -9,7 +9,6 @@ import java.util.TimeZone;
 
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
-import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
 
 /*
@@ -219,7 +218,6 @@ public class App {
     if (validArgs && validateConfig(options)) {
       Generator generator = new Generator(options);
       generator.run();
-      Exporter.closeOpenFiles();
     }
   }
   
