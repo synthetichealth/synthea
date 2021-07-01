@@ -23,7 +23,7 @@ import java.time.ZoneOffset;
  * Moderna COVID-19 Vaccine emergency use authorization on December 18, 2020 for people over 18
  * https://www.fda.gov/news-events/press-announcements/fda-takes-additional-action-fight-against-covid-19-issuing-emergency-use-authorization-second-covid
  *
- * Johnson & Johnson (Janssen) COVID-19 Vaccine emergency use authorization on February 27, 2021 for people
+ * Johnson &amp; Johnson (Janssen) COVID-19 Vaccine emergency use authorization on February 27, 2021 for people
  * over 18.
  * https://www.fda.gov/emergency-preparedness-and-response/coronavirus-disease-2019-covid-19/janssen-covid-19-vaccine
  *
@@ -34,7 +34,7 @@ import java.time.ZoneOffset;
  * On February 27, 2021 all three vaccines are distributed. Distribution has the following weights:
  * * Pfizer-BioNTech COVID-19 Vaccine - 53.1%
  * * Moderna COVID-19 Vaccine - 39.8%
- * * Johnson & Johnson (Janssen) COVID-19 - 7.1%
+ * * Johnson &amp; Johnson (Janssen) COVID-19 - 7.1%
  *
  * Distribution ratios were calculated using doses administered information from Our World in Data
  * on June 23, 2021.
@@ -98,7 +98,6 @@ public class C19ImmunizationModule extends Module {
     POTENTIAL_LATE_ADOPTER,
     NEVER_GOING_TO_GET_SHOT,
     FIRST_SHOT,
-    SECOND_SHOT,
     FULLY_VACCINATED
   }
 
@@ -161,10 +160,10 @@ public class C19ImmunizationModule extends Module {
     return null;
   }
 
-  public static void firstShot(Person person, long time) {
+  public static void vaccinate(Person person, long time, int series) {
     person.record.encounterStart(time, HealthRecord.EncounterType.OUTPATIENT);
     HealthRecord.Immunization immunization = person.record.immunization(time, "COVID19");
-    immunization.series = 1;
+    immunization.series = series;
     C19Vaccine vaccine = C19Vaccine.EUAs.get(person.attributes.get(C19_VACCINE));
     HealthRecord.Code immCode = new HealthRecord.Code("http://hl7.org/fhir/sid/cvx",
         vaccine.getCvx(), vaccine.getDisplay());
@@ -208,13 +207,33 @@ public class C19ImmunizationModule extends Module {
             return false;
           }
         }
-        firstShot(person, time);
-        if (C19Vaccine.EUAs.get(person.attributes.get(C19_VACCINE)).isTwoDose()) {
+        vaccinate(person, time, 1);
+        C19Vaccine vaccineUsed = C19Vaccine.EUAs.get(person.attributes.get(C19_VACCINE));
+        if (vaccineUsed.isTwoDose()) {
           person.attributes.put(C19_VACCINE_STATUS, VaccinationStatus.FIRST_SHOT);
+          person.attributes.put(C19_SCHEDULED_SECOND_SHOT, vaccineUsed.getTimeBetweenDoses() + time);
         } else {
           person.attributes.put(C19_VACCINE_STATUS, VaccinationStatus.FULLY_VACCINATED);
         }
         break;
+      case FIRST_SHOT:
+        // Assuming someone doesn't get COVID between first and second shot
+        long scheduledSecondShotDate = (long) person.attributes.get(C19_SCHEDULED_SECOND_SHOT);
+        if (scheduledSecondShotDate <= time) {
+          vaccinate(person, time, 2);
+          person.attributes.put(C19_VACCINE_STATUS, VaccinationStatus.FULLY_VACCINATED);
+        }
+        break;
+      case FULLY_VACCINATED:
+        // do nothing
+        break;
+      case NEVER_GOING_TO_GET_SHOT:
+        // do nothing
+        break;
+      case POTENTIAL_LATE_ADOPTER:
+        // TODO: set up age group specific chances that people will get vaccinated beyond the actual
+        // data we have. Particularly relevant for 12-15 year olds as demand is still somewhat high
+        // in that group
     }
 
     return false;
