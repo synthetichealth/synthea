@@ -462,6 +462,14 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
+    
+    if (Config.getAsBoolean("exporter.metadata.export", false)) {
+      try {
+        MetadataExporter.exportMetadata(generator);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
 
     closeOpenFiles();
   }
