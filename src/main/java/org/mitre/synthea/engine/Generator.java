@@ -58,6 +58,11 @@ import org.mitre.synthea.world.geography.Location;
  */
 public class Generator implements RandomNumberGenerator {
 
+  /**
+   * Unique ID for this instance of the Generator. 
+   * Even if the same settings are used multiple times, this ID should be unique.
+   */
+  public final UUID id = UUID.randomUUID();
   public GeneratorOptions options;
   private Random random;
   public long timestep;
@@ -65,7 +70,7 @@ public class Generator implements RandomNumberGenerator {
   public long referenceTime;
   public Map<String, AtomicInteger> stats;
   public Location location;
-  private AtomicInteger totalGeneratedPopulation;
+  public AtomicInteger totalGeneratedPopulation;
   private String logLevel;
   private boolean onlyAlivePatients;
   private boolean onlyDeadPatients;
@@ -130,6 +135,8 @@ public class Generator implements RandomNumberGenerator {
     public File keepPatientsModulePath;
     /** Reference Time when to start Synthea. By default equal to the current system time. */
     public long referenceTime = seed;
+    /** Actual time the run started. */
+    public final long runStartTime = referenceTime;
   }
   
   /**
