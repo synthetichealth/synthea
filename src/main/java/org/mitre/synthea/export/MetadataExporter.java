@@ -63,57 +63,49 @@ public class MetadataExporter {
     int payerCount = Payer.getAllPayers().size();
     metadata.put("payerCount", payerCount);
 
-    
     // Java version, 
     String javaVersion = System.getProperty("java.version"); // something like "12" or "1.8.0_201"
     metadata.put("javaVersion", javaVersion);
-
-    // gradle version maybe
-    
-    
 
     // Actual Date/Time of execution.
     String runStartTime = ExportHelper.iso8601Timestamp(opts.runStartTime);
     metadata.put("runStartTime", runStartTime);
 
-    // Run time, maybe.
-    
+    // Run time
+    long runTimeInSeconds = (System.currentTimeMillis() - opts.runStartTime) / 1000;
+    metadata.put("runTimeInSeconds", runTimeInSeconds);
 
     // selected run settings
-    String[] configSettings = {"exporter.years_of_history", };
+    String[] configSettings = { "exporter.years_of_history", };
     
     for (String configSetting : configSettings) {
-      metadata.put(configSetting, Config.get(configSetting, ""));
+      metadata.put(configSetting, Config.get(configSetting));
     }
     
+    // note that nulls don't get exported, so if gender, age, city, etc, aren't specified
+    // then they won't even be in the output file
     String gender = opts.gender;
     metadata.put("gender", gender);
 
-    
     boolean ageSpecified = opts.ageSpecified;
     int minAge = opts.minAge;
     int maxAge = opts.maxAge;
-    String age = ageSpecified ? minAge + "-" + maxAge : "";
+    String age = ageSpecified ? minAge + "-" + maxAge : null;
     metadata.put("age", age);
 
-    
     String city = opts.city;
     metadata.put("city", city);
 
     String state = opts.state;
     metadata.put("state", state);
 
-    
     String modules = opts.enabledModules == null ? "*" : String.join(";", opts.enabledModules);
     metadata.put("modules", modules);
 
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
     String json = gson.toJson(metadata);
     
-
     StringBuilder filenameBuilder = new StringBuilder();
-    
-    // make sure everything is filename-safe
     filenameBuilder.append(runStartTime);
     filenameBuilder.append('_');
     
@@ -130,7 +122,7 @@ public class MetadataExporter {
     filenameBuilder.append('_');
     filenameBuilder.append(generator.id);
     
-    // make sure everything is filename-safe
+    // make sure everything is filename-safe, replace "non-word characters" with _
     String filename = filenameBuilder.toString().replaceAll("\\W+", "_");
     File outputDirectory = Exporter.getOutputFolder("metadata", null);
     outputDirectory.mkdirs();
