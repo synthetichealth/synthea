@@ -54,17 +54,6 @@ public class Claim implements Serializable {
     }
   }
 
-//<<<<<<< HEAD
-//=======
-//  private Entry mainEntry;
-//  // The Entries have the actual cost, so the claim has the amount that the payer covered.
-//  private double totalCost;
-//  private double payerCost;
-//  private double patientDeductible;
-//  private double patientCopay;
-//  private double patientCoinsurance;
-//  private double patientCost;
-//>>>>>>> Initial BB2 Inpatient claims. Required fields only.
   public Payer payer;
   public Payer secondaryPayer;
   public Person person;
@@ -116,7 +105,6 @@ public class Claim implements Serializable {
    * Assign costs between the payer and patient.
    */
   public void assignCosts() {
-//<<<<<<< HEAD
     Plan plan = person.coverage.getPlanAtTime(mainEntry.entry.start);
     if (plan == null) {
       plan = person.coverage.getLastPlan();
@@ -141,53 +129,8 @@ public class Claim implements Serializable {
     plan.payer.addUncoveredCost(totals.deductible);
     plan.payer.addUncoveredCost(totals.pocket);
     plan.secondaryPayer.addCoveredCost(totals.secondaryPayer);
-//=======
-//
-//    totalCost = this.getTotalClaimCost();
-//    patientDeductible = payer.getDeductible();
-//    patientCopay = payer.determineCopay(mainEntry);
-//    patientCoinsurance = payer.getCoinsurance();
-//    patientCost = 0.0;
-//    payerCost = 0.0;
-//
-//    // Determine who covers the care and assign the costs accordingly.
-//    if (this.payer.coversCare(mainEntry)) {
-//      // Person's Payer covers their care.
-//      if (totalCost > (patientDeductible + patientCopay)) {
-//        patientCost = (patientDeductible + patientCopay);
-//        patientCost += (totalCost * patientCoinsurance);
-//        if (patientCost > totalCost) {
-//          patientCost = totalCost;
-//          payerCost = 0;
-//        } else {
-//          payerCost = totalCost - patientCost;
-//        }
-//      } else {
-//        patientCost = totalCost;
-//      }
-//      this.payerCoversEntry(mainEntry);
-//    } else {
-//      // Payer will not cover the care.
-//      this.payerDoesNotCoverEntry(mainEntry);
-//      patientCost = totalCost;
-//    }
-//
-//    // Update Person's Expenses and Coverage.
-//    this.person.addExpense(patientCost, mainEntry.start);
-//    this.person.addCoverage(payerCost, mainEntry.start);
-//    // Update Payer's Covered and Uncovered Costs.
-//    this.payer.addCoveredCost(payerCost);
-//    this.payer.addUncoveredCost(patientCost);
-//    // Update the Provider's Revenue if this is an encounter.
-//    if (mainEntry instanceof Encounter) {
-//      Encounter e = (Encounter) mainEntry;
-//      e.provider.addRevenue(totalCost);
-//    }
-//>>>>>>> Initial BB2 Inpatient claims. Required fields only.
   }
 
-<<<<<<< HEAD
-//<<<<<<< HEAD
   private void assignCosts(ClaimEntry claimEntry, Plan plan) {
     claimEntry.cost = claimEntry.entry.getCost().doubleValue();
     double remaining = claimEntry.cost;
@@ -221,43 +164,6 @@ public class Claim implements Serializable {
           // Payer covers some
           claimEntry.coinsurance = (coinsurance * remaining);
           remaining -= claimEntry.coinsurance;
-//=======
-//    totalCost = this.getTotalClaimCost();
-//    patientDeductible = payer.getDeductible();
-//    patientCopay = payer.determineCopay(mainEntry);
-//    patientCoinsurance = payer.getCoinsurance();
-//    patientCost = 0.0;
-//    payerCost = 0.0;
-//
-//    // Determine who covers the care and assign the costs accordingly.
-//    if (this.payer.coversCare(mainEntry)) {
-//      // Person's Payer covers their care.
-//      if (totalCost > (patientDeductible + patientCopay)) {
-//        patientCost = (patientDeductible + patientCopay);
-//        patientCost += ((totalCost - patientCost) * patientCoinsurance);
-//        if (patientCost > totalCost) {
-//          patientCost = totalCost;
-//          payerCost = 0;
-//>>>>>>> Fix broken unit tests.
-//=======
-//    totalCost = this.getTotalClaimCost();
-//    patientDeductible = payer.getDeductible();
-//    patientCopay = payer.determineCopay(mainEntry);
-//    patientCoinsurance = payer.getCoinsurance();
-//    patientCost = 0.0;
-//    payerCost = 0.0;
-//
-//    // Determine who covers the care and assign the costs accordingly.
-//    if (this.payer.coversCare(mainEntry)) {
-//      // Person's Payer covers their care.
-//      if (totalCost > (patientDeductible + patientCopay)) {
-//        patientCost = (patientDeductible + patientCopay);
-//        patientCoinsurance = ((totalCost - patientCost) * patientCoinsurance);
-//        patientCost += patientCoinsurance;
-//        if (patientCost > totalCost) {
-//          patientCost = totalCost;
-//          payerCost = 0;
-//>>>>>>> Add carrier claims to BB2.
         } else {
           // Payer covers all
           claimEntry.payer = remaining;
@@ -284,87 +190,45 @@ public class Claim implements Serializable {
   }
 
   /**
-<<<<<<< HEAD
    * Returns the total cost of the Claim, including immunizations/procedures tied to the encounter.
    */
   public double getTotalClaimCost() {
     return this.totals.cost;
-//=======
-//   * Returns the additional costs from any charges tied to the encounter.
-//   */
-//  private double getLineItemCosts() {
-//    double additionalCosts = 0.0;
-//    // Sum line-item entry costs.
-//    for (Entry entry : this.items) {
-//      additionalCosts += entry.getCost().doubleValue();
-//    }
-//    return additionalCosts;
-//  }
-//
-//  /**
-//   * Returns the total cost of the Claim, including immunizations/procedures tied to the encounter.
-//   */
-//  public double getTotalClaimCost() {
-//    double totalCost = 0.0;
-//    totalCost += this.getLineItemCosts();
-//    totalCost += mainEntry.getCost().doubleValue();
-//    return totalCost;
-//>>>>>>> Fix claim costs.
   }
 
   /**
    * Returns the total cost that the Payer covered for this claim.
    */
   public double getCoveredCost() {
-//<<<<<<< HEAD
     return (this.totals.coinsurance + this.totals.payer);
-//=======
-//    return this.payerCost;
-//  }
-//
-//  public double getDeductiblePaid() {
-//    return this.patientDeductible;
-//  }
-//
-//  public double getCopayPaid() {
-//    return this.patientCopay;
-//  }
-//
-//  public double getCoinsurancePaid() {
-//    return this.patientCoinsurance;
-//  }
-//
-//  /**
-//   * Returns the total cost to the patient, including copay, coinsurance, and deductible.
-//   */
-//  public double getPatientCost() {
-//    return this.patientCost;
-//  }
-//
-//  /**
-//   * Increments the covered entry utilization of the payer.
-//   */
-//  private void payerCoversEntry(Entry entry) {
-//    // Payer covers the entry.
-//    this.payer.incrementCoveredEntries(entry);
-//    // Payer covers the line items.
-//    for (Entry lineItemEntry : this.items) {
-//      this.payer.incrementCoveredEntries(lineItemEntry);
-//    }
-//  }
-//
-//  /**
-//   * Increments the uncovered entry utilization of the payer.
-//   */
-//  private void payerDoesNotCoverEntry(Entry entry) {
-//    // Payer does not cover the entry.
-//    this.payer.incrementUncoveredEntries(entry);
-//    // Payer does not cover the line items.
-//    for (Entry lineItemEntry : this.items) {
-//      this.payer.incrementUncoveredEntries(lineItemEntry);
-//    }
-//    // Results in adding to NO_INSURANCE's costs uncovered, but not their utilization.
-//    this.payer = Payer.noInsurance;
-//>>>>>>> Initial BB2 Inpatient claims. Required fields only.
+  }
+
+  public double getDeductiblePaid() {
+    return this.totals.deductible;
+  }
+
+  public double getCopayPaid() {
+    return this.totals.copay;
+  }
+
+  /**
+   * Returns the amount of coinsurance paid by the patient, either via secondary insurance or out
+   * of pocket.
+   * @return the amount of coinsurance paid
+   */
+  public double getCoinsurancePaid() {
+    if (this.totals.secondaryPayer > 0) {
+      return this.totals.secondaryPayer;
+    } else if (this.totals.coinsurance > 0) {
+      return this.totals.pocket; 
+    }
+    return 0;
+  }
+
+  /**
+   * Returns the total cost to the patient, including copay, coinsurance, and deductible.
+   */
+  public double getPatientCost() {
+    return this.totals.pocket + this.totals.copay + this.totals.deductible;
   }
 }

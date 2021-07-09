@@ -6,10 +6,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -76,7 +75,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
  *    Coded        : Implementation in exporter source code, ignored
  *    [Blank]      : Cell was analyzed and value should be empty 
  */
-public class BB2RIFExporter implements Flushable {
+public class BB2RIFExporter {
   
   private BeneficiaryWriters beneficiaryWriters;
   private SynchronizedBBLineWriter beneficiaryHistory;
@@ -181,44 +180,6 @@ public class BB2RIFExporter implements Flushable {
    * Create the output folder and files. Write headers to each file.
    */
   final void prepareOutputFiles() throws IOException {
-    // Clean up any existing output writers
-    if (beneficiaryWriters != null) {
-      beneficiaryWriters.closeAll();
-    }
-    if (beneficiaryHistory != null) {
-      beneficiaryHistory.close();
-    }
-    if (inpatient != null) {
-      inpatient.close();
-    }
-    if (outpatient != null) {
-      outpatient.close();
-    }
-    if (carrier != null) {
-      carrier.close();
-    }
-    if (prescription != null) {
-      prescription.close();
-    }
-    if (dme != null) {
-      dme.close();
-    }
-    if (home != null) {
-      home.close();
-    }
-    if (hospice != null) {
-      hospice.close();
-    }
-    if (snf != null) {
-      snf.close();
-    }
-    if (npi != null) {
-      npi.close();
-    }
-    if (manifest != null) {
-      manifest.close();
-    }
-
     // Initialize output writers
     File output = Exporter.getOutputFolder("bfd", null);
     output.mkdirs();
@@ -226,48 +187,45 @@ public class BB2RIFExporter implements Flushable {
     
     beneficiaryWriters = new BeneficiaryWriters(outputDirectory);
 
-    File beneficiaryHistoryFile = outputDirectory.resolve("beneficiary_history.csv").toFile();
+    Path beneficiaryHistoryFile = outputDirectory.resolve("beneficiary_history.csv");
     beneficiaryHistory = new SynchronizedBBLineWriter(beneficiaryHistoryFile);
     beneficiaryHistory.writeHeader(BeneficiaryHistoryFields.class);
 
-    File outpatientFile = outputDirectory.resolve("outpatient.csv").toFile();
+    Path outpatientFile = outputDirectory.resolve("outpatient.csv");
     outpatient = new SynchronizedBBLineWriter(outpatientFile);
     outpatient.writeHeader(OutpatientFields.class);
 
-    File inpatientFile = outputDirectory.resolve("inpatient.csv").toFile();
+    Path inpatientFile = outputDirectory.resolve("inpatient.csv");
     inpatient = new SynchronizedBBLineWriter(inpatientFile);
     inpatient.writeHeader(InpatientFields.class);
 
-    File carrierFile = outputDirectory.resolve("carrier.csv").toFile();
+    Path carrierFile = outputDirectory.resolve("carrier.csv");
     carrier = new SynchronizedBBLineWriter(carrierFile);
     carrier.writeHeader(CarrierFields.class);
 
-    File prescriptionFile = outputDirectory.resolve("prescription.csv").toFile();
+    Path prescriptionFile = outputDirectory.resolve("prescription.csv");
     prescription = new SynchronizedBBLineWriter(prescriptionFile);
     prescription.writeHeader(PrescriptionFields.class);
 
-    File dmeFile = outputDirectory.resolve("dme.csv").toFile();
+    Path dmeFile = outputDirectory.resolve("dme.csv");
     dme = new SynchronizedBBLineWriter(dmeFile);
     dme.writeHeader(DMEFields.class);
 
-    File homeFile = outputDirectory.resolve("home.csv").toFile();
+    Path homeFile = outputDirectory.resolve("home.csv");
     home = new SynchronizedBBLineWriter(homeFile);
     home.writeHeader(HHAFields.class);
 
-    File hospiceFile = outputDirectory.resolve("hospice.csv").toFile();
+    Path hospiceFile = outputDirectory.resolve("hospice.csv");
     hospice = new SynchronizedBBLineWriter(hospiceFile);
     hospice.writeHeader(HospiceFields.class);
 
-    File snfFile = outputDirectory.resolve("snf.csv").toFile();
+    Path snfFile = outputDirectory.resolve("snf.csv");
     snf = new SynchronizedBBLineWriter(snfFile);
     snf.writeHeader(SNFFields.class);
 
-    File npiFile = outputDirectory.resolve("npi.tsv").toFile();
+    Path npiFile = outputDirectory.resolve("npi.tsv");
     npi = new SynchronizedBBLineWriter(npiFile, "\t");
     npi.writeHeader(NPIFields.class);
-
-    File manifestFile = outputDirectory.resolve("manifest.xml").toFile();
-    manifest = new BufferedWriter(new FileWriter(manifestFile));
   }
   
   /**
@@ -276,6 +234,10 @@ public class BB2RIFExporter implements Flushable {
    * @throws IOException if something goes wrong
    */
   public void exportManifest() throws IOException {
+    File output = Exporter.getOutputFolder("bfd", null);
+    output.mkdirs();
+    Path manifestPath = output.toPath().resolve("manifest.xml");
+    StringWriter manifest = new StringWriter();
     manifest.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
     manifest.write("<dataSetManifest xmlns=\"http://cms.hhs.gov/bluebutton/api/schema/ccw-rif/v9\"");
     manifest.write(String.format(" timestamp=\"%s\" ", 
@@ -306,7 +268,8 @@ public class BB2RIFExporter implements Flushable {
             snf.getFile().getName()));
     manifest.write(String.format("  <entry name=\"%s\" type=\"BENEFICIARY_HISTORY\"/>\n",
             beneficiaryHistory.getFile().getName()));
-    manifest.write("</dataSetManifest>\n");
+    manifest.write("</dataSetManifest>");
+    Exporter.appendToFile(manifestPath, manifest.toString());
   }
 
   /**
@@ -1609,27 +1572,6 @@ public class BB2RIFExporter implements Flushable {
       snf.writeValues(SNFFields.class, fieldValues);
     }
   }
-
-  /**
-   * Flush contents of any buffered streams to disk.
-   * @throws IOException if something goes wrong
-   */
-  @Override
-  public void flush() throws IOException {
-    beneficiaryWriters.flushAll();
-    beneficiaryHistory.flush();
-    inpatient.flush();
-    outpatient.flush();
-    carrier.flush();
-    prescription.flush();
-    dme.flush();
-    home.flush();
-    hospice.flush();
-    snf.flush();
-    npi.flush();
-    manifest.flush();
-  }
-
 
   /**
    * Get the BB2 race code. BB2 uses a single code to represent race and ethnicity, we assume
@@ -3944,19 +3886,18 @@ public class BB2RIFExporter implements Flushable {
   /**
    * Utility class for writing to BB2 writers.
    */
-  private static class SynchronizedBBLineWriter extends BufferedWriter {
+  private static class SynchronizedBBLineWriter {
     
     private String bbFieldSeparator = "|";
-    private File file;
+    private Path path;
     
     /**
      * Construct a new instance.
      * @param file the writer to write to
      * @throws IOException if something goes wrong
      */
-    public SynchronizedBBLineWriter(File file) throws IOException {
-      super(new FileWriter(file));
-      this.file = file;
+    public SynchronizedBBLineWriter(Path path) {
+      this.path = path;
     }
 
     /**
@@ -3964,10 +3905,9 @@ public class BB2RIFExporter implements Flushable {
      * @param file the writer to write to
      * @throws IOException if something goes wrong
      */
-    public SynchronizedBBLineWriter(File file, String separator) throws IOException {
-      super(new FileWriter(file));
+    public SynchronizedBBLineWriter(Path path, String separator) {
       this.bbFieldSeparator = separator;
-      this.file = file;
+      this.path = path;
     }
 
     /**
@@ -3976,12 +3916,9 @@ public class BB2RIFExporter implements Flushable {
      * @param fields the fields that will be concatenated into the line
      * @throws IOException if something goes wrong
      */
-    private void writeLine(String... fields) throws IOException {
+    private void writeLine(String... fields) {
       String line = String.join(bbFieldSeparator, fields);
-      synchronized (lock) {
-        write(line);
-        newLine();
-      }
+      Exporter.appendToFile(path, line);
     }
     
     /**
@@ -4014,9 +3951,8 @@ public class BB2RIFExporter implements Flushable {
      * @return the file
      */
     public File getFile() {
-      return file;
+      return path.toFile();
     }
-
   }
   
   /**
@@ -4389,7 +4325,7 @@ public class BB2RIFExporter implements Flushable {
     public synchronized SynchronizedBBLineWriter getWriter(int year) throws IOException {
       SynchronizedBBLineWriter writer = writers.get(year);
       if (writer == null) {
-        File beneficiaryFile = dir.resolve(String.format("beneficiary_%d.csv", year)).toFile();
+        Path beneficiaryFile = dir.resolve(String.format("beneficiary_%d.csv", year));
         writer = new SynchronizedBBLineWriter(beneficiaryFile);
         writers.put(year, writer);
         writer.writeHeader(BeneficiaryFields.class);        
@@ -4403,19 +4339,6 @@ public class BB2RIFExporter implements Flushable {
         list.add(writer.getFile());
       });
       return list;
-    }
-    
-    public synchronized void flushAll() throws IOException {
-      for (int year: writers.keySet()) {
-        writers.get(year).flush();
-      }
-    }
-    
-    public synchronized void closeAll() throws IOException {
-      for (int year: writers.keySet()) {
-        writers.get(year).close();
-      }
-      writers.clear();
     }
   }
 }
