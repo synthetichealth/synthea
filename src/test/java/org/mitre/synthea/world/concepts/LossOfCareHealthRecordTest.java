@@ -25,6 +25,7 @@ public class LossOfCareHealthRecordTest {
   private long time;
   private double defaultEncounterCost = Double
       .parseDouble(Config.get("generate.costs.default_encounter_cost"));
+  private double patientCost;
   private double testPrivatePayerCopay;
 
   /**
@@ -96,6 +97,7 @@ public class LossOfCareHealthRecordTest {
     person.coverage.setPayerAtTime(time, testPrivatePayer);
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
+
     // Determine income
     double encCost = Double.parseDouble(Config.get("generate.costs.default_encounter_cost"));
     double coinsurance = 1 - testPrivatePayer.getCoinsurance();

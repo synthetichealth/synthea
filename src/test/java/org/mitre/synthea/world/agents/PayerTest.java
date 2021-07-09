@@ -394,6 +394,7 @@ public class PayerTest {
     fakeEncounter.provider = new Provider();
     double totalCost = fakeEncounter.getCost().doubleValue();
     person.record.encounterEnd(0L, EncounterType.WELLNESS);
+//<<<<<<< HEAD
     // check the copays match
     assertEquals(testPrivatePayer1.getDeductible(), fakeEncounter.claim.totals.deductible, 0.001);
     // check that totals match
@@ -404,6 +405,14 @@ public class PayerTest {
         + fakeEncounter.claim.totals.payer
         + fakeEncounter.claim.totals.pocket;
     assertEquals(totalCost, result, 0.001);
+//=======
+//    // The total cost should equal the Cost to the Payer summed with the Payer's copay amount.
+//    assertEquals(totalCost, testPrivatePayer1.getAmountCovered()
+//        + fakeEncounter.claim.getPatientCost(), 0.001);
+//    // The total cost should equal the Payer's uncovered costs plus the Payer's covered costs.
+//    assertEquals(totalCost, testPrivatePayer1.getAmountCovered()
+//        + testPrivatePayer1.getAmountUncovered(), 0.001);
+//>>>>>>> Fix broken unit tests.
     // The total coverage by the payer should equal the person's covered costs.
     assertEquals(person.coverage.getTotalCoverage(), testPrivatePayer1.getAmountCovered(), 0.001);
   }
@@ -496,6 +505,7 @@ public class PayerTest {
     encounter.codes.add(new Code("SNOMED-CT","705129","Fake SNOMED for null entry"));
     assertTrue(testPrivatePayer1.coversService(encounter.type));
     healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
+//<<<<<<< HEAD
     // Person's coverage should equal the cost of the encounter
     double coverage = encounter.claim.totals.coinsurance + encounter.claim.totals.payer;
     assertEquals(person.coverage.getTotalCoverage(), coverage, 0.001);
@@ -510,6 +520,15 @@ public class PayerTest {
         + encounter.claim.totals.deductible
         + encounter.claim.totals.pocket;
     assertEquals(person.coverage.getTotalExpenses(), expenses, 0.001);
+//=======
+//    // Person's coverage should equal the cost of the encounter minus the copay,
+//    // minus the deductible, and minus any coinsurance
+//    assertEquals(person.getHealthcareCoverage(), encounter.claim.getTotalClaimCost()
+//        - encounter.claim.getPatientCost(), 0.001);
+//    // Person's expenses should equal the copay, coinsurance, and deductible.
+//    assertEquals(person.getHealthcareExpenses(),
+//        encounter.claim.getPatientCost(), 0.001);
+//>>>>>>> Fix broken unit tests.
   }
 
   @Test

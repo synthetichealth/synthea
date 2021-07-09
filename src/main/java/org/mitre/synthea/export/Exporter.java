@@ -36,7 +36,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
-public abstract class Exporter {
+public class Exporter {
   
   /**
    * Supported FHIR versions.
@@ -49,7 +49,7 @@ public abstract class Exporter {
   
   private static final List<Pair<Person, Long>> deferredExports = 
           Collections.synchronizedList(new LinkedList<>());
-
+  
   private static final ConcurrentHashMap<Path, PrintWriter> fileWriters = 
           new ConcurrentHashMap<Path, PrintWriter>();
 
@@ -254,6 +254,14 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
+    if (Config.getAsBoolean("exporter.bfd.export")) {
+      try {
+        BB2RIFExporter exporter = BB2RIFExporter.getInstance();
+        exporter.export(person, stopTime);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
     if (Config.getAsBoolean("exporter.cpcds.export")) {
       try {
         CPCDSExporter.getInstance().export(person, stopTime);
@@ -341,7 +349,7 @@ public abstract class Exporter {
    * @param file Path to the new file.
    * @param contents The contents of the file.
    */
-  private static void appendToFile(Path file, String contents) {
+  static void appendToFile(Path file, String contents) {
     PrintWriter writer = fileWriters.get(file);
 
     if (writer == null) {
@@ -450,6 +458,16 @@ public abstract class Exporter {
     }
     Config.set("exporter.fhir.bulk_data", bulk);
 
+    if (Config.getAsBoolean("exporter.bfd.export")) {
+      try {
+        BB2RIFExporter exporter = BB2RIFExporter.getInstance();
+        exporter.exportNPIs();
+        exporter.exportManifest();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
     if (Config.getAsBoolean("exporter.cdw.export")) {
       CDWExporter.getInstance().writeFactTables();
     }
@@ -465,7 +483,7 @@ public abstract class Exporter {
 
     closeOpenFiles();
   }
-
+  
   /**
    * Filter the patient's history to only the last __ years
    * but also include relevant history from before that. Exclude

@@ -454,7 +454,8 @@ public class HealthRecord implements Serializable {
 
   public enum EncounterType {
     WELLNESS("AMB"), AMBULATORY("AMB"), OUTPATIENT("AMB"),
-        INPATIENT("IMP"), EMERGENCY("EMER"), URGENTCARE("AMB");
+    INPATIENT("IMP"), EMERGENCY("EMER"), URGENTCARE("AMB"),
+    HOSPICE("HH"), HOME("HH"), SNF("IMP");
 
     // http://www.hl7.org/implement/standards/fhir/v3/ActEncounterCode/vs.html
     private final String code;
@@ -953,6 +954,7 @@ public class HealthRecord implements Serializable {
     device.generateUDI(person);
     Encounter encounter = currentEncounter(time);
     encounter.devices.add(device);
+    encounter.claim.addLineItem(device);
     present.put(type, device);
     return device;
   }
@@ -1029,6 +1031,7 @@ public class HealthRecord implements Serializable {
     }
     Report report = new Report(time, type, observations);
     encounter.reports.add(report);
+    encounter.claim.addLineItem(report);
     observations.forEach(o -> o.report = report);
     return report;
   }
@@ -1099,7 +1102,9 @@ public class HealthRecord implements Serializable {
     if (!present.containsKey(type)) {
       medication = new Medication(time, type);
       medication.chronic = chronic;
-      currentEncounter(time).medications.add(medication);
+      Encounter encounter = currentEncounter(time);
+      encounter.medications.add(medication);
+      encounter.claim.addLineItem(medication);
       present.put(type, medication);
     } else {
       medication = (Medication) present.get(type);

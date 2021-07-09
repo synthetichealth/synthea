@@ -25,6 +25,10 @@ public class Costs {
       parseCsvToMap("costs/encounters.csv");
   private static final Map<String, CostData> IMMUNIZATION_COSTS =
       parseCsvToMap("costs/immunizations.csv");
+  private static final Map<String, CostData> DEVICE_COSTS =
+      parseCsvToMap("costs/devices.csv");
+  private static final Map<String, CostData> SUPPLY_COSTS =
+      parseCsvToMap("costs/supplies.csv");
 
   private static final double DEFAULT_PROCEDURE_COST = Double
       .parseDouble(Config.get("generate.costs.default_procedure_cost"));
@@ -34,6 +38,12 @@ public class Costs {
       .parseDouble(Config.get("generate.costs.default_encounter_cost"));
   private static final double DEFAULT_IMMUNIZATION_COST = Double
       .parseDouble(Config.get("generate.costs.default_immunization_cost"));
+  private static final double DEFAULT_LAB_COST = Double
+      .parseDouble(Config.get("generate.costs.default_lab_cost"));
+  private static final double DEFAULT_DEVICE_COST = Double
+      .parseDouble(Config.get("generate.costs.default_device_cost"));
+  private static final double DEFAULT_SUPPLY_COST = Double
+      .parseDouble(Config.get("generate.costs.default_supply_cost"));
 
   private static final Map<String, Double> LOCATION_ADJUSTMENT_FACTORS = parseAdjustmentFactors();
 
@@ -61,6 +71,14 @@ public class Costs {
     } else if (entry instanceof HealthRecord.Immunization) {
       costs = IMMUNIZATION_COSTS;
       defaultCost = DEFAULT_IMMUNIZATION_COST;
+    } else if (entry instanceof HealthRecord.Device) {
+      costs = DEVICE_COSTS;
+      defaultCost = DEFAULT_DEVICE_COST;
+    } else if (entry instanceof HealthRecord.Supply) {
+      costs = SUPPLY_COSTS;
+      defaultCost = DEFAULT_SUPPLY_COST;
+    } else if (entry instanceof HealthRecord.Report) {
+      defaultCost = DEFAULT_LAB_COST;
     } else {
       // Not an entry type that has an associated cost.
       return 0.0;
@@ -167,7 +185,9 @@ public class Costs {
     return (entry instanceof HealthRecord.Procedure) 
         || (entry instanceof HealthRecord.Medication)
         || (entry instanceof HealthRecord.Encounter)
-        || (entry instanceof HealthRecord.Immunization);
+        || (entry instanceof HealthRecord.Immunization)
+        || (entry instanceof HealthRecord.Report)
+        || (entry instanceof HealthRecord.Device);
   }
 
   /**

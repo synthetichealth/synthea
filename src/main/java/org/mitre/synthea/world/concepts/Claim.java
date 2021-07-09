@@ -202,4 +202,33 @@ public class Claim implements Serializable {
   public double getCoveredCost() {
     return (this.totals.coinsurance + this.totals.payer);
   }
+
+  public double getDeductiblePaid() {
+    return this.totals.deductible;
+  }
+
+  public double getCopayPaid() {
+    return this.totals.copay;
+  }
+
+  /**
+   * Returns the amount of coinsurance paid by the patient, either via secondary insurance or out
+   * of pocket.
+   * @return the amount of coinsurance paid
+   */
+  public double getCoinsurancePaid() {
+    if (this.totals.secondaryPayer > 0) {
+      return this.totals.secondaryPayer;
+    } else if (this.totals.coinsurance > 0) {
+      return this.totals.pocket; 
+    }
+    return 0;
+  }
+
+  /**
+   * Returns the total cost to the patient, including copay, coinsurance, and deductible.
+   */
+  public double getPatientCost() {
+    return this.totals.pocket + this.totals.copay + this.totals.deductible;
+  }
 }

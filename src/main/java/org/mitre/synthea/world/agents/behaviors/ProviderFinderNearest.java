@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.agents.Provider.ProviderType;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
 public class ProviderFinderNearest implements IProviderFinder {
@@ -19,9 +20,10 @@ public class ProviderFinderNearest implements IProviderFinder {
       if (provider.accepts(person, time)
           && (provider.hasService(service) || service == null)) {
         if (person.attributes.containsKey("veteran")
-                && !("VA Facility".equals(provider.type))
-                && !(service.equals(
-                        EncounterType.URGENTCARE) || service.equals(EncounterType.EMERGENCY))) {
+                && !("VA Facility".equals(provider.rawType)
+                    || ProviderType.VETERAN == provider.type)
+                && !(service.equals(EncounterType.URGENTCARE)
+                    || service.equals(EncounterType.EMERGENCY))) {
           continue;
         }
         distance = provider.getLonLat().distance(person.getLonLat());

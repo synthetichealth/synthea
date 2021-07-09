@@ -143,7 +143,16 @@
     },
     "End_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Delay_For_Recovery"
+      "distributed_transition": [
+        {
+          "transition": "Home Health Visits",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Delay_For_Recovery",
+          "distribution": 0.5
+        }
+      ]
     },
     "Delay_For_Recovery": {
       "type": "Delay",
@@ -309,6 +318,12 @@
     "Post_Procedure_Encounter_End": {
       "type": "EncounterEnd",
       "direct_transition": "Delay_Until_New_Replacement_Needed"
+    },
+    "Home Health Visits": {
+      "type": "SetAttribute",
+      "attribute": "home_health",
+      "direct_transition": "Delay_For_Recovery",
+      "value": true
     }
   },
   "gmf_version": 1
