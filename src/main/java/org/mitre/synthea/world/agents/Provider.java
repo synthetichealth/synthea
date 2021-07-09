@@ -400,7 +400,7 @@ public class Provider implements QuadTreeElement, Serializable {
    * @param filename Location of the file, relative to src/main/resources
    * @param providerType ProviderType
    * @param servicesProvided Set of services provided by these facilities
-   * @param institutional If the provider is institutional (true) or professional (false)
+   * @param clinicianSeed random seed for clinicians
    * @throws IOException if the file cannot be read
    */
   public static void loadProviders(Location location, String filename,
@@ -510,7 +510,8 @@ public class Provider implements QuadTreeElement, Serializable {
       out.put(Person.RACE, race);
       String ethnicity = cityDemographics.pickEthnicity(clinicianRand);
       out.put(Person.ETHNICITY, ethnicity);
-      String language = cityDemographics.languageFromRaceAndEthnicity(race, ethnicity, clinicianRand);
+      String language = cityDemographics.languageFromRaceAndEthnicity(race, ethnicity,
+              clinicianRand);
       out.put(Person.FIRST_LANGUAGE, language);
       String gender = cityDemographics.pickGender(clinicianRand);
       if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {

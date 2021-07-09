@@ -73,7 +73,6 @@ public class BB2RIFExporterTest {
     }
     // Adding post completion exports to generate organizations and providers CSV files
     Exporter.runPostCompletionExports(generator, exportOpts);
-    Exporter.flushFlushables();
 
     // if we get here we at least had no exceptions
 
