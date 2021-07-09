@@ -13,11 +13,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -52,9 +50,6 @@ public class Exporter {
   private static final List<Pair<Person, Long>> deferredExports = 
           Collections.synchronizedList(new LinkedList<>());
   
-  private static final Set<Flushable> flushableExporters = 
-          Collections.synchronizedSet(new HashSet<>());
-
   private static final ConcurrentHashMap<Path, PrintWriter> fileWriters = 
           new ConcurrentHashMap<Path, PrintWriter>();
 
@@ -262,7 +257,6 @@ public class Exporter {
     if (Config.getAsBoolean("exporter.bfd.export")) {
       try {
         BB2RIFExporter exporter = BB2RIFExporter.getInstance();
-        flushableExporters.add(exporter);
         exporter.export(person, stopTime);
       } catch (IOException e) {
         e.printStackTrace();
@@ -355,7 +349,7 @@ public class Exporter {
    * @param file Path to the new file.
    * @param contents The contents of the file.
    */
-  private static void appendToFile(Path file, String contents) {
+  static void appendToFile(Path file, String contents) {
     PrintWriter writer = fileWriters.get(file);
 
     if (writer == null) {
@@ -488,20 +482,6 @@ public class Exporter {
     }
 
     closeOpenFiles();
-  }
-  
-  /**
-   * Flush any exporters that buffer output. Should be called once all exports have been
-   * completed.
-   */
-  public static void flushFlushables() {
-    for (Flushable f: flushableExporters) {
-      try {
-        f.flush();
-      } catch (IOException ex) {
-        ex.printStackTrace();
-      }
-    }
   }
   
   /**

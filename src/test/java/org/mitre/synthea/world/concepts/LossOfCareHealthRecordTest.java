@@ -26,6 +26,7 @@ public class LossOfCareHealthRecordTest {
   private double defaultEncounterCost = Double
       .parseDouble(Config.get("generate.costs.default_encounter_cost"));
   private double patientCost;
+  private double testPrivatePayerCopay;
 
   /**
    * Setup for HealthRecord Tests.
@@ -50,16 +51,9 @@ public class LossOfCareHealthRecordTest {
     person.setProvider(EncounterType.WELLNESS, new Provider());
     person.attributes.put(Person.INCOME, 1);
     Encounter encounter = person.encounterStart(time, EncounterType.WELLNESS);
-//<<<<<<< HEAD
     testPrivatePayerCopay = testPrivatePayer.determineCopay(encounter);
 
     time = 0L; //Utilities.convertCalendarYearsToTime(1900);
-//=======
-//    patientCost = testPrivatePayer.determineCopay(encounter) + testPrivatePayer.getDeductible();
-//    patientCost += (defaultEncounterCost - patientCost) * testPrivatePayer.getCoinsurance();
-//    
-//    time = Utilities.convertCalendarYearsToTime(1900);
-//>>>>>>> Fix broken unit tests.
   }
 
   @AfterClass
@@ -103,7 +97,7 @@ public class LossOfCareHealthRecordTest {
     person.coverage.setPayerAtTime(time, testPrivatePayer);
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
-//<<<<<<< HEAD
+
     // Determine income
     double encCost = Double.parseDouble(Config.get("generate.costs.default_encounter_cost"));
     double coinsurance = 1 - testPrivatePayer.getCoinsurance();
@@ -113,10 +107,6 @@ public class LossOfCareHealthRecordTest {
         + (2 * testPrivatePayerCopay) - 1;
     // Set person's income to be $1 lower than the cost of 2 visits.
     person.attributes.put(Person.INCOME, (int) income);
-//=======
-//    // Set person's income to be $1 lower than the cost of 2 copays.
-//    person.attributes.put(Person.INCOME, (int) (patientCost * 2) - 1);
-//>>>>>>> Fix broken unit tests.
 
     // First encounter is covered and copay is affordable.
     Encounter coveredEncounter1 = person.encounterStart(time, EncounterType.WELLNESS);

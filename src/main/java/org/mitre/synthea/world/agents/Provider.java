@@ -326,48 +326,25 @@ public class Provider implements QuadTreeElement, Serializable {
         servicesProvided.add(EncounterType.INPATIENT);
 
         String hospitalFile = Config.get("generate.providers.hospitals.default_file");
-//<<<<<<< HEAD
-        loadProviders(location, hospitalFile, servicesProvided, true, clinicianSeed);
+        loadProviders(location, hospitalFile,
+            ProviderType.HOSPITAL, servicesProvided, clinicianSeed);
 
         servicesProvided.add(EncounterType.WELLNESS);
         String vaFile = Config.get("generate.providers.veterans.default_file");
-        loadProviders(location, vaFile, servicesProvided, true, clinicianSeed);
-//=======
-//        loadProviders(location, hospitalFile,
-//            ProviderType.HOSPITAL, servicesProvided, clinicianSeed);
-//
-//        servicesProvided.add(EncounterType.WELLNESS);
-//        String vaFile = Config.get("generate.providers.veterans.default_file");
-//        loadProviders(location, vaFile,
-//            ProviderType.VETERAN, servicesProvided, clinicianSeed);
-//>>>>>>> Add carrier claims to BB2.
+        loadProviders(location, vaFile,
+            ProviderType.VETERAN, servicesProvided, clinicianSeed);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.WELLNESS);
         String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
-//<<<<<<< HEAD
-        loadProviders(location, primaryCareFile, servicesProvided, false, clinicianSeed);
-//=======
-//        loadProviders(location, primaryCareFile,
-//            ProviderType.PRIMARY, servicesProvided, clinicianSeed);
-//>>>>>>> Add carrier claims to BB2.
+        loadProviders(location, primaryCareFile,
+            ProviderType.PRIMARY, servicesProvided, clinicianSeed);
         
         servicesProvided.clear();
         servicesProvided.add(EncounterType.URGENTCARE);
         String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
-//<<<<<<< HEAD
-//<<<<<<< HEAD
-        loadProviders(location, urgentcareFile, servicesProvided, true, clinicianSeed);
-//=======
-//        loadProviders(location, urgentcareFile,
-//            ProviderType.URGENT, servicesProvided, clinicianSeed);
-//>>>>>>> Add carrier claims to BB2.
-      
-//=======
-//        loadProviders(location, urgentcareFile,
-//            ProviderType.URGENT, servicesProvided, clinicianSeed);
-//
-//>>>>>>> Initial hospice.
+        loadProviders(location, urgentcareFile,
+            ProviderType.URGENT, servicesProvided, clinicianSeed);
         statesLoaded.add(location.state);
         statesLoaded.add(Location.getAbbreviation(location.state));
         statesLoaded.add(Location.getStateName(location.state));
@@ -410,15 +387,11 @@ public class Provider implements QuadTreeElement, Serializable {
    * @param filename Location of the file, relative to src/main/resources
    * @param providerType ProviderType
    * @param servicesProvided Set of services provided by these facilities
-   * @param institutional If the provider is institutional (true) or professional (false)
+   * @param clinicianSeed random seed for clinicians
    * @throws IOException if the file cannot be read
    */
   public static void loadProviders(Location location, String filename,
-//<<<<<<< HEAD
-      Set<EncounterType> servicesProvided, boolean institutional, long clinicianSeed)
-//=======
-//      ProviderType providerType, Set<EncounterType> servicesProvided, long clinicianSeed)
-//>>>>>>> Add carrier claims to BB2.
+      ProviderType providerType, Set<EncounterType> servicesProvided, long clinicianSeed)
       throws IOException {
     String resource = Utilities.readResource(filename);
     Iterator<? extends Map<String,String>> csv = SimpleCSV.parseLineByLine(resource);
@@ -435,11 +408,7 @@ public class Provider implements QuadTreeElement, Serializable {
           || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
 
         Provider parsed = csvLineToProvider(row);
-//<<<<<<< HEAD
-        parsed.institutional = institutional;
-//=======
-//        parsed.type = providerType;
-//>>>>>>> Add carrier claims to BB2.
+        parsed.type = providerType;
         parsed.servicesProvided.addAll(servicesProvided);
 
         if ("Yes".equals(row.remove("emergency"))) {
@@ -528,7 +497,8 @@ public class Provider implements QuadTreeElement, Serializable {
       out.put(Person.RACE, race);
       String ethnicity = cityDemographics.pickEthnicity(clinicianRand);
       out.put(Person.ETHNICITY, ethnicity);
-      String language = cityDemographics.languageFromRaceAndEthnicity(race, ethnicity, clinicianRand);
+      String language = cityDemographics.languageFromRaceAndEthnicity(race, ethnicity,
+              clinicianRand);
       out.put(Person.FIRST_LANGUAGE, language);
       String gender = cityDemographics.pickGender(clinicianRand);
       if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {

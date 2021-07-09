@@ -69,7 +69,7 @@ dependencies {
   
   implementation 'org.springframework:spring-web:5.2.7.RELEASE'
 
-  compile group: 'com.opencsv', name: 'opencsv', version: '5.2'
+  implementation 'com.opencsv:opencsv:5.2'
 
   // Java 9 no longer includes these APIs by default
   implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
