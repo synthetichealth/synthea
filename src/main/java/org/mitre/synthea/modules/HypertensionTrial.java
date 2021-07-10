@@ -1,6 +1,7 @@
 package org.mitre.synthea.modules;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,14 +26,9 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 public class HypertensionTrial {
 
   public static void registerModules(Map<String, ModuleSupplier> modules) {
-
     modules.put("ChooseNextTherapy", new ModuleSupplier(new ChooseNextTherapy()));
-    
-    modules.put("CreateVisitSchedule", new ModuleSupplier(new CreateVisitSchedule()));
-    modules.put("DelayUntilNextVisit", new ModuleSupplier(new DelayUntilNextVisit()));
-    
+    modules.put("VisitCheck", new ModuleSupplier(new VisitCheck()));
     modules.put("StepDownTherapy", new ModuleSupplier(new StepDownTherapy()));
-
   }
   
   public static class Drug {
@@ -86,7 +82,6 @@ public class HypertensionTrial {
         drug.prescribable = Boolean.parseBoolean(line.get("Prescribable")); // allow medications used elsewhere in synthea to have impacts, without letting them be prescribed here
         
         drugClass.add(drug);
-        
       }
       
       HTN_TRIAL_FORMULARY = formulary;
@@ -136,9 +131,9 @@ public class HypertensionTrial {
         if (drug.ingredient != null && person.record.allergyActive(drug.ingredient.code)) {
           continue;
         }
-        
+
         nextDrug = drug;
-        break;
+        break; 
       }
       if (nextDrug != null) break;
     }
@@ -199,8 +194,6 @@ public class HypertensionTrial {
     }
     
     if (nonTitratedDrug == null && direction == TitrationDirection.UP) {
-      
-      
       for (Set<Drug> drugClass : HTN_TRIAL_FORMULARY.values()) {
         for (Drug drug : drugClass) {
           System.out.println(person.seed + " - " + drug.code.display + ": active:" + person.record.medicationActive(drug.code.code));
@@ -278,7 +271,7 @@ public class HypertensionTrial {
       // there may be opportunities to de-dup, but I like having the detail in the module
       
       String trialArm = (String)person.attributes.get("trial_arm");
-      boolean milepost = (boolean) person.attributes.getOrDefault("milestone_visit", false);
+      boolean milepost = (boolean) person.attributes.getOrDefault("milepost_visit", false);
       
       double sbp = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time);
       double dbp = person.getVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, time);
@@ -390,20 +383,7 @@ public class HypertensionTrial {
       
       return true; // submodule is complete
     }
-    
-//    private static final String[][] DRUG_HIERARCHY = {
-//        { "chlorthalidone", "furosemide", "spironolactone", "triamterene/hctz", "amiloride" }, // diuretics
-//        { "lisinopril" }, // ace inhibitor
-//        {"losartan", "azilsartan","azilsartan/chlorthalidone"}, // angiotensin receptor blocker
-//        {"diltiazem", "amlodipine"}, // calcium channel blocker
-//        {"metoprolol tartrate", "atenolol", "atenolol/chlorthalidone"}, // beta blocker
-//        {"hydrazine", "minoxidil"}, // vasodilators
-//        {"guanfacine"}, // alpha 2 agonist
-//        {"doxazosin"}, // alpha blocker
-//        {"kcl tablets", "kcl oral"}, // potassium supplement
-//    };
-    
-    
+   
   }
   
   
@@ -460,157 +440,38 @@ public class HypertensionTrial {
     }
   }
   
-  public static class CreateVisitSchedule extends Module {
-    public CreateVisitSchedule() {
-      this.name = "CreateVisitSchedule";
-      this.submodule = true;
-    }
-
-    public Module clone() {
-      return this;
-    }
-
-    @Override
-    public boolean process(Person person, long time) {
-      List<Long> visitSchedule = new ArrayList<>();
-      
-      visitSchedule.add(time + Utilities.convertTime("months", 1)); // TODO, add the rest
-      visitSchedule.add(time + Utilities.convertTime("months", 2));
-      visitSchedule.add(time + Utilities.convertTime("months", 3));
-      
-      
-      visitSchedule.add(time + Utilities.convertTime("months", 6));
-      visitSchedule.add(time + Utilities.convertTime("months", 9));
-      visitSchedule.add(time + Utilities.convertTime("months", 12));
-      
-      // yr 2
-      visitSchedule.add(time + Utilities.convertTime("months", 15));
-      visitSchedule.add(time + Utilities.convertTime("months", 18));
-      visitSchedule.add(time + Utilities.convertTime("months", 21));
-      visitSchedule.add(time + Utilities.convertTime("months", 24));
-      
-      // yr 3
-      visitSchedule.add(time + Utilities.convertTime("months", 27));
-      visitSchedule.add(time + Utilities.convertTime("months", 30));
-      visitSchedule.add(time + Utilities.convertTime("months", 33));
-      visitSchedule.add(time + Utilities.convertTime("months", 36));
-      
-      // yr 4
-      visitSchedule.add(time + Utilities.convertTime("months", 39));
-      visitSchedule.add(time + Utilities.convertTime("months", 42));
-      visitSchedule.add(time + Utilities.convertTime("months", 45));
-      visitSchedule.add(time + Utilities.convertTime("months", 48));
-      
-      person.attributes.put("htn_trial_visit_schedule", visitSchedule);
-      
-      return true;
-    }
-  }
-
-  public static class DelayUntilNextVisit extends Module {
-    public DelayUntilNextVisit() {
-      this.name = "DelayUntilNextVisit";
-      this.submodule = true;
-    }
-
-    public Module clone() {
-      return this;
-    }
-
-    @Override
-    public boolean process(Person person, long time) {
-
-      // attributes we may care about
-      // trial_arm (String, "standard"/"intensive") is input
-      // see_participant_monthly (boolean) is input
-      // milestone_visit (boolean) should be set on milestone visits
-      // milestone visit schedule needs to be clarified
-      
-      boolean seeParticipantMonthly = (boolean) person.attributes.getOrDefault("see_participant_monthly", false);
-      
-      List<Long> visitSchedule = (ArrayList<Long>)person.attributes.get("htn_trial_visit_schedule");
-      
-      
-      if (visitSchedule.isEmpty()) {
-        person.attributes.put("trial_complete", true);
-        return true;
-      }
-      
-//      System.out.println(person.seed + " waiting till next visit, curr: " + ExportHelper.iso8601Timestamp(time));
-      
-//      visitSchedule.removeIf(visit -> visit < time); // remove all visits already completed
-      
-      long nextEncounter;
-      
-      if (seeParticipantMonthly) {
-        HealthRecord.Encounter previousEncounter = null;
-        
-        for (HealthRecord.Encounter e : person.record.encounters) {
-          if (!e.codes.isEmpty() && e.codes.get(0).code.equals("1234")) {
-            // TODO: pick the right code
-            
-            // assumes that encounters are always added sequentially, which they should be
-            previousEncounter = e;
-          }
-        }
-
-        // delay 1 month since last encounter
-        nextEncounter = previousEncounter.start + Utilities.convertTime("months", 1);
-        boolean milestone = isMilestoneVisit(time, visitSchedule);
-        person.attributes.put("milestone_visit", milestone);
-        
-//        System.out.println(person.seed + "'s next visit is 1 month: " + ExportHelper.iso8601Timestamp(nextEncounter));
-
-        
-        if (milestone && time >= nextEncounter) {
-//          System.out.println(person.seed + " removing index 0");
-
-          visitSchedule.remove(0);
-          return true;
-        }
-        
-        return (time >= nextEncounter);
-        
-      } else {
-        // wait until the next milestone        
+  private static final Set<Integer> VISIT_SCHEDULE = new HashSet<>( Arrays.asList(1,2,3, 6,9,12, 15,18,21,24, 27,30,33,36, 39,42,45,48) ); 
 
   
-        
-        person.attributes.put("milestone_visit", true);
-        nextEncounter = visitSchedule.get(0);
-        
-//        System.out.println(person.seed + "'s next visit is mlestone: " + ExportHelper.iso8601Timestamp(nextEncounter));
-
-        
-        if (time >= nextEncounter) {
-//          System.out.println(person.seed + " removing index 0");
-
-          visitSchedule.remove(0); // remove the current visit once it starts
-          return true;
-        }
-        
-        return false;
-      }
-
-//      System.out.println("time: " + ExportHelper.iso8601Timestamp(time) + ", nextEncounter: " + ExportHelper.iso8601Timestamp(nextEncounter))
-      
-      // note return options here, see State$CallSubmodule
-      // if we return true, the submodule completed and processing continues to the next state
-      // if we return false, the submodule did not complete (like with a Delay) and will re-process the next timestep.
-      // so we should not always return false like in other java modules
+  public static class VisitCheck extends Module {
+    public VisitCheck() {
+      this.name = "VisitCheck";
+      this.submodule = true;
     }
-    
-    
-    public static boolean isMilestoneVisit(long time, List<Long> visitSchedule) {
-      long oneWeek = Utilities.convertTime("weeks", 1);
+
+    public Module clone() {
+      return this;
+    }
+
+    @Override
+    public boolean process(Person person, long time) {
+      int monthCount = (int)person.attributes.getOrDefault("htn_trial_month_count", 0);
+      monthCount++;
       
-      for (long visit : visitSchedule) {
-        if (Math.abs(time - visit) < oneWeek) {
-          return true;
-        }
+      if (monthCount > 48) {
+        person.attributes.put("trial_complete", true);
       }
       
-      return false;
+      boolean milepost = (monthCount % 6) == 0; // every 6 months is a milepost visit
+      boolean seeParticipantMonthly = (boolean) person.attributes.getOrDefault("see_participant_monthly", false);
+
+      boolean should_have_encounter = seeParticipantMonthly || VISIT_SCHEDULE.contains(monthCount);
+      
+      person.attributes.put("htn_trial_month_count", monthCount);
+      person.attributes.put("milepost_visit", milepost);
+      person.attributes.put("htn_trial_should_start_encounter", should_have_encounter);
+      
+      return true;
     }
   }
 }

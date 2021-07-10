@@ -14,12 +14,12 @@
     "Randomization Visit": {
       "type": "SetAttribute",
       "attribute": "trial_arm",
-      "direct_transition": "Create Visit Schedule",
+      "direct_transition": "Assign_Initial_Meds",
       "value": "intensive"
     },
     "Assign_Initial_Meds": {
       "type": "Simple",
-      "direct_transition": "Delay until next visit"
+      "direct_transition": "Delay one month"
     },
     "Encounter": {
       "type": "Encounter",
@@ -155,32 +155,9 @@
         }
       ]
     },
-    "Delay until next visit": {
-      "type": "CallSubmodule",
-      "submodule": "DelayUntilNextVisit",
-      "conditional_transition": [
-        {
-          "transition": "Terminal",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "trial_complete",
-            "operator": "==",
-            "value": true
-          }
-        },
-        {
-          "transition": "Encounter"
-        }
-      ]
-    },
     "Loop back to top": {
       "type": "EncounterEnd",
-      "direct_transition": "Delay until next visit"
-    },
-    "Create Visit Schedule": {
-      "type": "CallSubmodule",
-      "submodule": "CreateVisitSchedule",
-      "direct_transition": "Assign_Initial_Meds"
+      "direct_transition": "Delay one month"
     },
     "Check_SBP": {
       "type": "Simple",
@@ -285,6 +262,44 @@
       "attribute": "sbp_gt_120",
       "direct_transition": "Check_DBP",
       "value": false
+    },
+    "Delay one month": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Visit Check"
+    },
+    "Visit Check": {
+      "type": "CallSubmodule",
+      "submodule": "VisitCheck",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "trial_complete",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "htn_trial_should_start_encounter",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Delay one month"
+        }
+      ]
     }
   },
   "gmf_version": 2
