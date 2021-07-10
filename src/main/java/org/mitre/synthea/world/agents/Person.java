@@ -289,6 +289,38 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     return years;
   }
 
+  public String getString(String key) {
+    return getAttribute(key, String.class);
+  }
+  public String getString(String key, String defaultValue) {
+    return getAttribute(key, String.class, defaultValue);
+  }
+  
+  public boolean getBoolean(String key) {
+    return getAttribute(key, Boolean.TYPE);
+  }
+  public boolean getBoolean(String key, boolean defaultValue) {
+    return getAttribute(key, Boolean.TYPE, defaultValue);
+  }
+  
+//  public String getString(String key) {
+//    return getAttribute(key, String.class);
+//  }
+//  public String getString(String key, String defaultValue) {
+//    return getAttribute(key, String.class, defaultValue);
+//  }
+  
+  
+  @SuppressWarnings("unchecked")
+  public <T> T getAttribute(String key, Class<T> type) {
+    return (T) attributes.get(key);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public <T> T getAttribute(String key, Class<T> type, T defaultValue) {
+    return (T) attributes.getOrDefault(key, defaultValue);
+  }
+  
   /**
    * Returns whether a person is alive at the given time.
    */
