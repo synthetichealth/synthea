@@ -32,7 +32,7 @@
     },
     "Assign initial meds": {
       "type": "Simple",
-      "direct_transition": "Delay one month"
+      "direct_transition": "Recommend_Diet_and_Exercise"
     },
     "Titrate or add therapy": {
       "type": "CallSubmodule",
@@ -474,6 +474,17 @@
           "transition": "Delay one month"
         }
       ]
+    },
+    "Recommend_Diet_and_Exercise": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 1151000175103,
+          "display": "Dietary Approaches to Stop Hypertension diet (regime/therapy)"
+        }
+      ],
+      "direct_transition": "Delay one month"
     }
   },
   "gmf_version": 2

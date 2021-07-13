@@ -6,29 +6,51 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 
 import org.mitre.synthea.engine.Components.Range;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.Module.ModuleSupplier;
-import org.mitre.synthea.export.ExportHelper;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.VitalSign;
-import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 public class HypertensionTrial {
 
   public static void registerModules(Map<String, ModuleSupplier> modules) {
-    modules.put("ChooseNextTherapy", new ModuleSupplier(new ChooseNextTherapy()));
-    modules.put("VisitCheck", new ModuleSupplier(new VisitCheck()));
-    modules.put("StepDownTherapy", new ModuleSupplier(new StepDownTherapy()));
+   new WrappedFunctionModule("ChooseNextTherapy", HypertensionTrial::chooseNextTherapy).register(modules);
+   new WrappedFunctionModule("VisitCheck", HypertensionTrial::visitCheck).register(modules);
+   new WrappedFunctionModule("StepDownTherapy", HypertensionTrial::stepDownTherapy).register(modules);
+  }
+  
+  public static class WrappedFunctionModule extends Module {
+    private static final long serialVersionUID = -5448385841737112663L;
+    private BiConsumer<Person, Long> processFunction;
+    public WrappedFunctionModule(String name, BiConsumer<Person,Long> processFunction) {
+      this.name = name;
+      this.processFunction = processFunction;
+      this.submodule = true;
+    }
+    
+    public Module clone() {
+      return this;
+    }
+    
+    @Override
+    public boolean process(Person person, long time) {
+      this.processFunction.accept(person, time);
+      return true;
+    }
+    
+    public void register(Map<String, ModuleSupplier> modules) {
+      modules.put(this.name, new ModuleSupplier(this));
+    }
   }
   
   public static class Drug {
@@ -171,7 +193,7 @@ public class HypertensionTrial {
       return nonPrescribableTherapyToEnd;
     }
     
-    boolean hypertension = (boolean) person.attributes.getOrDefault("hypertension", false);
+    boolean hypertension = person.getBoolean("hypertension", false);
     
     if (hypertension) {
       System.err.println("patient with hypertension has low BP but not on any meds?");
@@ -179,7 +201,7 @@ public class HypertensionTrial {
     return null;
   }
   
-  public static Drug findNonTitratedDrug(Person person, TitrationDirection direction) {
+  public static Drug findTitratableDrug(Person person, TitrationDirection direction) {
     Drug nonTitratedDrug = null;
     
     for (Set<Drug> drugClass : HTN_TRIAL_FORMULARY.values()) {
@@ -246,174 +268,166 @@ public class HypertensionTrial {
   public static final String TITRATE = "titrate";
   public static final String SKIP = "skip";
   
-  public static class ChooseNextTherapy extends Module {
-    public ChooseNextTherapy() {
-      this.name = "ChooseNextTherapy";
-      this.submodule = true;
-    }
 
-    public Module clone() {
-      return this;
-    }
-
-
+  public static final double TITRATION_RATIO = 1; // always titrate every time rather than adding new class
     
-    public static final double TITRATION_RATIO = 0.7; // 70% of the time, titrate every time rather than adding new class
+  public static void chooseNextTherapy(Person person, long time) {      
+    // output: 
+    // htn_trial_next_action = "titrate" or "add_therapy"
+    // htn_trial_next_action_code = code for titrating or adding
     
-    @Override
-    public boolean process(Person person, long time) {      
-      // output: 
-      // htn_trial_next_action = "titrate" or "add_therapy"
-      // htn_trial_next_action_code = code for titrating or adding
-      
-    	
-      // note: some repetition of logic here from what's in the module
-      // there may be opportunities to de-dup, but I like having the detail in the module
-      
-      String trialArm = (String)person.attributes.get("trial_arm");
-      boolean milepost = (boolean) person.attributes.getOrDefault("milepost_visit", false);
-      
-      double sbp = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time);
-      double dbp = person.getVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, time);
-     
-      boolean dbpGte90 = (boolean)person.attributes.getOrDefault("dbp_gte_90", false);
-      boolean sbpGte140 = (boolean)person.attributes.getOrDefault("sbp_gte_140", false);
-      boolean sbpLt135 = (boolean)person.attributes.getOrDefault("sbp_lt_135", false);
-      boolean sbpGt120 = (boolean)person.attributes.getOrDefault("sbp_gt_120", false);
-      
-      AtomicInteger titrationCounter = (AtomicInteger)person.attributes.get("titration_counter");
-      if (titrationCounter == null) {
-        titrationCounter = new AtomicInteger(0);
-        person.attributes.put("titration_counter", titrationCounter);
-      }
-      
-      int drugCount = countDrugs(person);
-      
-      String nextAction;
-      Drug nextActionCode = null;
-      
-      if (trialArm.equals("intensive")) {
-        if (sbp >= 120) {
-          
-          if (sbp <= 125 && !sbpGt120) {
-            nextAction = SKIP;
-          } else if (milepost) {
-            // Add therapy not in use
-            // see participant monthly, handled in module
-            nextAction = ADD_THERAPY;
-            person.attributes.put("sbp_gt_120", true);
-          } else {
-            // Titrate or add therapy not in use
-            // see participant monthly, handled in module
-            
-            if (drugCount == titrationCounter.get() || person.rand() > TITRATION_RATIO) {
-              nextAction = ADD_THERAPY;
-            } else {
-              nextAction = TITRATE;
-            }
-            person.attributes.put("sbp_gt_120", true);
-
-          }
-        } else if (dbp >= 100 || (dbp >= 90 && dbpGte90)) {
-          // titrate or add therapy not in use
-          
-          if (drugCount == titrationCounter.get() || person.rand() > TITRATION_RATIO) {
-            nextAction = ADD_THERAPY;
-          } else {
-            nextAction = TITRATE;
-          }
-          person.attributes.put("sbp_gt_120", false);
-
-        } else {
-          // why did the module get called?
-          throw new IllegalStateException("ChooseNextTherapy module called for patient that doesn't need it!");
-        }
-      } else {
-        if (sbp >= 160 || (sbp >= 140 && sbpGte140)) {
-          // titrate or add therapy not in use
-          // schedule 1 month visit, not currently implemented
-          
-          if (drugCount == titrationCounter.get() || person.rand() > TITRATION_RATIO) {
-            nextAction = ADD_THERAPY;
-          } else {
-            nextAction = TITRATE;
-          }
-          
-        } else if (dbp >= 100 || (dbp >= 90 && dbpGte90)) {
-          // titrate or add therapy not in use
-          
-          if (drugCount == titrationCounter.get() || person.rand() > TITRATION_RATIO) {
-            nextAction = ADD_THERAPY;
-          } else {
-            nextAction = TITRATE;
-          }
-          
-        } else if (sbp < 130 || (sbp < 135 && sbpLt135)) {
-          // step down
-          throw new IllegalStateException("ChooseNextTherapy module called for patient that needs StepDown");
-        } else {
-          // why did the module get called at all?
-          throw new IllegalStateException("ChooseNextTherapy module called for patient that doesn't need it!");
-        }
-      }
-      
-      if (nextAction == ADD_THERAPY) {
-        nextActionCode = findTherapyNotInUse(person);
-
-     // TEMPORARY - add the medication here for quick debugging
-        
-        HealthRecord.Medication temp = person.record.medicationStart(time, nextActionCode.code.code, false);
-        temp.codes.add(nextActionCode.code);
-        
-        
-      } else if (nextAction == TITRATE) {
-        nextActionCode = findNonTitratedDrug(person, TitrationDirection.UP);
-        markTitrated(nextActionCode, person, TitrationDirection.UP);
-        titrationCounter.incrementAndGet();
-
-      } else if (nextAction != SKIP){
-        throw new IllegalStateException("nextAction set to something unexpected");
-      }
-      
- 
-      
-      person.attributes.put("htn_trial_next_action", nextAction);
-      if (nextAction != SKIP)
-        person.attributes.put("htn_trial_next_action_code", nextActionCode.code);
-      
-      return true; // submodule is complete
-    }
+  	
+    // note: some repetition of logic here from what's in the module
+    // there may be opportunities to de-dup, but I like having the detail in the module
+    
+    String trialArm = person.getString("trial_arm");
+    boolean milepost = person.getBoolean("milepost_visit", false);
+    
+    double sbp = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time);
+    double dbp = person.getVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE, time);
    
-  }
-  
-  
-  public static class StepDownTherapy extends Module {
-    public StepDownTherapy() {
-      this.name = "StepDownTherapy";
-      this.submodule = true;
+    boolean dbpGte90 = person.getBoolean("dbp_gte_90", false);
+    boolean sbpGte140 = person.getBoolean("sbp_gte_140", false);
+    boolean sbpLt135 = person.getBoolean("sbp_lt_135", false);
+    boolean sbpGt120 = person.getBoolean("sbp_gt_120", false);
+    
+    AtomicInteger titrationCounter = (AtomicInteger)person.attributes.get("titration_counter");
+    if (titrationCounter == null) {
+      titrationCounter = new AtomicInteger(0);
+      person.attributes.put("titration_counter", titrationCounter);
     }
+    
+    int drugCount = countDrugs(person);
+    
+    String nextAction;
+    Drug nextActionCode = null;
+    
+    if (trialArm.equals("intensive")) {
+      if (sbp >= 120) {
+        
+        if (sbp <= 125 && !sbpGt120) {
+          nextAction = SKIP;
+        } else if (milepost) {
+          // Add therapy not in use
+          // see participant monthly, handled in module
+          nextAction = ADD_THERAPY;
+          person.attributes.put("sbp_gt_120", true);
+        } else {
+          // Titrate or add therapy not in use
+          // see participant monthly, handled in module
+          
+          if (drugCount == titrationCounter.get() || person.rand() > TITRATION_RATIO) {
+            nextAction = ADD_THERAPY;
+          } else {
+            nextAction = TITRATE;
+          }
+          person.attributes.put("sbp_gt_120", true);
 
-    public Module clone() {
-      return this;
+        }
+      } else if (dbp >= 100 || (dbp >= 90 && dbpGte90)) {
+        // titrate or add therapy not in use
+        
+        if (drugCount == titrationCounter.get() || person.rand() > TITRATION_RATIO) {
+          nextAction = ADD_THERAPY;
+        } else {
+          nextAction = TITRATE;
+        }
+        person.attributes.put("sbp_gt_120", false);
+
+      } else {
+        // why did the module get called?
+        throw new IllegalStateException("ChooseNextTherapy module called for patient that doesn't need it!");
+      }
+    } else {
+      if (sbp >= 160 || (sbp >= 140 && sbpGte140)) {
+        // titrate or add therapy not in use
+        // schedule 1 month visit, not currently implemented
+        
+        if (drugCount == titrationCounter.get() || person.rand() > TITRATION_RATIO) {
+          nextAction = ADD_THERAPY;
+        } else {
+          nextAction = TITRATE;
+        }
+        
+      } else if (dbp >= 100 || (dbp >= 90 && dbpGte90)) {
+        // titrate or add therapy not in use
+        
+        if (drugCount == titrationCounter.get() || person.rand() > TITRATION_RATIO) {
+          nextAction = ADD_THERAPY;
+        } else {
+          nextAction = TITRATE;
+        }
+        
+      } else if (sbp < 130 || (sbp < 135 && sbpLt135)) {
+        // step down
+        throw new IllegalStateException("ChooseNextTherapy module called for patient that needs StepDown");
+      } else {
+        // why did the module get called at all?
+        throw new IllegalStateException("ChooseNextTherapy module called for patient that doesn't need it!");
+      }
     }
     
+    if (nextAction == ADD_THERAPY) {
+      nextActionCode = findTherapyNotInUse(person);
+
+   // TEMPORARY - add the medication here for quick debugging
+      
+      HealthRecord.Medication temp = person.record.medicationStart(time, nextActionCode.code.code, false);
+      temp.codes.add(nextActionCode.code);
+      
+      
+    } else if (nextAction == TITRATE) {
+      nextActionCode = findTitratableDrug(person, TitrationDirection.UP);
+      markTitrated(nextActionCode, person, TitrationDirection.UP);
+      titrationCounter.incrementAndGet();
+
+    } else if (nextAction != SKIP) {
+      throw new IllegalStateException("nextAction set to something unexpected: " + nextAction);
+    }
     
-    public boolean process(Person person, long time) {
-      double sbp = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time);
-     
-      boolean sbpLt135 = (boolean)person.attributes.getOrDefault("sbp_lt_135", false);
+    person.attributes.put("htn_trial_next_action", nextAction);
+    if (nextAction != SKIP) {
+      person.attributes.put("htn_trial_next_action_code", nextActionCode.code);
+    }
+  }
+   
+  public static void stepDownTherapy(Person person, long time) {
+    double sbp = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time);
+    String trialArm = person.getString("trial_arm");
+    
+    if (trialArm.equals("intensive")) {
+      if (sbp < 114 || person.rand() < 0.03) {
+        // titrate down if BP is low, or randomly
+        AtomicInteger titrationCounter = (AtomicInteger)person.attributes.get("titration_counter");
+  
+        Drug drugToToTitrateDown = findTitratableDrug(person, TitrationDirection.DOWN);
+        if (drugToToTitrateDown == null) {
+          person.attributes.put("htn_trial_next_action", SKIP);
+          person.attributes.remove("htn_trial_next_action_code");
+        } else {
+          if (isTitrated(drugToToTitrateDown, person, TitrationDirection.UP)) {
+            titrationCounter.decrementAndGet();
+          }
+          
+          markTitrated(drugToToTitrateDown, person, TitrationDirection.DOWN);
+          person.attributes.put("htn_trial_next_action", TITRATE);
+          person.attributes.put("htn_trial_next_action_code", drugToToTitrateDown.code);
+        }
+      }
+    } else {
+      boolean sbpLt135 = person.getBoolean("sbp_lt_135", false);
       
       if (sbp < 130 || (sbp < 135 && sbpLt135)) {
         AtomicInteger titrationCounter = (AtomicInteger)person.attributes.get("titration_counter");
 
-        Drug drugToToTitrateDown = findNonTitratedDrug(person, TitrationDirection.DOWN);
+        Drug drugToToTitrateDown = findTitratableDrug(person, TitrationDirection.DOWN);
         if (drugToToTitrateDown == null) {
           Drug drugToEnd = findTherapyToEnd(person);
           
           if (drugToEnd == null) {
             person.attributes.remove("htn_trial_next_action");
             person.attributes.remove("htn_trial_next_action_code");
-            return true;
+            return;
           }
           
           if (isTitrated(drugToEnd, person, TitrationDirection.UP)) {
@@ -424,7 +438,6 @@ public class HypertensionTrial {
           person.attributes.put("htn_trial_next_action", "end drug");
           person.attributes.put("htn_trial_next_action_code", medToEnd);
         } else {
-          
           if (isTitrated(drugToToTitrateDown, person, TitrationDirection.UP)) {
             titrationCounter.decrementAndGet();
           }
@@ -433,45 +446,31 @@ public class HypertensionTrial {
           person.attributes.put("htn_trial_next_action", TITRATE);
           person.attributes.put("htn_trial_next_action_code", drugToToTitrateDown.code);
         }
-        return true;
       } else {
         throw new IllegalStateException("stepdown called for patient that doesn't need it");
       }
     }
   }
   
+ 
   private static final Set<Integer> VISIT_SCHEDULE = new HashSet<>( Arrays.asList(1,2,3, 6,9,12, 15,18,21,24, 27,30,33,36, 39,42,45,48) ); 
 
-  
-  public static class VisitCheck extends Module {
-    public VisitCheck() {
-      this.name = "VisitCheck";
-      this.submodule = true;
+  public static void visitCheck(Person person, long time) {
+    int monthCount = (int)person.attributes.getOrDefault("htn_trial_month_count", 0);
+    monthCount++;
+    
+    if (monthCount > 48) {
+      person.attributes.put("trial_complete", true);
+      return;
     }
+    
+    boolean milepost = (monthCount % 6) == 0; // every 6 months is a milepost visit
+    boolean seeParticipantMonthly = person.getBoolean("see_participant_monthly", false);
 
-    public Module clone() {
-      return this;
-    }
-
-    @Override
-    public boolean process(Person person, long time) {
-      int monthCount = (int)person.attributes.getOrDefault("htn_trial_month_count", 0);
-      monthCount++;
-      
-      if (monthCount > 48) {
-        person.attributes.put("trial_complete", true);
-      }
-      
-      boolean milepost = (monthCount % 6) == 0; // every 6 months is a milepost visit
-      boolean seeParticipantMonthly = (boolean) person.attributes.getOrDefault("see_participant_monthly", false);
-
-      boolean should_have_encounter = seeParticipantMonthly || VISIT_SCHEDULE.contains(monthCount);
-      
-      person.attributes.put("htn_trial_month_count", monthCount);
-      person.attributes.put("milepost_visit", milepost);
-      person.attributes.put("htn_trial_should_start_encounter", should_have_encounter);
-      
-      return true;
-    }
+    boolean should_have_encounter = seeParticipantMonthly || VISIT_SCHEDULE.contains(monthCount);
+    
+    person.attributes.put("htn_trial_month_count", monthCount);
+    person.attributes.put("milepost_visit", milepost);
+    person.attributes.put("htn_trial_should_start_encounter", should_have_encounter);
   }
 }

@@ -19,7 +19,7 @@
     },
     "Assign_Initial_Meds": {
       "type": "Simple",
-      "direct_transition": "Delay one month"
+      "direct_transition": "Recommend_Diet_and_Exercise"
     },
     "Encounter": {
       "type": "Encounter",
@@ -94,7 +94,7 @@
       "type": "SetAttribute",
       "attribute": "dbp_gte_90",
       "value": false,
-      "direct_transition": "Loop back to top"
+      "direct_transition": "Consider_Downtitrate"
     },
     "Set_DBP_90_flag": {
       "type": "SetAttribute",
@@ -299,6 +299,82 @@
         {
           "transition": "Delay one month"
         }
+      ]
+    },
+    "Recommend_Diet_and_Exercise": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 1151000175103,
+          "display": "Dietary Approaches to Stop Hypertension diet (regime/therapy)"
+        }
+      ],
+      "direct_transition": "Delay one month"
+    },
+    "Down_Titrate": {
+      "type": "MultiObservation",
+      "category": "therapy",
+      "number_of_observations": 0,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "70006-2",
+          "display": "Medication management note"
+        }
+      ],
+      "observations": [
+        {
+          "category": "therapy",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "93341-6",
+              "display": "Medication recommendation"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 182879007,
+            "display": "Medication decreased (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "18816-9",
+              "display": "Medication name + identifier"
+            }
+          ],
+          "attribute": "htn_trial_next_action_code"
+        }
+      ],
+      "direct_transition": "Loop back to top"
+    },
+    "Consider_Downtitrate": {
+      "type": "CallSubmodule",
+      "submodule": "StepDownTherapy",
+      "conditional_transition": [
+        {
+          "transition": "Down_Titrate",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "htn_trial_next_action",
+            "operator": "==",
+            "value": "titrate"
+          }
+        },
+        {
+          "transition": "Loop back to top"
+        }
+      ],
+      "remarks": [
+        "Titrate down if BP is too low, or randomly, to imply side effects",
+        ""
       ]
     }
   },

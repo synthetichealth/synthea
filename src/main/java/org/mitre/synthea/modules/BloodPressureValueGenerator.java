@@ -5,9 +5,11 @@ import java.util.Map;
 
 import org.mitre.synthea.engine.Components.Range;
 import org.mitre.synthea.helpers.TrendingValueGenerator;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
+import org.mitre.synthea.world.concepts.HealthRecord;
 
 /**
  * Generate realistic blood pressure vital signs. 
@@ -51,7 +53,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
 
     double value = calculateMean(person, null, 0, time);
     
-    cachedValue = value + getMedicationImpacts(person, time);
+    cachedValue = value + getMedicationImpacts(person, time) + getLifestyleImpacts(person, value, time);
     cacheTime = time;
     return cachedValue;
   }
@@ -123,6 +125,64 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     return baseline;
   }
   
+  private static final long ONE_YEAR = Utilities.convertTime("years", 1);
+  
+  private double getLifestyleImpacts(Person person, double baseline, long time) {
+    // if the person has a "blood pressure care plan"
+    // assume that over ~1 year their blood pressure will be reduced by ~14 mmHg
+    // with most of that happening in the first 6 mos
+    
+    double maxDrop;
+    if (this.sysDias == SysDias.SYSTOLIC) {
+      // don't allow diet/exercise alone to drop below 124
+      double delta = Math.abs(baseline - 124);
+      maxDrop = -Math.min(delta, 14.0);
+    } else {
+      // don't allow diet/exercise alone to drop below 78
+      double delta = Math.abs(baseline - 78);
+      maxDrop = -Math.min(delta, 8.0);
+    }
+    
+    HealthRecord.CarePlan careplan = (HealthRecord.CarePlan) person.record.present.get("1151000175103");
+    if (careplan != null && careplan.stop == 0L) { // technically we should check if start <= time <= stop but oh well
+            
+      boolean carePlanAdherent;
+      if (person.attributes.containsKey("htn_trial_lifestyle_careplan_adherent")) {
+        carePlanAdherent = person.getBoolean("htn_trial_lifestyle_careplan_adherent");
+      } else {
+        String trialArm = person.getString("trial_arm");
+        double adherenceRatio;
+        
+        if (trialArm.equals("intensive")) {
+          adherenceRatio = 0.6;
+        } else {
+          adherenceRatio = 0.3;
+        }
+        carePlanAdherent = person.rand() < adherenceRatio;
+        person.attributes.put("htn_trial_lifestyle_careplan_adherent", carePlanAdherent);
+      }
+      if (carePlanAdherent) {
+        long start = careplan.start;
+        
+        if (time > (start + ONE_YEAR)) {
+          // max value
+          return maxDrop;
+        } else if (time < start) {
+          return 0.0;
+        }
+        
+        // dy / dx = -14/1 = -14
+        // y = (dy/dx) * x
+        // x = (time - start) / 1 yr
+        
+        double x = ((double)(time - start) / ((double)ONE_YEAR));
+        
+        return x * maxDrop;
+      }
+    }
+    
+    return 0.0;
+  }
   
   private double getMedicationImpacts(Person person, long time) {
     double drugImpactDelta = 0.0;
