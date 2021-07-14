@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.awt.geom.Point2D;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -2146,14 +2147,14 @@ public class FhirR4 {
   /**
    * Map the given Report to a FHIR DiagnosticReport resource, and add it to the given Bundle.
    *
-   * @param rand           Source of randomness to use when generating ids etc
+   * @param person         Source of randomness to use when generating ids etc
    * @param personEntry    The Entry for the Person
    * @param bundle         Bundle to add the Report to
    * @param encounterEntry Current Encounter entry
    * @param report         The Report
    * @return The added Entry
    */
-  private static BundleEntryComponent report(RandomNumberGenerator rand,
+  private static BundleEntryComponent report(Person person,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           Report report) {
     DiagnosticReport reportResource = new DiagnosticReport();
@@ -2179,8 +2180,14 @@ public class FhirR4 {
       reference.setDisplay(observation.codes.get(0).display);
       reportResource.addResult(reference);
     }
+    if (report.reportPath != null) {
+      File fhirOutDir = Exporter.getOutputFolder("fhir", person);
+      reportResource.addPresentedForm()
+        .setUrl(fhirOutDir.toPath().relativize(report.reportPath).toString())
+        .setContentType(report.reportMediaType);
+    }
 
-    return newEntry(rand, bundle, reportResource);
+    return newEntry(person, bundle, reportResource);
   }
 
   /**

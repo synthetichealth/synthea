@@ -10,6 +10,7 @@ import java.io.Serializable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -205,6 +206,8 @@ public class HealthRecord implements Serializable {
 
   public class Report extends Entry {
     public List<Observation> observations;
+    public Path reportPath;
+    public String reportMediaType;
 
     /**
      * Constructor for Report HealthRecord Entry.
