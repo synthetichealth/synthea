@@ -1574,21 +1574,9 @@
       "direct_transition": "Wait 12 hours"
     },
     "ECG": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 29303009,
-          "display": "Electrocardiographic procedure"
-        }
-      ],
-      "duration": {
-        "low": 5,
-        "high": 10,
-        "unit": "minutes"
-      },
-      "direct_transition": "ECG_Data",
-      "reason": "chf"
+      "type": "CallSubmodule",
+      "submodule": "heart/ecg",
+      "direct_transition": "ECG_Data"
     },
     "ECG_Data": {
       "type": "Simple",
@@ -1725,20 +1713,8 @@
       "direct_transition": "Inpatient daily routine"
     },
     "Inpatient_ECG": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 29303009,
-          "display": "Electrocardiographic procedure"
-        }
-      ],
-      "duration": {
-        "low": 5,
-        "high": 10,
-        "unit": "minutes"
-      },
-      "reason": "chf",
+      "type": "CallSubmodule",
+      "submodule": "heart/ecg",
       "distributed_transition": [
         {
           "transition": "Inpatient_Echocardiography",
