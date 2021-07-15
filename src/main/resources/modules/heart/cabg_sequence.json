@@ -161,7 +161,8 @@
     },
     "Deceased": {
       "type": "Death",
-      "direct_transition": "Terminal"
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "cardiac_surgery_reason"
     },
     "End Operation Encounter": {
       "type": "EncounterEnd",
