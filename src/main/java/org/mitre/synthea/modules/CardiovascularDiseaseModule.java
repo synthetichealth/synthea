@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Utilities;
@@ -808,6 +809,29 @@ public final class CardiovascularDiseaseModule extends Module {
     }
   }
 
+  private static void callECGSubmodule(Person person, long time) {
+    // this is inspiried by the CallSubmodule state but ignoring module history
+    // (because the CVD module doesn't have history)
+    // and recognizing the the module always completes
+    // e.g. "submodule": "medications/otc_antihistamine"
+    Module submod = Module.getModuleByPath("heart/ecg");
+    Encounter encounter = (Encounter) person.attributes.get(CVD_ENCOUNTER);
+    if (encounter != null) {
+      person.setCurrentEncounter(submod, encounter);
+    }
+    submod.process(person, time);
+    
+    // it stopped at the ECG procedure state because it takes 5-10 mins
+    // so we cheat and advance time a little here  to get the rest
+    State.Procedure ecgProcedure = (State.Procedure)person.history.get(0);
+    long ecgProcedureStopTime = ecgProcedure.endOfDelay(time, person);
+    submod.process(person, ecgProcedureStopTime);
+    
+    // clear the submodule history
+    person.attributes.remove(submod.name);
+  }
+
+
   /**
    * Perform an emergency cardiovascular disease encounter.
    * @param person The patient.
@@ -833,6 +857,12 @@ public final class CardiovascularDiseaseModule extends Module {
     procedure.name = "Echocardiogram";
     procedure.codes.add(LOOKUP.get("echocardiogram"));
     procedure.reasons.add(LOOKUP.get(diagnosis));
+
+    if (diagnosis.equals("cardiac_arrest")) {
+      person.attributes.put("ecg_finding", "cardiac_arrest");
+      callECGSubmodule(person, time);
+    }
+    // diagnosis could also be stroke or myocardial infarction
 
     for (String proc : EMERGENCY_PROCEDURES.get(diagnosis)) {
       procedure = person.record.procedure(time, proc);
