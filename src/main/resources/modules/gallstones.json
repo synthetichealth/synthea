@@ -1141,12 +1141,21 @@
           "display": "Physical findings of Abdomen by Palpation"
         }
       ],
-      "direct_transition": "ECG",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 53566005,
         "display": "Positive Murphy's Sign"
-      }
+      },
+      "distributed_transition": [
+        {
+          "transition": "Set_ECG_Finding_Normal",
+          "distribution": 0.85
+        },
+        {
+          "transition": "Set_ECG_Finding_Sinus_Tachycardia",
+          "distribution": 0.15
+        }
+      ]
     },
     "Chole_Symptom4_Ends": {
       "type": "Symptom",
@@ -1295,6 +1304,18 @@
       "type": "MedicationEnd",
       "direct_transition": "Complete_Blood_Count",
       "medication_order": "Antiemetic"
+    },
+    "Set_ECG_Finding_Normal": {
+      "type": "SetAttribute",
+      "attribute": "ecg_finding",
+      "direct_transition": "ECG",
+      "value": "normal"
+    },
+    "Set_ECG_Finding_Sinus_Tachycardia": {
+      "type": "SetAttribute",
+      "attribute": "ecg_finding",
+      "direct_transition": "ECG",
+      "value": "sinus_tachycardia"
     }
   },
   "gmf_version": 1

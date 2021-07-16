@@ -22,7 +22,65 @@
         "high": 10,
         "unit": "minutes"
       },
-      "direct_transition": "ECG_Sim"
+      "conditional_transition": [
+        {
+          "transition": "ECG_Sim",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ecg_finding",
+            "operator": "==",
+            "value": "normal"
+          }
+        },
+        {
+          "transition": "ECG_Sim_LVH",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ecg_finding",
+            "operator": "==",
+            "value": "lvh"
+          }
+        },
+        {
+          "transition": "ECG_Sim_Sinus_Tachycardia",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ecg_finding",
+            "operator": "==",
+            "value": "sinus_tachycardia"
+          }
+        },
+        {
+          "transition": "ECG_Sim_Long_QT",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ecg_finding",
+            "operator": "==",
+            "value": "long_qt"
+          }
+        },
+        {
+          "transition": "ECG_Sim_Nonspecific_ST",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ecg_finding",
+            "operator": "==",
+            "value": "nonspecific_st"
+          }
+        },
+        {
+          "transition": "ECG_Sim_Cardiac_Arrest",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ecg_finding",
+            "operator": "==",
+            "value": "cardiac_arrest"
+          }
+        },
+        {
+          "transition": "ECG_Sim"
+        }
+      ]
     },
     "ECG_Sim": {
       "type": "Physiology",
@@ -45,7 +103,182 @@
         }
       ],
       "direct_transition": "ECG_Data",
-      "alt_direct_transition": "Gall_Bladder_Imaging"
+      "alt_direct_transition": "Terminal"
+    },
+    "ECG_Sim_LVH": {
+      "type": "Physiology",
+      "model": "circulation/McSharry2003_Synthetic_ECG.xml",
+      "solver": "runge_kutta",
+      "step_size": 0.01,
+      "sim_duration": 4,
+      "lead_time": 0,
+      "remarks": [
+        "basically just increase the amplitude of Q,R,S?"
+      ],
+      "inputs": [
+        {
+          "from_exp": "#{BMI} * 0.497 + 56.15",
+          "to": "hrmean"
+        },
+        {
+          "from_exp": "-7.0",
+          "to": "ai_Q"
+        },
+        {
+          "from_exp": "36.0",
+          "to": "ai_R"
+        },
+        {
+          "from_exp": "-10.0",
+          "to": "ai_S"
+        }
+      ],
+      "outputs": [
+        {
+          "from_list": "zf",
+          "to": "ecg_result",
+          "type": "Attribute"
+        }
+      ],
+      "direct_transition": "ECG_Data",
+      "alt_direct_transition": "Terminal"
+    },
+    "ECG_Sim_Sinus_Tachycardia": {
+      "type": "Physiology",
+      "model": "circulation/McSharry2003_Synthetic_ECG.xml",
+      "solver": "runge_kutta",
+      "step_size": 0.01,
+      "sim_duration": 4,
+      "lead_time": 0,
+      "remarks": [
+        "use a fixed heart rate of 120 for now. ideally it would be something like rand(100, 220-#{age})",
+        "but there doesn't seem to be a way to do random in CQL"
+      ],
+      "inputs": [
+        {
+          "from_exp": "120.0",
+          "to": "hrmean"
+        }
+      ],
+      "outputs": [
+        {
+          "from_list": "zf",
+          "to": "ecg_result",
+          "type": "Attribute"
+        }
+      ],
+      "direct_transition": "ECG_Data",
+      "alt_direct_transition": "Terminal"
+    },
+    "ECG_Sim_Long_QT": {
+      "type": "Physiology",
+      "model": "circulation/McSharry2003_Synthetic_ECG.xml",
+      "solver": "runge_kutta",
+      "step_size": 0.01,
+      "sim_duration": 4,
+      "lead_time": 0,
+      "remarks": [
+        "basically just increase theta for T?"
+      ],
+      "inputs": [
+        {
+          "from_exp": "#{BMI} * 0.497 + 56.15",
+          "to": "hrmean"
+        },
+        {
+          "from_exp": "150.0",
+          "to": "ti_T"
+        }
+      ],
+      "outputs": [
+        {
+          "from_list": "zf",
+          "to": "ecg_result",
+          "type": "Attribute"
+        }
+      ],
+      "direct_transition": "ECG_Data",
+      "alt_direct_transition": "Terminal"
+    },
+    "ECG_Sim_Nonspecific_ST": {
+      "type": "Physiology",
+      "model": "circulation/McSharry2003_Synthetic_ECG.xml",
+      "solver": "runge_kutta",
+      "step_size": 0.01,
+      "sim_duration": 4,
+      "lead_time": 0,
+      "remarks": [
+        "basically just reduce amplitude for T?"
+      ],
+      "inputs": [
+        {
+          "from_exp": "#{BMI} * 0.497 + 56.15",
+          "to": "hrmean"
+        },
+        {
+          "from_exp": "0.25",
+          "to": "ai_T"
+        }
+      ],
+      "outputs": [
+        {
+          "from_list": "zf",
+          "to": "ecg_result",
+          "type": "Attribute"
+        }
+      ],
+      "direct_transition": "ECG_Data",
+      "alt_direct_transition": "Terminal"
+    },
+    "ECG_Sim_Cardiac_Arrest": {
+      "type": "Physiology",
+      "model": "circulation/McSharry2003_Synthetic_ECG.xml",
+      "solver": "runge_kutta",
+      "step_size": 0.01,
+      "sim_duration": 4,
+      "lead_time": 0,
+      "remarks": [
+        "basically just reduce amplitude for all to 0, with initial z = 0"
+      ],
+      "inputs": [
+        {
+          "from_exp": "#{BMI} * 0.497 + 56.15",
+          "to": "hrmean"
+        },
+        {
+          "from_exp": "0.0",
+          "to": "z"
+        },
+        {
+          "from_exp": "0.0",
+          "to": "ai_P"
+        },
+        {
+          "from_exp": "0.0",
+          "to": "ai_Q"
+        },
+        {
+          "from_exp": "0.0",
+          "to": "ai_R"
+        },
+        {
+          "from_exp": "0.0",
+          "to": "ai_S"
+        },
+        {
+          "from_exp": "0.0",
+          "to": "ai_T"
+        }
+      ],
+      "outputs": [
+        {
+          "from_list": "zf",
+          "to": "ecg_result",
+          "type": "Attribute"
+        }
+      ],
+      "direct_transition": "ECG_Data",
+      "alt_direct_transition": "Terminal"
     },
     "ECG_Data": {
       "type": "Observation",
@@ -95,6 +328,11 @@
     "Clear_ECG_result": {
       "type": "SetAttribute",
       "attribute": "ecg_result",
+      "direct_transition": "Clear_ECG_finding"
+    },
+    "Clear_ECG_finding": {
+      "type": "SetAttribute",
+      "attribute": "ecg_finding",
       "direct_transition": "Terminal"
     },
     "Terminal": {

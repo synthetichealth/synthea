@@ -916,7 +916,38 @@
     "Initial Lab Work": {
       "type": "CallSubmodule",
       "submodule": "heart/chf_lab_work",
-      "direct_transition": "ECG"
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf_type",
+            "operator": "==",
+            "value": "HFrEF"
+          },
+          "distributions": [
+            {
+              "transition": "Set_ECG_Finding_LVH",
+              "distribution": 0.33
+            },
+            {
+              "transition": "Set_ECG_Finding_Long_QT",
+              "distribution": 0.33
+            },
+            {
+              "transition": "Set_ECG_Finding_Nonspecific_ST",
+              "distribution": 0.33999999999999997
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Set_ECG_Finding_Normal",
+              "distribution": 1
+            }
+          ]
+        }
+      ]
     },
     "Initial Encounter End": {
       "type": "EncounterEnd",
@@ -1752,7 +1783,32 @@
           "display": "Medication Reconciliation (procedure)"
         }
       ],
-      "direct_transition": "Inpatient_ECG"
+      "conditional_transition": [
+        {
+          "transition": "Set_Inpatient_ECG_Finding_LVH",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Set_ECG_Finding_LVH"
+          }
+        },
+        {
+          "transition": "Set_Inpatient_ECG_Finding_Long_QT",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Set_ECG_Finding_Long_QT"
+          }
+        },
+        {
+          "transition": "Set_Inpatient_ECG_Finding_Nonspecific_ST",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Set_ECG_Finding_Nonspecific_ST"
+          }
+        },
+        {
+          "transition": "Set_Inpatient_ECG_Finding_Nonspecific_ST"
+        }
+      ]
     },
     "Heart Failure Education": {
       "type": "Procedure",
@@ -1825,6 +1881,48 @@
       },
       "referenced_by_attribute": "chf",
       "direct_transition": "Terminal"
+    },
+    "Set_ECG_Finding_Normal": {
+      "type": "SetAttribute",
+      "attribute": "ecg_finding",
+      "direct_transition": "ECG",
+      "value": "normal"
+    },
+    "Set_ECG_Finding_LVH": {
+      "type": "SetAttribute",
+      "attribute": "ecg_finding",
+      "direct_transition": "ECG",
+      "value": "lvh"
+    },
+    "Set_ECG_Finding_Nonspecific_ST": {
+      "type": "SetAttribute",
+      "attribute": "ecg_finding",
+      "direct_transition": "ECG",
+      "value": "nonspecific_st"
+    },
+    "Set_ECG_Finding_Long_QT": {
+      "type": "SetAttribute",
+      "attribute": "ecg_finding",
+      "direct_transition": "ECG",
+      "value": "long_qt"
+    },
+    "Set_Inpatient_ECG_Finding_Nonspecific_ST": {
+      "type": "SetAttribute",
+      "attribute": "ecg_finding",
+      "direct_transition": "Inpatient_ECG",
+      "value": "nonspecific_st"
+    },
+    "Set_Inpatient_ECG_Finding_LVH": {
+      "type": "SetAttribute",
+      "attribute": "ecg_finding",
+      "direct_transition": "Inpatient_ECG",
+      "value": "lvh"
+    },
+    "Set_Inpatient_ECG_Finding_Long_QT": {
+      "type": "SetAttribute",
+      "attribute": "ecg_finding",
+      "direct_transition": "Inpatient_ECG",
+      "value": "long_qt"
     }
   },
   "remarks": [
