@@ -185,6 +185,8 @@ public class GeneticTestingEditor extends StatefulHealthRecordEditor {
           bw.write("\n");
         }
         bw.flush();
+        geneticTestingReport.reportPath = outFilePath;
+        geneticTestingReport.reportMediaType = "text/csv";
       }
 
     } catch (IOException | InterruptedException ex) {
