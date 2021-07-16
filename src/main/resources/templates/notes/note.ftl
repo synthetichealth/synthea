@@ -37,11 +37,11 @@ Patient currently has ${ehr_insurance?replace("_", " ")}.
 </#list></#if>
 <#if ehr_imaging_studies?has_content>The following imaging studies were conducted:
 <#list ehr_imaging_studies as entry>
-- ${entry.codes[0].display?lower_case}
+- ${entry.codes[0].display?lower_case} <#if entry.fileLocation?has_content> stored in ${entry.fileLocation}</#if>
 </#list></#if>
-<#if ehr_reports?has_content>The following imaging reports were created:
+<#if ehr_reports?has_content>The following reports were created:
 <#list ehr_reports as entry>
-- ${entry.codes[0].display?lower_case}
+- ${entry.codes[0].display?lower_case} <#if entry.reportPath?has_content> stored in ${pathPrinter(entry.reportPath)}</#if>
 </#list></#if>
 <#if ehr_medications?has_content>The patient was prescribed the following medications:
 <#list ehr_medications as entry>

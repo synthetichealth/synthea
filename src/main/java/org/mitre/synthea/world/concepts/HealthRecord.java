@@ -328,6 +328,7 @@ public class HealthRecord implements Serializable {
   public class ImagingStudy extends Entry {
     public String dicomUid;
     public List<Series> series;
+    public String fileLocation;
 
     /**
      * Constructor for ImagingStudy HealthRecord Entry.

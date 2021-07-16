@@ -38,6 +38,7 @@ public class MicrobleedEditor implements HealthRecordEditor {
         String sourceFile = DICOMFileSelector.selectRandomDICOMFile(person);
         String targetFile = DICOMExporter.outputDICOMFile(person, is.dicomUid);
         DICOMExporter.writeDICOMAttributes(is.dicomUid, is.start, person, sourceFile, targetFile);
+        is.fileLocation = targetFile;
       } catch (IOException e) {
         System.out.println("Unable to write DICOM file for microbleed");
         e.printStackTrace();

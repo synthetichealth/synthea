@@ -5,9 +5,15 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 import java.io.StringWriter;
+import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import freemarker.template.TemplateMethodModelEx;
+import freemarker.template.TemplateModel;
+import freemarker.template.TemplateModelException;
+import freemarker.template.utility.DeepUnwrap;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
@@ -138,6 +144,11 @@ public class ClinicalNoteExporter {
     person.attributes.put("ethnicity_lookup", RaceAndEthnicity.LOOK_UP_CDC_ETHNICITY_CODE);
     person.attributes.put("ethnicity_display_lookup",
         RaceAndEthnicity.LOOK_UP_CDC_ETHNICITY_DISPLAY);
+    TemplateMethodModelEx pathPrinter = (args) -> {
+      Path path = (Path) DeepUnwrap.unwrap((TemplateModel) args.get(0));
+      return path.toString();
+    };
+    person.attributes.put("pathPrinter", pathPrinter);
 
     StringWriter writer = new StringWriter();
     try {
