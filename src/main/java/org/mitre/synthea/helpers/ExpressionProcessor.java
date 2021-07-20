@@ -180,6 +180,10 @@ public class ExpressionProcessor {
       return new BigDecimal(person.ageInDecimalYears(time));
     }
     
+    if (param.equals("rand")) {
+      return new BigDecimal(person.rand());
+    }
+    
     // If this param is in the cache, check if we have a VitalSign or not
     org.mitre.synthea.world.concepts.VitalSign vs = vitalSignCache.get(param);
     

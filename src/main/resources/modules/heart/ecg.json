@@ -93,6 +93,10 @@
         {
           "from_exp": "#{BMI} * 0.497 + 56.15",
           "to": "hrmean"
+        },
+        {
+          "from_exp": "#{rand}",
+          "to": "rng_seed"
         }
       ],
       "outputs": [
@@ -131,6 +135,10 @@
         {
           "from_exp": "-10.0",
           "to": "ai_S"
+        },
+        {
+          "from_exp": "#{rand}",
+          "to": "rng_seed"
         }
       ],
       "outputs": [
@@ -158,6 +166,10 @@
         {
           "from_exp": "120.0",
           "to": "hrmean"
+        },
+        {
+          "from_exp": "#{rand}",
+          "to": "rng_seed"
         }
       ],
       "outputs": [
@@ -188,6 +200,10 @@
         {
           "from_exp": "150.0",
           "to": "ti_T"
+        },
+        {
+          "from_exp": "#{rand}",
+          "to": "rng_seed"
         }
       ],
       "outputs": [
@@ -218,6 +234,10 @@
         {
           "from_exp": "0.25",
           "to": "ai_T"
+        },
+        {
+          "from_exp": "#{rand}",
+          "to": "rng_seed"
         }
       ],
       "outputs": [
@@ -268,6 +288,10 @@
         {
           "from_exp": "0.0",
           "to": "ai_T"
+        },
+        {
+          "from_exp": "#{rand}",
+          "to": "rng_seed"
         }
       ],
       "outputs": [
