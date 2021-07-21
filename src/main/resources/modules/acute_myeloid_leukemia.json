@@ -1,0 +1,804 @@
+{
+  "name": "Acute Myeloid Leukemia for PCOR Research",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "distributed_transition": [
+        {
+          "transition": "Delay_1",
+          "distribution": 0.098
+        },
+        {
+          "transition": "Delay_2",
+          "distribution": 0.1264
+        },
+        {
+          "transition": "Delay_3",
+          "distribution": 0.1094
+        },
+        {
+          "transition": "Delay_4",
+          "distribution": 0.0645
+        },
+        {
+          "transition": "Delay_5",
+          "distribution": 0.0533
+        },
+        {
+          "transition": "Delay_6",
+          "distribution": 0.0345
+        },
+        {
+          "transition": "Delay_7",
+          "distribution": 0.0362
+        },
+        {
+          "transition": "Delay_8",
+          "distribution": 0.0318
+        },
+        {
+          "transition": "Delay_9",
+          "distribution": 0.0354
+        },
+        {
+          "transition": "Delay_10",
+          "distribution": 0.0346
+        },
+        {
+          "transition": "Delay_11",
+          "distribution": 0.0289
+        },
+        {
+          "transition": "Delay_12",
+          "distribution": 0.0312
+        },
+        {
+          "transition": "Delay_13",
+          "distribution": 0.033
+        },
+        {
+          "transition": "Delay_14",
+          "distribution": 0.03
+        },
+        {
+          "transition": "Delay_15",
+          "distribution": 0.0343
+        },
+        {
+          "transition": "Delay_16",
+          "distribution": 0.0289
+        },
+        {
+          "transition": "Delay_17",
+          "distribution": 0.0323
+        },
+        {
+          "transition": "Delay_18",
+          "distribution": 0.0323
+        },
+        {
+          "transition": "Delay_19",
+          "distribution": 0.0346
+        },
+        {
+          "transition": "Delay_20",
+          "distribution": 0.0315
+        },
+        {
+          "transition": "Delay_21",
+          "distribution": 0.0173
+        },
+        {
+          "transition": "Delay_0",
+          "distribution": 0.04159999999999997
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Levofloxacin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 199885,
+          "display": "levofloxacin 500 MG Oral Tablet"
+        }
+      ],
+      "chronic": false,
+      "assign_to_attribute": "levofloxacin",
+      "administration": true,
+      "reason": "Acute_Myeloid_Leukemia_AML",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        },
+        "instructions": []
+      },
+      "direct_transition": "Absolute_Neutrophil_Count_ANC"
+    },
+    "No_Levofloxacin_Prophylaxis": {
+      "type": "Simple",
+      "direct_transition": "Absolute_Neutrophil_Count_ANC2"
+    },
+    "Absolute_Neutrophil_Count_ANC": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "mm3",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "751-8",
+          "display": "Neutrophils [#/volume] in Blood by Automated count"
+        }
+      ],
+      "range": {
+        "low": 250,
+        "high": 500
+      },
+      "direct_transition": "End_Levofloxacin"
+    },
+    "Febrile_Neutropenia": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Chemotherapy_Inpatient_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 409089005,
+          "display": "Febrile neutropenia (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Bacteremia"
+    },
+    "Non-Febrile_Neutropenia": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Chemotherapy_Inpatient_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 47318007,
+          "display": "Neutropenia (disorder)"
+        }
+      ],
+      "direct_transition": "Transfer_to_Stepdown"
+    },
+    "Bacteremia": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "bacteremia",
+      "target_encounter": "Chemotherapy_Inpatient_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 5758002,
+          "display": "Bacteremia (finding)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Transfer_to_ICU",
+          "distribution": 0.112
+        },
+        {
+          "transition": "Transfer_to_Stepdown",
+          "distribution": 0.8620000000000001
+        },
+        {
+          "transition": "Death_Event",
+          "distribution": 0.026
+        }
+      ]
+    },
+    "Check_Bacteremia": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 199885,
+                "display": "levofloxacin 500 MG Oral Tablet"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Bacteremia",
+              "distribution": 0.137
+            },
+            {
+              "transition": "No_Bacteremia",
+              "distribution": 0.863
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "levofloxacin",
+            "operator": "is nil"
+          },
+          "distributions": [
+            {
+              "transition": "Bacteremia",
+              "distribution": 0.33
+            },
+            {
+              "transition": "No_Bacteremia",
+              "distribution": 0.6699999999999999
+            }
+          ]
+        }
+      ]
+    },
+    "No_Bacteremia": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Transfer_to_ICU",
+          "distribution": 0.041
+        },
+        {
+          "transition": "Death_Event",
+          "distribution": 0.015
+        },
+        {
+          "transition": "Transfer_to_Stepdown",
+          "distribution": 0.944
+        }
+      ]
+    },
+    "Death": {
+      "type": "Death",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "direct_transition": "End_Encounter2",
+      "remarks": [
+        ""
+      ],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 91861009,
+          "display": "Acute myeloid leukemia, disease (disorder)"
+        }
+      ]
+    },
+    "End_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": 1,
+        "display": "Discharge to Home"
+      }
+    },
+    "Absolute_Neutrophil_Count_ANC2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "mm3",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "751-8",
+          "display": "Neutrophils [#/volume] in Blood by Automated count"
+        }
+      ],
+      "direct_transition": "Check_Fever2",
+      "range": {
+        "low": 250,
+        "high": 500
+      }
+    },
+    "Normal_Body_Temp": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "degrees Fahrenheit",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Body Temperature"
+        }
+      ],
+      "direct_transition": "Non-Febrile_Neutropenia",
+      "range": {
+        "low": 96,
+        "high": 98.9
+      }
+    },
+    "Fever": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "degrees Fahrenheit",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Body Temperature"
+        }
+      ],
+      "range": {
+        "low": 99,
+        "high": 103
+      },
+      "direct_transition": "Febrile_Neutropenia"
+    },
+    "Check_Fever": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Fever",
+          "distribution": 0.656
+        },
+        {
+          "transition": "Normal_Body_Temp",
+          "distribution": 0.344
+        }
+      ]
+    },
+    "Check_Fever2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Fever",
+          "distribution": 0.795
+        },
+        {
+          "transition": "Normal_Body_Temp",
+          "distribution": 0.20500000000000007
+        }
+      ]
+    },
+    "Chemotherapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 367336001,
+          "display": "Chemotherapy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "reason": "Acute_Myeloid_Leukemia_AML",
+      "direct_transition": "Determine_Levofloxacin_Prophylaxis"
+    },
+    "Transfer_to_ICU": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 305351004,
+          "display": "Admit to intensive care unit (ICU)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 5758002,
+                "display": "Bacteremia (finding)"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Death_Event",
+              "distribution": 0.167
+            },
+            {
+              "transition": "Transfer_to_Stepdown",
+              "distribution": 0.833
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Death_Event",
+              "distribution": 0.061
+            },
+            {
+              "transition": "Transfer_to_Stepdown",
+              "distribution": 0.9390000000000001
+            }
+          ]
+        }
+      ],
+      "reason": "Febrile_Neutropenia"
+    },
+    "Chemotherapy_Inpatient_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "Acute_Myeloid_Leukemia_AML",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Chemotherapy"
+    },
+    "Death_Event": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 16983000,
+          "display": "Death in hospital (event)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Death"
+    },
+    "Determine_Levofloxacin_Prophylaxis": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Levofloxacin",
+          "default_probability": 0.2638,
+          "lookup_table_name": "AML.csv"
+        },
+        {
+          "transition": "No_Levofloxacin_Prophylaxis",
+          "default_probability": 0.7362,
+          "lookup_table_name": "AML.csv"
+        }
+      ]
+    },
+    "End_Encounter2": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": 41,
+        "display": "Expired in medical facility"
+      }
+    },
+    "Transfer_to_Stepdown": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 449214001,
+          "display": "Transfer to stepdown"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_AML"
+    },
+    "Delay_1": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_2": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 2
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_3": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 3
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_4": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 4
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_5": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 5
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_6": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 6
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_7": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 7
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_8": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 8
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_9": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 9
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_10": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 10
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_11": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 11
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_12": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 12
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_13": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 13
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_14": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 14
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_15": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 15
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_16": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 16
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_17": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 17
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_18": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 18
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_19": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 19
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_20": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 20
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_21": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 21
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Delay_0": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 0
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Acute_Myeloid_Leukemia_AML": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 91861009,
+          "display": "Acute myeloid leukemia, disease (disorder)"
+        }
+      ],
+      "direct_transition": "Chemotherapy_Inpatient_Encounter"
+    },
+    "End_Levofloxacin": {
+      "type": "MedicationEnd",
+      "direct_transition": "Check_Fever",
+      "medication_order": "Levofloxacin",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 199885,
+          "display": "levofloxacin 500MG Oral tablet"
+        }
+      ]
+    },
+    "End_Non-Febrile_Neutropenia": {
+      "type": "ConditionEnd",
+      "direct_transition": "End_Febrile_Neutropenia",
+      "condition_onset": "Non-Febrile_Neutropenia"
+    },
+    "End_Febrile_Neutropenia": {
+      "type": "ConditionEnd",
+      "direct_transition": "End_Bacteremia",
+      "condition_onset": "Febrile_Neutropenia"
+    },
+    "End_Bacteremia": {
+      "type": "ConditionEnd",
+      "direct_transition": "End_Encounter",
+      "condition_onset": "Bacteremia"
+    },
+    "End_AML": {
+      "type": "ConditionEnd",
+      "direct_transition": "End_Non-Febrile_Neutropenia",
+      "condition_onset": "Acute_Myeloid_Leukemia_AML"
+    }
+  },
+  "remarks": [
+    "Module Title: Acute Myeloid Leukemia for PCOR Research",
+    "Version Number: 1.0",
+    "Last Updated: 7/20/2021",
+    "Module Steward: ONC",
+    "Module Developer: Clinovations Government + Health",
+    "Description: This module models Levofloxacin prophylaxis in patients age <=21 years of age. It is based on a microsimulation study to effectively test the utility of Synthea data for PCOR hypothesis testing. This module was designed with a microsimulation-based hypothesis from a study by McCormick et al., which provides an evaluation of the cost effectiveness of levofloxacin use in children with acute myeloid leukemia (AML). The McCormick study includes a decision-analysis model designed to evaluate the cost-effectiveness of levofloxacin prophylaxis compared to no prophylaxis in patients less than or equal to 21 years of age with AML during a single chemotherapy inpatient visit. The study reports outcomes, including the cost of bacterial infection, cost per ICU admission, and cost per death avoided. In order to replicate the costs within this study, costs within appropriate Synthea cost lookup files were updated. In addition, one city in the default demographics file within Synthea was updated with gender, race, and ethnicity parameters from the McCormick study in order to generate similar population characteristics.",
+    "",
+    "Reference: McCormick M, Friehling E, Kalpatthi R, Siripong N, Smith K. Cost‐effectiveness of levofloxacin prophylaxis against bacterial infection in pediatric patients with acute myeloid leukemia. Pediatric Blood & Cancer. 2020 Oct;67(10):e28469",
+    "",
+    ""
+  ],
+  "gmf_version": 2
+}
