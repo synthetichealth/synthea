@@ -1,0 +1,13 @@
+gender,race,ethnicity,Levofloxacin,No_Levofloxacin_Prophylaxis
+F,white,hispanic,0.174554813,0.825445187
+F,black,hispanic,0.266740323,0.733259677
+F,other,hispanic,0.181338426,0.818661575
+F,white,nonhispanic,0.272348285,0.727651715
+F,black,nonhispanic,0.416180272,0.583819728
+F,other,nonhispanic,0.282932383,0.717067617
+M,white,hispanic,0.170360288,0.829639713
+M,black,hispanic,0.260330594,0.739669406
+M,other,hispanic,0.176980891,0.823019109
+M,white,nonhispanic,0.265803798,0.734196202
+M,black,nonhispanic,0.406179524,0.593820476
+M,other,nonhispanic,0.276133562,0.723866438
