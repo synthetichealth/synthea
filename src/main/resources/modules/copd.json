@@ -450,7 +450,7 @@
             },
             {
               "distribution": 0.0424,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         },
@@ -478,7 +478,7 @@
             },
             {
               "distribution": 0.06,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         },
@@ -502,7 +502,7 @@
             },
             {
               "distribution": 0.08,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         }
@@ -550,7 +550,7 @@
             },
             {
               "distribution": 0.01,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         },
@@ -574,7 +574,7 @@
             },
             {
               "distribution": 0.02,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         },
@@ -598,7 +598,7 @@
             },
             {
               "distribution": 0.02,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         }
@@ -972,7 +972,12 @@
     "Death": {
       "type": "Death",
       "referenced_by_attribute": "copd_variant",
-      "direct_transition": "Terminal"
+      "direct_transition": "Terminal",
+      "range": {
+        "low": 10,
+        "high": 30,
+        "unit": "days"
+      }
     },
     "Terminal": {
       "type": "Terminal"
@@ -1005,6 +1010,31 @@
     "End_COPD_Followup_Enc1": {
       "type": "EncounterEnd",
       "direct_transition": "Consider_Surgery"
+    },
+    "Hospice Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Hospice",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Death",
+          "distribution": 0.6
+        }
+      ]
+    },
+    "Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice",
+      "direct_transition": "Hospice Reason",
+      "value": true
+    },
+    "Hospice Reason": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value": "copd_variant",
+      "direct_transition": "Death"
     }
   },
   "gmf_version": 1

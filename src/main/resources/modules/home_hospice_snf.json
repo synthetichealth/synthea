@@ -641,188 +641,88 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Initiate Hospice",
+          "transition": "Alzheimers",
           "condition": {
-            "condition_type": "Or",
-            "conditions": [
+            "condition_type": "Attribute",
+            "attribute": "Type of Alzheimer's",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "COPD",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "copd_variant",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "CHF",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Heart Disease",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
               {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "LOINC",
-                    "code": "55277-8",
-                    "display": "HIV Positive Status"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "26929004",
-                    "display": "Alzheimers"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "254837009",
-                    "display": "Breast Cancer"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "lung_cancer",
-                "operator": "==",
-                "value": true
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "126906006",
-                    "display": "Prostate Cancer"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "93761005",
-                    "display": "Colorectal Cancer Stage I"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "109838007",
-                    "display": "Colorectal Cancer Stage II"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "363406005",
-                    "display": "Colorectal Cancer Stage III"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "94260004",
-                    "display": "Colorectal Cancer Stage IV"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": "88805009",
-                    "display": "Chronic Congestive Heart Failure"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": 22298006,
-                    "display": "Myocardial Infarction"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "coronary_heart_disease",
-                "operator": "==",
-                "value": true
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": 399211009,
-                    "display": "History of myocardial infarction (situation)"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": 110030002,
-                    "display": "Concussion injury of brain"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": 190905008,
-                    "display": "Cystic Fibrosis"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": 87433001,
-                    "display": "Pulmonary Emphysema"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": 185086009,
-                    "display": "Chronic Obstructive Bronchitis"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": 65710008,
-                    "display": "Acute respiratory failure (disorder)"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "ckd",
-                "operator": "is not nil"
+                "system": "SNOMED-CT",
+                "code": 53741008,
+                "display": "Coronary Heart Disease"
               }
             ]
+          }
+        },
+        {
+          "transition": "CF",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Cystic_Fibrosis",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "CKD",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "dialysis_reason",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Lung Cancer",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Lung Cancer",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Breast Cancer",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_condition",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Prostate Cancer",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "prostate_cancer",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Colorectal Cancer",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer",
+            "operator": "is not nil"
           }
         },
         {
@@ -835,6 +735,70 @@
       "attribute": "hospice",
       "direct_transition": "Wait for Next Decade",
       "value": true
+    },
+    "Alzheimers": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "direct_transition": "COPD",
+      "value": "Type of Alzheimer's"
+    },
+    "COPD": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value": "copd_variant",
+      "direct_transition": "Initiate Hospice"
+    },
+    "CHF": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value": "chf",
+      "direct_transition": "Initiate Hospice"
+    },
+    "Heart Disease": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "direct_transition": "Initiate Hospice",
+      "value_code": {
+        "system": "SNOMED",
+        "code": "53741008",
+        "display": "Coronary Heart Disease"
+      }
+    },
+    "CKD": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value": "dialysis_reason",
+      "direct_transition": "Initiate Hospice"
+    },
+    "CF": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value": "Cystic_Fibrosis",
+      "direct_transition": "Initiate Hospice"
+    },
+    "Breast Cancer": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value": "breast_cancer_condition",
+      "direct_transition": "Initiate Hospice"
+    },
+    "Lung Cancer": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value": "Lung Cancer",
+      "direct_transition": "Initiate Hospice"
+    },
+    "Prostate Cancer": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value": "prostate_cancer",
+      "direct_transition": "Initiate Hospice"
+    },
+    "Colorectal Cancer": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value": "colorectal_cancer",
+      "direct_transition": "Initiate Hospice"
     }
   },
   "gmf_version": 1
