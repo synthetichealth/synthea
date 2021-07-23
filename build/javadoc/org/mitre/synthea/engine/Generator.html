@@ -159,32 +159,42 @@ implements <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#DEFAULT_STATE">DEFAULT_STATE</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>java.util.UUID</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#id">id</a></span></code>
+<div class="block">Unique ID for this instance of the Generator.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/mitre/synthea/world/geography/Location.html" title="class in org.mitre.synthea.world.geography">Location</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#location">location</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/mitre/synthea/helpers/TransitionMetrics.html" title="class in org.mitre.synthea.helpers">TransitionMetrics</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#metrics">metrics</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html" title="class in org.mitre.synthea.engine">Generator.GeneratorOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#options">options</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#referenceTime">referenceTime</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.util.concurrent.atomic.AtomicInteger&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#stats">stats</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#stop">stop</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#timestep">timestep</a></span></code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>java.util.concurrent.atomic.AtomicInteger</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#totalGeneratedPopulation">totalGeneratedPopulation</a></span></code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -384,6 +394,17 @@ implements <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.
 <!--   -->
 </a>
 <h3>Field Detail</h3>
+<a name="id">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>id</h4>
+<pre>public final&nbsp;java.util.UUID id</pre>
+<div class="block">Unique ID for this instance of the Generator. 
+ Even if the same settings are used multiple times, this ID should be unique.</div>
+</li>
+</ul>
 <a name="options">
 <!--   -->
 </a>
@@ -436,6 +457,15 @@ implements <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.
 <li class="blockList">
 <h4>location</h4>
 <pre>public&nbsp;<a href="../../../../org/mitre/synthea/world/geography/Location.html" title="class in org.mitre.synthea.world.geography">Location</a> location</pre>
+</li>
+</ul>
+<a name="totalGeneratedPopulation">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>totalGeneratedPopulation</h4>
+<pre>public&nbsp;java.util.concurrent.atomic.AtomicInteger totalGeneratedPopulation</pre>
 </li>
 </ul>
 <a name="metrics">

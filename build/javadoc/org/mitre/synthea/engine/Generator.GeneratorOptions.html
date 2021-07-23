@@ -210,13 +210,19 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>long</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#seed">seed</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#runStartTime">runStartTime</a></span></code>
+<div class="block">Actual time the run started.</div>
+</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>long</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#seed">seed</a></span></code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#state">state</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.io.File</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#updatedPopulationSnapshotPath">updatedPopulationSnapshotPath</a></span></code>
 <div class="block">File used to store a population snapshot.</div>
@@ -438,11 +444,21 @@ extends java.lang.Object</pre>
 <a name="referenceTime">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>referenceTime</h4>
 <pre>public&nbsp;long referenceTime</pre>
 <div class="block">Reference Time when to start Synthea. By default equal to the current system time.</div>
+</li>
+</ul>
+<a name="runStartTime">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>runStartTime</h4>
+<pre>public final&nbsp;long runStartTime</pre>
+<div class="block">Actual time the run started.</div>
 </li>
 </ul>
 </li>
