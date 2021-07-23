@@ -712,6 +712,11 @@ public abstract class State implements Cloneable, Serializable {
       }
 
       if (value != null) {
+        // the module is setting an attribute to be the value of an existing attribute
+        if (person.attributes.containsKey(value)) {
+          Object obj = person.attributes.get(value);
+          value = obj;
+        }
         person.attributes.put(attribute, value);
       } else if (person.attributes.containsKey(attribute)) {
         // intentionally clear out the variable
@@ -845,8 +850,13 @@ public abstract class State implements Cloneable, Serializable {
 
         if (reason != null) {
           if (person.attributes.containsKey(reason)) {
-            Entry condition = (Entry) person.attributes.get(reason);
-            encounter.reason = condition.codes.get(0);
+            Object value = person.attributes.get(reason);
+            if (value instanceof Entry) {
+              Entry condition = (Entry) person.attributes.get(reason);
+              encounter.reason = condition.codes.get(0);
+            } else if (value instanceof Code) {
+              encounter.reason = (Code) value;
+            }
           } else if (person.hadPriorState(reason)) {
             // loop through the present conditions, the condition "name" will match
             // the name of the ConditionOnset state (aka "reason")

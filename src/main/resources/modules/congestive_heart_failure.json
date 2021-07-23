@@ -43,7 +43,7 @@
           "display": "Chronic congestive heart failure (disorder)"
         }
       ],
-      "direct_transition": "CHF initial workup encounter"
+      "direct_transition": "Eventual Hospice Reason"
     },
     "CHF initial workup encounter": {
       "type": "Encounter",
@@ -1849,6 +1849,12 @@
       },
       "referenced_by_attribute": "chf",
       "direct_transition": "Terminal"
+    },
+    "Eventual Hospice Reason": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "direct_transition": "CHF initial workup encounter",
+      "value": "chf"
     }
   },
   "remarks": [

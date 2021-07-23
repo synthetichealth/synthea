@@ -2261,8 +2261,7 @@
           "display": "Chronic kidney disease stage 3 (disorder)"
         }
       ],
-      "direct_transition": "Record_MetabolicPanel_3",
-      "assign_to_attribute": "text"
+      "direct_transition": "Record_MetabolicPanel_3"
     },
     "CKD4 Diagnosis": {
       "type": "ConditionOnset",
