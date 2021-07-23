@@ -83,6 +83,8 @@ public class C19ImmunizationModule extends Module {
       .toInstant(ZoneOffset.UTC).toEpochMilli();
   public static final long EXPAND_AGE_TO_TWELVE = LocalDateTime.of(2021, 5, 10, 12, 0)
       .toInstant(ZoneOffset.UTC).toEpochMilli();
+  public static final long LATE_ADOPTION_START_TIME = LocalDateTime.of(2021, 7, 23, 12, 0)
+      .toInstant(ZoneOffset.UTC).toEpochMilli();
 
   public static final int FIRST_ELIGIBLE_AGE = 16;
   public static final int EXPANDED_ELIGIBLE_AGE = 12;
@@ -91,6 +93,7 @@ public class C19ImmunizationModule extends Module {
   public static final String C19_VACCINE = "C19_VACCINE";
   public static final String C19_SCHEDULED_FIRST_SHOT = "C19_SCHEDULED_FIRST_SHOT";
   public static final String C19_SCHEDULED_SECOND_SHOT = "C19_SCHEDULED_SECOND_SHOT";
+  public static final String C19_LATE_ADOPTER_MODEL = "C19_LATE_ADOPTER_MODEL";
 
   public enum VaccinationStatus {
     NOT_ELIGIBLE,
@@ -179,6 +182,12 @@ public class C19ImmunizationModule extends Module {
     }
 
     VaccinationStatus status = (VaccinationStatus) person.attributes.get(C19_VACCINE_STATUS);
+
+    if (status == null) {
+      status = VaccinationStatus.NOT_ELIGIBLE;
+      person.attributes.put(C19_VACCINE_STATUS, status);
+    }
+
     switch (status) {
       case NOT_ELIGIBLE:
         if (eligibleForShot(person, time)) {
@@ -234,6 +243,26 @@ public class C19ImmunizationModule extends Module {
         // TODO: set up age group specific chances that people will get vaccinated beyond the actual
         // data we have. Particularly relevant for 12-15 year olds as demand is still somewhat high
         // in that group
+        if (time >= LATE_ADOPTION_START_TIME) {
+          LateAdopterModel model = (LateAdopterModel) person.attributes.get(C19_LATE_ADOPTER_MODEL);
+          if (model == null) {
+            model = new LateAdopterModel(person, time);
+            person.attributes.put(C19_LATE_ADOPTER_MODEL, model);
+          }
+          boolean willGetShot = model.willGetShot(person, time);
+          if (willGetShot) {
+            person.attributes.put(C19_VACCINE_STATUS, VaccinationStatus.WAITING_FOR_SHOT);
+            long shotDate = time + Utilities.convertTime("weeks", 1);
+            person.attributes.put(C19_SCHEDULED_FIRST_SHOT, shotDate);
+          } else if (model.isNotGettingShot()) {
+            person.attributes.put(C19_VACCINE_STATUS, VaccinationStatus.NEVER_GOING_TO_GET_SHOT);
+          }
+        }
+        break;
+      default:
+        // should never get here
+        throw new IllegalStateException("COVID-19 Immunization entered an unknown state based on" +
+            "a person's vaccination status");
     }
 
     return false;
