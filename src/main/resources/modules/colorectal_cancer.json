@@ -2093,8 +2093,14 @@
     "Will Use Hospice": {
       "type": "SetAttribute",
       "attribute": "hospice",
-      "direct_transition": "Wait_For_Oncologist_Encounter",
+      "direct_transition": "Hospice Reason",
       "value": true
+    },
+    "Hospice Reason": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "direct_transition": "Wait_For_Oncologist_Encounter",
+      "value": "colorectal_cancer"
     }
   },
   "gmf_version": 1

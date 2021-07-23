@@ -2107,8 +2107,14 @@
     "Will Use Hospice": {
       "type": "SetAttribute",
       "attribute": "hospice",
-      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options",
+      "direct_transition": "Hospice Reason",
       "value": true
+    },
+    "Hospice Reason": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options",
+      "value": "breast_cancer_condition"
     }
   },
   "gmf_version": 1

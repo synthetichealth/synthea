@@ -21,7 +21,8 @@
           "display": "Admission to hospice (procedure)"
         }
       ],
-      "direct_transition": "Determine_LOS"
+      "direct_transition": "Determine_LOS",
+      "reason": "hospice_reason"
     },
     "Determine_LOS": {
       "type": "Simple",

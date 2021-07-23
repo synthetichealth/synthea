@@ -84,7 +84,7 @@
           "display": "Alzheimer's disease (disorder)"
         }
       ],
-      "direct_transition": "NoImpairment"
+      "direct_transition": "Eventual_Hospice_Reason"
     },
     "PreEarlyOnsetAlzheimers": {
       "type": "Delay",
@@ -106,7 +106,7 @@
           "display": "Familial Alzheimer's disease of early onset (disorder)"
         }
       ],
-      "direct_transition": "NoImpairment"
+      "direct_transition": "Eventual_Hospice_Reason"
     },
     "NoImpairment": {
       "type": "Delay",
@@ -699,12 +699,12 @@
     "PneumoniaEncounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason": "Pneumonia",
+      "reason": "Type of Alzheimer's",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "32485007",
-          "display": "Hospital admission"
+          "code": 305336008,
+          "display": "Admission to hospice (procedure)"
         }
       ],
       "direct_transition": "PneumoniaDeath"
@@ -730,6 +730,12 @@
     "End_Diagnosis_Encounter": {
       "type": "EncounterEnd",
       "direct_transition": "ModerateDecline"
+    },
+    "Eventual_Hospice_Reason": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "direct_transition": "NoImpairment",
+      "value": "Type of Alzheimer's"
     }
   },
   "gmf_version": 1

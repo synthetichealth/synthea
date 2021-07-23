@@ -18,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -39,8 +41,10 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.Provider.ProviderType;
 import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Device;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 
 /**
@@ -236,7 +240,6 @@ public class BB2RIFExporter {
   public void exportManifest() throws IOException {
     File output = Exporter.getOutputFolder("bfd", null);
     output.mkdirs();
-    Path manifestPath = output.toPath().resolve("manifest.xml");
     StringWriter manifest = new StringWriter();
     manifest.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
     manifest.write("<dataSetManifest xmlns=\"http://cms.hhs.gov/bluebutton/api/schema/ccw-rif/v9\"");
@@ -269,6 +272,7 @@ public class BB2RIFExporter {
     manifest.write(String.format("  <entry name=\"%s\" type=\"BENEFICIARY_HISTORY\"/>\n",
             beneficiaryHistory.getFile().getName()));
     manifest.write("</dataSetManifest>");
+    Path manifestPath = output.toPath().resolve("manifest.xml");
     Exporter.appendToFile(manifestPath, manifest.toString());
   }
 
@@ -452,6 +456,47 @@ public class BB2RIFExporter {
         return "0";
     }
   }
+
+  private static final Comparator<Entry> ENTRY_SORTER = new Comparator<Entry>() {
+    @Override
+    public int compare(Entry o1, Entry o2) {
+      return (int)(o2.start - o1.start);
+    }
+  };
+
+  /**
+   * This returns the list of active diagnoses, sorted by most recent first
+   * and oldest last.
+   * @param person patient with the diagnoses.
+   * @return the list of active diagnoses, sorted by most recent first and oldest last.
+   */
+  private List<String> getDiagnosesCodes(Person person, long time) {
+    // Collect the active diagnoses at the given time,
+    // keeping only those diagnoses that are mappable.
+    List<Entry> diagnoses = new ArrayList<Entry>();
+    for (HealthRecord.Encounter encounter : person.record.encounters) {
+      if (encounter.start <= time) {
+        for (Entry dx : encounter.conditions) {
+          if (dx.stop == 0L || dx.stop > time) {
+            if (conditionCodeMapper.canMap(dx.codes.get(0).code)) {
+              String mapped = conditionCodeMapper.map(dx.codes.get(0).code, person, true);
+              // Temporarily add the mapped code... we'll remove it later.
+              Code mappedCode = new Code("ICD10", mapped, dx.codes.get(0).display);
+              dx.codes.add(mappedCode);
+              diagnoses.add(dx);
+            }
+          }
+        }
+      }
+    }
+    // Sort them by date and then return only the mapped codes (not the entire Entry).
+    diagnoses.sort(ENTRY_SORTER);
+    List<String> mappedDiagnosisCodes = new ArrayList<String>();
+    for (Entry dx : diagnoses) {
+      mappedDiagnosisCodes.add(dx.codes.remove(dx.codes.size() - 1).code);
+    }
+    return mappedDiagnosisCodes;
+  }
   
   /**
    * Export a beneficiary history for single person. Assumes exportBeneficiary
@@ -619,32 +664,23 @@ public class BB2RIFExporter {
           fieldValues.put(OutpatientFields.PRNCPAL_DGNS_CD, icdCode);
         }
       }
+
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
-      boolean noDiagnoses = false;
-      if (person.record.present != null && !person.record.present.isEmpty()) {
-        List<String> mappedDiagnosisCodes = new ArrayList<>();
-        for (String key : person.record.present.keySet()) {
-          if (person.record.conditionActive(key)) {
-            if (conditionCodeMapper.canMap(key)) {
-              mappedDiagnosisCodes.add(conditionCodeMapper.map(key, person, true));
-            }
-          }
+      List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
+      boolean noDiagnoses = mappedDiagnosisCodes.isEmpty();
+      if (!noDiagnoses) {
+        int smallest = Math.min(mappedDiagnosisCodes.size(), outpatientDxFields.length);
+        for (int i = 0; i < smallest; i++) {
+          OutpatientFields[] dxField = outpatientDxFields[i];
+          fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+          fieldValues.put(dxField[1], "0"); // 0=ICD10
         }
-        if (!mappedDiagnosisCodes.isEmpty()) {
-          int smallest = Math.min(mappedDiagnosisCodes.size(), outpatientDxFields.length);
-          for (int i = 0; i < smallest; i++) {
-            OutpatientFields[] dxField = outpatientDxFields[i];
-            fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
-            fieldValues.put(dxField[1], "0"); // 0=ICD10
-          }
-          if (!fieldValues.containsKey(OutpatientFields.PRNCPAL_DGNS_CD)) {
-            fieldValues.put(OutpatientFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
-          }
-        } else {
-          noDiagnoses = true;
+        if (!fieldValues.containsKey(OutpatientFields.PRNCPAL_DGNS_CD)) {
+          fieldValues.put(OutpatientFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
         }
       }
+
       // Use the procedures in this encounter to enter mapped values
       boolean noProcedures = false;
       if (!encounter.procedures.isEmpty()) {
@@ -794,26 +830,17 @@ public class BB2RIFExporter {
       }
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
-      boolean noDiagnoses = false;
-      if (person.record.present != null && !person.record.present.isEmpty()) {
-        List<String> mappedDiagnosisCodes = new ArrayList<>();
-        for (String key : person.record.present.keySet()) {
-          if (person.record.conditionActive(key)) {
-            if (conditionCodeMapper.canMap(key)) {
-              mappedDiagnosisCodes.add(conditionCodeMapper.map(key, person, true));
-            }
-          }
+      List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
+      boolean noDiagnoses = mappedDiagnosisCodes.isEmpty();
+      if (!noDiagnoses) {
+        int smallest = Math.min(mappedDiagnosisCodes.size(), inpatientDxFields.length);
+        for (int i = 0; i < smallest; i++) {
+          InpatientFields[] dxField = inpatientDxFields[i];
+          fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+          fieldValues.put(dxField[1], "0"); // 0=ICD10
         }
-        if (!mappedDiagnosisCodes.isEmpty()) {
-          int smallest = Math.min(mappedDiagnosisCodes.size(), inpatientDxFields.length);
-          for (int i = 0; i < smallest; i++) {
-            InpatientFields[] dxField = inpatientDxFields[i];
-            fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
-            fieldValues.put(dxField[1], "0"); // 0=ICD10
-            fieldValues.put(dxField[2], "Y");
-          }
-        } else {
-          noDiagnoses = true;
+        if (!fieldValues.containsKey(InpatientFields.PRNCPAL_DGNS_CD)) {
+          fieldValues.put(InpatientFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
         }
       }
       // Use the procedures in this encounter to enter mapped values
@@ -950,33 +977,18 @@ public class BB2RIFExporter {
 
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
-      boolean noDiagnoses = false;
-      if (person.record.present != null && !person.record.present.isEmpty()) {
-        List<String> mappedDiagnosisCodes = new ArrayList<>();
-        for (String key : person.record.present.keySet()) {
-          if (person.record.conditionActive(key)) {
-            if (conditionCodeMapper.canMap(key)) {
-              mappedDiagnosisCodes.add(conditionCodeMapper.map(key, person, true));
-            }
-          }
-        }
-        if (!mappedDiagnosisCodes.isEmpty()) {
-          int smallest = Math.min(mappedDiagnosisCodes.size(), carrierDxFields.length);
-          for (int i = 0; i < smallest; i++) {
-            CarrierFields[] dxField = carrierDxFields[i];
-            fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
-            fieldValues.put(dxField[1], "0"); // 0=ICD10
-          }
-          if (!fieldValues.containsKey(CarrierFields.PRNCPAL_DGNS_CD)) {
-            fieldValues.put(CarrierFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
-            fieldValues.put(CarrierFields.LINE_ICD_DGNS_CD, mappedDiagnosisCodes.get(0));
-          }
-        } else {
-          noDiagnoses = true;
-        }
-      }
-      if (noDiagnoses) {
+      List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
+      if (mappedDiagnosisCodes.isEmpty() && encounter.reason == null) {
         continue; // skip this encounter
+      }
+      int smallest = Math.min(mappedDiagnosisCodes.size(), carrierDxFields.length);
+      for (int i = 0; i < smallest; i++) {
+        CarrierFields[] dxField = carrierDxFields[i];
+        fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+        fieldValues.put(dxField[1], "0"); // 0=ICD10
+      }
+      if (!fieldValues.containsKey(CarrierFields.PRNCPAL_DGNS_CD)) {
+        fieldValues.put(CarrierFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
 
       carrier.writeValues(CarrierFields.class, fieldValues);
@@ -1164,33 +1176,19 @@ public class BB2RIFExporter {
 
           // Use the active condition diagnoses to enter mapped values
           // into the diagnoses codes.
-          boolean noDiagnoses = false;
-          if (person.record.present != null && !person.record.present.isEmpty()) {
-            List<String> mappedDiagnosisCodes = new ArrayList<>();
-            for (String key : person.record.present.keySet()) {
-              if (person.record.conditionActive(key)) {
-                if (conditionCodeMapper.canMap(key)) {
-                  mappedDiagnosisCodes.add(conditionCodeMapper.map(key, person, true));
-                }
-              }
-            }
-            if (!mappedDiagnosisCodes.isEmpty()) {
-              int smallest = Math.min(mappedDiagnosisCodes.size(), dmeDxFields.length);
-              for (int i = 0; i < smallest; i++) {
-                DMEFields[] dxField = dmeDxFields[i];
-                fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
-                fieldValues.put(dxField[1], "0"); // 0=ICD10
-              }
-              if (!fieldValues.containsKey(DMEFields.PRNCPAL_DGNS_CD)) {
-                fieldValues.put(DMEFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
-                fieldValues.put(DMEFields.LINE_ICD_DGNS_CD, mappedDiagnosisCodes.get(0));
-              }
-            } else {
-              noDiagnoses = true;
-            }
-          }
-          if (noDiagnoses) {
+          List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
+          if (mappedDiagnosisCodes.isEmpty()) {
             continue; // skip this encounter
+          }
+          int smallest = Math.min(mappedDiagnosisCodes.size(), dmeDxFields.length);
+          for (int i = 0; i < smallest; i++) {
+            DMEFields[] dxField = dmeDxFields[i];
+            fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+            fieldValues.put(dxField[1], "0"); // 0=ICD10
+          }
+          if (!fieldValues.containsKey(DMEFields.PRNCPAL_DGNS_CD)) {
+            fieldValues.put(DMEFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+            fieldValues.put(DMEFields.LINE_ICD_DGNS_CD, mappedDiagnosisCodes.get(0));
           }
 
           // write out field values
@@ -1272,32 +1270,18 @@ public class BB2RIFExporter {
 
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
-      boolean noDiagnoses = false;
-      if (person.record.present != null && !person.record.present.isEmpty()) {
-        List<String> mappedDiagnosisCodes = new ArrayList<>();
-        for (String key : person.record.present.keySet()) {
-          if (person.record.conditionActive(key)) {
-            if (conditionCodeMapper.canMap(key)) {
-              mappedDiagnosisCodes.add(conditionCodeMapper.map(key, person, true));
-            }
-          }
-        }
-        if (!mappedDiagnosisCodes.isEmpty()) {
-          int smallest = Math.min(mappedDiagnosisCodes.size(), homeDxFields.length);
-          for (int i = 0; i < smallest; i++) {
-            HHAFields[] dxField = homeDxFields[i];
-            fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
-            fieldValues.put(dxField[1], "0"); // 0=ICD10
-          }
-          if (!fieldValues.containsKey(HHAFields.PRNCPAL_DGNS_CD)) {
-            fieldValues.put(HHAFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
-          }
-        } else {
-          noDiagnoses = true;
-        }
-      }
-      if (noDiagnoses) {
+      List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
+      if (mappedDiagnosisCodes.isEmpty()) {
         continue; // skip this encounter
+      }
+      int smallest = Math.min(mappedDiagnosisCodes.size(), homeDxFields.length);
+      for (int i = 0; i < smallest; i++) {
+        HHAFields[] dxField = homeDxFields[i];
+        fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+        fieldValues.put(dxField[1], "0"); // 0=ICD10
+      }
+      if (!fieldValues.containsKey(HHAFields.PRNCPAL_DGNS_CD)) {
+        fieldValues.put(HHAFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
 
       home.writeValues(HHAFields.class, fieldValues);
@@ -1345,16 +1329,28 @@ public class BB2RIFExporter {
       fieldValues.put(HospiceFields.PRVDR_STATE_CD,
               locationMapper.getStateCode(encounter.provider.state));
       // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
-      String field = null;
+      // NCH_PTNT_STUS_IND_CD: A = Discharged, B = Died, C = Still a patient
+      String dischargeStatus = null;
+      String patientStatus = null;
+      String dischargeDate = null;
       if (encounter.ended) {
-        field = "1"; // TODO 2=transfer if the next encounter is also inpatient
+        dischargeStatus = "1"; // TODO 2=transfer if the next encounter is also inpatient
+        patientStatus = "A"; // discharged
+        dischargeDate = bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop));
       } else {
-        field = "30"; // the patient is still here
+        dischargeStatus = "30"; // the patient is still here
+        patientStatus = "C"; // still a patient
       }
       if (!person.alive(encounter.stop)) {
-        field = "20"; // the patient died before the encounter ended
+        dischargeStatus = "20"; // the patient died before the encounter ended
+        patientStatus = "B"; // died
+        dischargeDate = bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop));
       }
-      fieldValues.put(HospiceFields.PTNT_DSCHRG_STUS_CD, field);
+      fieldValues.put(HospiceFields.PTNT_DSCHRG_STUS_CD, dischargeStatus);
+      fieldValues.put(HospiceFields.NCH_PTNT_STATUS_IND_CD, patientStatus);
+      if (dischargeDate != null) {
+        fieldValues.put(HospiceFields.NCH_BENE_DSCHRG_DT, dischargeDate);
+      }
       fieldValues.put(HospiceFields.CLM_TOT_CHRG_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       fieldValues.put(HospiceFields.REV_CNTR_TOT_CHRG_AMT,
@@ -1375,32 +1371,18 @@ public class BB2RIFExporter {
 
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
-      boolean noDiagnoses = false;
-      if (person.record.present != null && !person.record.present.isEmpty()) {
-        List<String> mappedDiagnosisCodes = new ArrayList<>();
-        for (String key : person.record.present.keySet()) {
-          if (person.record.conditionActive(key)) {
-            if (conditionCodeMapper.canMap(key)) {
-              mappedDiagnosisCodes.add(conditionCodeMapper.map(key, person, true));
-            }
-          }
-        }
-        if (!mappedDiagnosisCodes.isEmpty()) {
-          int smallest = Math.min(mappedDiagnosisCodes.size(), hospiceDxFields.length);
-          for (int i = 0; i < smallest; i++) {
-            HospiceFields[] dxField = hospiceDxFields[i];
-            fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
-            fieldValues.put(dxField[1], "0"); // 0=ICD10
-          }
-          if (!fieldValues.containsKey(HospiceFields.PRNCPAL_DGNS_CD)) {
-            fieldValues.put(HospiceFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
-          }
-        } else {
-          noDiagnoses = true;
-        }
-      }
-      if (noDiagnoses) {
+      List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
+      if (mappedDiagnosisCodes.isEmpty()) {
         continue; // skip this encounter
+      }
+      int smallest = Math.min(mappedDiagnosisCodes.size(), hospiceDxFields.length);
+      for (int i = 0; i < smallest; i++) {
+        HospiceFields[] dxField = hospiceDxFields[i];
+        fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+        fieldValues.put(dxField[1], "0"); // 0=ICD10
+      }
+      if (!fieldValues.containsKey(HospiceFields.PRNCPAL_DGNS_CD)) {
+        fieldValues.put(HospiceFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
 
       int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
@@ -1512,29 +1494,18 @@ public class BB2RIFExporter {
 
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
-      boolean noDiagnoses = false;
-      if (person.record.present != null && !person.record.present.isEmpty()) {
-        List<String> mappedDiagnosisCodes = new ArrayList<>();
-        for (String key : person.record.present.keySet()) {
-          if (person.record.conditionActive(key)) {
-            if (conditionCodeMapper.canMap(key)) {
-              mappedDiagnosisCodes.add(conditionCodeMapper.map(key, person, true));
-            }
-          }
+      List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
+      boolean noDiagnoses = mappedDiagnosisCodes.isEmpty();
+      if (!noDiagnoses) {
+        int smallest = Math.min(mappedDiagnosisCodes.size(), snfDxFields.length);
+        for (int i = 0; i < smallest; i++) {
+          SNFFields[] dxField = snfDxFields[i];
+          fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+          fieldValues.put(dxField[1], "0"); // 0=ICD10
         }
-        if (!mappedDiagnosisCodes.isEmpty()) {
-          int smallest = Math.min(mappedDiagnosisCodes.size(), snfDxFields.length);
-          for (int i = 0; i < smallest; i++) {
-            SNFFields[] dxField = snfDxFields[i];
-            fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
-            fieldValues.put(dxField[1], "0"); // 0=ICD10
-          }
-          if (!fieldValues.containsKey(SNFFields.PRNCPAL_DGNS_CD)) {
-            fieldValues.put(SNFFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
-            fieldValues.put(SNFFields.ADMTG_DGNS_CD, mappedDiagnosisCodes.get(0));
-          }
-        } else {
-          noDiagnoses = true;
+        if (!fieldValues.containsKey(SNFFields.PRNCPAL_DGNS_CD)) {
+          fieldValues.put(SNFFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+          fieldValues.put(SNFFields.ADMTG_DGNS_CD, mappedDiagnosisCodes.get(0));
         }
       }
 
