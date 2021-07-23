@@ -76,7 +76,10 @@ public class App {
             options.clinicianSeed = Long.parseLong(value);
           } else if (currArg.equalsIgnoreCase("-r")) {
             String value = argsQ.poll();
-            SimpleDateFormat format = new SimpleDateFormat("YYYYMMDD");
+            // note that Y = "week year" and y = "year" per the formatting guidelines
+            // and D = "day in year" and d = "day in month", so what we actually want is yyyyMMdd
+            // see: https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
             format.setTimeZone(TimeZone.getTimeZone("UTC"));
             options.referenceTime = format.parse(value).getTime();
           } else if (currArg.equalsIgnoreCase("-p")) {
