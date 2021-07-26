@@ -965,20 +965,21 @@ public class BB2RIFExporter {
               "" + latestHemoglobin);
 
       // OPTIONAL
+      String icdReasonCode = null;
       if (encounter.reason != null) {
         // If the encounter has a recorded reason, enter the mapped
         // values into the principle diagnoses code.
         if (conditionCodeMapper.canMap(encounter.reason.code)) {
-          String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
-          fieldValues.put(CarrierFields.PRNCPAL_DGNS_CD, icdCode);
-          fieldValues.put(CarrierFields.LINE_ICD_DGNS_CD, icdCode);
+          icdReasonCode = conditionCodeMapper.map(encounter.reason.code, person, true);
+          fieldValues.put(CarrierFields.PRNCPAL_DGNS_CD, icdReasonCode);
+          fieldValues.put(CarrierFields.LINE_ICD_DGNS_CD, icdReasonCode);
         }
       }
 
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
       List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
-      if (mappedDiagnosisCodes.isEmpty() && encounter.reason == null) {
+      if (mappedDiagnosisCodes.isEmpty() && icdReasonCode == null) {
         continue; // skip this encounter
       }
       int smallest = Math.min(mappedDiagnosisCodes.size(), carrierDxFields.length);
