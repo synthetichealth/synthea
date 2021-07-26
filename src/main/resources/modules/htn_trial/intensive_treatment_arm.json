@@ -152,6 +152,18 @@
             }
           ],
           "attribute": "htn_trial_next_action_code"
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "83849-0",
+              "display": "Reason for dose change"
+            }
+          ],
+          "attribute": "htn_trial_next_action_reason"
         }
       ]
     },
@@ -351,6 +363,18 @@
             }
           ],
           "attribute": "htn_trial_next_action_code"
+        },
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "83849-0",
+              "display": "Reason for dose change"
+            }
+          ],
+          "attribute": "htn_trial_next_action_reason"
         }
       ],
       "direct_transition": "Loop back to top"

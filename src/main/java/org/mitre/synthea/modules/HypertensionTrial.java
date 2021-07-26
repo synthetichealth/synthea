@@ -301,6 +301,7 @@ public class HypertensionTrial {
     
     String nextAction;
     Drug nextActionCode = null;
+    String reason = "high bp"; // TODO
     
     if (trialArm.equals("intensive")) {
       if (sbp >= 120) {
@@ -388,6 +389,7 @@ public class HypertensionTrial {
     person.attributes.put("htn_trial_next_action", nextAction);
     if (nextAction != SKIP) {
       person.attributes.put("htn_trial_next_action_code", nextActionCode.code);
+      person.attributes.put("htn_trial_next_action_reason", reason);
     }
   }
    
@@ -412,6 +414,8 @@ public class HypertensionTrial {
           markTitrated(drugToToTitrateDown, person, TitrationDirection.DOWN);
           person.attributes.put("htn_trial_next_action", TITRATE);
           person.attributes.put("htn_trial_next_action_code", drugToToTitrateDown.code);
+          person.attributes.put("htn_trial_next_action_reason", sbp < 114 ? "low BP" : "side effects");
+
         }
       }
     } else {
@@ -427,6 +431,7 @@ public class HypertensionTrial {
           if (drugToEnd == null) {
             person.attributes.remove("htn_trial_next_action");
             person.attributes.remove("htn_trial_next_action_code");
+            person.attributes.remove("htn_trial_next_action_reason");
             return;
           }
           
@@ -437,6 +442,7 @@ public class HypertensionTrial {
           HealthRecord.Medication medToEnd = (HealthRecord.Medication) person.record.present.get(drugToEnd.code.code);
           person.attributes.put("htn_trial_next_action", "end drug");
           person.attributes.put("htn_trial_next_action_code", medToEnd);
+          person.attributes.put("htn_trial_next_action_reason", "low BP");
         } else {
           if (isTitrated(drugToToTitrateDown, person, TitrationDirection.UP)) {
             titrationCounter.decrementAndGet();
@@ -445,6 +451,7 @@ public class HypertensionTrial {
           markTitrated(drugToToTitrateDown, person, TitrationDirection.DOWN);
           person.attributes.put("htn_trial_next_action", TITRATE);
           person.attributes.put("htn_trial_next_action_code", drugToToTitrateDown.code);
+          person.attributes.put("htn_trial_next_action_reason", "low BP");
         }
       } else {
         throw new IllegalStateException("stepdown called for patient that doesn't need it");
