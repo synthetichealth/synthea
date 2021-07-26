@@ -153,10 +153,12 @@ public class BloodPressureValueGenerator extends ValueGenerator {
         String trialArm = person.getString("trial_arm");
         double adherenceRatio;
         
+        // estimate 3-25% of patients are adherent,
+        // so for a single # pick ~15%
         if (trialArm.equals("intensive")) {
-          adherenceRatio = 0.6;
+          adherenceRatio = 0.15;
         } else {
-          adherenceRatio = 0.3;
+          adherenceRatio = 0.15;
         }
         carePlanAdherent = person.rand() < adherenceRatio;
         person.attributes.put("htn_trial_lifestyle_careplan_adherent", carePlanAdherent);

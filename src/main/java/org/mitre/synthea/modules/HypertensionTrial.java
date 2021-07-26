@@ -396,7 +396,7 @@ public class HypertensionTrial {
     String trialArm = person.getString("trial_arm");
     
     if (trialArm.equals("intensive")) {
-      if (sbp < 114 || person.rand() < 0.03) {
+      if (sbp < 114 || person.rand() < 0.07) {
         // titrate down if BP is low, or randomly
         AtomicInteger titrationCounter = (AtomicInteger)person.attributes.get("titration_counter");
   
