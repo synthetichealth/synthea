@@ -20,14 +20,27 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * This class parses the CSV file that is created by calling the CDC API for COVID-19 vaccination
+ * information. The API can be found at:
+ *
+ * https://data.cdc.gov/resource/km4m-vcsb
+ *
+ * The number of doses given in a day is used to select a date for when an individual in the
+ * simulation will get their vaccine. EnumeratedDistributions are created for each age group, with
+ * the days weighted by the number of doses administered on that day.
+ */
 public class C19VaccineAgeDistributions {
   public static final String DOSE_RATES_FILE = "covid_dose_rates.csv";
-  public static final String DATE_COLUMN_HEADER = "Date";
+  public static final String DATE_COLUMN_HEADER = "date";
   public static final LocalDate EXPAND_AGE_TO_TWELVE = LocalDate.of(2021, 5, 10);
-  public static final DateTimeFormatter CSV_DATE_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yy");
+  public static final DateTimeFormatter CSV_DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yyyy");
   public static final HashMap<AgeRange, List<Pair<String, Integer>>> rawDistributions = new HashMap<>();
   public static final HashMap<AgeRange, EnumeratedDistribution<String>> distributions = new HashMap<>();
 
+  /**
+   * Representation of an age range in years with logic for parsing the format used by the CDC API.
+   */
   public static class AgeRange {
     public int min;
     public int max;
@@ -46,29 +59,42 @@ public class C19VaccineAgeDistributions {
       return Objects.hash(min, max);
     }
 
+    /**
+     * Creates an AgeRange by parsing the display string
+     * @param display something like Ages_75+_yrs or Ages_40-49_yrs
+     */
     public AgeRange(String display) {
       this.display = display;
       switch (display.length()) {
-        case 3:
-          // Example: 75+
-          this.min = Integer.parseInt(display.substring(0 ,2));
+        case 12:
+          // Example: Ages_75+_yrs
+          this.min = Integer.parseInt(display.substring(5 ,7));
           this.max = Integer.MAX_VALUE;
           break;
-        case 5:
-          // Example: 12-15
-          this.min = Integer.parseInt(display.substring(0 ,2));
-          this.max = Integer.parseInt(display.substring(3 ,5));
+        case 14:
+          // Example: Ages_40-49_yrs
+          this.min = Integer.parseInt(display.substring(5 ,7));
+          this.max = Integer.parseInt(display.substring(8 ,10));
           break;
         default:
-          throw new IllegalArgumentException("Display should be 3 or 5 characters long.");
+          throw new IllegalArgumentException("Display should be 12 or 14 characters long.");
       }
     }
 
+    /**
+     * Determines whether the specified age falls within this range.
+     * @param age Age in years
+     * @return true if the age is contained in the range
+     */
     public boolean in(int age) {
       return age >= min && age <= max;
     }
   }
 
+  /**
+   * Reads in the CSV file. Creating a List for each AgeRange, where the items are Pairs of the
+   * String representation of the date and an Integer counting the number of doses administered.
+   */
   public static void loadRawDistribution() {
     String fileName = Config.get("generate.lookup_tables") + DOSE_RATES_FILE;
     List<? extends Map<String, String>> rawRates = null;
@@ -98,7 +124,7 @@ public class C19VaccineAgeDistributions {
     // Special case for 12-15. While there were individuals under 16 who received vaccinations
     // prior to May 10, 2021, the numbers are pretty small. This strips out that population for
     // the sake of simplicity in the simulation
-    AgeRange specialCaseRange = new AgeRange("12-15");
+    AgeRange specialCaseRange = new AgeRange("Ages_12-15_yrs");
     rawDistributions.put(specialCaseRange, rawDistributions.get(specialCaseRange).stream()
         .filter(pair -> {
           String dateString = pair.getFirst();
@@ -108,6 +134,10 @@ public class C19VaccineAgeDistributions {
         .collect(Collectors.toList()));
   }
 
+  /**
+   * Processes the raw distribution information into the EnumeratedDistributions that will be used
+   * to select the date of vaccination administration. Must be called after loadRawDistribution().
+   */
   public static void populateDistributions() {
     rawDistributions.forEach((ageRange, dayInfoList) -> {
       double totalDosesForRange =
