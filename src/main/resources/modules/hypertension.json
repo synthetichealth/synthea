@@ -143,7 +143,16 @@
         }
       ],
       "reason": "hypertension_dx",
-      "direct_transition": "Prescribe_Medication"
+      "distributed_transition": [
+        {
+          "transition": "Prescribe_Medication",
+          "distribution": 0.7
+        },
+        {
+          "transition": "Drop Outs",
+          "distribution": 0.3
+        }
+      ]
     },
     "Wellness_Encounter": {
       "type": "Encounter",

@@ -143,43 +143,47 @@ public class BloodPressureValueGenerator extends ValueGenerator {
       maxDrop = -Math.min(delta, 8.0);
     }
     
-    HealthRecord.CarePlan careplan = (HealthRecord.CarePlan) person.record.present.get("1151000175103");
-    if (careplan != null && careplan.stop == 0L) { // technically we should check if start <= time <= stop but oh well
-            
-      boolean carePlanAdherent;
-      if (person.attributes.containsKey("htn_trial_lifestyle_careplan_adherent")) {
-        carePlanAdherent = person.getBoolean("htn_trial_lifestyle_careplan_adherent");
-      } else {
-        String trialArm = person.getString("trial_arm");
-        double adherenceRatio;
-        
-        // estimate 3-25% of patients are adherent,
-        // so for a single # pick ~15%
-        if (trialArm.equals("intensive")) {
-          adherenceRatio = 0.15;
+    // 443402002 = base hypertension careplan
+    // 1151000175103 = trial careplan
+    
+    // consider each independently, but if one is active then skip the rest
+    // (assume they don't add together)
+    String[] carePlanCodes = {"1151000175103", "443402002"};
+    
+    for (String code : carePlanCodes) {
+      double adherenceRatio = 0.15;
+      // estimate 3-25% of patients are adherent,
+      // so for a single # pick ~15%
+      
+      HealthRecord.CarePlan careplan = (HealthRecord.CarePlan) person.record.present.get(code);
+      
+      if (careplan != null && careplan.stop == 0L) { // technically we should check if start <= time <= stop but oh well
+        boolean carePlanAdherent;
+        String key = "htn_trial_" + code + "_careplan_adherent";
+        if (person.attributes.containsKey(key)) {
+          carePlanAdherent = person.getBoolean(key);
         } else {
-          adherenceRatio = 0.15;
+          carePlanAdherent = person.rand() < adherenceRatio;
+          person.attributes.put(key, carePlanAdherent);
         }
-        carePlanAdherent = person.rand() < adherenceRatio;
-        person.attributes.put("htn_trial_lifestyle_careplan_adherent", carePlanAdherent);
-      }
-      if (carePlanAdherent) {
-        long start = careplan.start;
-        
-        if (time > (start + ONE_YEAR)) {
-          // max value
-          return maxDrop;
-        } else if (time < start) {
-          return 0.0;
+        if (carePlanAdherent) {
+          long start = careplan.start;
+          
+          if (time > (start + ONE_YEAR)) {
+            // max value
+            return maxDrop;
+          } else if (time < start) {
+            return 0.0;
+          }
+          
+          // dy / dx = -14/1 = -14
+          // y = (dy/dx) * x
+          // x = (time - start) / 1 yr
+          
+          double x = ((double)(time - start) / ((double)ONE_YEAR));
+          
+          return x * maxDrop;
         }
-        
-        // dy / dx = -14/1 = -14
-        // y = (dy/dx) * x
-        // x = (time - start) / 1 yr
-        
-        double x = ((double)(time - start) / ((double)ONE_YEAR));
-        
-        return x * maxDrop;
       }
     }
     
