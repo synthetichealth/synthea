@@ -151,12 +151,16 @@
       "direct_transition": "CPB"
     },
     "On Pump": {
-      "type": "Simple",
-      "direct_transition": "Cannulation"
+      "type": "SetAttribute",
+      "attribute": "cabg_pump",
+      "direct_transition": "Cannulation",
+      "value": true
     },
     "Off Pump": {
-      "type": "Simple",
-      "direct_transition": "Emergency_Check"
+      "type": "SetAttribute",
+      "attribute": "cabg_pump",
+      "direct_transition": "Emergency_Check",
+      "value": false
     },
     "CPB": {
       "type": "Procedure",

@@ -1,14 +1,17 @@
 package org.mitre.synthea.modules;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.mitre.synthea.engine.Distribution;
 import org.mitre.synthea.engine.Distribution.Kind;
 import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
@@ -29,20 +32,30 @@ public class PerformCABG extends Module {
     return this;
   }
   
-  private static final Code CABG =
+  private static final Code ON_PUMP_CABG =
       new Code("SNOMED-CT", "232717009", "Coronary artery bypass grafting (procedure)");
+  private static final Code OFF_PUMP_CABG =
+      new Code("SNOMED-CT", "418824004", "Off-pump coronary artery bypass (procedure)");
   private static final Code EMERGENCY_CABG =
       new Code("SNOMED-CT", "414088005", "Emergency coronary artery bypass graft (procedure)");
   
-  private static List<Clinician> cabgSurgeons = loadCabgSurgeons();
+  private static Map<String,Clinician> surgeons = new HashMap<String,Clinician>();
+  private static RandomCollection<Clinician> onPumpCabgSurgeons =
+      new RandomCollection<Clinician>();
+  private static RandomCollection<Clinician> offPumpCabgSurgeons =
+      new RandomCollection<Clinician>();
   
-  private static List<Clinician> loadCabgSurgeons() {
+  static {
     try {
-      String cabgSurgeonsCsv = Utilities.readResource("cabg_surgeons.csv");
-      List<LinkedHashMap<String,String>> surgeons = SimpleCSV.parse(cabgSurgeonsCsv);
+      // Load the Surgeon File
+      String cabgSurgeonsCsv = Utilities.readResource("surgeon_stats.csv");
+      List<LinkedHashMap<String,String>> surgeonsFile = SimpleCSV.parse(cabgSurgeonsCsv);
 
-      // only keep "CABG" code lines
-      surgeons.removeIf(s -> !s.get("surgery_group_label").equals("CABG"));
+      // First, extract the unique list of surgeon identifiers
+      Set<String> identifierSet = new HashSet<String>();
+      for (LinkedHashMap<String,String> row : surgeonsFile) {
+        identifierSet.add(row.get("RandomID"));
+      }
 
       if (Provider.getProviderList().isEmpty()) {
         // awful hack to prevent a crash is the test suite,
@@ -57,24 +70,17 @@ public class PerformCABG extends Module {
         Provider.getProviderList().add(dummyProvider);
       }
 
+      // Now create a Clinician representing each surgeon...
       Provider provider = Provider.getProviderList().get(0);
-
       Random clinicianRand = new Random(-1);
-
-      ArrayList<Clinician> clinicianList = new ArrayList<>();
-
       int id = 0;
-      for (LinkedHashMap<String,String> surgeon : surgeons) {
+      for (String surgeonId : identifierSet) {
         Clinician clin = new Clinician(-1, clinicianRand, id++, provider);
-        clin.attributes.putAll(surgeon);
 
-        clin.attributes.put(Clinician.SPECIALTY, "CABG");
-
-        String surgeonCode = (String)surgeon.get("surgeon_code_final");
-
-        clin.attributes.put(Clinician.FIRST_NAME, surgeonCode);
-        clin.attributes.put(Clinician.LAST_NAME, surgeonCode);
-        clin.attributes.put(Clinician.NAME, surgeonCode);
+        clin.attributes.put(Clinician.SPECIALTY, "Surgeon");
+        clin.attributes.put(Clinician.FIRST_NAME, surgeonId);
+        clin.attributes.put(Clinician.LAST_NAME, surgeonId);
+        clin.attributes.put(Clinician.NAME, surgeonId);
         clin.attributes.put(Clinician.NAME_PREFIX, "Dr.");
 
         clin.attributes.put(Clinician.GENDER, clinicianRand.nextBoolean() ? "F" : "M");
@@ -85,24 +91,43 @@ public class PerformCABG extends Module {
         clin.attributes.put(Person.ZIP, provider.zip);
         clin.attributes.put(Person.COORDINATE, provider.getLonLat());
 
-        clinicianList.add(clin);
+        surgeons.put(surgeonId, clin);
       }
 
-      provider.clinicianMap.put("CABG", clinicianList);
+      // Finally, go back through the surgeon file data and create distributions
+      // for each surgery...
+      for (LinkedHashMap<String,String> row : surgeonsFile) {
+        String identifier = row.get("RandomID");
+        Clinician clin = surgeons.get(identifier);
 
-      return clinicianList;
+        String operation = row.get("NewProcGroupFinal");
+        Double weight = Double.parseDouble(row.get("n_surgeries"));
+        Double mean = Double.parseDouble(row.get("mean"));
+        Double std = Double.parseDouble(row.get("std"));
+        Double min = Double.parseDouble(row.get("min"));
+        Double max = Double.parseDouble(row.get("max"));
 
+        Distribution distribution = buildDistribution(mean, std, min, max);
+        clin.attributes.put(operation, distribution);
+        if (operation.equals("onPumpCABG")) {
+          onPumpCabgSurgeons.add(weight, clin);
+        } else if (operation.equals("offPumpCABG")) {
+          offPumpCabgSurgeons.add(weight, clin);
+        }
+      }
     } catch (Exception e) {
       throw new Error(e);
     }
   }
 
-  private static Distribution buildDistribution(double mean, double std) {
+  private static Distribution buildDistribution(double mean, double std, double min, double max) {
     Distribution d = new Distribution();
     d.kind = Kind.GAUSSIAN;
     d.parameters = new HashMap<>();
     d.parameters.put("standardDeviation", std);
     d.parameters.put("mean", mean);
+    d.parameters.put("min", min);
+    d.parameters.put("max", max);
     return d;
   }
   
@@ -113,34 +138,46 @@ public class PerformCABG extends Module {
     if (person.attributes.containsKey("cabg_stop_time")) {
       stopTime = (long) person.attributes.get("cabg_stop_time");
     } else {
-      Clinician surgeon = cabgSurgeons.get(person.randInt(cabgSurgeons.size()));
+      Clinician surgeon = null;
+      Distribution distribution = null;
+
+      boolean onPump = (Boolean) person.attributes.getOrDefault("cabg_pump", true);
+      if (onPump) {
+        surgeon = onPumpCabgSurgeons.next(person);
+        distribution = (Distribution) surgeon.attributes.get("onPumpCABG");
+      } else {
+        surgeon = offPumpCabgSurgeons.next(person);
+        distribution = (Distribution) surgeon.attributes.get("offPumpCABG");
+      }
+
+      double durationInMinutes = distribution.generate(person);
+      long durationInMs = Utilities.convertTime("minutes", durationInMinutes);
+      stopTime = time + durationInMs;
+      person.attributes.put("cabg_stop_time", stopTime);
 
       boolean emergency = false;
       String operativeStatus = (String) person.attributes.get("operative_status");
       if ("emergent".equals(operativeStatus) || "emergent_salvage".equals(operativeStatus)) {
         emergency = true;
       }
-
-      stopTime = time + getCabgDuration(person, surgeon, operativeStatus, time);
-      person.attributes.put("cabg_stop_time", stopTime);
-
-      Code code = emergency ? EMERGENCY_CABG : CABG;
-      
+      Code code = onPump ? ON_PUMP_CABG : OFF_PUMP_CABG;
       String primaryCode = code.code;
       Procedure cabg = person.record.procedure(time, primaryCode);
       cabg.name = this.name;
       cabg.codes.add(code);
-      
+      if (emergency) {
+        cabg.codes.add(EMERGENCY_CABG);
+      }
       cabg.stop = stopTime;
       cabg.clinician = surgeon;
-      
+
       surgeon.incrementEncounters();
-      
+
       // hack this clinician back onto the record?
       person.record.currentEncounter(stopTime).clinician = surgeon;
-      
+
       String reason = "cardiac_surgery_reason";
-      
+
       // below copied from Procedure State to make this easier
       if (person.attributes.containsKey(reason)) {
         Entry condition = (Entry) person.attributes.get(reason);
@@ -155,7 +192,7 @@ public class PerformCABG extends Module {
         }
       }
     }
-    
+
     // note return options here, see State$CallSubmodule
     // if we return true, the submodule completed and processing continues to the next state
     // if we return false, the submodule did not complete (like with a Delay)
@@ -170,63 +207,5 @@ public class PerformCABG extends Module {
     } else {
       return false;
     }
-  }
-
-  /**
-   * Get the duration of a CABG operation.
-   * @param person The person undergoing surgery.
-   * @param surgeon The surgeon conducting the operation.
-   * @param operativeStatus The operative status of the patient.
-   * @param time The time the surgery is scheduled to occur.
-   * @return The length of the surgery in milliseconds.
-   */
-  public static long getCabgDuration(
-      Person person, Clinician surgeon, String operativeStatus, long time) {
-
-    double duration;
-    double min;
-    double max;
-    double mean;
-    double std;
-
-    if ("elective".equals(operativeStatus)) {
-      min = 40;
-      max = 439;
-      mean = 112.617647;
-      std = 52.817343;
-    } else if ("emergent".equals(operativeStatus)) {
-      min = 37;
-      max = 252;
-      mean = 112.38;
-      std = 48.0743;
-    } else if ("emergent_salvage".equals(operativeStatus)) {
-      min = 78;
-      max = 266;
-      mean = 140.285714;
-      std = 62.246056;
-    } else if ("urgent".equals(operativeStatus)) {
-      min = 43;
-      max = 354;
-      mean = 110.297872;
-      std = 45.136946;
-    } else {
-      min = 37;
-      max = 439;
-      mean = 111.88;
-      std = 48.819034;
-    }
-
-    Distribution distribution = buildDistribution(mean, std);
-    duration = distribution.generate(person);
-    
-    long durationInMs = Utilities.convertTime("minutes", duration);
-    long minInMs = Utilities.convertTime("minutes", min);
-    long maxInMs = Utilities.convertTime("minutes", max);
-
-    return bound(durationInMs, minInMs, maxInMs);
-  }
-  
-  private static long bound(long value, long min, long max) {
-    return Math.min(Math.max(value, min), max);
   }
 }
