@@ -83,7 +83,7 @@ fetchAllCOVIDData().then(allData => {
   csvWriter.writeRecords(outputRows);
 
   let ageDosePercentageJSON = JSON.stringify(ageDosePercentage, null, 2);
-  fs.writeFileSync('../resources/modules/lookup_tables/covid_first_shot_percentage_by_age.json',
+  fs.writeFileSync('../resources/covid19/covid_first_shot_percentage_by_age.json',
                    ageDosePercentageJSON);
 });
 

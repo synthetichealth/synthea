@@ -1,5 +1,7 @@
 package org.mitre.synthea.modules.covid;
 
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.apache.commons.math3.util.Pair;
 import org.mitre.synthea.helpers.Config;
@@ -32,11 +34,13 @@ import java.util.stream.Collectors;
  */
 public class C19VaccineAgeDistributions {
   public static final String DOSE_RATES_FILE = "covid_dose_rates.csv";
+  public static final String FIRST_SHOT_PROBS_FILE = "covid_first_shot_percentage_by_age.json";
   public static final String DATE_COLUMN_HEADER = "date";
   public static final LocalDate EXPAND_AGE_TO_TWELVE = LocalDate.of(2021, 5, 10);
   public static final DateTimeFormatter CSV_DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yyyy");
   public static final HashMap<AgeRange, List<Pair<String, Integer>>> rawDistributions = new HashMap<>();
   public static final HashMap<AgeRange, EnumeratedDistribution<String>> distributions = new HashMap<>();
+  public static final HashMap<AgeRange, Double> firstShotProbByAge = new HashMap<>();
 
   /**
    * Representation of an age range in years with logic for parsing the format used by the CDC API.
@@ -89,6 +93,12 @@ public class C19VaccineAgeDistributions {
     public boolean in(int age) {
       return age >= min && age <= max;
     }
+  }
+
+  public static void initialize() {
+    loadRawDistribution();
+    populateDistributions();
+    loadShotProbabilitiesByAge();
   }
 
   /**
@@ -151,6 +161,24 @@ public class C19VaccineAgeDistributions {
     });
   }
 
+  public static void loadShotProbabilitiesByAge() {
+    String fileName = "covid19/" + FIRST_SHOT_PROBS_FILE;
+    LinkedTreeMap<String, Object> rawShotProbs = null;
+    try {
+      String rawJson = Utilities.readResource(fileName);
+      Gson gson = new Gson();
+      rawShotProbs = gson.fromJson(rawJson, LinkedTreeMap.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    rawShotProbs.entrySet().forEach(stringObjectEntry -> {
+      AgeRange ar = new AgeRange(stringObjectEntry.getKey());
+      Double probability = Double.parseDouble((String) stringObjectEntry.getValue());
+      probability = probability / 100;
+      firstShotProbByAge.put(ar, probability);
+    });
+  }
+
   public static long selectShotTime(Person person, long time) {
     int age = person.ageInYears(time);
     AgeRange r = distributions.keySet()
@@ -162,5 +190,15 @@ public class C19VaccineAgeDistributions {
     distro.reseedRandomGenerator(person.randLong());
     LocalDate shotDate = CSV_DATE_FORMAT.parse(distro.sample(), LocalDate::from);
     return LocalDateTime.of(shotDate, LocalTime.NOON).toInstant(ZoneOffset.UTC).toEpochMilli();
+  }
+
+  public static double chanceOfGettingShot(Person person, long time) {
+    int age = person.ageInYears(time);
+    AgeRange r = distributions.keySet()
+        .stream()
+        .filter(ageRange -> ageRange.in(age))
+        .findFirst()
+        .get();
+    return firstShotProbByAge.get(r);
   }
 }

@@ -27,4 +27,13 @@ public class C19VaccineAgeDistributionsTest {
     assertEquals(12, ar.min);
     assertEquals(15, ar.max);
   }
+
+  @Test
+  public void loadShotProbabilitiesByAge() {
+    C19VaccineAgeDistributions.loadShotProbabilitiesByAge();
+    C19VaccineAgeDistributions.AgeRange ar =
+        new C19VaccineAgeDistributions.AgeRange("Ages_75+_yrs");
+    double prob = C19VaccineAgeDistributions.firstShotProbByAge.get(ar);
+    assertTrue(prob > 0.5);
+  }
 }
