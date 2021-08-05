@@ -78,7 +78,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 76	CLM_HOSPC_START_DT_ID	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A		N/A	TRUE	
 77	CLM_ID	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	FALSE	
 78	CLM_IP_ADMSN_TYPE_CD	N/A	N/A	"1,2,3"	N/A	N/A	N/A	N/A	N/A	N/A	Coded	FALSE	
-79	CLM_LINE_NUM	N/A	N/A	1	1	N/A	N/A	N/A	1	1	1	FALSE	
+79	CLM_LINE_NUM	N/A	N/A	1	1	N/A	N/A	N/A	1	Coded	1	FALSE	
 80	CLM_MCO_PD_SW	N/A	N/A	0 (0 = No managed care organization (MCO) payment)	0 (0 = No managed care organization (MCO) payment)	N/A	N/A	N/A	N/A	N/A		TRUE	
 81	CLM_MDCR_NON_PMT_RSN_CD	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A		[Blank]		TRUE	
 82	CLM_NON_UTLZTN_DAYS_CNT	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A	0	FALSE	
@@ -186,7 +186,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 184	HCPCS_2ND_MDFR_CD	N/A	N/A	N/A			N/A				N/A	TRUE	
 185	HCPCS_3RD_MDFR_CD	N/A	N/A	N/A	N/A	N/A	N/A		N/A	N/A	N/A	TRUE	
 186	HCPCS_4TH_MDFR_CD	N/A	N/A	N/A	N/A	N/A	N/A		N/A	N/A	N/A	TRUE	
-187	HCPCS_CD	N/A	N/A				N/A	Coded				TRUE	
+187	HCPCS_CD	N/A	N/A				N/A	Coded		Coded		TRUE	
 188	HMO_10_IND		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 189	HMO_11_IND		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 190	HMO_12_IND		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
@@ -579,7 +579,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 577	REV_CNTR_COINSRNC_WGE_ADJSTD_C	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
 578	REV_CNTR_DDCTBL_COINSRNC_CD	N/A	N/A		N/A	N/A	N/A	N/A				TRUE	
 579	REV_CNTR_DSCNT_IND_CD	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-580	REV_CNTR_DT	N/A	N/A	N/A		N/A	N/A	N/A			N/A	TRUE	
+580	REV_CNTR_DT	N/A	N/A	N/A		N/A	N/A	N/A		Coded	N/A	TRUE	
 581	REV_CNTR_IDE_NDC_UPC_NUM	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 582	REV_CNTR_NCVRD_CHRG_AMT	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE/FALSE	
 583	REV_CNTR_NDC_QTY	N/A	N/A	0	0	N/A	N/A	N/A				TRUE	
