@@ -85,6 +85,10 @@ public class C19ImmunizationModule extends Module {
   public static final String C19_SCHEDULED_SECOND_SHOT = "C19_SCHEDULED_SECOND_SHOT";
   public static final String C19_LATE_ADOPTER_MODEL = "C19_LATE_ADOPTER_MODEL";
 
+  // This is somewhat redundant given that there is C19_VACCINE_STATUS, but GMF modules can't
+  // check attributes set to java enumeration values, so this will just be a simple boolean
+  public static final String C19_FULLY_VACCINATED = "C19_FULLY_VACCINATED";
+
   public enum VaccinationStatus {
     NOT_ELIGIBLE,
     WAITING_FOR_SHOT,
@@ -201,6 +205,7 @@ public class C19ImmunizationModule extends Module {
           person.attributes.put(C19_SCHEDULED_SECOND_SHOT, vaccineUsed.getTimeBetweenDoses() + time);
         } else {
           person.attributes.put(C19_VACCINE_STATUS, VaccinationStatus.FULLY_VACCINATED);
+          person.attributes.put(C19_FULLY_VACCINATED, true);
         }
         break;
       case FIRST_SHOT:
@@ -209,6 +214,7 @@ public class C19ImmunizationModule extends Module {
         if (scheduledSecondShotDate <= time) {
           vaccinate(person, time, 2);
           person.attributes.put(C19_VACCINE_STATUS, VaccinationStatus.FULLY_VACCINATED);
+          person.attributes.put(C19_FULLY_VACCINATED, true);
         }
         break;
       case FULLY_VACCINATED:
@@ -232,6 +238,7 @@ public class C19ImmunizationModule extends Module {
             person.attributes.put(C19_VACCINE_STATUS, VaccinationStatus.WAITING_FOR_SHOT);
             long shotDate = time + Utilities.convertTime("weeks", 1);
             person.attributes.put(C19_SCHEDULED_FIRST_SHOT, shotDate);
+            person.attributes.put(C19_VACCINE, selectVaccine(person, shotDate));
           } else if (model.isNotGettingShot()) {
             person.attributes.put(C19_VACCINE_STATUS, VaccinationStatus.NEVER_GOING_TO_GET_SHOT);
           }

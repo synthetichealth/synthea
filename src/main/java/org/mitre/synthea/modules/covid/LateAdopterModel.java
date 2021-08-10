@@ -3,6 +3,8 @@ package org.mitre.synthea.modules.covid;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
+import java.io.Serializable;
+
 /**
  * The COVID-19 Immunization Module uses actual data to predict whether someone will get a vaccine
  * during the time period for which data is available. As of writing, this is December 2020
@@ -21,7 +23,7 @@ import org.mitre.synthea.world.agents.Person;
  * This model assigns a much higher chance for those 15 and younger to attempt to get the vaccine
  * as that population has not been eligible for very long at the time of writing.
  */
-public class LateAdopterModel {
+public class LateAdopterModel implements Serializable {
   public static double LOWEST_CHANCE_THRESHOLD = 0.001;
 
   private double chanceOfGettingShot;
