@@ -32,7 +32,9 @@
       ]
     },
     "Diagnosis": {
-      "type": "Simple",
+      "type": "SetAttribute",
+      "attribute": "atrial_fibrillation",
+      "value": true,
       "direct_transition": "Terminal"
     }
   }

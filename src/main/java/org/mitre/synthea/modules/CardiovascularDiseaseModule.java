@@ -13,6 +13,7 @@ import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.risk_calculators.ASCVD;
+import org.mitre.synthea.modules.risk_calculators.CHADSVASC;
 import org.mitre.synthea.modules.risk_calculators.Framingham;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
@@ -34,6 +35,8 @@ public final class CardiovascularDiseaseModule extends Module {
     return this;
   }
 
+  private static final boolean USE_FRAMINGHAM = false;
+  
   @Override
   public boolean process(Person person, long time) {
     if (!person.alive(time)) {
@@ -45,8 +48,7 @@ public final class CardiovascularDiseaseModule extends Module {
     // until we can convert this module to GMF
 
     // TODO: make this a config parameter for which risk system we want to use
-    boolean useFramingham = false;
-    if (useFramingham) {
+    if (USE_FRAMINGHAM) {
         calculateCardioRisk(person, time);
     } else {
         calculateAscvdRisk(person, time);
@@ -196,7 +198,8 @@ public final class CardiovascularDiseaseModule extends Module {
     return Math.min(Math.max(value, min), max);
   }
 
-  private static final long tenYearsInMS = TimeUnit.DAYS.toMillis(3650);
+  private static final long tenYearsInMS = TimeUnit.DAYS.toMillis(3652);
+  private static final long oneYearInMS = TimeUnit.DAYS.toMillis(365);
   private static final long oneMonthInMS = TimeUnit.DAYS.toMillis(30); // roughly
   
   /**
@@ -387,11 +390,23 @@ public final class CardiovascularDiseaseModule extends Module {
    * @param time The time.
    */
   private static void calculateStrokeRisk(Person person, long time) {
+    // use the CHA₂DS₂-VASc Score for Atrial Fibrillation Stroke Risk
+    // if the patient has AFib
     
-    double tenStrokeRisk = Framingham.stroke10Year(person, time, false);
-    // divide 10 year risk by 365 * 10 to get daily risk.
-    person.attributes.put("stroke_risk",
-        Utilities.convertRiskToTimestep(tenStrokeRisk, tenYearsInMS));
+    if (USE_FRAMINGHAM) {
+      double framingham10YrRisk = Framingham.stroke10Year(person, time, false);
+      person.attributes.put("stroke_risk",
+          Utilities.convertRiskToTimestep(framingham10YrRisk, tenYearsInMS));
+    } else if ((boolean)person.attributes.getOrDefault("atrial_fibrillation", false)) {
+      double chadsvasc1YrRisk = CHADSVASC.strokeRisk1Year(person, time);
+       person.attributes.put("stroke_risk",
+           Utilities.convertRiskToTimestep(chadsvasc1YrRisk, oneYearInMS));
+    } else {
+      double ascvdRisk = (double) person.attributes.get("ascvd_risk");
+      // TODO: multiple this overall risk by some ratio for stroke
+      person.attributes.put("stroke_risk",
+          Utilities.convertRiskToTimestep(ascvdRisk, tenYearsInMS));
+    }
   }
 
   /**
