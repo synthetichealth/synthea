@@ -144,7 +144,7 @@
         "low": 250,
         "high": 500
       },
-      "direct_transition": "End_Levofloxacin"
+      "direct_transition": "Check_Fever"
     },
     "Febrile_Neutropenia": {
       "type": "ConditionOnset",
@@ -317,7 +317,7 @@
       "direct_transition": "Non-Febrile_Neutropenia",
       "range": {
         "low": 96,
-        "high": 98.9
+        "high": 99
       }
     },
     "Fever": {
@@ -332,7 +332,7 @@
         }
       ],
       "range": {
-        "low": 99,
+        "low": 100.4,
         "high": 103
       },
       "direct_transition": "Febrile_Neutropenia"
@@ -459,7 +459,8 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "Death"
+      "direct_transition": "Death",
+      "reason": "Acute_Myeloid_Leukemia_AML"
     },
     "Determine_Levofloxacin_Prophylaxis": {
       "type": "Simple",
@@ -499,7 +500,8 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "End_AML"
+      "direct_transition": "End_Levofloxacin",
+      "reason": "Acute_Myeloid_Leukemia_AML"
     },
     "Delay_1": {
       "type": "Delay",
@@ -757,7 +759,7 @@
     },
     "End_Levofloxacin": {
       "type": "MedicationEnd",
-      "direct_transition": "Check_Fever",
+      "direct_transition": "End_AML",
       "medication_order": "Levofloxacin",
       "codes": [
         {
@@ -791,10 +793,10 @@
   "remarks": [
     "Module Title: Acute Myeloid Leukemia for PCOR Research",
     "Version Number: 1.0",
-    "Last Updated: 7/20/2021",
+    "Last Updated: 8/12/2021",
     "Module Steward: ONC",
     "Module Developer: Clinovations Government + Health",
-    "Description: This module models Levofloxacin prophylaxis in patients age <=21 years of age. It is based on a microsimulation study to effectively test the utility of Synthea data for PCOR hypothesis testing. This module was designed with a microsimulation-based hypothesis from a study by McCormick et al., which provides an evaluation of the cost effectiveness of levofloxacin use in children with acute myeloid leukemia (AML). The McCormick study includes a decision-analysis model designed to evaluate the cost-effectiveness of levofloxacin prophylaxis compared to no prophylaxis in patients less than or equal to 21 years of age with AML during a single chemotherapy inpatient visit. The study reports outcomes, including the cost of bacterial infection, cost per ICU admission, and cost per death avoided. In order to replicate the costs within this study, costs within appropriate Synthea cost lookup files were updated. In addition, one city in the default demographics file within Synthea was updated with gender, race, and ethnicity parameters from the McCormick study in order to generate similar population characteristics.",
+    "Description: This module models Levofloxacin prophylaxis in patients age <=21 years of age. It is based on a microsimulation study to effectively test the utility of Synthea data for PCOR hypothesis testing. This module was designed with a microsimulation-based hypothesis from a study by McCormick et al., which provides an evaluation of the cost effectiveness of levofloxacin use in children with acute myeloid leukemia (AML). The McCormick study includes a decision-analysis model designed to evaluate the cost-effectiveness of levofloxacin prophylaxis compared to no prophylaxis in patients less than or equal to 21 years of age with AML during a single chemotherapy inpatient visit. The study reports outcomes, including the cost of bacterial infection, cost per ICU admission, and cost per death avoided. In order to replicate the costs within this study, costs within appropriate Synthea cost lookup files were updated. In addition, one city in the default demographics file within Synthea was updated with gender, race, and ethnicity parameters from the McCormick study in order to generate similar population characteristics. This module is not intended to include all possible clinical issues related to the patient with acute myeloid leukemia (AML) or represent a clinical care guideline of any kind.",
     "",
     "Reference: McCormick M, Friehling E, Kalpatthi R, Siripong N, Smith K. Cost‐effectiveness of levofloxacin prophylaxis against bacterial infection in pediatric patients with acute myeloid leukemia. Pediatric Blood & Cancer. 2020 Oct;67(10):e28469",
     "",
