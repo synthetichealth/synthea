@@ -236,7 +236,7 @@ public final class CardiovascularDiseaseModule extends Module {
     person.attributes.put("cardio_risk", timestepRisk);
     
     double monthlyRisk = Utilities.convertRiskToTimestep(ascvdRisk, tenYearsInMS, oneMonthInMS);
-    person.attributes.put("mi_risk", monthlyRisk);
+    person.attributes.put("mi_risk", monthlyRisk * ASCVD.MI_RATIO);
     // drives the myocardial_infarction module
     
     person.attributes.put("ihd_risk", monthlyRisk * 5);
@@ -363,7 +363,7 @@ public final class CardiovascularDiseaseModule extends Module {
   private static void calculateAtrialFibrillationRisk(Person person, long time) {
     double afRisk = Framingham.atrialFibrillation10Year(person, time, false);
     person.attributes.put("atrial_fibrillation_risk",
-        Utilities.convertRiskToTimestep(afRisk, tenYearsInMS));
+        Utilities.convertRiskToTimestep(afRisk, tenYearsInMS, oneMonthInMS));
   }
 
 
@@ -396,16 +396,15 @@ public final class CardiovascularDiseaseModule extends Module {
     if (USE_FRAMINGHAM) {
       double framingham10YrRisk = Framingham.stroke10Year(person, time, false);
       person.attributes.put("stroke_risk",
-          Utilities.convertRiskToTimestep(framingham10YrRisk, tenYearsInMS));
+          Utilities.convertRiskToTimestep(framingham10YrRisk, tenYearsInMS, oneMonthInMS));
     } else if ((boolean)person.attributes.getOrDefault("atrial_fibrillation", false)) {
       double chadsvasc1YrRisk = CHADSVASC.strokeRisk1Year(person, time);
        person.attributes.put("stroke_risk",
-           Utilities.convertRiskToTimestep(chadsvasc1YrRisk, oneYearInMS));
+           Utilities.convertRiskToTimestep(chadsvasc1YrRisk, oneYearInMS, oneMonthInMS));
     } else {
       double ascvdRisk = (double) person.attributes.get("ascvd_risk");
-      // TODO: multiple this overall risk by some ratio for stroke
-      person.attributes.put("stroke_risk",
-          Utilities.convertRiskToTimestep(ascvdRisk, tenYearsInMS));
+      double monthlyRisk = Utilities.convertRiskToTimestep(ascvdRisk, tenYearsInMS, oneMonthInMS);
+      person.attributes.put("stroke_risk", monthlyRisk * ASCVD.STROKE_RATIO);
     }
   }
 

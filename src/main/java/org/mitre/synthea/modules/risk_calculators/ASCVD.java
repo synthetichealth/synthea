@@ -39,6 +39,13 @@ public class ASCVD {
   };
 
 
+  // relative ratios of how often each of these events occurs
+  // these should add up to 1.0
+  public static final double MI_RATIO = 0.5;
+  public static final double STROKE_RATIO = 0.5;
+  // TODO: other outcomes?
+  
+  
   /**
    * Calculates the 10-year ASCVD Risk Estimates, based on the
    * Pooled Cohort Equations for Estimation of 10-Year Risk of Hard ASCVD.

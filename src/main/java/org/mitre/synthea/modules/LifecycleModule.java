@@ -614,9 +614,49 @@ public final class LifecycleModule extends Module {
       index = (Integer) person.attributes.getOrDefault("diabetes_severity", 1);
     }
 
-    double totalCholesterol = person.rand(CHOLESTEROL_RANGE[index], CHOLESTEROL_RANGE[index + 1]);
+    double totalCholesterol;
     double triglycerides = person.rand(TRIGLYCERIDES_RANGE[index], TRIGLYCERIDES_RANGE[index + 1]);
-    double hdl = person.rand(HDL_RANGE[index], HDL_RANGE[index + 1]);
+    double hdl;
+    
+    if (index == 0) {
+      boolean lowHDL, highTotalChol;
+      if (person.attributes.containsKey("low_hdl")) {
+        lowHDL = (boolean)person.attributes.get("low_hdl");
+        highTotalChol = (boolean)person.attributes.get("high_total_chol");
+      } else {
+        boolean female = "F".equals(person.attributes.get(Person.GENDER));
+
+        // gender is the largest factor, much more than age or race/ethnicity
+        double chanceOfLowHDL = female ? .085 : .266;
+
+        lowHDL = person.rand() < chanceOfLowHDL; 
+        // https://www.cdc.gov/nchs/data/databriefs/db363-h.pdf
+        
+        person.attributes.put("low_hdl", lowHDL);
+        
+        highTotalChol = person.rand() < .114;
+        person.attributes.put("high_total_chol", highTotalChol);
+      }
+      
+      
+      // normal distribution: sd * randGaussian() + mean
+      if (lowHDL) {
+        hdl = 3 * person.randGaussian() + 30;
+      } else {
+        hdl = 5 * person.randGaussian() + 55;
+      }
+      
+      if (highTotalChol) {
+        // high is 240 or more
+        totalCholesterol = 20 * person.randGaussian() + 280;
+      } else {
+        totalCholesterol = 30 * person.randGaussian() + 170;
+      }
+    } else {
+      totalCholesterol = person.rand(CHOLESTEROL_RANGE[index], CHOLESTEROL_RANGE[index + 1]);
+      hdl = person.rand(HDL_RANGE[index], HDL_RANGE[index + 1]);
+    }
+    
     double ldl = totalCholesterol - hdl - (0.2 * triglycerides);
 
     person.setVitalSign(VitalSign.TOTAL_CHOLESTEROL, totalCholesterol);
@@ -933,16 +973,19 @@ public final class LifecycleModule extends Module {
         if (person.rand() < probability) {
           person.attributes.put(Person.SMOKER, false);
           person.attributes.put(QUIT_SMOKING_AGE, age);
-        } else {
-          double quitSmokingBaseline = Double
-              .parseDouble(Config.get("lifecycle.quit_smoking.baseline", "0.01"));
-          double quitSmokingTimestepDelta = Double
-              .parseDouble(Config.get("lifecycle.quit_smoking.timestep_delta", "-0.1"));
-          probability += quitSmokingTimestepDelta;
-          if (probability < quitSmokingBaseline) {
-            probability = quitSmokingBaseline;
-          }
-          person.attributes.put(QUIT_SMOKING_PROBABILITY, probability);
+          // timestep delta isn't useful without a way of boosting it past the baseline
+          // which we don't currently have
+          // so it just wastes cycles. disable it entirely for now
+//        } else {
+//          double quitSmokingBaseline = Double
+//              .parseDouble(Config.get("lifecycle.quit_smoking.baseline", "0.01"));
+//          double quitSmokingTimestepDelta = Double
+//              .parseDouble(Config.get("lifecycle.quit_smoking.timestep_delta", "-0.1"));
+//          probability += quitSmokingTimestepDelta;
+//          if (probability < quitSmokingBaseline) {
+//            probability = quitSmokingBaseline;
+//          }
+//          person.attributes.put(QUIT_SMOKING_PROBABILITY, probability);
         }
       }
     }
