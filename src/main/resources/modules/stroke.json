@@ -25,7 +25,16 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "End_Encounter"
+      "distributed_transition": [
+        {
+          "transition": "Death",
+          "distribution": 0.175
+        },
+        {
+          "transition": "End_Encounter",
+          "distribution": 0.825
+        }
+      ]
     },
     "Stroke": {
       "type": "ConditionOnset",
@@ -134,6 +143,23 @@
         "unit": "minutes"
       },
       "direct_transition": "Mechanical Thrombectomy"
+    },
+    "Death": {
+      "type": "Death",
+      "range": {
+        "low": 1,
+        "high": 30,
+        "unit": "days"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 230690007,
+          "display": "Stroke"
+        }
+      ],
+      "direct_transition": "End_Encounter"
     }
-  }
+  },
+  "gmf_version": 2
 }
