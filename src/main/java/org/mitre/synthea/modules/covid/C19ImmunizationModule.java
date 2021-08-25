@@ -197,15 +197,15 @@ public class C19ImmunizationModule extends Module {
             // wait for COVID to resolve before getting shot
             return false;
           }
-        }
-        vaccinate(person, time, 1);
-        C19Vaccine vaccineUsed = C19Vaccine.EUAs.get(person.attributes.get(C19_VACCINE));
-        if (vaccineUsed.isTwoDose()) {
-          person.attributes.put(C19_VACCINE_STATUS, VaccinationStatus.FIRST_SHOT);
-          person.attributes.put(C19_SCHEDULED_SECOND_SHOT, vaccineUsed.getTimeBetweenDoses() + time);
-        } else {
-          person.attributes.put(C19_VACCINE_STATUS, VaccinationStatus.FULLY_VACCINATED);
-          person.attributes.put(C19_FULLY_VACCINATED, true);
+          vaccinate(person, time, 1);
+          C19Vaccine vaccineUsed = C19Vaccine.EUAs.get(person.attributes.get(C19_VACCINE));
+          if (vaccineUsed.isTwoDose()) {
+            person.attributes.put(C19_VACCINE_STATUS, VaccinationStatus.FIRST_SHOT);
+            person.attributes.put(C19_SCHEDULED_SECOND_SHOT, vaccineUsed.getTimeBetweenDoses() + time);
+          } else {
+            person.attributes.put(C19_VACCINE_STATUS, VaccinationStatus.FULLY_VACCINATED);
+            person.attributes.put(C19_FULLY_VACCINATED, true);
+          }
         }
         break;
       case FIRST_SHOT:
