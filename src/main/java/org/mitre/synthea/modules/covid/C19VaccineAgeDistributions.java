@@ -2,12 +2,6 @@ package org.mitre.synthea.modules.covid;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import org.apache.commons.math3.distribution.EnumeratedDistribution;
-import org.apache.commons.math3.util.Pair;
-import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.helpers.SimpleCSV;
-import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Person;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -22,15 +16,24 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.commons.math3.distribution.EnumeratedDistribution;
+import org.apache.commons.math3.util.Pair;
+import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.SimpleCSV;
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Person;
+
 /**
  * This class parses the CSV file that is created by calling the CDC API for COVID-19 vaccination
  * information. The API can be found at:
- *
+ * <p>
  * https://data.cdc.gov/resource/km4m-vcsb
- *
+ * </p>
+ * <p>
  * The number of doses given in a day is used to select a date for when an individual in the
  * simulation will get their vaccine. EnumeratedDistributions are created for each age group, with
  * the days weighted by the number of doses administered on that day.
+ * </p>
  */
 public class C19VaccineAgeDistributions {
   public static final String DOSE_RATES_FILE = "covid_dose_rates.csv";
@@ -38,8 +41,10 @@ public class C19VaccineAgeDistributions {
   public static final String DATE_COLUMN_HEADER = "date";
   public static final LocalDate EXPAND_AGE_TO_TWELVE = LocalDate.of(2021, 5, 10);
   public static final DateTimeFormatter CSV_DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yyyy");
-  public static final HashMap<AgeRange, List<Pair<String, Integer>>> rawDistributions = new HashMap<>();
-  public static final HashMap<AgeRange, EnumeratedDistribution<String>> distributions = new HashMap<>();
+  public static final HashMap<AgeRange,
+      List<Pair<String, Integer>>> rawDistributions = new HashMap<>();
+  public static final HashMap<AgeRange,
+      EnumeratedDistribution<String>> distributions = new HashMap<>();
   public static final HashMap<AgeRange, Double> firstShotProbByAge = new HashMap<>();
 
   /**
@@ -52,8 +57,12 @@ public class C19VaccineAgeDistributions {
 
     @Override
     public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
       AgeRange ageRange = (AgeRange) o;
       return min == ageRange.min && max == ageRange.max;
     }
@@ -64,7 +73,7 @@ public class C19VaccineAgeDistributions {
     }
 
     /**
-     * Creates an AgeRange by parsing the display string
+     * Creates an AgeRange by parsing the display string.
      * @param display something like Ages_75+_yrs or Ages_40-49_yrs
      */
     public AgeRange(String display) {
@@ -72,13 +81,13 @@ public class C19VaccineAgeDistributions {
       switch (display.length()) {
         case 12:
           // Example: Ages_75+_yrs
-          this.min = Integer.parseInt(display.substring(5 ,7));
+          this.min = Integer.parseInt(display.substring(5, 7));
           this.max = Integer.MAX_VALUE;
           break;
         case 14:
           // Example: Ages_40-49_yrs
-          this.min = Integer.parseInt(display.substring(5 ,7));
-          this.max = Integer.parseInt(display.substring(8 ,10));
+          this.min = Integer.parseInt(display.substring(5, 7));
+          this.max = Integer.parseInt(display.substring(8, 10));
           break;
         default:
           throw new IllegalArgumentException("Display should be 12 or 14 characters long.");
@@ -95,6 +104,9 @@ public class C19VaccineAgeDistributions {
     }
   }
 
+  /**
+   * Run all methods needed to interact with the methods to select shot time or shot chance.
+   */
   public static void initialize() {
     loadRawDistribution();
     populateDistributions();
@@ -150,8 +162,8 @@ public class C19VaccineAgeDistributions {
    */
   public static void populateDistributions() {
     rawDistributions.forEach((ageRange, dayInfoList) -> {
-      double totalDosesForRange =
-          dayInfoList.stream().map(pair -> pair.getSecond()).collect(Collectors.summingInt(Integer::intValue));
+      double totalDosesForRange = dayInfoList.stream()
+          .map(pair -> pair.getSecond()).collect(Collectors.summingInt(Integer::intValue));
       List<Pair<String, Double>> pmf = dayInfoList.stream().map(dayInfo -> {
         double dosesForDay = dayInfo.getSecond();
         double weight = dosesForDay / totalDosesForRange;
@@ -161,6 +173,10 @@ public class C19VaccineAgeDistributions {
     });
   }
 
+  /**
+   * Load the JSON file that has a map of age ranges to percentage of that age range that has been
+   * vaccinated.
+   */
   public static void loadShotProbabilitiesByAge() {
     String fileName = "covid19/" + FIRST_SHOT_PROBS_FILE;
     LinkedTreeMap<String, Object> rawShotProbs = null;
@@ -179,6 +195,13 @@ public class C19VaccineAgeDistributions {
     });
   }
 
+  /**
+   * Selects a time for an individual to get the COVID-19 vaccine based on their age and historical
+   * distributions of vaccine administration based on age.
+   * @param person The person to use
+   * @param time Time in the simulation used for age calculation
+   * @return A time in the simulation when the person should get their first (only?) shot
+   */
   public static long selectShotTime(Person person, long time) {
     int age = person.ageInYears(time);
     AgeRange r = distributions.keySet()
@@ -192,6 +215,12 @@ public class C19VaccineAgeDistributions {
     return LocalDateTime.of(shotDate, LocalTime.NOON).toInstant(ZoneOffset.UTC).toEpochMilli();
   }
 
+  /**
+   * Determines the likelihood that an individual will get a COVID-19 vaccine based on their age.
+   * @param person The person to use
+   * @param time Time in the simulation used for age calculation
+   * @return a value between 0 - 1 representing the chance the person will get vaccinated
+   */
   public static double chanceOfGettingShot(Person person, long time) {
     int age = person.ageInYears(time);
     AgeRange r = distributions.keySet()

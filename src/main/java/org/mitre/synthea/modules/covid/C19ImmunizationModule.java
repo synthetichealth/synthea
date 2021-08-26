@@ -1,66 +1,79 @@
 package org.mitre.synthea.modules.covid;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-
 /**
  * A module to simulate COVID19 Immunizations in the United States.
- *
+ * <p>
  * People meeting the criteria for vaccination may get one as soon as it it available. A percentage
  * of the population will opt not to get vaccinated and drop out. For individuals in the simulation
  * who "want" the vaccine, they will have a randomly weighted delay based on their age, as vaccines
  * were typically made available to older age groups before the entire public.
- *
+ * </p>
+ * <p>
  * Pfizer-BioNTech COVID-19 Vaccine emergency use authorization on December 11, 2020 for people
  * over 16. Expanded to 12+ on May 10, 2021.
  * https://www.fda.gov/emergency-preparedness-and-response/coronavirus-disease-2019-covid-19/pfizer-biontech-covid-19-vaccine
- *
+ * </p>
+ * <p>
  * Moderna COVID-19 Vaccine emergency use authorization on December 18, 2020 for people over 18
  * https://www.fda.gov/news-events/press-announcements/fda-takes-additional-action-fight-against-covid-19-issuing-emergency-use-authorization-second-covid
- *
- * Johnson &amp; Johnson (Janssen) COVID-19 Vaccine emergency use authorization on February 27, 2021 for people
- * over 18.
+ * </p>
+ * <p>
+ * Johnson &amp; Johnson (Janssen) COVID-19 Vaccine emergency use authorization on February 27, 2021
+ * for people over 18.
  * https://www.fda.gov/emergency-preparedness-and-response/coronavirus-disease-2019-covid-19/janssen-covid-19-vaccine
- *
+ * </p>
+ * <p>
  * From December 11, 2020 through December 17, 2020, only the Pfizer-BioNTech COVID-19 Vaccine is
  * available. From December 18, 2020 through February 26, 2021, the Pfizer-BioNTech COVID-19 Vaccine
  * and Moderna COVID-19 Vaccine will be available, with them being distributed equally.
- *
+ * </p>
+ * <p>
  * On February 27, 2021 all three vaccines are distributed. Distribution has the following weights:
  * * Pfizer-BioNTech COVID-19 Vaccine - 53.1%
  * * Moderna COVID-19 Vaccine - 39.8%
  * * Johnson &amp; Johnson (Janssen) COVID-19 - 7.1%
- *
+ * </p>
+ * <p>
  * Distribution ratios were calculated using doses administered information from Our World in Data
  * on June 23, 2021.
  * https://ourworldindata.org/grapher/covid-vaccine-doses-by-manufacturer?country=~USA
- *
+ * </p>
+ * <p>
  * Doses of two shot vaccines were divided by 1.956 to determine the number of individuals
  * vaccinated. These results were combined with the Janssen vaccine doses to determine ratios.
- *
+ * </p>
+ * <p>
  * The factor of 1.956 was chosen as a CDC MMWR showed that 95.6% of individuals were returning for
  * their second dose, if they had a two dose vaccine.
  * https://www.cdc.gov/mmwr/volumes/70/wr/mm7011e2.htm
- *
+ * </p>
+ * <p>
  * This module does not represent the "pause" of the Janssen vaccine.
- *
+ * </p>
+ * <p>
  * When people get vaccinated is based on data from the CDC COVID Data Tracker.
  * https://covid.cdc.gov/covid-data-tracker
- *
+ * </p>
+ * <p>
  * Distributions are created for each age group based on actual doses per day. The weight of each
  * day being selected is based on the number of doses given that day divided by the overall number
  * of doses for the age group. This will have the effect of shifting the doses a little later, as
  * the data does not reflect the difference between first and second dose, but it should be close
  * enough to mirror the general trends by age group.
- *
+ * </p>
+ * <p>
  * The chance that someone gets vaccinated is based on vaccination percentage for age group as of
  * June 25, 2021. There are kids under 12 who have received a dose of COVID Vaccine in the US. The
  * number is small and currently ignored by this module.
+ * </p>
  */
 public class C19ImmunizationModule extends Module {
   public static final String COVID_CODE = "840539006";
@@ -80,9 +93,14 @@ public class C19ImmunizationModule extends Module {
   public static final int EXPANDED_ELIGIBLE_AGE = 12;
 
   public static final String C19_VACCINE_STATUS = "C19_VACCINE_STATUS";
+  // Attribute used to store the vaccine to give to the individual
   public static final String C19_VACCINE = "C19_VACCINE";
   public static final String C19_SCHEDULED_FIRST_SHOT = "C19_SCHEDULED_FIRST_SHOT";
   public static final String C19_SCHEDULED_SECOND_SHOT = "C19_SCHEDULED_SECOND_SHOT";
+  // If someone does not get vaccinated in the period of time that they are eligible and Synthea
+  // has national statistics on, there is still a chance that they will get vaccinated. The chance
+  // is stored in their attributes under this key, where the chance of being vaccinated decays
+  // exponentially.
   public static final String C19_LATE_ADOPTER_MODEL = "C19_LATE_ADOPTER_MODEL";
 
   // This is somewhat redundant given that there is C19_VACCINE_STATUS, but GMF modules can't
@@ -98,6 +116,9 @@ public class C19ImmunizationModule extends Module {
     FULLY_VACCINATED
   }
 
+  /**
+   * Create and initialize am instance of the module.
+   */
   public C19ImmunizationModule() {
     C19VaccineAgeDistributions.initialize();
     C19Vaccine.initialize();
@@ -108,23 +129,51 @@ public class C19ImmunizationModule extends Module {
     return this;
   }
 
+  /**
+   * Checks a person's health record to see if they currently have COVID-19.
+   * @param person the person to check
+   * @return true if there is an active COVID-19 condition on the record.
+   */
   public static boolean currentlyHasCOVID(Person person) {
     return person.record.conditionActive(COVID_CODE);
   }
 
+  /**
+   * Check to see if a person is eligible for a COVID-19 vaccine at the time in the simulation.
+   * The check is based on date (when a vaccine was given an EUA) and age
+   * @param person the person to check
+   * @param time current time in the simulation
+   * @return true if the person would be eligible for a vaccine at the point in the simulation
+   */
   public static boolean eligibleForShot(Person person, long time) {
     int age = person.ageInYears(time);
-    if (age >= FIRST_ELIGIBLE_AGE || (time >= EXPAND_AGE_TO_TWELVE) && age >= EXPANDED_ELIGIBLE_AGE) {
+    if (age >= FIRST_ELIGIBLE_AGE
+        || (time >= EXPAND_AGE_TO_TWELVE) && age >= EXPANDED_ELIGIBLE_AGE) {
       return true;
     }
     return false;
   }
 
+  /**
+   * Given an individual, randomly select whether they will get vaccinated, with the selection
+   * weighted by the proportion of individuals in their age group who have been vaccinated according
+   * to national statistics.
+   * @param person the person to check
+   * @param time current time in the simulation
+   * @return true if the person should proceed to vaccination
+   */
   public static boolean decideOnShot(Person person, long time) {
     double chanceOfGettingShot = C19VaccineAgeDistributions.chanceOfGettingShot(person, time);
     return chanceOfGettingShot <= person.rand();
   }
 
+  /**
+   * Select a vaccine for an individual based on national distribution statistics and whether the
+   * vaccine was eligible for the time in simulation.
+   * @param person the person to check
+   * @param time current time in the simulation
+   * @return a vaccine that should be administered to the person
+   */
   public static C19Vaccine.EUASet selectVaccine(Person person, long time) {
     if (time < MODERNA_APPROVED) {
       return C19Vaccine.EUASet.PFIZER;
@@ -136,14 +185,21 @@ public class C19ImmunizationModule extends Module {
         return C19Vaccine.EUASet.MODERNA;
       }
     } else if (time > JANSSEN_APPROVED) {
-        return C19Vaccine.selectShot(person);
+      return C19Vaccine.selectShot(person);
     }
 
     return null;
   }
 
+  /**
+   * Provide a COVID-19 vaccine to the person. Add an Immunization to their health record.
+   * @param person the person to check
+   * @param time current time in the simulation
+   * @param series 1 - for first shot, 2 - for second shot
+   */
   public static void vaccinate(Person person, long time, int series) {
-    HealthRecord.Encounter encounter = person.encounterStart(time, HealthRecord.EncounterType.OUTPATIENT);
+    HealthRecord.Encounter encounter = person.encounterStart(time,
+        HealthRecord.EncounterType.OUTPATIENT);
     HealthRecord.Code encounterCode = new HealthRecord.Code("http://snomed.info/sct", "33879002",
         "Administration of vaccine to produce active immunity (procedure)");
     encounter.codes.add(encounterCode);
@@ -173,7 +229,7 @@ public class C19ImmunizationModule extends Module {
     switch (status) {
       case NOT_ELIGIBLE:
         if (eligibleForShot(person, time)) {
-          if(decideOnShot(person, time)) {
+          if (decideOnShot(person, time)) {
             person.attributes.put(C19_VACCINE_STATUS, VaccinationStatus.WAITING_FOR_SHOT);
             long shotDate = C19VaccineAgeDistributions.selectShotTime(person, time);
             if (shotDate < time) {
@@ -201,7 +257,8 @@ public class C19ImmunizationModule extends Module {
           C19Vaccine vaccineUsed = C19Vaccine.EUAs.get(person.attributes.get(C19_VACCINE));
           if (vaccineUsed.isTwoDose()) {
             person.attributes.put(C19_VACCINE_STATUS, VaccinationStatus.FIRST_SHOT);
-            person.attributes.put(C19_SCHEDULED_SECOND_SHOT, vaccineUsed.getTimeBetweenDoses() + time);
+            person.attributes.put(C19_SCHEDULED_SECOND_SHOT,
+                vaccineUsed.getTimeBetweenDoses() + time);
           } else {
             person.attributes.put(C19_VACCINE_STATUS, VaccinationStatus.FULLY_VACCINATED);
             person.attributes.put(C19_FULLY_VACCINATED, true);
@@ -246,8 +303,8 @@ public class C19ImmunizationModule extends Module {
         break;
       default:
         // should never get here
-        throw new IllegalStateException("COVID-19 Immunization entered an unknown state based on" +
-            "a person's vaccination status");
+        throw new IllegalStateException("COVID-19 Immunization entered an unknown state based on"
+            + "a person's vaccination status");
     }
 
     return false;
