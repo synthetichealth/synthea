@@ -78,7 +78,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 76	CLM_HOSPC_START_DT_ID	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A		N/A	TRUE	
 77	CLM_ID	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	FALSE	
 78	CLM_IP_ADMSN_TYPE_CD	N/A	N/A	"1,2,3"	N/A	N/A	N/A	N/A	N/A	N/A	Coded	FALSE	
-79	CLM_LINE_NUM	N/A	N/A	1	1	N/A	N/A	N/A	1	Coded	1	FALSE	
+79	CLM_LINE_NUM	N/A	N/A	1	1	N/A	N/A	N/A	Coded	Coded	1	FALSE	
 80	CLM_MCO_PD_SW	N/A	N/A	0 (0 = No managed care organization (MCO) payment)	0 (0 = No managed care organization (MCO) payment)	N/A	N/A	N/A	N/A	N/A		TRUE	
 81	CLM_MDCR_NON_PMT_RSN_CD	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A		[Blank]		TRUE	
 82	CLM_NON_UTLZTN_DAYS_CNT	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A	0	FALSE	
@@ -186,7 +186,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 184	HCPCS_2ND_MDFR_CD	N/A	N/A	N/A			N/A				N/A	TRUE	
 185	HCPCS_3RD_MDFR_CD	N/A	N/A	N/A	N/A	N/A	N/A		N/A	N/A	N/A	TRUE	
 186	HCPCS_4TH_MDFR_CD	N/A	N/A	N/A	N/A	N/A	N/A		N/A	N/A	N/A	TRUE	
-187	HCPCS_CD	N/A	N/A				N/A	Coded		Coded		TRUE	
+187	HCPCS_CD	N/A	N/A				N/A	Coded	Coded	Coded		TRUE	
 188	HMO_10_IND		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 189	HMO_11_IND		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 190	HMO_12_IND		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
@@ -426,7 +426,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 424	NSTD_FRMT_CD	N/A	N/A	N/A	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	TRUE	
 425	OP_PHYSN_NPI	N/A	N/A	[Blank]	Coded	N/A	N/A	N/A	N/A	N/A		TRUE	
 426	OP_PHYSN_UPIN	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	N/A	N/A		TRUE	
-427	ORG_NPI_NUM	N/A	N/A	Coded	Coded		N/A	N/A		Coded		TRUE	
+427	ORG_NPI_NUM	N/A	N/A	Coded	Coded		N/A	N/A	Coded	Coded		TRUE	
 428	OTHR_TROOP_AMT	N/A	N/A	N/A	N/A	N/A	0	N/A	N/A	N/A	N/A	FALSE	
 429	OT_PHYSN_NPI	N/A	N/A			N/A	N/A	N/A	N/A	N/A		TRUE	
 430	OT_PHYSN_UPIN	N/A	N/A			N/A	N/A	N/A	N/A	N/A		TRUE	
@@ -577,9 +577,9 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 575	REV_CNTR_BLOOD_DDCTBL_AMT	N/A	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
 576	REV_CNTR_CASH_DDCTBL_AMT	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
 577	REV_CNTR_COINSRNC_WGE_ADJSTD_C	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
-578	REV_CNTR_DDCTBL_COINSRNC_CD	N/A	N/A		N/A	N/A	N/A	N/A				TRUE	
+578	REV_CNTR_DDCTBL_COINSRNC_CD	N/A	N/A		N/A	N/A	N/A	N/A	Coded			TRUE	
 579	REV_CNTR_DSCNT_IND_CD	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-580	REV_CNTR_DT	N/A	N/A	N/A		N/A	N/A	N/A		Coded	N/A	TRUE	
+580	REV_CNTR_DT	N/A	N/A	N/A		N/A	N/A	N/A	Coded	Coded	N/A	TRUE	
 581	REV_CNTR_IDE_NDC_UPC_NUM	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 582	REV_CNTR_NCVRD_CHRG_AMT	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE/FALSE	
 583	REV_CNTR_NDC_QTY	N/A	N/A	0	0	N/A	N/A	N/A				TRUE	
@@ -587,7 +587,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 585	REV_CNTR_OTAF_PMT_CD	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 586	REV_CNTR_PACKG_IND_CD	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 587	REV_CNTR_PMT_AMT_AMT	N/A	N/A	N/A	Coded	N/A	N/A	N/A	Coded	Coded	N/A	FALSE	
-588	REV_CNTR_PMT_MTHD_IND_CD	N/A	N/A	N/A		N/A	N/A	N/A		N/A	N/A	TRUE	
+588	REV_CNTR_PMT_MTHD_IND_CD	N/A	N/A	N/A		N/A	N/A	N/A	4 (4=paid at reasonable cost)	N/A	N/A	TRUE	
 589	REV_CNTR_PRVDR_PMT_AMT	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A		N/A	FALSE	
 590	REV_CNTR_PTNT_RSPNSBLTY_PMT	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
 591	REV_CNTR_RATE_AMT	N/A	N/A	0	0	N/A	N/A	N/A	Coded	Coded	Coded	FALSE	
@@ -598,7 +598,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 596	RFRNC_YR	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 597	RFR_PHYSN_NPI	N/A	N/A	N/A	N/A		N/A		N/A	N/A	N/A	TRUE	
 598	RFR_PHYSN_UPIN	N/A	N/A	N/A	N/A		N/A		N/A	N/A	N/A	TRUE	
-599	RNDRNG_PHYSN_NPI	N/A	N/A			N/A	N/A	N/A				TRUE	
+599	RNDRNG_PHYSN_NPI	N/A	N/A			N/A	N/A	N/A	Coded			TRUE	
 600	RNDRNG_PHYSN_UPIN	N/A	N/A			N/A	N/A	N/A				TRUE	
 601	RPTD_GAP_DSCNT_NUM	N/A	N/A	N/A	N/A	N/A	0	N/A	N/A	N/A	N/A	FALSE	
 602	RSN_VISIT_CD1	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
