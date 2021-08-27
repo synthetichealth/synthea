@@ -40,6 +40,7 @@ import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.Provider.ProviderType;
+import org.mitre.synthea.world.concepts.Claim.ClaimEntry;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Device;
@@ -107,7 +108,7 @@ public class BB2RIFExporter {
   private CodeMapper medicationCodeMapper;
   private CodeMapper drgCodeMapper;
   private CodeMapper dmeCodeMapper;
-  private CodeMapper hospiceCodeMapper;
+  private CodeMapper hcpcsCodeMapper;
   
   private StateCodeMapper locationMapper;
   private StaticFieldConfig staticFieldConfig;
@@ -149,7 +150,7 @@ public class BB2RIFExporter {
     medicationCodeMapper = new CodeMapper("medication_code_map.json");
     drgCodeMapper = new CodeMapper("drg_code_map.json");
     dmeCodeMapper = new CodeMapper("dme_code_map.json");
-    hospiceCodeMapper = new CodeMapper("hospice_code_map.json");
+    hcpcsCodeMapper = new CodeMapper("hospice_code_map.json");
     locationMapper = new StateCodeMapper();
     try {
       String csv = Utilities.readResource("payers/carriers.csv");
@@ -1222,6 +1223,7 @@ public class BB2RIFExporter {
       homeVisits += 1;
       long claimId = this.claimId.getAndDecrement();
       int claimGroupId = this.claimGroupId.getAndDecrement();
+      int claimLine = 1;
 
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, HHAFields.class, person);
@@ -1235,6 +1237,9 @@ public class BB2RIFExporter {
       fieldValues.put(HHAFields.NCH_WKLY_PROC_DT,
           bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
       fieldValues.put(HHAFields.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(HHAFields.ORG_NPI_NUM, encounter.provider.npi);
+      fieldValues.put(HHAFields.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
+
       fieldValues.put(HHAFields.CLM_PMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
@@ -1286,8 +1291,43 @@ public class BB2RIFExporter {
       if (!fieldValues.containsKey(HHAFields.PRNCPAL_DGNS_CD)) {
         fieldValues.put(HHAFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
-
+      fieldValues.put(HHAFields.CLM_LINE_NUM, Integer.toString(claimLine++));
       home.writeValues(HHAFields.class, fieldValues);
+
+      for (ClaimEntry lineItem : encounter.claim.items) {
+        String hcpcsCode = "";
+        for (HealthRecord.Code code : lineItem.entry.codes) {
+          if (hcpcsCodeMapper.canMap(code.code)) {
+            hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
+            break; // take the first mappable code for each procedure
+          }
+        }
+        fieldValues.put(HHAFields.CLM_LINE_NUM, Integer.toString(claimLine++));
+        fieldValues.put(HHAFields.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
+        fieldValues.put(HHAFields.HCPCS_CD, hcpcsCode);
+        fieldValues.put(HHAFields.REV_CNTR_RATE_AMT,
+            String.format("%.2f", (lineItem.cost / days)));
+        fieldValues.put(HHAFields.REV_CNTR_PMT_AMT_AMT,
+            String.format("%.2f", lineItem.coinsurance + lineItem.payer));
+        fieldValues.put(HHAFields.REV_CNTR_TOT_CHRG_AMT,
+            String.format("%.2f", lineItem.cost));
+        fieldValues.put(HHAFields.REV_CNTR_NCVRD_CHRG_AMT,
+            String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
+        if (lineItem.pocket == 0 && lineItem.deductible == 0) {
+          // Not subject to deductible or coinsurance
+          fieldValues.put(HHAFields.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
+        } else if (lineItem.pocket > 0 && lineItem.deductible > 0) {
+          // Subject to deductible and coinsurance
+          fieldValues.put(HHAFields.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
+        } else if (lineItem.pocket == 0) {
+          // Not subject to deductible
+          fieldValues.put(HHAFields.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
+        } else {
+          // Not subject to coinsurance
+          fieldValues.put(HHAFields.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
+        }
+        home.writeValues(HHAFields.class, fieldValues);
+      }
     }
   }
 
@@ -1376,8 +1416,8 @@ public class BB2RIFExporter {
 
         String hcpcsCode = "";
         for (HealthRecord.Code code : procedure.codes) {
-          if (hospiceCodeMapper.canMap(code.code)) {
-            hcpcsCode = hospiceCodeMapper.map(code.code, person, true);
+          if (hcpcsCodeMapper.canMap(code.code)) {
+            hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
             break; // take the first mappable code for each procedure
           }
         }
