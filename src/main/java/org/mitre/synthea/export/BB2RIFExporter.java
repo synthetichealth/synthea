@@ -1365,77 +1365,105 @@ public class BB2RIFExporter {
       if (!encounter.type.equals(EncounterType.HOSPICE.toString())) {
         continue;
       }
+      // Use the active condition diagnoses to enter mapped values
+      // into the diagnoses codes.
+      List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
+      if (mappedDiagnosisCodes.isEmpty()) {
+        continue; // skip this encounter
+      }
 
       long claimId = this.claimId.getAndDecrement();
       int claimGroupId = this.claimGroupId.getAndDecrement();
+      fieldValues.clear();
+      staticFieldConfig.setValues(fieldValues, HospiceFields.class, person);
+
+      fieldValues.put(HospiceFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
+      fieldValues.put(HospiceFields.CLM_ID, "" + claimId);
+      fieldValues.put(HospiceFields.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(HospiceFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(HospiceFields.CLM_HOSPC_START_DT_ID, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(HospiceFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(HospiceFields.NCH_WKLY_PROC_DT,
+              bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
+      fieldValues.put(HospiceFields.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(HospiceFields.AT_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(HospiceFields.ORG_NPI_NUM, encounter.provider.npi);
+      fieldValues.put(HospiceFields.CLM_PMT_AMT,
+              String.format("%.2f", encounter.claim.getTotalClaimCost()));
+      if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
+        fieldValues.put(HospiceFields.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
+      } else {
+        fieldValues.put(HospiceFields.NCH_PRMRY_PYR_CLM_PD_AMT,
+                String.format("%.2f", encounter.claim.getCoveredCost()));
+      }
+      fieldValues.put(HospiceFields.PRVDR_STATE_CD,
+              locationMapper.getStateCode(encounter.provider.state));
+      // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
+      // NCH_PTNT_STUS_IND_CD: A = Discharged, B = Died, C = Still a patient
+      String dischargeStatus = null;
+      String patientStatus = null;
+      String dischargeDate = null;
+      if (encounter.ended) {
+        dischargeStatus = "1"; // TODO 2=transfer if the next encounter is also inpatient
+        patientStatus = "A"; // discharged
+        dischargeDate = bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop));
+      } else {
+        dischargeStatus = "30"; // the patient is still here
+        patientStatus = "C"; // still a patient
+      }
+      if (!person.alive(encounter.stop)) {
+        dischargeStatus = "20"; // the patient died before the encounter ended
+        patientStatus = "B"; // died
+        dischargeDate = bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop));
+      }
+      fieldValues.put(HospiceFields.PTNT_DSCHRG_STUS_CD, dischargeStatus);
+      fieldValues.put(HospiceFields.NCH_PTNT_STATUS_IND_CD, patientStatus);
+      if (dischargeDate != null) {
+        fieldValues.put(HospiceFields.NCH_BENE_DSCHRG_DT, dischargeDate);
+      }
+      fieldValues.put(HospiceFields.CLM_TOT_CHRG_AMT,
+              String.format("%.2f", encounter.claim.getTotalClaimCost()));
+      fieldValues.put(HospiceFields.REV_CNTR_TOT_CHRG_AMT,
+          String.format("%.2f", encounter.claim.getCoveredCost()));
+      fieldValues.put(HospiceFields.REV_CNTR_NCVRD_CHRG_AMT,
+          String.format("%.2f", encounter.claim.getPatientCost()));
+      fieldValues.put(HospiceFields.REV_CNTR_PMT_AMT_AMT,
+          String.format("%.2f", encounter.claim.getCoveredCost()));
+
+      if (encounter.reason != null) {
+        // If the encounter has a recorded reason, enter the mapped
+        // values into the principle diagnoses code.
+        if (conditionCodeMapper.canMap(encounter.reason.code)) {
+          String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
+          fieldValues.put(HospiceFields.PRNCPAL_DGNS_CD, icdCode);
+        }
+      }
+
+      int smallest = Math.min(mappedDiagnosisCodes.size(), hospiceDxFields.length);
+      for (int i = 0; i < smallest; i++) {
+        HospiceFields[] dxField = hospiceDxFields[i];
+        fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+        fieldValues.put(dxField[1], "0"); // 0=ICD10
+      }
+      if (!fieldValues.containsKey(HospiceFields.PRNCPAL_DGNS_CD)) {
+        fieldValues.put(HospiceFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+      }
+
+      int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
+      if (days <= 0) {
+        days = 1;
+      }
+      fieldValues.put(HospiceFields.CLM_UTLZTN_DAY_CNT, "" + days);
+      int coinDays = days -  21; // first 21 days no coinsurance
+      if (coinDays < 0) {
+        coinDays = 0;
+      }
+      fieldValues.put(HospiceFields.REV_CNTR_UNIT_CNT, "" + days);
+      fieldValues.put(HospiceFields.REV_CNTR_RATE_AMT,
+          String.format("%.2f", (encounter.claim.getTotalClaimCost() / days)));
+
       int claimLine = 1;
-
       for (HealthRecord.Procedure procedure : encounter.procedures) {
-        fieldValues.clear();
-        staticFieldConfig.setValues(fieldValues, HospiceFields.class, person);
-
-        fieldValues.put(HospiceFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
-        fieldValues.put(HospiceFields.CLM_ID, "" + claimId);
-        fieldValues.put(HospiceFields.CLM_GRP_ID, "" + claimGroupId);
-        fieldValues.put(HospiceFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
-        fieldValues.put(HospiceFields.CLM_HOSPC_START_DT_ID, bb2DateFromTimestamp(encounter.start));
-        fieldValues.put(HospiceFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
-        fieldValues.put(HospiceFields.NCH_WKLY_PROC_DT,
-                bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-        fieldValues.put(HospiceFields.PRVDR_NUM, encounter.provider.id);
-        fieldValues.put(HospiceFields.AT_PHYSN_NPI, encounter.clinician.npi);
-        fieldValues.put(HospiceFields.ORG_NPI_NUM, encounter.provider.npi);
-        fieldValues.put(HospiceFields.CLM_PMT_AMT,
-                String.format("%.2f", encounter.claim.getTotalClaimCost()));
-        if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
-          fieldValues.put(HospiceFields.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
-        } else {
-          fieldValues.put(HospiceFields.NCH_PRMRY_PYR_CLM_PD_AMT,
-                  String.format("%.2f", encounter.claim.getCoveredCost()));
-        }
-        fieldValues.put(HospiceFields.PRVDR_STATE_CD,
-                locationMapper.getStateCode(encounter.provider.state));
-        // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
-        // NCH_PTNT_STUS_IND_CD: A = Discharged, B = Died, C = Still a patient
-        String dischargeStatus = null;
-        String patientStatus = null;
-        String dischargeDate = null;
-        if (encounter.ended) {
-          dischargeStatus = "1"; // TODO 2=transfer if the next encounter is also inpatient
-          patientStatus = "A"; // discharged
-          dischargeDate = bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop));
-        } else {
-          dischargeStatus = "30"; // the patient is still here
-          patientStatus = "C"; // still a patient
-        }
-        if (!person.alive(encounter.stop)) {
-          dischargeStatus = "20"; // the patient died before the encounter ended
-          patientStatus = "B"; // died
-          dischargeDate = bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop));
-        }
-        fieldValues.put(HospiceFields.PTNT_DSCHRG_STUS_CD, dischargeStatus);
-        fieldValues.put(HospiceFields.NCH_PTNT_STATUS_IND_CD, patientStatus);
-        if (dischargeDate != null) {
-          fieldValues.put(HospiceFields.NCH_BENE_DSCHRG_DT, dischargeDate);
-        }
-        fieldValues.put(HospiceFields.CLM_TOT_CHRG_AMT,
-                String.format("%.2f", encounter.claim.getTotalClaimCost()));
-        fieldValues.put(HospiceFields.REV_CNTR_TOT_CHRG_AMT,
-            String.format("%.2f", encounter.claim.getCoveredCost()));
-        fieldValues.put(HospiceFields.REV_CNTR_NCVRD_CHRG_AMT,
-            String.format("%.2f", encounter.claim.getPatientCost()));
-        fieldValues.put(HospiceFields.REV_CNTR_PMT_AMT_AMT,
-            String.format("%.2f", encounter.claim.getCoveredCost()));
-
-        if (encounter.reason != null) {
-          // If the encounter has a recorded reason, enter the mapped
-          // values into the principle diagnoses code.
-          if (conditionCodeMapper.canMap(encounter.reason.code)) {
-            String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
-            fieldValues.put(HospiceFields.PRNCPAL_DGNS_CD, icdCode);
-          }
-        }
-
         String hcpcsCode = "";
         for (HealthRecord.Code code : procedure.codes) {
           if (hcpcsCodeMapper.canMap(code.code)) {
@@ -1447,37 +1475,68 @@ public class BB2RIFExporter {
         fieldValues.put(HospiceFields.HCPCS_CD, hcpcsCode);
         fieldValues.put(HospiceFields.REV_CNTR_DT, bb2DateFromTimestamp(procedure.start));
 
-        // Use the active condition diagnoses to enter mapped values
-        // into the diagnoses codes.
-        List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
-        if (mappedDiagnosisCodes.isEmpty()) {
-          continue; // skip this encounter
-        }
-        int smallest = Math.min(mappedDiagnosisCodes.size(), hospiceDxFields.length);
-        for (int i = 0; i < smallest; i++) {
-          HospiceFields[] dxField = hospiceDxFields[i];
-          fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
-          fieldValues.put(dxField[1], "0"); // 0=ICD10
-        }
-        if (!fieldValues.containsKey(HospiceFields.PRNCPAL_DGNS_CD)) {
-          fieldValues.put(HospiceFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
-        }
-
-        int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
-        if (days <= 0) {
-          days = 1;
-        }
-        fieldValues.put(HospiceFields.CLM_UTLZTN_DAY_CNT, "" + days);
-        int coinDays = days -  21; // first 21 days no coinsurance
-        if (coinDays < 0) {
-          coinDays = 0;
-        }
-        fieldValues.put(HospiceFields.REV_CNTR_UNIT_CNT, "" + days);
-        fieldValues.put(HospiceFields.REV_CNTR_RATE_AMT,
-            String.format("%.2f", (encounter.claim.getTotalClaimCost() / days)));
-
         hospice.writeValues(HospiceFields.class, fieldValues);
       }
+      
+      for (ClaimEntry lineItem : encounter.claim.items) {
+        String hcpcsCode = null;
+        if (lineItem.entry instanceof HealthRecord.Procedure) {
+          for (HealthRecord.Code code : lineItem.entry.codes) {
+            if (hcpcsCodeMapper.canMap(code.code)) {
+              hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
+              break; // take the first mappable code for each procedure
+            }
+          }
+          fieldValues.remove(HospiceFields.REV_CNTR_NDC_QTY);
+          fieldValues.remove(HospiceFields.REV_CNTR_NDC_QTY_QLFR_CD);
+        } else if (lineItem.entry instanceof HealthRecord.Medication) {
+          HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
+          if (med.administration) {
+            hcpcsCode = "T1502";  // Administration of medication
+            fieldValues.put(HospiceFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
+            fieldValues.put(HospiceFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
+          }
+        }
+        if (hcpcsCode == null) {
+          continue;
+        }
+
+        fieldValues.put(HospiceFields.CLM_LINE_NUM, Integer.toString(claimLine++));
+        fieldValues.put(HospiceFields.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
+        fieldValues.put(HospiceFields.HCPCS_CD, hcpcsCode);
+        fieldValues.put(HospiceFields.REV_CNTR_RATE_AMT,
+            String.format("%.2f", (lineItem.cost / days)));
+        fieldValues.put(HospiceFields.REV_CNTR_PMT_AMT_AMT,
+            String.format("%.2f", lineItem.coinsurance + lineItem.payer));
+        fieldValues.put(HospiceFields.REV_CNTR_TOT_CHRG_AMT,
+            String.format("%.2f", lineItem.cost));
+        fieldValues.put(HospiceFields.REV_CNTR_NCVRD_CHRG_AMT,
+            String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
+        if (lineItem.pocket == 0 && lineItem.deductible == 0) {
+          // Not subject to deductible or coinsurance
+          fieldValues.put(HospiceFields.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
+        } else if (lineItem.pocket > 0 && lineItem.deductible > 0) {
+          // Subject to deductible and coinsurance
+          fieldValues.put(HospiceFields.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
+        } else if (lineItem.pocket == 0) {
+          // Not subject to deductible
+          fieldValues.put(HospiceFields.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
+        } else {
+          // Not subject to coinsurance
+          fieldValues.put(HospiceFields.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
+        }
+        hospice.writeValues(HospiceFields.class, fieldValues);
+      }
+
+      if (claimLine == 1) {
+        // If claimLine still equals 1, then no line items were successfully added.
+        // Add a single top-level entry.
+        fieldValues.put(HospiceFields.CLM_LINE_NUM, Integer.toString(claimLine));
+        fieldValues.put(HospiceFields.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
+        fieldValues.put(HospiceFields.HCPCS_CD, "S9126"); // hospice per diem
+        hospice.writeValues(HospiceFields.class, fieldValues);
+      }
+
     }
   }
 
