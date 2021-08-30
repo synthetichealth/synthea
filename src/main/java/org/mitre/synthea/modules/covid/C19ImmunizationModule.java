@@ -164,7 +164,7 @@ public class C19ImmunizationModule extends Module {
    */
   public static boolean decideOnShot(Person person, long time) {
     double chanceOfGettingShot = C19VaccineAgeDistributions.chanceOfGettingShot(person, time);
-    return chanceOfGettingShot <= person.rand();
+    return chanceOfGettingShot >= person.rand();
   }
 
   /**
