@@ -219,6 +219,7 @@ public class Generator {
     if (Config.getAsBoolean("exporter.cdw.export")) {
       CDWExporter.getInstance().setKeyStart((stateIndex * 1_000_000) + 1);
     }
+    Exporter.loadCustomExporters();
 
     this.populationRandom = new DefaultRandomNumberGenerator(options.seed);
     this.clinicianRandom = new DefaultRandomNumberGenerator(options.clinicianSeed);

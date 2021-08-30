@@ -113,6 +113,8 @@ dependencies {
   // JfreeChart for drawing physiology charts
   implementation 'org.jfree:jfreechart:1.5.3'
 
+  implementation fileTree(dir: 'lib/custom', include: '*.jar')
+
   // Use JUnit test framework
   testImplementation('junit:junit') {
     version {
