@@ -1291,17 +1291,28 @@ public class BB2RIFExporter {
       if (!fieldValues.containsKey(HHAFields.PRNCPAL_DGNS_CD)) {
         fieldValues.put(HHAFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
-      fieldValues.put(HHAFields.CLM_LINE_NUM, Integer.toString(claimLine++));
-      home.writeValues(HHAFields.class, fieldValues);
 
       for (ClaimEntry lineItem : encounter.claim.items) {
-        String hcpcsCode = "";
-        for (HealthRecord.Code code : lineItem.entry.codes) {
-          if (hcpcsCodeMapper.canMap(code.code)) {
-            hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
-            break; // take the first mappable code for each procedure
+        String hcpcsCode = null;
+        if (lineItem.entry instanceof HealthRecord.Procedure) {
+          for (HealthRecord.Code code : lineItem.entry.codes) {
+            if (hcpcsCodeMapper.canMap(code.code)) {
+              hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
+              break; // take the first mappable code for each procedure
+            }
+          }
+        } else if (lineItem.entry instanceof HealthRecord.Medication) {
+          HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
+          if (med.administration) {
+            hcpcsCode = "T1502";  // Administration of medication
+            fieldValues.put(HHAFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
+            fieldValues.put(HHAFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
           }
         }
+        if (hcpcsCode == null) {
+          continue;
+        }
+
         fieldValues.put(HHAFields.CLM_LINE_NUM, Integer.toString(claimLine++));
         fieldValues.put(HHAFields.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
         fieldValues.put(HHAFields.HCPCS_CD, hcpcsCode);
@@ -1326,6 +1337,15 @@ public class BB2RIFExporter {
           // Not subject to coinsurance
           fieldValues.put(HHAFields.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
         }
+        home.writeValues(HHAFields.class, fieldValues);
+      }
+
+      if (claimLine == 1) {
+        // If claimLine still equals 1, then no line items were successfully added.
+        // Add a single top-level entry.
+        fieldValues.put(HHAFields.CLM_LINE_NUM, Integer.toString(claimLine));
+        fieldValues.put(HHAFields.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
+        fieldValues.put(HHAFields.HCPCS_CD, "T1021"); // home health visit
         home.writeValues(HHAFields.class, fieldValues);
       }
     }
