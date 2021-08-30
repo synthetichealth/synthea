@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -55,6 +56,28 @@ public abstract class Exporter {
 
   private static final int fileBufferSize = 4 * 1024 * 1024;
 
+  private static List<PatientExporter> patientExporters;
+  private static List<PostCompletionExporter> postCompletionExporters;
+  
+  public static void loadCustomExporters() {
+    if (Config.getAsBoolean("exporter.enable_custom_exporters", false)) {
+      patientExporters = new LinkedList<>();
+      postCompletionExporters = new LinkedList<>();
+      
+      ServiceLoader<PatientExporter> loader = ServiceLoader.load(PatientExporter.class);
+      for (PatientExporter instance : loader) {
+        System.out.println(instance.getClass().getCanonicalName());
+        patientExporters.add(instance);
+      }
+
+      ServiceLoader<PostCompletionExporter> loader2 = ServiceLoader.load(PostCompletionExporter.class);
+      for (PostCompletionExporter instance : loader2) {
+        System.out.println(instance.getClass().getCanonicalName());
+        postCompletionExporters.add(instance);
+      }
+    }
+  }
+  
   /**
    * Runtime configuration of the record exporter.
    */
@@ -302,6 +325,13 @@ public abstract class Exporter {
       String consolidatedNotes = ClinicalNoteExporter.export(person);
       writeNewFile(outFilePath, consolidatedNotes);
     }
+    
+    if (patientExporters != null && !patientExporters.isEmpty()) {
+      for (PatientExporter patientExporter : patientExporters) {
+        patientExporter.export(person, stopTime, options);
+      }
+    }
+    
     if (options.isQueueEnabled()) {
       try {
         switch (options.queuedFhirVersion()) {
@@ -468,6 +498,12 @@ public abstract class Exporter {
         MetadataExporter.exportMetadata(generator);
       } catch (IOException e) {
         e.printStackTrace();
+      }
+    }
+    
+    if (postCompletionExporters != null && !postCompletionExporters.isEmpty()) {
+      for (PostCompletionExporter postCompletionExporter : postCompletionExporters) {
+        postCompletionExporter.export(generator, options);
       }
     }
 

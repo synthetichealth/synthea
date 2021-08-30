@@ -84,6 +84,8 @@ dependencies {
   // JfreeChart for drawing physiology charts
   implementation 'org.jfree:jfreechart:1.5.0'
 
+  implementation fileTree(dir: 'lib/custom', include: '*.jar')
+
   // Use JUnit test framework
   testImplementation 'junit:junit:4.12'
   testImplementation fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')
@@ -273,7 +275,7 @@ artifacts {
 }
 
 def mavenGroup = 'org.mitre.synthea'
-def mavenVersion = '3.0.0-SNAPSHOT'
+def mavenVersion = '3.0.1'
 
 publishing {
     publications {
