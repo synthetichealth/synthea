@@ -150,7 +150,7 @@ public class BB2RIFExporter {
     medicationCodeMapper = new CodeMapper("medication_code_map.json");
     drgCodeMapper = new CodeMapper("drg_code_map.json");
     dmeCodeMapper = new CodeMapper("dme_code_map.json");
-    hcpcsCodeMapper = new CodeMapper("hospice_code_map.json");
+    hcpcsCodeMapper = new CodeMapper("hcpcs_code_map.json");
     locationMapper = new StateCodeMapper();
     try {
       String csv = Utilities.readResource("payers/carriers.csv");
