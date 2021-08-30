@@ -1301,6 +1301,8 @@ public class BB2RIFExporter {
               break; // take the first mappable code for each procedure
             }
           }
+          fieldValues.remove(HHAFields.REV_CNTR_NDC_QTY);
+          fieldValues.remove(HHAFields.REV_CNTR_NDC_QTY_QLFR_CD);
         } else if (lineItem.entry instanceof HealthRecord.Medication) {
           HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
           if (med.administration) {
