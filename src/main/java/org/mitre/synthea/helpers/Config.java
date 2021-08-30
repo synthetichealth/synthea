@@ -90,10 +90,6 @@ public abstract class Config {
     return Integer.parseInt(get(key));
   }
 
-  public static long getAsLong(String key) {
-    return Long.parseLong(get(key));
-  }
-
   /**
    * Get a named property as an int, or the default value if not found.
    *
@@ -109,14 +105,24 @@ public abstract class Config {
     }
   }
 
-    /**
-   * Get a named property as an int, or the default value if not found.
+  /**
+   * Get a named property as a long value.
+   *
+   * @param key property name
+   * @return value for the property, or null if not found
+   */
+  public static long getAsLong(String key) {
+    return Long.parseLong(get(key));
+  }
+
+  /**
+   * Get a named property as a long, or the default value if not found.
    *
    * @param key          property name
    * @param defaultValue value to return if the property is not found in the list
    * @return value for the property, or defaultValue if not found
    */
-  public static long getAsLong(String key, int defaultValue) {
+  public static long getAsLong(String key, long defaultValue) {
     if (properties.containsKey(key)) {
       return getAsLong(key);
     } else {
