@@ -86,7 +86,7 @@ public class C19ImmunizationModule extends Module {
       .toInstant(ZoneOffset.UTC).toEpochMilli();
   public static final long EXPAND_AGE_TO_TWELVE = LocalDateTime.of(2021, 5, 10, 12, 0)
       .toInstant(ZoneOffset.UTC).toEpochMilli();
-  public static final long LATE_ADOPTION_START_TIME = LocalDateTime.of(2021, 8, 2, 12, 0)
+  public static final long LATE_ADOPTION_START_TIME = LocalDateTime.of(2021, 8, 30, 12, 0)
       .toInstant(ZoneOffset.UTC).toEpochMilli();
 
   public static final int FIRST_ELIGIBLE_AGE = 16;
