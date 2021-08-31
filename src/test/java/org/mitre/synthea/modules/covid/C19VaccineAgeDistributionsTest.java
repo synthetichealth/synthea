@@ -1,8 +1,11 @@
 package org.mitre.synthea.modules.covid;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.world.agents.Person;
 
 public class C19VaccineAgeDistributionsTest {
 
@@ -35,5 +38,17 @@ public class C19VaccineAgeDistributionsTest {
         new C19VaccineAgeDistributions.AgeRange("Ages_75+_yrs");
     double prob = C19VaccineAgeDistributions.firstShotProbByAge.get(ar);
     assertTrue(prob > 0.5);
+  }
+
+  @Test
+  public void selectShotTime() {
+    C19VaccineAgeDistributions.loadRawDistribution();
+    C19VaccineAgeDistributions.populateDistributions();
+    long decemberFifteenth = TestHelper.timestamp(2020, 12, 15, 0, 0, 0);
+    long birthday = TestHelper.timestamp(1978, 8, 1, 0, 0, 0);
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, birthday);
+    long shotTime = C19VaccineAgeDistributions.selectShotTime(person, decemberFifteenth);
+    assertTrue(shotTime > TestHelper.timestamp(2020, 12, 15, 0, 0, 0));
   }
 }
