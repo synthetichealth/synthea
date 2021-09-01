@@ -3,10 +3,10 @@ package org.mitre.synthea.engine;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.mitre.synthea.engine.ExpressedSymptom.SymptomInfo;
 import org.mitre.synthea.engine.ExpressedSymptom.SymptomSource;
@@ -140,8 +140,8 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
      */
     public ModuleConditions(String source) {
       this.source = source;
-      onsetConditions = new ConcurrentHashMap<String, OnsetCondition>();
-      state2conditionMapping = new ConcurrentHashMap<String, String>();
+      onsetConditions = new HashMap<String, OnsetCondition>();
+      state2conditionMapping = new HashMap<String, String>();
     }
     
     /**
@@ -231,7 +231,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
       this.conditionName = name;
       this.onsetTime = onsetTime;
       this.endTime = endTime;
-      this.symptoms = new ConcurrentHashMap<String, List<Integer>>();
+      this.symptoms = new HashMap<String, List<Integer>>();
     }
     
     /**
@@ -295,7 +295,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
   
   public ExpressedConditionRecord(Person person) {
     this.person = person;
-    sources = new ConcurrentHashMap<String, ModuleConditions>();
+    sources = new HashMap<String, ModuleConditions>();
   }
   
   /**
@@ -384,7 +384,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
   public Map<Long, List<ConditionWithSymptoms>> getConditionSymptoms() {
     Map<String, ExpressedSymptom> symptoms = person.getExpressedSymptoms();
     Map<Long, List<ConditionWithSymptoms>> result;
-    result = new ConcurrentHashMap<Long, List<ConditionWithSymptoms>>();    
+    result = new HashMap<Long, List<ConditionWithSymptoms>>();    
     for (String module : sources.keySet()) {
       ModuleConditions moduleConditions = sources.get(module);
       for (String condition : moduleConditions.getOnsetConditions().keySet()) {

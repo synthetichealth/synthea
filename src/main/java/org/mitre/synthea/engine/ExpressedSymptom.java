@@ -1,8 +1,8 @@
 package org.mitre.synthea.engine;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ExpressedSymptom implements Cloneable, Serializable {
   
@@ -64,7 +64,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
      */
     public SymptomSource(String source) {
       this.source = source;
-      timeInfos = new ConcurrentHashMap<Long, ExpressedSymptom.SymptomInfo>();
+      timeInfos = new HashMap<Long, ExpressedSymptom.SymptomInfo>();
       resolved = false;
       lastUpdateTime = null;
     }
@@ -134,7 +134,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
   
   public ExpressedSymptom(String name) {
     this.name = name;  
-    sources = new ConcurrentHashMap<String, SymptomSource>();
+    sources = new HashMap<String, SymptomSource>();
   }
   
   /**
