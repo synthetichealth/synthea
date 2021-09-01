@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.mitre.synthea.engine.ExpressedConditionRecord;
 import org.mitre.synthea.engine.ExpressedSymptom;
@@ -145,17 +144,17 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public Person(long seed) {
     this.seed = seed;
     random = new Random(seed);
-    attributes = new ConcurrentHashMap<String, Object>();
-    vitalSigns = new ConcurrentHashMap<VitalSign, ValueGenerator>();
-    symptoms = new ConcurrentHashMap<String, ExpressedSymptom>();
+    attributes = new HashMap<String, Object>();
+    vitalSigns = new HashMap<VitalSign, ValueGenerator>();
+    symptoms = new HashMap<String, ExpressedSymptom>();
     /* initialized the onsetConditions field */
     onsetConditionRecord = new ExpressedConditionRecord(this);
     /* Chronic Medications which will be renewed at each Wellness Encounter */
-    chronicMedications = new ConcurrentHashMap<String, HealthRecord.Medication>();
+    chronicMedications = new HashMap<String, HealthRecord.Medication>();
     hasMultipleRecords =
         Config.getAsBoolean("exporter.split_records", false);
     if (hasMultipleRecords) {
-      records = new ConcurrentHashMap<String, HealthRecord>();
+      records = new HashMap<String, HealthRecord>();
     }
     defaultRecord = new HealthRecord(this);
     lossOfCareEnabled =
@@ -195,11 +194,29 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     return random.nextInt(bound);
   }
 
+  private boolean haveNextNextGaussian = false;
+  private double nextNextGaussian;
+  
   /**
    * Returns a double from a normal distribution.
    */
   public double randGaussian() {
-    return random.nextGaussian();
+	// See Knuth, ACP, Section 3.4.1 Algorithm C.
+	if (haveNextNextGaussian) {
+		haveNextNextGaussian = false;
+		return nextNextGaussian;
+	} else {
+		double v1, v2, s;
+		do {
+			v1 = 2 * random.nextDouble() - 1; // between -1 and 1
+			v2 = 2 * random.nextDouble() - 1; // between -1 and 1
+			s = v1 * v1 + v2 * v2;
+		} while (s >= 1 || s == 0);
+		double multiplier = Math.sqrt(-2 * Math.log(s)/s);
+		nextNextGaussian = v2 * multiplier;
+		haveNextNextGaussian = true;
+		return v1 * multiplier;
+	}
   }
 
   /**
@@ -280,15 +297,29 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     return years;
   }
 
+	private Boolean aliveCacheValue = null;
+	private long aliveCacheTime = Long.MIN_VALUE;
+
   /**
    * Returns whether a person is alive at the given time.
    */
-  public boolean alive(long time) {
-    boolean born = attributes.containsKey(Person.BIRTHDATE);
-    Long died = (Long) attributes.get(Person.DEATHDATE);
-    return (born && (died == null || died > time));
-  }
+	public boolean alive(long time) {
+		if (aliveCacheTime != time || null == aliveCacheValue) {
+			aliveCacheTime = time;
+			aliveCacheValue = calcAlive(time);
+		}
+		return aliveCacheValue.booleanValue();
+	}
 
+	private boolean calcAlive(long time) {
+		boolean born = attributes.containsKey(Person.BIRTHDATE);
+		if (born) {
+			Long died = (Long) attributes.get(Person.DEATHDATE);
+			return (died == null || died > time);
+		}
+		return false;
+	}
+	  
   /**
   * Get the expressed symptoms.
   */
@@ -348,8 +379,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public int getSymptom(String type) {
     int max = 0;
-    if (symptoms.containsKey(type)) {
-      ExpressedSymptom expressedSymptom = symptoms.get(type);
+	ExpressedSymptom expressedSymptom = symptoms.get(type);
+	if(null != expressedSymptom){
       max = expressedSymptom.getSymptom();
     }
     return max;
