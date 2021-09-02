@@ -20,6 +20,7 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.VitalSign;
 
 public class PerformCABG extends Module {
 
@@ -100,7 +101,7 @@ public class PerformCABG extends Module {
         String identifier = row.get("RandomID");
         Clinician clin = surgeons.get(identifier);
 
-        String operation = row.get("NewProcGroupFinal");
+        String operation = row.get("Surgery_cat_2");
         Double weight = Double.parseDouble(row.get("n_surgeries"));
         Double mean = Double.parseDouble(row.get("mean"));
         Double std = Double.parseDouble(row.get("std"));
@@ -109,9 +110,10 @@ public class PerformCABG extends Module {
 
         Distribution distribution = buildDistribution(mean, std, min, max);
         clin.attributes.put(operation, distribution);
-        if (operation.equals("onPumpCABG")) {
+        clin.attributes.put("mean_surgeon_time", mean);
+        if (operation.equals("OnPumpCABG")) {
           onPumpCabgSurgeons.add(weight, clin);
-        } else if (operation.equals("offPumpCABG")) {
+        } else if (operation.equals("OffPumpCABG")) {
           offPumpCabgSurgeons.add(weight, clin);
         }
       }
@@ -139,18 +141,15 @@ public class PerformCABG extends Module {
       stopTime = (long) person.attributes.get("cabg_stop_time");
     } else {
       Clinician surgeon = null;
-      Distribution distribution = null;
 
       boolean onPump = (Boolean) person.attributes.getOrDefault("cabg_pump", true);
       if (onPump) {
         surgeon = onPumpCabgSurgeons.next(person);
-        distribution = (Distribution) surgeon.attributes.get("onPumpCABG");
       } else {
         surgeon = offPumpCabgSurgeons.next(person);
-        distribution = (Distribution) surgeon.attributes.get("offPumpCABG");
       }
 
-      double durationInMinutes = distribution.generate(person);
+      double durationInMinutes = getProcedureDuration(person, surgeon, time);
       long durationInMs = Utilities.convertTime("minutes", durationInMinutes);
       stopTime = time + durationInMs;
       person.attributes.put("cabg_stop_time", stopTime);
@@ -207,5 +206,59 @@ public class PerformCABG extends Module {
     } else {
       return false;
     }
+  }
+  
+  private static final double getProcedureDuration(Person person, Clinician surgeon, long time) {
+    boolean onPump = (Boolean) person.attributes.getOrDefault("cabg_pump", true);
+
+    int numberGrafts = 0; // TODO
+
+    boolean hasDialysis = false; // TODO
+
+    double TotalNoDistAnastArtCond = 0.0; // TODO what even is this?
+
+    boolean sternotomy = false; // TODO
+
+    boolean redo = false; // TODO
+
+    boolean unstableAngina = person.record.conditionActive("4557003"); // TODO - make sure we expect the code here not the text or state name
+
+    double calculatedBMI = person.getVitalSign(VitalSign.BMI, time);
+
+    double meanSurgeonTime = (double) surgeon.attributes.get("mean_surgeon_time");
+
+    return getProcedureDuration(onPump, numberGrafts, hasDialysis, TotalNoDistAnastArtCond, sternotomy, redo,
+        unstableAngina, calculatedBMI, meanSurgeonTime);
+  }
+
+  private static final double getProcedureDuration(boolean onPump, int numberGrafts, boolean hasDialysis,
+      double TotalNoDistAnastArtCond, boolean sternotomy, boolean redo, boolean unstableAngina, double calculatedBMI,
+      double meanSurgeonTime) {
+
+    double duration = 19.7; // constant value
+
+    if (onPump) duration += 5.92;
+
+    if (numberGrafts >= 5) duration += 52.22;
+    else if (numberGrafts == 4) duration += 21.09;
+    else if (numberGrafts == 3) duration += 4.76;
+    else if (numberGrafts == 2) duration += -14.34;
+    else if (numberGrafts == 1) duration += -64.03;
+
+    if (hasDialysis) duration += 30.22;
+
+    duration += TotalNoDistAnastArtCond * 9.27;
+
+    if (sternotomy) duration += -34.37;
+
+    if (redo) duration += 45.7;
+
+    if (unstableAngina) duration += 8.22;
+
+    duration += calculatedBMI * 0.7471;
+
+    duration += meanSurgeonTime * 0.843;
+
+    return duration;
   }
 }
