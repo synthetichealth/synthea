@@ -211,29 +211,32 @@ public class PerformCABG extends Module {
   private static final double getProcedureDuration(Person person, Clinician surgeon, long time) {
     boolean onPump = (Boolean) person.attributes.getOrDefault("cabg_pump", true);
 
-    int numberGrafts = 0; // TODO
+    int numberGrafts = 0; // TODO - this may just be a distribution, not already on the patient
 
-    boolean hasDialysis = false; // TODO
+    int ckdStage = (Integer) person.attributes.getOrDefault("ckd", 0);
+    boolean hasDialysis = ckdStage >= 4; // dialysis module kicks off at ckd stage >= 4
 
-    double TotalNoDistAnastArtCond = 0.0; // TODO what even is this?
+    double totalNoDistAnastArtCond = 0.0; // TODO what even is this?
 
     boolean sternotomy = false; // TODO
 
-    boolean redo = false; // TODO
+    boolean redo = person.record.conditionActive("399261000"); // history of CABG code, see heart/cabg/operation.json
 
-    boolean unstableAngina = person.record.conditionActive("4557003"); // TODO - make sure we expect the code here not the text or state name
+    boolean unstableAngina = person.record.conditionActive("4557003"); // "preinfarction syndrome", see heart/nsteacs_pathway.json
 
     double calculatedBMI = person.getVitalSign(VitalSign.BMI, time);
 
     double meanSurgeonTime = (double) surgeon.attributes.get("mean_surgeon_time");
 
-    return getProcedureDuration(onPump, numberGrafts, hasDialysis, TotalNoDistAnastArtCond, sternotomy, redo,
-        unstableAngina, calculatedBMI, meanSurgeonTime);
+    double gaussianNoise = person.randGaussian();
+    
+    return getProcedureDuration(onPump, numberGrafts, hasDialysis, totalNoDistAnastArtCond, sternotomy, redo,
+        unstableAngina, calculatedBMI, meanSurgeonTime, gaussianNoise);
   }
 
   private static final double getProcedureDuration(boolean onPump, int numberGrafts, boolean hasDialysis,
-      double TotalNoDistAnastArtCond, boolean sternotomy, boolean redo, boolean unstableAngina, double calculatedBMI,
-      double meanSurgeonTime) {
+      double totalNoDistAnastArtCond, boolean sternotomy, boolean redo, boolean unstableAngina, double calculatedBMI,
+      double meanSurgeonTime, double gaussianNoise) {
 
     double duration = 19.7; // constant value
 
@@ -247,7 +250,7 @@ public class PerformCABG extends Module {
 
     if (hasDialysis) duration += 30.22;
 
-    duration += TotalNoDistAnastArtCond * 9.27;
+    duration += totalNoDistAnastArtCond * 9.27;
 
     if (sternotomy) duration += -34.37;
 
@@ -258,6 +261,8 @@ public class PerformCABG extends Module {
     duration += calculatedBMI * 0.7471;
 
     duration += meanSurgeonTime * 0.843;
+    
+    duration += gaussianNoise * 28; // mean of zero and std of 28
 
     return duration;
   }
