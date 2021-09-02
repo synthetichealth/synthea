@@ -50,6 +50,7 @@ public class BB2RIFExporterTest {
    */
   @BeforeClass
   public static void setUpExportDir() throws Exception {
+    BB2RIFExporter.CodeMapper.throwExceptionOnFileMissing = false;
     TestHelper.exportOff();
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
