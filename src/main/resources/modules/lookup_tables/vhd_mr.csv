@@ -1,4 +1,4 @@
-age,gender,vhf_mr_risk,Mitral Valve Regurgitation,Check for TR Onset
+age,gender,vhd_mr_risk,Mitral Valve Regurgitation,Annual Check
 0-4,M,true,0.000076,0.999924
 5-9,M,true,0.000041,0.999959
 10-14,M,true,0.000050,0.999950

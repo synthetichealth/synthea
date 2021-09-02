@@ -1,4 +1,4 @@
-age,gender,vhf_as_risk,Aortic Valve Stenosis,Check for AR Onset
+age,gender,vhd_as_risk,Aortic Valve Stenosis,Check for AR Onset
 0-4,M,true,0.000124,0.999876
 5-9,M,true,0.000059,0.999941
 10-14,M,true,0.000058,0.999942

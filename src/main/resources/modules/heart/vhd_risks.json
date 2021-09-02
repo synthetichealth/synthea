@@ -1,0 +1,66 @@
+{
+  "name": "vhd_risks",
+  "remarks": [
+    "Valvular Heart Disease (VHD) Risk model.",
+    "",
+    "Currently this sets the risk of all potential conditions to true,and each individual model uses real world prevalence to potentially onset the conditions. Future iterations should apply risk factors such as smoking, hypertension, history of scarlet fever, etc, and adjust the real world prevalence #s accordingly based on those risk factors"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Initialize AS Risk"
+    },
+    "Initialize AS Risk": {
+      "type": "SetAttribute",
+      "attribute": "vhd_as_risk",
+      "direct_transition": "Initialize_AR_Risk",
+      "value": true
+    },
+    "Initialize_AR_Risk": {
+      "type": "SetAttribute",
+      "attribute": "vhd_ar_risk",
+      "value": true,
+      "direct_transition": "Initialize_MS_Risk"
+    },
+    "Initialize_MR_Risk": {
+      "type": "SetAttribute",
+      "attribute": "vhd_mr_risk",
+      "value": true,
+      "direct_transition": "Initialize_TS_Risk"
+    },
+    "Initialize_TR_Risk": {
+      "type": "SetAttribute",
+      "attribute": "vhd_tr_risk",
+      "value": true,
+      "direct_transition": "Initialize_PS_Risk"
+    },
+    "Initialize_MS_Risk": {
+      "type": "SetAttribute",
+      "attribute": "vhd_ms_risk",
+      "value": true,
+      "direct_transition": "Initialize_MR_Risk"
+    },
+    "Initialize_TS_Risk": {
+      "type": "SetAttribute",
+      "attribute": "vhd_ts_risk",
+      "value": true,
+      "direct_transition": "Initialize_TR_Risk"
+    },
+    "Initialize_PS_Risk": {
+      "type": "SetAttribute",
+      "attribute": "vhd_ps_risk",
+      "value": true,
+      "direct_transition": "Initialize_PR_Risk"
+    },
+    "Initialize_PR_Risk": {
+      "type": "SetAttribute",
+      "attribute": "vhd_pr_risk",
+      "value": true,
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}

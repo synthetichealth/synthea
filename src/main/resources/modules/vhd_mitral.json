@@ -1,0 +1,172 @@
+{
+  "name": "vhd_mitral",
+  "remarks": [
+    "Mitral Valvular Heart Disease (VHD) Progression model."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Set_Risk_Factors"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Mitral Valve Regurgitation": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "vhd_diagnosis",
+      "target_encounter": "Encounter_MVR",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 48724000,
+          "display": "Mitral valve regurgitation (disorder)"
+        }
+      ],
+      "direct_transition": "Wait_for_Encounter MVR"
+    },
+    "Transthoracic_Echo MVR": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 433236007,
+        "display": "Transthoracic echocardiography (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51185008,
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Ultrasound Multiframe Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.3.1",
+                "display": "Ultrasound Multiframe Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Placeholder for Mitral Clip"
+    },
+    "Placeholder for Mitral Clip": {
+      "type": "Simple",
+      "direct_transition": "End_Encounter_MVR"
+    },
+    "Wait_for_Encounter MVR": {
+      "type": "Delay",
+      "range": {
+        "low": 12,
+        "high": 24,
+        "unit": "months"
+      },
+      "direct_transition": "Encounter_MVR"
+    },
+    "Encounter_MVR": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "vhd_diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Transthoracic_Echo MVR"
+    },
+    "End_Encounter_MVR": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Annual Check": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "direct_transition": "Risk Factor Check"
+    },
+    "Risk Factor Check": {
+      "type": "Simple",
+      "direct_transition": "Check for MS Onset"
+    },
+    "Check for MR Onset": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Mitral Valve Regurgitation",
+          "default_probability": 0,
+          "lookup_table_name": "vhd_mr.csv"
+        },
+        {
+          "default_probability": 1,
+          "lookup_table_name": "vhd_mr.csv",
+          "transition": "Annual Check"
+        }
+      ]
+    },
+    "Check for MS Onset": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "default_probability": 0,
+          "lookup_table_name": "vhd_ms.csv",
+          "transition": "Mitral Valve Stenosis"
+        },
+        {
+          "transition": "Check for MR Onset",
+          "default_probability": 1,
+          "lookup_table_name": "vhd_ms.csv"
+        }
+      ]
+    },
+    "Mitral Valve Stenosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "vhd_diagnosis",
+      "target_encounter": "Placeholder MVS Treatment",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 79619009,
+          "display": "Mitral valve stenosis (disorder)"
+        }
+      ],
+      "direct_transition": "Placeholder MVS Treatment"
+    },
+    "Placeholder MVS Treatment": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "New_State"
+    },
+    "New_State": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Set_Risk_Factors": {
+      "type": "CallSubmodule",
+      "submodule": "heart/vhd_risks",
+      "direct_transition": "Risk Factor Check",
+      "remarks": [
+        "For this initial impl, risk factors are set to true once. Later versions of this model should move this into Risk Factor Check and update the risk factors yearly"
+      ]
+    }
+  },
+  "gmf_version": 2
+}

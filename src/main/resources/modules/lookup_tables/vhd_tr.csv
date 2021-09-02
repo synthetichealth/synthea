@@ -1,4 +1,4 @@
-age,gender,vhf_tr_risk,Tricuspid Valve Regurgitation,Annual Check
+age,gender,vhd_tr_risk,Tricuspid Valve Regurgitation,Annual Check
 0-4,M,true,0.000006,0.999994
 5-9,M,true,0.000005,0.999995
 10-14,M,true,0.000004,0.999996

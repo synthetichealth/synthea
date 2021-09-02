@@ -1,4 +1,4 @@
-age,gender,vhf_ar_risk,Aortic Valve Regurgitation,Check for MR Onset
+age,gender,vhd_ar_risk,Aortic Valve Regurgitation,Annual Check
 0-4,M,true,0.000109,0.999891
 5-9,M,true,0.000093,0.999907
 10-14,M,true,0.000105,0.999895

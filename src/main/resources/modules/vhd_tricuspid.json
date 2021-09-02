@@ -1,0 +1,172 @@
+{
+  "name": "vhd_tricuspid",
+  "remarks": [
+    "Tricuspid Valvular Heart Disease (VHD) Progression model."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Set_Risk_Factors"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Tricuspid Valve Regurgitation": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "vhd_diagnosis",
+      "target_encounter": "Encounter_TVR",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 111287006,
+          "display": "Tricuspid valve regurgitation (disorder)"
+        }
+      ],
+      "direct_transition": "Wait_for_Encounter_TVR"
+    },
+    "Transthoracic Echo TVR": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 433236007,
+        "display": "Transthoracic echocardiography (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51185008,
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Ultrasound Multiframe Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.3.1",
+                "display": "Ultrasound Multiframe Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Placeholder for Other Valve Surgery"
+    },
+    "Placeholder for Other Valve Surgery": {
+      "type": "Simple",
+      "direct_transition": "End_Encounter_TVR"
+    },
+    "Wait_for_Encounter_TVR": {
+      "type": "Delay",
+      "range": {
+        "low": 12,
+        "high": 24,
+        "unit": "months"
+      },
+      "direct_transition": "Encounter_TVR"
+    },
+    "Encounter_TVR": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Tricuspid Valve Regurgitation",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Transthoracic Echo TVR"
+    },
+    "End_Encounter_TVR": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Annual Check": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "direct_transition": "Risk Factor Check"
+    },
+    "Risk Factor Check": {
+      "type": "Simple",
+      "direct_transition": "Check for TS Onset"
+    },
+    "Check for TR Onset": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Annual Check",
+          "default_probability": 1,
+          "lookup_table_name": "vhd_tr.csv"
+        },
+        {
+          "transition": "Tricuspid Valve Regurgitation",
+          "default_probability": 0,
+          "lookup_table_name": "vhd_tr.csv"
+        }
+      ]
+    },
+    "Check for TS Onset": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Check for TR Onset",
+          "default_probability": 1,
+          "lookup_table_name": "vhd_ts.csv"
+        },
+        {
+          "transition": "Tricuspid Valve Stenosis",
+          "default_probability": 1,
+          "lookup_table_name": "vhd_ts.csv"
+        }
+      ]
+    },
+    "Tricuspid Valve Stenosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "target_encounter": "Encounter_TVS",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 49915006,
+          "display": "Tricuspid valve stenosis (disorder)"
+        }
+      ],
+      "direct_transition": "Encounter_TVS"
+    },
+    "End_Encounter_TVS": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Encounter_TVS": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Tricuspid Valve Stenosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "End_Encounter_TVS"
+    },
+    "Set_Risk_Factors": {
+      "type": "CallSubmodule",
+      "submodule": "heart/vhd_risks",
+      "direct_transition": "Risk Factor Check",
+      "remarks": [
+        "For this initial impl, risk factors are set to true once. Later versions of this model should move this into Risk Factor Check and update the risk factors yearly"
+      ]
+    }
+  },
+  "gmf_version": 2
+}
