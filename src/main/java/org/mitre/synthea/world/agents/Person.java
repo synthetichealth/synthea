@@ -236,16 +236,23 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   /**
    * Returns a person's age in Period form.
    */
-  public Period age(long time) {
-    Period age = Period.ZERO;
+  private Period ageCache = null;
+  private long ageCacheTime = Long.MIN_VALUE;
 
-    if (attributes.containsKey(BIRTHDATE)) {
-      LocalDate now = Instant.ofEpochMilli(time).atZone(timeZone).toLocalDate();
-      LocalDate birthdate = Instant.ofEpochMilli((long) attributes.get(BIRTHDATE))
-          .atZone(timeZone).toLocalDate();
-      age = Period.between(birthdate, now);
+  public Period age(long time) {
+	if(ageCacheTime != time) {
+	  ageCacheTime = time;
+      ageCache = Period.ZERO;
+
+      if (attributes.containsKey(BIRTHDATE)) {
+        LocalDate now = Instant.ofEpochMilli(time).atZone(timeZone).toLocalDate();
+        LocalDate birthdate = Instant.ofEpochMilli((long) attributes.get(BIRTHDATE))
+            .atZone(timeZone).toLocalDate();
+        ageCache = Period.between(birthdate, now);
+      }
     }
-    return age;
+	  
+    return ageCache;
   }
 
   /**
