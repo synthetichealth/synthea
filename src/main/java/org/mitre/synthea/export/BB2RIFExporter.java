@@ -4035,7 +4035,8 @@ public class BB2RIFExporter {
    * Utility class for dealing with code mapping configuration writers.
    */
   static class CodeMapper {
-    static boolean throwExceptionOnFileMissing = true;
+    private static boolean requireCodeMaps = Config.getAsBoolean(
+            "exporter.bfd.require_code_maps", true);
     private HashMap<String, List<Map<String, String>>> map;
     
     /**
@@ -4060,7 +4061,7 @@ public class BB2RIFExporter {
         Type type = new TypeToken<HashMap<String,List<Map<String, String>>>>(){}.getType();
         map = g.fromJson(json, type);
       } catch (JsonSyntaxException | IOException | IllegalArgumentException e) {
-        if (throwExceptionOnFileMissing){
+        if (requireCodeMaps) {
           throw new MissingResourceException("Unable to read code map file: " + jsonMap,
                   "CodeMapper", jsonMap);
         } else {

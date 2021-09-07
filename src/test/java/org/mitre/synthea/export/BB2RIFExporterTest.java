@@ -50,12 +50,12 @@ public class BB2RIFExporterTest {
    */
   @BeforeClass
   public static void setUpExportDir() throws Exception {
-    BB2RIFExporter.CodeMapper.throwExceptionOnFileMissing = false;
     TestHelper.exportOff();
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     bb2ExportEnabled = Config.get("exporter.bfd.export");
     Config.set("exporter.bfd.export", "true");
+    Config.set("exporter.bfd.require_code_maps", "false");
     exportDir = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", exportDir.toString());
     BB2RIFExporter.getInstance().prepareOutputFiles();
