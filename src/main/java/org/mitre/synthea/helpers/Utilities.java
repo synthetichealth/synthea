@@ -24,6 +24,16 @@ import org.mitre.synthea.engine.State;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 public class Utilities {
+
+  private static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone("UTC");
+  
+  private static final ThreadLocal<Calendar> threadLocalCalendar = new ThreadLocal<Calendar>(){
+	  @Override
+	  protected Calendar initialValue() {
+		  return Calendar.getInstance(UTC_TIME_ZONE);
+	  }
+  };
+
   /**
    * Convert a quantity of time in a specified units into milliseconds.
    *
@@ -95,7 +105,7 @@ public class Utilities {
    * Get the year of a Unix timestamp.
    */
   public static int getYear(long time) {
-    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    Calendar calendar = threadLocalCalendar.get();
     calendar.setTimeInMillis(time);
     return calendar.get(Calendar.YEAR);
   }
@@ -104,7 +114,7 @@ public class Utilities {
    * Get the month of a Unix timestamp.
    */
   public static int getMonth(long time) {
-    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    Calendar calendar = threadLocalCalendar.get();
     calendar.setTimeInMillis(time);
     return calendar.get(Calendar.MONTH) + 1;
   }
@@ -134,11 +144,20 @@ public class Utilities {
     return retVal;
   }
 
+  private static double timestepCache = Double.NaN;
+  
+  private static double getTimestep() {
+	if(timestepCache == Double.NaN)
+      timestepCache = Double.parseDouble(Config.get("generate.timestep"));
+	
+	return timestepCache;
+  }
+
   /**
    * Calculates 1 - (1-risk)^(currTimeStepInMS/originalPeriodInMS).
    */
   public static double convertRiskToTimestep(double risk, double originalPeriodInMS) {
-    double currTimeStepInMS = Double.parseDouble(Config.get("generate.timestep"));
+    double currTimeStepInMS = getTimestep();
 
     return convertRiskToTimestep(risk, originalPeriodInMS, currTimeStepInMS);
   }

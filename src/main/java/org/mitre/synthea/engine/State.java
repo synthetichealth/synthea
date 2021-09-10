@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math.ode.DerivativeException;
@@ -1751,10 +1752,9 @@ public abstract class State implements Cloneable, Serializable {
       // we need to ensure we deep clone the list
       // (otherwise as this gets passed around, the same objects are used for different patients
       // which causes weird and unexpected results)
-      List<Observation> cloneObs = new ArrayList<>(observations.size());
-      for (Observation o : observations) {
-        cloneObs.add(o.clone());
-      }
+      List<Observation> cloneObs = observations.stream()
+			  .map(Observation::clone)
+			  .collect(Collectors.toCollection(ArrayList::new));
       clone.observations = cloneObs;
 
       return clone;
