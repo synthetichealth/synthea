@@ -1234,76 +1234,92 @@ public class BB2RIFExporter {
         }
       }
 
-      for (Device device : encounter.devices) {
-        if (dmeCodeMapper.canMap(device.codes.get(0).code)) {
-          fieldValues.clear();
-          staticFieldConfig.setValues(fieldValues, DMEFields.class, person);
+      fieldValues.clear();
+      staticFieldConfig.setValues(fieldValues, DMEFields.class, person);
 
-          // complex fields that could not easily be set using cms_field_values.tsv
-          fieldValues.put(DMEFields.CLM_ID, "" + claimId);
-          fieldValues.put(DMEFields.CLM_GRP_ID, "" + claimGroupId);
-          fieldValues.put(DMEFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
-          fieldValues.put(DMEFields.LINE_HCT_HGB_RSLT_NUM, "" + latestHemoglobin);
-          fieldValues.put(DMEFields.CARR_NUM,
-                  getCarrier(encounter.provider.state, CarrierFields.CARR_NUM));
-          fieldValues.put(DMEFields.CLM_FROM_DT, bb2DateFromTimestamp(device.start));
-          fieldValues.put(DMEFields.CLM_THRU_DT, bb2DateFromTimestamp(device.start));
-          fieldValues.put(DMEFields.LINE_BENE_PTB_DDCTBL_AMT,
-                  String.format("%.2f", encounter.claim.getDeductiblePaid()));
-          fieldValues.put(DMEFields.LINE_COINSRNC_AMT,
-                  String.format("%.2f", encounter.claim.getCoinsurancePaid()));
-          fieldValues.put(DMEFields.NCH_WKLY_PROC_DT,
-                  bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-          fieldValues.put(DMEFields.PRVDR_STATE_CD,
-                  locationMapper.getStateCode(encounter.provider.state));
-          fieldValues.put(DMEFields.TAX_NUM,
-                  bb2TaxId((String)encounter.clinician.attributes.get(Person.IDENTIFIER_SSN)));
-          fieldValues.put(DMEFields.DMERC_LINE_PRCNG_STATE_CD,
-                  locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
-          fieldValues.put(DMEFields.LINE_1ST_EXPNS_DT, bb2DateFromTimestamp(encounter.start));
-          fieldValues.put(DMEFields.LINE_LAST_EXPNS_DT, bb2DateFromTimestamp(encounter.stop));
-          fieldValues.put(DMEFields.HCPCS_CD,
-                  dmeCodeMapper.map(device.codes.get(0).code, person));
-          fieldValues.put(DMEFields.LINE_CMS_TYPE_SRVC_CD,
-                  dmeCodeMapper.map(device.codes.get(0).code,
-                          DMEFields.LINE_CMS_TYPE_SRVC_CD.toString().toLowerCase(),
-                          person));
+      // complex fields that could not easily be set using cms_field_values.tsv
+      fieldValues.put(DMEFields.CLM_ID, "" + claimId);
+      fieldValues.put(DMEFields.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(DMEFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
+      fieldValues.put(DMEFields.LINE_HCT_HGB_RSLT_NUM, "" + latestHemoglobin);
+      fieldValues.put(DMEFields.CARR_NUM,
+              getCarrier(encounter.provider.state, CarrierFields.CARR_NUM));
+      fieldValues.put(DMEFields.NCH_WKLY_PROC_DT,
+              bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
+      fieldValues.put(DMEFields.PRVDR_STATE_CD,
+              locationMapper.getStateCode(encounter.provider.state));
+      fieldValues.put(DMEFields.TAX_NUM,
+              bb2TaxId((String)encounter.clinician.attributes.get(Person.IDENTIFIER_SSN)));
+      fieldValues.put(DMEFields.DMERC_LINE_PRCNG_STATE_CD,
+              locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
+      fieldValues.put(DMEFields.LINE_1ST_EXPNS_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(DMEFields.LINE_LAST_EXPNS_DT, bb2DateFromTimestamp(encounter.stop));
 
-          // OPTIONAL
-          if (encounter.reason != null) {
-            // If the encounter has a recorded reason, enter the mapped
-            // values into the principle diagnoses code.
-            if (conditionCodeMapper.canMap(encounter.reason.code)) {
-              String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
-              fieldValues.put(DMEFields.PRNCPAL_DGNS_CD, icdCode);
-              fieldValues.put(DMEFields.LINE_ICD_DGNS_CD, icdCode);
-            }
-          }
+      // OPTIONAL
+      if (encounter.reason != null) {
+        // If the encounter has a recorded reason, enter the mapped
+        // values into the principle diagnoses code.
+        if (conditionCodeMapper.canMap(encounter.reason.code)) {
+          String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
+          fieldValues.put(DMEFields.PRNCPAL_DGNS_CD, icdCode);
+          fieldValues.put(DMEFields.LINE_ICD_DGNS_CD, icdCode);
+        }
+      }
 
-          // Use the active condition diagnoses to enter mapped values
-          // into the diagnoses codes.
-          List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
-          if (mappedDiagnosisCodes.isEmpty()) {
-            continue; // skip this encounter
-          }
-          int smallest = Math.min(mappedDiagnosisCodes.size(), dmeDxFields.length);
-          for (int i = 0; i < smallest; i++) {
-            DMEFields[] dxField = dmeDxFields[i];
-            fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
-            fieldValues.put(dxField[1], "0"); // 0=ICD10
-          }
-          if (!fieldValues.containsKey(DMEFields.PRNCPAL_DGNS_CD)) {
-            fieldValues.put(DMEFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
-            fieldValues.put(DMEFields.LINE_ICD_DGNS_CD, mappedDiagnosisCodes.get(0));
-          }
+      // Use the active condition diagnoses to enter mapped values
+      // into the diagnoses codes.
+      List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
+      if (mappedDiagnosisCodes.isEmpty()) {
+        continue; // skip this encounter
+      }
+      int smallest = Math.min(mappedDiagnosisCodes.size(), dmeDxFields.length);
+      for (int i = 0; i < smallest; i++) {
+        DMEFields[] dxField = dmeDxFields[i];
+        fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+        fieldValues.put(dxField[1], "0"); // 0=ICD10
+      }
+      if (!fieldValues.containsKey(DMEFields.PRNCPAL_DGNS_CD)) {
+        fieldValues.put(DMEFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+        fieldValues.put(DMEFields.LINE_ICD_DGNS_CD, mappedDiagnosisCodes.get(0));
+      }
 
-          // write out field values
-          dme.writeValues(DMEFields.class, fieldValues);
-        } else {
-          // TODO remove this prior to PR merge
+      int lineNum = 1;
+      for (ClaimEntry lineItem : encounter.claim.items) {
+        if (!(lineItem.entry instanceof Device)) {
+          continue;
+        }
+        Device device = (Device)lineItem.entry;
+        if (!dmeCodeMapper.canMap(device.codes.get(0).code)) {
           System.err.println(" *** Possibly Missing DME Code: " + device.codes.get(0).code
                   + " " + device.codes.get(0).display);
+          continue;
         }
+        
+        fieldValues.put(DMEFields.CLM_FROM_DT, bb2DateFromTimestamp(device.start));
+        fieldValues.put(DMEFields.CLM_THRU_DT, bb2DateFromTimestamp(device.start));
+        fieldValues.put(DMEFields.HCPCS_CD,
+                dmeCodeMapper.map(device.codes.get(0).code, person));
+        fieldValues.put(DMEFields.LINE_CMS_TYPE_SRVC_CD,
+                dmeCodeMapper.map(device.codes.get(0).code,
+                        DMEFields.LINE_CMS_TYPE_SRVC_CD.toString().toLowerCase(),
+                        person));
+        fieldValues.put(DMEFields.LINE_BENE_PTB_DDCTBL_AMT,
+                String.format("%.2f", lineItem.deductible));
+        fieldValues.put(DMEFields.LINE_COINSRNC_AMT,
+                String.format("%.2f", lineItem.coinsurance));
+        fieldValues.put(DMEFields.LINE_BENE_PMT_AMT,
+            String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
+        fieldValues.put(DMEFields.LINE_PRVDR_PMT_AMT,
+            String.format("%.2f", lineItem.coinsurance + lineItem.payer));
+        fieldValues.put(DMEFields.LINE_SBMTD_CHRG_AMT,
+            String.format("%.2f", lineItem.cost));
+        fieldValues.put(DMEFields.LINE_ALOWD_CHRG_AMT,
+            String.format("%.2f", lineItem.cost - lineItem.adjustment));
+        
+        
+        // set the line number and write out field values
+        fieldValues.put(DMEFields.LINE_NUM, Integer.toString(lineNum++));
+        dme.writeValues(DMEFields.class, fieldValues);
       }
     }
   }
@@ -1340,6 +1356,7 @@ public class BB2RIFExporter {
           bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
       fieldValues.put(HHAFields.PRVDR_NUM, encounter.provider.id);
       fieldValues.put(HHAFields.ORG_NPI_NUM, encounter.provider.npi);
+      fieldValues.put(HHAFields.AT_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(HHAFields.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
 
       fieldValues.put(HHAFields.CLM_PMT_AMT,
@@ -1489,6 +1506,7 @@ public class BB2RIFExporter {
               bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
       fieldValues.put(HospiceFields.PRVDR_NUM, encounter.provider.id);
       fieldValues.put(HospiceFields.AT_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(HospiceFields.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(HospiceFields.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(HospiceFields.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
@@ -1659,6 +1677,9 @@ public class BB2RIFExporter {
       fieldValues.put(SNFFields.NCH_WKLY_PROC_DT,
           bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
       fieldValues.put(SNFFields.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(SNFFields.AT_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(SNFFields.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
+      
       fieldValues.put(SNFFields.CLM_PMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
