@@ -300,7 +300,12 @@ public abstract class Logic implements Serializable {
   public static class And extends GroupedCondition {
     @Override
     public boolean test(Person person, long time) {
-      return conditions.stream().allMatch(c -> c.test(person, time));
+	  for(Logic condition: conditions) {
+		  if (!condition.test(person, time))
+			  return false;
+	  }
+
+	  return true;
     }
   }
 

@@ -34,6 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
@@ -301,7 +302,7 @@ public class Module implements Cloneable, Serializable {
       states.put(entry.getKey(), state);
     }
   }
-
+  
   /**
    * Clone this module. Never provide the original.
    */
@@ -311,10 +312,12 @@ public class Module implements Cloneable, Serializable {
     clone.submodule = this.submodule;
     clone.remarks = this.remarks;
     if (this.states != null) {
-      clone.states = new ConcurrentHashMap<String, State>();
-      for (String key : this.states.keySet()) {
-        clone.states.put(key, this.states.get(key).clone());
-      }
+	  clone.states = this.states.entrySet().stream()
+			  .collect(Collectors.toMap(
+					  e -> e.getKey(),
+					  e -> e.getValue().clone(),
+					  (oldValue, newValue) -> newValue,
+					  ConcurrentHashMap::new));
     }
     return clone;
   }
@@ -423,11 +426,13 @@ public class Module implements Cloneable, Serializable {
    */
   public static class ModuleSupplier implements Supplier<Module> {
 
+	private final Object getLock = new Object();
+
     public final boolean core;
     public final boolean submodule;
     public final String path;
 
-    private boolean loaded;
+    private volatile boolean loaded;
     private Callable<Module> loader;
     private Module module;
     private Throwable fault;
@@ -461,17 +466,21 @@ public class Module implements Cloneable, Serializable {
     }
 
     @Override
-    public synchronized Module get() {
+    public Module get() {
       if (!loaded) {
-        try {
-          module = loader.call();
-        } catch (Throwable e) {
-          e.printStackTrace();
-          fault = e;
-        } finally {
-          loaded = true;
-          loader = null;
-        }
+		synchronized(getLock) {
+          if (!loaded) {
+            try {
+              module = loader.call();
+            } catch (Throwable e) {
+              e.printStackTrace();
+              fault = e;
+            } finally {
+              loaded = true;
+              loader = null;
+            }
+		  }
+		}
       }
       if (fault != null) {
         throw new RuntimeException(fault);
