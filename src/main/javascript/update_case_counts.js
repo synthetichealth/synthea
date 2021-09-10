@@ -27,7 +27,9 @@ caseData['USA']['data'].forEach(dayRow => {
   const day = new Date(dayRow['date']);
   const startTime = day.getTime();
   const endTime = startTime + (24 * 60 * 60 * 1000) - 1;
-  let dayChance = dayRow['new_cases_per_million'] / 1000000;
+  // Multiplying by 4 since the COVID-19 module tests for infection
+  // every 4 days
+  let dayChance = (dayRow['new_cases_per_million'] / 1000000) * 4;
   if (isNaN(dayChance)) {
     dayChance = 0;
   }
