@@ -644,15 +644,14 @@
       ],
       "direct_transition": "NT-proBNP",
       "range": {
-        "low": 0,
-        "high": 0.5
+        "low": 0.03,
+        "high": 0.08
       },
       "remarks": [
         "    Normal range: below 0.04 ng/ml",
-        "    Probable heart attack: above 0.40 ng/ml",
         "https://testguide.labmed.uw.edu/public/view/TROPIG",
         " ",
-        "Note this is used in the NSTEACS pathway to decide between NSTEMI and UA"
+        "Note this is used in the NSTEACS pathway to decide between NSTEMI and UA (aiming for 20% below 0.04)"
       ]
     },
     "NT-proBNP": {
