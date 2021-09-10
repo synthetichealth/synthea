@@ -45,7 +45,7 @@
     "Call Infection Submodule": {
       "submodule": "covid19/infection",
       "type": "CallSubmodule",
-      "direct_transition": "Check Vaccine Status",
+      "direct_transition": "Terminal",
       "name": "Call Infection Submodule"
     },
     "Check Vaccine Status": {
