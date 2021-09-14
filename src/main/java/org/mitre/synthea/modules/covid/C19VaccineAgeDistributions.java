@@ -185,7 +185,7 @@ public class C19VaccineAgeDistributions {
       Gson gson = new Gson();
       rawShotProbs = gson.fromJson(rawJson, LinkedTreeMap.class);
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new RuntimeException("Couldn't load the shot probabilities file", e);
     }
     rawShotProbs.entrySet().forEach(stringObjectEntry -> {
       AgeRange ar = new AgeRange(stringObjectEntry.getKey());

@@ -58,6 +58,9 @@ public class C19Vaccine {
   }
 
   public static EUASet selectShot(Person person) {
+    if (shotSelector == null) {
+      initialize();
+    }
     shotSelector.reseedRandomGenerator(person.randLong());
     return shotSelector.sample();
   }

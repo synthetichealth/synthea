@@ -181,7 +181,9 @@ public class C19ImmunizationModule extends Module {
    * @return a vaccine that should be administered to the person
    */
   public static C19Vaccine.EUASet selectVaccine(Person person, long time) {
-    if (time < MODERNA_APPROVED) {
+    if (time < FIRST_POSSIBLE_SHOT_TIME) {
+      throw new IllegalArgumentException("No vaccines were available at time: " + time);
+    } else if (time < MODERNA_APPROVED) {
       return C19Vaccine.EUASet.PFIZER;
     } else if (time >= MODERNA_APPROVED && time <= JANSSEN_APPROVED) {
       // Randomly select, with equal chance
