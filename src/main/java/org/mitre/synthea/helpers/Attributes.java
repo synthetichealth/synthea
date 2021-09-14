@@ -40,6 +40,7 @@ import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.modules.QualityOfLifeModule;
+import org.mitre.synthea.modules.covid.C19ImmunizationModule;
 import org.mitre.synthea.world.agents.Person;
 
 /**
@@ -149,6 +150,7 @@ public class Attributes {
     Immunizations.inventoryAttributes(attributes);
     LifecycleModule.inventoryAttributes(attributes);
     QualityOfLifeModule.inventoryAttributes(attributes);
+    C19ImmunizationModule.inventoryAttributes(attributes);
     
     return attributes;
   }

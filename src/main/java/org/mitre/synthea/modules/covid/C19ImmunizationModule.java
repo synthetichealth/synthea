@@ -2,8 +2,10 @@ package org.mitre.synthea.modules.covid;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Map;
 
 import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -117,7 +119,7 @@ public class C19ImmunizationModule extends Module {
   }
 
   /**
-   * Create and initialize am instance of the module.
+   * Create and initialize an instance of the module.
    */
   public C19ImmunizationModule() {
     C19VaccineAgeDistributions.initialize();
@@ -131,6 +133,7 @@ public class C19ImmunizationModule extends Module {
 
   /**
    * Checks a person's health record to see if they currently have COVID-19.
+   *
    * @param person the person to check
    * @return true if there is an active COVID-19 condition on the record.
    */
@@ -141,8 +144,9 @@ public class C19ImmunizationModule extends Module {
   /**
    * Check to see if a person is eligible for a COVID-19 vaccine at the time in the simulation.
    * The check is based on date (when a vaccine was given an EUA) and age
+   *
    * @param person the person to check
-   * @param time current time in the simulation
+   * @param time   current time in the simulation
    * @return true if the person would be eligible for a vaccine at the point in the simulation
    */
   public static boolean eligibleForShot(Person person, long time) {
@@ -158,8 +162,9 @@ public class C19ImmunizationModule extends Module {
    * Given an individual, randomly select whether they will get vaccinated, with the selection
    * weighted by the proportion of individuals in their age group who have been vaccinated according
    * to national statistics.
+   *
    * @param person the person to check
-   * @param time current time in the simulation
+   * @param time   current time in the simulation
    * @return true if the person should proceed to vaccination
    */
   public static boolean decideOnShot(Person person, long time) {
@@ -170,8 +175,9 @@ public class C19ImmunizationModule extends Module {
   /**
    * Select a vaccine for an individual based on national distribution statistics and whether the
    * vaccine was eligible for the time in simulation.
+   *
    * @param person the person to check
-   * @param time current time in the simulation
+   * @param time   current time in the simulation
    * @return a vaccine that should be administered to the person
    */
   public static C19Vaccine.EUASet selectVaccine(Person person, long time) {
@@ -193,8 +199,9 @@ public class C19ImmunizationModule extends Module {
 
   /**
    * Provide a COVID-19 vaccine to the person. Add an Immunization to their health record.
+   *
    * @param person the person to check
-   * @param time current time in the simulation
+   * @param time   current time in the simulation
    * @param series 1 - for first shot, 2 - for second shot
    */
   public static void vaccinate(Person person, long time, int series) {
@@ -308,5 +315,22 @@ public class C19ImmunizationModule extends Module {
     }
 
     return false;
+  }
+
+  /**
+   * Populate the given attribute map with the list of attributes that this
+   * module reads/writes with example values when appropriate.
+   *
+   * @param attributes Attribute map to populate.
+   */
+  public static void inventoryAttributes(Map<String, Attributes.Inventory> attributes) {
+    String m = C19ImmunizationModule.class.getSimpleName();
+
+    Attributes.inventory(attributes, m, C19_VACCINE_STATUS, true, true, "WAITING_FOR_SHOT");
+    Attributes.inventory(attributes, m, C19_VACCINE, true, true, "MODERNA");
+    Attributes.inventory(attributes, m, C19_SCHEDULED_FIRST_SHOT, true, true, "7/29/2021");
+    Attributes.inventory(attributes, m, C19_SCHEDULED_SECOND_SHOT, true, true, "8/19/2021");
+    Attributes.inventory(attributes, m, C19_LATE_ADOPTER_MODEL, true, true, null);
+    Attributes.inventory(attributes, m, C19_FULLY_VACCINATED, false, true, "true");
   }
 }
