@@ -57,6 +57,11 @@ public class C19Vaccine {
     shotSelector = new EnumeratedDistribution(pmf);
   }
 
+  /**
+   * Select a vaccine to be used for an individual.
+   * @param person to vaccinate
+   * @return a vaccine to use
+   */
   public static EUASet selectShot(Person person) {
     if (shotSelector == null) {
       initialize();
