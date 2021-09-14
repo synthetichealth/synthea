@@ -45,22 +45,85 @@
     },
     "Check Operative Status": {
       "type": "Simple",
-      "distributed_transition": [
+      "conditional_transition": [
         {
-          "transition": "Elective",
-          "distribution": 0.381471
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "401303003",
+                    "display": "Acute ST segment elevation myocardial infarction (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "401314000",
+                    "display": "Acute non-ST segment elevation myocardial infarction (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "4557003",
+                    "display": "Preinfarction syndrome (disorder)"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Nonelective"
         },
         {
+          "transition": "Any"
+        }
+      ]
+    },
+    "Nonelective": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
           "transition": "Emergent",
-          "distribution": 0.076294
+          "distribution": 0.1244
         },
         {
           "transition": "Emergent Salvage",
-          "distribution": 0.010899
+          "distribution": 0.0138
         },
         {
           "transition": "Urgent",
-          "distribution": 0.531336
+          "distribution": 0.8618
+        }
+      ]
+    },
+    "Any": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Elective",
+          "distribution": 0.3608
+        },
+        {
+          "transition": "Emergent",
+          "distribution": 0.0795
+        },
+        {
+          "transition": "Emergent Salvage",
+          "distribution": 0.0088
+        },
+        {
+          "transition": "Urgent",
+          "distribution": 0.5508
         }
       ]
     },

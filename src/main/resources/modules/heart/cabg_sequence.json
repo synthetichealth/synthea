@@ -89,10 +89,21 @@
         {
           "transition": "Urgent",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "operative_status",
-            "operator": "==",
-            "value": "emergent_salvage"
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "operative_status",
+                "operator": "==",
+                "value": "emergent_salvage"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "operative_status",
+                "operator": "==",
+                "value": "emergent"
+              }
+            ]
           }
         },
         {
@@ -152,7 +163,35 @@
     "Referral and Preoperative Testing": {
       "type": "CallSubmodule",
       "submodule": "heart/cabg/referral",
-      "direct_transition": "Operation"
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "vhd_diagnosis",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "bicuspid_aortic_valve",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "repeat_referral_pci",
+                "operator": "is not nil"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Operation"
+        }
+      ]
     },
     "Postop ICU and Ward": {
       "type": "CallSubmodule",

@@ -30,8 +30,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 77343006,
-          "display": "Angiography (procedure)"
+          "code": 33367005,
+          "display": "Coronary angiography (procedure)"
         }
       ],
       "duration": {
@@ -53,8 +53,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 112802009,
-          "display": "Cardiovascular operative procedure (procedure)"
+          "code": 32485007,
+          "display": "Hospital admission (procedure)"
         }
       ],
       "direct_transition": "Terminal"
@@ -262,11 +262,11 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 112802009,
-          "display": "Cardiovascular operative procedure (procedure)"
+          "code": 32485007,
+          "display": "Hospital admission (procedure)"
         }
       ],
-      "direct_transition": "Scheduling Procedure "
+      "direct_transition": "Preoperative Testing"
     },
     "Preoperative Outpatient": {
       "type": "Encounter",
@@ -279,25 +279,12 @@
           "display": "Follow-up encounter (procedure)"
         }
       ],
-      "direct_transition": "Scheduling Procedure "
+      "direct_transition": "Preoperative Testing"
     },
     "Preoperative Testing": {
       "type": "CallSubmodule",
       "submodule": "heart/cabg/preoperative",
-      "conditional_transition": [
-        {
-          "transition": "Terminal",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "cabg_immediate_admission",
-            "operator": "==",
-            "value": true
-          }
-        },
-        {
-          "transition": "End Preoperative"
-        }
-      ]
+      "direct_transition": "Treatment_Plan"
     },
     "End Preoperative": {
       "type": "EncounterEnd",
@@ -375,7 +362,20 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "Cardiology Consultation"
+      "conditional_transition": [
+        {
+          "transition": "Repeat_Referrals",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_consultation_count",
+            "operator": ">=",
+            "value": 1
+          }
+        },
+        {
+          "transition": "Cardiology Consultation"
+        }
+      ]
     },
     "Cardiology Consultation": {
       "type": "Procedure",
@@ -399,8 +399,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 722492002,
-          "display": "Postoperative procedure (procedure)"
+          "code": 736169004,
+          "display": "Post anesthesia care management (procedure)"
         }
       ],
       "duration": {
@@ -436,9 +436,67 @@
           ]
         }
       ],
-      "reason": "Select Condition/Enter Attribute"
+      "reason": "Abnormal Findings"
     },
-    "Scheduling Procedure ": {
+    "Repeat_Referrals": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Repeat Referral Medical Care",
+          "distribution": 0.02
+        },
+        {
+          "transition": "Repeat Referral PCI",
+          "distribution": 0.98
+        }
+      ]
+    },
+    "Repeat Referral PCI": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 415070008,
+          "display": "Percutaneous coronary intervention (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 90,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "assign_to_attribute": "repeat_referral_pci",
+      "direct_transition": "Terminal",
+      "reason": "Abnormal Findings"
+    },
+    "Repeat Referral Medical Care": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 781087000,
+          "display": "Medical care (regime/therapy)"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "Abnormal Findings"
+    },
+    "Treatment_Plan": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 709138001,
+          "display": "Notification of treatment plan (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "Scheduling_Procedure"
+    },
+    "Scheduling_Procedure": {
       "type": "Procedure",
       "codes": [
         {
@@ -447,13 +505,21 @@
           "display": "Scheduling (procedure)"
         }
       ],
-      "duration": {
-        "low": 30,
-        "high": 60,
-        "unit": "minutes"
-      },
-      "direct_transition": "Preoperative Testing",
-      "reason": "Abnormal Findings"
+      "reason": "Abnormal Findings",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_immediate_admission",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "End Preoperative"
+        }
+      ]
     }
   },
   "gmf_version": 2

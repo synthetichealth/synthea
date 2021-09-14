@@ -76,13 +76,6 @@
       },
       "direct_transition": "Common Labs"
     },
-    "TODO Blood Type and Cross": {
-      "type": "Simple",
-      "direct_transition": "Priority 2+",
-      "remarks": [
-        "Synthea patients do not yet have blood types or Rh factors."
-      ]
-    },
     "High_Sensitivity_Cardiac_Troponin_I": {
       "type": "DiagnosticReport",
       "codes": [
@@ -720,7 +713,49 @@
     "Common Labs": {
       "type": "CallSubmodule",
       "submodule": "heart/cabg/labs_common",
-      "direct_transition": "TODO Blood Type and Cross"
+      "direct_transition": "Blood Type and Cross"
+    },
+    "Blood Type and Cross": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 44608003,
+          "display": "Blood group typing (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "Redo_Check",
+      "remarks": [
+        "Synthea patients do not yet have blood types or Rh factors."
+      ]
+    },
+    "Assign_Redo_Attribute": {
+      "type": "SetAttribute",
+      "attribute": "cabg_redo",
+      "direct_transition": "Priority 2+",
+      "value": true
+    },
+    "Redo_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Assign_Redo_Attribute",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 399261000,
+                "display": "History of coronary artery bypass grafting (situation)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Priority 2+"
+        }
+      ]
     }
   },
   "gmf_version": 2

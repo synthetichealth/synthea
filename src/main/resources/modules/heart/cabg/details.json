@@ -1,0 +1,214 @@
+{
+  "name": "details",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Pick Operative Approach"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Pick Operative Approach": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Sternotomy",
+          "default_probability": 1,
+          "lookup_table_name": "cabg_details_operative_approach.csv"
+        },
+        {
+          "transition": "Thoracotomy",
+          "default_probability": 0,
+          "lookup_table_name": "cabg_details_operative_approach.csv"
+        },
+        {
+          "transition": "Anything Else",
+          "default_probability": 0,
+          "lookup_table_name": "cabg_details_operative_approach.csv"
+        }
+      ]
+    },
+    "Pick Number of Grafts": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Graft_No_1",
+          "default_probability": 0.023,
+          "lookup_table_name": "cabg_details_num_grafts.csv"
+        },
+        {
+          "transition": "Graft_No_2",
+          "default_probability": 0.27,
+          "lookup_table_name": "cabg_details_num_grafts.csv"
+        },
+        {
+          "transition": "Graft_No_3",
+          "default_probability": 0.5,
+          "lookup_table_name": "cabg_details_num_grafts.csv"
+        },
+        {
+          "transition": "Graft_No_4",
+          "default_probability": 0.179,
+          "lookup_table_name": "cabg_details_num_grafts.csv"
+        },
+        {
+          "transition": "Graft_No_5",
+          "default_probability": 0.028,
+          "lookup_table_name": "cabg_details_num_grafts.csv"
+        },
+        {
+          "transition": "Graft_No_6",
+          "default_probability": 0.001,
+          "lookup_table_name": "cabg_details_num_grafts.csv"
+        }
+      ]
+    },
+    "Pick Number of Arterial Conduits": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Art_Cond_1",
+          "default_probability": 0.478,
+          "lookup_table_name": "cabg_details_num_art_cond.csv"
+        },
+        {
+          "transition": "Art_Cond_2",
+          "default_probability": 0.293,
+          "lookup_table_name": "cabg_details_num_art_cond.csv"
+        },
+        {
+          "transition": "Art_Cond_3",
+          "default_probability": 0.144,
+          "lookup_table_name": "cabg_details_num_art_cond.csv"
+        },
+        {
+          "transition": "Art_Cond_4",
+          "default_probability": 0.06,
+          "lookup_table_name": "cabg_details_num_art_cond.csv"
+        },
+        {
+          "transition": "Art_Cond_5",
+          "default_probability": 0.023,
+          "lookup_table_name": "cabg_details_num_art_cond.csv"
+        },
+        {
+          "transition": "Art_Cond_6",
+          "default_probability": 0.003,
+          "lookup_table_name": "cabg_details_num_art_cond.csv"
+        }
+      ]
+    },
+    "Sternotomy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "359672006",
+          "display": "Median sternotomy (procedure)"
+        }
+      ],
+      "assign_to_attribute": "cabg_operative_approach",
+      "direct_transition": "Pick Number of Grafts"
+    },
+    "Graft_No_1": {
+      "type": "SetAttribute",
+      "attribute": "cabg_number_of_grafts",
+      "value": 1,
+      "direct_transition": "Pick Number of Arterial Conduits"
+    },
+    "Graft_No_2": {
+      "type": "SetAttribute",
+      "attribute": "cabg_number_of_grafts",
+      "value": 2,
+      "direct_transition": "Pick Number of Arterial Conduits"
+    },
+    "Graft_No_3": {
+      "type": "SetAttribute",
+      "attribute": "cabg_number_of_grafts",
+      "value": 3,
+      "direct_transition": "Pick Number of Arterial Conduits"
+    },
+    "Graft_No_4": {
+      "type": "SetAttribute",
+      "attribute": "cabg_number_of_grafts",
+      "value": 4,
+      "direct_transition": "Pick Number of Arterial Conduits"
+    },
+    "Graft_No_5": {
+      "type": "SetAttribute",
+      "attribute": "cabg_number_of_grafts",
+      "value": 5,
+      "direct_transition": "Pick Number of Arterial Conduits"
+    },
+    "Graft_No_6": {
+      "type": "SetAttribute",
+      "attribute": "cabg_number_of_grafts",
+      "value": 6,
+      "direct_transition": "Pick Number of Arterial Conduits"
+    },
+    "Art_Cond_1": {
+      "type": "SetAttribute",
+      "attribute": "cabg_arterial_conduits",
+      "value": 1,
+      "direct_transition": "Terminal"
+    },
+    "Art_Cond_2": {
+      "type": "SetAttribute",
+      "attribute": "cabg_arterial_conduits",
+      "value": 2,
+      "direct_transition": "Terminal"
+    },
+    "Art_Cond_3": {
+      "type": "SetAttribute",
+      "attribute": "cabg_arterial_conduits",
+      "value": 3,
+      "direct_transition": "Terminal"
+    },
+    "Art_Cond_4": {
+      "type": "SetAttribute",
+      "attribute": "cabg_arterial_conduits",
+      "value": 4,
+      "direct_transition": "Terminal"
+    },
+    "Art_Cond_5": {
+      "type": "SetAttribute",
+      "attribute": "cabg_arterial_conduits",
+      "value": 5,
+      "direct_transition": "Terminal"
+    },
+    "Art_Cond_6": {
+      "type": "SetAttribute",
+      "attribute": "cabg_arterial_conduits",
+      "value": 6,
+      "direct_transition": "Terminal"
+    },
+    "Thoracotomy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "177765008",
+          "display": "Opening of chest (procedure)"
+        }
+      ],
+      "assign_to_attribute": "cabg_operative_approach",
+      "direct_transition": "Pick Number of Grafts"
+    },
+    "Anything Else": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "385488000",
+          "display": "Surgical procedure on chest wall (procedure)"
+        }
+      ],
+      "assign_to_attribute": "cabg_operative_approach",
+      "direct_transition": "Pick Number of Grafts"
+    }
+  },
+  "gmf_version": 2
+}

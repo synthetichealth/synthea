@@ -49,12 +49,12 @@
     "CABG": {
       "type": "CallSubmodule",
       "submodule": "PerformCABG",
-      "direct_transition": "Intraop_Devices_or_Meds"
+      "direct_transition": "Intraop_Devices"
     },
     "Emergency_CABG": {
       "type": "CallSubmodule",
       "submodule": "PerformCABG",
-      "direct_transition": "Intraop_Devices_or_Meds"
+      "direct_transition": "Intraop_Devices"
     },
     "History_of_CABG": {
       "type": "ConditionOnset",
@@ -126,11 +126,11 @@
       "distributed_transition": [
         {
           "transition": "On Pump",
-          "distribution": 0.578
+          "distribution": 0.59
         },
         {
           "transition": "Off Pump",
-          "distribution": 0.422
+          "distribution": 0.41
         }
       ]
     },
@@ -159,7 +159,7 @@
     "Off Pump": {
       "type": "SetAttribute",
       "attribute": "cabg_pump",
-      "direct_transition": "Emergency_Check",
+      "direct_transition": "Call CABG_Details Off Pump",
       "value": false
     },
     "CPB": {
@@ -208,7 +208,7 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "Emergency Check"
+      "direct_transition": "Call CABG_Details On Pump"
     },
     "Removal of Aortic Cross Clamp": {
       "type": "Procedure",
@@ -273,12 +273,12 @@
     "On Pump CABG": {
       "type": "CallSubmodule",
       "submodule": "PerformCABG",
-      "direct_transition": "Intraop Devices or Meds"
+      "direct_transition": "Intraop Devices"
     },
     "On Pump Emergency CABG": {
       "type": "CallSubmodule",
       "submodule": "PerformCABG",
-      "direct_transition": "Intraop Devices or Meds"
+      "direct_transition": "Intraop Devices"
     },
     "Surgery Documentation": {
       "type": "Procedure",
@@ -301,15 +301,25 @@
       "submodule": "heart/cabg/or_labs_meds",
       "direct_transition": "Arterial Line Insertion"
     },
-    "Intraop Devices or Meds": {
+    "Intraop_Devices": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/or_intraop",
+      "direct_transition": "History_of_CABG"
+    },
+    "Intraop Devices": {
       "type": "CallSubmodule",
       "submodule": "heart/cabg/or_intraop",
       "direct_transition": "Removal of Aortic Cross Clamp"
     },
-    "Intraop_Devices_or_Meds": {
+    "Call CABG_Details On Pump": {
       "type": "CallSubmodule",
-      "submodule": "heart/cabg/or_intraop",
-      "direct_transition": "History_of_CABG"
+      "submodule": "heart/cabg/details",
+      "direct_transition": "Emergency Check"
+    },
+    "Call CABG_Details Off Pump": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/details",
+      "direct_transition": "Emergency_Check"
     }
   },
   "gmf_version": 2

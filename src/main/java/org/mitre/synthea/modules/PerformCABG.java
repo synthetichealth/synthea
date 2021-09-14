@@ -17,6 +17,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
@@ -211,14 +212,15 @@ public class PerformCABG extends Module {
   private static final double getProcedureDuration(Person person, Clinician surgeon, long time) {
     boolean onPump = (Boolean) person.attributes.getOrDefault("cabg_pump", true);
 
-    int numberGrafts = 0; // TODO - this may just be a distribution, not already on the patient
+    int numberGrafts = (int) person.attributes.get("cabg_number_of_grafts");
 
     int ckdStage = (Integer) person.attributes.getOrDefault("ckd", 0);
     boolean hasDialysis = ckdStage >= 4; // dialysis module kicks off at ckd stage >= 4
 
-    double totalNoDistAnastArtCond = 0.0; // TODO what even is this?
+    double totalNoDistAnastArtCond = (int) person.attributes.get("cabg_arterial_conduits");
 
-    boolean sternotomy = false; // TODO
+    HealthRecord.Procedure operativeApproach = (HealthRecord.Procedure) person.attributes.get("cabg_operative_approach");
+    boolean sternotomy = operativeApproach.containsCode("359672006", "SNOMED-CT");
 
     boolean redo = person.record.conditionActive("399261000"); // history of CABG code, see heart/cabg/operation.json
 
