@@ -715,52 +715,54 @@ public class BB2RIFExporter {
         continue; // skip this encounter
       }
 
-      int claimLine = 1;
-      for (ClaimEntry lineItem : encounter.claim.items) {
-        String hcpcsCode = null;
-        if (lineItem.entry instanceof HealthRecord.Procedure) {
-          for (HealthRecord.Code code : lineItem.entry.codes) {
-            if (hcpcsCodeMapper.canMap(code.code)) {
-              hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
-              break; // take the first mappable code for each procedure
+      synchronized(outpatient) {
+        int claimLine = 1;
+        for (ClaimEntry lineItem : encounter.claim.items) {
+          String hcpcsCode = null;
+          if (lineItem.entry instanceof HealthRecord.Procedure) {
+            for (HealthRecord.Code code : lineItem.entry.codes) {
+              if (hcpcsCodeMapper.canMap(code.code)) {
+                hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
+                break; // take the first mappable code for each procedure
+              }
+            }
+            fieldValues.remove(OutpatientFields.REV_CNTR_NDC_QTY);
+            fieldValues.remove(OutpatientFields.REV_CNTR_NDC_QTY_QLFR_CD);
+          } else if (lineItem.entry instanceof HealthRecord.Medication) {
+            HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
+            if (med.administration) {
+              hcpcsCode = "T1502";  // Administration of medication
+              fieldValues.put(OutpatientFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
+              fieldValues.put(OutpatientFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }
           }
-          fieldValues.remove(OutpatientFields.REV_CNTR_NDC_QTY);
-          fieldValues.remove(OutpatientFields.REV_CNTR_NDC_QTY_QLFR_CD);
-        } else if (lineItem.entry instanceof HealthRecord.Medication) {
-          HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
-          if (med.administration) {
-            hcpcsCode = "T1502";  // Administration of medication
-            fieldValues.put(OutpatientFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
-            fieldValues.put(OutpatientFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
+          if (hcpcsCode == null) {
+            continue;
           }
-        }
-        if (hcpcsCode == null) {
-          continue;
+
+          fieldValues.put(OutpatientFields.CLM_LINE_NUM, Integer.toString(claimLine++));
+          fieldValues.put(OutpatientFields.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
+          fieldValues.put(OutpatientFields.HCPCS_CD, hcpcsCode);
+          fieldValues.put(OutpatientFields.REV_CNTR_RATE_AMT,
+              String.format("%.2f", (lineItem.cost)));
+          fieldValues.put(OutpatientFields.REV_CNTR_PMT_AMT_AMT,
+              String.format("%.2f", lineItem.coinsurance + lineItem.payer));
+          fieldValues.put(OutpatientFields.REV_CNTR_TOT_CHRG_AMT,
+              String.format("%.2f", lineItem.cost));
+          fieldValues.put(OutpatientFields.REV_CNTR_NCVRD_CHRG_AMT,
+              String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
+          outpatient.writeValues(OutpatientFields.class, fieldValues);
         }
 
-        fieldValues.put(OutpatientFields.CLM_LINE_NUM, Integer.toString(claimLine++));
-        fieldValues.put(OutpatientFields.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
-        fieldValues.put(OutpatientFields.HCPCS_CD, hcpcsCode);
-        fieldValues.put(OutpatientFields.REV_CNTR_RATE_AMT,
-            String.format("%.2f", (lineItem.cost)));
-        fieldValues.put(OutpatientFields.REV_CNTR_PMT_AMT_AMT,
-            String.format("%.2f", lineItem.coinsurance + lineItem.payer));
-        fieldValues.put(OutpatientFields.REV_CNTR_TOT_CHRG_AMT,
-            String.format("%.2f", lineItem.cost));
-        fieldValues.put(OutpatientFields.REV_CNTR_NCVRD_CHRG_AMT,
-            String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
-        outpatient.writeValues(OutpatientFields.class, fieldValues);
-      }
-
-      if (claimLine == 1) {
-        // If claimLine still equals 1, then no line items were successfully added.
-        // Add a single top-level entry.
-        fieldValues.put(OutpatientFields.CLM_LINE_NUM, Integer.toString(claimLine));
-        fieldValues.put(OutpatientFields.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
-        // 99241: "Office consultation for a new or established patient" 
-        fieldValues.put(OutpatientFields.HCPCS_CD, "99241");
-        outpatient.writeValues(OutpatientFields.class, fieldValues);
+        if (claimLine == 1) {
+          // If claimLine still equals 1, then no line items were successfully added.
+          // Add a single top-level entry.
+          fieldValues.put(OutpatientFields.CLM_LINE_NUM, Integer.toString(claimLine));
+          fieldValues.put(OutpatientFields.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
+          // 99241: "Office consultation for a new or established patient" 
+          fieldValues.put(OutpatientFields.HCPCS_CD, "99241");
+          outpatient.writeValues(OutpatientFields.class, fieldValues);
+        }
       }
     }
   }
@@ -924,64 +926,65 @@ public class BB2RIFExporter {
       }
       previousEmergency = isEmergency;
 
-      int claimLine = 1;
-      for (ClaimEntry lineItem : encounter.claim.items) {
-        String hcpcsCode = null;
-        if (lineItem.entry instanceof HealthRecord.Procedure) {
-          for (HealthRecord.Code code : lineItem.entry.codes) {
-            if (hcpcsCodeMapper.canMap(code.code)) {
-              hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
-              break; // take the first mappable code for each procedure
+      synchronized(inpatient) {
+        int claimLine = 1;
+        for (ClaimEntry lineItem : encounter.claim.items) {
+          String hcpcsCode = null;
+          if (lineItem.entry instanceof HealthRecord.Procedure) {
+            for (HealthRecord.Code code : lineItem.entry.codes) {
+              if (hcpcsCodeMapper.canMap(code.code)) {
+                hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
+                break; // take the first mappable code for each procedure
+              }
+            }
+            fieldValues.remove(InpatientFields.REV_CNTR_NDC_QTY);
+            fieldValues.remove(InpatientFields.REV_CNTR_NDC_QTY_QLFR_CD);
+          } else if (lineItem.entry instanceof HealthRecord.Medication) {
+            HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
+            if (med.administration) {
+              hcpcsCode = "T1502";  // Administration of medication
+              fieldValues.put(InpatientFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
+              fieldValues.put(InpatientFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }
           }
-          fieldValues.remove(InpatientFields.REV_CNTR_NDC_QTY);
-          fieldValues.remove(InpatientFields.REV_CNTR_NDC_QTY_QLFR_CD);
-        } else if (lineItem.entry instanceof HealthRecord.Medication) {
-          HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
-          if (med.administration) {
-            hcpcsCode = "T1502";  // Administration of medication
-            fieldValues.put(InpatientFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
-            fieldValues.put(InpatientFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
+          if (hcpcsCode == null) {
+            continue;
           }
-        }
-        if (hcpcsCode == null) {
-          continue;
+
+          fieldValues.put(InpatientFields.CLM_LINE_NUM, Integer.toString(claimLine++));
+          fieldValues.put(InpatientFields.HCPCS_CD, hcpcsCode);
+          fieldValues.put(InpatientFields.REV_CNTR_RATE_AMT,
+              String.format("%.2f", (lineItem.cost / Integer.max(1, days))));
+          fieldValues.put(InpatientFields.REV_CNTR_TOT_CHRG_AMT,
+              String.format("%.2f", lineItem.cost));
+          fieldValues.put(InpatientFields.REV_CNTR_NCVRD_CHRG_AMT,
+              String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
+          if (lineItem.pocket == 0 && lineItem.deductible == 0) {
+            // Not subject to deductible or coinsurance
+            fieldValues.put(InpatientFields.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
+          } else if (lineItem.pocket > 0 && lineItem.deductible > 0) {
+            // Subject to deductible and coinsurance
+            fieldValues.put(InpatientFields.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
+          } else if (lineItem.pocket == 0) {
+            // Not subject to deductible
+            fieldValues.put(InpatientFields.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
+          } else {
+            // Not subject to coinsurance
+            fieldValues.put(InpatientFields.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
+          }
+          inpatient.writeValues(InpatientFields.class, fieldValues);
         }
 
-        fieldValues.put(InpatientFields.CLM_LINE_NUM, Integer.toString(claimLine++));
-        fieldValues.put(InpatientFields.HCPCS_CD, hcpcsCode);
-        fieldValues.put(InpatientFields.REV_CNTR_RATE_AMT,
-            String.format("%.2f", (lineItem.cost / Integer.max(1, days))));
-        fieldValues.put(InpatientFields.REV_CNTR_TOT_CHRG_AMT,
-            String.format("%.2f", lineItem.cost));
-        fieldValues.put(InpatientFields.REV_CNTR_NCVRD_CHRG_AMT,
-            String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
-        if (lineItem.pocket == 0 && lineItem.deductible == 0) {
-          // Not subject to deductible or coinsurance
-          fieldValues.put(InpatientFields.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
-        } else if (lineItem.pocket > 0 && lineItem.deductible > 0) {
-          // Subject to deductible and coinsurance
-          fieldValues.put(InpatientFields.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
-        } else if (lineItem.pocket == 0) {
-          // Not subject to deductible
-          fieldValues.put(InpatientFields.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
-        } else {
-          // Not subject to coinsurance
-          fieldValues.put(InpatientFields.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
+        if (claimLine == 1) {
+          // If claimLine still equals 1, then no line items were successfully added.
+          // Add a single top-level entry.
+          fieldValues.put(InpatientFields.CLM_LINE_NUM, Integer.toString(claimLine));
+          // HCPCS 99221: "Inpatient hospital visits: Initial and subsequent"
+          fieldValues.put(InpatientFields.HCPCS_CD, "99221");
+          inpatient.writeValues(InpatientFields.class, fieldValues);
         }
-        inpatient.writeValues(InpatientFields.class, fieldValues);
-      }
-
-      if (claimLine == 1) {
-        // If claimLine still equals 1, then no line items were successfully added.
-        // Add a single top-level entry.
-        fieldValues.put(InpatientFields.CLM_LINE_NUM, Integer.toString(claimLine));
-        // HCPCS 99221: "Inpatient hospital visits: Initial and subsequent"
-        fieldValues.put(InpatientFields.HCPCS_CD, "99221");
-        inpatient.writeValues(InpatientFields.class, fieldValues);
       }
     }
-    
   }
 
   /**
@@ -1052,16 +1055,6 @@ public class BB2RIFExporter {
               getCarrier(encounter.provider.state, CarrierFields.CARR_LINE_PRCNG_LCLTY_CD));
       fieldValues.put(CarrierFields.LINE_NCH_PMT_AMT,
               String.format("%.2f", encounter.claim.getCoveredCost()));
-      fieldValues.put(CarrierFields.LINE_PRVDR_PMT_AMT,
-              String.format("%.2f", encounter.claim.getCoveredCost()));
-      fieldValues.put(CarrierFields.LINE_BENE_PTB_DDCTBL_AMT,
-              String.format("%.2f", encounter.claim.getDeductiblePaid()));
-      fieldValues.put(CarrierFields.LINE_COINSRNC_AMT,
-              String.format("%.2f", encounter.claim.getCoinsurancePaid()));
-      fieldValues.put(CarrierFields.LINE_SBMTD_CHRG_AMT,
-              String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(CarrierFields.LINE_ALOWD_CHRG_AMT,
-              String.format("%.2f", encounter.claim.getCoveredCost()));
       // length of encounter in minutes
       fieldValues.put(CarrierFields.CARR_LINE_MTUS_CNT,
               "" + ((encounter.stop - encounter.start) / (1000 * 60)));
@@ -1096,8 +1089,48 @@ public class BB2RIFExporter {
       if (!fieldValues.containsKey(CarrierFields.PRNCPAL_DGNS_CD)) {
         fieldValues.put(CarrierFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
+      
+      synchronized(carrier) {
+        int lineNum = 1;
+        for (ClaimEntry lineItem : encounter.claim.items) {
+          fieldValues.put(CarrierFields.LINE_BENE_PTB_DDCTBL_AMT,
+                  String.format("%.2f", lineItem.deductible));
+          fieldValues.put(CarrierFields.LINE_COINSRNC_AMT,
+                  String.format("%.2f", lineItem.coinsurance));
+          fieldValues.put(CarrierFields.LINE_BENE_PMT_AMT,
+              String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
+          fieldValues.put(CarrierFields.LINE_PRVDR_PMT_AMT,
+              String.format("%.2f", lineItem.coinsurance + lineItem.payer));
+          fieldValues.put(CarrierFields.LINE_SBMTD_CHRG_AMT,
+              String.format("%.2f", lineItem.cost));
+          fieldValues.put(CarrierFields.LINE_ALOWD_CHRG_AMT,
+              String.format("%.2f", lineItem.cost - lineItem.adjustment));
 
-      carrier.writeValues(CarrierFields.class, fieldValues);
+
+          // set the line number and write out field values
+          fieldValues.put(CarrierFields.LINE_NUM, Integer.toString(lineNum++));
+          carrier.writeValues(CarrierFields.class, fieldValues);
+        }
+
+        if (lineNum == 1) {
+          // If lineNum still equals 1, then no line items were successfully added.
+          // Add a single top-level entry.
+          fieldValues.put(CarrierFields.LINE_NUM, Integer.toString(lineNum));
+          fieldValues.put(CarrierFields.LINE_BENE_PTB_DDCTBL_AMT,
+                  String.format("%.2f", encounter.claim.getDeductiblePaid()));
+          fieldValues.put(CarrierFields.LINE_COINSRNC_AMT,
+                  String.format("%.2f", encounter.claim.getCoinsurancePaid()));
+          fieldValues.put(CarrierFields.LINE_SBMTD_CHRG_AMT,
+                  String.format("%.2f", encounter.claim.getTotalClaimCost()));
+          fieldValues.put(CarrierFields.LINE_ALOWD_CHRG_AMT,
+                  String.format("%.2f", encounter.claim.getCoveredCost()));
+          fieldValues.put(CarrierFields.LINE_PRVDR_PMT_AMT,
+                  String.format("%.2f", encounter.claim.getCoveredCost()));
+          fieldValues.put(CarrierFields.LINE_BENE_PMT_AMT,
+                  String.format("%.2f", encounter.claim.getPatientCost()));
+          carrier.writeValues(CarrierFields.class, fieldValues);
+        }
+      }
     }
   }
   
@@ -1283,43 +1316,45 @@ public class BB2RIFExporter {
         fieldValues.put(DMEFields.LINE_ICD_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
 
-      int lineNum = 1;
-      for (ClaimEntry lineItem : encounter.claim.items) {
-        if (!(lineItem.entry instanceof Device)) {
-          continue;
+      synchronized(dme) {
+        int lineNum = 1;
+        for (ClaimEntry lineItem : encounter.claim.items) {
+          if (!(lineItem.entry instanceof Device)) {
+            continue;
+          }
+          Device device = (Device)lineItem.entry;
+          if (!dmeCodeMapper.canMap(device.codes.get(0).code)) {
+            System.err.println(" *** Possibly Missing DME Code: " + device.codes.get(0).code
+                    + " " + device.codes.get(0).display);
+            continue;
+          }
+
+          fieldValues.put(DMEFields.CLM_FROM_DT, bb2DateFromTimestamp(device.start));
+          fieldValues.put(DMEFields.CLM_THRU_DT, bb2DateFromTimestamp(device.start));
+          fieldValues.put(DMEFields.HCPCS_CD,
+                  dmeCodeMapper.map(device.codes.get(0).code, person));
+          fieldValues.put(DMEFields.LINE_CMS_TYPE_SRVC_CD,
+                  dmeCodeMapper.map(device.codes.get(0).code,
+                          DMEFields.LINE_CMS_TYPE_SRVC_CD.toString().toLowerCase(),
+                          person));
+          fieldValues.put(DMEFields.LINE_BENE_PTB_DDCTBL_AMT,
+                  String.format("%.2f", lineItem.deductible));
+          fieldValues.put(DMEFields.LINE_COINSRNC_AMT,
+                  String.format("%.2f", lineItem.coinsurance));
+          fieldValues.put(DMEFields.LINE_BENE_PMT_AMT,
+              String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
+          fieldValues.put(DMEFields.LINE_PRVDR_PMT_AMT,
+              String.format("%.2f", lineItem.coinsurance + lineItem.payer));
+          fieldValues.put(DMEFields.LINE_SBMTD_CHRG_AMT,
+              String.format("%.2f", lineItem.cost));
+          fieldValues.put(DMEFields.LINE_ALOWD_CHRG_AMT,
+              String.format("%.2f", lineItem.cost - lineItem.adjustment));
+
+
+          // set the line number and write out field values
+          fieldValues.put(DMEFields.LINE_NUM, Integer.toString(lineNum++));
+          dme.writeValues(DMEFields.class, fieldValues);
         }
-        Device device = (Device)lineItem.entry;
-        if (!dmeCodeMapper.canMap(device.codes.get(0).code)) {
-          System.err.println(" *** Possibly Missing DME Code: " + device.codes.get(0).code
-                  + " " + device.codes.get(0).display);
-          continue;
-        }
-        
-        fieldValues.put(DMEFields.CLM_FROM_DT, bb2DateFromTimestamp(device.start));
-        fieldValues.put(DMEFields.CLM_THRU_DT, bb2DateFromTimestamp(device.start));
-        fieldValues.put(DMEFields.HCPCS_CD,
-                dmeCodeMapper.map(device.codes.get(0).code, person));
-        fieldValues.put(DMEFields.LINE_CMS_TYPE_SRVC_CD,
-                dmeCodeMapper.map(device.codes.get(0).code,
-                        DMEFields.LINE_CMS_TYPE_SRVC_CD.toString().toLowerCase(),
-                        person));
-        fieldValues.put(DMEFields.LINE_BENE_PTB_DDCTBL_AMT,
-                String.format("%.2f", lineItem.deductible));
-        fieldValues.put(DMEFields.LINE_COINSRNC_AMT,
-                String.format("%.2f", lineItem.coinsurance));
-        fieldValues.put(DMEFields.LINE_BENE_PMT_AMT,
-            String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
-        fieldValues.put(DMEFields.LINE_PRVDR_PMT_AMT,
-            String.format("%.2f", lineItem.coinsurance + lineItem.payer));
-        fieldValues.put(DMEFields.LINE_SBMTD_CHRG_AMT,
-            String.format("%.2f", lineItem.cost));
-        fieldValues.put(DMEFields.LINE_ALOWD_CHRG_AMT,
-            String.format("%.2f", lineItem.cost - lineItem.adjustment));
-        
-        
-        // set the line number and write out field values
-        fieldValues.put(DMEFields.LINE_NUM, Integer.toString(lineNum++));
-        dme.writeValues(DMEFields.class, fieldValues);
       }
     }
   }
@@ -1341,7 +1376,6 @@ public class BB2RIFExporter {
       homeVisits += 1;
       long claimId = this.claimId.getAndDecrement();
       int claimGroupId = this.claimGroupId.getAndDecrement();
-      int claimLine = 1;
 
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, HHAFields.class, person);
@@ -1411,63 +1445,66 @@ public class BB2RIFExporter {
         fieldValues.put(HHAFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
 
-      for (ClaimEntry lineItem : encounter.claim.items) {
-        String hcpcsCode = null;
-        if (lineItem.entry instanceof HealthRecord.Procedure) {
-          for (HealthRecord.Code code : lineItem.entry.codes) {
-            if (hcpcsCodeMapper.canMap(code.code)) {
-              hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
-              break; // take the first mappable code for each procedure
+      synchronized(home) {
+        int claimLine = 1;
+        for (ClaimEntry lineItem : encounter.claim.items) {
+          String hcpcsCode = null;
+          if (lineItem.entry instanceof HealthRecord.Procedure) {
+            for (HealthRecord.Code code : lineItem.entry.codes) {
+              if (hcpcsCodeMapper.canMap(code.code)) {
+                hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
+                break; // take the first mappable code for each procedure
+              }
+            }
+            fieldValues.remove(HHAFields.REV_CNTR_NDC_QTY);
+            fieldValues.remove(HHAFields.REV_CNTR_NDC_QTY_QLFR_CD);
+          } else if (lineItem.entry instanceof HealthRecord.Medication) {
+            HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
+            if (med.administration) {
+              hcpcsCode = "T1502";  // Administration of medication
+              fieldValues.put(HHAFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
+              fieldValues.put(HHAFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }
           }
-          fieldValues.remove(HHAFields.REV_CNTR_NDC_QTY);
-          fieldValues.remove(HHAFields.REV_CNTR_NDC_QTY_QLFR_CD);
-        } else if (lineItem.entry instanceof HealthRecord.Medication) {
-          HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
-          if (med.administration) {
-            hcpcsCode = "T1502";  // Administration of medication
-            fieldValues.put(HHAFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
-            fieldValues.put(HHAFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
+          if (hcpcsCode == null) {
+            continue;
           }
-        }
-        if (hcpcsCode == null) {
-          continue;
+
+          fieldValues.put(HHAFields.CLM_LINE_NUM, Integer.toString(claimLine++));
+          fieldValues.put(HHAFields.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
+          fieldValues.put(HHAFields.HCPCS_CD, hcpcsCode);
+          fieldValues.put(HHAFields.REV_CNTR_RATE_AMT,
+              String.format("%.2f", (lineItem.cost / Integer.max(1, days))));
+          fieldValues.put(HHAFields.REV_CNTR_PMT_AMT_AMT,
+              String.format("%.2f", lineItem.coinsurance + lineItem.payer));
+          fieldValues.put(HHAFields.REV_CNTR_TOT_CHRG_AMT,
+              String.format("%.2f", lineItem.cost));
+          fieldValues.put(HHAFields.REV_CNTR_NCVRD_CHRG_AMT,
+              String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
+          if (lineItem.pocket == 0 && lineItem.deductible == 0) {
+            // Not subject to deductible or coinsurance
+            fieldValues.put(HHAFields.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
+          } else if (lineItem.pocket > 0 && lineItem.deductible > 0) {
+            // Subject to deductible and coinsurance
+            fieldValues.put(HHAFields.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
+          } else if (lineItem.pocket == 0) {
+            // Not subject to deductible
+            fieldValues.put(HHAFields.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
+          } else {
+            // Not subject to coinsurance
+            fieldValues.put(HHAFields.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
+          }
+          home.writeValues(HHAFields.class, fieldValues);
         }
 
-        fieldValues.put(HHAFields.CLM_LINE_NUM, Integer.toString(claimLine++));
-        fieldValues.put(HHAFields.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
-        fieldValues.put(HHAFields.HCPCS_CD, hcpcsCode);
-        fieldValues.put(HHAFields.REV_CNTR_RATE_AMT,
-            String.format("%.2f", (lineItem.cost / Integer.max(1, days))));
-        fieldValues.put(HHAFields.REV_CNTR_PMT_AMT_AMT,
-            String.format("%.2f", lineItem.coinsurance + lineItem.payer));
-        fieldValues.put(HHAFields.REV_CNTR_TOT_CHRG_AMT,
-            String.format("%.2f", lineItem.cost));
-        fieldValues.put(HHAFields.REV_CNTR_NCVRD_CHRG_AMT,
-            String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
-        if (lineItem.pocket == 0 && lineItem.deductible == 0) {
-          // Not subject to deductible or coinsurance
-          fieldValues.put(HHAFields.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
-        } else if (lineItem.pocket > 0 && lineItem.deductible > 0) {
-          // Subject to deductible and coinsurance
-          fieldValues.put(HHAFields.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
-        } else if (lineItem.pocket == 0) {
-          // Not subject to deductible
-          fieldValues.put(HHAFields.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
-        } else {
-          // Not subject to coinsurance
-          fieldValues.put(HHAFields.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
+        if (claimLine == 1) {
+          // If claimLine still equals 1, then no line items were successfully added.
+          // Add a single top-level entry.
+          fieldValues.put(HHAFields.CLM_LINE_NUM, Integer.toString(claimLine));
+          fieldValues.put(HHAFields.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
+          fieldValues.put(HHAFields.HCPCS_CD, "T1021"); // home health visit
+          home.writeValues(HHAFields.class, fieldValues);
         }
-        home.writeValues(HHAFields.class, fieldValues);
-      }
-
-      if (claimLine == 1) {
-        // If claimLine still equals 1, then no line items were successfully added.
-        // Add a single top-level entry.
-        fieldValues.put(HHAFields.CLM_LINE_NUM, Integer.toString(claimLine));
-        fieldValues.put(HHAFields.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
-        fieldValues.put(HHAFields.HCPCS_CD, "T1021"); // home health visit
-        home.writeValues(HHAFields.class, fieldValues);
       }
     }
   }
@@ -1582,64 +1619,66 @@ public class BB2RIFExporter {
       fieldValues.put(HospiceFields.REV_CNTR_RATE_AMT,
           String.format("%.2f", (encounter.claim.getTotalClaimCost() / days)));
 
-      int claimLine = 1;
-      for (ClaimEntry lineItem : encounter.claim.items) {
-        String hcpcsCode = null;
-        if (lineItem.entry instanceof HealthRecord.Procedure) {
-          for (HealthRecord.Code code : lineItem.entry.codes) {
-            if (hcpcsCodeMapper.canMap(code.code)) {
-              hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
-              break; // take the first mappable code for each procedure
+      synchronized(hospice) {
+        int claimLine = 1;
+        for (ClaimEntry lineItem : encounter.claim.items) {
+          String hcpcsCode = null;
+          if (lineItem.entry instanceof HealthRecord.Procedure) {
+            for (HealthRecord.Code code : lineItem.entry.codes) {
+              if (hcpcsCodeMapper.canMap(code.code)) {
+                hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
+                break; // take the first mappable code for each procedure
+              }
+            }
+            fieldValues.remove(HospiceFields.REV_CNTR_NDC_QTY);
+            fieldValues.remove(HospiceFields.REV_CNTR_NDC_QTY_QLFR_CD);
+          } else if (lineItem.entry instanceof HealthRecord.Medication) {
+            HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
+            if (med.administration) {
+              hcpcsCode = "T1502";  // Administration of medication
+              fieldValues.put(HospiceFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
+              fieldValues.put(HospiceFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }
           }
-          fieldValues.remove(HospiceFields.REV_CNTR_NDC_QTY);
-          fieldValues.remove(HospiceFields.REV_CNTR_NDC_QTY_QLFR_CD);
-        } else if (lineItem.entry instanceof HealthRecord.Medication) {
-          HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
-          if (med.administration) {
-            hcpcsCode = "T1502";  // Administration of medication
-            fieldValues.put(HospiceFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
-            fieldValues.put(HospiceFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
+          if (hcpcsCode == null) {
+            continue;
           }
-        }
-        if (hcpcsCode == null) {
-          continue;
+
+          fieldValues.put(HospiceFields.CLM_LINE_NUM, Integer.toString(claimLine++));
+          fieldValues.put(HospiceFields.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
+          fieldValues.put(HospiceFields.HCPCS_CD, hcpcsCode);
+          fieldValues.put(HospiceFields.REV_CNTR_RATE_AMT,
+              String.format("%.2f", (lineItem.cost / Integer.max(1, days))));
+          fieldValues.put(HospiceFields.REV_CNTR_PMT_AMT_AMT,
+              String.format("%.2f", lineItem.coinsurance + lineItem.payer));
+          fieldValues.put(HospiceFields.REV_CNTR_TOT_CHRG_AMT,
+              String.format("%.2f", lineItem.cost));
+          fieldValues.put(HospiceFields.REV_CNTR_NCVRD_CHRG_AMT,
+              String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
+          if (lineItem.pocket == 0 && lineItem.deductible == 0) {
+            // Not subject to deductible or coinsurance
+            fieldValues.put(HospiceFields.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
+          } else if (lineItem.pocket > 0 && lineItem.deductible > 0) {
+            // Subject to deductible and coinsurance
+            fieldValues.put(HospiceFields.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
+          } else if (lineItem.pocket == 0) {
+            // Not subject to deductible
+            fieldValues.put(HospiceFields.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
+          } else {
+            // Not subject to coinsurance
+            fieldValues.put(HospiceFields.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
+          }
+          hospice.writeValues(HospiceFields.class, fieldValues);
         }
 
-        fieldValues.put(HospiceFields.CLM_LINE_NUM, Integer.toString(claimLine++));
-        fieldValues.put(HospiceFields.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
-        fieldValues.put(HospiceFields.HCPCS_CD, hcpcsCode);
-        fieldValues.put(HospiceFields.REV_CNTR_RATE_AMT,
-            String.format("%.2f", (lineItem.cost / Integer.max(1, days))));
-        fieldValues.put(HospiceFields.REV_CNTR_PMT_AMT_AMT,
-            String.format("%.2f", lineItem.coinsurance + lineItem.payer));
-        fieldValues.put(HospiceFields.REV_CNTR_TOT_CHRG_AMT,
-            String.format("%.2f", lineItem.cost));
-        fieldValues.put(HospiceFields.REV_CNTR_NCVRD_CHRG_AMT,
-            String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
-        if (lineItem.pocket == 0 && lineItem.deductible == 0) {
-          // Not subject to deductible or coinsurance
-          fieldValues.put(HospiceFields.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
-        } else if (lineItem.pocket > 0 && lineItem.deductible > 0) {
-          // Subject to deductible and coinsurance
-          fieldValues.put(HospiceFields.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
-        } else if (lineItem.pocket == 0) {
-          // Not subject to deductible
-          fieldValues.put(HospiceFields.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
-        } else {
-          // Not subject to coinsurance
-          fieldValues.put(HospiceFields.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
+        if (claimLine == 1) {
+          // If claimLine still equals 1, then no line items were successfully added.
+          // Add a single top-level entry.
+          fieldValues.put(HospiceFields.CLM_LINE_NUM, Integer.toString(claimLine));
+          fieldValues.put(HospiceFields.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
+          fieldValues.put(HospiceFields.HCPCS_CD, "S9126"); // hospice per diem
+          hospice.writeValues(HospiceFields.class, fieldValues);
         }
-        hospice.writeValues(HospiceFields.class, fieldValues);
-      }
-
-      if (claimLine == 1) {
-        // If claimLine still equals 1, then no line items were successfully added.
-        // Add a single top-level entry.
-        fieldValues.put(HospiceFields.CLM_LINE_NUM, Integer.toString(claimLine));
-        fieldValues.put(HospiceFields.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
-        fieldValues.put(HospiceFields.HCPCS_CD, "S9126"); // hospice per diem
-        hospice.writeValues(HospiceFields.class, fieldValues);
       }
     }
   }
@@ -1785,62 +1824,64 @@ public class BB2RIFExporter {
         continue; // skip this encounter
       }
 
-      int claimLine = 1;
-      for (ClaimEntry lineItem : encounter.claim.items) {
-        String hcpcsCode = null;
-        if (lineItem.entry instanceof HealthRecord.Procedure) {
-          for (HealthRecord.Code code : lineItem.entry.codes) {
-            if (hcpcsCodeMapper.canMap(code.code)) {
-              hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
-              break; // take the first mappable code for each procedure
+      synchronized(snf) {
+        int claimLine = 1;
+        for (ClaimEntry lineItem : encounter.claim.items) {
+          String hcpcsCode = null;
+          if (lineItem.entry instanceof HealthRecord.Procedure) {
+            for (HealthRecord.Code code : lineItem.entry.codes) {
+              if (hcpcsCodeMapper.canMap(code.code)) {
+                hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
+                break; // take the first mappable code for each procedure
+              }
+            }
+            fieldValues.remove(SNFFields.REV_CNTR_NDC_QTY);
+            fieldValues.remove(SNFFields.REV_CNTR_NDC_QTY_QLFR_CD);
+          } else if (lineItem.entry instanceof HealthRecord.Medication) {
+            HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
+            if (med.administration) {
+              hcpcsCode = "T1502";  // Administration of medication
+              fieldValues.put(SNFFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
+              fieldValues.put(SNFFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }
           }
-          fieldValues.remove(SNFFields.REV_CNTR_NDC_QTY);
-          fieldValues.remove(SNFFields.REV_CNTR_NDC_QTY_QLFR_CD);
-        } else if (lineItem.entry instanceof HealthRecord.Medication) {
-          HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
-          if (med.administration) {
-            hcpcsCode = "T1502";  // Administration of medication
-            fieldValues.put(SNFFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
-            fieldValues.put(SNFFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
+          if (hcpcsCode == null) {
+            continue;
           }
-        }
-        if (hcpcsCode == null) {
-          continue;
+
+          fieldValues.put(SNFFields.CLM_LINE_NUM, Integer.toString(claimLine++));
+          fieldValues.put(SNFFields.HCPCS_CD, hcpcsCode);
+          fieldValues.put(SNFFields.REV_CNTR_RATE_AMT,
+              String.format("%.2f", (lineItem.cost / Integer.max(1, days))));
+          fieldValues.put(SNFFields.REV_CNTR_TOT_CHRG_AMT,
+              String.format("%.2f", lineItem.cost));
+          fieldValues.put(SNFFields.REV_CNTR_NCVRD_CHRG_AMT,
+              String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
+          if (lineItem.pocket == 0 && lineItem.deductible == 0) {
+            // Not subject to deductible or coinsurance
+            fieldValues.put(SNFFields.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
+          } else if (lineItem.pocket > 0 && lineItem.deductible > 0) {
+            // Subject to deductible and coinsurance
+            fieldValues.put(SNFFields.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
+          } else if (lineItem.pocket == 0) {
+            // Not subject to deductible
+            fieldValues.put(SNFFields.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
+          } else {
+            // Not subject to coinsurance
+            fieldValues.put(SNFFields.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
+          }
+          snf.writeValues(SNFFields.class, fieldValues);
         }
 
-        fieldValues.put(SNFFields.CLM_LINE_NUM, Integer.toString(claimLine++));
-        fieldValues.put(SNFFields.HCPCS_CD, hcpcsCode);
-        fieldValues.put(SNFFields.REV_CNTR_RATE_AMT,
-            String.format("%.2f", (lineItem.cost / Integer.max(1, days))));
-        fieldValues.put(SNFFields.REV_CNTR_TOT_CHRG_AMT,
-            String.format("%.2f", lineItem.cost));
-        fieldValues.put(SNFFields.REV_CNTR_NCVRD_CHRG_AMT,
-            String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
-        if (lineItem.pocket == 0 && lineItem.deductible == 0) {
-          // Not subject to deductible or coinsurance
-          fieldValues.put(SNFFields.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
-        } else if (lineItem.pocket > 0 && lineItem.deductible > 0) {
-          // Subject to deductible and coinsurance
-          fieldValues.put(SNFFields.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
-        } else if (lineItem.pocket == 0) {
-          // Not subject to deductible
-          fieldValues.put(SNFFields.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
-        } else {
-          // Not subject to coinsurance
-          fieldValues.put(SNFFields.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
+        if (claimLine == 1) {
+          // If claimLine still equals 1, then no line items were successfully added.
+          // Add a single top-level entry.
+          fieldValues.put(SNFFields.CLM_LINE_NUM, Integer.toString(claimLine));
+          // G0299: “direct skilled nursing services of a registered nurse (RN) in the home health or
+          // hospice setting”
+          fieldValues.put(SNFFields.HCPCS_CD, "G0299");
+          snf.writeValues(SNFFields.class, fieldValues);
         }
-        snf.writeValues(SNFFields.class, fieldValues);
-      }
-
-      if (claimLine == 1) {
-        // If claimLine still equals 1, then no line items were successfully added.
-        // Add a single top-level entry.
-        fieldValues.put(SNFFields.CLM_LINE_NUM, Integer.toString(claimLine));
-        // G0299: “direct skilled nursing services of a registered nurse (RN) in the home health or
-        // hospice setting”
-        fieldValues.put(SNFFields.HCPCS_CD, "G0299");
-        snf.writeValues(SNFFields.class, fieldValues);
       }
     }
   }
