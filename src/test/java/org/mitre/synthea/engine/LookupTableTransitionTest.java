@@ -75,7 +75,7 @@ public class LookupTableTransitionTest {
   @AfterClass
   public static void reset() throws Exception {
     // Set the lookuptable CSV location to the standard directory.
-    Config.set("generic.lookuptables", "modules/lookup_tables");
+    Config.set("generic.lookup_tables", "modules/lookup_tables");
     // Remove the lookuptable_test.json module
     modules.remove("lookuptable_test");
     modules.remove("lookuptable_timerangetest");
