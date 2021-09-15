@@ -13,7 +13,7 @@ import org.mitre.synthea.world.agents.Person;
 /**
  * Class that wraps EnumeratedDistribution for thread safe use in Synthea. In several places in
  * Synthea, EnumeratedDistributions are used following a
- * <a href="https://en.wikipedia.org/wiki/Singleton_pattern>singleton pattern</a>. One distribution
+ * <a href="https://en.wikipedia.org/wiki/Singleton_pattern">singleton pattern</a>. One distribution
  * is used in a particular aspect of simulation. To support reproducibility of simulations, its
  * source of randomness is reseeded for each individual. Since multiple threads may be accessing
  * the distribution at the same time, it would be possible to reseed the distribution in one thread
