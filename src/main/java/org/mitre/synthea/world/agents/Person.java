@@ -2,8 +2,6 @@ package org.mitre.synthea.world.agents;
 
 import java.awt.geom.Point2D;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
@@ -497,15 +495,14 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
       default:
         decimalPlaces = 2;
     }
-    Double retVal = value;
-    try {
-      retVal = BigDecimal.valueOf(value)
-              .setScale(decimalPlaces, RoundingMode.HALF_UP)
-              .doubleValue();
+
+	try {
+	  final double factor = Math.pow(10, decimalPlaces);
+	  value = Math.floor(((value * factor * 10) + 5) / 10) / factor;
     } catch (NumberFormatException e) {
       // Ignore, value was NaN or infinity.
     }
-    return retVal;
+    return value;
   }
 
   public void setVitalSign(VitalSign vitalSign, ValueGenerator valueGenerator) {
