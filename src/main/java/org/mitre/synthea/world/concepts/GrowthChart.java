@@ -121,17 +121,15 @@ public class GrowthChart implements Serializable {
     return -1 * Math.sqrt(2) * Erf.erfcInv(2 * percentile);
   }
 
+  private static final NormalDistribution NORMAL_DISTRIBUTION = new NormalDistribution();
+
   /**
    * Convert a z-score into a percentile.
    * @param zscore The ZScore to find the percentile for
    * @return percentile - 0.0 - 1.0
    */
   public static double zscoreToPercentile(double zscore) {
-    double percentile = 0;
-
-    NormalDistribution dist = new NormalDistribution();
-    percentile = dist.cumulativeProbability(zscore);
-    return percentile;
+    return NORMAL_DISTRIBUTION.cumulativeProbability(zscore);
   }
 
   /**
