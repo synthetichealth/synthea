@@ -20,7 +20,7 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class C19Vaccine {
   public static final HashMap<EUASet, C19Vaccine> EUAs = new HashMap();
-  public static EnumeratedDistribution<EUASet> shotSelector;
+  private static EnumeratedDistribution<EUASet> shotSelector;
 
   private String display;
   private String cvx;
