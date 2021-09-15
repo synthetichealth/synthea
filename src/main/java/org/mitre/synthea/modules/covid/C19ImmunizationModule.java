@@ -7,7 +7,9 @@ import java.util.Map;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
 /**
@@ -207,11 +209,10 @@ public class C19ImmunizationModule extends Module {
    * @param series 1 - for first shot, 2 - for second shot
    */
   public static void vaccinate(Person person, long time, int series) {
-    HealthRecord.Encounter encounter = person.encounterStart(time,
-        HealthRecord.EncounterType.OUTPATIENT);
     HealthRecord.Code encounterCode = new HealthRecord.Code("http://snomed.info/sct", "33879002",
         "Administration of vaccine to produce active immunity (procedure)");
-    encounter.codes.add(encounterCode);
+    EncounterModule.createEncounter(person, time, HealthRecord.EncounterType.OUTPATIENT,
+        ClinicianSpecialty.GENERAL_PRACTICE, encounterCode);
     HealthRecord.Immunization immunization = person.record.immunization(time, "COVID19");
     immunization.series = series;
     C19Vaccine vaccine = C19Vaccine.EUAs.get(person.attributes.get(C19_VACCINE));

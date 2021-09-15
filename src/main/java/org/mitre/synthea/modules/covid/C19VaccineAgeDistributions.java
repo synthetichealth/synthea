@@ -16,10 +16,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.apache.commons.math3.util.Pair;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
+import org.mitre.synthea.helpers.SyncedEnumeratedDistro;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
@@ -44,7 +44,7 @@ public class C19VaccineAgeDistributions {
   public static final HashMap<AgeRange,
       List<Pair<String, Integer>>> rawDistributions = new HashMap<>();
   public static final HashMap<AgeRange,
-      EnumeratedDistribution<String>> distributions = new HashMap<>();
+      SyncedEnumeratedDistro<String>> distributions = new HashMap<>();
   public static final HashMap<AgeRange, Double> firstShotProbByAge = new HashMap<>();
 
   /**
@@ -169,7 +169,7 @@ public class C19VaccineAgeDistributions {
         double weight = dosesForDay / totalDosesForRange;
         return new Pair<String, Double>(dayInfo.getFirst(), weight);
       }).collect(Collectors.toList());
-      distributions.put(ageRange, new EnumeratedDistribution(pmf));
+      distributions.put(ageRange, new SyncedEnumeratedDistro(pmf));
     });
   }
 
@@ -209,9 +209,9 @@ public class C19VaccineAgeDistributions {
         .filter(ageRange -> ageRange.in(age))
         .findFirst()
         .get();
-    EnumeratedDistribution<String> distro = distributions.get(r);
-    distro.reseedRandomGenerator(person.randLong());
-    LocalDate shotDate = CSV_DATE_FORMAT.parse(distro.sample(), LocalDate::from);
+    SyncedEnumeratedDistro<String> distro = distributions.get(r);
+    LocalDate shotDate = CSV_DATE_FORMAT.parse(distro.syncedReseededSample(person),
+        LocalDate::from);
     return LocalDateTime.of(shotDate, LocalTime.NOON).toInstant(ZoneOffset.UTC).toEpochMilli();
   }
 

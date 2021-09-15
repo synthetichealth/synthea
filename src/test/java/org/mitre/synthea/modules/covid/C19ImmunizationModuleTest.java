@@ -57,11 +57,14 @@ public class C19ImmunizationModuleTest {
   public void vaccinate() {
     long decemberFifteenth = TestHelper.timestamp(2020, 12, 15, 0, 0, 0);
     long birthday = TestHelper.timestamp(1978, 8, 1, 0, 0, 0);
+    Location here = new Location("Massachusetts", "Billerica");
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, birthday);
     person.attributes.put(C19ImmunizationModule.C19_VACCINE, C19Vaccine.EUASet.PFIZER);
-    person.setProvider(HealthRecord.EncounterType.OUTPATIENT, new Provider());
-    Location here = new Location("Massachusetts", "Billerica");
+    here.assignPoint(person, "Billerica");
+    Provider.loadProviders(here, 1L);
+    person.setProvider(HealthRecord.EncounterType.OUTPATIENT,
+        Provider.findService(person, HealthRecord.EncounterType.OUTPATIENT, decemberFifteenth));
     Payer.loadPayers(here);
     person.coverage.setPayerAtTime(decemberFifteenth, Payer.getGovernmentPayer("Medicare"));
     C19ImmunizationModule.vaccinate(person, decemberFifteenth, 1);

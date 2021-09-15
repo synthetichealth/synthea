@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.apache.commons.math3.util.Pair;
+import org.mitre.synthea.helpers.SyncedEnumeratedDistro;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
@@ -20,7 +20,7 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class C19Vaccine {
   public static final HashMap<EUASet, C19Vaccine> EUAs = new HashMap();
-  private static EnumeratedDistribution<EUASet> shotSelector;
+  private static SyncedEnumeratedDistro<EUASet> shotSelector;
 
   private String display;
   private String cvx;
@@ -54,7 +54,7 @@ public class C19Vaccine {
     List pmf = EUAs.entrySet().stream()
         .map(entry -> new Pair(entry.getKey(), entry.getValue().getUsagePercentage()))
         .collect(Collectors.toList());
-    shotSelector = new EnumeratedDistribution(pmf);
+    shotSelector = new SyncedEnumeratedDistro(pmf);
   }
 
   /**
@@ -66,8 +66,7 @@ public class C19Vaccine {
     if (shotSelector == null) {
       initialize();
     }
-    shotSelector.reseedRandomGenerator(person.randLong());
-    return shotSelector.sample();
+    return shotSelector.syncedReseededSample(person);
   }
 
   /**
