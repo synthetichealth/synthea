@@ -48,8 +48,6 @@ import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
-import org.mitre.synthea.world.concepts.CoverageRecord;
-import org.mitre.synthea.world.concepts.CoverageRecord.Plan;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Demographics;
