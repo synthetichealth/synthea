@@ -1170,7 +1170,8 @@ public class HealthRecord implements Serializable {
   }
 
   public boolean medicationActive(String type) {
-    return present.containsKey(type) && ((Medication) present.get(type)).stop == 0L;
+	final Entry medication = present.get(type);
+    return medication != null && ((Medication) medication).stop == 0L;
   }
 
   /**
