@@ -10,10 +10,12 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Wait Until Exposure"
+      "direct_transition": "Wait Until Exposure",
+      "name": "Initial"
     },
     "Terminal": {
-      "type": "Terminal"
+      "type": "Terminal",
+      "name": "Terminal"
     },
     "Wait Until Exposure": {
       "type": "Delay",
@@ -22,28 +24,57 @@
         "unit": "days"
       },
       "lookup_table_transition": [
-        {
-          "transition": "Wait Until Exposure",
-          "default_probability": "1",
-          "lookup_table_name": "covid19_prob.csv"
-        },
-        {
-          "transition": "Call Infection Submodule",
-          "default_probability": "0",
-          "lookup_table_name": "covid19_prob.csv"
-        },
-        {
-          "transition": "Terminal",
-          "default_probability": "0",
-          "lookup_table_name": "covid19_prob.csv"
-        }
-      ]
+          {
+            "transition": "Wait Until Exposure",
+            "default_probability": "1",
+            "lookup_table_name": "covid19_prob.csv"
+          },
+          {
+            "transition": "Check Vaccine Status",
+            "default_probability": "0",
+            "lookup_table_name": "covid19_prob.csv"
+          },
+          {
+            "transition": "Terminal",
+            "default_probability": "0",
+            "lookup_table_name": "covid19_prob.csv"
+          }
+      ],
+      "name": "Wait Until Exposure"
     },
     "Call Infection Submodule": {
       "submodule": "covid19/infection",
       "type": "CallSubmodule",
-      "direct_transition": "Terminal"
+      "direct_transition": "Terminal",
+      "name": "Call Infection Submodule"
+    },
+    "Check Vaccine Status": {
+      "type": "Simple",
+      "name": "Check Vaccine Status",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "C19_FULLY_VACCINATED",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Call Infection Submodule",
+              "distribution": 0.01
+            },
+            {
+              "transition": "Wait Until Exposure",
+              "distribution": 0.99
+            }
+          ]
+        },
+        {
+          "transition": "Call Infection Submodule"
+        }
+      ]
     }
   },
-  "gmf_version": 1
+  "gmf_version": 2
 }
