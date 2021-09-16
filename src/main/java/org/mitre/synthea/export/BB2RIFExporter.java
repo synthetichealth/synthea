@@ -481,7 +481,7 @@ public class BB2RIFExporter {
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       if (encounter.start <= time) {
         for (Entry dx : encounter.conditions) {
-          if (dx.stop == 0L || dx.stop > time) {
+          if (dx.start <= time && (dx.stop == 0L || dx.stop > time)) {
             if (conditionCodeMapper.canMap(dx.codes.get(0).code)) {
               String mapped = conditionCodeMapper.map(dx.codes.get(0).code, person, true);
               // Temporarily add the mapped code... we'll remove it later.
@@ -613,6 +613,7 @@ public class BB2RIFExporter {
               bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
       fieldValues.put(OutpatientFields.PRVDR_NUM, encounter.provider.id);
       fieldValues.put(OutpatientFields.AT_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(OutpatientFields.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(OutpatientFields.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(OutpatientFields.OP_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(OutpatientFields.CLM_PMT_AMT, String.format("%.2f",
@@ -867,7 +868,8 @@ public class BB2RIFExporter {
           String.format("%.2f", encounter.claim.getPatientCost()));
 
       // OPTIONAL FIELDS
-      // Optional numeric fields apparently need to be filled with zeroes.
+      fieldValues.put(InpatientFields.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
+
       if (encounter.reason != null) {
         // If the encounter has a recorded reason, enter the mapped
         // values into the principle diagnoses code.
@@ -882,14 +884,18 @@ public class BB2RIFExporter {
       }
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
+      List<String> presentOnAdmission = getDiagnosesCodes(person, encounter.start);
       List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
       boolean noDiagnoses = mappedDiagnosisCodes.isEmpty();
       if (!noDiagnoses) {
         int smallest = Math.min(mappedDiagnosisCodes.size(), inpatientDxFields.length);
         for (int i = 0; i < smallest; i++) {
           InpatientFields[] dxField = inpatientDxFields[i];
-          fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+          String dxCode = mappedDiagnosisCodes.get(i);
+          fieldValues.put(dxField[0], dxCode);
           fieldValues.put(dxField[1], "0"); // 0=ICD10
+          String present = presentOnAdmission.contains(dxCode) ? "Y" : "N";
+          fieldValues.put(dxField[2], present);
         }
         if (!fieldValues.containsKey(InpatientFields.PRNCPAL_DGNS_CD)) {
           fieldValues.put(InpatientFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));

@@ -56,18 +56,18 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 54	CLM_DISP_CD	N/A	N/A	N/A	N/A	1	N/A	1	N/A	N/A	N/A	FALSE	
 55	CLM_DRG_CD	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A		TRUE	
 56	CLM_DRG_OUTLIER_STAY_CD	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
-57	CLM_E_POA_IND_SW1	N/A	N/A	N (N = diagnosis not present on admission)	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-58	CLM_E_POA_IND_SW10	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-59	CLM_E_POA_IND_SW11	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-60	CLM_E_POA_IND_SW12	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-61	CLM_E_POA_IND_SW2	N/A	N/A	N (N = diagnosis not present on admission)	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-62	CLM_E_POA_IND_SW3	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-63	CLM_E_POA_IND_SW4	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-64	CLM_E_POA_IND_SW5	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-65	CLM_E_POA_IND_SW6	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-66	CLM_E_POA_IND_SW7	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-67	CLM_E_POA_IND_SW8	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-68	CLM_E_POA_IND_SW9	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+57	CLM_E_POA_IND_SW1	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+58	CLM_E_POA_IND_SW10	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+59	CLM_E_POA_IND_SW11	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+60	CLM_E_POA_IND_SW12	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+61	CLM_E_POA_IND_SW2	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+62	CLM_E_POA_IND_SW3	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+63	CLM_E_POA_IND_SW4	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+64	CLM_E_POA_IND_SW5	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+65	CLM_E_POA_IND_SW6	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+66	CLM_E_POA_IND_SW7	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+67	CLM_E_POA_IND_SW8	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+68	CLM_E_POA_IND_SW9	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 69	CLM_FAC_TYPE_CD	N/A	N/A	"1 (1=Hospital, 2=SNF, 7=Dialysis)"	"1 (1=Hospital, 2=SNF, 7=Dialysis)"	N/A	N/A	N/A	3 (3=HHA)	8 (8=Hospice)	2 (2=SNF)	FALSE	
 70	CLM_FREQ_CD	N/A	N/A	"1 (1=Admit-Discharge, 9=Final)"	"1 (1=Admit-Discharge, 9=Final)"	N/A	N/A	N/A	"1,9 (1=Admit-Dischage, 9=Final)"	"1,9 (1=Admit-Dischage, 9=Final)"	"1,9 (1=Admit-Discharge, 9=Final)"	FALSE	
 71	CLM_FROM_DT	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	FALSE	
@@ -86,7 +86,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 84	CLM_OP_PRVDR_PMT_AMT	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
 85	CLM_PASS_THRU_PER_DIEM_AMT	N/A	N/A	10 (fixed $ amount?)	N/A	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
 86	CLM_PMT_AMT	N/A	N/A	Coded	Coded	Coded	N/A	(Mapped from SNOMED)	Coded	Coded	Coded	FALSE	
-87	CLM_POA_IND_SW1	N/A	N/A	Coded (N = diagnosis not present on admission)	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+87	CLM_POA_IND_SW1	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 88	CLM_POA_IND_SW10	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 89	CLM_POA_IND_SW11	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 90	CLM_POA_IND_SW12	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
@@ -97,7 +97,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 95	CLM_POA_IND_SW17	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 96	CLM_POA_IND_SW18	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 97	CLM_POA_IND_SW19	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-98	CLM_POA_IND_SW2	N/A	N/A	Coded (N = diagnosis not present on admission)	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+98	CLM_POA_IND_SW2	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 99	CLM_POA_IND_SW20	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 100	CLM_POA_IND_SW21	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 101	CLM_POA_IND_SW22	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
@@ -598,7 +598,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 596	RFRNC_YR	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 597	RFR_PHYSN_NPI	N/A	N/A	N/A	N/A		N/A		N/A	N/A	N/A	TRUE	
 598	RFR_PHYSN_UPIN	N/A	N/A	N/A	N/A		N/A		N/A	N/A	N/A	TRUE	
-599	RNDRNG_PHYSN_NPI	N/A	N/A			N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+599	RNDRNG_PHYSN_NPI	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
 600	RNDRNG_PHYSN_UPIN	N/A	N/A			N/A	N/A	N/A				TRUE	
 601	RPTD_GAP_DSCNT_NUM	N/A	N/A	N/A	N/A	N/A	0	N/A	N/A	N/A	N/A	FALSE	
 602	RSN_VISIT_CD1	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
