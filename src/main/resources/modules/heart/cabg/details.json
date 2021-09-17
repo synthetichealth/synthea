@@ -66,7 +66,7 @@
         }
       ]
     },
-    "Pick Number of Arterial Conduits": {
+    "Pick Number of CABG Arterial Conduits": {
       "type": "Simple",
       "lookup_table_transition": [
         {
@@ -117,73 +117,73 @@
       "type": "SetAttribute",
       "attribute": "cabg_number_of_grafts",
       "value": 1,
-      "direct_transition": "Pick Number of Arterial Conduits"
+      "direct_transition": "Graft_Obs_1"
     },
     "Graft_No_2": {
       "type": "SetAttribute",
       "attribute": "cabg_number_of_grafts",
       "value": 2,
-      "direct_transition": "Pick Number of Arterial Conduits"
+      "direct_transition": "Graft_Obs_2"
     },
     "Graft_No_3": {
       "type": "SetAttribute",
       "attribute": "cabg_number_of_grafts",
       "value": 3,
-      "direct_transition": "Pick Number of Arterial Conduits"
+      "direct_transition": "Graft_Obs_3"
     },
     "Graft_No_4": {
       "type": "SetAttribute",
       "attribute": "cabg_number_of_grafts",
       "value": 4,
-      "direct_transition": "Pick Number of Arterial Conduits"
+      "direct_transition": "Graft_Obs_4"
     },
     "Graft_No_5": {
       "type": "SetAttribute",
       "attribute": "cabg_number_of_grafts",
       "value": 5,
-      "direct_transition": "Pick Number of Arterial Conduits"
+      "direct_transition": "Graft_Obs_5"
     },
     "Graft_No_6": {
       "type": "SetAttribute",
       "attribute": "cabg_number_of_grafts",
       "value": 6,
-      "direct_transition": "Pick Number of Arterial Conduits"
+      "direct_transition": "Graft_Obs_6"
     },
     "Art_Cond_1": {
       "type": "SetAttribute",
       "attribute": "cabg_arterial_conduits",
       "value": 1,
-      "direct_transition": "Terminal"
+      "direct_transition": "Art_Cond_Obs_1"
     },
     "Art_Cond_2": {
       "type": "SetAttribute",
       "attribute": "cabg_arterial_conduits",
       "value": 2,
-      "direct_transition": "Terminal"
+      "direct_transition": "Art_Cond_Obs_2"
     },
     "Art_Cond_3": {
       "type": "SetAttribute",
       "attribute": "cabg_arterial_conduits",
       "value": 3,
-      "direct_transition": "Terminal"
+      "direct_transition": "Art_Cond_Obs_3"
     },
     "Art_Cond_4": {
       "type": "SetAttribute",
       "attribute": "cabg_arterial_conduits",
       "value": 4,
-      "direct_transition": "Terminal"
+      "direct_transition": "Art_Cond_Obs_4"
     },
     "Art_Cond_5": {
       "type": "SetAttribute",
       "attribute": "cabg_arterial_conduits",
       "value": 5,
-      "direct_transition": "Terminal"
+      "direct_transition": "Art_Cond_Obs_5"
     },
     "Art_Cond_6": {
       "type": "SetAttribute",
       "attribute": "cabg_arterial_conduits",
       "value": 6,
-      "direct_transition": "Terminal"
+      "direct_transition": "Art_Cond_Obs_6"
     },
     "Thoracotomy": {
       "type": "Procedure",
@@ -208,6 +208,174 @@
       ],
       "assign_to_attribute": "cabg_operative_approach",
       "direct_transition": "Pick Number of Grafts"
+    },    
+    "Graft_Obs_1": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "{#}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "exact": { "quantity": "CABG Grafts: 1" },
+      "direct_transition": "Pick Number of CABG Arterial Conduits"
+    },
+    "Graft_Obs_2": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "{#}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "exact": { "quantity": "CABG Grafts: 2" },
+      "direct_transition": "Pick Number of CABG Arterial Conduits"
+    },
+    "Graft_Obs_3": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "{#}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "exact": { "quantity": "CABG Grafts: 3" },
+      "direct_transition": "Pick Number of CABG Arterial Conduits"
+    },
+    "Graft_Obs_4": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "{#}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "exact": { "quantity": "CABG Grafts: 4" },
+      "direct_transition": "Pick Number of CABG Arterial Conduits"
+    },
+    "Graft_Obs_5": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "{#}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "exact": { "quantity": "CABG Grafts: 5" },
+      "direct_transition": "Pick Number of CABG Arterial Conduits"
+    },
+    "Graft_Obs_6": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "{#}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "exact": { "quantity": "CABG Grafts: 6" },
+      "direct_transition": "Pick Number of CABG Arterial Conduits"
+    },
+    "Art_Cond_Obs_1": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "{#}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "exact": { "quantity": "CABG Arterial Conduits: 1" },
+      "direct_transition": "Terminal"
+    },
+    "Art_Cond_Obs_2": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "{#}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "exact": { "quantity": "CABG Arterial Conduits: 2" },
+      "direct_transition": "Terminal"
+    },
+    "Art_Cond_Obs_3": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "{#}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "exact": { "quantity": "CABG Arterial Conduits: 3" },
+      "direct_transition": "Terminal"
+    },
+    "Art_Cond_Obs_4": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "{#}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "exact": { "quantity": "CABG Arterial Conduits: 4" },
+      "direct_transition": "Terminal"
+    },
+    "Art_Cond_Obs_5": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "{#}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "exact": { "quantity": "CABG Arterial Conduits: 5" },
+      "direct_transition": "Terminal"
+    },
+    "Art_Cond_Obs_6": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "{#}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "exact": { "quantity": "CABG Arterial Conduits: 6" },
+      "direct_transition": "Terminal"
     }
   },
   "gmf_version": 2
