@@ -266,6 +266,14 @@ public class PerformCABG extends Module {
     
     duration += gaussianNoise * 28; // mean of zero and std of 28
 
+    // bound to the 0.5% and 99.5% quantile of surgery times
+    duration = bound(duration, 90, 382);
+
     return duration;
   }
+
+  private static double bound(double value, double min, double max) {
+    return Math.min(Math.max(value, min), max);
+  }
+
 }
