@@ -1,5 +1,6 @@
 package org.mitre.synthea.modules;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -17,8 +18,10 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.VitalSign;
@@ -96,6 +99,8 @@ public class PerformCABG extends Module {
         surgeons.put(surgeonId, clin);
       }
 
+      provider.clinicianMap.put(ClinicianSpecialty.CARDIAC_SURGERY, new ArrayList<Clinician>(surgeons.values()));
+      
       // Finally, go back through the surgeon file data and create distributions
       // for each surgery...
       for (LinkedHashMap<String,String> row : surgeonsFile) {
@@ -172,6 +177,7 @@ public class PerformCABG extends Module {
       cabg.clinician = surgeon;
 
       surgeon.incrementEncounters();
+      surgeon.getOrganization().incrementEncounters(EncounterType.INPATIENT, Utilities.getYear(time));
 
       // hack this clinician back onto the record?
       person.record.currentEncounter(stopTime).clinician = surgeon;
