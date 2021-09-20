@@ -96,12 +96,18 @@ public class BB2RIFExporter {
   private SynchronizedBBLineWriter npi;
   private Writer manifest;
 
-  private AtomicLong beneId; // per patient identifier
-  private AtomicLong claimId; // per claim per encounter
-  private AtomicInteger claimGroupId; // per encounter
-  private AtomicLong pdeId; // per medication claim
-  private AtomicReference<MBI> mbi;
-  private AtomicReference<HICN> hicn;
+  private static AtomicLong beneId =
+      new AtomicLong(Config.getAsLong("exporter.bfd.bene_id_start", -1));
+  private static AtomicLong claimId =
+      new AtomicLong(Config.getAsLong("exporter.bfd.clm_id_start", -1));
+  private static AtomicInteger claimGroupId =
+      new AtomicInteger(Config.getAsInteger("exporter.bfd.clm_grp_id_start", -1));
+  private static AtomicLong pdeId =
+      new AtomicLong(Config.getAsLong("exporter.bfd.pde_id_start", -1));
+  private static AtomicReference<MBI> mbi =
+      new AtomicReference<>(MBI.parse(Config.get("exporter.bfd.mbi_start", "1S00-A00-AA00")));
+  private static AtomicReference<HICN> hicn =
+      new AtomicReference<>(HICN.parse(Config.get("exporter.bfd.hicn_start", "T00000000A")));
   private final PartDContractID[] partDContractIDs;
 
   private List<LinkedHashMap<String, String>> carrierLookup;
@@ -138,14 +144,6 @@ public class BB2RIFExporter {
    * Create the output folder and files. Write headers to each file.
    */
   private BB2RIFExporter() {
-    beneId = new AtomicLong(Config.getAsLong("exporter.bfd.bene_id_start", -1));
-    claimId = new AtomicLong(Config.getAsLong("exporter.bfd.clm_id_start", -1));
-    claimGroupId = new AtomicInteger(Config.getAsInteger("exporter.bfd.clm_grp_id_start", -1));
-    pdeId = new AtomicLong(Config.getAsLong("exporter.bfd.pde_id_start", -1));
-    String mbiStartStr = Config.get("exporter.bfd.mbi_start", "1S00-A00-AA00");
-    mbi = new AtomicReference<>(MBI.parse(mbiStartStr));
-    String hicnStartStr = Config.get("exporter.bfd.hicn_start", "T00000000A");
-    hicn = new AtomicReference<>(HICN.parse(hicnStartStr));
     partDContractIDs = initPartDContractIDs();
     conditionCodeMapper = new CodeMapper("condition_code_map.json");
     medicationCodeMapper = new CodeMapper("medication_code_map.json");
@@ -716,7 +714,7 @@ public class BB2RIFExporter {
         continue; // skip this encounter
       }
 
-      synchronized(outpatient) {
+      synchronized (outpatient) {
         int claimLine = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
           String hcpcsCode = null;
@@ -932,7 +930,7 @@ public class BB2RIFExporter {
       }
       previousEmergency = isEmergency;
 
-      synchronized(inpatient) {
+      synchronized (inpatient) {
         int claimLine = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
           String hcpcsCode = null;
@@ -1096,7 +1094,7 @@ public class BB2RIFExporter {
         fieldValues.put(CarrierFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
       
-      synchronized(carrier) {
+      synchronized (carrier) {
         int lineNum = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
           fieldValues.put(CarrierFields.LINE_BENE_PTB_DDCTBL_AMT,
@@ -1322,7 +1320,7 @@ public class BB2RIFExporter {
         fieldValues.put(DMEFields.LINE_ICD_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
 
-      synchronized(dme) {
+      synchronized (dme) {
         int lineNum = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
           if (!(lineItem.entry instanceof Device)) {
@@ -1451,7 +1449,7 @@ public class BB2RIFExporter {
         fieldValues.put(HHAFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
 
-      synchronized(home) {
+      synchronized (home) {
         int claimLine = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
           String hcpcsCode = null;
@@ -1625,7 +1623,7 @@ public class BB2RIFExporter {
       fieldValues.put(HospiceFields.REV_CNTR_RATE_AMT,
           String.format("%.2f", (encounter.claim.getTotalClaimCost() / days)));
 
-      synchronized(hospice) {
+      synchronized (hospice) {
         int claimLine = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
           String hcpcsCode = null;
@@ -1830,7 +1828,7 @@ public class BB2RIFExporter {
         continue; // skip this encounter
       }
 
-      synchronized(snf) {
+      synchronized (snf) {
         int claimLine = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
           String hcpcsCode = null;
@@ -1883,8 +1881,8 @@ public class BB2RIFExporter {
           // If claimLine still equals 1, then no line items were successfully added.
           // Add a single top-level entry.
           fieldValues.put(SNFFields.CLM_LINE_NUM, Integer.toString(claimLine));
-          // G0299: “direct skilled nursing services of a registered nurse (RN) in the home health or
-          // hospice setting”
+          // G0299: “direct skilled nursing services of a registered nurse (RN) in the home health
+          // or hospice setting”
           fieldValues.put(SNFFields.HCPCS_CD, "G0299");
           snf.writeValues(SNFFields.class, fieldValues);
         }
