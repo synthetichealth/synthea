@@ -215,7 +215,7 @@ public class PerformCABG extends Module {
     }
   }
   
-  private static final double getProcedureDuration(Person person, Clinician surgeon, long time) {
+  public static final double getProcedureDuration(Person person, Clinician surgeon, long time) {
     boolean onPump = (Boolean) person.attributes.getOrDefault("cabg_pump", true);
 
     int numberGrafts = (int) person.attributes.get("cabg_number_of_grafts");
@@ -242,7 +242,7 @@ public class PerformCABG extends Module {
         unstableAngina, calculatedBMI, meanSurgeonTime, gaussianNoise);
   }
 
-  private static final double getProcedureDuration(boolean onPump, int numberGrafts, boolean hasDialysis,
+  public static final double getProcedureDuration(boolean onPump, int numberGrafts, boolean hasDialysis,
       double totalNoDistAnastArtCond, boolean sternotomy, boolean redo, boolean unstableAngina, double calculatedBMI,
       double meanSurgeonTime, double gaussianNoise) {
 
