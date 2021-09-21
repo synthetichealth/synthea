@@ -17,13 +17,11 @@ bin/**
 src/main/resources/version.txt
 
 # don't commit the code maps
-src/main/resources/map.json
-src/main/resources/condition_code_map.json
-src/main/resources/medication_code_map.json
-src/main/resources/drg_code_map.json
-src/main/resources/dme_code_map.json
-src/main/resources/hospice_code_map.json
-src/main/resources/hcpcs_code_map.json
+src/main/resources/export/condition_code_map.json
+src/main/resources/export/medication_code_map.json
+src/main/resources/export/drg_code_map.json
+src/main/resources/export/dme_code_map.json
+src/main/resources/export/hcpcs_code_map.json
 
 # H2 database files
 **/*.mv.db

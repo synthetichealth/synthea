@@ -94,7 +94,6 @@ public class BB2RIFExporter {
   private SynchronizedBBLineWriter hospice;
   private SynchronizedBBLineWriter snf;
   private SynchronizedBBLineWriter npi;
-  private Writer manifest;
 
   private static AtomicLong beneId =
       new AtomicLong(Config.getAsLong("exporter.bfd.bene_id_start", -1));
@@ -145,11 +144,11 @@ public class BB2RIFExporter {
    */
   private BB2RIFExporter() {
     partDContractIDs = initPartDContractIDs();
-    conditionCodeMapper = new CodeMapper("condition_code_map.json");
-    medicationCodeMapper = new CodeMapper("medication_code_map.json");
-    drgCodeMapper = new CodeMapper("drg_code_map.json");
-    dmeCodeMapper = new CodeMapper("dme_code_map.json");
-    hcpcsCodeMapper = new CodeMapper("hcpcs_code_map.json");
+    conditionCodeMapper = new CodeMapper("export/condition_code_map.json");
+    medicationCodeMapper = new CodeMapper("export/medication_code_map.json");
+    drgCodeMapper = new CodeMapper("export/drg_code_map.json");
+    dmeCodeMapper = new CodeMapper("export/dme_code_map.json");
+    hcpcsCodeMapper = new CodeMapper("export/hcpcs_code_map.json");
     locationMapper = new StateCodeMapper();
     try {
       String csv = Utilities.readResource("payers/carriers.csv");
@@ -353,11 +352,11 @@ public class BB2RIFExporter {
    */
   private void exportBeneficiary(Person person, 
         long stopTime) throws IOException {
-    String beneIdStr = Long.toString(beneId.getAndDecrement());
+    String beneIdStr = Long.toString(BB2RIFExporter.beneId.getAndDecrement());
     person.attributes.put(BB2_BENE_ID, beneIdStr);
-    String hicId = hicn.getAndUpdate((v) -> v.next()).toString();
+    String hicId = BB2RIFExporter.hicn.getAndUpdate((v) -> v.next()).toString();
     person.attributes.put(BB2_HIC_ID, hicId);
-    String mbiStr = mbi.getAndUpdate((v) -> v.next()).toString();
+    String mbiStr = BB2RIFExporter.mbi.getAndUpdate((v) -> v.next()).toString();
     person.attributes.put(BB2_MBI, mbiStr);
     long deathDate = person.attributes.get(Person.DEATHDATE) == null ? -1
             : (long) person.attributes.get(Person.DEATHDATE);
@@ -592,8 +591,8 @@ public class BB2RIFExporter {
       boolean isUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
       boolean isWellness = encounter.type.equals(EncounterType.WELLNESS.toString());
       boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
-      long claimId = this.claimId.getAndDecrement();
-      int claimGroupId = this.claimGroupId.getAndDecrement();
+      long claimId = BB2RIFExporter.claimId.getAndDecrement();
+      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
 
       if (isPrimary || !(isAmbulatory || isOutpatient || isUrgent || isWellness)) {
         continue;
@@ -781,8 +780,8 @@ public class BB2RIFExporter {
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       boolean isInpatient = encounter.type.equals(EncounterType.INPATIENT.toString());
       boolean isEmergency = encounter.type.equals(EncounterType.EMERGENCY.toString());
-      long claimId = this.claimId.getAndDecrement();
-      int claimGroupId = this.claimGroupId.getAndDecrement();
+      long claimId = BB2RIFExporter.claimId.getAndDecrement();
+      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
 
       if (!(isInpatient || isEmergency)) {
         previousEmergency = false;
@@ -1006,8 +1005,8 @@ public class BB2RIFExporter {
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
 
-      long claimId = this.claimId.getAndDecrement();
-      int claimGroupId = this.claimGroupId.getAndDecrement();
+      long claimId = BB2RIFExporter.claimId.getAndDecrement();
+      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
 
       for (HealthRecord.Observation observation : encounter.observations) {
         if (observation.containsCode("718-7", "http://loinc.org")) {
@@ -1180,8 +1179,8 @@ public class BB2RIFExporter {
           continue; // skip codes that can't be mapped to NDC
         }
 
-        long pdeId = this.pdeId.getAndDecrement();
-        int claimGroupId = this.claimGroupId.getAndDecrement();
+        long pdeId = BB2RIFExporter.pdeId.getAndDecrement();
+        int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
 
         fieldValues.clear();
         staticFieldConfig.setValues(fieldValues, PrescriptionFields.class, person);
@@ -1262,8 +1261,8 @@ public class BB2RIFExporter {
     HashMap<DMEFields, String> fieldValues = new HashMap<>();
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      long claimId = this.claimId.getAndDecrement();
-      int claimGroupId = this.claimGroupId.getAndDecrement();
+      long claimId = BB2RIFExporter.claimId.getAndDecrement();
+      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       double latestHemoglobin = 0;
       for (HealthRecord.Observation observation : encounter.observations) {
         if (observation.containsCode("718-7", "http://loinc.org")) {
@@ -1378,8 +1377,8 @@ public class BB2RIFExporter {
       }
 
       homeVisits += 1;
-      long claimId = this.claimId.getAndDecrement();
-      int claimGroupId = this.claimGroupId.getAndDecrement();
+      long claimId = BB2RIFExporter.claimId.getAndDecrement();
+      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
 
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, HHAFields.class, person);
@@ -1532,8 +1531,8 @@ public class BB2RIFExporter {
         continue; // skip this encounter
       }
 
-      long claimId = this.claimId.getAndDecrement();
-      int claimGroupId = this.claimGroupId.getAndDecrement();
+      long claimId = BB2RIFExporter.claimId.getAndDecrement();
+      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, HospiceFields.class, person);
 
@@ -1705,8 +1704,8 @@ public class BB2RIFExporter {
       if (!encounter.type.equals(EncounterType.SNF.toString())) {
         continue;
       }
-      long claimId = this.claimId.getAndDecrement();
-      int claimGroupId = this.claimGroupId.getAndDecrement();
+      long claimId = BB2RIFExporter.claimId.getAndDecrement();
+      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
 
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, SNFFields.class, person);
@@ -4291,7 +4290,7 @@ public class BB2RIFExporter {
      * @throws IOException if the writer can't be read.
      */
     public StaticFieldConfig() throws IOException {
-      String tsv = Utilities.readResource(Config.get("exporter.bfd.config_file"));
+      String tsv = Utilities.readResource("export/bfd_field_values.tsv");
       config = SimpleCSV.parse(tsv, '\t');
       configMap = new HashMap<>();
       for (LinkedHashMap<String, String> row: config) {
