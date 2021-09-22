@@ -104,10 +104,15 @@ public class PerformCABG extends Module {
       // Finally, go back through the surgeon file data and create distributions
       // for each surgery...
       for (LinkedHashMap<String,String> row : surgeonsFile) {
+        String operation = row.get("Surgery_cat_2");
+        if (!(operation.equals("OnPumpCABG") || operation.equals("OffPumpCABG"))) {
+          // we only care about these 2 operation types
+          continue;
+        }
+        
         String identifier = row.get("RandomID");
         Clinician clin = surgeons.get(identifier);
 
-        String operation = row.get("Surgery_cat_2");
         Double weight = Double.parseDouble(row.get("n_surgeries"));
         Double mean = Double.parseDouble(row.get("mean"));
         Double std = Double.parseDouble(row.get("std"));
@@ -116,10 +121,13 @@ public class PerformCABG extends Module {
 
         Distribution distribution = buildDistribution(mean, std, min, max);
         clin.attributes.put(operation, distribution);
-        clin.attributes.put("mean_surgeon_time", mean);
+        // note that surgeons have different mean times for on/off pump
+        
         if (operation.equals("OnPumpCABG")) {
+          clin.attributes.put("mean_surgeon_time_OnPump", mean);
           onPumpCabgSurgeons.add(weight, clin);
         } else if (operation.equals("OffPumpCABG")) {
+          clin.attributes.put("mean_surgeon_time_OffPump", mean);
           offPumpCabgSurgeons.add(weight, clin);
         }
       }
@@ -234,7 +242,8 @@ public class PerformCABG extends Module {
 
     double calculatedBMI = person.getVitalSign(VitalSign.BMI, time);
 
-    double meanSurgeonTime = (double) surgeon.attributes.get("mean_surgeon_time");
+    String meanTimeKey = onPump ? "mean_surgeon_time_OnPump" : "mean_surgeon_time_OffPump";
+    double meanSurgeonTime = (double) surgeon.attributes.get(meanTimeKey);
 
     double gaussianNoise = person.randGaussian();
     

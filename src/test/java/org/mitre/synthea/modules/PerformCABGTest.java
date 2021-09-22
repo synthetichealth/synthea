@@ -130,7 +130,8 @@ public class PerformCABGTest {
 
       person.setVitalSign(VitalSign.BMI,  testCase.calculatedBMI);
     
-      clinician.attributes.put("mean_surgeon_time", testCase.meanSurgeonTime);
+      String meanTimeKey = testCase.onPump ? "mean_surgeon_time_OnPump" : "mean_surgeon_time_OffPump";
+      clinician.attributes.put(meanTimeKey, testCase.meanSurgeonTime);
       
       
       double result = PerformCABG.getProcedureDuration(person, clinician, 0);
