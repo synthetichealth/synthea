@@ -72,7 +72,7 @@ public class PerformCABGTest {
     }
   }
   
-  @Test @Ignore
+  @Test
   public void testModule() {
     Person person = new Person(0L);
     person.setVitalSign(VitalSign.BMI, 20.0);
@@ -96,8 +96,9 @@ public class PerformCABGTest {
   
   @Test
   public void testFunctionWithPerson() {
-
-    // TODO: disable gaussian noise in order to run this test
+    // disable gaussian noise in order to run this test
+    int oldGaussianFactor = PerformCABG.GAUSSIAN_NOISE_FACTOR;
+    PerformCABG.GAUSSIAN_NOISE_FACTOR = 0;
     for (TestWrapper testCase : TEST_CASES) {
       
       Person person = new Person(0L);
@@ -135,6 +136,7 @@ public class PerformCABGTest {
       double result = PerformCABG.getProcedureDuration(person, clinician, 0);
       assertEquals(testCase.expected, result, 1.0);
     }
+    PerformCABG.GAUSSIAN_NOISE_FACTOR = oldGaussianFactor;
   }
   
   @Test

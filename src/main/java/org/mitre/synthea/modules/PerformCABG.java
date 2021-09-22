@@ -242,6 +242,9 @@ public class PerformCABG extends Module {
         unstableAngina, calculatedBMI, meanSurgeonTime, gaussianNoise);
   }
 
+  // extracted to a constant so we can disable it in the unit test
+  public static int GAUSSIAN_NOISE_FACTOR = 28;
+  
   public static final double getProcedureDuration(boolean onPump, int numberGrafts, boolean hasDialysis,
       double totalNoDistAnastArtCond, boolean sternotomy, boolean redo, boolean unstableAngina, double calculatedBMI,
       double meanSurgeonTime, double gaussianNoise) {
@@ -270,7 +273,7 @@ public class PerformCABG extends Module {
 
     duration += meanSurgeonTime * 0.843;
     
-    duration += gaussianNoise * 28; // mean of zero and std of 28
+    duration += gaussianNoise * GAUSSIAN_NOISE_FACTOR; // mean of zero and std of 28
 
     // bound to the 0.5% and 99.5% quantile of surgery times
     duration = bound(duration, 90, 382);
