@@ -19,7 +19,7 @@
       },
       "distributed_transition": [
         {
-          "transition": "Diagnosis",
+          "transition": "Atrial Fibrillation",
           "distribution": {
             "attribute": "atrial_fibrillation_risk",
             "default": 0
@@ -31,11 +31,36 @@
         }
       ]
     },
-    "Diagnosis": {
-      "type": "SetAttribute",
-      "attribute": "atrial_fibrillation",
-      "value": true,
+    "Atrial Fibrillation": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "atrial_fibrillation",
+      "target_encounter": "Atrial Fibrillation Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 49436004,
+          "display": "Atrial fibrillation (disorder)"
+        }
+      ],
+      "direct_transition": "Atrial Fibrillation Encounter"
+    },
+    "Atrial Fibrillation Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "atrial_fibrillation",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "encounter_end"
+    },
+    "encounter_end": {
+      "type": "EncounterEnd",
       "direct_transition": "Terminal"
     }
-  }
+  },
+  "gmf_version": 2
 }
