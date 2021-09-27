@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.mitre.synthea.engine.Components.Range;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.Attributes.Inventory;
+import org.mitre.synthea.modules.HypertensionTrial;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.VitalSign;
 
@@ -218,6 +220,16 @@ public class Framingham {
     
   }
   
+  private static boolean isBloodPressureBeingTreated(Person person, long time) {
+    for (String medicationCode : HypertensionTrial.HTN_DRUG_IMPACTS.keySet()) {
+      if (person.record.medicationActive(medicationCode)) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+  
 
   /**
    * Calculates a patient's risk of coronary heart disease, based on the 1998 Framingham study group.
@@ -237,8 +249,7 @@ public class Framingham {
       return -1;
     }
 
-    Boolean bpTreated = (Boolean)
-        person.attributes.getOrDefault("blood_pressure_controlled", false);
+    boolean bpTreated = isBloodPressureBeingTreated(person, time);
 
     Double hdl = person.getVitalSign(VitalSign.HDL, time);
 
@@ -323,8 +334,7 @@ public class Framingham {
       return -1;
     }
 
-    boolean bpTreated = (boolean)
-        person.attributes.getOrDefault("blood_pressure_controlled", false);
+    boolean bpTreated = isBloodPressureBeingTreated(person, time);
     
     Double hdl = person.getVitalSign(VitalSign.HDL, time);
     
@@ -409,7 +419,7 @@ public class Framingham {
       afScore += 1;
     }
 
-    if ((Boolean) person.attributes.getOrDefault("blood_pressure_controlled", false)) {
+    if (isBloodPressureBeingTreated(person, time)) {
       afScore += 1;
     }
 
@@ -508,7 +518,7 @@ public class Framingham {
 
       int bp = bloodPressure.intValue();
       
-      if ((Boolean) person.attributes.getOrDefault("blood_pressure_controlled", false)) {
+      if (isBloodPressureBeingTreated(person, time)) {
         strokePoints += getIndexForValueInRangelist(bp, treated_sys_bp_stroke[genderIndex]);
       } else {
         strokePoints += getIndexForValueInRangelist(bp, untreated_sys_bp_stroke[genderIndex]);

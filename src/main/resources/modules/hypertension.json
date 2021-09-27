@@ -44,7 +44,7 @@
         }
       ],
       "assign_to_attribute": "hypertension_dx",
-      "direct_transition": "Set_BP_Not Controlled"
+      "direct_transition": "LifeStyle_Modifications_Hypertension_CarePlan"
     },
     "Hypertension_Followup_Encounter": {
       "type": "Encounter",
@@ -260,16 +260,6 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "blood_pressure_controlled",
-            "operator": "==",
-            "value": true
-          },
-          "distributions": [],
-          "transition": "Hypertension_Followup_Encounter"
-        },
-        {
-          "condition": {
-            "condition_type": "Attribute",
             "attribute": "hypertension_severe",
             "operator": "==",
             "value": true
@@ -469,12 +459,6 @@
       ],
       "direct_transition": "End_Hypertension_Followup_Encounter_3"
     },
-    "Set_BP_Not Controlled": {
-      "type": "SetAttribute",
-      "attribute": "blood_pressure_controlled",
-      "direct_transition": "LifeStyle_Modifications_Hypertension_CarePlan",
-      "value": false
-    },
     "Delay 2_Month": {
       "type": "Delay",
       "exact": {
@@ -482,16 +466,6 @@
         "unit": "months"
       },
       "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "blood_pressure_controlled",
-            "operator": "==",
-            "value": true
-          },
-          "distributions": [],
-          "transition": "Hypertension_Followup_Encounter_2"
-        },
         {
           "condition": {
             "condition_type": "Attribute",

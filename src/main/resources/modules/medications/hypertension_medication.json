@@ -47,6 +47,15 @@
       "type": "Simple",
       "conditional_transition": [
         {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "htn_trial_eligibility",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
           "transition": "Initialize Step",
           "condition": {
             "condition_type": "Attribute",

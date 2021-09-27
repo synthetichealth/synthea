@@ -631,7 +631,6 @@ public final class CardiovascularDiseaseModule extends Module {
     Attributes.inventory(attributes, m, Person.SMOKER, true, false, "false");
     Attributes.inventory(attributes, m, "atrial_fibrillation", true, false, "false");
     Attributes.inventory(attributes, m, "atrial_fibrillation_risk", true, false, null);
-    Attributes.inventory(attributes, m, "blood_pressure_controlled", true, false, "false");
     Attributes.inventory(attributes, m, "cardio_risk", true, false, "-1.0");
     Attributes.inventory(attributes, m, "coronary_heart_disease", true, false, "false");
     Attributes.inventory(attributes, m, "cardiovascular_procedures", true, false, null);

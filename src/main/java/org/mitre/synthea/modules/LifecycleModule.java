@@ -755,14 +755,6 @@ public final class LifecycleModule extends Module {
     person.setVitalSign(VitalSign.RESPIRATION_RATE,
         new TrendingValueGenerator(person, 1.0, respirationStart, respirationEnd,
             time, time + timestep, RESPIRATION_RATE_NORMAL[0], RESPIRATION_RATE_NORMAL[1]));
-    
-    
-    boolean hypertension = (boolean)person.attributes.getOrDefault("hypertension", false);
-    
-    if (hypertension) {
-      boolean controlled = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time) < 130;
-      person.attributes.put("blood_pressure_controlled", controlled);
-    }
   }
 
   /**
