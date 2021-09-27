@@ -245,22 +245,22 @@ public final class CardiovascularDiseaseModule extends Module {
   }
 
 
-  /**
-   * The patient rolls the probability dice. If their roll is less than their
-   * "cardio_risk" attribute, then coronary heart disease begins.
-   * @param person The patient.
-   * @param time The time.
-   */
-  private static void onsetCoronaryHeartDisease(Person person, long time) {
-    if (person.attributes.containsKey("coronary_heart_disease")) {
-      return;
-    }
+  // /**
+  //  * The patient rolls the probability dice. If their roll is less than their
+  //  * "cardio_risk" attribute, then coronary heart disease begins.
+  //  * @param person The patient.
+  //  * @param time The time.
+  //  */
+  // private static void onsetCoronaryHeartDisease(Person person, long time) {
+  //   if (person.attributes.containsKey("coronary_heart_disease")) {
+  //     return;
+  //   }
 
-    double cardioRisk = (double) person.attributes.getOrDefault("cardio_risk", -1.0);
-    if (person.rand() < cardioRisk) {
-      person.attributes.put("coronary_heart_disease", true);
-    }
-  }
+  //   double cardioRisk = (double) person.attributes.getOrDefault("cardio_risk", -1.0);
+  //   if (person.rand() < cardioRisk) {
+  //     person.attributes.put("coronary_heart_disease", true);
+  //   }
+  // }
 
   /**
    * If the patient has "coronary_heart_disease", there is a small chance they
@@ -268,57 +268,57 @@ public final class CardiovascularDiseaseModule extends Module {
    * @param person The patient.
    * @param time The time.
    */
-  private static void coronaryHeartDiseaseProgression(Person person, long time) {
-    // numbers are from appendix:
-    // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1647098/pdf/amjph00262-0029.pdf
-    boolean coronaryHeartDisease = (Boolean) person.attributes
-        .getOrDefault("coronary_heart_disease", false);
+  // private static void coronaryHeartDiseaseProgression(Person person, long time) {
+  //   // numbers are from appendix:
+  //   // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1647098/pdf/amjph00262-0029.pdf
+  //   boolean coronaryHeartDisease = (Boolean) person.attributes
+  //       .getOrDefault("coronary_heart_disease", false);
 
-    if (!coronaryHeartDisease) {
-      return;
-    }
+  //   if (!coronaryHeartDisease) {
+  //     return;
+  //   }
 
-    String gender = (String) person.attributes.get(Person.GENDER);
+  //   String gender = (String) person.attributes.get(Person.GENDER);
 
-    double annualRisk;
-    // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1647098/pdf/amjph00262-0029.pdf
-    // annual probability of coronary attack given history of angina
-    if (gender.equals("M")) {
-      annualRisk = 0.042;
-    } else {
-      annualRisk = 0.015;
-    }
+  //   double annualRisk;
+  //   // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1647098/pdf/amjph00262-0029.pdf
+  //   // annual probability of coronary attack given history of angina
+  //   if (gender.equals("M")) {
+  //     annualRisk = 0.042;
+  //   } else {
+  //     annualRisk = 0.015;
+  //   }
 
-    double cardiacEventChance = Utilities.convertRiskToTimestep(annualRisk,
-        TimeUnit.DAYS.toMillis(365));
+  //   double cardiacEventChance = Utilities.convertRiskToTimestep(annualRisk,
+  //       TimeUnit.DAYS.toMillis(365));
 
-    if (person.rand() < cardiacEventChance) {
-      String cardiacEvent;
+  //   if (person.rand() < cardiacEventChance) {
+  //     String cardiacEvent;
 
-      // Proportion of coronary attacks that are MI, given history of CHD
-      if (person.rand() < 0.8) {
-        cardiacEvent = "myocardial_infarction";
-      } else {
-        cardiacEvent = "cardiac_arrest";
-      }
+  //     // Proportion of coronary attacks that are MI, given history of CHD
+  //     if (person.rand() < 0.8) {
+  //       cardiacEvent = "myocardial_infarction";
+  //     } else {
+  //       cardiacEvent = "cardiac_arrest";
+  //     }
 
-      // Make sure the Emergency Encounter has started...
-      Code code = LOOKUP.get(cardiacEvent);
-      beginOrContinueEmergency(person, time, code);
-      performEmergency(person, time, cardiacEvent);
+  //     // Make sure the Emergency Encounter has started...
+  //     Code code = LOOKUP.get(cardiacEvent);
+  //     beginOrContinueEmergency(person, time, code);
+  //     performEmergency(person, time, cardiacEvent);
 
-      double survivalRate = 0.095; // http://cpr.heart.org/AHAECC/CPRAndECC/General/UCM_477263_Cardiac-Arrest-Statistics.jsp
-      // survival rate triples if a bystander is present
-      // http://cpr.heart.org/AHAECC/CPRAndECC/AboutCPRFirstAid/CPRFactsAndStats/UCM_475748_CPR-Facts-and-Stats.jsp
-      if (person.rand() < 0.46) {
-        survivalRate *= 3.0;
-      }
+  //     double survivalRate = 0.095; // http://cpr.heart.org/AHAECC/CPRAndECC/General/UCM_477263_Cardiac-Arrest-Statistics.jsp
+  //     // survival rate triples if a bystander is present
+  //     // http://cpr.heart.org/AHAECC/CPRAndECC/AboutCPRFirstAid/CPRFactsAndStats/UCM_475748_CPR-Facts-and-Stats.jsp
+  //     if (person.rand() < 0.46) {
+  //       survivalRate *= 3.0;
+  //     }
 
-      if (person.rand() > survivalRate) {
-        person.recordDeath(time, LOOKUP.get(cardiacEvent));
-      }
-    }
-  }
+  //     if (person.rand() > survivalRate) {
+  //       person.recordDeath(time, LOOKUP.get(cardiacEvent));
+  //     }
+  //   }
+  // }
 
   /**
    * If the patient does NOT have "coronary_heart_disease", there is a very small chance
@@ -326,33 +326,33 @@ public final class CardiovascularDiseaseModule extends Module {
    * @param person The patient.
    * @param time The time.
    */
-  private static void noCoronaryHeartDisease(Person person, long time) {
-    // chance of getting a sudden cardiac arrest without heart disease. (Most probable cardiac event
-    // w/o cause or history)
-    if (person.attributes.containsKey("coronary_heart_disease")) {
-      return;
-    }
+  // private static void noCoronaryHeartDisease(Person person, long time) {
+  //   // chance of getting a sudden cardiac arrest without heart disease. (Most probable cardiac event
+  //   // w/o cause or history)
+  //   if (person.attributes.containsKey("coronary_heart_disease")) {
+  //     return;
+  //   }
 
-    double annualRisk = 0.00076;
-    double cardiacEventChance = Utilities.convertRiskToTimestep(annualRisk,
-        TimeUnit.DAYS.toMillis(365));
-    if (person.rand() < cardiacEventChance) {
-      // Make sure the Emergency Encounter has started...
-      Code code = LOOKUP.get("cardiac_arrest");
-      beginOrContinueEmergency(person, time, code);
-      performEmergency(person, time, "cardiac_arrest");
+  //   double annualRisk = 0.00076;
+  //   double cardiacEventChance = Utilities.convertRiskToTimestep(annualRisk,
+  //       TimeUnit.DAYS.toMillis(365));
+  //   if (person.rand() < cardiacEventChance) {
+  //     // Make sure the Emergency Encounter has started...
+  //     Code code = LOOKUP.get("cardiac_arrest");
+  //     beginOrContinueEmergency(person, time, code);
+  //     performEmergency(person, time, "cardiac_arrest");
 
-      double survivalRate = 1 - (0.00069);
-      if (person.rand() < 0.46) {
-        survivalRate *= 3.0;
-      }
-      double annualDeathRisk = 1 - survivalRate;
-      if (person.rand() < Utilities.convertRiskToTimestep(annualDeathRisk,
-          TimeUnit.DAYS.toMillis(365))) {
-        person.recordDeath(time, LOOKUP.get("cardiac_arrest"));
-      }
-    }
-  }
+  //     double survivalRate = 1 - (0.00069);
+  //     if (person.rand() < 0.46) {
+  //       survivalRate *= 3.0;
+  //     }
+  //     double annualDeathRisk = 1 - survivalRate;
+  //     if (person.rand() < Utilities.convertRiskToTimestep(annualDeathRisk,
+  //         TimeUnit.DAYS.toMillis(365))) {
+  //       person.recordDeath(time, LOOKUP.get("cardiac_arrest"));
+  //     }
+  //   }
+  // }
 
   /**
    * Depending on gender, BMI, and blood pressure, there is a small risk of
@@ -367,19 +367,19 @@ public final class CardiovascularDiseaseModule extends Module {
   }
 
 
-  /**
-   * The patient rolls the probability dice. If their roll is less than their
-   * "atrial_fibrillation_risk" attribute, then "atrial_fibrillation" begins.
-   * @param person The patient.
-   * @param time The time.
-   */
-  private static void getAtrialFibrillation(Person person, long time) {
-    if (!person.attributes.containsKey("atrial_fibrillation")
-        && person.attributes.containsKey("atrial_fibrillation_risk")
-        && person.rand() < (Double) person.attributes.get("atrial_fibrillation_risk")) {
-      person.attributes.put("atrial_fibrillation", true);
-    }
-  }
+  // /**
+  //  * The patient rolls the probability dice. If their roll is less than their
+  //  * "atrial_fibrillation_risk" attribute, then "atrial_fibrillation" begins.
+  //  * @param person The patient.
+  //  * @param time The time.
+  //  */
+  // private static void getAtrialFibrillation(Person person, long time) {
+  //   if (!person.attributes.containsKey("atrial_fibrillation")
+  //       && person.attributes.containsKey("atrial_fibrillation_risk")
+  //       && person.rand() < (Double) person.attributes.get("atrial_fibrillation_risk")) {
+  //     person.attributes.put("atrial_fibrillation", true);
+  //   }
+  // }
 
 
   /**
@@ -397,7 +397,7 @@ public final class CardiovascularDiseaseModule extends Module {
       double framingham10YrRisk = Framingham.stroke10Year(person, time, false);
       person.attributes.put("stroke_risk",
           Utilities.convertRiskToTimestep(framingham10YrRisk, tenYearsInMS, oneMonthInMS));
-    } else if ((boolean)person.attributes.getOrDefault("atrial_fibrillation", false)) {
+    } else if (person.attributes.containsKey("atrial_fibrillation")) {
       double chadsvasc1YrRisk = CHADSVASC.strokeRisk1Year(person, time);
        person.attributes.put("stroke_risk",
            Utilities.convertRiskToTimestep(chadsvasc1YrRisk, oneYearInMS, oneMonthInMS));
@@ -414,22 +414,22 @@ public final class CardiovascularDiseaseModule extends Module {
    * @param person The patient.
    * @param time The time.
    */
-  private static void getStroke(Person person, long time) {
-    if (person.attributes.containsKey("stroke_risk")
-        && person.rand() < (Double) person.attributes.get("stroke_risk")) {
-      // Make sure the Emergency Encounter has started...
-      Code code = LOOKUP.get("stroke");
-      beginOrContinueEmergency(person, time, code);
-      performEmergency(person, time, "stroke");
-      person.attributes.put("stroke_history", true);
+  // private static void getStroke(Person person, long time) {
+  //   if (person.attributes.containsKey("stroke_risk")
+  //       && person.rand() < (Double) person.attributes.get("stroke_risk")) {
+  //     // Make sure the Emergency Encounter has started...
+  //     Code code = LOOKUP.get("stroke");
+  //     beginOrContinueEmergency(person, time, code);
+  //     performEmergency(person, time, "stroke");
+  //     person.attributes.put("stroke_history", true);
 
-      // Strokes are fatal 10-20 percent of cases
-      // https://stroke.nih.gov/materials/strokechallenges.htm
-      if (person.rand() < 0.15) {
-        person.recordDeath(time, code);
-      }
-    }
-  }
+  //     // Strokes are fatal 10-20 percent of cases
+  //     // https://stroke.nih.gov/materials/strokechallenges.htm
+  //     if (person.rand() < 0.15) {
+  //       person.recordDeath(time, code);
+  //     }
+  //   }
+  // }
 
   /**
    * Start or stop medication treatment depending on whether or not the patient has
@@ -463,7 +463,7 @@ public final class CardiovascularDiseaseModule extends Module {
     List<String> meds = filter_meds_by_year(Arrays.asList("warfarin", "verapamil", "digoxin"),
         time);
 
-    if ((Boolean) person.attributes.getOrDefault("atrial_fibrillation", false)) {
+    if (person.attributes.containsKey("atrial_fibrillation")) {
       for (String med : meds) {
         prescribeMedication(med, person, time, true);
       }
@@ -521,7 +521,7 @@ public final class CardiovascularDiseaseModule extends Module {
     person.attributes.put(CVD_ENCOUNTER, encounter);
 
     // step 1 - diagnosis
-    for (String diagnosis : new String[] { "coronary_heart_disease", "atrial_fibrillation" }) {
+    for (String diagnosis : new String[] { "coronary_heart_disease" }) {
       if ((Boolean) person.attributes.getOrDefault(diagnosis, false)
           && !person.record.present.containsKey(diagnosis)) {
         Code code = LOOKUP.get(diagnosis);
@@ -629,7 +629,7 @@ public final class CardiovascularDiseaseModule extends Module {
     Attributes.inventory(attributes, m, Person.GENDER, true, false, "F");
     Attributes.inventory(attributes, m, Person.SMOKER, true, false, "true");
     Attributes.inventory(attributes, m, Person.SMOKER, true, false, "false");
-    Attributes.inventory(attributes, m, "atrial_fibrillation", true, false, "false");
+    Attributes.inventory(attributes, m, "atrial_fibrillation", true, false, null);
     Attributes.inventory(attributes, m, "atrial_fibrillation_risk", true, false, null);
     Attributes.inventory(attributes, m, "cardio_risk", true, false, "-1.0");
     Attributes.inventory(attributes, m, "coronary_heart_disease", true, false, "false");
@@ -640,7 +640,6 @@ public final class CardiovascularDiseaseModule extends Module {
     Attributes.inventory(attributes, m, "left_ventricular_hypertrophy", true, false, "false");
     Attributes.inventory(attributes, m, "stroke_risk", true, false, null);
     // Write
-    Attributes.inventory(attributes, m, "atrial_fibrillation", false, true, "true");
     Attributes.inventory(attributes, m, "atrial_fibrillation_risk", false, true, "Numeric");
     Attributes.inventory(attributes, m, "cardio_risk", false, true, "1.0");
     Attributes.inventory(attributes, m,
