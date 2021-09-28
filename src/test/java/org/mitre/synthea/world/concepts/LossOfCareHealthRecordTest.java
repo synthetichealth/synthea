@@ -25,7 +25,6 @@ public class LossOfCareHealthRecordTest {
   private long time;
   private double defaultEncounterCost = Double
       .parseDouble(Config.get("generate.costs.default_encounter_cost"));
-  private double patientCost;
   private double testPrivatePayerCopay;
 
   /**
