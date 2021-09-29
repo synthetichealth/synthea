@@ -184,6 +184,11 @@
                 "condition_type": "Attribute",
                 "attribute": "repeat_referral_pci",
                 "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "repeat_referral_medical",
+                "operator": "is not nil"
               }
             ]
           }

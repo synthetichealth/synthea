@@ -279,7 +279,7 @@
           "display": "Follow-up encounter (procedure)"
         }
       ],
-      "direct_transition": "Preoperative Testing"
+      "direct_transition": "Set_Immediate_Admission_False"
     },
     "Preoperative Testing": {
       "type": "CallSubmodule",
@@ -482,7 +482,8 @@
         }
       ],
       "direct_transition": "Terminal",
-      "reason": "Abnormal Findings"
+      "reason": "Abnormal Findings",
+      "assign_to_attribute": "repeat_referral_medical"
     },
     "Treatment_Plan": {
       "type": "Procedure",
@@ -520,6 +521,12 @@
           "transition": "End Preoperative"
         }
       ]
+    },
+    "Set_Immediate_Admission_False": {
+      "type": "SetAttribute",
+      "attribute": "cabg_immediate_admission",
+      "direct_transition": "Preoperative Testing",
+      "value": false
     }
   },
   "gmf_version": 2
