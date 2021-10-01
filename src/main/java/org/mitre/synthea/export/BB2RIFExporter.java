@@ -42,6 +42,7 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.Provider.ProviderType;
 import org.mitre.synthea.world.concepts.Claim.ClaimEntry;
+import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Device;
@@ -108,6 +109,7 @@ public class BB2RIFExporter {
   private static AtomicReference<HICN> hicn =
       new AtomicReference<>(HICN.parse(Config.get("exporter.bfd.hicn_start", "T00000000A")));
   private final PartDContractID[] partDContractIDs;
+  private final CLIA[] cliaLabNumbers;
 
   private List<LinkedHashMap<String, String>> carrierLookup;
   private CodeMapper conditionCodeMapper;
@@ -144,6 +146,7 @@ public class BB2RIFExporter {
    */
   private BB2RIFExporter() {
     partDContractIDs = initPartDContractIDs();
+    cliaLabNumbers = initCliaLabNumbers();
     conditionCodeMapper = new CodeMapper("export/condition_code_map.json");
     medicationCodeMapper = new CodeMapper("export/medication_code_map.json");
     drgCodeMapper = new CodeMapper("export/drg_code_map.json");
@@ -177,7 +180,18 @@ public class BB2RIFExporter {
     }
     return partDContractIDs;
   }
-  
+
+  private static CLIA[] initCliaLabNumbers() {
+    int numLabs = Config.getAsInteger("exporter.bfd.clia_labs_count",1);
+    CLIA[] labNumbers = new CLIA[numLabs];
+    CLIA labNumber = CLIA.parse(Config.get("exporter.bfd.clia_labs_start", "00A0000000"));
+    for (int i = 0; i < numLabs; i++) {
+      labNumbers[i] = labNumber;
+      labNumber = labNumber.next();
+    }
+    return labNumbers;
+  }
+
   /**
    * Create the output folder and files. Write headers to each file.
    */
@@ -967,11 +981,12 @@ public class BB2RIFExporter {
   private void exportCarrier(Person person, long stopTime) throws IOException {
     HashMap<CarrierFields, String> fieldValues = new HashMap<>();
 
-    HealthRecord.Encounter previous = null;
     double latestHemoglobin = 0;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
+      if (ProviderType.PRIMARY != encounter.provider.type) {
+        continue;
+      }
 
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
       int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
@@ -980,11 +995,6 @@ public class BB2RIFExporter {
         if (observation.containsCode("718-7", "http://loinc.org")) {
           latestHemoglobin = (double) observation.value;
         }
-      }
-
-      if (!isPrimary) {
-        previous = encounter;
-        continue;
       }
 
       staticFieldConfig.setValues(fieldValues, CarrierFields.class, person);
@@ -1019,6 +1029,12 @@ public class BB2RIFExporter {
               String.format("%.2f", encounter.claim.getDeductiblePaid()));
       fieldValues.put(CarrierFields.CARR_CLM_RFRNG_PIN_NUM, encounter.provider.id);
       fieldValues.put(CarrierFields.CARR_PRFRNG_PIN_NUM, encounter.provider.id);
+      fieldValues.put(CarrierFields.ORG_NPI_NUM, encounter.provider.npi);
+      fieldValues.put(CarrierFields.PRF_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(CarrierFields.RFR_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(CarrierFields.PRVDR_SPCLTY,
+          ClinicianSpecialty.getCMSProviderSpecialtyCode(
+              (String) encounter.clinician.attributes.get(Clinician.SPECIALTY)));
       fieldValues.put(CarrierFields.TAX_NUM,
               bb2TaxId((String)encounter.clinician.attributes.get(Person.IDENTIFIER_SSN)));
       fieldValues.put(CarrierFields.LINE_SRVC_CNT, "" + encounter.claim.items.size());
@@ -1063,6 +1079,7 @@ public class BB2RIFExporter {
       
       synchronized (carrier) {
         int lineNum = 1;
+        CLIA cliaLab = cliaLabNumbers[person.randInt(cliaLabNumbers.length)];
         for (ClaimEntry lineItem : encounter.claim.items) {
           fieldValues.put(CarrierFields.LINE_BENE_PTB_DDCTBL_AMT,
                   String.format("%.2f", lineItem.deductible));
@@ -1077,6 +1094,10 @@ public class BB2RIFExporter {
           fieldValues.put(CarrierFields.LINE_ALOWD_CHRG_AMT,
               String.format("%.2f", lineItem.cost - lineItem.adjustment));
 
+          // If this item is a lab report, add the number of the clinical lab...
+          if  (lineItem.entry instanceof HealthRecord.Report) {
+            fieldValues.put(CarrierFields.CARR_LINE_CLIA_LAB_NUM, cliaLab.toString());
+          }
 
           // set the line number and write out field values
           fieldValues.put(CarrierFields.LINE_NUM, Integer.toString(lineNum++));
@@ -1250,6 +1271,11 @@ public class BB2RIFExporter {
               getCarrier(encounter.provider.state, CarrierFields.CARR_NUM));
       fieldValues.put(DMEFields.NCH_WKLY_PROC_DT,
               bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
+      fieldValues.put(DMEFields.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(DMEFields.PRVDR_NPI, encounter.provider.npi);
+      fieldValues.put(DMEFields.PRVDR_SPCLTY,
+          ClinicianSpecialty.getCMSProviderSpecialtyCode(
+              (String) encounter.clinician.attributes.get(Clinician.SPECIALTY)));
       fieldValues.put(DMEFields.PRVDR_STATE_CD,
               locationMapper.getStateCode(encounter.provider.state));
       fieldValues.put(DMEFields.TAX_NUM,
@@ -1687,6 +1713,7 @@ public class BB2RIFExporter {
       fieldValues.put(SNFFields.NCH_WKLY_PROC_DT,
           bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
       fieldValues.put(SNFFields.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(SNFFields.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(SNFFields.AT_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(SNFFields.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
       
@@ -4410,7 +4437,33 @@ public class BB2RIFExporter {
       return retval;
     }
   }
-  
+
+  /**
+   * Utility class for working with CLIA Lab Numbers.
+   *
+   * @see <a href="https://www.cms.gov/apps/clia/clia_start.asp">
+   * https://www.cms.gov/apps/clia/clia_start.asp</a>
+   */
+  static class CLIA extends FixedLengthIdentifier {
+
+    private static final char[][] CLIA_FORMAT = {NUMERIC, NUMERIC, ALPHA,
+        NUMERIC, NUMERIC, NUMERIC, NUMERIC, NUMERIC, NUMERIC, NUMERIC};
+    static final long MIN_CLIA = 0;
+    static final long MAX_CLIA = maxValue(CLIA_FORMAT);
+
+    public CLIA(long value) {
+      super(value, CLIA_FORMAT);
+    }
+
+    static CLIA parse(String str) {
+      return new CLIA(parse(str, CLIA_FORMAT));
+    }
+
+    public CLIA next() {
+      return new CLIA(value + 1);
+    }
+  }
+
   /**
    * Utility class for working with CMS MBIs.
    * Note that this class fixes the value of character position 2 to be 'S' and will fail to

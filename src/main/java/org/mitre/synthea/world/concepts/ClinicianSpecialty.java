@@ -132,4 +132,174 @@ public class ClinicianSpecialty {
 
     return specialtyList;
   }
+
+  /**
+   * Get the CMS Provider specialty code for CMS Billing.
+   * @param specialty One of the static Provider Specialties.
+   * @return A two digit alpha-numeric CMS Provider Specialty code.
+   */
+  public static String getCMSProviderSpecialtyCode(String specialty) {
+    switch (specialty) {
+      case "ADDICTION MEDICINE":
+        return "79";
+      case "ADVANCED HEART FAILURE AND TRANSPLANT CARDIOLOGY":
+        return "C7";
+      case "ALLERGY/IMMUNOLOGY":
+        return "03";
+      case "ANESTHESIOLOGY":
+        return "05";
+      case "ANESTHESIOLOGY ASSISTANT":
+        return "32";
+      case "AUDIOLOGIST":
+        return "64";
+      case "CARDIAC ELECTROPHYSIOLOGY":
+        return "21";
+      case "CARDIAC SURGERY":
+        return "78";
+      case "CARDIOVASCULAR DISEASE (CARDIOLOGY)":
+        return "06";
+      case "CERTIFIED NURSE MIDWIFE":
+        return "42";
+      case "CERTIFIED REGISTERED NURSE ANESTHETIST":
+        return "43";
+      case "CHIROPRACTIC":
+        return "35";
+      case "CLINICAL NURSE SPECIALIST":
+        return "89";
+      case "CLINICAL PSYCHOLOGIST":
+        return "68";
+      case "CLINICAL SOCIAL WORKER":
+        return "80";
+      case "COLORECTAL SURGERY (PROCTOLOGY)":
+        return "28";
+      case "CRITICAL CARE (INTENSIVISTS)":
+        return "81";
+      case "DENTIST":
+        return "C5";
+      case "DERMATOLOGY":
+        return "07";
+      case "DIAGNOSTIC RADIOLOGY":
+        return "30";
+      case "EMERGENCY MEDICINE":
+        return "93";
+      case "ENDOCRINOLOGY":
+        return "46";
+      case "FAMILY PRACTICE":
+        return "08";
+      case "GASTROENTEROLOGY":
+        return "10";
+      case "GENERAL PRACTICE":
+        return "01";
+      case "GENERAL SURGERY":
+        return "02";
+      case "GERIATRIC MEDICINE":
+        return "38";
+      case "GERIATRIC PSYCHIATRY":
+        return "27";
+      case "GYNECOLOGICAL ONCOLOGY":
+        return "98";
+      case "HAND SURGERY":
+        return "40";
+      case "HEMATOLOGY":
+        return "82";
+      case "HEMATOLOGY/ONCOLOGY":
+        return "83";
+      case "HEMATOPOIETIC CELL TRANSPLANTATION AND CELLULAR TH":
+        return "C9";
+      case "HOSPICE/PALLIATIVE CARE":
+        return "17";
+      case "HOSPITALIST":
+        return "C6";
+      case "INFECTIOUS DISEASE":
+        return "44";
+      case "INTERNAL MEDICINE":
+        return "11";
+      case "INTERVENTIONAL CARDIOLOGY":
+        return "C3";
+      case "INTERVENTIONAL PAIN MANAGEMENT":
+        return "72";
+      case "INTERVENTIONAL RADIOLOGY":
+        return "94";
+      case "MAXILLOFACIAL SURGERY":
+        return "85";
+      case "MEDICAL ONCOLOGY":
+        return "90";
+      case "NEPHROLOGY":
+        return "39";
+      case "NEUROLOGY":
+        return "13";
+      case "NEUROPSYCHIATRY":
+        return "86";
+      case "NEUROSURGERY":
+        return "14";
+      case "NUCLEAR MEDICINE":
+        return "36";
+      case "NURSE PRACTITIONER":
+        return "50";
+      case "OBSTETRICS/GYNECOLOGY":
+        return "16";
+      case "OCCUPATIONAL THERAPY":
+        return "67";
+      case "OPHTHALMOLOGY":
+        return "18";
+      case "OPTOMETRY":
+        return "41";
+      case "ORAL SURGERY":
+        return "19";
+      case "ORTHOPEDIC SURGERY":
+        return "20";
+      case "OSTEOPATHIC MANIPULATIVE MEDICINE":
+        return "12";
+      case "OTOLARYNGOLOGY":
+        return "04";
+      case "PAIN MANAGEMENT":
+        return "72";
+      case "PATHOLOGY":
+        return "22";
+      case "PEDIATRIC MEDICINE":
+        return "37";
+      case "PERIPHERAL VASCULAR DISEASE":
+        return "76";
+      case "PHYSICAL MEDICINE AND REHABILITATION":
+        return "25";
+      case "PHYSICAL THERAPY":
+        return "65";
+      case "PHYSICIAN ASSISTANT":
+        return "97";
+      case "PLASTIC AND RECONSTRUCTIVE SURGERY":
+        return "24";
+      case "PODIATRY":
+        return "48";
+      case "PREVENTATIVE MEDICINE":
+        return "84";
+      case "PSYCHIATRY":
+        return "26";
+      case "PULMONARY DISEASE":
+        return "28";
+      case "RADIATION ONCOLOGY":
+        return "92";
+      case "REGISTERED DIETITIAN OR NUTRITION PROFESSIONAL":
+        return "71";
+      case "RHEUMATOLOGY":
+        return "66";
+      case "SLEEP MEDICINE":
+        return "C0";
+      case "SPEECH LANGUAGE PATHOLOGIST":
+        return "15";
+      case "SPORTS MEDICINE":
+        return "23";
+      case "SURGICAL ONCOLOGY":
+        return "91";
+      case "THORACIC SURGERY":
+        return "33";
+      case "UNDEFINED PHYSICIAN TYPE (SPECIFY)":
+        return "01"; // general practice
+      case "UROLOGY":
+        return "34";
+      case "VASCULAR SURGERY":
+        return "77";
+      default:
+        return "01"; // general practice
+    }
+  }
 }

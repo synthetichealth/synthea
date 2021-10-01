@@ -40,7 +40,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 38	CARR_CLM_PRMRY_PYR_PD_AMT	N/A	N/A	N/A	N/A	Coded	N/A	(Sum of LINE_PRVDR_PMT_AMT)	N/A	N/A	N/A	FALSE	
 39	CARR_CLM_PRVDR_ASGNMT_IND_SW	N/A	N/A	N/A	N/A	A (assigned)	N/A	A (assigned)	N/A	N/A	N/A	TRUE/FALSE	
 40	CARR_CLM_RFRNG_PIN_NUM	N/A	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	FALSE	
-41	CARR_LINE_ANSTHSA_UNIT_CNT	N/A	N/A	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	FALSE	
+41	CARR_LINE_ANSTHSA_UNIT_CNT	N/A	N/A	N/A	N/A	"0,0,0,0,1"	N/A	N/A	N/A	N/A	N/A	FALSE	
 42	CARR_LINE_CLIA_LAB_NUM	N/A	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	TRUE	
 43	CARR_LINE_MTUS_CD	N/A	N/A	N/A	N/A	(mapped from line items)	N/A	N/A	N/A	N/A	N/A	TRUE	
 44	CARR_LINE_MTUS_CNT	N/A	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	FALSE	
@@ -426,7 +426,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 424	NSTD_FRMT_CD	N/A	N/A	N/A	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	TRUE	
 425	OP_PHYSN_NPI	N/A	N/A	[Blank]	Coded	N/A	N/A	N/A	N/A	N/A		TRUE	
 426	OP_PHYSN_UPIN	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	N/A	N/A		TRUE	
-427	ORG_NPI_NUM	N/A	N/A	Coded	Coded		N/A	N/A	Coded	Coded		TRUE	
+427	ORG_NPI_NUM	N/A	N/A	Coded	Coded	Coded	N/A	N/A	Coded	Coded	Coded	TRUE	
 428	OTHR_TROOP_AMT	N/A	N/A	N/A	N/A	N/A	0	N/A	N/A	N/A	N/A	FALSE	
 429	OT_PHYSN_NPI	N/A	N/A			N/A	N/A	N/A	N/A	N/A		TRUE	
 430	OT_PHYSN_UPIN	N/A	N/A			N/A	N/A	N/A	N/A	N/A		TRUE	
@@ -463,17 +463,17 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 461	PRCDR_DT8	N/A	N/A	Coded	Coded	N/A	N/A	N/A	N/A	N/A	Coded	TRUE	
 462	PRCDR_DT9	N/A	N/A	Coded	Coded	N/A	N/A	N/A	N/A	N/A	Coded	TRUE	
 463	PRCNG_EXCPTN_CD	N/A	N/A	N/A	N/A	N/A		N/A	N/A	N/A	N/A	TRUE	
-464	PRF_PHYSN_NPI	N/A	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	TRUE	
+464	PRF_PHYSN_NPI	N/A	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	TRUE	
 465	PRF_PHYSN_UPIN	N/A	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	TRUE	
 466	PRNCPAL_DGNS_CD	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
 467	PRNCPAL_DGNS_VRSN_CD	N/A	N/A	0	0	0	N/A	0	0	0	0	TRUE	
 468	PROD_SRVC_ID	N/A	N/A	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	FALSE	
 469	PRSCRBR_ID	N/A	N/A	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	FALSE	
 470	PRSCRBR_ID_QLFYR_CD	N/A	N/A	N/A	N/A	N/A	01 (NPI)	N/A	N/A	N/A	N/A	FALSE	
-471	PRTCPTNG_IND_CD	N/A	N/A	N/A	N/A		N/A		N/A	N/A	N/A	TRUE	
-472	PRVDR_NPI	N/A	N/A	N/A	N/A	N/A	N/A		N/A	N/A	N/A	TRUE	
-473	PRVDR_NUM	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE/FALSE	
-474	PRVDR_SPCLTY	N/A	N/A	N/A	N/A		N/A		N/A	N/A	N/A	TRUE	
+471	PRTCPTNG_IND_CD	N/A	N/A	N/A	N/A	"1,2,3,4,5,6,7"	N/A	"1,2,3,4,5,6,7"	N/A	N/A	N/A	TRUE	
+472	PRVDR_NPI	N/A	N/A	N/A	N/A	N/A	N/A	Coded	N/A	N/A	N/A	TRUE	
+473	PRVDR_NUM	N/A	N/A	Coded	Coded	N/A	N/A	Coded	Coded	Coded	Coded	TRUE/FALSE	
+474	PRVDR_SPCLTY	N/A	N/A	N/A	N/A	Coded	N/A	Coded	N/A	N/A	N/A	TRUE	
 475	PRVDR_STATE_CD	N/A	N/A	Coded	Coded	N/A	N/A	Coded	Coded	Coded	Coded	TRUE/FALSE	
 476	PRVDR_ZIP	N/A	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	TRUE	
 477	PTC_CNTRCT_APR_ID		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
@@ -596,7 +596,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 594	REV_CNTR_TOT_CHRG_AMT	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	FALSE	
 595	REV_CNTR_UNIT_CNT	N/A	N/A	0	0	N/A	N/A	N/A	Coded	Coded	Coded	FALSE	
 596	RFRNC_YR	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-597	RFR_PHYSN_NPI	N/A	N/A	N/A	N/A		N/A		N/A	N/A	N/A	TRUE	
+597	RFR_PHYSN_NPI	N/A	N/A	N/A	N/A	Coded	N/A		N/A	N/A	N/A	TRUE	
 598	RFR_PHYSN_UPIN	N/A	N/A	N/A	N/A		N/A		N/A	N/A	N/A	TRUE	
 599	RNDRNG_PHYSN_NPI	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
 600	RNDRNG_PHYSN_UPIN	N/A	N/A			N/A	N/A	N/A				TRUE	
