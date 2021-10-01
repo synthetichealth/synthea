@@ -108,7 +108,6 @@ public class BB2RIFExporter {
       new AtomicReference<>(MBI.parse(Config.get("exporter.bfd.mbi_start", "1S00-A00-AA00")));
   private static AtomicReference<HICN> hicn =
       new AtomicReference<>(HICN.parse(Config.get("exporter.bfd.hicn_start", "T00000000A")));
-  private final PartDContractID[] partDContractIDs;
   private final CLIA[] cliaLabNumbers;
 
   private List<LinkedHashMap<String, String>> carrierLookup;
@@ -145,7 +144,6 @@ public class BB2RIFExporter {
    * Create the output folder and files. Write headers to each file.
    */
   private BB2RIFExporter() {
-    partDContractIDs = initPartDContractIDs();
     cliaLabNumbers = initCliaLabNumbers();
     conditionCodeMapper = new CodeMapper("export/condition_code_map.json");
     medicationCodeMapper = new CodeMapper("export/medication_code_map.json");
@@ -169,18 +167,6 @@ public class BB2RIFExporter {
     }
   }
   
-  private static PartDContractID[] initPartDContractIDs() {
-    int numContracts = Config.getAsInteger("exporter.bfd.partd_contract_count",1);
-    PartDContractID[] partDContractIDs = new PartDContractID[numContracts];
-    PartDContractID contractID = PartDContractID.parse(
-            Config.get("exporter.bfd.partd_contract_start", "Z0001"));
-    for (int i = 0; i < numContracts; i++) {
-      partDContractIDs[i] = contractID;
-      contractID = contractID.next();
-    }
-    return partDContractIDs;
-  }
-
   private static CLIA[] initCliaLabNumbers() {
     int numLabs = Config.getAsInteger("exporter.bfd.clia_labs_count",1);
     CLIA[] labNumbers = new CLIA[numLabs];
@@ -378,15 +364,7 @@ public class BB2RIFExporter {
     if (deathDate != -1 && Utilities.getYear(deathDate) < endYear) {
       endYear = Utilities.getYear(deathDate); // stop after year in which patient dies
     }
-    Map<Integer, PartDContractID> partDContracts = new HashMap<>();
-    for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
-      if (person.randInt(10) > 2) {
-        // 30% chance of not enrolling in Part D
-        // see https://www.kff.org/medicare/issue-brief/10-things-to-know-about-medicare-part-d-coverage-and-costs-in-2019/
-        PartDContractID partDContractID = partDContractIDs[person.randInt(partDContractIDs.length)];
-        partDContracts.put(year, partDContractID);
-      }
-    }
+    PartDContractHistory partDContracts = new PartDContractHistory(person, stopTime);
     person.attributes.put(BB2_PARTD_CONTRACTS, partDContracts);
     
     for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
@@ -440,7 +418,7 @@ public class BB2RIFExporter {
           fieldValues.put(BeneficiaryFields.BENE_PTB_TRMNTN_CD, "1");
         }
       }
-      PartDContractID partDContractID = partDContracts.get(year);
+      PartDContractID partDContractID = partDContracts.getContractID(year);
       if (partDContractID != null) {
         for (int i = 0; i < monthCount; i++) {
           fieldValues.put(beneficiaryPartDContractFields[i], partDContractID.toString());
@@ -1142,6 +1120,47 @@ public class BB2RIFExporter {
     }
     return "0";
   }
+  
+  private static class PartDContractHistory {
+    private static final PartDContractID[] partDContractIDs = initContractIDs();
+    private Map<Integer, PartDContractID> partDContracts;
+    
+    public PartDContractHistory(Person person, long stopTime) {
+      long deathDate = person.attributes.get(Person.DEATHDATE) == null ? -1
+              : (long) person.attributes.get(Person.DEATHDATE);
+      int yearsOfHistory = Config.getAsInteger("exporter.years_of_history");
+      int endYear = Utilities.getYear(stopTime);
+      if (deathDate != -1 && Utilities.getYear(deathDate) < endYear) {
+        endYear = Utilities.getYear(deathDate); // stop after year in which patient dies
+      }
+      partDContracts = new HashMap<>();
+      for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
+        if (person.randInt(10) > 2) {
+          // 30% chance of not enrolling in Part D
+          // see https://www.kff.org/medicare/issue-brief/10-things-to-know-about-medicare-part-d-coverage-and-costs-in-2019/
+          PartDContractID partDContractID = 
+                  partDContractIDs[person.randInt(partDContractIDs.length)];
+          partDContracts.put(year, partDContractID);
+        }
+      }
+    }
+    
+    public PartDContractID getContractID(int year) {
+      return partDContracts.get(year);
+    }
+    
+    private static PartDContractID[] initContractIDs() {
+      int numContracts = Config.getAsInteger("exporter.bfd.partd_contract_count",1);
+      PartDContractID[] contractIDs = new PartDContractID[numContracts];
+      PartDContractID contractID = PartDContractID.parse(
+              Config.get("exporter.bfd.partd_contract_start", "Z0001"));
+      for (int i = 0; i < numContracts; i++) {
+        contractIDs[i] = contractID;
+        contractID = contractID.next();
+      }
+      return contractIDs;
+    }
+  }
 
   /**
    * Export prescription claims details for a single person.
@@ -1151,15 +1170,16 @@ public class BB2RIFExporter {
    */
   private void exportPrescription(Person person, long stopTime) 
         throws IOException {
-    Map<Integer, PartDContractID> partDContracts = 
-            (Map<Integer, PartDContractID>) person.attributes.get(BB2_PARTD_CONTRACTS);
+    PartDContractHistory partDContracts =
+            (PartDContractHistory) person.attributes.get(BB2_PARTD_CONTRACTS);
     HashMap<PrescriptionFields, String> fieldValues = new HashMap<>();
     HashMap<String, Integer> fillNum = new HashMap<>();
     double costs = 0;
     int costYear = 0;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      PartDContractID partDContractID = partDContracts.get(Utilities.getYear(encounter.start));
+      PartDContractID partDContractID = partDContracts.getContractID(
+              Utilities.getYear(encounter.start));
       if (partDContractID == null) {
         continue; // skip medications if patient isn't enrolled in Part D
       }
