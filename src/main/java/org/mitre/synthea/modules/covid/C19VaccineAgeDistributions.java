@@ -121,10 +121,7 @@ public class C19VaccineAgeDistributions {
     String fileName = Config.get("generate.lookup_tables") + DOSE_RATES_FILE;
     List<? extends Map<String, String>> rawRates = null;
     try {
-      String csv = Utilities.readResource(fileName);
-      if (csv.startsWith("\uFEFF")) {
-        csv = csv.substring(1); // Removes BOM.
-      }
+      String csv = Utilities.readResourceAndStripBOM(fileName);
       rawRates = SimpleCSV.parse(csv);
     } catch (IOException e) {
       e.printStackTrace();
