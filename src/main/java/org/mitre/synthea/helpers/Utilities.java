@@ -350,6 +350,20 @@ public class Utilities {
   }
 
   /**
+   * Read the entire contents of a file in resources into a String and strip the BOM if present.
+   * @param filename Path to the file, relative to src/main/resources.
+   * @return The entire text contents of the file minus the leading BOM if present.
+   * @throws IOException if any error occurs reading the file
+   */
+  public static final String readResourceAndStripBOM(String filename) throws IOException {
+    String contents = readResource(filename);
+    if (contents.startsWith("\uFEFF")) {
+      contents = contents.substring(1); // Removes BOM.
+    }
+    return contents;
+  }
+
+  /**
    * Get a Gson object, preconfigured to load the GMF modules into classes.
    *
    * @return Gson object to unmarshal GMF JSON into objects

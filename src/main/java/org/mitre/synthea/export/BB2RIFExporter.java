@@ -9,7 +9,6 @@ import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -17,7 +16,6 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,6 +29,8 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.apache.commons.lang3.StringUtils;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
@@ -151,10 +151,7 @@ public class BB2RIFExporter {
     hcpcsCodeMapper = new CodeMapper("export/hcpcs_code_map.json");
     locationMapper = new StateCodeMapper();
     try {
-      String csv = Utilities.readResource("payers/carriers.csv");
-      if (csv.startsWith("\uFEFF")) {
-        csv = csv.substring(1); // Removes BOM.
-      }
+      String csv = Utilities.readResourceAndStripBOM("payers/carriers.csv");
       carrierLookup = SimpleCSV.parse(csv);
       staticFieldConfig = new StaticFieldConfig();
       prepareOutputFiles();
@@ -363,9 +360,9 @@ public class BB2RIFExporter {
 
     // One entry for each year of history or until patient dies
     int yearsOfHistory = Config.getAsInteger("exporter.years_of_history");
-    int endYear = getYear(stopTime);
-    if (deathDate != -1 && getYear(deathDate) < endYear) {
-      endYear = getYear(deathDate); // stop after year in which patient dies
+    int endYear = Utilities.getYear(stopTime);
+    if (deathDate != -1 && Utilities.getYear(deathDate) < endYear) {
+      endYear = Utilities.getYear(deathDate); // stop after year in which patient dies
     }
     Map<Integer, PartDContractID> partDContracts = new HashMap<>();
     for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
@@ -388,7 +385,7 @@ public class BB2RIFExporter {
       }
 
       fieldValues.put(BeneficiaryFields.RFRNC_YR, String.valueOf(year));
-      int monthCount = year == endYear ? getMonth(stopTime) : 12;
+      int monthCount = year == endYear ? Utilities.getMonth(stopTime) : 12;
       String monthCountStr = String.valueOf(monthCount);
       fieldValues.put(BeneficiaryFields.A_MO_CNT, monthCountStr);
       fieldValues.put(BeneficiaryFields.B_MO_CNT, monthCountStr);
@@ -414,7 +411,7 @@ public class BB2RIFExporter {
       fieldValues.put(BeneficiaryFields.BENE_SRNM_NAME, 
               (String)person.attributes.get(Person.LAST_NAME));
       String givenName = (String)person.attributes.get(Person.FIRST_NAME);
-      fieldValues.put(BeneficiaryFields.BENE_GVN_NAME, trimToLength(givenName, 15));
+      fieldValues.put(BeneficiaryFields.BENE_GVN_NAME, StringUtils.truncate(givenName, 15));
       long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
       fieldValues.put(BeneficiaryFields.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
       fieldValues.put(BeneficiaryFields.AGE, String.valueOf(ageAtEndOfYear(birthdate, year)));
@@ -423,7 +420,7 @@ public class BB2RIFExporter {
       if (deathDate != -1) {
         // only add death date for years when it was (presumably) known. E.g. If we are outputting
         // record for 2005 and patient died in 2007 we don't include the death date.
-        if (getYear(deathDate) <= year) {
+        if (Utilities.getYear(deathDate) <= year) {
           fieldValues.put(BeneficiaryFields.DEATH_DT, bb2DateFromTimestamp(deathDate));
           fieldValues.put(BeneficiaryFields.BENE_PTA_TRMNTN_CD, "1");
           fieldValues.put(BeneficiaryFields.BENE_PTB_TRMNTN_CD, "1");
@@ -438,13 +435,6 @@ public class BB2RIFExporter {
       
       beneficiaryWriters.getWriter(year).writeValues(BeneficiaryFields.class, fieldValues);
     }
-  }
-  
-  private String trimToLength(String str, int maxLength) {
-    if (str.length() > maxLength) {
-      str = str.substring(0, maxLength);
-    }
-    return str;
   }
   
   private String getBB2SexCode(String sex) {
@@ -544,35 +534,13 @@ public class BB2RIFExporter {
   }
 
   /**
-   * Get the year of a point in time.
-   * @param time point in time specified as number of milliseconds since the epoch
-   * @return the year as a four figure value, e.g. 1971
-   */
-  private static int getYear(long time) {
-    Calendar cal = Calendar.getInstance();
-    cal.setTimeInMillis(time);
-    return cal.get(Calendar.YEAR);
-  }
-
-  /**
-   * Get the month of a point in time.
-   * @param time point in time specified as number of milliseconds since the epoch
-   * @return the month of the year
-   */
-  private static int getMonth(long time) {
-    Calendar cal = Calendar.getInstance();
-    cal.setTimeInMillis(time);
-    return 1 + cal.get(Calendar.MONTH);
-  }
-  
-  /**
    * Calculate the age of a person at the end of the given year.
    * @param birthdate a person's birthdate specified as number of milliseconds since the epoch
    * @param year the year
    * @return the person's age
    */
   private static int ageAtEndOfYear(long birthdate, int year) {
-    return year - getYear(birthdate);
+    return year - Utilities.getYear(birthdate);
   }
 
   /**
@@ -1170,7 +1138,7 @@ public class BB2RIFExporter {
     int costYear = 0;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      PartDContractID partDContractID = partDContracts.get(getYear(encounter.start));
+      PartDContractID partDContractID = partDContracts.get(Utilities.getYear(encounter.start));
       if (partDContractID == null) {
         continue; // skip medications if patient isn't enrolled in Part D
       }
@@ -2183,11 +2151,7 @@ public class BB2RIFExporter {
       List<LinkedHashMap<String, String>> csvData;
 
       try {
-        String csv = Utilities.readResource("geography/fipscodes.csv");
-
-        if (csv.startsWith("\uFEFF")) {
-          csv = csv.substring(1); // Removes BOM.
-        }
+        String csv = Utilities.readResourceAndStripBOM("geography/fipscodes.csv");
         csvData = SimpleCSV.parse(csv);
       } catch (IOException e) {
         throw new RuntimeException(e);
@@ -4215,8 +4179,8 @@ public class BB2RIFExporter {
     private Path path;
     
     /**
-     * Construct a new instance.
-     * @param file the writer to write to
+     * Construct a new instance. Fields will be separated using the default '|' character.
+     * @param path the file path to write to
      * @throws IOException if something goes wrong
      */
     public SynchronizedBBLineWriter(Path path) {
@@ -4225,7 +4189,8 @@ public class BB2RIFExporter {
 
     /**
      * Construct a new instance.
-     * @param file the writer to write to
+     * @param path the file path to write to
+     * @param separator overrides the default '|' field separator
      * @throws IOException if something goes wrong
      */
     public SynchronizedBBLineWriter(Path path, String separator) {

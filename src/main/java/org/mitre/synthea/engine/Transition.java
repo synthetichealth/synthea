@@ -175,10 +175,7 @@ public abstract class Transition implements Serializable {
       String fileName = Config.get("generate.lookup_tables") + lookupTableName;
       List<? extends Map<String, String>> lookupTable = null;
       try {
-        String csv = Utilities.readResource(fileName);
-        if (csv.startsWith("\uFEFF")) {
-          csv = csv.substring(1); // Removes BOM.
-        }
+        String csv = Utilities.readResourceAndStripBOM(fileName);
         lookupTable = SimpleCSV.parse(csv);
       } catch (IOException e) {
         e.printStackTrace();
