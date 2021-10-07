@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -97,7 +96,6 @@ import org.mitre.synthea.world.geography.CMSStateCodeMapper;
 public class BB2RIFExporter {
   
   private RifWriters rifWriters;
-  private BeneficiaryWriters beneficiaryWriters;
 
   private static AtomicLong beneId =
       new AtomicLong(Config.getAsLong("exporter.bfd.bene_id_start", -1));
@@ -190,9 +188,8 @@ public class BB2RIFExporter {
     output.mkdirs();
     Path outputDirectory = output.toPath();
     
-    beneficiaryWriters = new BeneficiaryWriters(outputDirectory);
-    
     rifWriters = new RifWriters(outputDirectory);
+    rifWriters.addWriter(BeneficiaryFields.class, "beneficiary.csv");
     rifWriters.addWriter(BeneficiaryHistoryFields.class, "beneficiary_history.csv");
     rifWriters.addWriter(OutpatientFields.class, "outpatient.csv");
     rifWriters.addWriter(InpatientFields.class, "inpatient.csv");
@@ -222,10 +219,8 @@ public class BB2RIFExporter {
                      .truncatedTo(java.time.temporal.ChronoUnit.SECONDS)
                      .toString()));
     manifest.write("sequenceId=\"0\">\n");
-    for (File file: beneficiaryWriters.getFiles()) {
-      manifest.write(String.format("  <entry name=\"%s\" type=\"BENEFICIARY\"/>\n",
-              file.getName()));
-    }
+    manifest.write(String.format("  <entry name=\"%s\" type=\"BENEFICIARY\"/>\n",
+            rifWriters.getWriter(BeneficiaryFields.class).getFile().getName()));
     manifest.write(String.format("  <entry name=\"%s\" type=\"INPATIENT\"/>\n",
             rifWriters.getWriter(InpatientFields.class).getFile().getName()));
     manifest.write(String.format("  <entry name=\"%s\" type=\"OUTPATIENT\"/>\n",
@@ -342,66 +337,68 @@ public class BB2RIFExporter {
     PartDContractHistory partDContracts = new PartDContractHistory(person, stopTime);
     person.attributes.put(BB2_PARTD_CONTRACTS, partDContracts);
     
-    for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
-      HashMap<BeneficiaryFields, String> fieldValues = new HashMap<>();
-      staticFieldConfig.setValues(fieldValues, BeneficiaryFields.class, person);
-      if (year > endYear - yearsOfHistory) {
-        // The first year output is set via staticFieldConfig to "INSERT", subsequent years
-        // need to be "UPDATE"
-        fieldValues.put(BeneficiaryFields.DML_IND, "UPDATE");
-      }
+    synchronized (rifWriters.getWriter(BeneficiaryFields.class)) {
+      for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
+        HashMap<BeneficiaryFields, String> fieldValues = new HashMap<>();
+        staticFieldConfig.setValues(fieldValues, BeneficiaryFields.class, person);
+        if (year > endYear - yearsOfHistory) {
+          // The first year output is set via staticFieldConfig to "INSERT", subsequent years
+          // need to be "UPDATE"
+          fieldValues.put(BeneficiaryFields.DML_IND, "UPDATE");
+        }
 
-      fieldValues.put(BeneficiaryFields.RFRNC_YR, String.valueOf(year));
-      int monthCount = year == endYear ? Utilities.getMonth(stopTime) : 12;
-      String monthCountStr = String.valueOf(monthCount);
-      fieldValues.put(BeneficiaryFields.A_MO_CNT, monthCountStr);
-      fieldValues.put(BeneficiaryFields.B_MO_CNT, monthCountStr);
-      fieldValues.put(BeneficiaryFields.BUYIN_MO_CNT, monthCountStr);
-      fieldValues.put(BeneficiaryFields.RDS_MO_CNT, monthCountStr);
-      fieldValues.put(BeneficiaryFields.PLAN_CVRG_MO_CNT, monthCountStr);
-      fieldValues.put(BeneficiaryFields.BENE_ID, beneIdStr);
-      fieldValues.put(BeneficiaryFields.BENE_CRNT_HIC_NUM, hicId);
-      fieldValues.put(BeneficiaryFields.MBI_NUM, mbiStr);
-      fieldValues.put(BeneficiaryFields.BENE_SEX_IDENT_CD,
-              getBB2SexCode((String)person.attributes.get(Person.GENDER)));
-      String zipCode = (String)person.attributes.get(Person.ZIP);
-      fieldValues.put(BeneficiaryFields.BENE_COUNTY_CD,
-              locationMapper.zipToCountyCode(zipCode));
-      fieldValues.put(BeneficiaryFields.STATE_CODE,
-              locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
-      fieldValues.put(BeneficiaryFields.BENE_ZIP_CD,
-              (String)person.attributes.get(Person.ZIP));
-      fieldValues.put(BeneficiaryFields.BENE_RACE_CD,
-              bb2RaceCode(
-                      (String)person.attributes.get(Person.ETHNICITY),
-                      (String)person.attributes.get(Person.RACE)));
-      fieldValues.put(BeneficiaryFields.BENE_SRNM_NAME, 
-              (String)person.attributes.get(Person.LAST_NAME));
-      String givenName = (String)person.attributes.get(Person.FIRST_NAME);
-      fieldValues.put(BeneficiaryFields.BENE_GVN_NAME, StringUtils.truncate(givenName, 15));
-      long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
-      fieldValues.put(BeneficiaryFields.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
-      fieldValues.put(BeneficiaryFields.AGE, String.valueOf(ageAtEndOfYear(birthdate, year)));
-      fieldValues.put(BeneficiaryFields.BENE_PTA_TRMNTN_CD, "0");
-      fieldValues.put(BeneficiaryFields.BENE_PTB_TRMNTN_CD, "0");
-      if (deathDate != -1) {
-        // only add death date for years when it was (presumably) known. E.g. If we are outputting
-        // record for 2005 and patient died in 2007 we don't include the death date.
-        if (Utilities.getYear(deathDate) <= year) {
-          fieldValues.put(BeneficiaryFields.DEATH_DT, bb2DateFromTimestamp(deathDate));
-          fieldValues.put(BeneficiaryFields.BENE_PTA_TRMNTN_CD, "1");
-          fieldValues.put(BeneficiaryFields.BENE_PTB_TRMNTN_CD, "1");
+        fieldValues.put(BeneficiaryFields.RFRNC_YR, String.valueOf(year));
+        int monthCount = year == endYear ? Utilities.getMonth(stopTime) : 12;
+        String monthCountStr = String.valueOf(monthCount);
+        fieldValues.put(BeneficiaryFields.A_MO_CNT, monthCountStr);
+        fieldValues.put(BeneficiaryFields.B_MO_CNT, monthCountStr);
+        fieldValues.put(BeneficiaryFields.BUYIN_MO_CNT, monthCountStr);
+        fieldValues.put(BeneficiaryFields.RDS_MO_CNT, monthCountStr);
+        fieldValues.put(BeneficiaryFields.PLAN_CVRG_MO_CNT, monthCountStr);
+        fieldValues.put(BeneficiaryFields.BENE_ID, beneIdStr);
+        fieldValues.put(BeneficiaryFields.BENE_CRNT_HIC_NUM, hicId);
+        fieldValues.put(BeneficiaryFields.MBI_NUM, mbiStr);
+        fieldValues.put(BeneficiaryFields.BENE_SEX_IDENT_CD,
+                getBB2SexCode((String)person.attributes.get(Person.GENDER)));
+        String zipCode = (String)person.attributes.get(Person.ZIP);
+        fieldValues.put(BeneficiaryFields.BENE_COUNTY_CD,
+                locationMapper.zipToCountyCode(zipCode));
+        fieldValues.put(BeneficiaryFields.STATE_CODE,
+                locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
+        fieldValues.put(BeneficiaryFields.BENE_ZIP_CD,
+                (String)person.attributes.get(Person.ZIP));
+        fieldValues.put(BeneficiaryFields.BENE_RACE_CD,
+                bb2RaceCode(
+                        (String)person.attributes.get(Person.ETHNICITY),
+                        (String)person.attributes.get(Person.RACE)));
+        fieldValues.put(BeneficiaryFields.BENE_SRNM_NAME, 
+                (String)person.attributes.get(Person.LAST_NAME));
+        String givenName = (String)person.attributes.get(Person.FIRST_NAME);
+        fieldValues.put(BeneficiaryFields.BENE_GVN_NAME, StringUtils.truncate(givenName, 15));
+        long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
+        fieldValues.put(BeneficiaryFields.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
+        fieldValues.put(BeneficiaryFields.AGE, String.valueOf(ageAtEndOfYear(birthdate, year)));
+        fieldValues.put(BeneficiaryFields.BENE_PTA_TRMNTN_CD, "0");
+        fieldValues.put(BeneficiaryFields.BENE_PTB_TRMNTN_CD, "0");
+        if (deathDate != -1) {
+          // only add death date for years when it was (presumably) known. E.g. If we are outputting
+          // record for 2005 and patient died in 2007 we don't include the death date.
+          if (Utilities.getYear(deathDate) <= year) {
+            fieldValues.put(BeneficiaryFields.DEATH_DT, bb2DateFromTimestamp(deathDate));
+            fieldValues.put(BeneficiaryFields.BENE_PTA_TRMNTN_CD, "1");
+            fieldValues.put(BeneficiaryFields.BENE_PTB_TRMNTN_CD, "1");
+          }
         }
-      }
-      PartDContractID partDContractID = partDContracts.getContractID(year);
-      if (partDContractID != null) {
-        for (int i = 0; i < monthCount; i++) {
-          fieldValues.put(BB2RIFStructure.beneficiaryPartDContractFields[i],
-                  partDContractID.toString());
+        PartDContractID partDContractID = partDContracts.getContractID(year);
+        if (partDContractID != null) {
+          for (int i = 0; i < monthCount; i++) {
+            fieldValues.put(BB2RIFStructure.beneficiaryPartDContractFields[i],
+                    partDContractID.toString());
+          }
         }
+
+        rifWriters.writeValues(BeneficiaryFields.class, fieldValues);
       }
-      
-      beneficiaryWriters.getWriter(year).writeValues(BeneficiaryFields.class, fieldValues);
     }
   }
   
@@ -2614,35 +2611,6 @@ public class BB2RIFExporter {
     public <E extends Enum<E>> void writeValues(Class<E> enumClass, Map<E, String> fieldValues)
             throws IOException {
       writers.get(enumClass).writeValues(enumClass, fieldValues);
-    }
-  }
-  
-  private static class BeneficiaryWriters {
-    private final TreeMap<Integer, SynchronizedBBLineWriter> writers;
-    private final Path dir;
-    
-    public BeneficiaryWriters(Path dir) {
-      this.dir = dir;
-      this.writers = new TreeMap<>();
-    }
-    
-    public synchronized SynchronizedBBLineWriter getWriter(int year) throws IOException {
-      SynchronizedBBLineWriter writer = writers.get(year);
-      if (writer == null) {
-        Path beneficiaryFile = dir.resolve(String.format("beneficiary_%d.csv", year));
-        writer = new SynchronizedBBLineWriter(beneficiaryFile);
-        writers.put(year, writer);
-        writer.writeHeader(BeneficiaryFields.class);        
-      }
-      return writer;
-    }
-    
-    public synchronized List<File> getFiles() {
-      ArrayList<File> list = new ArrayList<>(writers.size());
-      writers.values().forEach(writer -> {
-        list.add(writer.getFile());
-      });
-      return list;
     }
   }
 }
