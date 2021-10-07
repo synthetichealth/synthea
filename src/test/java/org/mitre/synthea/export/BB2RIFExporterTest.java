@@ -20,14 +20,14 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
-import org.mitre.synthea.export.BB2RIFExporter.BeneficiaryFields;
-import org.mitre.synthea.export.BB2RIFExporter.CarrierFields;
 import org.mitre.synthea.export.BB2RIFExporter.CodeMapper;
-import org.mitre.synthea.export.BB2RIFExporter.DMEFields;
 import org.mitre.synthea.export.BB2RIFExporter.HICN;
-import org.mitre.synthea.export.BB2RIFExporter.InpatientFields;
 import org.mitre.synthea.export.BB2RIFExporter.MBI;
 import org.mitre.synthea.export.BB2RIFExporter.StaticFieldConfig;
+import org.mitre.synthea.export.BB2RIFStructure.BeneficiaryFields;
+import org.mitre.synthea.export.BB2RIFStructure.CarrierFields;
+import org.mitre.synthea.export.BB2RIFStructure.DMEFields;
+import org.mitre.synthea.export.BB2RIFStructure.InpatientFields;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
@@ -42,7 +42,6 @@ public class BB2RIFExporterTest {
   public static TemporaryFolder tempFolder = new TemporaryFolder();
   
   private static File exportDir;
-  private static String bb2ExportEnabled;
 
   /**
    * Global setup for export tests.
@@ -53,7 +52,6 @@ public class BB2RIFExporterTest {
     TestHelper.exportOff();
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
-    bb2ExportEnabled = Config.get("exporter.bfd.export");
     Config.set("exporter.bfd.export", "true");
     Config.set("exporter.bfd.require_code_maps", "false");
     exportDir = tempFolder.newFolder();
