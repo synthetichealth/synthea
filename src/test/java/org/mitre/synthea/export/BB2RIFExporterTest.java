@@ -2,6 +2,7 @@ package org.mitre.synthea.export;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -10,6 +11,10 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -190,5 +195,86 @@ public class BB2RIFExporterTest {
     assertEquals("INSERT", values.get(BeneficiaryFields.DML_IND));
     String sexIdent = values.get(BeneficiaryFields.BENE_SEX_IDENT_CD);
     assertTrue(sexIdent.equals("1") || sexIdent.equals("2"));
+  }
+  
+  @Test
+  public void testPartDContractPeriod() {
+    RandomNumberGenerator rand = new Person(System.currentTimeMillis());
+    LocalDate start = LocalDate.of(2020, Month.MARCH, 15);
+    LocalDate end = LocalDate.of(2021, Month.JUNE, 15);
+    BB2RIFExporter.PartDContractHistory history
+            = new BB2RIFExporter.PartDContractHistory(
+                    rand, java.time.Instant.now().toEpochMilli(), 10);
+    BB2RIFExporter.PartDContractHistory.PartDContractPeriod period
+            = history.new PartDContractPeriod(start, end, null);
+    assertNull(period.getContractID());
+    
+    assertFalse(period.coversYear(2019));
+    assertEquals(0, period.getCoveredMonths(2019).size());
+    
+    assertTrue(period.coversYear(2020));
+    List<Integer> twentyTwentyMonths = period.getCoveredMonths(2020);
+    assertEquals(10, twentyTwentyMonths.size());
+    assertFalse(twentyTwentyMonths.contains(1));
+    assertFalse(twentyTwentyMonths.contains(2));
+    assertTrue(twentyTwentyMonths.contains(3));
+    assertTrue(twentyTwentyMonths.contains(4));
+    assertTrue(twentyTwentyMonths.contains(5));
+    assertTrue(twentyTwentyMonths.contains(6));
+    assertTrue(twentyTwentyMonths.contains(7));
+    assertTrue(twentyTwentyMonths.contains(8));
+    assertTrue(twentyTwentyMonths.contains(9));
+    assertTrue(twentyTwentyMonths.contains(10));
+    assertTrue(twentyTwentyMonths.contains(11));
+    assertTrue(twentyTwentyMonths.contains(12));
+    
+    assertTrue(period.coversYear(2021));
+    List<Integer> twentyTwentyOneMonths = period.getCoveredMonths(2021);
+    assertEquals(6, twentyTwentyOneMonths.size());
+    assertTrue(twentyTwentyOneMonths.contains(1));
+    assertTrue(twentyTwentyOneMonths.contains(2));
+    assertTrue(twentyTwentyOneMonths.contains(3));
+    assertTrue(twentyTwentyOneMonths.contains(4));
+    assertTrue(twentyTwentyOneMonths.contains(5));
+    assertTrue(twentyTwentyOneMonths.contains(6));
+    assertFalse(twentyTwentyOneMonths.contains(7));
+    assertFalse(twentyTwentyOneMonths.contains(8));
+    assertFalse(twentyTwentyOneMonths.contains(9));
+    assertFalse(twentyTwentyOneMonths.contains(10));
+    assertFalse(twentyTwentyOneMonths.contains(11));
+    assertFalse(twentyTwentyOneMonths.contains(12));
+    
+    assertFalse(period.coversYear(2022));
+    assertEquals(0, period.getCoveredMonths(2022).size());
+    
+    LocalDate pointInTime = start;
+    Instant instant = pointInTime.atStartOfDay(ZoneId.systemDefault()).toInstant();
+    long timeInMillis = instant.toEpochMilli();
+    assertTrue(period.covers(timeInMillis));
+    
+    pointInTime = start.minusDays(1); // previous day (start is middle of month)
+    instant = pointInTime.atStartOfDay(ZoneId.systemDefault()).toInstant();
+    timeInMillis = instant.toEpochMilli();
+    assertTrue(period.covers(timeInMillis));
+    
+    pointInTime = start.minusDays(15); // previous month
+    instant = pointInTime.atStartOfDay(ZoneId.systemDefault()).toInstant();
+    timeInMillis = instant.toEpochMilli();
+    assertFalse(period.covers(timeInMillis));
+    
+    pointInTime = end;
+    instant = pointInTime.atStartOfDay(ZoneId.systemDefault()).toInstant();
+    timeInMillis = instant.toEpochMilli();
+    assertTrue(period.covers(timeInMillis));
+    
+    pointInTime = end.plusDays(1); // next day (end is middle of month)
+    instant = pointInTime.atStartOfDay(ZoneId.systemDefault()).toInstant();
+    timeInMillis = instant.toEpochMilli();
+    assertTrue(period.covers(timeInMillis));
+
+    pointInTime = end.plusDays(16); // next month (end is middle of month)
+    instant = pointInTime.atStartOfDay(ZoneId.systemDefault()).toInstant();
+    timeInMillis = instant.toEpochMilli();
+    assertFalse(period.covers(timeInMillis));
   }
 }
