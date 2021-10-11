@@ -14,6 +14,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -325,36 +329,41 @@ public class BB2RIFExporter {
     person.attributes.put(BB2_HIC_ID, hicId);
     String mbiStr = BB2RIFExporter.mbi.getAndUpdate((v) -> v.next()).toString();
     person.attributes.put(BB2_MBI, mbiStr);
-    long deathDate = person.attributes.get(Person.DEATHDATE) == null ? -1
-            : (long) person.attributes.get(Person.DEATHDATE);
-
-    // One entry for each year of history or until patient dies
     int yearsOfHistory = Config.getAsInteger("exporter.years_of_history");
     int endYear = Utilities.getYear(stopTime);
-    if (deathDate != -1 && Utilities.getYear(deathDate) < endYear) {
-      endYear = Utilities.getYear(deathDate); // stop after year in which patient dies
+    int endMonth = Utilities.getMonth(stopTime);
+    long deathDate = person.attributes.get(Person.DEATHDATE) == null ? -1
+            : (long) person.attributes.get(Person.DEATHDATE);
+    if (deathDate != -1) {
+      endYear = Utilities.getYear(deathDate);
+      endMonth = Utilities.getMonth(deathDate);
     }
-    PartDContractHistory partDContracts = new PartDContractHistory(person, stopTime);
+
+    PartDContractHistory partDContracts = new PartDContractHistory(person,
+            deathDate == -1 ? stopTime : deathDate, yearsOfHistory);
     person.attributes.put(BB2_PARTD_CONTRACTS, partDContracts);
-    
+
+    boolean firstLine = true;
     synchronized (rifWriters.getWriter(BeneficiaryFields.class)) {
       for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
         HashMap<BeneficiaryFields, String> fieldValues = new HashMap<>();
         staticFieldConfig.setValues(fieldValues, BeneficiaryFields.class, person);
-        if (year > endYear - yearsOfHistory) {
+        if (!firstLine) {
           // The first year output is set via staticFieldConfig to "INSERT", subsequent years
           // need to be "UPDATE"
           fieldValues.put(BeneficiaryFields.DML_IND, "UPDATE");
         }
+        firstLine = false;
 
         fieldValues.put(BeneficiaryFields.RFRNC_YR, String.valueOf(year));
-        int monthCount = year == endYear ? Utilities.getMonth(stopTime) : 12;
+        int monthCount = year == endYear ? endMonth : 12;
         String monthCountStr = String.valueOf(monthCount);
         fieldValues.put(BeneficiaryFields.A_MO_CNT, monthCountStr);
         fieldValues.put(BeneficiaryFields.B_MO_CNT, monthCountStr);
         fieldValues.put(BeneficiaryFields.BUYIN_MO_CNT, monthCountStr);
         fieldValues.put(BeneficiaryFields.RDS_MO_CNT, monthCountStr);
-        fieldValues.put(BeneficiaryFields.PLAN_CVRG_MO_CNT, monthCountStr);
+        int partDMonthsCovered = partDContracts.getCoveredMonthsCount(year);
+        fieldValues.put(BeneficiaryFields.PLAN_CVRG_MO_CNT, String.valueOf(partDMonthsCovered));
         fieldValues.put(BeneficiaryFields.BENE_ID, beneIdStr);
         fieldValues.put(BeneficiaryFields.BENE_CRNT_HIC_NUM, hicId);
         fieldValues.put(BeneficiaryFields.MBI_NUM, mbiStr);
@@ -389,14 +398,17 @@ public class BB2RIFExporter {
             fieldValues.put(BeneficiaryFields.BENE_PTB_TRMNTN_CD, "1");
           }
         }
-        PartDContractID partDContractID = partDContracts.getContractID(year);
-        if (partDContractID != null) {
-          for (int i = 0; i < monthCount; i++) {
-            fieldValues.put(BB2RIFStructure.beneficiaryPartDContractFields[i],
-                    partDContractID.toString());
+        
+        for (PartDContractHistory.PartDContractPeriod period: 
+                partDContracts.getContractPeriods(year)) {
+          PartDContractID partDContractID = period.getContractID();
+          if (partDContractID != null) {
+            for (int i: period.getCoveredMonths(year)) {
+              fieldValues.put(BB2RIFStructure.beneficiaryPartDContractFields[i - 1],
+                      partDContractID.toString());
+            }
           }
         }
-
         rifWriters.writeValues(BeneficiaryFields.class, fieldValues);
       }
     }
@@ -1102,36 +1114,88 @@ public class BB2RIFExporter {
   /**
    * Utility class to manage a beneficiary's part D contract history.
    */
-  private static class PartDContractHistory {
+  static class PartDContractHistory {
     private static final PartDContractID[] partDContractIDs = initContractIDs();
-    private Map<Integer, PartDContractID> partDContracts;
+    private List<PartDContractPeriod> contractPeriods;
     
-    public PartDContractHistory(Person person, long stopTime) {
-      long deathDate = person.attributes.get(Person.DEATHDATE) == null ? -1
-              : (long) person.attributes.get(Person.DEATHDATE);
-      int yearsOfHistory = Config.getAsInteger("exporter.years_of_history");
+    /**
+     * Create a new random Part D contract history.
+     * @param rand source of randomness
+     * @param stopTime when the history should end (as ms since epoch)
+     * @param yearsOfHistory how many years should be covered
+     */
+    public PartDContractHistory(RandomNumberGenerator rand, long stopTime, int yearsOfHistory) {
       int endYear = Utilities.getYear(stopTime);
-      if (deathDate != -1 && Utilities.getYear(deathDate) < endYear) {
-        endYear = Utilities.getYear(deathDate); // stop after year in which patient dies
-      }
-      partDContracts = new HashMap<>();
-      PartDContractID partDContractID = getContractID(person);
+      int endMonth = 12;
+      contractPeriods = new ArrayList<>();
+      PartDContractPeriod currentContractPeriod = 
+              new PartDContractPeriod(endYear - yearsOfHistory, rand);
       for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
-        if (person.randInt(10) < 2) {
-          // 20% chance of changing policy at open enrollment
-          partDContractID = getContractID(person);
+        if (year == endYear) {
+          endMonth = Utilities.getMonth(stopTime);
         }
-        partDContracts.put(year, partDContractID);
+        for (int month = 1; month <= endMonth; month++) {
+          if ((month == 1 && rand.randInt(10) < 2) || rand.randInt(100) == 1) {
+            // 20% chance of changing policy at open enrollment
+            // 1% chance of changing policy Feb - Dec
+            PartDContractPeriod newContractPeriod = new PartDContractPeriod(year, month, rand);
+            PartDContractID currentContractID = currentContractPeriod.getContractID();
+            PartDContractID newContractID = newContractPeriod.getContractID();
+            if ((currentContractID != null && !currentContractID.equals(newContractID))
+                    || currentContractID != newContractID) {
+              currentContractPeriod.setEndBefore(newContractPeriod);
+              contractPeriods.add(currentContractPeriod);
+              currentContractPeriod = newContractPeriod;
+            }
+          }
+        }
       }
+      currentContractPeriod.setEnd(stopTime);
+      contractPeriods.add(currentContractPeriod);
     }
     
     /**
-     * Get the contract ID for the specified year.
-     * @param year the year of interest
-     * @return the contract ID or null if not enrolled for the specified year
+     * Get the contract ID for the specified point in time.
+     * @param timeStamp the point in time
+     * @return the contract ID or null if not enrolled at the specified point in time
      */
-    public PartDContractID getContractID(int year) {
-      return partDContracts.get(year);
+    public PartDContractID getContractID(long timeStamp) {
+      for (PartDContractPeriod contractPeriod: contractPeriods) {
+        if (contractPeriod.covers(timeStamp)) {
+          return contractPeriod.getContractID();
+        }
+      }
+      return null;
+    }
+    
+    /**
+     * Get a list of contract periods that were active during the specified year.
+     * @param year the year
+     * @return the list
+     */
+    public List<PartDContractPeriod> getContractPeriods(int year) {
+      List<PartDContractPeriod> periods = new ArrayList<>();
+      for (PartDContractPeriod period: contractPeriods) {
+        if (period.coversYear(year)) {
+          periods.add(period);
+        }
+      }
+      return Collections.unmodifiableList(periods);
+    }
+    
+    /**
+     * Get a count of months that were covered by Part D in the specified year.
+     * @param year the year
+     * @return the count
+     */
+    public int getCoveredMonthsCount(int year) {
+      int count = 0;
+      for (PartDContractPeriod period: getContractPeriods(year)) {
+        if (period.getContractID() != null) {
+          count += period.getCoveredMonths(year).size();
+        }
+      }
+      return count;
     }
     
     /**
@@ -1139,7 +1203,7 @@ public class BB2RIFExporter {
      * @param rand source of randomness
      * @return a contract ID (70% or the time) or null (30% of the time)
      */
-    private PartDContractID getContractID(RandomNumberGenerator rand) {
+    private PartDContractID getRandomContractID(RandomNumberGenerator rand) {
       if (rand.randInt(10) <= 2) {
         // 30% chance of not enrolling in Part D
         // see https://www.kff.org/medicare/issue-brief/10-things-to-know-about-medicare-part-d-coverage-and-costs-in-2019/
@@ -1163,6 +1227,148 @@ public class BB2RIFExporter {
       }
       return contractIDs;
     }
+
+    /**
+     * Utility class that represents a period of time and an associated Part D contract id.
+     */
+    public class PartDContractPeriod {
+      private LocalDate startDate;
+      private LocalDate endDate;
+      private PartDContractID contractID;
+
+      /**
+       * Create a new contract period. Contract periods have a one month granularity so the 
+       * supplied start and end are adjusted to the first day of the start month and last day of 
+       * the end month.
+       * @param start the start of the contract period
+       * @param end the end of the contract period
+       * @param contractID the contract id
+       */
+      public PartDContractPeriod(LocalDate start, LocalDate end, PartDContractID contractID) {
+        if (start != null) {
+          this.startDate = LocalDate.of(start.getYear(), start.getMonthValue(), 1);
+        }
+        if (end != null) {
+          this.endDate = LocalDate.of(end.getYear(), end.getMonthValue(), 1)
+                  .plusMonths(1).minusDays(1);
+        }
+        this.contractID = contractID;
+      }
+      
+      /**
+       * Create a new contract period starting on the first days of the specified month. A contract
+       * id is randomly assigned.
+       * @param year the year
+       * @param month the month
+       * @param rand source of randomness
+       */
+      public PartDContractPeriod(int year, int month, RandomNumberGenerator rand) {
+        this(LocalDate.of(year, month, 1), null, getRandomContractID(rand));
+      }
+
+      /**
+       * Create a new contract period starting on the first days of the specified year. A contract
+       * id is randomly assigned.
+       * @param year the year
+       * @param rand source of randomness
+       */
+      public PartDContractPeriod(int year, RandomNumberGenerator rand) {
+        this(year, 1, rand);
+      }
+      
+      /**
+       * Get the contract id.
+       * @return the contract id or null if not enrolled during this period
+       */
+      public PartDContractID getContractID() {
+        return contractID;
+      }
+      
+      /**
+       * Get a list of years covered by this period.
+       * @return list of years
+       * @throws IllegalStateException if the period has a null start and end
+       */
+      public List<Integer> getCoveredYears() {
+        if (startDate == null || endDate == null) {
+          throw new IllegalStateException(
+                  "Contract period is unbounded (either start or end is null)");
+        }
+        ArrayList<Integer> years = new ArrayList<>();
+        for (int year = startDate.getYear(); year <= endDate.getYear(); year++) {
+          years.add(year);
+        }
+        return years;
+      }
+      
+      /**
+       * Get the list of months that are covered by this contract period in the specified year. 
+       * @param year the year
+       * @return the list
+       */
+      public List<Integer> getCoveredMonths(int year) {
+        ArrayList<Integer> months = new ArrayList<>();
+        if (year < startDate.getYear() || year > endDate.getYear()) {
+          return months;
+        }
+        int startMonth = 1;
+        int endMonth = 12;
+        if (year == startDate.getYear()) {
+          startMonth = startDate.getMonthValue();
+        }
+        if (year == endDate.getYear()) {
+          endMonth = endDate.getMonthValue();
+        }
+        for (int i = startMonth; i <= endMonth; i++) {
+          months.add(i);
+        }
+        return months;
+      }
+
+      /**
+       * Set the end of this period to occur the month before the start of the specified period.
+       * @param newContractPeriod the period to end one before
+       * @throws IllegalStateException if the supplied period has a null start
+       */
+      public void setEndBefore(PartDContractPeriod newContractPeriod) {
+        if (newContractPeriod.startDate == null) {
+          throw new IllegalStateException(
+                  "Contract period has an unbounded start (start is null)");
+        }
+        this.endDate = newContractPeriod.startDate.minusDays(1);
+      }
+      
+      /**
+       * Set the end of this period to the supplied point in time (in ms since the epoch).
+       * @param stopTime the point in time
+       */
+      public void setEnd(long stopTime) {
+        endDate = Instant.ofEpochMilli(stopTime).atZone(ZoneId.systemDefault()).toLocalDate();
+      }
+
+      /**
+       * Check whether this period includes the specified point in time. Undounded periods are
+       * assumed to cover all times before, after or both.
+       * @param timeStamp point in time
+       * @return true of the period covers the point in time, false otherwise
+       */
+      public boolean covers(long timeStamp) {
+        LocalDate date = Instant.ofEpochMilli(timeStamp)
+                .atZone(ZoneId.systemDefault()).toLocalDate();
+        return (startDate == null || startDate.isBefore(date) || startDate.isEqual(date))
+                && (endDate == null || endDate.isAfter(date) || endDate.isEqual(date));
+      }
+
+      /**
+       * Check if this period has any overlap with the specified year.
+       * @param year the year
+       * @return true if the period overlap with any point in the year, false otherwise.
+       */
+      public boolean coversYear(int year) {
+        return (startDate == null || startDate.getYear() <= year)
+                && (endDate == null || endDate.getYear() >= year);
+      }
+    }
   }
 
   /**
@@ -1181,8 +1387,7 @@ public class BB2RIFExporter {
     int costYear = 0;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      PartDContractID partDContractID = partDContracts.getContractID(
-              Utilities.getYear(encounter.start));
+      PartDContractID partDContractID = partDContracts.getContractID(encounter.start);
       if (partDContractID == null) {
         continue; // skip medications if patient isn't enrolled in Part D
       }
